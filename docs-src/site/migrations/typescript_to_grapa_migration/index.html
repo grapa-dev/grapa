@@ -4050,6 +4050,10 @@
 <td><code>obj["key"]</code><br><code>obj.key</code><br><code>obj."key"</code></td>
 </tr>
 <tr>
+<td><code>const {a, b} = obj</code></td>
+<td><code>@local ++= obj; a.echo(); b.echo();</code></td>
+</tr>
+<tr>
 <td><code>for (let i=0; i&lt;arr.length; i++)</code></td>
 <td><code>for i in arr { ... }</code><br><code>i = 0; while (i &lt; arr.len()) { ...; i += 1; }</code><br><code>arr.map(op(x) { ... })</code><br><code>(n).range(0,1).map(op(i) { ... })</code></td>
 </tr>

@@ -2526,11 +2526,44 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#4-destructuringpattern-matching-planned" class="md-nav__link">
+  <a href="#4-grapas-pattern-matching-implemented" class="md-nav__link">
     <span class="md-ellipsis">
-      4. Destructuring/Pattern Matching 🔄 PLANNED
+      4. Grapa's Pattern Matching ✅ IMPLEMENTED
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="4. Grapa&#39;s Pattern Matching ✅ IMPLEMENTED">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#4a-grapas-destructuring-implemented" class="md-nav__link">
+    <span class="md-ellipsis">
+      4a. Grapa's Destructuring ✅ IMPLEMENTED
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4b-grapas-switch-based-pattern-matching-implemented" class="md-nav__link">
+    <span class="md-ellipsis">
+      4b. Grapa's Switch-Based Pattern Matching ✅ IMPLEMENTED
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4c-grapas-structural-querying-implemented" class="md-nav__link">
+    <span class="md-ellipsis">
+      4c. Grapa's Structural Querying ✅ IMPLEMENTED
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
         
@@ -3852,11 +3885,44 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#4-destructuringpattern-matching-planned" class="md-nav__link">
+  <a href="#4-grapas-pattern-matching-implemented" class="md-nav__link">
     <span class="md-ellipsis">
-      4. Destructuring/Pattern Matching 🔄 PLANNED
+      4. Grapa's Pattern Matching ✅ IMPLEMENTED
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="4. Grapa&#39;s Pattern Matching ✅ IMPLEMENTED">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#4a-grapas-destructuring-implemented" class="md-nav__link">
+    <span class="md-ellipsis">
+      4a. Grapa's Destructuring ✅ IMPLEMENTED
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4b-grapas-switch-based-pattern-matching-implemented" class="md-nav__link">
+    <span class="md-ellipsis">
+      4b. Grapa's Switch-Based Pattern Matching ✅ IMPLEMENTED
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4c-grapas-structural-querying-implemented" class="md-nav__link">
+    <span class="md-ellipsis">
+      4c. Grapa's Structural Querying ✅ IMPLEMENTED
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
         
@@ -4146,25 +4212,109 @@ loop_with_break = op() {
     }
 };
 </code></pre></div>
-<h3 id="4-destructuringpattern-matching-planned"><strong>4. Destructuring/Pattern Matching</strong> 🔄 <strong>PLANNED</strong></h3>
-<p><strong>Status</strong>: Not yet implemented
-<strong>Planned Syntax</strong>: Destructuring assignment</p>
-<div class="highlight"><pre><span></span><code>/* Planned destructuring syntax */
-{name, age} = person;  /* Object destructuring */
-[first, second, ...rest] = array;  /* Array destructuring */
+<h3 id="4-grapas-pattern-matching-implemented"><strong>4. Grapa's Pattern Matching</strong> ✅ <strong>IMPLEMENTED</strong></h3>
+<p><strong>Status</strong>: Fully implemented with superior approach
+<strong>Grapa's Capabilities</strong>: Multiple pattern matching mechanisms</p>
+<h4 id="4a-grapas-destructuring-implemented"><strong>4a. Grapa's Destructuring</strong> ✅ <strong>IMPLEMENTED</strong></h4>
+<p><strong>Status</strong>: Fully implemented with superior approach
+<strong>Grapa's Syntax</strong>: Namespace-based destructuring assignment</p>
+<div class="highlight"><pre><span></span><code>/* Grapa&#39;s destructuring via namespace concatenation */
+@local ++= {name:&quot;Alice&quot;, age:30};  /* Destructure into local namespace */
+name.echo();  /* Direct access: &quot;Alice&quot; */
+age.echo();   /* Direct access: 30 */
+
+/* Array destructuring */
+arr = [1, 2, 3, 4, 5];
+@local ++= {first:arr[0], second:arr[1], rest:arr.range(2, arr.len())};
+first.echo();   /* 1 */
+second.echo();  /* 2 */
+rest.echo();    /* [3, 4, 5] */
 </code></pre></div>
 <p><strong>Use Cases:</strong>
-- <strong>Object Destructuring</strong> - Extract properties
-- <strong>Array Destructuring</strong> - Extract elements
-- <strong>Function Parameters</strong> - Destructure parameters
-- <strong>Return Values</strong> - Destructure return values</p>
-<p><strong>Current Workaround:</strong>
-<div class="highlight"><pre><span></span><code>/* Explicit property access */
-name = person.name;
-age = person.age;
-first = array[0];
-second = array[1];
+- <strong>Object Destructuring</strong> - Extract properties into any namespace
+- <strong>Array Destructuring</strong> - Extract elements with custom variable names
+- <strong>Function Parameters</strong> - Destructure parameters into local scope
+- <strong>Return Values</strong> - Destructure return values into target namespace
+- <strong>Configuration</strong> - Load config objects into global namespace</p>
+<p><strong>Namespace Options:</strong>
+<div class="highlight"><pre><span></span><code>/* Local namespace (function scope) */
+@local ++= {debug:true, timeout:5000};
+
+/* Global namespace (persistent) */
+@global ++= {config:true, version:&quot;1.0&quot;};
+
+/* Object namespace (current object) */
+@this ++= {name:&quot;John&quot;, age:25};
+
+/* Custom namespace */
+@my_namespace ++= {data:123, flag:false};
 </code></pre></div></p>
+<p><strong>Duplicate Handling:</strong>
+<div class="highlight"><pre><span></span><code>/* References access the last added in case of duplicates */
+@local ++= {a:1, b:2};
+@local ++= {a:10, c:3};  /* &#39;a&#39; now refers to 10, not 1 */
+
+/* Remove duplicates if needed */
+@local.unique();  /* Removes duplicate entries */
+</code></pre></div></p>
+<h4 id="4b-grapas-switch-based-pattern-matching-implemented"><strong>4b. Grapa's Switch-Based Pattern Matching</strong> ✅ <strong>IMPLEMENTED</strong></h4>
+<p><strong>Status</strong>: Fully implemented with superior approach
+<strong>Grapa's Syntax</strong>: Expression-based switch statements</p>
+<div class="highlight"><pre><span></span><code>/* Each case can be a full boolean expression */
+switch (true) {
+    case (user.role == &quot;admin&quot; &amp;&amp; user.age &gt;= 18): &quot;Admin access granted&quot;.echo();
+    case (user.role == &quot;user&quot; &amp;&amp; user.age &gt;= 18): &quot;User access granted&quot;.echo();
+    case (user.age &lt; 18): &quot;Access denied - too young&quot;.echo();
+    default: &quot;Access denied - unknown role&quot;.echo();
+};
+
+/* Type-based pattern matching */
+switch (true) {
+    case (data.type() == $STR): &quot;String data&quot;.echo();
+    case (data.type() == $INT): &quot;Integer data&quot;.echo();
+    case (data.type() == $ARRAY): &quot;Array data&quot;.echo();
+    case (data.type() == $LIST): &quot;List data&quot;.echo();
+    default: &quot;Other data type&quot;.echo();
+};
+
+/* Complex data structure matching */
+switch (true) {
+    case (user.name == &quot;admin&quot; &amp;&amp; user.permissions.len() &gt; 0): &quot;Full admin&quot;.echo();
+    case (user.permissions.find(&quot;read&quot;)): &quot;Read access&quot;.echo();
+    case (user.guest == true): &quot;Guest access&quot;.echo();
+    default: &quot;No access&quot;.echo();
+};
+</code></pre></div>
+<p><strong>Advantages of Grapa's Switch Pattern Matching:</strong>
+- <strong>Full Expressions</strong>: Each case can contain complex boolean expressions
+- <strong>Sequential Evaluation</strong>: Evaluates from first to last case, stops at first match
+- <strong>No Fall-Through</strong>: Unlike C-style switches, Grapa doesn't fall through to next case
+- <strong>Pattern Matching</strong>: Can match on data structure patterns, types, and conditions
+- <strong>Default Case</strong>: Optional catch-all for unmatched conditions
+- <strong>Type Safety</strong>: Can match on data types using <code>.type()</code> method</p>
+<h4 id="4c-grapas-structural-querying-implemented"><strong>4c. Grapa's Structural Querying</strong> ✅ <strong>IMPLEMENTED</strong></h4>
+<p><strong>Status</strong>: Fully implemented with superior approach
+<strong>Grapa's Syntax</strong>: <code>.findall()</code> method for structural pattern matching</p>
+<div class="highlight"><pre><span></span><code>/* XML structural pattern matching */
+xml = &lt;root&gt;&lt;item id=&quot;1&quot;&gt;Hello&lt;/item&gt;&lt;item id=&quot;2&quot;&gt;World&lt;/item&gt;&lt;/root&gt;;
+xml.findall({name:&quot;item&quot;})                /* All item elements */
+xml.findall({name:&quot;item&quot;, attr:{id:&quot;2&quot;}}) /* Items with id=&quot;2&quot; */
+xml.findall({value:&quot;Hello&quot;})              /* Elements with content &quot;Hello&quot; */
+
+/* LIST structural pattern matching */
+data = {name:&quot;Alice&quot;, age:30, city:&quot;New York&quot;};
+data.findall({has:{name:&quot;age&quot;}})          /* Returns: {&quot;data&quot;:{&quot;name&quot;:&quot;Alice&quot;,&quot;age&quot;:30}} */
+
+/* ARRAY structural pattern matching */
+arr = [{name:&quot;Alice&quot;}, {name:&quot;Bob&quot;}, {name:&quot;Charlie&quot;}];
+arr.findall({has:{name:&quot;name&quot;}})          /* Returns: [{&quot;name&quot;:&quot;Alice&quot;},{&quot;name&quot;:&quot;Bob&quot;},{&quot;name&quot;:&quot;Charlie&quot;}] */
+</code></pre></div>
+<p><strong>Advantages of Grapa's Structural Querying:</strong>
+- <strong>Declarative</strong>: Express patterns declaratively rather than imperatively
+- <strong>Powerful</strong>: Can match complex nested structures
+- <strong>Flexible</strong>: Supports logical operators (AND, OR) in patterns
+- <strong>Type-Agnostic</strong>: Works across XML, LIST, and ARRAY types
+- <strong>Composable</strong>: Can combine multiple pattern conditions</p>
 <h3 id="5-advanced-module-system-basic-implementation"><strong>5. Advanced Module System</strong> 🔄 <strong>BASIC IMPLEMENTATION</strong></h3>
 <p><strong>Status</strong>: Basic implementation exists
 <strong>Current</strong>: <code>include</code> and <code>reset</code> commands</p>
@@ -4297,7 +4447,7 @@ $ARRAY += (custom_method: op() { $this.len(); });
 </tr>
 <tr>
 <td><strong>Destructuring</strong></td>
-<td>🔄 Planned</td>
+<td>✅ Superior</td>
 <td>✅ Yes</td>
 <td>✅ Yes</td>
 <td>✅ Yes</td>

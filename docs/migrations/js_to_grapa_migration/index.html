@@ -4418,6 +4418,10 @@
 <td><code>if (obj &amp;&amp; obj.prop) { obj.prop; }</code></td>
 </tr>
 <tr>
+<td><code>const {a, b} = obj</code></td>
+<td><code>@local ++= obj; a.echo(); b.echo();</code></td>
+</tr>
+<tr>
 <td><code>x ?? y</code></td>
 <td><code>if (x == null) { x = y; }</code></td>
 </tr>
@@ -4854,7 +4858,7 @@ if (value.type() == $INT) {
 <ul>
 <li><strong>Template literals</strong>: <code>`Hello ${name}`</code> - Use <code>"Hello ${name}".interpolate()</code> (preferred) or string concatenation: <code>"Hello " + name</code> or see <a href="../../type/str/#string-templates-and-dynamic-construction">String Templates and Dynamic Construction</a> for advanced patterns</li>
 <li><strong>Method chaining</strong>: <code>"hello".toUpperCase() + " world".toLowerCase()</code> - Use string interpolation: <code>"${'hello'.upper()} ${'world'.lower()}".interpolate()</code></li>
-<li><strong>Destructuring</strong>: <code>const {a, b} = obj</code> - Use explicit property access: <code>a = obj.a; b = obj.b;</code></li>
+<li><strong>Destructuring</strong>: <code>const {a, b} = obj</code> - Use Grapa's namespace destructuring: <code>@local ++= obj; a.echo(); b.echo();</code></li>
 <li><strong>Spread operator</strong>: <code>[...arr1, ...arr2]</code> - Use <code>+=</code> operator: <code>arr1 += arr2</code></li>
 <li><strong>Optional chaining</strong>: <code>obj?.prop?.sub</code> - Use <code>.iferr()</code> for superior safe property access with custom fallback values: <code>obj.prop.iferr(null).sub.iferr("default")</code></li>
 <li><strong>Nullish coalescing</strong>: <code>x ?? y</code> - Use <code>.ifnull()</code> for superior nullish coalescing: <code>x.ifnull(y)</code></li>

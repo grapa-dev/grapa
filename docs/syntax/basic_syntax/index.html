@@ -2554,6 +2554,66 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#grapas-destructuring-assignment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Grapa's Destructuring Assignment
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Grapa&#39;s Destructuring Assignment">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#object-destructuring" class="md-nav__link">
+    <span class="md-ellipsis">
+      Object Destructuring
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#array-destructuring" class="md-nav__link">
+    <span class="md-ellipsis">
+      Array Destructuring
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#namespace-options" class="md-nav__link">
+    <span class="md-ellipsis">
+      Namespace Options
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#duplicate-handling" class="md-nav__link">
+    <span class="md-ellipsis">
+      Duplicate Handling
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#advanced-patterns" class="md-nav__link">
+    <span class="md-ellipsis">
+      Advanced Patterns
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#const-protection" class="md-nav__link">
     <span class="md-ellipsis">
       Const Protection
@@ -4841,6 +4901,66 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#grapas-destructuring-assignment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Grapa's Destructuring Assignment
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Grapa&#39;s Destructuring Assignment">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#object-destructuring" class="md-nav__link">
+    <span class="md-ellipsis">
+      Object Destructuring
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#array-destructuring" class="md-nav__link">
+    <span class="md-ellipsis">
+      Array Destructuring
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#namespace-options" class="md-nav__link">
+    <span class="md-ellipsis">
+      Namespace Options
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#duplicate-handling" class="md-nav__link">
+    <span class="md-ellipsis">
+      Duplicate Handling
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#advanced-patterns" class="md-nav__link">
+    <span class="md-ellipsis">
+      Advanced Patterns
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#const-protection" class="md-nav__link">
     <span class="md-ellipsis">
       Const Protection
@@ -6154,6 +6274,85 @@ if (condition) {
     block_var = &quot;other&quot;;  /* Different block namespace */
 }
 </code></pre></div>
+<h3 id="grapas-destructuring-assignment">Grapa's Destructuring Assignment</h3>
+<p>Grapa provides a powerful destructuring system using namespace concatenation with the <code>++=</code> operator. This is more flexible and powerful than traditional destructuring syntax.</p>
+<h4 id="object-destructuring">Object Destructuring</h4>
+<div class="highlight"><pre><span></span><code>/* Destructure object properties into local namespace */
+person = {name:&quot;Alice&quot;, age:30, city:&quot;New York&quot;};
+@local ++= person;
+name.echo();    /* &quot;Alice&quot; */
+age.echo();     /* 30 */
+city.echo();    /* &quot;New York&quot; */
+
+/* Destructure into global namespace */
+@global ++= {debug:true, timeout:5000};
+debug.echo();   /* true */
+timeout.echo(); /* 5000 */
+</code></pre></div>
+<h4 id="array-destructuring">Array Destructuring</h4>
+<div class="highlight"><pre><span></span><code>/* Destructure array elements with custom variable names */
+arr = [1, 2, 3, 4, 5];
+@local ++= {first:arr[0], second:arr[1], rest:arr.range(2, arr.len())};
+first.echo();   /* 1 */
+second.echo();  /* 2 */
+rest.echo();    /* [3, 4, 5] */
+
+/* Function parameter destructuring */
+func = op(params) {
+    @local ++= params;  /* Destructure all parameters */
+    name.echo();
+    age.echo();
+};
+
+func({name:&quot;Bob&quot;, age:25});
+</code></pre></div>
+<h4 id="namespace-options">Namespace Options</h4>
+<div class="highlight"><pre><span></span><code>/* Local namespace (function scope) */
+@local ++= {debug:true, timeout:5000};
+
+/* Global namespace (persistent) */
+@global ++= {config:true, version:&quot;1.0&quot;};
+
+/* Object namespace (current object) */
+@this ++= {name:&quot;John&quot;, age:25};
+
+/* Custom namespace */
+@my_namespace ++= {data:123, flag:false};
+</code></pre></div>
+<h4 id="duplicate-handling">Duplicate Handling</h4>
+<div class="highlight"><pre><span></span><code>/* References access the last added in case of duplicates */
+@local ++= {a:1, b:2};
+@local ++= {a:10, c:3};  /* &#39;a&#39; now refers to 10, not 1 */
+
+/* Remove duplicates if needed */
+@local.unique();  /* Removes duplicate entries */
+</code></pre></div>
+<h4 id="advanced-patterns">Advanced Patterns</h4>
+<div class="highlight"><pre><span></span><code>/* Destructure nested objects */
+nested = {user:{name:&quot;Alice&quot;, profile:{age:30, role:&quot;admin&quot;}}};
+@local ++= nested.user.profile;
+age.echo();   /* 30 */
+role.echo();  /* &quot;admin&quot; */
+
+/* Destructure with transformations */
+data = {x:10, y:20};
+@local ++= {sum:data.x + data.y, product:data.x * data.y};
+sum.echo();     /* 30 */
+product.echo(); /* 200 */
+
+/* Configuration destructuring */
+@global ++= {debug:true, timeout:5000, retries:3};
+debug.echo();   /* true */
+timeout.echo(); /* 5000 */
+retries.echo(); /* 3 */
+</code></pre></div>
+<p><strong>Advantages of Grapa's Destructuring:</strong>
+- <strong>Namespace Control</strong>: Explicit control over where variables go
+- <strong>Flexible</strong>: Can destructure into any namespace (<code>@local</code>, <code>@global</code>, <code>@this</code>)
+- <strong>Powerful</strong>: Can destructure multiple objects into the same namespace
+- <strong>Consistent</strong>: Uses existing <code>++=</code> operator and namespace system
+- <strong>Duplicate Resolution</strong>: Clear behavior for handling duplicates
+- <strong>Direct Access</strong>: Variables become directly accessible without prefix</p>
 <h3 id="const-protection">Const Protection</h3>
 <p>Grapa provides runtime const protection that prevents variable modification:</p>
 <div class="highlight"><pre><span></span><code>/* Create const variable */

@@ -4114,6 +4114,10 @@
 <td><code>if/else</code> chain</td>
 </tr>
 <tr>
+<td><code>let {a, b} = obj;</code></td>
+<td><code>@local ++= obj; a.echo(); b.echo();</code></td>
+</tr>
+<tr>
 <td><code>arr.iter().map(|x| x+1)</code></td>
 <td><code>arr.map(op(x) { x + 1; })</code></td>
 </tr>

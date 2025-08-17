@@ -1530,6 +1530,57 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="switch">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#basic-value-matching" class="md-nav__link">
+    <span class="md-ellipsis">
+      Basic Value Matching
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#boolean-expression-matching" class="md-nav__link">
+    <span class="md-ellipsis">
+      Boolean Expression Matching
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#complex-pattern-matching" class="md-nav__link">
+    <span class="md-ellipsis">
+      Complex Pattern Matching
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#type-based-matching" class="md-nav__link">
+    <span class="md-ellipsis">
+      Type-Based Matching
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sequential-evaluation-first-match-wins" class="md-nav__link">
+    <span class="md-ellipsis">
+      Sequential Evaluation (First Match Wins)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -3526,6 +3577,57 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="switch">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#basic-value-matching" class="md-nav__link">
+    <span class="md-ellipsis">
+      Basic Value Matching
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#boolean-expression-matching" class="md-nav__link">
+    <span class="md-ellipsis">
+      Boolean Expression Matching
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#complex-pattern-matching" class="md-nav__link">
+    <span class="md-ellipsis">
+      Complex Pattern Matching
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#type-based-matching" class="md-nav__link">
+    <span class="md-ellipsis">
+      Type-Based Matching
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sequential-evaluation-first-match-wins" class="md-nav__link">
+    <span class="md-ellipsis">
+      Sequential Evaluation (First Match Wins)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -3577,12 +3679,62 @@ none
 </code></pre></div></p>
 <h2 id="switch">switch</h2>
 <p>Syntax options:
-* swtich (item) {case item1: statement; item2 statement; etc...;};
-* swtich (item) {case item1: statement; item2 statement; etc...; default: statement;};</p>
-<p>The following is a way to use a switch in place of if/ifelse/else sequence. The switch will compare until if arrives at a true.</p>
-<div class="highlight"><pre><span></span><code>&gt; switch(true){case (1==0):&quot;1==0\n&quot;.echo(); case (2==2): &quot;2==2\n&quot;.echo(); default: &quot;none\n&quot;.echo();};
-2==2
+* switch (item) {case condition1: statement; case condition2: statement; etc...;};
+* switch (item) {case condition1: statement; case condition2: statement; etc...; default: statement;};</p>
+<p>Grapa's switch statement is <strong>much more powerful</strong> than traditional switch statements. Each <code>case</code> can contain a <strong>full expression that returns true/false</strong>, and evaluation stops at the first match.</p>
+<h3 id="basic-value-matching">Basic Value Matching</h3>
+<div class="highlight"><pre><span></span><code>/* Traditional value matching */
+switch (x) {
+    case 1: &quot;One&quot;.echo();
+    case 2: &quot;Two&quot;.echo();
+    default: &quot;Other&quot;.echo();
+};
 </code></pre></div>
+<h3 id="boolean-expression-matching">Boolean Expression Matching</h3>
+<div class="highlight"><pre><span></span><code>/* Each case can be a full boolean expression */
+switch (true) {
+    case (x &lt; 0): &quot;Negative&quot;.echo();
+    case (x == 0): &quot;Zero&quot;.echo();
+    case (x &gt; 0): &quot;Positive&quot;.echo();
+    default: &quot;Unknown&quot;.echo();
+};
+</code></pre></div>
+<h3 id="complex-pattern-matching">Complex Pattern Matching</h3>
+<div class="highlight"><pre><span></span><code>/* Pattern matching on data structures */
+user = {name: &quot;Alice&quot;, age: 25, role: &quot;admin&quot;};
+
+switch (true) {
+    case (user.role == &quot;admin&quot; &amp;&amp; user.age &gt;= 18): &quot;Admin access granted&quot;.echo();
+    case (user.role == &quot;user&quot; &amp;&amp; user.age &gt;= 18): &quot;User access granted&quot;.echo();
+    case (user.age &lt; 18): &quot;Access denied - too young&quot;.echo();
+    default: &quot;Access denied - unknown role&quot;.echo();
+};
+</code></pre></div>
+<h3 id="type-based-matching">Type-Based Matching</h3>
+<div class="highlight"><pre><span></span><code>/* Match based on data type */
+switch (true) {
+    case (data.type() == $STR): &quot;String data&quot;.echo();
+    case (data.type() == $INT): &quot;Integer data&quot;.echo();
+    case (data.type() == $ARRAY): &quot;Array data&quot;.echo();
+    case (data.type() == $LIST): &quot;List data&quot;.echo();
+    default: &quot;Other data type&quot;.echo();
+};
+</code></pre></div>
+<h3 id="sequential-evaluation-first-match-wins">Sequential Evaluation (First Match Wins)</h3>
+<div class="highlight"><pre><span></span><code>/* Evaluation stops at first true condition */
+switch (true) {
+    case (x &gt; 10): &quot;Greater than 10&quot;.echo();  /* If x=15, only this executes */
+    case (x &gt; 5): &quot;Greater than 5&quot;.echo();    /* This won&#39;t execute if above is true */
+    case (x &gt; 0): &quot;Greater than 0&quot;.echo();    /* This won&#39;t execute if above is true */
+    default: &quot;Zero or negative&quot;.echo();
+};
+</code></pre></div>
+<p><strong>Key Features:</strong>
+- <strong>Full expressions</strong>: Each case can contain complex boolean expressions
+- <strong>Sequential evaluation</strong>: Evaluates from first to last case, stops at first match
+- <strong>No fall-through</strong>: Unlike C-style switches, Grapa doesn't fall through to next case
+- <strong>Pattern matching</strong>: Can match on data structure patterns, types, and conditions
+- <strong>Default case</strong>: Optional catch-all for unmatched conditions</p>
 <h2 id="_1"><code>?</code></h2>
 <p>Syntax options:
 * bool ? statement for true;
