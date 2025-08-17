@@ -3067,6 +3067,15 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#reflection-and-introspection" class="md-nav__link">
+    <span class="md-ellipsis">
+      Reflection and Introspection
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -4197,6 +4206,15 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#reflection-and-introspection" class="md-nav__link">
+    <span class="md-ellipsis">
+      Reflection and Introspection
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -4928,6 +4946,33 @@ if (match(&quot;hello world&quot;, &quot;world&quot;)) {
 }
 </code></pre></div>
 <p>This is a handy workaround until Grapa adds a native <code>.match()</code> method.</p>
+<h3 id="reflection-and-introspection">Reflection and Introspection</h3>
+<p><strong>JavaScript:</strong> <code>typeof</code>, <code>Object.keys()</code>, <code>Object.getOwnPropertyNames()</code>, <code>Reflect</code> API
+<strong>Grapa:</strong> Enhanced <code>.describe()</code> method with configurable options</p>
+<p><strong>Grapa's Superior Reflection:</strong>
+<div class="highlight"><pre><span></span><code>/* JavaScript: typeof obj, Object.keys(obj), Object.getOwnPropertyNames(obj) */
+/* Grapa: Single method with configurable options */
+obj.describe();                    /* Basic type and structure info */
+obj.describe({values: true});      /* Include actual values */
+obj.describe({structure: true});   /* Include internal structure details */
+obj.describe({format: &#39;json&#39;});    /* Machine-readable JSON output */
+
+/* Float structure inspection (unique to Grapa) */
+(2.3).describe({structure: true});
+/* Shows 7 internal components: sign, trunc, fix, exp, max, extra, data */
+
+/* Object property inspection */
+user = {name: &#39;Alice&#39;, age: 30};
+user.describe({properties: true});
+/* Returns: &quot;List with 2 properties (keys: name, age)&quot; */
+</code></pre></div></p>
+<p><strong>Advantages of Grapa's Approach:</strong>
+- <strong>Single Method</strong>: One <code>.describe()</code> method handles all reflection needs
+- <strong>Configurable</strong>: Options control what information is included
+- <strong>Multiple Formats</strong>: Text for humans, JSON for programs
+- <strong>Float Structure</strong>: Complete internal component inspection (unique feature)
+- <strong>Type-Specific</strong>: Detailed information for each data type
+- <strong>Performance</strong>: Efficient implementation with minimal overhead</p>
 
 
 

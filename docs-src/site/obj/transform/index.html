@@ -2770,6 +2770,30 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#object-inspection-and-reflection" class="md-nav__link">
+    <span class="md-ellipsis">
+      Object Inspection and Reflection
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Object Inspection and Reflection">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#describeoptions" class="md-nav__link">
+    <span class="md-ellipsis">
+      describe(options)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -5100,6 +5124,30 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#object-inspection-and-reflection" class="md-nav__link">
+    <span class="md-ellipsis">
+      Object Inspection and Reflection
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Object Inspection and Reflection">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#describeoptions" class="md-nav__link">
+    <span class="md-ellipsis">
+      describe(options)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -5839,6 +5887,51 @@ false
 <p><strong>Performance &amp; Parallelism:</strong>
 All array/vector transformation methods (e.g., <code>.map()</code>, <code>.filter()</code>, <code>.reduce()</code>) are parallel by default, robust, and production-ready for ETL workloads. Grapa's parallelism is well tested for high-throughput data processing.</p>
 </blockquote>
+<h2 id="object-inspection-and-reflection">Object Inspection and Reflection</h2>
+<h3 id="describeoptions">describe(options)</h3>
+<p>Provides comprehensive object description and reflection capabilities with configurable options.</p>
+<p><strong>Parameters:</strong>
+- <code>options</code> (optional): Object with configuration options
+  - <code>properties</code> (boolean): Include property names and types (default: true)
+  - <code>methods</code> (boolean): Include method names and signatures (default: true)
+  - <code>structure</code> (boolean): Include internal structure details (default: false)
+  - <code>values</code> (boolean): Include actual values for small objects (default: false)
+  - <code>format</code> (string): Output format - "text", "json", or "xml" (default: "text")</p>
+<p><strong>Returns:</strong> String description of the object</p>
+<p><strong>Examples:</strong></p>
+<div class="highlight"><pre><span></span><code>/* Basic descriptions */
+&#39;hello&#39;.describe();                    /* &quot;String with length 5&quot; */
+(123).describe();                      /* &quot;Integer: 123&quot; */
+[1, 2, 3].describe();                  /* &quot;Array with 3 elements&quot; */
+{name: &#39;Alice&#39;, age: 30}.describe();   /* &quot;List with 2 properties (keys: name, age)&quot; */
+
+/* With structure details */
+(2.3).describe({structure: true});
+/* Returns: &quot;Float: 2.3... (sign:false, trunc:false, fix:false, exp:1, max:184, extra:10, data:3689348814741910323)&quot; */
+
+/* With values */
+&#39;world&#39;.describe({values: true});      /* &quot;String with length 5: \&quot;world\&quot;&quot; */
+
+/* JSON format */
+{name: &#39;Bob&#39;}.describe({format: &#39;json&#39;});
+/* Returns: {&quot;type&quot;:&quot;list&quot;,&quot;length&quot;:1,&quot;properties&quot;:1,&quot;keys&quot;:[&quot;name&quot;]} */
+
+/* Array with type information */
+[1, &#39;hello&#39;, 3.14].describe({structure: true});
+/* Returns: &quot;Array with 3 elements (types: integer, string, float)&quot; */
+</code></pre></div>
+<p><strong>Float Structure Inspection:</strong>
+When <code>structure: true</code> is used with float values, the method reveals the 7 internal components of Grapa's <code>$FLOAT</code> type:</p>
+<ol>
+<li><strong>sign</strong> - Boolean indicating if the number is signed</li>
+<li><strong>trunc</strong> - Boolean indicating if truncation occurred  </li>
+<li><strong>fix</strong> - Boolean indicating if it's a fixed-point number</li>
+<li><strong>exp</strong> - Exponent value</li>
+<li><strong>max</strong> - Maximum bits</li>
+<li><strong>extra</strong> - Extra precision bits</li>
+<li><strong>data</strong> - The actual numeric data</li>
+</ol>
+<p>This provides complete introspection into Grapa's high-precision floating-point implementation.</p>
 
 
 

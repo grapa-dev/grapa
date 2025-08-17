@@ -2577,11 +2577,53 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#6-enhanced-reflection-basic-implementation" class="md-nav__link">
+  <a href="#6-enhanced-reflection-implemented" class="md-nav__link">
     <span class="md-ellipsis">
-      6. Enhanced Reflection 🔄 BASIC IMPLEMENTATION
+      6. Enhanced Reflection ✅ IMPLEMENTED
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="6. Enhanced Reflection ✅ IMPLEMENTED">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#6a-enhanced-describe-method-implemented" class="md-nav__link">
+    <span class="md-ellipsis">
+      6a. Enhanced .describe() Method ✅ IMPLEMENTED
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6b-type-specific-descriptions-implemented" class="md-nav__link">
+    <span class="md-ellipsis">
+      6b. Type-Specific Descriptions ✅ IMPLEMENTED
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6c-float-structure-inspection-implemented" class="md-nav__link">
+    <span class="md-ellipsis">
+      6c. Float Structure Inspection ✅ IMPLEMENTED
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6d-output-formats-implemented" class="md-nav__link">
+    <span class="md-ellipsis">
+      6d. Output Formats ✅ IMPLEMENTED
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
         
@@ -3936,11 +3978,53 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#6-enhanced-reflection-basic-implementation" class="md-nav__link">
+  <a href="#6-enhanced-reflection-implemented" class="md-nav__link">
     <span class="md-ellipsis">
-      6. Enhanced Reflection 🔄 BASIC IMPLEMENTATION
+      6. Enhanced Reflection ✅ IMPLEMENTED
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="6. Enhanced Reflection ✅ IMPLEMENTED">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#6a-enhanced-describe-method-implemented" class="md-nav__link">
+    <span class="md-ellipsis">
+      6a. Enhanced .describe() Method ✅ IMPLEMENTED
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6b-type-specific-descriptions-implemented" class="md-nav__link">
+    <span class="md-ellipsis">
+      6b. Type-Specific Descriptions ✅ IMPLEMENTED
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6c-float-structure-inspection-implemented" class="md-nav__link">
+    <span class="md-ellipsis">
+      6c. Float Structure Inspection ✅ IMPLEMENTED
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6d-output-formats-implemented" class="md-nav__link">
+    <span class="md-ellipsis">
+      6d. Output Formats ✅ IMPLEMENTED
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
         
@@ -4327,17 +4411,101 @@ reset;                 /* Reset namespace */
 - <strong>Module Namespaces</strong> - Isolated module contexts
 - <strong>Circular Dependencies</strong> - Handle circular imports
 - <strong>Hot Reloading</strong> - Module hot reloading</p>
-<h3 id="6-enhanced-reflection-basic-implementation"><strong>6. Enhanced Reflection</strong> 🔄 <strong>BASIC IMPLEMENTATION</strong></h3>
-<p><strong>Status</strong>: Basic implementation exists
-<strong>Current</strong>: <code>.type()</code> method</p>
-<div class="highlight"><pre><span></span><code>/* Current reflection */
-type = value.type();  /* Get type */
+<h3 id="6-enhanced-reflection-implemented"><strong>6. Enhanced Reflection</strong> ✅ <strong>IMPLEMENTED</strong></h3>
+<p><strong>Status</strong>: Fully implemented with enhanced <code>.describe()</code> function
+<strong>Grapa's Capabilities</strong>: Comprehensive object inspection and description</p>
+<p>Grapa provides enhanced reflection capabilities through the <code>.describe()</code> method, which can be applied to any object with configurable options for detailed inspection.</p>
+<h4 id="6a-enhanced-describe-method-implemented"><strong>6a. Enhanced .describe() Method</strong> ✅ <strong>IMPLEMENTED</strong></h4>
+<p><strong>Status</strong>: Fully implemented with comprehensive options
+<strong>Grapa's Syntax</strong>: Configurable object description with multiple output formats</p>
+<div class="highlight"><pre><span></span><code>/* Enhanced .describe() with parameters */
+object.describe(options);
+
+/* Options object structure */
+options = {
+    &quot;properties&quot;: true,      /* Include property names and types */
+    &quot;methods&quot;: true,         /* Include method names and signatures */
+    &quot;structure&quot;: false,      /* Include internal structure details */
+    &quot;values&quot;: false,         /* Include actual values (for small objects) */
+    &quot;format&quot;: &quot;text&quot;         /* &quot;text&quot;, &quot;json&quot;, &quot;xml&quot; */
+};
 </code></pre></div>
-<p><strong>Planned Enhancements:</strong>
-- <strong>Property Reflection</strong> - Enumerate properties
-- <strong>Method Reflection</strong> - Enumerate methods
-- <strong>Runtime Property Access</strong> - Dynamic property access
-- <strong>Type Introspection</strong> - Detailed type information</p>
+<p><strong>Example Usage:</strong>
+<div class="highlight"><pre><span></span><code>/* Basic description */
+user = {name: &quot;Alice&quot;, age: 30, greet: op() { &quot;Hello!&quot;.echo(); }};
+user.describe();
+/* Returns: &quot;List with 3 properties (keys: name, age, greet)&quot; */
+
+/* Detailed description with properties */
+user.describe({properties: true, methods: true});
+/* Returns: &quot;List with 3 properties (keys: name, age, greet)&quot; */
+
+/* Structure description for complex objects */
+table = $file().table(&quot;ROW&quot;);
+table.describe({structure: true});
+/* Returns detailed structure information */
+
+/* JSON format for programmatic access */
+user.describe({properties: true, format: &quot;json&quot;});
+/* Returns: {&quot;type&quot;:&quot;list&quot;,&quot;length&quot;:3,&quot;properties&quot;:3,&quot;keys&quot;:[&quot;name&quot;,&quot;age&quot;,&quot;greet&quot;]} */
+</code></pre></div></p>
+<h4 id="6b-type-specific-descriptions-implemented"><strong>6b. Type-Specific Descriptions</strong> ✅ <strong>IMPLEMENTED</strong></h4>
+<p><strong>Status</strong>: Fully implemented for all major types
+<strong>Grapa's Capabilities</strong>: Detailed descriptions for each data type</p>
+<p><strong>String Descriptions:</strong>
+<div class="highlight"><pre><span></span><code>&#39;hello&#39;.describe();                    /* &quot;String with length 5&quot; */
+&#39;world&#39;.describe({values: true});      /* &quot;String with length 5: \&quot;world\&quot;&quot; */
+</code></pre></div></p>
+<p><strong>Numeric Descriptions:</strong>
+<div class="highlight"><pre><span></span><code>(123).describe();                      /* &quot;Integer: 123&quot; */
+(2.3).describe({structure: true});     /* Shows 7 float components */
+</code></pre></div></p>
+<p><strong>Array Descriptions:</strong>
+<div class="highlight"><pre><span></span><code>[1, 2, 3].describe();                  /* &quot;Array with 3 elements&quot; */
+[1, 2, 3].describe({structure: true}); /* &quot;Array with 3 elements (types: integer, integer, integer)&quot; */
+</code></pre></div></p>
+<p><strong>List/Object Descriptions:</strong>
+<div class="highlight"><pre><span></span><code>{name: &#39;Alice&#39;, age: 30}.describe();   /* &quot;List with 2 properties (keys: name, age)&quot; */
+{name: &#39;Bob&#39;}.describe({format: &#39;json&#39;}); /* {&quot;type&quot;:&quot;list&quot;,&quot;length&quot;:1,&quot;properties&quot;:1,&quot;keys&quot;:[&quot;name&quot;]} */
+</code></pre></div></p>
+<h4 id="6c-float-structure-inspection-implemented"><strong>6c. Float Structure Inspection</strong> ✅ <strong>IMPLEMENTED</strong></h4>
+<p><strong>Status</strong>: Fully implemented with 7-component structure
+<strong>Grapa's Capabilities</strong>: Detailed internal float component inspection</p>
+<p>Grapa's <code>$FLOAT</code> type has 7 internal components that can be inspected:</p>
+<div class="highlight"><pre><span></span><code>/* Show float structure details */
+(2.3).describe({structure: true});
+/* Returns: &quot;Float: 2.3... (sign:false, trunc:false, fix:false, exp:1, max:184, extra:10, data:3689348814741910323)&quot; */
+
+/* JSON format with structure */
+(2.3).describe({structure: true, format: &quot;json&quot;});
+/* Returns: {&quot;type&quot;:&quot;float&quot;,&quot;value&quot;:&quot;2.3...&quot;,&quot;structure&quot;:{&quot;sign&quot;:false,&quot;trunc&quot;:false,&quot;fix&quot;:false,&quot;exp&quot;:1,&quot;max&quot;:184,&quot;extra&quot;:10,&quot;data&quot;:&quot;3689348814741910323&quot;}} */
+</code></pre></div>
+<p><strong>The 7 Float Components:</strong>
+1. <strong>sign</strong> - Boolean indicating if the number is signed
+2. <strong>trunc</strong> - Boolean indicating if truncation occurred
+3. <strong>fix</strong> - Boolean indicating if it's a fixed-point number
+4. <strong>exp</strong> - Exponent value
+5. <strong>max</strong> - Maximum bits
+6. <strong>extra</strong> - Extra precision bits
+7. <strong>data</strong> - The actual numeric data</p>
+<h4 id="6d-output-formats-implemented"><strong>6d. Output Formats</strong> ✅ <strong>IMPLEMENTED</strong></h4>
+<p><strong>Status</strong>: Multiple output formats supported
+<strong>Grapa's Capabilities</strong>: Text and JSON output formats</p>
+<p><strong>Text Format (Default):</strong>
+<div class="highlight"><pre><span></span><code>&#39;hello&#39;.describe();                    /* &quot;String with length 5&quot; */
+[1, 2, 3].describe({structure: true}); /* &quot;Array with 3 elements (types: integer, integer, integer)&quot; */
+</code></pre></div></p>
+<p><strong>JSON Format:</strong>
+<div class="highlight"><pre><span></span><code>&#39;hello&#39;.describe({format: &#39;json&#39;});    /* {&quot;type&quot;:&quot;string&quot;,&quot;length&quot;:5} */
+[1, 2, 3].describe({format: &#39;json&#39;});  /* {&quot;type&quot;:&quot;array&quot;,&quot;length&quot;:3} */
+</code></pre></div></p>
+<p><strong>Advantages of Grapa's Enhanced Reflection:</strong>
+- <strong>Single Method</strong>: One <code>.describe()</code> method handles all reflection needs
+- <strong>Configurable</strong>: Options control what information is included
+- <strong>Multiple Formats</strong>: Text for humans, JSON for programs
+- <strong>Type-Specific</strong>: Detailed information for each data type
+- <strong>Float Structure</strong>: Complete internal component inspection
+- <strong>Performance</strong>: Efficient implementation with minimal overhead</p>
 <h3 id="7-system-class-redefinition-implemented"><strong>7. System Class Redefinition</strong> ✅ <strong>IMPLEMENTED</strong></h3>
 <p><strong>Status</strong>: Fully implemented but advanced feature
 <strong>Current</strong>: <code>@global</code> syntax for redefining system classes</p>

@@ -2004,6 +2004,39 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#object-inspection-and-reflection" class="md-nav__link">
+    <span class="md-ellipsis">
+      Object Inspection and Reflection
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Object Inspection and Reflection">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#describeoptions" class="md-nav__link">
+    <span class="md-ellipsis">
+      describe(options)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#type" class="md-nav__link">
+    <span class="md-ellipsis">
+      type()
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -3942,6 +3975,39 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#object-inspection-and-reflection" class="md-nav__link">
+    <span class="md-ellipsis">
+      Object Inspection and Reflection
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Object Inspection and Reflection">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#describeoptions" class="md-nav__link">
+    <span class="md-ellipsis">
+      describe(options)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#type" class="md-nav__link">
+    <span class="md-ellipsis">
+      type()
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -4040,6 +4106,33 @@ expression = $sys.add(term, expression);
 // In library files
 function = op(){@this.$sys.function_name(@var.{params});};
 </code></pre></div>
+<h2 id="object-inspection-and-reflection">Object Inspection and Reflection</h2>
+<h3 id="describeoptions">describe(options)</h3>
+<p>Provides comprehensive object description and reflection capabilities.</p>
+<p><strong>Parameters:</strong>
+- <code>options</code> (optional): Configuration object
+  - <code>properties</code> (boolean): Include property names (default: true)
+  - <code>methods</code> (boolean): Include method names (default: true)
+  - <code>structure</code> (boolean): Include internal structure (default: false)
+  - <code>values</code> (boolean): Include actual values (default: false)
+  - <code>format</code> (string): Output format - "text", "json" (default: "text")</p>
+<p><strong>Examples:</strong>
+<div class="highlight"><pre><span></span><code>&#39;hello&#39;.describe();                    /* &quot;String with length 5&quot; */
+(123).describe();                      /* &quot;Integer: 123&quot; */
+[1,2,3].describe();                    /* &quot;Array with 3 elements&quot; */
+{name:&#39;Alice&#39;}.describe();             /* &quot;List with 1 properties (keys: name)&quot; */
+(2.3).describe({structure:true});      /* Shows 7 float components */
+&#39;world&#39;.describe({values:true});       /* &quot;String with length 5: \&quot;world\&quot;&quot; */
+{name:&#39;Bob&#39;}.describe({format:&#39;json&#39;}); /* {&quot;type&quot;:&quot;list&quot;,&quot;length&quot;:1,&quot;properties&quot;:1,&quot;keys&quot;:[&quot;name&quot;]} */
+</code></pre></div></p>
+<h3 id="type">type()</h3>
+<p>Returns the type of an object.</p>
+<p><strong>Examples:</strong>
+<div class="highlight"><pre><span></span><code>&#39;hello&#39;.type();    /* $STR */
+123.type();        /* $INT */
+[1,2,3].type();    /* $ARRAY */
+{name:&#39;Alice&#39;}.type(); /* $LIST */
+</code></pre></div></p>
 <p><strong>Total: 200+ system functions available</strong> </p>
 <blockquote>
 <p><strong>See Also:</strong>
