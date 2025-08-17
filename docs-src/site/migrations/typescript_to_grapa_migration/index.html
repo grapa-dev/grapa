@@ -2999,6 +2999,24 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#decorators-and-function-composition" class="md-nav__link">
+    <span class="md-ellipsis">
+      Decorators and Function Composition
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#generics-and-type-abstraction" class="md-nav__link">
+    <span class="md-ellipsis">
+      Generics and Type Abstraction
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -3969,6 +3987,24 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#decorators-and-function-composition" class="md-nav__link">
+    <span class="md-ellipsis">
+      Decorators and Function Composition
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#generics-and-type-abstraction" class="md-nav__link">
+    <span class="md-ellipsis">
+      Generics and Type Abstraction
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -4671,6 +4707,77 @@ processData = @&lt;data,{
 }&gt;;
 </code></pre></div></p>
 <p><strong>Note:</strong> Guard statements are just coding patterns using existing control flow. Grapa's <code>iferr()</code>, <code>ifnull()</code>, <code>if()</code>, and <code>return()</code> provide all the functionality needed for guard patterns without requiring special syntax.</p>
+<h3 id="decorators-and-function-composition">Decorators and Function Composition</h3>
+<p><strong>TypeScript:</strong>
+<div class="highlight"><pre><span></span><code><span class="c1">// Decorator function</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">validate</span><span class="p">(</span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="kt">any</span><span class="p">,</span><span class="w"> </span><span class="nx">propertyKey</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="nx">descriptor</span><span class="o">:</span><span class="w"> </span><span class="kt">PropertyDescriptor</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">originalMethod</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">descriptor</span><span class="p">.</span><span class="nx">value</span><span class="p">;</span>
+<span class="w">    </span><span class="nx">descriptor</span><span class="p">.</span><span class="nx">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kd">function</span><span class="p">(</span><span class="nx">...args</span><span class="o">:</span><span class="w"> </span><span class="kt">any</span><span class="p">[])</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">args</span><span class="p">[</span><span class="mf">0</span><span class="p">]</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mf">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="nx">originalMethod</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="k">this</span><span class="p">,</span><span class="w"> </span><span class="nx">args</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="k">throw</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="ne">Error</span><span class="p">(</span><span class="s2">&quot;Invalid input&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">};</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">descriptor</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kd">class</span><span class="w"> </span><span class="nx">Example</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">@validate</span>
+<span class="w">    </span><span class="nx">processData</span><span class="p">(</span><span class="nx">data</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nx">data</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">2</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></p>
+<p><strong>Grapa:</strong>
+<div class="highlight"><pre><span></span><code>/* Grapa uses explicit function composition instead of decorators */
+validate = op(f) { op(x) { if (x &gt; 0) f(x); else $ERR(&quot;Invalid input&quot;); }; };
+
+processData = op(data) { data * 2; };
+
+/* Compose functions explicitly */
+validatedProcess = validate(processData);
+result = validatedProcess(5);
+</code></pre></div></p>
+<p><strong>Note:</strong> Grapa intentionally omits decorators in favor of explicit function composition. This approach is more transparent, flexible, and aligns with Grapa's late-binding philosophy. You can see exactly what's happening and compose functions dynamically.</p>
+<h3 id="generics-and-type-abstraction">Generics and Type Abstraction</h3>
+<p><strong>TypeScript:</strong>
+<div class="highlight"><pre><span></span><code><span class="c1">// Generic functions with type parameters</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">sortArray</span><span class="o">&lt;</span><span class="nx">T</span><span class="o">&gt;</span><span class="p">(</span><span class="nx">items</span><span class="o">:</span><span class="w"> </span><span class="kt">T</span><span class="p">[])</span><span class="o">:</span><span class="w"> </span><span class="nx">T</span><span class="p">[]</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">items</span><span class="p">.</span><span class="nx">sort</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="kd">function</span><span class="w"> </span><span class="nx">filterArray</span><span class="o">&lt;</span><span class="nx">T</span><span class="o">&gt;</span><span class="p">(</span><span class="nx">items</span><span class="o">:</span><span class="w"> </span><span class="kt">T</span><span class="p">[],</span><span class="w"> </span><span class="nx">predicate</span><span class="o">:</span><span class="w"> </span><span class="p">(</span><span class="nx">item</span><span class="o">:</span><span class="w"> </span><span class="kt">T</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="kt">boolean</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="nx">T</span><span class="p">[]</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">items</span><span class="p">.</span><span class="nx">filter</span><span class="p">(</span><span class="nx">predicate</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// Usage with different types</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">numbers</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mf">3</span><span class="p">,</span><span class="w"> </span><span class="mf">1</span><span class="p">,</span><span class="w"> </span><span class="mf">4</span><span class="p">,</span><span class="w"> </span><span class="mf">1</span><span class="p">,</span><span class="w"> </span><span class="mf">5</span><span class="p">];</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">strings</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;banana&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;apple&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;cherry&quot;</span><span class="p">];</span>
+
+<span class="kd">const</span><span class="w"> </span><span class="nx">sortedNumbers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">sortArray</span><span class="p">(</span><span class="nx">numbers</span><span class="p">);</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">sortedStrings</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">sortArray</span><span class="p">(</span><span class="nx">strings</span><span class="p">);</span>
+</code></pre></div></p>
+<p><strong>Grapa:</strong>
+<div class="highlight"><pre><span></span><code>/* Grapa handles type complexity in C++ libraries, not in scripts */
+/* All methods work on any type automatically */
+
+/* Sorting works on any array type */
+numbers = [3, 1, 4, 1, 5];
+sortedNumbers = numbers.sort();
+
+strings = [&quot;banana&quot;, &quot;apple&quot;, &quot;cherry&quot;];
+sortedStrings = strings.sort();
+
+/* Filtering works on any type */
+evens = numbers.filter(op(x) { x % 2 == 0; });
+longStrings = strings.filter(op(s) { s.len() &gt; 5; });
+
+/* Mapping works on any type */
+doubled = numbers.map(op(x) { x * 2; });
+uppercase = strings.map(op(s) { s.upper(); });
+</code></pre></div></p>
+<p><strong>Note:</strong> Grapa abstracts type complexity into C++ libraries rather than exposing generics in scripts. This approach is simpler, more performant, and leverages Grapa's dynamic typing strengths. The same methods work on all types without explicit type parameters.</p>
 
 
 

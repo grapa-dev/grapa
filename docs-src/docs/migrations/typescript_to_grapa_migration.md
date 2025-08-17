@@ -622,3 +622,86 @@ processData = @<data,{
 ```
 
 **Note:** Guard statements are just coding patterns using existing control flow. Grapa's `iferr()`, `ifnull()`, `if()`, and `return()` provide all the functionality needed for guard patterns without requiring special syntax.
+
+### Decorators and Function Composition
+
+**TypeScript:**
+```typescript
+// Decorator function
+function validate(target: any, propertyKey: string, descriptor: PropertyDescriptor) {
+    const originalMethod = descriptor.value;
+    descriptor.value = function(...args: any[]) {
+        if (args[0] > 0) {
+            return originalMethod.apply(this, args);
+        } else {
+            throw new Error("Invalid input");
+        }
+    };
+    return descriptor;
+}
+
+class Example {
+    @validate
+    processData(data: number): number {
+        return data * 2;
+    }
+}
+```
+
+**Grapa:**
+```grapa
+/* Grapa uses explicit function composition instead of decorators */
+validate = op(f) { op(x) { if (x > 0) f(x); else $ERR("Invalid input"); }; };
+
+processData = op(data) { data * 2; };
+
+/* Compose functions explicitly */
+validatedProcess = validate(processData);
+result = validatedProcess(5);
+```
+
+**Note:** Grapa intentionally omits decorators in favor of explicit function composition. This approach is more transparent, flexible, and aligns with Grapa's late-binding philosophy. You can see exactly what's happening and compose functions dynamically.
+
+### Generics and Type Abstraction
+
+**TypeScript:**
+```typescript
+// Generic functions with type parameters
+function sortArray<T>(items: T[]): T[] {
+    return items.sort();
+}
+
+function filterArray<T>(items: T[], predicate: (item: T) => boolean): T[] {
+    return items.filter(predicate);
+}
+
+// Usage with different types
+const numbers: number[] = [3, 1, 4, 1, 5];
+const strings: string[] = ["banana", "apple", "cherry"];
+
+const sortedNumbers = sortArray(numbers);
+const sortedStrings = sortArray(strings);
+```
+
+**Grapa:**
+```grapa
+/* Grapa handles type complexity in C++ libraries, not in scripts */
+/* All methods work on any type automatically */
+
+/* Sorting works on any array type */
+numbers = [3, 1, 4, 1, 5];
+sortedNumbers = numbers.sort();
+
+strings = ["banana", "apple", "cherry"];
+sortedStrings = strings.sort();
+
+/* Filtering works on any type */
+evens = numbers.filter(op(x) { x % 2 == 0; });
+longStrings = strings.filter(op(s) { s.len() > 5; });
+
+/* Mapping works on any type */
+doubled = numbers.map(op(x) { x * 2; });
+uppercase = strings.map(op(s) { s.upper(); });
+```
+
+**Note:** Grapa abstracts type complexity into C++ libraries rather than exposing generics in scripts. This approach is simpler, more performant, and leverages Grapa's dynamic typing strengths. The same methods work on all types without explicit type parameters.

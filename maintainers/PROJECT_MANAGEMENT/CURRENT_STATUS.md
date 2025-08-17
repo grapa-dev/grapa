@@ -76,12 +76,11 @@
 - **📋 Control Flow Fixes** - Working return/break/continue statements
 
 **Phase 2 Focus:** Language Gaps (Weeks 5-12)
-- **📋 Advanced language features** - Decorators/annotations, generics/templates, destructuring/pattern matching
 - **📋 Extension System** - Extending existing types with new methods (NEEDED - += syntax exists but doesn't add callable methods to system classes; requires C++ implementation for SYSID types in assignappend case; @global redefinition works but is unsafe)
 
 **Implementation Strategy:**
 - **Phase 1 (Weeks 1-4)**: 📋 **PENDING** - Critical language gaps (Exception Handling, Control Flow Fixes)
-- **Phase 2 (Weeks 5-8)**: 📋 **PENDING** - Advanced language features (Pattern Matching, Decorators, Extension System)
+- **Phase 2 (Weeks 5-8)**: 📋 **PENDING** - Extension System
 - **Phase 2B (Weeks 8-10)**: ✅ **COMPLETED** - All user experience improvements implemented
 - **Phase 2C (Weeks 10-12)**: ✅ **COMPLETED** - Migration guide gaps and critical language features
 - **Phase 2D (Weeks 12-13)**: ✅ **COMPLETED** - String distance functions and fuzzy matching
@@ -464,17 +463,21 @@
 - **📋 Access Control** - Public/private/protected visibility modifiers → **NOT NEEDED** (Grapa's late-binding philosophy makes access modifiers unnecessary)
 - **📋 Meta-programming Capabilities** - Code generation and manipulation → **NOT NEEDED** (Grapa already has superior built-in meta-programming capabilities)
 - **📋 Guard Statements** - Precondition and postcondition guards → **NOT NEEDED** (Just coding patterns using existing if/return/break/continue)
+- **📋 Advanced language features** - Decorators/annotations, generics/templates, destructuring/pattern matching → **NOT NEEDED** (Decorators replaced by function composition, generics handled in C++ libraries, pattern matching already implemented)
 
 **Documentation Updates:**
 - **Migration Guides Enhanced**: Added comprehensive sections to Python, JavaScript, and TypeScript migration guides explaining why these features aren't needed in Grapa
 - **Roadmap Cleanup**: Removed items from `CURRENT_STATUS.md` and `grapa_ecosystem_positioning.md`
 - **Consistency Achieved**: Phase 2C evaluation results now match Phase 2 roadmap
 - **Phase Overlap Resolved**: Removed duplicate "advanced control flow" from Phase 2 to eliminate overlap with Phase 1
+- **Advanced Features Removed**: Decorators/annotations and generics/templates removed from Phase 2 (function composition and C++ library abstraction are superior)
 
 **Rationale:**
 - **Access Control**: Grapa's late-binding, dynamic philosophy promotes transparency over encapsulation
 - **Meta-programming**: Grapa's execution tree architecture provides superior capabilities compared to traditional eval() approaches
 - **Guard Statements**: Existing control flow (`iferr()`, `ifnull()`, `if()`, `return()`) provides all needed functionality
+- **Decorators**: Function composition is more explicit, flexible, and transparent than decorator syntax
+- **Generics**: Type complexity belongs in C++ libraries, not in Grapa scripts; dynamic typing handles all use cases
 
 **Impact:**
 - **Cleaner Roadmap**: Focus on true language gaps rather than unnecessary features

@@ -759,6 +759,85 @@ process_data = @<data,{
 
 **Note:** Guard statements are just coding patterns using existing control flow. Grapa's `iferr()`, `ifnull()`, `if()`, and `return()` provide all the functionality needed for guard patterns without requiring special syntax.
 
+### Decorators and Function Composition
+
+**Python:**
+```python
+@validate
+@cache
+@log
+def process_data(data):
+    return data * 2
+
+# Usage
+result = process_data(5)
+```
+
+**Grapa:**
+```grapa
+/* Grapa uses explicit function composition instead of decorators */
+validate = op(f) { op(x) { if (x > 0) f(x); else $ERR("Invalid input"); }; };
+cache = op(f) { 
+    cache_data = {};
+    op(x) { 
+        if (cache_data[x]) cache_data[x];
+        else cache_data[x] = f(x);
+    };
+};
+log = op(f) { op(x) { ("Calling " + f.str()).echo(); result = f(x); ("Result: " + result.str()).echo(); result; }; };
+
+process_data = op(data) { data * 2; };
+
+/* Compose functions explicitly */
+validated_process = validate(process_data);
+cached_process = cache(process_data);
+logged_process = log(process_data);
+
+/* Or chain them */
+final_process = log(cache(validate(process_data)));
+result = final_process(5);
+```
+
+**Note:** Grapa intentionally omits decorators in favor of explicit function composition. This approach is more transparent, flexible, and aligns with Grapa's late-binding philosophy. You can see exactly what's happening and compose functions dynamically.
+
+### Generics and Type Abstraction
+
+**Python:**
+```python
+from typing import TypeVar, List
+
+T = TypeVar('T')
+
+def sort_list(items: List[T]) -> List[T]:
+    return sorted(items)
+
+def filter_list(items: List[T], predicate) -> List[T]:
+    return [item for item in items if predicate(item)]
+```
+
+**Grapa:**
+```grapa
+/* Grapa handles type complexity in C++ libraries, not in scripts */
+/* All methods work on any type automatically */
+
+/* Sorting works on any array type */
+numbers = [3, 1, 4, 1, 5];
+sorted_numbers = numbers.sort();
+
+strings = ["banana", "apple", "cherry"];
+sorted_strings = strings.sort();
+
+/* Filtering works on any type */
+evens = numbers.filter(op(x) { x % 2 == 0; });
+long_strings = strings.filter(op(s) { s.len() > 5; });
+
+/* Mapping works on any type */
+doubled = numbers.map(op(x) { x * 2; });
+uppercase = strings.map(op(s) { s.upper(); });
+```
+
+**Note:** Grapa abstracts type complexity into C++ libraries rather than exposing generics in scripts. This approach is simpler, more performant, and leverages Grapa's dynamic typing strengths. The same methods work on all types without explicit type parameters.
+
 ## Notes
 - See [Operators](../syntax/operator.md) and [System](../sys/sys.md) docs for more details.
 - Grapa supports variable scoping with `$global`, `$local`, and `$root`.
