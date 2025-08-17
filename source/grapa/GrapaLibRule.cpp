@@ -4893,6 +4893,15 @@ static GrapaRuleEvent* ItemAssignRun(GrapaScriptExec *vScriptExec, GrapaNames* p
 						}
 						parameter = parameter->vQueue->Head(1);
 					}
+					if (parameter->mValue.mToken == GrapaTokenType::CLASS)
+					{
+						parameter = parameter->vQueue->Head(0);
+						if (parameter->vQueue == NULL)
+						{
+							parameter->vQueue = new GrapaRuleQueue();
+							parameter->mValue.mToken = GrapaTokenType::LIST;
+						}
+					}
 					switch (parameter->mValue.mToken)
 					{
 					case GrapaTokenType::STR:
@@ -6525,9 +6534,16 @@ GrapaRuleEvent* GrapaLibraryRuleSearchEvent::Run(GrapaScriptExec *vScriptExec, G
 			root = pNameSpace->GetNameQueue()->Tail();
 			break;
 		case GrapaTokenType::CLASS:
+			q = ((GrapaRuleQueue*)item->vQueue)->Head()->vQueue;
+			if (item->vClass == NULL)
+				item->vClass = vScriptExec->vScriptState->GetClass(pNameSpace, GrapaCHAR("$CLASS"));
 			c = item->vClass;
 			root = item;
 			break;
+		//case GrapaTokenType::CLASS:
+		//	c = item->vClass;
+		//	root = item;
+		//	break;
 		case GrapaTokenType::OBJ:
 		case GrapaTokenType::RULEOP:
 			q = (GrapaRuleQueue*)item->vQueue;

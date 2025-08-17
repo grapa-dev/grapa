@@ -1,0 +1,6 @@
+op()($sys().getenv("$STATICLIB")["$ARRAY.grc"])();
+@$ARRAY ++= {f:op(){55},c:op(){$this.len();}};
+ar = [1,2,4];
+ar.f();
+ar.c();
+
