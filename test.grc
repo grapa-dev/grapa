@@ -1,6 +1,8 @@
-op()($sys().getenv("$STATICLIB")["$ARRAY.grc"])();
+$ARRAY();
 @$ARRAY ++= {f:op(){55},c:op(){$this.len();}};
 ar = [1,2,4];
-ar.f();
-ar.c();
+"f: ${ar.f()}\n".interpolate().echo();
+"c: ${ar.c()}\n".interpolate().echo();
+
+./grapa -c '$ARRAY(); @$ARRAY ++= {f:op(){55},c:op(){$this.len();}}; ar = [1,2,4]; "[f: ${ar.f()}]\n[c: ${ar.c()}]\n".interpolate().echo();'
 
