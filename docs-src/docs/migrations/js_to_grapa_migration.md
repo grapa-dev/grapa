@@ -635,3 +635,35 @@ if (match("hello world", "world")) {
 ```
 
 This is a handy workaround until Grapa adds a native `.match()` method.
+
+### Reflection and Introspection
+
+**JavaScript:** `typeof`, `Object.keys()`, `Object.getOwnPropertyNames()`, `Reflect` API
+**Grapa:** Enhanced `.describe()` method with configurable options
+
+**Grapa's Superior Reflection:**
+```grapa
+/* JavaScript: typeof obj, Object.keys(obj), Object.getOwnPropertyNames(obj) */
+/* Grapa: Single method with configurable options */
+obj.describe();                    /* Basic type and structure info */
+obj.describe({values: true});      /* Include actual values */
+obj.describe({structure: true});   /* Include internal structure details */
+obj.describe({format: 'json'});    /* Machine-readable JSON output */
+
+/* Float structure inspection (unique to Grapa) */
+(2.3).describe({structure: true});
+/* Shows 7 internal components: sign, trunc, fix, exp, max, extra, data */
+
+/* Object property inspection */
+user = {name: 'Alice', age: 30};
+user.describe({properties: true});
+/* Returns: "List with 2 properties (keys: name, age)" */
+```
+
+**Advantages of Grapa's Approach:**
+- **Single Method**: One `.describe()` method handles all reflection needs
+- **Configurable**: Options control what information is included
+- **Multiple Formats**: Text for humans, JSON for programs
+- **Float Structure**: Complete internal component inspection (unique feature)
+- **Type-Specific**: Detailed information for each data type
+- **Performance**: Efficient implementation with minimal overhead

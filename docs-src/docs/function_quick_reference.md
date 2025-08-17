@@ -96,6 +96,41 @@ expression = $sys.add(term, expression);
 function = op(){@this.$sys.function_name(@var.{params});};
 ```
 
+## Object Inspection and Reflection
+
+### describe(options)
+Provides comprehensive object description and reflection capabilities.
+
+**Parameters:**
+- `options` (optional): Configuration object
+  - `properties` (boolean): Include property names (default: true)
+  - `methods` (boolean): Include method names (default: true)
+  - `structure` (boolean): Include internal structure (default: false)
+  - `values` (boolean): Include actual values (default: false)
+  - `format` (string): Output format - "text", "json" (default: "text")
+
+**Examples:**
+```grapa
+'hello'.describe();                    /* "String with length 5" */
+(123).describe();                      /* "Integer: 123" */
+[1,2,3].describe();                    /* "Array with 3 elements" */
+{name:'Alice'}.describe();             /* "List with 1 properties (keys: name)" */
+(2.3).describe({structure:true});      /* Shows 7 float components */
+'world'.describe({values:true});       /* "String with length 5: \"world\"" */
+{name:'Bob'}.describe({format:'json'}); /* {"type":"list","length":1,"properties":1,"keys":["name"]} */
+```
+
+### type()
+Returns the type of an object.
+
+**Examples:**
+```grapa
+'hello'.type();    /* $STR */
+123.type();        /* $INT */
+[1,2,3].type();    /* $ARRAY */
+{name:'Alice'}.type(); /* $LIST */
+```
+
 **Total: 200+ system functions available** 
 
 > **See Also:**

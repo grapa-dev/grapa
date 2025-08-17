@@ -826,3 +826,57 @@ Sets a bit to lock the variable from being modified. If set as const, the variab
 
 > **Performance & Parallelism:**
 > All array/vector transformation methods (e.g., `.map()`, `.filter()`, `.reduce()`) are parallel by default, robust, and production-ready for ETL workloads. Grapa's parallelism is well tested for high-throughput data processing.
+
+## Object Inspection and Reflection
+
+### describe(options)
+
+Provides comprehensive object description and reflection capabilities with configurable options.
+
+**Parameters:**
+- `options` (optional): Object with configuration options
+  - `properties` (boolean): Include property names and types (default: true)
+  - `methods` (boolean): Include method names and signatures (default: true)
+  - `structure` (boolean): Include internal structure details (default: false)
+  - `values` (boolean): Include actual values for small objects (default: false)
+  - `format` (string): Output format - "text", "json", or "xml" (default: "text")
+
+**Returns:** String description of the object
+
+**Examples:**
+
+```grapa
+/* Basic descriptions */
+'hello'.describe();                    /* "String with length 5" */
+(123).describe();                      /* "Integer: 123" */
+[1, 2, 3].describe();                  /* "Array with 3 elements" */
+{name: 'Alice', age: 30}.describe();   /* "List with 2 properties (keys: name, age)" */
+
+/* With structure details */
+(2.3).describe({structure: true});
+/* Returns: "Float: 2.3... (sign:false, trunc:false, fix:false, exp:1, max:184, extra:10, data:3689348814741910323)" */
+
+/* With values */
+'world'.describe({values: true});      /* "String with length 5: \"world\"" */
+
+/* JSON format */
+{name: 'Bob'}.describe({format: 'json'});
+/* Returns: {"type":"list","length":1,"properties":1,"keys":["name"]} */
+
+/* Array with type information */
+[1, 'hello', 3.14].describe({structure: true});
+/* Returns: "Array with 3 elements (types: integer, string, float)" */
+```
+
+**Float Structure Inspection:**
+When `structure: true` is used with float values, the method reveals the 7 internal components of Grapa's `$FLOAT` type:
+
+1. **sign** - Boolean indicating if the number is signed
+2. **trunc** - Boolean indicating if truncation occurred  
+3. **fix** - Boolean indicating if it's a fixed-point number
+4. **exp** - Exponent value
+5. **max** - Maximum bits
+6. **extra** - Extra precision bits
+7. **data** - The actual numeric data
+
+This provides complete introspection into Grapa's high-precision floating-point implementation.
