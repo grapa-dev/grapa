@@ -198,7 +198,7 @@ current_version = $sys().getenv($VERSION);
 if (decoded["version"] == current_version) {
     "Version compatible".echo();
 } else {
-    ("Version mismatch: " + decoded["version"] + " vs " + current_version).echo();
+    "Version mismatch: ${decoded['version']} vs ${current_version}".interpolate().echo();
 }
 ```
 
@@ -378,9 +378,9 @@ grz_time = ((grz_end - grz_start) / 1000000).int();
 ("Grz time: " + grz_time + " ms").echo();
 
 if (grz_time < grc_time) {
-    ("Grz is " + ((grc_time - grz_time) * 100 / grc_time) + "% faster").echo();
+    "Grz is ${((grc_time - grz_time) * 100 / grc_time)}% faster".interpolate().echo();
 } else {
-    ("Grc is " + ((grz_time - grc_time) * 100 / grz_time) + "% faster").echo();
+    "Grc is ${((grz_time - grc_time) * 100 / grz_time)}% faster".interpolate().echo();
 }
 ```
 

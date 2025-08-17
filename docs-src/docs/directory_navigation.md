@@ -2,7 +2,7 @@
 
 ## Syntax Reminders
 - Every statement and every block (including after closing braces) must end with a semicolon (`;`).
-- Use block comments (`/* ... */`), not line comments (`// ...`).
+- Use block comments (`/* ... */`) or line comments (`// ...`). `#` comments are not supported.
 - To append to arrays, use the `+=` operator (not `.push()` or `.append()`).
 - See [Syntax Quick Reference](syntax/basic_syntax.md) for more.
 

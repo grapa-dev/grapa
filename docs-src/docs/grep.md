@@ -54,7 +54,7 @@ Anyone who wants to use Grapa's advanced pattern matching, achieve ripgrep parit
 ## Key Syntax Rules
 
 === "CLI"
-    - Use block comments (`/* ... */`), not line comments (`// ...`).
+    - Use block comments (`/* ... */`) or line comments (`// ...`). `#` comments are not supported.
     - To append to arrays, use the `+=` operator (not `.push()` or `.append()`).
     - All statements and blocks must end with a semicolon (`;`).
 

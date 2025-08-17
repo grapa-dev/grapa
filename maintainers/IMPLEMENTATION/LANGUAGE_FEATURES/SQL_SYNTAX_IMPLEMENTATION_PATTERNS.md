@@ -171,7 +171,7 @@ custom_command = rule insert into $STR values $STR {op(table_name:$3,values_str:
     
     /* Generate a new key */
     existing_records = table_obj.ls();
-    new_key = table_name + "_" + (existing_records.len() + 1).str();
+    new_key = "${table_name}_${existing_records.len() + 1}".interpolate();
     
     /* Insert values */
     table_obj.set(new_key, values[1].trim(), "name");

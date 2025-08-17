@@ -17,7 +17,7 @@ GrapaPy brings the power of Grapa to Python users, making advanced data processi
 > - Use `[]` for list/array access, not `.get()` (which is for objects/tables).
 > - Use `.map()`, `.reduce()`, `.filter()` as methods on arrays/lists, not as global functions.
 > - Every statement and block must end with a semicolon (`;`).
-> - Only block comments (`/* ... */`) are supported—no `//` line comments.
+> - Block comments (`/* ... */`) and line comments (`// ...`) are both supported. `#` comments are not supported.
 > - Explicit type conversion is required for results (e.g., `.str()`, `.int()`, `.float()`).
 > - No implicit truthy/falsy—use explicit boolean checks.
 > - No attribute-style access for dict/list keys—use `[]` or `.get()` for objects.

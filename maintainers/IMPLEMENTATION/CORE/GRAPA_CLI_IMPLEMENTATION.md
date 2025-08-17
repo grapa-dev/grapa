@@ -41,7 +41,7 @@ start_time = \$TIME().utc();
 /* ... operations ... */
 end_time = \$TIME().utc();
 elapsed_ms = ((end_time - start_time) / 1000000).int();
-('Performance: ' + elapsed_ms + ' ms').echo();
+"Performance: ${elapsed_ms} ms".interpolate().echo();
 "
 
 # Parallel processing with timing
@@ -51,7 +51,7 @@ data = (10000).range(0,1);
 processed = data.map(op(x) { x * x + 1; }, 4);
 end_time = \$TIME().utc();
 elapsed_ms = ((end_time - start_time) / 1000000).int();
-('Processed ' + processed.len() + ' items in ' + elapsed_ms + ' ms').echo();
+"Processed ${processed.len()} items in ${elapsed_ms} ms".interpolate().echo();
 "
 ```
 
@@ -92,7 +92,7 @@ squares = large_data.map(op(x) { x * x; }, 8);  /* 8 worker threads */
 grapa -c "
 data = (10000).range(0,1);
 processed = data.map(op(x) { x * x + 1; }, 4);  /* 4 workers */
-('Processed ' + processed.len() + ' items').echo();
+"Processed ${processed.len()} items".interpolate().echo();
 "
 
 # Concurrent operations
@@ -101,9 +101,9 @@ tasks = [];
 for (i in (5).range(0,1)) {
     task = op(id) {
         \$sys().sleep(100);  /* Simulate work */
-        'Task ' + id.str() + ' completed'.echo();
+        "Task ${id} completed".interpolate().echo();
     };
-    tasks.append(task);
+    tasks += task;
 }
 for (task in tasks) {
     task(tasks.index(task));
@@ -124,7 +124,7 @@ grapa -c "'Hello World'.echo()" | grep "Hello"
 grapa -c "
 data = ['apple', 'banana', 'cherry'];
 for (item in data) {
-    ('Item: ' + item.upper()).echo();
+    "Item: ${item.upper()}".interpolate().echo();
 }
 "
 
@@ -168,7 +168,7 @@ iferr {
     result = 10 / 0;
     'This won\'t print'.echo();
 } {
-    ('Error occurred: ' + $sys.error).echo();
+    "Error occurred: ${$sys.error}".interpolate().echo();
 }
 ```
 
@@ -180,7 +180,7 @@ iferr {
     result = 10 / 0;
     'This won\'t print'.echo();
 } {
-    ('Error occurred: ' + \$sys.error).echo();
+    "Error occurred: ${$sys.error}".interpolate().echo();
 }
 "
 ```
@@ -203,7 +203,7 @@ db.mkfield('age', 'INT');
 db.set('user1', 'Alice', 'name');
 db.set('user1', 25, 'age');
 result = db.get('user1', 'name');
-('User name: ' + result).echo();
+"User name: ${result}".interpolate().echo();
 "
 ```
 
@@ -213,7 +213,7 @@ result = db.get('user1', 'name');
 files = $file().ls('.');
 for (file in files) {
     if (file.type == 'file') {
-        ('File: ' + file.name).echo();
+        "File: ${file.name}".interpolate().echo();
     }
 }
 ```
@@ -225,9 +225,9 @@ grapa -c "
 files = \$file().ls('.');
 for (file in files) {
     if (file.type == 'file') {
-        ('File: ' + file.name).echo();
+        "File: ${file.name}".interpolate().echo();
     } else {
-        ('Directory: ' + file.name).echo();
+        "Directory: ${file.name}".interpolate().echo();
     }
 }
 "

@@ -1,0 +1,168 @@
+/* Class and Inheritance Validation Tests */
+/* Testing examples from implementation documentation */
+
+"=== Class and Inheritance Validation ===".echo();
+
+/* Test 1: Basic class definition */
+Person = class {
+    name = "Unknown";
+    age = 0;
+    
+    greet = op() {
+        "Hello, my name is ${this.name}".interpolate().echo();
+    };
+    
+    set_age = op(new_age) {
+        this.age = new_age;
+    };
+};
+
+/* Test 2: Class instantiation and method calls */
+person1 = Person();
+person1.name = "Alice";
+person1.age = 30;
+"Person 1: ${person1.name}, Age: ${person1.age}".interpolate().echo();  /* Should output: Person 1: Alice, Age: 30 */
+person1.greet();  /* Should output: Hello, my name is Alice */
+
+/* Test 3: Class inheritance */
+Employee = class extends Person {
+    employee_id = 0;
+    department = "Unknown";
+    
+    work = op() {
+        "${this.name} is working in ${this.department}".interpolate().echo();
+    };
+    
+    set_employee_info = op(id, dept) {
+        this.employee_id = id;
+        this.department = dept;
+    };
+};
+
+/* Test 4: Inherited class usage */
+employee1 = Employee();
+employee1.name = "Bob";
+employee1.age = 25;
+employee1.set_employee_info(1001, "Engineering");
+"Employee: ${employee1.name}, ID: ${employee1.employee_id}, Dept: ${employee1.department}".interpolate().echo();
+employee1.greet();  /* Inherited method */
+employee1.work();   /* Own method */
+
+/* Test 5: Method overriding */
+Manager = class extends Employee {
+    team_size = 0;
+    
+    greet = op() {
+        "Hello, I'm ${this.name}, a manager with ${this.team_size} team members".interpolate().echo();
+    };
+    
+    set_team_size = op(size) {
+        this.team_size = size;
+    };
+};
+
+/* Test 6: Overridden method usage */
+manager1 = Manager();
+manager1.name = "Carol";
+manager1.set_employee_info(2001, "Management");
+manager1.set_team_size(5);
+manager1.greet();  /* Overridden method */
+manager1.work();   /* Inherited method */
+
+/* Test 7: Class with computed properties */
+Calculator = class {
+    history = [];
+    
+    add = op(a, b) {
+        result = a + b;
+        this.history += "${a} + ${b} = ${result}".interpolate();
+        result;
+    };
+    
+    multiply = op(a, b) {
+        result = a * b;
+        this.history += "${a} * ${b} = ${result}".interpolate();
+        result;
+    };
+    
+    get_history = op() {
+        this.history;
+    };
+    
+    clear_history = op() {
+        this.history = [];
+    };
+};
+
+/* Test 8: Calculator usage */
+calc = Calculator();
+result1 = calc.add(5, 3);
+result2 = calc.multiply(4, 7);
+"Calculator results: ${result1}, ${result2}".interpolate().echo();
+"History: ${calc.get_history().str()}".interpolate().echo();
+
+/* Test 9: Class with static-like behavior */
+Counter = class {
+    static_count = 0;
+    
+    increment = op() {
+        Counter.static_count += 1;
+        Counter.static_count;
+    };
+    
+    get_count = op() {
+        Counter.static_count;
+    };
+    
+    reset = op() {
+        Counter.static_count = 0;
+    };
+};
+
+/* Test 10: Static-like behavior usage */
+counter1 = Counter();
+counter2 = Counter();
+counter1.increment();
+counter2.increment();
+counter1.increment();
+"Shared count: ${counter1.get_count()}".interpolate().echo();  /* Should output: 3 */
+
+/* Test 11: Class with complex methods */
+DataProcessor = class {
+    data = [];
+    
+    add_data = op(item) {
+        this.data += item;
+    };
+    
+    process_data = op(processor_func) {
+        this.data.map(processor_func);
+    };
+    
+    filter_data = op(filter_func) {
+        this.data.filter(filter_func);
+    };
+    
+    get_sum = op() {
+        this.data.reduce(op(acc, x) { acc + x; }, 0);
+    };
+};
+
+/* Test 12: DataProcessor usage */
+processor = DataProcessor();
+processor.add_data(10);
+processor.add_data(20);
+processor.add_data(30);
+processor.add_data(40);
+processor.add_data(50);
+
+doubled = processor.process_data(op(x) { x * 2; });
+evens = processor.filter_data(op(x) { x % 2 == 0; });
+total = processor.get_sum();
+
+"Original data: ${processor.data.str()}".interpolate().echo();
+"Doubled data: ${doubled.str()}".interpolate().echo();
+"Even numbers: ${evens.str()}".interpolate().echo();
+"Total sum: ${total}".interpolate().echo();
+
+"=== All Class and Inheritance Tests Completed ===".echo();

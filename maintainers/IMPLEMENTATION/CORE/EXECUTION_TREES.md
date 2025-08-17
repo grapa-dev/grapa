@@ -261,7 +261,7 @@ i = 0;
 while (i < operations.len()) {
     op_name = operations.get(i);
     func = op(a,b)("a " + op_name + " b");
-    funcs.append(func);
+    funcs += func;
     i = i + 1;
 }
 

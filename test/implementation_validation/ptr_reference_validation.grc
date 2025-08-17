@@ -1,0 +1,97 @@
+/* PTR and Reference Validation Tests */
+/* Testing examples from implementation documentation */
+
+"=== PTR and Reference Validation ===".echo();
+
+/* Test 1: Variable reference creation */
+x = 42;
+ref_x = @x;  /* Creates PTR to x */
+x = 50;      /* Set original value */
+ref_x = 100;  /* Modifies original x */
+"Original x value: ${x}".interpolate().echo();  /* Should output: 100 */
+
+/* Test 2: Function parameter references */
+modify_value = op(ref_param) {
+    ref_param = ref_param * 2;  /* Modifies original */
+};
+
+original = 5;
+modify_value(@original);  /* Pass reference */
+"Modified original value: ${original}".interpolate().echo();  /* Should output: 10 */
+
+/* Test 3: Array references */
+data = [1, 2, 3, 4, 5];
+ref_data = @data;  /* PTR to array */
+
+/* Modifying through reference */
+ref_data += 6;  /* Modifies original array */
+"Modified array: ${data.str()}".interpolate().echo();  /* Should output: [1, 2, 3, 4, 5, 6] */
+
+/* Test 4: Object references */
+my_obj = class {
+    value = 42;
+    name = "test";
+};
+
+ref_obj = @my_obj;  /* PTR to object */
+ref_obj.value = 100;  /* Modifies original object */
+"Modified object value: ${my_obj.value}".interpolate().echo();  /* Should output: 100 */
+
+/* Test 5: Multi-call reference chains */
+get_reference = op() {
+    data = [1, 2, 3];
+    @data;  /* Return PTR to data */
+};
+
+/* Multi-call usage */
+ref1 = get_reference();
+ref2 = ref1;  /* PTR to same data */
+ref1 += 4;
+"Reference chain result: ${ref2.str()}".interpolate().echo();  /* Should output: [1, 2, 3, 4] */
+
+/* Test 6: Complex data structure references */
+complex_data = [{"id": 1, "name": "Alice"}, {"id": 2, "name": "Bob"}];
+ref_complex = @complex_data;
+
+/* Modify through reference */
+ref_complex[0].name = "Alice Updated";
+"Modified complex data: ${complex_data[0].name}".interpolate().echo();  /* Should output: Alice Updated */
+
+/* Test 7: Reference to function */
+test_func = op(x) { x * 2; };
+ref_func = @test_func;
+
+/* Call through reference */
+result = ref_func(5);
+"Function call through reference: ${result}".interpolate().echo();  /* Should output: 10 */
+
+/* Test 8: Reference scope testing */
+create_scope_data = op() {
+    local_data = [10, 20, 30];
+    @local_data;  /* Return reference to local data */
+};
+
+scope_ref = create_scope_data();
+"Scope reference result: ${scope_ref.str()}".interpolate().echo();  /* Should output: [10, 20, 30] */
+
+/* Test 9: Multiple references to same data */
+shared_data = [100, 200, 300];
+ref_a = @shared_data;
+ref_b = @shared_data;
+ref_c = @shared_data;
+
+/* Modify through one reference */
+ref_a += 400;
+
+/* Check all references see the change */
+"Ref A: ${ref_a.str()}".interpolate().echo();  /* Should output: [100, 200, 300, 400] */
+"Ref B: ${ref_b.str()}".interpolate().echo();  /* Should output: [100, 200, 300, 400] */
+"Ref C: ${ref_c.str()}".interpolate().echo();  /* Should output: [100, 200, 300, 400] */
+
+/* Test 10: Reference to primitive types */
+number = 42;
+ref_number = @number;
+ref_number = 84;
+"Modified number: ${number}".interpolate().echo();  /* Should output: 84 */
+
+"=== All PTR and Reference Tests Completed ===".echo();

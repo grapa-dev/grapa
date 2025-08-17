@@ -34,12 +34,11 @@ tags:
 Essential language constructs for writing Grapa scripts.
 
 ### Comments
-Grapa only supports block comments (`/* ... */`). Line comments (`// ...`) are not supported.
+Grapa supports both block comments (`/* ... */`) and line comments (`// ...`). `#` comments are not supported.
 
 **Comment Rules:**
-- Outside `{}` blocks: Comments can be at the end of lines
-- Inside `{}` blocks: Comments must be on their own line
-- Class/function definitions: Comments must be on their own line
+- Comments can be used anywhere in your code, including at the end of lines
+- Comments work inside `{}` blocks, class definitions, and function bodies
 
 ```grapa
 /* ✅ Correct */
@@ -213,7 +212,7 @@ func = op(x) {
 ### Comments
 ```grapa
 /* This is a block comment */
-/* Line comments are not supported in Grapa */
+/* Both block and line comments are supported in Grapa */
 ```
 
 [Back to Top](#grapa-api-reference)

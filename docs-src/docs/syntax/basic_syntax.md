@@ -1274,7 +1274,7 @@ MyClass = class {
 };
 ```
 
-> **Note:** All comment types (`/* */`, `/** */`, `//`, `///`) are fully supported throughout Grapa code, including inside class definitions, function bodies, and at the end of lines.
+> **Note:** All comment types (`/* */`, `/** */`, `//`, `///`) are fully supported throughout Grapa code, including inside class definitions, function bodies, and at the end of lines. **`#` comments are not supported** and will cause syntax errors.
 
 ## Control Structures
 

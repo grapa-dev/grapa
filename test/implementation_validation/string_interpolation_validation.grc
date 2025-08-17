@@ -1,0 +1,68 @@
+/* String Interpolation Validation Tests */
+/* Testing examples from implementation documentation */
+
+"=== String Interpolation Validation ===".echo();
+
+/* Test 1: Basic interpolation */
+id = 42;
+result = "Task ${id} completed".interpolate();
+result.echo();  /* Should output: Task 42 completed */
+
+/* Test 2: HTTP status interpolation */
+response = $obj();
+response.set("status", 404);
+result = "HTTP ${response.get('status')}".interpolate();
+result.echo();  /* Should output: HTTP 404 */
+
+/* Test 3: URL interpolation */
+base_url = "https://api.example.com";
+page = 5;
+url = "${base_url}?page=${page}".interpolate();
+url.echo();  /* Should output: https://api.example.com?page=5 */
+
+/* Test 4: Version comparison interpolation */
+decoded = $obj();
+decoded.set("version", "1.2.3");
+current_version = "1.2.4";
+result = "Version mismatch: ${decoded['version']} vs ${current_version}".interpolate();
+result.echo();  /* Should output: Version mismatch: 1.2.3 vs 1.2.4 */
+
+/* Test 5: Performance interpolation */
+elapsed_ms = 150;
+result = "Performance: ${elapsed_ms} ms".interpolate();
+result.echo();  /* Should output: Performance: 150 ms */
+
+/* Test 6: Array length interpolation */
+processed = [1, 2, 3, 4, 5];
+result = "Processed ${processed.len()} items in ${elapsed_ms} ms".interpolate();
+result.echo();  /* Should output: Processed 5 items in 150 ms */
+
+/* Test 7: File name interpolation */
+file = $obj();
+file.set("name", "test.txt");
+result = "File: ${file.name}".interpolate();
+result.echo();  /* Should output: File: test.txt */
+
+/* Test 8: Complex expression interpolation */
+grc_time = 1000;
+grz_time = 800;
+result = "Grz is ${((grc_time - grz_time) * 100 / grc_time)}% faster".interpolate();
+result.echo();  /* Should output: Grz is 20% faster */
+
+/* Test 9: Error message interpolation */
+error_msg = "Connection failed";
+result = "Error occurred: ${error_msg}".interpolate();
+result.echo();  /* Should output: Error occurred: Connection failed */
+
+/* Test 10: Table name interpolation */
+table_name = "users";
+existing_records = [1, 2, 3];
+new_key = "${table_name}_${existing_records.len() + 1}".interpolate();
+new_key.echo();  /* Should output: users_4 */
+
+/* Test 11: Editor label interpolation */
+editors = [1, 2, 3, 4];
+label = "Grapa Editor ${editors.len()}".interpolate();
+label.echo();  /* Should output: Grapa Editor 4 */
+
+"=== All String Interpolation Tests Completed ===".echo();

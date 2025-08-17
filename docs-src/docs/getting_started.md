@@ -35,8 +35,8 @@ grapa -f "my_script.grc"
 
 ## Key Syntax Rules (Read This First!)
 - Every statement and every block (including after closing braces) must end with a semicolon (`;`).
-- Use block comments (`/* ... */`), not line comments (`// ...`).
-- Within `{}` blocks, comments must be on their own line, not at the end of a line.
+- Use block comments (`/* ... */`) or line comments (`// ...`). `#` comments are not supported.
+- Comments can be used anywhere in your code, including at the end of lines.
 - To append to arrays, use the `+=` operator (not `.push()` or `.append()`).
 - Grapa uses dynamic typing by design - types are determined at runtime for maximum flexibility.
 - See [Syntax Quick Reference](syntax/basic_syntax.md) for more.
@@ -270,9 +270,9 @@ matches.echo();  /* ["world", "world"] */
 > **Tip:** Use `.range()` to generate arrays of numbers: `(n).range(start, step)`. 
 
 > **Comment Style:**
-> - Only block comments (`/* ... */`) are supported in Grapa, and must always be on their own line.
-> - `//` and `#` comments are not supported and will cause errors.
-> - Within `{}` blocks, comments must be on their own line, not at the end of a line.
+> - Block comments (`/* ... */`) and line comments (`// ...`) are both supported in Grapa.
+> - Comments can be used anywhere in your code, including at the end of lines.
+> - `#` comments are not supported and will cause syntax errors.
 
 > **Did you know?**
 > Grapa's parallel ETL/data processing is a core, production-ready feature. Parallelism is well tested and ideal for real-world, high-throughput data tasks. 

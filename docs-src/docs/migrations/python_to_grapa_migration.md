@@ -65,7 +65,7 @@ This guide helps Python users transition to Grapa by mapping common Python idiom
 | `list[index]` | `arr[index]`<br>`arr.get(index)` |
 | (file access) | `file.get("key")` |
 | `try: ... except:` | `result.iferr(fallback)`<br>`if (result.type() == $ERR) { ... }` |
-| `# comment` | `/* comment */` (block)<br>`/** comment */` (doc block)<br>`// comment` (line)<br>`/// comment` (doc line) |
+| `# comment` | `/* comment */` (block)<br>`/** comment */` (doc block)<br>`// comment` (line)<br>`/// comment` (doc line)<br>**Note:** `#` comments are not supported in Grapa |
 | `True/False` | `true/false` |
 | `None` | `null` |
 | `str(x)` | `x.str()` |

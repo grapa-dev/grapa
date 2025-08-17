@@ -22,55 +22,23 @@ Grapa's implementation is built on several key components:
 ## Quick Navigation
 
 ### Core Components
-- [System Functions](SYSTEM_FUNCTIONS.md) - Low-level system APIs and functions
-- [Base Types](BASETYPES.md) - Core type system implementation
-- [Execution Trees](EXECUTION_TREES.md) - Execution model and compilation
-- [Include System](INCLUDE_SYSTEM.md) - Module system and code organization
-- [Module System Implementation](MODULE_SYSTEM_IMPLEMENTATION.md) - Complete module system with $PATH, $LIB, and class loading
-- [GRZ Format](GRZ_FORMAT.md) - Binary format specification
-- [Unicode Grep Status](UNICODE_GREP_STATUS.md) - Unicode implementation details
-- [CLI Implementation](GRAPA_CLI_IMPLEMENTATION.md) - Command line interface implementation and working functionality
-- [BTree Implementation](GRAPA_BTREE_IMPLEMENTATION.md) - Low-level BTree data structure and algorithms (used by the database)
-- [BTree File Structure & Traversal](GRAPA_BTREE_FILE_STRUCTURE.md) - On-disk file/block structure and manual traversal for Grapa BTree files (for forensics, debugging, and tool authors)
-- [Database Implementation](GRAPA_DB_IMPLEMENTATION.md) - Full GrapaDB system, including database architecture, pointer dereferencing, and integration
-- [Index-Based Search Implementation](INDEX_BASED_SEARCH_IMPLEMENTATION_GUIDE.md) - Guide for implementing proper index-based searching in Grapa databases
-- [Comment Handling Guide](COMMENT_HANDLING_GUIDE.md) - Comment handling guide and best practices
-- [Threading Architecture](GRAPA_THREADING_ARCHITECTURE.md) - Grapa's parallel-by-design architecture and thread safety implementation
-- [Endian Safety Implementation](GRAPA_ENDIAN_SAFETY_IMPLEMENTATION.md) - Cross-platform endian safety for database file compatibility
-- [Float Implementation](GRAPAFLOAT_IMPLEMENTATION.md) - Floating-point number implementation and precision handling
-- [Compilation and Execution](GRAPA_COMPILATION_AND_EXECUTION.md) - Core compilation process, left recursion solution, and operator precedence
-- [Static Helper Functions](STATIC_HELPER_FUNCTION_DOCUMENTATION.md) - Documentation for static helper functions
+- [Core Implementation](CORE/) - Fundamental system components, type system, execution model, and CLI
+- [Database Implementation](DATABASE/) - Database systems, BTree data structures, and storage
+- [Language Features](LANGUAGE_FEATURES/) - Language extensibility, syntax enhancements, and operators
+- [System Components](SYSTEM_COMPONENTS/) - Threading, floating-point, and system integration
+- [Analysis](ANALYSIS/) - Analysis, validation, and improvement proposals
+- [Networking Implementation](NETWORKING/) - HTTP/HTTPS client/server, web scraping, SSL/TLS
+- [Research](RESEARCH/) - Research and innovation concepts
+
+### Documentation Management
+- [Implementation Documentation Catalog](IMPLEMENTATION_DOCUMENTATION_CATALOG.md) - Comprehensive catalog of all implementation documentation
+- [Documentation Updates Needed](DOCUMENTATION_UPDATES_NEEDED.md) - Tracks required updates to user-facing documentation
+- [C++ Source Analysis Issues](C++_SOURCE_ANALYSIS_ISSUES.md) - Issues encountered during C++ source analysis
+
+### External References
 - [Formula Version Compatibility](../RESEARCH_AND_ANALYSIS/FORMULA_VERSION_COMPATIBILITY_ANALYSIS.md) - Version compatibility analysis for Grapa's formula system
 - [Library Specification Analysis](../RESEARCH_AND_ANALYSIS/LIBRARY_SPECIFICATION_ANALYSIS.md) - Analysis of library specification mechanisms in $OP syntax
 - [Builtin Namespace Definitions](../RESEARCH_AND_ANALYSIS/BUILTIN_NAMESPACE_DEFINITIONS_ANALYSIS.md) - Analysis of builtin namespace definitions and registration
-
-### Language Extensibility
-- [Rule System Architecture](RULE_SYSTEM_ARCHITECTURE.md) - Executable BNF system, compilation vs execution, custom syntax integration
-- [Rules System Enhancement Roadmap](RULES_SYSTEM_ENHANCEMENT_ROADMAP.md) - Comprehensive 16-week roadmap for modern language features and developer experience
-- [SQL Syntax Implementation Patterns](SQL_SYNTAX_IMPLEMENTATION_PATTERNS.md) - Native SQL syntax using custom_command and custom_function mechanisms
-- [Syntax Improvements Analysis](GRAPA_SYNTAX_IMPROVEMENTS_ANALYSIS.md) - Comprehensive analysis of grammar and C++ libraries for syntax enhancements
-- [Native For Loop Implementation](CUSTOM_COMMAND_FOR_LOOP_IMPLEMENTATION.md) - ✅ **COMPLETED** - Native for loop implementation with consolidated smart handler supporting all loop variations
-- [BNF-Based ETL Analysis](BNF_BASED_ETL_ANALYSIS.md) - How Grapa uses executable BNF for JSON, XML, and HTML processing
-- [OP Function Parameter Matching](OP_FUNCTION_PARAMETER_MATCHING.md) - Internal implementation of parameter matching, dual syntax support (= and :), and JSON integration
-- [Array and List Operators Analysis](ARRAY_LIST_OPERATORS_ANALYSIS.md) - C++ implementation analysis of assignment operators (`+=`, `++=`, `-=`) with late-binding design patterns
-- [Enhanced Assignment Operators Implementation](ENHANCED_ASSIGNMENT_OPERATORS_IMPLEMENTATION.md) - ✅ **COMPLETED** - Implementation of `*=`, `/=`, `%=`, `**=` operators with type-specific arithmetic operations
-- [List Comprehension Implementation](LIST_COMPREHENSION_IMPLEMENTATION.md) - ✅ **COMPLETED** - Native list comprehension with temporary namespace management and variable scoping
-- [OBJ.grc Documentation Analysis](OBJ_GRC_DOCUMENTATION_ANALYSIS.md) - Comprehensive analysis of documentation coverage for $OBJ.grc methods (72% missing)
-- [OBJ.grc Method Name Analysis](OBJ_GRC_METHOD_NAME_ANALYSIS.md) - Analysis of method name appropriateness and recommendations for modern naming conventions
-- [OBJ.grc Parameter Name Proposal](OBJ_GRC_PARAMETER_NAME_PROPOSAL.md) - Proposal for improved parameter names with shorter, more intuitive alternatives
-- [OBJ.grc Test Coverage Analysis](OBJ_GRC_TEST_COVERAGE_ANALYSIS.md) - Analysis of test coverage for parameter changes (95% covered, 5% needs enhancement)
-- [OBJ.grc Method Validation Analysis](OBJ_GRC_METHOD_VALIDATION_ANALYSIS.md) - Comprehensive analysis of $OBJ.grc method functionality and data type requirements
-- [Secret Method Analysis](SECRET_METHOD_ANALYSIS.md) - Analysis of secret() method and cryptography dependencies
-- [Unified Dot Notation System](UNIFIED_DOT_NOTATION_SYSTEM.md) - Unified dot notation system for accessing data across JSON, XML, HTML, and other complex structures
-- [Match Method Implementation](MATCH_METHOD_IMPLEMENTATION.md) - Boolean wrapper around grep functionality for pattern testing with full parameter support and error handling
-- [XML/HTML Capabilities Analysis](XML_HTML_CAPABILITIES_ANALYSIS.md) - Analysis of actual XML/HTML implementation with array-like access, attribute handling, and powerful .findall() method
-
-### Research and Innovation
-- [LLM-Powered Dynamic IDE Concept](LLM_POWERED_DYNAMIC_IDE_CONCEPT.md) - Revolutionary IDE approach using LLMs to understand Grapa's dynamic syntax in real-time
-
-### Specialized Components
-- [Binary Grep Implementation](BINARY_GREP.md) - Deep technical reference for binary data processing and grep implementation
-- [Field Metadata Lifecycle](FIELD_METADATA_LIFECYCLE.md) - Field metadata lifecycle and requirements
 
 ## Architecture Overview
 
