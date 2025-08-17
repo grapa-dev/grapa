@@ -618,6 +618,98 @@ if (condition) {
 }
 ```
 
+### Grapa's Destructuring Assignment
+
+Grapa provides a powerful destructuring system using namespace concatenation with the `++=` operator. This is more flexible and powerful than traditional destructuring syntax.
+
+#### Object Destructuring
+```grapa
+/* Destructure object properties into local namespace */
+person = {name:"Alice", age:30, city:"New York"};
+@local ++= person;
+name.echo();    /* "Alice" */
+age.echo();     /* 30 */
+city.echo();    /* "New York" */
+
+/* Destructure into global namespace */
+@global ++= {debug:true, timeout:5000};
+debug.echo();   /* true */
+timeout.echo(); /* 5000 */
+```
+
+#### Array Destructuring
+```grapa
+/* Destructure array elements with custom variable names */
+arr = [1, 2, 3, 4, 5];
+@local ++= {first:arr[0], second:arr[1], rest:arr.range(2, arr.len())};
+first.echo();   /* 1 */
+second.echo();  /* 2 */
+rest.echo();    /* [3, 4, 5] */
+
+/* Function parameter destructuring */
+func = op(params) {
+    @local ++= params;  /* Destructure all parameters */
+    name.echo();
+    age.echo();
+};
+
+func({name:"Bob", age:25});
+```
+
+#### Namespace Options
+```grapa
+/* Local namespace (function scope) */
+@local ++= {debug:true, timeout:5000};
+
+/* Global namespace (persistent) */
+@global ++= {config:true, version:"1.0"};
+
+/* Object namespace (current object) */
+@this ++= {name:"John", age:25};
+
+/* Custom namespace */
+@my_namespace ++= {data:123, flag:false};
+```
+
+#### Duplicate Handling
+```grapa
+/* References access the last added in case of duplicates */
+@local ++= {a:1, b:2};
+@local ++= {a:10, c:3};  /* 'a' now refers to 10, not 1 */
+
+/* Remove duplicates if needed */
+@local.unique();  /* Removes duplicate entries */
+```
+
+#### Advanced Patterns
+```grapa
+/* Destructure nested objects */
+nested = {user:{name:"Alice", profile:{age:30, role:"admin"}}};
+@local ++= nested.user.profile;
+age.echo();   /* 30 */
+role.echo();  /* "admin" */
+
+/* Destructure with transformations */
+data = {x:10, y:20};
+@local ++= {sum:data.x + data.y, product:data.x * data.y};
+sum.echo();     /* 30 */
+product.echo(); /* 200 */
+
+/* Configuration destructuring */
+@global ++= {debug:true, timeout:5000, retries:3};
+debug.echo();   /* true */
+timeout.echo(); /* 5000 */
+retries.echo(); /* 3 */
+```
+
+**Advantages of Grapa's Destructuring:**
+- **Namespace Control**: Explicit control over where variables go
+- **Flexible**: Can destructure into any namespace (`@local`, `@global`, `@this`)
+- **Powerful**: Can destructure multiple objects into the same namespace
+- **Consistent**: Uses existing `++=` operator and namespace system
+- **Duplicate Resolution**: Clear behavior for handling duplicates
+- **Direct Access**: Variables become directly accessible without prefix
+
 ### Const Protection
 
 Grapa provides runtime const protection that prevents variable modification:

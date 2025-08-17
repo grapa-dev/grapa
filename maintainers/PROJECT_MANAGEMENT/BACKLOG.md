@@ -63,7 +63,7 @@ This backlog tracks all future, long-term, and queued tasks for the Grapa projec
 
 
 ### **6. Advanced Language Features** - **MODERN LANGUAGE PARITY** 🟡 **MEDIUM PRIORITY**
-- [ ] **Pattern Matching**: Destructuring and match expressions
+- [ ] **Match Expressions Syntax**: `match value { pattern => result }` syntax (Grapa already has powerful pattern matching via switch statements and .findall())
 - [ ] **Decorators/Annotations**: Function and class decorators
 - [ ] **Enhanced Reflection**: Runtime code inspection and modification
 - [ ] **Extension System**: Extending existing types with new methods

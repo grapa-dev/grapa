@@ -379,7 +379,9 @@ result = mixed_data.json.users.map(op(user) {
 
 ### **What Grapa Has That Others Don't** 🚀
 
-Grapa possesses unique capabilities that modern languages cannot match:
+Grapa possesses unique capabilities that modern languages cannot match (or provides superior implementations):
+
+**Note**: Some features listed below exist in other languages (like Python) but Grapa provides them as **built-in, native capabilities** without external libraries, or offers **superior implementations** that are more integrated and powerful.
 
 #### **1. Executable BNF System**
 - **Runtime grammar modification** - Change language syntax on-the-fly
@@ -388,9 +390,9 @@ Grapa possesses unique capabilities that modern languages cannot match:
 - **Language creation** - Build domain-specific languages within Grapa
 
 #### **2. Unlimited Precision Arithmetic**
-- **Arbitrary-precision for all types** - No overflow, exact calculations
+- **Arbitrary-precision for all types** - No overflow, exact calculations (superior to Python's decimal module)
 - **Cryptographic-grade math** - Prime generation, modular arithmetic
-- **Financial precision** - Exact decimal calculations without floating-point errors
+- **Financial precision** - Exact decimal calculations without external libraries
 - **Scientific computing** - Unlimited precision for research applications
 
 #### **3. Advanced Pattern Matching**
@@ -417,13 +419,13 @@ Grapa possesses unique capabilities that modern languages cannot match:
 - **Advanced concurrency** - Structured parallel processing with callbacks
 
 #### **6. String Distance Functions**
-- **Fuzzy matching** - Levenshtein, Jaro-Winkler, Cosine similarity
+- **Fuzzy matching** - Levenshtein, Jaro-Winkler, Cosine similarity (built-in, no external libraries needed)
 - **Smart auto-detection** - Automatic algorithm selection
 - **Options support** - Case sensitivity, method selection, corpus handling
 - **Performance optimized** - C++ implementation with proper type handling
 
 #### **7. Advanced Language Features**
-- **Unified dot notation system** - Consistent access and assignment across all data types
+- **Unified dot notation system** - Consistent access and assignment across all data types (unique to Grapa)
 - **String interpolation** - Advanced template literal support with expressions and C++ implementation
 - **Enhanced assignment operators** - `*=`, `/=`, `%=`, `**=` for numeric types with smart type promotion
 - **For loops** - Native loop syntax with consolidated smart handler supporting all variations
@@ -441,7 +443,7 @@ Grapa possesses unique capabilities that modern languages cannot match:
 - **Runtime path configuration** - Flexible search path management via environment variables
 - **Plugin architecture** - Dynamic loading of custom libraries and extensions
 - **Performance optimization** - Pre-compiled `.grz` files for production deployment
-- **Superior to traditional** - More flexible than static import/export systems
+- **Superior to traditional** - More flexible than static import/export systems (similar to Python's dynamic imports but more powerful)
 
 ### **Language Gaps Being Worked On** 🔧
 
@@ -452,7 +454,7 @@ These features are actively being developed to address modern language parity:
 - **📋 Control Flow Fixes** - Working return/break/continue statements
 
 #### **Phase 2: Advanced Language Features (Weeks 5-8)**
-- **📋 Pattern Matching** - Destructuring and match expressions
+- **📋 Match Expressions Syntax** - `match value { pattern => result }` syntax (Grapa already has powerful pattern matching via switch statements and .findall())
 - **📋 Decorators/Annotations** - Function and class decorators
 - **📋 Enhanced Reflection** - Runtime code inspection and modification
 - **📋 Extension System** - Extending existing types with new methods

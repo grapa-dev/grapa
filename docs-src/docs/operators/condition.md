@@ -19,15 +19,74 @@ none
 ## switch
 
 Syntax options:
-* swtich (item) {case item1: statement; item2 statement; etc...;};
-* swtich (item) {case item1: statement; item2 statement; etc...; default: statement;};
+* switch (item) {case condition1: statement; case condition2: statement; etc...;};
+* switch (item) {case condition1: statement; case condition2: statement; etc...; default: statement;};
 
-The following is a way to use a switch in place of if/ifelse/else sequence. The switch will compare until if arrives at a true.
+Grapa's switch statement is **much more powerful** than traditional switch statements. Each `case` can contain a **full expression that returns true/false**, and evaluation stops at the first match.
 
+### Basic Value Matching
+```grapa
+/* Traditional value matching */
+switch (x) {
+    case 1: "One".echo();
+    case 2: "Two".echo();
+    default: "Other".echo();
+};
 ```
-> switch(true){case (1==0):"1==0\n".echo(); case (2==2): "2==2\n".echo(); default: "none\n".echo();};
-2==2
+
+### Boolean Expression Matching
+```grapa
+/* Each case can be a full boolean expression */
+switch (true) {
+    case (x < 0): "Negative".echo();
+    case (x == 0): "Zero".echo();
+    case (x > 0): "Positive".echo();
+    default: "Unknown".echo();
+};
 ```
+
+### Complex Pattern Matching
+```grapa
+/* Pattern matching on data structures */
+user = {name: "Alice", age: 25, role: "admin"};
+
+switch (true) {
+    case (user.role == "admin" && user.age >= 18): "Admin access granted".echo();
+    case (user.role == "user" && user.age >= 18): "User access granted".echo();
+    case (user.age < 18): "Access denied - too young".echo();
+    default: "Access denied - unknown role".echo();
+};
+```
+
+### Type-Based Matching
+```grapa
+/* Match based on data type */
+switch (true) {
+    case (data.type() == $STR): "String data".echo();
+    case (data.type() == $INT): "Integer data".echo();
+    case (data.type() == $ARRAY): "Array data".echo();
+    case (data.type() == $LIST): "List data".echo();
+    default: "Other data type".echo();
+};
+```
+
+### Sequential Evaluation (First Match Wins)
+```grapa
+/* Evaluation stops at first true condition */
+switch (true) {
+    case (x > 10): "Greater than 10".echo();  /* If x=15, only this executes */
+    case (x > 5): "Greater than 5".echo();    /* This won't execute if above is true */
+    case (x > 0): "Greater than 0".echo();    /* This won't execute if above is true */
+    default: "Zero or negative".echo();
+};
+```
+
+**Key Features:**
+- **Full expressions**: Each case can contain complex boolean expressions
+- **Sequential evaluation**: Evaluates from first to last case, stops at first match
+- **No fall-through**: Unlike C-style switches, Grapa doesn't fall through to next case
+- **Pattern matching**: Can match on data structure patterns, types, and conditions
+- **Default case**: Optional catch-all for unmatched conditions
 
 ## `?`
 

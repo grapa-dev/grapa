@@ -210,6 +210,7 @@ if (result.type() == $ERR) {
 | `object : Foo {}`             | `obj : Foo {}`                                    |
 | `fun foo(x: Int) = ...`       | `op(x){...}` or `op(x)("...")`                   |
 | `val x = ...`                 | `x = ...`                                         |
+| `val (a, b) = obj`            | `@local ++= obj; a.echo(); b.echo();`             |
 | `var x = ...`                 | `x = ...`                                         |
 | `@file:JvmName("Foo")`       | WIP                                               |
 | `coroutineScope { ... }`      | WIP                                               |

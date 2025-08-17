@@ -36,6 +36,7 @@ This guide helps TypeScript users transition to Grapa by mapping common TypeScri
 | `arr[0]` | `arr[0]`<br>`arr.get(0)` |
 | `let obj: {[key: string]: number} = {};` | `obj = {}` |
 | `obj["key"]` | `obj["key"]`<br>`obj.key`<br>`obj."key"` |
+| `const {a, b} = obj` | `@local ++= obj; a.echo(); b.echo();` |
 | `for (let i=0; i<arr.length; i++)` | `for i in arr { ... }`<br>`i = 0; while (i < arr.len()) { ...; i += 1; }`<br>`arr.map(op(x) { ... })`<br>`(n).range(0,1).map(op(i) { ... })` |
 | `if (cond) { ... } else { ... }` | `if (cond) { ... } else { ... }` |
 | `function f(x: number): number { ... }` | `f = op(x) { ... };` |

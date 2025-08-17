@@ -43,6 +43,7 @@ This guide helps Rust users transition to Grapa by mapping common Rust idioms, p
 | `Some(x)` / `None` | `x` / `null` |
 | `Result<T, E>` | `value or $ERR` |
 | `match x { ... }` | `if/else` chain |
+| `let {a, b} = obj;` | `@local ++= obj; a.echo(); b.echo();` |
 | `arr.iter().map(|x| x+1)` | `arr.map(op(x) { x + 1; })` |
 | `arr.iter().filter(|x| *x > 0)` | `arr.filter(op(x) { x > 0; })` |
 | `arr.iter().fold(0, |a, x| a + x)` | `arr.reduce(op(a, x) { a + x; }, 0)` |

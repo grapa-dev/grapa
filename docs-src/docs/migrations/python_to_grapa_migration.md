@@ -95,6 +95,7 @@ This guide helps Python users transition to Grapa by mapping common Python idiom
 | `with open() as f:` | Use `$file()` methods directly: `content = $file().read("file.txt")` |
 | `@decorator` | Use function composition: `f = op() { decorator(original_func); }` |
 | `arr1 + arr2` | `arr1 += arr2` |
+| `{a, b} = obj` | `@local ++= obj; a.echo(); b.echo();` |
 
 > **Note:** Both `x = x + 1;` and `x += 1;` (and `s = s + "x";` and `s += "x";`) are valid in Grapa. The `+=` form is idiomatic and preferred in most cases.
 >

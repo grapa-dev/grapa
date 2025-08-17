@@ -229,31 +229,129 @@ loop_with_break = op() {
 };
 ```
 
-### **4. Destructuring/Pattern Matching** 🔄 **PLANNED**
+### **4. Grapa's Pattern Matching** ✅ **IMPLEMENTED**
 
-**Status**: Not yet implemented
-**Planned Syntax**: Destructuring assignment
+**Status**: Fully implemented with superior approach
+**Grapa's Capabilities**: Multiple pattern matching mechanisms
+
+#### **4a. Grapa's Destructuring** ✅ **IMPLEMENTED**
+
+**Status**: Fully implemented with superior approach
+**Grapa's Syntax**: Namespace-based destructuring assignment
 
 ```grapa
-/* Planned destructuring syntax */
-{name, age} = person;  /* Object destructuring */
-[first, second, ...rest] = array;  /* Array destructuring */
+/* Grapa's destructuring via namespace concatenation */
+@local ++= {name:"Alice", age:30};  /* Destructure into local namespace */
+name.echo();  /* Direct access: "Alice" */
+age.echo();   /* Direct access: 30 */
+
+/* Array destructuring */
+arr = [1, 2, 3, 4, 5];
+@local ++= {first:arr[0], second:arr[1], rest:arr.range(2, arr.len())};
+first.echo();   /* 1 */
+second.echo();  /* 2 */
+rest.echo();    /* [3, 4, 5] */
 ```
 
 **Use Cases:**
-- **Object Destructuring** - Extract properties
-- **Array Destructuring** - Extract elements
-- **Function Parameters** - Destructure parameters
-- **Return Values** - Destructure return values
+- **Object Destructuring** - Extract properties into any namespace
+- **Array Destructuring** - Extract elements with custom variable names
+- **Function Parameters** - Destructure parameters into local scope
+- **Return Values** - Destructure return values into target namespace
+- **Configuration** - Load config objects into global namespace
 
-**Current Workaround:**
+**Namespace Options:**
 ```grapa
-/* Explicit property access */
-name = person.name;
-age = person.age;
-first = array[0];
-second = array[1];
+/* Local namespace (function scope) */
+@local ++= {debug:true, timeout:5000};
+
+/* Global namespace (persistent) */
+@global ++= {config:true, version:"1.0"};
+
+/* Object namespace (current object) */
+@this ++= {name:"John", age:25};
+
+/* Custom namespace */
+@my_namespace ++= {data:123, flag:false};
 ```
+
+**Duplicate Handling:**
+```grapa
+/* References access the last added in case of duplicates */
+@local ++= {a:1, b:2};
+@local ++= {a:10, c:3};  /* 'a' now refers to 10, not 1 */
+
+/* Remove duplicates if needed */
+@local.unique();  /* Removes duplicate entries */
+```
+
+#### **4b. Grapa's Switch-Based Pattern Matching** ✅ **IMPLEMENTED**
+
+**Status**: Fully implemented with superior approach
+**Grapa's Syntax**: Expression-based switch statements
+
+```grapa
+/* Each case can be a full boolean expression */
+switch (true) {
+    case (user.role == "admin" && user.age >= 18): "Admin access granted".echo();
+    case (user.role == "user" && user.age >= 18): "User access granted".echo();
+    case (user.age < 18): "Access denied - too young".echo();
+    default: "Access denied - unknown role".echo();
+};
+
+/* Type-based pattern matching */
+switch (true) {
+    case (data.type() == $STR): "String data".echo();
+    case (data.type() == $INT): "Integer data".echo();
+    case (data.type() == $ARRAY): "Array data".echo();
+    case (data.type() == $LIST): "List data".echo();
+    default: "Other data type".echo();
+};
+
+/* Complex data structure matching */
+switch (true) {
+    case (user.name == "admin" && user.permissions.len() > 0): "Full admin".echo();
+    case (user.permissions.find("read")): "Read access".echo();
+    case (user.guest == true): "Guest access".echo();
+    default: "No access".echo();
+};
+```
+
+**Advantages of Grapa's Switch Pattern Matching:**
+- **Full Expressions**: Each case can contain complex boolean expressions
+- **Sequential Evaluation**: Evaluates from first to last case, stops at first match
+- **No Fall-Through**: Unlike C-style switches, Grapa doesn't fall through to next case
+- **Pattern Matching**: Can match on data structure patterns, types, and conditions
+- **Default Case**: Optional catch-all for unmatched conditions
+- **Type Safety**: Can match on data types using `.type()` method
+
+#### **4c. Grapa's Structural Querying** ✅ **IMPLEMENTED**
+
+**Status**: Fully implemented with superior approach
+**Grapa's Syntax**: `.findall()` method for structural pattern matching
+
+```grapa
+/* XML structural pattern matching */
+xml = <root><item id="1">Hello</item><item id="2">World</item></root>;
+xml.findall({name:"item"})                /* All item elements */
+xml.findall({name:"item", attr:{id:"2"}}) /* Items with id="2" */
+xml.findall({value:"Hello"})              /* Elements with content "Hello" */
+
+/* LIST structural pattern matching */
+data = {name:"Alice", age:30, city:"New York"};
+data.findall({has:{name:"age"}})          /* Returns: {"data":{"name":"Alice","age":30}} */
+
+/* ARRAY structural pattern matching */
+arr = [{name:"Alice"}, {name:"Bob"}, {name:"Charlie"}];
+arr.findall({has:{name:"name"}})          /* Returns: [{"name":"Alice"},{"name":"Bob"},{"name":"Charlie"}] */
+```
+
+**Advantages of Grapa's Structural Querying:**
+- **Declarative**: Express patterns declaratively rather than imperatively
+- **Powerful**: Can match complex nested structures
+- **Flexible**: Supports logical operators (AND, OR) in patterns
+- **Type-Agnostic**: Works across XML, LIST, and ARRAY types
+- **Composable**: Can combine multiple pattern conditions
 
 ### **5. Advanced Module System** 🔄 **BASIC IMPLEMENTATION**
 
@@ -356,7 +454,7 @@ $ARRAY += (custom_method: op() { $this.len(); });
 | **Concurrency** | ✅ Superior | ⚠️ Complex | ⚠️ Complex | ✅ Yes |
 | **Decorators** | 🔄 Planned | ✅ Yes | ✅ Yes | ❌ No |
 | **Generics** | 🔄 Planned | ⚠️ Limited | ❌ No | ✅ Yes |
-| **Destructuring** | 🔄 Planned | ✅ Yes | ✅ Yes | ✅ Yes |
+| **Destructuring** | ✅ Superior | ✅ Yes | ✅ Yes | ✅ Yes |
 
 ## Best Practices
 

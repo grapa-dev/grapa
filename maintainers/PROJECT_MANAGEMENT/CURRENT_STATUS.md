@@ -76,7 +76,7 @@
 - **📋 Control Flow Fixes** - Working return/break/continue statements
 
 **Phase 2 Focus:** Advanced Language Features (Weeks 5-8)
-- **📋 Pattern Matching** - Destructuring and match expressions
+- **📋 Match Expressions Syntax** - `match value { pattern => result }` syntax (Grapa already has powerful pattern matching via switch statements and .findall())
 - **📋 Decorators/Annotations** - Function and class decorators
 - **📋 Enhanced Reflection** - Runtime code inspection and modification
 - **📋 Extension System** - Extending existing types with new methods (NEEDED - += syntax exists but doesn't add callable methods to system classes; requires C++ implementation for SYSID types in assignappend case; @global redefinition works but is unsafe)
