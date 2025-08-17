@@ -26,6 +26,7 @@ Language features provide the foundation for Grapa's dynamic syntax, custom comm
 
 ### Control Flow
 - [Native For Loop Implementation](CUSTOM_COMMAND_FOR_LOOP_IMPLEMENTATION.md) - ✅ **COMPLETED** - Native for loop implementation with consolidated smart handler supporting all loop variations
+- [Control Flow Implementation](CONTROL_FLOW_IMPLEMENTATION.md) - Runtime flow controls (break, continue, return, exit), compiler pipeline, execution engine, Phase 1 planning
 
 ### Data Processing
 - [BNF-Based ETL Analysis](BNF_BASED_ETL_ANALYSIS.md) - How Grapa uses executable BNF for JSON, XML, and HTML processing

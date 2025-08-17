@@ -127,6 +127,9 @@ maintainers/IMPLEMENTATION/
 - **CUSTOM_COMMAND_FOR_LOOP_IMPLEMENTATION.md** (13KB, 472 lines) - Native for loop
   - **Content**: ✅ **COMPLETED** - For loop implementation with smart handler
   - **Status**: Complete for loop documentation
+- **CONTROL_FLOW_IMPLEMENTATION.md** (15KB, 500 lines) - Control flow implementation
+  - **Content**: Runtime flow controls (break, continue, return, exit), compiler pipeline, execution engine
+  - **Status**: Complete control flow analysis and Phase 1 planning
 
 #### **Data Processing**
 - **BNF_BASED_ETL_ANALYSIS.md** (14KB, 397 lines) - BNF-based ETL
