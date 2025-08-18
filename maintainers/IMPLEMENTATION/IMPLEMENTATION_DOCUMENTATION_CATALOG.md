@@ -130,6 +130,9 @@ maintainers/IMPLEMENTATION/
 - **CONTROL_FLOW_IMPLEMENTATION.md** (15KB, 500 lines) - Control flow implementation
   - **Content**: Runtime flow controls (break, continue, return, exit), compiler pipeline, execution engine
   - **Status**: Complete control flow analysis and Phase 1 planning
+- **CONTROL_FLOW_IMPLEMENTATION_FUNCTIONS.md** (12KB, 400 lines) - Functions to modify for control flow
+  - **Content**: Complete list of 13+ functions requiring modification for break, continue, return implementation
+  - **Status**: Comprehensive function identification and modification requirements
 
 #### **Data Processing**
 - **BNF_BASED_ETL_ANALYSIS.md** (14KB, 397 lines) - BNF-based ETL
