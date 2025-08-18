@@ -1,0 +1,156 @@
+/* Control Flow Validation Tests */
+
+/* Test 1: Basic Break in While Loop */
+"Test 1: Basic Break in While Loop".echo();
+i = 0;
+while (i < 10) {
+    i += 1;
+    if (i == 5) {
+        break;
+    };
+};
+"Final i value: ".interpolate(i).echo();
+"Expected: 5".echo();
+
+/* Test 2: Basic Continue in While Loop */
+"Test 2: Basic Continue in While Loop".echo();
+sum = 0;
+i = 0;
+while (i < 10) {
+    i += 1;
+    if (i % 2 == 0) {
+        continue;
+    };
+    sum += i;
+};
+"Final sum value: ".interpolate(sum).echo();
+"Expected: 25 (sum of odd numbers 1,3,5,7,9)".echo();
+
+/* Test 3: Break in For Loop */
+"Test 3: Break in For Loop".echo();
+result = [];
+for i in [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] {
+    if (i == 6) {
+        break;
+    };
+    result += i;
+};
+"Result array: ".interpolate(result).echo();
+"Expected: [1, 2, 3, 4, 5]".echo();
+
+/* Test 4: Continue in For Loop */
+"Test 4: Continue in For Loop".echo();
+result = [];
+for i in [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] {
+    if (i % 2 == 0) {
+        continue;
+    };
+    result += i;
+};
+"Result array: ".interpolate(result).echo();
+"Expected: [1, 3, 5, 7, 9]".echo();
+
+/* Test 5: Return in While Loop */
+"Test 5: Return in While Loop".echo();
+func testReturnInLoop() {
+    i = 0;
+    while (i < 10) {
+        i += 1;
+        if (i == 5) {
+            return i;
+        };
+    };
+    return 0;
+};
+result = testReturnInLoop();
+"Return value: ".interpolate(result).echo();
+"Expected: 5".echo();
+
+/* Test 6: Return with Value */
+"Test 6: Return with Value".echo();
+func testReturnValue() {
+    return 42;
+};
+result = testReturnValue();
+"Return value: ".interpolate(result).echo();
+"Expected: 42".echo();
+
+/* Test 7: Return with Expression */
+"Test 7: Return with Expression".echo();
+func testReturnExpression() {
+    a = 10;
+    b = 20;
+    return a + b;
+};
+result = testReturnExpression();
+"Return value: ".interpolate(result).echo();
+"Expected: 30".echo();
+
+/* Test 8: Nested Control Flow */
+"Test 8: Nested Control Flow".echo();
+func testNestedControlFlow() {
+    for i in [1, 2, 3, 4, 5] {
+        for j in [1, 2, 3] {
+            if (i == 3 && j == 2) {
+                return i * j;
+            };
+        };
+    };
+    return 0;
+};
+result = testNestedControlFlow();
+"Return value: ".interpolate(result).echo();
+"Expected: 6".echo();
+
+/* Test 9: Break in Nested Loops */
+"Test 9: Break in Nested Loops".echo();
+outer_sum = 0;
+for i in [1, 2, 3] {
+    inner_sum = 0;
+    for j in [1, 2, 3, 4, 5] {
+        if (j == 4) {
+            break;
+        };
+        inner_sum += j;
+    };
+    outer_sum += inner_sum;
+};
+"Outer sum: ".interpolate(outer_sum).echo();
+"Expected: 18 (6+6+6)".echo();
+
+/* Test 10: Continue in Nested Loops */
+"Test 10: Continue in Nested Loops".echo();
+sum = 0;
+for i in [1, 2, 3] {
+    if (i == 2) {
+        continue;
+    };
+    for j in [1, 2, 3] {
+        sum += i * j;
+    };
+};
+"Sum: ".interpolate(sum).echo();
+"Expected: 18 (1*1+1*2+1*3 + 3*1+3*2+3*3)".echo();
+
+/* Test 11: Return from Function with Scope */
+"Test 11: Return from Function with Scope".echo();
+func testFunctionScope() {
+    local_var = 100;
+    if (local_var > 50) {
+        return local_var;
+    };
+    return 0;
+};
+result = testFunctionScope();
+"Return value: ".interpolate(result).echo();
+"Expected: 100".echo();
+
+/* Test 12: Exit Statement Test */
+"Test 12: Exit Statement Test".echo();
+"Testing exit statement...".echo();
+"Note: This should terminate the program if exit works".echo();
+/* Uncomment to test exit:
+exit;
+*/
+
+"All control flow tests completed!".echo();
