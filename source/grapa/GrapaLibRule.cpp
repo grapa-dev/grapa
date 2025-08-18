@@ -3349,7 +3349,9 @@ GrapaRuleEvent* GrapaLibraryRuleResetEvent::Run(GrapaScriptExec* vScriptExec, Gr
 
 GrapaRuleEvent* GrapaLibraryRuleExitEvent::Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput)
 {
-	GrapaRuleEvent* result = NULL;
+	GrapaRuleEvent* result = new GrapaRuleEvent(GrapaTokenType::START, 0, "", "");
+	result->SetNull();
+	result->mControlFlow = GrapaControlFlowType::EXIT;
 	gSystem->mStop = true;
 	return(result);
 }
@@ -9085,7 +9087,7 @@ GrapaRuleEvent* GrapaLibraryRuleWhileEvent::Run(GrapaScriptExec *vScriptExec, Gr
 							isContinue = false;
 						if (isControlFlowChange == GrapaControlFlowType::CONTINUE) 
 							;
-						if (isControlFlowChange == GrapaControlFlowType::RETURN || isControlFlowChange == GrapaControlFlowType::SYNTAX)
+						if (isControlFlowChange == GrapaControlFlowType::RETURN || isControlFlowChange == GrapaControlFlowType::SYNTAX || isControlFlowChange == GrapaControlFlowType::EXIT)
 						{
 							isContinue = false;
 							result->mControlFlow = isControlFlowChange;
@@ -9111,10 +9113,13 @@ GrapaRuleEvent* GrapaLibraryRuleScopeEvent::Run(GrapaScriptExec *vScriptExec, Gr
 			result = vScriptExec->ProcessPlan(pNameSpace, p);
 			if (result && result->mValue.mToken == GrapaTokenType::PTR)
 			{
+				u8 isControlFlowChange = result->mControlFlow;;
 				GrapaRuleEvent* old = result;
 				result = vScriptExec->CopyItem(old);
 				old->CLEAR();
 				delete old;
+				if (result)
+					result->mControlFlow = isControlFlowChange;
 			}
 		}
 		if (pNameSpace->GetNameQueue()->PopEvent(operation))
@@ -19295,7 +19300,7 @@ GrapaRuleEvent* GrapaLibraryRuleForEvent::HandleDoWhile(GrapaScriptExec *vScript
 			return NULL;
 		if (isControlFlowChange == GrapaControlFlowType::CONTINUE)
 			;
-		if (isControlFlowChange == GrapaControlFlowType::RETURN || isControlFlowChange == GrapaControlFlowType::SYNTAX)
+		if (isControlFlowChange == GrapaControlFlowType::RETURN || isControlFlowChange == GrapaControlFlowType::SYNTAX || isControlFlowChange == GrapaControlFlowType::EXIT)
 		{
 			result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaCHAR());
 			result->mControlFlow = isControlFlowChange;
@@ -19337,7 +19342,7 @@ GrapaRuleEvent* GrapaLibraryRuleForEvent::HandleDoWhile(GrapaScriptExec *vScript
 				break;
 			if (isControlFlowChange == GrapaControlFlowType::CONTINUE)
 				;
-			if (isControlFlowChange == GrapaControlFlowType::RETURN || isControlFlowChange == GrapaControlFlowType::SYNTAX)
+			if (isControlFlowChange == GrapaControlFlowType::RETURN || isControlFlowChange == GrapaControlFlowType::SYNTAX || isControlFlowChange == GrapaControlFlowType::EXIT)
 			{
 				result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaCHAR());
 				result->mControlFlow = isControlFlowChange;
@@ -19417,7 +19422,7 @@ GrapaRuleEvent* GrapaLibraryRuleForEvent::HandleForIn(GrapaScriptExec *vScriptEx
 					break;
 				if (isControlFlowChange == GrapaControlFlowType::CONTINUE)
 					;
-				if (isControlFlowChange == GrapaControlFlowType::RETURN || isControlFlowChange == GrapaControlFlowType::SYNTAX)
+				if (isControlFlowChange == GrapaControlFlowType::RETURN || isControlFlowChange == GrapaControlFlowType::SYNTAX || isControlFlowChange == GrapaControlFlowType::EXIT)
 				{
 					result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaCHAR());
 					result->mControlFlow = isControlFlowChange;
@@ -19454,7 +19459,7 @@ GrapaRuleEvent* GrapaLibraryRuleForEvent::HandleForIn(GrapaScriptExec *vScriptEx
 						break;
 					if (isControlFlowChange == GrapaControlFlowType::CONTINUE)
 						;
-					if (isControlFlowChange == GrapaControlFlowType::RETURN || isControlFlowChange == GrapaControlFlowType::SYNTAX)
+					if (isControlFlowChange == GrapaControlFlowType::RETURN || isControlFlowChange == GrapaControlFlowType::SYNTAX || isControlFlowChange == GrapaControlFlowType::EXIT)
 					{
 						result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaCHAR());
 						result->mControlFlow = isControlFlowChange;
@@ -19492,7 +19497,7 @@ GrapaRuleEvent* GrapaLibraryRuleForEvent::HandleForIn(GrapaScriptExec *vScriptEx
 					break;
 				if (isControlFlowChange == GrapaControlFlowType::CONTINUE)
 					;
-				if (isControlFlowChange == GrapaControlFlowType::RETURN || isControlFlowChange == GrapaControlFlowType::SYNTAX)
+				if (isControlFlowChange == GrapaControlFlowType::RETURN || isControlFlowChange == GrapaControlFlowType::SYNTAX || isControlFlowChange == GrapaControlFlowType::EXIT)
 				{
 					result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaCHAR());
 					result->mControlFlow = isControlFlowChange;
@@ -19631,7 +19636,7 @@ GrapaRuleEvent* GrapaLibraryRuleForEvent::HandleForFrom(GrapaScriptExec *vScript
 			}
 			if (isControlFlowChange == GrapaControlFlowType::CONTINUE)
 				;
-			if (isControlFlowChange == GrapaControlFlowType::RETURN || isControlFlowChange == GrapaControlFlowType::SYNTAX)
+			if (isControlFlowChange == GrapaControlFlowType::RETURN || isControlFlowChange == GrapaControlFlowType::SYNTAX || isControlFlowChange == GrapaControlFlowType::EXIT)
 			{
 				startResult->CLEAR(); delete startResult;
 				endResult->CLEAR(); delete endResult;
@@ -19743,7 +19748,7 @@ GrapaRuleEvent* GrapaLibraryRuleForEvent::HandleComplexFor(GrapaScriptExec *vScr
 				break;
 			if (isControlFlowChange == GrapaControlFlowType::CONTINUE)
 				;
-			if (isControlFlowChange == GrapaControlFlowType::RETURN || isControlFlowChange == GrapaControlFlowType::SYNTAX)
+			if (isControlFlowChange == GrapaControlFlowType::RETURN || isControlFlowChange == GrapaControlFlowType::SYNTAX || isControlFlowChange == GrapaControlFlowType::EXIT)
 			{
 				result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaCHAR());
 				result->mControlFlow = isControlFlowChange;
@@ -19920,7 +19925,7 @@ GrapaRuleEvent* GrapaLibraryRuleForEvent::HandleForFromStep(GrapaScriptExec *vSc
 				break;
 			if (isControlFlowChange == GrapaControlFlowType::CONTINUE)
 				;
-			if (isControlFlowChange == GrapaControlFlowType::RETURN || isControlFlowChange == GrapaControlFlowType::SYNTAX)
+			if (isControlFlowChange == GrapaControlFlowType::RETURN || isControlFlowChange == GrapaControlFlowType::SYNTAX || isControlFlowChange == GrapaControlFlowType::EXIT)
 			{
 				result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaCHAR());
 				result->mControlFlow = isControlFlowChange;

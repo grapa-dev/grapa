@@ -93,7 +93,7 @@ public:
 ////////////////////////////////////////////////////////////////////////////////
 
 class GrapaControlFlowType {
-public: enum { NONE = 0, SYNTAX, BREAK, CONTINUE, RETURN, THROW };
+public: enum { NONE = 0, EXIT, SYNTAX, BREAK, CONTINUE, RETURN, THROW };
 };
 
 class GrapaRuleEvent : public GrapaObjectEvent

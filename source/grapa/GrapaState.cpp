@@ -4523,10 +4523,13 @@ GrapaRuleEvent* GrapaScriptExec::ProcessPlan(GrapaNames* pNameSpace, GrapaRuleEv
 	}
 	if (result && !result->mVar && result->mValue.mToken == GrapaTokenType::PTR) //NEED TO FIX THIS
 	{
+		u8 isControlFlowChange = result->mControlFlow;;
 		GrapaRuleEvent *v = CopyItem(result);
 		result->CLEAR();
 		delete result;
 		result = v;
+		if (result)
+			result->mControlFlow = isControlFlowChange;
 	}
 	
 	// ADD DEBUG: Execution completion (Level 1)
