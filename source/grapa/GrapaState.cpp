@@ -4297,14 +4297,21 @@ GrapaRuleEvent* GrapaScriptExec::ProcessPlan(GrapaNames* pNameSpace, GrapaRuleEv
 				
 				GrapaRuleEvent* oldresult = result;
 				result = ProcessPlan(pNameSpace, item, pParam, pCount);
+				u8 isControlFlowChange = result->mControlFlow;
+				if (!isControlFlowChange && result->mValue.mToken == GrapaTokenType::PTR && result->vRulePointer) isControlFlowChange = result->vRulePointer->mControlFlow;
 				if (oldresult)
 				{
 					oldresult->CLEAR();
 					delete oldresult;
 					oldresult = NULL;
 				}
-				if (result && result->mControlFlow)
-					break;
+				if (result)
+				{
+					u8 isControlFlowChange = result->mControlFlow;
+					if (!isControlFlowChange && result->mValue.mToken == GrapaTokenType::PTR && result->vRulePointer) isControlFlowChange = result->vRulePointer->mControlFlow;
+					if (isControlFlowChange)
+						break;
+				}
 				item = item->Next();
 				childIndex++;
 			}
@@ -4490,6 +4497,9 @@ GrapaRuleEvent* GrapaScriptExec::ProcessPlan(GrapaNames* pNameSpace, GrapaRuleEv
 						while (v->mValue.mToken == GrapaTokenType::PTR && v->vRulePointer) v = v->vRulePointer;
 						result->vRulePointer = v;
 					}
+					if (result && !result->mControlFlow && result->mValue.mToken == GrapaTokenType::PTR && result->vRulePointer)
+						result->vRulePointer = result->vRulePointer->vRulePointer;
+
 					//if (result && result->mLocal)
 					//{
 					//	GrapaRuleEvent *v = CopyItem(result);
@@ -4519,11 +4529,16 @@ GrapaRuleEvent* GrapaScriptExec::ProcessPlan(GrapaNames* pNameSpace, GrapaRuleEv
 			vScriptState->mDebug.DebugPrint(this, pNameSpace, "executor", debugMsg, 3);
 		}
 		
+		u8 isControlFlowChange = pOperation->mControlFlow;
+		if (!isControlFlowChange && result->mValue.mToken == GrapaTokenType::PTR && pOperation->vRulePointer) isControlFlowChange = pOperation->vRulePointer->mControlFlow;
 		result = CopyItem(pOperation);
+		if (result)
+			result->mControlFlow = isControlFlowChange;
 	}
 	if (result && !result->mVar && result->mValue.mToken == GrapaTokenType::PTR) //NEED TO FIX THIS
 	{
-		u8 isControlFlowChange = result->mControlFlow;;
+		u8 isControlFlowChange = result->mControlFlow;
+		if (!isControlFlowChange && result->mValue.mToken == GrapaTokenType::PTR && result->vRulePointer) isControlFlowChange = result->vRulePointer->mControlFlow;
 		GrapaRuleEvent *v = CopyItem(result);
 		result->CLEAR();
 		delete result;
@@ -4780,7 +4795,6 @@ GrapaRuleEvent* GrapaScriptExec::CopyItem(GrapaRuleEvent* pAction, bool isTAG, b
 	result->vRulePointer = p->vRulePointer;
 	result->vRuleParent = p->vRuleParent;
 	result->vClass = p->vClass;
-	result->mControlFlow = p->mControlFlow;
 	result->mVar = p->mVar;
 	result->mSkip = p->mSkip;
 	result->mT = p->mT;
