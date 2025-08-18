@@ -92,6 +92,10 @@ public:
 
 ////////////////////////////////////////////////////////////////////////////////
 
+class GrapaControlFlowType {
+public: enum { NONE = 0, SYNTAX, BREAK, CONTINUE, RETURN, THROW };
+};
+
 class GrapaRuleEvent : public GrapaObjectEvent
 {
 public:
@@ -100,7 +104,8 @@ public:
 	GrapaRuleEvent *vRuleLambda;
 	GrapaRuleEvent *vRuleParent;
 	GrapaRuleEvent *vClass;
-	bool mAbort, mVar, mLocal, mClass, mConst;
+	bool mVar, mLocal, mClass, mConst;
+	u8 mControlFlow; // Control flow type: 0 = none, 1 = break, 2 = continue, 3 = return, 4 = throw
 	char mQuote;
 	u8 mT;
 public:
@@ -120,7 +125,8 @@ private:
 	void INIT() {
 		vValueEvent = NULL; 
 		vRuleLambda = NULL; vLibraryEvent = NULL;  
-		mAbort = mVar = mLocal = mClass = mConst = false; vRuleParent = NULL;
+		mVar = mLocal = mClass = mConst = false; vRuleParent = NULL;
+		mControlFlow = 0;
 		vClass = NULL;
 		mQuote = 0;
 		mT = GrapaTokenType::START;

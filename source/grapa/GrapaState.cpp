@@ -4303,6 +4303,8 @@ GrapaRuleEvent* GrapaScriptExec::ProcessPlan(GrapaNames* pNameSpace, GrapaRuleEv
 					delete oldresult;
 					oldresult = NULL;
 				}
+				if (result && result->mControlFlow)
+					break;
 				item = item->Next();
 				childIndex++;
 			}
@@ -4775,6 +4777,7 @@ GrapaRuleEvent* GrapaScriptExec::CopyItem(GrapaRuleEvent* pAction, bool isTAG, b
 	result->vRulePointer = p->vRulePointer;
 	result->vRuleParent = p->vRuleParent;
 	result->vClass = p->vClass;
+	result->mControlFlow = p->mControlFlow;
 	result->mVar = p->mVar;
 	result->mSkip = p->mSkip;
 	result->mT = p->mT;
@@ -6204,7 +6207,8 @@ GrapaRuleEvent* GrapaScriptExec::Exec(GrapaNames* pNameSpace, GrapaRuleEvent* ru
 				token = token->Next();
 			}
 			(*resultPtr)->vQueue->PushTail(new GrapaRuleEvent(0, name, value));
-			(*resultPtr)->mAbort = true;
+			(*resultPtr)->mControlFlow = GrapaControlFlowType::SYNTAX;
+			;
 		}
 	}
 	else if (isActive && resultPtr)
@@ -6617,9 +6621,9 @@ GrapaRuleEvent *GrapaScriptExec::Plan(GrapaNames* pNameSpace, GrapaCHAR& pInput,
 								token = token->Next();
 							}
 							evalResult->vQueue->PushTail(new GrapaRuleEvent(0, name, value));
-							evalResult->mAbort = true;
+							evalResult->mControlFlow = GrapaControlFlowType::SYNTAX;
 							codeResult->vQueue->PushTail(evalResult);
-							codeResult->mAbort = true;
+							codeResult->mControlFlow = GrapaControlFlowType::SYNTAX;
 							break;
 						}
 						else
@@ -7028,7 +7032,7 @@ void GrapaScriptExecState::Running()
 						{
 							StartResult(vScriptExec->vScriptState->GetNameSpace());
 							token = vScriptExec->Exec(vScriptExec->vScriptState->GetNameSpace(), NULL, mRuleId, token, &result);
-							if (result && result->mAbort)
+							if (result && result->mControlFlow)
 							{
 								//delete result;
 								//result = NULL;
