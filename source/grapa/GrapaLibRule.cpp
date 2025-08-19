@@ -8981,15 +8981,19 @@ GrapaRuleEvent* GrapaLibraryRuleReturnEvent::Run(GrapaScriptExec *vScriptExec, G
 {
 	GrapaRuleEvent* result = NULL;
 	GrapaRuleEvent* p1 = pInput->Head(0);
-	if (p1->mValue.mToken == GrapaTokenType::OP)
+	if (p1)
 	{
-		result = vScriptExec->ProcessPlan(pNameSpace, p1);
+		if (p1->mValue.mToken == GrapaTokenType::OP)
+			result = vScriptExec->ProcessPlan(pNameSpace, p1);
+		else
+			result = vScriptExec->CopyItem(p1);
 	}
 	else
 	{
 		result = new GrapaRuleEvent(GrapaTokenType::START, 0, "", "");
 		result->SetNull();
 	}
+
 	result->mControlFlow = GrapaControlFlowType::RETURN;
 	return(result);
 }

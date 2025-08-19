@@ -7057,6 +7057,16 @@ void GrapaScriptExecState::Running()
 								//result = NULL;
 								//break;
 							}
+							if (gSystem->mStop)
+							{
+								mStop = true;
+								if (result && result->IsNull())
+								{
+									result->CLEAR();
+									delete result;
+									result = NULL;
+								}
+							}
 							EndResult(vScriptExec->vScriptState->GetNameSpace(), result);
 							if (mSync)
 								UpdateResult(vScriptExec->vScriptState->GetNameSpace(), result);

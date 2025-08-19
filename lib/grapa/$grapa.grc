@@ -653,6 +653,8 @@
     | break {@<break,{}>}
     | continue {@<continue,{}>}
 	| return '(' <$comp> ')' {@<return,{$3}>}
+	| return <$comp> {@<return,{$2}>}
+	| exit '(' ')'{@<exit,{}>}
 	| exit {@<exit,{}>}
     | reset {@<reset,{}>}
 	| <custom_command>
