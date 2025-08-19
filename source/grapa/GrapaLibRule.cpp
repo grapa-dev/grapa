@@ -40,6 +40,9 @@ limitations under the License.
 
 extern GrapaSystem* gSystem;
 
+// Vector helper macro (from GrapaVector.cpp)
+#define _datavectorpos(bd,bs,bp) ((GrapaVectorItem*)&((u8*)bd)[bs*bp])
+
 // Helper function to check if a string can be parsed as a number (integer or float)
 bool IsStringNumeric(GrapaCHAR& str, GrapaScriptExec* vScriptExec)
 {
@@ -73,6 +76,24 @@ static int DoComparison(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, Gr
 {
 	GrapaLibraryParam r1(vScriptExec, pNameSpace, pInput ? pInput->Head(0) : NULL);
 	GrapaLibraryParam r2(vScriptExec, pNameSpace, pInput ? pInput->Head(1) : NULL);
+	
+	// Handle VECTOR comparisons - different types are never equal
+	if (r1.vVal && r1.vVal->mValue.mToken == GrapaTokenType::VECTOR)
+	{
+		// If r1 is a vector and r2 is not, they're different types
+		if (!r2.vVal || r2.vVal->mValue.mToken != GrapaTokenType::VECTOR)
+		{
+			return -1; // Different types
+		}
+	}
+	if (r2.vVal && r2.vVal->mValue.mToken == GrapaTokenType::VECTOR)
+	{
+		// If r2 is a vector and r1 is not, they're different types
+		if (!r1.vVal || r1.vVal->mValue.mToken != GrapaTokenType::VECTOR)
+		{
+			return -1; // Different types
+		}
+	}
 	
 	// Handle BOOL comparisons
 	if (r1.vVal && r1.vVal->mValue.mToken == GrapaTokenType::BOOL)
@@ -302,6 +323,251 @@ static int DoComparison(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, Gr
 				if (compResult > bb) return 1;
 				return 0;
 			}
+		}
+	}
+	
+	// Handle VECTOR comparisons (both must be vectors)
+	if (r1.vVal && r2.vVal && r1.vVal->mValue.mToken == GrapaTokenType::VECTOR && r2.vVal->mValue.mToken == GrapaTokenType::VECTOR)
+	{
+		// Vectors use vVector field
+		if (r1.vVal->vVector && r2.vVal->vVector)
+		{
+			// Compare dimensions first
+			if (r1.vVal->vVector->mDim != r2.vVal->vVector->mDim) 
+			{
+				return (r1.vVal->vVector->mDim < r2.vVal->vVector->mDim) ? -1 : 1;
+			}
+			
+			// Compare dimension sizes
+			for (int i = 0; i < r1.vVal->vVector->mDim; i++)
+			{
+				if (r1.vVal->vVector->mCounts[i] != r2.vVal->vVector->mCounts[i])
+				{
+					return (r1.vVal->vVector->mCounts[i] < r2.vVal->vVector->mCounts[i]) ? -1 : 1;
+				}
+			}
+			
+			// Compare actual vector data elements
+			u64 totalSize = r1.vVal->vVector->mSize;
+			if (totalSize != r2.vVal->vVector->mSize)
+			{
+				return (totalSize < r2.vVal->vVector->mSize) ? -1 : 1;
+			}
+			
+			// Compare each element in the vector
+			for (u64 i = 0; i < totalSize; i++)
+			{
+				GrapaVectorItem* item1 = _datavectorpos(r1.vVal->vVector->mData, r1.vVal->vVector->mBlock, i);
+				GrapaVectorItem* item2 = _datavectorpos(r2.vVal->vVector->mData, r2.vVal->vVector->mBlock, i);
+				
+				// Compare null states
+				if (item1->isNull != item2->isNull)
+				{
+					return item1->isNull ? -1 : 1;
+				}
+				
+				if (item1->isNull) continue; // Both are null, move to next element
+				
+				// Compare value types
+				if (item1->isValue != item2->isValue)
+				{
+					return item1->isValue ? -1 : 1;
+				}
+				
+				// Compare tokens
+				if (item1->mToken != item2->mToken)
+				{
+					return (item1->mToken < item2->mToken) ? -1 : 1;
+				}
+				
+				// Compare actual values
+				if (item1->isValue)
+				{
+					// Compare GrapaVectorValue pointers
+					GrapaVectorValue* val1 = 0L;
+					GrapaVectorValue* val2 = 0L;
+					memcpy(&val1, item1->d, sizeof(GrapaVectorValue*));
+					memcpy(&val2, item2->d, sizeof(GrapaVectorValue*));
+					
+					if (val1 && val2)
+					{
+						GrapaRuleEvent* event1 = val1->Get();
+						GrapaRuleEvent* event2 = val2->Get();
+						
+						if (event1 && event2)
+						{
+							// Create temporary queue for recursive comparison
+							GrapaRuleQueue tempQueue;
+							tempQueue.PushTail(event1);
+							tempQueue.PushTail(event2);
+							
+							int elementCmp = DoComparison(vScriptExec, pNameSpace, pOperation, &tempQueue);
+							if (elementCmp != 0) return elementCmp;
+						}
+						else if (event1 != event2)
+						{
+							return (event1 == NULL) ? -1 : 1;
+						}
+					}
+					else if (val1 != val2)
+					{
+						return (val1 == NULL) ? -1 : 1;
+					}
+				}
+				else
+				{
+					// Compare raw data
+					if (item1->mLen != item2->mLen)
+					{
+						return (item1->mLen < item2->mLen) ? -1 : 1;
+					}
+					
+					if (item1->mLen > 0)
+					{
+						int memCmp = memcmp(item1->d, item2->d, item1->mLen);
+						if (memCmp != 0) return memCmp;
+					}
+				}
+			}
+			
+			return 0; // All elements match
+		}
+		else if (r1.vVal->vVector == NULL && r2.vVal->vVector == NULL)
+		{
+			return 0; // Both null vectors
+		}
+		else
+		{
+			return (r1.vVal->vVector == NULL) ? -1 : 1; // One is null
+		}
+	}
+	
+	// Handle ARRAY, LIST, VECTOR, and XML comparisons
+	if (r1.vVal && r2.vVal && r1.vVal->vQueue && r2.vVal->vQueue)
+	{
+		// ARRAY comparisons (ordered elements)
+		if (r1.vVal->mValue.mToken == GrapaTokenType::ARRAY && r2.vVal->mValue.mToken == GrapaTokenType::ARRAY)
+		{
+			GrapaRuleQueue* q1 = (GrapaRuleQueue*)r1.vVal->vQueue;
+			GrapaRuleQueue* q2 = (GrapaRuleQueue*)r2.vVal->vQueue;
+			
+			// Compare lengths first
+			if (q1->mCount < q2->mCount) return -1;
+			if (q1->mCount > q2->mCount) return 1;
+			
+			// Compare elements in order
+			GrapaRuleEvent* item1 = q1->Head();
+			GrapaRuleEvent* item2 = q2->Head();
+			while (item1 && item2)
+			{
+				// Handle PTR dereferencing for array elements
+				GrapaRuleEvent* actualItem1 = item1;
+				GrapaRuleEvent* actualItem2 = item2;
+				
+				// Dereference PTR types
+				while (actualItem1 && actualItem1->mValue.mToken == GrapaTokenType::PTR && actualItem1->vRulePointer)
+					actualItem1 = actualItem1->vRulePointer;
+				while (actualItem2 && actualItem2->mValue.mToken == GrapaTokenType::PTR && actualItem2->vRulePointer)
+					actualItem2 = actualItem2->vRulePointer;
+				
+				// Create temporary queue for recursive comparison
+				GrapaRuleQueue tempQueue;
+				tempQueue.PushTail(actualItem1);
+				tempQueue.PushTail(actualItem2);
+				
+				int elementCmp = DoComparison(vScriptExec, pNameSpace, pOperation, &tempQueue);
+				if (elementCmp != 0) return elementCmp;
+				
+				item1 = item1->Next();
+				item2 = item2->Next();
+			}
+			return 0; // All elements match
+		}
+		
+		// LIST comparisons (key-value pairs)
+		else if (r1.vVal->mValue.mToken == GrapaTokenType::LIST && r2.vVal->mValue.mToken == GrapaTokenType::LIST)
+		{
+			GrapaRuleQueue* q1 = (GrapaRuleQueue*)r1.vVal->vQueue;
+			GrapaRuleQueue* q2 = (GrapaRuleQueue*)r2.vVal->vQueue;
+			
+			// Compare lengths first
+			if (q1->mCount < q2->mCount) return -1;
+			if (q1->mCount > q2->mCount) return 1;
+			
+			// Compare key-value pairs
+			GrapaRuleEvent* item1 = q1->Head();
+			GrapaRuleEvent* item2 = q2->Head();
+			while (item1 && item2)
+			{
+				// Compare keys first
+				if (item1->mName.StrCmp(item2->mName) != 0)
+				{
+					return item1->mName.StrCmp(item2->mName);
+				}
+				
+				// Handle PTR dereferencing for list values
+				GrapaRuleEvent* actualItem1 = item1;
+				GrapaRuleEvent* actualItem2 = item2;
+				
+				// Dereference PTR types
+				while (actualItem1 && actualItem1->mValue.mToken == GrapaTokenType::PTR && actualItem1->vRulePointer)
+					actualItem1 = actualItem1->vRulePointer;
+				while (actualItem2 && actualItem2->mValue.mToken == GrapaTokenType::PTR && actualItem2->vRulePointer)
+					actualItem2 = actualItem2->vRulePointer;
+				
+				// Compare values
+				GrapaRuleQueue tempQueue;
+				tempQueue.PushTail(actualItem1);
+				tempQueue.PushTail(actualItem2);
+				
+				int valueCmp = DoComparison(vScriptExec, pNameSpace, pOperation, &tempQueue);
+				if (valueCmp != 0) return valueCmp;
+				
+				item1 = item1->Next();
+				item2 = item2->Next();
+			}
+			return 0; // All key-value pairs match
+		}
+		
+
+		
+		// XML comparisons (recursive structure comparison)
+		else if (r1.vVal->mValue.mToken == GrapaTokenType::XML && r2.vVal->mValue.mToken == GrapaTokenType::XML)
+		{
+			GrapaRuleQueue* q1 = (GrapaRuleQueue*)r1.vVal->vQueue;
+			GrapaRuleQueue* q2 = (GrapaRuleQueue*)r2.vVal->vQueue;
+			
+			// Compare lengths first
+			if (q1->mCount < q2->mCount) return -1;
+			if (q1->mCount > q2->mCount) return 1;
+			
+			// Compare XML elements recursively
+			GrapaRuleEvent* item1 = q1->Head();
+			GrapaRuleEvent* item2 = q2->Head();
+			while (item1 && item2)
+			{
+				// Handle PTR dereferencing for XML elements
+				GrapaRuleEvent* actualItem1 = item1;
+				GrapaRuleEvent* actualItem2 = item2;
+				
+				// Dereference PTR types
+				while (actualItem1 && actualItem1->mValue.mToken == GrapaTokenType::PTR && actualItem1->vRulePointer)
+					actualItem1 = actualItem1->vRulePointer;
+				while (actualItem2 && actualItem2->mValue.mToken == GrapaTokenType::PTR && actualItem2->vRulePointer)
+					actualItem2 = actualItem2->vRulePointer;
+				
+				// Create temporary queue for recursive comparison
+				GrapaRuleQueue tempQueue;
+				tempQueue.PushTail(actualItem1);
+				tempQueue.PushTail(actualItem2);
+				
+				int elementCmp = DoComparison(vScriptExec, pNameSpace, pOperation, &tempQueue);
+				if (elementCmp != 0) return elementCmp;
+				
+				item1 = item1->Next();
+				item2 = item2->Next();
+			}
+			return 0; // All XML elements match
 		}
 	}
 	

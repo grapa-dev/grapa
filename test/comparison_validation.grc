@@ -1,0 +1,115 @@
+/* Comprehensive comparison operator validation test */
+
+/* Test ARRAY comparisons */
+"=== ARRAY COMPARISONS ===".echo();
+
+/* Same arrays should be equal */
+[1,2,3] == [1,2,3].echo();  /* Should be true */
+
+/* Different lengths should not be equal */
+[1,2] == [1,2,3].echo();    /* Should be false */
+[1,2,3] == [1,2].echo();    /* Should be false */
+
+/* Different order should not be equal */
+[1,2,3] == [3,2,1].echo();  /* Should be false */
+[1,2,3] == [1,3,2].echo();  /* Should be false */
+
+/* Different values should not be equal */
+[1,2,3] == [1,2,4].echo();  /* Should be false */
+[1,2,3] == [4,2,3].echo();  /* Should be false */
+
+/* Empty arrays */
+[] == [].echo();             /* Should be true */
+[] == [1].echo();            /* Should be false */
+[1] == [].echo();            /* Should be false */
+
+/* Nested arrays */
+[[1,2],[3,4]] == [[1,2],[3,4]].echo();  /* Should be true */
+[[1,2],[3,4]] == [[1,2],[3,5]].echo();  /* Should be false */
+
+/* Test LIST comparisons */
+"=== LIST COMPARISONS ===".echo();
+
+/* Same lists should be equal */
+{1,2,3} == {1,2,3}.echo();  /* Should be true */
+
+/* Different lengths should not be equal */
+{1,2} == {1,2,3}.echo();    /* Should be false */
+{1,2,3} == {1,2}.echo();    /* Should be false */
+
+/* Different order should not be equal (lists are ordered) */
+{1,2,3} == {3,2,1}.echo();  /* Should be false */
+{1,2,3} == {1,3,2}.echo();  /* Should be false */
+
+/* Named key-value pairs */
+{a:1, b:2} == {a:1, b:2}.echo();        /* Should be true */
+{a:1, b:2} == {b:2, a:1}.echo();        /* Should be false (order matters) */
+{a:1, b:2} == {a:1, b:3}.echo();        /* Should be false */
+{a:1, b:2} == {a:1, c:2}.echo();        /* Should be false */
+
+/* Empty lists */
+{} == {}.echo();             /* Should be true */
+{} == {1}.echo();            /* Should be false */
+{1} == {}.echo();            /* Should be false */
+
+/* Test VECTOR comparisons */
+"=== VECTOR COMPARISONS ===".echo();
+
+/* Same vectors should be equal */
+#[1,2,3]# == #[1,2,3]#.echo();  /* Should be true */
+
+/* Different lengths should not be equal */
+#[1,2]# == #[1,2,3]#.echo();    /* Should be false */
+#[1,2,3]# == #[1,2]#.echo();    /* Should be false */
+
+/* Different order should not be equal */
+#[1,2,3]# == #[3,2,1]#.echo();  /* Should be false */
+#[1,2,3]# == #[1,3,2]#.echo();  /* Should be false */
+
+/* Different values should not be equal */
+#[1,2,3]# == #[1,2,4]#.echo();  /* Should be false */
+#[1,2,3]# == #[4,2,3]#.echo();  /* Should be false */
+
+/* Empty vectors */
+#[]# == #[].echo();           /* Should be true */
+#[]# == #[1].echo();          /* Should be false */
+#[1]# == #[].echo();          /* Should be false */
+
+/* Test mixed type comparisons */
+"=== MIXED TYPE COMPARISONS ===".echo();
+
+/* Arrays vs Lists */
+[1,2,3] == {1,2,3}.echo();   /* Should be false (different types) */
+{1,2,3} == [1,2,3].echo();   /* Should be false (different types) */
+
+/* Arrays vs Vectors */
+[1,2,3] == #[1,2,3]#.echo(); /* Should be false (different types) */
+#[1,2,3]# == [1,2,3].echo(); /* Should be false (different types) */
+
+/* Lists vs Vectors */
+{1,2,3} == #[1,2,3]#.echo(); /* Should be false (different types) */
+#[1,2,3]# == {1,2,3}.echo(); /* Should be false (different types) */
+
+/* Test with PTR types */
+"=== PTR TYPE COMPARISONS ===".echo();
+
+/* Variables that might be PTR types */
+x = [1,2,3];
+y = [1,2,3];
+z = [1,2,4];
+
+x == y.echo();  /* Should be true */
+x == z.echo();  /* Should be false */
+
+/* Test XML comparisons (if supported) */
+"=== XML COMPARISONS ===".echo();
+
+/* Basic XML comparison */
+xml1 = <root><item>1</item><item>2</item></root>;
+xml2 = <root><item>1</item><item>2</item></root>;
+xml3 = <root><item>1</item><item>3</item></root>;
+
+xml1 == xml2.echo();  /* Should be true */
+xml1 == xml3.echo();  /* Should be false */
+
+"=== COMPARISON TESTS COMPLETE ===".echo();

@@ -117,6 +117,70 @@ Bitwise not.
 (~0x6C).hex() -> FFFFFF93
 ```
 
+# Data Structure Comparisons
+
+## Arrays (`[]`)
+Arrays are compared element-by-element in order. Length is compared first, then elements.
+
+```grapa
+[1,2,3] == [1,2,3]    // true
+[1,2] == [1,2,3]      // false (different lengths)
+[1,2,3] == [3,2,1]    // false (different order)
+[1,2,3] == [1,2,4]    // false (different values)
+[] == []               // true (empty arrays)
+[] == [1]              // false
+```
+
+## Lists (`{}`)
+Lists are compared element-by-element in order. For key-value pairs, keys are compared first, then values.
+
+```grapa
+{1,2,3} == {1,2,3}    // true
+{1,2} == {1,2,3}      // false (different lengths)
+{1,2,3} == {3,2,1}    // false (different order)
+{a:1, b:2} == {a:1, b:2}        // true
+{a:1, b:2} == {b:2, a:1}        // false (order matters)
+{a:1, b:2} == {a:1, b:3}        // false (different values)
+{} == {}               // true (empty lists)
+{} == {1}              // false
+```
+
+## Vectors (`#[ ]#`)
+Vectors are compared using their internal structure. Currently supports basic comparison.
+
+```grapa
+#[1,2,3]# == #[1,2,3]#    // true
+#[1,2]# == #[1,2,3]#      // false (different lengths)
+#[1,2,3]# == #[3,2,1]#    // false (different order)
+```
+
+## XML Structures
+XML structures are compared recursively, element-by-element.
+
+```grapa
+xml1 = <root><item>1</item><item>2</item></root>;
+xml2 = <root><item>1</item><item>2</item></root>;
+xml1 == xml2    // true
+```
+
+## Mixed Type Comparisons
+Different data structure types are never equal:
+
+```grapa
+[1,2,3] == {1,2,3}      // false (array vs list)
+[1,2,3] == #[1,2,3]#    // false (array vs vector)
+{1,2,3} == #[1,2,3]#    // false (list vs vector)
+```
+
+## Nested Structures
+Nested data structures are compared recursively:
+
+```grapa
+[[1,2],[3,4]] == [[1,2],[3,4]]    // true
+[[1,2],[3,4]] == [[1,2],[3,5]]    // false
+{a:[1,2], b:{x:1}} == {a:[1,2], b:{x:1}}    // true
+```
+
 # Type Handling
 
 All comparison operators now support mixed type comparisons with intelligent type conversion:
@@ -126,6 +190,7 @@ All comparison operators now support mixed type comparisons with intelligent typ
 - **Float vs String**: Uses adaptive tolerance for numeric strings
 - **Bool comparisons**: Handled with proper truthiness logic
 - **Null comparisons**: Properly handled for equality and ordering
+- **PTR types**: Properly dereferenced for comparison
 
 **Examples**:
 ```grapa
