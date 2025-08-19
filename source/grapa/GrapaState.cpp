@@ -3355,7 +3355,7 @@ GrapaRuleEvent* GrapaLibraryEvent::CreateNull()
 
 GrapaRuleEvent* GrapaLibraryEvent::CreatePtr(GrapaRuleEvent* pPtr)
 {
-	if (pPtr && pPtr->mValue.mToken == GrapaTokenType::PTR && pPtr->vRulePointer) return pPtr;
+	while (pPtr && pPtr->mValue.mToken == GrapaTokenType::PTR && pPtr->vRulePointer) pPtr = pPtr->vRulePointer;
 	GrapaRuleEvent* result = new GrapaRuleEvent();
 	result->mValue.mToken = GrapaTokenType::PTR;
 	result->vRulePointer = pPtr;

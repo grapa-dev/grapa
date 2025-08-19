@@ -6001,7 +6001,6 @@ GrapaRuleEvent* GrapaLibraryRuleArrayCompEvent::HandleListComprehension(GrapaScr
     
     // Create temporary namespace for list comprehension (following EvalEvent/OpEvent pattern)
     // This ensures loop variables don't affect the outer scope
-    GrapaRuleEvent* operation = vScriptExec->vScriptState->AddRuleOperation(pNameSpace->GetNameQueue(), "", "");
     GrapaRuleEvent* vLocals = new GrapaRuleEvent();
     vLocals->mValue.mToken = GrapaTokenType::LIST;
     vLocals->vQueue = new GrapaRuleQueue();
@@ -6231,13 +6230,6 @@ GrapaRuleEvent* GrapaLibraryRuleArrayCompEvent::HandleListComprehension(GrapaScr
     {
         vLocals->CLEAR();
         delete vLocals;
-    }
-    
-    if (pNameSpace->GetNameQueue()->PopEvent(operation))
-    {
-        operation->CLEAR();
-        delete operation;
-        operation = NULL;
     }
     
     return result;
@@ -17957,25 +17949,24 @@ GrapaRuleEvent* GrapaLibraryRuleInterpolateEvent::Run(GrapaScriptExec* vScriptEx
 	GrapaRuleEvent* vLocals = new GrapaRuleEvent();
 	vLocals->mValue.mToken = GrapaTokenType::LIST;
 	vLocals->vQueue = new GrapaRuleQueue();
+	pNameSpace->GetNameQueue()->PushTail(vLocals);
 
 	// Load parameters into local namespace using PTR approach
 	if (r2.vVal && r2.vVal->mValue.mToken == GrapaTokenType::LIST && r2.vVal->vQueue)
 	{
-		GrapaRuleEvent* e = vScriptExec->CopyItem(r2.vVal, false, false);
-		if (e && e->mValue.mToken == GrapaTokenType::LIST && e->vQueue)
+		GrapaRuleEvent* ex = r2.vVal; 
+		while (ex && ex->mValue.mToken == GrapaTokenType::PTR && ex->vRulePointer) ex = ex->vRulePointer;
+		if (ex && ex->mValue.mToken == GrapaTokenType::LIST && ex->vQueue)
 		{
-			while (e->vQueue->Head())
-				vLocals->vQueue->PushTail(e->vQueue->PopHead());
-		}
-		if (e)
-		{
-			e->CLEAR();
-			delete e;
+			ex = ex->vQueue->Head();
+			while (ex)
+			{
+				//vLocals->vQueue->PushTail(CreatePtr(ex));
+				vLocals->vQueue->PushTail(vScriptExec->CopyItem(ex));
+				ex = ex->Next();
+			}
 		}
 	}
-
-	// Push local namespace onto the queue
-	pNameSpace->GetNameQueue()->PushTail(vLocals);
 
 	// Phase 2: Template Processing
 	size_t pos = 0;
@@ -18006,8 +17997,13 @@ GrapaRuleEvent* GrapaLibraryRuleInterpolateEvent::Run(GrapaScriptExec* vScriptEx
 				// First try to find the variable directly
 				GrapaCHAR varName;
 				varName.FROM(code.c_str());
-				GrapaRuleEvent* varResult = vScriptExec->vScriptState->SearchVariable(pNameSpace, varName);
-				
+				//GrapaRuleEvent* varResult = vScriptExec->vScriptState->SearchVariable(pNameSpace, varName);
+
+				GrapaRuleEvent* rulexx = vScriptExec->vScriptState->SearchVariable(pNameSpace, GrapaCHAR("$comp"));
+				GrapaRuleEvent* plan = vScriptExec->Plan(pNameSpace, varName, rulexx, 0, GrapaCHAR());
+				GrapaRuleEvent* codePtr = vScriptExec->ProcessPlan(pNameSpace, plan);
+
+				/*
 				GrapaRuleEvent* codeResult = NULL;
 				if (varResult)
 				{
@@ -18021,7 +18017,9 @@ GrapaRuleEvent* GrapaLibraryRuleInterpolateEvent::Run(GrapaScriptExec* vScriptEx
 					codeStr.FROM(code.c_str());
 					codeResult = vScriptExec->Exec(pNameSpace, NULL, 0, GrapaCHAR(), codeStr);
 				}
-				
+				*/
+				GrapaRuleEvent*  codeResult = codePtr;
+				while (codeResult && codeResult->mValue.mToken == GrapaTokenType::PTR && codeResult->vRulePointer) codeResult = codeResult->vRulePointer;
 				if (codeResult && codeResult->mValue.mToken == GrapaTokenType::STR)
 				{
 					std::string codeResultStr = std::string(reinterpret_cast<const char*>(codeResult->mValue.mBytes), codeResult->mValue.mLength);
@@ -18033,7 +18031,11 @@ GrapaRuleEvent* GrapaLibraryRuleInterpolateEvent::Run(GrapaScriptExec* vScriptEx
 					GrapaCHAR strResult = codeResult->mValue.ToStr();
 					resultStr += std::string(reinterpret_cast<const char*>(strResult.mBytes), strResult.mLength);
 				}
-				
+				if (codePtr)
+				{
+					codePtr->CLEAR();
+					delete codePtr;
+				}
 				pos = endPos + 1;
 				continue;
 			}
@@ -19763,7 +19765,6 @@ GrapaRuleEvent* GrapaLibraryRuleForEvent::HandleForIn(GrapaScriptExec *vScriptEx
     GrapaCHAR varName = varParam.vVal->mValue;
     
     // Create temporary namespace for for loop (following ArrayCompEvent pattern)
-    GrapaRuleEvent* operation = vScriptExec->vScriptState->AddRuleOperation(pNameSpace->GetNameQueue(), "", "");
     GrapaRuleEvent* vLocals = new GrapaRuleEvent();
     vLocals->mValue.mToken = GrapaTokenType::LIST;
     vLocals->vQueue = new GrapaRuleQueue();
@@ -19778,6 +19779,12 @@ GrapaRuleEvent* GrapaLibraryRuleForEvent::HandleForIn(GrapaScriptExec *vScriptEx
     
     if (!collectionResult)
     {
+		pNameSpace->GetNameQueue()->PopEvent(vLocals);
+		if (vLocals)
+		{
+			vLocals->CLEAR();
+			delete vLocals;
+		}
         return Error(vScriptExec, pNameSpace, -1);
     }
     
@@ -19789,6 +19796,12 @@ GrapaRuleEvent* GrapaLibraryRuleForEvent::HandleForIn(GrapaScriptExec *vScriptEx
     {
         collectionResult->CLEAR();
         delete collectionResult;
+		pNameSpace->GetNameQueue()->PopEvent(vLocals);
+		if (vLocals)
+		{
+			vLocals->CLEAR();
+			delete vLocals;
+		}
         return Error(vScriptExec, pNameSpace, -1);
     }
     
@@ -19900,9 +19913,12 @@ GrapaRuleEvent* GrapaLibraryRuleForEvent::HandleForIn(GrapaScriptExec *vScriptEx
     }
     else
     {
-        collectionResult->CLEAR();
-        delete collectionResult;
-        return Error(vScriptExec, pNameSpace, -1);
+		if (result)
+		{
+			result->CLEAR();
+			delete result;
+		}
+        result = Error(vScriptExec, pNameSpace, -1);
     }
     
     collectionResult->CLEAR();
@@ -19914,13 +19930,6 @@ GrapaRuleEvent* GrapaLibraryRuleForEvent::HandleForIn(GrapaScriptExec *vScriptEx
     {
         vLocals->CLEAR();
         delete vLocals;
-    }
-    
-    if (pNameSpace->GetNameQueue()->PopEvent(operation))
-    {
-        operation->CLEAR();
-        delete operation;
-        operation = NULL;
     }
     
     return result;
@@ -19961,7 +19970,6 @@ GrapaRuleEvent* GrapaLibraryRuleForEvent::HandleForFrom(GrapaScriptExec *vScript
     GrapaCHAR varName = varParam.vVal->mValue;
     
     // Create temporary namespace for for loop (following ArrayCompEvent pattern)
-    GrapaRuleEvent* operation = vScriptExec->vScriptState->AddRuleOperation(pNameSpace->GetNameQueue(), "", "");
     GrapaRuleEvent* vLocals = new GrapaRuleEvent();
     vLocals->mValue.mToken = GrapaTokenType::LIST;
     vLocals->vQueue = new GrapaRuleQueue();
@@ -19988,6 +19996,12 @@ GrapaRuleEvent* GrapaLibraryRuleForEvent::HandleForFrom(GrapaScriptExec *vScript
         {
             if (startResult) { startResult->CLEAR(); delete startResult; }
             if (endResult) { endResult->CLEAR(); delete endResult; }
+			pNameSpace->GetNameQueue()->PopEvent(vLocals);
+			if (vLocals)
+			{
+				vLocals->CLEAR();
+				delete vLocals;
+			}
             return Error(vScriptExec, pNameSpace, -1);
         }
         
@@ -19998,7 +20012,13 @@ GrapaRuleEvent* GrapaLibraryRuleForEvent::HandleForFrom(GrapaScriptExec *vScript
         {
             startResult->CLEAR(); delete startResult;
             endResult->CLEAR(); delete endResult;
-            return Error(vScriptExec, pNameSpace, -1);
+			pNameSpace->GetNameQueue()->PopEvent(vLocals);
+			if (vLocals)
+			{
+				vLocals->CLEAR();
+				delete vLocals;
+			}
+			return Error(vScriptExec, pNameSpace, -1);
         }
         
         startInt.FromBytes(startVal->mValue);
@@ -20070,13 +20090,6 @@ GrapaRuleEvent* GrapaLibraryRuleForEvent::HandleForFrom(GrapaScriptExec *vScript
     {
         vLocals->CLEAR();
         delete vLocals;
-    }
-    
-    if (pNameSpace->GetNameQueue()->PopEvent(operation))
-    {
-        operation->CLEAR();
-        delete operation;
-        operation = NULL;
     }
     
     return result;
@@ -20173,7 +20186,6 @@ GrapaRuleEvent* GrapaLibraryRuleForEvent::HandleForFromStep(GrapaScriptExec *vSc
     GrapaCHAR varName = varParam.vVal->mValue;
     
     // Create temporary namespace for for loop (following ArrayCompEvent pattern)
-    GrapaRuleEvent* operation = vScriptExec->vScriptState->AddRuleOperation(pNameSpace->GetNameQueue(), "", "");
     GrapaRuleEvent* vLocals = new GrapaRuleEvent();
     vLocals->mValue.mToken = GrapaTokenType::LIST;
     vLocals->vQueue = new GrapaRuleQueue();
@@ -20198,7 +20210,13 @@ GrapaRuleEvent* GrapaLibraryRuleForEvent::HandleForFromStep(GrapaScriptExec *vSc
         if (startResult) { startResult->CLEAR(); delete startResult; }
         if (endResult) { endResult->CLEAR(); delete endResult; }
         if (stepResult) { stepResult->CLEAR(); delete stepResult; }
-        return Error(vScriptExec, pNameSpace, -1);
+		pNameSpace->GetNameQueue()->PopEvent(vLocals);
+		if (vLocals)
+		{
+			vLocals->CLEAR();
+			delete vLocals;
+		}
+		return Error(vScriptExec, pNameSpace, -1);
     }
     
     // Extract integer values
@@ -20210,7 +20228,13 @@ GrapaRuleEvent* GrapaLibraryRuleForEvent::HandleForFromStep(GrapaScriptExec *vSc
         startResult->CLEAR(); delete startResult;
         endResult->CLEAR(); delete endResult;
         stepResult->CLEAR(); delete stepResult;
-        return Error(vScriptExec, pNameSpace, -1);
+		pNameSpace->GetNameQueue()->PopEvent(vLocals);
+		if (vLocals)
+		{
+			vLocals->CLEAR();
+			delete vLocals;
+		}
+		return Error(vScriptExec, pNameSpace, -1);
     }
     
     startInt.FromBytes(startVal->mValue);
@@ -20222,7 +20246,13 @@ GrapaRuleEvent* GrapaLibraryRuleForEvent::HandleForFromStep(GrapaScriptExec *vSc
         startResult->CLEAR(); delete startResult;
         endResult->CLEAR(); delete endResult;
         stepResult->CLEAR(); delete stepResult;
-        return Error(vScriptExec, pNameSpace, -1);
+		pNameSpace->GetNameQueue()->PopEvent(vLocals);
+		if (vLocals)
+		{
+			vLocals->CLEAR();
+			delete vLocals;
+		}
+		return Error(vScriptExec, pNameSpace, -1);
     }
     
     // Initialize current to start value
@@ -20243,13 +20273,6 @@ GrapaRuleEvent* GrapaLibraryRuleForEvent::HandleForFromStep(GrapaScriptExec *vSc
         {
             vLocals->CLEAR();
             delete vLocals;
-        }
-        
-        if (pNameSpace->GetNameQueue()->PopEvent(operation))
-        {
-            operation->CLEAR();
-            delete operation;
-            operation = NULL;
         }
         
         return Error(vScriptExec, pNameSpace, -1);
@@ -20280,13 +20303,6 @@ GrapaRuleEvent* GrapaLibraryRuleForEvent::HandleForFromStep(GrapaScriptExec *vSc
         {
             vLocals->CLEAR();
             delete vLocals;
-        }
-        
-        if (pNameSpace->GetNameQueue()->PopEvent(operation))
-        {
-            operation->CLEAR();
-            delete operation;
-            operation = NULL;
         }
         
         return Error(vScriptExec, pNameSpace, -1);
@@ -20336,13 +20352,6 @@ GrapaRuleEvent* GrapaLibraryRuleForEvent::HandleForFromStep(GrapaScriptExec *vSc
     {
         vLocals->CLEAR();
         delete vLocals;
-    }
-    
-    if (pNameSpace->GetNameQueue()->PopEvent(operation))
-    {
-        operation->CLEAR();
-        delete operation;
-        operation = NULL;
     }
     
     return result;
