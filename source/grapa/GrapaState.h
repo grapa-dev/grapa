@@ -73,6 +73,8 @@ public:
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput) { return(pOperation); }
 	virtual GrapaRuleEvent* Optimize(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleEvent* pParam) { return(pOperation); }
 	virtual GrapaRuleEvent* Error(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaError err);
+	virtual GrapaRuleEvent* CreateNull();
+	virtual GrapaRuleEvent* CreatePtr(GrapaRuleEvent* pPtr);
 	virtual void RotateLeft(GrapaRuleEvent* pOperation, GrapaRuleEvent* pParam, const char* v1, const char* v2, const char* v3, const char* v4);
 };
 

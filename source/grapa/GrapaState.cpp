@@ -3346,6 +3346,22 @@ GrapaRuleEvent* GrapaLibraryEvent::Error(GrapaScriptExec* vScriptExec, GrapaName
 	return result;
 }
 
+GrapaRuleEvent* GrapaLibraryEvent::CreateNull()
+{
+	GrapaRuleEvent* result = new GrapaRuleEvent();
+	result->SetNull();
+	return result;
+}
+
+GrapaRuleEvent* GrapaLibraryEvent::CreatePtr(GrapaRuleEvent* pPtr)
+{
+	if (pPtr && pPtr->mValue.mToken == GrapaTokenType::PTR && pPtr->vRulePointer) return pPtr;
+	GrapaRuleEvent* result = new GrapaRuleEvent();
+	result->mValue.mToken == GrapaTokenType::PTR;
+	result->vRulePointer = pPtr;
+	return result;
+}
+
 void GrapaLibraryEvent::RotateLeft(GrapaRuleEvent* pOperation, GrapaRuleEvent* pParam, const char*v1, const char*v2, const char* v3, const char* v4)
 {
 	if (pParam && pParam->vQueue && pParam->vQueue->mCount == 2)
@@ -7067,7 +7083,7 @@ void GrapaScriptExecState::Running()
 								if (mSync)
 									UpdateResult(vScriptExec->vScriptState->GetNameSpace(), result);
 							}
-							else if(result)
+							else if (result)
 							{
 								result->CLEAR();
 								delete result;
