@@ -8999,8 +8999,7 @@ GrapaRuleEvent* GrapaLibraryRuleReturnEvent::Run(GrapaScriptExec *vScriptExec, G
 	}
 	else
 	{
-		result = new GrapaRuleEvent(GrapaTokenType::START, 0, "", "");
-		result->SetNull();
+		result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaCHAR());
 	}
 	result->mControlFlow = GrapaControlFlowType::RETURN;
 	return(result);
@@ -9008,16 +9007,14 @@ GrapaRuleEvent* GrapaLibraryRuleReturnEvent::Run(GrapaScriptExec *vScriptExec, G
 
 GrapaRuleEvent* GrapaLibraryRuleBreakEvent::Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput)
 {
-	GrapaRuleEvent* result = new GrapaRuleEvent(GrapaTokenType::START, 0, "", "");
-	result->SetNull();
+	GrapaRuleEvent* result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaCHAR());
 	result->mControlFlow = GrapaControlFlowType::BREAK;
 	return(result);
 }
 
 GrapaRuleEvent* GrapaLibraryRuleContinueEvent::Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput)
 {
-    GrapaRuleEvent* result = new GrapaRuleEvent(GrapaTokenType::START, 0, "", "");
-	result->SetNull();
+	GrapaRuleEvent* result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaCHAR());
 	result->mControlFlow = GrapaControlFlowType::CONTINUE;
 	return(result);
 }
@@ -9035,8 +9032,7 @@ GrapaRuleEvent* GrapaLibraryRuleThrowEvent::Run(GrapaScriptExec* vScriptExec, Gr
 	}
 	else
 	{
-		result = new GrapaRuleEvent(GrapaTokenType::START, 0, "", "");
-		result->SetNull();
+		result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaCHAR());
 	}
 	result->mControlFlow = GrapaControlFlowType::THROW;
 	return(result);
