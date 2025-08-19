@@ -869,6 +869,14 @@ public:
 };
 GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleCase(GrapaCHAR& pName) { return new GrapaLibraryRuleCaseEvent(pName); }
 
+class GrapaLibraryRuleThrowEvent : public GrapaLibraryEvent
+{
+public:
+	GrapaLibraryRuleThrowEvent(GrapaCHAR& pName) { mName.FROM(pName); };
+	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
+};
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleThrow(GrapaCHAR& pName) { return new GrapaLibraryRuleThrowEvent(pName); }
+
 class GrapaLibraryRuleForEvent : public GrapaLibraryEvent
 {
 public:
@@ -2775,8 +2783,10 @@ GrapaLibraryEvent* GrapaLibraryRuleEvent::LoadLib(GrapaScriptExec *vScriptExec, 
 		{ "while", &GrapaLibraryRuleEvent::HandleWhile },
 		{ "scope", &GrapaLibraryRuleEvent::HandleScope },
 		{ "switch", &GrapaLibraryRuleEvent::HandleSwitch },
-        { "case", &GrapaLibraryRuleEvent::HandleCase },
-        { "for", &GrapaLibraryRuleEvent::HandleFor },
+		{ "try", &GrapaLibraryRuleEvent::HandleSwitch },
+		{ "case", &GrapaLibraryRuleEvent::HandleCase },
+		{ "throw", &GrapaLibraryRuleEvent::HandleThrow },
+		{ "for", &GrapaLibraryRuleEvent::HandleFor },
 		{ "plan", &GrapaLibraryRuleEvent::HandlePlan },
 		{ "wrap", &GrapaLibraryRuleEvent::HandleWrap },
 		{ "op", &GrapaLibraryRuleEvent::HandleOp },
@@ -8992,7 +9002,6 @@ GrapaRuleEvent* GrapaLibraryRuleReturnEvent::Run(GrapaScriptExec *vScriptExec, G
 		result = new GrapaRuleEvent(GrapaTokenType::START, 0, "", "");
 		result->SetNull();
 	}
-
 	result->mControlFlow = GrapaControlFlowType::RETURN;
 	return(result);
 }
@@ -9010,6 +9019,26 @@ GrapaRuleEvent* GrapaLibraryRuleContinueEvent::Run(GrapaScriptExec *vScriptExec,
     GrapaRuleEvent* result = new GrapaRuleEvent(GrapaTokenType::START, 0, "", "");
 	result->SetNull();
 	result->mControlFlow = GrapaControlFlowType::CONTINUE;
+	return(result);
+}
+
+GrapaRuleEvent* GrapaLibraryRuleThrowEvent::Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput)
+{
+	GrapaRuleEvent* result = NULL;
+	GrapaRuleEvent* p1 = pInput->Head(0);
+	if (p1)
+	{
+		if (p1->mValue.mToken == GrapaTokenType::OP)
+			result = vScriptExec->ProcessPlan(pNameSpace, p1);
+		else
+			result = vScriptExec->CopyItem(p1);
+	}
+	else
+	{
+		result = new GrapaRuleEvent(GrapaTokenType::START, 0, "", "");
+		result->SetNull();
+	}
+	result->mControlFlow = GrapaControlFlowType::THROW;
 	return(result);
 }
 
@@ -9088,7 +9117,7 @@ GrapaRuleEvent* GrapaLibraryRuleWhileEvent::Run(GrapaScriptExec *vScriptExec, Gr
 							isContinue = false;
 						if (isControlFlowChange == GrapaControlFlowType::CONTINUE) 
 							;
-						if (isControlFlowChange == GrapaControlFlowType::RETURN || isControlFlowChange == GrapaControlFlowType::SYNTAX || isControlFlowChange == GrapaControlFlowType::EXIT)
+						if (isControlFlowChange == GrapaControlFlowType::RETURN || isControlFlowChange == GrapaControlFlowType::THROW || isControlFlowChange == GrapaControlFlowType::SYNTAX || isControlFlowChange == GrapaControlFlowType::EXIT)
 						{
 							isContinue = false;
 							result = r2;
@@ -9151,6 +9180,36 @@ GrapaRuleEvent* GrapaLibraryRuleSwitchEvent::Run(GrapaScriptExec *vScriptExec, G
 {
 	GrapaRuleEvent* result = NULL;
 	GrapaRuleEvent* rx1 = vScriptExec->ProcessPlan(pNameSpace, pInput->Head(0));
+	GrapaRuleEvent* rx3 = pInput->Head(2);
+	GrapaRuleEvent* r3 = rx3; while (r3 && r3->vRulePointer) r3 = r3->vRulePointer;
+	GrapaRuleEvent* finallyItem = r3;
+	if (mName.Cmp("try") == 0 && rx1 && rx1->mControlFlow != GrapaControlFlowType::THROW)
+	{
+		if (finallyItem)
+		{
+			GrapaRuleEvent* oldResult = result;
+			result = vScriptExec->ProcessPlan(pNameSpace, finallyItem);
+			if (result && !result->IsNull() && oldResult)
+			{
+				u8 isControlFlowChange = oldResult->mControlFlow;
+				oldResult->CLEAR();
+				delete oldResult;
+				if (!result->mControlFlow)
+					result->mControlFlow = isControlFlowChange;
+			}
+			else
+			{
+				if (result)
+				{
+					result->CLEAR();
+					delete result;
+				}
+				result = oldResult;
+			}
+		}
+		if (rx1) { rx1->CLEAR(); delete rx1; }
+		return(result);
+	}
 	GrapaRuleEvent* rx2 = vScriptExec->ProcessPlan(pNameSpace, pInput->Head(1));
 	GrapaRuleEvent* r1 = rx1; while (r1 && r1->vRulePointer) r1 = r1->vRulePointer;
 	GrapaRuleEvent* r2 = rx2; while (r2 && r2->vRulePointer) r2 = r2->vRulePointer;
@@ -9161,32 +9220,53 @@ GrapaRuleEvent* GrapaLibraryRuleSwitchEvent::Run(GrapaScriptExec *vScriptExec, G
 	if (caseItem)
 		caseItem = caseItem->Next();
 	bool isEqual = false;
+
+	GrapaRuleEvent* vLocals = new GrapaRuleEvent();
+	vLocals->mValue.mToken = GrapaTokenType::LIST;
+	vLocals->vQueue = new GrapaRuleQueue();
+	pNameSpace->GetNameQueue()->PushTail(vLocals);
+	vLocals->vQueue->PushTail(CreatePtr(r1));
+
 	while (caseItem && caseItem->vQueue)
 	{
-		GrapaRuleEvent* caseCompare = vScriptExec->ProcessPlan(pNameSpace, (GrapaRuleEvent*)caseItem->vQueue->Head(0));
-		if ((r1 == NULL || r1->IsNull()) && (caseCompare == NULL || caseCompare->IsNull())) isEqual = true;
-		else if ((r1 == NULL || r1->IsNull()) || (caseCompare == NULL || caseCompare->IsNull())) isEqual = false;
-		else if (r1->mId && r1->mId == caseCompare->mId) isEqual = true;
-		else if (r1->mValue.StrCmp(caseCompare->mValue) == 0) isEqual = true;
-		else if (!isEqual && r1 && caseCompare && r1->mValue.mBytes && caseCompare->mValue.mBytes)
+		GrapaRuleEvent* caseCompareX = vScriptExec->ProcessPlan(pNameSpace, (GrapaRuleEvent*)caseItem->vQueue->Head(0));
+		GrapaRuleEvent* caseCmpVal = caseCompareX; while (caseCmpVal && caseCmpVal->vRulePointer) caseCmpVal = caseCmpVal->vRulePointer;
+		if (caseCmpVal && caseCmpVal->mValue.mToken != GrapaTokenType::ERR)
 		{
-			GrapaInt a, b;
-			if (r1->mValue.mToken == GrapaTokenType::INT && r1->mValue.mToken == caseCompare->mValue.mToken)
+			if (caseCmpVal->mValue.mToken == GrapaTokenType::BOOL && !caseCmpVal->IsZero())
+				isEqual = true;
+			else
 			{
-				a.FromBytes(r1->mValue);
-				b.FromBytes(caseCompare->mValue);
-				if (a == b)
-					isEqual = true;
+				if ((r1 == NULL || r1->IsNull()) && (caseCmpVal == NULL || caseCmpVal->IsNull())) isEqual = true;
+				else if ((r1 == NULL || r1->IsNull()) || (caseCmpVal == NULL || caseCmpVal->IsNull())) isEqual = false;
+				else if (r1->mId && r1->mId == caseCmpVal->mId) isEqual = true;
+				else if (r1->mValue.StrCmp(caseCmpVal->mValue) == 0) isEqual = true;
+				else if (!isEqual && r1 && caseCmpVal && r1->mValue.mBytes && caseCmpVal->mValue.mBytes)
+				{
+					GrapaInt a, b;
+					if (r1->mValue.mToken == GrapaTokenType::INT && r1->mValue.mToken == caseCmpVal->mValue.mToken)
+					{
+						a.FromBytes(r1->mValue);
+						b.FromBytes(caseCmpVal->mValue);
+						if (a == b)
+							isEqual = true;
+					}
+				}
 			}
 		}
-		if (caseCompare)
+		if (caseCompareX)
 		{
-			caseCompare->CLEAR();
-			delete caseCompare;
-			caseCompare = NULL;
+			caseCompareX->CLEAR();
+			delete caseCompareX;
+			caseCompareX = NULL;
 		}
 		if (isEqual)
 		{
+			if (result)
+			{
+				result->CLEAR();
+				delete result;
+			}
 			result = vScriptExec->ProcessPlan(pNameSpace, (GrapaRuleEvent*)caseItem->vQueue->Head(1));
 			break;
 		}
@@ -9194,8 +9274,42 @@ GrapaRuleEvent* GrapaLibraryRuleSwitchEvent::Run(GrapaScriptExec *vScriptExec, G
 	}
 	if (!isEqual && defaultItem && defaultItem->vQueue && defaultItem->vQueue->Head(1))
 	{
+		if (result)
+		{
+			result->CLEAR();
+			delete result;
+		}
 		result = vScriptExec->ProcessPlan(pNameSpace, (GrapaRuleEvent*)defaultItem->vQueue->Head(1));
 	}
+	if (finallyItem)
+	{
+		GrapaRuleEvent* oldResult = result;
+		result = vScriptExec->ProcessPlan(pNameSpace, finallyItem);
+		if (result && !result->IsNull() && oldResult)
+		{
+			u8 isControlFlowChange = oldResult->mControlFlow;
+			oldResult->CLEAR();
+			delete oldResult;
+			if (!result->mControlFlow)
+				result->mControlFlow = isControlFlowChange;
+		}
+		else
+		{
+			if (result)
+			{
+				result->CLEAR();
+				delete result;
+			}
+			result = oldResult;
+		}
+	}
+	pNameSpace->GetNameQueue()->PopEvent(vLocals);
+	if (vLocals)
+	{
+		vLocals->CLEAR();
+		delete vLocals;
+	}
+
 	if (rx1) { rx1->CLEAR(); delete rx1; }
 	if (rx2) { rx2->CLEAR(); delete rx2; }
 	return(result);
@@ -19304,7 +19418,7 @@ GrapaRuleEvent* GrapaLibraryRuleForEvent::HandleDoWhile(GrapaScriptExec *vScript
 			return NULL;
 		if (isControlFlowChange == GrapaControlFlowType::CONTINUE)
 			;
-		if (isControlFlowChange == GrapaControlFlowType::RETURN || isControlFlowChange == GrapaControlFlowType::SYNTAX || isControlFlowChange == GrapaControlFlowType::EXIT)
+		if (isControlFlowChange == GrapaControlFlowType::RETURN || isControlFlowChange == GrapaControlFlowType::THROW || isControlFlowChange == GrapaControlFlowType::SYNTAX || isControlFlowChange == GrapaControlFlowType::EXIT)
 		{
 			result = bodyResult;
 			return(result);
@@ -19346,7 +19460,7 @@ GrapaRuleEvent* GrapaLibraryRuleForEvent::HandleDoWhile(GrapaScriptExec *vScript
 				break;
 			if (isControlFlowChange == GrapaControlFlowType::CONTINUE)
 				;
-			if (isControlFlowChange == GrapaControlFlowType::RETURN || isControlFlowChange == GrapaControlFlowType::SYNTAX || isControlFlowChange == GrapaControlFlowType::EXIT)
+			if (isControlFlowChange == GrapaControlFlowType::RETURN || isControlFlowChange == GrapaControlFlowType::THROW || isControlFlowChange == GrapaControlFlowType::SYNTAX || isControlFlowChange == GrapaControlFlowType::EXIT)
 			{
 				result = bodyResult;
 				break;
@@ -19384,7 +19498,7 @@ GrapaRuleEvent* GrapaLibraryRuleForEvent::HandleForIn(GrapaScriptExec *vScriptEx
     // Create the loop variable once (following ArrayCompEvent pattern)
     GrapaRuleEvent* actualVar = new GrapaRuleEvent(0, varName, GrapaCHAR());
     vLocals->vQueue->PushTail(actualVar);
-    
+
     // Evaluate the collection/range (it might be an expression)
     GrapaRuleEvent* collectionResult = vScriptExec->ProcessPlan(pNameSpace, collectionEvent);
     
@@ -19425,7 +19539,7 @@ GrapaRuleEvent* GrapaLibraryRuleForEvent::HandleForIn(GrapaScriptExec *vScriptEx
 					break;
 				if (isControlFlowChange == GrapaControlFlowType::CONTINUE)
 					;
-				if (isControlFlowChange == GrapaControlFlowType::RETURN || isControlFlowChange == GrapaControlFlowType::SYNTAX || isControlFlowChange == GrapaControlFlowType::EXIT)
+				if (isControlFlowChange == GrapaControlFlowType::RETURN || isControlFlowChange == GrapaControlFlowType::THROW || isControlFlowChange == GrapaControlFlowType::SYNTAX || isControlFlowChange == GrapaControlFlowType::EXIT)
 				{
 					result = bodyResult;
 					break;
@@ -19461,7 +19575,7 @@ GrapaRuleEvent* GrapaLibraryRuleForEvent::HandleForIn(GrapaScriptExec *vScriptEx
 						break;
 					if (isControlFlowChange == GrapaControlFlowType::CONTINUE)
 						;
-					if (isControlFlowChange == GrapaControlFlowType::RETURN || isControlFlowChange == GrapaControlFlowType::SYNTAX || isControlFlowChange == GrapaControlFlowType::EXIT)
+					if (isControlFlowChange == GrapaControlFlowType::RETURN || isControlFlowChange == GrapaControlFlowType::THROW || isControlFlowChange == GrapaControlFlowType::SYNTAX || isControlFlowChange == GrapaControlFlowType::EXIT)
 					{
 						result = bodyResult;
 						break;
@@ -19498,7 +19612,7 @@ GrapaRuleEvent* GrapaLibraryRuleForEvent::HandleForIn(GrapaScriptExec *vScriptEx
 					break;
 				if (isControlFlowChange == GrapaControlFlowType::CONTINUE)
 					;
-				if (isControlFlowChange == GrapaControlFlowType::RETURN || isControlFlowChange == GrapaControlFlowType::SYNTAX || isControlFlowChange == GrapaControlFlowType::EXIT)
+				if (isControlFlowChange == GrapaControlFlowType::RETURN || isControlFlowChange == GrapaControlFlowType::THROW || isControlFlowChange == GrapaControlFlowType::SYNTAX || isControlFlowChange == GrapaControlFlowType::EXIT)
 				{
 					result = bodyResult;
 					break;
@@ -19636,7 +19750,7 @@ GrapaRuleEvent* GrapaLibraryRuleForEvent::HandleForFrom(GrapaScriptExec *vScript
 			}
 			if (isControlFlowChange == GrapaControlFlowType::CONTINUE)
 				;
-			if (isControlFlowChange == GrapaControlFlowType::RETURN || isControlFlowChange == GrapaControlFlowType::SYNTAX || isControlFlowChange == GrapaControlFlowType::EXIT)
+			if (isControlFlowChange == GrapaControlFlowType::RETURN || isControlFlowChange == GrapaControlFlowType::THROW || isControlFlowChange == GrapaControlFlowType::SYNTAX || isControlFlowChange == GrapaControlFlowType::EXIT)
 			{
 				startResult->CLEAR(); delete startResult;
 				endResult->CLEAR(); delete endResult;
@@ -19747,7 +19861,7 @@ GrapaRuleEvent* GrapaLibraryRuleForEvent::HandleComplexFor(GrapaScriptExec *vScr
 				break;
 			if (isControlFlowChange == GrapaControlFlowType::CONTINUE)
 				;
-			if (isControlFlowChange == GrapaControlFlowType::RETURN || isControlFlowChange == GrapaControlFlowType::SYNTAX || isControlFlowChange == GrapaControlFlowType::EXIT)
+			if (isControlFlowChange == GrapaControlFlowType::RETURN || isControlFlowChange == GrapaControlFlowType::THROW || isControlFlowChange == GrapaControlFlowType::SYNTAX || isControlFlowChange == GrapaControlFlowType::EXIT)
 			{
 				result = bodyResult;
 				break;
@@ -19923,7 +20037,7 @@ GrapaRuleEvent* GrapaLibraryRuleForEvent::HandleForFromStep(GrapaScriptExec *vSc
 				break;
 			if (isControlFlowChange == GrapaControlFlowType::CONTINUE)
 				;
-			if (isControlFlowChange == GrapaControlFlowType::RETURN || isControlFlowChange == GrapaControlFlowType::SYNTAX || isControlFlowChange == GrapaControlFlowType::EXIT)
+			if (isControlFlowChange == GrapaControlFlowType::RETURN || isControlFlowChange == GrapaControlFlowType::THROW || isControlFlowChange == GrapaControlFlowType::SYNTAX || isControlFlowChange == GrapaControlFlowType::EXIT)
 			{
 				result = bodyResult;
 				break;

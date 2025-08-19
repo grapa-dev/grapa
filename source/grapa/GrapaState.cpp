@@ -3359,6 +3359,7 @@ GrapaRuleEvent* GrapaLibraryEvent::CreatePtr(GrapaRuleEvent* pPtr)
 	GrapaRuleEvent* result = new GrapaRuleEvent();
 	result->mValue.mToken = GrapaTokenType::PTR;
 	result->vRulePointer = pPtr;
+	if (pPtr) result->mName.FROM(pPtr->mName);
 	return result;
 }
 
