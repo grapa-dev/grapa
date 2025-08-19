@@ -231,8 +231,8 @@
 	|
 	;
 @global["$case"]
-	= rule <$comp> ':' <$command> ';' {@<case,{$1,$3}>}
-	| <$comp> ':' <$command> {@<case,{$1,$3}>}
+	= rule <$function> ':' <$command> ';' {@<case,{$1,$3}>}
+	| <$function> ':' <$command> {@<case,{$1,$3}>}
 	;
 @global["$case_default"]
 	= rule ':' <$command> ';' {@<case,{null,$2}>}

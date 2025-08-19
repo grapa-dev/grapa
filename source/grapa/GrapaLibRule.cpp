@@ -9208,6 +9208,12 @@ GrapaRuleEvent* GrapaLibraryRuleSwitchEvent::Run(GrapaScriptExec *vScriptExec, G
 			}
 		}
 		if (rx1) { rx1->CLEAR(); delete rx1; }
+		if (result && !result->mControlFlow)
+		{
+			result->CLEAR();
+			delete result;
+			result = NULL;
+		}
 		return(result);
 	}
 	GrapaRuleEvent* rx2 = vScriptExec->ProcessPlan(pNameSpace, pInput->Head(1));
@@ -9312,6 +9318,12 @@ GrapaRuleEvent* GrapaLibraryRuleSwitchEvent::Run(GrapaScriptExec *vScriptExec, G
 
 	if (rx1) { rx1->CLEAR(); delete rx1; }
 	if (rx2) { rx2->CLEAR(); delete rx2; }
+	if (result && !result->mControlFlow)
+	{
+		result->CLEAR();
+		delete result;
+		result = NULL;
+	}
 	return(result);
 }
 
