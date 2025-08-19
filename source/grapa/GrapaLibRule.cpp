@@ -6033,14 +6033,16 @@ GrapaRuleEvent* GrapaLibraryRuleArrayCompEvent::HandleListComprehension(GrapaScr
     result->vQueue = new GrapaRuleQueue();
     printf("[DEBUG] Created result array\n");
     
-    // Create temporary namespace for list comprehension (following EvalEvent/OpEvent pattern)
-    // This ensures loop variables don't affect the outer scope
-    GrapaRuleEvent* vLocals = new GrapaRuleEvent();
-    vLocals->mValue.mToken = GrapaTokenType::LIST;
-    vLocals->vQueue = new GrapaRuleQueue();
-    pNameSpace->GetNameQueue()->PushTail(vLocals);
-    GrapaRuleEvent* actualVar = new GrapaRuleEvent(0, varName, GrapaCHAR());
-    vLocals->vQueue->PushTail(actualVar);
+            // Create temporary namespace for list comprehension (following EvalEvent/OpEvent pattern)
+        // This ensures loop variables don't affect the outer scope
+        GrapaRuleEvent* vLocals = new GrapaRuleEvent();
+        vLocals->mValue.mToken = GrapaTokenType::LIST;
+        vLocals->vQueue = new GrapaRuleQueue();
+        pNameSpace->GetNameQueue()->PushTail(vLocals);
+        GrapaRuleEvent* actualVar = new GrapaRuleEvent(0, varName, GrapaCHAR());
+        vLocals->vQueue->PushTail(actualVar);
+        printf("[DEBUG] Created actualVar with name: %s\n", actualVar->mValue.mBytes);
+        printf("[DEBUG] vLocals->vQueue->mCount = %llu\n", vLocals->vQueue->mCount);
     
     // Handle different iterable types (following ForEvent patterns)
     printf("[DEBUG] Iterable type: %d\n", iterParam.vVal->mValue.mToken);
@@ -6327,9 +6329,17 @@ GrapaRuleEvent* GrapaLibraryRuleArrayCompEvent::HandleNewComprehension(GrapaScri
         printf("[DEBUG] compParam.vVal->vQueue->mCount = %llu\n", compParam.vVal->vQueue->mCount);
     }
     
-    if (compParam.vVal->vQueue && compParam.vVal->vQueue->mCount > 0)
+    // For basic comprehensions, the structure is {variable, iterable}
+    // For nested comprehensions, the structure is a list of clauses
+    if (compParam.vVal->vQueue && compParam.vVal->vQueue->mCount == 2)
     {
-        // The comprehension structure is a list of clauses
+        // Single clause case: {variable, iterable}
+        // This is a basic comprehension, not nested
+        comprehensionClauses.push_back(compParam.vVal);
+    }
+    else if (compParam.vVal->vQueue && compParam.vVal->vQueue->mCount > 2)
+    {
+        // Multiple clauses case - nested comprehension
         GrapaRuleEvent* clause = compParam.vVal->vQueue->Head();
         while (clause)
         {
@@ -6339,7 +6349,7 @@ GrapaRuleEvent* GrapaLibraryRuleArrayCompEvent::HandleNewComprehension(GrapaScri
     }
     else
     {
-        // Single clause case - the compParam itself is the clause
+        // Fallback - treat as single clause
         comprehensionClauses.push_back(compParam.vVal);
     }
     
@@ -6367,14 +6377,24 @@ GrapaRuleEvent* GrapaLibraryRuleArrayCompEvent::HandleNewComprehension(GrapaScri
         GrapaCHAR varName;
         GrapaRuleEvent* iterable = NULL;
         
+        printf("[DEBUG] clause->mValue.mToken = %d\n", clause->mValue.mToken);
+        printf("[DEBUG] clause->vQueue = %p\n", clause->vQueue);
+        if (clause->vQueue) {
+            printf("[DEBUG] clause->vQueue->mCount = %llu\n", clause->vQueue->mCount);
+        }
+        
         if (clause->vQueue && clause->vQueue->mCount >= 2)
         {
             // Clause format: {variable, iterable}
             GrapaRuleEvent* varEvent = clause->vQueue->Head(0);
             GrapaRuleEvent* iterEvent = clause->vQueue->Head(1);
             
+            printf("[DEBUG] varEvent = %p, iterEvent = %p\n", varEvent, iterEvent);
+            
             if (varEvent && iterEvent)
             {
+                printf("[DEBUG] varEvent->mValue.mToken = %d\n", varEvent->mValue.mToken);
+                printf("[DEBUG] varEvent->mValue.mBytes = %s\n", varEvent->mValue.mBytes);
                 varName.FROM(varEvent->mValue);
                 iterable = vScriptExec->CopyItem(iterEvent);
                 printf("[DEBUG] Variable: %s\n", varName.mBytes);
@@ -6417,12 +6437,44 @@ GrapaRuleEvent* GrapaLibraryRuleArrayCompEvent::HandleNewComprehension(GrapaScri
                 GrapaRuleEvent* elementEvent = iterParam.vVal->vQueue->Head((u64)(i.LongValue() - 1));
                 if (elementEvent)
                 {
-                    actualVar->mValue.FROM(elementEvent->mValue);
+                    printf("[DEBUG] elementEvent->mValue.mToken = %d\n", elementEvent->mValue.mToken);
+                    printf("[DEBUG] elementEvent->mValue.mBytes = %s\n", elementEvent->mValue.mBytes);
+                    
+                    // Handle PTR tokens (dereference if needed) - following ForEvent pattern
+                    GrapaRuleEvent* actualElement = elementEvent->mValue.mToken == GrapaTokenType::PTR ? 
+                                                   elementEvent->vRulePointer : elementEvent;
+                    
+                    if (actualElement) {
+                        printf("[DEBUG] actualElement->mValue.mToken = %d\n", actualElement->mValue.mToken);
+                        printf("[DEBUG] actualElement->mValue.mBytes = %s\n", actualElement->mValue.mBytes);
+                        
+                        // Handle INT values (following ForEvent pattern)
+                        if (actualElement->mValue.mToken == GrapaTokenType::INT)
+                        {
+                            GrapaInt intVal;
+                            intVal.FromBytes(actualElement->mValue);
+                            printf("[DEBUG] INT value: %s\n", intVal.ToString().mBytes);
+                            actualVar->mValue.FROM(actualElement->mValue);
+                            printf("[DEBUG] actualVar->mValue set from INT\n");
+                        }
+                        else
+                        {
+                            printf("[DEBUG] Setting actualVar->mValue to: %s\n", actualElement->mValue.mBytes);
+                            actualVar->mValue.FROM(actualElement->mValue);
+                            printf("[DEBUG] actualVar->mValue is now: %s\n", actualVar->mValue.mBytes);
+                        }
+                    } else {
+                        printf("[DEBUG] actualElement is NULL after PTR dereference\n");
+                    }
                     
                     // Evaluate expression
+                    printf("[DEBUG] Evaluating expression: token=%d, value=%s\n", 
+                           exprParam.vVal->mValue.mToken, exprParam.vVal->mValue.mBytes);
                     GrapaRuleEvent* exprResult = vScriptExec->ProcessPlan(pNameSpace, exprParam.vVal);
                     if (exprResult)
                     {
+                        printf("[DEBUG] Expression result: token=%d, value=%s\n", 
+                               exprResult->mValue.mToken, exprResult->mValue.mBytes);
                         GrapaRuleEvent* r1 = exprResult->mValue.mToken == GrapaTokenType::PTR ? 
                                            exprResult->vRulePointer : exprResult;
                         
@@ -6431,6 +6483,10 @@ GrapaRuleEvent* GrapaLibraryRuleArrayCompEvent::HandleNewComprehension(GrapaScri
                         printf("[DEBUG] Added element to result array\n");
                         exprResult->CLEAR();
                         delete exprResult;
+                    }
+                    else
+                    {
+                        printf("[DEBUG] Expression evaluation failed - exprResult is NULL\n");
                     }
                 }
                 i += 1;
