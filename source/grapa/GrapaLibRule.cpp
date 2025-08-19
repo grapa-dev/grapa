@@ -839,6 +839,7 @@ public:
     virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 private:
     GrapaRuleEvent* HandleListComprehension(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleQueue* pInput, bool hasCondition);
+    GrapaRuleEvent* HandleNewComprehension(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleQueue* pInput);
 };
 GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleArrayComp(GrapaCHAR& pName) { return new GrapaLibraryRuleArrayCompEvent(pName); }
 
@@ -3014,6 +3015,9 @@ GrapaLibraryEvent* GrapaLibraryRuleEvent::LoadLib(GrapaScriptExec *vScriptExec, 
         { "assignpow", &GrapaLibraryRuleEvent::HandleAssignPow },
         { "createarray", &GrapaLibraryRuleEvent::HandleCreateArray },
         { "arraycomp", &GrapaLibraryRuleEvent::HandleArrayComp },
+        { "comprehension", &GrapaLibraryRuleEvent::HandleComprehension },
+        { "forclause", &GrapaLibraryRuleEvent::HandleForClause },
+        { "ifclause", &GrapaLibraryRuleEvent::HandleIfClause },
 		{ "createtuple", &GrapaLibraryRuleEvent::HandleCreateTuple },
 		{ "createlist", &GrapaLibraryRuleEvent::HandleCreateList },
 		{ "createxml", &GrapaLibraryRuleEvent::HandleCreateXml },
@@ -3308,6 +3312,7 @@ GrapaLibraryEvent* GrapaLibraryRuleEvent::LoadLib(GrapaScriptExec *vScriptExec, 
 			else if (pName.Cmp("assignappend") == 0) lib = new GrapaLibraryRuleAssignAppendEvent(pName);
 			else if (pName.Cmp("assignextend") == 0) lib = new GrapaLibraryRuleAssignExtendEvent(pName);
 			else if (pName.Cmp("createarray") == 0) lib = new GrapaLibraryRuleCreateArrayEvent(pName);
+			else if (pName.Cmp("arraycomp") == 0) lib = new GrapaLibraryRuleArrayCompEvent(pName);
 			else if (pName.Cmp("createtuple") == 0) lib = new GrapaLibraryRuleCreateTupleEvent(pName);
 			else if (pName.Cmp("createlist") == 0) lib = new GrapaLibraryRuleCreateListEvent(pName);
 			else if (pName.Cmp("createxml") == 0) lib = new GrapaLibraryRuleCreateXmlEvent(pName);
@@ -5959,22 +5964,43 @@ GrapaRuleEvent* GrapaLibraryRuleCreateArrayEvent::Run(GrapaScriptExec* vScriptEx
 
 GrapaRuleEvent* GrapaLibraryRuleArrayCompEvent::Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput)
 {
+    printf("[DEBUG] ArrayCompEvent::Run called with %llu parameters\n", pInput ? pInput->mCount : 0);
+    
+    // Debug: Print each parameter
+    for (int i = 0; i < (pInput ? pInput->mCount : 0); i++) {
+        GrapaRuleEvent* param = pInput->Head(i);
+        if (param) {
+            printf("[DEBUG] Parameter %d: token=%d, value='%s'\n", i, param->mValue.mToken, param->mValue.mBytes);
+        } else {
+            printf("[DEBUG] Parameter %d: NULL\n", i);
+        }
+    }
+    
     GrapaRuleEvent* result = NULL;
     
     // List comprehension handler based on parameter count
     switch (pInput->mCount)
     {
+        case 2:
+            printf("[DEBUG] ArrayCompEvent: Processing 2-parameter comprehension (new format)\n");
+            // [expression comprehension_structure]
+            // Parameters: [0]=expression, [1]=comprehension_structure
+            return HandleNewComprehension(vScriptExec, pNameSpace, pInput);
+            
         case 3:
+            printf("[DEBUG] ArrayCompEvent: Processing 3-parameter comprehension\n");
             // [expression for variable in iterable]
             // Parameters: [0]=expression, [1]=variable, [2]=iterable
             return HandleListComprehension(vScriptExec, pNameSpace, pInput, false);
             
         case 4:
+            printf("[DEBUG] ArrayCompEvent: Processing 4-parameter comprehension\n");
             // [expression for variable in iterable if condition]
             // Parameters: [0]=expression, [1]=variable, [2]=iterable, [3]=condition
             return HandleListComprehension(vScriptExec, pNameSpace, pInput, true);
             
         default:
+            printf("[DEBUG] ArrayCompEvent: Invalid parameter count %llu\n", pInput->mCount);
             return Error(vScriptExec, pNameSpace, -1);
     }
 }
@@ -5982,22 +6008,30 @@ GrapaRuleEvent* GrapaLibraryRuleArrayCompEvent::Run(GrapaScriptExec* vScriptExec
 // Helper method for list comprehension
 GrapaRuleEvent* GrapaLibraryRuleArrayCompEvent::HandleListComprehension(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleQueue* pInput, bool hasCondition)
 {
+    printf("[DEBUG] HandleListComprehension called with hasCondition=%d\n", hasCondition);
+    
     GrapaRuleEvent* result = NULL;
     
     // Get variable name using GrapaLibraryParam (following ForEvent pattern)
-    GrapaLibraryParam varParam(vScriptExec, pNameSpace, pInput->Head(1));   // variable name
+    // Use false for variable name to avoid evaluation - we want the raw token
+    GrapaLibraryParam varParam(vScriptExec, pNameSpace, pInput->Head(1), false);   // variable name
     GrapaLibraryParam iterParam(vScriptExec, pNameSpace, pInput->Head(2));  // iterable
+    
+    printf("[DEBUG] varParam.vVal=%p, iterParam.vVal=%p\n", varParam.vVal, iterParam.vVal);
     
     if (!varParam.vVal || !iterParam.vVal)
     {
+        printf("[DEBUG] Error: Missing parameters\n");
         return Error(vScriptExec, pNameSpace, -1);
     }
     
     GrapaCHAR varName = varParam.vVal->mValue;
+    printf("[DEBUG] Variable name: %s\n", varName.mBytes);
     
     // Create result array
     result = new GrapaRuleEvent(GrapaTokenType::ARRAY, 0, "", "");
     result->vQueue = new GrapaRuleQueue();
+    printf("[DEBUG] Created result array\n");
     
     // Create temporary namespace for list comprehension (following EvalEvent/OpEvent pattern)
     // This ensures loop variables don't affect the outer scope
@@ -6009,6 +6043,7 @@ GrapaRuleEvent* GrapaLibraryRuleArrayCompEvent::HandleListComprehension(GrapaScr
     vLocals->vQueue->PushTail(actualVar);
     
     // Handle different iterable types (following ForEvent patterns)
+    printf("[DEBUG] Iterable type: %d\n", iterParam.vVal->mValue.mToken);
     
     if (iterParam.vVal->mValue.mToken == GrapaTokenType::INT)
     {
@@ -6077,6 +6112,7 @@ GrapaRuleEvent* GrapaLibraryRuleArrayCompEvent::HandleListComprehension(GrapaScr
     else if (iterParam.vVal->mValue.mToken == GrapaTokenType::LIST || 
              iterParam.vVal->mValue.mToken == GrapaTokenType::ARRAY)
     {
+        printf("[DEBUG] Processing array/list iteration\n");
         // Collection iteration (following ForEvent pattern)
         GrapaInt length = iterParam.vVal->vQueue ? iterParam.vVal->vQueue->mCount : 0;
         GrapaInt i = 1;
@@ -6119,9 +6155,11 @@ GrapaRuleEvent* GrapaLibraryRuleArrayCompEvent::HandleListComprehension(GrapaScr
                 }
                 
                 // Evaluate expression and add to result (evaluate in loop like ForEvent does with body)
+                printf("[DEBUG] Evaluating expression for element %d\n", i.LongValue());
                 GrapaRuleEvent* exprResult = vScriptExec->ProcessPlan(pNameSpace, pInput->Head(0));
                 if (exprResult)
                 {
+                    printf("[DEBUG] Expression result obtained\n");
 
                     
                     // Handle PTR tokens (dereference if needed) - following ForEvent pattern
@@ -6138,6 +6176,7 @@ GrapaRuleEvent* GrapaLibraryRuleArrayCompEvent::HandleListComprehension(GrapaScr
                     
                     GrapaRuleEvent* copy = vScriptExec->CopyItem(r1);
                     result->vQueue->PushTail(copy);
+                    printf("[DEBUG] Added element to result array\n");
                     exprResult->CLEAR();
                     delete exprResult;
                 }
@@ -6231,6 +6270,572 @@ GrapaRuleEvent* GrapaLibraryRuleArrayCompEvent::HandleListComprehension(GrapaScr
         vLocals->CLEAR();
         delete vLocals;
     }
+    
+    printf("[DEBUG] Returning result with %d elements\n", result->vQueue ? result->vQueue->mCount : 0);
+    return result;
+}
+
+// Handle new comprehension format with nested structure
+GrapaRuleEvent* GrapaLibraryRuleArrayCompEvent::HandleNewComprehension(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleQueue* pInput)
+{
+    printf("[DEBUG] HandleNewComprehension called\n");
+    printf("[DEBUG] pInput->mCount = %llu\n", pInput->mCount);
+    
+    GrapaRuleEvent* result = NULL;
+    
+    // Get expression and comprehension structure
+    GrapaLibraryParam exprParam(vScriptExec, pNameSpace, pInput->Head(0));  // expression
+    GrapaLibraryParam compParam(vScriptExec, pNameSpace, pInput->Head(1));  // comprehension structure
+    
+    printf("[DEBUG] exprParam.vVal=%p, compParam.vVal=%p\n", exprParam.vVal, compParam.vVal);
+    
+    // Debug: Print more details about the parameters
+    if (exprParam.vVal) {
+        printf("[DEBUG] exprParam: token=%d, hasQueue=%d, queueCount=%d\n", 
+               exprParam.vVal->mValue.mToken, 
+               exprParam.vVal->vQueue ? 1 : 0,
+               exprParam.vVal->vQueue ? exprParam.vVal->vQueue->mCount : 0);
+    }
+    if (compParam.vVal) {
+        printf("[DEBUG] compParam: token=%d, hasQueue=%d, queueCount=%d\n", 
+               compParam.vVal->mValue.mToken, 
+               compParam.vVal->vQueue ? 1 : 0,
+               compParam.vVal->vQueue ? compParam.vVal->vQueue->mCount : 0);
+    }
+    
+    if (!exprParam.vVal || !compParam.vVal)
+    {
+        printf("[DEBUG] Error: Missing parameters\n");
+        return Error(vScriptExec, pNameSpace, -1);
+    }
+    
+    // Create result array
+    result = new GrapaRuleEvent(GrapaTokenType::ARRAY, 0, "", "");
+    result->vQueue = new GrapaRuleQueue();
+    printf("[DEBUG] Created result array\n");
+    
+    // Extract variable and iterable from the comprehension structure
+    // The compParam contains a nested structure that we need to parse
+    printf("[DEBUG] Extracting from comprehension structure...\n");
+    
+    // Parse the comprehension structure to extract clauses
+    std::vector<GrapaRuleEvent*> comprehensionClauses;
+    
+    printf("[DEBUG] compParam.vVal->mValue.mToken = %d\n", compParam.vVal->mValue.mToken);
+    printf("[DEBUG] compParam.vVal->vQueue = %p\n", compParam.vVal->vQueue);
+    if (compParam.vVal->vQueue) {
+        printf("[DEBUG] compParam.vVal->vQueue->mCount = %llu\n", compParam.vVal->vQueue->mCount);
+    }
+    
+    if (compParam.vVal->vQueue && compParam.vVal->vQueue->mCount > 0)
+    {
+        // The comprehension structure is a list of clauses
+        GrapaRuleEvent* clause = compParam.vVal->vQueue->Head();
+        while (clause)
+        {
+            comprehensionClauses.push_back(clause);
+            clause = clause->Next();
+        }
+    }
+    else
+    {
+        // Single clause case - the compParam itself is the clause
+        comprehensionClauses.push_back(compParam.vVal);
+    }
+    
+    printf("[DEBUG] Found %zu comprehension clauses\n", comprehensionClauses.size());
+    
+    // Process the comprehension clauses
+    if (comprehensionClauses.empty())
+    {
+        printf("[DEBUG] Error: No comprehension clauses found\n");
+        return Error(vScriptExec, pNameSpace, -1);
+    }
+    
+    // For now, handle single clause case (basic comprehension)
+    if (comprehensionClauses.size() == 1)
+    {
+        GrapaRuleEvent* clause = comprehensionClauses[0];
+        printf("[DEBUG] Processing single clause\n");
+        printf("[DEBUG] clause->mValue.mToken = %d\n", clause->mValue.mToken);
+        printf("[DEBUG] clause->vQueue = %p\n", clause->vQueue);
+        if (clause->vQueue) {
+            printf("[DEBUG] clause->vQueue->mCount = %llu\n", clause->vQueue->mCount);
+        }
+        
+        // Extract variable name and iterable from the clause
+        GrapaCHAR varName;
+        GrapaRuleEvent* iterable = NULL;
+        
+        if (clause->vQueue && clause->vQueue->mCount >= 2)
+        {
+            // Clause format: {variable, iterable}
+            GrapaRuleEvent* varEvent = clause->vQueue->Head(0);
+            GrapaRuleEvent* iterEvent = clause->vQueue->Head(1);
+            
+            if (varEvent && iterEvent)
+            {
+                varName.FROM(varEvent->mValue);
+                iterable = vScriptExec->CopyItem(iterEvent);
+                printf("[DEBUG] Variable: %s\n", varName.mBytes);
+            }
+        }
+        else
+        {
+            // Clause format: {variable, iterable} (direct structure)
+            // This might be a different format - need to investigate
+            printf("[DEBUG] Clause doesn't have expected queue structure\n");
+            return result; // Return empty array for now
+        }
+        
+        if (!iterable)
+        {
+            printf("[DEBUG] Error: Could not extract iterable\n");
+            return Error(vScriptExec, pNameSpace, -1);
+        }
+        
+        // Create temporary namespace for list comprehension
+        GrapaRuleEvent* vLocals = new GrapaRuleEvent();
+        vLocals->mValue.mToken = GrapaTokenType::LIST;
+        vLocals->vQueue = new GrapaRuleQueue();
+        pNameSpace->GetNameQueue()->PushTail(vLocals);
+        GrapaRuleEvent* actualVar = new GrapaRuleEvent(0, varName, GrapaCHAR());
+        vLocals->vQueue->PushTail(actualVar);
+        
+        // Process the iterable
+        GrapaLibraryParam iterParam(vScriptExec, pNameSpace, iterable);
+        
+        if (iterParam.vVal->mValue.mToken == GrapaTokenType::LIST || 
+            iterParam.vVal->mValue.mToken == GrapaTokenType::ARRAY)
+        {
+            printf("[DEBUG] Processing array/list iteration\n");
+            GrapaInt length = iterParam.vVal->vQueue ? iterParam.vVal->vQueue->mCount : 0;
+            GrapaInt i = 1;
+            
+            while (i <= length)
+            {
+                GrapaRuleEvent* elementEvent = iterParam.vVal->vQueue->Head((u64)(i.LongValue() - 1));
+                if (elementEvent)
+                {
+                    actualVar->mValue.FROM(elementEvent->mValue);
+                    
+                    // Evaluate expression
+                    GrapaRuleEvent* exprResult = vScriptExec->ProcessPlan(pNameSpace, exprParam.vVal);
+                    if (exprResult)
+                    {
+                        GrapaRuleEvent* r1 = exprResult->mValue.mToken == GrapaTokenType::PTR ? 
+                                           exprResult->vRulePointer : exprResult;
+                        
+                        GrapaRuleEvent* copy = vScriptExec->CopyItem(r1);
+                        result->vQueue->PushTail(copy);
+                        printf("[DEBUG] Added element to result array\n");
+                        exprResult->CLEAR();
+                        delete exprResult;
+                    }
+                }
+                i += 1;
+            }
+        }
+        
+        // Clean up
+        iterable->CLEAR();
+        delete iterable;
+    }
+    else
+    {
+        // Multiple clauses - nested comprehension
+        printf("[DEBUG] Processing nested comprehension with %zu clauses\n", comprehensionClauses.size());
+        // TODO: Implement nested comprehension logic using GenerateCartesianProduct
+        // For now, return empty array
+    }
+    
+    printf("[DEBUG] Returning result with %d elements\n", result->vQueue ? result->vQueue->mCount : 0);
+    return result;
+}
+
+
+
+// Helper function to generate cartesian product of for clauses
+void GenerateCartesianProduct(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, 
+                             const std::vector<GrapaRuleEvent*>& forClauses,
+                             std::vector<std::vector<GrapaRuleEvent*>>& result)
+{
+    if (forClauses.empty())
+    {
+        result.clear();
+        return;
+    }
+    
+    // Initialize with first for clause
+    std::vector<std::vector<GrapaRuleEvent*>> current;
+    
+    GrapaRuleEvent* firstForClause = forClauses[0];
+    if (firstForClause->vQueue && firstForClause->vQueue->mCount >= 2)
+    {
+        // Get collection from for clause
+        GrapaRuleEvent* collectionEvent = firstForClause->vQueue->Head(1);
+        if (collectionEvent)
+        {
+            GrapaLibraryParam collectionParam(vScriptExec, pNameSpace, collectionEvent);
+            if (collectionParam.vVal)
+            {
+                // Iterate through collection
+                if (collectionParam.vVal->mValue.mToken == GrapaTokenType::INT)
+                {
+                    // Numeric range
+                    GrapaInt rangeInt;
+                    rangeInt.FromBytes(collectionParam.vVal->mValue);
+                    for (GrapaInt i = 0; i < rangeInt; i++)
+                    {
+                        GrapaRuleEvent* valueEvent = new GrapaRuleEvent(0, GrapaCHAR(), i.getBytes());
+                        current.push_back({valueEvent});
+                    }
+                }
+                else if (collectionParam.vVal->mValue.mToken == GrapaTokenType::LIST || 
+                         collectionParam.vVal->mValue.mToken == GrapaTokenType::ARRAY)
+                {
+                    // Collection iteration
+                    if (collectionParam.vVal->vQueue)
+                    {
+                        GrapaRuleEvent* element = collectionParam.vVal->vQueue->Head();
+                        while (element)
+                        {
+                            GrapaRuleEvent* valueEvent = vScriptExec->CopyItem(element);
+                            current.push_back({valueEvent});
+                            element = element->Next();
+                        }
+                    }
+                }
+                else if (collectionParam.vVal->mValue.mToken == GrapaTokenType::STR)
+                {
+                    // String iteration
+                    GrapaCHAR strValue = collectionParam.vVal->mValue;
+                    for (GrapaInt i = 0; i < strValue.mLength; i++)
+                    {
+                        GrapaCHAR charValue;
+                        charValue.FROM((char*)&strValue.mBytes[(int)i.LongValue()], 1);
+                        GrapaRuleEvent* valueEvent = new GrapaRuleEvent(0, GrapaCHAR(), charValue);
+                        current.push_back({valueEvent});
+                    }
+                }
+            }
+        }
+    }
+    
+    // Process remaining for clauses
+    for (size_t i = 1; i < forClauses.size(); i++)
+    {
+        std::vector<std::vector<GrapaRuleEvent*>> next;
+        GrapaRuleEvent* forClause = forClauses[i];
+        
+        if (forClause->vQueue && forClause->vQueue->mCount >= 2)
+        {
+            // Get collection from for clause
+            GrapaRuleEvent* collectionEvent = forClause->vQueue->Head(1);
+            if (collectionEvent)
+            {
+                GrapaLibraryParam collectionParam(vScriptExec, pNameSpace, collectionEvent);
+                if (collectionParam.vVal)
+                {
+                    // For each current combination, add each element from this collection
+                    for (const auto& combination : current)
+                    {
+                        if (collectionParam.vVal->mValue.mToken == GrapaTokenType::INT)
+                        {
+                            // Numeric range
+                            GrapaInt rangeInt;
+                            rangeInt.FromBytes(collectionParam.vVal->mValue);
+                            for (GrapaInt j = 0; j < rangeInt; j++)
+                            {
+                                std::vector<GrapaRuleEvent*> newCombination = combination;
+                                GrapaRuleEvent* valueEvent = new GrapaRuleEvent(0, GrapaCHAR(), j.getBytes());
+                                newCombination.push_back(valueEvent);
+                                next.push_back(newCombination);
+                            }
+                        }
+                        else if (collectionParam.vVal->mValue.mToken == GrapaTokenType::LIST || 
+                                 collectionParam.vVal->mValue.mToken == GrapaTokenType::ARRAY)
+                        {
+                            // Collection iteration
+                            if (collectionParam.vVal->vQueue)
+                            {
+                                GrapaRuleEvent* element = collectionParam.vVal->vQueue->Head();
+                                while (element)
+                                {
+                                    std::vector<GrapaRuleEvent*> newCombination = combination;
+                                    GrapaRuleEvent* valueEvent = vScriptExec->CopyItem(element);
+                                    newCombination.push_back(valueEvent);
+                                    next.push_back(newCombination);
+                                    element = element->Next();
+                                }
+                            }
+                        }
+                        else if (collectionParam.vVal->mValue.mToken == GrapaTokenType::STR)
+                        {
+                            // String iteration
+                            GrapaCHAR strValue = collectionParam.vVal->mValue;
+                            for (GrapaInt j = 0; j < strValue.mLength; j++)
+                            {
+                                std::vector<GrapaRuleEvent*> newCombination = combination;
+                                GrapaCHAR charValue;
+                                charValue.FROM((char*)&strValue.mBytes[(int)j.LongValue()], 1);
+                                GrapaRuleEvent* valueEvent = new GrapaRuleEvent(0, GrapaCHAR(), charValue);
+                                newCombination.push_back(valueEvent);
+                                next.push_back(newCombination);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        
+        // Clean up current combinations
+        for (const auto& combination : current)
+        {
+            for (GrapaRuleEvent* event : combination)
+            {
+                if (event)
+                {
+                    event->CLEAR();
+                    delete event;
+                }
+            }
+        }
+        
+        current = next;
+    }
+    
+    result = current;
+}
+
+// New comprehension event handlers for nested array comprehensions
+class GrapaLibraryRuleComprehensionEvent : public GrapaLibraryEvent
+{
+public:
+    GrapaLibraryRuleComprehensionEvent(GrapaCHAR& pName) { mName.FROM(pName); };
+    virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
+};
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleComprehension(GrapaCHAR& pName) { return new GrapaLibraryRuleComprehensionEvent(pName); }
+
+class GrapaLibraryRuleForClauseEvent : public GrapaLibraryEvent
+{
+public:
+    GrapaLibraryRuleForClauseEvent(GrapaCHAR& pName) { mName.FROM(pName); };
+    virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
+};
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleForClause(GrapaCHAR& pName) { return new GrapaLibraryRuleForClauseEvent(pName); }
+
+class GrapaLibraryRuleIfClauseEvent : public GrapaLibraryEvent
+{
+public:
+    GrapaLibraryRuleIfClauseEvent(GrapaCHAR& pName) { mName.FROM(pName); };
+    virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
+};
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleIfClause(GrapaCHAR& pName) { return new GrapaLibraryRuleIfClauseEvent(pName); }
+
+// Implementation of new comprehension event handlers
+
+GrapaRuleEvent* GrapaLibraryRuleComprehensionEvent::Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput)
+{
+    // This handler processes comprehension clauses (for clauses + optional if clause)
+    // Parameters: [0]=for_clause, [1]=optional_if_clause_or_more_for_clauses
+    
+    GrapaRuleEvent* result = NULL;
+    
+    if (pInput->mCount < 1)
+    {
+        return Error(vScriptExec, pNameSpace, -1);
+    }
+    
+    // Create result array
+    result = new GrapaRuleEvent(GrapaTokenType::ARRAY, 0, "", "");
+    result->vQueue = new GrapaRuleQueue();
+    
+    // Create temporary namespace for comprehension
+    GrapaRuleEvent* vLocals = new GrapaRuleEvent();
+    vLocals->mValue.mToken = GrapaTokenType::LIST;
+    vLocals->vQueue = new GrapaRuleQueue();
+    pNameSpace->GetNameQueue()->PushTail(vLocals);
+    
+    // Process all for clauses to build nested loops
+    std::vector<GrapaRuleEvent*> forClauses;
+    std::vector<GrapaRuleEvent*> ifClauses;
+    
+    GrapaRuleEvent* current = pInput->Head(0);
+    while (current)
+    {
+        // Check if this is a for clause
+        if (current->mValue.mToken == GrapaTokenType::OP && current->mValue.mLength > 0)
+        {
+            GrapaCHAR opName;
+            opName.FROM((char*)current->mValue.mBytes, current->mValue.mLength);
+            
+            if (opName.Cmp("forclause") == 0)
+            {
+                forClauses.push_back(current);
+            }
+            else if (opName.Cmp("ifclause") == 0)
+            {
+                ifClauses.push_back(current);
+            }
+        }
+        current = current->Next();
+    }
+    
+    if (forClauses.empty())
+    {
+        // Clean up and return empty array
+        pNameSpace->GetNameQueue()->PopEvent(vLocals);
+        if (vLocals)
+        {
+            vLocals->CLEAR();
+            delete vLocals;
+        }
+        return result;
+    }
+    
+    // Generate cartesian product of all for clauses
+    std::vector<std::vector<GrapaRuleEvent*>> allCombinations;
+    GenerateCartesianProduct(vScriptExec, pNameSpace, forClauses, allCombinations);
+    
+    // For each combination, evaluate the expression
+    for (const auto& combination : allCombinations)
+    {
+        // Set up variables for this combination
+        for (size_t i = 0; i < combination.size() && i < forClauses.size(); i++)
+        {
+            GrapaRuleEvent* forClause = forClauses[i];
+            GrapaRuleEvent* value = combination[i];
+            
+            if (forClause->vQueue && forClause->vQueue->mCount >= 1)
+            {
+                // Get variable name from for clause
+                GrapaRuleEvent* varNameEvent = forClause->vQueue->Head(0);
+                if (varNameEvent && varNameEvent->mValue.mToken == GrapaTokenType::STR)
+                {
+                    GrapaCHAR varName = varNameEvent->mValue;
+                    
+                    // Create variable in local namespace
+                    GrapaRuleEvent* varEvent = new GrapaRuleEvent(0, varName, GrapaCHAR());
+                    vLocals->vQueue->PushTail(varEvent);
+                    
+                    // Set variable value
+                    if (value)
+                    {
+                        varEvent->mValue.FROM(value->mValue);
+                    }
+                }
+            }
+        }
+        
+        // Check if conditions are met
+        bool conditionsMet = true;
+        for (GrapaRuleEvent* ifClause : ifClauses)
+        {
+            if (ifClause->vQueue && ifClause->vQueue->mCount >= 1)
+            {
+                GrapaRuleEvent* condResult = vScriptExec->ProcessPlan(pNameSpace, ifClause->vQueue->Head(0));
+                if (condResult)
+                {
+                    GrapaRuleEvent* condVal = condResult->mValue.mToken == GrapaTokenType::PTR ? 
+                                            condResult->vRulePointer : condResult;
+                    
+                    if (!condVal || !condVal->mValue.mLength || 
+                        condVal->mValue.mBytes[0] == '0' || condVal->IsNull())
+                    {
+                        conditionsMet = false;
+                    }
+                    
+                    condResult->CLEAR();
+                    delete condResult;
+                }
+                else
+                {
+                    conditionsMet = false;
+                }
+            }
+        }
+        
+        if (conditionsMet)
+        {
+            // Evaluate the expression and add to result
+            GrapaRuleEvent* exprResult = vScriptExec->ProcessPlan(pNameSpace, pOperation);
+            if (exprResult)
+            {
+                GrapaRuleEvent* r1 = exprResult->mValue.mToken == GrapaTokenType::PTR ? 
+                                   exprResult->vRulePointer : exprResult;
+                
+                GrapaRuleEvent* copy = vScriptExec->CopyItem(r1);
+                result->vQueue->PushTail(copy);
+                
+                exprResult->CLEAR();
+                delete exprResult;
+            }
+        }
+        
+        // Clean up variables for this iteration
+        while (vLocals->vQueue->Head())
+        {
+            GrapaRuleEvent* var = vLocals->vQueue->PopHead();
+            if (var)
+            {
+                var->CLEAR();
+                delete var;
+            }
+        }
+    }
+    
+    // Clean up temporary namespace
+    pNameSpace->GetNameQueue()->PopEvent(vLocals);
+    if (vLocals)
+    {
+        vLocals->CLEAR();
+        delete vLocals;
+    }
+    
+    return result;
+}
+
+GrapaRuleEvent* GrapaLibraryRuleForClauseEvent::Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput)
+{
+    // This handler processes individual for clauses
+    // Parameters: [0]=variable_name, [1]=collection
+    
+    GrapaRuleEvent* result = NULL;
+    
+    if (pInput->mCount != 2)
+    {
+        return Error(vScriptExec, pNameSpace, -1);
+    }
+    
+    // Create a structure to hold the for clause information
+    result = new GrapaRuleEvent(GrapaTokenType::LIST, 0, "", "");
+    result->vQueue = new GrapaRuleQueue();
+    
+    // Add variable name and collection to the result
+    GrapaRuleEvent* varName = vScriptExec->ProcessPlan(pNameSpace, pInput->Head(0));
+    GrapaRuleEvent* collection = vScriptExec->ProcessPlan(pNameSpace, pInput->Head(1));
+    
+    if (varName) result->vQueue->PushTail(varName);
+    if (collection) result->vQueue->PushTail(collection);
+    
+    return result;
+}
+
+GrapaRuleEvent* GrapaLibraryRuleIfClauseEvent::Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput)
+{
+    // This handler processes if clauses
+    // Parameters: [0]=condition
+    
+    GrapaRuleEvent* result = NULL;
+    
+    if (pInput->mCount != 1)
+    {
+        return Error(vScriptExec, pNameSpace, -1);
+    }
+    
+    // Process the condition
+    result = vScriptExec->ProcessPlan(pNameSpace, pInput->Head(0));
     
     return result;
 }

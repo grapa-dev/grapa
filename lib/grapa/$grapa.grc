@@ -485,8 +485,7 @@
 @global["$function"]
 	= rule '[' ']' {@<createarray,{}>}
 	| '[' <$array> ']'
-    | '[' <$comp> for $ID in <$comp> if <$comp> ']' {@<arraycomp,{$2,$4,$6,$8}>}
-    | '[' <$comp> for $ID in <$comp> ']' {@<arraycomp,{$2,$4,$6}>}
+    | '[' <$comp> <$comprehension_clauses> ']' {@<arraycomp,{$2,$3}>}
 	| '#' '[' ']' '#'  {@<vector,{}>}
 	| '#' '[' <$array> ']' '#'  {@<vector,{$3}>}
 	| '{' '}' {@<createlist,{}>}
@@ -545,6 +544,12 @@
 	| '[' ']' {@<createlist,{null}>}
 	| '.' <$compName> <$comppart> {@<prepend,{$3,$2}>}
 	| '.' <$compName> {@<createlist,{$2}>}
+	;
+@global["$comprehension_clauses"]
+	= rule for $ID in <$comp> if <$comp> <$comprehension_clauses> {@<prepend,{$6,{$2,$4,$5}}>}
+	| for $ID in <$comp> <$comprehension_clauses> {@<prepend,{$5,{$2,$4}}>}
+	| for $ID in <$comp> if <$comp> {@<createlist,{$2,$4,$5}>}
+	| for $ID in <$comp> {@<createlist,{$2,$4}>}
 	;
 @global["$compL3"]
 	= rule <$lit> <$comppart> {@<search,{$1,$2}>}
