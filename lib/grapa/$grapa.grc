@@ -648,9 +648,9 @@
 	| if '(' <$comp> ')' <$command> <$else> {@<if,{$3,$5,$6}>}
 	| if '(' <$comp> ')' <$command> {@<if,{$3,$5}>}
 	| while '(' <$comp> ')' <$command> {@<while,{$3,$5}>}
-	| switch '(' <$comp> ')' '{' <$case_list> '}' finaly <$command> {@<switch,{$3,$6,$9}>}
+	| switch '(' <$comp> ')' '{' <$case_list> '}' finally <$command> {@<switch,{$3,$6,$9}>}
 	| switch '(' <$comp> ')' '{' <$case_list> '}' {@<switch,{$3,$6,null}>}
-	| try <$command> '{' <$case_list> '}' finaly <$command> {@<try,{$2,$4,$7}>}
+	| try <$command> '{' <$case_list> '}' finally <$command> {@<try,{$2,$4,$7}>}
 	| try <$command> '{' <$case_list> '}' {@<try,{$2,$4,null}>}
     | foreach $ID in <$comp> <$command> {@<for,{$2,$4,$5}>}
     | do <$command> while '(' <$comp> ')' {@<for,{$2,$5}>}
