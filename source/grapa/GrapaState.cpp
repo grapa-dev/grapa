@@ -3357,7 +3357,7 @@ GrapaRuleEvent* GrapaLibraryEvent::CreatePtr(GrapaRuleEvent* pPtr)
 {
 	if (pPtr && pPtr->mValue.mToken == GrapaTokenType::PTR && pPtr->vRulePointer) return pPtr;
 	GrapaRuleEvent* result = new GrapaRuleEvent();
-	result->mValue.mToken == GrapaTokenType::PTR;
+	result->mValue.mToken = GrapaTokenType::PTR;
 	result->vRulePointer = pPtr;
 	return result;
 }
@@ -7076,6 +7076,7 @@ void GrapaScriptExecState::Running()
 							if (gSystem->mStop)
 							{
 								mStop = true;
+
 							}
 							if (!mStop || (result && !result->IsNull()))
 							{
