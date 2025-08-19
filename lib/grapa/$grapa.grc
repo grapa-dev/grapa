@@ -662,6 +662,8 @@
     | continue {@<continue,{}>}
 	| return '(' <$comp> ')' {@<return,{$3}>}
 	| return <$comp> {@<return,{$2}>}
+	| throw '(' <$comp> ')' {@<throw,{$3}>}
+	| throw <$comp> {@<throw,{$2}>}
 	| exit '(' ')'{@<exit,{}>}
 	| exit {@<exit,{}>}
     | reset {@<reset,{}>}
