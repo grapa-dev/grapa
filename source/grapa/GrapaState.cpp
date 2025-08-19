@@ -7060,16 +7060,19 @@ void GrapaScriptExecState::Running()
 							if (gSystem->mStop)
 							{
 								mStop = true;
-								if (result && result->IsNull())
-								{
-									result->CLEAR();
-									delete result;
-									result = NULL;
-								}
 							}
-							EndResult(vScriptExec->vScriptState->GetNameSpace(), result);
-							if (mSync)
-								UpdateResult(vScriptExec->vScriptState->GetNameSpace(), result);
+							if (!mStop || (result && !result->IsNull()))
+							{
+								EndResult(vScriptExec->vScriptState->GetNameSpace(), result);
+								if (mSync)
+									UpdateResult(vScriptExec->vScriptState->GetNameSpace(), result);
+							}
+							else if(result)
+							{
+								result->CLEAR();
+								delete result;
+								result = NULL;
+							}
 						}
 						else
 							token = NULL;
