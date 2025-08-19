@@ -1,0 +1,179 @@
+/* Control Flow Validation Tests - After Fixes */
+
+/* Test 1: Basic Break in While Loop (should still work) */
+"Test 1: Basic Break in While Loop".echo();
+i = 0;
+while (i < 10) {
+    i += 1;
+    if (i == 5) {
+        break;
+    };
+};
+"Final i value: ".interpolate(i).echo();
+"Expected: 5".echo();
+
+/* Test 2: Basic Continue in While Loop (should still work) */
+"Test 2: Basic Continue in While Loop".echo();
+sum = 0;
+i = 0;
+while (i < 10) {
+    i += 1;
+    if (i % 2 == 0) {
+        continue;
+    };
+    sum += i;
+};
+"Final sum value: ".interpolate(sum).echo();
+"Expected: 25 (sum of odd numbers 1,3,5,7,9)".echo();
+
+/* Test 3: Break in For Loop (should still work) */
+"Test 3: Break in For Loop".echo();
+result = [];
+for i in [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] {
+    if (i == 6) {
+        break;
+    };
+    result += i;
+};
+"Result array: ".interpolate(result).echo();
+"Expected: [1, 2, 3, 4, 5]".echo();
+
+/* Test 4: Continue in For Loop (should still work) */
+"Test 4: Continue in For Loop".echo();
+result = [];
+for i in [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] {
+    if (i % 2 == 0) {
+        continue;
+    };
+    result += i;
+};
+"Result array: ".interpolate(result).echo();
+"Expected: [1, 3, 5, 7, 9]".echo();
+
+/* Test 5: Conditional Return in Function (FIXED?) */
+"Test 5: Conditional Return in Function".echo();
+testFunc = op() {
+    if (true) {
+        return 200;
+        999;  /* This should not execute if return works */
+    };
+    return 100;
+    888;  /* This should not execute if return works */
+};
+result = testFunc();
+"Return value: ".interpolate(result).echo();
+"Expected: 200 (if fixed), 999 (if not fixed)".echo();
+
+/* Test 6: Return in Loop within Function (FIXED?) */
+"Test 6: Return in Loop within Function".echo();
+testFunc = op() {
+    i = 0;
+    while (i < 10) {
+        i += 1;
+        if (i == 5) {
+            return i;
+            999;  /* This should not execute if return works */
+        };
+    };
+    return 0;
+    888;  /* This should not execute if return works */
+};
+result = testFunc();
+"Return value: ".interpolate(result).echo();
+"Expected: 5 (if fixed), 888 (if not fixed)".echo();
+
+/* Test 7: Return with Expression (FIXED?) */
+"Test 7: Return with Expression".echo();
+testFunc = op() {
+    a = 10;
+    b = 20;
+    return a + b;
+    999;  /* This should not execute if return works */
+};
+result = testFunc();
+"Return value: ".interpolate(result).echo();
+"Expected: 30 (if fixed), 999 (if not fixed)".echo();
+
+/* Test 8: Nested Control Flow (FIXED?) */
+"Test 8: Nested Control Flow".echo();
+testFunc = op() {
+    for i in [1, 2, 3, 4, 5] {
+        for j in [1, 2, 3] {
+            if (i == 3 && j == 2) {
+                return i * j;
+                999;  /* This should not execute if return works */
+            };
+        };
+    };
+    return 0;
+    888;  /* This should not execute if return works */
+};
+result = testFunc();
+"Return value: ".interpolate(result).echo();
+"Expected: 6 (if fixed), 888 (if not fixed)".echo();
+
+/* Test 9: Break in Nested Loops (should still work) */
+"Test 9: Break in Nested Loops".echo();
+outer_sum = 0;
+for i in [1, 2, 3] {
+    inner_sum = 0;
+    for j in [1, 2, 3, 4, 5] {
+        if (j == 4) {
+            break;
+        };
+        inner_sum += j;
+    };
+    outer_sum += inner_sum;
+};
+"Outer sum: ".interpolate(outer_sum).echo();
+"Expected: 18 (6+6+6)".echo();
+
+/* Test 10: Continue in Nested Loops (should still work) */
+"Test 10: Continue in Nested Loops".echo();
+sum = 0;
+for i in [1, 2, 3] {
+    if (i == 2) {
+        continue;
+    };
+    for j in [1, 2, 3] {
+        sum += i * j;
+    };
+};
+"Sum: ".interpolate(sum).echo();
+"Expected: 18 (1*1+1*2+1*3 + 3*1+3*2+3*3)".echo();
+
+/* Test 11: Return from Function with Scope (FIXED?) */
+"Test 11: Return from Function with Scope".echo();
+testFunc = op() {
+    local_var = 100;
+    if (local_var > 50) {
+        return local_var;
+        999;  /* This should not execute if return works */
+    };
+    return 0;
+    888;  /* This should not execute if return works */
+};
+result = testFunc();
+"Return value: ".interpolate(result).echo();
+"Expected: 100 (if fixed), 999 (if not fixed)".echo();
+
+/* Test 12: Exit Statement Test (FIXED?) */
+"Test 12: Exit Statement Test".echo();
+"Testing exit statement...".echo();
+"Note: This should terminate the program if exit works".echo();
+/* Uncomment to test exit:
+exit;
+'This should not print if exit works'.echo();
+*/
+
+/* Test 13: Simple Return Test (baseline) */
+"Test 13: Simple Return Test".echo();
+testFunc = op() {
+    return 42;
+    999;  /* This should not execute if return works */
+};
+result = testFunc();
+"Return value: ".interpolate(result).echo();
+"Expected: 42 (if fixed), 999 (if not fixed)".echo();
+
+"All control flow tests completed!".echo();
