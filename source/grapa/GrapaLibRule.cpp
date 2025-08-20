@@ -17711,11 +17711,11 @@ GrapaRuleEvent* GrapaLibraryRuleInterpolateEvent::Run(GrapaScriptExec* vScriptEx
 				varName.FROM(code.c_str());
 				//GrapaRuleEvent* varResult = vScriptExec->vScriptState->SearchVariable(pNameSpace, varName);
 
-				//GrapaRuleEvent* rulexx = vScriptExec->vScriptState->SearchVariable(pNameSpace, GrapaCHAR("$comp"));
+				GrapaRuleEvent* rulexx = vScriptExec->vScriptState->SearchVariable(pNameSpace, GrapaCHAR("$comp"));
 				//GrapaRuleEvent* plan = vScriptExec->Plan(pNameSpace, varName, rulexx, 0, GrapaCHAR());
 				//GrapaRuleEvent* codePtr = vScriptExec->ProcessPlan(pNameSpace, plan);
 
-				GrapaRuleEvent* codePtr = vScriptExec->Exec(pNameSpace, NULL, 0, GrapaCHAR(), varName);
+				GrapaRuleEvent* codePtr = vScriptExec->Exec(pNameSpace, rulexx, 0, GrapaCHAR(), varName);
 
 				//tokenExec.vScriptState->vScriptExec = saveTokenExec;
 
