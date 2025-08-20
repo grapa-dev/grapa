@@ -16168,6 +16168,7 @@ GrapaRuleEvent* GrapaLibraryRuleStrEvent::Run(GrapaScriptExec *vScriptExec, Grap
 		case GrapaTokenType::TABLE:
 		case GrapaTokenType::SYSSTR:
 		case GrapaTokenType::TIME:
+
 			result = new GrapaRuleEvent(0, item, r1.vVal->mValue.ToStr());
 			result->mValue.mToken = GrapaTokenType::STR;
 			break;
@@ -17744,6 +17745,7 @@ GrapaRuleEvent* GrapaLibraryRuleInterpolateEvent::Run(GrapaScriptExec* vScriptEx
 				*/
 				GrapaRuleEvent*  codeResult = codePtr;
 				while (codeResult && codeResult->mValue.mToken == GrapaTokenType::PTR && codeResult->vRulePointer) codeResult = codeResult->vRulePointer;
+				/*
 				if (codeResult && codeResult->mValue.mToken == GrapaTokenType::STR)
 				{
 					std::string codeResultStr = std::string(reinterpret_cast<const char*>(codeResult->mValue.mBytes), codeResult->mValue.mLength);
@@ -17753,6 +17755,79 @@ GrapaRuleEvent* GrapaLibraryRuleInterpolateEvent::Run(GrapaScriptExec* vScriptEx
 				{
 					// Convert non-string result to string using ToStr()
 					GrapaCHAR strResult = codeResult->mValue.ToStr();
+					resultStr += std::string(reinterpret_cast<const char*>(strResult.mBytes), strResult.mLength);
+				}
+				*/
+				if (codeResult)
+				{
+					GrapaCHAR strResult;
+					GrapaCHAR item;
+					GrapaInt a;
+					GrapaTime t;
+					switch (codeResult->mValue.mToken)
+					{
+					case GrapaTokenType::INT:
+					case GrapaTokenType::SYSINT:
+					case GrapaTokenType::BOOL:
+					case GrapaTokenType::RAW:
+					case GrapaTokenType::STR:
+					case GrapaTokenType::ID:
+					case GrapaTokenType::SYSID:
+					case GrapaTokenType::TABLE:
+					case GrapaTokenType::SYSSTR:
+					case GrapaTokenType::TIME:
+						strResult = codeResult->mValue.ToStr();
+						break;
+					case GrapaTokenType::FLOAT:
+					{
+						GrapaFloat d(vScriptExec->vScriptState->mItemState.mFloatFix, vScriptExec->vScriptState->mItemState.mFloatMax, vScriptExec->vScriptState->mItemState.mFloatExtra, 0);
+						d.FromBytes(codeResult->mValue);
+						strResult = d.ToString(10);
+					}
+					result->mValue.mToken = GrapaTokenType::STR;
+					break;
+					case GrapaTokenType::ERR:
+					case GrapaTokenType::ARRAY:
+					case GrapaTokenType::TUPLE:
+					case GrapaTokenType::LIST:
+					case GrapaTokenType::XML:
+					case GrapaTokenType::EL:
+					case GrapaTokenType::TAG:
+					case GrapaTokenType::OP:
+					case GrapaTokenType::RULEOP:
+					case GrapaTokenType::CODE:
+					case GrapaTokenType::OBJ:
+					case GrapaTokenType::VECTOR:
+						if (codeResult->mValue.mToken == GrapaTokenType::VECTOR)
+						{
+							codeResult->vVector->TO(vScriptExec, pNameSpace, NULL, strResult);
+						}
+						else
+						{
+							GrapaStrSend send;
+							GrapaRuleEvent* echo = codeResult;
+							while (echo->mValue.mToken == GrapaTokenType::PTR && echo->vRulePointer)
+								echo = echo->vRulePointer;
+							if (echo->mValue.mToken == GrapaTokenType::RULEOP)
+							{
+								echo = echo->vQueue->Tail();
+								while (echo->mValue.mToken == GrapaTokenType::PTR && echo->vRulePointer)
+									echo = echo->vRulePointer;
+							}
+							u64 size = 0;
+							echo->TOSize(size);
+							send.mBuff.SetSize(size);
+							send.mBuff.SetLength(0);
+							if (echo->vQueue)
+								vScriptExec->EchoList(&send, echo, false, false, false);
+							else
+								vScriptExec->EchoValue(&send, echo, false, true, false);
+							send.GetStr(strResult);
+						}
+						break;
+					default:
+						break;
+					}
 					resultStr += std::string(reinterpret_cast<const char*>(strResult.mBytes), strResult.mLength);
 				}
 				if (codePtr)
