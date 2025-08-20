@@ -105,6 +105,15 @@ list[-2] = 300;           /* Negative index assignment: {"e":5,"a":10,"c":300,"d
 list.a += 5;              /* Compound assignment: {"e":5,"a":15,"c":300,"d":4} */
 list.echo();
 
+/* Advanced: Recursive keys function using .getname() */
+keys = op(lst){lst.reduce(op(acc,x){if(x.type()==$LIST){acc += keys(x);}else{acc += 'x'.getname();}},[]);};
+
+obj = {name:"Alice", age:30, test:{a:1,b:2}, city:"NYC"};
+keys(obj).echo();  /* Outputs: [name,age,[a,b],city] */
+
+nested = {level1:{level2:{level3:"value"}}};
+keys(nested).echo();  /* Outputs: [level1,[level2,[level3]]] */
+
 /* Concatenation */
 arr1 = [1, 2, 3];
 arr2 = [4, 5, 6];

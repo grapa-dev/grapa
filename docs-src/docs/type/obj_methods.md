@@ -884,6 +884,21 @@ obj.getname(1);      /* Returns: property name at index 1 */
 **Parameters:**
 - `index` (default: null) - Index of the property
 
+**Advanced Usage - Recursive Keys Function:**
+```grapa
+/* Create a recursive .keys() function using .getname() */
+keys = op(lst){lst.reduce(op(acc,x){if(x.type()==$LIST){acc += keys(x);}else{acc += 'x'.getname();}},[]);};
+
+/* Usage examples */
+obj = {name:"Alice", age:30, test:{a:1,b:2}, city:"NYC"};
+keys(obj);  /* Returns: [name,age,[a,b],city] */
+
+nested = {level1:{level2:{level3:"value"}}};
+keys(nested);  /* Returns: [level1,[level2,[level3]]] */
+```
+
+This demonstrates how `.getname()` can be used with `.reduce()` to create powerful object introspection utilities.
+
 ### `.iferr(error)`
 Provides error fallback for operations.
 

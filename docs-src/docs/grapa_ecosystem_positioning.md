@@ -162,8 +162,8 @@ This table ranks programming languages across key capabilities, showing where Gr
 | Capability/Feature | **Grapa** | Python | JavaScript | TypeScript | Go | Rust | Swift | Kotlin | Ruby |
 |-------------------|-----------|--------|------------|------------|----|------|-------|--------|------|
 | **Meta-Programming** | **⭐⭐⭐⭐⭐ (Executable BNF, Runtime Grammar)** | ⭐⭐ (eval, inspect) | ⭐⭐ (eval, Proxy) | ⭐⭐ (eval, Proxy) | ⭐ (reflect) | ⭐⭐ (macros) | ⭐ (mirror) | ⭐⭐ (reflection) | ⭐⭐⭐ (eval, metaprogramming) |
-| **Dynamic Code Generation** | **⭐⭐⭐⭐⭐ (Human-readable Execution Trees)** | ⭐⭐ (exec, eval) | ⭐⭐ (Function constructor) | ⭐⭐ (Function constructor) | ⭐ (reflect) | ⭐⭐ (procedural macros) | ⭐ (mirror) | ⭐⭐ (reflection) | ⭐⭐⭐ (eval, define_method) |
-| **Multi-Syntax Processing** | **⭐⭐⭐ (JSON, XML, HTML Native - basic namespace)** | ⭐⭐ (json, xml libs) | ⭐⭐ (JSON native, xml libs) | ⭐⭐ (JSON native, xml libs) | ⭐⭐ (json, xml libs) | ⭐⭐ (serde) | ⭐⭐ (Codable) | ⭐⭐ (serialization) | ⭐⭐ (json, xml libs) |
+| **Dynamic Syntax Creation** | **⭐⭐⭐⭐⭐ (Human-readable Execution Trees)** | ⭐⭐ (exec, eval) | ⭐⭐ (Function constructor) | ⭐⭐ (Function constructor) | ⭐ (reflect) | ⭐⭐ (procedural macros) | ⭐ (mirror) | ⭐⭐ (reflection) | ⭐⭐⭐ (eval, define_method) |
+| **Multi-Syntax Processing** | **⭐⭐⭐⭐⭐ (JSON, XML, HTML Native + unified dot notation + .findall())** | ⭐⭐ (json, xml libs) | ⭐⭐ (JSON native, xml libs) | ⭐⭐ (JSON native, xml libs) | ⭐⭐ (json, xml libs) | ⭐⭐ (serde) | ⭐⭐ (Codable) | ⭐⭐ (serialization) | ⭐⭐ (json, xml libs) |
 | **Unlimited Precision Math** | **⭐⭐⭐⭐⭐ (Native $INT, $FLOAT, $TIME)** | ⭐⭐⭐ (decimal, mpmath) | ⭐⭐ (BigInt) | ⭐⭐ (BigInt) | ⭐⭐ (big.Int) | ⭐⭐ (num-bigint) | ⭐⭐ (BigInt) | ⭐⭐ (BigInteger) | ⭐⭐ (BigDecimal) |
 | **Pattern Matching** | **⭐⭐⭐⭐⭐ (100% ripgrep, Binary Support)** | ⭐⭐ (re module) | ⭐⭐ (RegExp) | ⭐⭐ (RegExp) | ⭐⭐ (regexp) | ⭐⭐⭐ (regex) | ⭐⭐ (NSRegularExpression) | ⭐⭐ (Regex) | ⭐⭐ (Regexp) |
 | **Parallel Processing** | **⭐⭐⭐⭐⭐ (Built-in Threading, No Setup)** | ⭐⭐ (multiprocessing) | ⭐⭐ (Web Workers) | ⭐⭐ (Web Workers) | ⭐⭐⭐ (goroutines) | ⭐⭐⭐ (async/await) | ⭐⭐ (GCD) | ⭐⭐ (coroutines) | ⭐⭐ (Thread) |
@@ -191,6 +191,7 @@ This table ranks programming languages across key capabilities, showing where Gr
 - **Grapa is competitive** in error handling, string interpolation, and file system access
 - **Grapa provides alternatives** for type safety and ecosystem maturity
 - **Grapa's unique strengths** are in areas where other languages require external libraries or complex setup
+- **Multi-syntax advantage**: Grapa's unified dot notation and `.findall()` method work identically across JSON, XML, and HTML, providing enterprise-grade querying capabilities, and developers can extend multi-syntax support with custom grammar rules
 
 ## When Grapa's Superior Capabilities Are Essential
 
