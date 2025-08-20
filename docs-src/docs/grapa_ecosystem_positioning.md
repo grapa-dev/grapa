@@ -163,7 +163,7 @@ This table ranks programming languages across key capabilities, showing where Gr
 |-------------------|-----------|--------|------------|------------|----|------|-------|--------|------|
 | **Meta-Programming** | **⭐⭐⭐⭐⭐ (Executable BNF, Runtime Grammar)** | ⭐⭐ (eval, inspect) | ⭐⭐ (eval, Proxy) | ⭐⭐ (eval, Proxy) | ⭐ (reflect) | ⭐⭐ (macros) | ⭐ (mirror) | ⭐⭐ (reflection) | ⭐⭐⭐ (eval, metaprogramming) |
 | **Dynamic Code Generation** | **⭐⭐⭐⭐⭐ (Human-readable Execution Trees)** | ⭐⭐ (exec, eval) | ⭐⭐ (Function constructor) | ⭐⭐ (Function constructor) | ⭐ (reflect) | ⭐⭐ (procedural macros) | ⭐ (mirror) | ⭐⭐ (reflection) | ⭐⭐⭐ (eval, define_method) |
-| **Multi-Syntax Processing** | **⭐⭐⭐⭐⭐ (JSON, XML, HTML Native)** | ⭐⭐ (json, xml libs) | ⭐⭐ (JSON native, xml libs) | ⭐⭐ (JSON native, xml libs) | ⭐⭐ (json, xml libs) | ⭐⭐ (serde) | ⭐⭐ (Codable) | ⭐⭐ (serialization) | ⭐⭐ (json, xml libs) |
+| **Multi-Syntax Processing** | **⭐⭐⭐ (JSON, XML, HTML Native - basic namespace)** | ⭐⭐ (json, xml libs) | ⭐⭐ (JSON native, xml libs) | ⭐⭐ (JSON native, xml libs) | ⭐⭐ (json, xml libs) | ⭐⭐ (serde) | ⭐⭐ (Codable) | ⭐⭐ (serialization) | ⭐⭐ (json, xml libs) |
 | **Unlimited Precision Math** | **⭐⭐⭐⭐⭐ (Native $INT, $FLOAT, $TIME)** | ⭐⭐⭐ (decimal, mpmath) | ⭐⭐ (BigInt) | ⭐⭐ (BigInt) | ⭐⭐ (big.Int) | ⭐⭐ (num-bigint) | ⭐⭐ (BigInt) | ⭐⭐ (BigInteger) | ⭐⭐ (BigDecimal) |
 | **Pattern Matching** | **⭐⭐⭐⭐⭐ (100% ripgrep, Binary Support)** | ⭐⭐ (re module) | ⭐⭐ (RegExp) | ⭐⭐ (RegExp) | ⭐⭐ (regexp) | ⭐⭐⭐ (regex) | ⭐⭐ (NSRegularExpression) | ⭐⭐ (Regex) | ⭐⭐ (Regexp) |
 | **Parallel Processing** | **⭐⭐⭐⭐⭐ (Built-in Threading, No Setup)** | ⭐⭐ (multiprocessing) | ⭐⭐ (Web Workers) | ⭐⭐ (Web Workers) | ⭐⭐⭐ (goroutines) | ⭐⭐⭐ (async/await) | ⭐⭐ (GCD) | ⭐⭐ (coroutines) | ⭐⭐ (Thread) |
