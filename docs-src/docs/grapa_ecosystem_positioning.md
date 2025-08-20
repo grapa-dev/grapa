@@ -157,90 +157,36 @@ Grapa **exceeds** modern languages in Extract, Transform, Load operations:
 
 ## Language Capability Comparison Matrix
 
-This comparison ranks programming languages across key capabilities, showing where Grapa excels and where it provides competitive alternatives.
+This table ranks programming languages across key capabilities, showing where Grapa excels and where it provides competitive alternatives.
 
-### **Grapa's Outstanding Capabilities (⭐⭐⭐⭐⭐)**
+| Capability/Feature | Python | JavaScript | TypeScript | Go | Rust | Swift | Kotlin | Ruby | **Grapa** |
+|-------------------|--------|------------|------------|----|------|-------|--------|------|-----------|
+| **Meta-Programming** | ⭐⭐ (eval, inspect) | ⭐⭐ (eval, Proxy) | ⭐⭐ (eval, Proxy) | ⭐ (reflect) | ⭐⭐ (macros) | ⭐ (mirror) | ⭐⭐ (reflection) | ⭐⭐⭐ (eval, metaprogramming) | **⭐⭐⭐⭐⭐ (Executable BNF, Runtime Grammar)** |
+| **Dynamic Code Generation** | ⭐⭐ (exec, eval) | ⭐⭐ (Function constructor) | ⭐⭐ (Function constructor) | ⭐ (reflect) | ⭐⭐ (procedural macros) | ⭐ (mirror) | ⭐⭐ (reflection) | ⭐⭐⭐ (eval, define_method) | **⭐⭐⭐⭐⭐ (Human-readable Execution Trees)** |
+| **Multi-Syntax Processing** | ⭐⭐ (json, xml libs) | ⭐⭐ (JSON native, xml libs) | ⭐⭐ (JSON native, xml libs) | ⭐⭐ (json, xml libs) | ⭐⭐ (serde) | ⭐⭐ (Codable) | ⭐⭐ (serialization) | ⭐⭐ (json, xml libs) | **⭐⭐⭐⭐⭐ (JSON, XML, HTML Native)** |
+| **Unlimited Precision Math** | ⭐⭐⭐ (decimal, mpmath) | ⭐⭐ (BigInt) | ⭐⭐ (BigInt) | ⭐⭐ (big.Int) | ⭐⭐ (num-bigint) | ⭐⭐ (BigInt) | ⭐⭐ (BigInteger) | ⭐⭐ (BigDecimal) | **⭐⭐⭐⭐⭐ (Native $INT, $FLOAT, $TIME)** |
+| **Pattern Matching** | ⭐⭐ (re module) | ⭐⭐ (RegExp) | ⭐⭐ (RegExp) | ⭐⭐ (regexp) | ⭐⭐⭐ (regex) | ⭐⭐ (NSRegularExpression) | ⭐⭐ (Regex) | ⭐⭐ (Regexp) | **⭐⭐⭐⭐⭐ (100% ripgrep, Binary Support)** |
+| **Parallel Processing** | ⭐⭐ (multiprocessing) | ⭐⭐ (Web Workers) | ⭐⭐ (Web Workers) | ⭐⭐⭐ (goroutines) | ⭐⭐⭐ (async/await) | ⭐⭐ (GCD) | ⭐⭐ (coroutines) | ⭐⭐ (Thread) | **⭐⭐⭐⭐⭐ (Built-in Threading, No Setup)** |
+| **Database Integration** | ⭐⭐ (SQLAlchemy, ORMs) | ⭐⭐ (IndexedDB, SQLite) | ⭐⭐ (IndexedDB, SQLite) | ⭐⭐ (database/sql) | ⭐⭐ (SQLx, Diesel) | ⭐⭐ (Core Data) | ⭐⭐ (Room, Exposed) | ⭐⭐ (Active Record) | **⭐⭐⭐⭐⭐ (Native $file().table())** |
+| **Type Safety** | ⭐⭐ (mypy, type hints) | ⭐ (dynamic) | ⭐⭐⭐⭐ (static) | ⭐⭐⭐⭐ (static) | ⭐⭐⭐⭐⭐ (static) | ⭐⭐⭐⭐ (static) | ⭐⭐⭐⭐ (static) | ⭐ (dynamic) | **⭐⭐⭐ (Runtime Type Checking)** |
+| **Error Handling** | ⭐⭐⭐ (try/except) | ⭐⭐ (try/catch) | ⭐⭐ (try/catch) | ⭐⭐⭐ (error returns) | ⭐⭐⭐⭐ (Result<T,E>) | ⭐⭐⭐ (do-catch) | ⭐⭐⭐ (try/catch) | ⭐⭐ (begin/rescue) | **⭐⭐⭐⭐ (try/catch/finally, .iferr())** |
+| **String Interpolation** | ⭐⭐⭐⭐ (f-strings) | ⭐⭐⭐⭐ (template literals) | ⭐⭐⭐⭐ (template literals) | ⭐⭐ (fmt.Sprintf) | ⭐⭐ (format!) | ⭐⭐⭐⭐ (string interpolation) | ⭐⭐⭐⭐ (string templates) | ⭐⭐⭐⭐ (string interpolation) | **⭐⭐⭐⭐⭐ (Advanced .interpolate())** |
+| **File System Access** | ⭐⭐⭐ (pathlib, os) | ⭐⭐ (fs module) | ⭐⭐ (fs module) | ⭐⭐⭐ (os, path) | ⭐⭐⭐ (std::fs) | ⭐⭐⭐ (FileManager) | ⭐⭐⭐ (java.nio) | ⭐⭐⭐ (File, Dir) | **⭐⭐⭐⭐⭐ (Native $file() Integration)** |
+| **Data Structure Flexibility** | ⭐⭐⭐ (lists, dicts) | ⭐⭐⭐ (arrays, objects) | ⭐⭐⭐ (arrays, objects) | ⭐⭐ (slices, maps) | ⭐⭐⭐ (Vec, HashMap) | ⭐⭐⭐ (Array, Dictionary) | ⭐⭐⭐ (List, Map) | ⭐⭐⭐ (Array, Hash) | **⭐⭐⭐⭐⭐ (Unified Cross-Format Access)** |
+| **Binary Data Processing** | ⭐⭐ (struct, binascii) | ⭐⭐ (ArrayBuffer) | ⭐⭐ (ArrayBuffer) | ⭐⭐⭐ (binary package) | ⭐⭐⭐⭐ (bytes, binary) | ⭐⭐ (Data) | ⭐⭐ (ByteArray) | ⭐⭐ (String#unpack) | **⭐⭐⭐⭐⭐ (Native Binary Support)** |
+| **Unicode Support** | ⭐⭐⭐ (native) | ⭐⭐⭐ (native) | ⭐⭐⭐ (native) | ⭐⭐ (unicode package) | ⭐⭐⭐ (unicode) | ⭐⭐⭐⭐ (native) | ⭐⭐⭐ (native) | ⭐⭐⭐ (native) | **⭐⭐⭐⭐⭐ (Native + Diacritic-Insensitive)** |
+| **Memory Management** | ⭐⭐ (GC) | ⭐⭐ (GC) | ⭐⭐ (GC) | ⭐⭐⭐ (GC) | ⭐⭐⭐⭐⭐ (manual) | ⭐⭐⭐⭐ (ARC) | ⭐⭐⭐ (GC) | ⭐⭐ (GC) | **⭐⭐⭐⭐ (Automatic + Thread-Safe)** |
+| **Performance** | ⭐⭐ (interpreted) | ⭐⭐ (JIT) | ⭐⭐ (JIT) | ⭐⭐⭐⭐ (compiled) | ⭐⭐⭐⭐⭐ (compiled) | ⭐⭐⭐⭐ (compiled) | ⭐⭐⭐ (JVM) | ⭐⭐ (interpreted) | **⭐⭐⭐⭐ (Compiled + Parallel)** |
+| **Ecosystem Maturity** | ⭐⭐⭐⭐⭐ (extensive) | ⭐⭐⭐⭐⭐ (extensive) | ⭐⭐⭐⭐⭐ (extensive) | ⭐⭐⭐⭐ (growing) | ⭐⭐⭐ (growing) | ⭐⭐⭐⭐ (Apple ecosystem) | ⭐⭐⭐⭐ (JVM ecosystem) | ⭐⭐⭐ (RubyGems) | **⭐⭐⭐ (Growing, Focused)** |
 
-**Meta-Programming**
-- **Grapa**: Executable BNF, Runtime Grammar
-- **Others**: eval/inspect (Python), Proxy (JS), macros (Rust), reflection (Kotlin)
-
-**Dynamic Code Generation**
-- **Grapa**: Human-readable Execution Trees
-- **Others**: exec/eval (Python), Function constructor (JS), procedural macros (Rust)
-
-**Multi-Syntax Processing**
-- **Grapa**: JSON, XML, HTML Native
-- **Others**: External libraries required (json/xml libs, serde, Codable)
-
-**Unlimited Precision Math**
-- **Grapa**: Native $INT, $FLOAT, $TIME
-- **Others**: External libraries (decimal/mpmath, BigInt, big.Int, num-bigint)
-
-**Pattern Matching**
-- **Grapa**: 100% ripgrep, Binary Support
-- **Others**: re module (Python), RegExp (JS), regex (Rust)
-
-**Parallel Processing**
-- **Grapa**: Built-in Threading, No Setup
-- **Others**: multiprocessing (Python), Web Workers (JS), goroutines (Go)
-
-**Database Integration**
-- **Grapa**: Native $file().table()
-- **Others**: ORMs required (SQLAlchemy, IndexedDB, database/sql)
-
-**String Interpolation**
-- **Grapa**: Advanced .interpolate()
-- **Others**: f-strings (Python), template literals (JS), format! (Rust)
-
-**File System Access**
-- **Grapa**: Native $file() Integration
-- **Others**: External modules (pathlib/os, fs module, std::fs)
-
-**Data Structure Flexibility**
-- **Grapa**: Unified Cross-Format Access
-- **Others**: Specialized collections (lists/dicts, arrays/objects, Vec/HashMap)
-
-**Binary Data Processing**
-- **Grapa**: Native Binary Support
-- **Others**: External libraries (struct/binascii, ArrayBuffer, bytes/binary)
-
-**Unicode Support**
-- **Grapa**: Native + Diacritic-Insensitive
-- **Others**: Basic native support, external packages for advanced features
-
-### **Grapa's Competitive Capabilities (⭐⭐⭐⭐)**
-
-**Error Handling**
-- **Grapa**: try/catch/finally, .iferr()
-- **Others**: try/except (Python), try/catch (JS), Result<T,E> (Rust)
-
-**Memory Management**
-- **Grapa**: Automatic + Thread-Safe
-- **Others**: GC (most), manual (Rust), ARC (Swift)
-
-**Performance**
-- **Grapa**: Compiled + Parallel
-- **Others**: Interpreted (Python/Ruby), JIT (JS), compiled (Go/Rust/Swift)
-
-### **Grapa's Alternative Approaches (⭐⭐⭐)**
-
-**Type Safety**
-- **Grapa**: Runtime Type Checking
-- **Others**: Static typing (TypeScript, Go, Rust, Swift, Kotlin)
-
-**Ecosystem Maturity**
-- **Grapa**: Growing, Focused
-- **Others**: Extensive (Python/JS), growing (Go/Rust), specialized (Swift/Kotlin)
-
-### **Rating Legend**
+**Legend:**
 - ⭐ = Basic support
 - ⭐⭐ = Good support  
 - ⭐⭐⭐ = Very good support
 - ⭐⭐⭐⭐ = Excellent support
 - ⭐⭐⭐⭐⭐ = Outstanding support
 
-### **Key Insights**
+**Key Insights:**
 - **Grapa excels** in meta-programming, dynamic code generation, multi-syntax processing, and unlimited precision math
 - **Grapa is competitive** in error handling, string interpolation, and file system access
 - **Grapa provides alternatives** for type safety and ecosystem maturity
