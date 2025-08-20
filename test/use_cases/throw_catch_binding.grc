@@ -1,0 +1,35 @@
+/* Test: Throw/Catch Variable Binding Issue
+ * 
+ * Testing if throw variable bindings are seamlessly accessible in catch blocks.
+ */
+
+("=== Testing Throw/Catch Variable Binding ===").echo();
+
+/* Test 1: Basic throw with object */
+("--- Test 1: Basic throw with object ---").echo();
+
+try {
+    throw {code: 404, message: "Not found"};
+} catch (e) {
+    ("Caught error: " + e).echo();
+    ("Error code: " + e.code).echo();
+    ("Error message: " + e.message).echo();
+}
+
+/* Test 2: Compare with regular object access */
+("--- Test 2: Compare with regular object access ---").echo();
+
+obj = {code: 404, message: "Not found"};
+("Regular object code: " + obj.code).echo();
+("Regular object message: " + obj.message).echo();
+
+/* Test 3: Simple string throw (should work) */
+("--- Test 3: Simple string throw ---").echo();
+
+try {
+    throw "simple error";
+} catch (e) {
+    ("Caught string: " + e).echo();
+}
+
+("=== Test Complete ===").echo();

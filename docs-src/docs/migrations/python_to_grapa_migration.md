@@ -24,7 +24,7 @@
 > - ✅ **Comprehensive comments**: `/* */`, `/** */`, `//`, `///` - Full commenting support
 > - ✅ **String interpolation**: `"Hello ${name}".interpolate()` - Template literal support
 > - ✅ **Enhanced operators**: `*=`, `/=`, `%=`, `**=` - Compound assignment operators
-> - ✅ **List comprehension**: `[x*2 for x in arr]` - Native list comprehension
+> 
 > - ✅ **Regex matching**: `text.match(pattern)` - Boolean pattern matching
 >
 > | Type      | .get("key") | .get(index) | Bracket Notation | Dot Notation | .len() | .size() |
@@ -91,7 +91,9 @@ This guide helps Python users transition to Grapa by mapping common Python idiom
 | `f"Hello {name}"` | `"Hello ${name}".interpolate()`<br>`"Hello " + name` (concatenation) |
 | `if (x := f()) > 0:` | `x = f(); if (x > 0) { ... }` |
 | `async def f(): await g()` | Use Grapa's built-in parallelism: `data.map(op(x) { process(x); }, 8)` |
-| `(x*2 for x in arr)` | `arr.map(op(x) { x * 2; })` (Grapa is eager by default)<br>`[x*2 for x in arr]` (list comprehension)<br>`[x*2 for x in arr]` (native list comprehension) |
+| `(x*2 for x in arr)` | `arr.map(op(x) { x * 2; })` (Grapa is eager by default) |
+| `[x*2 for x in arr if x > 0]` | `arr.filter(op(x) { x > 0; }).map(op(x) { x * 2; })` |
+| `[x for x in range(10) if x % 2 == 0]` | `(10).range().filter(op(x) { x % 2 == 0; })` |
 | `with open() as f:` | Use `$file()` methods directly: `content = $file().read("file.txt")` |
 | `@decorator` | Use function composition: `f = op() { decorator(original_func); }` |
 | `arr1 + arr2` | `arr1 += arr2` |
@@ -137,6 +139,35 @@ value = arr.get(1);     /* Returns 20 */
 
 - Use bracket notation or `.get(index)` for $ARRAY.
 - Dot notation and `.get("key")` are NOT valid for $ARRAY.
+
+### Array Comprehension Alternatives
+
+Python's list comprehensions can be replaced with Grapa's functional methods:
+
+```python
+# Python list comprehensions
+evens = [x for x in range(10) if x % 2 == 0]
+squares = [x*x for x in range(5) if x > 0]
+doubled = [x*2 for x in arr if x > 2]
+```
+
+```grapa
+// Grapa functional equivalents
+evens = (10).range().filter(op(x) { x % 2 == 0; });
+squares = (5).range().filter(op(x) { x > 0; }).map(op(x) { x * x; });
+doubled = arr.filter(op(x) { x > 2; }).map(op(x) { x * 2; });
+
+// With threading for performance
+large_result = (10000).range()
+    .filter(op(x) { x % 2 == 0; }, 8)      // 8 threads
+    .map(op(x) { x * x; }, 8);             // 8 threads
+```
+
+**Key advantages:**
+- **Explicit threading control** for performance optimization
+- **Functional programming style** with chainable operations
+- **Better performance** for large datasets
+- **Memory efficient** processing
 
 ### $file
 
@@ -292,8 +323,7 @@ squares = [x*x for x in range(10)]
 **Grapa:**
 ```grapa
 squares = (10).range(0,1).map(op(x) { x * x; });
-/* Or using list comprehension */
-squares = [x*x for x in 10];
+
 ```
 
 **Python:**
@@ -304,8 +334,7 @@ evens = [x for x in range(10) if x % 2 == 0]
 **Grapa:**
 ```grapa
 evens = (10).range(0,1).filter(op(x) { x % 2 == 0; });
-/* Or using list comprehension */
-evens = [x for x in 10 if x % 2 == 0];
+
 ```
 
 **Python:**

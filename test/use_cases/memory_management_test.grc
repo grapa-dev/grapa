@@ -1,0 +1,218 @@
+/* Memory Management Test
+ * 
+ * This test verifies if there are memory management issues in Grapa,
+ * including memory leaks, buffer overflows, and null pointer dereferences.
+ */
+
+("=== Memory Management Test ===").echo();
+
+/* Test 1: Large Array Operations */
+("--- Test 1: Large Array Operations ---").echo();
+
+// Test memory allocation for large arrays
+large_array = (10000).range();
+("Large array created with " + large_array.len() + " elements").echo();
+
+// Test array operations that might cause memory issues
+doubled = large_array.map(op(x) { x * 2; });
+("Doubled array created").echo();
+
+filtered = large_array.filter(op(x) { x % 2 == 0; });
+("Filtered array created with " + filtered.len() + " elements").echo();
+
+// Test nested operations
+nested_result = large_array.map(op(x) { 
+    x * 2; 
+}).filter(op(x) { 
+    x % 4 == 0; 
+}).map(op(x) { 
+    x / 4; 
+});
+("Nested operations completed with " + nested_result.len() + " elements").echo();
+
+/* Test 2: String Memory Operations */
+("--- Test 2: String Memory Operations ---").echo();
+
+// Test large string operations
+large_string = "";
+i = 0;
+while (i < 1000) {
+    large_string += "test_string_" + i + "_";
+    i += 1;
+}
+("Large string created with length: " + large_string.len()).echo();
+
+// Test string operations
+upper_string = large_string.upper();
+("String upper case operation completed").echo();
+
+split_string = large_string.split("_");
+("String split operation completed with " + split_string.len() + " parts").echo();
+
+/* Test 3: Object Memory Operations */
+("--- Test 3: Object Memory Operations ---").echo();
+
+// Test large object creation
+large_object = {};
+i = 0;
+while (i < 1000) {
+    large_object["key_" + i] = "value_" + i;
+    i += 1;
+}
+("Large object created with " + large_object.keys().len() + " keys").echo();
+
+// Test object operations
+object_values = large_object.values();
+("Object values extracted").echo();
+
+object_keys = large_object.keys();
+("Object keys extracted").echo();
+
+/* Test 4: Recursive Function Calls */
+("--- Test 4: Recursive Function Calls ---").echo();
+
+// Test recursive function that might cause stack overflow
+factorial = op(n) {
+    if (n <= 1) {
+        1;
+    } else {
+        n * factorial(n - 1);
+    }
+};
+
+// Test with moderate recursion depth
+result = factorial(10);
+("Factorial 10 = " + result).echo();
+
+/* Test 5: Complex Type Checking */
+("--- Test 5: Complex Type Checking ---").echo();
+
+// Test complex type checking operations that might cause memory issues
+complex_type_check = op(value) {
+    if (value.type() == $INT) {
+        "Integer: " + value;
+    } else if (value.type() == $STR) {
+        "String: " + value;
+    } else if (value.type() == $ARRAY) {
+        "Array with " + value.len() + " elements";
+    } else if (value.type() == $LIST) {
+        "List with " + value.keys().len() + " keys";
+    } else if (value.type() == $FLOAT) {
+        "Float: " + value;
+    } else {
+        "Unknown type: " + value.type();
+    }
+};
+
+// Test with various types
+test_values = [42, "hello", [1, 2, 3], {a: 1, b: 2}, 3.14];
+results = test_values.map(op(value) { complex_type_check(value); });
+("Complex type checking completed for " + results.len() + " values").echo();
+
+/* Test 6: Memory-Intensive Operations */
+("--- Test 6: Memory-Intensive Operations ---").echo();
+
+// Test operations that might cause memory pressure
+memory_intensive = op() {
+    arrays = [];
+    i = 0;
+    while (i < 100) {
+        arrays += [(i * 1000).range()];
+        i += 1;
+    }
+    arrays;
+};
+
+arrays = memory_intensive();
+("Memory-intensive operation completed with " + arrays.len() + " arrays").echo();
+
+/* Test 7: Null Pointer Safety */
+("--- Test 7: Null Pointer Safety ---").echo();
+
+// Test operations with null/empty values
+null_tests = [
+    null,
+    "",
+    [],
+    {}
+];
+
+null_results = null_tests.map(op(value) {
+    if (value == null) {
+        "NULL value";
+    } else if (value.type() == $STR && value.len() == 0) {
+        "Empty string";
+    } else if (value.type() == $ARRAY && value.len() == 0) {
+        "Empty array";
+    } else if (value.type() == $LIST && value.keys().len() == 0) {
+        "Empty object";
+    } else {
+        "Other: " + value.type();
+    }
+});
+("Null pointer safety tests completed").echo();
+
+/* Test 8: Buffer Operations */
+("--- Test 8: Buffer Operations ---").echo();
+
+// Test operations that might cause buffer overflows
+buffer_test = op() {
+    data = [];
+    i = 0;
+    while (i < 10000) {
+        data += [i];
+        i += 1;
+    }
+    
+    // Test various buffer operations
+    data.map(op(x) { x * 2; });
+    data.filter(op(x) { x % 2 == 0; });
+    data.reduce(op(acc, x) { acc + x; }, 0);
+    
+    "Buffer operations completed";
+};
+
+buffer_result = buffer_test();
+(buffer_result).echo();
+
+/* Test 9: Memory Cleanup */
+("--- Test 9: Memory Cleanup ---").echo();
+
+// Test if memory is properly cleaned up after operations
+cleanup_test = op() {
+    // Create temporary data
+    temp_data = (1000).range().map(op(x) { x * x; });
+    temp_string = "temporary_string_for_cleanup_test";
+    temp_object = {temp: "data", for: "cleanup", test: "purposes"};
+    
+    // Perform operations
+    result = temp_data.filter(op(x) { x % 2 == 0; }).len();
+    
+    // Return result (temporary data should be cleaned up)
+    result;
+};
+
+cleanup_result = cleanup_test();
+("Memory cleanup test completed with result: " + cleanup_result).echo();
+
+/* Test 10: Stress Test */
+("--- Test 10: Stress Test ---").echo();
+
+// Final stress test to check for memory issues
+stress_test = op() {
+    results = [];
+    i = 0;
+    while (i < 100) {
+        // Create and destroy data repeatedly
+        data = (100).range().map(op(x) { x * i; });
+        filtered = data.filter(op(x) { x % 2 == 0; });
+        results += [filtered.len()];
+        i += 1;
+    }
+    results.reduce(op(acc, x) { acc + x; }, 0);
+};
+
+stress_result = stress_test();
+("Stress test completed with total: " + stress_result).echo();
+
+("=== Memory Management Test Complete ===").echo();

@@ -1,0 +1,33 @@
+/* Working Closure Mutation Example
+ * 
+ * This demonstrates that closure mutation CAN work in some cases.
+ */
+
+("=== Working Closure Mutation Example ===").echo();
+
+// Create the mutator function as shown by the user
+create_mutator = op() {
+    {
+        obj: {value: 0},
+        mutate: op() { obj.value += 1; },
+        get: op() { obj.value; }
+    };
+};
+
+// Create the mutator
+mutator = create_mutator();
+("Mutator created").echo();
+
+// Show initial state
+("Initial mutator:").echo();
+mutator.echo();
+
+// Try to mutate
+("Calling mutator.mutate()...").echo();
+mutator.mutate();
+
+// Show final state
+("Final mutator:").echo();
+mutator.echo();
+
+("=== Test Complete ===").echo();

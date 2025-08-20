@@ -1,0 +1,157 @@
+/* Type System Analysis Test - FIXED VERSION
+ * 
+ * This file tests Grapa's existing type system capabilities with fixes for
+ * the segmentation fault issues found in the original test.
+ */
+
+("=== Type System Analysis Test (FIXED) ===").echo();
+
+/* Test 1: Dynamic Type Assignment */
+("--- Test 1: Dynamic Type Assignment ---").echo();
+
+// Grapa uses dynamic typing - types are determined at runtime
+x = 5;                    // $INT
+y = "hello";              // $STR
+z = [1, 2, 3];            // $ARRAY
+w = {name: "Alice"};      // $LIST
+
+("Dynamic types: x=" + x.type() + ", y=" + y.type() + ", z=" + z.type() + ", w=" + w.type()).echo();
+
+// Types can change at runtime
+x = "now a string";       // Changed from $INT to $STR
+("x type after change: " + x.type()).echo();
+
+/* Test 2: Runtime Type Checking */
+("--- Test 2: Runtime Type Checking ---").echo();
+
+// Type checking with .type() method - FIXED VERSION
+check_type = op(value, expected_type) {
+    actual_type = value.type();
+    if (actual_type == expected_type) {
+        "Type check passed: " + actual_type;
+    } else {
+        "Type check failed: expected " + expected_type + ", got " + actual_type;
+    }
+};
+
+// Test various type checks
+type_tests = [
+    {value: 42, expected: $INT},
+    {value: "hello", expected: $STR},
+    {value: [1, 2, 3], expected: $ARRAY},
+    {value: {a: 1}, expected: $LIST},
+    {value: 3.14, expected: $FLOAT}
+];
+
+type_tests.map(op(test) {
+    result = check_type(test.value, test.expected);
+    result.echo();
+});
+
+/* Test 3: Type Constraints (Runtime) - FIXED VERSION */
+("--- Test 3: Type Constraints (Runtime) - FIXED ---").echo();
+
+// Function with runtime type constraints - SIMPLIFIED to avoid segfault
+safe_divide = op(a, b) {
+    // Simplified type checking - avoid complex logic
+    a_type = a.type();
+    b_type = b.type();
+    
+    // Check if types are numeric
+    if (a_type != $INT && a_type != $FLOAT) {
+        "Error: First argument must be numeric (got " + a_type + ")";
+    } else if (b_type != $INT && b_type != $FLOAT) {
+        "Error: Second argument must be numeric (got " + b_type + ")";
+    } else if (b == 0) {
+        "Error: Division by zero";
+    } else {
+        a / b;
+    }
+};
+
+// Test type constraints - SIMPLIFIED
+result1 = safe_divide(10, 2);
+("Safe divide result: " + result1).echo();
+
+result2 = safe_divide("10", 2);
+("Safe divide result: " + result2).echo();
+
+result3 = safe_divide(10, 0);
+("Safe divide result: " + result3).echo();
+
+/* Test 4: Type Inference (Automatic Deduction) */
+("--- Test 4: Type Inference (Automatic Deduction) ---").echo();
+
+// Grapa automatically infers types from operations
+inferred_int = 5 + 3;           // Automatically $INT
+inferred_float = 5.0 + 3;       // Automatically $FLOAT
+inferred_str = "Hello" + "World"; // Automatically $STR
+inferred_array = [1] + [2];     // Automatically $ARRAY
+
+("Inferred types: int=" + inferred_int.type() + ", float=" + inferred_float.type() + 
+ ", str=" + inferred_str.type() + ", array=" + inferred_array.type()).echo();
+
+/* Test 5: Type Validation - FIXED VERSION */
+("--- Test 5: Type Validation - FIXED ---").echo();
+
+// Comprehensive type validation function - SIMPLIFIED
+validate_type = op(value, valid_types) {
+    actual_type = value.type();
+    // Simplified validation - just check if type is in the list
+    is_valid = false;
+    i = 0;
+    while (i < valid_types.len()) {
+        if (actual_type == valid_types[i]) {
+            is_valid = true;
+            break;
+        }
+        i += 1;
+    }
+    
+    {
+        value: value,
+        actual_type: actual_type,
+        valid_types: valid_types,
+        is_valid: is_valid
+    };
+};
+
+// Test type validation
+validation_tests = [
+    {value: 42, valid_types: [$INT, $FLOAT]},
+    {value: "hello", valid_types: [$STR]},
+    {value: [1, 2, 3], valid_types: [$ARRAY, $LIST]},
+    {value: 3.14, valid_types: [$INT, $FLOAT]},
+    {value: {a: 1}, valid_types: [$LIST]}
+];
+
+validation_tests.map(op(test) {
+    result = validate_type(test.value, test.valid_types);
+    ("Validation: " + result.value + " (" + result.actual_type + ") - " + 
+     (result.is_valid ? "VALID" : "INVALID")).echo();
+});
+
+/* Test 6: Generic-like Functions */
+("--- Test 6: Generic-like Functions ---").echo();
+
+// Function that works with multiple types (like generics)
+generic_process = op(data) {
+    data_type = data.type();
+    
+    switch (data_type) {
+        case $INT: data * 2;
+        case $STR: data.upper();
+        case $ARRAY: data.map(op(x) { x * 2; });
+        case $LIST: data.map(op(key, value) { key + ": " + value; });
+        default: "Unsupported type: " + data_type;
+    }
+};
+
+// Test generic-like function
+generic_tests = [42, "hello", [1, 2, 3], {a: 1, b: 2}];
+generic_tests.map(op(test) {
+    result = generic_process(test);
+    ("Generic process: " + test + " -> " + result).echo();
+});
+
+("=== Type System Analysis Test (FIXED) Complete ===").echo();

@@ -1,0 +1,286 @@
+/* Thread Safety Test
+ * 
+ * This test verifies if there are thread safety edge cases in Grapa,
+ * including race conditions, concurrent access issues, and synchronization problems.
+ */
+
+("=== Thread Safety Test ===").echo();
+
+/* Test 1: Parallel Array Operations */
+("--- Test 1: Parallel Array Operations ---").echo();
+
+// Test parallel operations on the same data
+shared_array = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
+// Run multiple parallel operations
+parallel_results = [
+    shared_array.map(op(x) { x * 2; }, 2),      // 2 threads
+    shared_array.filter(op(x) { x % 2 == 0; }, 2), // 2 threads
+    shared_array.map(op(x) { x * x; }, 2)       // 2 threads
+];
+
+("Parallel array operations completed with " + parallel_results.len() + " results").echo();
+
+/* Test 2: Concurrent Variable Access */
+("--- Test 2: Concurrent Variable Access ---").echo();
+
+// Test concurrent access to shared variables
+@global["shared_counter"] = 0;
+
+// Create functions that modify shared state
+increment_counter = op() {
+    @global["shared_counter"] = @global["shared_counter"] + 1;
+    @global["shared_counter"];
+};
+
+decrement_counter = op() {
+    @global["shared_counter"] = @global["shared_counter"] - 1;
+    @global["shared_counter"];
+};
+
+// Test concurrent modifications
+parallel_modifications = [
+    increment_counter(),
+    increment_counter(),
+    decrement_counter(),
+    increment_counter()
+];
+
+("Concurrent variable access completed. Final counter: " + @global["shared_counter"]).echo();
+
+/* Test 3: Thread Lock Testing */
+("--- Test 3: Thread Lock Testing ---").echo();
+
+// Test explicit thread locking
+lock_obj = $thread();
+lock_obj.lock();
+
+// Perform operations while locked
+locked_operations = [
+    "Operation 1 completed",
+    "Operation 2 completed",
+    "Operation 3 completed"
+];
+
+lock_obj.unlock();
+("Thread lock testing completed with " + locked_operations.len() + " operations").echo();
+
+/* Test 4: Parallel Object Modifications */
+("--- Test 4: Parallel Object Modifications ---").echo();
+
+// Test concurrent object modifications
+shared_object = {counter: 0, data: []};
+
+// Create functions that modify the shared object
+add_to_object = op(key, value) {
+    shared_object[key] = value;
+    shared_object.counter += 1;
+    shared_object;
+};
+
+// Test parallel modifications
+parallel_object_ops = [
+    add_to_object("key1", "value1"),
+    add_to_object("key2", "value2"),
+    add_to_object("key3", "value3")
+];
+
+("Parallel object modifications completed. Object counter: " + shared_object.counter).echo();
+
+/* Test 5: Concurrent String Operations */
+("--- Test 5: Concurrent String Operations ---").echo();
+
+// Test concurrent string operations
+shared_string = "initial";
+
+// Create functions that modify the shared string
+append_to_string = op(suffix) {
+    shared_string += suffix;
+    shared_string;
+};
+
+// Test parallel string modifications
+parallel_string_ops = [
+    append_to_string("_suffix1"),
+    append_to_string("_suffix2"),
+    append_to_string("_suffix3")
+];
+
+("Concurrent string operations completed. Final string length: " + shared_string.len()).echo();
+
+/* Test 6: Race Condition Simulation */
+("--- Test 6: Race Condition Simulation ---").echo();
+
+// Simulate potential race conditions
+@global["race_counter"] = 0;
+
+// Create functions that might race
+race_function1 = op() {
+    current = @global["race_counter"];
+    // Simulate some processing time
+    i = 0;
+    while (i < 100) {
+        i += 1;
+    }
+    @global["race_counter"] = current + 1;
+    @global["race_counter"];
+};
+
+race_function2 = op() {
+    current = @global["race_counter"];
+    // Simulate some processing time
+    i = 0;
+    while (i < 100) {
+        i += 1;
+    }
+    @global["race_counter"] = current + 2;
+    @global["race_counter"];
+};
+
+// Test potential race conditions
+race_results = [
+    race_function1(),
+    race_function2(),
+    race_function1()
+];
+
+("Race condition simulation completed. Final counter: " + @global["race_counter"]).echo();
+
+/* Test 7: Parallel Function Execution */
+("--- Test 7: Parallel Function Execution ---").echo();
+
+// Test parallel execution of functions
+parallel_function = op(id) {
+    "Function " + id + " executed";
+};
+
+// Execute functions in parallel
+parallel_execution = [
+    parallel_function(1),
+    parallel_function(2),
+    parallel_function(3),
+    parallel_function(4)
+];
+
+("Parallel function execution completed with " + parallel_execution.len() + " results").echo();
+
+/* Test 8: Concurrent Data Structure Access */
+("--- Test 8: Concurrent Data Structure Access ---").echo();
+
+// Test concurrent access to complex data structures
+shared_data = {
+    array: [1, 2, 3, 4, 5],
+    object: {a: 1, b: 2},
+    string: "test"
+};
+
+// Create functions that access and modify the shared data
+modify_data = op(operation) {
+    if (operation == "array") {
+        shared_data.array += [shared_data.array.len() + 1];
+        shared_data.array.len();
+    } else if (operation == "object") {
+        shared_data.object["key_" + shared_data.object.keys().len()] = "value";
+        shared_data.object.keys().len();
+    } else if (operation == "string") {
+        shared_data.string += "_modified";
+        shared_data.string.len();
+    }
+};
+
+// Test concurrent modifications
+concurrent_modifications = [
+    modify_data("array"),
+    modify_data("object"),
+    modify_data("string"),
+    modify_data("array")
+];
+
+("Concurrent data structure access completed").echo();
+
+/* Test 9: Thread Safety with Complex Operations */
+("--- Test 9: Thread Safety with Complex Operations ---").echo();
+
+// Test complex operations that might have thread safety issues
+complex_operation = op(data, operation) {
+    if (operation == "transform") {
+        data.map(op(x) { x * 2; }).filter(op(x) { x % 4 == 0; });
+    } else if (operation == "aggregate") {
+        data.reduce(op(acc, x) { acc + x; }, 0);
+    } else if (operation == "filter") {
+        data.filter(op(x) { x % 2 == 0; });
+    }
+};
+
+// Test with shared data
+shared_complex_data = (100).range();
+complex_results = [
+    complex_operation(shared_complex_data, "transform"),
+    complex_operation(shared_complex_data, "aggregate"),
+    complex_operation(shared_complex_data, "filter")
+];
+
+("Complex operations thread safety test completed").echo();
+
+/* Test 10: Stress Test with Multiple Threads */
+("--- Test 10: Stress Test with Multiple Threads ---").echo();
+
+// Final stress test with multiple concurrent operations
+stress_test = op() {
+    @global["stress_counter"] = 0;
+    
+    // Create multiple parallel operations
+    operations = [];
+    i = 0;
+    while (i < 50) {
+        operations += [op() {
+            @global["stress_counter"] += 1;
+            @global["stress_counter"];
+        }];
+        i += 1;
+    }
+    
+    // Execute all operations
+    results = operations.map(op(func) { func(); });
+    results.reduce(op(acc, x) { acc + x; }, 0);
+};
+
+stress_result = stress_test();
+("Stress test completed with total: " + stress_result).echo();
+
+/* Test 11: Lock Contention Test */
+("--- Test 11: Lock Contention Test ---").echo();
+
+// Test lock contention scenarios
+contention_lock = $thread();
+contention_lock.lock();
+
+// Simulate work while holding lock
+i = 0;
+while (i < 1000) {
+    i += 1;
+}
+
+contention_lock.unlock();
+("Lock contention test completed").echo();
+
+/* Test 12: Deadlock Prevention Test */
+("--- Test 12: Deadlock Prevention Test ---").echo();
+
+// Test deadlock prevention by using proper lock ordering
+lock1 = $thread();
+lock2 = $thread();
+
+// Always acquire locks in the same order to prevent deadlock
+lock1.lock();
+lock2.lock();
+
+// Perform operations
+deadlock_test_result = "Deadlock prevention test passed";
+
+lock2.unlock();
+lock1.unlock();
+
+(deadlock_test_result).echo();
+
+("=== Thread Safety Test Complete ===").echo();

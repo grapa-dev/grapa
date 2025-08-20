@@ -1,0 +1,307 @@
+/* Advanced Data Structures Analysis Test - FIXED VERSION
+ * 
+ * This file tests Grapa's existing advanced data structure capabilities with fixes for
+ * the infinite loop issues found in the original test.
+ */
+
+("=== Advanced Data Structures Analysis Test (FIXED) ===").echo();
+
+/* Test 1: Set-like Functionality */
+("--- Test 1: Set-like Functionality ---").echo();
+
+// Grapa can implement Set-like behavior using arrays with unique values
+create_set = op(items) {
+    // Remove duplicates to create set-like behavior
+    items.unique();
+};
+
+// Test set operations
+set1 = create_set([1, 2, 3, 3, 4, 4, 5]);
+set2 = create_set([3, 4, 5, 6, 7]);
+
+("Set 1: " + set1).echo();
+("Set 2: " + set2).echo();
+
+// Set union (combine and remove duplicates)
+set_union = (set1 + set2).unique();
+("Set union: " + set_union).echo();
+
+// Set intersection (find common elements)
+set_intersection = set1.filter(op(item) { set2.grep(item).len() > 0; });
+("Set intersection: " + set_intersection).echo();
+
+// Set difference (elements in set1 but not in set2)
+set_difference = set1.filter(op(item) { set2.grep(item).len() == 0; });
+("Set difference: " + set_difference).echo();
+
+/* Test 2: Map-like Functionality */
+("--- Test 2: Map-like Functionality ---").echo();
+
+// Grapa can implement Map-like behavior using objects ($LIST)
+create_map = op(key_value_pairs) {
+    map_obj = {};
+    key_value_pairs.map(op(pair) {
+        map_obj[pair.key] = pair.value;
+    });
+    map_obj;
+};
+
+// Test map operations
+map_data = [
+    {key: "name", value: "Alice"},
+    {key: "age", value: 30},
+    {key: "city", value: "NY"}
+];
+
+map_obj = create_map(map_data);
+("Map object: " + map_obj).echo();
+
+// Map get operation
+map_get = op(map_obj, key, default_value) {
+    if (map_obj[key] != null) {
+        map_obj[key];
+    } else {
+        default_value;
+    }
+};
+
+// Map set operation
+map_set = op(map_obj, key, value) {
+    map_obj[key] = value;
+    map_obj;
+};
+
+// Test map operations
+name = map_get(map_obj, "name", "Unknown");
+age = map_get(map_obj, "age", 0);
+country = map_get(map_obj, "country", "Unknown");
+
+("Map get - name: " + name + ", age: " + age + ", country: " + country).echo();
+
+// Update map
+map_obj = map_set(map_obj, "country", "USA");
+map_obj = map_set(map_obj, "age", 31);
+("Updated map: " + map_obj).echo();
+
+/* Test 3: Weak Reference Patterns */
+("--- Test 3: Weak Reference Patterns ---").echo();
+
+// Grapa can implement weak reference patterns using function closures
+create_weak_ref = op(target) {
+    // Create a weak reference pattern using closure
+    op() { target; };
+};
+
+// Test weak reference
+original_data = {name: "Alice", data: [1, 2, 3]};
+weak_ref = create_weak_ref(original_data);
+
+// Access through weak reference
+accessed_data = weak_ref();
+("Weak ref access: " + accessed_data).echo();
+
+// Weak reference with cleanup
+create_managed_ref = op(target, cleanup_func) {
+    ref_count = 1;
+    
+    {
+        get: op() { 
+            if (ref_count > 0) {
+                target;
+            } else {
+                null;
+            }
+        },
+        release: op() {
+            ref_count -= 1;
+            if (ref_count <= 0) {
+                cleanup_func();
+                null;
+            } else {
+                ref_count;
+            }
+        },
+        retain: op() {
+            ref_count += 1;
+            ref_count;
+        }
+    };
+};
+
+// Test managed reference
+cleanup_called = false;
+cleanup = op() { cleanup_called = true; };
+
+managed_ref = create_managed_ref({data: "important"}, cleanup);
+("Managed ref created").echo();
+
+data = managed_ref.get();
+("Managed ref data: " + data).echo();
+
+ref_count = managed_ref.retain();
+("Retained, count: " + ref_count).echo();
+
+ref_count = managed_ref.release();
+("Released, count: " + ref_count).echo();
+
+ref_count = managed_ref.release();
+("Released again, count: " + ref_count).echo();
+
+("Cleanup called: " + cleanup_called).echo();
+
+/* Test 4: Iterator Protocols - FIXED VERSION */
+("--- Test 4: Iterator Protocols - FIXED ---").echo();
+
+// Grapa can implement iterator protocols using functions - FIXED VERSION
+create_iterator = op(collection) {
+    // Use a mutable state object to avoid closure capture issues
+    state = {index: 0, collection: collection};
+    
+    {
+        has_next: op() { state.index < state.collection.len(); },
+        next: op() { 
+            if (state.index < state.collection.len()) {
+                item = state.collection[state.index];
+                state.index += 1;
+                item;
+            } else {
+                null;
+            }
+        },
+        reset: op() { state.index = 0; },
+        current: op() { 
+            if (state.index > 0 && state.index <= state.collection.len()) {
+                state.collection[state.index - 1];
+            } else {
+                null;
+            }
+        }
+    };
+};
+
+// Test iterator - FIXED VERSION
+iterator = create_iterator([1, 2, 3, 4, 5]);
+
+("Iterator test:").echo();
+while (iterator.has_next()) {
+    item = iterator.next();
+    ("  Next: " + item).echo();
+}
+
+// Reset and test again
+iterator.reset();
+("Iterator reset test:").echo();
+while (iterator.has_next()) {
+    item = iterator.next();
+    ("  Next: " + item).echo();
+}
+
+/* Test 5: Custom Iteration - FIXED VERSION */
+("--- Test 5: Custom Iteration - FIXED ---").echo();
+
+// Custom iteration patterns - FIXED VERSION
+custom_range = op(start, end, step) {
+    // Use mutable state object to avoid closure capture issues
+    state = {current: start, end: end, step: step};
+    
+    {
+        has_next: op() { state.current <= state.end; },
+        next: op() { 
+            if (state.current <= state.end) {
+                result = state.current;
+                state.current += state.step;
+                result;
+            } else {
+                null;
+            }
+        }
+    };
+};
+
+// Test custom range iterator - FIXED VERSION
+range_iter = custom_range(0, 10, 2);
+("Custom range (0-10, step 2):").echo();
+while (range_iter.has_next()) {
+    value = range_iter.next();
+    ("  " + value).echo();
+}
+
+// Custom object iterator - FIXED VERSION
+object_iterator = op(obj) {
+    keys = obj.keys();
+    state = {index: 0, keys: keys, obj: obj};
+    
+    {
+        has_next: op() { state.index < state.keys.len(); },
+        next: op() { 
+            if (state.index < state.keys.len()) {
+                key = state.keys[state.index];
+                state.index += 1;
+                {key: key, value: state.obj[key]};
+            } else {
+                null;
+            }
+        }
+    };
+};
+
+// Test object iterator - FIXED VERSION
+test_obj = {name: "Alice", age: 30, city: "NY"};
+obj_iter = object_iterator(test_obj);
+
+("Object iterator:").echo();
+while (obj_iter.has_next()) {
+    item = obj_iter.next();
+    ("  " + item.key + ": " + item.value).echo();
+}
+
+/* Test 6: Advanced Data Structure Patterns */
+("--- Test 6: Advanced Data Structure Patterns ---").echo();
+
+// Priority queue using array
+create_priority_queue = op() {
+    items = [];
+    
+    {
+        enqueue: op(item, priority) {
+            items += [{item: item, priority: priority}];
+            // Sort by priority (higher priority first)
+            items = items.sort(op(a, b) { b.priority - a.priority; });
+        },
+        dequeue: op() {
+            if (items.len() > 0) {
+                item = items[0];
+                items = items.slice(1);
+                item.item;
+            } else {
+                null;
+            }
+        },
+        peek: op() {
+            if (items.len() > 0) {
+                items[0].item;
+            } else {
+                null;
+            }
+        },
+        size: op() { items.len(); },
+        empty: op() { items.len() == 0; }
+    };
+};
+
+// Test priority queue
+pq = create_priority_queue();
+pq.enqueue("Task A", 1);
+pq.enqueue("Task B", 3);
+pq.enqueue("Task C", 2);
+
+("Priority queue test:").echo();
+("Size: " + pq.size()).echo();
+("Peek: " + pq.peek()).echo();
+
+while (!pq.empty()) {
+    item = pq.dequeue();
+    ("  Dequeued: " + item).echo();
+}
+
+("=== Advanced Data Structures Analysis Test (FIXED) Complete ===").echo();

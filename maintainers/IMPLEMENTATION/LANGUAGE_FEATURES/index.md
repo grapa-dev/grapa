@@ -37,7 +37,7 @@ Language features provide the foundation for Grapa's dynamic syntax, custom comm
 - [Enhanced Assignment Operators Implementation](ENHANCED_ASSIGNMENT_OPERATORS_IMPLEMENTATION.md) - ✅ **COMPLETED** - Implementation of `*=`, `/=`, `%=`, `**=` operators with type-specific arithmetic operations
 
 ### Language Extensions
-- [List Comprehension Implementation](LIST_COMPREHENSION_IMPLEMENTATION.md) - ✅ **COMPLETED** - Native list comprehension with temporary namespace management and variable scoping
+
 - [Unified Dot Notation System](UNIFIED_DOT_NOTATION_SYSTEM.md) - Unified dot notation system for accessing data across JSON, XML, HTML, and other complex structures
 - [Match Method Implementation](MATCH_METHOD_IMPLEMENTATION.md) - Boolean wrapper around grep functionality for pattern testing with full parameter support and error handling
 - [Extension System Implementation](EXTENSION_SYSTEM_IMPLEMENTATION.md) - ✅ **COMPLETED** - Three patterns for extending Grapa objects and classes
@@ -48,7 +48,7 @@ These components work together to provide:
 - **Dynamic Syntax**: Runtime grammar modification and custom syntax
 - **Extensible Language**: Custom commands and functions
 - **Multi-Format Processing**: Native JSON, XML, HTML, and SQL support
-- **Modern Language Features**: List comprehensions, enhanced operators, and control flow
+- **Modern Language Features**: Enhanced operators, and control flow
 - **Object Extension**: Comprehensive object and class extension capabilities
 
 ## Development Guidelines

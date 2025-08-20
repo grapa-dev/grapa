@@ -140,10 +140,10 @@ result = f *= 2.0;
 ("f *= 2.0: " + f + ", result = " + result).echo();
 
 /* ========================================
- * List Comprehension Corner Cases
+ 
  * ======================================== */
 
-("--- List Comprehension Corner Cases ---").echo();
+
 
 /* Test 17: Empty range */
 ("Test 17: [x for x in 0]").echo();
@@ -175,13 +175,13 @@ result = [x**2 + 1 for x in 3];
 ("Result: " + result).echo();
 ("Expected: [1, 2, 5]").echo();
 
-/* Test 22: Conditional list comprehension */
+
 ("Test 22: [x for x in 10 if x % 2 == 0]").echo();
 result = [x for x in 10 if x % 2 == 0];
 ("Result: " + result).echo();
 ("Expected: [0, 2, 4, 6, 8]").echo();
 
-/* Test 23: Nested list comprehension */
+
 ("Test 23: [[x, y] for x in 2 for y in 2]").echo();
 result = [[x, y] for x in 2 for y in 2];
 ("Result: " + result).echo();

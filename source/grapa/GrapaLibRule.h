@@ -314,10 +314,7 @@ double calculate_jaro_winkler_similarity(const std::string& str1, const std::str
 double calculate_cosine_similarity(const std::string& str1, const std::string& str2);
 double calculate_cosine_similarity_tfidf(const std::string& str1, const std::string& str2, const std::vector<std::string>& corpus);
 
-// Array Comprehension Helper Functions
-void GenerateCartesianProduct(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, 
-                             const std::vector<GrapaRuleEvent*>& forClauses,
-                             std::vector<std::vector<GrapaRuleEvent*>>& result);
+
 
 #endif //_GrapaLibRule_
 
