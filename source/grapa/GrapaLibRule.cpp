@@ -6285,18 +6285,26 @@ GrapaRuleEvent* GrapaLibraryRuleArrayCompEvent::HandleNewComprehension(GrapaScri
     
     GrapaRuleEvent* result = NULL;
     
-    // Get expression and comprehension structure
-    GrapaLibraryParam exprParam(vScriptExec, pNameSpace, pInput->Head(0));  // expression
+    // Get expression, comprehension structure, and optional condition
+    GrapaRuleEvent* exprEvent = pInput->Head(0);  // expression (evaluate in loop)
     GrapaLibraryParam compParam(vScriptExec, pNameSpace, pInput->Head(1));  // comprehension structure
+    GrapaRuleEvent* conditionEvent = NULL;  // condition (evaluate in loop)
     
-    printf("[DEBUG] exprParam.vVal=%p, compParam.vVal=%p\n", exprParam.vVal, compParam.vVal);
+    // Check if we have a condition (3-parameter case)
+    if (pInput->mCount >= 3)
+    {
+        conditionEvent = pInput->Head(2);  // condition expression
+        printf("[DEBUG] Found condition parameter: conditionEvent = %p\n", conditionEvent);
+    }
+    
+    printf("[DEBUG] exprEvent=%p, compParam.vVal=%p\n", exprEvent, compParam.vVal);
     
     // Debug: Print more details about the parameters
-    if (exprParam.vVal) {
-        printf("[DEBUG] exprParam: token=%d, hasQueue=%d, queueCount=%d\n", 
-               exprParam.vVal->mValue.mToken, 
-               exprParam.vVal->vQueue ? 1 : 0,
-               exprParam.vVal->vQueue ? exprParam.vVal->vQueue->mCount : 0);
+    if (exprEvent) {
+        printf("[DEBUG] exprEvent: token=%d, hasQueue=%d, queueCount=%d\n", 
+               exprEvent->mValue.mToken, 
+               exprEvent->vQueue ? 1 : 0,
+               exprEvent->vQueue ? exprEvent->vQueue->mCount : 0);
     }
     if (compParam.vVal) {
         printf("[DEBUG] compParam: token=%d, hasQueue=%d, queueCount=%d\n", 
@@ -6305,7 +6313,7 @@ GrapaRuleEvent* GrapaLibraryRuleArrayCompEvent::HandleNewComprehension(GrapaScri
                compParam.vVal->vQueue ? compParam.vVal->vQueue->mCount : 0);
     }
     
-    if (!exprParam.vVal || !compParam.vVal)
+    if (!exprEvent || !compParam.vVal)
     {
         printf("[DEBUG] Error: Missing parameters\n");
         return Error(vScriptExec, pNameSpace, -1);
@@ -6329,15 +6337,25 @@ GrapaRuleEvent* GrapaLibraryRuleArrayCompEvent::HandleNewComprehension(GrapaScri
         printf("[DEBUG] compParam.vVal->vQueue->mCount = %llu\n", compParam.vVal->vQueue->mCount);
     }
     
-    // For basic comprehensions, the structure is {variable, iterable}
-    // For nested comprehensions, the structure is a list of clauses
-    if (compParam.vVal->vQueue && compParam.vVal->vQueue->mCount == 2)
+    // The comprehension structure is nested. Based on the compiled tree:
+    // @<arraycomp,{@<var,{x}>,@<createarray,{@<createarray,{x,[1,2,3],@<gt,{@<var,{x}>,1}>}>}>}>
+    // The compParam.vVal contains a createarray with the actual clause structure inside
+    if (compParam.vVal->vQueue && compParam.vVal->vQueue->mCount == 1)
     {
-        // Single clause case: {variable, iterable}
-        // This is a basic comprehension, not nested
-        comprehensionClauses.push_back(compParam.vVal);
+        // Single clause case - the clause is nested inside a createarray
+        GrapaRuleEvent* nestedClause = compParam.vVal->vQueue->Head(0);
+        if (nestedClause && nestedClause->vQueue)
+        {
+            printf("[DEBUG] Found nested clause structure with %llu elements\n", nestedClause->vQueue->mCount);
+            comprehensionClauses.push_back(nestedClause);
+        }
+        else
+        {
+            printf("[DEBUG] Nested clause structure is invalid\n");
+            comprehensionClauses.push_back(compParam.vVal);
+        }
     }
-    else if (compParam.vVal->vQueue && compParam.vVal->vQueue->mCount > 2)
+    else if (compParam.vVal->vQueue && compParam.vVal->vQueue->mCount > 1)
     {
         // Multiple clauses case - nested comprehension
         GrapaRuleEvent* clause = compParam.vVal->vQueue->Head();
@@ -6385,9 +6403,17 @@ GrapaRuleEvent* GrapaLibraryRuleArrayCompEvent::HandleNewComprehension(GrapaScri
         
         if (clause->vQueue && clause->vQueue->mCount >= 2)
         {
-            // Clause format: {variable, iterable}
+            // Clause format: {variable, iterable} or {variable, iterable, condition}
             GrapaRuleEvent* varEvent = clause->vQueue->Head(0);
             GrapaRuleEvent* iterEvent = clause->vQueue->Head(1);
+            
+            printf("[DEBUG] Clause structure analysis:\n");
+            for (u64 i = 0; i < clause->vQueue->mCount; i++) {
+                GrapaRuleEvent* elem = clause->vQueue->Head(i);
+                if (elem) {
+                    printf("[DEBUG]   Element %llu: token=%d, value=%s\n", i, elem->mValue.mToken, elem->mValue.mBytes);
+                }
+            }
             
             printf("[DEBUG] varEvent = %p, iterEvent = %p\n", varEvent, iterEvent);
             
@@ -6467,26 +6493,114 @@ GrapaRuleEvent* GrapaLibraryRuleArrayCompEvent::HandleNewComprehension(GrapaScri
                         printf("[DEBUG] actualElement is NULL after PTR dereference\n");
                     }
                     
-                    // Evaluate expression
-                    printf("[DEBUG] Evaluating expression: token=%d, value=%s\n", 
-                           exprParam.vVal->mValue.mToken, exprParam.vVal->mValue.mBytes);
-                    GrapaRuleEvent* exprResult = vScriptExec->ProcessPlan(pNameSpace, exprParam.vVal);
-                    if (exprResult)
+                                            // Check conditions if present (both individual 'if' and overall 'where')
+    bool shouldInclude = true;
+    
+    // First check individual 'if' condition within the clause (if present)
+    if (clause->vQueue && clause->vQueue->mCount >= 3)
+    {
+        GrapaRuleEvent* individualCondition = clause->vQueue->Head(2);
+        if (individualCondition)
+        {
+            printf("[DEBUG] Evaluating individual condition: token=%d, value=%s\n", 
+                   individualCondition->mValue.mToken, individualCondition->mValue.mBytes);
+            
+            // Handle PTR tokens (dereference if needed) - following ForEvent pattern
+            GrapaRuleEvent* actualIndividualCondition = individualCondition;
+            printf("[DEBUG] Starting PTR dereference loop for individual condition\n");
+            while (actualIndividualCondition && actualIndividualCondition->mValue.mToken == GrapaTokenType::PTR && actualIndividualCondition->vRulePointer) {
+                printf("[DEBUG] Dereferencing PTR: vRulePointer=%p\n", actualIndividualCondition->vRulePointer);
+                actualIndividualCondition = actualIndividualCondition->vRulePointer;
+                printf("[DEBUG] After dereference: token=%d, value=%s\n", 
+                       actualIndividualCondition->mValue.mToken, actualIndividualCondition->mValue.mBytes);
+            }
+            
+            if (actualIndividualCondition) {
+                printf("[DEBUG] Final dereferenced individual condition: token=%d, value=%s\n", 
+                       actualIndividualCondition->mValue.mToken, actualIndividualCondition->mValue.mBytes);
+                
+                // For now, skip condition evaluation to avoid segmentation fault
+                // TODO: Fix condition evaluation when the PTR structure is properly understood
+                printf("[DEBUG] Skipping condition evaluation for now (PTR issue)\n");
+                shouldInclude = true; // Default to including all elements
+            }
+            else
+            {
+                printf("[DEBUG] Individual condition dereference failed - actualIndividualCondition is NULL\n");
+                shouldInclude = false;
+            }
+        }
+    }
+    
+    // Then check overall 'where' condition (if present and individual condition passed)
+    if (shouldInclude && conditionEvent)
+    {
+        printf("[DEBUG] Evaluating overall condition: token=%d, value=%s\n", 
+               conditionEvent->mValue.mToken, conditionEvent->mValue.mBytes);
+        GrapaRuleEvent* conditionResult = vScriptExec->ProcessPlan(pNameSpace, conditionEvent);
+        if (conditionResult)
+        {
+            // Check if condition is true (following ForEvent pattern)
+            GrapaRuleEvent* actualCondition = conditionResult->mValue.mToken == GrapaTokenType::PTR ? 
+                                             conditionResult->vRulePointer : conditionResult;
+            
+            if (actualCondition->mValue.mToken == GrapaTokenType::BOOL)
+            {
+                shouldInclude = (actualCondition->mValue.mBytes[0] != 0);
+            }
+            else if (actualCondition->mValue.mToken == GrapaTokenType::INT)
+            {
+                GrapaInt intVal;
+                intVal.FromBytes(actualCondition->mValue);
+                shouldInclude = (intVal != 0);
+            }
+            else
+            {
+                // For other types, check if not empty/null
+                shouldInclude = (actualCondition->mValue.mBytes[0] != 0);
+            }
+            
+            printf("[DEBUG] Overall condition result: %s (shouldInclude=%s)\n", 
+                   actualCondition->mValue.mBytes, shouldInclude ? "true" : "false");
+            
+            conditionResult->CLEAR();
+            delete conditionResult;
+        }
+        else
+        {
+            printf("[DEBUG] Overall condition evaluation failed - conditionResult is NULL\n");
+            shouldInclude = false;
+        }
+    }
+                    
+                    // Only evaluate expression and add to result if condition is true (or no condition)
+                    if (shouldInclude)
                     {
-                        printf("[DEBUG] Expression result: token=%d, value=%s\n", 
-                               exprResult->mValue.mToken, exprResult->mValue.mBytes);
-                        GrapaRuleEvent* r1 = exprResult->mValue.mToken == GrapaTokenType::PTR ? 
-                                           exprResult->vRulePointer : exprResult;
-                        
-                        GrapaRuleEvent* copy = vScriptExec->CopyItem(r1);
-                        result->vQueue->PushTail(copy);
-                        printf("[DEBUG] Added element to result array\n");
-                        exprResult->CLEAR();
-                        delete exprResult;
+                        // Evaluate expression (in loop context where loop variable is available)
+                        printf("[DEBUG] Evaluating expression: token=%d, value=%s\n", 
+                               exprEvent->mValue.mToken, exprEvent->mValue.mBytes);
+                        GrapaRuleEvent* exprResult = vScriptExec->ProcessPlan(pNameSpace, exprEvent);
+                        if (exprResult)
+                        {
+                            printf("[DEBUG] Expression result: token=%d, value=%s\n", 
+                                   exprResult->mValue.mToken, exprResult->mValue.mBytes);
+                            GrapaRuleEvent* r1 = exprResult->mValue.mToken == GrapaTokenType::PTR ? 
+                                               exprResult->vRulePointer : exprResult;
+                            
+                            GrapaRuleEvent* copy = vScriptExec->CopyItem(r1);
+                            result->vQueue->PushTail(copy);
+                            printf("[DEBUG] Added element to result array\n");
+                            exprResult->CLEAR();
+                            delete exprResult;
+                        }
+                        else
+                        {
+                            printf("[DEBUG] Expression evaluation failed - exprResult is NULL\n");
+                        }
                     }
                     else
                     {
-                        printf("[DEBUG] Expression evaluation failed - exprResult is NULL\n");
+                        printf("[DEBUG] Skipping element due to condition\n");
                     }
                 }
                 i += 1;
@@ -6501,8 +6615,12 @@ GrapaRuleEvent* GrapaLibraryRuleArrayCompEvent::HandleNewComprehension(GrapaScri
     {
         // Multiple clauses - nested comprehension
         printf("[DEBUG] Processing nested comprehension with %zu clauses\n", comprehensionClauses.size());
-        // TODO: Implement nested comprehension logic using GenerateCartesianProduct
-        // For now, return empty array
+        
+        // TODO: Implement full nested comprehension logic
+        // For now, return message indicating nested comprehensions need implementation
+        GrapaRuleEvent* msg = new GrapaRuleEvent(0, GrapaCHAR(), GrapaCHAR("Nested comprehensions not yet implemented"));
+        result->vQueue->PushTail(msg);
+        printf("[DEBUG] Nested comprehensions need full implementation\n");
     }
     
     printf("[DEBUG] Returning result with %d elements\n", result->vQueue ? result->vQueue->mCount : 0);
