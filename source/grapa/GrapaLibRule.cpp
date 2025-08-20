@@ -17640,6 +17640,44 @@ GrapaRuleEvent* GrapaLibraryRuleReplaceEvent::Run(GrapaScriptExec* vScriptExec, 
 	return(result);
 }
 
+// Helper function to find matching closing brace for interpolation
+size_t FindMatchingBrace(const std::string& input, size_t startPos) {
+    int braceCount = 1; // Start with 1 since we're already inside the opening brace
+    bool inQuotes = false;
+    char quoteChar = 0;
+    
+    for (size_t i = startPos; i < input.length(); i++) {
+        char c = input[i];
+        
+        // Handle quotes (skip braces inside quotes)
+        if ((c == '"' || c == '\'') && (i == 0 || input[i-1] != '\\')) {
+            if (!inQuotes) {
+                inQuotes = true;
+                quoteChar = c;
+            } else if (c == quoteChar) {
+                inQuotes = false;
+                quoteChar = 0;
+            }
+            continue;
+        }
+        
+        // Skip processing if inside quotes
+        if (inQuotes) continue;
+        
+        // Count braces
+        if (c == '{') {
+            braceCount++;
+        } else if (c == '}') {
+            braceCount--;
+            if (braceCount == 0) {
+                return i; // Found matching closing brace
+            }
+        }
+    }
+    
+    return std::string::npos; // No matching brace found
+}
+
 GrapaRuleEvent* GrapaLibraryRuleInterpolateEvent::Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput)
 {
 	GrapaRuleEvent* result = NULL;
@@ -17700,7 +17738,7 @@ GrapaRuleEvent* GrapaLibraryRuleInterpolateEvent::Run(GrapaScriptExec* vScriptEx
 		// Check for ${code} pattern
 		if (dollarPos + 1 < input.length() && input[dollarPos + 1] == '{')
 		{
-			size_t endPos = input.find('}', dollarPos + 2);
+			size_t endPos = FindMatchingBrace(input, dollarPos + 2);
 			if (endPos != std::string::npos)
 			{
 				// Extract code between ${ and }

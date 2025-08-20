@@ -192,6 +192,19 @@ Performs string interpolation with embedded expressions and script execution. Su
 - `${op(params)("script")()}` - Script execution with parameters using `op()` function
 - `${op(params)(script_var)()}` - **ADVANCED** - Dynamic script execution with variable references
 
+### What Can Be Used Inside `${}`:
+- **Variables**: `${name}`, `${age}`, `${user.id}`
+- **Expressions**: `${x + y}`, `${price * 1.08}`, `${count > 0}`
+- **Function calls**: `${get_data()}`, `${calculate(a, b)}`
+- **Method calls**: `${text.upper()}`, `${array.len()}`
+- **Object literals**: `${{name:"John", age:30}}`
+- **Array literals**: `${[1, 2, 3]}`
+- **Array operations**: `${data.filter(op(x){x > 0})}`
+- **Nested expressions**: `${users.map(op(u){u.name}).join(", ")}`
+- **Conditional expressions**: `${status == "ok" ? "Success" : "Failed"}`
+
+
+
 ### Examples:
 
 ```grapa
@@ -238,6 +251,32 @@ calc = "x * y + z;";
 /* Method chaining */
 "Hello ${name}".interpolate({name:"Alice"}).upper();
 /* → "HELLO ALICE" */
+
+/* Direct object syntax */
+"Object: ${{a:1,b:2}}".interpolate();
+/* → "Object: {"a":1,"b":2}" */
+
+/* Nested objects */
+"Nested: ${{a:{b:1},c:2}}".interpolate();
+/* → "Nested: {"a":{"b":1},"c":2}" */
+
+/* Function calls inside ${} */
+get_user = op() { {name:"John", age:30}; };
+"User: ${get_user()}".interpolate();
+/* → "User: {"name":"John","age":30}" */
+
+/* Function calls with parameters */
+multiply = op(x, y) { x * y; };
+"Result: ${multiply(5, 3)}".interpolate();
+/* → "Result: 15" */
+
+/* Array operations */
+"Numbers: ${[1,2,3,4].filter(op(x){x > 2})}".interpolate();
+/* → "Numbers: [3,4]" */
+
+/* String methods */
+"Uppercase: ${'hello world'.upper()}".interpolate();
+/* → "Uppercase: HELLO WORLD" */
 ```
 
 ### Advanced Features:

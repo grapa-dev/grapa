@@ -171,6 +171,35 @@ try {
 } finally: 'Cleanup completed'.echo();
 ```
 
+### Object Variable Binding
+```grapa
+/* Direct object throw - works correctly */
+try {
+    user = {name: 'Alice', age: 30};
+    throw (err:user);
+} {
+    default: ('User name: ' + err.name).echo();
+}
+
+/* Nested object with explicit copy - works correctly */
+try {
+    user = {name: 'Alice', age: 30};
+    throw (err:{user: user.list()});
+} {
+    default: ('User name: ' + err.user.name).echo();
+}
+
+/* Nested object without copy - may fail due to reference issues */
+try {
+    user = {name: 'Alice', age: 30};
+    throw (err:{user: user});  /* Use .list() for reliable binding */
+} {
+    default: ('User name: ' + err.user.name).echo();
+}
+```
+
+**Note**: When throwing complex nested objects, use `.list()` to ensure proper variable binding. This creates an explicit copy and avoids reference-related issues in the throw/catch system.
+
 ### Multiple Catch Blocks
 ```grapa
 /* Multiple catch blocks with different conditions */
