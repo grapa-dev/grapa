@@ -49,8 +49,6 @@ public:
     GrapaLibraryEvent* HandleAssignMod(GrapaCHAR& pName);
     GrapaLibraryEvent* HandleAssignPow(GrapaCHAR& pName);
     GrapaLibraryEvent* HandleCreateArray(GrapaCHAR& pName);
-    GrapaLibraryEvent* HandleArrayComp(GrapaCHAR& pName);
-    GrapaLibraryEvent* HandleComprehension(GrapaCHAR& pName);
     GrapaLibraryEvent* HandleForClause(GrapaCHAR& pName);
     GrapaLibraryEvent* HandleIfClause(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleCreateTuple(GrapaCHAR& pName);
