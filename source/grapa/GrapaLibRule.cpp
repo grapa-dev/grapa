@@ -3003,8 +3003,6 @@ GrapaLibraryEvent* GrapaLibraryRuleEvent::LoadLib(GrapaScriptExec *vScriptExec, 
         { "assignmod", &GrapaLibraryRuleEvent::HandleAssignMod },
         { "assignpow", &GrapaLibraryRuleEvent::HandleAssignPow },
         { "createarray", &GrapaLibraryRuleEvent::HandleCreateArray },
-        { "forclause", &GrapaLibraryRuleEvent::HandleForClause },
-        { "ifclause", &GrapaLibraryRuleEvent::HandleIfClause },
 		{ "createtuple", &GrapaLibraryRuleEvent::HandleCreateTuple },
 		{ "createlist", &GrapaLibraryRuleEvent::HandleCreateList },
 		{ "createxml", &GrapaLibraryRuleEvent::HandleCreateXml },
@@ -5947,67 +5945,6 @@ GrapaRuleEvent* GrapaLibraryRuleCreateArrayEvent::Optimize(GrapaScriptExec* vScr
 GrapaRuleEvent* GrapaLibraryRuleCreateArrayEvent::Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput)
 {
 	return ItemPrependRun(vScriptExec, pNameSpace, pOperation, pInput, GrapaCHAR("createarray"));
-}
-
-class GrapaLibraryRuleForClauseEvent : public GrapaLibraryEvent
-{
-public:
-    GrapaLibraryRuleForClauseEvent(GrapaCHAR& pName) { mName.FROM(pName); };
-    virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
-};
-GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleForClause(GrapaCHAR& pName) { return new GrapaLibraryRuleForClauseEvent(pName); }
-
-class GrapaLibraryRuleIfClauseEvent : public GrapaLibraryEvent
-{
-public:
-    GrapaLibraryRuleIfClauseEvent(GrapaCHAR& pName) { mName.FROM(pName); };
-    virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
-};
-GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleIfClause(GrapaCHAR& pName) { return new GrapaLibraryRuleIfClauseEvent(pName); }
-
-
-GrapaRuleEvent* GrapaLibraryRuleForClauseEvent::Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput)
-{
-    // This handler processes individual for clauses
-    // Parameters: [0]=variable_name, [1]=collection
-    
-    GrapaRuleEvent* result = NULL;
-    
-    if (pInput->mCount != 2)
-    {
-        return Error(vScriptExec, pNameSpace, -1);
-    }
-    
-    // Create a structure to hold the for clause information
-    result = new GrapaRuleEvent(GrapaTokenType::LIST, 0, "", "");
-    result->vQueue = new GrapaRuleQueue();
-    
-    // Add variable name and collection to the result
-    GrapaRuleEvent* varName = vScriptExec->ProcessPlan(pNameSpace, pInput->Head(0));
-    GrapaRuleEvent* collection = vScriptExec->ProcessPlan(pNameSpace, pInput->Head(1));
-    
-    if (varName) result->vQueue->PushTail(varName);
-    if (collection) result->vQueue->PushTail(collection);
-    
-    return result;
-}
-
-GrapaRuleEvent* GrapaLibraryRuleIfClauseEvent::Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput)
-{
-    // This handler processes if clauses
-    // Parameters: [0]=condition
-    
-    GrapaRuleEvent* result = NULL;
-    
-    if (pInput->mCount != 1)
-    {
-        return Error(vScriptExec, pNameSpace, -1);
-    }
-    
-    // Process the condition
-    result = vScriptExec->ProcessPlan(pNameSpace, pInput->Head(0));
-    
-    return result;
 }
 
 GrapaRuleEvent* GrapaLibraryRuleCreateTupleEvent::Optimize(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleEvent* pParam)
