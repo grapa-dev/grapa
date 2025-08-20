@@ -373,37 +373,7 @@ result = (10).range(0,1)
     .reduce(op(acc, x) { acc + x; }, 0); /* 120 */
 ```
 
-### List Comprehension
 
-Grapa supports native list comprehension for creating arrays from expressions evaluated over iterables:
-
-```grapa
-/* Basic list comprehension */
-[x for x in 3]           /* [0, 1, 2] */
-
-/* Complex expressions */
-[x*2 for x in 3]         /* [0, 2, 4] */
-[x+1 for x in 5]         /* [1, 2, 3, 4, 5] */
-
-/* Conditional filtering */
-[x for x in 5 if x > 1]  /* [2, 3, 4] */
-[x for x in 10 if x % 2 == 0]  /* [0, 2, 4, 6, 8] */
-
-/* Collection iteration */
-arr = [10, 20, 30];
-[x*2 for x in arr]       /* [20, 40, 60] */
-
-/* String iteration */
-[x for x in "abc"]       /* ["a", "b", "c"] */
-[x.upper() for x in "abc"]  /* ["A", "B", "C"] */
-```
-
-**Key Features:**
-- **Numeric ranges**: `[x for x in 5]` iterates from 0 to 4
-- **Collections**: Works with arrays, lists, and strings
-- **Complex expressions**: Any valid Grapa expression can be used
-- **Conditional filtering**: Optional `if` clause for filtering
-- **Variable scoping**: Loop variables don't affect outer scope
 
 ### Parallel Processing
 
@@ -922,6 +892,31 @@ slice3 = arr.range(1, 3);  /* ["b", "c"] */
 ### Array Methods
 
 Grapa provides several useful array methods:
+
+#### Array Comprehension Alternatives
+
+Grapa provides functional methods that accomplish the same results as array comprehensions in other languages, with the added benefit of explicit threading control:
+
+```grapa
+/* Python: [x for x in range(10) if x % 2 == 0] */
+evens = (10).range().filter(op(x){x%2==0});  // [0,2,4,6,8]
+
+/* Python: [x * 2 for x in range(10) if x % 2 == 0] */
+doubled = (10).range().filter(op(x){x%2==0}).map(op(x){x*2});  // [0,4,8,12,16]
+
+/* With threading for performance */
+large_result = (10000).range()
+    .filter(op(x){x%2==0}, 8)      // 8 threads for filtering
+    .map(op(x){x*x}, 8);           // 8 threads for mapping
+```
+
+**Key advantages:**
+- **Explicit threading control** for performance optimization
+- **Functional programming style** with chainable operations
+- **Better performance** for large datasets
+- **Memory efficient** processing
+
+See [Array Comprehension Alternatives](../examples/array_comprehension_alternatives.grc) for comprehensive examples.
 
 ```grapa
 /* Basic array operations */

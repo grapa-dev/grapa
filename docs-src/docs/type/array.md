@@ -217,34 +217,4 @@ first.user.age                             /* Returns: 30 */
 > **Parallelism Note:**
 > Array operations like `.map()` and `.filter()` are parallel by default and hardened for ETL/data processing workloads.
 
-### List Comprehension
 
-Grapa supports native list comprehension for creating arrays from expressions evaluated over iterables:
-
-```grapa
-/* Basic list comprehension */
-[x for x in 3]           /* [0, 1, 2] */
-
-/* Complex expressions */
-[x*2 for x in 3]         /* [0, 2, 4] */
-[x+1 for x in 5]         /* [1, 2, 3, 4, 5] */
-
-/* Conditional filtering */
-[x for x in 5 if x > 1]  /* [2, 3, 4] */
-[x for x in 10 if x % 2 == 0]  /* [0, 2, 4, 6, 8] */
-
-/* Collection iteration */
-arr = [10, 20, 30];
-[x*2 for x in arr]       /* [20, 40, 60] */
-
-/* String iteration */
-[x for x in "abc"]       /* ["a", "b", "c"] */
-[x.upper() for x in "abc"]  /* ["A", "B", "C"] */
-```
-
-**Key Features:**
-- **Numeric ranges**: `[x for x in 5]` iterates from 0 to 4
-- **Collections**: Works with arrays, lists, and strings
-- **Complex expressions**: Any valid Grapa expression can be used
-- **Conditional filtering**: Optional `if` clause for filtering
-- **Variable scoping**: Loop variables don't affect outer scope

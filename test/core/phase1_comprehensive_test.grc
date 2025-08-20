@@ -7,7 +7,7 @@
  * 3. String Interpolation (custom_function)
  * 4. Range Function (custom_function)
  * 5. Ternary Operator (custom_function)
- * 6. List Comprehension (custom_function)
+ 
  * 7. Spaceship Operator (custom_function)
  */
 
@@ -144,7 +144,7 @@ custom_function = rule <$comp> '?' <$comp> ':' <$comp> {
 };
 
 /* ========================================
- * LIST COMPREHENSION
+ 
  * ======================================== */
 custom_function = rule '[' <$comp> for $ID in <$comp> ']' {
     op(expression:$2, variable:$4, iterable:$6){
@@ -202,8 +202,7 @@ message = "Your score is ${score}, which is ${score >= 90 ? 'excellent' : score 
 message.echo();
 ("").echo();
 
-/* Test 3: Range function with list comprehension */
-("Test 3: Range function with list comprehension").echo();
+
 squares = [x**2 for x in range(5)];
 ("  Squares from range(5): " + squares).echo();
 ("").echo();
@@ -238,8 +237,7 @@ for num in numbers {
 ("  Final processed list: " + processed).echo();
 ("").echo();
 
-/* Test 6: List comprehension with string interpolation and ternary */
-("Test 6: List comprehension with string interpolation and ternary").echo();
+
 formatted = ["Number ${x} is ${x % 2 == 0 ? 'even' : 'odd'}" for x in 6];
 ("  Formatted list: " + formatted).echo();
 ("").echo();
@@ -284,7 +282,7 @@ for i from 1 to 10 {
     status = "Processing ${i} -> ${processed_value}";
     status.echo();
     
-    /* Add to list using list comprehension pattern */
+    
     final_numbers.append(processed_value);
 };
 
@@ -297,7 +295,7 @@ for i from 1 to 10 {
 ("✅ String Interpolation").echo();
 ("✅ Range Function").echo();
 ("✅ Ternary Operator").echo();
-("✅ List Comprehension").echo();
+
 ("✅ Spaceship Operator").echo();
 ("").echo();
 ("🎉 Phase 1 Complete - Ready for Phase 2 C++ Implementation!").echo(); 

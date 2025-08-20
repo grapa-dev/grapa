@@ -136,13 +136,7 @@ vec += #[4, 5, 6]#;   /* Vector addition */
 xml = xml + <newitem>content</newitem>;  /* Add XML element */
 xml = xml + <root><item>1</item></root>;  /* Concatenate XML */
 
-/* List comprehension */
-squares = [x*x for x in 5];  /* [0, 1, 4, 9, 16] */
-evens = [x*2 for x in 10 if x % 2 == 0];  /* [0, 2, 4, 6, 8] */
-doubled = [x*2 for x in [1, 2, 3]];  /* [2, 4, 6] */
-chars = [x.upper() for x in "abc"];  /* ["A", "B", "C"] */
-
-**Grapa's assignment operators and list comprehension capabilities match modern languages while providing unique cross-type operations.**
+**Grapa's assignment operators match modern languages while providing unique cross-type operations.**
 
 ### **Superior ETL and Data Processing** 📊
 Grapa **exceeds** modern languages in Extract, Transform, Load operations:
@@ -432,7 +426,7 @@ Grapa possesses unique capabilities that modern languages cannot match (or provi
 - **Advanced control flow** - `foreach`, `do/while` integrated into for loop implementation
 - **Range function** - `(10).range()` for loops
 - **Ternary operator** - `?:` conditional expressions
-- **List comprehension** - Native `[x for x in collection]` syntax
+
 - **Nullish coalescing** - `.ifnull()` method for comprehensive nullish value handling
 - **Built-in timing** - `$TIME` type with UTC timestamps, timezone support, and delta calculations
 - **Basic variable inspection** - `.type()` for type checking, `.echo()` for value display, `.debug()` for debug output

@@ -1,0 +1,144 @@
+/* Array Comprehension Alternatives in Grapa
+ * 
+ * This file demonstrates how to accomplish Python-style array comprehensions
+ * using Grapa's functional methods: .filter() and .map()
+ * 
+ * Key advantages:
+ * - Explicit threading control for performance
+ * - Functional programming style
+ * - Chainable operations
+ * - Better performance for large datasets
+ */
+
+("=== Array Comprehension Alternatives in Grapa ===").echo();
+
+/* Basic Examples */
+
+("--- Basic Filtering and Mapping ---").echo();
+
+// Python: [x for x in range(10) if x % 2 == 0]
+// Grapa equivalent:
+evens = (10).range().filter(op(x){x%2==0});
+("Evens 0-9: " + evens).echo();  // Expected: [0,2,4,6,8]
+
+// Python: [x * 2 for x in range(10) if x % 2 == 0]
+// Grapa equivalent:
+doubled_evens = (10).range().filter(op(x){x%2==0}).map(op(x){x*2});
+("Doubled evens: " + doubled_evens).echo();  // Expected: [0,4,8,12,16]
+
+// Python: [x * 3 for x in range(10) if x % 3 == 0]
+// Grapa equivalent:
+threes = (10).range().filter(op(x){x%3==0}).map(op(x){x*3});
+("Multiples of 3, tripled: " + threes).echo();  // Expected: [0,9,18,27]
+
+/* Complex Expressions */
+
+("--- Complex Expressions ---").echo();
+
+// Python: [x**2 for x in range(5) if x > 0]
+// Grapa equivalent:
+squares = (5).range().filter(op(x){x>0}).map(op(x){x*x});
+("Squares of positive numbers: " + squares).echo();  // Expected: [1,4,9,16]
+
+// Python: [str(x) + "!" for x in range(3) if x % 2 == 0]
+// Grapa equivalent:
+strings = (3).range().filter(op(x){x%2==0}).map(op(x){x.str() + "!"});
+("Stringified evens: " + strings).echo();  // Expected: ["0!","2!"]
+
+/* Collection Iteration */
+
+("--- Collection Iteration ---").echo();
+
+// Python: [x * 2 for x in [1, 2, 3, 4, 5] if x > 2]
+// Grapa equivalent:
+arr = [1, 2, 3, 4, 5];
+filtered_doubled = arr.filter(op(x){x>2}).map(op(x){x*2});
+("Filtered and doubled: " + filtered_doubled).echo();  // Expected: [6,8,10]
+
+// Python: [x.upper() for x in "abc" if x != "b"]
+// Grapa equivalent:
+chars = "abc".filter(op(x){x!="b"}).map(op(x){x.upper()});
+("Uppercase chars (no 'b'): " + chars).echo();  // Expected: ["A","C"]
+
+/* Threading Performance Examples */
+
+("--- Threading Performance Examples ---").echo();
+
+// Sequential processing (default for small arrays)
+small_result = (10).range().filter(op(x){x%2==0}).map(op(x){x*3});
+("Small dataset (sequential): " + small_result).echo();
+
+// Parallel processing with explicit thread count
+large_result = (1000).range().filter(op(x){x%2==0}, 4).map(op(x){x*3}, 4);
+("Large dataset (4 threads): " + large_result.len() + " items").echo();
+
+// Different thread counts for different operations
+mixed_result = (100).range()
+    .filter(op(x){x%2==0}, 2)      // 2 threads for filtering
+    .map(op(x){x*x}, 4);           // 4 threads for mapping
+("Mixed threading: " + mixed_result.len() + " items").echo();
+
+/* Nested Operations */
+
+("--- Nested Operations ---").echo();
+
+// Python: [x + y for x in [1,2] for y in [10,20] if x + y > 15]
+// Grapa equivalent (using flatMap for nested iteration):
+nested = [1,2].flatMap(op(x){
+    [10,20].filter(op(y){x+y>15}).map(op(y){x+y});
+});
+("Nested comprehension: " + nested).echo();  // Expected: [21,22]
+
+/* Real-world Examples */
+
+("--- Real-world Examples ---").echo();
+
+// Data processing pipeline
+data = (20).range();
+processed = data
+    .filter(op(x){x%2==0}, 2)           // Filter evens with 2 threads
+    .map(op(x){x*x}, 4)                 // Square with 4 threads
+    .filter(op(x){x<100}, 2)            // Filter small squares with 2 threads
+    .map(op(x){"Square: " + x.str()}, 4); // Format with 4 threads
+("Data pipeline result: " + processed).echo();
+
+// String processing
+words = ["hello", "world", "grapa", "programming"];
+processed_words = words
+    .filter(op(x){x.len()>4}, 2)        // Filter long words
+    .map(op(x){x.upper()}, 4)           // Uppercase
+    .map(op(x){x + "!"}, 4);            // Add exclamation
+("Processed words: " + processed_words).echo();
+
+/* Performance Comparison */
+
+("--- Performance Comparison ---").echo();
+
+// Test with larger dataset
+large_data = (10000).range();
+
+// Sequential processing
+start_time = time();
+seq_result = large_data.filter(op(x){x%2==0}).map(op(x){x*x});
+seq_time = time() - start_time;
+("Sequential time: " + seq_time + " seconds").echo();
+
+// Parallel processing
+start_time = time();
+par_result = large_data.filter(op(x){x%2==0}, 8).map(op(x){x*x}, 8);
+par_time = time() - start_time;
+("Parallel time (8 threads): " + par_time + " seconds").echo();
+
+("Speedup: " + (seq_time/par_time).round(2) + "x").echo();
+
+/* Best Practices */
+
+("--- Best Practices ---").echo();
+
+("✅ Use .filter() before .map() to reduce work").echo();
+("✅ Specify thread count for large datasets").echo();
+("✅ Chain operations for readability").echo();
+("✅ Use .flatMap() for nested iterations").echo();
+("✅ Consider memory usage with very large datasets").echo();
+
+("=== Array Comprehension Alternatives Complete ===").echo();

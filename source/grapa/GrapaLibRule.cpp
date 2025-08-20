@@ -3297,7 +3297,7 @@ GrapaLibraryEvent* GrapaLibraryRuleEvent::LoadLib(GrapaScriptExec *vScriptExec, 
 			else if (pName.Cmp("assignappend") == 0) lib = new GrapaLibraryRuleAssignAppendEvent(pName);
 			else if (pName.Cmp("assignextend") == 0) lib = new GrapaLibraryRuleAssignExtendEvent(pName);
 			else if (pName.Cmp("createarray") == 0) lib = new GrapaLibraryRuleCreateArrayEvent(pName);
-			else if (pName.Cmp("arraycomp") == 0) lib = new GrapaLibraryRuleArrayCompEvent(pName);
+
 			else if (pName.Cmp("createtuple") == 0) lib = new GrapaLibraryRuleCreateTupleEvent(pName);
 			else if (pName.Cmp("createlist") == 0) lib = new GrapaLibraryRuleCreateListEvent(pName);
 			else if (pName.Cmp("createxml") == 0) lib = new GrapaLibraryRuleCreateXmlEvent(pName);
@@ -19476,13 +19476,13 @@ GrapaRuleEvent* GrapaLibraryRuleForEvent::HandleForIn(GrapaScriptExec *vScriptEx
     
     GrapaCHAR varName = varParam.vVal->mValue;
     
-    // Create temporary namespace for for loop (following ArrayCompEvent pattern)
+    // Create temporary namespace for for loop 
     GrapaRuleEvent* vLocals = new GrapaRuleEvent();
     vLocals->mValue.mToken = GrapaTokenType::LIST;
     vLocals->vQueue = new GrapaRuleQueue();
     pNameSpace->GetNameQueue()->PushTail(vLocals);
     
-    // Create the loop variable once (following ArrayCompEvent pattern)
+    // Create the loop variable once 
     GrapaRuleEvent* actualVar = new GrapaRuleEvent(0, varName, GrapaCHAR());
     vLocals->vQueue->PushTail(actualVar);
 
@@ -19527,7 +19527,7 @@ GrapaRuleEvent* GrapaLibraryRuleForEvent::HandleForIn(GrapaScriptExec *vScriptEx
         
         while (current < rangeInt)
         {
-            // Update the loop variable value in place (following ArrayCompEvent pattern)
+            // Update the loop variable value in place 
             actualVar->mValue.FROM(current.getBytes());
             
             // Execute the loop body
@@ -19563,7 +19563,7 @@ GrapaRuleEvent* GrapaLibraryRuleForEvent::HandleForIn(GrapaScriptExec *vScriptEx
             GrapaRuleEvent* elementEvent = collectionVal->vQueue->Head((u64)(i.LongValue() - 1));
             if (elementEvent)
             {
-                // Update the loop variable value in place (following ArrayCompEvent pattern)
+                // Update the loop variable value in place 
                 actualVar->mValue.FROM(elementEvent->mValue);
                 
                 // Execute the loop body
@@ -19600,7 +19600,7 @@ GrapaRuleEvent* GrapaLibraryRuleForEvent::HandleForIn(GrapaScriptExec *vScriptEx
             GrapaCHAR charValue;
             charValue.FROM((char*)&strValue.mBytes[(int)(i.LongValue() - 1)], 1);
             
-            // Update the loop variable value in place (following ArrayCompEvent pattern)
+            // Update the loop variable value in place 
             actualVar->mValue.FROM(charValue);
             
             // Execute the loop body
@@ -19636,7 +19636,7 @@ GrapaRuleEvent* GrapaLibraryRuleForEvent::HandleForIn(GrapaScriptExec *vScriptEx
     collectionResult->CLEAR();
     delete collectionResult;
     
-    // Clean up temporary namespace (following ArrayCompEvent pattern)
+    // Clean up temporary namespace 
     pNameSpace->GetNameQueue()->PopEvent(vLocals);
     if (vLocals)
     {
@@ -19681,13 +19681,13 @@ GrapaRuleEvent* GrapaLibraryRuleForEvent::HandleForFrom(GrapaScriptExec *vScript
     
     GrapaCHAR varName = varParam.vVal->mValue;
     
-    // Create temporary namespace for for loop (following ArrayCompEvent pattern)
+    // Create temporary namespace for for loop 
     GrapaRuleEvent* vLocals = new GrapaRuleEvent();
     vLocals->mValue.mToken = GrapaTokenType::LIST;
     vLocals->vQueue = new GrapaRuleQueue();
     pNameSpace->GetNameQueue()->PushTail(vLocals);
     
-    // Create the loop variable once (following ArrayCompEvent pattern)
+    // Create the loop variable once 
     GrapaRuleEvent* actualVar = new GrapaRuleEvent(0, varName, GrapaCHAR());
     vLocals->vQueue->PushTail(actualVar);
     
@@ -19796,7 +19796,7 @@ GrapaRuleEvent* GrapaLibraryRuleForEvent::HandleForFrom(GrapaScriptExec *vScript
         endResult->CLEAR(); delete endResult;
     }
     
-    // Clean up temporary namespace (following ArrayCompEvent pattern)
+    // Clean up temporary namespace 
     pNameSpace->GetNameQueue()->PopEvent(vLocals);
     if (vLocals)
     {
@@ -19897,13 +19897,13 @@ GrapaRuleEvent* GrapaLibraryRuleForEvent::HandleForFromStep(GrapaScriptExec *vSc
     
     GrapaCHAR varName = varParam.vVal->mValue;
     
-    // Create temporary namespace for for loop (following ArrayCompEvent pattern)
+    // Create temporary namespace for for loop 
     GrapaRuleEvent* vLocals = new GrapaRuleEvent();
     vLocals->mValue.mToken = GrapaTokenType::LIST;
     vLocals->vQueue = new GrapaRuleQueue();
     pNameSpace->GetNameQueue()->PushTail(vLocals);
     
-    // Create the loop variable once (following ArrayCompEvent pattern)
+    // Create the loop variable once 
     GrapaRuleEvent* actualVar = new GrapaRuleEvent(0, varName, GrapaCHAR());
     vLocals->vQueue->PushTail(actualVar);
     
@@ -20058,7 +20058,7 @@ GrapaRuleEvent* GrapaLibraryRuleForEvent::HandleForFromStep(GrapaScriptExec *vSc
     if (endResult) { endResult->CLEAR(); delete endResult; }
     if (stepResult) { stepResult->CLEAR(); delete stepResult; }
     
-    // Clean up temporary namespace (following ArrayCompEvent pattern)
+    // Clean up temporary namespace 
     pNameSpace->GetNameQueue()->PopEvent(vLocals);
     if (vLocals)
     {
