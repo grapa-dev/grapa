@@ -1273,6 +1273,18 @@ void GrapaItemState::Running()
 				}
 				else if (state != GrapaTokenItemType::EXP && c == '.')
 				{
+					if (state == GrapaTokenType::FLOAT)
+					{
+						GrapaFloat d(mFloatFix, mFloatMax, mFloatExtra, 0);
+						d.FromString(msgStr, 10);
+						PushOutput(GrapaTokenType::FLOAT, d.getBytes(), quote);
+						msgStr.SetLength(0);
+						expStr.SetLength(0);
+						sendState = 0;
+						noEscape = false;
+						state = GrapaTokenType::START;
+						break;
+					}
 					state = GrapaTokenType::FLOAT;
 					nextValue->mMessage.mPos++;
 					msgStr.GrapaBYTE::Append(c);
@@ -1296,6 +1308,21 @@ void GrapaItemState::Running()
 				{
 					if (state == GrapaTokenType::FLOAT)
 					{
+						if (msgStr.mLength>0 && msgStr.mBytes[msgStr.mLength-1]=='.')
+						{
+							state = GrapaTokenType::INT;
+							msgStr.SetLength(msgStr.mLength - 1);
+							a.FromString(msgStr, 10);
+							PushOutput((sendState ? sendState : state), a.getBytes(), quote);
+							msgStr.FROM(".");
+							PushOutput(GrapaTokenType::SYM, msgStr, quote);
+							msgStr.SetLength(0);
+							expStr.SetLength(0);
+							sendState = 0;
+							noEscape = false;
+							state = GrapaTokenType::START;
+							break;
+						}
 						GrapaFloat d(mFloatFix, mFloatMax, mFloatExtra, 0);
 						d.FromString(msgStr, 10);
 						PushOutput(GrapaTokenType::FLOAT, d.getBytes(), quote);
@@ -1344,6 +1371,29 @@ void GrapaItemState::Running()
 				{
 					if (strchr((char*)msgStr.mBytes, '.'))
 					{
+						if (msgStr.mLength > 0 && msgStr.mBytes[msgStr.mLength - 1] == '.')
+						{
+							msgStr.SetLength(msgStr.mLength - 1);
+							if (std::count(msgStr.mBytes, msgStr.mBytes + msgStr.mLength, '.') == 0)
+							{
+								a.FromString(msgStr, 16);
+								PushOutput(GrapaTokenType::INT, a.getBytes(), quote);
+							}
+							else
+							{
+								GrapaFloat d(mFloatFix, mFloatMax, mFloatExtra, 0);
+								d.FromString(msgStr, 16);
+								PushOutput(GrapaTokenType::FLOAT, d.getBytes(), quote);
+							}
+							msgStr.FROM(".");
+							PushOutput(GrapaTokenType::SYM, msgStr, quote);
+							msgStr.SetLength(0);
+							expStr.SetLength(0);
+							sendState = 0;
+							noEscape = false;
+							state = GrapaTokenType::START;
+							break;
+						}
 						GrapaFloat d(mFloatFix, mFloatMax, mFloatExtra, 0);
 						d.FromString(msgStr, 16);
 						PushOutput(GrapaTokenType::FLOAT, d.getBytes(), quote);
