@@ -1953,7 +1953,8 @@ void GrapaFloat::FromString(const GrapaBYTE& pIn, u8 radix, s64 max)
 		case 8:
 		case 16:
 			lead = ((radix == 2) ? 1 : (radix == 4) ? 2 : (radix == 8) ? 3 : 4);
-			lead -= s2.mLength % lead;
+			lead -= (lead-(s2.mLength % lead));
+			if (lead <= s2.mLength) lead = 0;
 			bucket.Pad(lead, 0);
 			s2.Append(bucket);
 			n2.FromString(s2, radix);
