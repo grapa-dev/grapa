@@ -17711,9 +17711,21 @@ GrapaRuleEvent* GrapaLibraryRuleInterpolateEvent::Run(GrapaScriptExec* vScriptEx
 				varName.FROM(code.c_str());
 				//GrapaRuleEvent* varResult = vScriptExec->vScriptState->SearchVariable(pNameSpace, varName);
 
-				GrapaRuleEvent* rulexx = vScriptExec->vScriptState->SearchVariable(pNameSpace, GrapaCHAR("$comp"));
-				GrapaRuleEvent* plan = vScriptExec->Plan(pNameSpace, varName, rulexx, 0, GrapaCHAR());
-				GrapaRuleEvent* codePtr = vScriptExec->ProcessPlan(pNameSpace, plan);
+				//GrapaRuleEvent* rulexx = vScriptExec->vScriptState->SearchVariable(pNameSpace, GrapaCHAR("$comp"));
+				//GrapaRuleEvent* plan = vScriptExec->Plan(pNameSpace, varName, rulexx, 0, GrapaCHAR());
+				//GrapaRuleEvent* codePtr = vScriptExec->ProcessPlan(pNameSpace, plan);
+
+				GrapaRuleEvent* codePtr = vScriptExec->Exec(pNameSpace, NULL, 0, GrapaCHAR(), varName);
+
+				//tokenExec.vScriptState->vScriptExec = saveTokenExec;
+
+				if (codePtr && codePtr->mValue.mToken == GrapaTokenType::PTR)
+				{
+					GrapaRuleEvent* old = codePtr;
+					codePtr = vScriptExec->CopyItem(old);
+					old->CLEAR();
+					delete old;
+				}
 
 				/*
 				GrapaRuleEvent* codeResult = NULL;
