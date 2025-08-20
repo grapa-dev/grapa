@@ -159,25 +159,25 @@ Grapa **exceeds** modern languages in Extract, Transform, Load operations:
 
 This table ranks programming languages across key capabilities, showing where Grapa excels and where it provides competitive alternatives.
 
-| Capability/Feature | Python | JavaScript | TypeScript | Go | Rust | Swift | Kotlin | Ruby | **Grapa** |
-|-------------------|--------|------------|------------|----|------|-------|--------|------|-----------|
-| **Meta-Programming** | ⭐⭐ (eval, inspect) | ⭐⭐ (eval, Proxy) | ⭐⭐ (eval, Proxy) | ⭐ (reflect) | ⭐⭐ (macros) | ⭐ (mirror) | ⭐⭐ (reflection) | ⭐⭐⭐ (eval, metaprogramming) | **⭐⭐⭐⭐⭐ (Executable BNF, Runtime Grammar)** |
-| **Dynamic Code Generation** | ⭐⭐ (exec, eval) | ⭐⭐ (Function constructor) | ⭐⭐ (Function constructor) | ⭐ (reflect) | ⭐⭐ (procedural macros) | ⭐ (mirror) | ⭐⭐ (reflection) | ⭐⭐⭐ (eval, define_method) | **⭐⭐⭐⭐⭐ (Human-readable Execution Trees)** |
-| **Multi-Syntax Processing** | ⭐⭐ (json, xml libs) | ⭐⭐ (JSON native, xml libs) | ⭐⭐ (JSON native, xml libs) | ⭐⭐ (json, xml libs) | ⭐⭐ (serde) | ⭐⭐ (Codable) | ⭐⭐ (serialization) | ⭐⭐ (json, xml libs) | **⭐⭐⭐⭐⭐ (JSON, XML, HTML Native)** |
-| **Unlimited Precision Math** | ⭐⭐⭐ (decimal, mpmath) | ⭐⭐ (BigInt) | ⭐⭐ (BigInt) | ⭐⭐ (big.Int) | ⭐⭐ (num-bigint) | ⭐⭐ (BigInt) | ⭐⭐ (BigInteger) | ⭐⭐ (BigDecimal) | **⭐⭐⭐⭐⭐ (Native $INT, $FLOAT, $TIME)** |
-| **Pattern Matching** | ⭐⭐ (re module) | ⭐⭐ (RegExp) | ⭐⭐ (RegExp) | ⭐⭐ (regexp) | ⭐⭐⭐ (regex) | ⭐⭐ (NSRegularExpression) | ⭐⭐ (Regex) | ⭐⭐ (Regexp) | **⭐⭐⭐⭐⭐ (100% ripgrep, Binary Support)** |
-| **Parallel Processing** | ⭐⭐ (multiprocessing) | ⭐⭐ (Web Workers) | ⭐⭐ (Web Workers) | ⭐⭐⭐ (goroutines) | ⭐⭐⭐ (async/await) | ⭐⭐ (GCD) | ⭐⭐ (coroutines) | ⭐⭐ (Thread) | **⭐⭐⭐⭐⭐ (Built-in Threading, No Setup)** |
-| **Database Integration** | ⭐⭐ (SQLAlchemy, ORMs) | ⭐⭐ (IndexedDB, SQLite) | ⭐⭐ (IndexedDB, SQLite) | ⭐⭐ (database/sql) | ⭐⭐ (SQLx, Diesel) | ⭐⭐ (Core Data) | ⭐⭐ (Room, Exposed) | ⭐⭐ (Active Record) | **⭐⭐⭐⭐⭐ (Native $file().table())** |
-| **Type Safety** | ⭐⭐ (mypy, type hints) | ⭐ (dynamic) | ⭐⭐⭐⭐ (static) | ⭐⭐⭐⭐ (static) | ⭐⭐⭐⭐⭐ (static) | ⭐⭐⭐⭐ (static) | ⭐⭐⭐⭐ (static) | ⭐ (dynamic) | **⭐⭐⭐ (Runtime Type Checking)** |
-| **Error Handling** | ⭐⭐⭐ (try/except) | ⭐⭐ (try/catch) | ⭐⭐ (try/catch) | ⭐⭐⭐ (error returns) | ⭐⭐⭐⭐ (Result<T,E>) | ⭐⭐⭐ (do-catch) | ⭐⭐⭐ (try/catch) | ⭐⭐ (begin/rescue) | **⭐⭐⭐⭐ (try/catch/finally, .iferr())** |
-| **String Interpolation** | ⭐⭐⭐⭐ (f-strings) | ⭐⭐⭐⭐ (template literals) | ⭐⭐⭐⭐ (template literals) | ⭐⭐ (fmt.Sprintf) | ⭐⭐ (format!) | ⭐⭐⭐⭐ (string interpolation) | ⭐⭐⭐⭐ (string templates) | ⭐⭐⭐⭐ (string interpolation) | **⭐⭐⭐⭐⭐ (Advanced .interpolate())** |
-| **File System Access** | ⭐⭐⭐ (pathlib, os) | ⭐⭐ (fs module) | ⭐⭐ (fs module) | ⭐⭐⭐ (os, path) | ⭐⭐⭐ (std::fs) | ⭐⭐⭐ (FileManager) | ⭐⭐⭐ (java.nio) | ⭐⭐⭐ (File, Dir) | **⭐⭐⭐⭐⭐ (Native $file() Integration)** |
-| **Data Structure Flexibility** | ⭐⭐⭐ (lists, dicts) | ⭐⭐⭐ (arrays, objects) | ⭐⭐⭐ (arrays, objects) | ⭐⭐ (slices, maps) | ⭐⭐⭐ (Vec, HashMap) | ⭐⭐⭐ (Array, Dictionary) | ⭐⭐⭐ (List, Map) | ⭐⭐⭐ (Array, Hash) | **⭐⭐⭐⭐⭐ (Unified Cross-Format Access)** |
-| **Binary Data Processing** | ⭐⭐ (struct, binascii) | ⭐⭐ (ArrayBuffer) | ⭐⭐ (ArrayBuffer) | ⭐⭐⭐ (binary package) | ⭐⭐⭐⭐ (bytes, binary) | ⭐⭐ (Data) | ⭐⭐ (ByteArray) | ⭐⭐ (String#unpack) | **⭐⭐⭐⭐⭐ (Native Binary Support)** |
-| **Unicode Support** | ⭐⭐⭐ (native) | ⭐⭐⭐ (native) | ⭐⭐⭐ (native) | ⭐⭐ (unicode package) | ⭐⭐⭐ (unicode) | ⭐⭐⭐⭐ (native) | ⭐⭐⭐ (native) | ⭐⭐⭐ (native) | **⭐⭐⭐⭐⭐ (Native + Diacritic-Insensitive)** |
-| **Memory Management** | ⭐⭐ (GC) | ⭐⭐ (GC) | ⭐⭐ (GC) | ⭐⭐⭐ (GC) | ⭐⭐⭐⭐⭐ (manual) | ⭐⭐⭐⭐ (ARC) | ⭐⭐⭐ (GC) | ⭐⭐ (GC) | **⭐⭐⭐⭐ (Automatic + Thread-Safe)** |
-| **Performance** | ⭐⭐ (interpreted) | ⭐⭐ (JIT) | ⭐⭐ (JIT) | ⭐⭐⭐⭐ (compiled) | ⭐⭐⭐⭐⭐ (compiled) | ⭐⭐⭐⭐ (compiled) | ⭐⭐⭐ (JVM) | ⭐⭐ (interpreted) | **⭐⭐⭐⭐ (Compiled + Parallel)** |
-| **Ecosystem Maturity** | ⭐⭐⭐⭐⭐ (extensive) | ⭐⭐⭐⭐⭐ (extensive) | ⭐⭐⭐⭐⭐ (extensive) | ⭐⭐⭐⭐ (growing) | ⭐⭐⭐ (growing) | ⭐⭐⭐⭐ (Apple ecosystem) | ⭐⭐⭐⭐ (JVM ecosystem) | ⭐⭐⭐ (RubyGems) | **⭐⭐⭐ (Growing, Focused)** |
+| Capability/Feature | **Grapa** | Python | JavaScript | TypeScript | Go | Rust | Swift | Kotlin | Ruby |
+|-------------------|-----------|--------|------------|------------|----|------|-------|--------|------|
+| **Meta-Programming** | **⭐⭐⭐⭐⭐ (Executable BNF, Runtime Grammar)** | ⭐⭐ (eval, inspect) | ⭐⭐ (eval, Proxy) | ⭐⭐ (eval, Proxy) | ⭐ (reflect) | ⭐⭐ (macros) | ⭐ (mirror) | ⭐⭐ (reflection) | ⭐⭐⭐ (eval, metaprogramming) |
+| **Dynamic Code Generation** | **⭐⭐⭐⭐⭐ (Human-readable Execution Trees)** | ⭐⭐ (exec, eval) | ⭐⭐ (Function constructor) | ⭐⭐ (Function constructor) | ⭐ (reflect) | ⭐⭐ (procedural macros) | ⭐ (mirror) | ⭐⭐ (reflection) | ⭐⭐⭐ (eval, define_method) |
+| **Multi-Syntax Processing** | **⭐⭐⭐⭐⭐ (JSON, XML, HTML Native)** | ⭐⭐ (json, xml libs) | ⭐⭐ (JSON native, xml libs) | ⭐⭐ (JSON native, xml libs) | ⭐⭐ (json, xml libs) | ⭐⭐ (serde) | ⭐⭐ (Codable) | ⭐⭐ (serialization) | ⭐⭐ (json, xml libs) |
+| **Unlimited Precision Math** | **⭐⭐⭐⭐⭐ (Native $INT, $FLOAT, $TIME)** | ⭐⭐⭐ (decimal, mpmath) | ⭐⭐ (BigInt) | ⭐⭐ (BigInt) | ⭐⭐ (big.Int) | ⭐⭐ (num-bigint) | ⭐⭐ (BigInt) | ⭐⭐ (BigInteger) | ⭐⭐ (BigDecimal) |
+| **Pattern Matching** | **⭐⭐⭐⭐⭐ (100% ripgrep, Binary Support)** | ⭐⭐ (re module) | ⭐⭐ (RegExp) | ⭐⭐ (RegExp) | ⭐⭐ (regexp) | ⭐⭐⭐ (regex) | ⭐⭐ (NSRegularExpression) | ⭐⭐ (Regex) | ⭐⭐ (Regexp) |
+| **Parallel Processing** | **⭐⭐⭐⭐⭐ (Built-in Threading, No Setup)** | ⭐⭐ (multiprocessing) | ⭐⭐ (Web Workers) | ⭐⭐ (Web Workers) | ⭐⭐⭐ (goroutines) | ⭐⭐⭐ (async/await) | ⭐⭐ (GCD) | ⭐⭐ (coroutines) | ⭐⭐ (Thread) |
+| **Database Integration** | **⭐⭐⭐⭐⭐ (Native $file().table())** | ⭐⭐ (SQLAlchemy, ORMs) | ⭐⭐ (IndexedDB, SQLite) | ⭐⭐ (IndexedDB, SQLite) | ⭐⭐ (database/sql) | ⭐⭐ (SQLx, Diesel) | ⭐⭐ (Core Data) | ⭐⭐ (Room, Exposed) | ⭐⭐ (Active Record) |
+| **Type Safety** | **⭐⭐⭐ (Runtime Type Checking)** | ⭐⭐ (mypy, type hints) | ⭐ (dynamic) | ⭐⭐⭐⭐ (static) | ⭐⭐⭐⭐ (static) | ⭐⭐⭐⭐⭐ (static) | ⭐⭐⭐⭐ (static) | ⭐⭐⭐⭐ (static) | ⭐ (dynamic) |
+| **Error Handling** | **⭐⭐⭐⭐ (try/catch/finally, .iferr())** | ⭐⭐⭐ (try/except) | ⭐⭐ (try/catch) | ⭐⭐ (try/catch) | ⭐⭐⭐ (error returns) | ⭐⭐⭐⭐ (Result<T,E>) | ⭐⭐⭐ (do-catch) | ⭐⭐⭐ (try/catch) | ⭐⭐ (begin/rescue) |
+| **String Interpolation** | **⭐⭐⭐⭐⭐ (Advanced .interpolate())** | ⭐⭐⭐⭐ (f-strings) | ⭐⭐⭐⭐ (template literals) | ⭐⭐⭐⭐ (template literals) | ⭐⭐ (fmt.Sprintf) | ⭐⭐ (format!) | ⭐⭐⭐⭐ (string interpolation) | ⭐⭐⭐⭐ (string templates) | ⭐⭐⭐⭐ (string interpolation) |
+| **File System Access** | **⭐⭐⭐⭐⭐ (Native $file() Integration)** | ⭐⭐⭐ (pathlib, os) | ⭐⭐ (fs module) | ⭐⭐ (fs module) | ⭐⭐⭐ (os, path) | ⭐⭐⭐ (std::fs) | ⭐⭐⭐ (FileManager) | ⭐⭐⭐ (java.nio) | ⭐⭐⭐ (File, Dir) |
+| **Data Structure Flexibility** | **⭐⭐⭐⭐⭐ (Unified Cross-Format Access)** | ⭐⭐⭐ (lists, dicts) | ⭐⭐⭐ (arrays, objects) | ⭐⭐⭐ (arrays, objects) | ⭐⭐ (slices, maps) | ⭐⭐⭐ (Vec, HashMap) | ⭐⭐⭐ (Array, Dictionary) | ⭐⭐⭐ (List, Map) | ⭐⭐⭐ (Array, Hash) |
+| **Binary Data Processing** | **⭐⭐⭐⭐⭐ (Native Binary Support)** | ⭐⭐ (struct, binascii) | ⭐⭐ (ArrayBuffer) | ⭐⭐ (ArrayBuffer) | ⭐⭐⭐ (binary package) | ⭐⭐⭐⭐ (bytes, binary) | ⭐⭐ (Data) | ⭐⭐ (ByteArray) | ⭐⭐ (String#unpack) |
+| **Unicode Support** | **⭐⭐⭐⭐⭐ (Native + Diacritic-Insensitive)** | ⭐⭐⭐ (native) | ⭐⭐⭐ (native) | ⭐⭐⭐ (native) | ⭐⭐ (unicode package) | ⭐⭐⭐ (unicode) | ⭐⭐⭐⭐ (native) | ⭐⭐⭐ (native) | ⭐⭐⭐ (native) |
+| **Memory Management** | **⭐⭐⭐⭐ (Automatic + Thread-Safe)** | ⭐⭐ (GC) | ⭐⭐ (GC) | ⭐⭐ (GC) | ⭐⭐⭐ (GC) | ⭐⭐⭐⭐⭐ (manual) | ⭐⭐⭐⭐ (ARC) | ⭐⭐⭐ (GC) | ⭐⭐ (GC) |
+| **Performance** | **⭐⭐⭐⭐ (Compiled + Parallel)** | ⭐⭐ (interpreted) | ⭐⭐ (JIT) | ⭐⭐ (JIT) | ⭐⭐⭐⭐ (compiled) | ⭐⭐⭐⭐⭐ (compiled) | ⭐⭐⭐⭐ (compiled) | ⭐⭐⭐ (JVM) | ⭐⭐ (interpreted) |
+| **Ecosystem Maturity** | **⭐⭐⭐ (Growing, Focused)** | ⭐⭐⭐⭐⭐ (extensive) | ⭐⭐⭐⭐⭐ (extensive) | ⭐⭐⭐⭐⭐ (extensive) | ⭐⭐⭐⭐ (growing) | ⭐⭐⭐ (growing) | ⭐⭐⭐⭐ (Apple ecosystem) | ⭐⭐⭐⭐ (JVM ecosystem) | ⭐⭐⭐ (RubyGems) |
 
 **Legend:**
 - ⭐ = Basic support
