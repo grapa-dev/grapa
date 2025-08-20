@@ -174,7 +174,7 @@ This table ranks programming languages across key capabilities, showing where Gr
 | **File System Access** | **⭐⭐⭐⭐⭐ (Native $file() Integration)** | ⭐⭐⭐ (pathlib, os) | ⭐⭐ (fs module) | ⭐⭐ (fs module) | ⭐⭐⭐ (os, path) | ⭐⭐⭐ (std::fs) | ⭐⭐⭐ (FileManager) | ⭐⭐⭐ (java.nio) | ⭐⭐⭐ (File, Dir) |
 | **Data Structure Flexibility** | **⭐⭐⭐⭐⭐ (Unified Cross-Format Access)** | ⭐⭐⭐ (lists, dicts) | ⭐⭐⭐ (arrays, objects) | ⭐⭐⭐ (arrays, objects) | ⭐⭐ (slices, maps) | ⭐⭐⭐ (Vec, HashMap) | ⭐⭐⭐ (Array, Dictionary) | ⭐⭐⭐ (List, Map) | ⭐⭐⭐ (Array, Hash) |
 | **Binary Data Processing** | **⭐⭐⭐⭐⭐ (Native Binary Support)** | ⭐⭐ (struct, binascii) | ⭐⭐ (ArrayBuffer) | ⭐⭐ (ArrayBuffer) | ⭐⭐⭐ (binary package) | ⭐⭐⭐⭐ (bytes, binary) | ⭐⭐ (Data) | ⭐⭐ (ByteArray) | ⭐⭐ (String#unpack) |
-| **Unicode Support** | **⭐⭐⭐⭐⭐ (Native + Diacritic-Insensitive)** | ⭐⭐⭐ (native) | ⭐⭐⭐ (native) | ⭐⭐⭐ (native) | ⭐⭐ (unicode package) | ⭐⭐⭐ (unicode) | ⭐⭐⭐⭐ (native) | ⭐⭐⭐ (native) | ⭐⭐⭐ (native) |
+| **Unicode Support** | **⭐⭐⭐ (Basic + grep fully unicode)** | ⭐⭐⭐ (native) | ⭐⭐⭐ (native) | ⭐⭐⭐ (native) | ⭐⭐ (unicode package) | ⭐⭐⭐ (unicode) | ⭐⭐⭐⭐ (native) | ⭐⭐⭐ (native) | ⭐⭐⭐ (native) |
 | **Memory Management** | **⭐⭐⭐⭐ (Automatic + Thread-Safe)** | ⭐⭐ (GC) | ⭐⭐ (GC) | ⭐⭐ (GC) | ⭐⭐⭐ (GC) | ⭐⭐⭐⭐⭐ (manual) | ⭐⭐⭐⭐ (ARC) | ⭐⭐⭐ (GC) | ⭐⭐ (GC) |
 | **Performance** | **⭐⭐⭐⭐ (Compiled + Parallel)** | ⭐⭐ (interpreted) | ⭐⭐ (JIT) | ⭐⭐ (JIT) | ⭐⭐⭐⭐ (compiled) | ⭐⭐⭐⭐⭐ (compiled) | ⭐⭐⭐⭐ (compiled) | ⭐⭐⭐ (JVM) | ⭐⭐ (interpreted) |
 | **Ecosystem Maturity** | **⭐ (Just me right now)** | ⭐⭐⭐⭐⭐ (extensive) | ⭐⭐⭐⭐⭐ (extensive) | ⭐⭐⭐⭐⭐ (extensive) | ⭐⭐⭐⭐ (growing) | ⭐⭐⭐ (growing) | ⭐⭐⭐⭐ (Apple ecosystem) | ⭐⭐⭐⭐ (JVM ecosystem) | ⭐⭐⭐ (RubyGems) |
