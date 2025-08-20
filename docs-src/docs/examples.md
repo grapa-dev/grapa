@@ -12,6 +12,12 @@ Welcome to the Grapa Examples hub! Here you'll find practical, ready-to-run scri
 | [Basic Example](examples/basic_example.grc) | Demonstrates basic Grapa syntax, variable assignment, arrays, strings, and math operations. |
 | [Advanced Example](examples/advanced_example.grc) | Shows more complex operations: string processing, array manipulation, and returning multiple results. |
 | [Performance Example](examples/performance_example.grc) | Illustrates performance-related operations, including loops and array creation. |
+| [Vector Operations](examples/vector_operations.grc) | Comprehensive examples of vector operations including matrix operations, linear algebra, statistical functions, and multi-dimensional data processing. |
+| [Array Comprehension Alternatives](examples/array_comprehension_alternatives.grc) | Demonstrates how to accomplish array comprehension patterns using Grapa's functional methods with threading support. |
+| [String Interpolation](examples/string_interpolation_example.grc) | Shows advanced string interpolation techniques including variable substitution, expression evaluation, and dynamic script execution. |
+| [Database Examples](examples/database_examples.grc) | Demonstrates database operations including table creation, data manipulation, queries, and advanced database features. |
+| [Advanced Language Features Demo](examples/advanced_language_features_demo.grc) | Comprehensive demonstration of all advanced language features already implemented in Grapa, including pattern matching, metaprogramming, concurrency, type system, data structures, and debugging tools. |
+
 
 ### **Language Extension Examples**
 | Example | Description |

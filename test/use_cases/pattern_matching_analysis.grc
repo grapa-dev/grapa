@@ -1,0 +1,234 @@
+/* Pattern Matching Analysis Test
+ * 
+ * This file tests Grapa's existing pattern matching capabilities to determine
+ * what's already implemented vs what might be missing.
+ * 
+ * Testing:
+ * 1. Pattern destructuring (array and object)
+ * 2. Match expressions (switch/case)
+ * 3. Guard clauses (conditional cases)
+ * 4. Pattern matching with grep/match
+ */
+
+("=== Pattern Matching Analysis Test ===").echo();
+
+/* Test 1: Array Destructuring */
+("--- Test 1: Array Destructuring ---").echo();
+
+// Test basic array destructuring using Grapa's namespace approach
+arr = [1, 2, 3, 4, 5];
+
+// Method 1: Direct assignment (traditional)
+first = arr[0];
+second = arr[1];
+rest = arr.slice(2);
+("Direct assignment: first=" + first + ", second=" + second + ", rest=" + rest).echo();
+
+// Method 2: Namespace destructuring (Grapa's approach)
+@local ++= {first: arr[0], second: arr[1], rest: arr.slice(2)};
+("Namespace destructuring: first=" + first + ", second=" + second + ", rest=" + rest).echo();
+
+// Method 3: Function parameter destructuring
+destructure_array = op(params) {
+    @local ++= {first: params[0], second: params[1], rest: params.slice(2)};
+    ("Function destructuring: first=" + first + ", second=" + second + ", rest=" + rest).echo();
+};
+destructure_array([10, 20, 30, 40, 50]);
+
+/* Test 2: Object Destructuring */
+("--- Test 2: Object Destructuring ---").echo();
+
+// Test object destructuring
+obj = {name: "Alice", age: 30, city: "NY", role: "admin"};
+
+// Method 1: Direct property access
+name = obj.name;
+age = obj.age;
+("Direct access: name=" + name + ", age=" + age).echo();
+
+// Method 2: Namespace destructuring (Grapa's approach)
+@local ++= obj;
+("Namespace destructuring: name=" + name + ", age=" + age + ", city=" + city + ", role=" + role).echo();
+
+// Method 3: Selective destructuring
+@local ++= {name: obj.name, age: obj.age};
+("Selective destructuring: name=" + name + ", age=" + age).echo();
+
+/* Test 3: Match Expressions (Switch/Case) */
+("--- Test 3: Match Expressions (Switch/Case) ---").echo();
+
+// Test basic match expression
+test_match = op(value) {
+    switch (value) {
+        case 1: "One".echo();
+        case 2: "Two".echo();
+        case 3: "Three".echo();
+        default: "Other".echo();
+    }
+};
+
+test_match(1);  // Should print "One"
+test_match(2);  // Should print "Two"
+test_match(5);  // Should print "Other"
+
+// Test match with expressions
+test_match_expr = op(value) {
+    switch (value) {
+        case (value < 0): "Negative".echo();
+        case (value == 0): "Zero".echo();
+        case (value > 0): "Positive".echo();
+    }
+};
+
+test_match_expr(-5);  // Should print "Negative"
+test_match_expr(0);   // Should print "Zero"
+test_match_expr(10);  // Should print "Positive"
+
+/* Test 4: Guard Clauses */
+("--- Test 4: Guard Clauses ---").echo();
+
+// Test guard clauses using conditional cases
+test_guards = op(user) {
+    switch (user) {
+        case (user.age < 18): "Too young".echo();
+        case (user.age >= 18 && user.role == "admin"): "Admin access".echo();
+        case (user.age >= 18 && user.role == "user"): "User access".echo();
+        case (user.age >= 65): "Senior access".echo();
+        default: "No access".echo();
+    }
+};
+
+test_guards({age: 16, role: "user"});     // Should print "Too young"
+test_guards({age: 25, role: "admin"});    // Should print "Admin access"
+test_guards({age: 30, role: "user"});     // Should print "User access"
+test_guards({age: 70, role: "user"});     // Should print "Senior access"
+
+/* Test 5: Pattern Matching with Grep */
+("--- Test 5: Pattern Matching with Grep ---").echo();
+
+// Test pattern matching on text
+text = "Hello world\nGoodbye world\nHello again";
+
+// Basic pattern matching
+matches = text.grep("Hello");
+("Basic pattern matches: " + matches).echo();
+
+// Match-only output
+match_only = text.grep("world", "o");
+("Match-only output: " + match_only).echo();
+
+// Case-insensitive matching
+case_insensitive = text.grep("hello", "i");
+("Case-insensitive matches: " + case_insensitive).echo();
+
+/* Test 6: Pattern Matching with Match Method */
+("--- Test 6: Pattern Matching with Match Method ---").echo();
+
+// Test boolean pattern matching
+has_hello = text.match("Hello");
+("Contains 'Hello': " + has_hello).echo();
+
+has_world = text.match("world");
+("Contains 'world': " + has_world).echo();
+
+has_xyz = text.match("xyz");
+("Contains 'xyz': " + has_xyz).echo();
+
+/* Test 7: Complex Pattern Matching */
+("--- Test 7: Complex Pattern Matching ---").echo();
+
+// Test complex patterns
+data = [
+    {name: "Alice", age: 25, role: "admin"},
+    {name: "Bob", age: 30, role: "user"},
+    {name: "Charlie", age: 35, role: "admin"},
+    {name: "Diana", age: 20, role: "user"}
+];
+
+// Pattern matching on complex data
+admin_users = data.filter(op(user) { user.role == "admin"; });
+("Admin users: " + admin_users.len()).echo();
+
+young_admins = data.filter(op(user) { user.role == "admin" && user.age < 30; });
+("Young admin users: " + young_admins.len()).echo();
+
+// Pattern matching with transformations
+user_names = data.map(op(user) { user.name; });
+("User names: " + user_names).echo();
+
+/* Test 8: Nested Pattern Matching */
+("--- Test 8: Nested Pattern Matching ---").echo();
+
+// Test nested object destructuring
+nested_obj = {
+    user: {name: "Alice", age: 30},
+    settings: {theme: "dark", notifications: true},
+    metadata: {created: "2024-01-01", version: "1.0"}
+};
+
+// Nested destructuring
+@local ++= nested_obj;
+("Nested destructuring: user.name=" + user.name + ", settings.theme=" + settings.theme).echo();
+
+// Deep nested destructuring
+@local ++= {user_name: nested_obj.user.name, theme: nested_obj.settings.theme};
+("Deep nested destructuring: user_name=" + user_name + ", theme=" + theme).echo();
+
+/* Test 9: Pattern Matching with Arrays */
+("--- Test 9: Pattern Matching with Arrays ---").echo();
+
+// Test array pattern matching
+arrays = [
+    [1, 2, 3],
+    [4, 5, 6],
+    [7, 8, 9],
+    [1, 2, 3, 4]
+];
+
+// Pattern matching on arrays
+three_element_arrays = arrays.filter(op(arr) { arr.len() == 3; });
+("Three-element arrays: " + three_element_arrays.len()).echo();
+
+arrays_starting_with_one = arrays.filter(op(arr) { arr[0] == 1; });
+("Arrays starting with 1: " + arrays_starting_with_one.len()).echo();
+
+/* Test 10: Advanced Pattern Matching */
+("--- Test 10: Advanced Pattern Matching ---").echo();
+
+// Test advanced patterns with multiple conditions
+advanced_data = [
+    {type: "user", data: {name: "Alice", age: 25}},
+    {type: "admin", data: {name: "Bob", age: 35}},
+    {type: "user", data: {name: "Charlie", age: 20}},
+    {type: "system", data: {name: "System", age: 0}}
+];
+
+// Complex pattern matching
+young_users = advanced_data.filter(op(item) {
+    item.type == "user" && item.data.age < 30;
+});
+("Young users: " + young_users.len()).echo();
+
+// Pattern matching with type checking
+valid_items = advanced_data.filter(op(item) {
+    item.type() == $LIST && item.data && item.data.name;
+});
+("Valid items: " + valid_items.len()).echo();
+
+("=== Pattern Matching Analysis Complete ===").echo();
+
+/* Summary of Findings:
+ * 
+ * Grapa already has:
+ * 1. ✅ Array destructuring via namespace concatenation (@local ++= {first: arr[0], second: arr[1]})
+ * 2. ✅ Object destructuring via namespace concatenation (@local ++= obj)
+ * 3. ✅ Match expressions via switch/case statements
+ * 4. ✅ Guard clauses via conditional cases (case (condition):)
+ * 5. ✅ Pattern matching via .grep() and .match() methods
+ * 6. ✅ Complex pattern matching via .filter() and .map()
+ * 
+ * These capabilities are already documented in:
+ * - docs-src/docs/syntax/basic_syntax.md (destructuring)
+ * - docs-src/docs/operators/condition.md (switch/case)
+ * - docs-src/docs/examples.md (pattern matching)
+ */

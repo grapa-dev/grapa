@@ -120,6 +120,7 @@ GrapaValue (Base)
 GrapaTokenType Enumeration:
 ├── Primitive: ERR, RAW, BOOL, ID, STR, INT, FLOAT, TIME
 ├── Collections: ARRAY, LIST, TUPLE, VECTOR
+│   └── [Vector Implementation](GRAPA_VECTOR_IMPLEMENTATION.md) - Multi-dimensional mathematical data structure
 ├── System: SYM, SYSSYM, SYSID, SYSSTR, SYSINT
 ├── Execution: OP, CODE, RULE, TOKEN
 ├── Data: TABLE, XML, TAG, EL

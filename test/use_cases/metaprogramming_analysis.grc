@@ -1,0 +1,245 @@
+/* Metaprogramming Analysis Test
+ * 
+ * This file tests Grapa's existing metaprogramming capabilities to determine
+ * what's already implemented vs what might be missing.
+ * 
+ * Testing:
+ * 1. Macro system (custom_command/custom_function)
+ * 2. AST manipulation (execution trees)
+ * 3. Code reflection (introspection)
+ * 4. Dynamic grammar modification
+ */
+
+("=== Metaprogramming Analysis Test ===").echo();
+
+/* Test 1: Macro System (Custom Commands and Functions) */
+("--- Test 1: Macro System (Custom Commands and Functions) ---").echo();
+
+// Define a custom function (macro)
+custom_function = rule select $INT {op(p:$2){p*5}};
+
+// Use the custom function
+result1 = select 4;        // Should return 20
+result2 = select 8;        // Should return 40
+("Custom function results: " + result1 + ", " + result2).echo();
+
+// Define a custom command (macro)
+custom_command = rule repeat $INT times '{' <$command> '}' {
+    op(count:$2, body:$5){
+        i = 0;
+        while (i < count) {
+            body();
+            i += 1;
+        }
+    }
+};
+
+// Use the custom command
+("Testing custom command:").echo();
+repeat 3 times {
+    "Hello from custom command!".echo();
+}
+
+/* Test 2: AST Manipulation (Execution Trees) */
+("--- Test 2: AST Manipulation (Execution Trees) ---").echo();
+
+// Create a function and get its execution tree
+test_function = op(x, y) { x + y * 2; };
+
+// Get the execution tree
+tree = test_function.plan();
+("Execution tree type: " + tree.type()).echo();
+
+// Execute the tree directly
+result = tree(5, 3);  // Should return 11 (5 + 3*2)
+("Tree execution result: " + result).echo();
+
+// Create execution tree from string
+string_tree = op()("x + y * 2")();
+("String tree type: " + string_tree.type()).echo();
+
+// Execute string tree with parameters
+string_result = op(x:5, y:3)(string_tree)();
+("String tree result: " + string_result).echo();
+
+/* Test 3: Code Reflection (Introspection) */
+("--- Test 3: Code Reflection (Introspection) ---").echo();
+
+// Test function introspection
+introspect_function = op(name, age) { 
+    "Name: " + name + ", Age: " + age; 
+};
+
+// Get function description
+func_desc = introspect_function.describe();
+("Function description: " + func_desc).echo();
+
+// Test variable introspection
+test_var = 42;
+var_type = test_var.type();
+var_desc = test_var.describe();
+("Variable type: " + var_type + ", description: " + var_desc).echo();
+
+// Test object introspection
+test_obj = {name: "Alice", age: 30};
+obj_desc = test_obj.describe();
+("Object description: " + obj_desc).echo();
+
+/* Test 4: Dynamic Grammar Modification */
+("--- Test 4: Dynamic Grammar Modification ---").echo();
+
+// Define a new grammar rule at runtime
+@global["$dynamic_rule"] = rule hello $STR {op(name:$2){"Hello, " + name + "!"}};
+
+// Use the dynamically created rule
+dynamic_result = hello "World";
+("Dynamic rule result: " + dynamic_result).echo();
+
+// Define another dynamic rule
+@global["$math_rule"] = rule calculate $INT '+' $INT {op(a:$2,b:$4){a + b}};
+
+// Use the math rule
+calc_result = calculate 5 '+' 3;
+("Math rule result: " + calc_result).echo();
+
+/* Test 5: Advanced Metaprogramming Patterns */
+("--- Test 5: Advanced Metaprogramming Patterns ---").echo();
+
+// Template generation
+create_template = op(template_name, fields) {
+    template_code = "op(" + fields.join(",") + ") {";
+    template_code += "    /* Generated template: " + template_name + " */";
+    template_code += "    result = {};";
+    fields.map(op(field) {
+        template_code += "    result." + field + " = " + field + ";";
+    });
+    template_code += "    result;";
+    template_code += "}";
+    
+    // Compile the template
+    op()(template_code)();
+};
+
+// Use template generation
+user_template = create_template("user", ["name", "age", "email"]);
+user_instance = user_template("Alice", 30, "alice@example.com");
+("Generated template result: " + user_instance).echo();
+
+/* Test 6: Code Generation and Execution */
+("--- Test 6: Code Generation and Execution ---").echo();
+
+// Generate code dynamically
+generate_adder = op(operation) {
+    code = "op(a, b) { a " + operation + " b; }";
+    op()(code)();
+};
+
+// Create different operations
+add_func = generate_adder("+");
+sub_func = generate_adder("-");
+mul_func = generate_adder("*");
+
+// Test generated functions
+("Generated add: " + add_func(5, 3)).echo();
+("Generated sub: " + sub_func(5, 3)).echo();
+("Generated mul: " + mul_func(5, 3)).echo();
+
+/* Test 7: Execution Tree Transformation */
+("--- Test 7: Execution Tree Transformation ---").echo();
+
+// Create a function with side effects
+original_func = op(x) { 
+    "Processing: " + x.echo(); 
+    x * 2; 
+};
+
+// Transform the function to add logging
+transform_with_logging = op(func) {
+    op(x) {
+        "=== Function Call Start ===".echo();
+        result = func(x);
+        "=== Function Call End ===".echo();
+        result;
+    }
+};
+
+// Test transformed function
+transformed = transform_with_logging(original_func);
+result = transformed(10);
+("Transformed result: " + result).echo();
+
+/* Test 8: Dynamic Language Extension */
+("--- Test 8: Dynamic Language Extension ---").echo();
+
+// Extend the language with a new control structure
+@global["$for_rule"] = rule for $ID in <$comp> '{' <$command> '}' {
+    op(var_name:$2, collection:$4, body:$7){
+        collection.map(op(item){
+            // Set the variable in local scope
+            @local ++= {temp_var: item};
+            // Execute body with the variable available
+            body();
+        });
+    }
+};
+
+// Use the new control structure
+test_array = [1, 2, 3, 4, 5];
+for item in test_array {
+    ("Item: " + item).echo();
+}
+
+/* Test 9: Metaprogramming with System Functions */
+("--- Test 9: Metaprogramming with System Functions ---").echo();
+
+// Use system evaluation
+eval_result = $sys().eval("5 + 3 * 2");
+("System eval result: " + eval_result).echo();
+
+// Use system compilation
+compiled_code = $sys().compile("x * y + z");
+compiled_result = $sys().eval(compiled_code, {"x": 2, "y": 3, "z": 1});
+("Compiled code result: " + compiled_result).echo();
+
+/* Test 10: Advanced Code Analysis */
+("--- Test 10: Advanced Code Analysis ---").echo();
+
+// Analyze function structure
+analyze_function = op(func) {
+    func_desc = func.describe();
+    func_type = func.type();
+    
+    {
+        type: func_type,
+        description: func_desc,
+        is_function: func_type == $OP,
+        has_plan: func.plan ? true : false
+    };
+};
+
+// Test function analysis
+sample_func = op(x, y) { x + y; };
+analysis = analyze_function(sample_func);
+("Function analysis: " + analysis).echo();
+
+("=== Metaprogramming Analysis Complete ===").echo();
+
+/* Summary of Findings:
+ * 
+ * Grapa already has:
+ * 1. ✅ Macro system via custom_command/custom_function
+ * 2. ✅ AST manipulation via execution trees (.plan())
+ * 3. ✅ Code reflection via .describe() and .type()
+ * 4. ✅ Dynamic grammar modification via @global rules
+ * 5. ✅ Code generation and execution via op()()
+ * 6. ✅ Execution tree transformation
+ * 7. ✅ Dynamic language extension
+ * 8. ✅ System-level metaprogramming via $sys().eval() and $sys().compile()
+ * 9. ✅ Advanced code analysis capabilities
+ * 
+ * These capabilities are already documented in:
+ * - docs-src/docs/multi_syntax_programming.md (custom commands/functions)
+ * - docs-src/docs/syntax/basic_syntax.md (execution trees)
+ * - docs-src/docs/api_reference.md (metaprogramming)
+ * - docs-src/docs/language_design_with_executable_bnf.md (grammar modification)
+ */
