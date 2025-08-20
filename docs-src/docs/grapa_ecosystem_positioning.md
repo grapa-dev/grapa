@@ -177,7 +177,7 @@ This table ranks programming languages across key capabilities, showing where Gr
 | **Unicode Support** | **⭐⭐⭐⭐⭐ (Native + Diacritic-Insensitive)** | ⭐⭐⭐ (native) | ⭐⭐⭐ (native) | ⭐⭐⭐ (native) | ⭐⭐ (unicode package) | ⭐⭐⭐ (unicode) | ⭐⭐⭐⭐ (native) | ⭐⭐⭐ (native) | ⭐⭐⭐ (native) |
 | **Memory Management** | **⭐⭐⭐⭐ (Automatic + Thread-Safe)** | ⭐⭐ (GC) | ⭐⭐ (GC) | ⭐⭐ (GC) | ⭐⭐⭐ (GC) | ⭐⭐⭐⭐⭐ (manual) | ⭐⭐⭐⭐ (ARC) | ⭐⭐⭐ (GC) | ⭐⭐ (GC) |
 | **Performance** | **⭐⭐⭐⭐ (Compiled + Parallel)** | ⭐⭐ (interpreted) | ⭐⭐ (JIT) | ⭐⭐ (JIT) | ⭐⭐⭐⭐ (compiled) | ⭐⭐⭐⭐⭐ (compiled) | ⭐⭐⭐⭐ (compiled) | ⭐⭐⭐ (JVM) | ⭐⭐ (interpreted) |
-| **Ecosystem Maturity** | **⭐⭐⭐ (Growing, Focused)** | ⭐⭐⭐⭐⭐ (extensive) | ⭐⭐⭐⭐⭐ (extensive) | ⭐⭐⭐⭐⭐ (extensive) | ⭐⭐⭐⭐ (growing) | ⭐⭐⭐ (growing) | ⭐⭐⭐⭐ (Apple ecosystem) | ⭐⭐⭐⭐ (JVM ecosystem) | ⭐⭐⭐ (RubyGems) |
+| **Ecosystem Maturity** | **⭐ (Just me right now)** | ⭐⭐⭐⭐⭐ (extensive) | ⭐⭐⭐⭐⭐ (extensive) | ⭐⭐⭐⭐⭐ (extensive) | ⭐⭐⭐⭐ (growing) | ⭐⭐⭐ (growing) | ⭐⭐⭐⭐ (Apple ecosystem) | ⭐⭐⭐⭐ (JVM ecosystem) | ⭐⭐⭐ (RubyGems) |
 
 **Legend:**
 - ⭐ = Basic support
