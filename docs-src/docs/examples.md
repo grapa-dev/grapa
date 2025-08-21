@@ -17,6 +17,8 @@ Welcome to the Grapa Examples hub! Here you'll find practical, ready-to-run scri
 | [String Interpolation](examples/string_interpolation_example.grc) | Shows advanced string interpolation techniques including variable substitution, expression evaluation, and dynamic script execution. |
 | [Database Examples](examples/database_examples.grc) | Demonstrates database operations including table creation, data manipulation, queries, and advanced database features. |
 | [Advanced Language Features Demo](examples/advanced_language_features_demo.grc) | Comprehensive demonstration of all advanced language features already implemented in Grapa, including pattern matching, metaprogramming, concurrency, type system, data structures, and debugging tools. |
+| [Hex and Binary Examples](examples/hex_binary_examples.grc) | Demonstrates Grapa's enhanced hex and binary literal support including underscores, floats, string parsing, and practical use cases like color values and bit flags. |
+| [Unsigned Methods Examples](examples/unsigned_methods_examples.grc) | Comprehensive demonstration of Grapa's unsigned methods (.uint(), .uraw(), .uhex(), .ubin()) for cryptographic applications, binary data processing, and handling large numbers without sign issues. |
 
 
 ### **Language Extension Examples**
@@ -131,6 +133,88 @@ squares = [x*x for x in 5];  /* [0, 1, 4, 9, 16] */
 evens = [x for x in 10 if x % 2 == 0];  /* [0, 2, 4, 6, 8] */
 doubled = [x*2 for x in [1, 2, 3]];  /* [2, 4, 6] */
 chars = [x for x in "hello"];  /* ["h", "e", "l", "l", "o"] */
+```
+
+### Hex and Binary Literals
+```grapa
+/* Basic hex and binary literals */
+0x12.echo();              /* 18 */
+0xABCD.echo();            /* 43981 */
+0b010.echo();             /* 2 */
+0b1010.echo();            /* 10 */
+
+/* With underscores for readability */
+0x12_34.echo();           /* 4660 */
+0b010_101.echo();         /* 21 */
+
+/* Hex and binary floats */
+0x12.34.echo();           /* 18.203125 */
+0b010.011.echo();         /* 2.375 */
+
+/* String parsing */
+'0x12'.exec().echo();     /* 18 */
+'0b101'.exec().echo();    /* 5 */
+
+/* Practical examples */
+red = 0xFF0000;           /* Red color */
+green = 0x00FF00;         /* Green color */
+blue = 0x0000FF;          /* Blue color */
+
+READ = 0b001;             /* Read permission */
+WRITE = 0b010;            /* Write permission */
+EXECUTE = 0b100;          /* Execute permission */
+permissions = READ + WRITE;  /* Read and write */
+
+/* Method calls work on hex/binary literals */
+0x12.hex().echo();        /* "12" */
+0x12.int().echo();        /* 18 */
+0b010.bin().echo();       /* "10" */
+0b010.int().echo();       /* 2 */
+```
+
+### Unsigned Methods (Cryptographic)
+```grapa
+/* Unsigned integer conversion */
+(-1).uint();              /* 255 (8-bit unsigned equivalent) */
+(-100).uint();            /* 156 (8-bit unsigned equivalent) */
+(-1000).uint();           /* 64536 (16-bit unsigned equivalent) */
+(255).uint();             /* 255 (no change for positive numbers) */
+
+/* Unsigned raw representation (with 0x prefix) */
+(-1).uraw();              /* 0xD6 (unsigned hex with 0x prefix) */
+(255).uraw();             /* 0x0FF (with leading zero for consistency) */
+(-100).uraw();            /* 0x9C (unsigned representation) */
+
+/* Unsigned hex representation (without 0x prefix) */
+(-1).uhex();              /* "D6" (unsigned hex without 0x prefix) */
+(255).uhex();             /* "FF" (no change for positive numbers) */
+(-100).uhex();            /* "9C" (unsigned representation) */
+
+/* Unsigned binary representation */
+(-1).ubin();              /* "11010110" (unsigned binary) */
+(255).ubin();             /* "11111111" (no change for positive numbers) */
+(-100).ubin();            /* "10011100" (unsigned representation) */
+
+/* Cryptographic applications */
+large_random = 0x80000000;  /* Number with leading bit set */
+unsigned_value = large_random.uint();  /* Convert to unsigned */
+key_hex = unsigned_value.uhex();       /* Get hex representation */
+
+/* Bit manipulation for cryptography */
+crypto_value = -98765;
+binary_rep = crypto_value.ubin();
+bit_count = binary_rep.grep("1", "c")[0].int();  /* Count 1 bits */
+
+/* Important: For cryptographic output, prefer .uhex() over .uraw() */
+key = 0xFFFF;
+key.uhex();         /* "FFFF" (clean hex string) */
+key.uraw();         /* "0x0FFFF" (with 0x prefix and leading zero) */
+
+/* Hex representation methods: .hex() vs .raw() */
+42.hex();           /* "2A" (value as hex) */
+42.raw();           /* "0x2A" (internal binary as hex) */
+4.5.hex();          /* "4.8" (decimal value as hex) */
+4.5.raw();          /* "0x00281000A09" (internal binary structure) */
 ```
 
 ### Truthy and Falsy Examples

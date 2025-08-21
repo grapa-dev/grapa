@@ -53,18 +53,45 @@ obj.describe();      /* Returns detailed object information */
 ```
 
 ### `.raw()`
-Returns the raw bytes representation of the object.
+Returns the raw bytes representation of the object. For numbers, this shows the **internal binary representation** as hex.
 
 ```grapa
 "Hello".raw();       /* Returns: 0x48656C6C6F */
 42.raw();           /* Returns: 0x2A */
+255.raw();          /* Returns: 0x0FF */
+4.5.raw();          /* Returns: 0x00281000A09 (internal binary structure) */
 ```
 
+**Note:** For `$FLOAT` types, `.raw()` shows the internal binary representation (sign, exponent, mantissa) as hex, not the decimal value.
+
 ### `.uraw()`
-Returns the unsigned raw bytes representation of the object.
+Returns the unsigned raw bytes representation of the object. This method treats negative numbers as unsigned integers using two's complement representation, which is essential for cryptographic applications and binary data processing.
 
 ```grapa
-obj.uraw();         /* Returns unsigned raw bytes */
+(-1).uraw();        /* Returns: 0xD6 (unsigned hex with 0x prefix) */
+(255).uraw();       /* Returns: 0x0FF (with leading zero for consistency) */
+(-100).uraw();      /* Returns: 0x9C (unsigned representation) */
+```
+
+**Key Features:**
+- **Two's complement conversion**: Negative numbers are converted to their unsigned equivalent
+- **Consistent formatting**: Always includes `0x` prefix and leading zeros for consistency
+- **Cryptographic applications**: Essential for handling large numbers that might be interpreted as negative
+- **Binary data processing**: Useful for working with raw bytes and network protocols
+
+**Use Cases:**
+- Binary file format parsing
+- Network protocol data handling
+- Low-level system programming
+- Debugging and inspection (for cryptographic output, prefer `.uhex()`)
+
+**Note: For cryptographic key output, prefer `.uhex()` over `.uraw()`**
+```grapa
+// .uraw() includes 0x prefix and leading zeros
+key.uraw();         /* Returns: "0x0FFFF" */
+
+// .uhex() provides clean hex string for cryptographic use
+key.uhex();         /* Returns: "FFFF" */
 ```
 
 ### `.bool()`
@@ -98,10 +125,38 @@ Converts the object to an integer.
 ```
 
 ### `.uint()`
-Converts the object to an unsigned integer.
+Converts the object to an unsigned integer. This method is crucial for cryptographic applications where you need to handle large numbers as unsigned values without sign issues.
 
 ```grapa
-obj.uint();         /* Returns unsigned integer */
+(-1).uint();        /* Returns: 255 (8-bit unsigned equivalent) */
+(-100).uint();      /* Returns: 156 (8-bit unsigned equivalent) */
+(-1000).uint();     /* Returns: 64536 (16-bit unsigned equivalent) */
+(-2147483648).uint(); /* Returns: 2147483648 (32-bit unsigned equivalent) */
+(255).uint();       /* Returns: 255 (no change for positive numbers) */
+```
+
+**Key Features:**
+- **Two's complement conversion**: Negative numbers are converted to their unsigned equivalent
+- **Bit width preservation**: Maintains the appropriate bit width for the conversion
+- **No effect on positives**: Positive numbers remain unchanged
+- **Cryptographic safety**: Prevents sign issues when working with large random numbers
+
+**Cryptographic Applications:**
+- **Large random number generation**: Handle numbers with leading bits set without sign issues
+- **Key generation**: Ensure cryptographic keys are treated as unsigned values
+- **Hash function inputs**: Prevent negative number interpretation in hash calculations
+- **Bit manipulation**: Work with bit patterns that might be interpreted as negative
+
+**Example Workflow:**
+```grapa
+// Generate a large random number (might have leading bit set)
+large_random = 0x80000000 + some_random_bits;
+
+// Convert to unsigned for cryptographic operations
+unsigned_value = large_random.uint();
+
+// Compare with other unsigned values
+is_equal = (unsigned_value == 0x80000000);
 ```
 
 ### `.float(precision, mode)`
@@ -200,17 +255,54 @@ Converts the object to a different base representation.
 - `radix` (default: 10) - Base for conversion
 
 ### `.hex()`
-Converts the object to hexadecimal representation.
+Converts the object to hexadecimal representation. For numbers, this converts the **value** to hex.
 
 ```grapa
 42.hex();           /* Returns: "2A" */
+255.hex();          /* Returns: "FF" */
+4.5.hex();          /* Returns: "4.8" (decimal value as hex) */
 ```
 
+**Note:** For `$FLOAT` types, `.hex()` converts the decimal value to hex representation, not the internal binary structure.
+
 ### `.uhex()`
-Converts the object to unsigned hexadecimal representation.
+Converts the object to unsigned hexadecimal representation. This method treats negative numbers as unsigned integers and returns hex without the `0x` prefix.
 
 ```grapa
-obj.uhex();         /* Returns unsigned hex */
+(-1).uhex();        /* Returns: "D6" (unsigned hex without 0x prefix) */
+(255).uhex();       /* Returns: "FF" (no change for positive numbers) */
+(-100).uhex();      /* Returns: "9C" (unsigned representation) */
+(-1000).uhex();     /* Returns: "FC18" (16-bit unsigned hex) */
+```
+
+**Key Features:**
+- **Two's complement conversion**: Negative numbers are converted to their unsigned equivalent
+- **No 0x prefix**: Returns clean hex string without prefix (unlike `.uraw()`)
+- **Consistent with `.hex()`**: Same format as regular `.hex()` but for unsigned values
+- **Cryptographic applications**: Essential for hex representation of unsigned values
+
+**Comparison with other hex methods:**
+```grapa
+(-1).hex();         /* Returns: "-01" (signed hex with minus sign) */
+(-1).uhex();        /* Returns: "D6" (unsigned hex without sign) */
+(-1).uraw();        /* Returns: "0xD6" (unsigned hex with 0x prefix) */
+```
+
+**Use Cases:**
+- **Cryptographic key representation**: Display keys in standard hex format (preferred over `.uraw()`)
+- **Hash value output**: Show hash results as unsigned hex strings
+- **Binary data inspection**: View raw data as unsigned hex
+- **Protocol debugging**: Examine network protocol data in hex format
+
+**Important: For cryptographic output, use `.uhex()` instead of `.uraw()`**
+```grapa
+// For cryptographic applications, prefer .uhex() over .uraw()
+key = 0xFFFF;
+key.uhex();         /* Returns: "FFFF" (clean hex string) */
+key.uraw();         /* Returns: "0x0FFFF" (with 0x prefix and leading zero) */
+
+// .uhex() provides standard cryptographic hex format
+// .uraw() includes formatting that may not be desired
 ```
 
 ### `.bin()`
@@ -221,10 +313,44 @@ Converts the object to binary representation.
 ```
 
 ### `.ubin()`
-Converts the object to unsigned binary representation.
+Converts the object to unsigned binary representation. This method treats negative numbers as unsigned integers and returns binary without sign indicators.
 
 ```grapa
-obj.ubin();         /* Returns unsigned binary */
+(-1).ubin();        /* Returns: "11010110" (unsigned binary) */
+(255).ubin();       /* Returns: "11111111" (no change for positive numbers) */
+(-100).ubin();      /* Returns: "10011100" (unsigned representation) */
+(-1000).ubin();     /* Returns: "11111100100011000" (16-bit unsigned binary) */
+```
+
+**Key Features:**
+- **Two's complement conversion**: Negative numbers are converted to their unsigned equivalent
+- **No sign indicators**: Returns clean binary string without minus signs
+- **Consistent with `.bin()`**: Same format as regular `.bin()` but for unsigned values
+- **Bit manipulation**: Essential for cryptographic bit operations
+
+**Comparison with other binary methods:**
+```grapa
+(-1).bin();         /* Returns: "-1" (signed binary with minus sign) */
+(-1).ubin();        /* Returns: "11010110" (unsigned binary without sign) */
+```
+
+**Use Cases:**
+- **Cryptographic bit operations**: Work with binary representations for encryption/decryption
+- **Hash function implementation**: Manipulate binary data for hash calculations
+- **Binary protocol analysis**: Examine binary protocol data
+- **Bit-level debugging**: Debug cryptographic algorithms at the bit level
+- **Random number generation**: Work with binary representations of random values
+
+**Example: Bit manipulation for cryptography**
+```grapa
+// Generate a random number that might be negative
+random_value = generate_random_number();
+
+// Convert to unsigned binary for bit operations
+binary_rep = random_value.ubin();
+
+// Perform bit-level operations
+bit_count = binary_rep.grep("1", "c")[0].int();
 ```
 
 ### `.time()`
@@ -860,18 +986,73 @@ Sets file content or properties.
 
 ## Utility Methods
 
-### `.exec(callback, set, get)`
-Executes a command or script.
+### `.exec()`
+Executes a string as Grapa code, parsing and evaluating it as if it were typed directly in the console. This is functionally equivalent to `op()(script)()`.
 
 ```grapa
-"command".exec();                    /* Returns: {"error":-1} or result */
-"echo 'test'".exec();                /* Returns: "test" */
+/* Basic number parsing */
+"5".exec();                          /* Returns: 5 */
+"5.5".exec();                        /* Returns: 5.5 */
+
+/* Hex and binary literal parsing */
+"0x12".exec();                       /* Returns: 18 */
+"0x5.f".exec();                      /* Returns: 5.9375 */
+"0b101".exec();                      /* Returns: 5 */
+"0b101.011".exec();                  /* Returns: 5.375 */
+
+/* Mathematical expressions */
+"5 + 3".exec();                      /* Returns: 8 */
+"2 * 4".exec();                      /* Returns: 8 */
+"10 / 2".exec();                     /* Returns: 5 */
+"2 ^ 3".exec();                      /* Returns: 8 */
+
+/* Variable assignment and usage */
+"x = 5".exec();                      /* Assigns x = 5 */
+"x".exec();                          /* Returns: 5 */
+"y = x + 3".exec();                  /* Assigns y = 8 */
+
+/* Function calls */
+"op(x){x*2}(5)".exec();              /* Returns: 10 */
+"op(x,y){x+y}(3,4)".exec();          /* Returns: 7 */
+
+/* Data structures */
+"[1,2,3]".exec();                    /* Returns: [1,2,3] */
+"{a:1,b:2}".exec();                  /* Returns: {"a":1,"b":2} */
+"[1,2,3].len()".exec();              /* Returns: 3 */
+
+/* Error handling */
+"invalid syntax".exec();              /* Returns: {"error":-1} */
+"5 +".exec();                        /* Returns: [5,{"match":"+","fail":""}] */
+
+/* Comparison with op()() */
+script = "5 + 3";
+script.exec();                        /* Returns: 8 */
+op()(script)();                       /* Returns: 8 (equivalent) */
 ```
 
-**Parameters:**
-- `callback` (default: null) - Callback function
-- `set` (default: null) - Set function
-- `get` (default: null) - Get function
+**Relationship to `op()()`:**
+- `script.exec()` is functionally equivalent to `op()(script)()`
+- Both use the same underlying Grapa parser and execution engine
+- Both support the same syntax including hex/binary literals, expressions, functions, etc.
+- `.exec()` is a more convenient syntax for the same functionality
+
+**Key Features:**
+- **Full Grapa Parser**: Parses any valid Grapa syntax including literals, expressions, functions, and data structures
+- **Hex/Binary Support**: Automatically recognizes and parses hex (`0x`) and binary (`0b`) literals
+- **Variable Scope**: Executes in the current namespace, allowing variable assignment and retrieval
+- **Error Handling**: Returns structured error information for invalid syntax
+- **Expression Evaluation**: Supports complex mathematical and logical expressions
+- **Function Execution**: Can execute function definitions and calls
+- **Data Structure Creation**: Parses arrays, objects, and their method calls
+- **Customizable Execution**: Optional callback, set, and get functions for custom behavior
+
+**Use Cases:**
+- **String-to-Number Conversion**: Parse hex/binary strings to numbers
+- **Dynamic Code Execution**: Execute code stored in strings
+- **Configuration Parsing**: Parse configuration strings as Grapa expressions
+- **User Input Processing**: Safely execute user-provided expressions
+- **Template Evaluation**: Evaluate expressions embedded in strings
+- **Custom Execution Context**: Use callback/set/get for specialized execution environments
 
 ### `.getname(index)`
 Gets the name of an object property.

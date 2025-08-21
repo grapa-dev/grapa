@@ -98,6 +98,18 @@ This backlog tracks all future, long-term, and queued tasks for the Grapa projec
 
 ### **Grapa Rules System Enhancement Roadmap** 🔧 **COMPREHENSIVE PLANNING**
 - **Status**: Comprehensive roadmap created with 12 major enhancements across 4 phases
+
+### **`.exec()` Method Enhancement** 🔧 **PARAMETER SUPPORT REVISIT**
+- **Status**: `.exec()` method has callback, set, get parameters designed in C++ but not exposed in Grapa syntax
+- **Background**: Created before `op()()` was fully implemented, parameter handling designed but never fully exposed
+- **Goal**: Revisit whether to enhance `.exec()` with parameter support or keep it simple as `op()(script)()` equivalent
+- **Options**: 
+  - Keep simple (current behavior) - equivalent to `op()(script)()`
+  - Expose callback parameter for custom response handling
+  - Expose set/get parameters for custom variable scope management
+  - Full parameter support for specialized execution contexts
+- **Priority**: Low - current functionality works well, enhancement would be nice-to-have
+- **Estimated Effort**: 1-2 weeks (analysis and implementation)
 - **Focus**: Modern language features, developer experience, advanced capabilities
 - **Timeline**: 16-week phased implementation (4 phases, 4 weeks each)
 - **Priority**: High - foundational for language adoption and developer experience

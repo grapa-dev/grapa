@@ -1364,6 +1364,10 @@ void GrapaItemState::Running()
 					//msgStr.GrapaBYTE::Append(mItemParams->mParam[GrapaItemEnum::HEX][addHex]);
 					msgStr.GrapaBYTE::Append(c);
 				}
+				else if (c == '_')
+				{
+					msgStr.GrapaBYTE::Append(c);
+				}
 				else if (c == '.')
 				{
 					msgStr.GrapaBYTE::Append('.');
@@ -1375,17 +1379,7 @@ void GrapaItemState::Running()
 					{
 						a.FromString(msgStr, 16);
 						GrapaCHAR m2(a.getBytes());
-						u32 c1 = (msgStr.mLength + 1) / 2;
-						u32 c2 = m2.mLength;
-						if (c1 > c2)
-						{
-							GrapaCHAR m3;
-							while (c2++ < c1) m3.Append("\0", 1);
-							m3.GrapaBYTE::Append(m2);
-							PushOutput(GrapaTokenType::RAW, m3, quote);
-						}
-						else
-							PushOutput(GrapaTokenType::INT, m2, quote);
+						PushOutput(GrapaTokenType::INT, m2, quote);
 						msgStr.SetLength(0);
 						expStr.SetLength(0);
 						sendState = 0;
@@ -1426,17 +1420,7 @@ void GrapaItemState::Running()
 							msgStr.SetLength(lastDot - ((char*)msgStr.mBytes));
 							a.FromString(msgStr, 16);
 							GrapaCHAR m2(a.getBytes());
-							u32 c1 = (msgStr.mLength + 1) / 2;
-							u32 c2 = m2.mLength;
-							if (c1 > c2)
-							{
-								GrapaCHAR m3;
-								while (c2++ < c1) m3.Append("\0", 1);
-								m3.GrapaBYTE::Append(m2);
-								PushOutput(GrapaTokenType::RAW, m3, quote);
-							}
-							else
-								PushOutput(GrapaTokenType::INT, m2, quote);
+							PushOutput(GrapaTokenType::INT, m2, quote);
 							msgStr.FROM(".");
 							PushOutput(GrapaTokenType::SYM, msgStr, quote);
 							msgStr.FROM(saveStr);
@@ -1456,17 +1440,7 @@ void GrapaItemState::Running()
 						{
 							a.FromString(msgStr, 16);
 							GrapaCHAR m2(a.getBytes());
-							u32 c1 = (msgStr.mLength + 1) / 2;
-							u32 c2 = m2.mLength;
-							if (c1 > c2)
-							{
-								GrapaCHAR m3;
-								while (c2++ < c1) m3.Append("\0", 1);
-								m3.GrapaBYTE::Append(m2);
-								PushOutput(GrapaTokenType::RAW, m3, quote);
-							}
-							else
-								PushOutput(GrapaTokenType::INT, m2, quote);
+							PushOutput(GrapaTokenType::INT, m2, quote);
 						}
 						else
 						{
@@ -1488,8 +1462,11 @@ void GrapaItemState::Running()
 				nextValue->mMessage.mPos++;
 				break;
 			case GrapaTokenItemType::NUMBIN:
-                from = strchr(mItemParams->mParam[GrapaItemEnum::BIN], c);
-				if (from)
+				if (char* from = strchr(mItemParams->mParam[GrapaItemEnum::BIN], c))
+				{
+					msgStr.GrapaBYTE::Append(c);
+				}
+				else if (c == '_')
 				{
 					msgStr.GrapaBYTE::Append(c);
 				}
@@ -1499,35 +1476,26 @@ void GrapaItemState::Running()
 				}
 				else
 				{
-					if (strchr((char*)msgStr.mBytes, '.'))
+					int cnt = std::count(msgStr.mBytes, msgStr.mBytes + msgStr.mLength, '.');
+					if (cnt == 0)
 					{
-						if (msgStr.mLength > 0 && msgStr.mBytes[msgStr.mLength - 1] == '.')
+						a.FromString(msgStr, 2);
+						GrapaCHAR m2(a.getBytes());
+						PushOutput(GrapaTokenType::INT, m2, quote);
+						msgStr.SetLength(0);
+						expStr.SetLength(0);
+						sendState = 0;
+						noEscape = false;
+						state = GrapaTokenType::START;
+						break;
+					}
+					else if (cnt == 1)
+					{
+						if (strchr(mItemParams->mParam[GrapaItemEnum::BIN], msgStr.mBytes[msgStr.mLength - 1]) && strchr(mItemParams->mParam[GrapaItemEnum::BIN], c))
 						{
-							msgStr.SetLength(msgStr.mLength - 1);
-							if (std::count(msgStr.mBytes, msgStr.mBytes + msgStr.mLength, '.') == 0)
-							{
-								a.FromString(msgStr, 2);
-								GrapaCHAR m2(a.getBytes());
-								u32 c1 = (msgStr.mLength + 7) / 8;
-								u32 c2 = m2.mLength;
-								if (c1 > c2)
-								{
-									GrapaCHAR m3;
-									while (c2++ < c1) m3.Append("\0", 1);
-									m3.GrapaBYTE::Append(m2);
-									PushOutput(GrapaTokenType::RAW, m3, quote);
-								}
-								else
-									PushOutput(GrapaTokenType::RAW, m2, quote);
-							}
-							else
-							{
-								GrapaFloat d(mFloatFix, mFloatMax, mFloatExtra, 0);
-								d.FromString(msgStr, 2);
-								PushOutput(GrapaTokenType::FLOAT, d.getBytes(), quote);
-							}
-							msgStr.FROM(".");
-							PushOutput(GrapaTokenType::SYM, msgStr, quote);
+							GrapaFloat d(mFloatFix, mFloatMax, mFloatExtra, 0);
+							d.FromString(msgStr, 2);
+							PushOutput(GrapaTokenType::FLOAT, d.getBytes(), quote);
 							msgStr.SetLength(0);
 							expStr.SetLength(0);
 							sendState = 0;
@@ -1535,28 +1503,62 @@ void GrapaItemState::Running()
 							state = GrapaTokenType::START;
 							break;
 						}
-						GrapaFloat d(mFloatFix, mFloatMax, mFloatExtra, 0);
-						d.FromString(msgStr, 2);
-						PushOutput(GrapaTokenType::FLOAT, d.getBytes(), quote);
+						else
+						{
+							char* lastDot = strrchr((char*)msgStr.mBytes, '.');
+							GrapaCHAR saveStr(lastDot + 1, msgStr.mLength - (lastDot - ((char*)msgStr.mBytes)) - 1);
+							if (saveStr.mLength && strspn((char*)saveStr.mBytes, mItemParams->mParam[GrapaItemEnum::BIN]) == saveStr.mLength && !strchr(mItemParams->mParam[GrapaItemEnum::ID], c))
+							{
+								GrapaFloat d(mFloatFix, mFloatMax, mFloatExtra, 0);
+								d.FromString(msgStr, 2);
+								PushOutput(GrapaTokenType::FLOAT, d.getBytes(), quote);
+								msgStr.SetLength(0);
+								expStr.SetLength(0);
+								sendState = 0;
+								noEscape = false;
+								state = GrapaTokenType::START;
+								break;
+							}
+							msgStr.SetLength(lastDot - ((char*)msgStr.mBytes));
+							a.FromString(msgStr, 2);
+							GrapaCHAR m2(a.getBytes());
+							PushOutput(GrapaTokenType::INT, m2, quote);
+							msgStr.FROM(".");
+							PushOutput(GrapaTokenType::SYM, msgStr, quote);
+							msgStr.FROM(saveStr);
+							expStr.SetLength(0);
+							sendState = 0;
+							noEscape = false;
+							state = GrapaTokenType::ID;
+							break;
+						}
 					}
 					else
 					{
-						a.FromString(msgStr, 2);
-						GrapaCHAR m2(a.getBytes());
-						u32 c1 = (msgStr.mLength + 7) / 8;
-						u32 c2 = m2.mLength;
-						if (c1 > c2)
+						char* lastDot = strrchr((char*)msgStr.mBytes, '.');
+						GrapaCHAR saveStr(lastDot + 1, msgStr.mLength - (lastDot - ((char*)msgStr.mBytes)) - 1);
+						msgStr.SetLength(lastDot - ((char*)msgStr.mBytes));
+						if (std::count(msgStr.mBytes, msgStr.mBytes + msgStr.mLength, '.') == 0)
 						{
-							GrapaCHAR m3;
-							while (c2++ < c1) m3.Append("\0", 1);
-							m3.GrapaBYTE::Append(m2);
-							PushOutput(GrapaTokenType::RAW, m3, quote);
+							a.FromString(msgStr, 2);
+							GrapaCHAR m2(a.getBytes());
+							PushOutput(GrapaTokenType::INT, m2, quote);
 						}
 						else
-							PushOutput(GrapaTokenType::RAW, m2, quote);
+						{
+							GrapaFloat d(mFloatFix, mFloatMax, mFloatExtra, 0);
+							d.FromString(msgStr, 2);
+							PushOutput(GrapaTokenType::FLOAT, d.getBytes(), quote);
+						}
+						msgStr.FROM(".");
+						PushOutput(GrapaTokenType::SYM, msgStr, quote);
+						msgStr.FROM(saveStr);
+						expStr.SetLength(0);
+						sendState = 0;
+						noEscape = false;
+						state = GrapaTokenType::ID;
+						break;
 					}
-					msgStr.SetLength(0);
-					state = GrapaTokenType::START;
 					break;
 				}
 				nextValue->mMessage.mPos++;

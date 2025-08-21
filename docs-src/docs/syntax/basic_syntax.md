@@ -255,25 +255,159 @@ while (i < array.len()) {
 
 ### Number Method Calls and Dot Notation
 
-**⚠️ CRITICAL:** When calling methods on numbers using dot notation, you must enclose the number in parentheses to prevent the lexer from treating the dot as part of a float literal:
+Numbers can be used directly with dot notation for method calls:
 
 ```grapa
-/* ✅ Correct - Use parentheses for number method calls */
-(20).random();    /* Works: 20 is treated as integer, dot is available for method */
-(3.14).floor();   /* Works: 3.14 is treated as float, dot is available for method */
-(42).str();       /* Works: 42 is treated as integer, dot is available for method */
-
-/* ❌ Incorrect - Lexer consumes the dot as part of float literal */
-20.random();      /* Fails: Lexer sees "20." as float, no dot token for method */
-3.14.floor();     /* Fails: Lexer sees "3.14." as float, no dot token for method */
-42.str();         /* Fails: Lexer sees "42." as float, no dot token for method */
+/* ✅ Correct - Direct number method calls */
+20.random();      /* Works: Random number 0-19 */
+3.14.floor();     /* Works: Floor to 3 */
+42.str();         /* Works: Convert to string */
+145.len();        /* Works: Length of number (3) */
+145.echo();       /* Works: Output the number */
 ```
 
-**Why this happens:**
-- The lexer processes `20.` as a float literal and consumes the dot
-- No dot token reaches the parser, so method calls fail
-- Parentheses force the lexer to treat the number as a complete token first
-- Then the dot becomes available for method calls
+**Note:** Numbers work seamlessly with dot notation for method calls.
+
+### Hex and Binary Literals
+
+Grapa supports hexadecimal and binary literals with underscore separators for readability:
+
+```grapa
+/* Hexadecimal literals */
+0x12;              /* 18 in decimal */
+0xABCD;            /* 43981 in decimal */
+0xAbCd;            /* 43981 in decimal (case insensitive) */
+0x12_34;           /* 4660 in decimal (with underscore separator) */
+0x12.34;           /* 18.203125 in decimal (hex float) */
+0x12_34.56_78;     /* 4660.33984375 in decimal (hex float with underscores) */
+
+/* Binary literals */
+0b010;             /* 2 in decimal */
+0b1010;            /* 10 in decimal */
+0b010_101;         /* 21 in decimal (with underscore separator) */
+0b010.011;         /* 2.375 in decimal (binary float) */
+0b010_101.011_001; /* 21.1875 in decimal (binary float with underscores) */
+
+/* Type behavior */
+0x12.type();       /* $INT */
+0x12.34.type();    /* $FLOAT */
+0b010.type();      /* $INT */
+0b010.011.type();  /* $FLOAT */
+
+/* Method calls work on hex/binary literals */
+0x12.hex();        /* "12" (hex representation) */
+0x12.int();        /* 18 (decimal value) */
+0x12.float();      /* 18.0 (float conversion) */
+0b010.bin();       /* "10" (binary representation) */
+0b010.int();       /* 2 (decimal value) */
+0b010.float();     /* 2.0 (float conversion) */
+```
+
+**Key Features:**
+- **Underscore separators**: Use `_` to group digits for readability (e.g., `0x12_34_56`)
+- **Case insensitive**: `0xABCD` and `0xAbCd` are equivalent
+- **Float support**: Both hex and binary support decimal points
+- **Type consistency**: Returns `$INT` for integers, `$FLOAT` for floats
+- **Method support**: All number methods work on hex/binary literals
+- **String parsing**: Use `.exec()` to parse hex/binary strings: `'0x12'.exec()` → `18`
+
+**String Conversion:**
+```grapa
+/* Parse hex/binary strings */
+'0x12'.exec();           /* 18 */
+'0x12.34'.exec();        /* 18.203125 */
+'0b101'.exec();          /* 5 */
+'0b101.011'.exec();      /* 5.375 */
+'0x12_34'.exec();        /* 4660 */
+'0b010_101'.exec();      /* 21 */
+```
+
+### Unsigned Number Methods (Cryptographic)
+
+Grapa provides specialized unsigned methods for cryptographic applications and binary data processing. These methods treat negative numbers as unsigned integers using two's complement representation:
+
+```grapa
+/* Unsigned integer conversion */
+(-1).uint();        /* 255 (8-bit unsigned equivalent) */
+(-100).uint();      /* 156 (8-bit unsigned equivalent) */
+(-1000).uint();     /* 64536 (16-bit unsigned equivalent) */
+(255).uint();       /* 255 (no change for positive numbers) */
+
+/* Unsigned raw representation (with 0x prefix) */
+(-1).uraw();        /* 0xD6 (unsigned hex with 0x prefix) */
+(255).uraw();       /* 0x0FF (with leading zero for consistency) */
+(-100).uraw();      /* 0x9C (unsigned representation) */
+
+/* Unsigned hex representation (without 0x prefix) */
+(-1).uhex();        /* "D6" (unsigned hex without 0x prefix) */
+(255).uhex();       /* "FF" (no change for positive numbers) */
+(-100).uhex();      /* "9C" (unsigned representation) */
+
+/* Unsigned binary representation */
+(-1).ubin();        /* "11010110" (unsigned binary) */
+(255).ubin();       /* "11111111" (no change for positive numbers) */
+(-100).ubin();      /* "10011100" (unsigned representation) */
+```
+
+**Key Features:**
+- **Two's complement conversion**: Negative numbers are converted to their unsigned equivalent
+- **Cryptographic safety**: Prevents sign issues when working with large random numbers
+- **Bit width preservation**: Maintains appropriate bit width for conversions
+- **No effect on positives**: Positive numbers remain unchanged
+
+**Cryptographic Applications:**
+- **Large random number generation**: Handle numbers with leading bits set without sign issues
+- **Key generation**: Ensure cryptographic keys are treated as unsigned values
+- **Hash function inputs**: Prevent negative number interpretation in hash calculations
+- **Binary data processing**: Work with raw bytes and network protocols
+
+**Comparison with regular methods:**
+```grapa
+/* Regular methods preserve sign */
+(-1).int();         /* -1 */
+(-1).hex();         /* "-01" */
+(-1).bin();         /* "-1" */
+(-1).raw();         /* 0xD6 */
+
+/* Unsigned methods convert to unsigned */
+(-1).uint();        /* 255 */
+(-1).uhex();        /* "D6" */
+(-1).ubin();        /* "11010110" */
+(-1).uraw();        /* 0xD6 */
+```
+
+**Important: For cryptographic output, prefer `.uhex()` over `.uraw()`**
+```grapa
+/* .uhex() provides clean hex string for cryptographic use */
+0xFFFF.uhex();      /* "FFFF" (standard cryptographic format) */
+
+/* .uraw() includes 0x prefix and leading zeros */
+0xFFFF.uraw();      /* "0x0FFFF" (with formatting) */
+```
+
+### Hex Representation Methods: `.hex()` vs `.raw()`
+
+Grapa provides two different hex representation methods that serve different purposes:
+
+**`.hex()` - Value Representation:**
+```grapa
+42.hex();           /* "2A" (value as hex) */
+255.hex();          /* "FF" (value as hex) */
+4.5.hex();          /* "4.8" (decimal value as hex) */
+```
+
+**`.raw()` - Internal Binary Representation:**
+```grapa
+42.raw();           /* "0x2A" (internal binary as hex) */
+255.raw();          /* "0x0FF" (internal binary as hex) */
+4.5.raw();          /* "0x00281000A09" (internal binary structure) */
+```
+
+**Key Differences:**
+- **`.hex()`**: Converts the **value** to hex representation
+- **`.raw()`**: Shows the **internal binary structure** as hex
+- **For `$FLOAT`**: `.hex()` shows decimal value as hex, `.raw()` shows internal binary format
+- **For `$INT`**: Both show similar results but `.raw()` includes `0x` prefix and leading zeros
 
 ### Sequence Generation with .range()
 
@@ -296,7 +430,7 @@ squares = (1000000).range(0,1).map(op(x) { x * x; }, 8);  /* Limit to 8 threads 
 - Use `.range()` instead of manual while loops for sequence generation
 - Combine with `.map()`, `.filter()`, `.reduce()` for functional iteration
 - Specify thread count for large arrays to avoid too many threads
-- **Remember:** Always use parentheses for number method calls: `(10).range()` not `10.range()`
+- **Note:** Numbers work seamlessly with dot notation: `10.range()` works perfectly
 
 ## Functional Programming Methods
 

@@ -98,6 +98,8 @@ This guide helps Python users transition to Grapa by mapping common Python idiom
 | `[x for x in range(10) if x % 2 == 0]` | `(10).range().filter(op(x) { x % 2 == 0; })` |
 | `with open() as f:` | Use `$file()` methods directly: `content = $file().read("file.txt")` |
 | `@decorator` | Use function composition: `f = op() { decorator(original_func); }` |
+| `0x12` | `0x12` (same syntax, enhanced with underscore support) |
+| `0b101` | `0b101` (same syntax, enhanced with underscore support) |
 | `arr1 + arr2` | `arr1 += arr2` |
 | `{a, b} = obj` | `@local ++= obj; a.echo(); b.echo();` |
 
@@ -170,6 +172,75 @@ large_result = (10000).range()
 - **Functional programming style** with chainable operations
 - **Better performance** for large datasets
 - **Memory efficient** processing
+
+### Hex and Binary Literals
+
+Grapa supports the same hex and binary literal syntax as Python, with enhanced features:
+
+```python
+# Python hex and binary literals
+hex_val = 0x12        # 18 in decimal
+hex_float = 0x12.34   # Not supported in Python
+bin_val = 0b101       # 5 in decimal
+bin_float = 0b101.011 # Not supported in Python
+```
+
+```grapa
+// Grapa hex and binary literals (enhanced)
+hex_val = 0x12;              // 18 in decimal
+hex_float = 0x12.34;         // 18.203125 in decimal (Grapa enhancement)
+hex_underscore = 0x12_34;    // 4660 in decimal (Grapa enhancement)
+bin_val = 0b101;             // 5 in decimal
+bin_float = 0b101.011;       // 5.375 in decimal (Grapa enhancement)
+bin_underscore = 0b101_011;  // 43 in decimal (Grapa enhancement)
+
+// String parsing (Grapa enhancement)
+hex_from_string = '0x12'.exec();           // 18
+bin_from_string = '0b101'.exec();          // 5
+hex_float_from_string = '0x12.34'.exec();  // 18.203125
+```
+
+**Grapa enhancements over Python:**
+- ✅ **Float support**: Both hex and binary support decimal points
+- ✅ **Underscore separators**: Use `_` for readability (e.g., `0x12_34_56`)
+- ✅ **String parsing**: Use `.exec()` to parse hex/binary strings
+- ✅ **Case insensitive**: `0xABCD` and `0xAbCd` are equivalent
+- ✅ **Method support**: All number methods work on hex/binary literals
+
+### Unsigned Number Methods
+
+Grapa provides specialized unsigned methods for cryptographic applications that Python doesn't have:
+
+```python
+# Python - no built-in unsigned conversion methods
+# Must use manual bit manipulation or external libraries
+negative_value = -1
+# No direct way to get unsigned representation
+```
+
+```grapa
+// Grapa - built-in unsigned methods for cryptographic applications
+negative_value = -1;
+
+// Unsigned integer conversion
+unsigned_int = negative_value.uint();        // 255
+
+// Unsigned representations
+unsigned_hex = negative_value.uhex();        // "D6"
+unsigned_bin = negative_value.ubin();        // "11010110"
+unsigned_raw = negative_value.uraw();        // "0xD6"
+
+// Essential for cryptographic applications
+large_random = 0x80000000;  // Might be interpreted as negative
+crypto_safe = large_random.uint();  // Guaranteed unsigned
+```
+
+**Grapa advantages for cryptography:**
+- ✅ **Built-in unsigned conversion**: No external libraries needed
+- ✅ **Cryptographic safety**: Handle large numbers without sign issues
+- ✅ **Multiple formats**: Hex, binary, and raw representations
+- ✅ **Two's complement handling**: Automatic conversion for negative numbers
+- ✅ **Bit manipulation support**: Essential for cryptographic algorithms
 
 ### $file
 
