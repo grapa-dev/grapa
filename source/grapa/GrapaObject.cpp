@@ -231,6 +231,7 @@ GrapaObjectEvent* GrapaObjectQueue::SearchCase(const GrapaCHAR& pName, s64& pInd
 			case GrapaTokenType::ARRAY:
 			case GrapaTokenType::TUPLE:
 			case GrapaTokenType::LIST:
+			case GrapaTokenType::ERR:
 				if (item->vQueue && item->vQueue->mCount)
 				{
 					GrapaObjectEvent* xitem = item->vQueue->Head();
