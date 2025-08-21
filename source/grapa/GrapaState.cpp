@@ -4478,7 +4478,13 @@ GrapaRuleEvent* GrapaScriptExec::ProcessPlan(GrapaNames* pNameSpace, GrapaRuleEv
 					if (!result->mControlFlow && result->mValue.mToken == GrapaTokenType::PTR && result->vRulePointer)
 						result->mControlFlow = result->vRulePointer->mControlFlow;
 					if (result->mControlFlow)
+					{
+						GrapaRuleEvent* oldResult = result;
+						u8 isControlFlowChange = result->mControlFlow;;
+						result = CopyItem(result);
+						result->mControlFlow = isControlFlowChange;
 						break;
+					}
 				}
 				item = item->Next();
 				childIndex++;
