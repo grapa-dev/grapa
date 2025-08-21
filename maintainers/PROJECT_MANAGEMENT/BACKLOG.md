@@ -241,6 +241,53 @@ This backlog tracks all future, long-term, and queued tasks for the Grapa projec
 - **Reference**: [`test/use_cases/sql_syntax_injection_table_demo.grc`](../../test/use_cases/sql_syntax_injection_table_demo.grc) - Current test script
 - **Priority**: Low - educational/demonstration value, design reconsideration needed
 
+### **ReplaceLocalQueue Optimization** 🔍 **INVESTIGATION NEEDED**
+- **Status**: Function currently disabled, basic functionality working via complete copy approach
+- **Focus**: Revisit the selective copying optimization for local variable scope exit handling
+- **Context**: `ReplaceLocalQueue` function was designed to selectively copy only local variables that are referenced in returned objects, rather than doing complete copies
+- **Current State**: 
+  - Function is disabled with `return;` at the start (`GrapaState.cpp:5061`)
+  - No calls to `ReplaceLocalQueue` exist in the codebase
+  - Basic scope exit scenarios work correctly via complete copy approach
+- **Original Intent**: 
+  - Traverse returned objects to find references to local variables
+  - Copy only the referenced local variables before scope exit
+  - Avoid unnecessary copying of large objects when only small local variables are referenced
+- **Complexity**: Implementation became complex and was abandoned in favor of simpler complete copy approach
+- **Progress**: 
+  - ✅ mVar field analysis completed
+  - ✅ Scope exit behavior verified working correctly
+  - ✅ ReplaceLocalQueue function identified as disabled optimization
+  - ✅ Current complete copy approach confirmed sufficient for basic cases
+- **Next Steps**: Evaluate if selective copying optimization is worth implementing, or if complete copy approach is sufficient
+- **Reference**: [`maintainers/IMPLEMENTATION/CORE_SYSTEM/GRAPA_RULE_EVENT_MVAR_IMPLEMENTATION.md`](../../maintainers/IMPLEMENTATION/CORE_SYSTEM/GRAPA_RULE_EVENT_MVAR_IMPLEMENTATION.md) - Complete analysis
+- **Priority**: Low - current implementation works correctly, optimization may not be necessary
+
+### **ProcessPlan Control Flow Copy Optimization** 🔍 **INVESTIGATION NEEDED**
+- **Status**: Automatic copy in control flow section removed, intelligent copy detection now working correctly
+- **Focus**: Evaluate all automatic copies in ProcessPlan for performance optimization opportunities
+- **Context**: The automatic copy in `if (result->mControlFlow)` section was interfering with intelligent copy detection system
+- **Current State**: 
+  - Automatic copy removed from control flow section in `GrapaScriptExec::ProcessPlan`
+  - Intelligent copy detection now works properly for local variable references
+  - Throw scenarios with local variable references now work correctly
+- **Performance Impact**: 
+  - Each automatic copy needs evaluation for necessity
+  - Local variables are tagged appropriately for recursive inspection
+  - Copy should only be made if local variable references are detected
+- **Progress**: 
+  - ✅ Throw scenario fixed by removing unnecessary automatic copy
+  - ✅ Intelligent copy detection system now working as intended
+  - ✅ mVar system properly detecting local variable references
+- **Next Steps**: 
+  - Audit all automatic copies in ProcessPlan for similar optimization opportunities
+  - Implement recursive inspection to detect when copies are actually needed
+  - Ensure performance optimization without breaking existing functionality
+- **Optimization Ideas**: 
+  - **mClean flag approach**: Add `mClean` boolean flag that is set to `true` after a copy is made, then checked before making subsequent copies to avoid redundant copying
+  - **Recursive inspection**: Use existing `mVar` system to detect when local variable references are present and only copy when necessary
+- **Priority**: Medium - performance optimization, but current system works correctly
+
 ---
 
 

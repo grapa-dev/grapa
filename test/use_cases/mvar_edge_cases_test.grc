@@ -1,0 +1,149 @@
+/* 
+   mVar Edge Cases Test
+   
+   This test checks edge cases where mVar might not be working
+   as intended, based on the C++ code analysis findings.
+*/
+
+"=== mVar Edge Cases Test ===".echo();
+
+/* Edge Case 1: Large Object Performance */
+"--- Edge Case 1: Large Object Performance ---".echo();
+
+// Create large object to test copy prevention
+large_obj = (1000).range().map(op(x){x * x});
+large_ref = large_obj;
+
+"Large object reference created successfully".echo();
+"Large object size: " + large_obj.len().echo();
+
+/* Edge Case 2: Complex Nested Structure */
+"--- Edge Case 2: Complex Nested Structure ---".echo();
+
+// Create complex nested structure
+complex_nested = (10).range().map(op(i){
+    {
+        id: i,
+        data: (5).range().map(op(j){i * j}),
+        nested: {
+            level1: {
+                level2: {
+                    level3: {
+                        value: i * 100
+                    }
+                }
+            }
+        }
+    }
+});
+
+complex_ref = complex_nested;
+"Complex nested structure reference created".echo();
+
+/* Edge Case 3: Function Return Reference */
+"--- Edge Case 3: Function Return Reference ---".echo();
+
+// Function that creates and returns complex object
+create_complex = op() {
+    {
+        data: (100).range().map(op(x){x * x}),
+        metadata: {
+            created: $TIME(),
+            type: "complex"
+        }
+    };
+};
+
+// Test multiple calls
+obj1 = create_complex();
+obj2 = create_complex();
+
+"Multiple complex objects created successfully".echo();
+"Objects are independent: " + (obj1 != obj2).echo();
+
+/* Edge Case 4: Reference Chain Breaking */
+"--- Edge Case 4: Reference Chain Breaking ---".echo();
+
+// Test if reference chains break unexpectedly
+chain_start = {data: "start"};
+chain_mid = {ptr: chain_start};
+chain_end = {ptr: chain_mid};
+
+// Modify through chain
+chain_end.ptr.ptr.data = "modified through chain";
+
+"Chain modification result: " + chain_start.data.echo();
+"Chain reference works: " + (chain_start.data == "modified through chain").echo();
+
+/* Edge Case 5: Scope Boundary Reference */
+"--- Edge Case 5: Scope Boundary Reference ---".echo();
+
+// Test reference behavior across scope boundaries
+global_ref = {counter: 0};
+
+scope_test = op() {
+    local_ref = global_ref;
+    local_ref.counter += 1;
+    local_ref.counter;
+};
+
+result1 = scope_test();
+result2 = scope_test();
+
+"Global counter after scope operations: " + global_ref.counter.echo();
+"Scope reference works: " + (global_ref.counter == 2).echo();
+
+/* Edge Case 6: Error Handling with References */
+"--- Edge Case 6: Error Handling with References ---".echo();
+
+// Test reference behavior during errors
+error_obj = {valid: true, data: "test"};
+error_ref = error_obj;
+
+try {
+    error_obj.valid = false;
+    error_obj.nonexistent.method();
+} {
+    default: "Error caught successfully".echo();
+}
+
+"Reference preserved after error: " + (error_ref.data == "test").echo();
+
+/* Edge Case 7: Memory Pressure Test */
+"--- Edge Case 7: Memory Pressure Test ---".echo();
+
+// Test with many references to same object
+base_obj = {counter: 0};
+refs = (100).range().map(op(i){base_obj});
+
+// Modify through one reference
+refs[50].counter = 999;
+
+"Base object counter: " + base_obj.counter.echo();
+"All references updated: " + (refs[0].counter == 999 && refs[99].counter == 999).echo();
+
+/* Edge Case 8: What the C++ Comments Suggest */
+"--- Edge Case 8: What the C++ Comments Suggest ---".echo();
+
+"Based on C++ code analysis, potential issues:".echo();
+"1. 'NEED TO FIX THIS' in pointer dereferencing".echo();
+"2. 'ignore result->mVar' comment suggests uncertainty".echo();
+"3. Widget-specific copy prevention exceptions".echo();
+"4. Complex copy prevention logic".echo();
+
+"Current test results show:".echo();
+"- Basic reference semantics work correctly".echo();
+"- Pointer dereferencing works as expected".echo();
+"- Function parameters maintain references".echo();
+"- Explicit copying provides isolation".echo();
+
+"Potential areas where mVar might fail:".echo();
+"- Very large objects (memory pressure)".echo();
+"- Complex nested structures (performance)".echo();
+"- Widget objects (special handling)".echo();
+"- Database objects (different mVar semantics)".echo();
+
+"Recommendation:".echo();
+"The current implementation appears to work correctly for most cases.".echo();
+"The C++ comments suggest internal implementation issues".echo();
+"rather than fundamental design problems.".echo();

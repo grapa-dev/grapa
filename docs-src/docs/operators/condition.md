@@ -189,16 +189,16 @@ try {
     default: ('User name: ' + err.user.name).echo();
 }
 
-/* Nested object without copy - may fail due to reference issues */
+/* Nested object without copy - works correctly */
 try {
     user = {name: 'Alice', age: 30};
-    throw (err:{user: user});  /* Use .list() for reliable binding */
+    throw (err:{user: user});  /* Local variable references are now preserved */
 } {
     default: ('User name: ' + err.user.name).echo();
 }
 ```
 
-**Note**: When throwing complex nested objects, use `.list()` to ensure proper variable binding. This creates an explicit copy and avoids reference-related issues in the throw/catch system.
+**Note**: Local variable references in thrown objects are now automatically preserved. The `.list()` method is no longer required for reliable binding.
 
 ### Multiple Catch Blocks
 ```grapa

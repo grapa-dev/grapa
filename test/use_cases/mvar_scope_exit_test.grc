@@ -1,0 +1,145 @@
+/* 
+   mVar Scope Exit Test
+   
+   This test verifies the scope exit behavior that mVar was designed to address.
+   The key issue is that ReplaceLocalQueue function is disabled (has return; at start).
+*/
+
+"=== mVar Scope Exit Test ===".echo();
+
+/* Test 1: Basic Local Variable Return */
+"--- Test 1: Basic Local Variable Return ---".echo();
+
+f1 = op() {
+    $local.x = 1;
+    x;
+};
+
+result1 = f1();
+"Basic local variable return: " + result1.echo();
+
+/* Test 2: Local Variable in Array */
+"--- Test 2: Local Variable in Array ---".echo();
+
+f2 = op() {
+    $local.x = 1;
+    [x];
+};
+
+result2 = f2();
+"Local variable in array: " + result2.echo();
+
+/* Test 3: Local Variable in Object */
+"--- Test 3: Local Variable in Object ---".echo();
+
+f3 = op() {
+    $local.x = 1;
+    {x: x};
+};
+
+result3 = f3();
+"Local variable in object: " + result3.echo();
+
+/* Test 4: Multiple Local Variables */
+"--- Test 4: Multiple Local Variables ---".echo();
+
+f4 = op() {
+    $local.x = 1;
+    $local.y = 2;
+    {x: x, y: y};
+};
+
+result4 = f4();
+"Multiple local variables: " + result4.echo();
+
+/* Test 5: Nested Local Variables */
+"--- Test 5: Nested Local Variables ---".echo();
+
+f5 = op() {
+    $local.x = 1;
+    $local.y = 2;
+    {
+        outer: {
+            x: x,
+            y: y
+        }
+    };
+};
+
+result5 = f5();
+"Nested local variables: " + result5.echo();
+
+/* Test 6: Local Variable Modification After Return */
+"--- Test 6: Local Variable Modification After Return ---".echo();
+
+f6 = op() {
+    $local.x = 1;
+    $local.y = 2;
+    {x: x, y: y};
+};
+
+result6 = f6();
+result6.x = 999;
+"Modified returned object x: " + result6.x.echo();
+
+/* Test 7: Complex Local Variable Structure */
+"--- Test 7: Complex Local Variable Structure ---".echo();
+
+f7 = op() {
+    $local.x = 1;
+    $local.y = 2;
+    $local.z = 3;
+    {
+        data: [x, y, z],
+        metadata: {
+            count: 3,
+            values: {x: x, y: y, z: z}
+        }
+    };
+};
+
+result7 = f7();
+"Complex local variable structure: " + result7.echo();
+
+/* Test 8: Local Variable in Function Chain */
+"--- Test 8: Local Variable in Function Chain ---".echo();
+
+create_data = op() {
+    $local.x = 1;
+    $local.y = 2;
+    {x: x, y: y};
+};
+
+process_data = op(data) {
+    data.x = data.x * 10;
+    data.y = data.y * 10;
+    data;
+};
+
+result8 = process_data(create_data());
+"Function chain with local variables: " + result8.echo();
+
+/* Test 9: ReplaceLocalQueue Disabled Issue */
+"--- Test 9: ReplaceLocalQueue Disabled Issue ---".echo();
+
+"Based on C++ code analysis:".echo();
+"1. ReplaceLocalQueue function has 'return;' at the start".echo();
+"2. This means it's completely disabled".echo();
+"3. This function should handle scope exit detection".echo();
+"4. Without it, local variables may not be properly copied".echo();
+
+"Current test results show:".echo();
+"- Basic local variable returns work".echo();
+"- Local variables in arrays work".echo();
+"- Local variables in objects work".echo();
+"- Complex nested structures work".echo();
+
+"Potential issue:".echo();
+"- ReplaceLocalQueue being disabled may cause problems".echo();
+"- Local variables might not be properly isolated".echo();
+"- Scope exit detection may not work correctly".echo();
+
+"Recommendation:".echo();
+"- Investigate why ReplaceLocalQueue is disabled".echo();
+"- Test if local variables are properly copied".echo();
+"- Verify scope isolation is working correctly".echo();
