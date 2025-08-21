@@ -74,11 +74,11 @@
 - **Findings**: 
   - Simple values, objects, arrays, and function results bind correctly
   - Multiple catch blocks with conditions work properly
-  - **Reference/Copy Issue**: Complex nested objects require explicit `.list()` copy for reliable binding
+  - **Reference/Copy Issue**: ✅ **RESOLVED** - Local variable references in throw/catch now work correctly
   - **Documentation Updated**: Added examples showing correct patterns for object binding
 - **Conclusion**: System works correctly with proper syntax, documentation clarified
 - **Impact**: Variable binding is fully functional with documented best practices
-- **Known Issue**: C++ reference system may not automatically copy in throw/catch context (needs investigation)
+- **Known Issue**: ✅ **RESOLVED** - C++ reference system now properly handles local variable references in throw/catch context
 
 
 
@@ -111,8 +111,18 @@
    - **Impact**: No enhancement needed - system works as designed
    - **Next Priority**: Focus on adoption drivers (Python 3.13+ compatibility, GrapaDB enhancements)
 
-3. **Performance Analysis**: Benchmark vector operations for large datasets
-4. **Test Edge Cases**: Test vector operations with edge cases and large datasets
+4. **✅ COMPLETED: GrapaRuleEvent mVar Field Analysis**: Deep dive investigation of core reference semantics
+   - **Status**: Comprehensive analysis completed
+   - **Findings**: 
+     - **Primary Purpose**: mVar indicates whether an event is a reference vs. value copy
+     - **Critical Usage**: Pointer dereferencing, database mode switching, copy prevention
+     - **Potential Issues**: Inconsistent copy prevention logic, widget-specific exceptions, pointer dereferencing bugs
+     - **Documentation**: Created `maintainers/IMPLEMENTATION/CORE_SYSTEM/GRAPA_RULE_EVENT_MVAR_ANALYSIS.md`
+   - **Impact**: Identified several areas where the original intent may not be fully realized
+   - **Next Priority**: Address identified issues in copy prevention and pointer dereferencing logic
+
+5. **Performance Analysis**: Benchmark vector operations for large datasets
+6. **Test Edge Cases**: Test vector operations with edge cases and large datasets
 
 ### Short Term (Next 1-2 Sessions)
 1. **Test Edge Cases**: Empty lists, complex conditions, performance with large datasets

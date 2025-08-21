@@ -549,7 +549,7 @@ These are high-level missing components for a complete development ecosystem:
 **What's Missing:**
 - ❌ **IDE integration** - Syntax highlighting, autocomplete, error detection
 - ❌ **Development utilities** - Code formatting, linting, advanced testing
-- ⚠️ **C++ Reference System** - Minor optimization issue with automatic copying in throw/catch (workaround: use `.list()`)
+- ✅ **C++ Reference System** - Local variable references in throw/catch now work correctly
 
 
 

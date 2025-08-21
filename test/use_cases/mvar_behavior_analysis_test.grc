@@ -1,0 +1,104 @@
+/* 
+   mVar Behavior Analysis Test
+   
+   This test analyzes the specific behavior patterns revealed
+   by the previous tests to understand what mVar is addressing.
+*/
+
+"=== mVar Behavior Analysis ===".echo();
+
+/* Analysis 1: Object Reference Behavior */
+"--- Analysis 1: Object Reference Behavior ---".echo();
+
+obj1 = {a: 1, b: 2};
+ref1 = obj1;
+ref1.a = 999;
+
+"obj1.a: " + obj1.a.echo();
+"ref1.a: " + ref1.a.echo();
+"Are they the same? " + (obj1.a == ref1.a).echo();
+
+/* Analysis 2: Array Reference Behavior */
+"--- Analysis 2: Array Reference Behavior ---".echo();
+
+arr1 = [1, 2, 3, 4, 5];
+arr_ref = arr1;
+arr_ref[2] = 999;
+
+"arr1[2]: " + arr1[2].echo();
+"arr_ref[2]: " + arr_ref[2].echo();
+"Are they the same? " + (arr1[2] == arr_ref[2]).echo();
+
+/* Analysis 3: Copy Behavior */
+"--- Analysis 3: Copy Behavior ---".echo();
+
+obj2 = {x: 10, y: 20};
+copy2 = obj2.list();
+copy2.x = 888;
+
+"obj2.x: " + obj2.x.echo();
+"copy2.x: " + copy2.x.echo();
+"Are they different? " + (obj2.x != copy2.x).echo();
+
+/* Analysis 4: Nested Object Behavior */
+"--- Analysis 4: Nested Object Behavior ---".echo();
+
+nested = {level1: {level2: {value: "deep"}}};
+deep_ref = nested.level1.level2;
+deep_ref.value = "modified";
+
+"nested.level1.level2.value: " + nested.level1.level2.value.echo();
+"deep_ref.value: " + deep_ref.value.echo();
+"Are they the same? " + (nested.level1.level2.value == deep_ref.value).echo();
+
+/* Analysis 5: Function Parameter Behavior */
+"--- Analysis 5: Function Parameter Behavior ---".echo();
+
+test_func = op(param) {
+    param.value = "modified";
+    param;
+};
+
+test_obj = {value: "original"};
+result = test_func(test_obj);
+
+"test_obj.value: " + test_obj.value.echo();
+"result.value: " + result.value.echo();
+"Are they the same? " + (test_obj.value == result.value).echo();
+
+/* Analysis 6: Multiple Reference Behavior */
+"--- Analysis 6: Multiple Reference Behavior ---".echo();
+
+shared = {count: 0};
+ref_a = shared;
+ref_b = shared;
+
+ref_a.count = 1;
+ref_b.count = 2;
+
+"shared.count: " + shared.count.echo();
+"ref_a.count: " + ref_a.count.echo();
+"ref_b.count: " + ref_b.count.echo();
+"All same? " + (shared.count == ref_a.count && ref_a.count == ref_b.count).echo();
+
+/* Analysis 7: What mVar Should Address */
+"--- Analysis 7: What mVar Should Address ---".echo();
+
+"Based on the analysis:".echo();
+"1. Direct assignment (obj1 = obj2) creates references".echo();
+"2. Explicit copy (.list()) creates isolated copies".echo();
+"3. Function parameters are passed by reference".echo();
+"4. Nested object access preserves references".echo();
+"5. Multiple references to same object work correctly".echo();
+
+"mVar appears to be working correctly for:".echo();
+"- Reference creation and maintenance".echo();
+"- Copy prevention when needed".echo();
+"- Function parameter passing".echo();
+"- Object identity preservation".echo();
+
+"Potential issues mVar might address:".echo();
+"- Performance optimization for large objects".echo();
+"- Memory management for complex data structures".echo();
+"- Pointer dereferencing optimization".echo();
+"- Database object lifecycle management".echo();

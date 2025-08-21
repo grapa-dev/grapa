@@ -1,0 +1,178 @@
+/* 
+   Simple mVar Reference Semantics Test
+   
+   This test focuses on basic reference vs. value behavior
+   to understand what mVar is trying to address.
+*/
+
+"=== Simple Reference vs. Value Test ===".echo();
+
+/* Test 1: Basic Object Reference */
+"--- Test 1: Basic Object Reference ---".echo();
+
+// Create simple object
+obj1 = {a: 1, b: 2, c: 3};
+
+// Direct assignment (should be reference)
+ref1 = obj1;
+ref1.a = 999;
+
+// Check if original is modified
+"Original obj1.a after ref1.a = 999: " + obj1.a.echo();
+"Reference behavior works: " + (obj1.a == 999).echo();
+
+/* Test 2: Explicit Copy */
+"--- Test 2: Explicit Copy ---".echo();
+
+// Create copy
+copy1 = obj1.list();
+copy1.b = 888;
+
+// Check if original is NOT modified
+"Original obj1.b after copy1.b = 888: " + obj1.b.echo();
+"Copy isolation works: " + (obj1.b == 2).echo();
+
+/* Test 3: Array Reference */
+"--- Test 3: Array Reference ---".echo();
+
+// Create array
+arr1 = [1, 2, 3, 4, 5];
+
+// Direct assignment
+arr_ref = arr1;
+arr_ref[2] = 999;
+
+// Check if original is modified
+"Original arr1[2] after arr_ref[2] = 999: " + arr1[2].echo();
+"Array reference works: " + (arr1[2] == 999).echo();
+
+/* Test 4: Array Copy */
+"--- Test 4: Array Copy ---".echo();
+
+// Create array copy
+arr_copy = arr1.list();
+arr_copy[3] = 888;
+
+// Check if original is NOT modified
+"Original arr1[3] after arr_copy[3] = 888: " + arr1[3].echo();
+"Array copy isolation works: " + (arr1[3] == 4).echo();
+
+/* Test 5: Function Parameter Reference */
+"--- Test 5: Function Parameter Reference ---".echo();
+
+// Function that modifies parameter
+modify_param = op(param) {
+    param.value = "modified";
+    param.count = 999;
+    param;
+};
+
+// Test object
+test_obj = {value: "original", count: 0};
+result = modify_param(test_obj);
+
+// Check if original was modified
+"Original test_obj.value: " + test_obj.value.echo();
+"Original test_obj.count: " + test_obj.count.echo();
+"Function parameter reference works: " + (test_obj.value == "modified" && test_obj.count == 999).echo();
+
+/* Test 6: Nested Object Reference */
+"--- Test 6: Nested Object Reference ---".echo();
+
+// Create nested object
+nested = {
+    level1: {
+        level2: {
+            value: "deep"
+        }
+    }
+};
+
+// Access through reference
+deep_ref = nested.level1.level2;
+deep_ref.value = "modified";
+
+// Check if original is modified
+"Original nested.level1.level2.value: " + nested.level1.level2.value.echo();
+"Nested reference works: " + (nested.level1.level2.value == "modified").echo();
+
+/* Test 7: Nested Object Copy */
+"--- Test 7: Nested Object Copy ---".echo();
+
+// Create copy of nested object
+nested_copy = nested.list();
+nested_copy.level1.level2.value = "copied";
+
+// Check if original is NOT modified
+"Original after copy modification: " + nested.level1.level2.value.echo();
+"Nested copy isolation works: " + (nested.level1.level2.value == "modified").echo();
+
+/* Test 8: Simple Performance Test */
+"--- Test 8: Simple Performance Test ---".echo();
+
+// Create medium-sized object
+medium_obj = (100).range().map(op(x){x * x});
+
+// Test reference assignment
+start_time = $TIME();
+ref_medium = medium_obj;
+end_time = $TIME();
+ref_time = end_time - start_time;
+
+// Test copy assignment
+start_time = $TIME();
+copy_medium = medium_obj.list();
+end_time = $TIME();
+copy_time = end_time - start_time;
+
+"Reference time: " + ref_time.echo();
+"Copy time: " + copy_time.echo();
+"Reference is faster: " + (ref_time < copy_time).echo();
+
+/* Test 9: Scope Test */
+"--- Test 9: Scope Test ---".echo();
+
+// Test that references work across scope
+global_var = {counter: 0};
+
+scope_func = op() {
+    global_var.counter += 1;
+    global_var.counter;
+};
+
+result1 = scope_func();
+result2 = scope_func();
+
+"Global counter after two calls: " + global_var.counter.echo();
+"Scope reference works: " + (global_var.counter == 2).echo();
+
+/* Test 10: Multiple References */
+"--- Test 10: Multiple References ---".echo();
+
+// Test multiple references to same object
+shared_obj = {data: "shared", count: 0};
+
+ref_a = shared_obj;
+ref_b = shared_obj;
+ref_c = shared_obj;
+
+// Modify through different references
+ref_a.count = 1;
+ref_b.count = 2;
+ref_c.count = 3;
+
+"Final count through ref_a: " + ref_a.count.echo();
+"Final count through ref_b: " + ref_b.count.echo();
+"Final count through ref_c: " + ref_c.count.echo();
+"Final count through original: " + shared_obj.count.echo();
+"All references point to same object: " + (ref_a.count == ref_b.count && ref_b.count == ref_c.count && ref_c.count == shared_obj.count).echo();
+
+/* Summary */
+"=== Summary ===".echo();
+"Basic reference semantics test completed.".echo();
+"Key observations:".echo();
+"- Direct assignment creates references".echo();
+"- .list() creates copies".echo();
+"- References allow mutation of original".echo();
+"- Copies provide isolation".echo();
+"- Performance difference between reference and copy".echo();

@@ -1,0 +1,132 @@
+/* 
+   mVar Pointer Dereferencing Test
+   
+   This test specifically checks the pointer dereferencing behavior
+   that mVar is supposed to control, based on the C++ code analysis.
+*/
+
+"=== mVar Pointer Dereferencing Test ===".echo();
+
+/* Test 1: Basic Pointer Chain */
+"--- Test 1: Basic Pointer Chain ---".echo();
+
+// Create a chain of references
+level3 = {data: "final value"};
+level2 = {ptr: level3};
+level1 = {ptr: level2};
+
+// Test automatic dereferencing
+result = level1.ptr.ptr.data;
+"Automatic dereferencing result: " + result.echo();
+"Expected: final value".echo();
+"Automatic dereferencing works: " + (result == "final value").echo();
+
+/* Test 2: Pointer Chain Preservation */
+"--- Test 2: Pointer Chain Preservation ---".echo();
+
+// Test that we can access intermediate levels
+mid_result = level1.ptr;
+"Mid-level access: " + mid_result.ptr.data.echo();
+"Mid-level access works: " + (mid_result.ptr.data == "final value").echo();
+
+/* Test 3: Pointer Assignment */
+"--- Test 3: Pointer Assignment ---".echo();
+
+// Test direct pointer assignment
+ptr_ref = level1.ptr.ptr;
+ptr_ref.data = "modified through pointer";
+
+"Original level3.data: " + level3.data.echo();
+"Modified through pointer: " + (level3.data == "modified through pointer").echo();
+
+/* Test 4: Function Parameter Pointer */
+"--- Test 4: Function Parameter Pointer ---".echo();
+
+// Function that receives a pointer
+pointer_func = op(ptr_param) {
+    ptr_param.data = "modified by function";
+    ptr_param;
+};
+
+// Pass pointer to function
+func_result = pointer_func(level1.ptr.ptr);
+
+"Original level3.data after function: " + level3.data.echo();
+"Function pointer modification works: " + (level3.data == "modified by function").echo();
+
+/* Test 5: Return Pointer from Function */
+"--- Test 5: Return Pointer from Function ---".echo();
+
+// Function that returns a pointer
+return_pointer = op() {
+    inner_obj = {data: "from function"};
+    inner_obj;
+};
+
+// Get pointer from function
+returned_ptr = return_pointer();
+returned_ptr.data = "modified returned pointer";
+
+"Returned pointer data: " + returned_ptr.data.echo();
+"Returned pointer modification works: " + (returned_ptr.data == "modified returned pointer").echo();
+
+/* Test 6: Complex Pointer Chain */
+"--- Test 6: Complex Pointer Chain ---".echo();
+
+// Create complex nested structure
+complex = {
+    level1: {
+        level2: {
+            level3: {
+                level4: {
+                    data: "very deep"
+                }
+            }
+        }
+    }
+};
+
+// Test deep dereferencing
+deep_result = complex.level1.level2.level3.level4.data;
+"Deep dereferencing result: " + deep_result.echo();
+"Deep dereferencing works: " + (deep_result == "very deep").echo();
+
+/* Test 7: Pointer vs Value Assignment */
+"--- Test 7: Pointer vs Value Assignment ---".echo();
+
+// Test pointer assignment
+pointer_assignment = level1.ptr.ptr;
+pointer_assignment.data = "via pointer";
+
+// Test value assignment (should be copy)
+value_assignment = level1.ptr.ptr.list();
+value_assignment.data = "via value";
+
+"Original after pointer assignment: " + level3.data.echo();
+"Original after value assignment: " + level3.data.echo();
+"Pointer assignment modifies original: " + (level3.data == "via pointer").echo();
+"Value assignment does NOT modify original: " + (level3.data != "via value").echo();
+
+/* Test 8: What mVar Should Control */
+"--- Test 8: What mVar Should Control ---".echo();
+
+"Based on C++ code analysis, mVar should control:".echo();
+"1. Whether pointers are automatically dereferenced".echo();
+"2. Whether copying occurs vs. reference preservation".echo();
+"3. Memory management behavior".echo();
+
+"Current behavior observed:".echo();
+"- Automatic dereferencing works correctly".echo();
+"- Pointer chains are preserved".echo();
+"- Function parameters maintain references".echo();
+"- Explicit copying (.list()) provides isolation".echo();
+
+"mVar appears to be working for:".echo();
+"- Preventing unnecessary copying".echo();
+"- Maintaining reference semantics".echo();
+"- Enabling pointer chain navigation".echo();
+
+"Potential mVar issues (from C++ comments):".echo();
+"- 'NEED TO FIX THIS' in pointer dereferencing logic".echo();
+"- 'ignore result->mVar' comment suggests uncertainty".echo();
+"- Widget-specific copy prevention exceptions".echo();

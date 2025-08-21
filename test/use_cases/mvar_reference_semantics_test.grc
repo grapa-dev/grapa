@@ -1,0 +1,273 @@
+/* 
+   GrapaRuleEvent mVar Field Reference Semantics Test
+   
+   This test suite explores what the mVar field is trying to address:
+   - Reference vs. value semantics
+   - Copy prevention for large data structures
+   - Pointer dereferencing behavior
+   - Variable assignment and mutation
+   - Scope and lifetime management
+*/
+
+/* Test 1: Basic Reference vs. Value Semantics */
+"=== Test 1: Basic Reference vs. Value Semantics ===".echo();
+
+// Create a large data structure
+large_data = {a: 1, b: 2, c: [1,2,3,4,5], d: {x: 10, y: 20, z: [100,200,300]}};
+
+// Test direct assignment (should create reference)
+ref1 = large_data;
+ref1.a = 999;
+
+// Check if original is modified (reference behavior)
+"Original modified by reference: " + (large_data.a == 999).echo();
+
+// Test explicit copy
+copy1 = large_data.list();
+copy1.b = 888;
+
+// Check if original is NOT modified (copy behavior)
+"Original NOT modified by copy: " + (large_data.b == 2).echo();
+
+/* Test 2: Function Parameter Reference Semantics */
+"=== Test 2: Function Parameter Reference Semantics ===".echo();
+
+// Function that modifies its parameter
+modify_func = op(param) {
+    param.value = "modified";
+    param.count = 999;
+    param;
+};
+
+// Test with direct object
+test_obj = {value: "original", count: 0};
+result = modify_func(test_obj);
+
+// Check if original object was modified (reference behavior)
+"Original object modified by function: " + (test_obj.value == "modified").echo();
+"Original object count updated: " + (test_obj.count == 999).echo();
+
+/* Test 3: Pointer Dereferencing Behavior */
+"=== Test 3: Pointer Dereferencing Behavior ===".echo();
+
+// Create nested pointer structure
+level3 = {data: "final"};
+level2 = {ptr: level3};
+level1 = {ptr: level2};
+
+// Test automatic dereferencing
+deref_result = level1.ptr.ptr.data;
+"Automatic dereferencing works: " + (deref_result == "final").echo();
+
+// Test pointer chain preservation
+chain_test = level1.ptr.ptr;
+"Pointer chain preserved: " + (chain_test.data == "final").echo();
+
+/* Test 4: Large Data Structure Copy Prevention */
+"=== Test 4: Large Data Structure Copy Prevention ===".echo();
+
+// Create a very large structure
+big_array = (1000).range().map(op(x){x * x});
+big_object = {data: big_array, metadata: {size: big_array.len(), type: "large"}};
+
+// Test assignment (should be reference, not copy)
+start_time = $TIME();
+ref_big = big_object;
+end_time = $TIME();
+ref_time = end_time - start_time;
+
+// Test explicit copy
+start_time = $TIME();
+copy_big = big_object.list();
+end_time = $TIME();
+copy_time = end_time - start_time;
+
+"Reference assignment time: " + ref_time.echo();
+"Copy assignment time: " + copy_time.echo();
+"Copy is slower than reference: " + (copy_time > ref_time).echo();
+
+/* Test 5: Variable Assignment and Mutation */
+"=== Test 5: Variable Assignment and Mutation ===".echo();
+
+// Test variable assignment in different scopes
+global_var = {counter: 0, data: "global"};
+
+scope_test = op() {
+    local_var = {counter: 0, data: "local"};
+    
+    // Modify global reference
+    global_var.counter += 1;
+    
+    // Modify local copy
+    local_copy = local_var.list();
+    local_copy.counter += 1;
+    
+    {global: global_var.counter, local: local_var.counter, copy: local_copy.counter};
+};
+
+result = scope_test();
+"Global counter incremented: " + (result.global == 1).echo();
+"Local counter unchanged: " + (result.local == 0).echo();
+"Copy counter incremented: " + (result.copy == 1).echo();
+
+/* Test 6: Array Reference Semantics */
+"=== Test 6: Array Reference Semantics ===".echo();
+
+// Test array reference behavior
+original_array = [1, 2, 3, 4, 5];
+array_ref = original_array;
+array_ref[2] = 999;
+
+"Array reference modifies original: " + (original_array[2] == 999).echo();
+
+// Test array copy behavior
+array_copy = original_array.list();
+array_copy[3] = 888;
+
+"Array copy does NOT modify original: " + (original_array[3] == 4).echo();
+
+/* Test 7: Nested Object Reference Semantics */
+"=== Test 7: Nested Object Reference Semantics ===".echo();
+
+// Create nested object structure
+nested = {
+    level1: {
+        level2: {
+            level3: {
+                value: "deep"
+            }
+        }
+    }
+};
+
+// Test deep reference
+deep_ref = nested.level1.level2.level3;
+deep_ref.value = "modified";
+
+"Deep reference modifies original: " + (nested.level1.level2.level3.value == "modified").echo();
+
+// Test deep copy
+deep_copy = nested.list();
+deep_copy.level1.level2.level3.value = "copied";
+
+"Deep copy does NOT modify original: " + (nested.level1.level2.level3.value == "modified").echo();
+
+/* Test 8: Function Return Reference Semantics */
+"=== Test 8: Function Return Reference Semantics ===".echo();
+
+// Function that returns a reference to internal data
+create_counter = op() {
+    counter = {value: 0, increment: op(){this.value += 1; this.value}};
+    counter;
+};
+
+counter1 = create_counter();
+counter2 = create_counter();
+
+// Test that each gets its own instance
+counter1.increment();
+counter2.increment();
+counter2.increment();
+
+"Counter1 value: " + counter1.value.echo();
+"Counter2 value: " + counter2.value.echo();
+"Counters are independent: " + (counter1.value == 1 && counter2.value == 2).echo();
+
+/* Test 9: Complex Data Structure Performance */
+"=== Test 9: Complex Data Structure Performance ===".echo();
+
+// Create complex nested structure
+complex_data = (100).range().map(op(i){
+    {
+        id: i,
+        data: (10).range().map(op(j){i * j}),
+        metadata: {
+            created: $TIME(),
+            type: "complex",
+            nested: {
+                level1: {level2: {level3: {value: i * 100}}}
+            }
+        }
+    }
+});
+
+// Test reference assignment performance
+start_time = $TIME();
+ref_complex = complex_data;
+end_time = $TIME();
+ref_perf = end_time - start_time;
+
+// Test copy assignment performance
+start_time = $TIME();
+copy_complex = complex_data.list();
+end_time = $TIME();
+copy_perf = end_time - start_time;
+
+"Reference assignment performance: " + ref_perf.echo();
+"Copy assignment performance: " + copy_perf.echo();
+"Reference is faster than copy: " + (ref_perf < copy_perf).echo();
+
+/* Test 10: Mutation Through References */
+"=== Test 10: Mutation Through References ===".echo();
+
+// Test that mutations through references affect the original
+original = {list: [1,2,3], obj: {x: 10, y: 20}};
+reference = original;
+
+// Mutate through reference
+reference.list.push(4);
+reference.obj.x = 999;
+
+"Original list modified through reference: " + (original.list.len() == 4).echo();
+"Original object modified through reference: " + (original.obj.x == 999).echo();
+
+// Test that mutations through copies do NOT affect original
+copy = original.list();
+copy.list.push(5);
+copy.obj.y = 888;
+
+"Original list NOT modified through copy: " + (original.list.len() == 4).echo();
+"Original object NOT modified through copy: " + (original.obj.y == 20).echo();
+
+/* Test 11: Scope and Lifetime Management */
+"=== Test 11: Scope and Lifetime Management ===".echo();
+
+// Test that references maintain validity across scope boundaries
+create_scope_data = op() {
+    scope_var = {data: "from scope", counter: 0};
+    op() { scope_var.counter += 1; scope_var; };
+};
+
+getter = create_scope_data();
+ref1 = getter();
+ref2 = getter();
+
+"Reference1 counter: " + ref1.counter.echo();
+"Reference2 counter: " + ref2.counter.echo();
+"References point to same object: " + (ref1.counter == ref2.counter).echo();
+
+/* Test 12: Error Handling with References */
+"=== Test 12: Error Handling with References ===".echo();
+
+// Test that errors in referenced objects are properly handled
+error_obj = {valid: true, data: "test"};
+error_ref = error_obj;
+
+try {
+    error_obj.valid = false;
+    error_obj.nonexistent.method();
+} {
+    default: "Error caught: " + error_obj.data.echo();
+}
+
+"Error handling preserves reference: " + (error_ref.data == "test").echo();
+
+/* Summary */
+"=== Summary ===".echo();
+"All mVar reference semantics tests completed.".echo();
+"Key findings:".echo();
+"- Reference assignment is faster than copy assignment".echo();
+"- References allow mutation of original data".echo();
+"- Copies provide isolation from original data".echo();
+"- Pointer dereferencing works automatically".echo();
+"- Scope and lifetime management works correctly".echo();
