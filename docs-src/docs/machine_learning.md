@@ -527,16 +527,16 @@ cross_validate = op(X, y, k_folds, model_type) {
 
 For complete working examples, see:
 
-- [Linear Regression Example](../examples/linear_regression_example.grc) - Complete implementation with data generation, training, and evaluation
-- [Vector Operations](../examples/vector_operations.grc) - Core vector operations used in machine learning
-- [Performance Examples](../examples/performance_example.grc) - Performance optimization techniques
+- [Linear Regression Example](examples/linear_regression_example.grc) - Complete implementation with data generation, training, and evaluation
+- [Vector Operations](examples/vector_operations.grc) - Core vector operations used in machine learning
+- [Performance Examples](examples/performance_example.grc) - Performance optimization techniques
 
 ## See Also
 
 - [$VECTOR object](type/vector.md) - Core vector operations
 - [Vector Performance Guide](vector_performance_guide.md) - Performance optimization
 - [Statistical Functions](type/obj_methods.md) - Built-in statistical operations
-- [Mathematical Operations](../operators/math.md) - Mathematical operators
+- [Mathematical Operations](operators/math.md) - Mathematical operators
 
 ## Conclusion
 

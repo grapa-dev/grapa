@@ -159,6 +159,8 @@ nav:
       - XML and LIST Integration: xml_list_integration.md
       - Unified Dot Notation System: unified_dot_notation.md
       - Module System: module_system.md
+      - Machine Learning: machine_learning.md
+      - Vector Performance Guide: vector_performance_guide.md
   - Guides:
       - Migration Guides:
           - Python: migrations/python_to_grapa_migration.md
