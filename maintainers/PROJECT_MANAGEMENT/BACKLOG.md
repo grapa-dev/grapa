@@ -220,7 +220,53 @@ This backlog tracks all future, long-term, and queued tasks for the Grapa projec
 
 ---
 
-## 🔍 **INVESTIGATION ITEMS** (1 item)
+## 🔧 **INFRASTRUCTURE & PLATFORM** (1 item)
+
+### **Platform-Aware Library Directory Implementation** 🔧 **INFRASTRUCTURE ENHANCEMENT**
+- **Status**: Initial implementation complete but reverted due to compilation issues and testing challenges
+- **Focus**: Implement platform-specific default library directory paths for better user experience
+- **Context**: Currently uses development-focused paths, but production users need platform-appropriate paths
+- **Current Search Order** (existing functionality):
+  1. **Current Working Directory**: `{current_working_directory}/lib/grapa`
+  2. **System Paths**: `/usr/lib/grapa` → `/usr/local/lib/grapa` 
+  3. **Binary Directory**: `{binary_directory}/lib/grapa`
+  4. **Static Library**: Built-in compressed library files
+- **Proposed Platform Requirements**:
+  - **Windows**: `%USERPROFILE%\.grapa\lib` → `%PROGRAMFILES%\Grapa\lib` → `{current_directory}\lib\grapa`
+  - **macOS**: `~/Library/Application Support/Grapa/lib` → `/usr/local/lib/grapa` → `/opt/grapa/lib` → `{current_directory}/lib/grapa`
+  - **Linux/BSD**: `~/.local/lib/grapa` → `/usr/local/lib/grapa` → `/usr/lib/grapa` → `{current_directory}/lib/grapa`
+- **Implementation Details**:
+  - Modify `gSystem->mLibDir` initialization in `source/grapa/GrapaLink.cpp`
+  - Ensure proper ordering after `mHomeDir` initialization
+  - Add proper `struct stat sb;` declaration for directory existence checks
+  - Test automatic file loading mechanism with platform-aware paths
+- **Challenges Identified**:
+  - Variable scoping issues with `struct stat sb` declaration
+  - Interaction with existing grammar file loading logic (`$grapa.grz`)
+  - Testing automatic file loading mechanism complexity
+- **Progress**: 
+  - ✅ Platform-specific path logic designed and implemented
+  - ✅ Build system compilation successful after fixes
+  - ✅ Platform-aware directory detection working (`/Users/matichuk/Library/Application Support/Grapa/lib` on macOS)
+  - ❌ Automatic file loading testing inconclusive (requires further investigation)
+  - ❌ Changes reverted due to testing complexity and scope
+- **Next Steps**: 
+  - Revisit implementation with proper variable scoping from the start
+  - Implement comprehensive testing strategy for automatic file loading
+  - Ensure grammar file loading logic compatibility
+  - Update documentation for new default paths
+- **Documentation Updates Needed**:
+  - `docs-src/docs/module_system.md` - Platform-specific search paths
+  - `docs-src/docs/getting_started.md` - Platform-aware installation paths
+  - `maintainers/IMPLEMENTATION/CORE_SYSTEM/AUTOMATIC_FILE_LOADING_MECHANISM.md` - Updated search paths
+- **Reference**: Implementation was in `source/grapa/GrapaLink.cpp` with platform-specific `#ifdef` blocks
+- **Priority**: Medium - improves user experience but not critical for core functionality
+- **Estimated Effort**: 1-2 weeks (implementation + testing + documentation)
+- **Risk Level**: Medium - affects core system initialization and file loading behavior
+
+---
+
+## 🔍 **INVESTIGATION ITEMS** (3 items)
 
 ### **SQL Syntax Injection Demo** 🔍 **INVESTIGATION NEEDED**
 - **Status**: Initial investigation complete, design concerns identified

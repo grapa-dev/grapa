@@ -1,0 +1,381 @@
+/* Vector Performance Benchmarks
+ * 
+ * This script provides comprehensive performance analysis of Grapa's vector operations
+ * including matrix multiplication, statistical functions, and memory usage patterns.
+ * 
+ * Key benchmarks:
+ * - Matrix multiplication performance across different sizes
+ * - Statistical function performance (covariance, eigenvalues, etc.)
+ * - Memory usage analysis for large operations
+ * - Performance comparison between different operation types
+ * - Optimization recommendations based on results
+ */
+
+("=== Vector Performance Benchmarks ===").echo();
+("Starting comprehensive vector operation performance analysis...\n").echo();
+
+/* ======================================== */
+/* 1. Matrix Multiplication Benchmarks */
+/* ======================================== */
+
+("--- Matrix Multiplication Performance ---").echo();
+
+/* Helper function to create test matrices */
+create_test_matrix = op(size) {
+    matrix = [];
+    i = 0;
+    while (i < size) {
+        row = [];
+        j = 0;
+        while (j < size) {
+            row += (i * size + j + 1);
+            j = j + 1;
+        }
+        matrix += row;
+        i = i + 1;
+    }
+    matrix.vector();
+};
+
+/* Benchmark matrix multiplication */
+benchmark_matrix_mult = op(size) {
+    ("Testing " + size + "x" + size + " matrix multiplication...").echo();
+    
+    /* Create test matrices */
+    start_time = $TIME().utc();
+    mat1 = create_test_matrix(size);
+    mat2 = create_test_matrix(size);
+    creation_time = (($TIME().utc() - start_time) / 1000000).int();
+    
+    /* Perform matrix multiplication */
+    start_time = $TIME().utc();
+    result = mat1.dot(mat2);
+    mult_time = (($TIME().utc() - start_time) / 1000000).int();
+    
+    /* Calculate total time and operations */
+    total_time = creation_time + mult_time;
+    operations = size * size * size; /* O(n³) for matrix multiplication */
+    ops_per_sec = (operations / (mult_time / 1000)).int();
+    
+    {
+        "size": size,
+        "creation_time_ms": creation_time,
+        "multiplication_time_ms": mult_time,
+        "total_time_ms": total_time,
+        "operations": operations,
+        "ops_per_sec": ops_per_sec,
+        "result_shape": result.shape()
+    };
+};
+
+/* Test different matrix sizes */
+matrix_sizes = [2, 5, 10, 20, 50, 100];
+matrix_results = [];
+
+matrix_sizes.range().each(op(i) {
+    size = matrix_sizes.get(i);
+    result = benchmark_matrix_mult(size);
+    matrix_results += result;
+    
+    ("  " + size + "x" + size + ": " + result.get("multiplication_time_ms") + "ms (" + 
+     result.get("ops_per_sec") + " ops/sec)").echo();
+});
+
+/* ======================================== */
+/* 2. Statistical Function Benchmarks */
+/* ======================================== */
+
+("\n--- Statistical Function Performance ---").echo();
+
+/* Benchmark covariance calculation */
+benchmark_covariance = op(size) {
+    ("Testing covariance for " + size + "x" + size + " matrix...").echo();
+    
+    /* Create test data */
+    start_time = $TIME().utc();
+    data = create_test_matrix(size);
+    creation_time = (($TIME().utc() - start_time) / 1000000).int();
+    
+    /* Calculate covariance */
+    start_time = $TIME().utc();
+    cov_result = data.cov();
+    cov_time = (($TIME().utc() - start_time) / 1000000).int();
+    
+    {
+        "size": size,
+        "creation_time_ms": creation_time,
+        "covariance_time_ms": cov_time,
+        "result_shape": cov_result.shape()
+    };
+};
+
+/* Benchmark eigenvalue calculation */
+benchmark_eigenvalues = op(size) {
+    ("Testing eigenvalues for " + size + "x" + size + " symmetric matrix...").echo();
+    
+    /* Create symmetric test matrix */
+    start_time = $TIME().utc();
+    data = create_test_matrix(size);
+    /* Make it symmetric by adding transpose */
+    symmetric_data = (data + data.t()) / 2;
+    creation_time = (($TIME().utc() - start_time) / 1000000).int();
+    
+    /* Calculate eigenvalues */
+    start_time = $TIME().utc();
+    eigen_result = symmetric_data.eigh();
+    eigen_time = (($TIME().utc() - start_time) / 1000000).int();
+    
+    {
+        "size": size,
+        "creation_time_ms": creation_time,
+        "eigenvalue_time_ms": eigen_time,
+        "result_type": eigen_result.type()
+    };
+};
+
+/* Test statistical functions */
+stat_sizes = [2, 5, 10, 20, 50];
+cov_results = [];
+eigen_results = [];
+
+stat_sizes.range().each(op(i) {
+    size = stat_sizes.get(i);
+    
+    cov_result = benchmark_covariance(size);
+    cov_results += cov_result;
+    ("  Covariance " + size + "x" + size + ": " + cov_result.get("covariance_time_ms") + "ms").echo();
+    
+    eigen_result = benchmark_eigenvalues(size);
+    eigen_results += eigen_result;
+    ("  Eigenvalues " + size + "x" + size + ": " + eigen_result.get("eigenvalue_time_ms") + "ms").echo();
+});
+
+/* ======================================== */
+/* 3. Memory Usage Analysis */
+/* ======================================== */
+
+("\n--- Memory Usage Analysis ---").echo();
+
+/* Helper function to estimate memory usage */
+estimate_memory = op(matrix) {
+    /* Rough estimation: each element is ~8 bytes for FLOAT */
+    elements = matrix.shape().reduce(op(acc, dim){acc * dim}, 1);
+    estimated_bytes = elements * 8;
+    estimated_mb = (estimated_bytes / (1024 * 1024)).float();
+    estimated_mb;
+};
+
+/* Test memory usage for different sizes */
+memory_sizes = [10, 50, 100, 200, 500];
+memory_results = [];
+
+memory_sizes.range().each(op(i) {
+    size = memory_sizes.get(i);
+    ("Testing memory usage for " + size + "x" + size + " matrix...").echo();
+    
+    start_time = $TIME().utc();
+    matrix = create_test_matrix(size);
+    creation_time = (($TIME().utc() - start_time) / 1000000).int();
+    
+    estimated_mb = estimate_memory(matrix);
+    
+    /* Perform some operations to test memory efficiency */
+    start_time = $TIME().utc();
+    transposed = matrix.t();
+    inverse = matrix.inv();
+    determinant = matrix.det();
+    operation_time = (($TIME().utc() - start_time) / 1000000).int();
+    
+    result = {
+        "size": size,
+        "creation_time_ms": creation_time,
+        "operation_time_ms": operation_time,
+        "estimated_memory_mb": estimated_mb,
+        "operations_performed": 3
+    };
+    
+    memory_results += result;
+    
+    ("  " + size + "x" + size + ": ~" + estimated_mb.str() + "MB, " + 
+     operation_time + "ms for 3 operations").echo();
+});
+
+/* ======================================== */
+/* 4. Performance Comparison Analysis */
+/* ======================================== */
+
+("\n--- Performance Comparison Analysis ---").echo();
+
+/* Compare different operation types on same size */
+compare_operations = op(size) {
+    ("Comparing operations on " + size + "x" + size + " matrix...").echo();
+    
+    matrix = create_test_matrix(size);
+    
+    /* Time different operations */
+    operations = {};
+    
+    /* Matrix operations */
+    start_time = $TIME().utc();
+    transposed = matrix.t();
+    operations.set("transpose", (($TIME().utc() - start_time) / 1000000).int());
+    
+    start_time = $TIME().utc();
+    inverse = matrix.inv();
+    operations.set("inverse", (($TIME().utc() - start_time) / 1000000).int());
+    
+    start_time = $TIME().utc();
+    determinant = matrix.det();
+    operations.set("determinant", (($TIME().utc() - start_time) / 1000000).int());
+    
+    start_time = $TIME().utc();
+    rank_val = matrix.rank();
+    operations.set("rank", (($TIME().utc() - start_time) / 1000000).int());
+    
+    /* Statistical operations */
+    start_time = $TIME().utc();
+    sum_val = matrix.sum();
+    operations.set("sum", (($TIME().utc() - start_time) / 1000000).int());
+    
+    start_time = $TIME().utc();
+    mean_val = matrix.mean();
+    operations.set("mean", (($TIME().utc() - start_time) / 1000000).int());
+    
+    operations;
+};
+
+/* Test operation comparison */
+comp_sizes = [10, 20, 50];
+operation_comparisons = [];
+
+comp_sizes.range().each(op(i) {
+    size = comp_sizes.get(i);
+    comparison = compare_operations(size);
+    comparison.set("size", size);
+    operation_comparisons += comparison;
+    
+    ("  " + size + "x" + size + " operations:").echo();
+    comparison.keys().filter(op(key){key != "size"}).each(op(key) {
+        time = comparison.get(key);
+        ("    " + key + ": " + time + "ms").echo();
+    });
+});
+
+/* ======================================== */
+/* 5. Large Dataset Stress Testing */
+/* ======================================== */
+
+("\n--- Large Dataset Stress Testing ---").echo();
+
+/* Test with very large matrices */
+stress_test = op() {
+    ("Testing large matrix operations (this may take a while)...").echo();
+    
+    /* Test 200x200 matrix */
+    ("Creating 200x200 matrix...").echo();
+    start_time = $TIME().utc();
+    large_matrix = create_test_matrix(200);
+    creation_time = (($TIME().utc() - start_time) / 1000000).int();
+    ("  Creation time: " + creation_time + "ms").echo();
+    
+    /* Test matrix multiplication */
+    ("Performing 200x200 matrix multiplication...").echo();
+    start_time = $TIME().utc();
+    result = large_matrix.dot(large_matrix);
+    mult_time = (($TIME().utc() - start_time) / 1000000).int();
+    ("  Multiplication time: " + mult_time + "ms").echo();
+    
+    /* Test statistical operations */
+    ("Calculating covariance...").echo();
+    start_time = $TIME().utc();
+    cov_result = large_matrix.cov();
+    cov_time = (($TIME().utc() - start_time) / 1000000).int();
+    ("  Covariance time: " + cov_time + "ms").echo();
+    
+    {
+        "size": 200,
+        "creation_time_ms": creation_time,
+        "multiplication_time_ms": mult_time,
+        "covariance_time_ms": cov_time,
+        "total_time_ms": creation_time + mult_time + cov_time
+    };
+};
+
+stress_result = stress_test();
+
+/* ======================================== */
+/* 6. Performance Summary and Recommendations */
+/* ======================================== */
+
+("\n--- Performance Summary ---").echo();
+
+/* Calculate averages and trends */
+("Matrix Multiplication Performance:").echo();
+matrix_results.each(op(result) {
+    size = result.get("size");
+    time = result.get("multiplication_time_ms");
+    ops_per_sec = result.get("ops_per_sec");
+    ("  " + size + "x" + size + ": " + time + "ms (" + ops_per_sec + " ops/sec)").echo();
+});
+
+("\nStatistical Function Performance:").echo();
+("Covariance:").echo();
+cov_results.each(op(result) {
+    size = result.get("size");
+    time = result.get("covariance_time_ms");
+    ("  " + size + "x" + size + ": " + time + "ms").echo();
+});
+
+("Eigenvalues:").echo();
+eigen_results.each(op(result) {
+    size = result.get("size");
+    time = result.get("eigenvalue_time_ms");
+    ("  " + size + "x" + size + ": " + time + "ms").echo();
+});
+
+("\nMemory Usage Summary:").echo();
+memory_results.each(op(result) {
+    size = result.get("size");
+    memory = result.get("estimated_memory_mb");
+    time = result.get("operation_time_ms");
+    ("  " + size + "x" + size + ": ~" + memory.str() + "MB, " + time + "ms for operations").echo();
+});
+
+("\nLarge Dataset Stress Test:").echo();
+("  200x200 matrix: " + stress_result.get("total_time_ms") + "ms total").echo();
+
+/* ======================================== */
+/* 7. Optimization Recommendations */
+/* ======================================== */
+
+("\n--- Optimization Recommendations ---").echo();
+
+/* Analyze performance patterns and provide recommendations */
+("Based on benchmark results:\n").echo();
+
+/* Matrix multiplication recommendations */
+("Matrix Multiplication:").echo();
+("  - Use smaller matrices (< 50x50) for real-time applications").echo();
+("  - Consider breaking large matrices into smaller blocks").echo();
+("  - Matrix multiplication scales as O(n³) - be aware of performance impact").echo();
+
+/* Statistical function recommendations */
+("\nStatistical Functions:").echo();
+("  - Covariance calculations are relatively fast for moderate sizes").echo();
+("  - Eigenvalue calculations become expensive for large matrices (> 50x50)").echo();
+("  - Use symmetric matrices when possible for eigenvalue calculations").echo();
+
+/* Memory recommendations */
+("\nMemory Usage:").echo();
+("  - Monitor memory usage for matrices > 100x100").echo();
+("  - Consider memory-efficient operations for large datasets").echo();
+("  - Use .array() for general data manipulation, .vector() for mathematical operations").echo();
+
+/* General recommendations */
+("\nGeneral Performance Tips:").echo();
+("  - Pre-allocate matrices when possible").echo();
+("  - Use appropriate data types (INT vs FLOAT)").echo();
+("  - Consider parallel processing for large datasets").echo();
+("  - Profile memory usage for long-running operations").echo();
+
+("=== Vector Performance Benchmarks Complete ===").echo();

@@ -260,6 +260,51 @@ matches.echo();  /* ["world", "world"] */
 
 ---
 
+## Automatic File Loading
+
+**Important**: This is **runtime loading** - files are loaded when the function or class is first called, not at compile time. This differs from the `include` command which loads files at compile time.
+
+Grapa includes a powerful automatic file loading mechanism that makes it easy to organize and reuse code:
+
+### Creating Reusable Functions
+
+```grapa
+/* File: lib/grapa/utils.grc */
+@global["utils"] = class {
+    format_date = op(date) {
+        return date.format("YYYY-MM-DD");
+    };
+    
+    validate_email = op(email) {
+        return email.grep(r"^[^@]+@[^@]+\.[^@]+$", "x").len() > 0;
+    };
+};
+```
+
+### Using Functions Automatically
+
+```grapa
+/* Grapa automatically loads utils.grc when you call utils() */
+formatted = utils().format_date($TIME());
+is_valid = utils().validate_email("user@example.com");
+```
+
+### Search Paths
+
+Grapa automatically searches for `.grc` and `.grz` files in this order:
+
+1. **Current working directory** - Where you run the `grapa` command
+2. **Library directory** - Determined by this priority:
+   - `{current_working_directory}/lib/grapa` (development/local)
+   - `/usr/lib/grapa` (system-wide, package manager)
+   - `/usr/local/lib/grapa` (system-wide, user-installed)
+   - `{binary_directory}/lib/grapa` (fallback, relative to grapa executable)
+3. **Static library** - Built-in compressed library files
+
+> **Tip:** Place your utility functions in `lib/grapa/` in your project directory for automatic discovery. No import statements needed!
+
+---
+
 ## Next Steps
 - Explore [Examples](examples.md) for more complex use cases
 - Learn about [Testing](testing.md) your Grapa code

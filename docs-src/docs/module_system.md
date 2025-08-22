@@ -1,13 +1,71 @@
 # Module System
 
-Grapa provides a sophisticated module system that combines compile-time includes with runtime dynamic class loading. This system is more flexible and powerful than traditional import/export mechanisms.
+Grapa provides a sophisticated module system that combines compile-time includes with runtime dynamic class loading and **automatic file loading**. This system is more flexible and powerful than traditional import/export mechanisms.
 
 ## Overview
 
-Grapa's module system consists of two main components:
+Grapa's module system consists of three main components:
 
 1. **Include System** - Compile-time file inclusion
 2. **Dynamic Class Loading** - Runtime class resolution with search paths
+3. **Automatic File Loading** - Automatic loading of `.grc` files for function calls
+
+## Automatic File Loading
+
+**Important**: This is **runtime loading** - files are loaded when the function or class is first called, not at compile time. This differs from the `include` command which loads files at compile time.
+
+### Function Call Auto-Loading
+
+When you call a function that doesn't exist in the current namespace, Grapa automatically searches for and loads the corresponding `.grc` file:
+
+```grapa
+/* File: lib/grapa/mycode.grc */
+@global["mycode"] = class {
+    test = op() {
+        "Hello from mycode.grc!".echo();
+        return "Success from mycode.grc";
+    };
+};
+
+/* Usage - automatically loads mycode.grc */
+x = mycode();  /* Searches for mycode.grc and loads it */
+x.test();      /* Calls the test method */
+```
+
+### Search Paths for Auto-Loading
+
+The automatic file loading mechanism searches in this order:
+
+1. **Current Working Directory** (`gSystem->mPath`) - Where you run the `grapa` command
+2. **Library Directory** (`gSystem->mLibDir`) - Default: `{current_directory}/lib/grapa`
+3. **Static Library** (`gSystem->mStaticLib`) - Built-in classes
+
+### Default Library Directory Search Order
+
+The library directory is determined in this order:
+
+1. **`{current_working_directory}/lib/grapa`** (development/local)
+2. **`/usr/lib/grapa`** (system-wide, package manager)
+3. **`/usr/local/lib/grapa`** (system-wide, user-installed)
+4. **`{binary_directory}/lib/grapa`** (fallback, relative to grapa executable)
+
+> **Note**: The current implementation prioritizes development convenience by checking the current working directory first. This makes it easy for developers to place library files in their project's `lib/grapa/` directory.
+
+## Runtime vs Compile-Time Loading
+
+Grapa provides two different mechanisms for loading code:
+
+### Automatic File Loading (Runtime)
+- **When**: Files are loaded when functions/classes are first called
+- **How**: Searches for `.grc`/`.grz` files in search paths
+- **Use case**: Dynamic loading, plugins, optional features
+- **Example**: `mycode()` automatically loads `mycode.grc` when called
+
+### Include Command (Compile-Time)
+- **When**: Files are loaded during compilation/parsing
+- **How**: Explicitly includes files with `include "file.grc"`
+- **Use case**: Core dependencies, always-required modules
+- **Example**: `include "lib/core/utils.grc"` loads file during compilation
 
 ## Include System
 
@@ -106,6 +164,28 @@ When loading a class, Grapa searches in this order:
 4. **Static library** - Built-in classes
 
 ## Practical Examples
+
+### Automatic Function Loading
+
+```grapa
+/* Create a utility function */
+/* File: lib/grapa/utils.grc */
+@global["utils"] = class {
+    format_date = op(date) {
+        /* Date formatting logic */
+        return date.format("YYYY-MM-DD");
+    };
+    
+    validate_email = op(email) {
+        /* Email validation logic */
+        return email.grep(r"^[^@]+@[^@]+\.[^@]+$", "x").len() > 0;
+    };
+};
+
+/* Usage - automatically loads utils.grc */
+formatted = utils().format_date($TIME());
+is_valid = utils().validate_email("user@example.com");
+```
 
 ### Custom Class Library
 
@@ -261,17 +341,21 @@ include "lib/core/grapa.grc";
 
 /* Class loading - runtime */
 custom = $CUSTOM_CLASS();  /* Searches $PATH automatically */
+
+/* Automatic file loading - runtime */
+utils = utils();           /* Automatically loads utils.grc */
 ```
 
 ## Best Practices
 
-1. **Use $PATH for custom libraries and plugins**
-2. **Use $LIB for system-wide library directory**
-3. **Use .grc files during development**
-4. **Use .grz files in production**
-5. **Organize libraries by category**
-6. **Optimize search path order**
-7. **Cache frequently used libraries**
+1. **Use automatic file loading for simple utilities and functions**
+2. **Use $PATH for custom libraries and plugins**
+3. **Use $LIB for system-wide library directory**
+4. **Use .grc files during development**
+5. **Use .grz files in production**
+6. **Organize libraries by category**
+7. **Optimize search path order**
+8. **Cache frequently used libraries**
 
 ## Comparison with Traditional Modules
 
@@ -279,11 +363,12 @@ Grapa's module system is more flexible than traditional import/export:
 
 | Traditional Modules | Grapa Module System |
 |-------------------|-------------------|
-| Static imports | Dynamic class loading |
+| Static imports | Dynamic class loading + automatic file loading |
 | Fixed dependencies | Runtime path configuration |
 | Compile-time resolution | Runtime resolution |
 | Limited flexibility | High flexibility |
 | Single search location | Multiple search paths |
+| Explicit imports | Automatic discovery |
 
 ## Conclusion
 
@@ -291,6 +376,7 @@ Grapa's module system provides:
 
 - **Compile-time includes** for code organization
 - **Runtime class loading** with flexible search paths
+- **Automatic file loading** for seamless function calls
 - **Environment variable management** for configuration
 - **Performance optimization** with pre-compiled files
 - **Extensible architecture** for custom search providers
@@ -301,3 +387,4 @@ This system is more sophisticated than traditional import/export modules and pro
 
 - [Command Operators](operators/command.md) - Include syntax details
 - [System Functions](sys/sys.md) - Environment variable management
+- [Object Methods](type/obj_methods.md) - Class and method usage

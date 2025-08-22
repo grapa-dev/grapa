@@ -1242,6 +1242,24 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#raw_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      .raw()
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#comparison-len-vs-bytes-vs-raw" class="md-nav__link">
+    <span class="md-ellipsis">
+      Comparison: .len() vs .bytes() vs .raw()
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#setconstvalue" class="md-nav__link">
     <span class="md-ellipsis">
       .setconst(value)
@@ -1776,9 +1794,9 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#execcallback-set-get" class="md-nav__link">
+  <a href="#exec" class="md-nav__link">
     <span class="md-ellipsis">
-      .exec(callback, set, get)
+      .exec()
     </span>
   </a>
   
@@ -3556,6 +3574,52 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../machine_learning/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Machine Learning
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../vector_performance_guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Vector Performance Guide
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -4709,6 +4773,24 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#raw_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      .raw()
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#comparison-len-vs-bytes-vs-raw" class="md-nav__link">
+    <span class="md-ellipsis">
+      Comparison: .len() vs .bytes() vs .raw()
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#setconstvalue" class="md-nav__link">
     <span class="md-ellipsis">
       .setconst(value)
@@ -5243,9 +5325,9 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#execcallback-set-get" class="md-nav__link">
+  <a href="#exec" class="md-nav__link">
     <span class="md-ellipsis">
-      .exec(callback, set, get)
+      .exec()
     </span>
   </a>
   
@@ -5506,14 +5588,36 @@
 <div class="highlight"><pre><span></span><code>obj.describe();      /* Returns detailed object information */
 </code></pre></div>
 <h3 id="raw"><code>.raw()</code></h3>
-<p>Returns the raw bytes representation of the object.</p>
+<p>Returns the raw bytes representation of the object. For numbers, this shows the <strong>internal binary representation</strong> as hex.</p>
 <div class="highlight"><pre><span></span><code>&quot;Hello&quot;.raw();       /* Returns: 0x48656C6C6F */
 42.raw();           /* Returns: 0x2A */
+255.raw();          /* Returns: 0x0FF */
+4.5.raw();          /* Returns: 0x00281000A09 (internal binary structure) */
 </code></pre></div>
+<p><strong>Note:</strong> For <code>$FLOAT</code> types, <code>.raw()</code> shows the internal binary representation (sign, exponent, mantissa) as hex, not the decimal value.</p>
 <h3 id="uraw"><code>.uraw()</code></h3>
-<p>Returns the unsigned raw bytes representation of the object.</p>
-<div class="highlight"><pre><span></span><code>obj.uraw();         /* Returns unsigned raw bytes */
+<p>Returns the unsigned raw bytes representation of the object. This method treats negative numbers as unsigned integers using two's complement representation, which is essential for cryptographic applications and binary data processing.</p>
+<div class="highlight"><pre><span></span><code>(-1).uraw();        /* Returns: 0xD6 (unsigned hex with 0x prefix) */
+(255).uraw();       /* Returns: 0x0FF (with leading zero for consistency) */
+(-100).uraw();      /* Returns: 0x9C (unsigned representation) */
 </code></pre></div>
+<p><strong>Key Features:</strong>
+- <strong>Two's complement conversion</strong>: Negative numbers are converted to their unsigned equivalent
+- <strong>Consistent formatting</strong>: Always includes <code>0x</code> prefix and leading zeros for consistency
+- <strong>Cryptographic applications</strong>: Essential for handling large numbers that might be interpreted as negative
+- <strong>Binary data processing</strong>: Useful for working with raw bytes and network protocols</p>
+<p><strong>Use Cases:</strong>
+- Binary file format parsing
+- Network protocol data handling
+- Low-level system programming
+- Debugging and inspection (for cryptographic output, prefer <code>.uhex()</code>)</p>
+<p><strong>Note: For cryptographic key output, prefer <code>.uhex()</code> over <code>.uraw()</code></strong>
+<div class="highlight"><pre><span></span><code>// .uraw() includes 0x prefix and leading zeros
+key.uraw();         /* Returns: &quot;0x0FFFF&quot; */
+
+// .uhex() provides clean hex string for cryptographic use
+key.uhex();         /* Returns: &quot;FFFF&quot; */
+</code></pre></div></p>
 <h3 id="bool"><code>.bool()</code></h3>
 <p>Converts the object to a boolean value.</p>
 <div class="highlight"><pre><span></span><code>&quot;hello&quot;.bool();     /* Returns: true */
@@ -5526,6 +5630,20 @@
 <div class="highlight"><pre><span></span><code>&quot;hello&quot;.len();      /* Returns: 5 */
 [1,2,3].len();      /* Returns: 3 */
 </code></pre></div>
+<p><strong>Behavior by Type:</strong>
+- <strong>Strings</strong>: Returns Unicode character count (grapheme clusters)
+- <strong>Arrays/Lists</strong>: Returns number of elements
+- <strong>Numbers</strong>: Returns the length of the string representation (e.g., "42" has length 2)
+- <strong>Objects</strong>: Returns number of properties
+- <strong>Other types</strong>: Returns element count or 0</p>
+<p><strong>Unicode Support:</strong>
+For strings, <code>.len()</code> counts Unicode characters (grapheme clusters), not bytes:
+<div class="highlight"><pre><span></span><code>&quot;hello&quot;.len();      /* Returns: 5 (5 characters) */
+&quot;héllo&quot;.len();      /* Returns: 5 (5 characters, not 6 bytes) */
+&quot;é&quot;.len();          /* Returns: 1 (1 character, not 2 bytes) */
+&quot;🚀&quot;.len();         /* Returns: 1 (1 emoji, not 4 bytes) */
+&quot;👨‍👩‍👧‍👦&quot;.len();   /* Returns: 4 (4 grapheme clusters) */
+</code></pre></div></p>
 <hr />
 <h2 id="type-conversion-methods">Type Conversion Methods</h2>
 <h3 id="int"><code>.int()</code></h3>
@@ -5534,9 +5652,33 @@
 3.14.int();         /* Returns: 3 */
 </code></pre></div>
 <h3 id="uint"><code>.uint()</code></h3>
-<p>Converts the object to an unsigned integer.</p>
-<div class="highlight"><pre><span></span><code>obj.uint();         /* Returns unsigned integer */
+<p>Converts the object to an unsigned integer. This method is crucial for cryptographic applications where you need to handle large numbers as unsigned values without sign issues.</p>
+<div class="highlight"><pre><span></span><code>(-1).uint();        /* Returns: 255 (8-bit unsigned equivalent) */
+(-100).uint();      /* Returns: 156 (8-bit unsigned equivalent) */
+(-1000).uint();     /* Returns: 64536 (16-bit unsigned equivalent) */
+(-2147483648).uint(); /* Returns: 2147483648 (32-bit unsigned equivalent) */
+(255).uint();       /* Returns: 255 (no change for positive numbers) */
 </code></pre></div>
+<p><strong>Key Features:</strong>
+- <strong>Two's complement conversion</strong>: Negative numbers are converted to their unsigned equivalent
+- <strong>Bit width preservation</strong>: Maintains the appropriate bit width for the conversion
+- <strong>No effect on positives</strong>: Positive numbers remain unchanged
+- <strong>Cryptographic safety</strong>: Prevents sign issues when working with large random numbers</p>
+<p><strong>Cryptographic Applications:</strong>
+- <strong>Large random number generation</strong>: Handle numbers with leading bits set without sign issues
+- <strong>Key generation</strong>: Ensure cryptographic keys are treated as unsigned values
+- <strong>Hash function inputs</strong>: Prevent negative number interpretation in hash calculations
+- <strong>Bit manipulation</strong>: Work with bit patterns that might be interpreted as negative</p>
+<p><strong>Example Workflow:</strong>
+<div class="highlight"><pre><span></span><code>// Generate a large random number (might have leading bit set)
+large_random = 0x80000000 + some_random_bits;
+
+// Convert to unsigned for cryptographic operations
+unsigned_value = large_random.uint();
+
+// Compare with other unsigned values
+is_equal = (unsigned_value == 0x80000000);
+</code></pre></div></p>
 <h3 id="floatprecision-mode"><code>.float(precision, mode)</code></h3>
 <p>Converts the object to a float with specified precision and mode.</p>
 <div class="highlight"><pre><span></span><code>&quot;3.14&quot;.float();     /* Returns: 3.14 */
@@ -5599,21 +5741,79 @@
 <p><strong>Parameters:</strong>
 - <code>radix</code> (default: 10) - Base for conversion</p>
 <h3 id="hex"><code>.hex()</code></h3>
-<p>Converts the object to hexadecimal representation.</p>
+<p>Converts the object to hexadecimal representation. For numbers, this converts the <strong>value</strong> to hex.</p>
 <div class="highlight"><pre><span></span><code>42.hex();           /* Returns: &quot;2A&quot; */
+255.hex();          /* Returns: &quot;FF&quot; */
+4.5.hex();          /* Returns: &quot;4.8&quot; (decimal value as hex) */
 </code></pre></div>
+<p><strong>Note:</strong> For <code>$FLOAT</code> types, <code>.hex()</code> converts the decimal value to hex representation, not the internal binary structure.</p>
 <h3 id="uhex"><code>.uhex()</code></h3>
-<p>Converts the object to unsigned hexadecimal representation.</p>
-<div class="highlight"><pre><span></span><code>obj.uhex();         /* Returns unsigned hex */
+<p>Converts the object to unsigned hexadecimal representation. This method treats negative numbers as unsigned integers and returns hex without the <code>0x</code> prefix.</p>
+<div class="highlight"><pre><span></span><code>(-1).uhex();        /* Returns: &quot;D6&quot; (unsigned hex without 0x prefix) */
+(255).uhex();       /* Returns: &quot;FF&quot; (no change for positive numbers) */
+(-100).uhex();      /* Returns: &quot;9C&quot; (unsigned representation) */
+(-1000).uhex();     /* Returns: &quot;FC18&quot; (16-bit unsigned hex) */
 </code></pre></div>
+<p><strong>Key Features:</strong>
+- <strong>Two's complement conversion</strong>: Negative numbers are converted to their unsigned equivalent
+- <strong>No 0x prefix</strong>: Returns clean hex string without prefix (unlike <code>.uraw()</code>)
+- <strong>Consistent with <code>.hex()</code></strong>: Same format as regular <code>.hex()</code> but for unsigned values
+- <strong>Cryptographic applications</strong>: Essential for hex representation of unsigned values</p>
+<p><strong>Comparison with other hex methods:</strong>
+<div class="highlight"><pre><span></span><code>(-1).hex();         /* Returns: &quot;-01&quot; (signed hex with minus sign) */
+(-1).uhex();        /* Returns: &quot;D6&quot; (unsigned hex without sign) */
+(-1).uraw();        /* Returns: &quot;0xD6&quot; (unsigned hex with 0x prefix) */
+</code></pre></div></p>
+<p><strong>Use Cases:</strong>
+- <strong>Cryptographic key representation</strong>: Display keys in standard hex format (preferred over <code>.uraw()</code>)
+- <strong>Hash value output</strong>: Show hash results as unsigned hex strings
+- <strong>Binary data inspection</strong>: View raw data as unsigned hex
+- <strong>Protocol debugging</strong>: Examine network protocol data in hex format</p>
+<p><strong>Important: For cryptographic output, use <code>.uhex()</code> instead of <code>.uraw()</code></strong>
+<div class="highlight"><pre><span></span><code>// For cryptographic applications, prefer .uhex() over .uraw()
+key = 0xFFFF;
+key.uhex();         /* Returns: &quot;FFFF&quot; (clean hex string) */
+key.uraw();         /* Returns: &quot;0x0FFFF&quot; (with 0x prefix and leading zero) */
+
+// .uhex() provides standard cryptographic hex format
+// .uraw() includes formatting that may not be desired
+</code></pre></div></p>
 <h3 id="bin"><code>.bin()</code></h3>
 <p>Converts the object to binary representation.</p>
 <div class="highlight"><pre><span></span><code>42.bin();           /* Returns: &quot;101010&quot; */
 </code></pre></div>
 <h3 id="ubin"><code>.ubin()</code></h3>
-<p>Converts the object to unsigned binary representation.</p>
-<div class="highlight"><pre><span></span><code>obj.ubin();         /* Returns unsigned binary */
+<p>Converts the object to unsigned binary representation. This method treats negative numbers as unsigned integers and returns binary without sign indicators.</p>
+<div class="highlight"><pre><span></span><code>(-1).ubin();        /* Returns: &quot;11010110&quot; (unsigned binary) */
+(255).ubin();       /* Returns: &quot;11111111&quot; (no change for positive numbers) */
+(-100).ubin();      /* Returns: &quot;10011100&quot; (unsigned representation) */
+(-1000).ubin();     /* Returns: &quot;11111100100011000&quot; (16-bit unsigned binary) */
 </code></pre></div>
+<p><strong>Key Features:</strong>
+- <strong>Two's complement conversion</strong>: Negative numbers are converted to their unsigned equivalent
+- <strong>No sign indicators</strong>: Returns clean binary string without minus signs
+- <strong>Consistent with <code>.bin()</code></strong>: Same format as regular <code>.bin()</code> but for unsigned values
+- <strong>Bit manipulation</strong>: Essential for cryptographic bit operations</p>
+<p><strong>Comparison with other binary methods:</strong>
+<div class="highlight"><pre><span></span><code>(-1).bin();         /* Returns: &quot;-1&quot; (signed binary with minus sign) */
+(-1).ubin();        /* Returns: &quot;11010110&quot; (unsigned binary without sign) */
+</code></pre></div></p>
+<p><strong>Use Cases:</strong>
+- <strong>Cryptographic bit operations</strong>: Work with binary representations for encryption/decryption
+- <strong>Hash function implementation</strong>: Manipulate binary data for hash calculations
+- <strong>Binary protocol analysis</strong>: Examine binary protocol data
+- <strong>Bit-level debugging</strong>: Debug cryptographic algorithms at the bit level
+- <strong>Random number generation</strong>: Work with binary representations of random values</p>
+<p><strong>Example: Bit manipulation for cryptography</strong>
+<div class="highlight"><pre><span></span><code>// Generate a random number that might be negative
+random_value = generate_random_number();
+
+// Convert to unsigned binary for bit operations
+binary_rep = random_value.ubin();
+
+// Perform bit-level operations
+bit_count = binary_rep.grep(&quot;1&quot;, &quot;c&quot;)[0].int();
+</code></pre></div></p>
 <h3 id="time"><code>.time()</code></h3>
 <p>Converts the object to a time representation.</p>
 <div class="highlight"><pre><span></span><code>obj.time();         /* Returns time representation */
@@ -5623,9 +5823,84 @@
 <div class="highlight"><pre><span></span><code>obj.bits();         /* Returns bit representation */
 </code></pre></div>
 <h3 id="bytes"><code>.bytes()</code></h3>
-<p>Returns the byte representation of the object.</p>
-<div class="highlight"><pre><span></span><code>obj.bytes();        /* Returns byte representation */
+<p>Returns the byte count of the object's internal storage.</p>
+<div class="highlight"><pre><span></span><code>&quot;hello&quot;.bytes();    /* Returns: 5 (byte count) */
+42.bytes();         /* Returns: 0 (byte storage size) */
+1.2.bytes();        /* Returns: 29 (byte storage size) */
 </code></pre></div>
+<p><strong>Behavior by Type:</strong>
+- <strong>Strings</strong>: Returns byte count (same as <code>.len()</code> for ASCII strings)
+- <strong>Numbers</strong>: Returns the byte size of internal storage
+- <strong>Arrays/Lists</strong>: Returns <code>{"error":-1}</code> (not supported)
+- <strong>Objects</strong>: Returns <code>{"error":-1}</code> (not supported)</p>
+<p><strong>Note</strong>: For numbers, this returns the size of the internal binary representation, not the string length.</p>
+<h3 id="raw_1"><code>.raw()</code></h3>
+<p>Returns the raw binary representation of the object as a <code>$RAW</code> type.</p>
+<div class="highlight"><pre><span></span><code>42.raw();           /* Returns: 0x2A (hex representation) */
+1.2.raw();          /* Returns: 0x00281000A09... (internal bytes) */
+&quot;hello&quot;.raw();      /* Returns: 0x68656C6C6F (hex of &quot;hello&quot;) */
+</code></pre></div>
+<p><strong>Behavior by Type:</strong>
+- <strong>Numbers</strong>: Returns internal binary representation as hex
+- <strong>Strings</strong>: Returns string bytes as hex
+- <strong>Other types</strong>: Returns internal representation as hex</p>
+<h3 id="comparison-len-vs-bytes-vs-raw"><strong>Comparison: <code>.len()</code> vs <code>.bytes()</code> vs <code>.raw()</code></strong></h3>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Purpose</th>
+<th>String</th>
+<th>Number</th>
+<th>Array/List</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>.len()</code></td>
+<td>Logical length</td>
+<td>Unicode character count</td>
+<td>String length</td>
+<td>Element count</td>
+</tr>
+<tr>
+<td><code>.bytes()</code></td>
+<td>Storage size</td>
+<td>Byte count</td>
+<td>Internal bytes</td>
+<td>Not supported</td>
+</tr>
+<tr>
+<td><code>.raw()</code></td>
+<td>Raw data</td>
+<td>Hex bytes</td>
+<td>Hex bytes</td>
+<td>Hex bytes</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Examples:</strong>
+<div class="highlight"><pre><span></span><code>value = 42;
+value.len();        /* Returns: 2 (length of &quot;42&quot;) */
+value.bytes();      /* Returns: 0 (internal storage size) */
+value.raw();        /* Returns: 0x2A (hex representation) */
+
+text = &quot;hello&quot;;
+text.len();         /* Returns: 5 (character count) */
+text.bytes();       /* Returns: 5 (byte count) */
+text.raw();         /* Returns: 0x68656C6C6F (hex) */
+
+unicode_text = &quot;héllo 🚀&quot;;
+unicode_text.len(); /* Returns: 7 (Unicode character count) */
+unicode_text.bytes(); /* Returns: 11 (byte count) */
+unicode_text.raw();   /* Returns: 0x68C3A96C6C6F20F09F9A80 (hex) */
+
+float_val = 1.2;
+float_val.len();    /* Returns: 3 (length of &quot;1.2&quot;) */
+float_val.bytes();  /* Returns: 29 (internal storage size) */
+float_val.raw();    /* Returns: 0x00281000A09... (hex) */
+</code></pre></div></p>
+<p><strong>Key Relationship</strong>: For some types, <code>.raw().len() == .bytes()</code> because <code>.raw()</code> returns the internal bytes and <code>.len()</code> on those bytes gives the byte count.</p>
 <h3 id="setconstvalue"><code>.setconst(value)</code></h3>
 <p>Sets the object to a constant value.</p>
 <div class="highlight"><pre><span></span><code>obj.setconst(100);  /* Sets object to constant value 100 */
@@ -5636,27 +5911,36 @@ obj.setconst(&quot;new value&quot;); /* Sets object to constant string */
 <hr />
 <h2 id="string-manipulation-methods">String Manipulation Methods</h2>
 <h3 id="leftcount"><code>.left(count)</code></h3>
-<p>Returns the leftmost characters of a string.</p>
+<p>Returns the leftmost characters of a string. <strong>Unicode-aware</strong>: Counts Unicode characters (grapheme clusters), not bytes.</p>
 <div class="highlight"><pre><span></span><code>&quot;Hello, World!&quot;.left(5);   /* Returns: &quot;Hello&quot; */
-&quot;Hello, World!&quot;.left(-3);  /* Returns: &quot;Hello, Wor&quot; */
+&quot;héllo&quot;.left(3);          /* Returns: &quot;hél&quot; (3 Unicode characters) */
+&quot;🚀héllo&quot;.left(3);        /* Returns: &quot;🚀hé&quot; (3 Unicode characters) */
+&quot;👨‍👩‍👧‍👦&quot;.left(2);       /* Returns: &quot;👨‍👩‍&quot; (2 Unicode characters) */
 </code></pre></div>
 <p><strong>Parameters:</strong>
-- <code>count</code> (default: 0) - Number of characters to return (negative counts from right)</p>
+- <code>count</code> (default: 0) - Number of Unicode characters to return (negative counts from right)</p>
+<p><strong>Unicode Support:</strong> This function now properly handles Unicode characters, emoji, and complex grapheme clusters by counting characters rather than bytes.</p>
 <h3 id="rightcount"><code>.right(count)</code></h3>
-<p>Returns the rightmost characters of a string.</p>
+<p>Returns the rightmost characters of a string. <strong>Unicode-aware</strong>: Counts Unicode characters (grapheme clusters), not bytes.</p>
 <div class="highlight"><pre><span></span><code>&quot;Hello, World!&quot;.right(5);  /* Returns: &quot;orld!&quot; */
-&quot;Hello, World!&quot;.right(-3); /* Returns: &quot;lo, World!&quot; */
+&quot;héllo&quot;.right(3);         /* Returns: &quot;llo&quot; (3 Unicode characters) */
+&quot;🚀héllo&quot;.right(3);       /* Returns: &quot;llo&quot; (3 Unicode characters) */
+&quot;👨‍👩‍👧‍👦&quot;.right(2);      /* Returns: &quot;👧‍👦&quot; (2 Unicode characters) */
 </code></pre></div>
 <p><strong>Parameters:</strong>
-- <code>count</code> (default: 0) - Number of characters to return (negative counts from left)</p>
+- <code>count</code> (default: 0) - Number of Unicode characters to return (negative counts from left)</p>
+<p><strong>Unicode Support:</strong> This function now properly handles Unicode characters, emoji, and complex grapheme clusters by counting characters rather than bytes.</p>
 <h3 id="midstart-count"><code>.mid(start, count)</code></h3>
-<p>Returns a substring starting at the specified position.</p>
+<p>Returns a substring starting at the specified position. <strong>Unicode-aware</strong>: Counts Unicode characters (grapheme clusters), not bytes.</p>
 <div class="highlight"><pre><span></span><code>&quot;Hello, World!&quot;.mid(2, 5); /* Returns: &quot;llo, &quot; */
-&quot;Hello, World!&quot;.mid(0, 3); /* Returns: &quot;Hel&quot; */
+&quot;héllo&quot;.mid(1, 3);        /* Returns: &quot;éll&quot; (3 Unicode characters from position 1) */
+&quot;🚀héllo&quot;.mid(1, 3);      /* Returns: &quot;hél&quot; (3 Unicode characters from position 1) */
+&quot;👨‍👩‍👧‍👦&quot;.mid(1, 2);     /* Returns: &quot;👩‍👧‍&quot; (2 Unicode characters from position 1) */
 </code></pre></div>
 <p><strong>Parameters:</strong>
-- <code>start</code> (default: 0) - Starting position
-- <code>count</code> (default: 0) - Number of characters to return</p>
+- <code>start</code> (default: 0) - Starting position (Unicode character position)
+- <code>count</code> (default: 0) - Number of Unicode characters to return</p>
+<p><strong>Unicode Support:</strong> This function now properly handles Unicode characters, emoji, and complex grapheme clusters by counting characters rather than bytes.</p>
 <h3 id="midtrimitems-offset-size"><code>.midtrim(items, offset, size)</code></h3>
 <p>Trims and extracts a portion of the object based on items, offset, and size.</p>
 <div class="highlight"><pre><span></span><code>&quot;Hello, World!&quot;.midtrim([1,2,3], 2, 3); /* Returns: {} */
@@ -5712,26 +5996,38 @@ obj.setconst(&quot;new value&quot;); /* Sets object to constant string */
 - <code>count</code> - Number of positions to rotate (default: 1)</p>
 <p><strong>Data Types:</strong> <code>$ARRAY</code>, <code>$LIST</code>, <code>$TUPLE</code>, <code>$XML</code></p>
 <h3 id="lpadwidth-char"><code>.lpad(width, char)</code></h3>
-<p>Pads the string on the left to the specified width.</p>
+<p>Pads the string on the left to the specified width. <strong>Unicode-aware</strong>: Counts Unicode characters (grapheme clusters), not bytes.</p>
 <div class="highlight"><pre><span></span><code>&quot;Hello&quot;.lpad(20, &quot;*&quot;); /* Returns: &quot;***************Hello&quot; */
 &quot;Hello&quot;.lpad(15, &quot; &quot;); /* Returns: &quot;          Hello&quot; */
+&quot;héllo&quot;.lpad(10, &quot; &quot;); /* Returns: &quot;     héllo&quot; (5 Unicode characters) */
+&quot;héllo&quot;.lpad(10, &quot;é&quot;); /* Returns: &quot;éééééhéllo&quot; (5 Unicode characters) */
+&quot;🚀héllo&quot;.lpad(10, &quot;🚀&quot;); /* Returns: &quot;🚀🚀🚀🚀🚀héllo&quot; (5 Unicode characters) */
 </code></pre></div>
 <p><strong>Parameters:</strong>
-- <code>width</code> - Target width
-- <code>char</code> - Character to use for padding</p>
+- <code>width</code> - Target width in Unicode characters
+- <code>char</code> - Character to use for padding (default: space)</p>
+<p><strong>Unicode Support:</strong> This function now properly handles Unicode characters, emoji, and complex grapheme clusters by counting characters rather than bytes.</p>
 <h3 id="rpadwidth-char"><code>.rpad(width, char)</code></h3>
-<p>Pads the string on the right to the specified width.</p>
+<p>Pads the string on the right to the specified width. <strong>Unicode-aware</strong>: Counts Unicode characters (grapheme clusters), not bytes.</p>
 <div class="highlight"><pre><span></span><code>&quot;Hello&quot;.rpad(20, &quot;*&quot;); /* Returns: &quot;Hello***************&quot; */
 &quot;Hello&quot;.rpad(15, &quot; &quot;); /* Returns: &quot;Hello          &quot; */
+&quot;héllo&quot;.rpad(10, &quot; &quot;); /* Returns: &quot;héllo     &quot; (5 Unicode characters) */
+&quot;héllo&quot;.rpad(10, &quot;é&quot;); /* Returns: &quot;hélloééééé&quot; (5 Unicode characters) */
+&quot;🚀héllo&quot;.rpad(10, &quot;🚀&quot;); /* Returns: &quot;héllo🚀🚀🚀🚀🚀&quot; (5 Unicode characters) */
 </code></pre></div>
 <p><strong>Parameters:</strong>
-- <code>width</code> - Target width
-- <code>char</code> - Character to use for padding</p>
+- <code>width</code> - Target width in Unicode characters
+- <code>char</code> - Character to use for padding (default: space)</p>
+<p><strong>Unicode Support:</strong> This function now properly handles Unicode characters, emoji, and complex grapheme clusters by counting characters rather than bytes.</p>
 <h3 id="reverse"><code>.reverse()</code></h3>
-<p>Reverses the order of elements in an array or characters in a string.</p>
+<p>Reverses the order of elements in an array or characters in a string. <strong>Unicode-aware</strong>: For strings, reverses Unicode characters (grapheme clusters), not bytes.</p>
 <div class="highlight"><pre><span></span><code>[1,2,3,4,5].reverse(); /* Returns: [5,4,3,2,1] */
 &quot;Hello&quot;.reverse();     /* Returns: &quot;olleH&quot; */
+&quot;héllo&quot;.reverse();     /* Returns: &quot;olléh&quot; (Unicode characters reversed) */
+&quot;🚀héllo&quot;.reverse();   /* Returns: &quot;olléh🚀&quot; (emoji and Unicode characters reversed) */
+&quot;👨‍👩‍👧‍👦&quot;.reverse();  /* Returns: &quot;👦👧‍👩‍👨‍&quot; (complex emoji sequences reversed) */
 </code></pre></div>
+<p><strong>Unicode Support:</strong> For strings, this function now properly handles Unicode characters, emoji, and complex grapheme clusters by reversing characters rather than bytes.</p>
 <h3 id="replaceold-new"><code>.replace(old, new)</code></h3>
 <p>Replaces occurrences of old text with new text.</p>
 <div class="highlight"><pre><span></span><code>&quot;Hello, World!&quot;.replace(&quot;World&quot;, &quot;Grapa&quot;); /* Returns: &quot;Hello, Grapa!&quot; */
@@ -6039,15 +6335,68 @@ key = obj.secret(&quot;EC&quot;);    /* Returns Elliptic Curve key */
 - <code>data</code> - Data to write</p>
 <hr />
 <h2 id="utility-methods">Utility Methods</h2>
-<h3 id="execcallback-set-get"><code>.exec(callback, set, get)</code></h3>
-<p>Executes a command or script.</p>
-<div class="highlight"><pre><span></span><code>&quot;command&quot;.exec();                    /* Returns: {&quot;error&quot;:-1} or result */
-&quot;echo &#39;test&#39;&quot;.exec();                /* Returns: &quot;test&quot; */
+<h3 id="exec"><code>.exec()</code></h3>
+<p>Executes a string as Grapa code, parsing and evaluating it as if it were typed directly in the console. This is functionally equivalent to <code>op()(script)()</code>.</p>
+<div class="highlight"><pre><span></span><code>/* Basic number parsing */
+&quot;5&quot;.exec();                          /* Returns: 5 */
+&quot;5.5&quot;.exec();                        /* Returns: 5.5 */
+
+/* Hex and binary literal parsing */
+&quot;0x12&quot;.exec();                       /* Returns: 18 */
+&quot;0x5.f&quot;.exec();                      /* Returns: 5.9375 */
+&quot;0b101&quot;.exec();                      /* Returns: 5 */
+&quot;0b101.011&quot;.exec();                  /* Returns: 5.375 */
+
+/* Mathematical expressions */
+&quot;5 + 3&quot;.exec();                      /* Returns: 8 */
+&quot;2 * 4&quot;.exec();                      /* Returns: 8 */
+&quot;10 / 2&quot;.exec();                     /* Returns: 5 */
+&quot;2 ^ 3&quot;.exec();                      /* Returns: 8 */
+
+/* Variable assignment and usage */
+&quot;x = 5&quot;.exec();                      /* Assigns x = 5 */
+&quot;x&quot;.exec();                          /* Returns: 5 */
+&quot;y = x + 3&quot;.exec();                  /* Assigns y = 8 */
+
+/* Function calls */
+&quot;op(x){x*2}(5)&quot;.exec();              /* Returns: 10 */
+&quot;op(x,y){x+y}(3,4)&quot;.exec();          /* Returns: 7 */
+
+/* Data structures */
+&quot;[1,2,3]&quot;.exec();                    /* Returns: [1,2,3] */
+&quot;{a:1,b:2}&quot;.exec();                  /* Returns: {&quot;a&quot;:1,&quot;b&quot;:2} */
+&quot;[1,2,3].len()&quot;.exec();              /* Returns: 3 */
+
+/* Error handling */
+&quot;invalid syntax&quot;.exec();              /* Returns: {&quot;error&quot;:-1} */
+&quot;5 +&quot;.exec();                        /* Returns: [5,{&quot;match&quot;:&quot;+&quot;,&quot;fail&quot;:&quot;&quot;}] */
+
+/* Comparison with op()() */
+script = &quot;5 + 3&quot;;
+script.exec();                        /* Returns: 8 */
+op()(script)();                       /* Returns: 8 (equivalent) */
 </code></pre></div>
-<p><strong>Parameters:</strong>
-- <code>callback</code> (default: null) - Callback function
-- <code>set</code> (default: null) - Set function
-- <code>get</code> (default: null) - Get function</p>
+<p><strong>Relationship to <code>op()()</code>:</strong>
+- <code>script.exec()</code> is functionally equivalent to <code>op()(script)()</code>
+- Both use the same underlying Grapa parser and execution engine
+- Both support the same syntax including hex/binary literals, expressions, functions, etc.
+- <code>.exec()</code> is a more convenient syntax for the same functionality</p>
+<p><strong>Key Features:</strong>
+- <strong>Full Grapa Parser</strong>: Parses any valid Grapa syntax including literals, expressions, functions, and data structures
+- <strong>Hex/Binary Support</strong>: Automatically recognizes and parses hex (<code>0x</code>) and binary (<code>0b</code>) literals
+- <strong>Variable Scope</strong>: Executes in the current namespace, allowing variable assignment and retrieval
+- <strong>Error Handling</strong>: Returns structured error information for invalid syntax
+- <strong>Expression Evaluation</strong>: Supports complex mathematical and logical expressions
+- <strong>Function Execution</strong>: Can execute function definitions and calls
+- <strong>Data Structure Creation</strong>: Parses arrays, objects, and their method calls
+- <strong>Customizable Execution</strong>: Optional callback, set, and get functions for custom behavior</p>
+<p><strong>Use Cases:</strong>
+- <strong>String-to-Number Conversion</strong>: Parse hex/binary strings to numbers
+- <strong>Dynamic Code Execution</strong>: Execute code stored in strings
+- <strong>Configuration Parsing</strong>: Parse configuration strings as Grapa expressions
+- <strong>User Input Processing</strong>: Safely execute user-provided expressions
+- <strong>Template Evaluation</strong>: Evaluate expressions embedded in strings
+- <strong>Custom Execution Context</strong>: Use callback/set/get for specialized execution environments</p>
 <h3 id="getnameindex"><code>.getname(index)</code></h3>
 <p>Gets the name of an object property.</p>
 <div class="highlight"><pre><span></span><code>obj.getname();       /* Returns: property name */
@@ -6055,6 +6404,18 @@ obj.getname(1);      /* Returns: property name at index 1 */
 </code></pre></div>
 <p><strong>Parameters:</strong>
 - <code>index</code> (default: null) - Index of the property</p>
+<p><strong>Advanced Usage - Recursive Keys Function:</strong>
+<div class="highlight"><pre><span></span><code>/* Create a recursive .keys() function using .getname() */
+keys = op(lst){lst.reduce(op(acc,x){if(x.type()==$LIST){acc += keys(x);}else{acc += &#39;x&#39;.getname();}},[]);};
+
+/* Usage examples */
+obj = {name:&quot;Alice&quot;, age:30, test:{a:1,b:2}, city:&quot;NYC&quot;};
+keys(obj);  /* Returns: [name,age,[a,b],city] */
+
+nested = {level1:{level2:{level3:&quot;value&quot;}}};
+keys(nested);  /* Returns: [level1,[level2,[level3]]] */
+</code></pre></div></p>
+<p>This demonstrates how <code>.getname()</code> can be used with <code>.reduce()</code> to create powerful object introspection utilities.</p>
 <h3 id="iferrerror"><code>.iferr(error)</code></h3>
 <p>Provides error fallback for operations.</p>
 <div class="highlight"><pre><span></span><code>obj.iferr(&quot;error occurred&quot;); /* Returns: &quot;error occurred&quot; if operation fails */

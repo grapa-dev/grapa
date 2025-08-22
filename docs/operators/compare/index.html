@@ -2662,6 +2662,52 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../machine_learning/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Machine Learning
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../vector_performance_guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Vector Performance Guide
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -3732,6 +3778,51 @@
 <p>Bitwise not.</p>
 <div class="highlight"><pre><span></span><code>(~0x6C).hex() -&gt; FFFFFF93
 </code></pre></div>
+<h1 id="data-structure-comparisons">Data Structure Comparisons</h1>
+<h2 id="arrays">Arrays (<code>[]</code>)</h2>
+<p>Arrays are compared element-by-element in order. Length is compared first, then elements.</p>
+<div class="highlight"><pre><span></span><code>[1,2,3] == [1,2,3]    // true
+[1,2] == [1,2,3]      // false (different lengths)
+[1,2,3] == [3,2,1]    // false (different order)
+[1,2,3] == [1,2,4]    // false (different values)
+[] == []               // true (empty arrays)
+[] == [1]              // false
+</code></pre></div>
+<h2 id="lists">Lists (<code>{}</code>)</h2>
+<p>Lists are compared element-by-element in order. For key-value pairs, keys are compared first, then values.</p>
+<div class="highlight"><pre><span></span><code>{1,2,3} == {1,2,3}    // true
+{1,2} == {1,2,3}      // false (different lengths)
+{1,2,3} == {3,2,1}    // false (different order)
+{a:1, b:2} == {a:1, b:2}        // true
+{a:1, b:2} == {b:2, a:1}        // false (order matters)
+{a:1, b:2} == {a:1, b:3}        // false (different values)
+{} == {}               // true (empty lists)
+{} == {1}              // false
+</code></pre></div>
+<h2 id="vectors">Vectors (<code>#[ ]#</code>)</h2>
+<p>Vectors are compared using their internal structure. Currently supports basic comparison.</p>
+<div class="highlight"><pre><span></span><code>#[1,2,3]# == #[1,2,3]#    // true
+#[1,2]# == #[1,2,3]#      // false (different lengths)
+#[1,2,3]# == #[3,2,1]#    // false (different order)
+</code></pre></div>
+<h2 id="xml-structures">XML Structures</h2>
+<p>XML structures are compared recursively, element-by-element.</p>
+<div class="highlight"><pre><span></span><code>xml1 = &lt;root&gt;&lt;item&gt;1&lt;/item&gt;&lt;item&gt;2&lt;/item&gt;&lt;/root&gt;;
+xml2 = &lt;root&gt;&lt;item&gt;1&lt;/item&gt;&lt;item&gt;2&lt;/item&gt;&lt;/root&gt;;
+xml1 == xml2    // true
+</code></pre></div>
+<h2 id="mixed-type-comparisons">Mixed Type Comparisons</h2>
+<p>Different data structure types are never equal:</p>
+<div class="highlight"><pre><span></span><code>[1,2,3] == {1,2,3}      // false (array vs list)
+[1,2,3] == #[1,2,3]#    // false (array vs vector)
+{1,2,3} == #[1,2,3]#    // false (list vs vector)
+</code></pre></div>
+<h2 id="nested-structures">Nested Structures</h2>
+<p>Nested data structures are compared recursively:</p>
+<div class="highlight"><pre><span></span><code>[[1,2],[3,4]] == [[1,2],[3,4]]    // true
+[[1,2],[3,4]] == [[1,2],[3,5]]    // false
+{a:[1,2], b:{x:1}} == {a:[1,2], b:{x:1}}    // true
+</code></pre></div>
 <h1 id="type-handling">Type Handling</h1>
 <p>All comparison operators now support mixed type comparisons with intelligent type conversion:</p>
 <ul>
@@ -3740,6 +3831,7 @@
 <li><strong>Float vs String</strong>: Uses adaptive tolerance for numeric strings</li>
 <li><strong>Bool comparisons</strong>: Handled with proper truthiness logic</li>
 <li><strong>Null comparisons</strong>: Properly handled for equality and ordering</li>
+<li><strong>PTR types</strong>: Properly dereferenced for comparison</li>
 </ul>
 <p><strong>Examples</strong>:
 <div class="highlight"><pre><span></span><code>5 == &quot;5&quot;      // true (numeric conversion)

@@ -1,0 +1,92 @@
+/* Simple Vector Performance Benchmark
+ * 
+ * Focused benchmark for key vector operations with clear output
+ */
+
+("=== Simple Vector Performance Benchmark ===").echo();
+
+/* Helper function to create test matrix */
+create_matrix = op(size) {
+    matrix = [];
+    i = 0;
+    while (i < size) {
+        row = [];
+        j = 0;
+        while (j < size) {
+            row += (i * size + j + 1);
+            j = j + 1;
+        }
+        matrix += row;
+        i = i + 1;
+    }
+    matrix.vector();
+};
+
+/* Test matrix sizes */
+sizes = [2, 5, 10, 20, 50];
+
+("Testing Matrix Multiplication:").echo();
+sizes.each(op(size) {
+    ("  Creating " + size + "x" + size + " matrices...").echo();
+    
+    start_time = $TIME().utc();
+    mat1 = create_matrix(size);
+    mat2 = create_matrix(size);
+    creation_time = (($TIME().utc() - start_time) / 1000000).int();
+    
+    ("  Multiplying " + size + "x" + size + " matrices...").echo();
+    start_time = $TIME().utc();
+    result = mat1.dot(mat2);
+    mult_time = (($TIME().utc() - start_time) / 1000000).int();
+    
+    ("  " + size + "x" + size + ": Creation=" + creation_time + "ms, Multiplication=" + mult_time + "ms").echo();
+});
+
+("\nTesting Statistical Functions:").echo();
+sizes.each(op(size) {
+    ("  Testing " + size + "x" + size + " matrix...").echo();
+    
+    matrix = create_matrix(size);
+    
+    start_time = $TIME().utc();
+    cov_result = matrix.cov();
+    cov_time = (($TIME().utc() - start_time) / 1000000).int();
+    
+    start_time = $TIME().utc();
+    det_result = matrix.det();
+    det_time = (($TIME().utc() - start_time) / 1000000).int();
+    
+    ("  " + size + "x" + size + ": Covariance=" + cov_time + "ms, Determinant=" + det_time + "ms").echo();
+});
+
+("\nTesting Basic Operations:").echo();
+test_size = 20;
+("  Testing basic operations on " + test_size + "x" + test_size + " matrix...").echo();
+
+matrix = create_matrix(test_size);
+
+operations = {
+    "transpose": op() { matrix.t(); },
+    "inverse": op() { matrix.inv(); },
+    "rank": op() { matrix.rank(); },
+    "sum": op() { matrix.sum(); },
+    "mean": op() { matrix.mean(); }
+};
+
+operations.keys().each(op(key) {
+    start_time = $TIME().utc();
+    operations.get(key)();
+    time = (($TIME().utc() - start_time) / 1000000).int();
+    ("    " + key + ": " + time + "ms").echo();
+});
+
+("\nMemory Usage Estimation:").echo();
+memory_sizes = [10, 50, 100];
+memory_sizes.each(op(size) {
+    matrix = create_matrix(size);
+    elements = matrix.shape().reduce(op(acc, dim){acc * dim}, 1);
+    estimated_mb = (elements * 8 / (1024 * 1024)).float();
+    ("  " + size + "x" + size + " matrix: ~" + estimated_mb.str() + "MB estimated").echo();
+});
+
+("\n=== Benchmark Complete ===").echo();

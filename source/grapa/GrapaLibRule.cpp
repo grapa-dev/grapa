@@ -15874,10 +15874,28 @@ GrapaRuleEvent* GrapaLibraryRuleLenEvent::Run(GrapaScriptExec *vScriptExec, Grap
 		break;
 		case GrapaTokenType::STR:
 		case GrapaTokenType::SYSSTR:
+		case GrapaTokenType::ID:
+		{
+			// For strings, count Unicode characters (grapheme clusters) instead of bytes
+			std::string input_str(reinterpret_cast<const char*>(r1.vVal->mValue.mBytes), r1.vVal->mValue.mLength);
+			
+			// Count grapheme clusters (Unicode characters)
+			size_t char_count = 0;
+			size_t offset = 0;
+			while (offset < input_str.size()) {
+				std::string cluster = extract_grapheme_cluster(input_str, offset);
+				if (cluster.empty()) break;
+				char_count++;
+				offset += cluster.size();
+			}
+			
+			a = char_count;
+			result = new GrapaRuleEvent(0, item, a.getBytes());
+		}
+		break;
 		case GrapaTokenType::TABLE:
 		case GrapaTokenType::RAW:
 		case GrapaTokenType::BOOL:
-		case GrapaTokenType::ID:
 		case GrapaTokenType::SYSID:
 		case GrapaTokenType::SYM:
 			a = r1.vVal->mValue.mLength;
@@ -16980,15 +16998,30 @@ GrapaRuleEvent* GrapaLibraryRuleLeftEvent::Run(GrapaScriptExec *vScriptExec, Gra
 		{
 		case GrapaTokenType::RAW:
 		case GrapaTokenType::STR:
+		{
 			result = new GrapaRuleEvent(r1.vVal->mValue.mToken, 0, "", "");
 			if (r1.vVal->mValue.mLength)
 			{
-				if (len < 0) len = r1.vVal->mValue.mLength + len;
-				if (len < 0) len = 0;
-				if (len > (s64)r1.vVal->mValue.mLength) len = r1.vVal->mValue.mLength;
-				result->mValue.FROM((char*)r1.vVal->mValue.mBytes, len);
+				// For strings, use Unicode character counting instead of byte counting
+				std::string input_str(reinterpret_cast<const char*>(r1.vVal->mValue.mBytes), r1.vVal->mValue.mLength);
+				
+				// Count grapheme clusters to target position
+				size_t target_chars = (len < 0) ? 0 : static_cast<size_t>(len);
+				size_t char_count = 0;
+				size_t offset = 0;
+				
+				while (offset < input_str.size() && char_count < target_chars) {
+					std::string cluster = extract_grapheme_cluster(input_str, offset);
+					if (cluster.empty()) break;
+					char_count++;
+					offset += cluster.size();
+				}
+				
+				// Extract substring from byte offset
+				result->mValue.FROM((char*)r1.vVal->mValue.mBytes, offset);
 			}
-			break;
+		}
+		break;
 		case GrapaTokenType::LIST:
 		case GrapaTokenType::ERR:
 		case GrapaTokenType::XML:
@@ -17056,15 +17089,43 @@ GrapaRuleEvent* GrapaLibraryRuleRightEvent::Run(GrapaScriptExec *vScriptExec, Gr
 		{
 		case GrapaTokenType::STR:
 		case GrapaTokenType::RAW:
+		{
 			result = new GrapaRuleEvent(r1.vVal->mValue.mToken, 0, "", "");
 			if (r1.vVal->mValue.mLength)
 			{
-				if (len < 0) len = r1.vVal->mValue.mLength + len;
-				if (len < 0) len = 0;
-				if (len > (s64)r1.vVal->mValue.mLength) len = r1.vVal->mValue.mLength;
-				result->mValue.FROM((char*)&r1.vVal->mValue.mBytes[r1.vVal->mValue.mLength - len], len);
+				// For strings, use Unicode character counting instead of byte counting
+				std::string input_str(reinterpret_cast<const char*>(r1.vVal->mValue.mBytes), r1.vVal->mValue.mLength);
+				
+				// Count total grapheme clusters
+				std::vector<std::string> clusters;
+				size_t offset = 0;
+				while (offset < input_str.size()) {
+					std::string cluster = extract_grapheme_cluster(input_str, offset);
+					if (cluster.empty()) break;
+					clusters.push_back(cluster);
+					offset += cluster.size();
+				}
+				
+				// Calculate target characters from the end
+				size_t total_chars = clusters.size();
+				size_t target_chars = (len < 0) ? 0 : static_cast<size_t>(len);
+				if (target_chars > total_chars) target_chars = total_chars;
+				
+				// Calculate start position from the end
+				size_t start_char = total_chars - target_chars;
+				
+				// Find byte offset for start position
+				size_t byte_offset = 0;
+				for (size_t i = 0; i < start_char && i < clusters.size(); i++) {
+					byte_offset += clusters[i].size();
+				}
+				
+				// Extract substring from byte offset to end
+				size_t remaining_bytes = r1.vVal->mValue.mLength - byte_offset;
+				result->mValue.FROM((char*)&r1.vVal->mValue.mBytes[byte_offset], remaining_bytes);
 			}
-			break;
+		}
+		break;
 		case GrapaTokenType::LIST:
 		case GrapaTokenType::ERR:
 		case GrapaTokenType::XML:
@@ -17141,24 +17202,55 @@ GrapaRuleEvent* GrapaLibraryRuleMidEvent::Run(GrapaScriptExec *vScriptExec, Grap
 		{
 		case GrapaTokenType::STR:
 		case GrapaTokenType::RAW:
+		{
 			result = new GrapaRuleEvent(r1.vVal->mValue.mToken, 0, "", "");
 			if (r1.vVal->mValue.mLength)
 			{
-				if (pos < 0) pos = r1.vVal->mValue.mLength + pos;
-				if (pos < 0) pos = 0;
-				if (pos > (s64)r1.vVal->mValue.mLength) pos = r1.vVal->mValue.mLength;
-				if ((pos + len) > (s64)r1.vVal->mValue.mLength)
-				{
-					len = r1.vVal->mValue.mLength - pos;
+				// For strings, use Unicode character counting instead of byte counting
+				std::string input_str(reinterpret_cast<const char*>(r1.vVal->mValue.mBytes), r1.vVal->mValue.mLength);
+				
+				// Count total grapheme clusters
+				std::vector<std::string> clusters;
+				size_t offset = 0;
+				while (offset < input_str.size()) {
+					std::string cluster = extract_grapheme_cluster(input_str, offset);
+					if (cluster.empty()) break;
+					clusters.push_back(cluster);
+					offset += cluster.size();
 				}
-				else
-				{
-					if (len < 0) len = (r1.vVal->mValue.mLength-pos) + len;
-					if (len < 0) len = 0;
+				
+				size_t total_chars = clusters.size();
+				
+				// Handle negative position (from end)
+				size_t char_pos = (pos < 0) ? (total_chars + pos) : static_cast<size_t>(pos);
+				if (char_pos < 0) char_pos = 0;
+				if (char_pos > total_chars) char_pos = total_chars;
+				
+				// Handle length
+				size_t char_len = (len < 0) ? (total_chars - char_pos + len) : static_cast<size_t>(len);
+				if (char_len < 0) char_len = 0;
+				if ((char_pos + char_len) > total_chars) {
+					char_len = total_chars - char_pos;
 				}
-				result->mValue.FROM((char*)&r1.vVal->mValue.mBytes[pos], len);
+				
+				// Find byte offset for start position
+				size_t start_byte_offset = 0;
+				for (size_t i = 0; i < char_pos && i < clusters.size(); i++) {
+					start_byte_offset += clusters[i].size();
+				}
+				
+				// Find byte offset for end position
+				size_t end_byte_offset = start_byte_offset;
+				for (size_t i = char_pos; i < (char_pos + char_len) && i < clusters.size(); i++) {
+					end_byte_offset += clusters[i].size();
+				}
+				
+				// Extract substring
+				size_t extract_bytes = end_byte_offset - start_byte_offset;
+				result->mValue.FROM((char*)&r1.vVal->mValue.mBytes[start_byte_offset], extract_bytes);
 			}
-			break;
+		}
+		break;
 		case GrapaTokenType::ARRAY:
 		case GrapaTokenType::TUPLE:
 		case GrapaTokenType::VECTOR:
@@ -17506,19 +17598,41 @@ GrapaRuleEvent* GrapaLibraryRuleRPadEvent::Run(GrapaScriptExec* vScriptExec, Gra
 		{
 		case GrapaTokenType::STR:
 		case GrapaTokenType::RAW:
-			if (n < r1.vVal->mValue.mLength) {
-				result = new GrapaRuleEvent(r1.vVal->mValue.mToken, 0, "", "");
-				result->mValue.FROM((char*)r1.vVal->mValue.mBytes,n);
+		{
+			// For strings, use Unicode character counting instead of byte counting
+			std::string input_str(reinterpret_cast<const char*>(r1.vVal->mValue.mBytes), r1.vVal->mValue.mLength);
+			
+			// Count Unicode characters (grapheme clusters)
+			size_t char_count = 0;
+			size_t offset = 0;
+			while (offset < input_str.size()) {
+				std::string cluster = extract_grapheme_cluster(input_str, offset);
+				if (cluster.empty()) break;
+				char_count++;
+				offset += cluster.size();
 			}
-			else {
+			
+			size_t target_chars = static_cast<size_t>(n);
+			
+			if (target_chars <= char_count) {
+				// If target is less than or equal to current length, truncate
 				result = new GrapaRuleEvent(r1.vVal->mValue.mToken, 0, "", "");
-				GrapaCHAR add(pad);
-				while ((r1.vVal->mValue.mLength + add.mLength) < n) add.Append(pad);
-				add.SetLength(n- r1.vVal->mValue.mLength);
+				result->mValue.FROM((char*)r1.vVal->mValue.mBytes, r1.vVal->mValue.mLength);
+			} else {
+				// Pad to target character count
+				result = new GrapaRuleEvent(r1.vVal->mValue.mToken, 0, "", "");
 				result->mValue.FROM(r1.vVal->mValue);
-				result->mValue.GrapaCHAR::Append(add);
+				
+				// Calculate how many padding characters we need
+				size_t padding_needed = target_chars - char_count;
+				
+				// Add padding characters
+				for (size_t i = 0; i < padding_needed; i++) {
+					result->mValue.GrapaCHAR::Append(pad);
+				}
 			}
-			break;
+		}
+		break;
 		default:
 			break;
 		}
@@ -17563,19 +17677,43 @@ GrapaRuleEvent* GrapaLibraryRuleLPadEvent::Run(GrapaScriptExec* vScriptExec, Gra
 		{
 		case GrapaTokenType::STR:
 		case GrapaTokenType::RAW:
-			if (n < r1.vVal->mValue.mLength) {
+		{
+			// For strings, use Unicode character counting instead of byte counting
+			std::string input_str(reinterpret_cast<const char*>(r1.vVal->mValue.mBytes), r1.vVal->mValue.mLength);
+			
+			// Count Unicode characters (grapheme clusters)
+			size_t char_count = 0;
+			size_t offset = 0;
+			while (offset < input_str.size()) {
+				std::string cluster = extract_grapheme_cluster(input_str, offset);
+				if (cluster.empty()) break;
+				char_count++;
+				offset += cluster.size();
+			}
+			
+			size_t target_chars = static_cast<size_t>(n);
+			
+			if (target_chars <= char_count) {
+				// If target is less than or equal to current length, truncate from right
 				result = new GrapaRuleEvent(r1.vVal->mValue.mToken, 0, "", "");
 				result->mValue.FROM((char*)&r1.vVal->mValue.mBytes[r1.vVal->mValue.mLength -n], n);
-			}
-			else {
+			} else {
+				// Pad to target character count
 				result = new GrapaRuleEvent(r1.vVal->mValue.mToken, 0, "", "");
-				GrapaCHAR add(pad);
-				while ((r1.vVal->mValue.mLength + add.mLength) < n) add.Append(pad);
-				add.SetLength(n - r1.vVal->mValue.mLength);
-				result->mValue.FROM(add);
+				
+				// Calculate how many padding characters we need
+				size_t padding_needed = target_chars - char_count;
+				
+				// Add padding characters first (left padding)
+				for (size_t i = 0; i < padding_needed; i++) {
+					result->mValue.GrapaCHAR::Append(pad);
+				}
+				
+				// Then add the original string
 				result->mValue.GrapaCHAR::Append(r1.vVal->mValue);
 			}
-			break;
+		}
+		break;
 		default:
 			break;
 		}
@@ -17597,13 +17735,40 @@ GrapaRuleEvent* GrapaLibraryRuleReverseEvent::Run(GrapaScriptExec *vScriptExec, 
 		case GrapaTokenType::INT:
 		case GrapaTokenType::STR:
 		case GrapaTokenType::RAW:
+		{
 			result = new GrapaRuleEvent(r1.vVal->mValue.mToken, 0, "", "");
-			result->mValue.SetLength(r1.vVal->mValue.mLength);
-			for (u64 i = 0; i < r1.vVal->mValue.mLength; i++)
-			{
-				result->mValue.mBytes[i] = r1.vVal->mValue.mBytes[r1.vVal->mValue.mLength - i - 1];
+			
+			// For strings, reverse grapheme clusters instead of bytes
+			if (r1.vVal->mValue.mToken == GrapaTokenType::STR || r1.vVal->mValue.mToken == GrapaTokenType::RAW) {
+				std::string input_str(reinterpret_cast<const char*>(r1.vVal->mValue.mBytes), r1.vVal->mValue.mLength);
+				
+				// Extract all grapheme clusters
+				std::vector<std::string> clusters;
+				size_t offset = 0;
+				while (offset < input_str.size()) {
+					std::string cluster = extract_grapheme_cluster(input_str, offset);
+					if (cluster.empty()) break;
+					clusters.push_back(cluster);
+					offset += cluster.size();
+				}
+				
+				// Reverse clusters and concatenate
+				std::string reversed;
+				for (auto it = clusters.rbegin(); it != clusters.rend(); ++it) {
+					reversed += *it;
+				}
+				
+				result->mValue.FROM(reversed.c_str(), reversed.length());
+			} else {
+				// For integers, use byte reversal
+				result->mValue.SetLength(r1.vVal->mValue.mLength);
+				for (u64 i = 0; i < r1.vVal->mValue.mLength; i++)
+				{
+					result->mValue.mBytes[i] = r1.vVal->mValue.mBytes[r1.vVal->mValue.mLength - i - 1];
+				}
 			}
-			break;
+		}
+		break;
 		case GrapaTokenType::LIST:
 		case GrapaTokenType::ERR:
 		case GrapaTokenType::ARRAY:

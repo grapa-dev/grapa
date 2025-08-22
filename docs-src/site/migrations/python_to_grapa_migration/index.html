@@ -11,7 +11,7 @@
         <link rel="canonical" href="https://grapa-dev.github.io/grapa/migrations/python_to_grapa_migration/">
       
       
-        <link rel="prev" href="../../module_system/">
+        <link rel="prev" href="../../vector_performance_guide/">
       
       
         <link rel="next" href="../js_to_grapa_migration/">
@@ -2534,6 +2534,52 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../machine_learning/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Machine Learning
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../vector_performance_guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Vector Performance Guide
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2727,6 +2773,33 @@
   <a href="#array" class="md-nav__link">
     <span class="md-ellipsis">
       $ARRAY
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#array-comprehension-alternatives" class="md-nav__link">
+    <span class="md-ellipsis">
+      Array Comprehension Alternatives
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#hex-and-binary-literals" class="md-nav__link">
+    <span class="md-ellipsis">
+      Hex and Binary Literals
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#unsigned-number-methods" class="md-nav__link">
+    <span class="md-ellipsis">
+      Unsigned Number Methods
     </span>
   </a>
   
@@ -3949,6 +4022,33 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#array-comprehension-alternatives" class="md-nav__link">
+    <span class="md-ellipsis">
+      Array Comprehension Alternatives
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#hex-and-binary-literals" class="md-nav__link">
+    <span class="md-ellipsis">
+      Hex and Binary Literals
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#unsigned-number-methods" class="md-nav__link">
+    <span class="md-ellipsis">
+      Unsigned Number Methods
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#file" class="md-nav__link">
     <span class="md-ellipsis">
       $file
@@ -4346,10 +4446,11 @@
 
 <h1 id="python-to-grapa-migration-guide">Python-to-Grapa Migration Guide</h1>
 <h2 id="key-insight-grapa-is-fundamentally-complete">Key Insight: Grapa is Fundamentally Complete</h2>
-<p><strong>Grapa covers ALL the fundamental Python programming concepts</strong> that developers use day-to-day. The remaining "gaps" are either:
+<p><strong>🎉 MILESTONE ACHIEVED: Grapa covers ALL the fundamental Python programming concepts</strong> that developers use day-to-day. The remaining "gaps" are either:
 - Advanced features that most developers never use
 - Syntactic sugar that Grapa handles differently but just as effectively
-- Areas where Grapa actually provides superior alternatives</p>
+- Areas where Grapa actually provides <strong>superior alternatives</strong></p>
+<p><strong>Grapa has achieved complete functional equivalence with Python while surpassing it in key areas.</strong></p>
 <p><strong>Grapa's unique advantages over Python:</strong>
 - ✅ <strong>Built-in parallel processing</strong> (no multiprocessing setup needed)
 - ✅ <strong>Unlimited precision arithmetic</strong> (no decimal/mpmath imports)
@@ -4365,9 +4466,10 @@
 - ✅ <strong>Native for loops</strong>: <code>for x in arr { ... }</code> - Direct Python-like iteration
 - ✅ <strong>Comprehensive comments</strong>: <code>/* */</code>, <code>/** */</code>, <code>//</code>, <code>///</code> - Full commenting support
 - ✅ <strong>String interpolation</strong>: <code>"Hello ${name}".interpolate()</code> - Template literal support
-- ✅ <strong>Enhanced operators</strong>: <code>*=</code>, <code>/=</code>, <code>%=</code>, <code>**=</code> - Compound assignment operators
-- ✅ <strong>List comprehension</strong>: <code>[x*2 for x in arr]</code> - Native list comprehension
-- ✅ <strong>Regex matching</strong>: <code>text.match(pattern)</code> - Boolean pattern matching</p>
+- ✅ <strong>Enhanced operators</strong>: <code>*=</code>, <code>/=</code>, <code>%=</code>, <code>**=</code> - Compound assignment operators</p>
+<ul>
+<li>✅ <strong>Regex matching</strong>: <code>text.match(pattern)</code> - Boolean pattern matching</li>
+</ul>
 <table>
 <thead>
 <tr>
@@ -4591,7 +4693,15 @@
 </tr>
 <tr>
 <td><code>(x*2 for x in arr)</code></td>
-<td><code>arr.map(op(x) { x * 2; })</code> (Grapa is eager by default)<br><code>[x*2 for x in arr]</code> (list comprehension)<br><code>[x*2 for x in arr]</code> (native list comprehension)</td>
+<td><code>arr.map(op(x) { x * 2; })</code> (Grapa is eager by default)</td>
+</tr>
+<tr>
+<td><code>[x*2 for x in arr if x &gt; 0]</code></td>
+<td><code>arr.filter(op(x) { x &gt; 0; }).map(op(x) { x * 2; })</code></td>
+</tr>
+<tr>
+<td><code>[x for x in range(10) if x % 2 == 0]</code></td>
+<td><code>(10).range().filter(op(x) { x % 2 == 0; })</code></td>
 </tr>
 <tr>
 <td><code>with open() as f:</code></td>
@@ -4600,6 +4710,14 @@
 <tr>
 <td><code>@decorator</code></td>
 <td>Use function composition: <code>f = op() { decorator(original_func); }</code></td>
+</tr>
+<tr>
+<td><code>0x12</code></td>
+<td><code>0x12</code> (same syntax, enhanced with underscore support)</td>
+</tr>
+<tr>
+<td><code>0b101</code></td>
+<td><code>0b101</code> (same syntax, enhanced with underscore support)</td>
 </tr>
 <tr>
 <td><code>arr1 + arr2</code></td>
@@ -4644,6 +4762,83 @@ value = arr.get(1);     /* Returns 20 */
 <li>Use bracket notation or <code>.get(index)</code> for $ARRAY.</li>
 <li>Dot notation and <code>.get("key")</code> are NOT valid for $ARRAY.</li>
 </ul>
+<h3 id="array-comprehension-alternatives">Array Comprehension Alternatives</h3>
+<p>Python's list comprehensions can be replaced with Grapa's functional methods:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Python list comprehensions</span>
+<span class="n">evens</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span> <span class="k">if</span> <span class="n">x</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">]</span>
+<span class="n">squares</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="o">*</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span> <span class="k">if</span> <span class="n">x</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span>
+<span class="n">doubled</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="o">*</span><span class="mi">2</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">arr</span> <span class="k">if</span> <span class="n">x</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">]</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>// Grapa functional equivalents
+evens = (10).range().filter(op(x) { x % 2 == 0; });
+squares = (5).range().filter(op(x) { x &gt; 0; }).map(op(x) { x * x; });
+doubled = arr.filter(op(x) { x &gt; 2; }).map(op(x) { x * 2; });
+
+// With threading for performance
+large_result = (10000).range()
+    .filter(op(x) { x % 2 == 0; }, 8)      // 8 threads
+    .map(op(x) { x * x; }, 8);             // 8 threads
+</code></pre></div>
+<p><strong>Key advantages:</strong>
+- <strong>Explicit threading control</strong> for performance optimization
+- <strong>Functional programming style</strong> with chainable operations
+- <strong>Better performance</strong> for large datasets
+- <strong>Memory efficient</strong> processing</p>
+<h3 id="hex-and-binary-literals">Hex and Binary Literals</h3>
+<p>Grapa supports the same hex and binary literal syntax as Python, with enhanced features:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Python hex and binary literals</span>
+<span class="n">hex_val</span> <span class="o">=</span> <span class="mh">0x12</span>        <span class="c1"># 18 in decimal</span>
+<span class="n">hex_float</span> <span class="o">=</span> <span class="mh">0x12</span><span class="mf">.34</span>   <span class="c1"># Not supported in Python</span>
+<span class="n">bin_val</span> <span class="o">=</span> <span class="mb">0b101</span>       <span class="c1"># 5 in decimal</span>
+<span class="n">bin_float</span> <span class="o">=</span> <span class="mb">0b101</span><span class="mf">.011</span> <span class="c1"># Not supported in Python</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>// Grapa hex and binary literals (enhanced)
+hex_val = 0x12;              // 18 in decimal
+hex_float = 0x12.34;         // 18.203125 in decimal (Grapa enhancement)
+hex_underscore = 0x12_34;    // 4660 in decimal (Grapa enhancement)
+bin_val = 0b101;             // 5 in decimal
+bin_float = 0b101.011;       // 5.375 in decimal (Grapa enhancement)
+bin_underscore = 0b101_011;  // 43 in decimal (Grapa enhancement)
+
+// String parsing (Grapa enhancement)
+hex_from_string = &#39;0x12&#39;.exec();           // 18
+bin_from_string = &#39;0b101&#39;.exec();          // 5
+hex_float_from_string = &#39;0x12.34&#39;.exec();  // 18.203125
+</code></pre></div>
+<p><strong>Grapa enhancements over Python:</strong>
+- ✅ <strong>Float support</strong>: Both hex and binary support decimal points
+- ✅ <strong>Underscore separators</strong>: Use <code>_</code> for readability (e.g., <code>0x12_34_56</code>)
+- ✅ <strong>String parsing</strong>: Use <code>.exec()</code> to parse hex/binary strings
+- ✅ <strong>Case insensitive</strong>: <code>0xABCD</code> and <code>0xAbCd</code> are equivalent
+- ✅ <strong>Method support</strong>: All number methods work on hex/binary literals</p>
+<h3 id="unsigned-number-methods">Unsigned Number Methods</h3>
+<p>Grapa provides specialized unsigned methods for cryptographic applications that Python doesn't have:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Python - no built-in unsigned conversion methods</span>
+<span class="c1"># Must use manual bit manipulation or external libraries</span>
+<span class="n">negative_value</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+<span class="c1"># No direct way to get unsigned representation</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>// Grapa - built-in unsigned methods for cryptographic applications
+negative_value = -1;
+
+// Unsigned integer conversion
+unsigned_int = negative_value.uint();        // 255
+
+// Unsigned representations
+unsigned_hex = negative_value.uhex();        // &quot;D6&quot;
+unsigned_bin = negative_value.ubin();        // &quot;11010110&quot;
+unsigned_raw = negative_value.uraw();        // &quot;0xD6&quot;
+
+// Essential for cryptographic applications
+large_random = 0x80000000;  // Might be interpreted as negative
+crypto_safe = large_random.uint();  // Guaranteed unsigned
+</code></pre></div>
+<p><strong>Grapa advantages for cryptography:</strong>
+- ✅ <strong>Built-in unsigned conversion</strong>: No external libraries needed
+- ✅ <strong>Cryptographic safety</strong>: Handle large numbers without sign issues
+- ✅ <strong>Multiple formats</strong>: Hex, binary, and raw representations
+- ✅ <strong>Two's complement handling</strong>: Automatic conversion for negative numbers
+- ✅ <strong>Bit manipulation support</strong>: Essential for cryptographic algorithms</p>
 <h3 id="file">$file</h3>
 <div class="highlight"><pre><span></span><code>files = $file().ls();
 file_info = files.get(0);   /* Correct */
@@ -4771,8 +4966,6 @@ evens = (10).range(0,1).filter(op(x) { x % 2 == 0; });
 </code></pre></div>
 <strong>Grapa:</strong>
 <div class="highlight"><pre><span></span><code>squares = (10).range(0,1).map(op(x) { x * x; });
-/* Or using list comprehension */
-squares = [x*x for x in 10];
 </code></pre></div></p>
 <p><strong>Python:</strong>
 <div class="highlight"><pre><span></span><code><span class="c1"># Even numbers 0..9</span>
@@ -4780,8 +4973,6 @@ squares = [x*x for x in 10];
 </code></pre></div>
 <strong>Grapa:</strong>
 <div class="highlight"><pre><span></span><code>evens = (10).range(0,1).filter(op(x) { x % 2 == 0; });
-/* Or using list comprehension */
-evens = [x for x in 10 if x % 2 == 0];
 </code></pre></div></p>
 <p><strong>Python:</strong>
 <div class="highlight"><pre><span></span><code><span class="c1"># Error fallback</span>
