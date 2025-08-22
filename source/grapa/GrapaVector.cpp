@@ -228,7 +228,7 @@ static u64* _scanvectordepth(GrapaRuleEvent* value, u8 pos, u8& dim, u8 maxDim, 
 bool GrapaVector::_scanvectorcreate(GrapaRuleEvent* value, u8 pos, u8 dim, u64* counts, GrapaVectorItem* data, u8 block, u64& p, u8& maxblock)
 {
 	if (value == NULL || value->vQueue == NULL) return(false);
-	if ((value->mValue.mToken != GrapaTokenType::ARRAY && value->mValue.mToken != GrapaTokenType::TUPLE) && (pos != 1 || value->mValue.mToken != GrapaTokenType::LIST || value->mValue.mToken != GrapaTokenType::ERR)) return(false);
+	if ((value->mValue.mToken != GrapaTokenType::ARRAY && value->mValue.mToken != GrapaTokenType::TUPLE) && (pos != 1 || value->mValue.mToken != GrapaTokenType::LIST)) return(false);
 	bool hasLabels = (mLabels.mCount == 0 && pos == 1 && value->mValue.mToken == GrapaTokenType::LIST);
 	GrapaInt b;
 	u64 i = 0;
