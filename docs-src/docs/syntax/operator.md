@@ -19,7 +19,11 @@ The Type Support Matrix now includes several additional data types that extend G
 
 - **Support**: Most arithmetic operators (`+`, `-`, `*`, `/`, `**`, `*/`), assignment operators, and logical operators
 
+- **Function Application**: Operators can apply functions element-wise: `[1,2,3] * [op(x){x*2}]` → `[2,4,6]`
+
 - **Examples**: `[1,2,3] + [4,5,6]` (element-wise addition), `(1,2,3) * 2` (scalar multiplication)
+
+- **See Also**: [Array-Vector Interoperability](../advanced/array_vector_interoperability.md) for automatic conversions
 
 
 ### **RULE**

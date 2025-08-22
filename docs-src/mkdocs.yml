@@ -152,6 +152,7 @@ nav:
       - Advanced Topics: advanced_topics.md
       - Advanced Language Features: advanced_language_features.md
       - Advanced Concurrency and Callbacks: advanced_concurrency_and_callbacks.md
+      - Array-Vector Interoperability: advanced/array_vector_interoperability.md
       - Multi-Syntax Programming: multi_syntax_programming.md
       - Language Design with Executable BNF: language_design_with_executable_bnf.md
       - Isolated Rule Execution: isolated_rule_execution.md

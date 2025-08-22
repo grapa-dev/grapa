@@ -5,6 +5,9 @@ tags:
 ---
 # $VECTOR
 
+References:
+- [Array-Vector Interoperability](../advanced/array_vector_interoperability.md)
+
 A high-performance vector type optimized for numerical operations and large datasets.
 
 ## Overview
@@ -15,9 +18,34 @@ A high-performance vector type optimized for numerical operations and large data
 
 ### Creation
 ```grapa
-vec = [1, 2, 3, 4, 5];    /* Create vector from array */
-vec = (1, 2, 3, 4, 5);    /* Create vector from tuple */
+vec = #[1, 2, 3, 4, 5]#;  /* Create vector directly */
+vec = [1, 2, 3, 4, 5].vector();  /* Convert array to vector */
+vec = $vector([1, 2, 3, 4, 5]);  /* Explicit vector creation */
+
+/* Create from CSV with headers */
+data = $vector("Name,Age,City\nAlice,25,NYC\nBob,30,LA");
+/* Result: 2D vector with column headers preserved */
 ```
+
+### Function Application
+
+Vectors support function application using operators, similar to arrays:
+
+```grapa
+/* Function application using operators */
+#[1, 2, 3, 4]# * [op(x){x*2}]   /* [2, 4, 6, 8] */
+#[1, 2, 3]# + [op(x){x+10}]     /* [11, 12, 13] */
+
+/* Complex functions */
+data = #[1, 2, 3, 4, 5]#;
+squares = data * [op(x){x*x}];   /* [1, 4, 9, 16, 25] */
+
+/* Conditional operations */
+values = #[1, -2, 3, -4, 5]#;
+abs_vals = values * [op(x){x < 0 ? -x : x}]; /* [1, 2, 3, 4, 5] */
+```
+
+> **Note:** Function application works seamlessly with vectors, allowing custom operations to be applied element-wise. See [Array-Vector Interoperability](../advanced/array_vector_interoperability.md) for more details on how arrays and vectors work together.
 
 ### Addition Operations (`+=`)
 ```grapa
@@ -184,6 +212,80 @@ data_3d.cov(0);           /* Covariance along axis 0 */
 /* Shape and reshaping */
 data_3d.shape();          /* Get dimensions [2, 2, 2] */
 data_3d.reshape([4, 2]);  /* Reshape to 4x2 matrix */
+```
+
+## Header Row Support
+
+Vectors provide sophisticated support for header rows in 2D data structures, making them ideal for working with CSV files and tabular data.
+
+### Automatic Header Detection
+```grapa
+/* CSV data with headers - automatically detected */
+sales_data = $vector("Product,Q1,Q2,Q3,Q4\nWidget,100,120,110,130\nGadget,80,90,85,95");
+
+/* Headers are preserved and can be used for column access */
+q1_sales = sales_data["Q1"];  /* Access by column name */
+products = sales_data["Product"];  /* Get product names */
+```
+
+### Header-Aware Operations
+```grapa
+/* Create vector with explicit headers */
+data = $vector("Name,Score,Grade\nAlice,95,A\nBob,87,B\nCharlie,92,A");
+
+/* Sort by column name */
+sorted_by_score = data.sort("Score");  /* Sort by Score column */
+sorted_by_name = data.sort("Name");    /* Sort by Name column */
+
+/* Statistical operations respect headers */
+avg_score = data["Score"].mean();      /* Average of Score column */
+grade_counts = data["Grade"].unique();  /* Unique grades */
+```
+
+### CSV Import/Export with Headers
+```grapa
+/* Import CSV file with headers */
+csv_data = $file().read("data.csv");
+vector_data = $vector(csv_data);       /* Headers automatically detected */
+
+/* Export vector with headers preserved */
+csv_output = vector_data.csv();        /* Convert back to CSV with headers */
+$file().write("output.csv", csv_output);
+```
+
+> **Note**: Vector header support has limited Unicode capabilities. It can handle UTF-8 BOM (Byte Order Mark) in CSV files, but header names are processed as raw bytes rather than Unicode characters. For full Unicode support in string operations, use Grapa's string functions instead.
+
+### Working with Mixed Data Types
+```grapa
+/* Vector handles mixed column types */
+mixed_data = $vector("ID,Name,Active,Score\n1,Alice,true,95.5\n2,Bob,false,87.2");
+
+/* Access typed columns */
+ids = mixed_data["ID"];           /* Numeric column */
+names = mixed_data["Name"];       /* String column */  
+active = mixed_data["Active"];    /* Boolean column */
+scores = mixed_data["Score"];     /* Float column */
+
+/* Filter using column names */
+active_users = mixed_data.filter(op(row){row["Active"] == true});
+high_scores = mixed_data.filter(op(row){row["Score"] > 90});
+```
+
+### Header Manipulation
+```grapa
+/* Check if vector has headers */
+has_headers = data.headers().len() > 0;
+
+/* Get all header names */
+column_names = data.headers();     /* Returns array of header names */
+
+/* Rename headers */
+data.rename_headers(["ID", "Full_Name", "Is_Active", "Test_Score"]);
+
+/* Add new column with header */
+data["Grade"] = data["Score"].map(op(score){
+    score >= 90 ? "A" : (score >= 80 ? "B" : "C");
+});
 ```
 
 ### Broadcasting

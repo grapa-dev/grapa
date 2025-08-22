@@ -17,9 +17,26 @@ class GrapaVector {
     GrapaVectorItem* mData; // Raw data storage
     u8 mBlock;            // Block size for data alignment
     u8 mMaxBlock;         // Maximum block size
-    GrapaRuleQueue mLabels; // Optional labels for dimensions
+    GrapaRuleQueue mLabels; // Column headers for 2D vectors (CSV support)
 };
 ```
+
+### Header Row System
+
+The `mLabels` field implements sophisticated header row support for 2D vectors:
+
+```cpp
+// Header detection logic (lines 232, 619)
+bool hasLabels = (mLabels.mCount == 0 && pos == 1 && value->mValue.mToken == GrapaTokenType::LIST);
+bool hasBlankHeader = true;  // Detects numeric-only headers (0,1,2,3...)
+```
+
+**Key Features:**
+- **Automatic detection** of header vs data rows
+- **Blank header removal** when first row is sequential integers
+- **UTF-8 BOM handling** for international CSV files
+- **Mixed type support** for different column data types
+- **Header preservation** during vector operations
 
 ### Vector Item Structure
 
@@ -161,6 +178,92 @@ memset(mData, 0, mBlock * mSize);
 - **Background computation** for non-blocking operations
 - **Progress tracking** for long-running operations
 
+## Header Row Implementation Details
+
+### CSV Parsing with Headers
+
+```cpp
+// CSV parsing with automatic header detection (GrapaVector.cpp lines 590-673)
+bool GrapaVector::FROM(GrapaScriptExec* pScriptExec, GrapaNames* pNameSpace, 
+                       bool pFix, s64 pMax, s64 pExtra, const GrapaBYTE& pData, u8 pBlock)
+```
+
+**Header Detection Algorithm:**
+1. **Parse first row** and store as potential headers in `mLabels`
+2. **Check for blank headers**: If first row contains only sequential integers (0,1,2...), treat as blank
+3. **UTF-8 BOM detection**: Remove UTF-8 BOM (`ï»¿`) from first header if present
+4. **Header validation**: Non-numeric or non-sequential data confirms real headers
+5. **Clean up**: Remove blank headers, preserve real headers
+
+### Header Storage and Access
+
+```cpp
+// Header storage (lines 635, 280)
+mLabels.PushTail(new GrapaRuleEvent(0, GrapaBYTE(vS, vL), GrapaCHAR("")));
+
+// Header-based column access (lines 2959-2961)
+GrapaRuleEvent* b = mLabels.Search(a->mValue, index);
+if (b) pos = index;  // Find column by header name
+```
+
+**Storage Format:**
+- Headers stored as `GrapaRuleEvent` objects in `mLabels` queue
+- Each header has name (column header) and optional value
+- Null entries for missing headers in irregular data
+
+### Header-Aware Operations
+
+```cpp
+// CSV export with headers (lines 937-958)
+GrapaRuleEvent* ev = mLabels.Head();
+if (ev) {
+    while (ev) {
+        pValue.Append(ev->mName);  // Export header names
+        ev = ev->Next();
+    }
+}
+```
+
+**Operations Supporting Headers:**
+- **CSV export** (`_tocsv`): Writes headers as first row
+- **Array conversion** (`_toarray`): Converts to `$LIST` when headers present
+- **Vector concatenation**: Merges headers from multiple vectors
+- **Sorting**: Preserves column headers during row-wise sorting
+- **Transpose**: Clears headers (since meaning changes)
+
+### Special Cases
+
+```cpp
+// UTF-8 BOM handling (lines 630-634)
+if (cols == 1 && !isQuoted && vL >= 3 && memcmp(vS, "ï»¿", 3) == 0) {
+    vS += 3;  // Skip UTF-8 BOM in first header
+    vL -= 3;
+}
+
+// Blank header detection (lines 656-665)
+if (isInt) {
+    GrapaInt y;
+    y.FromString(GrapaBYTE(vS, vL), 10);
+    s64 lv = y.LongValue();
+    if (lv != (cols - 1))
+        hasBlankHeader = false;
+}
+```
+
+**Edge Cases Handled:**
+- **UTF-8 BOM removal** from international CSV files (3-byte `ï»¿` sequence)
+- **Quoted headers** with embedded commas or special characters
+- **Mixed header types** (some numeric, some text)
+- **Empty headers** and irregular column counts
+- **Header preservation** during vector operations
+
+**Unicode Limitations:**
+- **Limited Unicode support** - Vector implementation predates Grapa's Unicode system
+- **Byte-based processing** - Headers processed as raw bytes, not Unicode characters
+- **No Unicode normalization** - Header names not normalized for comparison
+- **No grapheme cluster awareness** - Length calculations use byte count, not character count
+- **UTF-8 BOM only** - Only handles UTF-8 BOM, not other Unicode features
+
 ## Type System Integration
 
 ### Conversion Operations
@@ -176,6 +279,7 @@ bool FROM(GrapaScriptExec* pScriptExec, GrapaNames* pNameSpace,
 - **Dimension consistency** checking
 - **Type preservation** during conversion
 - **Error handling** for invalid structures
+- **Header detection** from `$LIST` types in first dimension
 
 ### Comparison Operations
 

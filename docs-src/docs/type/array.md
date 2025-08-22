@@ -7,6 +7,7 @@ tags:
 References:
 - [$LIST object](list.md)
 - [$VECTOR object](vector.md)
+- [Array-Vector Interoperability](../advanced/array_vector_interoperability.md)
 
 **`$ARRAY`** = `[]` syntax (positional, no names, indexed by position)
 
@@ -47,6 +48,27 @@ If the elements are $ARRAY type, the first item of the array is used for the mat
 ```
 
 There isn't currently built in support for searching for an $ARRAY or $LIST item within an $ARRAY. Currently, this would require an itterator to scan and compare, or the use of a hash of the contents as a key.
+
+### Mathematical Operations
+
+Arrays automatically convert to vectors for mathematical operations, then convert back to arrays:
+
+```grapa
+/* Arithmetic operations (uses vector math internally) */
+[1, 2, 3] + [4, 5, 6]         /* [5, 7, 9] */
+[1, 2, 3, 4] * 2              /* [2, 4, 6, 8] */
+[2, 4, 6] / 2                 /* [1, 2, 3] */
+
+/* Function application using operators */
+[1, 2, 3, 4] * [op(x){x*2}]   /* [2, 4, 6, 8] */
+[1, 2, 3] + [op(x){x+10}]     /* [11, 12, 13] */
+
+/* Matrix operations (converted to vectors internally) */
+[1, 2, 3].dot([4, 5, 6])      /* 32 (dot product) */
+[[1,2],[3,4]].reshape([4,1])  /* [[1],[2],[3],[4]] */
+```
+
+> **Note:** See [Array-Vector Interoperability](../advanced/array_vector_interoperability.md) for detailed information about automatic conversions.
 
 ### Array Operations
 
