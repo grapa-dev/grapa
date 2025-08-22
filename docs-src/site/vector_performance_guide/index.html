@@ -8,28 +8,24 @@
       
       
       
-        <link rel="canonical" href="https://grapa-dev.github.io/grapa/type/vector/">
+        <link rel="canonical" href="https://grapa-dev.github.io/grapa/vector_performance_guide/">
       
       
-        <link rel="prev" href="../tuple/">
       
       
-        <link rel="next" href="../widget/">
-      
-      
-      <link rel="icon" href="../../assets/images/favicon.png">
+      <link rel="icon" href="../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.15">
     
     
       
-        <title>Vector - Grapa Documentation</title>
+        <title>Vector Performance Optimization Guide - Grapa Documentation</title>
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.342714a4.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.342714a4.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+        <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
       
       
 
@@ -48,7 +44,7 @@
       
     
     
-    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -74,7 +70,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#vector" class="md-skip">
+        <a href="#vector-performance-optimization-guide" class="md-skip">
           Skip to content
         </a>
       
@@ -88,7 +84,7 @@
 
 <header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../.." title="Grapa Documentation" class="md-header__button md-logo" aria-label="Grapa Documentation" data-md-component="logo">
+    <a href=".." title="Grapa Documentation" class="md-header__button md-logo" aria-label="Grapa Documentation" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -108,7 +104,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Vector
+              Vector Performance Optimization Guide
             
           </span>
         </div>
@@ -205,7 +201,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../../about/" class="md-tabs__link">
+      <a href="../about/" class="md-tabs__link">
         
   
   
@@ -224,7 +220,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../.." class="md-tabs__link">
+      <a href=".." class="md-tabs__link">
         
   
   
@@ -245,7 +241,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../getting_started/" class="md-tabs__link">
+        <a href="../getting_started/" class="md-tabs__link">
           
   
   
@@ -263,7 +259,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../../cli_quickstart/" class="md-tabs__link">
+      <a href="../cli_quickstart/" class="md-tabs__link">
         
   
   
@@ -280,13 +276,11 @@
   
   
   
-    
-  
   
     
     
-      <li class="md-tabs__item md-tabs__item--active">
-        <a href="../../api_reference/" class="md-tabs__link">
+      <li class="md-tabs__item">
+        <a href="../api_reference/" class="md-tabs__link">
           
   
   
@@ -313,7 +307,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../migrations/python_to_grapa_migration/" class="md-tabs__link">
+        <a href="../migrations/python_to_grapa_migration/" class="md-tabs__link">
           
   
   
@@ -336,7 +330,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../use_cases/" class="md-tabs__link">
+        <a href="../use_cases/" class="md-tabs__link">
           
   
   
@@ -356,7 +350,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../troubleshooting/" class="md-tabs__link">
+        <a href="../troubleshooting/" class="md-tabs__link">
           
   
   
@@ -390,7 +384,7 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../.." title="Grapa Documentation" class="md-nav__button md-logo" aria-label="Grapa Documentation" data-md-component="logo">
+    <a href=".." title="Grapa Documentation" class="md-nav__button md-logo" aria-label="Grapa Documentation" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -408,7 +402,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../about/" class="md-nav__link">
+      <a href="../about/" class="md-nav__link">
         
   
   
@@ -430,7 +424,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../.." class="md-nav__link">
+      <a href=".." class="md-nav__link">
         
   
   
@@ -493,7 +487,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../getting_started/" class="md-nav__link">
+      <a href="../getting_started/" class="md-nav__link">
         
   
   
@@ -516,7 +510,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../cli_integration/" class="md-nav__link">
+      <a href="../cli_integration/" class="md-nav__link">
         
   
   
@@ -539,7 +533,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../run/" class="md-nav__link">
+      <a href="../run/" class="md-nav__link">
         
   
   
@@ -562,7 +556,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../python_integration/" class="md-nav__link">
+      <a href="../python_integration/" class="md-nav__link">
         
   
   
@@ -585,7 +579,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../grapa_ecosystem_positioning/" class="md-nav__link">
+      <a href="../grapa_ecosystem_positioning/" class="md-nav__link">
         
   
   
@@ -615,7 +609,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../cli_quickstart/" class="md-nav__link">
+      <a href="../cli_quickstart/" class="md-nav__link">
         
   
   
@@ -634,29 +628,24 @@
       
   
   
-    
   
   
-  
     
     
     
     
       
-        
-        
-      
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
         
           
-          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
             
   
   
@@ -669,7 +658,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_5">
             <span class="md-nav__icon md-icon"></span>
             Reference
@@ -683,7 +672,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../api_reference/" class="md-nav__link">
+      <a href="../api_reference/" class="md-nav__link">
         
   
   
@@ -703,8 +692,6 @@
                 
   
   
-    
-  
   
   
     
@@ -715,11 +702,11 @@
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_2" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_2" >
         
           
           <label class="md-nav__link" for="__nav_5_2" id="__nav_5_2_label" tabindex="0">
@@ -735,7 +722,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_2_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_2_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_5_2">
             <span class="md-nav__icon md-icon"></span>
             Data Types
@@ -749,7 +736,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../array/" class="md-nav__link">
+      <a href="../type/array/" class="md-nav__link">
         
   
   
@@ -772,7 +759,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../bool/" class="md-nav__link">
+      <a href="../type/bool/" class="md-nav__link">
         
   
   
@@ -795,7 +782,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../code/" class="md-nav__link">
+      <a href="../type/code/" class="md-nav__link">
         
   
   
@@ -818,7 +805,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../err/" class="md-nav__link">
+      <a href="../type/err/" class="md-nav__link">
         
   
   
@@ -841,7 +828,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../float/" class="md-nav__link">
+      <a href="../type/float/" class="md-nav__link">
         
   
   
@@ -864,7 +851,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../id/" class="md-nav__link">
+      <a href="../type/id/" class="md-nav__link">
         
   
   
@@ -887,7 +874,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../int/" class="md-nav__link">
+      <a href="../type/int/" class="md-nav__link">
         
   
   
@@ -910,7 +897,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../list/" class="md-nav__link">
+      <a href="../type/list/" class="md-nav__link">
         
   
   
@@ -933,7 +920,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../obj_methods/" class="md-nav__link">
+      <a href="../type/obj_methods/" class="md-nav__link">
         
   
   
@@ -956,7 +943,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../op/" class="md-nav__link">
+      <a href="../type/op/" class="md-nav__link">
         
   
   
@@ -979,7 +966,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../raw/" class="md-nav__link">
+      <a href="../type/raw/" class="md-nav__link">
         
   
   
@@ -1002,7 +989,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../rule/" class="md-nav__link">
+      <a href="../type/rule/" class="md-nav__link">
         
   
   
@@ -1025,7 +1012,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../str/" class="md-nav__link">
+      <a href="../type/str/" class="md-nav__link">
         
   
   
@@ -1048,7 +1035,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../sysid/" class="md-nav__link">
+      <a href="../type/sysid/" class="md-nav__link">
         
   
   
@@ -1071,7 +1058,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../sysint/" class="md-nav__link">
+      <a href="../type/sysint/" class="md-nav__link">
         
   
   
@@ -1094,7 +1081,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../sysstr/" class="md-nav__link">
+      <a href="../type/sysstr/" class="md-nav__link">
         
   
   
@@ -1117,7 +1104,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../table/" class="md-nav__link">
+      <a href="../type/table/" class="md-nav__link">
         
   
   
@@ -1140,7 +1127,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../tag/" class="md-nav__link">
+      <a href="../type/tag/" class="md-nav__link">
         
   
   
@@ -1163,7 +1150,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../time/" class="md-nav__link">
+      <a href="../type/time/" class="md-nav__link">
         
   
   
@@ -1186,7 +1173,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../tuple/" class="md-nav__link">
+      <a href="../type/tuple/" class="md-nav__link">
         
   
   
@@ -1206,32 +1193,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    Vector
-    
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../type/vector/" class="md-nav__link">
         
   
   
@@ -1242,383 +1207,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#overview" class="md-nav__link">
-    <span class="md-ellipsis">
-      Overview
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#basic-operations" class="md-nav__link">
-    <span class="md-ellipsis">
-      Basic Operations
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Basic Operations">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#creation" class="md-nav__link">
-    <span class="md-ellipsis">
-      Creation
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#addition-operations" class="md-nav__link">
-    <span class="md-ellipsis">
-      Addition Operations (+=)
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#concatenation-operations" class="md-nav__link">
-    <span class="md-ellipsis">
-      Concatenation Operations (++=)
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#mathematical-operations" class="md-nav__link">
-    <span class="md-ellipsis">
-      Mathematical Operations
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#performance-characteristics" class="md-nav__link">
-    <span class="md-ellipsis">
-      Performance Characteristics
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#performance-guidelines" class="md-nav__link">
-    <span class="md-ellipsis">
-      Performance Guidelines
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Performance Guidelines">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#matrix-size-recommendations" class="md-nav__link">
-    <span class="md-ellipsis">
-      Matrix Size Recommendations
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#operation-performance" class="md-nav__link">
-    <span class="md-ellipsis">
-      Operation Performance
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#memory-usage" class="md-nav__link">
-    <span class="md-ellipsis">
-      Memory Usage
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#use-cases" class="md-nav__link">
-    <span class="md-ellipsis">
-      Use Cases
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Use Cases">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#data-science" class="md-nav__link">
-    <span class="md-ellipsis">
-      Data Science
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#signal-processing" class="md-nav__link">
-    <span class="md-ellipsis">
-      Signal Processing
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#machine-learning" class="md-nav__link">
-    <span class="md-ellipsis">
-      Machine Learning
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#advanced-features" class="md-nav__link">
-    <span class="md-ellipsis">
-      Advanced Features
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Advanced Features">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#vector-operations" class="md-nav__link">
-    <span class="md-ellipsis">
-      Vector Operations
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#matrix-operations" class="md-nav__link">
-    <span class="md-ellipsis">
-      Matrix Operations
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#multi-dimensional-operations" class="md-nav__link">
-    <span class="md-ellipsis">
-      Multi-dimensional Operations
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#broadcasting" class="md-nav__link">
-    <span class="md-ellipsis">
-      Broadcasting
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#comparison-operators" class="md-nav__link">
-    <span class="md-ellipsis">
-      Comparison Operators
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#edge-case-behavior" class="md-nav__link">
-    <span class="md-ellipsis">
-      Edge Case Behavior
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Edge Case Behavior">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#empty-vectors-and-matrices" class="md-nav__link">
-    <span class="md-ellipsis">
-      Empty Vectors and Matrices
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#singular-matrices" class="md-nav__link">
-    <span class="md-ellipsis">
-      Singular Matrices
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#non-square-matrices" class="md-nav__link">
-    <span class="md-ellipsis">
-      Non-square Matrices
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#incompatible-operations" class="md-nav__link">
-    <span class="md-ellipsis">
-      Incompatible Operations
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#extreme-values" class="md-nav__link">
-    <span class="md-ellipsis">
-      Extreme Values
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#integration-with-other-types" class="md-nav__link">
-    <span class="md-ellipsis">
-      Integration with Other Types
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Integration with Other Types">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#conversion" class="md-nav__link">
-    <span class="md-ellipsis">
-      Conversion
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#mixed-operations" class="md-nav__link">
-    <span class="md-ellipsis">
-      Mixed Operations
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#performance-optimization" class="md-nav__link">
-    <span class="md-ellipsis">
-      Performance Optimization
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Performance Optimization">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#best-practices" class="md-nav__link">
-    <span class="md-ellipsis">
-      Best Practices
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#memory-management" class="md-nav__link">
-    <span class="md-ellipsis">
-      Memory Management
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#examples" class="md-nav__link">
-    <span class="md-ellipsis">
-      Examples
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#see-also" class="md-nav__link">
-    <span class="md-ellipsis">
-      See also
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1631,7 +1219,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../widget/" class="md-nav__link">
+      <a href="../type/widget/" class="md-nav__link">
         
   
   
@@ -1654,7 +1242,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../widget/attributes/" class="md-nav__link">
+      <a href="../type/widget/attributes/" class="md-nav__link">
         
   
   
@@ -1677,7 +1265,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../xml/" class="md-nav__link">
+      <a href="../type/xml/" class="md-nav__link">
         
   
   
@@ -1749,7 +1337,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../operators/function/" class="md-nav__link">
+      <a href="../operators/function/" class="md-nav__link">
         
   
   
@@ -1772,7 +1360,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../operators/assignment/" class="md-nav__link">
+      <a href="../operators/assignment/" class="md-nav__link">
         
   
   
@@ -1795,7 +1383,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../operators/math/" class="md-nav__link">
+      <a href="../operators/math/" class="md-nav__link">
         
   
   
@@ -1818,7 +1406,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../operators/bit/" class="md-nav__link">
+      <a href="../operators/bit/" class="md-nav__link">
         
   
   
@@ -1841,7 +1429,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../operators/compare/" class="md-nav__link">
+      <a href="../operators/compare/" class="md-nav__link">
         
   
   
@@ -1864,7 +1452,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../operators/condition/" class="md-nav__link">
+      <a href="../operators/condition/" class="md-nav__link">
         
   
   
@@ -1887,7 +1475,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../operators/loop/" class="md-nav__link">
+      <a href="../operators/loop/" class="md-nav__link">
         
   
   
@@ -1910,7 +1498,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../operators/command/" class="md-nav__link">
+      <a href="../operators/command/" class="md-nav__link">
         
   
   
@@ -1933,7 +1521,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../operators/constants/" class="md-nav__link">
+      <a href="../operators/constants/" class="md-nav__link">
         
   
   
@@ -2005,7 +1593,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../sys/file/" class="md-nav__link">
+      <a href="../sys/file/" class="md-nav__link">
         
   
   
@@ -2028,7 +1616,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../sys/math/" class="md-nav__link">
+      <a href="../sys/math/" class="md-nav__link">
         
   
   
@@ -2051,7 +1639,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../sys/net/" class="md-nav__link">
+      <a href="../sys/net/" class="md-nav__link">
         
   
   
@@ -2074,7 +1662,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../sys/sys/" class="md-nav__link">
+      <a href="../sys/sys/" class="md-nav__link">
         
   
   
@@ -2097,7 +1685,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../sys/thread/" class="md-nav__link">
+      <a href="../sys/thread/" class="md-nav__link">
         
   
   
@@ -2120,7 +1708,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../function_quick_reference/" class="md-nav__link">
+      <a href="../function_quick_reference/" class="md-nav__link">
         
   
   
@@ -2192,7 +1780,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../obj/document/" class="md-nav__link">
+      <a href="../obj/document/" class="md-nav__link">
         
   
   
@@ -2215,7 +1803,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../obj/encode/" class="md-nav__link">
+      <a href="../obj/encode/" class="md-nav__link">
         
   
   
@@ -2238,7 +1826,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../obj/grep/" class="md-nav__link">
+      <a href="../obj/grep/" class="md-nav__link">
         
   
   
@@ -2261,7 +1849,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../obj/grep_python/" class="md-nav__link">
+      <a href="../obj/grep_python/" class="md-nav__link">
         
   
   
@@ -2284,7 +1872,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../obj/iterate/" class="md-nav__link">
+      <a href="../obj/iterate/" class="md-nav__link">
         
   
   
@@ -2307,7 +1895,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../obj/transform/" class="md-nav__link">
+      <a href="../obj/transform/" class="md-nav__link">
         
   
   
@@ -2379,7 +1967,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../grep/" class="md-nav__link">
+      <a href="../grep/" class="md-nav__link">
         
   
   
@@ -2451,7 +2039,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../database/quick_reference/" class="md-nav__link">
+      <a href="../database/quick_reference/" class="md-nav__link">
         
   
   
@@ -2474,7 +2062,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../database/column_store/" class="md-nav__link">
+      <a href="../database/column_store/" class="md-nav__link">
         
   
   
@@ -2497,7 +2085,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../database/troubleshooting/" class="md-nav__link">
+      <a href="../database/troubleshooting/" class="md-nav__link">
         
   
   
@@ -2569,7 +2157,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../syntax/basic_syntax/" class="md-nav__link">
+      <a href="../syntax/basic_syntax/" class="md-nav__link">
         
   
   
@@ -2592,7 +2180,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../syntax/operator/" class="md-nav__link">
+      <a href="../syntax/operator/" class="md-nav__link">
         
   
   
@@ -2615,7 +2203,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../syntax/precedence/" class="md-nav__link">
+      <a href="../syntax/precedence/" class="md-nav__link">
         
   
   
@@ -2638,7 +2226,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../syntax/grammar_design/" class="md-nav__link">
+      <a href="../syntax/grammar_design/" class="md-nav__link">
         
   
   
@@ -2669,7 +2257,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../debugging/" class="md-nav__link">
+      <a href="../debugging/" class="md-nav__link">
         
   
   
@@ -2692,7 +2280,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../execution_pipeline_overview/" class="md-nav__link">
+      <a href="../execution_pipeline_overview/" class="md-nav__link">
         
   
   
@@ -2715,7 +2303,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../advanced_topics/" class="md-nav__link">
+      <a href="../advanced_topics/" class="md-nav__link">
         
   
   
@@ -2738,7 +2326,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../advanced_language_features/" class="md-nav__link">
+      <a href="../advanced_language_features/" class="md-nav__link">
         
   
   
@@ -2761,7 +2349,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../advanced_concurrency_and_callbacks/" class="md-nav__link">
+      <a href="../advanced_concurrency_and_callbacks/" class="md-nav__link">
         
   
   
@@ -2784,7 +2372,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../multi_syntax_programming/" class="md-nav__link">
+      <a href="../multi_syntax_programming/" class="md-nav__link">
         
   
   
@@ -2807,7 +2395,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../language_design_with_executable_bnf/" class="md-nav__link">
+      <a href="../language_design_with_executable_bnf/" class="md-nav__link">
         
   
   
@@ -2830,7 +2418,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../isolated_rule_execution/" class="md-nav__link">
+      <a href="../isolated_rule_execution/" class="md-nav__link">
         
   
   
@@ -2853,7 +2441,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../deep_expert_implementation_overview/" class="md-nav__link">
+      <a href="../deep_expert_implementation_overview/" class="md-nav__link">
         
   
   
@@ -2876,7 +2464,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../xml_list_integration/" class="md-nav__link">
+      <a href="../xml_list_integration/" class="md-nav__link">
         
   
   
@@ -2899,7 +2487,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../unified_dot_notation/" class="md-nav__link">
+      <a href="../unified_dot_notation/" class="md-nav__link">
         
   
   
@@ -2922,7 +2510,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../module_system/" class="md-nav__link">
+      <a href="../module_system/" class="md-nav__link">
         
   
   
@@ -3034,7 +2622,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../migrations/python_to_grapa_migration/" class="md-nav__link">
+      <a href="../migrations/python_to_grapa_migration/" class="md-nav__link">
         
   
   
@@ -3057,7 +2645,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../migrations/js_to_grapa_migration/" class="md-nav__link">
+      <a href="../migrations/js_to_grapa_migration/" class="md-nav__link">
         
   
   
@@ -3080,7 +2668,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../migrations/rust_to_grapa_migration/" class="md-nav__link">
+      <a href="../migrations/rust_to_grapa_migration/" class="md-nav__link">
         
   
   
@@ -3103,7 +2691,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../migrations/typescript_to_grapa_migration/" class="md-nav__link">
+      <a href="../migrations/typescript_to_grapa_migration/" class="md-nav__link">
         
   
   
@@ -3126,7 +2714,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../migrations/go_to_grapa_migration/" class="md-nav__link">
+      <a href="../migrations/go_to_grapa_migration/" class="md-nav__link">
         
   
   
@@ -3149,7 +2737,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../migrations/ruby_to_grapa_migration/" class="md-nav__link">
+      <a href="../migrations/ruby_to_grapa_migration/" class="md-nav__link">
         
   
   
@@ -3172,7 +2760,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../migrations/kotlin_to_grapa_migration/" class="md-nav__link">
+      <a href="../migrations/kotlin_to_grapa_migration/" class="md-nav__link">
         
   
   
@@ -3195,7 +2783,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../migrations/swift_to_grapa_migration/" class="md-nav__link">
+      <a href="../migrations/swift_to_grapa_migration/" class="md-nav__link">
         
   
   
@@ -3226,7 +2814,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../examples/" class="md-nav__link">
+      <a href="../examples/" class="md-nav__link">
         
   
   
@@ -3249,7 +2837,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../examples/" class="md-nav__link">
+      <a href="../examples/" class="md-nav__link">
         
   
   
@@ -3272,7 +2860,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../python_use_cases/" class="md-nav__link">
+      <a href="../python_use_cases/" class="md-nav__link">
         
   
   
@@ -3295,7 +2883,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../grc_scripts/" class="md-nav__link">
+      <a href="../grc_scripts/" class="md-nav__link">
         
   
   
@@ -3318,7 +2906,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../grz_format/" class="md-nav__link">
+      <a href="../grz_format/" class="md-nav__link">
         
   
   
@@ -3341,7 +2929,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../grapapy_namespace_solution/" class="md-nav__link">
+      <a href="../grapapy_namespace_solution/" class="md-nav__link">
         
   
   
@@ -3364,7 +2952,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../directory_navigation/" class="md-nav__link">
+      <a href="../directory_navigation/" class="md-nav__link">
         
   
   
@@ -3387,7 +2975,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../unified_path_system/" class="md-nav__link">
+      <a href="../unified_path_system/" class="md-nav__link">
         
   
   
@@ -3458,7 +3046,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../use_cases/" class="md-nav__link">
+      <a href="../use_cases/" class="md-nav__link">
         
   
   
@@ -3481,7 +3069,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../use_cases/etl_data_engineering/" class="md-nav__link">
+      <a href="../use_cases/etl_data_engineering/" class="md-nav__link">
         
   
   
@@ -3504,7 +3092,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../use_cases/compiler_bnf_learning/" class="md-nav__link">
+      <a href="../use_cases/compiler_bnf_learning/" class="md-nav__link">
         
   
   
@@ -3527,7 +3115,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../use_cases/high_precision_math/" class="md-nav__link">
+      <a href="../use_cases/high_precision_math/" class="md-nav__link">
         
   
   
@@ -3550,7 +3138,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../use_cases/parallel_concurrent_programming/" class="md-nav__link">
+      <a href="../use_cases/parallel_concurrent_programming/" class="md-nav__link">
         
   
   
@@ -3573,7 +3161,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../use_cases/web_data_scraping/" class="md-nav__link">
+      <a href="../use_cases/web_data_scraping/" class="md-nav__link">
         
   
   
@@ -3596,7 +3184,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../use_cases/database_file_system/" class="md-nav__link">
+      <a href="../use_cases/database_file_system/" class="md-nav__link">
         
   
   
@@ -3619,7 +3207,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../use_cases/education_prototyping/" class="md-nav__link">
+      <a href="../use_cases/education_prototyping/" class="md-nav__link">
         
   
   
@@ -3642,7 +3230,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../use_cases/cryptography/" class="md-nav__link">
+      <a href="../use_cases/cryptography/" class="md-nav__link">
         
   
   
@@ -3665,7 +3253,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../use_cases/multi_syntax_data_processing/" class="md-nav__link">
+      <a href="../use_cases/multi_syntax_data_processing/" class="md-nav__link">
         
   
   
@@ -3688,7 +3276,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../use_cases/language_design_and_dsls/" class="md-nav__link">
+      <a href="../use_cases/language_design_and_dsls/" class="md-nav__link">
         
   
   
@@ -3759,7 +3347,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../troubleshooting/" class="md-nav__link">
+      <a href="../troubleshooting/" class="md-nav__link">
         
   
   
@@ -3782,7 +3370,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../testing/" class="md-nav__link">
+      <a href="../testing/" class="md-nav__link">
         
   
   
@@ -3841,97 +3429,28 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#basic-operations" class="md-nav__link">
-    <span class="md-ellipsis">
-      Basic Operations
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Basic Operations">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#creation" class="md-nav__link">
-    <span class="md-ellipsis">
-      Creation
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#addition-operations" class="md-nav__link">
-    <span class="md-ellipsis">
-      Addition Operations (+=)
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#concatenation-operations" class="md-nav__link">
-    <span class="md-ellipsis">
-      Concatenation Operations (++=)
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#mathematical-operations" class="md-nav__link">
-    <span class="md-ellipsis">
-      Mathematical Operations
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#performance-characteristics" class="md-nav__link">
     <span class="md-ellipsis">
       Performance Characteristics
     </span>
   </a>
   
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#performance-guidelines" class="md-nav__link">
-    <span class="md-ellipsis">
-      Performance Guidelines
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Performance Guidelines">
+    <nav class="md-nav" aria-label="Performance Characteristics">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#matrix-size-recommendations" class="md-nav__link">
+  <a href="#algorithm-complexities" class="md-nav__link">
     <span class="md-ellipsis">
-      Matrix Size Recommendations
+      Algorithm Complexities
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#operation-performance" class="md-nav__link">
+  <a href="#performance-benchmarks" class="md-nav__link">
     <span class="md-ellipsis">
-      Operation Performance
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#memory-usage" class="md-nav__link">
-    <span class="md-ellipsis">
-      Memory Usage
+      Performance Benchmarks
     </span>
   </a>
   
@@ -3943,37 +3462,184 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#use-cases" class="md-nav__link">
+  <a href="#optimization-strategies" class="md-nav__link">
     <span class="md-ellipsis">
-      Use Cases
+      Optimization Strategies
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Use Cases">
+    <nav class="md-nav" aria-label="Optimization Strategies">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#data-science" class="md-nav__link">
+  <a href="#1-matrix-size-optimization" class="md-nav__link">
     <span class="md-ellipsis">
-      Data Science
+      1. Matrix Size Optimization
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Matrix Size Optimization">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#real-time-applications" class="md-nav__link">
+    <span class="md-ellipsis">
+      Real-time Applications
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#signal-processing" class="md-nav__link">
+  <a href="#batch-processing" class="md-nav__link">
     <span class="md-ellipsis">
-      Signal Processing
+      Batch Processing
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-algorithm-selection" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Algorithm Selection
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Algorithm Selection">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#matrix-multiplication" class="md-nav__link">
+    <span class="md-ellipsis">
+      Matrix Multiplication
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#machine-learning" class="md-nav__link">
+  <a href="#statistical-functions" class="md-nav__link">
     <span class="md-ellipsis">
-      Machine Learning
+      Statistical Functions
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-memory-management" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Memory Management
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Memory Management">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pre-allocation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Pre-allocation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#memory-monitoring" class="md-nav__link">
+    <span class="md-ellipsis">
+      Memory Monitoring
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-data-type-optimization" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Data Type Optimization
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Data Type Optimization">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#choose-appropriate-types" class="md-nav__link">
+    <span class="md-ellipsis">
+      Choose Appropriate Types
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#use-case-optimization" class="md-nav__link">
+    <span class="md-ellipsis">
+      Use Case Optimization
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Use Case Optimization">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#real-time-applications_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Real-time Applications
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#interactive-applications" class="md-nav__link">
+    <span class="md-ellipsis">
+      Interactive Applications
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#batch-processing_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Batch Processing
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#data-science-applications" class="md-nav__link">
+    <span class="md-ellipsis">
+      Data Science Applications
     </span>
   </a>
   
@@ -3985,106 +3651,28 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#advanced-features" class="md-nav__link">
+  <a href="#edge-case-performance" class="md-nav__link">
     <span class="md-ellipsis">
-      Advanced Features
+      Edge Case Performance
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Advanced Features">
+    <nav class="md-nav" aria-label="Edge Case Performance">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#vector-operations" class="md-nav__link">
+  <a href="#empty-and-small-matrices" class="md-nav__link">
     <span class="md-ellipsis">
-      Vector Operations
+      Empty and Small Matrices
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#matrix-operations" class="md-nav__link">
+  <a href="#special-matrix-types" class="md-nav__link">
     <span class="md-ellipsis">
-      Matrix Operations
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#multi-dimensional-operations" class="md-nav__link">
-    <span class="md-ellipsis">
-      Multi-dimensional Operations
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#broadcasting" class="md-nav__link">
-    <span class="md-ellipsis">
-      Broadcasting
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#comparison-operators" class="md-nav__link">
-    <span class="md-ellipsis">
-      Comparison Operators
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#edge-case-behavior" class="md-nav__link">
-    <span class="md-ellipsis">
-      Edge Case Behavior
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Edge Case Behavior">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#empty-vectors-and-matrices" class="md-nav__link">
-    <span class="md-ellipsis">
-      Empty Vectors and Matrices
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#singular-matrices" class="md-nav__link">
-    <span class="md-ellipsis">
-      Singular Matrices
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#non-square-matrices" class="md-nav__link">
-    <span class="md-ellipsis">
-      Non-square Matrices
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#incompatible-operations" class="md-nav__link">
-    <span class="md-ellipsis">
-      Incompatible Operations
+      Special Matrix Types
     </span>
   </a>
   
@@ -4105,28 +3693,28 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#integration-with-other-types" class="md-nav__link">
+  <a href="#performance-monitoring" class="md-nav__link">
     <span class="md-ellipsis">
-      Integration with Other Types
+      Performance Monitoring
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Integration with Other Types">
+    <nav class="md-nav" aria-label="Performance Monitoring">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#conversion" class="md-nav__link">
+  <a href="#timing-operations" class="md-nav__link">
     <span class="md-ellipsis">
-      Conversion
+      Timing Operations
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#mixed-operations" class="md-nav__link">
+  <a href="#memory-estimation" class="md-nav__link">
     <span class="md-ellipsis">
-      Mixed Operations
+      Memory Estimation
     </span>
   </a>
   
@@ -4138,28 +3726,37 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#performance-optimization" class="md-nav__link">
+  <a href="#best-practices-summary" class="md-nav__link">
     <span class="md-ellipsis">
-      Performance Optimization
+      Best Practices Summary
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Performance Optimization">
+    <nav class="md-nav" aria-label="Best Practices Summary">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#best-practices" class="md-nav__link">
+  <a href="#dos" class="md-nav__link">
     <span class="md-ellipsis">
-      Best Practices
+      Do's
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#memory-management" class="md-nav__link">
+  <a href="#donts" class="md-nav__link">
     <span class="md-ellipsis">
-      Memory Management
+      Don'ts
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#performance-checklist" class="md-nav__link">
+    <span class="md-ellipsis">
+      Performance Checklist
     </span>
   </a>
   
@@ -4171,18 +3768,9 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#examples" class="md-nav__link">
+  <a href="#conclusion" class="md-nav__link">
     <span class="md-ellipsis">
-      Examples
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#see-also" class="md-nav__link">
-    <span class="md-ellipsis">
-      See also
+      Conclusion
     </span>
   </a>
   
@@ -4202,423 +3790,347 @@
                 
                   
 
-  <nav class="md-tags" >
-    
-      
-      
-      
-        <span class="md-tag">highlevel</span>
-      
-    
-      
-      
-      
-        <span class="md-tag">user</span>
-      
-    
-  </nav>
 
 
-
-<h1 id="vector">$VECTOR</h1>
-<p>A high-performance vector type optimized for numerical operations and large datasets.</p>
+<h1 id="vector-performance-optimization-guide">Vector Performance Optimization Guide</h1>
 <h2 id="overview">Overview</h2>
-<p><code>$VECTOR</code> is a specialized data type designed for efficient numerical computations and large-scale data processing. It provides optimized operations for mathematical operations and memory management.</p>
-<h2 id="basic-operations">Basic Operations</h2>
-<h3 id="creation">Creation</h3>
-<div class="highlight"><pre><span></span><code>vec = [1, 2, 3, 4, 5];    /* Create vector from array */
-vec = (1, 2, 3, 4, 5);    /* Create vector from tuple */
-</code></pre></div>
-<h3 id="addition-operations">Addition Operations (<code>+=</code>)</h3>
-<div class="highlight"><pre><span></span><code>vec = [1, 2, 3];
-vec += 4;                 /* Add single element: [1,2,3,4] */
-vec += [5, 6];            /* Add multiple elements: [1,2,3,4,5,6] */
-</code></pre></div>
-<h3 id="concatenation-operations">Concatenation Operations (<code>++=</code>)</h3>
-<div class="highlight"><pre><span></span><code>vec1 = [1, 2, 3];
-vec2 = [4, 5, 6];
-vec1 ++= vec2;            /* Extend vector: [1,2,3,4,5,6] */
-</code></pre></div>
-<h3 id="mathematical-operations">Mathematical Operations</h3>
-<div class="highlight"><pre><span></span><code>vec1 = [1, 2, 3];
-vec2 = [4, 5, 6];
-
-/* Vector arithmetic */
-sum = vec1 + vec2;        /* Element-wise addition */
-diff = vec1 - vec2;       /* Element-wise subtraction */
-product = vec1 * vec2;    /* Element-wise multiplication */
-quotient = vec1 / vec2;   /* Element-wise division */
-
-/* Scalar operations */
-scaled = vec1 * 2;        /* Scale vector by scalar */
-shifted = vec1 + 10;      /* Add scalar to all elements */
-</code></pre></div>
+<p>This guide provides comprehensive performance optimization recommendations for Grapa's vector operations, based on systematic benchmarking and analysis. It covers performance characteristics, optimization strategies, and best practices for different use cases.</p>
 <h2 id="performance-characteristics">Performance Characteristics</h2>
-<ul>
-<li><strong>Optimized Memory Layout</strong>: Designed for cache-friendly access patterns</li>
-<li><strong>Parallel Operations</strong>: Many operations are automatically parallelized</li>
-<li><strong>Large Dataset Support</strong>: Efficient handling of vectors with millions of elements</li>
-<li><strong>Mathematical Optimization</strong>: Specialized for numerical computations</li>
-</ul>
-<h2 id="performance-guidelines">Performance Guidelines</h2>
-<h3 id="matrix-size-recommendations">Matrix Size Recommendations</h3>
+<h3 id="algorithm-complexities">Algorithm Complexities</h3>
 <table>
 <thead>
 <tr>
-<th>Use Case</th>
-<th>Recommended Size</th>
-<th>Performance Expectation</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Real-time</td>
-<td>&lt; 50x50</td>
-<td>Sub-second response</td>
-</tr>
-<tr>
-<td>Interactive</td>
-<td>&lt; 100x100</td>
-<td>&lt; 5 second response</td>
-</tr>
-<tr>
-<td>Batch processing</td>
-<td>&lt; 500x500</td>
-<td>&lt; 1 minute response</td>
-</tr>
-<tr>
-<td>Large-scale</td>
-<td>&gt; 500x500</td>
-<td>Consider alternatives</td>
-</tr>
-</tbody>
-</table>
-<h3 id="operation-performance">Operation Performance</h3>
-<table>
-<thead>
-<tr>
-<th>Operation Type</th>
-<th>Recommended Matrix Size</th>
-<th>Performance Notes</th>
+<th>Operation</th>
+<th>Complexity</th>
+<th>Performance Impact</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td>Matrix multiplication</td>
-<td>&lt; 100x100</td>
-<td>O(n³) complexity</td>
+<td>O(n³)</td>
+<td>High for large matrices</td>
 </tr>
 <tr>
-<td>Statistical functions</td>
-<td>&lt; 200x200</td>
-<td>Good performance</td>
-</tr>
-<tr>
-<td>Basic operations</td>
-<td>Any size</td>
-<td>Very fast</td>
+<td>Determinant calculation</td>
+<td>O(n³)</td>
+<td>High for large matrices</td>
 </tr>
 <tr>
 <td>Eigenvalue calculation</td>
-<td>&lt; 50x50</td>
-<td>Computationally intensive</td>
+<td>O(n³) with iterations</td>
+<td>Very high for large matrices</td>
+</tr>
+<tr>
+<td>Covariance calculation</td>
+<td>O(n²m)</td>
+<td>Moderate for large matrices</td>
+</tr>
+<tr>
+<td>Basic operations (sum, mean)</td>
+<td>O(n²)</td>
+<td>Low for all sizes</td>
+</tr>
+<tr>
+<td>Transpose</td>
+<td>O(n²)</td>
+<td>Very low for all sizes</td>
 </tr>
 </tbody>
 </table>
-<h3 id="memory-usage">Memory Usage</h3>
-<p>Estimated memory usage based on 8 bytes per element:</p>
+<h3 id="performance-benchmarks">Performance Benchmarks</h3>
 <table>
 <thead>
 <tr>
 <th>Matrix Size</th>
-<th>Elements</th>
-<th>Estimated Memory</th>
-<th>Memory Category</th>
+<th>Creation (ms)</th>
+<th>Multiplication (ms)</th>
+<th>Determinant (ms)</th>
+<th>Memory (KB)</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td>10x10</td>
-<td>100</td>
-<td>0.8 KB</td>
-<td>Very Small</td>
+<td>&lt;1</td>
+<td>&lt;1</td>
+<td>&lt;1</td>
+<td>0.8</td>
 </tr>
 <tr>
 <td>50x50</td>
-<td>2,500</td>
-<td>20 KB</td>
-<td>Small</td>
+<td>&lt;1</td>
+<td>&lt;1</td>
+<td>&lt;1</td>
+<td>20</td>
 </tr>
 <tr>
 <td>100x100</td>
-<td>10,000</td>
-<td>80 KB</td>
-<td>Medium</td>
+<td>&lt;1</td>
+<td>&lt;1</td>
+<td>&lt;1</td>
+<td>80</td>
 </tr>
 <tr>
 <td>200x200</td>
-<td>40,000</td>
-<td>320 KB</td>
-<td>Large</td>
+<td>&lt;1</td>
+<td>27,000</td>
+<td>&lt;1</td>
+<td>320</td>
 </tr>
 <tr>
 <td>500x500</td>
-<td>250,000</td>
-<td>2 MB</td>
-<td>Very Large</td>
+<td>&lt;1</td>
+<td>N/A</td>
+<td>&lt;1</td>
+<td>2,000</td>
 </tr>
 </tbody>
 </table>
-<h2 id="use-cases">Use Cases</h2>
-<h3 id="data-science">Data Science</h3>
-<div class="highlight"><pre><span></span><code>/* Statistical operations */
-data = [1.2, 3.4, 5.6, 7.8, 9.0];
-mean = data.sum() / data.len();
-variance = data.map(op(x){(x - mean)**2;}).sum() / data.len();
+<h2 id="optimization-strategies">Optimization Strategies</h2>
+<h3 id="1-matrix-size-optimization">1. Matrix Size Optimization</h3>
+<h4 id="real-time-applications">Real-time Applications</h4>
+<div class="highlight"><pre><span></span><code>/* For real-time applications, keep matrices small */
+// ✅ Good - Fast response
+small_matrix = [[1, 2], [3, 4]].vector();
+result = small_matrix.dot(small_matrix);  // &lt; 1ms
+
+// ❌ Avoid - Slow response
+large_matrix = create_large_matrix(100);  // 27+ seconds
+result = large_matrix.dot(large_matrix);
 </code></pre></div>
-<h3 id="signal-processing">Signal Processing</h3>
-<div class="highlight"><pre><span></span><code>/* Signal operations */
-signal = [0.1, 0.3, 0.5, 0.7, 0.9];
-filtered = signal.map(op(x){x * 0.5;});
+<p><strong>Recommendations:</strong>
+- Keep matrices &lt; 50x50 for sub-second response
+- Use &lt; 100x100 for interactive applications
+- Consider breaking large problems into smaller blocks</p>
+<h4 id="batch-processing">Batch Processing</h4>
+<div class="highlight"><pre><span></span><code>/* For batch processing, monitor memory usage */
+// ✅ Good - Manageable memory
+medium_matrix = create_matrix(200);  // 320KB memory
+result = medium_matrix.cov();        // Good performance
+
+// ⚠️ Monitor - Large memory usage
+large_matrix = create_matrix(500);   // 2MB memory
+result = large_matrix.cov();         // Monitor performance
 </code></pre></div>
-<h3 id="machine-learning">Machine Learning</h3>
-<div class="highlight"><pre><span></span><code>/* Feature vectors */
-features = [1.0, 2.0, 3.0, 4.0];
-weights = [0.1, 0.2, 0.3, 0.4];
-prediction = features.dot(weights);
+<h3 id="2-algorithm-selection">2. Algorithm Selection</h3>
+<h4 id="matrix-multiplication">Matrix Multiplication</h4>
+<div class="highlight"><pre><span></span><code>/* Use appropriate algorithms for your use case */
+// For small matrices - standard multiplication is fine
+small_result = mat_a.dot(mat_b);  // Fast for &lt; 100x100
+
+// For large matrices - consider alternatives
+if (mat_a.shape().get(0) &gt; 100) {
+    // Consider breaking into smaller blocks
+    result = block_multiply(mat_a, mat_b);
+} else {
+    result = mat_a.dot(mat_b);
+}
 </code></pre></div>
-<p>For comprehensive machine learning capabilities, see <a href="../../machine_learning/">Machine Learning Guide</a> which covers:
-- Linear regression (normal equation, gradient descent, ridge regression)
-- Statistical analysis and feature preprocessing
-- Model evaluation and performance metrics
-- Complete implementation examples</p>
-<h2 id="advanced-features">Advanced Features</h2>
-<h3 id="vector-operations">Vector Operations</h3>
-<div class="highlight"><pre><span></span><code>vec = [1, 2, 3, 4, 5];
+<h4 id="statistical-functions">Statistical Functions</h4>
+<div class="highlight"><pre><span></span><code>/* Choose efficient statistical operations */
+// ✅ Fast - Good for all sizes
+sum_result = data.sum();
+mean_result = data.mean();
 
-/* Statistical functions */
-vec.sum();                /* Sum of all elements */
-vec.mean();               /* Arithmetic mean */
-vec.std();                /* Standard deviation */
-vec.min();                /* Minimum value */
-vec.max();                /* Maximum value */
+// ⚠️ Moderate - Good for &lt; 200x200
+cov_result = data.cov();
 
-/* Mathematical functions */
-vec.abs();                /* Absolute values */
-vec.sqrt();               /* Square root of each element */
-vec.pow(2);               /* Each element raised to power */
-vec.exp();                /* Exponential of each element */
-vec.log();                /* Natural logarithm of each element */
+// ❌ Slow - Use only for &lt; 50x50
+eigen_result = data.eigh();
 </code></pre></div>
-<h3 id="matrix-operations">Matrix Operations</h3>
-<div class="highlight"><pre><span></span><code>mat = [[1, 2], [3, 4]];
+<h3 id="3-memory-management">3. Memory Management</h3>
+<h4 id="pre-allocation">Pre-allocation</h4>
+<div class="highlight"><pre><span></span><code>/* Pre-allocate matrices when possible */
+// ✅ Good - Reuse allocated memory
+matrix = create_matrix(50);
+for (i = 0; i &lt; 1000; i++) {
+    result = matrix.dot(matrix);  // Reuse same matrix
+}
 
-/* Basic matrix operations */
-mat.t();                  /* Transpose matrix: [[1,3],[2,4]] */
-mat.inv();                /* Matrix inverse: [[-2,1],[1.5,-0.5]] */
-mat.det();                /* Determinant: -2.0 */
-mat.rank();               /* Matrix rank: 2 */
-mat.rref();               /* Reduced row echelon form */
-
-/* Linear algebra */
-mat.solve([5, 6]);        /* Solve linear system Ax = b */
-mat.dot([1, 2]);          /* Dot product: [17,39] */
-mat.norm();               /* Matrix/vector norm */
-
-/* Matrix decomposition */
-mat.eigh();               /* Eigenvalues and eigenvectors */
-
-/* Matrix structure */
-mat.triu();               /* Upper triangular part */
-mat.tril();               /* Lower triangular part */
-mat.triu(1);              /* Upper triangular with offset */
-mat.tril(-1);             /* Lower triangular with offset */
+// ❌ Poor - Repeated allocation
+for (i = 0; i &lt; 1000; i++) {
+    matrix = create_matrix(50);   // Allocate each time
+    result = matrix.dot(matrix);
+}
 </code></pre></div>
-<h3 id="multi-dimensional-operations">Multi-dimensional Operations</h3>
-<div class="highlight"><pre><span></span><code>/* Statistical operations with axis parameter */
-data_3d = [[[1,2],[3,4]], [[5,6],[7,8]]];
-
-data_3d.sum();            /* Sum all elements */
-data_3d.sum(0);           /* Sum along axis 0 */
-data_3d.sum(1);           /* Sum along axis 1 */
-data_3d.sum(2);           /* Sum along axis 2 */
-
-data_3d.mean();           /* Mean of all elements */
-data_3d.mean(0);          /* Mean along axis 0 */
-data_3d.cov();            /* Covariance matrix */
-data_3d.cov(0);           /* Covariance along axis 0 */
-
-/* Shape and reshaping */
-data_3d.shape();          /* Get dimensions [2, 2, 2] */
-data_3d.reshape([4, 2]);  /* Reshape to 4x2 matrix */
+<h4 id="memory-monitoring">Memory Monitoring</h4>
+<div class="highlight"><pre><span></span><code>/* Monitor memory usage for large operations */
+large_matrix = create_matrix(200);
+estimated_memory = large_matrix.shape().reduce(op(acc, dim){acc * dim}, 1) * 8 / 1024;
+(&quot;Estimated memory usage: &quot; + estimated_memory + &quot; KB&quot;).echo();
 </code></pre></div>
-<h3 id="broadcasting">Broadcasting</h3>
-<div class="highlight"><pre><span></span><code>/* Automatic broadcasting for different-sized vectors */
-vec1 = [1, 2, 3];
-vec2 = [10];
-result = vec1 + vec2;     /* [11, 12, 13] - vec2 broadcast to match vec1 */
-</code></pre></div>
-<h3 id="comparison-operators">Comparison Operators</h3>
-<div class="highlight"><pre><span></span><code>vec1 = [1, 2, 3];
-vec2 = [1, 2, 3];
-vec3 = [1, 2, 4];
+<h3 id="4-data-type-optimization">4. Data Type Optimization</h3>
+<h4 id="choose-appropriate-types">Choose Appropriate Types</h4>
+<div class="highlight"><pre><span></span><code>/* Use INT for integer data, FLOAT for decimal */
+// ✅ Good - Use INT for integer data
+integer_data = [1, 2, 3, 4, 5].vector();
 
-/* Equality comparison */
-vec1 == vec2;             /* true - same content and dimensions */
-vec1 == vec3;             /* false - different content */
+// ✅ Good - Use FLOAT for decimal data
+decimal_data = [1.5, 2.7, 3.2, 4.1, 5.9].vector();
 
-/* Inequality comparison */
-vec1 != vec3;             /* true - different content */
-vec1 != vec2;             /* false - same content */
+// ⚠️ Consider - Precision vs performance trade-off
+high_precision = [1.123456789, 2.987654321].vector();
+</code></pre></div>
+<h2 id="use-case-optimization">Use Case Optimization</h2>
+<h3 id="real-time-applications_1">Real-time Applications</h3>
+<p><strong>Requirements:</strong> Sub-second response time
+<strong>Recommended Matrix Size:</strong> &lt; 50x50</p>
+<div class="highlight"><pre><span></span><code>/* Real-time optimization strategies */
+// 1. Use small matrices
+small_matrix = [[1, 2], [3, 4]].vector();
 
-/* Order comparison (lexicographic) */
-vec1 &lt; vec3;              /* true - vec1 comes before vec3 */
-vec1 &lt;= vec2;             /* true - vec1 equals vec2 */
-vec3 &gt; vec1;              /* true - vec3 comes after vec1 */
-vec2 &gt;= vec1;             /* true - vec2 equals vec1 */
+// 2. Pre-compute when possible
+precomputed_result = expensive_operation(small_matrix);
 
-/* Type handling */
-vec1 == [1, 2, 3];        /* false - different types (vector vs array) */
-vec1 == [1, 2, 3].vector(); /* true - after conversion */
-vec1.array() == [1, 2, 3];  /* true - after conversion */
-vec1 == {a:1, b:2};       /* false - different data structure */
-</code></pre></div>
-<p><strong>Comparison Rules:</strong>
-- <strong>Element-by-element comparison</strong> with dimension checking
-- <strong>Type safety</strong>: Vectors only compare equal to other vectors
-- <strong>Lexicographic ordering</strong> for <code>&lt;</code>, <code>&gt;</code>, <code>&lt;=</code>, <code>&gt;=</code> operators
-- <strong>Null handling</strong>: Empty vectors compare correctly
-- <strong>Nested support</strong>: Vectors containing other data structures compare recursively</p>
-<h2 id="edge-case-behavior">Edge Case Behavior</h2>
-<h3 id="empty-vectors-and-matrices">Empty Vectors and Matrices</h3>
-<div class="highlight"><pre><span></span><code>empty_vec = [].vector();
-empty_sum = empty_vec.sum();  /* Returns null */
-empty_mean = empty_vec.mean(); /* Returns null */
+// 3. Use fast operations
+fast_result = small_matrix.sum();  // O(n²) - very fast
 
-empty_mat = [[]].vector();
-empty_det = empty_mat.det();  /* Returns 0.0 */
+// 4. Avoid expensive operations
+// ❌ Avoid in real-time
+eigen_result = small_matrix.eigh();  // O(n³) with iterations
 </code></pre></div>
-<h3 id="singular-matrices">Singular Matrices</h3>
-<div class="highlight"><pre><span></span><code>singular_mat = [[1, 1], [1, 1]].vector();
-det_result = singular_mat.det();  /* Returns 0.0 */
-inv_result = singular_mat.inv();  /* Returns null */
+<h3 id="interactive-applications">Interactive Applications</h3>
+<p><strong>Requirements:</strong> &lt; 5 second response time
+<strong>Recommended Matrix Size:</strong> &lt; 100x100</p>
+<div class="highlight"><pre><span></span><code>/* Interactive optimization strategies */
+// 1. Use moderate matrix sizes
+medium_matrix = create_matrix(50);
+
+// 2. Provide progress feedback
+(&quot;Computing...&quot;).echo();
+result = medium_matrix.dot(medium_matrix);
+(&quot;Complete!&quot;).echo();
+
+// 3. Use appropriate operations
+cov_result = medium_matrix.cov();  // Good performance
 </code></pre></div>
-<h3 id="non-square-matrices">Non-square Matrices</h3>
-<div class="highlight"><pre><span></span><code>rect_mat = [[1, 2, 3], [4, 5, 6]].vector();
-rect_det = rect_mat.det();  /* Returns 0.0 */
-rect_inv = rect_mat.inv();  /* Returns null */
+<h3 id="batch-processing_1">Batch Processing</h3>
+<p><strong>Requirements:</strong> Efficient processing of large datasets
+<strong>Recommended Matrix Size:</strong> &lt; 500x500</p>
+<div class="highlight"><pre><span></span><code>/* Batch processing optimization strategies */
+// 1. Monitor memory usage
+large_matrix = create_matrix(200);
+memory_usage = estimate_memory(large_matrix);
+
+// 2. Use memory-efficient operations
+sum_result = large_matrix.sum();  // Memory efficient
+
+// 3. Consider breaking large problems
+if (large_matrix.shape().get(0) &gt; 200) {
+    result = process_in_blocks(large_matrix);
+} else {
+    result = process_directly(large_matrix);
+}
 </code></pre></div>
-<h3 id="incompatible-operations">Incompatible Operations</h3>
-<div class="highlight"><pre><span></span><code>mat_a = [[1, 2], [3, 4]].vector();
-mat_b = [[1, 2, 3], [4, 5, 6]].vector();
-result = mat_a.dot(mat_b);  /* Returns null - incompatible dimensions */
+<h3 id="data-science-applications">Data Science Applications</h3>
+<p><strong>Requirements:</strong> Accurate results with reasonable performance
+<strong>Recommended Matrix Size:</strong> &lt; 200x200</p>
+<div class="highlight"><pre><span></span><code>/* Data science optimization strategies */
+// 1. Use appropriate statistical functions
+data = load_dataset();
+cov_matrix = data.cov();  // Good for data analysis
+
+// 2. Consider data characteristics
+if (is_sparse(data)) {
+    result = sparse_operations(data);
+} else {
+    result = dense_operations(data);
+}
+
+// 3. Use efficient algorithms
+// For correlation analysis
+correlation = data.cov();  // More efficient than manual calculation
+</code></pre></div>
+<h2 id="edge-case-performance">Edge Case Performance</h2>
+<h3 id="empty-and-small-matrices">Empty and Small Matrices</h3>
+<div class="highlight"><pre><span></span><code>/* Edge cases perform excellently */
+empty_vec = [].vector();
+empty_sum = empty_vec.sum();  // 0ms - very fast
+
+small_mat = [[1]].vector();
+small_det = small_mat.det();  // 0ms - very fast
+</code></pre></div>
+<h3 id="special-matrix-types">Special Matrix Types</h3>
+<div class="highlight"><pre><span></span><code>/* Special matrices are optimized */
+identity = [[1, 0], [0, 1]].vector();
+id_det = identity.det();  // 0ms - very fast
+
+sparse = [[1, 0, 0], [0, 1, 0], [0, 0, 1]].vector();
+sparse_det = sparse.det();  // 0ms - very fast
 </code></pre></div>
 <h3 id="extreme-values">Extreme Values</h3>
-<div class="highlight"><pre><span></span><code>large_mat = [[1e15, 2e15], [3e15, 4e15]].vector();
-large_det = large_mat.det();  /* Handled correctly */
+<div class="highlight"><pre><span></span><code>/* Extreme values handled efficiently */
+large_nums = [[1e15, 2e15], [3e15, 4e15]].vector();
+large_det = large_nums.det();  // Handled correctly
 
-small_mat = [[1e-15, 2e-15], [3e-15, 4e-15]].vector();
-small_det = small_mat.det();  /* Handled correctly */
+small_nums = [[1e-15, 2e-15], [3e-15, 4e-15]].vector();
+small_det = small_nums.det();  // Handled correctly
 </code></pre></div>
-<p><strong>Edge Case Characteristics:</strong>
-- <strong>Graceful Handling</strong>: All edge cases handled without crashes
-- <strong>Null Returns</strong>: Invalid operations return null instead of errors
-- <strong>Mathematical Correctness</strong>: Singular matrices and special cases handled correctly
-- <strong>Performance</strong>: Edge cases perform excellently (0ms for most operations)</p>
-<h2 id="integration-with-other-types">Integration with Other Types</h2>
-<h3 id="conversion">Conversion</h3>
-<div class="highlight"><pre><span></span><code>/* Convert between types */
-arr = [1, 2, 3];
-vec = arr.vector();       /* Convert array to vector */
-arr2 = vec.array();       /* Convert vector back to array */
+<h2 id="performance-monitoring">Performance Monitoring</h2>
+<h3 id="timing-operations">Timing Operations</h3>
+<div class="highlight"><pre><span></span><code>/* Monitor operation performance */
+start_time = $TIME().utc();
+result = matrix.dot(matrix);
+end_time = $TIME().utc();
+operation_time = (($TIME().utc() - start_time) / 1000000).int();
+(&quot;Operation took: &quot; + operation_time + &quot;ms&quot;).echo();
+</code></pre></div>
+<h3 id="memory-estimation">Memory Estimation</h3>
+<div class="highlight"><pre><span></span><code>/* Estimate memory usage */
+estimate_memory = op(matrix) {
+    elements = matrix.shape().reduce(op(acc, dim){acc * dim}, 1);
+    bytes = elements * 8;  // 8 bytes per element
+    kb = bytes / 1024;
+    kb;
+};
 
-/* Multi-dimensional arrays */
-arr_2d = [[1, 2], [3, 4]];
-vec_2d = arr_2d.vector(); /* Convert 2D array to vector */
-
-/* Interchangeable comparisons */
-vec = #[1, 2, 3]#;
-arr = [1, 2, 3];
-vec == arr.vector();      /* true - after conversion */
-vec.array() == arr;       /* true - after conversion */
+memory_usage = estimate_memory(my_matrix);
+(&quot;Estimated memory: &quot; + memory_usage + &quot; KB&quot;).echo();
 </code></pre></div>
-<p><strong>Conversion Rules:</strong>
-- <strong>Vector to Array</strong>: Always succeeds - vectors can always convert to arrays
-- <strong>Array to Vector</strong>: Only succeeds for properly structured arrays
-  - ✅ Regular arrays: <code>[1, 2, 3]</code> → <code>#[1, 2, 3]#</code>
-  - ✅ Multi-dimensional: <code>[[1,2],[3,4]]</code> → <code>#[[1,2],[3,4]]#</code>
-  - ❌ Irregular arrays: <code>[[1,2],[3]]</code> → <code>$ERR</code> (ragged arrays)
-  - ❌ Mixed structures: <code>[1,[2,3],4]</code> → <code>$ERR</code> (inconsistent nesting)</p>
-<h3 id="mixed-operations">Mixed Operations</h3>
-<div class="highlight"><pre><span></span><code>/* Operations with other data types */
-vec = [1, 2, 3];
-list = {a:10, b:20};
-result = vec + list.values(); /* Vector + array values */
-</code></pre></div>
-<h2 id="performance-optimization">Performance Optimization</h2>
-<h3 id="best-practices">Best Practices</h3>
+<h2 id="best-practices-summary">Best Practices Summary</h2>
+<h3 id="dos">Do's</h3>
+<ul>
+<li>✅ Use matrices &lt; 50x50 for real-time applications</li>
+<li>✅ Pre-allocate matrices when possible</li>
+<li>✅ Use appropriate data types (INT vs FLOAT)</li>
+<li>✅ Monitor memory usage for large matrices</li>
+<li>✅ Use fast operations (sum, mean) for large datasets</li>
+<li>✅ Consider breaking large problems into smaller blocks</li>
+</ul>
+<h3 id="donts">Don'ts</h3>
+<ul>
+<li>❌ Don't use large matrices (&gt; 200x200) for real-time applications</li>
+<li>❌ Don't repeatedly allocate large matrices</li>
+<li>❌ Don't use eigenvalue calculations for large matrices (&gt; 50x50)</li>
+<li>❌ Don't ignore memory usage for large datasets</li>
+<li>❌ Don't use expensive operations when fast alternatives exist</li>
+</ul>
+<h3 id="performance-checklist">Performance Checklist</h3>
+<p>Before using vector operations, consider:</p>
 <ol>
-<li><strong>Use Appropriate Matrix Sizes</strong></li>
-<li>Keep matrices &lt; 50x50 for real-time applications</li>
-<li>Use &lt; 100x100 for interactive applications</li>
-<li>
-<p>Consider alternatives for matrices &gt; 500x500</p>
-</li>
-<li>
-<p><strong>Pre-allocate When Possible</strong></p>
-</li>
-<li>Create matrices once and reuse them</li>
-<li>
-<p>Avoid repeated creation of large matrices</p>
-</li>
-<li>
-<p><strong>Choose Data Types Wisely</strong></p>
-</li>
-<li>Use INT for integer data</li>
-<li>Use FLOAT for decimal data</li>
-<li>
-<p>Consider precision vs performance trade-offs</p>
-</li>
-<li>
-<p><strong>Optimize for Your Use Case</strong></p>
-</li>
-<li>Real-time: Use smaller matrices and break large problems into blocks</li>
-<li>Batch processing: Monitor memory usage for large datasets</li>
-<li>Interactive: Balance performance with user experience</li>
+<li><strong>Matrix Size</strong>: Is it appropriate for your use case?</li>
+<li><strong>Operation Type</strong>: Are you using the most efficient operation?</li>
+<li><strong>Memory Usage</strong>: Do you have sufficient memory?</li>
+<li><strong>Data Types</strong>: Are you using appropriate data types?</li>
+<li><strong>Pre-allocation</strong>: Can you reuse allocated matrices?</li>
+<li><strong>Monitoring</strong>: Are you tracking performance and memory usage?</li>
 </ol>
-<h3 id="memory-management">Memory Management</h3>
+<h2 id="conclusion">Conclusion</h2>
+<p>Grapa's vector operations provide excellent performance for most use cases. By following these optimization guidelines, you can achieve:</p>
 <ul>
-<li><strong>Monitor Memory Usage</strong>: Be aware of memory requirements for large matrices</li>
-<li><strong>Use Memory-Efficient Operations</strong>: Consider memory usage for long-running operations</li>
-<li><strong>Profile Memory</strong>: Monitor memory usage for large datasets</li>
+<li><strong>Sub-second response</strong> for real-time applications</li>
+<li><strong>Efficient processing</strong> for batch operations</li>
+<li><strong>Optimal memory usage</strong> for large datasets</li>
+<li><strong>Robust error handling</strong> for edge cases</li>
 </ul>
-<h2 id="examples">Examples</h2>
-<p>For comprehensive examples of all vector operations, see <a href="../../examples/vector_operations.grc">Vector Operations Examples</a> which demonstrates:</p>
-<ul>
-<li>Basic vector creation and conversion</li>
-<li>Matrix operations and linear algebra</li>
-<li>Statistical functions with axis support</li>
-<li>Multi-dimensional operations</li>
-<li>Performance considerations</li>
-<li>Error handling patterns</li>
-<li>Real-world use cases</li>
-</ul>
-<h2 id="see-also">See also</h2>
-<ul>
-<li><a href="../array/">$ARRAY object</a></li>
-<li><a href="../list/">$LIST object</a></li>
-<li><a href="../../operators/assignment/">Assignment Operators</a></li>
-<li><a href="../../operators/math/">Mathematical Operations</a></li>
-</ul>
+<p>The key is choosing the right matrix size and operations for your specific use case, while monitoring performance and memory usage appropriately.</p>
 
 
 
 
 
 
-
-  
-  
 
 
 
@@ -4669,16 +4181,16 @@ result = vec + list.values(); /* Vector + array values */
     
     
       
-      <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.top", "search.suggest", "content.code.copy", "content.action.edit", "content.action.view", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"base": "..", "features": ["navigation.tabs", "navigation.top", "search.suggest", "content.code.copy", "content.action.edit", "content.action.view", "content.tabs.link"], "search": "../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.56ea9cef.min.js"></script>
+      <script src="../assets/javascripts/bundle.56ea9cef.min.js"></script>
       
         <script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.0/dist/mermaid.min.js"></script>
       
-        <script src="../../javascripts/mermaid-init.js"></script>
+        <script src="../javascripts/mermaid-init.js"></script>
       
-        <script src="../../javascripts/search-fix.js"></script>
+        <script src="../javascripts/search-fix.js"></script>
       
     
   </body>

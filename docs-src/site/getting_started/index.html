@@ -713,6 +713,48 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#automatic-file-loading" class="md-nav__link">
+    <span class="md-ellipsis">
+      Automatic File Loading
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Automatic File Loading">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#creating-reusable-functions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Creating Reusable Functions
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#using-functions-automatically" class="md-nav__link">
+    <span class="md-ellipsis">
+      Using Functions Automatically
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#search-paths" class="md-nav__link">
+    <span class="md-ellipsis">
+      Search Paths
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#next-steps" class="md-nav__link">
     <span class="md-ellipsis">
       Next Steps
@@ -3812,6 +3854,48 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#automatic-file-loading" class="md-nav__link">
+    <span class="md-ellipsis">
+      Automatic File Loading
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Automatic File Loading">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#creating-reusable-functions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Creating Reusable Functions
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#using-functions-automatically" class="md-nav__link">
+    <span class="md-ellipsis">
+      Using Functions Automatically
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#search-paths" class="md-nav__link">
+    <span class="md-ellipsis">
+      Search Paths
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#next-steps" class="md-nav__link">
     <span class="md-ellipsis">
       Next Steps
@@ -4055,6 +4139,41 @@ text = &quot;Hello world, goodbye world&quot;;
 matches = text.grep(&quot;world&quot;, &quot;o&quot;);
 matches.echo();  /* [&quot;world&quot;, &quot;world&quot;] */
 </code></pre></div>
+<hr />
+<h2 id="automatic-file-loading">Automatic File Loading</h2>
+<p><strong>Important</strong>: This is <strong>runtime loading</strong> - files are loaded when the function or class is first called, not at compile time. This differs from the <code>include</code> command which loads files at compile time.</p>
+<p>Grapa includes a powerful automatic file loading mechanism that makes it easy to organize and reuse code:</p>
+<h3 id="creating-reusable-functions">Creating Reusable Functions</h3>
+<div class="highlight"><pre><span></span><code>/* File: lib/grapa/utils.grc */
+@global[&quot;utils&quot;] = class {
+    format_date = op(date) {
+        return date.format(&quot;YYYY-MM-DD&quot;);
+    };
+
+    validate_email = op(email) {
+        return email.grep(r&quot;^[^@]+@[^@]+\.[^@]+$&quot;, &quot;x&quot;).len() &gt; 0;
+    };
+};
+</code></pre></div>
+<h3 id="using-functions-automatically">Using Functions Automatically</h3>
+<div class="highlight"><pre><span></span><code>/* Grapa automatically loads utils.grc when you call utils() */
+formatted = utils().format_date($TIME());
+is_valid = utils().validate_email(&quot;user@example.com&quot;);
+</code></pre></div>
+<h3 id="search-paths">Search Paths</h3>
+<p>Grapa automatically searches for <code>.grc</code> and <code>.grz</code> files in this order:</p>
+<ol>
+<li><strong>Current working directory</strong> - Where you run the <code>grapa</code> command</li>
+<li><strong>Library directory</strong> - Determined by this priority:</li>
+<li><code>{current_working_directory}/lib/grapa</code> (development/local)</li>
+<li><code>/usr/lib/grapa</code> (system-wide, package manager)</li>
+<li><code>/usr/local/lib/grapa</code> (system-wide, user-installed)</li>
+<li><code>{binary_directory}/lib/grapa</code> (fallback, relative to grapa executable)</li>
+<li><strong>Static library</strong> - Built-in compressed library files</li>
+</ol>
+<blockquote>
+<p><strong>Tip:</strong> Place your utility functions in <code>lib/grapa/</code> in your project directory for automatic discovery. No import statements needed!</p>
+</blockquote>
 <hr />
 <h2 id="next-steps">Next Steps</h2>
 <ul>

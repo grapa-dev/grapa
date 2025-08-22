@@ -1108,6 +1108,48 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#unicode-support" class="md-nav__link">
+    <span class="md-ellipsis">
+      Unicode Support
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Unicode Support">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#unicode-characters-and-emoji" class="md-nav__link">
+    <span class="md-ellipsis">
+      Unicode Characters and Emoji
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#unicode-aware-string-functions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Unicode-Aware String Functions
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#unicode-vs-byte-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Unicode vs Byte Operations
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#common-string-operations" class="md-nav__link">
     <span class="md-ellipsis">
       Common String Operations
@@ -3703,6 +3745,48 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#unicode-support" class="md-nav__link">
+    <span class="md-ellipsis">
+      Unicode Support
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Unicode Support">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#unicode-characters-and-emoji" class="md-nav__link">
+    <span class="md-ellipsis">
+      Unicode Characters and Emoji
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#unicode-aware-string-functions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Unicode-Aware String Functions
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#unicode-vs-byte-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Unicode vs Byte Operations
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#common-string-operations" class="md-nav__link">
     <span class="md-ellipsis">
       Common String Operations
@@ -3882,7 +3966,9 @@
 
 <h1 id="str">$STR</h1>
 <p>References:</p>
-<p>ASCII only - Unicode will eventually be added. Can initialize with either double quotes or single quotes - which is easier than escaping a string that includes a quoted string - such as "this 'is' a test", or 'this "is" a test'. $STR inherits the $obj class - see $obj for functions supported. </p>
+<p><strong>Full Unicode Support</strong> - Grapa strings support complete Unicode including emoji, accented characters, and complex grapheme clusters. Can initialize with either double quotes or single quotes - which is easier than escaping a string that includes a quoted string - such as "this 'is' a test", or 'this "is" a test'. $STR inherits the $obj class - see $obj for functions supported.</p>
+<p><strong>Important:</strong> While string <strong>content</strong> supports full Unicode, <strong>identifiers</strong> (variable names, function names) are limited to ASCII characters only. See <a href="../id/">$ID Documentation</a> for details on identifier limitations.</p>
+<p><strong>Exception:</strong> When using <strong>quoted property access</strong> (e.g., <code>obj.'property_name'</code>), property names can contain Unicode characters since they're treated as string literals. </p>
 <h2 id="string-literals">String Literals</h2>
 <p>Grapa supports three types of string literals:</p>
 <h3 id="double-and-single-quotes">Double and Single Quotes</h3>
@@ -3921,6 +4007,58 @@ text = r&#39;This \&#39;is\&#39; a test&#39;;  /* Escape single quotes when usin
 path = r&quot;C:\Users\Name\Documents\file.txt&quot;;  /* No escaping needed for backslashes */
 pattern = r&quot;\w+\s+\d+&quot;;  /* No escaping needed for regex */
 </code></pre></div>
+<h2 id="unicode-support">Unicode Support</h2>
+<p>Grapa provides <strong>full Unicode support</strong> for strings, including:</p>
+<h3 id="unicode-characters-and-emoji">Unicode Characters and Emoji</h3>
+<div class="highlight"><pre><span></span><code>/* Accented characters */
+text = &quot;café résumé naïve&quot;;
+text.len();  /* Returns: 15 (Unicode character count) */
+
+/* Emoji and symbols */
+emoji = &quot;🚀🌟🎉&quot;;
+emoji.len();  /* Returns: 3 (Unicode character count) */
+
+/* Complex grapheme clusters */
+family = &quot;👨‍👩‍👧‍👦&quot;;
+family.len();  /* Returns: 1 (single grapheme cluster) */
+
+/* Mixed Unicode content */
+mixed = &quot;Hello 世界 🌍&quot;;
+mixed.len();  /* Returns: 8 (Unicode character count) */
+</code></pre></div>
+<h3 id="unicode-aware-string-functions">Unicode-Aware String Functions</h3>
+<p>All string manipulation functions in Grapa are Unicode-aware:</p>
+<div class="highlight"><pre><span></span><code>/* Unicode-aware length counting */
+&quot;héllo&quot;.len();      /* Returns: 5 (characters, not bytes) */
+&quot;🚀héllo&quot;.len();    /* Returns: 6 (characters, not bytes) */
+
+/* Unicode-aware substring operations */
+&quot;héllo&quot;.left(3);    /* Returns: &quot;hél&quot; (3 Unicode characters) */
+&quot;🚀héllo&quot;.right(3); /* Returns: &quot;llo&quot; (3 Unicode characters) */
+&quot;héllo&quot;.mid(1, 3);  /* Returns: &quot;éll&quot; (3 Unicode characters from position 1) */
+
+/* Unicode-aware reversal */
+&quot;héllo&quot;.reverse();  /* Returns: &quot;olléh&quot; (Unicode characters reversed) */
+
+/* Unicode-aware padding */
+&quot;héllo&quot;.lpad(10, &quot;🚀&quot;); /* Returns: &quot;🚀🚀🚀🚀🚀héllo&quot; */
+&quot;héllo&quot;.rpad(10, &quot;é&quot;);  /* Returns: &quot;hélloééééé&quot; */
+</code></pre></div>
+<h3 id="unicode-vs-byte-operations">Unicode vs Byte Operations</h3>
+<p>Grapa provides both Unicode character operations and byte-level operations:</p>
+<div class="highlight"><pre><span></span><code>unicode_text = &quot;héllo 🚀&quot;;
+
+/* Unicode character operations */
+unicode_text.len();    /* Returns: 7 (Unicode character count) */
+
+/* Byte-level operations */
+unicode_text.bytes();  /* Returns: 11 (byte count) */
+unicode_text.raw();    /* Returns: 0x68C3A96C6C6F20F09F9A80 (hex bytes) */
+</code></pre></div>
+<blockquote>
+<p><strong>See Also:</strong> <a href="../obj_methods/">Object Methods Documentation</a> for comprehensive details on Unicode-aware string functions including <code>.len()</code>, <code>.bytes()</code>, <code>.raw()</code>, <code>.left()</code>, <code>.right()</code>, <code>.mid()</code>, <code>.reverse()</code>, <code>.lpad()</code>, and <code>.rpad()</code>.</p>
+<p><strong>Note:</strong> While string content supports full Unicode, <strong>identifiers</strong> (variable names, function names) are limited to ASCII characters only. This is a lexical limitation in the parser. See <a href="../id/">$ID Documentation</a> for details.</p>
+</blockquote>
 <h2 id="common-string-operations">Common String Operations</h2>
 <h3 id="basic-operations">Basic Operations</h3>
 <table>

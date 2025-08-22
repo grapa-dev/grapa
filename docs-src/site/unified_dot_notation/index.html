@@ -4298,6 +4298,16 @@ data[property];     /* &quot;Alice&quot; */
 /* Loop through properties */
 properties = [&quot;name&quot;, &quot;age&quot;, &quot;city&quot;];
 properties.map(op(prop){data[prop];}).echo();
+
+/* Advanced: Recursive keys function using .getname() */
+keys = op(lst){lst.reduce(op(acc,x){if(x.type()==$LIST){acc += keys(x);}else{acc += &#39;x&#39;.getname();}},[]);};
+
+obj = {name:&quot;Alice&quot;, age:30, test:{a:1,b:2}, city:&quot;NYC&quot;};
+keys(obj).echo();  /* Outputs: [name,age,[a,b],city] */
+
+/* Dynamic property access with keys */
+all_keys = keys(obj);
+all_keys.map(op(key){obj[key].echo();});  /* Outputs all values */
 </code></pre></div>
 <h3 id="duplicate-key-resolution">Duplicate Key Resolution</h3>
 <p>When objects contain duplicate keys, Grapa follows "last value wins" behavior:</p>
@@ -4458,30 +4468,22 @@ users.map(op(user){
 </code></pre></div>
 <h3 id="critical-number-method-calls">⚠️ Critical: Number Method Calls</h3>
 <p><strong>IMPORTANT:</strong> When calling methods on numbers using dot notation, you must enclose the number in parentheses:</p>
-<div class="highlight"><pre><span></span><code>/* ✅ Correct - Use parentheses for number method calls */
-(20).random();    /* Works: Random number 0-19 */
-(3.14).floor();   /* Works: Floor to 3 */
-(42).str();       /* Works: Convert to string */
-
-/* ❌ Incorrect - Lexer consumes the dot as part of float literal */
-20.random();      /* Fails: Lexer sees &quot;20.&quot; as float */
-3.14.floor();     /* Fails: Lexer sees &quot;3.14.&quot; as float */
-42.str();         /* Fails: Lexer sees &quot;42.&quot; as float */
+<div class="highlight"><pre><span></span><code>/* ✅ Correct - Direct number method calls */
+20.random();      /* Works: Random number 0-19 */
+3.14.floor();     /* Works: Floor to 3 */
+42.str();         /* Works: Convert to string */
+145.len();        /* Works: Length of number (3) */
+145.echo();       /* Works: Output the number */
 </code></pre></div>
-<p><strong>Why this happens:</strong>
-- The lexer processes <code>20.</code> as a float literal and consumes the dot
-- No dot token reaches the parser, so method calls fail
-- Parentheses force the lexer to treat the number as a complete token first
-- Then the dot becomes available for method calls</p>
 <p><strong>Common patterns:</strong>
 <div class="highlight"><pre><span></span><code>/* Working examples */
-result = (20).random();     /* Random number 0-19 */
-rounded = (3.14159).floor(); /* Floor: 3 */
-text = (42).str();          /* Convert to string: &quot;42&quot; */
+result = 20.random();     /* Random number 0-19 */
+rounded = 3.14159.floor(); /* Floor: 3 */
+text = 42.str();          /* Convert to string: &quot;42&quot; */
 
 /* In functional programming */
-numbers = [(10).random(), (20).random(), (30).random()];
-text_numbers = [(1).str(), (2).str(), (3).str()];
+numbers = [10.random(), 20.random(), 30.random()];
+text_numbers = [1.str(), 2.str(), 3.str()];
 </code></pre></div></p>
 <h2 id="use-cases">Use Cases</h2>
 <h3 id="1-configuration-access">1. Configuration Access</h3>
