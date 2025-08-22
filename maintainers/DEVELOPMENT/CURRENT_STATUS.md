@@ -92,7 +92,23 @@
   - Performance analysis and optimization guidance
   - Integration with existing documentation structure
 
-## Current Focus: C++ Backend Optimization
+## Current Focus: Console Exit Optimization
+
+### ✅ **Console Exit Optimization Complete**
+- **Problem**: Grapa console would not exit immediately when `.exit()` was called if waiting for input
+- **POSIX Solution**: ✅ **Perfect** - Uses `select()` with 100ms timeout, loops internally until input or exit
+- **Windows Solution**: ✅ **Working** - Stable console operation with native UTF-8 conversion, exit requires keypress
+- **Windows Implementation**: Uses `WideCharToMultiByte()` for reliable UTF-8 conversion, blocking `ReadConsoleW()` for input
+- **Trade-off**: Windows console API limitations require extra keypress after `.exit()` to maintain stable operation
+- **Benefits Achieved**:
+  - **Mac/Linux**: Immediate exit response, no prompt spam, clean calling code
+  - **Windows**: Stable console operation, correct character handling, full Unicode support
+- **Key Features**:
+  - POSIX platforms: Function handles timeout internally, checks `gSystem->mStop` every 100ms
+  - Windows: Native UTF-8 conversion prevents character corruption
+  - All platforms: Full Unicode support and reliable character processing
+
+## Next Focus: C++ Backend Optimization
 
 ### 🎯 **Active Task: Address mVar Field Inconsistencies**
 - **Objective**: Review and optimize the `mVar` field usage in `GrapaRuleEvent` for better performance and consistency
