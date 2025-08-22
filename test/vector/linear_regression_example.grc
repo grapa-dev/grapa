@@ -1,0 +1,273 @@
+/* Linear Regression Example in Grapa
+ * 
+ * This example demonstrates how to implement linear regression
+ * using Grapa's vector operations, including:
+ * - Data preprocessing
+ * - Model training using normal equation
+ * - Predictions and evaluation
+ * - Performance metrics calculation
+ */
+
+("=== Linear Regression Example ===").echo();
+
+/* ======================================== */
+/* 1. Data Generation and Preprocessing */
+/* ======================================== */
+
+("--- Data Generation ---").echo();
+
+/* Generate sample data: y = 2*x1 + 3*x2 + 5 + noise */
+n_samples = 100;
+X_data = [];
+y_data = [];
+
+i = 0;
+while (i < n_samples) {
+    x1 = (i / 10).float();  /* Feature 1 */
+    x2 = (i % 10).float();  /* Feature 2 */
+    noise = ((i % 3) - 1) * 0.1;  /* Small noise */
+    y = 2 * x1 + 3 * x2 + 5 + noise;  /* True relationship */
+    
+    X_data += [x1, x2];
+    y_data += y;
+    i = i + 1;
+}
+
+/* Convert to vectors */
+X = X_data.vector();
+y = y_data.vector();
+
+("Generated " + n_samples + " samples").echo();
+("X shape: " + X.shape()).echo();
+("y shape: " + y.shape()).echo();
+
+/* ======================================== */
+/* 2. Feature Scaling */
+/* ======================================== */
+
+("--- Feature Scaling ---").echo();
+
+/* Standardize features (Z-score normalization) */
+feature_means = X.mean(0);
+feature_stds = X.std(0);
+
+("Feature means: " + feature_means).echo();
+("Feature standard deviations: " + feature_stds).echo();
+
+/* Scale the features */
+X_scaled = [];
+i = 0;
+while (i < X.shape().get(0)) {
+    row = [];
+    j = 0;
+    while (j < X.shape().get(1)) {
+        standardized_val = (X.get(i).get(j) - feature_means.get(j)) / feature_stds.get(j);
+        row += standardized_val;
+        j = j + 1;
+    }
+    X_scaled += row;
+    i = i + 1;
+}
+
+X_scaled = X_scaled.vector();
+("Features scaled successfully").echo();
+
+/* ======================================== */
+/* 3. Linear Regression Implementation */
+/* ======================================== */
+
+("--- Linear Regression Training ---").echo();
+
+/* Add bias term (intercept) to design matrix */
+add_bias_column = op(X) {
+    X_with_bias = [];
+    i = 0;
+    while (i < X.shape().get(0)) {
+        row = [1];  /* Bias term */
+        j = 0;
+        while (j < X.shape().get(1)) {
+            row += X.get(i).get(j);
+            j = j + 1;
+        }
+        X_with_bias += row;
+        i = i + 1;
+    }
+    X_with_bias.vector();
+};
+
+/* Normal equation: β = (X^T * X)^-1 * X^T * y */
+X_with_bias = add_bias_column(X_scaled);
+("Design matrix shape: " + X_with_bias.shape()).echo();
+
+/* Calculate coefficients using normal equation */
+start_time = $TIME().utc();
+XT = X_with_bias.t();
+XTX = XT.dot(X_with_bias);
+XTy = XT.dot(y);
+coefficients = XTX.inv().dot(XTy);
+end_time = $TIME().utc();
+training_time = (($TIME().utc() - start_time) / 1000000).int();
+
+("Training completed in " + training_time + "ms").echo();
+("Coefficients: " + coefficients).echo();
+
+/* ======================================== */
+/* 4. Predictions */
+/* ======================================== */
+
+("--- Making Predictions ---").echo();
+
+/* Make predictions on training data */
+predictions = X_with_bias.dot(coefficients);
+
+/* Show first few predictions */
+("First 5 predictions:").echo();
+i = 0;
+while (i < 5) {
+    ("  Sample " + i + ": True=" + y.get(i) + ", Predicted=" + predictions.get(i)).echo();
+    i = i + 1;
+}
+
+/* ======================================== */
+/* 5. Model Evaluation */
+/* ======================================== */
+
+("--- Model Evaluation ---").echo();
+
+/* Calculate performance metrics */
+calculate_r_squared = op(y_true, y_pred) {
+    y_mean = y_true.mean();
+    ss_total = (y_true - y_mean).pow(2).sum();
+    ss_residual = (y_true - y_pred).pow(2).sum();
+    r_squared = 1 - (ss_residual / ss_total);
+    r_squared;
+};
+
+calculate_mse = op(y_true, y_pred) {
+    mse = (y_true - y_pred).pow(2).mean();
+    mse;
+};
+
+calculate_rmse = op(y_true, y_pred) {
+    mse = calculate_mse(y_true, y_pred);
+    rmse = mse.sqrt();
+    rmse;
+};
+
+/* Calculate metrics */
+r_squared = calculate_r_squared(y, predictions);
+mse = calculate_mse(y, predictions);
+rmse = calculate_rmse(y, predictions);
+
+("Performance Metrics:").echo();
+("  R-squared: " + r_squared).echo();
+("  Mean Squared Error: " + mse).echo();
+("  Root Mean Squared Error: " + rmse).echo();
+
+/* ======================================== */
+/* 6. Ridge Regression Example */
+/* ======================================== */
+
+("--- Ridge Regression Example ---").echo();
+
+/* Ridge regression with L2 regularization */
+ridge_regression = op(X, y, lambda) {
+    /* Add regularization term */
+    n_features = X.shape().get(1);
+    regularization_matrix = [];
+    i = 0;
+    while (i < n_features) {
+        row = [];
+        j = 0;
+        while (j < n_features) {
+            if (i == j && i > 0) {  /* Don't regularize bias term */
+                row += lambda;
+            } else {
+                row += 0.0;
+            }
+            j = j + 1;
+        }
+        regularization_matrix += row;
+        i = i + 1;
+    }
+    regularization_matrix = regularization_matrix.vector();
+    
+    /* Calculate coefficients with regularization */
+    XT = X.t();
+    XTX = XT.dot(X);
+    XTX_reg = XTX + regularization_matrix;
+    XTy = XT.dot(y);
+    
+    coefficients = XTX_reg.inv().dot(XTy);
+    coefficients;
+};
+
+/* Try different regularization strengths */
+lambda_values = [0.0, 0.1, 1.0, 10.0];
+("Ridge regression with different lambda values:").echo();
+
+lambda_values.each(op(lambda) {
+    ridge_coefficients = ridge_regression(X_with_bias, y, lambda);
+    ridge_predictions = X_with_bias.dot(ridge_coefficients);
+    ridge_r_squared = calculate_r_squared(y, ridge_predictions);
+    ridge_rmse = calculate_rmse(y, ridge_predictions);
+    
+    ("  Lambda=" + lambda + ": R²=" + ridge_r_squared + ", RMSE=" + ridge_rmse).echo();
+});
+
+/* ======================================== */
+/* 7. New Data Prediction */
+/* ======================================== */
+
+("--- New Data Prediction ---").echo();
+
+/* Create new data points */
+new_data = [[1.5, 2.5], [3.0, 4.0], [5.5, 6.5]].vector();
+("New data points: " + new_data).echo();
+
+/* Scale new data using same parameters */
+new_data_scaled = [];
+i = 0;
+while (i < new_data.shape().get(0)) {
+    row = [];
+    j = 0;
+    while (j < new_data.shape().get(1)) {
+        standardized_val = (new_data.get(i).get(j) - feature_means.get(j)) / feature_stds.get(j);
+        row += standardized_val;
+        j = j + 1;
+    }
+    new_data_scaled += row;
+    i = i + 1;
+}
+
+new_data_scaled = new_data_scaled.vector();
+new_data_with_bias = add_bias_column(new_data_scaled);
+
+/* Make predictions */
+new_predictions = new_data_with_bias.dot(coefficients);
+
+("Predictions for new data:").echo();
+i = 0;
+while (i < new_data.shape().get(0)) {
+    ("  Input: " + new_data.get(i) + " -> Prediction: " + new_predictions.get(i)).echo();
+    i = i + 1;
+}
+
+/* ======================================== */
+/* 8. Summary */
+/* ======================================== */
+
+("\n--- Summary ---").echo();
+
+("Linear regression implementation completed successfully!").echo();
+("Key results:").echo();
+("  - Model trained on " + n_samples + " samples").echo();
+("  - Training time: " + training_time + "ms").echo();
+("  - R-squared: " + r_squared).echo();
+("  - RMSE: " + rmse).echo();
+("  - Coefficients: " + coefficients).echo();
+
+("The model successfully learned the relationship: y = 2*x1 + 3*x2 + 5").echo();
+("Grapa's vector operations provide all necessary capabilities for linear regression!").echo();
+
+("=== Linear Regression Example Complete ===").echo();

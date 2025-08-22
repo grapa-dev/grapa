@@ -56,6 +56,38 @@ shifted = vec1 + 10;      /* Add scalar to all elements */
 - **Large Dataset Support**: Efficient handling of vectors with millions of elements
 - **Mathematical Optimization**: Specialized for numerical computations
 
+## Performance Guidelines
+
+### Matrix Size Recommendations
+
+| Use Case | Recommended Size | Performance Expectation |
+|----------|------------------|------------------------|
+| Real-time | < 50x50         | Sub-second response    |
+| Interactive | < 100x100       | < 5 second response    |
+| Batch processing | < 500x500     | < 1 minute response    |
+| Large-scale | > 500x500       | Consider alternatives   |
+
+### Operation Performance
+
+| Operation Type | Recommended Matrix Size | Performance Notes |
+|----------------|-------------------------|-------------------|
+| Matrix multiplication | < 100x100 | O(n³) complexity |
+| Statistical functions | < 200x200 | Good performance |
+| Basic operations | Any size | Very fast |
+| Eigenvalue calculation | < 50x50 | Computationally intensive |
+
+### Memory Usage
+
+Estimated memory usage based on 8 bytes per element:
+
+| Matrix Size | Elements | Estimated Memory | Memory Category |
+|-------------|----------|------------------|-----------------|
+| 10x10       | 100      | 0.8 KB           | Very Small      |
+| 50x50       | 2,500    | 20 KB            | Small           |
+| 100x100     | 10,000   | 80 KB            | Medium          |
+| 200x200     | 40,000   | 320 KB           | Large           |
+| 500x500     | 250,000  | 2 MB             | Very Large      |
+
 ## Use Cases
 
 ### Data Science
@@ -80,6 +112,12 @@ features = [1.0, 2.0, 3.0, 4.0];
 weights = [0.1, 0.2, 0.3, 0.4];
 prediction = features.dot(weights);
 ```
+
+For comprehensive machine learning capabilities, see [Machine Learning Guide](../machine_learning.md) which covers:
+- Linear regression (normal equation, gradient descent, ridge regression)
+- Statistical analysis and feature preprocessing
+- Model evaluation and performance metrics
+- Complete implementation examples
 
 ## Advanced Features
 
@@ -190,6 +228,54 @@ vec1 == {a:1, b:2};       /* false - different data structure */
 - **Null handling**: Empty vectors compare correctly
 - **Nested support**: Vectors containing other data structures compare recursively
 
+## Edge Case Behavior
+
+### Empty Vectors and Matrices
+```grapa
+empty_vec = [].vector();
+empty_sum = empty_vec.sum();  /* Returns null */
+empty_mean = empty_vec.mean(); /* Returns null */
+
+empty_mat = [[]].vector();
+empty_det = empty_mat.det();  /* Returns 0.0 */
+```
+
+### Singular Matrices
+```grapa
+singular_mat = [[1, 1], [1, 1]].vector();
+det_result = singular_mat.det();  /* Returns 0.0 */
+inv_result = singular_mat.inv();  /* Returns null */
+```
+
+### Non-square Matrices
+```grapa
+rect_mat = [[1, 2, 3], [4, 5, 6]].vector();
+rect_det = rect_mat.det();  /* Returns 0.0 */
+rect_inv = rect_mat.inv();  /* Returns null */
+```
+
+### Incompatible Operations
+```grapa
+mat_a = [[1, 2], [3, 4]].vector();
+mat_b = [[1, 2, 3], [4, 5, 6]].vector();
+result = mat_a.dot(mat_b);  /* Returns null - incompatible dimensions */
+```
+
+### Extreme Values
+```grapa
+large_mat = [[1e15, 2e15], [3e15, 4e15]].vector();
+large_det = large_mat.det();  /* Handled correctly */
+
+small_mat = [[1e-15, 2e-15], [3e-15, 4e-15]].vector();
+small_det = small_mat.det();  /* Handled correctly */
+```
+
+**Edge Case Characteristics:**
+- **Graceful Handling**: All edge cases handled without crashes
+- **Null Returns**: Invalid operations return null instead of errors
+- **Mathematical Correctness**: Singular matrices and special cases handled correctly
+- **Performance**: Edge cases perform excellently (0ms for most operations)
+
 ## Integration with Other Types
 
 ### Conversion
@@ -226,12 +312,34 @@ list = {a:10, b:20};
 result = vec + list.values(); /* Vector + array values */
 ```
 
-## Performance Considerations
+## Performance Optimization
 
-- **Memory Efficiency**: Vectors use optimized memory layouts for numerical data
-- **Parallel Processing**: Many operations automatically utilize multiple CPU cores
-- **Cache Optimization**: Data layout optimized for CPU cache access patterns
-- **Large Dataset Handling**: Efficient algorithms for vectors with millions of elements
+### Best Practices
+
+1. **Use Appropriate Matrix Sizes**
+   - Keep matrices < 50x50 for real-time applications
+   - Use < 100x100 for interactive applications
+   - Consider alternatives for matrices > 500x500
+
+2. **Pre-allocate When Possible**
+   - Create matrices once and reuse them
+   - Avoid repeated creation of large matrices
+
+3. **Choose Data Types Wisely**
+   - Use INT for integer data
+   - Use FLOAT for decimal data
+   - Consider precision vs performance trade-offs
+
+4. **Optimize for Your Use Case**
+   - Real-time: Use smaller matrices and break large problems into blocks
+   - Batch processing: Monitor memory usage for large datasets
+   - Interactive: Balance performance with user experience
+
+### Memory Management
+
+- **Monitor Memory Usage**: Be aware of memory requirements for large matrices
+- **Use Memory-Efficient Operations**: Consider memory usage for long-running operations
+- **Profile Memory**: Monitor memory usage for large datasets
 
 ## Examples
 

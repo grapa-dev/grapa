@@ -1,0 +1,398 @@
+/* Vector Edge Cases Test Suite
+ * 
+ * This script tests vector operations with edge cases, error conditions,
+ * and boundary conditions to ensure robust behavior.
+ * 
+ * Test categories:
+ * - Empty matrices and vectors
+ * - Singular matrices and error conditions
+ * - Boundary conditions for different matrix sizes
+ * - Error handling and recovery mechanisms
+ * - Performance with edge case data patterns
+ */
+
+("=== Vector Edge Cases Test Suite ===").echo();
+
+/* ======================================== */
+/* 1. Empty Matrix Tests */
+/* ======================================== */
+
+("--- Empty Matrix Tests ---").echo();
+
+/* Test empty vector creation */
+("Testing empty vector operations...").echo();
+
+empty_vec = [].vector();
+("Empty vector type: " + empty_vec.type()).echo();
+("Empty vector shape: " + empty_vec.shape()).echo();
+
+/* Test operations on empty vectors */
+try {
+    empty_sum = empty_vec.sum();
+    ("Empty vector sum: " + empty_sum).echo();
+} {
+    catch 'error': ("Empty vector sum error: " + error).echo();
+    default: ("Empty vector sum: null").echo();
+}
+
+try {
+    empty_mean = empty_vec.mean();
+    ("Empty vector mean: " + empty_mean).echo();
+} {
+    catch 'error': ("Empty vector mean error: " + error).echo();
+    default: ("Empty vector mean: null").echo();
+}
+
+/* Test empty matrix operations */
+empty_mat = [[]].vector();
+("Empty matrix type: " + empty_mat.type()).echo();
+("Empty matrix shape: " + empty_mat.shape()).echo();
+
+try {
+    empty_det = empty_mat.det();
+    ("Empty matrix determinant: " + empty_det).echo();
+} {
+    catch 'error': ("Empty matrix determinant error: " + error).echo();
+    default: ("Empty matrix determinant: null").echo();
+}
+
+/* ======================================== */
+/* 2. Singular Matrix Tests */
+/* ======================================== */
+
+("\n--- Singular Matrix Tests ---").echo();
+
+/* Test singular matrices (determinant = 0) */
+("Testing singular matrices...").echo();
+
+/* 2x2 singular matrix */
+singular_2x2 = [[1, 1], [1, 1]].vector();
+("Singular 2x2 matrix: " + singular_2x2).echo();
+
+try {
+    det_2x2 = singular_2x2.det();
+    ("2x2 singular determinant: " + det_2x2).echo();
+} {
+    catch 'error': ("2x2 singular determinant error: " + error).echo();
+    default: ("2x2 singular determinant: null").echo();
+}
+
+try {
+    inv_2x2 = singular_2x2.inv();
+    ("2x2 singular inverse: " + inv_2x2).echo();
+} {
+    catch 'error': ("2x2 singular inverse error: " + error).echo();
+    default: ("2x2 singular inverse: null").echo();
+}
+
+/* 3x3 singular matrix */
+singular_3x3 = [[1, 2, 3], [2, 4, 6], [3, 6, 9]].vector();
+("Singular 3x3 matrix: " + singular_3x3).echo();
+
+try {
+    det_3x3 = singular_3x3.det();
+    ("3x3 singular determinant: " + det_3x3).echo();
+} {
+    catch 'error': ("3x3 singular determinant error: " + error).echo();
+    default: ("3x3 singular determinant: null").echo();
+}
+
+/* ======================================== */
+/* 3. Boundary Condition Tests */
+/* ======================================== */
+
+("\n--- Boundary Condition Tests ---").echo();
+
+/* Test 1x1 matrices */
+("Testing 1x1 matrices...").echo();
+
+mat_1x1 = [[5]].vector();
+("1x1 matrix: " + mat_1x1).echo();
+
+try {
+    det_1x1 = mat_1x1.det();
+    ("1x1 determinant: " + det_1x1).echo();
+} {
+    catch 'error': ("1x1 determinant error: " + error).echo();
+    default: ("1x1 determinant: null").echo();
+}
+
+try {
+    inv_1x1 = mat_1x1.inv();
+    ("1x1 inverse: " + inv_1x1).echo();
+} {
+    catch 'error': ("1x1 inverse error: " + error).echo();
+    default: ("1x1 inverse: null").echo();
+}
+
+/* Test 1xN and Nx1 matrices */
+("Testing 1xN and Nx1 matrices...").echo();
+
+mat_1x3 = [[1, 2, 3]].vector();
+mat_3x1 = [[1], [2], [3]].vector();
+
+("1x3 matrix: " + mat_1x3).echo();
+("3x1 matrix: " + mat_3x1).echo();
+
+try {
+    mult_1x3_3x1 = mat_1x3.dot(mat_3x1);
+    ("1x3 * 3x1 result: " + mult_1x3_3x1).echo();
+} {
+    catch 'error': ("1x3 * 3x1 error: " + error).echo();
+    default: ("1x3 * 3x1: null").echo();
+}
+
+/* ======================================== */
+/* 4. Error Condition Tests */
+/* ======================================== */
+
+("\n--- Error Condition Tests ---").echo();
+
+/* Test incompatible matrix multiplication */
+("Testing incompatible matrix multiplication...").echo();
+
+mat_2x3 = [[1, 2, 3], [4, 5, 6]].vector();
+mat_2x2 = [[1, 2], [3, 4]].vector();
+
+("2x3 matrix: " + mat_2x3).echo();
+("2x2 matrix: " + mat_2x2).echo();
+
+try {
+    incompatible_mult = mat_2x3.dot(mat_2x2);
+    ("2x3 * 2x2 result: " + incompatible_mult).echo();
+} {
+    catch 'error': ("2x3 * 2x2 error: " + error).echo();
+    default: ("2x3 * 2x2: null").echo();
+}
+
+/* Test non-square matrix determinant */
+("Testing non-square matrix determinant...").echo();
+
+try {
+    nonsquare_det = mat_2x3.det();
+    ("2x3 determinant: " + nonsquare_det).echo();
+} {
+    catch 'error': ("2x3 determinant error: " + error).echo();
+    default: ("2x3 determinant: null").echo();
+}
+
+/* Test non-square matrix inverse */
+("Testing non-square matrix inverse...").echo();
+
+try {
+    nonsquare_inv = mat_2x3.inv();
+    ("2x3 inverse: " + nonsquare_inv).echo();
+} {
+    catch 'error': ("2x3 inverse error: " + error).echo();
+    default: ("2x3 inverse: null").echo();
+}
+
+/* ======================================== */
+/* 5. Edge Case Data Pattern Tests */
+/* ======================================== */
+
+("\n--- Edge Case Data Pattern Tests ---").echo();
+
+/* Test matrices with extreme values */
+("Testing matrices with extreme values...").echo();
+
+/* Very large numbers */
+large_mat = [[1e15, 2e15], [3e15, 4e15]].vector();
+("Large number matrix: " + large_mat).echo();
+
+try {
+    large_det = large_mat.det();
+    ("Large number determinant: " + large_det).echo();
+} {
+    catch 'error': ("Large number determinant error: " + error).echo();
+    default: ("Large number determinant: null").echo();
+}
+
+/* Very small numbers */
+small_mat = [[1e-15, 2e-15], [3e-15, 4e-15]].vector();
+("Small number matrix: " + small_mat).echo();
+
+try {
+    small_det = small_mat.det();
+    ("Small number determinant: " + small_det).echo();
+} {
+    catch 'error': ("Small number determinant error: " + error).echo();
+    default: ("Small number determinant: null").echo();
+}
+
+/* Mixed positive and negative */
+mixed_mat = [[1, -2], [-3, 4]].vector();
+("Mixed sign matrix: " + mixed_mat).echo();
+
+try {
+    mixed_det = mixed_mat.det();
+    ("Mixed sign determinant: " + mixed_det).echo();
+} {
+    catch 'error': ("Mixed sign determinant error: " + error).echo();
+    default: ("Mixed sign determinant: null").echo();
+}
+
+/* ======================================== */
+/* 6. Performance Edge Case Tests */
+/* ======================================== */
+
+("\n--- Performance Edge Case Tests ---").echo();
+
+/* Test with matrices containing many zeros */
+("Testing sparse-like matrices...").echo();
+
+sparse_mat = [[1, 0, 0], [0, 1, 0], [0, 0, 1]].vector();
+("Sparse-like matrix: " + sparse_mat).echo();
+
+start_time = $TIME().utc();
+sparse_det = sparse_mat.det();
+end_time = $TIME().utc();
+sparse_time = (($TIME().utc() - start_time) / 1000000).int();
+("Sparse determinant: " + sparse_det + " (time: " + sparse_time + "ms)").echo();
+
+/* Test with matrices containing many identical values */
+("Testing matrices with identical values...").echo();
+
+identical_mat = [[5, 5, 5], [5, 5, 5], [5, 5, 5]].vector();
+("Identical values matrix: " + identical_mat).echo();
+
+start_time = $TIME().utc();
+identical_det = identical_mat.det();
+end_time = $TIME().utc();
+identical_time = (($TIME().utc() - start_time) / 1000000).int();
+("Identical values determinant: " + identical_det + " (time: " + identical_time + "ms)").echo();
+
+/* ======================================== */
+/* 7. Covariance Edge Case Tests */
+/* ======================================== */
+
+("\n--- Covariance Edge Case Tests ---").echo();
+
+/* Test covariance with single column */
+("Testing covariance with single column...").echo();
+
+single_col = [[1], [2], [3]].vector();
+("Single column matrix: " + single_col).echo();
+
+try {
+    single_cov = single_col.cov();
+    ("Single column covariance: " + single_cov).echo();
+} {
+    catch 'error': ("Single column covariance error: " + error).echo();
+    default: ("Single column covariance: null").echo();
+}
+
+/* Test covariance with single row */
+("Testing covariance with single row...").echo();
+
+single_row = [[1, 2, 3]].vector();
+("Single row matrix: " + single_row).echo();
+
+try {
+    single_row_cov = single_row.cov();
+    ("Single row covariance: " + single_row_cov).echo();
+} {
+    catch 'error': ("Single row covariance error: " + error).echo();
+    default: ("Single row covariance: null").echo();
+}
+
+/* Test covariance with constant values */
+("Testing covariance with constant values...").echo();
+
+constant_mat = [[1, 1, 1], [1, 1, 1], [1, 1, 1]].vector();
+("Constant values matrix: " + constant_mat).echo();
+
+try {
+    constant_cov = constant_mat.cov();
+    ("Constant values covariance: " + constant_cov).echo();
+} {
+    catch 'error': ("Constant values covariance error: " + error).echo();
+    default: ("Constant values covariance: null").echo();
+}
+
+/* ======================================== */
+/* 8. Eigenvalue Edge Case Tests */
+/* ======================================== */
+
+("\n--- Eigenvalue Edge Case Tests ---").echo();
+
+/* Test eigenvalues with identity matrix */
+("Testing eigenvalues with identity matrix...").echo();
+
+identity_mat = [[1, 0], [0, 1]].vector();
+("Identity matrix: " + identity_mat).echo();
+
+try {
+    eigen_result = identity_mat.eigh();
+    ("Identity matrix eigenvalues: " + eigen_result).echo();
+} {
+    catch 'error': ("Identity matrix eigenvalues error: " + error).echo();
+    default: ("Identity matrix eigenvalues: null").echo();
+}
+
+/* Test eigenvalues with non-symmetric matrix */
+("Testing eigenvalues with non-symmetric matrix...").echo();
+
+nonsym_mat = [[1, 2], [3, 4]].vector();
+("Non-symmetric matrix: " + nonsym_mat).echo();
+
+try {
+    nonsym_eigen = nonsym_mat.eigh();
+    ("Non-symmetric eigenvalues: " + nonsym_eigen).echo();
+} {
+    catch 'error': ("Non-symmetric eigenvalues error: " + error).echo();
+    default: ("Non-symmetric eigenvalues: null").echo();
+}
+
+/* ======================================== */
+/* 9. Memory Edge Case Tests */
+/* ======================================== */
+
+("\n--- Memory Edge Case Tests ---").echo();
+
+/* Test memory usage with large matrices */
+("Testing memory usage with large matrices...").echo();
+
+/* Create a moderately large matrix */
+large_test_mat = [];
+i = 0;
+while (i < 50) {
+    row = [];
+    j = 0;
+    while (j < 50) {
+        row += (i * 50 + j + 1);
+        j = j + 1;
+    }
+    large_test_mat += row;
+    i = i + 1;
+}
+
+large_test_vec = large_test_mat.vector();
+("Large test matrix shape: " + large_test_vec.shape()).echo();
+
+/* Test operations on large matrix */
+start_time = $TIME().utc();
+large_sum = large_test_vec.sum();
+end_time = $TIME().utc();
+large_sum_time = (($TIME().utc() - start_time) / 1000000).int();
+("Large matrix sum: " + large_sum + " (time: " + large_sum_time + "ms)").echo();
+
+/* ======================================== */
+/* 10. Summary and Error Count */
+/* ======================================== */
+
+("\n--- Test Summary ---").echo();
+
+("Edge case testing completed.").echo();
+("Tests covered:").echo();
+("  - Empty matrices and vectors").echo();
+("  - Singular matrices").echo();
+("  - Boundary conditions (1x1, 1xN, Nx1)").echo();
+("  - Error conditions (incompatible operations)").echo();
+("  - Edge case data patterns (large/small numbers)").echo();
+("  - Performance edge cases (sparse, identical values)").echo();
+("  - Covariance edge cases").echo();
+("  - Eigenvalue edge cases").echo();
+("  - Memory edge cases").echo();
+
+("=== Vector Edge Cases Test Suite Complete ===").echo();

@@ -18,6 +18,7 @@
 - [Grapa in the Ecosystem](grapa_ecosystem_positioning.md) - When to use Grapa vs. other languages
 
 ## Advanced Topics
+- [Machine Learning](machine_learning.md) - Linear regression, statistical analysis, and ML algorithms using vector operations
 - [Debugging](debugging.md) - Comprehensive debugging system with CLI and script control
 - [Grammar Design](syntax/grammar_design.md) - Create your own languages with Grapa
 - [Multi-Syntax Programming](multi_syntax_programming.md) - JSON, XML, HTML (native), SQL (example scripts), and custom syntax support
