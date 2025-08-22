@@ -432,14 +432,12 @@ std::string GrapaSystem::GetUtf8Char()
     DWORD read;
     WCHAR wch[2];
     
-    // Windows: Use PeekConsoleInput to check for available input before blocking
+    // Windows: Use WaitForSingleObject with timeout to check for input
     while (!gSystem->mStop) {
-        // Check if input is available without blocking
-        DWORD numEvents;
-        INPUT_RECORD inputRecord;
+        // Wait for input with 100ms timeout
+        DWORD waitResult = WaitForSingleObject(mStdinRef, 100);
         
-        // Peek to see if there are any console input events
-        if (PeekConsoleInput(mStdinRef, &inputRecord, 1, &numEvents) && numEvents > 0) {
+        if (waitResult == WAIT_OBJECT_0) {
             // Input is available, now we can safely call ReadConsoleW
             BOOL x = ReadConsoleW(mStdinRef, &wch[0], 1, &read, NULL);
             if (x && read > 0) {
@@ -462,13 +460,14 @@ std::string GrapaSystem::GetUtf8Char()
                 }
                 break; // We got a character, exit the loop
             }
+        } else if (waitResult == WAIT_TIMEOUT) {
+            // Timeout occurred, check for exit condition and continue loop
+            continue;
+        } else {
+            // Error occurred, check for exit condition and continue
+            if (gSystem->mStop) break;
+            Sleep(100);
         }
-        
-        // No input available, check for exit condition and wait a bit
-        if (gSystem->mStop) break;
-        
-        // Small delay to prevent busy waiting (100ms)
-        Sleep(100);
     }
 #else
     // POSIX: Use select() with timeout and loop until input or exit
