@@ -2,7 +2,11 @@
 References:
 
 
-ASCII only - Unicode will eventually be added. Can initialize with either double quotes or single quotes - which is easier than escaping a string that includes a quoted string - such as "this 'is' a test", or 'this "is" a test'. $STR inherits the $obj class - see $obj for functions supported. 
+**Full Unicode Support** - Grapa strings support complete Unicode including emoji, accented characters, and complex grapheme clusters. Can initialize with either double quotes or single quotes - which is easier than escaping a string that includes a quoted string - such as "this 'is' a test", or 'this "is" a test'. $STR inherits the $obj class - see $obj for functions supported.
+
+**Important:** While string **content** supports full Unicode, **identifiers** (variable names, function names) are limited to ASCII characters only. See [$ID Documentation](id.md) for details on identifier limitations.
+
+**Exception:** When using **quoted property access** (e.g., `obj.'property_name'`), property names can contain Unicode characters since they're treated as string literals. 
 
 ## String Literals
 
@@ -51,6 +55,70 @@ text = r'This \'is\' a test';  /* Escape single quotes when using single quotes 
 path = r"C:\Users\Name\Documents\file.txt";  /* No escaping needed for backslashes */
 pattern = r"\w+\s+\d+";  /* No escaping needed for regex */
 ```
+
+## Unicode Support
+
+Grapa provides **full Unicode support** for strings, including:
+
+### Unicode Characters and Emoji
+```grapa
+/* Accented characters */
+text = "café résumé naïve";
+text.len();  /* Returns: 15 (Unicode character count) */
+
+/* Emoji and symbols */
+emoji = "🚀🌟🎉";
+emoji.len();  /* Returns: 3 (Unicode character count) */
+
+/* Complex grapheme clusters */
+family = "👨‍👩‍👧‍👦";
+family.len();  /* Returns: 1 (single grapheme cluster) */
+
+/* Mixed Unicode content */
+mixed = "Hello 世界 🌍";
+mixed.len();  /* Returns: 8 (Unicode character count) */
+```
+
+### Unicode-Aware String Functions
+
+All string manipulation functions in Grapa are Unicode-aware:
+
+```grapa
+/* Unicode-aware length counting */
+"héllo".len();      /* Returns: 5 (characters, not bytes) */
+"🚀héllo".len();    /* Returns: 6 (characters, not bytes) */
+
+/* Unicode-aware substring operations */
+"héllo".left(3);    /* Returns: "hél" (3 Unicode characters) */
+"🚀héllo".right(3); /* Returns: "llo" (3 Unicode characters) */
+"héllo".mid(1, 3);  /* Returns: "éll" (3 Unicode characters from position 1) */
+
+/* Unicode-aware reversal */
+"héllo".reverse();  /* Returns: "olléh" (Unicode characters reversed) */
+
+/* Unicode-aware padding */
+"héllo".lpad(10, "🚀"); /* Returns: "🚀🚀🚀🚀🚀héllo" */
+"héllo".rpad(10, "é");  /* Returns: "hélloééééé" */
+```
+
+### Unicode vs Byte Operations
+
+Grapa provides both Unicode character operations and byte-level operations:
+
+```grapa
+unicode_text = "héllo 🚀";
+
+/* Unicode character operations */
+unicode_text.len();    /* Returns: 7 (Unicode character count) */
+
+/* Byte-level operations */
+unicode_text.bytes();  /* Returns: 11 (byte count) */
+unicode_text.raw();    /* Returns: 0x68C3A96C6C6F20F09F9A80 (hex bytes) */
+```
+
+> **See Also:** [Object Methods Documentation](obj_methods.md) for comprehensive details on Unicode-aware string functions including `.len()`, `.bytes()`, `.raw()`, `.left()`, `.right()`, `.mid()`, `.reverse()`, `.lpad()`, and `.rpad()`.
+
+> **Note:** While string content supports full Unicode, **identifiers** (variable names, function names) are limited to ASCII characters only. This is a lexical limitation in the parser. See [$ID Documentation](id.md) for details.
 
 ## Common String Operations
 

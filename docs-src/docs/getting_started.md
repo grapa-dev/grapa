@@ -260,6 +260,61 @@ matches.echo();  /* ["world", "world"] */
 
 ---
 
+## Automatic File Loading
+
+Grapa includes a powerful automatic file loading mechanism that makes it easy to organize and reuse code:
+
+### Creating Reusable Functions
+
+```grapa
+/* File: lib/grapa/utils.grc */
+@global["utils"] = class {
+    format_date = op(date) {
+        return date.format("YYYY-MM-DD");
+    };
+    
+    validate_email = op(email) {
+        return email.grep(r"^[^@]+@[^@]+\.[^@]+$", "x").len() > 0;
+    };
+};
+```
+
+### Using Functions Automatically
+
+```grapa
+/* Grapa automatically loads utils.grc when you call utils() */
+formatted = utils().format_date($TIME());
+is_valid = utils().validate_email("user@example.com");
+```
+
+### Search Paths
+
+Grapa automatically searches for `.grc` files in (platform-specific):
+
+#### **Windows:**
+1. **Current working directory** - Where you run the `grapa` command
+2. **User library** - `%USERPROFILE%\.grapa\lib`
+3. **System library** - `%PROGRAMFILES%\Grapa\lib`
+4. **Development** - `{current_directory}\lib\grapa`
+
+#### **macOS:**
+1. **Current working directory** - Where you run the `grapa` command
+2. **User library** - `~/Library/Application Support/Grapa/lib`
+3. **System library** - `/usr/local/lib/grapa` (Homebrew)
+4. **System library** - `/opt/grapa/lib`
+5. **Development** - `{current_directory}/lib/grapa`
+
+#### **Linux/BSD:**
+1. **Current working directory** - Where you run the `grapa` command
+2. **User library** - `~/.local/lib/grapa`
+3. **System library** - `/usr/local/lib/grapa`
+4. **System library** - `/usr/lib/grapa` (package manager/base system)
+5. **Development** - `{current_directory}/lib/grapa`
+
+> **Tip:** Place your utility functions in the appropriate platform directory for automatic discovery. No import statements needed!
+
+---
+
 ## Next Steps
 - Explore [Examples](examples.md) for more complex use cases
 - Learn about [Testing](testing.md) your Grapa code

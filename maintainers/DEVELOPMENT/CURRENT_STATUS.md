@@ -91,13 +91,54 @@
 ## Next Steps
 
 ### Immediate (Next Session)
-1. **✅ COMPLETED: Advanced Language Features Analysis**: Comprehensive review of all planned language features
+1. **✅ COMPLETED: Automatic File Loading Mechanism Discovery**: Uncovered how Grapa automatically loads `.grc` files for function calls
+   - **Discovery**: When calling `mycode()`, Grapa automatically loads and executes `mycode.grc` from `lib/grapa/`
+   - **Mechanism**: 
+     - Function calls go through `ProcessPlan` → `LoadLib` → `ItemSearchCall`
+     - In `ItemSearchCall`, if a function is not found via `SearchVariable`, it calls `GetClass(name)`
+     - `GetClass` searches for `.grc`/`.grz` files in `gSystem->mPath`, `gSystem->mLibDir`, `gSystem->mStaticLib`
+     - If found, the file is loaded and the class is returned
+     - The loaded class can then be instantiated and its methods called
+   - **Test Results**: `x = mycode(); x.test()` successfully loads `mycode.grc` and executes its `test()` method
+   - **Documentation**: This mechanism allows for automatic module loading without explicit imports
+   - **Status**: **Fully functional** - Grapa has a sophisticated automatic file loading system for both classes and functions
+
+2. **✅ COMPLETED: Unicode-aware String Functions Implementation**: Enhanced all string manipulation functions for proper Unicode support
+   - **Implementation**: Modified `GrapaLibraryRuleLeftEvent::Run`, `GrapaLibraryRuleRightEvent::Run`, `GrapaLibraryRuleMidEvent::Run`, `GrapaLibraryRuleReverseEvent::Run`, `GrapaLibraryRuleRPadEvent::Run`, and `GrapaLibraryRuleLPadEvent::Run` to use grapheme cluster counting
+   - **Functions Enhanced**:
+     - `.left()` - Now counts Unicode characters instead of bytes
+     - `.right()` - Now counts Unicode characters instead of bytes  
+     - `.mid()` - Now uses Unicode character positions instead of byte positions
+     - `.reverse()` - Now reverses Unicode characters instead of bytes
+     - `.rpad()` - Now pads to Unicode character count instead of byte count
+     - `.lpad()` - Now pads to Unicode character count instead of byte count
+   - **Features**: 
+     - All functions now properly handle emoji, accented characters, and complex Unicode sequences
+     - Maintains backward compatibility with ASCII strings
+     - Proper handling of grapheme clusters (Unicode characters)
+     - Padding functions now correctly pad to specified character length
+   - **Testing**: Comprehensive test suite created and all tests pass
+   - **Documentation**: Updated `docs-src/docs/type/obj_methods.md` with Unicode examples and explanations
+   - **Benefits**: Intuitive Unicode support that matches user expectations across all string manipulation functions
+
+2. **✅ COMPLETED: Full Unicode Support Verification**: Confirmed Grapa is fully Unicode-aware for strings
+   - **Verification**: Comprehensive testing confirms all string operations are Unicode-aware
+   - **Documentation Fix**: Updated `docs-src/docs/type/str.md` to remove outdated "ASCII only" statement
+   - **Added Unicode Section**: Comprehensive Unicode documentation with examples for emoji, accented characters, and grapheme clusters
+   - **Functions Verified**: All string functions (`.len()`, `.left()`, `.right()`, `.mid()`, `.reverse()`, `.lpad()`, `.rpad()`) properly handle Unicode
+   - **Test Results**: Complex Unicode strings with emoji, accented characters, and grapheme clusters work correctly
+   - **Status**: Grapa is now **fully Unicode-aware** for all string operations
+   - **Important Clarification**: While string content supports full Unicode, **identifiers** (variable names, function names) are limited to ASCII characters only due to lexical limitations
+   - **Key Discovery**: **Quoted property access** (e.g., `obj.'property_name'`) allows Unicode characters in property names since they're treated as string literals, bypassing identifier restrictions
+   - **Documentation Updates**: Updated `docs-src/docs/type/id.md` and `docs-src/docs/type/str.md` to clarify this distinction and document the quoted property access exception
+
+2. **✅ COMPLETED: Advanced Language Features Analysis**: Comprehensive review of all planned language features
    - **Status**: All 12 advanced language features are already implemented in Grapa
    - **Findings**: Pattern matching, metaprogramming, concurrency, type system, data structures, and debugging all exist
    - **Impact**: Grapa has achieved complete functional equivalence with modern languages
    - **Next Priority**: Focus on adoption drivers (Python 3.13+ compatibility, GrapaDB enhancements)
 
-2. **✅ COMPLETED: C++ Backend Issue Analysis**: Investigation of potential backend issues
+3. **✅ COMPLETED: C++ Backend Issue Analysis**: Investigation of potential backend issues
    - **Status**: Comprehensive testing completed
    - **Findings**: 
      - **Memory Management Issues**: ✅ **VERIFIED NO ISSUES** - All memory management tests passed

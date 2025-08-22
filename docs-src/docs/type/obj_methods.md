@@ -112,6 +112,23 @@ Returns the length of the object.
 [1,2,3].len();      /* Returns: 3 */
 ```
 
+**Behavior by Type:**
+- **Strings**: Returns Unicode character count (grapheme clusters)
+- **Arrays/Lists**: Returns number of elements
+- **Numbers**: Returns the length of the string representation (e.g., "42" has length 2)
+- **Objects**: Returns number of properties
+- **Other types**: Returns element count or 0
+
+**Unicode Support:**
+For strings, `.len()` counts Unicode characters (grapheme clusters), not bytes:
+```grapa
+"hello".len();      /* Returns: 5 (5 characters) */
+"héllo".len();      /* Returns: 5 (5 characters, not 6 bytes) */
+"é".len();          /* Returns: 1 (1 character, not 2 bytes) */
+"🚀".len();         /* Returns: 1 (1 emoji, not 4 bytes) */
+"👨‍👩‍👧‍👦".len();   /* Returns: 4 (4 grapheme clusters) */
+```
+
 ---
 
 ## Type Conversion Methods
@@ -368,11 +385,68 @@ obj.bits();         /* Returns bit representation */
 ```
 
 ### `.bytes()`
-Returns the byte representation of the object.
+Returns the byte count of the object's internal storage.
 
 ```grapa
-obj.bytes();        /* Returns byte representation */
+"hello".bytes();    /* Returns: 5 (byte count) */
+42.bytes();         /* Returns: 0 (byte storage size) */
+1.2.bytes();        /* Returns: 29 (byte storage size) */
 ```
+
+**Behavior by Type:**
+- **Strings**: Returns byte count (same as `.len()` for ASCII strings)
+- **Numbers**: Returns the byte size of internal storage
+- **Arrays/Lists**: Returns `{"error":-1}` (not supported)
+- **Objects**: Returns `{"error":-1}` (not supported)
+
+**Note**: For numbers, this returns the size of the internal binary representation, not the string length.
+
+### `.raw()`
+Returns the raw binary representation of the object as a `$RAW` type.
+
+```grapa
+42.raw();           /* Returns: 0x2A (hex representation) */
+1.2.raw();          /* Returns: 0x00281000A09... (internal bytes) */
+"hello".raw();      /* Returns: 0x68656C6C6F (hex of "hello") */
+```
+
+**Behavior by Type:**
+- **Numbers**: Returns internal binary representation as hex
+- **Strings**: Returns string bytes as hex
+- **Other types**: Returns internal representation as hex
+
+### **Comparison: `.len()` vs `.bytes()` vs `.raw()`**
+
+| Method | Purpose | String | Number | Array/List |
+|--------|---------|--------|--------|------------|
+| `.len()` | Logical length | Unicode character count | String length | Element count |
+| `.bytes()` | Storage size | Byte count | Internal bytes | Not supported |
+| `.raw()` | Raw data | Hex bytes | Hex bytes | Hex bytes |
+
+**Examples:**
+```grapa
+value = 42;
+value.len();        /* Returns: 2 (length of "42") */
+value.bytes();      /* Returns: 0 (internal storage size) */
+value.raw();        /* Returns: 0x2A (hex representation) */
+
+text = "hello";
+text.len();         /* Returns: 5 (character count) */
+text.bytes();       /* Returns: 5 (byte count) */
+text.raw();         /* Returns: 0x68656C6C6F (hex) */
+
+unicode_text = "héllo 🚀";
+unicode_text.len(); /* Returns: 7 (Unicode character count) */
+unicode_text.bytes(); /* Returns: 11 (byte count) */
+unicode_text.raw();   /* Returns: 0x68C3A96C6C6F20F09F9A80 (hex) */
+
+float_val = 1.2;
+float_val.len();    /* Returns: 3 (length of "1.2") */
+float_val.bytes();  /* Returns: 29 (internal storage size) */
+float_val.raw();    /* Returns: 0x00281000A09... (hex) */
+```
+
+**Key Relationship**: For some types, `.raw().len() == .bytes()` because `.raw()` returns the internal bytes and `.len()` on those bytes gives the byte count.
 
 ### `.setconst(value)`
 Sets the object to a constant value.
@@ -390,38 +464,50 @@ obj.setconst("new value"); /* Sets object to constant string */
 ## String Manipulation Methods
 
 ### `.left(count)`
-Returns the leftmost characters of a string.
+Returns the leftmost characters of a string. **Unicode-aware**: Counts Unicode characters (grapheme clusters), not bytes.
 
 ```grapa
 "Hello, World!".left(5);   /* Returns: "Hello" */
-"Hello, World!".left(-3);  /* Returns: "Hello, Wor" */
+"héllo".left(3);          /* Returns: "hél" (3 Unicode characters) */
+"🚀héllo".left(3);        /* Returns: "🚀hé" (3 Unicode characters) */
+"👨‍👩‍👧‍👦".left(2);       /* Returns: "👨‍👩‍" (2 Unicode characters) */
 ```
 
 **Parameters:**
-- `count` (default: 0) - Number of characters to return (negative counts from right)
+- `count` (default: 0) - Number of Unicode characters to return (negative counts from right)
+
+**Unicode Support:** This function now properly handles Unicode characters, emoji, and complex grapheme clusters by counting characters rather than bytes.
 
 ### `.right(count)`
-Returns the rightmost characters of a string.
+Returns the rightmost characters of a string. **Unicode-aware**: Counts Unicode characters (grapheme clusters), not bytes.
 
 ```grapa
 "Hello, World!".right(5);  /* Returns: "orld!" */
-"Hello, World!".right(-3); /* Returns: "lo, World!" */
+"héllo".right(3);         /* Returns: "llo" (3 Unicode characters) */
+"🚀héllo".right(3);       /* Returns: "llo" (3 Unicode characters) */
+"👨‍👩‍👧‍👦".right(2);      /* Returns: "👧‍👦" (2 Unicode characters) */
 ```
 
 **Parameters:**
-- `count` (default: 0) - Number of characters to return (negative counts from left)
+- `count` (default: 0) - Number of Unicode characters to return (negative counts from left)
+
+**Unicode Support:** This function now properly handles Unicode characters, emoji, and complex grapheme clusters by counting characters rather than bytes.
 
 ### `.mid(start, count)`
-Returns a substring starting at the specified position.
+Returns a substring starting at the specified position. **Unicode-aware**: Counts Unicode characters (grapheme clusters), not bytes.
 
 ```grapa
 "Hello, World!".mid(2, 5); /* Returns: "llo, " */
-"Hello, World!".mid(0, 3); /* Returns: "Hel" */
+"héllo".mid(1, 3);        /* Returns: "éll" (3 Unicode characters from position 1) */
+"🚀héllo".mid(1, 3);      /* Returns: "hél" (3 Unicode characters from position 1) */
+"👨‍👩‍👧‍👦".mid(1, 2);     /* Returns: "👩‍👧‍" (2 Unicode characters from position 1) */
 ```
 
 **Parameters:**
-- `start` (default: 0) - Starting position
-- `count` (default: 0) - Number of characters to return
+- `start` (default: 0) - Starting position (Unicode character position)
+- `count` (default: 0) - Number of Unicode characters to return
+
+**Unicode Support:** This function now properly handles Unicode characters, emoji, and complex grapheme clusters by counting characters rather than bytes.
 
 ### `.midtrim(items, offset, size)`
 Trims and extracts a portion of the object based on items, offset, and size.
@@ -504,36 +590,51 @@ Rotates elements right by the specified number of positions. Works with `$ARRAY`
 **Data Types:** `$ARRAY`, `$LIST`, `$TUPLE`, `$XML`
 
 ### `.lpad(width, char)`
-Pads the string on the left to the specified width.
+Pads the string on the left to the specified width. **Unicode-aware**: Counts Unicode characters (grapheme clusters), not bytes.
 
 ```grapa
 "Hello".lpad(20, "*"); /* Returns: "***************Hello" */
 "Hello".lpad(15, " "); /* Returns: "          Hello" */
+"héllo".lpad(10, " "); /* Returns: "     héllo" (5 Unicode characters) */
+"héllo".lpad(10, "é"); /* Returns: "éééééhéllo" (5 Unicode characters) */
+"🚀héllo".lpad(10, "🚀"); /* Returns: "🚀🚀🚀🚀🚀héllo" (5 Unicode characters) */
 ```
 
 **Parameters:**
-- `width` - Target width
-- `char` - Character to use for padding
+- `width` - Target width in Unicode characters
+- `char` - Character to use for padding (default: space)
+
+**Unicode Support:** This function now properly handles Unicode characters, emoji, and complex grapheme clusters by counting characters rather than bytes.
 
 ### `.rpad(width, char)`
-Pads the string on the right to the specified width.
+Pads the string on the right to the specified width. **Unicode-aware**: Counts Unicode characters (grapheme clusters), not bytes.
 
 ```grapa
 "Hello".rpad(20, "*"); /* Returns: "Hello***************" */
 "Hello".rpad(15, " "); /* Returns: "Hello          " */
+"héllo".rpad(10, " "); /* Returns: "héllo     " (5 Unicode characters) */
+"héllo".rpad(10, "é"); /* Returns: "hélloééééé" (5 Unicode characters) */
+"🚀héllo".rpad(10, "🚀"); /* Returns: "héllo🚀🚀🚀🚀🚀" (5 Unicode characters) */
 ```
 
 **Parameters:**
-- `width` - Target width
-- `char` - Character to use for padding
+- `width` - Target width in Unicode characters
+- `char` - Character to use for padding (default: space)
+
+**Unicode Support:** This function now properly handles Unicode characters, emoji, and complex grapheme clusters by counting characters rather than bytes.
 
 ### `.reverse()`
-Reverses the order of elements in an array or characters in a string.
+Reverses the order of elements in an array or characters in a string. **Unicode-aware**: For strings, reverses Unicode characters (grapheme clusters), not bytes.
 
 ```grapa
 [1,2,3,4,5].reverse(); /* Returns: [5,4,3,2,1] */
 "Hello".reverse();     /* Returns: "olleH" */
+"héllo".reverse();     /* Returns: "olléh" (Unicode characters reversed) */
+"🚀héllo".reverse();   /* Returns: "olléh🚀" (emoji and Unicode characters reversed) */
+"👨‍👩‍👧‍👦".reverse();  /* Returns: "👦👧‍👩‍👨‍" (complex emoji sequences reversed) */
 ```
+
+**Unicode Support:** For strings, this function now properly handles Unicode characters, emoji, and complex grapheme clusters by reversing characters rather than bytes.
 
 ### `.replace(old, new)`
 Replaces occurrences of old text with new text.
