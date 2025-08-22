@@ -432,52 +432,40 @@ std::string GrapaSystem::GetUtf8Char()
     DWORD read;
     WCHAR wch[2];
     
-    // Windows: Use WaitForSingleObject with timeout to make ReadConsoleW non-blocking
-    while (!gSystem->mStop) {
-        // Wait for input with 100ms timeout (same as POSIX)
-        DWORD waitResult = WaitForSingleObject(mStdinRef, 100);
-        
-        if (waitResult == WAIT_OBJECT_0) {
-            // Input is available, now we can safely call ReadConsoleW
-            BOOL x = ReadConsoleW(mStdinRef, &wch[0], 1, &read, NULL);
-            if (x && read > 0) {
-                // Check for surrogate pair
-                if (wch[0] >= 0xD800 && wch[0] <= 0xDBFF) {
-                    // High surrogate, read the next WCHAR
-                    DWORD read2;
-                    BOOL x2 = ReadConsoleW(mStdinRef, &wch[1], 1, &read2, NULL);
-                    if (x2 && read2 > 0 && wch[1] >= 0xDC00 && wch[1] <= 0xDFFF) {
-                        // Combine surrogate pair and convert to UTF-8
-                        WCHAR surrogate_pair[2] = {wch[0], wch[1]};
-                        char utf8[5];
-                        int utf8len = WideCharToMultiByte(CP_UTF8, 0, surrogate_pair, 2, utf8, sizeof(utf8), NULL, NULL);
-                        if (utf8len > 0) {
-                            result = std::string(utf8, utf8len);
-                        }
-                    } else {
-                        // Invalid surrogate, just convert the first
-                        char utf8[5];
-                        int utf8len = WideCharToMultiByte(CP_UTF8, 0, &wch[0], 1, utf8, sizeof(utf8), NULL, NULL);
-                        if (utf8len > 0) {
-                            result = std::string(utf8, utf8len);
-                        }
-                    }
-                } else {
-                    // Not a surrogate, convert to UTF-8
-                    char utf8[5];
-                    int utf8len = WideCharToMultiByte(CP_UTF8, 0, &wch[0], 1, utf8, sizeof(utf8), NULL, NULL);
-                    if (utf8len > 0) {
-                        result = std::string(utf8, utf8len);
-                    }
+    // Windows: Use Windows API UTF-8 conversion for reliability
+    if (gSystem->mStop) return result;
+    
+    // Block until we get input (this is the Windows limitation)
+    BOOL x = ReadConsoleW(mStdinRef, &wch[0], 1, &read, NULL);
+    if (x && read > 0) {
+        // Check for surrogate pair
+        if (wch[0] >= 0xD800 && wch[0] <= 0xDBFF) {
+            // High surrogate, read the next WCHAR
+            DWORD read2;
+            BOOL x2 = ReadConsoleW(mStdinRef, &wch[1], 1, &read2, NULL);
+            if (x2 && read2 > 0 && wch[1] >= 0xDC00 && wch[1] <= 0xDFFF) {
+                // Combine surrogate pair and convert to UTF-8
+                WCHAR surrogate_pair[2] = {wch[0], wch[1]};
+                char utf8[5];
+                int utf8len = WideCharToMultiByte(CP_UTF8, 0, surrogate_pair, 2, utf8, sizeof(utf8), NULL, NULL);
+                if (utf8len > 0) {
+                    result = std::string(utf8, utf8len);
                 }
-                break; // Got input, exit the loop
+            } else {
+                // Invalid surrogate, just convert the first
+                char utf8[5];
+                int utf8len = WideCharToMultiByte(CP_UTF8, 0, &wch[0], 1, utf8, sizeof(utf8), NULL, NULL);
+                if (utf8len > 0) {
+                    result = std::string(utf8, utf8len);
+                }
             }
-        } else if (waitResult == WAIT_TIMEOUT) {
-            // Timeout occurred, continue loop to check mStop again
-            continue;
         } else {
-            // Error occurred, continue loop
-            continue;
+            // Not a surrogate, convert to UTF-8
+            char utf8[5];
+            int utf8len = WideCharToMultiByte(CP_UTF8, 0, &wch[0], 1, utf8, sizeof(utf8), NULL, NULL);
+            if (utf8len > 0) {
+                result = std::string(utf8, utf8len);
+            }
         }
     }
 #else
