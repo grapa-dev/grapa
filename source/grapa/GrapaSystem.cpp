@@ -28,6 +28,7 @@ limitations under the License.
 #include <unistd.h>   // for read()
 #include <termios.h>  // for terminal settings (if needed)
 #include <errno.h>
+#include <sys/select.h>  // for select()
 #endif
 
 #include <openssl/rand.h>
@@ -430,55 +431,102 @@ std::string GrapaSystem::GetUtf8Char()
 #ifdef WIN32
     DWORD read;
     WCHAR wch[2];
-    BOOL x = ReadConsoleW(mStdinRef, &wch[0], 1, &read, NULL);
-    if (x && read > 0) {
-        // Check for surrogate pair
-        if (wch[0] >= 0xD800 && wch[0] <= 0xDBFF) {
-            // High surrogate, read the next WCHAR
-            DWORD read2;
-            BOOL x2 = ReadConsoleW(mStdinRef, &wch[1], 1, &read2, NULL);
-            if (x2 && read2 > 0 && wch[1] >= 0xDC00 && wch[1] <= 0xDFFF) {
-                // Combine surrogate pair
-                uint32_t codepoint = 0x10000 + (((uint32_t)wch[0] - 0xD800) << 10) + ((uint32_t)wch[1] - 0xDC00);
-                result = utf8_encode(codepoint); // Use your helper
+    
+    // Windows: Use a loop with small delays to check for exit condition
+    while (!gSystem->mStop) {
+        // Try to read with minimal blocking
+        BOOL x = ReadConsoleW(mStdinRef, &wch[0], 1, &read, NULL);
+        if (x && read > 0) {
+            // Check for surrogate pair
+            if (wch[0] >= 0xD800 && wch[0] <= 0xDBFF) {
+                // High surrogate, read the next WCHAR
+                DWORD read2;
+                BOOL x2 = ReadConsoleW(mStdinRef, &wch[1], 1, &read2, NULL);
+                if (x2 && read2 > 0 && wch[1] >= 0xDC00 && wch[1] <= 0xDFFF) {
+                    // Combine surrogate pair
+                    uint32_t codepoint = 0x10000 + (((uint32_t)wch[0] - 0xD800) << 10) + ((uint32_t)wch[1] - 0xDC00);
+                    result = utf8_encode(codepoint); // Use your helper
+                } else {
+                    // Invalid surrogate, just encode the first
+                    result = utf8_encode(wch[0]);
+                }
             } else {
-                // Invalid surrogate, just encode the first
+                // Not a surrogate, just encode as UTF-8
                 result = utf8_encode(wch[0]);
             }
-        } else {
-            // Not a surrogate, just encode as UTF-8
-            result = utf8_encode(wch[0]);
+            break; // We got a character, exit the loop
         }
+        
+        // If ReadConsoleW didn't return data, check for exit condition and wait a bit
+        if (gSystem->mStop) break;
+        
+        // Small delay to prevent busy waiting (100ms)
+        Sleep(100);
     }
 #else
-    // POSIX: Read the first byte
-    unsigned char first;
-    ssize_t n = read(mStdinRef, &first, 1);
-    if (n == 1) {
-        result += first;
-        // Determine how many more bytes to read for this UTF-8 character
-        int expected = 0;
-        if ((first & 0x80) == 0x00) {
-            expected = 0; // ASCII, single byte
-        }
-        else if ((first & 0xE0) == 0xC0) {
-            expected = 1; // 2-byte sequence
-        }
-        else if ((first & 0xF0) == 0xE0) {
-            expected = 2; // 3-byte sequence
-        }
-        else if ((first & 0xF8) == 0xF0) {
-            expected = 3; // 4-byte sequence
-        }
-        for (int i = 0; i < expected; ++i) {
-            unsigned char next;
-            if (read(mStdinRef, &next, 1) == 1) {
-                result += next;
+    // POSIX: Use select() with timeout and loop until input or exit
+    fd_set readfds;
+    struct timeval timeout;
+    
+    // Loop until we get input or need to exit
+    while (!gSystem->mStop) {
+        // Set up select() with 100ms timeout
+        FD_ZERO(&readfds);
+        FD_SET(mStdinRef, &readfds);
+        timeout.tv_sec = 0;
+        timeout.tv_usec = 100000; // 100ms timeout
+        
+        int select_result = select(mStdinRef + 1, &readfds, NULL, NULL, &timeout);
+        
+        if (select_result > 0 && FD_ISSET(mStdinRef, &readfds)) {
+            // Data is available, read the first byte
+            unsigned char first;
+            ssize_t n = read(mStdinRef, &first, 1);
+            if (n == 1) {
+                result += first;
+                // Determine how many more bytes to read for this UTF-8 character
+                int expected = 0;
+                if ((first & 0x80) == 0x00) {
+                    expected = 0; // ASCII, single byte
+                }
+                else if ((first & 0xE0) == 0xC0) {
+                    expected = 1; // 2-byte sequence
+                }
+                else if ((first & 0xF0) == 0xE0) {
+                    expected = 2; // 3-byte sequence
+                }
+                else if ((first & 0xF8) == 0xF0) {
+                    expected = 3; // 4-byte sequence
+                }
+                
+                // Read remaining bytes for multi-byte UTF-8 sequences
+                for (int i = 0; i < expected; ++i) {
+                    // Check for exit condition before reading each additional byte
+                    if (gSystem->mStop) break;
+                    
+                    // Use select() with shorter timeout for additional bytes
+                    FD_ZERO(&readfds);
+                    FD_SET(mStdinRef, &readfds);
+                    timeout.tv_sec = 0;
+                    timeout.tv_usec = 50000; // 50ms timeout for additional bytes
+                    
+                    select_result = select(mStdinRef + 1, &readfds, NULL, NULL, &timeout);
+                    if (select_result > 0 && FD_ISSET(mStdinRef, &readfds)) {
+                        unsigned char next;
+                        if (read(mStdinRef, &next, 1) == 1) {
+                            result += next;
+                        } else {
+                            break; // error or EOF
+                        }
+                    } else {
+                        break; // timeout or no data available
+                    }
+                }
+                break; // We got a character, exit the loop
             }
-            else {
-                break; // error or EOF
-            }
         }
+        // If select_result == 0, it's a timeout - continue the loop to check mStop again
+        // If select_result < 0, it's an error - continue the loop (could add error handling)
     }
 #endif
     return result;
