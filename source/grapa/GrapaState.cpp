@@ -41,6 +41,10 @@ limitations under the License.
 
 #include "GrapaLibRule.h"
 
+#include <algorithm> // Required for std::count
+#include <vector>
+#include <iostream>
+
 extern GrapaSystem* gSystem;
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
