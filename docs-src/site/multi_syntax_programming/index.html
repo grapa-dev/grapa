@@ -1,0 +1,4810 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://grapa-dev.github.io/grapa/multi_syntax_programming/">
+      
+      
+        <link rel="prev" href="../advanced_concurrency_and_callbacks/">
+      
+      
+        <link rel="next" href="../language_design_with_executable_bnf/">
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.15">
+    
+    
+      
+        <title>Multi-Syntax Programming - Grapa Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.342714a4.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#multi-syntax-programming-in-grapa" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Grapa Documentation" class="md-header__button md-logo" aria-label="Grapa Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Grapa Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Multi-Syntax Programming
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-hidden="true"  type="radio" name="__palette" id="__palette_0">
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../about/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  About
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href=".." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../getting_started/" class="md-tabs__link">
+          
+  
+  
+  Getting Started
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../cli_quickstart/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Quickstart
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../api_reference/" class="md-tabs__link">
+          
+  
+  
+  Reference
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../migrations/python_to_grapa_migration/" class="md-tabs__link">
+          
+  
+  
+  Guides
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../use_cases/" class="md-tabs__link">
+          
+  
+  
+  Use Cases
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../troubleshooting/" class="md-tabs__link">
+          
+  
+  
+  Support
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Grapa Documentation" class="md-nav__button md-logo" aria-label="Grapa Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Grapa Documentation
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../about/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    About
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Home
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Getting Started
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Getting Started
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../getting_started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Overview
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cli_integration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    CLI Integration
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../run/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Run Command
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../python_integration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Python Integration
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../grapa_ecosystem_positioning/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Grapa in the Ecosystem
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cli_quickstart/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Quickstart
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    Reference
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            Reference
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    API Reference
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_5_2" id="__nav_5_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Data Types
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_2">
+            <span class="md-nav__icon md-icon"></span>
+            Data Types
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../type/array/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Array
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../type/bool/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Boolean
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../type/code/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Code
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../type/err/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Error
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../type/float/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Float
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../type/id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    ID
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../type/int/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Integer
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../type/list/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    List
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../type/obj_methods/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Object Methods
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../type/op/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Operation
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../type/raw/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Raw
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../type/rule/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Rule
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../type/str/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    String
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../type/sysid/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    System ID
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../type/sysint/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    System Integer
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../type/sysstr/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    System String
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../type/table/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Table
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../type/tag/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tag
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../type/time/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Time
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../type/tuple/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tuple
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../type/vector/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Vector
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../type/widget/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Widget
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../type/widget/attributes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Widget Attributes
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../type/xml/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    XML
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_5_3" id="__nav_5_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Operators
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_3">
+            <span class="md-nav__icon md-icon"></span>
+            Operators
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../operators/function/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Function Operators
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../operators/assignment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Assignment Operators
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../operators/math/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Math Operators
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../operators/bit/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Bitwise Operators
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../operators/compare/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Comparison Operators
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../operators/condition/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Condition Operators
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../operators/loop/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Loop Operators
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../operators/command/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Command Operators
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../operators/constants/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Constants
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_5_4" id="__nav_5_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    System Functions
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_4">
+            <span class="md-nav__icon md-icon"></span>
+            System Functions
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sys/file/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    File Operations
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sys/math/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Math Functions
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sys/net/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Network Functions
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sys/sys/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    System Functions
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sys/thread/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Thread Functions
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../function_quick_reference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Function Quick Reference
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5_5" id="__nav_5_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Object Types
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_5">
+            <span class="md-nav__icon md-icon"></span>
+            Object Types
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../obj/document/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Document
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../obj/encode/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Encode
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../obj/grep/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Grep
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../obj/grep_python/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Grep Python
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../obj/iterate/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Iterate
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../obj/transform/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Transform
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_5_6" id="__nav_5_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Pattern Matching
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_6">
+            <span class="md-nav__icon md-icon"></span>
+            Pattern Matching
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../grep/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Grep Documentation
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_5_7" id="__nav_5_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Database
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_7">
+            <span class="md-nav__icon md-icon"></span>
+            Database
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../database/quick_reference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Quick Reference
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../database/column_store/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Storage Types
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../database/troubleshooting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Troubleshooting
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_5_8" id="__nav_5_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Language Reference
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_8">
+            <span class="md-nav__icon md-icon"></span>
+            Language Reference
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../syntax/basic_syntax/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Basic Syntax
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../syntax/operator/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Operators
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../syntax/precedence/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Precedence
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../syntax/grammar_design/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Grammar Design
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../debugging/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Debugging
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../execution_pipeline_overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Execution Pipeline
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../advanced_topics/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Advanced Topics
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../advanced_language_features/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Advanced Language Features
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../advanced_concurrency_and_callbacks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Advanced Concurrency and Callbacks
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Multi-Syntax Programming
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    Multi-Syntax Programming
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      Overview
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#key-concepts" class="md-nav__link">
+    <span class="md-ellipsis">
+      Key Concepts
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Key Concepts">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#executable-bnf-architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      Executable BNF Architecture
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#syntax-extension-approaches" class="md-nav__link">
+    <span class="md-ellipsis">
+      Syntax Extension Approaches
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Syntax Extension Approaches">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#primary-approach-direct-bnf-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      Primary Approach: Direct BNF Integration
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#secondary-approach-custom-commandfunction-variables" class="md-nav__link">
+    <span class="md-ellipsis">
+      Secondary Approach: Custom Command/Function Variables
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lexical-processing-and-flags" class="md-nav__link">
+    <span class="md-ellipsis">
+      Lexical Processing and Flags
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sql-syntax-integration-example-implementation" class="md-nav__link">
+    <span class="md-ellipsis">
+      SQL Syntax Integration (Example Implementation)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="SQL Syntax Integration (Example Implementation)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#basic-sql-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      Basic SQL Usage
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#advanced-sql-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      Advanced SQL Features
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#json-syntax-support" class="md-nav__link">
+    <span class="md-ellipsis">
+      JSON Syntax Support
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="JSON Syntax Support">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#native-json-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Native JSON Operations
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#json-functions" class="md-nav__link">
+    <span class="md-ellipsis">
+      JSON Functions
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#xml-syntax-support" class="md-nav__link">
+    <span class="md-ellipsis">
+      XML Syntax Support
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="XML Syntax Support">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#xpath-queries" class="md-nav__link">
+    <span class="md-ellipsis">
+      XPath Queries
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#html-syntax-support" class="md-nav__link">
+    <span class="md-ellipsis">
+      HTML Syntax Support
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="HTML Syntax Support">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#html-parsing-and-manipulation" class="md-nav__link">
+    <span class="md-ellipsis">
+      HTML Parsing and Manipulation
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#creating-custom-syntax" class="md-nav__link">
+    <span class="md-ellipsis">
+      Creating Custom Syntax
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Creating Custom Syntax">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#defining-new-syntax" class="md-nav__link">
+    <span class="md-ellipsis">
+      Defining New Syntax
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#advanced-syntax-patterns" class="md-nav__link">
+    <span class="md-ellipsis">
+      Advanced Syntax Patterns
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#integration-patterns" class="md-nav__link">
+    <span class="md-ellipsis">
+      Integration Patterns
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Integration Patterns">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#combining-multiple-syntaxes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Combining Multiple Syntaxes
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dynamic-syntax-loading" class="md-nav__link">
+    <span class="md-ellipsis">
+      Dynamic Syntax Loading
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#performance-considerations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Performance Considerations
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Performance Considerations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#syntax-compilation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Syntax Compilation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#memory-management" class="md-nav__link">
+    <span class="md-ellipsis">
+      Memory Management
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#advanced-rule-token-patterns" class="md-nav__link">
+    <span class="md-ellipsis">
+      Advanced Rule Token Patterns
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Advanced Rule Token Patterns">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#wrapper-function-pattern-for-etl" class="md-nav__link">
+    <span class="md-ellipsis">
+      Wrapper Function Pattern for ETL
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#best-practices" class="md-nav__link">
+    <span class="md-ellipsis">
+      Best Practices
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Best Practices">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#syntax-design" class="md-nav__link">
+    <span class="md-ellipsis">
+      Syntax Design
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      Integration
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#error-handling" class="md-nav__link">
+    <span class="md-ellipsis">
+      Error Handling
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#advanced-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      Advanced Examples
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Advanced Examples">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#domain-specific-language-dsl" class="md-nav__link">
+    <span class="md-ellipsis">
+      Domain-Specific Language (DSL)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#data-processing-pipeline" class="md-nav__link">
+    <span class="md-ellipsis">
+      Data Processing Pipeline
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#conclusion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Conclusion
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#see-also" class="md-nav__link">
+    <span class="md-ellipsis">
+      See Also
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../language_design_with_executable_bnf/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Language Design with Executable BNF
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../isolated_rule_execution/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Isolated Rule Execution
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../deep_expert_implementation_overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Deep Expert Implementation
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../xml_list_integration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    XML and LIST Integration
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../unified_dot_notation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Unified Dot Notation System
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../module_system/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Module System
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../machine_learning/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Machine Learning
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../vector_performance_guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Vector Performance Guide
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Guides
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            Guides
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_6_1" id="__nav_6_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Migration Guides
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6_1">
+            <span class="md-nav__icon md-icon"></span>
+            Migration Guides
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../migrations/python_to_grapa_migration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Python
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../migrations/js_to_grapa_migration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    JavaScript
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../migrations/rust_to_grapa_migration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Rust
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../migrations/typescript_to_grapa_migration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    TypeScript
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../migrations/go_to_grapa_migration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Go
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../migrations/ruby_to_grapa_migration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Ruby
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../migrations/kotlin_to_grapa_migration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Kotlin
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../migrations/swift_to_grapa_migration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Swift
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../examples/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Examples
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../examples/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Examples Overview
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../python_use_cases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Python Use Cases
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../grc_scripts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    GRC Scripts
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../grz_format/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    GRZ Format
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../grapapy_namespace_solution/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    GrapaPy Namespace Solution
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../directory_navigation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Directory Navigation
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../unified_path_system/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Unified Path System
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Use Cases
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            Use Cases
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../use_cases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Overview
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../use_cases/etl_data_engineering/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    ETL / Data Engineering
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../use_cases/compiler_bnf_learning/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Compiler/BNF Learning
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../use_cases/high_precision_math/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    High-Precision Math
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../use_cases/parallel_concurrent_programming/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Parallel Programming
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../use_cases/web_data_scraping/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Web Scraping
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../use_cases/database_file_system/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Database & File System
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../use_cases/education_prototyping/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Education & Prototyping
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../use_cases/cryptography/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Cryptography
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../use_cases/multi_syntax_data_processing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Multi-Syntax Data Processing
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../use_cases/language_design_and_dsls/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Language Design and DSLs
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Support
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            Support
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../troubleshooting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Troubleshooting
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../testing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Testing
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      Overview
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#key-concepts" class="md-nav__link">
+    <span class="md-ellipsis">
+      Key Concepts
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Key Concepts">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#executable-bnf-architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      Executable BNF Architecture
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#syntax-extension-approaches" class="md-nav__link">
+    <span class="md-ellipsis">
+      Syntax Extension Approaches
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Syntax Extension Approaches">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#primary-approach-direct-bnf-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      Primary Approach: Direct BNF Integration
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#secondary-approach-custom-commandfunction-variables" class="md-nav__link">
+    <span class="md-ellipsis">
+      Secondary Approach: Custom Command/Function Variables
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lexical-processing-and-flags" class="md-nav__link">
+    <span class="md-ellipsis">
+      Lexical Processing and Flags
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sql-syntax-integration-example-implementation" class="md-nav__link">
+    <span class="md-ellipsis">
+      SQL Syntax Integration (Example Implementation)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="SQL Syntax Integration (Example Implementation)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#basic-sql-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      Basic SQL Usage
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#advanced-sql-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      Advanced SQL Features
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#json-syntax-support" class="md-nav__link">
+    <span class="md-ellipsis">
+      JSON Syntax Support
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="JSON Syntax Support">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#native-json-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Native JSON Operations
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#json-functions" class="md-nav__link">
+    <span class="md-ellipsis">
+      JSON Functions
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#xml-syntax-support" class="md-nav__link">
+    <span class="md-ellipsis">
+      XML Syntax Support
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="XML Syntax Support">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#xpath-queries" class="md-nav__link">
+    <span class="md-ellipsis">
+      XPath Queries
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#html-syntax-support" class="md-nav__link">
+    <span class="md-ellipsis">
+      HTML Syntax Support
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="HTML Syntax Support">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#html-parsing-and-manipulation" class="md-nav__link">
+    <span class="md-ellipsis">
+      HTML Parsing and Manipulation
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#creating-custom-syntax" class="md-nav__link">
+    <span class="md-ellipsis">
+      Creating Custom Syntax
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Creating Custom Syntax">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#defining-new-syntax" class="md-nav__link">
+    <span class="md-ellipsis">
+      Defining New Syntax
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#advanced-syntax-patterns" class="md-nav__link">
+    <span class="md-ellipsis">
+      Advanced Syntax Patterns
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#integration-patterns" class="md-nav__link">
+    <span class="md-ellipsis">
+      Integration Patterns
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Integration Patterns">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#combining-multiple-syntaxes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Combining Multiple Syntaxes
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dynamic-syntax-loading" class="md-nav__link">
+    <span class="md-ellipsis">
+      Dynamic Syntax Loading
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#performance-considerations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Performance Considerations
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Performance Considerations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#syntax-compilation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Syntax Compilation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#memory-management" class="md-nav__link">
+    <span class="md-ellipsis">
+      Memory Management
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#advanced-rule-token-patterns" class="md-nav__link">
+    <span class="md-ellipsis">
+      Advanced Rule Token Patterns
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Advanced Rule Token Patterns">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#wrapper-function-pattern-for-etl" class="md-nav__link">
+    <span class="md-ellipsis">
+      Wrapper Function Pattern for ETL
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#best-practices" class="md-nav__link">
+    <span class="md-ellipsis">
+      Best Practices
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Best Practices">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#syntax-design" class="md-nav__link">
+    <span class="md-ellipsis">
+      Syntax Design
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      Integration
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#error-handling" class="md-nav__link">
+    <span class="md-ellipsis">
+      Error Handling
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#advanced-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      Advanced Examples
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Advanced Examples">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#domain-specific-language-dsl" class="md-nav__link">
+    <span class="md-ellipsis">
+      Domain-Specific Language (DSL)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#data-processing-pipeline" class="md-nav__link">
+    <span class="md-ellipsis">
+      Data Processing Pipeline
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#conclusion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Conclusion
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#see-also" class="md-nav__link">
+    <span class="md-ellipsis">
+      See Also
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  <nav class="md-tags" >
+    
+      
+      
+      
+        <span class="md-tag">advanced</span>
+      
+    
+      
+      
+      
+        <span class="md-tag">json</span>
+      
+    
+      
+      
+      
+        <span class="md-tag">language-extension</span>
+      
+    
+      
+      
+      
+        <span class="md-tag">multi-syntax</span>
+      
+    
+      
+      
+      
+        <span class="md-tag">sql</span>
+      
+    
+      
+      
+      
+        <span class="md-tag">xml</span>
+      
+    
+  </nav>
+
+
+
+<h1 id="multi-syntax-programming-in-grapa">Multi-Syntax Programming in Grapa</h1>
+<h2 id="overview">Overview</h2>
+<p>Grapa's executable BNF architecture enables support for multiple syntaxes within a single language. This guide explores how to use and extend Grapa with JSON, XML, HTML (native), SQL (example scripts), and other syntaxes, making it a powerful multi-paradigm programming environment.</p>
+<h2 id="key-concepts">Key Concepts</h2>
+<h3 id="executable-bnf-architecture"><strong>Executable BNF Architecture</strong></h3>
+<p>Grapa's <code>$RULE</code> system goes beyond traditional parsing - it's an executable BNF that can:
+- <strong>Define custom syntax</strong> at runtime
+- <strong>Execute arbitrary code</strong> during parsing
+- <strong>Build execution trees</strong> for later evaluation
+- <strong>Support multiple syntaxes</strong> simultaneously</p>
+<h3 id="syntax-extension-approaches"><strong>Syntax Extension Approaches</strong></h3>
+<h4 id="primary-approach-direct-bnf-integration"><strong>Primary Approach: Direct BNF Integration</strong></h4>
+<p>Add syntax directly to existing BNF rules using <code>@&lt;function_name,{parameters}&gt;</code> pattern:</p>
+<div class="highlight"><pre><span></span><code>/* Add to $command rule for control structures */
+| for &#39;(&#39; &lt;$comp&gt; &#39;;&#39; &lt;$comp&gt; &#39;;&#39; &lt;$comp&gt; &#39;)&#39; &lt;$command&gt; {@&lt;for,{$3,$5,$7,$9}&gt;}
+| for $ID in &lt;$comp&gt; &lt;$command&gt; {@&lt;forin,{$2,$4,$6}&gt;}
+
+/* Add to $comp rule for expressions */
+| &#39;$&#39; &#39;{&#39; &lt;$comp&gt; &#39;}&#39; {@&lt;interpolate,{$3}&gt;}
+| range &#39;(&#39; &lt;$comp&gt; &#39;)&#39; {@&lt;range,{$3}&gt;}
+</code></pre></div>
+<h4 id="secondary-approach-custom-commandfunction-variables"><strong>Secondary Approach: Custom Command/Function Variables</strong></h4>
+<p>Use <code>custom_command</code>/<code>custom_function</code> as variables that leverage existing grammar rules:</p>
+<ul>
+<li><strong><code>custom_command</code></strong>: For domain-specific actions (ETL, DSLs, protocol parsers) - leverages <code>$comp</code> and <code>$command</code> rules</li>
+<li><strong><code>custom_function</code></strong>: For domain-specific expressions - leverages <code>$comp</code> rules</li>
+</ul>
+<h3 id="lexical-processing-and-flags"><strong>Lexical Processing and Flags</strong></h3>
+<p>For complex formats like XML and HTML, Grapa uses lexical flags to activate special processing:</p>
+<div class="highlight"><pre><span></span><code>/* XML processing with lexical flags */
+xml_data = &quot;&lt;user&gt;&lt;name&gt;John&lt;/name&gt;&lt;age&gt;25&lt;/age&gt;&lt;/user&gt;&quot;;
+processed = xml_data.encode(&quot;XML-GRAPA&quot;);
+/* Internally uses: $&amp;&lt;user&gt;&lt;name&gt;John&lt;/name&gt;&lt;age&gt;25&lt;/age&gt;&lt;/user&gt;$&amp; */
+
+/* HTML processing with lexical flags */
+html_data = &quot;&lt;div&gt;&lt;h1&gt;Title&lt;/h1&gt;&lt;p&gt;Content&lt;/p&gt;&lt;/div&gt;&quot;;
+processed = html_data.encode(&quot;HTML-GRAPA&quot;);
+/* Internally uses: $&amp;&lt;div&gt;&lt;h1&gt;Title&lt;/h1&gt;&lt;p&gt;Content&lt;/p&gt;&lt;/div&gt;$&amp; */
+</code></pre></div>
+<p><strong>Key Features:</strong>
+- <strong><code>$&amp;</code> Enclosures</strong>: Activate special lexer processing for XML/HTML content
+- <strong>Fallback Compatibility</strong>: Works without flags in most cases
+- <strong>Complex Syntax Handling</strong>: Enables proper processing of syntax that might conflict with normal Grapa syntax
+- <strong>Format-Specific Processing</strong>: Different lexical modes for different data formats</p>
+<h2 id="sql-syntax-integration-example-implementation">SQL Syntax Integration (Example Implementation)</h2>
+<h3 id="basic-sql-usage"><strong>Basic SQL Usage</strong></h3>
+<p>Grapa demonstrates SQL syntax integration through example scripts that show how to add domain-specific SQL syntax using <code>custom_command</code> and <code>custom_function</code> as variables:</p>
+<div class="highlight"><pre><span></span><code>/* Define SQL syntax as variables */
+custom_command = rule select $STR from $STR {op(fields:$2,table_name:$4){
+    (&quot;SQL SELECT: &quot; + fields + &quot; FROM &quot; + table_name).echo();
+    /* Database query implementation */
+}};
+
+custom_function = rule count &#39;(&#39; $STR &#39;)&#39; from $STR {op(field:$3,table_name:$6){
+    (&quot;SQL COUNT: &quot; + field + &quot; FROM &quot; + table_name).echo();
+    records = table.ls();
+    return records.len();
+}};
+
+/* Use SQL syntax directly */
+select * from users;
+user_count = count(*) from users;
+</code></pre></div>
+<h3 id="advanced-sql-features"><strong>Advanced SQL Features</strong></h3>
+<div class="highlight"><pre><span></span><code>/* INSERT statement (example implementation) */
+custom_command = rule insert into $STR values $STR {op(table_name:$3,values_str:$5){
+    (&quot;SQL INSERT: &quot; + table_name + &quot; VALUES &quot; + values_str).echo();
+    /* Insert implementation */
+}};
+
+/* UPDATE statement (example implementation) */
+custom_command = rule update $STR set $STR where $STR {op(table_name:$2,set_clause:$4,where_clause:$6){
+    (&quot;SQL UPDATE: &quot; + table_name + &quot; SET &quot; + set_clause + &quot; WHERE &quot; + where_clause).echo();
+    /* Update implementation */
+}};
+
+/* Use complex SQL directly (via example scripts) */
+insert into users values John,25,New York;
+update users set age=26 where name=John;
+</code></pre></div>
+<h2 id="json-syntax-support">JSON Syntax Support</h2>
+<h3 id="native-json-operations"><strong>Native JSON Operations</strong></h3>
+<div class="highlight"><pre><span></span><code>/* JSON path queries */
+custom_function = rule $STR &#39;-&gt;&#39; $STR {op(json:$1,path:$3){
+    /* JSON path extraction */
+    return json.json().get(path);
+}};
+
+custom_function = rule $STR &#39;-&gt;&gt;&#39; $STR {op(json:$1,path:$3){
+    /* JSON path extraction as string */
+    return json.json().get(path).str();
+}};
+
+/* Execute JSON queries */
+data = &#39;{&quot;user&quot;: {&quot;name&quot;: &quot;John&quot;, &quot;age&quot;: 30}}&#39;;
+name = op(parse)(&#39;data-&gt;&quot;user&quot;-&gt;&quot;name&quot;&#39;)();
+age = op(parse)(&#39;data-&gt;&gt;&quot;user&quot;-&gt;&gt;&quot;age&quot;&#39;)();
+</code></pre></div>
+<h3 id="json-functions"><strong>JSON Functions</strong></h3>
+<div class="highlight"><pre><span></span><code>/* JSON validation */
+custom_function = rule json_valid &#39;(&#39; $STR &#39;)&#39; {op(json_str:$3){
+    return json_str.json().type() != $ERR;
+}};
+
+/* JSON aggregation */
+custom_function = rule json_agg &#39;(&#39; $STR &#39;)&#39; {op(expr:$3){
+    /* JSON array aggregation */
+    return expr.json();
+}};
+</code></pre></div>
+<h2 id="xml-syntax-support">XML Syntax Support</h2>
+<h3 id="xpath-queries"><strong>XPath Queries</strong></h3>
+<div class="highlight"><pre><span></span><code>/* XPath expression */
+custom_function = rule xpath &#39;(&#39; $STR &#39;,&#39; $STR &#39;)&#39; {op(xml:$3,xpath_expr:$5){
+    /* XPath evaluation */
+    return xml.xml().xpath(xpath_expr);
+}};
+
+/* XML validation */
+custom_function = rule xml_valid &#39;(&#39; $STR &#39;)&#39; {op(xml_str:$3){
+    return xml_str.xml().type() != $ERR;
+}};
+
+/* Execute XPath */
+xml_data = &#39;&lt;user&gt;&lt;name&gt;John&lt;/name&gt;&lt;age&gt;30&lt;/age&gt;&lt;/user&gt;&#39;;
+name = op(parse)(&#39;xpath(xml_data, &quot;/user/name&quot;)&#39;)();
+</code></pre></div>
+<h2 id="html-syntax-support">HTML Syntax Support</h2>
+<h3 id="html-parsing-and-manipulation"><strong>HTML Parsing and Manipulation</strong></h3>
+<div class="highlight"><pre><span></span><code>/* HTML element selection */
+custom_function = rule $STR &#39;&gt;&gt;&#39; $STR {op(html:$1,selector:$3){
+    /* CSS selector implementation */
+    return html.html().select(selector);
+}};
+
+/* HTML attribute extraction */
+custom_function = rule $STR &#39;&gt;&gt;&#39; $STR &#39;@&#39; $STR {op(html:$1,selector:$3,attr:$5){
+    /* Attribute extraction */
+    element = html.html().select(selector);
+    return element.attr(attr);
+}};
+
+/* Execute HTML queries */
+page = &#39;&lt;html&gt;&lt;body&gt;&lt;div class=&quot;user&quot;&gt;John&lt;/div&gt;&lt;/body&gt;&lt;/html&gt;&#39;;
+user = op(parse)(&#39;page&gt;&gt;&quot;.user&quot;&#39;)();
+</code></pre></div>
+<h2 id="creating-custom-syntax">Creating Custom Syntax</h2>
+<h3 id="defining-new-syntax"><strong>Defining New Syntax</strong></h3>
+<div class="highlight"><pre><span></span><code>/* Custom configuration syntax */
+custom_command = rule config $STR &#39;=&#39; $STR {op(key:$2,value:$4){
+    /* Configuration setting */
+    set_config(key, value);
+}};
+
+/* Custom loop syntax */
+custom_command = rule repeat $INT times &#39;{&#39; &lt;$command_list&gt; &#39;}&#39; {op(count:$2,body:$5){
+    /* Repeat loop implementation */
+    i = 0;
+    while (i &lt; count) {
+        body();
+        i += 1;
+    };
+}};
+
+/* Execute custom syntax */
+op(parse)(&#39;config theme = dark&#39;)();
+op(parse)(&#39;repeat 5 times { &quot;Hello&quot;.echo(); }&#39;)();
+</code></pre></div>
+<h3 id="advanced-syntax-patterns"><strong>Advanced Syntax Patterns</strong></h3>
+<div class="highlight"><pre><span></span><code>/* Template string interpolation */
+custom_function = rule &#39;`&#39; &lt;&gt; &#39;`&#39; {op(template:$2){
+    /* Template processing */
+    result = template;
+    /* Replace variables */
+    result = result.replace(/\$\{(\w+)\}/g, op(match) {
+        return get_variable(match[1]);
+    });
+    return result;
+}};
+
+/* Range syntax */
+custom_function = rule $INT &#39;..&#39; $INT {op(start:$1,end:$3){
+    /* Range generation */
+    return (end - start + 1).range(start, 1);
+}};
+
+/* Execute advanced syntax */
+message = op(parse)(&#39;`Hello ${name}!`&#39;)();
+numbers = op(parse)(&#39;1..10&#39;)();
+</code></pre></div>
+<h2 id="integration-patterns">Integration Patterns</h2>
+<h3 id="combining-multiple-syntaxes"><strong>Combining Multiple Syntaxes</strong></h3>
+<div class="highlight"><pre><span></span><code>/* SQL with JSON fields */
+custom_command = rule select $STR from $STR where $STR &#39;-&gt;&#39; $STR &#39;=&#39; $STR {
+    op(fields:$2,table:$4,json_field:$6,path:$8,value:$10){
+        /* SQL query with JSON path filtering */
+        records = table.ls();
+        filtered = records.filter(op(record) {
+            json_data = record.get(json_field);
+            return json_data.json().get(path) == value;
+        });
+        /* Display results */
+    }
+};
+
+/* Execute multi-syntax query */
+op(parse)(&#39;select * from users where metadata-&gt;&quot;city&quot; = &quot;New York&quot;&#39;)();
+</code></pre></div>
+<h3 id="dynamic-syntax-loading"><strong>Dynamic Syntax Loading</strong></h3>
+<div class="highlight"><pre><span></span><code>/* Load syntax from file */
+load_syntax = op(filename) {
+    syntax_def = $file().read(filename);
+    /* Parse and register syntax */
+    op(parse)(syntax_def)();
+};
+
+/* Load custom syntax */
+load_syntax(&quot;my_syntax.grc&quot;);
+op(parse)(&quot;my_custom_command arg1 arg2&quot;)();
+</code></pre></div>
+<h2 id="performance-considerations">Performance Considerations</h2>
+<h3 id="syntax-compilation"><strong>Syntax Compilation</strong></h3>
+<ul>
+<li>Custom syntax is compiled once and cached</li>
+<li>Execution trees are optimized for performance</li>
+<li>Multiple syntaxes can coexist without conflicts</li>
+</ul>
+<h3 id="memory-management"><strong>Memory Management</strong></h3>
+<ul>
+<li>Syntax definitions are stored efficiently</li>
+<li>Execution trees are garbage collected</li>
+<li>Large syntax sets don't impact performance</li>
+</ul>
+<h2 id="advanced-rule-token-patterns">Advanced Rule Token Patterns</h2>
+<h3 id="wrapper-function-pattern-for-etl"><strong>Wrapper Function Pattern for ETL</strong></h3>
+<p>The wrapper function pattern is a powerful technique for using custom functions in rule tokens:</p>
+<div class="highlight"><pre><span></span><code>/* Define ETL processing functions */
+validate_data = op(p){p.grep(&quot;valid&quot;)};
+transform_data = op(p){p.upper()};
+filter_data = op(p){p.len() &gt; 10 ? p : null};
+
+/* Use wrapper functions in rule tokens */
+@global[&quot;$etl_pipeline&quot;] = rule 
+    &lt;$raw_data,op(b:$1){validate_data(b)}&gt;
+    &lt;$validated,op(b:$1){transform_data(b)}&gt;
+    &lt;$transformed,op(b:$1){filter_data(b)}&gt;
+    {@&lt;var,{$1}&gt;}
+</code></pre></div>
+<p><strong>Key Benefits:</strong>
+- <strong>Explicit Parameter Passing</strong>: <code>op(b:$1){my_func(b)}</code> clearly shows parameter flow
+- <strong>Works with Any Function</strong>: Can wrap any function definition
+- <strong>ETL-Friendly</strong>: Perfect for data transformation pipelines
+- <strong>Reusable</strong>: Functions can be defined once and used in multiple rules</p>
+<p><strong>Real-World ETL Example:</strong>
+<div class="highlight"><pre><span></span><code>/* Data processing pipeline */
+clean_data = op(p){p.trim().lower()};
+validate_email = op(p){p.grep(&quot;^[^@]+@[^@]+\\.[^@]+$&quot;)?p:null};
+format_output = op(p){p.upper() + &quot; - PROCESSED&quot;};
+
+/* ETL grammar */
+@global[&quot;$data_pipeline&quot;] = rule 
+    &#39;process&#39; $STR {
+        op(input:$2) {
+            /* Apply ETL pipeline */
+            cleaned = op(parse)(&#39;clean &#39; + input)();
+            validated = op(parse)(&#39;validate &#39; + cleaned)();
+            formatted = op(parse)(&#39;format &#39; + validated)();
+            return formatted;
+        }
+    }
+;
+
+@global[&quot;$clean_step&quot;] = rule &lt;$raw_data,op(b:$1){clean_data(b)}&gt; {@&lt;var,{$1}&gt;};
+@global[&quot;$validate_step&quot;] = rule &lt;$cleaned_data,op(b:$1){validate_email(b)}&gt; {@&lt;var,{$1}&gt;};
+@global[&quot;$format_step&quot;] = rule &lt;$validated_data,op(b:$1){format_output(b)}&gt; {@&lt;var,{$1}&gt;};
+</code></pre></div></p>
+<h2 id="best-practices">Best Practices</h2>
+<h3 id="syntax-design"><strong>Syntax Design</strong></h3>
+<ol>
+<li><strong>Use <code>custom_command</code> for actions</strong> (statements, commands)</li>
+<li><strong>Use <code>custom_function</code> for expressions</strong> (operators, functions)</li>
+<li><strong>Follow existing patterns</strong> for consistency</li>
+<li><strong>Document syntax thoroughly</strong> for users</li>
+<li><strong>Use wrapper functions</strong> for complex ETL processing</li>
+</ol>
+<h3 id="integration"><strong>Integration</strong></h3>
+<ol>
+<li><strong>Leverage existing C++ libraries</strong> when possible</li>
+<li><strong>Use <code>op(parse)()</code> for execution</strong></li>
+<li><strong>Test syntax thoroughly</strong> before deployment</li>
+<li><strong>Consider performance implications</strong></li>
+</ol>
+<h3 id="error-handling"><strong>Error Handling</strong></h3>
+<div class="highlight"><pre><span></span><code>/* Robust syntax definition */
+custom_function = rule safe_query &#39;(&#39; $STR &#39;)&#39; {op(query:$3){
+    try {
+        return execute_query(query);
+    } catch (error) {
+        (&quot;Query error: &quot; + error).echo();
+        return $err(&quot;Query failed&quot;);
+    };
+}};
+</code></pre></div>
+<h2 id="advanced-examples">Advanced Examples</h2>
+<h3 id="domain-specific-language-dsl"><strong>Domain-Specific Language (DSL)</strong></h3>
+<div class="highlight"><pre><span></span><code>/* Configuration DSL */
+custom_command = rule server &#39;{&#39; &lt;$server_config&gt; &#39;}&#39; {op(config:$3){
+    /* Server configuration */
+    create_server(config);
+}};
+
+custom_command = rule port $INT {op(port_num:$2){
+    /* Port setting */
+    set_port(port_num);
+}};
+
+/* Execute DSL */
+op(parse)(&#39;server { port 8080 }&#39;)();
+</code></pre></div>
+<h3 id="data-processing-pipeline"><strong>Data Processing Pipeline</strong></h3>
+<div class="highlight"><pre><span></span><code>/* Pipeline syntax */
+custom_command = rule pipeline &#39;{&#39; &lt;$pipeline_steps&gt; &#39;}&#39; {op(steps:$3){
+    /* Execute pipeline */
+    result = null;
+    i = 0;
+    while (i &lt; steps.len()) {
+        step = steps[i];
+        result = execute_step(step, result);
+        i += 1;
+    };
+    return result;
+}};
+
+/* Execute pipeline */
+result = op(parse)(&#39;pipeline { load &quot;data.csv&quot; | filter &quot;age &gt; 25&quot; | sort &quot;name&quot; }&#39;)();
+</code></pre></div>
+<h2 id="conclusion">Conclusion</h2>
+<p>Grapa's multi-syntax capabilities make it uniquely powerful for:
+- <strong>Data processing</strong> with JSON, XML (native), and SQL (example scripts)
+- <strong>Web development</strong> with HTML and CSS selectors
+- <strong>Configuration management</strong> with custom DSLs
+- <strong>Domain-specific applications</strong> with tailored syntax</p>
+<p>The executable BNF architecture provides unprecedented flexibility while maintaining performance and consistency across all syntaxes.</p>
+<h2 id="see-also">See Also</h2>
+<ul>
+<li><a href="../advanced_topics/">Advanced Topics</a></li>
+<li><a href="../type/rule/#language-syntax-extension">Language Syntax Extension</a></li>
+<li><a href="../syntax/grammar_design/">Grammar Design</a></li>
+<li><a href="../examples/">Examples</a></li>
+<li><a href="../use_cases/">Use Cases</a> </li>
+</ul>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "..", "features": ["navigation.tabs", "navigation.top", "search.suggest", "content.code.copy", "content.action.edit", "content.action.view", "content.tabs.link"], "search": "../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.56ea9cef.min.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.0/dist/mermaid.min.js"></script>
+      
+        <script src="../javascripts/mermaid-init.js"></script>
+      
+        <script src="../javascripts/search-fix.js"></script>
+      
+    
+  </body>
+</html>
