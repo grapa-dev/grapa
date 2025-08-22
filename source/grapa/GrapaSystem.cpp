@@ -432,6 +432,9 @@ std::string GrapaSystem::GetUtf8Char()
     DWORD read;
     WCHAR wch[2];
     
+	//DWORD waitResult = WaitForSingleObject(mStdinRef, 100);
+	//if (PeekConsoleInput(mStdinRef, &inputRecord, 1, &numEvents) && numEvents > 0) {
+
     // Windows: Use Windows API UTF-8 conversion for reliability
     if (gSystem->mStop) return result;
     
