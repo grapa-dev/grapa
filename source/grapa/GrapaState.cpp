@@ -4484,10 +4484,15 @@ GrapaRuleEvent* GrapaScriptExec::ProcessPlan(GrapaNames* pNameSpace, GrapaRuleEv
 						result->mControlFlow = result->vRulePointer->mControlFlow;
 					if (result->mControlFlow)
 					{
-						GrapaRuleEvent* oldResult = result;
-						u8 isControlFlowChange = result->mControlFlow;;
-						result = CopyItem(result);
-						result->mControlFlow = isControlFlowChange;
+						if (!result->mCopied)
+						{
+							GrapaRuleEvent* oldResult = result;
+							u8 isControlFlowChange = result->mControlFlow;;
+							result = CopyItem(result);
+							oldResult->CLEAR();
+							delete oldResult;
+							result->mControlFlow = isControlFlowChange;
+						}
 						break;
 					}
 				}
@@ -4989,6 +4994,7 @@ GrapaRuleEvent* GrapaScriptExec::CopyItem(GrapaRuleEvent* pAction, bool isTAG, b
 	result->mNull = p->mNull;
 	result->mQuote = p->mQuote;
 	result->mConst = isConst;
+	result->mCopied = true;
 	if (isTAG)
 	{
 		if (result->mValue.mToken == GrapaTokenType::TAG)

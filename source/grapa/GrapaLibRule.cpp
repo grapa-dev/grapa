@@ -5231,6 +5231,25 @@ static GrapaRuleEvent* ItemAssignRun(GrapaScriptExec *vScriptExec, GrapaNames* p
 							break;
 						}
 						break;
+					case GrapaTokenType::RAW:
+						switch (r->mValue.mToken)
+						{
+						case GrapaTokenType::INT:
+							a.FromBytes(parameter->mValue);
+							b.FromBytes(r->mValue);
+							if (GrapaMem::StrCmp((char*)pName.mBytes, pName.mLength, "assignmul") == 0)
+								parameter->mValue.FROM((a * b).getBytes());
+							else if (GrapaMem::StrCmp((char*)pName.mBytes, pName.mLength, "assigndiv") == 0)
+								parameter->mValue.FROM((a / b).getBytes());
+							else if (GrapaMem::StrCmp((char*)pName.mBytes, pName.mLength, "assignmod") == 0)
+								parameter->mValue.FROM((a % b).getBytes());
+							else if (GrapaMem::StrCmp((char*)pName.mBytes, pName.mLength, "assignpow") == 0)
+								parameter->mValue.FROM((a.Pow(b)).getBytes());
+							else
+								parameter->mValue.FROM((a + b).getBytes());
+							break;
+						}
+						break;
 					case GrapaTokenType::FLOAT:
 						switch (r->mValue.mToken)
 						{
@@ -13019,6 +13038,21 @@ GrapaRuleEvent* GrapaLibraryRuleAddEvent::Run(GrapaScriptExec *vScriptExec, Grap
 						rStr2.LTrim('0');
 						rStr.Append(rStr2);
 						break;
+					case GrapaTokenType::INT:
+						rInt.FromString(rStr, 16);
+						rInt2.FromBytes(r1.vVal->mValue);
+						e = GrapaTokenType::INT;
+						rInt = rInt + rInt2;
+						break;
+					case GrapaTokenType::FLOAT:
+						rFloat.FromString(rStr, 16);
+						rFloat2.mMax = vScriptExec->vScriptState->mItemState.mFloatMax;
+						rFloat2.mFix = vScriptExec->vScriptState->mItemState.mFloatFix;
+						rFloat2.mExtra = vScriptExec->vScriptState->mItemState.mFloatExtra;
+						rFloat2.FromBytes(r1.vVal->mValue);
+						e = GrapaTokenType::FLOAT;
+						rFloat = rFloat + rFloat2;
+						break;
 					}
 					break;
 				case GrapaTokenType::INT:
@@ -13057,13 +13091,6 @@ GrapaRuleEvent* GrapaLibraryRuleAddEvent::Run(GrapaScriptExec *vScriptExec, Grap
 					case GrapaTokenType::INT:
 						rInt2.FromBytes(r1.vVal->mValue);
 						rFloat = rFloat + rInt2;
-						break;
-					case GrapaTokenType::FLOAT:
-						rFloat2.mMax = vScriptExec->vScriptState->mItemState.mFloatMax;
-						rFloat2.mFix = vScriptExec->vScriptState->mItemState.mFloatFix;
-						rFloat2.mExtra = vScriptExec->vScriptState->mItemState.mFloatExtra;
-						rFloat2.FromBytes(r1.vVal->mValue);
-						rFloat = rFloat + rFloat2;
 						break;
 					case GrapaTokenType::TIME:
 						break;
@@ -13194,7 +13221,7 @@ GrapaRuleEvent* GrapaLibraryRuleSubEvent::Run(GrapaScriptExec *vScriptExec, Grap
 	GrapaLibraryParam r1(vScriptExec, pNameSpace, pInput ? pInput->Head(0) : NULL);
 	GrapaLibraryParam r2(vScriptExec, pNameSpace, pInput ? pInput->Head(1) : NULL);
 
-	if (r1.vVal && r2.vVal && r1.vVal->mValue.mBytes && r2.vVal->mValue.mBytes)
+	if (r1.vVal && r2.vVal && (r1.vVal->mValue.mBytes|| r1.vVal->mValue.mToken == GrapaTokenType::RAW) && r2.vVal->mValue.mBytes)
 	{
 		GrapaCHAR item;
 		GrapaInt a, b;
@@ -13241,6 +13268,15 @@ GrapaRuleEvent* GrapaLibraryRuleSubEvent::Run(GrapaScriptExec *vScriptExec, Grap
 		{
 			a = r1.vVal->mValue.StrCmp(r2.vVal->mValue);
 			result = new GrapaRuleEvent(0, item, a.getBytes());
+		}
+		else if (r1.vVal->mValue.mToken == GrapaTokenType::RAW && r2.vVal->mValue.mToken == GrapaTokenType::INT)
+		{
+			if (r2.vVal->mValue.mToken == GrapaTokenType::INT)
+			{
+				a.FromBytes(r1.vVal->mValue);
+				b.FromBytes(r2.vVal->mValue);
+				result = new GrapaRuleEvent(0, item, (a - b).getBytes());
+			}
 		}
 	}
 	else if (r1.vVal && r2.vVal && r1.vVal->mValue.mToken == GrapaTokenType::VECTOR && (r2.vVal->mValue.mToken == GrapaTokenType::VECTOR || r2.vVal->mValue.mToken == GrapaTokenType::ARRAY || r2.vVal->mValue.mToken == GrapaTokenType::TUPLE || r2.vVal->mValue.mToken == GrapaTokenType::INT || r2.vVal->mValue.mToken == GrapaTokenType::FLOAT))

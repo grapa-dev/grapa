@@ -106,7 +106,7 @@ public:
 	GrapaRuleEvent *vRuleLambda;
 	GrapaRuleEvent *vRuleParent;
 	GrapaRuleEvent *vClass;
-	bool mVar, mLocal, mClass, mConst;
+	bool mVar, mLocal, mClass, mConst, mCopied;
 	u8 mControlFlow; // Control flow type: 0 = none, 1 = break, 2 = continue, 3 = return, 4 = throw
 	char mQuote;
 	u8 mT;
@@ -127,7 +127,7 @@ private:
 	void INIT() {
 		vValueEvent = NULL; 
 		vRuleLambda = NULL; vLibraryEvent = NULL;  
-		mVar = mLocal = mClass = mConst = false; vRuleParent = NULL;
+		mVar = mLocal = mClass = mConst = mCopied = false; vRuleParent = NULL;
 		mControlFlow = 0;
 		vClass = NULL;
 		mQuote = 0;
