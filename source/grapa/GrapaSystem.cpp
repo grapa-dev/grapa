@@ -842,8 +842,8 @@ void My_Console::Run(GrapaCB cb, void* data)
 			{
 				Fl::lock();
 				sendBuffer.FROM("$editor();");
+				sendBuffer.Append("$\n");
 				mConsoleSend.Send(mConsoleSend.mScriptState.vScriptExec, &mRuleVariables, (char*)sendBuffer.mBytes, sendBuffer.mLength);
-				mConsoleSend.Send(mConsoleSend.mScriptState.vScriptExec, &mRuleVariables, (u8*)"$\n", 2);
 				sendBuffer.SetLength(0);
 				while (!gSystem->mStop)
 					Fl::wait(1);
@@ -851,8 +851,8 @@ void My_Console::Run(GrapaCB cb, void* data)
 			}
 			if (ch.empty() || ch == "\n")
 			{
+				sendBuffer.Append("$\n");
 				mConsoleSend.Send(mConsoleSend.mScriptState.vScriptExec, &mRuleVariables, (char*)sendBuffer.mBytes, sendBuffer.mLength);
-				mConsoleSend.Send(mConsoleSend.mScriptState.vScriptExec, &mRuleVariables, (u8*)"$\n", 2);
 				sendBuffer.SetLength(0);
 			}
 		} while (!gSystem->mStop && (sendBuffer.mLength || ch == "\n" || ch == "\r") && !ch.empty());
