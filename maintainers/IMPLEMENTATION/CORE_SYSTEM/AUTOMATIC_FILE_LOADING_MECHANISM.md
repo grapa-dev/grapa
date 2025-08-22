@@ -4,6 +4,8 @@
 
 Grapa includes a sophisticated automatic file loading mechanism that allows functions and classes to be automatically loaded from `.grc` and `.grz` files without explicit import statements. This mechanism works for both function calls and class instantiation.
 
+**Important**: This is **runtime loading** - files are loaded when the function or class is first called, not at compile time. This differs from the `include` command which loads files at compile time.
+
 ## How It Works
 
 ### Function Call Flow
@@ -65,9 +67,13 @@ if (pCmd->mValue.mBytes && pCmd->mValue.mLength)
 
 The mechanism searches for files in these directories (in order):
 
-1. **Current Working Directory** (`gSystem->mPath`)
-2. **Library Directory** (`gSystem->mLibDir`) - typically `lib/grapa/`
-3. **Static Library Directory** (`gSystem->mStaticLib`)
+1. **Current Working Directory** (`gSystem->mPath`) - Where you run the `grapa` command
+2. **Library Directory** (`gSystem->mLibDir`) - Determined by priority:
+   - `{current_working_directory}/lib/grapa` (development/local)
+   - `/usr/lib/grapa` (system-wide, package manager)
+   - `/usr/local/lib/grapa` (system-wide, user-installed)
+   - `{binary_directory}/lib/grapa` (fallback, relative to grapa executable)
+3. **Static Library Directory** (`gSystem->mStaticLib`) - Built-in compressed library files
 
 ## File Extensions
 

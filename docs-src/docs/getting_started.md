@@ -262,6 +262,8 @@ matches.echo();  /* ["world", "world"] */
 
 ## Automatic File Loading
 
+**Important**: This is **runtime loading** - files are loaded when the function or class is first called, not at compile time. This differs from the `include` command which loads files at compile time.
+
 Grapa includes a powerful automatic file loading mechanism that makes it easy to organize and reuse code:
 
 ### Creating Reusable Functions
@@ -289,29 +291,17 @@ is_valid = utils().validate_email("user@example.com");
 
 ### Search Paths
 
-Grapa automatically searches for `.grc` files in (platform-specific):
+Grapa automatically searches for `.grc` and `.grz` files in this order:
 
-#### **Windows:**
 1. **Current working directory** - Where you run the `grapa` command
-2. **User library** - `%USERPROFILE%\.grapa\lib`
-3. **System library** - `%PROGRAMFILES%\Grapa\lib`
-4. **Development** - `{current_directory}\lib\grapa`
+2. **Library directory** - Determined by this priority:
+   - `{current_working_directory}/lib/grapa` (development/local)
+   - `/usr/lib/grapa` (system-wide, package manager)
+   - `/usr/local/lib/grapa` (system-wide, user-installed)
+   - `{binary_directory}/lib/grapa` (fallback, relative to grapa executable)
+3. **Static library** - Built-in compressed library files
 
-#### **macOS:**
-1. **Current working directory** - Where you run the `grapa` command
-2. **User library** - `~/Library/Application Support/Grapa/lib`
-3. **System library** - `/usr/local/lib/grapa` (Homebrew)
-4. **System library** - `/opt/grapa/lib`
-5. **Development** - `{current_directory}/lib/grapa`
-
-#### **Linux/BSD:**
-1. **Current working directory** - Where you run the `grapa` command
-2. **User library** - `~/.local/lib/grapa`
-3. **System library** - `/usr/local/lib/grapa`
-4. **System library** - `/usr/lib/grapa` (package manager/base system)
-5. **Development** - `{current_directory}/lib/grapa`
-
-> **Tip:** Place your utility functions in the appropriate platform directory for automatic discovery. No import statements needed!
+> **Tip:** Place your utility functions in `lib/grapa/` in your project directory for automatic discovery. No import statements needed!
 
 ---
 

@@ -12,6 +12,8 @@ Grapa's module system consists of three main components:
 
 ## Automatic File Loading
 
+**Important**: This is **runtime loading** - files are loaded when the function or class is first called, not at compile time. This differs from the `include` command which loads files at compile time.
+
 ### Function Call Auto-Loading
 
 When you call a function that doesn't exist in the current namespace, Grapa automatically searches for and loads the corresponding `.grc` file:
@@ -40,26 +42,30 @@ The automatic file loading mechanism searches in this order:
 
 ### Default Library Directory Search Order
 
-The library directory is determined in this order (platform-specific):
+The library directory is determined in this order:
 
-#### **Windows:**
-1. `%USERPROFILE%\.grapa\lib` (user's home)
-2. `%PROGRAMFILES%\Grapa\lib` (system-wide)
-3. `{current_directory}\lib\grapa` (development)
+1. **`{current_working_directory}/lib/grapa`** (development/local)
+2. **`/usr/lib/grapa`** (system-wide, package manager)
+3. **`/usr/local/lib/grapa`** (system-wide, user-installed)
+4. **`{binary_directory}/lib/grapa`** (fallback, relative to grapa executable)
 
-#### **macOS:**
-1. `~/Library/Application Support/Grapa/lib` (user's home)
-2. `/usr/local/lib/grapa` (Homebrew/system-wide)
-3. `/opt/grapa/lib` (system-wide)
-4. `{current_directory}/lib/grapa` (development)
+> **Note**: The current implementation prioritizes development convenience by checking the current working directory first. This makes it easy for developers to place library files in their project's `lib/grapa/` directory.
 
-#### **Linux/BSD:**
-1. `~/.local/lib/grapa` (user's home)
-2. `/usr/local/lib/grapa` (system-wide)
-3. `/usr/lib/grapa` (package manager/base system)
-4. `{current_directory}/lib/grapa` (development)
+## Runtime vs Compile-Time Loading
 
-> **Note**: The current implementation prioritizes development convenience. For production systems, the platform-specific user directories provide better separation between user and system libraries.
+Grapa provides two different mechanisms for loading code:
+
+### Automatic File Loading (Runtime)
+- **When**: Files are loaded when functions/classes are first called
+- **How**: Searches for `.grc`/`.grz` files in search paths
+- **Use case**: Dynamic loading, plugins, optional features
+- **Example**: `mycode()` automatically loads `mycode.grc` when called
+
+### Include Command (Compile-Time)
+- **When**: Files are loaded during compilation/parsing
+- **How**: Explicitly includes files with `include "file.grc"`
+- **Use case**: Core dependencies, always-required modules
+- **Example**: `include "lib/core/utils.grc"` loads file during compilation
 
 ## Include System
 
