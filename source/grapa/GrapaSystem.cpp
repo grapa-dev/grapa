@@ -432,32 +432,39 @@ std::string GrapaSystem::GetUtf8Char()
     DWORD read;
     WCHAR wch[2];
     
-    // Windows: Use a loop with small delays to check for exit condition
+    // Windows: Use PeekConsoleInput to check for available input before blocking
     while (!gSystem->mStop) {
-        // Try to read with minimal blocking
-        BOOL x = ReadConsoleW(mStdinRef, &wch[0], 1, &read, NULL);
-        if (x && read > 0) {
-            // Check for surrogate pair
-            if (wch[0] >= 0xD800 && wch[0] <= 0xDBFF) {
-                // High surrogate, read the next WCHAR
-                DWORD read2;
-                BOOL x2 = ReadConsoleW(mStdinRef, &wch[1], 1, &read2, NULL);
-                if (x2 && read2 > 0 && wch[1] >= 0xDC00 && wch[1] <= 0xDFFF) {
-                    // Combine surrogate pair
-                    uint32_t codepoint = 0x10000 + (((uint32_t)wch[0] - 0xD800) << 10) + ((uint32_t)wch[1] - 0xDC00);
-                    result = utf8_encode(codepoint); // Use your helper
+        // Check if input is available without blocking
+        DWORD numEvents;
+        INPUT_RECORD inputRecord;
+        
+        // Peek to see if there are any console input events
+        if (PeekConsoleInput(mStdinRef, &inputRecord, 1, &numEvents) && numEvents > 0) {
+            // Input is available, now we can safely call ReadConsoleW
+            BOOL x = ReadConsoleW(mStdinRef, &wch[0], 1, &read, NULL);
+            if (x && read > 0) {
+                // Check for surrogate pair
+                if (wch[0] >= 0xD800 && wch[0] <= 0xDBFF) {
+                    // High surrogate, read the next WCHAR
+                    DWORD read2;
+                    BOOL x2 = ReadConsoleW(mStdinRef, &wch[1], 1, &read2, NULL);
+                    if (x2 && read2 > 0 && wch[1] >= 0xDC00 && wch[1] <= 0xDFFF) {
+                        // Combine surrogate pair
+                        uint32_t codepoint = 0x10000 + (((uint32_t)wch[0] - 0xD800) << 10) + ((uint32_t)wch[1] - 0xDC00);
+                        result = utf8_encode(codepoint); // Use your helper
+                    } else {
+                        // Invalid surrogate, just encode the first
+                        result = utf8_encode(wch[0]);
+                    }
                 } else {
-                    // Invalid surrogate, just encode the first
+                    // Not a surrogate, just encode as UTF-8
                     result = utf8_encode(wch[0]);
                 }
-            } else {
-                // Not a surrogate, just encode as UTF-8
-                result = utf8_encode(wch[0]);
+                break; // We got a character, exit the loop
             }
-            break; // We got a character, exit the loop
         }
         
-        // If ReadConsoleW didn't return data, check for exit condition and wait a bit
+        // No input available, check for exit condition and wait a bit
         if (gSystem->mStop) break;
         
         // Small delay to prevent busy waiting (100ms)
