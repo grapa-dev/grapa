@@ -2184,6 +2184,15 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#what-can-be-used-inside" class="md-nav__link">
+    <span class="md-ellipsis">
+      What Can Be Used Inside ${}:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#examples_3" class="md-nav__link">
     <span class="md-ellipsis">
       Examples:
@@ -3418,6 +3427,52 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../machine_learning/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Machine Learning
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../vector_performance_guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Vector Performance Guide
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -4538,6 +4593,15 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#what-can-be-used-inside" class="md-nav__link">
+    <span class="md-ellipsis">
+      What Can Be Used Inside ${}:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#examples_3" class="md-nav__link">
     <span class="md-ellipsis">
       Examples:
@@ -5309,6 +5373,18 @@ whitespace = [&quot; &quot;, &quot;\t&quot;, &quot;\n&quot;, &quot;\r&quot;];
 <li><code>${op(params)("script")()}</code> - Script execution with parameters using <code>op()</code> function</li>
 <li><code>${op(params)(script_var)()}</code> - <strong>ADVANCED</strong> - Dynamic script execution with variable references</li>
 </ul>
+<h3 id="what-can-be-used-inside">What Can Be Used Inside <code>${}</code>:</h3>
+<ul>
+<li><strong>Variables</strong>: <code>${name}</code>, <code>${age}</code>, <code>${user.id}</code></li>
+<li><strong>Expressions</strong>: <code>${x + y}</code>, <code>${price * 1.08}</code>, <code>${count &gt; 0}</code></li>
+<li><strong>Function calls</strong>: <code>${get_data()}</code>, <code>${calculate(a, b)}</code></li>
+<li><strong>Method calls</strong>: <code>${text.upper()}</code>, <code>${array.len()}</code></li>
+<li><strong>Object literals</strong>: <code>${{name:"John", age:30}}</code></li>
+<li><strong>Array literals</strong>: <code>${[1, 2, 3]}</code></li>
+<li><strong>Array operations</strong>: <code>${data.filter(op(x){x &gt; 0})}</code></li>
+<li><strong>Nested expressions</strong>: <code>${users.map(op(u){u.name}).join(", ")}</code></li>
+<li><strong>Conditional expressions</strong>: <code>${status == "ok" ? "Success" : "Failed"}</code></li>
+</ul>
 <h3 id="examples_3">Examples:</h3>
 <div class="highlight"><pre><span></span><code>/* Basic variable interpolation */
 name = &quot;Alice&quot;;
@@ -5353,6 +5429,32 @@ calc = &quot;x * y + z;&quot;;
 /* Method chaining */
 &quot;Hello ${name}&quot;.interpolate({name:&quot;Alice&quot;}).upper();
 /* → &quot;HELLO ALICE&quot; */
+
+/* Direct object syntax */
+&quot;Object: ${{a:1,b:2}}&quot;.interpolate();
+/* → &quot;Object: {&quot;a&quot;:1,&quot;b&quot;:2}&quot; */
+
+/* Nested objects */
+&quot;Nested: ${{a:{b:1},c:2}}&quot;.interpolate();
+/* → &quot;Nested: {&quot;a&quot;:{&quot;b&quot;:1},&quot;c&quot;:2}&quot; */
+
+/* Function calls inside ${} */
+get_user = op() { {name:&quot;John&quot;, age:30}; };
+&quot;User: ${get_user()}&quot;.interpolate();
+/* → &quot;User: {&quot;name&quot;:&quot;John&quot;,&quot;age&quot;:30}&quot; */
+
+/* Function calls with parameters */
+multiply = op(x, y) { x * y; };
+&quot;Result: ${multiply(5, 3)}&quot;.interpolate();
+/* → &quot;Result: 15&quot; */
+
+/* Array operations */
+&quot;Numbers: ${[1,2,3,4].filter(op(x){x &gt; 2})}&quot;.interpolate();
+/* → &quot;Numbers: [3,4]&quot; */
+
+/* String methods */
+&quot;Uppercase: ${&#39;hello world&#39;.upper()}&quot;.interpolate();
+/* → &quot;Uppercase: HELLO WORLD&quot; */
 </code></pre></div>
 <h3 id="advanced-features">Advanced Features:</h3>
 <h4 id="multi-level-parameter-passing">Multi-Level Parameter Passing</h4>

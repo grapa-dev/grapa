@@ -914,6 +914,33 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#valid-identifiers-ascii-only" class="md-nav__link">
+    <span class="md-ellipsis">
+      Valid Identifiers (ASCII Only)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#invalid-identifiers-unicode-not-supported" class="md-nav__link">
+    <span class="md-ellipsis">
+      Invalid Identifiers (Unicode Not Supported)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#unicode-property-access-exception" class="md-nav__link">
+    <span class="md-ellipsis">
+      Unicode Property Access (Exception)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#see-also" class="md-nav__link">
     <span class="md-ellipsis">
       See also
@@ -2590,6 +2617,52 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../machine_learning/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Machine Learning
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../vector_performance_guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Vector Performance Guide
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -3484,6 +3557,33 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#valid-identifiers-ascii-only" class="md-nav__link">
+    <span class="md-ellipsis">
+      Valid Identifiers (ASCII Only)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#invalid-identifiers-unicode-not-supported" class="md-nav__link">
+    <span class="md-ellipsis">
+      Invalid Identifiers (Unicode Not Supported)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#unicode-property-access-exception" class="md-nav__link">
+    <span class="md-ellipsis">
+      Unicode Property Access (Exception)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#see-also" class="md-nav__link">
     <span class="md-ellipsis">
       See also
@@ -3510,7 +3610,9 @@
 
 <h1 id="id">$ID</h1>
 <p>References:</p>
-<p>Any identifier (starts with a letter and can follow with letters or numbers will be initialized as an $ID. And an $ID can be used for many things, including associating a value. Optionally, the '@' symbol is used to de-reference an $ID to retrieve the data stored - which is useful when being used in a location that requires and $ID (such as a label). When used in a location that requires a value, an $ID will be automatically dereferenced. </p>
+<p>Any identifier (starts with a letter and can follow with letters or numbers) will be initialized as an $ID. And an $ID can be used for many things, including associating a value. Optionally, the '@' symbol is used to de-reference an $ID to retrieve the data stored - which is useful when being used in a location that requires an $ID (such as a label). When used in a location that requires a value, an $ID will be automatically dereferenced.</p>
+<p><strong>Important:</strong> Identifiers (variable names, function names) are <strong>not Unicode-aware</strong> and are limited to ASCII characters. This is a lexical limitation - the lexer uses a specific array of allowed bytes for identifiers. While string content supports full Unicode, identifiers must use only ASCII letters, numbers, and underscores.</p>
+<p><strong>Exception:</strong> When using <strong>quoted property access</strong> (e.g., <code>obj.'property_name'</code>), the property name can contain Unicode characters since it's treated as a string literal rather than an identifier. </p>
 <p>Example of using an $ID as a variable:
 <div class="highlight"><pre><span></span><code>&gt; x = &quot;hi&quot;
 
@@ -3526,6 +3628,59 @@ hi test
 &gt; {@x:&quot;test&quot;}
 {&quot;hi&quot;:&quot;test&quot;}
 </code></pre></div></p>
+<h3 id="valid-identifiers-ascii-only">Valid Identifiers (ASCII Only)</h3>
+<div class="highlight"><pre><span></span><code>/* Valid variable names */
+name = &quot;John&quot;;
+age_123 = 30;
+user_name = &quot;alice&quot;;
+test123 = &quot;works&quot;;
+
+/* Valid function names */
+function_name = op(x) { x.echo(); };
+calculate_sum = op(a, b) { a + b; };
+</code></pre></div>
+<h3 id="invalid-identifiers-unicode-not-supported">Invalid Identifiers (Unicode Not Supported)</h3>
+<div class="highlight"><pre><span></span><code>/* These will cause parsing errors */
+héllo = &quot;test&quot;;     /* Error: Unicode character in identifier */
+café = &quot;test&quot;;      /* Error: Unicode character in identifier */
+user_世界 = &quot;test&quot;;  /* Error: Unicode character in identifier */
+🚀variable = &quot;test&quot;; /* Error: Unicode character in identifier */
+</code></pre></div>
+<p><strong>Note:</strong> While identifiers must be ASCII-only, the string content they store can contain full Unicode:</p>
+<div class="highlight"><pre><span></span><code>/* Valid: ASCII identifier with Unicode content */
+message = &quot;Hello 世界! 🚀&quot;;
+message.echo();  /* Output: Hello 世界! 🚀 */
+
+/* Valid: ASCII identifier with Unicode function name as string */
+function_name = &quot;café_function&quot;;
+function_name.echo();  /* Output: café_function */
+</code></pre></div>
+<h3 id="unicode-property-access-exception">Unicode Property Access (Exception)</h3>
+<p>When using quoted property access, you can use Unicode characters in property names:</p>
+<div class="highlight"><pre><span></span><code>/* Object with Unicode property names */
+data = {
+    &quot;héllo&quot;: 5,
+    &quot;🚀test&quot;: 10,
+    &quot;世界&quot;: &quot;hello&quot;,
+    &quot;👨‍👩‍👧‍👦&quot;: &quot;family&quot;
+};
+
+/* Access Unicode properties using quoted syntax */
+data.&#39;héllo&#39;.echo();      /* Output: 5 */
+data.&#39;🚀test&#39;.echo();     /* Output: 10 */
+data.&#39;世界&#39;.echo();        /* Output: hello */
+data.&#39;👨‍👩‍👧‍👦&#39;.echo();   /* Output: family */
+
+/* Functions with Unicode names via quoted access */
+functions = {
+    &quot;🚀function&quot;: op(x, y) { x + y },
+    &quot;世界_function&quot;: op(x) { x * 2 }
+};
+
+functions.&#39;🚀function&#39;(3, 4).echo();     /* Output: 7 */
+functions.&#39;世界_function&#39;(5).echo();     /* Output: 10 */
+</code></pre></div>
+<p><strong>Key Point:</strong> This works because quoted property access treats the property name as a string literal, bypassing the identifier lexer restrictions.</p>
 <hr />
 <h2 id="see-also">See also</h2>
 <ul>
