@@ -102,6 +102,36 @@ result = data.json.users[0].name + " from " + data.xml.config.setting;
 
 **Grapa's unified data type integration is unique - no other language provides this level of seamless cross-format data manipulation.**
 
+### **Machine Learning & Statistical Analysis** 🧠
+Grapa provides **comprehensive machine learning capabilities** that rival dedicated ML libraries:
+- **Linear regression** with multiple algorithms (normal equation, gradient descent, ridge regression)
+- **Statistical analysis** with built-in functions for mean, standard deviation, covariance, correlation
+- **Feature preprocessing** with standardization, normalization, and scaling capabilities
+- **Model evaluation** with R-squared, MSE, RMSE, and MAE metrics
+- **Optimized vector operations** for efficient matrix computations
+- **Complete ML pipeline** from data preprocessing to model evaluation
+
+```grapa
+/* Linear regression with normal equation */
+X = [[1, 2], [3, 4], [5, 6]].vector();
+y = [10, 20, 30].vector();
+
+/* Add bias term and calculate coefficients */
+X_with_bias = add_bias_column(X);
+XT = X_with_bias.t();
+XTX = XT.dot(X_with_bias);
+XTy = XT.dot(y);
+coefficients = XTX.inv().dot(XTy);
+
+/* Make predictions */
+predictions = X_with_bias.dot(coefficients);
+
+/* Evaluate model */
+r_squared = calculate_r_squared(y, predictions);
+```
+
+**Grapa's machine learning capabilities provide a complete foundation for implementing linear models and statistical analysis without external dependencies.**
+
 ### **Enhanced Assignment Operators** ⚡
 Grapa provides comprehensive assignment operators for all data types:
 ```grapa
@@ -176,6 +206,7 @@ This table ranks programming languages across key capabilities, showing where Gr
 | **Binary Data Processing** | **⭐⭐⭐⭐⭐ (Native Binary Support)** | ⭐⭐ (struct, binascii) | ⭐⭐ (ArrayBuffer) | ⭐⭐ (ArrayBuffer) | ⭐⭐⭐ (binary package) | ⭐⭐⭐⭐ (bytes, binary) | ⭐⭐ (Data) | ⭐⭐ (ByteArray) | ⭐⭐ (String#unpack) |
 | **Unsigned Number Handling** | **⭐⭐⭐⭐⭐ (Built-in .uint(), .uhex(), .ubin(), .uraw())** | ⭐⭐ (manual bit manipulation) | ⭐⭐ (manual bit manipulation) | ⭐⭐ (manual bit manipulation) | ⭐⭐ (manual bit manipulation) | ⭐⭐⭐ (manual bit manipulation) | ⭐⭐ (manual bit manipulation) | ⭐⭐ (manual bit manipulation) | ⭐⭐ (manual bit manipulation) |
 | **Numeric Literal Support** | **⭐⭐⭐⭐⭐ (Hex, Binary, Underscores, Floats)** | ⭐⭐⭐ (hex, binary) | ⭐⭐⭐ (hex, binary) | ⭐⭐⭐ (hex, binary) | ⭐⭐⭐ (hex, binary) | ⭐⭐⭐ (hex, binary) | ⭐⭐⭐ (hex, binary) | ⭐⭐⭐ (hex, binary) | ⭐⭐⭐ (hex, binary) |
+| **Machine Learning** | **⭐⭐⭐⭐ (Linear Regression, Statistical Analysis)** | ⭐⭐⭐⭐ (scikit-learn, numpy) | ⭐⭐ (ml libraries) | ⭐⭐ (ml libraries) | ⭐⭐ (ml libraries) | ⭐⭐ (ml libraries) | ⭐⭐ (ml libraries) | ⭐⭐ (ml libraries) | ⭐⭐ (ml libraries) |
 | **Unicode Support** | **⭐⭐⭐ (Basic + grep fully unicode)** | ⭐⭐⭐ (native) | ⭐⭐⭐ (native) | ⭐⭐⭐ (native) | ⭐⭐ (unicode package) | ⭐⭐⭐ (unicode) | ⭐⭐⭐⭐ (native) | ⭐⭐⭐ (native) | ⭐⭐⭐ (native) |
 | **Memory Management** | **⭐⭐⭐⭐ (Automatic + Thread-Safe)** | ⭐⭐ (GC) | ⭐⭐ (GC) | ⭐⭐ (GC) | ⭐⭐⭐ (GC) | ⭐⭐⭐⭐⭐ (manual) | ⭐⭐⭐⭐ (ARC) | ⭐⭐⭐ (GC) | ⭐⭐ (GC) |
 | **Performance** | **⭐⭐⭐⭐ (Compiled + Parallel)** | ⭐⭐ (interpreted) | ⭐⭐ (JIT) | ⭐⭐ (JIT) | ⭐⭐⭐⭐ (compiled) | ⭐⭐⭐⭐⭐ (compiled) | ⭐⭐⭐⭐ (compiled) | ⭐⭐⭐ (JVM) | ⭐⭐ (interpreted) |
@@ -494,6 +525,7 @@ Grapa possesses unique capabilities that modern languages cannot match (or provi
 - **Control Flow** - Working return/break/continue statements with proper value handling
 - **Array Comprehension Alternatives** - Functional methods (.filter(), .map()) with threading support
 - **Vector Operations** - Comprehensive matrix operations, linear algebra, and statistical functions
+- **Machine Learning** - Linear regression, statistical analysis, and ML algorithms with optimized vector operations
 - **String Interpolation** - Advanced template literal support with expressions
 - **Advanced Pattern Matching** - 100% ripgrep compatibility with binary data support
 - **Unified Data Type Integration** - Seamless cross-format manipulation

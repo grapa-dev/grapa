@@ -704,6 +704,15 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#machine-learning-statistical-analysis" class="md-nav__link">
+    <span class="md-ellipsis">
+      Machine Learning &amp; Statistical Analysis 🧠
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#enhanced-assignment-operators" class="md-nav__link">
     <span class="md-ellipsis">
       Enhanced Assignment Operators ⚡
@@ -3383,6 +3392,52 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../machine_learning/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Machine Learning
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../vector_performance_guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Vector Performance Guide
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -4341,6 +4396,15 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#machine-learning-statistical-analysis" class="md-nav__link">
+    <span class="md-ellipsis">
+      Machine Learning &amp; Statistical Analysis 🧠
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#enhanced-assignment-operators" class="md-nav__link">
     <span class="md-ellipsis">
       Enhanced Assignment Operators ⚡
@@ -5204,6 +5268,32 @@ data = {json:{users:[...]}, xml:&lt;config&gt;...&lt;/config&gt;};
 result = data.json.users[0].name + &quot; from &quot; + data.xml.config.setting;
 </code></pre></div></p>
 <p><strong>Grapa's unified data type integration is unique - no other language provides this level of seamless cross-format data manipulation.</strong></p>
+<h3 id="machine-learning-statistical-analysis"><strong>Machine Learning &amp; Statistical Analysis</strong> 🧠</h3>
+<p>Grapa provides <strong>comprehensive machine learning capabilities</strong> that rival dedicated ML libraries:
+- <strong>Linear regression</strong> with multiple algorithms (normal equation, gradient descent, ridge regression)
+- <strong>Statistical analysis</strong> with built-in functions for mean, standard deviation, covariance, correlation
+- <strong>Feature preprocessing</strong> with standardization, normalization, and scaling capabilities
+- <strong>Model evaluation</strong> with R-squared, MSE, RMSE, and MAE metrics
+- <strong>Optimized vector operations</strong> for efficient matrix computations
+- <strong>Complete ML pipeline</strong> from data preprocessing to model evaluation</p>
+<div class="highlight"><pre><span></span><code>/* Linear regression with normal equation */
+X = [[1, 2], [3, 4], [5, 6]].vector();
+y = [10, 20, 30].vector();
+
+/* Add bias term and calculate coefficients */
+X_with_bias = add_bias_column(X);
+XT = X_with_bias.t();
+XTX = XT.dot(X_with_bias);
+XTy = XT.dot(y);
+coefficients = XTX.inv().dot(XTy);
+
+/* Make predictions */
+predictions = X_with_bias.dot(coefficients);
+
+/* Evaluate model */
+r_squared = calculate_r_squared(y, predictions);
+</code></pre></div>
+<p><strong>Grapa's machine learning capabilities provide a complete foundation for implementing linear models and statistical analysis without external dependencies.</strong></p>
 <h3 id="enhanced-assignment-operators"><strong>Enhanced Assignment Operators</strong> ⚡</h3>
 <p>Grapa provides comprehensive assignment operators for all data types:
 <div class="highlight"><pre><span></span><code>/* Arithmetic assignment */
@@ -5449,6 +5539,18 @@ xml = xml + &lt;root&gt;&lt;item&gt;1&lt;/item&gt;&lt;/root&gt;;  /* Concatenate
 <td>⭐⭐⭐ (hex, binary)</td>
 <td>⭐⭐⭐ (hex, binary)</td>
 <td>⭐⭐⭐ (hex, binary)</td>
+</tr>
+<tr>
+<td><strong>Machine Learning</strong></td>
+<td><strong>⭐⭐⭐⭐ (Linear Regression, Statistical Analysis)</strong></td>
+<td>⭐⭐⭐⭐ (scikit-learn, numpy)</td>
+<td>⭐⭐ (ml libraries)</td>
+<td>⭐⭐ (ml libraries)</td>
+<td>⭐⭐ (ml libraries)</td>
+<td>⭐⭐ (ml libraries)</td>
+<td>⭐⭐ (ml libraries)</td>
+<td>⭐⭐ (ml libraries)</td>
+<td>⭐⭐ (ml libraries)</td>
 </tr>
 <tr>
 <td><strong>Unicode Support</strong></td>
@@ -5908,6 +6010,7 @@ result = mixed_data.json.users.map(op(user) {
 <li><strong>Control Flow</strong> - Working return/break/continue statements with proper value handling</li>
 <li><strong>Array Comprehension Alternatives</strong> - Functional methods (.filter(), .map()) with threading support</li>
 <li><strong>Vector Operations</strong> - Comprehensive matrix operations, linear algebra, and statistical functions</li>
+<li><strong>Machine Learning</strong> - Linear regression, statistical analysis, and ML algorithms with optimized vector operations</li>
 <li><strong>String Interpolation</strong> - Advanced template literal support with expressions</li>
 <li><strong>Advanced Pattern Matching</strong> - 100% ripgrep compatibility with binary data support</li>
 <li><strong>Unified Data Type Integration</strong> - Seamless cross-format manipulation</li>
