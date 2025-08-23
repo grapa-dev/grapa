@@ -1,0 +1,67 @@
+"================================================================================\n".echo();
+"PROLOG Implementation Demo in Grapa\n".echo();
+"================================================================================\n".echo();
+
+"Initialize knowledge base\n".echo();
+kb = $file().table();
+
+"================================================================================\n".echo();
+"Store PROLOG facts\n".echo();
+"================================================================================\n".echo();
+
+kb.set('fact1', 'parent(john,mary)');
+kb.set('fact2', 'parent(mary,jane)');
+kb.set('fact3', 'parent(jane,bob)');
+kb.set('fact4', 'likes(mary,wine)');
+kb.set('fact5', 'likes(john,mary)');
+
+"Stored facts:\n".echo();
+("fact1: " + kb.get('fact1') + "\n").echo();
+("fact2: " + kb.get('fact2') + "\n").echo();
+("fact3: " + kb.get('fact3') + "\n").echo();
+("fact4: " + kb.get('fact4') + "\n").echo();
+("fact5: " + kb.get('fact5') + "\n").echo();
+
+"================================================================================\n".echo();
+"Query: Find all parent facts\n".echo();
+"================================================================================\n".echo();
+
+keys = ['fact1', 'fact2', 'fact3', 'fact4', 'fact5'];
+parent_facts = [];
+
+keys.range().map(op(i) {
+    fact = kb.get(keys[i]);
+    if (fact.indexOf('parent') == 0) {
+        parent_facts = parent_facts.add(fact);
+    };
+});
+
+"Parent facts found: " + parent_facts.len() + "\n".echo();
+parent_facts.range().map(op(i) {
+    ("  " + parent_facts[i] + "\n").echo();
+});
+
+"================================================================================\n".echo();
+"Variable binding example\n".echo();
+"================================================================================\n".echo();
+
+$global.X = 'john';
+$global.Y = 'mary';
+
+"Variables: X=" + $global.X + ", Y=" + $global.Y + "\n".echo();
+"Template: parent(X,Y) becomes: parent(" + $global.X + "," + $global.Y + ")\n".echo();
+
+"================================================================================\n".echo();
+"Rule storage\n".echo();
+"================================================================================\n".echo();
+
+kb.set('rule1', 'ancestor(X,Y) :- parent(X,Y)');
+kb.set('rule2', 'ancestor(X,Z) :- parent(X,Y), ancestor(Y,Z)');
+
+"Stored rules:\n".echo();
+("rule1: " + kb.get('rule1') + "\n").echo();
+("rule2: " + kb.get('rule2') + "\n").echo();
+
+"================================================================================\n".echo();
+"PROLOG Implementation Complete\n".echo();
+"================================================================================\n".echo();

@@ -193,6 +193,86 @@ result = custom_tree(5, 3);  /* Result: 8 */
 
 ## Advanced Concurrency Patterns
 
+### Worker Thread Coordination with Functional Methods
+
+Grapa's `.map()` and `.filter()` methods are not just data processing tools - they're **sophisticated concurrency primitives** that can coordinate multiple worker threads. This enables structured concurrency patterns where all threads must complete before proceeding.
+
+#### **Thread Synchronization Barrier**
+
+```grapa
+/* Spawn multiple worker threads that all must complete */
+workers = [1, 2, 3, 4, 5].map(op(worker_id) {
+    /* Each worker does independent work */
+    ("Worker " + worker_id.str() + " starting").echo();
+    sleep(worker_id);  /* Simulate work */
+    ("Worker " + worker_id.str() + " completed").echo();
+    worker_id * 100;  /* Return result */
+});
+/* All workers complete before proceeding */
+("All workers finished").echo();
+/* Result: [100, 200, 300, 400, 500] */
+```
+
+#### **Parallel Task Execution**
+
+```grapa
+/* Execute multiple independent tasks in parallel */
+tasks = [
+    op() { "Task A: Database query".echo(); sleep(2); "A done".echo(); },
+    op() { "Task B: API call".echo(); sleep(1); "B done".echo(); },
+    op() { "Task C: File processing".echo(); sleep(3); "C done".echo(); }
+];
+
+results = tasks.map(op(task) { task(); });
+/* All tasks complete before proceeding */
+("All tasks completed").echo();
+```
+
+#### **Resource Pool Coordination**
+
+```grapa
+/* Coordinate multiple resource operations */
+resources = ["db1", "db2", "db3", "cache1", "cache2"].map(op(resource) {
+    ("Connecting to " + resource).echo();
+    /* Simulate connection */
+    sleep(1);
+    ("Connected to " + resource).echo();
+    resource + "_connection";
+});
+/* All resources connected before proceeding */
+("All resources ready").echo();
+/* Result: ["db1_connection", "db2_connection", "db3_connection", "cache1_connection", "cache2_connection"] */
+```
+
+#### **System Initialization Pattern**
+
+```grapa
+/* Initialize multiple system components in parallel */
+components = [
+    op() { initialize_database(); },
+    op() { initialize_cache(); },
+    op() { initialize_api_server(); },
+    op() { initialize_file_system(); }
+];
+
+initialized = components.map(op(init) { init(); });
+/* All components initialized before proceeding */
+("System ready").echo();
+```
+
+#### **Microservices Coordination**
+
+```grapa
+/* Coordinate multiple microservice calls */
+services = [
+    op() { call_user_service(); },
+    op() { call_payment_service(); },
+    op() { call_inventory_service(); }
+];
+results = services.map(op(service) { service(); });
+/* All services respond before proceeding */
+```
+
 ### Worker Pattern Integration
 
 Grapa's worker pattern is deeply integrated throughout the system:

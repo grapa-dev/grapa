@@ -471,10 +471,20 @@ filtered = large_data.filter(op(x) { x % 2 == 0; }, 8);  /* Limit to 8 threads *
 
 ### .reduce() - Accumulate Values
 
+`.reduce()` accumulates values by applying a function to each element. The function takes two parameters: the accumulator (`acc`) and the current element (`x`).
+
+#### **Initializer Behavior**
+- **With initializer**: `acc` starts as the initializer, `x` is each array element
+- **Without initializer**: `acc` starts as the first array element, `x` is each subsequent element
+
 ```grapa
-/* Sum all numbers */
+/* Sum all numbers with initializer */
 numbers = [1, 2, 3, 4, 5];
 sum = numbers.reduce(op(acc, x) { acc + x; }, 0);  /* 15 */
+
+/* Sum all numbers without initializer */
+numbers = [1, 2, 3, 4, 5];
+sum = numbers.reduce(op(acc, x) { acc + x; });  /* 15 */
 
 /* Build a string */
 words = ["hello", "world", "test"];
@@ -487,6 +497,79 @@ evens = numbers.reduce(op(acc, x) {
     acc;
 }, []);  /* [2, 4, 6] */
 ```
+
+#### **Control Flow in .reduce()**
+`.reduce()` supports all control flow statements with proper propagation (sequential processing):
+
+```grapa
+/* Break - terminates reduce and returns current accumulator */
+[1, 2, 3].reduce(op(acc, x) { if (x == 2) break; acc + x; });  /* Returns 1 */
+[1, 2, 3].reduce(op(acc, x) { if (x == 2) break; acc + x; }, 10);  /* Returns 11 */
+
+/* Return - exits reduce and returns specified value */
+[1, 2, 3].reduce(op(acc, x) { if (x == 2) return 999; acc + x; });  /* Returns 999 */
+[1, 2, 3].reduce(op(acc, x) { if (x == 2) return 999; acc + x; }, 10);  /* Returns 999 */
+
+/* Throw - propagates exception */
+[1, 2, 3].reduce(op(acc, x) { if (x == 2) throw "error"; acc + x; });  /* Throws "error" */
+
+/* Control flow propagates through function calls */
+func test() { 
+    [1, 2, 3].reduce(op(acc, x) { if (x == 2) return 999; acc + x; }); 
+    return 888; 
+}; 
+test();  /* Returns 999 */
+```
+
+**Important Notes:**
+- **With initializer**: `acc` starts as initializer, `x` is each element
+- **Without initializer**: `acc` starts as first element, `x` is each subsequent element
+- **Control flow**: All control flow statements (break, return, throw) work and propagate correctly
+- **Early termination**: Control flow can terminate reduce early and return appropriate values
+- **Sequential processing**: `.reduce()` processes items sequentially like a loop
+
+#### **Control Flow in .map() and .filter()**
+`.map()` and `.filter()` support different control flow behaviors (parallel processing):
+
+```grapa
+/* Throw in map - collects all throws in array */
+[1, 2, 3, 4, 5, 6, 7].map(op(x) {
+    if (x % 3) throw("error");  /* Throws for items 1,2,4,5,7 */
+    x % 3;
+});  /* {"error","error",null,"error","error",null,"error"} */
+
+/* Return in map - returns value for that specific item */
+[1, 2, 3].map(op(x) {
+    if (x == 2) return([3, 4]);  /* Returns [3,4] for item 2 */
+    x * 2;
+});  /* [2, [3,4], 6] */
+
+/* Break in map - returns empty string for that specific item */
+[1, 2, 3].map(op(x) {
+    if (x == 2) break;  /* Returns "" for item 2 */
+    x * 2;
+});  /* [2, "", 6] */
+
+/* Throw in filter - collects all throws in array */
+[1, 2, 3, 4, 5, 6, 7].filter(op(x) {
+    if (x % 3) throw("error");  /* Throws for items 1,2,4,5,7 */
+    x % 2;
+});  /* {"error","error",null,"error","error",null,"error"} */
+
+/* Return in filter - returns value for that specific item */
+[1, 2, 3].filter(op(x) {
+    if (x == 2) return(false);  /* Excludes item 2 */
+    x % 2;
+});  /* [1, 3] */
+```
+
+**Important Notes:**
+- **Parallel processing**: `.map()` and `.filter()` use multi-threaded processing
+- **Throw behavior**: `.throw()` collects all results in array with `null` for non-throwing items
+- **Return behavior**: `.return()` returns the value for that specific item only
+- **Break behavior**: `.break()` returns empty string for that specific item only
+- **Thread independence**: Each thread processes independently, control flow affects only that thread
+- **Enhanced error collection**: Array length matches input, preserves all error information
 
 ### Method Chaining
 
@@ -532,6 +615,149 @@ sum = data.reduce(op(acc, x) { acc + x; }, 0, 4);
 - Always specify thread count for very large datasets to avoid too many threads
 - `.reduce()` can be parallel but requires careful consideration of the operation
 - Method chaining is efficient and readable
+- **Concurrency Coordination**: `.map()` and `.filter()` can be used as thread synchronization barriers
+
+### Advanced Functional Programming: Complex Data Structures as Context
+
+Grapa's functional methods support **any data structure as initializers**, enabling sophisticated state machines and context-aware operations. The operation function can be defined within the context of the data structure.
+
+#### **Complex Initializers with State Objects**
+
+```grapa
+/* Stateful reduction with dynamic operation switching */
+[1, 2, 3].reduce(op(x, y) {
+    if (y == 2) x.o = op(a, b) { a * b; };  /* Switch to multiplication */
+    x.st = x.o(x.st, y);  /* Apply current operation */
+}, {st: 10, o: op(a, b) { a + b; }});  /* Initial state: {st: 10, o: add} */
+
+/* Process: 10+1=11, 11*2=22, 22*3=66 */
+/* Result: {"st": 66, "o": @<mul function>} */
+```
+
+#### **Context-Aware Operations**
+
+```grapa
+/* Map with context object */
+[1, 2, 3].map(op(x, y) {
+    y.count += 1;
+    y.sum += x;
+    x * y.multiplier;
+}, {count: 0, sum: 0, multiplier: 2});
+
+/* Filter with state tracking */
+[1, 2, 3, 4, 5].filter(op(x, y) {
+    y.seen += 1;
+    if (y.seen <= 3) {  /* Only first 3 elements */
+        y.sum += x;
+        true;
+    } else {
+        false;
+    };
+}, {seen: 0, sum: 0});
+```
+
+#### **Dynamic Algorithm Switching**
+
+```grapa
+/* Reduce with algorithm selection based on data */
+[1, 2, 3, 4, 5].reduce(op(x, y) {
+    if (y > 3) {
+        x.algorithm = "multiply";
+        x.operation = op(a, b) { a * b; };
+    };
+    x.result = x.operation(x.result, y);
+    x;
+}, {
+    result: 1,
+    algorithm: "add",
+    operation: op(a, b) { a + b; }
+});
+```
+
+#### **State Machines and Pipelines**
+
+```grapa
+/* Complex state machine with multiple operations */
+data = [1, 2, 3, 4, 5];
+result = data.reduce(op(state, item) {
+    /* Update counters */
+    state.total += 1;
+    state.sum += item;
+    
+    /* Dynamic operation based on state */
+    if (state.total == 3) {
+        state.operation = "multiply";
+        state.func = op(a, b) { a * b; };
+    };
+    
+    /* Apply current operation */
+    state.result = state.func(state.result, item);
+    state;
+}, {
+    total: 0,
+    sum: 0,
+    result: 1,
+    operation: "add",
+    func: op(a, b) { a + b; }
+});
+```
+
+#### **Key Concepts**
+
+1. **Any Data Structure**: Use objects, lists, arrays, or custom structures as initializers
+2. **Context Evolution**: The data structure can evolve and change during the operation
+3. **Dynamic Operations**: Functions can be stored and modified within the context
+4. **State Machines**: Build complex state machines with multiple operations
+5. **Pipeline Processing**: Create sophisticated data processing pipelines
+
+#### **Use Cases**
+
+- **Dynamic Algorithm Selection**: Switch algorithms based on data characteristics
+- **State Tracking**: Maintain complex state across iterations
+- **Pipeline Processing**: Build multi-stage data processing workflows
+- **Configuration Management**: Use context objects for configuration and state
+- **Complex Aggregations**: Perform sophisticated aggregations with multiple metrics
+- **Worker Thread Coordination**: Coordinate multiple parallel workers
+- **System Initialization**: Initialize multiple components in parallel
+- **Resource Pool Management**: Coordinate multiple resource operations
+
+#### **Concurrency Coordination with Functional Methods**
+
+Grapa's `.map()` and `.filter()` methods can be used as **thread synchronization barriers** for coordinating multiple worker threads:
+
+```grapa
+/* Worker thread coordination */
+workers = [1, 2, 3, 4, 5].map(op(worker_id) {
+    /* Each worker does independent work */
+    ("Worker " + worker_id.str() + " starting").echo();
+    sleep(worker_id);  /* Simulate work */
+    ("Worker " + worker_id.str() + " completed").echo();
+    worker_id * 100;  /* Return result */
+});
+/* All workers complete before proceeding */
+("All workers finished").echo();
+
+/* Parallel task execution */
+tasks = [
+    op() { "Task A: Database query".echo(); sleep(2); "A done".echo(); },
+    op() { "Task B: API call".echo(); sleep(1); "B done".echo(); },
+    op() { "Task C: File processing".echo(); sleep(3); "C done".echo(); }
+];
+results = tasks.map(op(task) { task(); });
+/* All tasks complete before proceeding */
+("All tasks completed").echo();
+```
+
+#### **Why Dynamic Typing Enables This Flexibility**
+
+Grapa's **dynamic typing** is a deliberate design choice that enables these advanced capabilities. Unlike strict type-constrained languages, Grapa leaves type handling to the implementation, allowing:
+
+- **Runtime Type Evolution**: Data structures can change types during execution
+- **Dynamic Function Assignment**: Operations can be swapped and modified at runtime  
+- **Context-Aware Processing**: Any object can serve as context for any operation
+- **Implementation-Driven Types**: Types emerge from how they're used, not predefined constraints
+
+This design philosophy enables the sophisticated state machines and dynamic algorithms shown above, where the "type" of the context object evolves based on the data and operations being performed.
 
 ## Data Types and Access Patterns
 
@@ -1257,6 +1483,8 @@ Grapa uses **dynamic typing** as a fundamental design choice, not a limitation. 
 - **Dynamic code execution**: Enables meta-programming and code generation
 - **System integration**: Works with data of unknown types
 - **Data processing**: Ideal for ETL and analysis tasks
+- **Advanced functional programming**: Enables complex context objects and state machines
+- **Implementation-driven types**: Types emerge from usage patterns, not predefined constraints
 
 ### Type Safety Through Runtime Checking
 Grapa provides robust type safety through runtime checking and introspection:
@@ -1795,6 +2023,7 @@ value = months["FFF"].iferr(-1);  /* Returns -1 for invalid key */
 
 - Use `.iferr(fallback_value)` for simple error handling
 - Use `if (result.type() == $ERR)` for explicit error handling
+- Use `.err()` to convert objects to `$ERR` type
 - `.iferr()` is preferred for simple fallback scenarios
 
 ### Safe Property Access with .iferr()
@@ -2330,8 +2559,9 @@ list += (h:66) list.b;   /* Insert at position of 'b': {a:1, h:66, b:2, c:3} */
 
 ### **Advanced Control Flow**
 
-Grapa provides comprehensive control flow structures:
+Grapa provides comprehensive control flow structures with proper propagation through all execution contexts:
 
+#### **Conditional Statements**
 ```grapa
 /* If-elseif-else */
 if (score >= 90) {
@@ -2343,22 +2573,103 @@ if (score >= 90) {
 } else {
     grade = "F";
 }
+```
 
-/* While loops */
+#### **Loop Control Flow**
+```grapa
+/* While loops with break and continue */
 counter = 0;
 while (counter < 10) {
+    if (counter == 5) {
+        break;  /* Exit loop immediately */
+    };
+    if (counter == 2) {
+        counter += 1;
+        continue;  /* Skip to next iteration */
+    };
     counter.echo();
     counter += 1;
 }
 
-/* Switch statements */
+/* For loops with control flow */
+for (i = 0; i < 10; i += 1) {
+    if (i == 5) {
+        break;  /* Exit loop immediately */
+    };
+    if (i == 2) {
+        continue;  /* Skip to next iteration */
+    };
+    i.echo();
+}
+```
+
+#### **Switch Statements**
+```grapa
+/* Switch statements with control flow */
 switch (day) {
     case 1: day_name = "Monday";;
     case 2: day_name = "Tuesday";;
     case 3: day_name = "Wednesday";;
     default: day_name = "Unknown";;
 }
+
+/* Switch with return statements */
+switch (value) {
+    case 1: return "one";;
+    case 2: return "two";;
+    default: return "unknown";;
+}
 ```
+
+#### **Function Control Flow**
+```grapa
+/* Function with return statements */
+func calculate(x, y) {
+    if (x < 0) {
+        return 0;  /* Early return */
+    };
+    if (y == 0) {
+        return x;  /* Early return */
+    };
+    return x / y;  /* Normal return */
+};
+
+/* Function with exit */
+func critical_operation() {
+    if (error_condition) {
+        exit;  /* Terminate program */
+    };
+    return "success";
+};
+```
+
+#### **Control Flow in Inline Code Blocks**
+```grapa
+/* Control flow in inline code blocks */
+"hi".{if (true) return 999; x=@$$; x.len()}.range();  /* Returns 999 */
+
+/* Control flow in function calls */
+func test() { 
+    "hi".{if (true) return 999; x=@$$; x.len()}.range(); 
+    return 888; 
+}; 
+test();  /* Returns 999 */
+
+/* Control flow in switch statements */
+switch (1) { 
+    case 1: "hi".{if (true) return 999; x=@$$; x.len()}.range(); 
+    return 888; 
+    default: return 777; 
+};  /* Returns 999 */
+```
+
+#### **Control Flow Propagation**
+All control flow statements properly propagate through all execution contexts:
+- **Functions**: RETURN statements exit functions and propagate return values
+- **Loops**: BREAK exits loops, CONTINUE skips to next iteration
+- **Switches**: RETURN statements exit switch statements
+- **Inline Code Blocks**: Control flow properly terminates block execution
+- **Nested Contexts**: Control flow propagates through all nested execution contexts
 
 ### **Functional Programming Syntax**
 

@@ -364,7 +364,7 @@ unique_data = data.unique();  /* [3, 1, 4, 5] */
 
 ## Control Flow
 
-Control program execution and logic flow.
+Control program execution and logic flow with proper propagation through all execution contexts.
 
 ### Conditionals
 ```grapa
@@ -375,29 +375,87 @@ if (condition) {
 }
 ```
 
-### Loops
+### Loops with Control Flow
 ```grapa
-/* While loop */
+/* While loop with break and continue */
 i = 0;
 while (i < 5) {
+    if (i == 3) {
+        break;  /* Exit loop immediately */
+    };
+    if (i == 1) {
+        i += 1;
+        continue;  /* Skip to next iteration */
+    };
     ("Iteration " + i.str()).echo();
     i += 1;
 };
 
-/* For-loop equivalent with range and map */
-(5).range(0,1).map(op(i) { ("Iteration " + i.str()).echo(); });
+/* For loop with control flow */
+for (i = 0; i < 5; i += 1) {
+    if (i == 3) {
+        break;  /* Exit loop immediately */
+    };
+    if (i == 1) {
+        continue;  /* Skip to next iteration */
+    };
+    ("Iteration " + i.str()).echo();
+};
 ```
 
-### Functions
+### Functions with Control Flow
 ```grapa
-/* Define function */
+/* Function with return statements */
 my_function = op(a, b) {
-    a + b;
+    if (a < 0) {
+        return 0;  /* Early return */
+    };
+    if (b == 0) {
+        return a;  /* Early return */
+    };
+    return a / b;  /* Normal return */
 };
 
-/* Call function */
-result = my_function(10, 20);
+/* Function with exit */
+critical_function = op() {
+    if (error_condition) {
+        exit;  /* Terminate program */
+    };
+    return "success";
+};
 ```
+
+### Switch Statements
+```grapa
+/* Switch with control flow */
+switch (value) {
+    case 1: return "one";;
+    case 2: return "two";;
+    default: return "unknown";;
+}
+```
+
+### Control Flow in Inline Code Blocks
+```grapa
+/* Control flow in inline code blocks */
+"hi".{if (true) return 999; x=@$$; x.len()}.range();  /* Returns 999 */
+
+/* Control flow propagates through all contexts */
+func test() { 
+    "hi".{if (true) return 999; x=@$$; x.len()}.range(); 
+    return 888; 
+}; 
+test();  /* Returns 999 */
+```
+
+### Control Flow Propagation
+All control flow statements properly propagate through all execution contexts:
+- **Functions**: RETURN statements exit functions and propagate return values
+- **Loops**: BREAK exits loops, CONTINUE skips to next iteration  
+- **Switches**: RETURN statements exit switch statements
+- **Inline Code Blocks**: Control flow properly terminates block execution
+- **Reduce Operations**: Control flow properly terminates reduce and propagates values
+- **Nested Contexts**: Control flow propagates through all nested execution contexts
 
 [Back to Top](#grapa-api-reference)
 
@@ -408,7 +466,7 @@ Parallel and sequential data processing functions.
 ### Map, Filter, Reduce
 - `map(data, function)` - Apply function to each element (parallel)
 - `filter(data, function)` - Filter elements (parallel)
-- `reduce(data, function, initial)` - Reduce to single value (sequential)
+- `reduce(data, function, [initial])` - Reduce to single value (sequential)
 
 ### Examples
 ```grapa
@@ -420,11 +478,95 @@ doubled = data.map(op(x) { x * 2; });
 /* Filter (parallel) */
 evans = data.filter(op(x) { x % 2 == 0; });
 
-/* Reduce (sequential) */
+/* Reduce (sequential) - with initializer */
 sum = data.reduce(op(acc, x) { acc + x; }, 0);
+
+/* Reduce (sequential) - without initializer */
+sum = data.reduce(op(acc, x) { acc + x; });
+
+/* Reduce with control flow */
+result = data.reduce(op(acc, x) { 
+    if (x == 3) return 999;  /* Early return */
+    if (x == 4) break;       /* Early termination */
+    acc + x; 
+}, 0);
 ```
 
-> **Note:** `map` and `filter` are parallel by default and production-ready for high-throughput data processing.
+> **Note:** `map` and `filter` are parallel by default and production-ready for high-throughput data processing. `reduce` supports all control flow statements (break, return, throw) with proper propagation. `map` and `filter` support `.throw()` (collects all results in array), `.return()` (returns value for specific item), and `.break()` (returns empty string for specific item). All functional methods now have complete control flow support with enhanced error collection.
+
+### Advanced Functional Programming: Complex Context Objects
+
+Functional methods support **any data structure as initializers**, enabling sophisticated state machines and context-aware operations:
+
+```grapa
+/* Stateful reduction with dynamic operation switching */
+[1, 2, 3].reduce(op(x, y) {
+    if (y == 2) x.o = op(a, b) { a * b; };  /* Switch to multiplication */
+    x.st = x.o(x.st, y);  /* Apply current operation */
+}, {st: 10, o: op(a, b) { a + b; }});  /* Initial state object */
+
+/* Map with context tracking */
+[1, 2, 3].map(op(x, y) {
+    y.count += 1;
+    y.sum += x;
+    x * y.multiplier;
+}, {count: 0, sum: 0, multiplier: 2});
+
+/* Filter with state management */
+[1, 2, 3, 4, 5].filter(op(x, y) {
+    y.seen += 1;
+    if (y.seen <= 3) {
+        y.sum += x;
+        true;
+    } else {
+        false;
+    };
+}, {seen: 0, sum: 0});
+```
+
+**Key Capabilities:**
+- **Any Data Structure**: Use objects, lists, arrays as initializers
+- **Context Evolution**: Data structures can evolve during operations
+- **Dynamic Operations**: Functions can be stored and modified within context
+- **State Machines**: Build complex state machines with multiple operations
+- **Pipeline Processing**: Create sophisticated data processing workflows
+
+**Design Philosophy:**
+Grapa's **dynamic typing** enables this flexibility by leaving type handling to the implementation rather than enforcing strict type constraints. This allows runtime type evolution, dynamic function assignment, and context-aware processing where types emerge from usage patterns.
+
+### Concurrency Coordination with Functional Methods
+
+Grapa's `.map()` and `.filter()` methods can be used as **thread synchronization barriers** for coordinating multiple worker threads:
+
+```grapa
+/* Worker thread coordination */
+workers = [1, 2, 3, 4, 5].map(op(worker_id) {
+    /* Each worker does independent work */
+    ("Worker " + worker_id.str() + " starting").echo();
+    sleep(worker_id);  /* Simulate work */
+    ("Worker " + worker_id.str() + " completed").echo();
+    worker_id * 100;  /* Return result */
+});
+/* All workers complete before proceeding */
+("All workers finished").echo();
+
+/* Parallel task execution */
+tasks = [
+    op() { "Task A: Database query".echo(); sleep(2); "A done".echo(); },
+    op() { "Task B: API call".echo(); sleep(1); "B done".echo(); },
+    op() { "Task C: File processing".echo(); sleep(3); "C done".echo(); }
+];
+results = tasks.map(op(task) { task(); });
+/* All tasks complete before proceeding */
+("All tasks completed").echo();
+```
+
+**Key Benefits:**
+- **Structured Concurrency**: Automatic synchronization barrier
+- **Worker Coordination**: Perfect for parallel task execution
+- **Resource Management**: Coordinate multiple resource operations
+- **System Initialization**: Parallel component initialization
+- **No Manual Thread Management**: Automatic coordination and cleanup
 
 [Back to Top](#grapa-api-reference)
 

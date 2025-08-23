@@ -25,6 +25,10 @@
 - [Language Design with Executable BNF](language_design_with_executable_bnf.md) - Advanced language design and DSL creation
 - [Isolated Rule Execution](isolated_rule_execution.md) - ETL and domain-specific processing without affecting main language
 
+## Language Integrations
+- [SQL Integration](sql_integration.md) - Implement SQL syntax and database operations using Grapa's executable BNF
+- [PROLOG Integration](prolog_integration.md) - Build logic programming and AI systems using Grapa's knowledge base features
+
 ## Key Features
 - **Dynamic Code Execution**: Compile and execute code at runtime with `op()(<string>)()` and `$sys().eval()`
 - **Execution Trees**: Direct manipulation of `$OP` objects for advanced meta-programming

@@ -75,6 +75,7 @@ double_and_add = compose(double, add_one);
 - **Lambda Expressions** - `op(x) { x * 2; }` syntax
 - **Functional Methods** - `.map()`, `.filter()`, `.reduce()`
 - **Parallel Processing** - Built-in parallel execution
+- **Complex Context Objects** - Any data structure as initializers with state evolution
 
 ### **4. Advanced Pattern Matching**
 
@@ -149,11 +150,27 @@ filtered = data.filter(op(x) { x > 5; }, 4);
 sum = filtered.reduce(op(acc, x) { acc + x; }, 0);
 ```
 
+**Worker Thread Coordination:**
+```grapa
+/* Spawn multiple worker threads that all must complete */
+workers = [1, 2, 3, 4, 5].map(op(worker_id) {
+    /* Each worker does independent work */
+    ("Worker " + worker_id.str() + " starting").echo();
+    sleep(worker_id);  /* Simulate work */
+    ("Worker " + worker_id.str() + " completed").echo();
+    worker_id * 100;  /* Return result */
+});
+/* All workers complete before proceeding */
+("All workers finished").echo();
+```
+
 **Advantages over Async/Await:**
 - **No Manual Promise Management** - Automatic parallel execution
 - **Thread Safety** - Built-in thread safety
 - **Performance** - Optimized for data processing
 - **Simplicity** - No complex async patterns
+- **Structured Concurrency** - Automatic synchronization barriers
+- **Worker Coordination** - Use functional methods as thread synchronization barriers
 
 ## Planned Advanced Features
 
@@ -610,13 +627,134 @@ The `+=` operator will be enhanced to safely add methods to system classes:
 $ARRAY += (custom_method: op() { $this.len(); });
 ```
 
+### **7. Complex Context Objects in Functional Programming**
+
+Grapa's functional methods support **any data structure as initializers**, enabling sophisticated state machines and context-aware operations. This goes far beyond simple accumulation to enable complex data processing pipelines.
+
+#### **Stateful Operations with Dynamic Behavior**
+
+```grapa
+/* Dynamic algorithm switching based on data characteristics */
+[1, 2, 3, 4, 5].reduce(op(state, item) {
+    /* Track processing state */
+    state.count += 1;
+    state.sum += item;
+    
+    /* Switch algorithms based on data */
+    if (item > 3) {
+        state.algorithm = "multiply";
+        state.operation = op(a, b) { a * b; };
+    };
+    
+    /* Apply current operation */
+    state.result = state.operation(state.result, item);
+    state;
+}, {
+    count: 0,
+    sum: 0,
+    result: 1,
+    algorithm: "add",
+    operation: op(a, b) { a + b; }
+});
+```
+
+#### **Context-Aware Data Processing**
+
+```grapa
+/* Map with complex state tracking */
+[1, 2, 3, 4, 5].map(op(item, context) {
+    /* Update context statistics */
+    context.total += 1;
+    context.sum += item;
+    context.average = context.sum / context.total;
+    
+    /* Apply context-aware transformation */
+    if (item > context.average) {
+        item * 2;  /* Double above-average items */
+    } else {
+        item / 2;  /* Halve below-average items */
+    };
+}, {
+    total: 0,
+    sum: 0,
+    average: 0
+});
+```
+
+#### **Pipeline Processing with State Machines**
+
+```grapa
+/* Multi-stage data processing pipeline */
+data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
+/* Stage 1: Filter with state tracking */
+filtered = data.filter(op(item, state) {
+    state.seen += 1;
+    if (state.seen <= 5) {  /* Process first 5 items */
+        state.sum += item;
+        true;
+    } else {
+        false;
+    };
+}, {seen: 0, sum: 0});
+
+/* Stage 2: Transform with dynamic operations */
+transformed = filtered.map(op(item, context) {
+    if (item > context.threshold) {
+        context.operation = op(x) { x * 2; };
+    } else {
+        context.operation = op(x) { x + 10; };
+    };
+    context.operation(item);
+}, {threshold: 3, operation: op(x) { x; }});
+
+/* Stage 3: Aggregate with complex state */
+result = transformed.reduce(op(state, item) {
+    state.count += 1;
+    state.sum += item;
+    state.max = item > state.max ? item : state.max;
+    state.min = item < state.min ? item : state.min;
+    state;
+}, {count: 0, sum: 0, max: -999999, min: 999999});
+```
+
+#### **Advanced Use Cases**
+
+1. **Dynamic Algorithm Selection**: Switch algorithms based on data characteristics
+2. **State Tracking**: Maintain complex state across iterations
+3. **Pipeline Processing**: Build multi-stage data processing workflows
+4. **Configuration Management**: Use context objects for configuration and state
+5. **Complex Aggregations**: Perform sophisticated aggregations with multiple metrics
+6. **Machine Learning Pipelines**: Build ML preprocessing and feature engineering workflows
+7. **Real-time Data Processing**: Process streaming data with stateful operations
+
+#### **Key Advantages**
+
+- **Flexibility**: Any data structure can serve as context
+- **State Evolution**: Context can evolve and change during operations
+- **Dynamic Operations**: Functions can be stored and modified within context
+- **Composability**: Complex operations can be built from simple components
+- **Performance**: Parallel processing with state management
+- **Readability**: Clear separation of data, operations, and state
+
+#### **Design Philosophy: Dynamic Typing Enables Flexibility**
+
+Grapa's **dynamic typing** is a deliberate design choice that enables this level of flexibility. Unlike strict type-constrained languages, Grapa leaves type handling to the implementation, allowing:
+
+- **Runtime Type Evolution**: Data structures can change types during execution
+- **Dynamic Function Assignment**: Operations can be swapped and modified at runtime
+- **Context-Aware Processing**: Any object can serve as context for any operation
+- **Implementation-Driven Types**: Types emerge from how they're used, not predefined constraints
+
+This design philosophy enables the sophisticated state machines and dynamic algorithms shown above, where the "type" of the context object evolves based on the data and operations being performed.
+
 ## Comparison with Other Languages
 
 | Feature | Grapa | Python | JavaScript | Rust |
 |---------|-------|--------|------------|------|
 | **Executable BNF** | ✅ Yes | ❌ No | ❌ No | ❌ No |
 | **Advanced Metaprogramming** | ✅ Superior | ⚠️ Limited | ⚠️ Limited | ⚠️ Limited |
-| **Functional Programming** | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes |
+| **Functional Programming** | ✅ Superior | ✅ Yes | ✅ Yes | ✅ Yes |
 | **Pattern Matching** | ✅ Superior | ⚠️ Limited | ⚠️ Limited | ✅ Yes |
 | **Concurrency** | ✅ Superior | ⚠️ Complex | ⚠️ Complex | ✅ Yes |
 | **Decorators** | 🔄 Planned | ✅ Yes | ✅ Yes | ❌ No |

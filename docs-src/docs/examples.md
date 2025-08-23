@@ -456,6 +456,130 @@ evens.echo();  /* Output: [0,2,4,6,8] */
 > **Parallel ETL Advantage:**
 > Grapa's parallel data processing (e.g., with `.map()`, `.filter()`, `.reduce()`) is a core, production-ready feature. Parallelism is well tested and hardened for real-world ETL workloads, making Grapa especially powerful for high-throughput data tasks.
 
+## Advanced Functional Programming: Complex Context Objects
+
+Grapa's functional methods support **any data structure as initializers**, enabling sophisticated state machines and context-aware operations. This goes far beyond simple accumulation to enable complex data processing pipelines.
+
+### Dynamic Algorithm Switching
+```grapa
+/* Switch algorithms based on data characteristics */
+[1, 2, 3, 4, 5].reduce(op(state, item) {
+    state.count += 1;
+    state.sum += item;
+    
+    /* Switch to multiplication for items > 3 */
+    if (item > 3) {
+        state.algorithm = "multiply";
+        state.operation = op(a, b) { a * b; };
+    };
+    
+    state.result = state.operation(state.result, item);
+    state;
+}, {
+    count: 0,
+    sum: 0,
+    result: 1,
+    algorithm: "add",
+    operation: op(a, b) { a + b; }
+});
+/* Process: 1+1=2, 2+2=4, 4+3=7, 7*4=28, 28*5=140 */
+/* Result: {"count": 5, "sum": 15, "result": 140, "algorithm": "multiply", "operation": @<mul>} */
+```
+
+### Context-Aware Data Processing
+```grapa
+/* Map with complex state tracking */
+[1, 2, 3, 4, 5].map(op(item, context) {
+    /* Update running statistics */
+    context.total += 1;
+    context.sum += item;
+    context.average = context.sum / context.total;
+    
+    /* Apply context-aware transformation */
+    if (item > context.average) {
+        item * 2;  /* Double above-average items */
+    } else {
+        item / 2;  /* Halve below-average items */
+    };
+}, {
+    total: 0,
+    sum: 0,
+    average: 0
+});
+/* Result: [0.5, 1, 1.5, 8, 10] */
+```
+
+### Multi-Stage Pipeline Processing
+```grapa
+/* Complex data processing pipeline with state management */
+data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
+/* Stage 1: Filter with state tracking */
+filtered = data.filter(op(item, state) {
+    state.seen += 1;
+    if (state.seen <= 5) {  /* Process first 5 items */
+        state.sum += item;
+        true;
+    } else {
+        false;
+    };
+}, {seen: 0, sum: 0});
+
+/* Stage 2: Transform with dynamic operations */
+transformed = filtered.map(op(item, context) {
+    if (item > context.threshold) {
+        context.operation = op(x) { x * 2; };
+    } else {
+        context.operation = op(x) { x + 10; };
+    };
+    context.operation(item);
+}, {threshold: 3, operation: op(x) { x; }});
+
+/* Stage 3: Aggregate with complex state */
+result = transformed.reduce(op(state, item) {
+    state.count += 1;
+    state.sum += item;
+    state.max = item > state.max ? item : state.max;
+    state.min = item < state.min ? item : state.min;
+    state;
+}, {count: 0, sum: 0, max: -999999, min: 999999});
+/* Result: {"count": 5, "sum": 47, "max": 20, "min": 11} */
+```
+
+### State Machine Implementation
+```grapa
+/* Implement a state machine for data validation */
+[1, 2, 3, 4, 5].reduce(op(state, item) {
+    /* State transitions based on data */
+    if (state.current_state == "start") {
+        if (item > 0) {
+            state.current_state = "processing";
+            state.valid_count += 1;
+        } else {
+            state.current_state = "error";
+            state.error_count += 1;
+        };
+    } else if (state.current_state == "processing") {
+        if (item % 2 == 0) {
+            state.even_count += 1;
+        } else {
+            state.odd_count += 1;
+        };
+    };
+    
+    state.total_count += 1;
+    state;
+}, {
+    current_state: "start",
+    total_count: 0,
+    valid_count: 0,
+    error_count: 0,
+    even_count: 0,
+    odd_count: 0
+});
+/* Result: {"current_state": "processing", "total_count": 5, "valid_count": 5, "error_count": 0, "even_count": 2, "odd_count": 3} */
+```
+
 ### String Word Length
 The following returns the length of each word in a string:
 ```grapa

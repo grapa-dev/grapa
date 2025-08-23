@@ -347,6 +347,91 @@ This backlog tracks all future, long-term, and queued tasks for the Grapa projec
   - **Recursive inspection**: Use existing `mVar` system to detect when local variable references are present and only copy when necessary
 - **Priority**: Medium - performance optimization, but current system works correctly
 
+### **Grep Thread Count Capping Implementation** 🔍 **INVESTIGATION NEEDED**
+- **Status**: Parallel processing infrastructure exists but thread capping logic is missing
+- **Focus**: Implement proper thread count capping for grep operations to prevent excessive thread creation
+- **Context**: Current grep implementation has `num_workers = 0` default but always uses sequential processing regardless of value
+- **Current State**: 
+  - `grep_extract_matches_unicode_impl_parallel` function exists with proper async processing
+  - `split_input_for_parallel` function properly splits input for parallel processing
+  - Main functions always call sequential implementation regardless of `num_workers` value
+  - No auto-detection of CPU cores or input size-based thread capping
+- **Missing Implementation**: 
+  - Logic to detect when `num_workers = 0` and auto-determine optimal thread count
+  - CPU core detection using `std::thread::hardware_concurrency()`
+  - Input size-based thread capping (small inputs use sequential, large inputs use parallel)
+  - Decision logic to choose between sequential and parallel processing
+- **Progress**: 
+  - ✅ Parallel processing infrastructure identified and analyzed
+  - ✅ Current implementation behavior documented
+  - ✅ Missing thread capping logic identified
+- **Next Steps**: 
+  - Implement auto-detection logic for optimal thread count
+  - Add CPU core detection and input size analysis
+  - Update main functions to use parallel processing when appropriate
+  - Add thread capping based on input size and system capabilities
+- **Implementation Plan**: 
+  - Add logic to detect `num_workers = 0` and auto-determine thread count
+  - Use `std::thread::hardware_concurrency()` for CPU core detection
+  - Implement input size thresholds (e.g., < 1KB sequential, > 1MB use more threads)
+  - Update `grep_extract_matches_unicode` to choose between sequential/parallel
+- **Priority**: Medium - performance optimization for grep operations
+
+### **Enhanced Error Information System** 🔍 **INVESTIGATION NEEDED**
+- **Status**: Current C++ errors return limited information (mostly `{"error":-1}`)
+- **Focus**: Enhance error reporting to provide more detailed and useful error information
+- **Context**: Most C++ errors currently return `{"error":-1}` which provides minimal debugging information
+- **Current State**: 
+  - Most C++ errors return `{"error":-1}` regardless of error type
+  - `$ERR` type is a `$LIST` (name/value pairs) with potential for rich error information
+  - Limited debugging capability due to lack of error context
+  - Poor user experience with generic error codes
+- **Issues with Current Approach**: 
+  - **Limited Debugging**: `-1` doesn't tell developers what went wrong
+  - **No Error Context**: Missing information about where/how the error occurred
+  - **Difficult Troubleshooting**: Hard to distinguish between different error types
+  - **Poor User Experience**: Users can't understand what failed
+- **Proposed Enhancement**: 
+  - **Error Codes**: Specific numeric codes for different error types
+  - **Error Messages**: Human-readable descriptions
+  - **Error Context**: Where the error occurred (line, column, operation)
+  - **Error Metadata**: Additional debugging information
+- **Implementation Plan**: 
+  - **Phase 1**: Audit current error codes across C++ codebase
+  - **Phase 2**: Define error code constants and error type enumeration
+  - **Phase 3**: Enhance error creation to include context and messages
+  - **Phase 4**: Update error handling documentation and examples
+- **Example Enhanced Error Structure**: 
+  ```grapa
+  /* Current */
+  {"error":-1}
+  
+  /* Enhanced */
+  {
+      "error": -1,
+      "type": "division_by_zero",
+      "message": "Division by zero attempted",
+      "location": "line 5, column 10",
+      "context": "x = 10 / 0"
+  }
+  
+  /* File operation error */
+  {
+      "error": -1,
+      "type": "file_not_found",
+      "message": "File does not exist",
+      "path": "/path/to/missing/file",
+      "operation": "open"
+  }
+  ```
+- **Benefits**: 
+  - **Better Debugging**: Developers know exactly what failed
+  - **User-Friendly**: Clear error messages for end users
+  - **Error Recovery**: Can implement specific handling for different error types
+  - **Logging**: Better error tracking and monitoring
+  - **Documentation**: Self-documenting error information
+- **Priority**: Medium - improves developer experience and debugging capabilities
+
 ---
 
 
