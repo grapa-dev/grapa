@@ -9909,10 +9909,10 @@ GrapaRuleEvent* GrapaLibraryRuleMapEvent::Run(GrapaScriptExec *vScriptExec, Grap
 		{
 			if (rp->vRulePointer)
 			{
+				GrapaRuleEvent* rpnext = rp->Next();
 				result->vQueue->PopEvent(rp->vRulePointer);
 				retPtr->vQueue->Push(rp->vRulePointer, rp);
 				retPtr->vQueue->PopEvent(rp);
-				GrapaRuleEvent* rpnext = rp->Next();
 				rp->CLEAR();
 				delete rp;
 				rp = rpnext;
