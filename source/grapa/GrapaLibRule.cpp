@@ -10040,7 +10040,7 @@ GrapaRuleEvent* GrapaLibraryRuleReduceEvent::Run(GrapaScriptExec *vScriptExec, G
 	if (init.vVal && !init.vVal->mNull)
 		start = init.vVal;
 	while (start && start->mValue.mToken == GrapaTokenType::PTR) start = start->vRulePointer;
-	GrapaRuleEvent* startDel = NULL;
+	//GrapaRuleEvent* startDel = NULL;
 
 	GrapaRuleQueue *cmp = new GrapaRuleQueue();
 
@@ -10095,21 +10095,22 @@ GrapaRuleEvent* GrapaLibraryRuleReduceEvent::Run(GrapaScriptExec *vScriptExec, G
 		if (r)
 		{
 			isControlFlowChange = r->mControlFlow;
-			if (r->vRulePointer != total->vRulePointer)
+			if (r->vRulePointer != total->vRulePointer && isControlFlowChange != GrapaControlFlowType::BREAK && isControlFlowChange != GrapaControlFlowType::CONTINUE)
 			{
-				if (startDel)
+				if (result)
 				{
-					startDel->CLEAR();
-					delete startDel;
+					result->CLEAR();
+					delete result;
 				}
-				startDel = r;
-				total->vRulePointer = r;
+				result = r;
+				total->vRulePointer = result;
 			}
 			else
 			{
 				r->CLEAR();
 				delete r;
 			}
+			result->mControlFlow = isControlFlowChange;
 			if (isControlFlowChange == GrapaControlFlowType::BREAK)
 				break;
 			if (isControlFlowChange == GrapaControlFlowType::CONTINUE)
@@ -10133,11 +10134,13 @@ GrapaRuleEvent* GrapaLibraryRuleReduceEvent::Run(GrapaScriptExec *vScriptExec, G
 	//	result = v;
 	//}
 
+	/*
 	if (startDel)
 	{
 		startDel->CLEAR();
 		delete startDel;
 	}
+	*/
 
 	if (result)
 		result->mControlFlow = isControlFlowChange;
