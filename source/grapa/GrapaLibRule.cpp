@@ -6486,6 +6486,11 @@ GrapaRuleEvent* GrapaLibraryRuleCallEvent::Run(GrapaScriptExec *vScriptExec, Gra
 		int x = 1;
 	}
 	result = ItemSearchCall(vScriptExec, pNameSpace, r1.vDel ? r1.vDel->vClass : NULL, r1.vVal, r2.vVal, err);
+	if (result)
+	{
+		if (result->mControlFlow == GrapaControlFlowType::RETURN)
+			result->mControlFlow = 0;
+	}
 	if (err && result == NULL)
 		result = Error(vScriptExec, pNameSpace, err);
 	return(result);
