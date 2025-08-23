@@ -19,6 +19,7 @@ limitations under the License.
 #include "GrapaVector.h"
 
 #include "GrapaSystem.h"
+#include "../grep/grapa_grep_unicode.hpp"
 
 extern GrapaSystem* gSystem;
 
@@ -39,6 +40,50 @@ extern GrapaSystem* gSystem;
 #define _datavectorpos(bd,bs,bp) ((GrapaVectorItem*)&((u8*)bd)[bs*bp])
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+
+/* Unicode-aware string length helper function */
+size_t GetUnicodeLength(const char* str, size_t byte_len) {
+    if (!str || byte_len == 0) return 0;
+    
+    std::string input_str(str, byte_len);
+    size_t char_count = 0;
+    size_t offset = 0;
+    
+    while (offset < input_str.size()) {
+        std::string cluster = extract_grapheme_cluster(input_str, offset);
+        if (cluster.empty()) break;
+        char_count++;
+        offset += cluster.size();
+    }
+    
+    return char_count;
+}
+
+/* Enhanced BOM detection function */
+bool ProcessUnicodeBOM(char*& vS, u64& vL) {
+    // UTF-8 BOM: EF BB BF
+    if (vL >= 3 && memcmp(vS, "\xEF\xBB\xBF", 3) == 0) {
+        vS += 3;
+        vL -= 3;
+        return true;
+    }
+    
+    // UTF-16 BE BOM: FE FF  
+    if (vL >= 2 && memcmp(vS, "\xFE\xFF", 2) == 0) {
+        vS += 2;
+        vL -= 2;
+        return true;
+    }
+    
+    // UTF-16 LE BOM: FF FE
+    if (vL >= 2 && memcmp(vS, "\xFF\xFE", 2) == 0) {
+        vS += 2;
+        vL -= 2;
+        return true;
+    }
+    
+    return false;
+}
 
 GrapaVectorBYTE::GrapaVectorBYTE(const GrapaBYTE& b)
 {

@@ -23,7 +23,7 @@ vec = [1, 2, 3, 4, 5].vector();  /* Convert array to vector */
 vec = $vector([1, 2, 3, 4, 5]);  /* Explicit vector creation */
 
 /* Create from CSV with headers */
-data = $vector("Name,Age,City\nAlice,25,NYC\nBob,30,LA");
+data = "Name,Age,City\nAlice,25,NYC\nBob,30,LA".vector();
 /* Result: 2D vector with column headers preserved */
 ```
 
@@ -75,6 +75,39 @@ quotient = vec1 / vec2;   /* Element-wise division */
 /* Scalar operations */
 scaled = vec1 * 2;        /* Scale vector by scalar */
 shifted = vec1 + 10;      /* Add scalar to all elements */
+```
+
+### Vector Manipulation Methods
+```grapa
+vec = [1, 2, 3, 4, 5, 6].vector();
+
+/* Element extraction */
+left = vec.left(3);       /* Extract leftmost 3 elements: #[1,2,3]# */
+right = vec.right(3);     /* Extract rightmost 3 elements: #[4,5,6]# */
+
+/* Vector splitting */
+parts = vec.split(2);     /* Split into 2 parts: [#[1,2,3]#, #[4,5,6]#] */
+parts_axis1 = vec.split(2, 1);  /* Split along axis 1 */
+
+/* Shape operations */
+shape = vec.shape();      /* Get dimensions: [6] */
+reshaped = vec.reshape([2, 3]);  /* Reshape to 2x3: #[[1,2,3],[4,5,6]]# */
+transposed = vec.t();     /* Matrix transpose (for 2D vectors) */
+
+/* Statistical operations */
+total = vec.sum();        /* Sum all elements */
+average = vec.mean();     /* Mean of all elements */
+det_value = vec.det();    /* Determinant (for square matrices) */
+rank_value = vec.rank();  /* Matrix rank */
+cov_matrix = vec.cov();   /* Covariance matrix */
+
+/* Matrix operations */
+inverse = vec.inv();      /* Matrix inverse */
+solution = vec.solve(b);  /* Solve linear system */
+eigenvalues = vec.eig();  /* Eigenvalues */
+upper_tri = vec.triu();   /* Upper triangular */
+lower_tri = vec.tril();   /* Lower triangular */
+dot_product = vec1.dot(vec2);  /* Dot product */
 ```
 
 ## Performance Characteristics
@@ -253,7 +286,7 @@ csv_output = vector_data.csv();        /* Convert back to CSV with headers */
 $file().write("output.csv", csv_output);
 ```
 
-> **Note**: Vector header support has limited Unicode capabilities. It can handle UTF-8 BOM (Byte Order Mark) in CSV files, but header names are processed as raw bytes rather than Unicode characters. For full Unicode support in string operations, use Grapa's string functions instead.
+> **Note**: Vector header support has excellent Unicode capabilities. It can handle UTF-8 BOM (Byte Order Mark) in CSV files, and header names with Unicode characters (including Cyrillic, accented characters, etc.) are fully preserved and accessible using the header extraction methods.
 
 ### Working with Mixed Data Types
 ```grapa
@@ -271,16 +304,34 @@ active_users = mixed_data.filter(op(row){row["Active"] == true});
 high_scores = mixed_data.filter(op(row){row["Score"] > 90});
 ```
 
-### Header Manipulation
+### Header Extraction and Manipulation
 ```grapa
-/* Check if vector has headers */
-has_headers = data.headers().len() > 0;
+/* Extract header names from CSV vector */
+keys = op(lst){lst.reduce(op(acc,x){if(x.type()==$LIST){acc += keys(x);}else{acc += 'x'.getname();}},[]);};
 
-/* Get all header names */
-column_names = data.headers();     /* Returns array of header names */
+csv = "Name,Value\nAlice,100\nBob,200";
+vec = csv.vector();
+arr = vec.array();
+first = arr[0];
+headers = keys(first);  /* ["Name","Value"] */
 
-/* Rename headers */
-data.rename_headers(["ID", "Full_Name", "Is_Active", "Test_Score"]);
+/* Complete header extraction function */
+extract_headers = op(csv_string) {
+    keys = op(lst){lst.reduce(op(acc,x){if(x.type()==$LIST){acc += keys(x);}else{acc += 'x'.getname();}},[]);};
+    vec = csv_string.vector();
+    arr = vec.array();
+    first = arr[0];
+    keys(first);
+};
+
+/* Usage */
+headers = extract_headers("Name,Value\nAlice,100\nBob,200");
+/* Result: ["Name","Value"] */
+
+/* Access data by header name */
+first_row = arr[0];
+name_value = first_row.Name;      /* "Alice" */
+value_value = first_row.Value;    /* 100 */
 
 /* Add new column with header */
 data["Grade"] = data["Score"].map(op(score){

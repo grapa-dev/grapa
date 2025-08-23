@@ -1,0 +1,69 @@
+/* Vector Unicode Header Support - Baseline Test
+ * 
+ * This test captures the current state of Unicode header support
+ * before implementing enhancements.
+ */
+
+("=== Vector Unicode Header Support - Baseline Test ===").echo();
+
+/* Test 1: Basic ASCII CSV (should work) */
+("\n--- Test 1: ASCII CSV ---").echo();
+ascii_csv = "Name,Age,City\nJohn,25,NYC\nJane,30,LA";
+vec1 = ascii_csv.vector();
+
+("ASCII CSV vector created: " + (vec1 != null)).echo();
+if (vec1 != null) {
+    ("Vector type: " + vec1.type()).echo();
+    ("Vector shape: " + vec1.shape()).echo();
+    ("Vector content: " + vec1.array()).echo();
+}
+
+/* Test 2: UTF-8 BOM CSV */
+("\n--- Test 2: UTF-8 BOM CSV ---").echo();
+bom_csv = "ï»¿Name,Value,Category\nAlice,100,A\nBob,200,B";
+vec2 = bom_csv.vector();
+
+("BOM CSV vector created: " + (vec2 != null)).echo();
+if (vec2 != null) {
+    ("Vector type: " + vec2.type()).echo();
+    ("Vector shape: " + vec2.shape()).echo();
+    ("Vector content: " + vec2.array()).echo();
+}
+
+/* Test 3: Unicode Headers */
+("\n--- Test 3: Unicode Headers ---").echo();
+unicode_csv = "Naïve,Café,Résumé\nValue1,Value2,Value3";
+vec3 = unicode_csv.vector();
+
+("Unicode CSV vector created: " + (vec3 != null)).echo();
+if (vec3 != null) {
+    ("Vector type: " + vec3.type()).echo();
+    ("Vector shape: " + vec3.shape()).echo();
+    ("Vector content: " + vec3.array()).echo();
+}
+
+/* Test 4: Cyrillic Headers */
+("\n--- Test 4: Cyrillic Headers ---").echo();
+cyrillic_csv = "Имя,Возраст,Город\nИван,25,Москва";
+vec4 = cyrillic_csv.vector();
+
+("Cyrillic CSV vector created: " + (vec4 != null)).echo();
+if (vec4 != null) {
+    ("Vector type: " + vec4.type()).echo();
+    ("Vector shape: " + vec4.shape()).echo();
+    ("Vector content: " + vec4.array()).echo();
+}
+
+/* Test 5: Mixed Encoding */
+("\n--- Test 5: Mixed Encoding ---").echo();
+mixed_csv = "Name,Naïve,Value\nJohn,Café,100";
+vec5 = mixed_csv.vector();
+
+("Mixed CSV vector created: " + (vec5 != null)).echo();
+if (vec5 != null) {
+    ("Vector type: " + vec5.type()).echo();
+    ("Vector shape: " + vec5.shape()).echo();
+    ("Vector content: " + vec5.array()).echo();
+}
+
+("\n=== Baseline Test Complete ===").echo();

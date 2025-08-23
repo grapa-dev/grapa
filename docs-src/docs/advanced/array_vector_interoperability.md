@@ -91,9 +91,9 @@ names.sort(op(a,b){a.upper().cmp(b.upper())})  // Case-insensitive sort
 #### Smart Vector Creation
 ```grapa
 // Vector creation from various sources
-$vector("1,2,3")                 // From comma-separated string
-$vector([1,2,3])                 // From array
-$vector(#[1,2,3]#)               // From existing vector
+"1,2,3".vector()                 // From comma-separated string
+[1,2,3].vector()                 // From array
+#[1,2,3]#                        // From existing vector
 
 // Handles complex expressions during creation
 $vector("1+2,3*4,5/2")          // Evaluates: #[3,12,2.5]#

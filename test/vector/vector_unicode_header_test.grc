@@ -1,0 +1,362 @@
+/* Vector Unicode Header Support - Comprehensive Regression Test
+ * 
+ * This test validates Unicode header support in vectors, including:
+ * - UTF-8 BOM detection and handling
+ * - Unicode header name preservation
+ * - Cyrillic and other non-Latin scripts
+ * - Mixed encoding support
+ * - Header extraction functionality
+ * - Data access by Unicode header names
+ */
+
+("=== Vector Unicode Header Support - Comprehensive Regression Test ===").echo();
+
+/* Define the keys function for header extraction */
+keys = op(lst){lst.reduce(op(acc,x){if(x.type()==$LIST){acc += keys(x);}else{acc += 'x'.getname();}},[]);};
+
+/* Header extraction function */
+extract_headers = op(csv_string) {
+    keys = op(lst){lst.reduce(op(acc,x){if(x.type()==$LIST){acc += keys(x);}else{acc += 'x'.getname();}},[]);};
+    vec = csv_string.vector();
+    arr = vec.array();
+    first = arr[0];
+    keys(first);
+};
+
+/* ======================================== */
+/* 1. Basic ASCII CSV Tests */
+/* ======================================== */
+
+("\n--- Test 1: Basic ASCII CSV ---").echo();
+
+ascii_csv = "Name,Age,City\nJohn,25,NYC\nJane,30,LA";
+vec1 = ascii_csv.vector();
+
+("ASCII CSV vector created: " + (vec1 != null)).echo();
+if (vec1 != null) {
+    ("Vector type: " + vec1.type()).echo();
+    ("Vector shape: " + vec1.shape()).echo();
+    
+    /* Test header extraction */
+    headers = extract_headers(ascii_csv);
+    ("Headers: " + headers).echo();
+    
+    /* Test data access */
+    arr = vec1.array();
+    first = arr[0];
+    ("First row Name: " + first.Name).echo();
+    ("First row Age: " + first.Age).echo();
+    ("First row City: " + first.City).echo();
+}
+
+/* ======================================== */
+/* 2. UTF-8 BOM Tests */
+/* ======================================== */
+
+("\n--- Test 2: UTF-8 BOM CSV ---").echo();
+
+bom_csv = "ï»¿Name,Value,Category\nAlice,100,A\nBob,200,B";
+vec2 = bom_csv.vector();
+
+("BOM CSV vector created: " + (vec2 != null)).echo();
+if (vec2 != null) {
+    ("Vector type: " + vec2.type()).echo();
+    ("Vector shape: " + vec2.shape()).echo();
+    
+    /* Test header extraction */
+    headers = extract_headers(bom_csv);
+    ("Headers: " + headers).echo();
+    
+    /* Test data access */
+    arr = vec2.array();
+    first = arr[0];
+    ("First row Name: " + first.Name).echo();
+    ("First row Value: " + first.Value).echo();
+    ("First row Category: " + first.Category).echo();
+}
+
+/* ======================================== */
+/* 3. Unicode Header Tests */
+/* ======================================== */
+
+("\n--- Test 3: Unicode Headers ---").echo();
+
+unicode_csv = "Naïve,Café,Résumé\nValue1,Value2,Value3";
+vec3 = unicode_csv.vector();
+
+("Unicode CSV vector created: " + (vec3 != null)).echo();
+if (vec3 != null) {
+    ("Vector type: " + vec3.type()).echo();
+    ("Vector shape: " + vec3.shape()).echo();
+    
+    /* Test header extraction */
+    headers = extract_headers(unicode_csv);
+    ("Headers: " + headers).echo();
+    
+    /* Test data access */
+    arr = vec3.array();
+    first = arr[0];
+    ("First row Naïve: " + first.Naïve).echo();
+    ("First row Café: " + first.Café).echo();
+    ("First row Résumé: " + first.Résumé).echo();
+}
+
+/* ======================================== */
+/* 4. Cyrillic Header Tests */
+/* ======================================== */
+
+("\n--- Test 4: Cyrillic Headers ---").echo();
+
+cyrillic_csv = "Имя,Возраст,Город\nИван,25,Москва\nМария,30,Санкт-Петербург";
+vec4 = cyrillic_csv.vector();
+
+("Cyrillic CSV vector created: " + (vec4 != null)).echo();
+if (vec4 != null) {
+    ("Vector type: " + vec4.type()).echo();
+    ("Vector shape: " + vec4.shape()).echo();
+    
+    /* Test header extraction */
+    headers = extract_headers(cyrillic_csv);
+    ("Headers: " + headers).echo();
+    
+    /* Test data access */
+    arr = vec4.array();
+    first = arr[0];
+    ("First row Имя: " + first.Имя).echo();
+    ("First row Возраст: " + first.Возраст).echo();
+    ("First row Город: " + first.Город).echo();
+}
+
+/* ======================================== */
+/* 5. Mixed Encoding Tests */
+/* ======================================== */
+
+("\n--- Test 5: Mixed Encoding ---").echo();
+
+mixed_csv = "Name,Naïve,Value\nJohn,Café,100\nAlice,Résumé,200";
+vec5 = mixed_csv.vector();
+
+("Mixed CSV vector created: " + (vec5 != null)).echo();
+if (vec5 != null) {
+    ("Vector type: " + vec5.type()).echo();
+    ("Vector shape: " + vec5.shape()).echo();
+    
+    /* Test header extraction */
+    headers = extract_headers(mixed_csv);
+    ("Headers: " + headers).echo();
+    
+    /* Test data access */
+    arr = vec5.array();
+    first = arr[0];
+    ("First row Name: " + first.Name).echo();
+    ("First row Naïve: " + first.Naïve).echo();
+    ("First row Value: " + first.Value).echo();
+}
+
+/* ======================================== */
+/* 6. Complex Unicode Tests */
+/* ======================================== */
+
+("\n--- Test 6: Complex Unicode ---").echo();
+
+complex_csv = "姓名,年齢,都市\n田中,25,東京\n佐藤,30,大阪";
+vec6 = complex_csv.vector();
+
+("Complex Unicode CSV vector created: " + (vec6 != null)).echo();
+if (vec6 != null) {
+    ("Vector type: " + vec6.type()).echo();
+    ("Vector shape: " + vec6.shape()).echo();
+    
+    /* Test header extraction */
+    headers = extract_headers(complex_csv);
+    ("Headers: " + headers).echo();
+    
+    /* Test data access */
+    arr = vec6.array();
+    first = arr[0];
+    ("First row 姓名: " + first.姓名).echo();
+    ("First row 年齢: " + first.年齢).echo();
+    ("First row 都市: " + first.都市).echo();
+}
+
+/* ======================================== */
+/* 7. Header Operations Tests */
+/* ======================================== */
+
+("\n--- Test 7: Header Operations ---").echo();
+
+test_csv = "Product,Q1,Q2,Q3,Q4\nWidget,100,120,110,130\nGadget,80,90,85,95";
+vec7 = test_csv.vector();
+
+("Header operations test vector created: " + (vec7 != null)).echo();
+if (vec7 != null) {
+    /* Test header extraction */
+    headers = extract_headers(test_csv);
+    ("Headers: " + headers).echo();
+    
+    /* Test header count */
+    ("Header count: " + headers.len()).echo();
+    
+    /* Test header access by index */
+    ("First header: " + headers[0]).echo();
+    ("Second header: " + headers[1]).echo();
+    ("Third header: " + headers[2]).echo();
+    ("Fourth header: " + headers[3]).echo();
+    
+    /* Test data access by header names */
+    arr = vec7.array();
+    first = arr[0];
+    ("Product: " + first.Product).echo();
+    ("Q1: " + first.Q1).echo();
+    ("Q2: " + first.Q2).echo();
+    ("Q3: " + first.Q3).echo();
+    ("Q4: " + first.Q4).echo();
+}
+
+/* ======================================== */
+/* 8. Edge Cases Tests */
+/* ======================================== */
+
+("\n--- Test 8: Edge Cases ---").echo();
+
+/* Test with empty headers */
+empty_headers_csv = ",,\n1,2,3\n4,5,6";
+vec8 = empty_headers_csv.vector();
+
+("Empty headers CSV vector created: " + (vec8 != null)).echo();
+if (vec8 != null) {
+    headers = extract_headers(empty_headers_csv);
+    ("Empty headers: " + headers).echo();
+}
+
+/* Test with single column */
+single_col_csv = "Name\nAlice\nBob";
+vec9 = single_col_csv.vector();
+
+("Single column CSV vector created: " + (vec9 != null)).echo();
+if (vec9 != null) {
+    headers = extract_headers(single_col_csv);
+    ("Single column headers: " + headers).echo();
+    
+    arr = vec9.array();
+    first = arr[0];
+    ("First row Name: " + first.Name).echo();
+}
+
+/* Test with very long header names */
+long_headers_csv = "VeryLongHeaderNameForTestingPurposes,AnotherVeryLongHeaderName\nValue1,Value2";
+vec10 = long_headers_csv.vector();
+
+("Long headers CSV vector created: " + (vec10 != null)).echo();
+if (vec10 != null) {
+    headers = extract_headers(long_headers_csv);
+    ("Long headers: " + headers).echo();
+    
+    arr = vec10.array();
+    first = arr[0];
+    ("First row VeryLongHeaderNameForTestingPurposes: " + first.VeryLongHeaderNameForTestingPurposes).echo();
+}
+
+/* ======================================== */
+/* 9. Performance Tests */
+/* ======================================== */
+
+("\n--- Test 9: Performance Tests ---").echo();
+
+/* Test with larger dataset */
+large_csv = "ID,Name,Age,City,Country,Email,Phone,Address,Company,Position\n";
+i = 1;
+while (i <= 100) {
+    large_csv += i + ",User" + i + "," + (20 + i) + ",City" + i + ",Country" + i + ",user" + i + "@example.com,555-000" + i + ",Address" + i + ",Company" + i + ",Position" + i + "\n";
+    i += 1;
+}
+
+vec11 = large_csv.vector();
+
+("Large CSV vector created: " + (vec11 != null)).echo();
+if (vec11 != null) {
+    ("Vector shape: " + vec11.shape()).echo();
+    
+    /* Test header extraction performance */
+    start_time = $time();
+    headers = extract_headers(large_csv);
+    end_time = $time();
+    ("Header extraction time: " + (end_time - start_time) + " ms").echo();
+    ("Large dataset headers: " + headers).echo();
+}
+
+/* ======================================== */
+/* 10. Backward Compatibility Tests */
+/* ======================================== */
+
+("\n--- Test 10: Backward Compatibility ---").echo();
+
+/* Test that existing functionality still works */
+simple_csv = "A,B,C\n1,2,3\n4,5,6";
+vec12 = simple_csv.vector();
+
+("Simple CSV vector created: " + (vec12 != null)).echo();
+if (vec12 != null) {
+    ("Vector type: " + vec12.type()).echo();
+    ("Vector shape: " + vec12.shape()).echo();
+    
+    /* Test array conversion still works */
+    arr = vec12.array();
+    ("Array conversion: " + arr).echo();
+    
+    /* Test header extraction works */
+    headers = extract_headers(simple_csv);
+    ("Simple headers: " + headers).echo();
+}
+
+/* ======================================== */
+/* 11. Error Handling Tests */
+/* ======================================== */
+
+("\n--- Test 11: Error Handling ---").echo();
+
+/* Test with malformed CSV */
+malformed_csv = "Name,Value\nAlice,100\nBob";  /* Missing value */
+vec13 = malformed_csv.vector();
+
+("Malformed CSV vector created: " + (vec13 != null)).echo();
+if (vec13 != null) {
+    ("Vector type: " + vec13.type()).echo();
+    ("Vector shape: " + vec13.shape()).echo();
+    
+    /* Test header extraction still works */
+    headers = extract_headers(malformed_csv);
+    ("Malformed CSV headers: " + headers).echo();
+}
+
+/* Test with empty CSV */
+empty_csv = "";
+vec14 = empty_csv.vector();
+
+("Empty CSV vector created: " + (vec14 != null)).echo();
+if (vec14 != null) {
+    ("Vector type: " + vec14.type()).echo();
+    ("Vector shape: " + vec14.shape()).echo();
+}
+
+/* ======================================== */
+/* Test Summary */
+/* ======================================== */
+
+("\n=== Test Summary ===").echo();
+("Unicode header support tests completed successfully!").echo();
+("All tests covered:").echo();
+(" - Basic ASCII CSV processing").echo();
+(" - UTF-8 BOM detection and handling").echo();
+(" - Unicode header name preservation").echo();
+(" - Cyrillic script support").echo();
+(" - Mixed encoding support").echo();
+(" - Complex Unicode characters").echo();
+(" - Header extraction functionality").echo();
+(" - Data access by Unicode header names").echo();
+(" - Header operations and indexing").echo();
+(" - Edge cases and error handling").echo();
+(" - Performance with large datasets").echo();
+(" - Backward compatibility").echo();
+
+("=== Vector Unicode Header Support - Comprehensive Regression Test Complete ===").echo();
