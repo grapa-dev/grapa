@@ -672,10 +672,43 @@ bool GrapaVector::FROM(GrapaScriptExec* pScriptExec, GrapaNames* pNameSpace, boo
 		bool isQuoted = false;
 		bool isSYS = false;
 		s2 = _next_vector_token(sep, sC, lenC, vS, vL, isQuoted, isSYS);
-		if (cols == 1 && !isQuoted && vL >= 3 && memcmp(vS, "ï»¿", 3) == 0)
+		if (cols == 1 && !isQuoted && vL >= 2)
 		{
-			vS += 3;
-			vL -= 3;
+			// UTF-8 BOM: 0xEF 0xBB 0xBF (actual UTF-8 BOM)
+			if (vL >= 3 && 
+				(unsigned char)vS[0] == 0xEF && 
+				(unsigned char)vS[1] == 0xBB && 
+				(unsigned char)vS[2] == 0xBF)
+			{
+				vS += 3;
+				vL -= 3;
+			}
+			// String literal 'ï»¿' encoded as UTF-8: 0xC3 0xAF 0xC2 0xBB 0xC2 0xBF
+			else if (vL >= 6 && 
+				(unsigned char)vS[0] == 0xC3 && 
+				(unsigned char)vS[1] == 0xAF && 
+				(unsigned char)vS[2] == 0xC2 && 
+				(unsigned char)vS[3] == 0xBB && 
+				(unsigned char)vS[4] == 0xC2 && 
+				(unsigned char)vS[5] == 0xBF)
+			{
+				vS += 6;
+				vL -= 6;
+			}
+			// UTF-16 LE BOM: 0xFF 0xFE
+			else if ((unsigned char)vS[0] == 0xFF && 
+					 (unsigned char)vS[1] == 0xFE)
+			{
+				vS += 2;
+				vL -= 2;
+			}
+			// UTF-16 BE BOM: 0xFE 0xFF
+			else if ((unsigned char)vS[0] == 0xFE && 
+					 (unsigned char)vS[1] == 0xFF)
+			{
+				vS += 2;
+				vL -= 2;
+			}
 		}
 		mLabels.PushTail(new GrapaRuleEvent(0, GrapaBYTE(vS, vL), GrapaCHAR("")));
 		if (hasBlankHeader)

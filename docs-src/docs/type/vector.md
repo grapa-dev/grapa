@@ -287,6 +287,10 @@ $file().write("output.csv", csv_output);
 ```
 
 > **Note**: Vector header support has excellent Unicode capabilities. It can handle UTF-8 BOM (Byte Order Mark) in CSV files, and header names with Unicode characters (including Cyrillic, accented characters, etc.) are fully preserved and accessible using the header extraction methods.
+>
+> **Encoding Support**: CSV to vector conversion supports UTF-8 encoding only. While UTF-16 BOMs are detected and stripped, the content must be UTF-8 encoded for proper processing. Files with UTF-16 content should be converted to UTF-8 before processing.
+>
+> **Note**: If you encounter garbled text in your vector data, it may indicate that your CSV file is encoded in UTF-16 or another non-UTF-8 encoding. Convert the file to UTF-8 encoding before processing.
 
 ### Working with Mixed Data Types
 ```grapa
@@ -465,28 +469,216 @@ list = {a:10, b:20};
 result = vec + list.values(); /* Vector + array values */
 ```
 
-## Performance Optimization
+## Data Types and Usage Examples
 
-### Best Practices
+### Working with Different Data Types
 
-1. **Use Appropriate Matrix Sizes**
-   - Keep matrices < 50x50 for real-time applications
-   - Use < 100x100 for interactive applications
-   - Consider alternatives for matrices > 500x500
+Grapa vectors can contain mixed data types, making them ideal for real-world data processing scenarios:
 
-2. **Pre-allocate When Possible**
-   - Create matrices once and reuse them
-   - Avoid repeated creation of large matrices
+#### **Numeric Vectors**
+```grapa
+/* Integer vectors */
+int_vec = #[1, 2, 3, 4, 5]#;
+sum = int_vec.sum();                    /* 15 */
+mean = int_vec.mean();                  /* 3.0 */
 
-3. **Choose Data Types Wisely**
-   - Use INT for integer data
-   - Use FLOAT for decimal data
-   - Consider precision vs performance trade-offs
+/* Float vectors with high precision */
+precise_vec = #[1.123456789, 2.987654321, 3.141592653]#;
+product = precise_vec.reduce(op(acc,x){acc*x}, 1);  /* Exact precision maintained */
 
-4. **Optimize for Your Use Case**
-   - Real-time: Use smaller matrices and break large problems into blocks
-   - Batch processing: Monitor memory usage for large datasets
-   - Interactive: Balance performance with user experience
+/* Large number calculations */
+large_nums = #[123456789012345678901234567890, 987654321098765432109876543210]#;
+result = large_nums[0] * large_nums[1];  /* No overflow - unlimited precision */
+```
+
+#### **String Vectors**
+```grapa
+/* Text processing */
+names = #["Alice", "Bob", "Charlie", "Diana"]#;
+upper_names = names.map(op(x){x.upper()});  /* ["ALICE", "BOB", "CHARLIE", "DIANA"] */
+
+/* String concatenation */
+greetings = #["Hello", "Hi", "Hey"]#;
+people = #["Alice", "Bob", "Charlie"]#;
+messages = greetings + " " + people;  /* ["Hello Alice", "Hi Bob", "Hey Charlie"] */
+
+/* String filtering */
+long_names = names.filter(op(x){x.len() > 4});  /* ["Alice", "Charlie", "Diana"] */
+```
+
+#### **Mixed Type Vectors**
+```grapa
+/* Real-world data with mixed types */
+mixed_data = #[1, "hello", 3.14, true, [1,2,3]]#;
+
+/* Type-aware processing */
+numbers = mixed_data.filter(op(x){x.type() == $INT || x.type() == $FLOAT});
+strings = mixed_data.filter(op(x){x.type() == $STR});
+booleans = mixed_data.filter(op(x){x.type() == $BOOL});
+```
+
+#### **Boolean Vectors**
+```grapa
+/* Logical operations */
+flags = #[true, false, true, true, false]#;
+all_true = flags.reduce(op(acc,x){acc && x}, true);    /* false */
+any_true = flags.reduce(op(acc,x){acc || x}, false);   /* true */
+true_count = flags.filter(op(x){x}).len();             /* 3 */
+```
+
+### CSV Data Processing Examples
+
+#### **Basic CSV Import**
+```grapa
+/* Simple CSV with headers */
+csv_data = "Name,Age,City,Active\nAlice,25,NYC,true\nBob,30,LA,false\nCharlie,35,Chicago,true";
+data = csv_data.vector();
+
+/* Access by column name */
+names = data["Name"];        /* ["Alice", "Bob", "Charlie"] */
+ages = data["Age"];          /* [25, 30, 35] */
+cities = data["City"];       /* ["NYC", "LA", "Chicago"] */
+active = data["Active"];     /* [true, false, true] */
+```
+
+#### **CSV with Mixed Data Types**
+```grapa
+/* Complex CSV with various data types */
+complex_csv = "ID,Name,Score,LastLogin,Preferences\n1,Alice,95.5,2024-01-15,{theme:dark}\n2,Bob,87.2,2024-01-10,{theme:light}\n3,Charlie,92.8,2024-01-12,{theme:auto}";
+data = complex_csv.vector();
+
+/* Extract and process different column types */
+ids = data["ID"];                    /* [1, 2, 3] - integers */
+names = data["Name"];                /* ["Alice", "Bob", "Charlie"] - strings */
+scores = data["Score"];              /* [95.5, 87.2, 92.8] - floats */
+logins = data["LastLogin"];          /* ["2024-01-15", "2024-01-10", "2024-01-12"] - dates */
+prefs = data["Preferences"];         /* [{theme:dark}, {theme:light}, {theme:auto}] - objects */
+```
+
+#### **CSV Data Analysis**
+```grapa
+/* Statistical analysis of CSV data */
+sales_data = "Product,Q1,Q2,Q3,Q4\nWidget,100,120,110,130\nGadget,80,90,85,95\nTool,150,160,155,165";
+data = sales_data.vector();
+
+/* Calculate totals by product */
+products = data["Product"];
+q1_sales = data["Q1"];
+q2_sales = data["Q2"];
+q3_sales = data["Q3"];
+q4_sales = data["Q4"];
+
+/* Total sales for each product */
+total_sales = q1_sales + q2_sales + q3_sales + q4_sales;  /* [460, 350, 630] */
+
+/* Average quarterly sales */
+avg_q1 = q1_sales.mean();  /* 110.0 */
+avg_q2 = q2_sales.mean();  /* 123.333... */
+avg_q3 = q3_sales.mean();  /* 116.666... */
+avg_q4 = q4_sales.mean();  /* 130.0 */
+
+/* Best performing product */
+max_sales = total_sales.max();  /* 630 */
+best_product = products[total_sales.find(max_sales)];  /* "Tool" */
+```
+
+### Matrix Operations Examples
+
+#### **2D Matrix Creation**
+```grapa
+/* Create 2D matrix */
+matrix = [[1, 2, 3], [4, 5, 6], [7, 8, 9]].vector();
+
+/* Matrix operations */
+transposed = matrix.t();           /* Transpose matrix */
+determinant = matrix.det();        /* Calculate determinant */
+inverse = matrix.inv();           /* Matrix inverse */
+
+/* Row and column operations */
+first_row = matrix[0];            /* [1, 2, 3] */
+first_col = matrix.column(0);     /* [1, 4, 7] */
+```
+
+#### **Matrix with Headers**
+```grapa
+/* Create matrix with row and column headers */
+header_matrix = "Row,A,B,C\nX,1,2,3\nY,4,5,6\nZ,7,8,9";
+matrix = header_matrix.vector();
+
+/* Access by header names */
+row_headers = matrix.row_headers();  /* ["X", "Y", "Z"] */
+col_headers = matrix.column_headers();  /* ["A", "B", "C"] */
+
+/* Access specific cells by header */
+cell_a_x = matrix["A"]["X"];  /* 1 */
+cell_b_y = matrix["B"]["Y"];  /* 5 */
+```
+
+### Advanced Usage Examples
+
+#### **Conditional Vector Operations**
+```grapa
+/* Apply conditional logic to vectors */
+temperatures = #[15, 25, 30, 5, 35, 10]#;
+weather = temperatures.map(op(t){
+    if (t < 10) "Cold"
+    else if (t < 20) "Cool"
+    else if (t < 30) "Warm"
+    else "Hot"
+});  /* ["Cool", "Warm", "Hot", "Cold", "Hot", "Cold"] */
+```
+
+#### **Vector Aggregation**
+```grapa
+/* Group and aggregate data */
+sales = #[100, 150, 200, 120, 180, 90]#;
+categories = #["A", "B", "A", "C", "B", "A"]#;
+
+/* Group by category and sum */
+grouped = {};
+for (i = 0; i < sales.len(); i++) {
+    cat = categories[i];
+    sale = sales[i];
+    if (grouped.has(cat)) {
+        grouped[cat] += sale;
+    } else {
+        grouped[cat] = sale;
+    }
+}
+/* Result: {A: 390, B: 330, C: 120} */
+```
+
+#### **Vector Validation**
+```grapa
+/* Validate vector data */
+grades = #[85, 92, 78, 105, 88, 95]#;
+
+/* Check for valid grade range (0-100) */
+valid_grades = grades.filter(op(g){g >= 0 && g <= 100});  /* [85, 92, 78, 88, 95] */
+invalid_grades = grades.filter(op(g){g < 0 || g > 100});  /* [105] */
+
+/* Calculate statistics only for valid grades */
+avg_grade = valid_grades.mean();  /* 87.6 */
+```
+
+### Performance Guidelines
+
+#### **Best Practices**
+1. **Use Appropriate Data Types**
+   - Use `$INT` for whole numbers
+   - Use `$FLOAT` for decimal numbers
+   - Use `$STR` for text data
+   - Use `$BOOL` for true/false values
+
+2. **Efficient Operations**
+   - Use vector methods instead of loops when possible
+   - Batch operations on multiple vectors
+   - Avoid repeated type conversions
+
+3. **Memory Management**
+   - Pre-allocate vectors for large datasets
+   - Monitor memory usage for very large vectors
+   - Use appropriate precision for your needs
 
 ### Memory Management
 

@@ -257,12 +257,58 @@ if (isInt) {
 - **Empty headers** and irregular column counts
 - **Header preservation** during vector operations
 
-**Unicode Limitations:**
-- **Limited Unicode support** - Vector implementation predates Grapa's Unicode system
-- **Byte-based processing** - Headers processed as raw bytes, not Unicode characters
-- **No Unicode normalization** - Header names not normalized for comparison
-- **No grapheme cluster awareness** - Length calculations use byte count, not character count
-- **UTF-8 BOM only** - Only handles UTF-8 BOM, not other Unicode features
+**Unicode Support:**
+- **Excellent Unicode support** - Vector implementation handles Unicode headers correctly
+- **UTF-8 BOM detection** - Automatically detects and removes UTF-8 BOM (3-byte `ï»¿` sequence)
+- **Unicode header preservation** - Header names with Unicode characters are fully preserved
+- **Multi-script support** - Supports Cyrillic, accented characters, and other Unicode scripts
+- **Mixed encoding** - Handles CSV files with mixed ASCII and Unicode content
+- **Header extraction** - Unicode headers can be extracted using the `keys()` function with `.getname()` method
+- **Encoding limitations** - CSV to vector conversion supports UTF-8 encoding only. UTF-16 BOMs are detected and stripped, but content must be UTF-8 encoded for proper processing
+- **Graceful degradation** - Non-UTF-8 content is processed as-is, potentially resulting in garbled text rather than failing
+
+### Header Extraction Methods
+
+**User-Level Header Extraction:**
+```grapa
+// Define the keys function for header extraction
+keys = op(lst){lst.reduce(op(acc,x){if(x.type()==$LIST){acc += keys(x);}else{acc += 'x'.getname();}},[]);};
+
+// Extract headers from CSV vector
+extract_headers = op(csv_string) {
+    keys = op(lst){lst.reduce(op(acc,x){if(x.type()==$LIST){acc += keys(x);}else{acc += 'x'.getname();}},[]);};
+    vec = csv_string.vector();
+    arr = vec.array();
+    first = arr[0];
+    keys(first);
+};
+
+// Usage
+headers = extract_headers("Name,Value\nAlice,100\nBob,200");
+// Result: ["Name","Value"]
+```
+
+**Implementation Details:**
+- **`.getname()` method** - Returns the key name from a `$LIST` element
+- **`keys()` function** - Recursively extracts all key names from a `$LIST` object
+- **`reduce()` method** - Iterates through list elements to collect key names
+- **Array conversion** - Uses `vec.array()` to convert vector to array of `$LIST` objects
+- **First element access** - Accesses `arr[0]` which contains the header row as a `$LIST`
+
+**C++ Implementation:**
+```cpp
+// In GrapaVector::_toarray (lines 2200-2299)
+GrapaRuleEvent* label = mLabels.Head();  // Access stored headers
+if (pos == 1 && label) {
+    result->mValue.mToken = GrapaTokenType::LIST;  // Set to LIST if labels present
+}
+// ... (loop to populate result)
+if (val) {
+    if (label && result->mValue.mToken == GrapaTokenType::LIST)
+        val->mName.FROM(label->mName);  // Set property name from label
+    result->vQueue->PushTail(val);
+}
+```
 
 ## Type System Integration
 
@@ -384,46 +430,134 @@ result = vec.dot([4, 5, 6]);
 - **Type conversion** with `.vector()` and `.array()`
 - **Error handling** with `$ERR` type
 
-## Future Enhancements
+## Performance Characteristics and Design Trade-offs
 
-### Planned Features
+### Current Performance Profile
 
-1. **GPU Acceleration**
-   - CUDA/OpenCL integration for large-scale operations
-   - Automatic GPU memory management
-   - Fallback to CPU for smaller operations
+Grapa's vector implementation prioritizes **flexibility and precision** over raw performance, which creates specific performance characteristics:
 
-2. **Advanced Linear Algebra**
-   - Sparse matrix support
-   - Iterative solvers for large systems
-   - Advanced decomposition algorithms
+#### **Performance Strengths**
+- **Unlimited Precision**: No overflow in mathematical operations
+- **Heterogeneous Data**: Mixed types handled seamlessly
+- **Dynamic Type Safety**: Runtime type checking and conversion
+- **CSV Integration**: Built-in header processing with Unicode support
+- **Educational Value**: Excellent for prototyping and teaching
 
-3. **Machine Learning Integration**
-   - Neural network operations
-   - Gradient computation
-   - Optimization algorithms
+#### **Performance Limitations**
+- **No SIMD Optimization**: Mixed types prevent vectorized CPU instructions
+- **Cache Inefficiency**: Heterogeneous data layout reduces cache locality
+- **Memory Overhead**: Dynamic allocation and type checking costs
+- **Runtime Type Checking**: Type information not available at compile time
 
-4. **Distributed Computing**
-   - Multi-node vector operations
-   - Distributed memory management
-   - Fault tolerance for large datasets
+### Performance Analysis
 
-### Performance Improvements
+#### **Memory Layout Impact**
+```cpp
+// Current heterogeneous layout
+struct GrapaVectorItem {
+    u8 isValue : 1;
+    u8 isNull : 1;
+    u8 mLen:6;
+    u8 mToken;
+    u8 d[sizeof(GrapaVectorValue*)];  // Variable size data
+};
+```
 
-1. **SIMD Optimization**
-   - AVX-512 support for modern processors
-   - Automatic vectorization for loops
-   - Memory alignment optimization
+**Performance Implications:**
+- **Cache Misses**: Non-contiguous data access patterns
+- **Memory Bandwidth**: Inefficient memory utilization
+- **Allocation Overhead**: Dynamic memory allocation for each element
+- **Type Checking**: Runtime type validation on every access
 
-2. **Memory Management**
-   - Custom allocators for vector operations
-   - Memory pooling for frequent operations
-   - Garbage collection integration
+#### **Arithmetic Operation Overhead**
+```cpp
+// Current arithmetic requires type checking and conversion
+GrapaError Add(GrapaScriptExec* pScriptExec, GrapaNames* pNameSpace, 
+               const GrapaVector& bi, bool pSub) {
+    // Type checking for each element
+    // Dynamic allocation for results
+    // Runtime conversion between types
+}
+```
 
-3. **Parallel Processing**
-   - Thread pool management
-   - Work stealing for load balancing
-   - NUMA-aware memory allocation
+**Performance Impact:**
+- **Type Checking**: O(n) runtime cost for n elements
+- **Memory Allocation**: Dynamic allocation for result vectors
+- **Conversion Overhead**: Runtime type conversion between operations
+
+### Strategic Performance Considerations
+
+#### **When Grapa Vectors Excel**
+1. **Scientific Computing**: Unlimited precision calculations
+2. **Data Processing**: Mixed-type CSV file handling
+3. **Educational/Prototyping**: Dynamic type flexibility
+4. **Research Applications**: Exact arithmetic without overflow
+
+#### **When Alternatives Are Better**
+1. **High-Frequency Computing**: Fixed-type numerical operations
+2. **Real-Time Processing**: Signal processing with known data types
+3. **Large-Scale Matrix Operations**: >1000x1000 matrices
+4. **GPU Computing**: Deep learning and parallel processing
+
+### Future Enhancement Roadmap
+
+#### **Phase 1: Type-Specialized Paths (High Impact)**
+- **Homogeneous Vector Detection**: Identify vectors with uniform types
+- **Optimized Arithmetic**: Specialized code paths for common types
+- **SIMD Integration**: Vectorized operations for supported types
+
+#### **Phase 2: Memory Optimization (Medium Impact)**
+- **Contiguous Storage**: Optimize memory layout for homogeneous data
+- **Memory Pooling**: Reduce allocation overhead
+- **Cache Optimization**: Improve data locality
+
+#### **Phase 3: Lazy Evaluation (Medium Impact)**
+- **Expression Trees**: Defer computation until needed
+- **View-Based Operations**: Avoid unnecessary data copying
+- **Optimization Passes**: Compile-time optimization where possible
+
+#### **Phase 4: Hybrid Vector Types (High Impact)**
+- **Type Annotations**: Allow users to specify fixed types
+- **Performance Hints**: User-controlled optimization strategies
+- **Specialized Classes**: Type-specific vector implementations
+
+### Performance Monitoring and Debugging
+
+#### **Debug Features**
+```grapa
+// Enable vector performance debugging
+$sys().putenv("GRAPA_DEBUG_COMPONENTS", "vector:3");
+$sys().putenv("GRAPA_DEBUG_LEVEL", "3");
+```
+
+**Debug Levels:**
+- **Level 1**: Basic operation logging
+- **Level 2**: Memory allocation tracking
+- **Level 3**: Performance profiling and timing
+- **Level 4**: Detailed cache and memory analysis
+
+#### **Performance Metrics**
+- **Memory Usage**: Track allocation patterns and memory efficiency
+- **Computation Time**: Measure operation performance
+- **Cache Performance**: Monitor cache hit/miss ratios
+- **Type Distribution**: Analyze vector type homogeneity
+
+### Implementation Considerations
+
+#### **Backward Compatibility**
+- **100% Compatibility**: All existing code must continue to work
+- **Progressive Enhancement**: Performance improves automatically
+- **Graceful Degradation**: Fallback to current implementation
+
+#### **Educational Value Preservation**
+- **Teaching Capabilities**: Maintain prototyping and educational features
+- **Debugging Support**: Keep comprehensive debugging capabilities
+- **Type Flexibility**: Preserve dynamic type system benefits
+
+#### **Strategic Positioning**
+- **Unique Capabilities**: Focus on strengths (precision, flexibility)
+- **Complementary Role**: Work alongside specialized numerical libraries
+- **User Choice**: Provide clear guidance on when to use alternatives
 
 ## See Also
 
