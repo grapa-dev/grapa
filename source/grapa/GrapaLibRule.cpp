@@ -2301,6 +2301,14 @@ public:
 };
 GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleList(GrapaCHAR& pName) { return new GrapaLibraryRuleListEvent(pName); }
 
+class GrapaLibraryRuleErrEvent : public GrapaLibraryEvent
+{
+public:
+	GrapaLibraryRuleErrEvent(GrapaCHAR& pName) { mName.FROM(pName); };
+	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
+};
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleErr(GrapaCHAR& pName) { return new GrapaLibraryRuleErrEvent(pName); }
+
 class GrapaLibraryRuleArrayEvent : public GrapaLibraryEvent
 {
 public:
@@ -3143,6 +3151,7 @@ GrapaLibraryEvent* GrapaLibraryRuleEvent::LoadLib(GrapaScriptExec *vScriptExec, 
 		{ "base", &GrapaLibraryRuleEvent::HandleBase },
 		{ "str", &GrapaLibraryRuleEvent::HandleStr },
 		{ "list", &GrapaLibraryRuleEvent::HandleList },
+		{ "err", &GrapaLibraryRuleEvent::HandleErr },
 		{ "array", &GrapaLibraryRuleEvent::HandleArray },
 		{ "vector", &GrapaLibraryRuleEvent::HandleVector },
 		{ "xml", &GrapaLibraryRuleEvent::HandleXml },
@@ -16483,6 +16492,31 @@ GrapaRuleEvent* GrapaLibraryRuleListEvent::Run(GrapaScriptExec* vScriptExec, Gra
 					delete plan;
 				}
 			}
+			break;
+		default:
+			break;
+		}
+	}
+	return(result);
+}
+
+GrapaRuleEvent* GrapaLibraryRuleErrEvent::Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput)
+{
+	GrapaRuleEvent* result = NULL;
+	GrapaLibraryParam r1(vScriptExec, pNameSpace, pInput ? pInput->Head(0) : NULL);
+	if (r1.vVal)
+	{
+		switch (r1.vVal->mValue.mToken)
+		{
+		case GrapaTokenType::TAG:
+		case GrapaTokenType::EL:
+		case GrapaTokenType::XML:
+		case GrapaTokenType::ARRAY:
+		case GrapaTokenType::TUPLE:
+		case GrapaTokenType::LIST:
+		case GrapaTokenType::ERR:
+			result = vScriptExec->CopyItem(r1.vVal, true);
+			result->mValue.mToken = GrapaTokenType::ERR;
 			break;
 		default:
 			break;

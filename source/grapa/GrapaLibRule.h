@@ -226,6 +226,7 @@ public:
 	GrapaLibraryEvent* HandleBase(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleStr(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleList(GrapaCHAR& pName);
+	GrapaLibraryEvent* HandleErr(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleArray(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleVector(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleXml(GrapaCHAR& pName);
