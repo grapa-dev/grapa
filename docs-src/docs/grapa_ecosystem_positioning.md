@@ -28,6 +28,45 @@ Grapa's **executable BNF system** provides capabilities that modern languages ca
 
 **No other language provides this level of runtime flexibility and code manipulation capability.**
 
+### **Runtime Grammar Extension** 🌐
+Grapa's **executable BNF system** provides unique capabilities that no other modern programming language offers:
+
+```grapa
+/* Add SQL syntax at runtime */
+custom_command = rule select $STR from $STR { op(fields:$2, table:$4){
+    /* SQL implementation */
+} };
+
+/* Add PROLOG syntax at runtime */
+custom_command = rule $STR '(' $STR ')' '.' { op(predicate:$1, args:$3){
+    /* PROLOG fact implementation */
+} };
+custom_function = rule '?-' $STR '(' $STR ')' { op(predicate:$2, query_args:$4){
+    /* PROLOG query implementation */
+} };
+
+/* Execute new syntax immediately */
+op(parse)("select * from users")();
+op(parse)("parent(john,mary).")();
+op(parse)("?- parent(john,X)")();
+```
+
+**Unique Capabilities:**
+- **Runtime syntax addition** - Add new language syntax while programs are running
+- **Immediate execution** - New syntax works immediately without compilation
+- **Seamless integration** - Mix native Grapa with custom syntax in the same script
+- **Full BNF power** - Complex grammar rules with precedence and recursion
+- **Production ready** - Working implementations of SQL and PROLOG
+
+**Comparison with Other Languages:**
+- **Python, JavaScript, Java, C#, Go, Rust**: No runtime syntax extension
+- **Lisp/Scheme**: Macro systems but limited to existing syntax patterns
+- **Racket**: Language-oriented programming but separate languages
+- **Haskell**: Template Haskell but compile-time only
+- **Grapa**: **Unique** - Full runtime grammar extension with working implementations
+
+**This capability is unprecedented in modern programming languages.**
+
 ### **Unlimited Precision Mathematics** 🔢
 Grapa provides **arbitrary-precision arithmetic** capabilities that exceed most modern languages:
 - **$INT**: Unlimited precision integers (no overflow) - **Superior to Python, JavaScript, Go**
@@ -50,6 +89,10 @@ xml = <user><name>John</name><age>30</age></user>;
 
 /* SQL processing (working implementation) */
 result = op(parse)("SELECT * FROM users WHERE age > 25")();
+
+/* PROLOG processing (working implementation) */
+op(parse)("parent(john,mary).")();
+query_results = op(parse)("?- parent(john,X)")();
 
 /* All in the same script! */
 ```
@@ -192,6 +235,7 @@ This table ranks programming languages across key capabilities, showing where Gr
 | Capability/Feature | **Grapa** | Python | JavaScript | TypeScript | Go | Rust | Swift | Kotlin | Ruby |
 |-------------------|-----------|--------|------------|------------|----|------|-------|--------|------|
 | **Meta-Programming** | **⭐⭐⭐⭐⭐ (Executable BNF, Runtime Grammar)** | ⭐⭐ (eval, inspect) | ⭐⭐ (eval, Proxy) | ⭐⭐ (eval, Proxy) | ⭐ (reflect) | ⭐⭐ (macros) | ⭐ (mirror) | ⭐⭐ (reflection) | ⭐⭐⭐ (eval, metaprogramming) |
+| **Runtime Grammar Extension** | **⭐⭐⭐⭐⭐ (Working SQL, PROLOG Implementations)** | ⭐ (None) | ⭐ (None) | ⭐ (None) | ⭐ (None) | ⭐⭐ (Procedural macros) | ⭐ (None) | ⭐ (None) | ⭐ (None) |
 | **Dynamic Syntax Creation** | **⭐⭐⭐⭐⭐ (Human-readable Execution Trees)** | ⭐⭐ (exec, eval) | ⭐⭐ (Function constructor) | ⭐⭐ (Function constructor) | ⭐ (reflect) | ⭐⭐ (procedural macros) | ⭐ (mirror) | ⭐⭐ (reflection) | ⭐⭐⭐ (eval, define_method) |
 | **Multi-Syntax Processing** | **⭐⭐⭐⭐⭐ (JSON, XML, HTML Native + unified dot notation + .findall())** | ⭐⭐ (json, xml libs) | ⭐⭐ (JSON native, xml libs) | ⭐⭐ (JSON native, xml libs) | ⭐⭐ (json, xml libs) | ⭐⭐ (serde) | ⭐⭐ (Codable) | ⭐⭐ (serialization) | ⭐⭐ (json, xml libs) |
 | **Unlimited Precision Math** | **⭐⭐⭐⭐⭐ (Native $INT, $FLOAT, $TIME)** | ⭐⭐⭐ (decimal, mpmath) | ⭐⭐ (BigInt) | ⭐⭐ (BigInt) | ⭐⭐ (big.Int) | ⭐⭐ (num-bigint) | ⭐⭐ (BigInt) | ⭐⭐ (BigInteger) | ⭐⭐ (BigDecimal) |
@@ -220,10 +264,11 @@ This table ranks programming languages across key capabilities, showing where Gr
 - ⭐⭐⭐⭐⭐ = Outstanding support
 
 **Key Insights:**
-- **Grapa excels** in meta-programming, dynamic code generation, multi-syntax processing, and unlimited precision math
+- **Grapa excels** in meta-programming, runtime grammar extension, dynamic code generation, multi-syntax processing, and unlimited precision math
 - **Grapa is competitive** in error handling, string interpolation, and file system access
 - **Grapa provides alternatives** for type safety and ecosystem maturity
 - **Grapa's unique strengths** are in areas where other languages require external libraries or complex setup
+- **Runtime grammar extension**: Grapa is the only modern language with working implementations of SQL and PROLOG syntax through runtime grammar extension
 - **Multi-syntax advantage**: Grapa's unified dot notation and `.findall()` method work identically across JSON, XML, and HTML, providing enterprise-grade querying capabilities, and developers can extend multi-syntax support with custom grammar rules
 
 ## When Grapa's Superior Capabilities Are Essential
@@ -274,7 +319,40 @@ result = process_all_formats(json_data, xml_data, sql_data);
 
 **Grapa's native multi-syntax capabilities eliminate the need for external libraries and parsers.**
 
-#### **3. Binary Data Analysis**
+#### **3. Runtime Language Integration**
+```grapa
+/* Add SQL syntax at runtime */
+custom_command = rule select $STR from $STR { op(fields:$2, table:$4){
+    /* SQL implementation */
+} };
+
+/* Add PROLOG syntax at runtime */
+custom_command = rule $STR '(' $STR ')' '.' { op(predicate:$1, args:$3){
+    /* PROLOG fact implementation */
+} };
+custom_function = rule '?-' $STR '(' $STR ')' { op(predicate:$2, query_args:$4){
+    /* PROLOG query implementation */
+} };
+
+/* Execute immediately */
+op(parse)("select * from users")();
+op(parse)("parent(john,mary).")();
+op(parse)("?- parent(john,X)")();
+```
+
+**Use Cases:**
+- **Legacy system integration** with custom syntax for old protocols and formats
+- **Domain-specific languages** for specialized domains without external toolchains
+- **Educational programming** with custom syntax for teaching concepts
+- **Research language design** for experimenting with new syntax features
+- **Configuration languages** that evolve at runtime
+- **Protocol parsers** that change over time without recompilation
+- **Template engines** with dynamic syntax modification
+- **Multi-language environments** where different syntaxes need to coexist
+
+**Grapa is the only modern language with working implementations of SQL and PROLOG through runtime grammar extension.**
+
+#### **4. Binary Data Analysis**
 ```grapa
 /* Advanced binary pattern matching */
 binary_data = $file("data.bin").read();
@@ -292,7 +370,7 @@ extracted = patterns.transform(extract_fields);
 
 **Grapa's binary data processing capabilities exceed those of Python, JavaScript, and most modern languages.**
 
-#### **4. Database-Centric Applications**
+#### **5. Database-Centric Applications**
 ```grapa
 /* Native database operations */
 db = $file("database.gdb");
@@ -310,7 +388,7 @@ result = users.grep("age > 25").map(format_user);
 
 **Grapa's database integration eliminates the need for external ORMs and database drivers.**
 
-#### **5. High-Precision Computing**
+#### **6. High-Precision Computing**
 ```grapa
 /* Unlimited precision arithmetic */
 large_number = 123456789012345678901234567890 ** 123;
@@ -328,7 +406,7 @@ timestamp = $TIME().utc();  /* Nanosecond precision */
 
 **Grapa's mathematical capabilities surpass Python's decimal module, JavaScript's BigInt, and most modern language numeric types.**
 
-#### **6. Advanced Pattern Matching**
+#### **7. Advanced Pattern Matching**
 ```grapa
 /* 100% ripgrep compatible pattern matching */
 text = "Hello world\nGoodbye world";
@@ -350,7 +428,7 @@ case_insensitive = text.match("WORLD", "i");  /* Case-insensitive matching */
 
 **Grapa's pattern matching capabilities exceed those of Python regex, JavaScript regex, and most modern text processing tools.**
 
-#### **7. Multi-Format Data Integration**
+#### **8. Multi-Format Data Integration**
 ```grapa
 /* Seamless integration of different data formats */
 mixed_data = {
