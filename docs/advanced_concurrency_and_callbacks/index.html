@@ -2579,6 +2579,66 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#worker-thread-coordination-with-functional-methods" class="md-nav__link">
+    <span class="md-ellipsis">
+      Worker Thread Coordination with Functional Methods
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Worker Thread Coordination with Functional Methods">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#thread-synchronization-barrier" class="md-nav__link">
+    <span class="md-ellipsis">
+      Thread Synchronization Barrier
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#parallel-task-execution" class="md-nav__link">
+    <span class="md-ellipsis">
+      Parallel Task Execution
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#resource-pool-coordination" class="md-nav__link">
+    <span class="md-ellipsis">
+      Resource Pool Coordination
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#system-initialization-pattern" class="md-nav__link">
+    <span class="md-ellipsis">
+      System Initialization Pattern
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#microservices-coordination" class="md-nav__link">
+    <span class="md-ellipsis">
+      Microservices Coordination
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#worker-pattern-integration" class="md-nav__link">
     <span class="md-ellipsis">
       Worker Pattern Integration
@@ -2919,6 +2979,101 @@
   
 
       </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_24" >
+        
+          
+          <label class="md-nav__link" for="__nav_5_24" id="__nav_5_24_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Language Integrations
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_24_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_24">
+            <span class="md-nav__icon md-icon"></span>
+            Language Integrations
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sql_integration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    SQL Integration
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../prolog_integration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    PROLOG Integration
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -3987,6 +4142,66 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#worker-thread-coordination-with-functional-methods" class="md-nav__link">
+    <span class="md-ellipsis">
+      Worker Thread Coordination with Functional Methods
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Worker Thread Coordination with Functional Methods">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#thread-synchronization-barrier" class="md-nav__link">
+    <span class="md-ellipsis">
+      Thread Synchronization Barrier
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#parallel-task-execution" class="md-nav__link">
+    <span class="md-ellipsis">
+      Parallel Task Execution
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#resource-pool-coordination" class="md-nav__link">
+    <span class="md-ellipsis">
+      Resource Pool Coordination
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#system-initialization-pattern" class="md-nav__link">
+    <span class="md-ellipsis">
+      System Initialization Pattern
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#microservices-coordination" class="md-nav__link">
+    <span class="md-ellipsis">
+      Microservices Coordination
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#worker-pattern-integration" class="md-nav__link">
     <span class="md-ellipsis">
       Worker Pattern Integration
@@ -4262,6 +4477,69 @@ tree_str = custom_tree.str();  /* Human-readable tree representation */
 result = custom_tree(5, 3);  /* Result: 8 */
 </code></pre></div>
 <h2 id="advanced-concurrency-patterns">Advanced Concurrency Patterns</h2>
+<h3 id="worker-thread-coordination-with-functional-methods">Worker Thread Coordination with Functional Methods</h3>
+<p>Grapa's <code>.map()</code> and <code>.filter()</code> methods are not just data processing tools - they're <strong>sophisticated concurrency primitives</strong> that can coordinate multiple worker threads. This enables structured concurrency patterns where all threads must complete before proceeding.</p>
+<h4 id="thread-synchronization-barrier"><strong>Thread Synchronization Barrier</strong></h4>
+<div class="highlight"><pre><span></span><code>/* Spawn multiple worker threads that all must complete */
+workers = [1, 2, 3, 4, 5].map(op(worker_id) {
+    /* Each worker does independent work */
+    (&quot;Worker &quot; + worker_id.str() + &quot; starting&quot;).echo();
+    sleep(worker_id);  /* Simulate work */
+    (&quot;Worker &quot; + worker_id.str() + &quot; completed&quot;).echo();
+    worker_id * 100;  /* Return result */
+});
+/* All workers complete before proceeding */
+(&quot;All workers finished&quot;).echo();
+/* Result: [100, 200, 300, 400, 500] */
+</code></pre></div>
+<h4 id="parallel-task-execution"><strong>Parallel Task Execution</strong></h4>
+<div class="highlight"><pre><span></span><code>/* Execute multiple independent tasks in parallel */
+tasks = [
+    op() { &quot;Task A: Database query&quot;.echo(); sleep(2); &quot;A done&quot;.echo(); },
+    op() { &quot;Task B: API call&quot;.echo(); sleep(1); &quot;B done&quot;.echo(); },
+    op() { &quot;Task C: File processing&quot;.echo(); sleep(3); &quot;C done&quot;.echo(); }
+];
+
+results = tasks.map(op(task) { task(); });
+/* All tasks complete before proceeding */
+(&quot;All tasks completed&quot;).echo();
+</code></pre></div>
+<h4 id="resource-pool-coordination"><strong>Resource Pool Coordination</strong></h4>
+<div class="highlight"><pre><span></span><code>/* Coordinate multiple resource operations */
+resources = [&quot;db1&quot;, &quot;db2&quot;, &quot;db3&quot;, &quot;cache1&quot;, &quot;cache2&quot;].map(op(resource) {
+    (&quot;Connecting to &quot; + resource).echo();
+    /* Simulate connection */
+    sleep(1);
+    (&quot;Connected to &quot; + resource).echo();
+    resource + &quot;_connection&quot;;
+});
+/* All resources connected before proceeding */
+(&quot;All resources ready&quot;).echo();
+/* Result: [&quot;db1_connection&quot;, &quot;db2_connection&quot;, &quot;db3_connection&quot;, &quot;cache1_connection&quot;, &quot;cache2_connection&quot;] */
+</code></pre></div>
+<h4 id="system-initialization-pattern"><strong>System Initialization Pattern</strong></h4>
+<div class="highlight"><pre><span></span><code>/* Initialize multiple system components in parallel */
+components = [
+    op() { initialize_database(); },
+    op() { initialize_cache(); },
+    op() { initialize_api_server(); },
+    op() { initialize_file_system(); }
+];
+
+initialized = components.map(op(init) { init(); });
+/* All components initialized before proceeding */
+(&quot;System ready&quot;).echo();
+</code></pre></div>
+<h4 id="microservices-coordination"><strong>Microservices Coordination</strong></h4>
+<div class="highlight"><pre><span></span><code>/* Coordinate multiple microservice calls */
+services = [
+    op() { call_user_service(); },
+    op() { call_payment_service(); },
+    op() { call_inventory_service(); }
+];
+results = services.map(op(service) { service(); });
+/* All services respond before proceeding */
+</code></pre></div>
 <h3 id="worker-pattern-integration">Worker Pattern Integration</h3>
 <p>Grapa's worker pattern is deeply integrated throughout the system:</p>
 <div class="highlight"><pre><span></span><code>/* Worker pattern for complex operations */

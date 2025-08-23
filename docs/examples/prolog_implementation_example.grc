@@ -1,0 +1,202 @@
+#!/usr/bin/env grapa
+/* 
+ * Basic PROLOG Implementation in Grapa
+ * Demonstrates facts, rules, unification, and basic queries
+ */
+
+/* Initialize PROLOG knowledge base and variable system */
+kb = $file().table();
+$global.prolog_vars = {};
+$global.query_results = [];
+
+/* ===== FACT STORAGE ===== */
+/* Store facts: parent(john, mary), parent(mary, jane), etc. */
+kb.set('parent_john_mary', 'parent(john,mary)');
+kb.set('parent_mary_jane', 'parent(mary,jane)');
+kb.set('parent_jane_bob', 'parent(jane,bob)');
+kb.set('parent_bob_alice', 'parent(bob,alice)');
+
+/* Store more facts: likes(mary, wine), likes(john, mary) */
+kb.set('likes_mary_wine', 'likes(mary,wine)');
+kb.set('likes_john_mary', 'likes(john,mary)');
+kb.set('likes_jane_books', 'likes(jane,books)');
+
+/* ===== RULE STORAGE ===== */
+/* Rules: ancestor(X,Y) :- parent(X,Y) */
+kb.set('ancestor_rule1', 'ancestor(X,Y) :- parent(X,Y)');
+/* ancestor(X,Z) :- parent(X,Y), ancestor(Y,Z) */
+kb.set('ancestor_rule2', 'ancestor(X,Z) :- parent(X,Y), ancestor(Y,Z)');
+
+/* ===== PROLOG INTERPRETER FUNCTIONS ===== */
+
+/* Parse a term like "parent(john,mary)" into components */
+parse_term = op(term) {
+    parts = term.split('(');
+    if (parts.len() != 2) return null;
+    
+    predicate = parts[0];
+    args_part = parts[1].replace(')', '');
+    args = args_part.split(',');
+    
+    /* Clean up arguments */
+    clean_args = [];
+    args.range().map(op(i) {
+        arg = args[i].replace(' ', '');
+        clean_args = clean_args.add(arg);
+    });
+    
+    return {predicate: predicate, args: clean_args};
+};
+
+/* Check if two terms can unify (basic unification) */
+unify = op(term1, term2) {
+    parsed1 = parse_term(term1);
+    parsed2 = parse_term(term2);
+    
+    if (!parsed1 || !parsed2) return false;
+    if (parsed1.predicate != parsed2.predicate) return false;
+    if (parsed1.args.len() != parsed2.args.len()) return false;
+    
+    bindings = {};
+    
+    /* Check each argument pair */
+    parsed1.args.range().map(op(i) {
+        arg1 = parsed1.args[i];
+        arg2 = parsed2.args[i];
+        
+        /* If both are variables (uppercase) or constants, handle accordingly */
+        if (arg1 == arg2) {
+            /* Exact match */
+        } else if (is_variable(arg1) && !is_variable(arg2)) {
+            bindings[arg1] = arg2;
+        } else if (!is_variable(arg1) && is_variable(arg2)) {
+            bindings[arg2] = arg1;
+        } else if (is_variable(arg1) && is_variable(arg2)) {
+            /* Both variables - bind one to the other */
+            bindings[arg1] = arg2;
+        } else {
+            /* Constants don't match */
+            return null;
+        };
+    });
+    
+    return bindings;
+};
+
+/* Check if a term is a variable (starts with uppercase) */
+is_variable = op(term) {
+    if (!term || term.len() == 0) return false;
+    first_char = term[0];
+    return first_char >= 'A' && first_char <= 'Z';
+};
+
+/* Apply variable bindings to a term */
+apply_bindings = op(term, bindings) {
+    if (!bindings) return term;
+    
+    result = term;
+    bindings.keys().range().map(op(i) {
+        var_name = bindings.keys()[i];
+        value = bindings[var_name];
+        result = result.replace(var_name, value);
+    });
+    
+    return result;
+};
+
+/* Query the knowledge base for facts */
+query_facts = op(query_term) {
+    results = [];
+    
+    /* Get all keys from knowledge base */
+    kb_keys = kb.keys();
+    
+    kb_keys.range().map(op(i) {
+        key = kb_keys[i];
+        fact = kb.get(key);
+        
+        /* Try to unify query with this fact */
+        bindings = unify(query_term, fact);
+        if (bindings) {
+            bound_query = apply_bindings(query_term, bindings);
+            results = results.add({
+                fact: fact,
+                bindings: bindings,
+                unified: bound_query
+            });
+        };
+    });
+    
+    return results;
+};
+
+/* ===== EXAMPLE QUERIES ===== */
+
+"=== PROLOG Implementation Demo ===";
+"";
+
+"1. Stored Facts:";
+"   parent(john,mary)";
+"   parent(mary,jane)"; 
+"   parent(jane,bob)";
+"   parent(bob,alice)";
+"   likes(mary,wine)";
+"   likes(john,mary)";
+"";
+
+"2. Query: parent(john,X) - Who are John's children?";
+results1 = query_facts('parent(john,X)');
+results1.len() > 0 ? "Results found: " + results1.len() : "No results found";
+results1.range().map(op(i) {
+    result = results1[i];
+    "  Fact: " + result.fact;
+    "  Bindings: " + result.bindings;
+});
+"";
+
+"3. Query: parent(X,jane) - Who are Jane's parents?";
+results2 = query_facts('parent(X,jane)');
+results2.len() > 0 ? "Results found: " + results2.len() : "No results found";
+results2.range().map(op(i) {
+    result = results2[i];
+    "  Fact: " + result.fact;
+    "  Bindings: " + result.bindings;
+});
+"";
+
+"4. Query: likes(mary,Y) - What does Mary like?";
+results3 = query_facts('likes(mary,Y)');
+results3.len() > 0 ? "Results found: " + results3.len() : "No results found";
+results3.range().map(op(i) {
+    result = results3[i];
+    "  Fact: " + result.fact;
+    "  Bindings: " + result.bindings;
+});
+"";
+
+"5. Test unification directly:";
+"   unify('parent(X,mary)', 'parent(john,mary)')";
+test_unify = unify('parent(X,mary)', 'parent(john,mary)');
+"   Result: " + test_unify;
+"";
+
+"6. Test term parsing:";
+"   parse_term('parent(john,mary)')";
+test_parse = parse_term('parent(john,mary)');
+"   Predicate: " + test_parse.predicate;
+"   Args: " + test_parse.args;
+"";
+
+"=== PROLOG Implementation Complete ===";
+"This demonstrates core PROLOG concepts:";
+"- Fact storage in knowledge base";
+"- Basic unification algorithm";
+"- Variable binding";
+"- Query resolution";
+"- Term parsing";
+"";
+"Next steps could include:";
+"- Rule resolution (backward chaining)";
+"- Backtracking for multiple solutions";
+"- Cut operator (!) implementation";
+"- Built-in predicates (is, =, \\=, etc.)";

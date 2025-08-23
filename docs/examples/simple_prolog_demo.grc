@@ -1,0 +1,40 @@
+#!/usr/bin/env grapa
+/*
+ * Simple PROLOG-style Knowledge Base Demo in Grapa
+ */
+
+"=== PROLOG Knowledge Base Demo ===".echo();
+
+/* Initialize knowledge base */
+kb = $file().table();
+
+/* Store facts */
+kb.set('fact1', 'parent(john,mary)');
+kb.set('fact2', 'parent(mary,jane)');
+kb.set('fact3', 'likes(mary,wine)');
+
+"Stored Facts:".echo();
+kb.get('fact1').echo();
+kb.get('fact2').echo();
+kb.get('fact3').echo();
+
+/* Simple query - find all parent facts */
+"".echo();
+"Query: All parent facts:".echo();
+keys = ['fact1', 'fact2', 'fact3'];
+keys.range().map(op(i) {
+    fact = kb.get(keys[i]);
+    if (fact.indexOf('parent') == 0) {
+        fact.echo();
+    };
+});
+
+/* Variable binding example */
+"".echo();
+"Variable binding example:".echo();
+$global.X = 'john';
+$global.Y = 'mary';
+"X=${X}, Y=${Y}".interpolate($global).echo();
+"parent(${X},${Y})".interpolate($global).echo();
+
+"=== PROLOG Demo Complete ===".echo();
