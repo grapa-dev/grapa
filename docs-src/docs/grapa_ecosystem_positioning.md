@@ -24,7 +24,7 @@ Grapa's **executable BNF system** provides capabilities that modern languages ca
 - **Code-as-data manipulation** - Everything is JSON-like structures that can be modified and executed
 - **Human-readable execution trees** - Manipulate and transform code at the execution tree level
 - **Dynamic language creation** - Build domain-specific languages without external tools
-- **Multi-syntax processing** - Handle JSON, XML, HTML natively, with SQL demonstrated through example scripts
+- **Multi-syntax processing** - Handle JSON, XML, HTML natively, with SQL and PROLOG as working implementations
 
 **No other language provides this level of runtime flexibility and code manipulation capability.**
 
@@ -48,7 +48,7 @@ data = {"name": "John", "age": 30};
 /* XML processing (native) */
 xml = <user><name>John</name><age>30</age></user>;
 
-/* SQL processing (demonstrated via example scripts) */
+/* SQL processing (working implementation) */
 result = op(parse)("SELECT * FROM users WHERE age > 25")();
 
 /* All in the same script! */

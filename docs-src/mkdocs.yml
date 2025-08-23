@@ -162,6 +162,9 @@ nav:
       - Module System: module_system.md
       - Machine Learning: machine_learning.md
       - Vector Performance Guide: vector_performance_guide.md
+  - Language Integrations:
+      - SQL Integration: sql_integration.md
+      - PROLOG Integration: prolog_integration.md
   - Guides:
       - Migration Guides:
           - Python: migrations/python_to_grapa_migration.md
