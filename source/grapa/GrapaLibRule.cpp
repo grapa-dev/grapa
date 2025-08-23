@@ -7185,7 +7185,10 @@ GrapaRuleEvent* GrapaLibraryRuleSearchEvent::Run(GrapaScriptExec *vScriptExec, G
 				attrList = attrList->Next();
 			}
 			if (attrList && e && !e->mControlFlow)
+			{
+				// don't think this should ever happe. But if it does, should an $ERR be returned?
 				e = NULL;
+			}
 			if (result == NULL && e)
 			{
 				if (e == delQueue.Tail())
@@ -10081,6 +10084,8 @@ GrapaRuleEvent* GrapaLibraryRuleReduceEvent::Run(GrapaScriptExec *vScriptExec, G
 
 	total->vRulePointer = result;
 
+	u8 isControlFlowChange = 0;
+
 	while (p)
 	{
 		GrapaRuleEvent *eH = p;
@@ -10089,6 +10094,7 @@ GrapaRuleEvent* GrapaLibraryRuleReduceEvent::Run(GrapaScriptExec *vScriptExec, G
 		GrapaRuleEvent *r = vScriptExec->ProcessPlan(pNameSpace, code.vVal, total);
 		if (r)
 		{
+			isControlFlowChange = r->mControlFlow;
 			if (r->vRulePointer != total->vRulePointer)
 			{
 				if (startDel)
@@ -10104,6 +10110,12 @@ GrapaRuleEvent* GrapaLibraryRuleReduceEvent::Run(GrapaScriptExec *vScriptExec, G
 				r->CLEAR();
 				delete r;
 			}
+			if (isControlFlowChange == GrapaControlFlowType::BREAK)
+				break;
+			if (isControlFlowChange == GrapaControlFlowType::CONTINUE)
+				;
+			if (isControlFlowChange == GrapaControlFlowType::RETURN || isControlFlowChange == GrapaControlFlowType::THROW || isControlFlowChange == GrapaControlFlowType::SYNTAX || isControlFlowChange == GrapaControlFlowType::EXIT)
+				break;
 		}
 		p = p->Next();
 	}
@@ -10126,6 +10138,9 @@ GrapaRuleEvent* GrapaLibraryRuleReduceEvent::Run(GrapaScriptExec *vScriptExec, G
 		startDel->CLEAR();
 		delete startDel;
 	}
+
+	if (result)
+		result->mControlFlow = isControlFlowChange;
 
 	return(result);
 }
