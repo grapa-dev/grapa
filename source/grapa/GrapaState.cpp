@@ -4484,15 +4484,12 @@ GrapaRuleEvent* GrapaScriptExec::ProcessPlan(GrapaNames* pNameSpace, GrapaRuleEv
 						result->mControlFlow = result->vRulePointer->mControlFlow;
 					if (result->mControlFlow)
 					{
-						if (!result->mCopied)
-						{
-							GrapaRuleEvent* oldResult = result;
-							u8 isControlFlowChange = result->mControlFlow;;
-							result = CopyItem(result);
-							oldResult->CLEAR();
-							delete oldResult;
-							result->mControlFlow = isControlFlowChange;
-						}
+						GrapaRuleEvent* oldResult = result;
+						u8 isControlFlowChange = result->mControlFlow;;
+						result = CopyItem(result);
+						oldResult->CLEAR();
+						delete oldResult;
+						result->mControlFlow = isControlFlowChange;
 						break;
 					}
 				}
