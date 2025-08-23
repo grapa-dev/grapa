@@ -149,22 +149,23 @@ nav:
           - Grammar Design: syntax/grammar_design.md
       - Debugging: debugging.md
       - Execution Pipeline: execution_pipeline_overview.md
-      - Advanced Topics: advanced_topics.md
-      - Advanced Language Features: advanced_language_features.md
-      - Advanced Concurrency and Callbacks: advanced_concurrency_and_callbacks.md
-      - Array-Vector Interoperability: advanced/array_vector_interoperability.md
-      - Multi-Syntax Programming: multi_syntax_programming.md
-      - Language Design with Executable BNF: language_design_with_executable_bnf.md
-      - Isolated Rule Execution: isolated_rule_execution.md
-      - Deep Expert Implementation: deep_expert_implementation_overview.md
-      - XML and LIST Integration: xml_list_integration.md
-      - Unified Dot Notation System: unified_dot_notation.md
-      - Module System: module_system.md
-      - Machine Learning: machine_learning.md
-      - Vector Performance Guide: vector_performance_guide.md
-  - Language Integrations:
-      - SQL Integration: sql_integration.md
-      - PROLOG Integration: prolog_integration.md
+      - Advanced Topics:
+          - Overview: advanced_topics.md
+          - Language Features: advanced_language_features.md
+          - Concurrency and Callbacks: advanced_concurrency_and_callbacks.md
+          - Array-Vector Interoperability: advanced/array_vector_interoperability.md
+          - Multi-Syntax Programming: multi_syntax_programming.md
+          - Language Design with Executable BNF: language_design_with_executable_bnf.md
+          - Isolated Rule Execution: isolated_rule_execution.md
+          - Deep Expert Implementation: deep_expert_implementation_overview.md
+          - XML and LIST Integration: xml_list_integration.md
+          - Unified Dot Notation System: unified_dot_notation.md
+          - Module System: module_system.md
+          - Machine Learning: machine_learning.md
+          - Vector Performance Guide: vector_performance_guide.md
+      - Language Integrations:
+          - SQL Integration: sql_integration.md
+          - PROLOG Integration: prolog_integration.md
   - Guides:
       - Migration Guides:
           - Python: migrations/python_to_grapa_migration.md
