@@ -9843,7 +9843,11 @@ GrapaRuleEvent* GrapaLibraryRuleMapEvent::Run(GrapaScriptExec *vScriptExec, Grap
 		we = (GrapaRuleWorkEvent*)we->Next();
 	}
 	
-	GrapaRuleEvent *retPtr = NULL;
+	bool hasThrow = false;
+	GrapaRuleEvent* retPtr = new GrapaRuleEvent();
+	retPtr->mValue.mToken = GrapaTokenType::LIST;
+	retPtr->vQueue = new GrapaRuleQueue();
+	retPtr->mControlFlow = GrapaControlFlowType::THROW;
 
 	if (result)
 	{
@@ -9858,15 +9862,29 @@ GrapaRuleEvent* GrapaLibraryRuleMapEvent::Run(GrapaScriptExec *vScriptExec, Grap
 					while (we->mResult->vQueue->Head())
 					{
 						GrapaRuleEvent* ev = we->mResult->vQueue->PopHead();
-						if (ev && ev->mControlFlow && !retPtr)
-							retPtr = ev;
+						GrapaRuleEvent* rp = new GrapaRuleEvent();
+						rp->SetNull();
+						retPtr->vQueue->PushTail(rp);
+						if (ev && ev->mControlFlow == GrapaControlFlowType::THROW)
+						{
+							hasThrow = true;
+							rp->vRulePointer = ev;
+							rp->mValue.mToken = GrapaTokenType::PTR;
+						}
 						result->vQueue->PushTail(ev);
 					}
 				}
 				else
 				{
-					if (we && we->mResult->mControlFlow && !retPtr)
-						retPtr = we->mResult;
+					GrapaRuleEvent* rp = new GrapaRuleEvent();
+					rp->SetNull();
+					retPtr->vQueue->PushTail(rp);
+					if (we && we->mResult->mControlFlow == GrapaControlFlowType::THROW)
+					{
+						hasThrow = true;
+						rp->vRulePointer = we->mResult;
+						rp->mValue.mToken = GrapaTokenType::PTR;
+					}
 					if (we->mResult->mValue.mToken == GrapaTokenType::PTR)
 					{
 						result->vQueue->PushTail(vScriptExec->CopyItem(we->mResult));
@@ -9884,13 +9902,35 @@ GrapaRuleEvent* GrapaLibraryRuleMapEvent::Run(GrapaScriptExec *vScriptExec, Grap
 		}
 	}
 
-	if (retPtr && retPtr->mControlFlow==GrapaControlFlowType::THROW)
+	if (hasThrow)
 	{
-		result->vQueue->PopEvent(retPtr);
+		GrapaRuleEvent* rp = retPtr->vQueue->Head();
+		while (rp)
+		{
+			if (rp->vRulePointer)
+			{
+				result->vQueue->PopEvent(rp->vRulePointer);
+				retPtr->vQueue->Push(rp->vRulePointer, rp);
+				retPtr->vQueue->PopEvent(rp);
+				GrapaRuleEvent* rpnext = rp->Next();
+				rp->CLEAR();
+				delete rp;
+				rp = rpnext;
+			}
+			else
+				rp = rp->Next();
+		}
 		result->CLEAR();
 		delete result;
 		result = retPtr;
 	}
+	else
+	{
+		retPtr->CLEAR();
+		delete retPtr;
+		retPtr = NULL;
+	}
+	
 	wq.CLEAR();
 
 	if (delList)
@@ -10010,7 +10050,11 @@ GrapaRuleEvent* GrapaLibraryRuleFilterEvent::Run(GrapaScriptExec *vScriptExec, G
 		we = (GrapaRuleWorkEvent*)we->Next();
 	}
 
-	GrapaRuleWorkEvent* retPtr = NULL;
+	bool hasThrow = false;
+	GrapaRuleEvent* retPtr = new GrapaRuleEvent();
+	retPtr->mValue.mToken = GrapaTokenType::LIST;
+	retPtr->vQueue = new GrapaRuleQueue();
+	retPtr->mControlFlow = GrapaControlFlowType::THROW;
 
 	if (result)
 	{
@@ -10028,8 +10072,6 @@ GrapaRuleEvent* GrapaLibraryRuleFilterEvent::Run(GrapaScriptExec *vScriptExec, G
 					first = first->vQueue->Head();
 					while (qq && first)
 					{
-						if (qq && qq->mControlFlow && !retPtr)
-							retPtr = we;
 						p = first;
 						while (p && p->vRulePointer) p = p->vRulePointer;
 						if (p && p->mValue.mToken == GrapaTokenType::EL)
@@ -10038,14 +10080,24 @@ GrapaRuleEvent* GrapaLibraryRuleFilterEvent::Run(GrapaScriptExec *vScriptExec, G
 						while (rH && rH->mValue.mToken == GrapaTokenType::PTR) rH = rH->vRulePointer;
 						if (rH && !rH->mNull && ((rH->mValue.mLength && rH->mValue.mBytes[0] && rH->mValue.mBytes[0] != '0') || (rH->vQueue && rH->vQueue->mCount)))
 							result->vQueue->PushTail(vScriptExec->CopyItem(p));
+						if (qq && qq->mControlFlow == GrapaControlFlowType::THROW)
+						{
+							hasThrow = true;
+							retPtr->vQueue->PushTail(we->mResult);
+							we->mResult = NULL;
+						}
+						else
+						{
+							GrapaRuleEvent* rp = new GrapaRuleEvent();
+							rp->SetNull();
+							retPtr->vQueue->PushTail(rp);
+						}
 						qq = qq->Next();
 						first = first->Next();
 					}
 				}
 				else
 				{
-					if (we && we->mResult->mControlFlow && !retPtr)
-						retPtr = we;
 					GrapaRuleEvent* p = we->mParam->Head()->vRulePointer;
 					while (p && p->vRulePointer) p = p->vRulePointer;
 					if (p && p->mValue.mToken == GrapaTokenType::EL)
@@ -10054,18 +10106,35 @@ GrapaRuleEvent* GrapaLibraryRuleFilterEvent::Run(GrapaScriptExec *vScriptExec, G
 					while (rH && rH->mValue.mToken == GrapaTokenType::PTR) rH = rH->vRulePointer;
 					if (rH && !rH->mNull && ((rH->mValue.mLength && rH->mValue.mBytes[0] && rH->mValue.mBytes[0] != '0') || (rH->vQueue && rH->vQueue->mCount)))
 						result->vQueue->PushTail(vScriptExec->CopyItem(p));
+					if (we && we->mResult->mControlFlow == GrapaControlFlowType::THROW)
+					{
+						hasThrow = true;
+						retPtr->vQueue->PushTail(we->mResult);
+						we->mResult = NULL;
+					}
+					else
+					{
+						GrapaRuleEvent* rp = new GrapaRuleEvent();
+						rp->SetNull();
+						retPtr->vQueue->PushTail(rp);
+					}
 				}
 			}
 			we = (GrapaRuleWorkEvent*)we->Next();
 		}
+	}
 
-		if (retPtr && retPtr->mResult->mControlFlow == GrapaControlFlowType::THROW)
-		{
-			result->CLEAR();
-			delete result;
-			result = retPtr->mResult;
-			retPtr->mResult = NULL;
-		}
+	if (hasThrow)
+	{
+		result->CLEAR();
+		delete result;
+		result = retPtr;
+	}
+	else
+	{
+		retPtr->CLEAR();
+		delete retPtr;
+		retPtr = NULL;
 	}
 
 	wq.CLEAR();
