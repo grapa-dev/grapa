@@ -10010,7 +10010,7 @@ GrapaRuleEvent* GrapaLibraryRuleFilterEvent::Run(GrapaScriptExec *vScriptExec, G
 		we = (GrapaRuleWorkEvent*)we->Next();
 	}
 
-	GrapaRuleEvent* retPtr = NULL;
+	GrapaRuleWorkEvent* retPtr = NULL;
 
 	if (result)
 	{
@@ -10029,7 +10029,7 @@ GrapaRuleEvent* GrapaLibraryRuleFilterEvent::Run(GrapaScriptExec *vScriptExec, G
 					while (qq && first)
 					{
 						if (qq && qq->mControlFlow && !retPtr)
-							retPtr = qq;
+							retPtr = we;
 						p = first;
 						while (p && p->vRulePointer) p = p->vRulePointer;
 						if (p && p->mValue.mToken == GrapaTokenType::EL)
@@ -10045,7 +10045,7 @@ GrapaRuleEvent* GrapaLibraryRuleFilterEvent::Run(GrapaScriptExec *vScriptExec, G
 				else
 				{
 					if (we && we->mResult->mControlFlow && !retPtr)
-						retPtr = we->mResult;
+						retPtr = we;
 					GrapaRuleEvent* p = we->mParam->Head()->vRulePointer;
 					while (p && p->vRulePointer) p = p->vRulePointer;
 					if (p && p->mValue.mToken == GrapaTokenType::EL)
@@ -10058,14 +10058,14 @@ GrapaRuleEvent* GrapaLibraryRuleFilterEvent::Run(GrapaScriptExec *vScriptExec, G
 			}
 			we = (GrapaRuleWorkEvent*)we->Next();
 		}
-	}
 
-	if (retPtr && retPtr->mControlFlow == GrapaControlFlowType::THROW)
-	{
-		result->vQueue->PopEvent(retPtr);
-		result->CLEAR();
-		delete result;
-		result = retPtr;
+		if (retPtr && retPtr->mResult->mControlFlow == GrapaControlFlowType::THROW)
+		{
+			result->CLEAR();
+			delete result;
+			result = retPtr->mResult;
+			retPtr->mResult = NULL;
+		}
 	}
 
 	wq.CLEAR();
