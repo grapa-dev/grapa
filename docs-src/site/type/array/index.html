@@ -808,6 +808,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#mathematical-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Mathematical Operations
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#array-operations" class="md-nav__link">
     <span class="md-ellipsis">
       Array Operations
@@ -2589,6 +2598,29 @@
   
   
     <li class="md-nav__item">
+      <a href="../../advanced/array_vector_interoperability/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Array-Vector Interoperability
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../multi_syntax_programming/" class="md-nav__link">
         
   
@@ -3692,6 +3724,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#mathematical-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Mathematical Operations
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#array-operations" class="md-nav__link">
     <span class="md-ellipsis">
       Array Operations
@@ -3879,7 +3920,8 @@
 <h1 id="array">$ARRAY</h1>
 <p>References:
 - <a href="../list/">$LIST object</a>
-- <a href="../vector/">$VECTOR object</a></p>
+- <a href="../vector/">$VECTOR object</a>
+- <a href="../../advanced/array_vector_interoperability/">Array-Vector Interoperability</a></p>
 <p><strong><code>$ARRAY</code></strong> = <code>[]</code> syntax (positional, no names, indexed by position)</p>
 <p>A positional array that stores values without named keys. Elements are accessed by their position (index) rather than by name. This follows traditional C-style array terminology where arrays are indexed collections.</p>
 <h3 id="array-vs-list-comparison">$ARRAY vs $LIST Comparison</h3>
@@ -3939,6 +3981,24 @@
 {&quot;err&quot;:-1}
 </code></pre></div></p>
 <p>There isn't currently built in support for searching for an $ARRAY or $LIST item within an $ARRAY. Currently, this would require an itterator to scan and compare, or the use of a hash of the contents as a key.</p>
+<h3 id="mathematical-operations">Mathematical Operations</h3>
+<p>Arrays automatically convert to vectors for mathematical operations, then convert back to arrays:</p>
+<div class="highlight"><pre><span></span><code>/* Arithmetic operations (uses vector math internally) */
+[1, 2, 3] + [4, 5, 6]         /* [5, 7, 9] */
+[1, 2, 3, 4] * 2              /* [2, 4, 6, 8] */
+[2, 4, 6] / 2                 /* [1, 2, 3] */
+
+/* Function application using operators */
+[1, 2, 3, 4] * [op(x){x*2}]   /* [2, 4, 6, 8] */
+[1, 2, 3] + [op(x){x+10}]     /* [11, 12, 13] */
+
+/* Matrix operations (converted to vectors internally) */
+[1, 2, 3].dot([4, 5, 6])      /* 32 (dot product) */
+[[1,2],[3,4]].reshape([4,1])  /* [[1],[2],[3],[4]] */
+</code></pre></div>
+<blockquote>
+<p><strong>Note:</strong> See <a href="../../advanced/array_vector_interoperability/">Array-Vector Interoperability</a> for detailed information about automatic conversions.</p>
+</blockquote>
 <h3 id="array-operations">Array Operations</h3>
 <h4 id="assignment-operations">Assignment Operations (<code>=</code>)</h4>
 <div class="highlight"><pre><span></span><code>/* Direct element assignment */

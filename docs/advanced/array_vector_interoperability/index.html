@@ -8,13 +8,13 @@
       
       
       
-        <link rel="canonical" href="https://grapa-dev.github.io/grapa/type/list/">
+        <link rel="canonical" href="https://grapa-dev.github.io/grapa/advanced/array_vector_interoperability/">
       
       
-        <link rel="prev" href="../int/">
+        <link rel="prev" href="../../advanced_concurrency_and_callbacks/">
       
       
-        <link rel="next" href="../obj_methods/">
+        <link rel="next" href="../../multi_syntax_programming/">
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
@@ -22,7 +22,7 @@
     
     
       
-        <title>List - Grapa Documentation</title>
+        <title>Array-Vector Interoperability - Grapa Documentation</title>
       
     
     
@@ -74,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#list" class="md-skip">
+        <a href="#array-and-vector-interoperability" class="md-skip">
           Skip to content
         </a>
       
@@ -108,7 +108,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              List
+              Array-Vector Interoperability
             
           </span>
         </div>
@@ -703,8 +703,6 @@
                 
   
   
-    
-  
   
   
     
@@ -715,11 +713,11 @@
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_2" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_2" >
         
           
           <label class="md-nav__link" for="__nav_5_2" id="__nav_5_2_label" tabindex="0">
@@ -735,7 +733,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_2_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_2_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_5_2">
             <span class="md-nav__icon md-icon"></span>
             Data Types
@@ -749,7 +747,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../array/" class="md-nav__link">
+      <a href="../../type/array/" class="md-nav__link">
         
   
   
@@ -772,7 +770,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../bool/" class="md-nav__link">
+      <a href="../../type/bool/" class="md-nav__link">
         
   
   
@@ -795,7 +793,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../code/" class="md-nav__link">
+      <a href="../../type/code/" class="md-nav__link">
         
   
   
@@ -818,7 +816,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../err/" class="md-nav__link">
+      <a href="../../type/err/" class="md-nav__link">
         
   
   
@@ -841,7 +839,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../float/" class="md-nav__link">
+      <a href="../../type/float/" class="md-nav__link">
         
   
   
@@ -864,7 +862,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../id/" class="md-nav__link">
+      <a href="../../type/id/" class="md-nav__link">
         
   
   
@@ -887,7 +885,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../int/" class="md-nav__link">
+      <a href="../../type/int/" class="md-nav__link">
         
   
   
@@ -907,32 +905,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    List
-    
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../type/list/" class="md-nav__link">
         
   
   
@@ -943,188 +919,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#list-vs-array-comparison" class="md-nav__link">
-    <span class="md-ellipsis">
-      $LIST vs $ARRAY Comparison
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#advanced-list-operations" class="md-nav__link">
-    <span class="md-ellipsis">
-      Advanced List Operations
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Advanced List Operations">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#assignment-operations" class="md-nav__link">
-    <span class="md-ellipsis">
-      Assignment Operations (=)
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#addition-operations" class="md-nav__link">
-    <span class="md-ellipsis">
-      Addition Operations (+=)
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#concatenation-operations" class="md-nav__link">
-    <span class="md-ellipsis">
-      Concatenation Operations (++=)
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#removal-operations-" class="md-nav__link">
-    <span class="md-ellipsis">
-      Removal Operations (-=)
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#unsupported-operations" class="md-nav__link">
-    <span class="md-ellipsis">
-      Unsupported Operations
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#concatenation-and-extension" class="md-nav__link">
-    <span class="md-ellipsis">
-      Concatenation and Extension
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#list-rotation" class="md-nav__link">
-    <span class="md-ellipsis">
-      List Rotation
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="List Rotation">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#left-rotation-lrot" class="md-nav__link">
-    <span class="md-ellipsis">
-      Left Rotation (.lrot())
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#right-rotation-rrot" class="md-nav__link">
-    <span class="md-ellipsis">
-      Right Rotation (.rrot())
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#advanced-element-finding-findall" class="md-nav__link">
-    <span class="md-ellipsis">
-      Advanced Element Finding (.findall())
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Advanced Element Finding (.findall())">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#basic-queries" class="md-nav__link">
-    <span class="md-ellipsis">
-      Basic Queries
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#complex-nested-queries" class="md-nav__link">
-    <span class="md-ellipsis">
-      Complex Nested Queries
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#logical-operations" class="md-nav__link">
-    <span class="md-ellipsis">
-      Logical Operations
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#working-with-results" class="md-nav__link">
-    <span class="md-ellipsis">
-      Working with Results
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1137,7 +931,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../obj_methods/" class="md-nav__link">
+      <a href="../../type/obj_methods/" class="md-nav__link">
         
   
   
@@ -1160,7 +954,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../op/" class="md-nav__link">
+      <a href="../../type/op/" class="md-nav__link">
         
   
   
@@ -1183,7 +977,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../raw/" class="md-nav__link">
+      <a href="../../type/raw/" class="md-nav__link">
         
   
   
@@ -1206,7 +1000,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../rule/" class="md-nav__link">
+      <a href="../../type/rule/" class="md-nav__link">
         
   
   
@@ -1229,7 +1023,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../str/" class="md-nav__link">
+      <a href="../../type/str/" class="md-nav__link">
         
   
   
@@ -1252,7 +1046,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../sysid/" class="md-nav__link">
+      <a href="../../type/sysid/" class="md-nav__link">
         
   
   
@@ -1275,7 +1069,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../sysint/" class="md-nav__link">
+      <a href="../../type/sysint/" class="md-nav__link">
         
   
   
@@ -1298,7 +1092,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../sysstr/" class="md-nav__link">
+      <a href="../../type/sysstr/" class="md-nav__link">
         
   
   
@@ -1321,7 +1115,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../table/" class="md-nav__link">
+      <a href="../../type/table/" class="md-nav__link">
         
   
   
@@ -1344,7 +1138,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../tag/" class="md-nav__link">
+      <a href="../../type/tag/" class="md-nav__link">
         
   
   
@@ -1367,7 +1161,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../time/" class="md-nav__link">
+      <a href="../../type/time/" class="md-nav__link">
         
   
   
@@ -1390,7 +1184,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../tuple/" class="md-nav__link">
+      <a href="../../type/tuple/" class="md-nav__link">
         
   
   
@@ -1413,7 +1207,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../vector/" class="md-nav__link">
+      <a href="../../type/vector/" class="md-nav__link">
         
   
   
@@ -1436,7 +1230,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../widget/" class="md-nav__link">
+      <a href="../../type/widget/" class="md-nav__link">
         
   
   
@@ -1459,7 +1253,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../widget/attributes/" class="md-nav__link">
+      <a href="../../type/widget/attributes/" class="md-nav__link">
         
   
   
@@ -1482,7 +1276,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../xml/" class="md-nav__link">
+      <a href="../../type/xml/" class="md-nav__link">
         
   
   
@@ -2586,10 +2380,32 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../../advanced/array_vector_interoperability/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Array-Vector Interoperability
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -2600,6 +2416,236 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      Overview
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#automatic-conversions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Automatic Conversions
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Automatic Conversions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#array-to-vector-conversions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Array to Vector Conversions
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#vector-to-array-conversions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Vector to Array Conversions
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#function-application" class="md-nav__link">
+    <span class="md-ellipsis">
+      Function Application
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Function Application">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#array-function-application" class="md-nav__link">
+    <span class="md-ellipsis">
+      Array Function Application
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#vector-function-application" class="md-nav__link">
+    <span class="md-ellipsis">
+      Vector Function Application
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#advanced-vector-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Advanced Vector Operations
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Advanced Vector Operations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#custom-sorting" class="md-nav__link">
+    <span class="md-ellipsis">
+      Custom Sorting
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#smart-vector-creation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Smart Vector Creation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#seamless-type-conversion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Seamless Type Conversion
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#implementation-details-for-users" class="md-nav__link">
+    <span class="md-ellipsis">
+      Implementation Details for Users
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Implementation Details for Users">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#performance-considerations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Performance Considerations
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#when-to-use-each-type" class="md-nav__link">
+    <span class="md-ellipsis">
+      When to Use Each Type
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#method-availability" class="md-nav__link">
+    <span class="md-ellipsis">
+      Method Availability
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Method Availability">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#methods-that-trigger-conversions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Methods That Trigger Conversions
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#native-methods" class="md-nav__link">
+    <span class="md-ellipsis">
+      Native Methods
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#best-practices" class="md-nav__link">
+    <span class="md-ellipsis">
+      Best Practices
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#error-handling" class="md-nav__link">
+    <span class="md-ellipsis">
+      Error Handling
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#see-also" class="md-nav__link">
+    <span class="md-ellipsis">
+      See Also
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -3706,64 +3752,37 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#list-vs-array-comparison" class="md-nav__link">
+  <a href="#overview" class="md-nav__link">
     <span class="md-ellipsis">
-      $LIST vs $ARRAY Comparison
+      Overview
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#advanced-list-operations" class="md-nav__link">
+  <a href="#automatic-conversions" class="md-nav__link">
     <span class="md-ellipsis">
-      Advanced List Operations
+      Automatic Conversions
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Advanced List Operations">
+    <nav class="md-nav" aria-label="Automatic Conversions">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#assignment-operations" class="md-nav__link">
+  <a href="#array-to-vector-conversions" class="md-nav__link">
     <span class="md-ellipsis">
-      Assignment Operations (=)
+      Array to Vector Conversions
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#addition-operations" class="md-nav__link">
+  <a href="#vector-to-array-conversions" class="md-nav__link">
     <span class="md-ellipsis">
-      Addition Operations (+=)
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#concatenation-operations" class="md-nav__link">
-    <span class="md-ellipsis">
-      Concatenation Operations (++=)
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#removal-operations-" class="md-nav__link">
-    <span class="md-ellipsis">
-      Removal Operations (-=)
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#unsupported-operations" class="md-nav__link">
-    <span class="md-ellipsis">
-      Unsupported Operations
+      Vector to Array Conversions
     </span>
   </a>
   
@@ -3775,37 +3794,103 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#concatenation-and-extension" class="md-nav__link">
+  <a href="#function-application" class="md-nav__link">
     <span class="md-ellipsis">
-      Concatenation and Extension
+      Function Application
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="Function Application">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#array-function-application" class="md-nav__link">
+    <span class="md-ellipsis">
+      Array Function Application
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#vector-function-application" class="md-nav__link">
+    <span class="md-ellipsis">
+      Vector Function Application
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#advanced-vector-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Advanced Vector Operations
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Advanced Vector Operations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#custom-sorting" class="md-nav__link">
+    <span class="md-ellipsis">
+      Custom Sorting
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#smart-vector-creation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Smart Vector Creation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#seamless-type-conversion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Seamless Type Conversion
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#list-rotation" class="md-nav__link">
+  <a href="#implementation-details-for-users" class="md-nav__link">
     <span class="md-ellipsis">
-      List Rotation
+      Implementation Details for Users
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="List Rotation">
+    <nav class="md-nav" aria-label="Implementation Details for Users">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#left-rotation-lrot" class="md-nav__link">
+  <a href="#performance-considerations" class="md-nav__link">
     <span class="md-ellipsis">
-      Left Rotation (.lrot())
+      Performance Considerations
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#right-rotation-rrot" class="md-nav__link">
+  <a href="#when-to-use-each-type" class="md-nav__link">
     <span class="md-ellipsis">
-      Right Rotation (.rrot())
+      When to Use Each Type
     </span>
   </a>
   
@@ -3817,46 +3902,28 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#advanced-element-finding-findall" class="md-nav__link">
+  <a href="#method-availability" class="md-nav__link">
     <span class="md-ellipsis">
-      Advanced Element Finding (.findall())
+      Method Availability
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Advanced Element Finding (.findall())">
+    <nav class="md-nav" aria-label="Method Availability">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#basic-queries" class="md-nav__link">
+  <a href="#methods-that-trigger-conversions" class="md-nav__link">
     <span class="md-ellipsis">
-      Basic Queries
+      Methods That Trigger Conversions
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#complex-nested-queries" class="md-nav__link">
+  <a href="#native-methods" class="md-nav__link">
     <span class="md-ellipsis">
-      Complex Nested Queries
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#logical-operations" class="md-nav__link">
-    <span class="md-ellipsis">
-      Logical Operations
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#working-with-results" class="md-nav__link">
-    <span class="md-ellipsis">
-      Working with Results
+      Native Methods
     </span>
   </a>
   
@@ -3864,6 +3931,33 @@
         
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#best-practices" class="md-nav__link">
+    <span class="md-ellipsis">
+      Best Practices
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#error-handling" class="md-nav__link">
+    <span class="md-ellipsis">
+      Error Handling
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#see-also" class="md-nav__link">
+    <span class="md-ellipsis">
+      See Also
+    </span>
+  </a>
   
 </li>
       
@@ -3883,242 +3977,208 @@
 
 
 
-<h1 id="list">$LIST</h1>
-<p>References:</p>
-<p><strong><code>$LIST</code></strong> = <code>{}</code> syntax (associative, with names/keys)</p>
-<p>An associative list that stores key-value pairs. Elements are accessed by their names (keys) rather than by position. This follows traditional terminology where lists are associative collections with named entries.</p>
-<h3 id="list-vs-array-comparison">$LIST vs $ARRAY Comparison</h3>
+<h1 id="array-and-vector-interoperability">Array and Vector Interoperability</h1>
+<p>Grapa provides seamless interoperability between <code>$ARRAY</code> and <code>$VECTOR</code> types, automatically converting between them to leverage the best capabilities of each type while maintaining intuitive user behavior.</p>
+<h2 id="overview">Overview</h2>
+<p>While <code>$ARRAY</code> and <code>$VECTOR</code> are distinct types in Grapa, they work together transparently:</p>
+<ul>
+<li><strong><code>$ARRAY</code></strong>: General-purpose collections with flexible indexing and iteration</li>
+<li><strong><code>$VECTOR</code></strong>: Mathematical structures optimized for linear algebra operations</li>
+</ul>
+<p>The Grapa runtime automatically converts between these types when needed, allowing you to use mathematical operations on arrays and array-like operations on vectors without explicit conversion.</p>
+<h2 id="automatic-conversions">Automatic Conversions</h2>
+<h3 id="array-to-vector-conversions">Array to Vector Conversions</h3>
+<p>Arrays are automatically converted to vectors when:</p>
+<ol>
+<li><strong>Mathematical Operations</strong>: Arithmetic operators (<code>+</code>, <code>-</code>, <code>*</code>, <code>/</code>, <code>^</code>)</li>
+<li><strong>Function Application</strong>: Using operators with functions (e.g., <code>[1,2,3] * [op(x){x*2}]</code>)</li>
+<li><strong>Matrix Operations</strong>: Linear algebra methods like <code>.dot()</code>, <code>.solve()</code>, etc.</li>
+</ol>
+<div class="highlight"><pre><span></span><code>// These all trigger ARRAY → VECTOR conversion internally
+[1,2,3,4] * 2                    // Scalar multiplication
+[1,2,3] + [4,5,6]               // Element-wise addition
+[1,2,3,4] * [op(x){x*2}]        // Function application
+[1,2,3].dot([4,5,6])            // Dot product
+</code></pre></div>
+<h3 id="vector-to-array-conversions">Vector to Array Conversions</h3>
+<p>Vectors are converted back to arrays when:</p>
+<ol>
+<li><strong>Method Results</strong>: Many vector methods return array results for consistency</li>
+<li><strong>Explicit Conversion</strong>: Using the <code>.array()</code> method</li>
+<li><strong>User Expectations</strong>: Operations that users expect to return arrays</li>
+</ol>
+<div class="highlight"><pre><span></span><code>vector = #[1,2,3,4]#            // Create vector
+array = vector.array()          // Explicit conversion
+reshaped = [1,2,3,4].reshape([2,2])  // Returns array, not vector
+</code></pre></div>
+<h2 id="function-application">Function Application</h2>
+<p>One of the most powerful features is function application using operators:</p>
+<h3 id="array-function-application">Array Function Application</h3>
+<div class="highlight"><pre><span></span><code>// Apply function to each element
+[1,2,3,4] * [op(x){x*2}]        // Result: [2,4,6,8]
+[1,2,3,4] + [op(x){x+10}]       // Result: [11,12,13,14]
+[2,4,6,8] / [op(x){x/2}]        // Result: [1,2,3,4]
+
+// More complex functions
+numbers = [1,2,3,4,5]
+squares = numbers * [op(x){x*x}] // Result: [1,4,9,16,25]
+
+// Conditional operations
+data = [1,-2,3,-4,5]
+abs_values = data * [op(x){x &lt; 0 ? -x : x}] // Result: [1,2,3,4,5]
+</code></pre></div>
+<h3 id="vector-function-application">Vector Function Application</h3>
+<p>Vectors support the same function application as arrays:</p>
+<div class="highlight"><pre><span></span><code>vector = #[1,2,3,4]#
+result = vector * [op(x){x*3}]   // Each element multiplied by 3
+</code></pre></div>
+<h3 id="advanced-vector-operations">Advanced Vector Operations</h3>
+<p>Vectors support additional advanced operations that work seamlessly with functions:</p>
+<h4 id="custom-sorting">Custom Sorting</h4>
+<div class="highlight"><pre><span></span><code>// Custom comparison functions for flexible sorting
+#[3,1,2]#.sort(op(a,b){a-b})     // Sort ascending
+#[3,1,2]#.sort(op(a,b){b-a})     // Sort descending
+
+// Complex sorting criteria
+names = #[&quot;Alice&quot;, &quot;bob&quot;, &quot;Charlie&quot;]#
+names.sort(op(a,b){a.upper().cmp(b.upper())})  // Case-insensitive sort
+</code></pre></div>
+<h4 id="smart-vector-creation">Smart Vector Creation</h4>
+<div class="highlight"><pre><span></span><code>// Vector creation from various sources
+&quot;1,2,3&quot;.vector()                 // From comma-separated string
+[1,2,3].vector()                 // From array
+#[1,2,3]#                        // From existing vector
+
+// Handles complex expressions during creation
+$vector(&quot;1+2,3*4,5/2&quot;)          // Evaluates: #[3,12,2.5]#
+</code></pre></div>
+<h4 id="seamless-type-conversion">Seamless Type Conversion</h4>
+<div class="highlight"><pre><span></span><code>// Automatic conversion maintains functionality
+array_data = [1,2,3,4]
+vector_result = array_data * [op(x){x*2}]  // Works transparently
+
+// Explicit conversions when needed
+vector = [1,2,3].vector()        // Array to vector
+array = #[1,2,3]#.array()        // Vector to array
+</code></pre></div>
+<h2 id="implementation-details-for-users">Implementation Details for Users</h2>
+<h3 id="performance-considerations">Performance Considerations</h3>
+<ol>
+<li><strong>Conversion Overhead</strong>: While automatic, conversions have computational cost</li>
+<li><strong>Memory Usage</strong>: Temporary vectors/arrays are created during conversion</li>
+<li><strong>Optimization</strong>: Grapa optimizes common patterns to minimize conversions</li>
+</ol>
+<h3 id="when-to-use-each-type">When to Use Each Type</h3>
+<p><strong>Use <code>$ARRAY</code> when:</strong>
+- General data manipulation and iteration
+- Mixed data types
+- Building collections dynamically
+- Interfacing with JSON/XML data</p>
+<p><strong>Use <code>$VECTOR</code> when:</strong>
+- Mathematical computations
+- Linear algebra operations
+- Large numerical datasets
+- Performance-critical mathematical code</p>
+<div class="highlight"><pre><span></span><code>// Array for general data
+mixed_data = [&quot;name&quot;, 42, 3.14, true]
+
+// Vector for mathematics  
+matrix = #[[1,2],[3,4]]#
+result = matrix.inv()  // Matrix inverse
+</code></pre></div>
+<h2 id="method-availability">Method Availability</h2>
+<h3 id="methods-that-trigger-conversions">Methods That Trigger Conversions</h3>
 <table>
 <thead>
 <tr>
-<th>Feature</th>
-<th>$LIST (<code>{}</code>)</th>
-<th>$ARRAY (<code>[]</code>)</th>
+<th>Method</th>
+<th>Input Type</th>
+<th>Conversion</th>
+<th>Output Type</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><strong>Syntax</strong></td>
-<td><code>{a:1, b:2, c:3}</code></td>
-<td><code>[1, 2, 3]</code></td>
+<td><code>.reshape()</code></td>
+<td><code>$ARRAY</code></td>
+<td>→ <code>$VECTOR</code> →</td>
+<td><code>$ARRAY</code></td>
 </tr>
 <tr>
-<td><strong>Access</strong></td>
-<td><code>list.a</code> or <code>list["a"]</code></td>
-<td><code>array[0]</code></td>
+<td><code>.triu()</code></td>
+<td><code>$ARRAY</code></td>
+<td>→ <code>$VECTOR</code> →</td>
+<td><code>$ARRAY</code></td>
 </tr>
 <tr>
-<td><strong>Type</strong></td>
-<td>Associative</td>
-<td>Positional</td>
+<td><code>.tril()</code></td>
+<td><code>$ARRAY</code></td>
+<td>→ <code>$VECTOR</code> →</td>
+<td><code>$ARRAY</code></td>
 </tr>
 <tr>
-<td><strong>Keys</strong></td>
-<td>Named keys</td>
-<td>Numeric indices</td>
+<td><code>.dot()</code></td>
+<td><code>$ARRAY</code></td>
+<td>→ <code>$VECTOR</code> →</td>
+<td><code>$ARRAY</code></td>
 </tr>
 <tr>
-<td><strong>Order</strong></td>
-<td>Key-based</td>
-<td>Position-based</td>
+<td>Arithmetic ops</td>
+<td><code>$ARRAY</code></td>
+<td>→ <code>$VECTOR</code> →</td>
+<td><code>$ARRAY</code></td>
+</tr>
+<tr>
+<td><code>.array()</code></td>
+<td><code>$VECTOR</code></td>
+<td>→</td>
+<td><code>$ARRAY</code></td>
 </tr>
 </tbody>
 </table>
-<p><strong>Note:</strong> This differs from some other languages where <code>[]</code> is called a "list" and <code>{}</code> is called a "dictionary" or "object". Grapa follows traditional C terminology. </p>
-<table>
-<thead>
-<tr>
-<th>Action</th>
-<th>Example</th>
-<th>Result</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Create</td>
-<td>{a:1, b:2, c:3}</td>
-<td>{"a":1,"b":2,"c":3}</td>
-</tr>
-<tr>
-<td>Access</td>
-<td>{a:1, b:2, c:3}.a</br>{a:1, b:2, c:3}[1]</br>{a:1, b:2, c:3}[-1]</td>
-<td>1</br>1</br>3</td>
-</tr>
-<tr>
-<td>Assign</td>
-<td>x = {a:1, b:2, c:3};</br>x.b = "x";</br>x["b"] = "by";</br>x[-2] = 1234;</td>
-<td></br></br>{"a":1,"b":"x","c":3}</br>{"a":1,"b":"by","c":3}</br>{"a":1,"b":1234,"c":3}</td>
-</tr>
-<tr>
-<td>Append</td>
-<td>x = {a:1, b:2};</br>x += (c:3);</br>x;</td>
-<td></br></br>{"a":1, "b":2, "c":3}</td>
-</tr>
-<tr>
-<td>Append</td>
-<td>x = {a:1, b:2};</br>x ++= {c:3,d:4};</br>x;</td>
-<td></br></br>{"a":1, "b":2, "c":3, "d":4}</td>
-</tr>
-<tr>
-<td>Insert</td>
-<td>x = {a:1, b:2};</br>x += (c:3) x[0];</br>x;</td>
-<td></br></br>{"c":3,"a":1,"b":2}</td>
-</tr>
-<tr>
-<td>Count</td>
-<td>{a:1, b:2, c:3}.len()</td>
-<td>3</td>
-</tr>
-<tr>
-<td>Remove</td>
-<td>x = {a:1, b:2, c:3};</br>x -= x[1];</br>x;</td>
-<td></br></br>{"a":1, "c":3}</td>
-</tr>
-</tbody>
-</table>
-<h3 id="advanced-list-operations">Advanced List Operations</h3>
-<h4 id="assignment-operations">Assignment Operations (<code>=</code>)</h4>
-<div class="highlight"><pre><span></span><code>/* Direct property assignment */
-list = {a:1, b:2, c:3};
-list.b = &quot;x&quot;;             /* {&quot;a&quot;:1,&quot;b&quot;:&quot;x&quot;,&quot;c&quot;:3} */
-list[&quot;b&quot;] = &quot;by&quot;;         /* {&quot;a&quot;:1,&quot;b&quot;:&quot;by&quot;,&quot;c&quot;:3} */
+<h3 id="native-methods">Native Methods</h3>
+<p>Some methods work directly without conversion:</p>
+<div class="highlight"><pre><span></span><code>// Array methods (no conversion)
+[1,2,3].len()           // Length
+[1,2,3].map(op(x){x*2}) // Map function
 
-/* Assignment by index */
-list[1] = 55;             /* {&quot;a&quot;:1,&quot;b&quot;:55,&quot;c&quot;:3} */
-
-/* Assignment by negative index */
-list[-2] = 1234;          /* {&quot;a&quot;:1,&quot;b&quot;:1234,&quot;c&quot;:3} */
-
-/* Compound assignment on accessed elements */
-list.b += &quot;dee&quot;;          /* {&quot;a&quot;:1,&quot;b&quot;:&quot;bydee&quot;,&quot;c&quot;:3} */
-list[0] += 8;             /* {&quot;a&quot;:9,&quot;b&quot;:&quot;bydee&quot;,&quot;c&quot;:3} */
+// Vector methods (no conversion)  
+#[1,2,3]#.shape()       // Shape information
+#[1,2,3]#.norm()        // Vector norm
 </code></pre></div>
-<h4 id="addition-operations">Addition Operations (<code>+=</code>)</h4>
-<div class="highlight"><pre><span></span><code>/* Add single key-value pair */
-list = {a:1, b:2};
-list += (c:3);           /* {&quot;a&quot;:1,&quot;b&quot;:2,&quot;c&quot;:3} */
+<h2 id="best-practices">Best Practices</h2>
+<ol>
+<li><strong>Let Grapa Handle Conversions</strong>: Don't manually convert unless necessary</li>
+<li><strong>Use Appropriate Types</strong>: Start with the type that matches your use case</li>
+<li><strong>Chain Operations</strong>: Multiple operations on the same data type are more efficient</li>
+<li><strong>Function Application</strong>: Leverage operator-based function application for clean code</li>
+</ol>
+<div class="highlight"><pre><span></span><code>// Good: Let Grapa handle conversions
+data = [1,2,3,4,5]
+processed = data * [op(x){x*2}] + [op(x){x+1}]
 
-/* Add multiple key-value pairs */
-list += {d:4, e:5};      /* {&quot;a&quot;:1,&quot;b&quot;:2,&quot;c&quot;:3,&quot;d&quot;:4,&quot;e&quot;:5} */
+// Good: Use appropriate starting type
+matrix = #[[1,2],[3,4]]#  // Start with vector for math
+result = matrix.inv().det()
 
-/* Insert at specific position */
-list += (f:6) list[0];   /* {&quot;f&quot;:6,&quot;a&quot;:1,&quot;b&quot;:2,&quot;c&quot;:3,&quot;d&quot;:4,&quot;e&quot;:5} */
+// Less efficient: Manual conversions
+data = [1,2,3]
+vector = $vector(data)    // Unnecessary explicit conversion
+result = vector.norm()
 </code></pre></div>
-<h4 id="concatenation-operations">Concatenation Operations (<code>++=</code>)</h4>
-<div class="highlight"><pre><span></span><code>/* Concatenate two lists */
-list1 = {a:1, b:2};
-list2 = {c:3, d:4};
-list1 ++= list2;         /* {&quot;a&quot;:1,&quot;b&quot;:2,&quot;c&quot;:3,&quot;d&quot;:4} */
+<h2 id="error-handling">Error Handling</h2>
+<p>Conversion failures result in <code>$ERR</code> objects:</p>
+<div class="highlight"><pre><span></span><code>// Invalid vector operations return errors
+result = [1,2,3].inv()  // Error: not a square matrix
+invalid = [&quot;a&quot;,&quot;b&quot;].dot([1,2])  // Error: non-numeric data
 </code></pre></div>
-<h4 id="removal-operations-">Removal Operations (<code>-=</code>)</h4>
-<div class="highlight"><pre><span></span><code>list = {a:1, b:2, c:3, d:4};
-
-/* Remove by key reference */
-list -= list.c;          /* {&quot;a&quot;:1,&quot;b&quot;:2,&quot;d&quot;:4} */
-
-/* Remove by key string */
-list -= list[&quot;b&quot;];       /* {&quot;a&quot;:1,&quot;d&quot;:4} */
-
-/* Remove by positive index */
-list -= list[0];         /* {&quot;d&quot;:4} */
-
-/* Remove by negative index */
-list -= list[-1];        /* {} */
-</code></pre></div>
-<h4 id="unsupported-operations">Unsupported Operations</h4>
-<div class="highlight"><pre><span></span><code>list = {a:1, b:2, c:3};
-
-/* These do NOT work: */
-list -= 2;               /* No effect - value-based removal not supported */
-list -= &quot;b&quot;;             /* No effect - direct string removal not supported */
-list -= list.b;          /* Error - trying to remove value, not key */
-</code></pre></div>
-<h3 id="concatenation-and-extension">Concatenation and Extension</h3>
-<div class="highlight"><pre><span></span><code>list = {a:1, b:2, c:3};
-
-/* Add elements */
-list += {d:4};                            /* {a:1, b:2, c:3, d:4} */
-
-/* Extend with multiple elements */
-list ++= {e:5, f:6};                      /* {a:1, b:2, c:3, d:4, e:5, f:6} */
-
-/* Insert at specific position */
-list ++= {g:7}, 2;                        /* Insert at position 2 */
-
-/* Remove elements */
-list -= {b:2};                            /* Remove element with key &quot;b&quot; */
-</code></pre></div>
-<h3 id="list-rotation">List Rotation</h3>
-<p>Lists support left and right rotation operations for reordering key-value pairs:</p>
-<h4 id="left-rotation-lrot">Left Rotation (.lrot())</h4>
-<div class="highlight"><pre><span></span><code>list = {a:1, b:2, c:3, d:4};
-
-list.lrot();                              /* {b:2, c:3, d:4, a:1} */
-list.lrot(2);                             /* {c:3, d:4, a:1, b:2} */
-list.lrot(0);                             /* {a:1, b:2, c:3, d:4} (no change) */
-</code></pre></div>
-<h4 id="right-rotation-rrot">Right Rotation (.rrot())</h4>
-<div class="highlight"><pre><span></span><code>list = {a:1, b:2, c:3, d:4};
-
-list.rrot();                              /* {d:4, a:1, b:2, c:3} */
-list.rrot(2);                             /* {c:3, d:4, a:1, b:2} */
-list.rrot(0);                             /* {a:1, b:2, c:3, d:4} (no change) */
-</code></pre></div>
-<blockquote>
-<p><strong>Note:</strong> Rotation methods preserve all key-value pairs while reordering them. For empty lists or single-element lists, rotation has no effect.</p>
-</blockquote>
-<h3 id="advanced-element-finding-findall">Advanced Element Finding (.findall())</h3>
-<p>The <code>.findall()</code> method provides <strong>enterprise-grade querying capabilities</strong> for LIST structures with support for complex patterns and logical operations.</p>
-<h4 id="basic-queries">Basic Queries</h4>
-<div class="highlight"><pre><span></span><code>data = {name:&quot;Alice&quot;, age:30, city:&quot;New York&quot;};
-
-/* Find by property existence */
-data.findall({has:{name:&quot;age&quot;}})          /* Returns: {&quot;data&quot;:{&quot;name&quot;:&quot;Alice&quot;,&quot;age&quot;:30}} */
-
-/* Find by property value */
-data.findall({has:{name:&quot;name&quot;, value:&quot;Alice&quot;}}) /* Returns: {&quot;data&quot;:{&quot;name&quot;:&quot;Alice&quot;,&quot;age&quot;:30}} */
-
-/* Find by value only */
-data.findall({has:{value:&quot;Alice&quot;}})       /* Returns: {&quot;data&quot;:{&quot;name&quot;:&quot;Alice&quot;,&quot;age&quot;:30}} */
-</code></pre></div>
-<h4 id="complex-nested-queries">Complex Nested Queries</h4>
-<div class="highlight"><pre><span></span><code>nested = {user:{name:&quot;Alice&quot;, age:30}, admin:{name:&quot;Bob&quot;, age:25}};
-
-/* Find nested objects */
-nested.findall({has:{name:&quot;user&quot;}})       /* Returns: {&quot;nested&quot;:{&quot;user&quot;:{&quot;name&quot;:&quot;Alice&quot;,&quot;age&quot;:30},&quot;admin&quot;:{&quot;name&quot;:&quot;Bob&quot;,&quot;age&quot;:25}}} */
-
-/* Find with nested criteria */
-nested.findall({has:{name:&quot;user&quot;, has:{name:&quot;name&quot;, value:&quot;Alice&quot;}}}) /* Returns: {&quot;nested&quot;:{&quot;user&quot;:{&quot;name&quot;:&quot;Alice&quot;,&quot;age&quot;:30},&quot;admin&quot;:{&quot;name&quot;:&quot;Bob&quot;,&quot;age&quot;:25}}} */
-
-/* Find with multiple nested criteria */
-nested.findall({has:{name:&quot;user&quot;, has:{name:&quot;age&quot;, value:30}}}) /* Returns: {&quot;nested&quot;:{&quot;user&quot;:{&quot;name&quot;:&quot;Alice&quot;,&quot;age&quot;:30},&quot;admin&quot;:{&quot;name&quot;:&quot;Bob&quot;,&quot;age&quot;:25}}} */
-</code></pre></div>
-<h4 id="logical-operations">Logical Operations</h4>
-<div class="highlight"><pre><span></span><code>data = {user:{name:&quot;Alice&quot;, role:&quot;admin&quot;}, guest:{name:&quot;Bob&quot;, role:&quot;user&quot;}};
-
-/* AND logic */
-data.findall({and:[{has:{name:&quot;user&quot;}}, {has:{name:&quot;user&quot;, has:{name:&quot;role&quot;, value:&quot;admin&quot;}}}]}) /* Returns: {&quot;data&quot;:{&quot;user&quot;:{&quot;name&quot;:&quot;Alice&quot;,&quot;role&quot;:&quot;admin&quot;},&quot;guest&quot;:{&quot;name&quot;:&quot;Bob&quot;,&quot;role&quot;:&quot;user&quot;}}} */
-
-/* OR logic */
-data.findall({or:[{has:{name:&quot;user&quot;}}, {has:{name:&quot;guest&quot;}}]}) /* Returns: {&quot;data&quot;:{&quot;user&quot;:{&quot;name&quot;:&quot;Alice&quot;,&quot;role&quot;:&quot;admin&quot;},&quot;guest&quot;:{&quot;name&quot;:&quot;Bob&quot;,&quot;role&quot;:&quot;user&quot;}}} */
-
-/* NAND logic */
-data.findall({nand:[{has:{name:&quot;user&quot;}}, {has:{name:&quot;user&quot;, has:{name:&quot;role&quot;, value:&quot;user&quot;}}}]}) /* Returns: {&quot;data&quot;:{&quot;user&quot;:{&quot;name&quot;:&quot;Alice&quot;,&quot;role&quot;:&quot;admin&quot;},&quot;guest&quot;:{&quot;name&quot;:&quot;Bob&quot;,&quot;role&quot;:&quot;user&quot;}}} */
-</code></pre></div>
-<h4 id="working-with-results">Working with Results</h4>
-<div class="highlight"><pre><span></span><code>data = {user:{name:&quot;Alice&quot;, age:30}, admin:{name:&quot;Bob&quot;, age:25}};
-
-/* Get all results */
-results = data.findall({has:{name:&quot;user&quot;}});
-results.len()                              /* Returns: 1 */
-
-/* Access individual results */
-first = results[0];                        /* Returns: {&quot;user&quot;:{&quot;name&quot;:&quot;Alice&quot;,&quot;age&quot;:30}} */
-
-/* Access nested properties of results */
-first.user.name                            /* Returns: &quot;Alice&quot; */
-first.user.age                             /* Returns: 30 */
-</code></pre></div>
+<h2 id="see-also">See Also</h2>
+<ul>
+<li><a href="../../type/array/">Array Type Documentation</a></li>
+<li><a href="../../type/vector/">Vector Type Documentation</a></li>
+<li><a href="../math/linear_algebra.md">Mathematical Operations</a></li>
+<li><a href="../patterns/functional_programming.md">Function Application Patterns</a></li>
+</ul>
 
 
 
