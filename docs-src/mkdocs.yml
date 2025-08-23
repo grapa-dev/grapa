@@ -166,6 +166,7 @@ nav:
       - Language Integrations:
           - SQL Integration: sql_integration.md
           - PROLOG Integration: prolog_integration.md
+          - LISP Integration: lisp_integration.md
   - Guides:
       - Migration Guides:
           - Python: migrations/python_to_grapa_migration.md
