@@ -2807,18 +2807,60 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#basic-sql-pattern" class="md-nav__link">
+  <a href="#1-two-implementation-approaches" class="md-nav__link">
     <span class="md-ellipsis">
-      Basic SQL Pattern
+      1. Two Implementation Approaches
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Two Implementation Approaches">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#a-syntax-extension-recommended" class="md-nav__link">
+    <span class="md-ellipsis">
+      A. Syntax Extension (Recommended)
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#advanced-sql-features" class="md-nav__link">
+  <a href="#b-function-based-basic" class="md-nav__link">
     <span class="md-ellipsis">
-      Advanced SQL Features
+      B. Function-based (Basic)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#working-sql-syntax-implementation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Working SQL Syntax Implementation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#using-sql-syntax" class="md-nav__link">
+    <span class="md-ellipsis">
+      Using SQL Syntax
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#power-of-syntax-extension" class="md-nav__link">
+    <span class="md-ellipsis">
+      Power of Syntax Extension
     </span>
   </a>
   
@@ -4048,18 +4090,60 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#basic-sql-pattern" class="md-nav__link">
+  <a href="#1-two-implementation-approaches" class="md-nav__link">
     <span class="md-ellipsis">
-      Basic SQL Pattern
+      1. Two Implementation Approaches
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Two Implementation Approaches">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#a-syntax-extension-recommended" class="md-nav__link">
+    <span class="md-ellipsis">
+      A. Syntax Extension (Recommended)
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#advanced-sql-features" class="md-nav__link">
+  <a href="#b-function-based-basic" class="md-nav__link">
     <span class="md-ellipsis">
-      Advanced SQL Features
+      B. Function-based (Basic)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#working-sql-syntax-implementation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Working SQL Syntax Implementation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#using-sql-syntax" class="md-nav__link">
+    <span class="md-ellipsis">
+      Using SQL Syntax
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#power-of-syntax-extension" class="md-nav__link">
+    <span class="md-ellipsis">
+      Power of Syntax Extension
     </span>
   </a>
   
@@ -4347,46 +4431,91 @@
 </ul>
 <h3 id="sql-syntax-extension-pattern"><strong>SQL Syntax Extension Pattern</strong></h3>
 <ul>
-<li><strong>Custom commands</strong> - Define SQL-like syntax using <code>custom_command</code></li>
-<li><strong>Custom functions</strong> - Implement SQL operations as Grapa functions</li>
-<li><strong>Executable BNF</strong> - Parse SQL statements using Grapa's grammar system</li>
+<li><strong><code>custom_command = rule</code></strong> - Define actual SQL syntax using executable BNF</li>
+<li><strong><code>custom_function = rule</code></strong> - Implement SQL functions with real syntax parsing</li>
+<li><strong><code>op(parse)()</code></strong> - Execute SQL statements as first-class syntax</li>
 <li><strong>Seamless integration</strong> - Mix SQL and Grapa syntax in the same script</li>
 </ul>
 <h2 id="implementation-examples">Implementation Examples</h2>
-<h3 id="basic-sql-pattern"><strong>Basic SQL Pattern</strong></h3>
-<div class="highlight"><pre><span></span><code>/* Define SQL syntax as variables */
-custom_command = op(fields, table_name) {
-    (&quot;SQL SELECT: &quot; + fields + &quot; FROM &quot; + table_name).echo();
-    /* Implementation using $file().table() */
-};
+<h3 id="1-two-implementation-approaches"><strong>1. Two Implementation Approaches</strong></h3>
+<h4 id="a-syntax-extension-recommended"><strong>A. Syntax Extension (Recommended)</strong></h4>
+<p>Using Grapa's executable BNF to add actual SQL syntax:</p>
+<div class="highlight"><pre><span></span><code>/* Define SQL syntax rules */
+custom_command = rule select $STR from $STR { /* SELECT implementation */ };
+custom_command = rule insert into $STR values &#39;(&#39; $STR &#39;)&#39; { /* INSERT implementation */ };
 
-custom_function = op(field, table_name) {
-    (&quot;SQL COUNT: &quot; + field + &quot; FROM &quot; + table_name).echo();
-    /* Implementation using $file().table() */
-};
-
-/* Use SQL syntax directly */
-custom_command(&quot;name, age&quot;, &quot;users&quot;);
-custom_function(&quot;age&quot;, &quot;users&quot;);
+/* Use actual SQL syntax */
+op(parse)(&quot;select name, age from users&quot;)();     /* Real SQL syntax */
+op(parse)(&quot;insert into users values (&#39;Alice&#39;, 25)&quot;)();  /* Real SQL syntax */
 </code></pre></div>
-<h3 id="advanced-sql-features"><strong>Advanced SQL Features</strong></h3>
-<div class="highlight"><pre><span></span><code>/* INSERT pattern */
-insert_command = op(table_name, values) {
-    values_str = values.str();
-    (&quot;SQL INSERT: &quot; + table_name + &quot; VALUES &quot; + values_str).echo();
-    /* Implementation using kb.set() */
-};
+<h4 id="b-function-based-basic"><strong>B. Function-based (Basic)</strong></h4>
+<p>Using function calls for SQL-like functionality:</p>
+<div class="highlight"><pre><span></span><code>/* Define SQL-like functions */
+select_command = op(fields, table) { /* Implementation */ };
+insert_command = op(table, values) { /* Implementation */ };
 
-/* UPDATE pattern */
-update_command = op(table_name, set_clause, where_clause) {
-    (&quot;SQL UPDATE: &quot; + table_name + &quot; SET &quot; + set_clause + &quot; WHERE &quot; + where_clause).echo();
-    /* Implementation using kb.set() with conditions */
-};
-
-/* Use complex SQL directly */
-insert_command(&quot;users&quot;, {&quot;name&quot;: &quot;Alice&quot;, &quot;age&quot;: 25});
-update_command(&quot;users&quot;, &quot;age = 26&quot;, &quot;name = &#39;Alice&#39;&quot;);
+/* Use function calls */
+select_command(&quot;name, age&quot;, &quot;users&quot;);           /* Function call */
+insert_command(&quot;users&quot;, {&quot;name&quot;: &quot;Alice&quot;, &quot;age&quot;: 25});  /* Function call */
 </code></pre></div>
+<h3 id="working-sql-syntax-implementation"><strong>Working SQL Syntax Implementation</strong></h3>
+<div class="highlight"><pre><span></span><code>/* SQL SELECT: select fields from table */
+custom_command = rule select $STR from $STR { op(fields:$2, table:$4){
+    /* Implementation using $file().table() */
+    kb = $file().table();
+    /* Process SELECT query */
+    return &quot;SELECT &quot; + fields + &quot; FROM &quot; + table + &quot; executed&quot;;
+} };
+
+/* SQL INSERT: insert into table values (...) */
+custom_command = rule insert into $STR values &#39;(&#39; $STR &#39;)&#39; { op(table:$3, values:$6){
+    /* Implementation using $file().table() */
+    kb = $file().table();
+    /* Process INSERT query */
+    return &quot;INSERT INTO &quot; + table + &quot; VALUES (&quot; + values + &quot;) executed&quot;;
+} };
+
+/* SQL UPDATE: update table set field = value where condition */
+custom_command = rule update $STR set $STR where $STR { op(table:$2, set_clause:$4, where_clause:$6){
+    /* Implementation using $file().table() */
+    kb = $file().table();
+    /* Process UPDATE query */
+    return &quot;UPDATE &quot; + table + &quot; SET &quot; + set_clause + &quot; WHERE &quot; + where_clause + &quot; executed&quot;;
+} };
+
+/* SQL COUNT: count(field) from table */
+custom_function = rule count &#39;(&#39; $STR &#39;)&#39; from $STR { op(field:$3, table:$6){
+    /* Implementation using $file().table() */
+    kb = $file().table();
+    /* Process COUNT query */
+    return &quot;COUNT(&quot; + field + &quot;) FROM &quot; + table + &quot; executed&quot;;
+} };
+</code></pre></div>
+<h3 id="using-sql-syntax"><strong>Using SQL Syntax</strong></h3>
+<div class="highlight"><pre><span></span><code>/* Execute SQL syntax directly using op(parse)() */
+op(parse)(&quot;select name, age from users&quot;)();
+op(parse)(&quot;insert into users values (&#39;Alice&#39;, 25)&quot;)();
+op(parse)(&quot;update users set age = 26 where name = &#39;Alice&#39;&quot;)();
+result = op(parse)(&quot;count(*) from users&quot;)();
+</code></pre></div>
+<h3 id="power-of-syntax-extension"><strong>Power of Syntax Extension</strong></h3>
+<p>The syntax extension approach demonstrates Grapa's unique capabilities:</p>
+<ul>
+<li><strong>Real SQL Syntax</strong>: <code>select name, age from users</code> is actual SQL syntax, not just a function call</li>
+<li><strong>Runtime Parsing</strong>: Syntax is parsed and executed using <code>op(parse)()</code></li>
+<li><strong>Seamless Integration</strong>: SQL syntax works alongside native Grapa code</li>
+<li><strong>No Core Changes</strong>: All implemented through rule extensions</li>
+<li><strong>Same Pattern as PROLOG</strong>: Uses identical <code>custom_command</code> and <code>custom_function</code> approach</li>
+</ul>
+<p>This is the same pattern used in the PROLOG integration:
+<div class="highlight"><pre><span></span><code>/* PROLOG syntax extension */
+custom_command = rule $STR &#39;(&#39; $STR &#39;)&#39; &#39;.&#39; { /* implementation */ };
+op(parse)(&quot;parent(john,mary).&quot;)();   /* Real PROLOG syntax */
+
+/* SQL syntax extension */
+custom_command = rule select $STR from $STR { /* implementation */ };
+op(parse)(&quot;select * from users&quot;)();  /* Real SQL syntax */
+</code></pre></div></p>
 <h3 id="complete-sql-implementation-example"><strong>Complete SQL Implementation Example</strong></h3>
 <p>See <a href="../examples/sql_syntax_example.grc">SQL Syntax Example</a> for a full implementation demonstrating:</p>
 <ul>
