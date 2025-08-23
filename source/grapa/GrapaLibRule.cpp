@@ -6993,6 +6993,15 @@ GrapaRuleEvent* GrapaLibraryRuleSearchEvent::Run(GrapaScriptExec *vScriptExec, G
 				q = NULL;
 				if (e)
 				{
+					u8 isControlFlowChange = e->mControlFlow;
+					if (isControlFlowChange == GrapaControlFlowType::BREAK)
+						break;
+					if (isControlFlowChange == GrapaControlFlowType::CONTINUE)
+						;
+					if (isControlFlowChange == GrapaControlFlowType::RETURN || isControlFlowChange == GrapaControlFlowType::THROW || isControlFlowChange == GrapaControlFlowType::SYNTAX || isControlFlowChange == GrapaControlFlowType::EXIT)
+					{
+						break;
+					}
 					GrapaRuleEvent *item2 = e;
 					item = e;
 					while (item2->mValue.mToken == GrapaTokenType::PTR && item2->vRulePointer) item2 = item2->vRulePointer;
@@ -7175,7 +7184,7 @@ GrapaRuleEvent* GrapaLibraryRuleSearchEvent::Run(GrapaScriptExec *vScriptExec, G
 				}
 				attrList = attrList->Next();
 			}
-			if (attrList)
+			if (attrList && e && !e->mControlFlow)
 				e = NULL;
 			if (result == NULL && e)
 			{
@@ -9532,10 +9541,13 @@ GrapaRuleEvent* GrapaLibraryRuleOpEvent::Run(GrapaScriptExec *vScriptExec, Grapa
 			{
 				if (!(result->mValue.mToken == GrapaTokenType::PTR && result->mVar && result->vRulePointer->mValue.mToken == GrapaTokenType::WIDGET))
 				{
+					u8 isControlFlowChange = result->mControlFlow;
 					GrapaRuleEvent* v = vScriptExec->CopyItem(result);
 					result->CLEAR();
 					delete result;
 					result = v;
+					if (result)
+						result->mControlFlow = isControlFlowChange;
 				}
 			}
 		}
