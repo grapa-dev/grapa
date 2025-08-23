@@ -10022,37 +10022,6 @@ GrapaRuleEvent* GrapaLibraryRuleFilterEvent::Run(GrapaScriptExec *vScriptExec, G
 			{
 				if (delList)
 				{
-					while (we->mResult->vQueue->Head())
-					{
-						GrapaRuleEvent* ev = we->mResult->vQueue->PopHead();
-						if (ev && ev->mControlFlow && !retPtr)
-							retPtr = ev;
-						result->vQueue->PushTail(ev);
-					}
-				}
-				else
-				{
-					if (we && we->mResult->mControlFlow && !retPtr)
-						retPtr = we->mResult;
-					if (we->mResult->mValue.mToken == GrapaTokenType::PTR)
-					{
-						result->vQueue->PushTail(vScriptExec->CopyItem(we->mResult));
-					}
-					else
-					{
-						result->vQueue->PushTail(we->mResult);
-						we->mResult = NULL;
-					}
-				}
-
-
-
-
-
-
-
-				if (delList)
-				{
 					GrapaRuleEvent* qq = we->mResult->vQueue->Head();
 					GrapaRuleEvent* first = we->mParam->Head()->vRulePointer;
 					while (first && first->vRulePointer) first = first->vRulePointer;
