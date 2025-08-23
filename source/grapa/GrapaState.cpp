@@ -4484,12 +4484,15 @@ GrapaRuleEvent* GrapaScriptExec::ProcessPlan(GrapaNames* pNameSpace, GrapaRuleEv
 						result->mControlFlow = result->vRulePointer->mControlFlow;
 					if (result->mControlFlow)
 					{
-						GrapaRuleEvent* oldResult = result;
-						u8 isControlFlowChange = result->mControlFlow;;
-						result = CopyItem(result);
-						oldResult->CLEAR();
-						delete oldResult;
-						result->mControlFlow = isControlFlowChange;
+						if (!result->mCopied)
+						{
+							GrapaRuleEvent* oldResult = result;
+							u8 isControlFlowChange = result->mControlFlow;;
+							result = CopyItem(result);
+							oldResult->CLEAR();
+							delete oldResult;
+							result->mControlFlow = isControlFlowChange;
+						}
 						break;
 					}
 				}
@@ -4663,7 +4666,11 @@ GrapaRuleEvent* GrapaScriptExec::ProcessPlan(GrapaNames* pNameSpace, GrapaRuleEv
 					}
 					
 					result = libName->vLibraryEvent->Run(this, pNameSpace, libParam, input);
-					
+					if (result)
+					{
+						if (result->mControlFlow == GrapaControlFlowType::RETURN)
+							result->mControlFlow = 0;
+					}
 					// ADD DEBUG: Function result (Level 4)
 					if (vScriptState->mDebug.ShouldDebug("executor", 4)) {
 						char debugMsg[256];
