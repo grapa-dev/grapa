@@ -8,13 +8,13 @@
       
       
       
-        <link rel="canonical" href="https://grapa-dev.github.io/grapa/vector_performance_guide/">
+        <link rel="canonical" href="https://grapa-dev.github.io/grapa/lisp_integration/">
       
       
-        <link rel="prev" href="../machine_learning/">
+        <link rel="prev" href="../prolog_integration/">
       
       
-        <link rel="next" href="../sql_integration/">
+        <link rel="next" href="../migrations/python_to_grapa_migration/">
       
       
       <link rel="icon" href="../assets/images/favicon.png">
@@ -22,7 +22,7 @@
     
     
       
-        <title>Vector Performance Guide - Grapa Documentation</title>
+        <title>LISP Integration - Grapa Documentation</title>
       
     
     
@@ -74,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#vector-performance-optimization-guide" class="md-skip">
+        <a href="#lisp-integration" class="md-skip">
           Skip to content
         </a>
       
@@ -108,7 +108,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Vector Performance Guide
+              LISP Integration
             
           </span>
         </div>
@@ -2311,8 +2311,6 @@
                 
   
   
-    
-  
   
   
     
@@ -2323,11 +2321,11 @@
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_11" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_11" >
         
           
           <label class="md-nav__link" for="__nav_5_11" id="__nav_5_11_label" tabindex="0">
@@ -2343,7 +2341,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_11_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_11_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_5_11">
             <span class="md-nav__icon md-icon"></span>
             Advanced Topics
@@ -2630,32 +2628,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    Vector Performance Guide
-    
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../vector_performance_guide/" class="md-nav__link">
         
   
   
@@ -2666,383 +2642,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#overview" class="md-nav__link">
-    <span class="md-ellipsis">
-      Overview
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#performance-characteristics" class="md-nav__link">
-    <span class="md-ellipsis">
-      Performance Characteristics
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Performance Characteristics">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#algorithm-complexities" class="md-nav__link">
-    <span class="md-ellipsis">
-      Algorithm Complexities
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#performance-benchmarks" class="md-nav__link">
-    <span class="md-ellipsis">
-      Performance Benchmarks
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#optimization-strategies" class="md-nav__link">
-    <span class="md-ellipsis">
-      Optimization Strategies
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Optimization Strategies">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#1-matrix-size-optimization" class="md-nav__link">
-    <span class="md-ellipsis">
-      1. Matrix Size Optimization
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="1. Matrix Size Optimization">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#real-time-applications" class="md-nav__link">
-    <span class="md-ellipsis">
-      Real-time Applications
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#batch-processing" class="md-nav__link">
-    <span class="md-ellipsis">
-      Batch Processing
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#2-algorithm-selection" class="md-nav__link">
-    <span class="md-ellipsis">
-      2. Algorithm Selection
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="2. Algorithm Selection">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#matrix-multiplication" class="md-nav__link">
-    <span class="md-ellipsis">
-      Matrix Multiplication
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#statistical-functions" class="md-nav__link">
-    <span class="md-ellipsis">
-      Statistical Functions
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#3-memory-management" class="md-nav__link">
-    <span class="md-ellipsis">
-      3. Memory Management
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="3. Memory Management">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#pre-allocation" class="md-nav__link">
-    <span class="md-ellipsis">
-      Pre-allocation
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#memory-monitoring" class="md-nav__link">
-    <span class="md-ellipsis">
-      Memory Monitoring
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#4-data-type-optimization" class="md-nav__link">
-    <span class="md-ellipsis">
-      4. Data Type Optimization
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="4. Data Type Optimization">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#choose-appropriate-types" class="md-nav__link">
-    <span class="md-ellipsis">
-      Choose Appropriate Types
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#use-case-optimization" class="md-nav__link">
-    <span class="md-ellipsis">
-      Use Case Optimization
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Use Case Optimization">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#real-time-applications_1" class="md-nav__link">
-    <span class="md-ellipsis">
-      Real-time Applications
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#interactive-applications" class="md-nav__link">
-    <span class="md-ellipsis">
-      Interactive Applications
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#batch-processing_1" class="md-nav__link">
-    <span class="md-ellipsis">
-      Batch Processing
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#data-science-applications" class="md-nav__link">
-    <span class="md-ellipsis">
-      Data Science Applications
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#edge-case-performance" class="md-nav__link">
-    <span class="md-ellipsis">
-      Edge Case Performance
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Edge Case Performance">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#empty-and-small-matrices" class="md-nav__link">
-    <span class="md-ellipsis">
-      Empty and Small Matrices
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#special-matrix-types" class="md-nav__link">
-    <span class="md-ellipsis">
-      Special Matrix Types
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#extreme-values" class="md-nav__link">
-    <span class="md-ellipsis">
-      Extreme Values
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#performance-monitoring" class="md-nav__link">
-    <span class="md-ellipsis">
-      Performance Monitoring
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Performance Monitoring">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#timing-operations" class="md-nav__link">
-    <span class="md-ellipsis">
-      Timing Operations
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#memory-estimation" class="md-nav__link">
-    <span class="md-ellipsis">
-      Memory Estimation
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#best-practices-summary" class="md-nav__link">
-    <span class="md-ellipsis">
-      Best Practices Summary
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Best Practices Summary">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#dos" class="md-nav__link">
-    <span class="md-ellipsis">
-      Do's
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#donts" class="md-nav__link">
-    <span class="md-ellipsis">
-      Don'ts
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#performance-checklist" class="md-nav__link">
-    <span class="md-ellipsis">
-      Performance Checklist
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#conclusion" class="md-nav__link">
-    <span class="md-ellipsis">
-      Conclusion
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -3060,6 +2659,8 @@
                 
   
   
+    
+  
   
   
     
@@ -3070,11 +2671,11 @@
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_12" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_12" checked>
         
           
           <label class="md-nav__link" for="__nav_5_12" id="__nav_5_12_label" tabindex="0">
@@ -3090,7 +2691,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_12_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_12_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_5_12">
             <span class="md-nav__icon md-icon"></span>
             Language Integrations
@@ -3147,10 +2748,32 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../lisp_integration/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    LISP Integration
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -3161,6 +2784,374 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      Overview
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#key-lisp-concepts-in-grapa" class="md-nav__link">
+    <span class="md-ellipsis">
+      Key LISP Concepts in Grapa
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Key LISP Concepts in Grapa">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-s-expressions" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. S-Expressions
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-function-definition" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Function Definition
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-conditional-expressions" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Conditional Expressions
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-list-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. List Operations
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#implementation-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      Implementation Example
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#usage-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      Usage Examples
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Usage Examples">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#basic-arithmetic" class="md-nav__link">
+    <span class="md-ellipsis">
+      Basic Arithmetic
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#list-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      List Operations
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#function-definition" class="md-nav__link">
+    <span class="md-ellipsis">
+      Function Definition
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#variables-and-conditionals" class="md-nav__link">
+    <span class="md-ellipsis">
+      Variables and Conditionals
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#integration-with-grapa-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      Integration with Grapa Features
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Integration with Grapa Features">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-native-list-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Native List Operations
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-functional-programming" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Functional Programming
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-metaprogramming" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Metaprogramming
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#advanced-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      Advanced Features
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Advanced Features">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-macros" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Macros
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-higher-order-functions" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Higher-Order Functions
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-recursive-functions" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Recursive Functions
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#best-practices" class="md-nav__link">
+    <span class="md-ellipsis">
+      Best Practices
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Best Practices">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-error-handling" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Error Handling
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-performance-optimization" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Performance Optimization
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-integration-patterns" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Integration Patterns
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#use-cases" class="md-nav__link">
+    <span class="md-ellipsis">
+      Use Cases
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Use Cases">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-educational-programming" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Educational Programming
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-symbolic-computation" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Symbolic Computation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-prototyping" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Prototyping
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-legacy-system-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Legacy System Integration
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#future-enhancements" class="md-nav__link">
+    <span class="md-ellipsis">
+      Future Enhancements
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Future Enhancements">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-advanced-lisp-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Advanced LISP Features
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-performance-improvements" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Performance Improvements
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-tooling-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Tooling Integration
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#conclusion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Conclusion
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -4077,28 +4068,46 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#performance-characteristics" class="md-nav__link">
+  <a href="#key-lisp-concepts-in-grapa" class="md-nav__link">
     <span class="md-ellipsis">
-      Performance Characteristics
+      Key LISP Concepts in Grapa
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Performance Characteristics">
+    <nav class="md-nav" aria-label="Key LISP Concepts in Grapa">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#algorithm-complexities" class="md-nav__link">
+  <a href="#1-s-expressions" class="md-nav__link">
     <span class="md-ellipsis">
-      Algorithm Complexities
+      1. S-Expressions
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#performance-benchmarks" class="md-nav__link">
+  <a href="#2-function-definition" class="md-nav__link">
     <span class="md-ellipsis">
-      Performance Benchmarks
+      2. Function Definition
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-conditional-expressions" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Conditional Expressions
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-list-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. List Operations
     </span>
   </a>
   
@@ -4110,184 +4119,55 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#optimization-strategies" class="md-nav__link">
+  <a href="#implementation-example" class="md-nav__link">
     <span class="md-ellipsis">
-      Optimization Strategies
+      Implementation Example
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="Optimization Strategies">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#1-matrix-size-optimization" class="md-nav__link">
-    <span class="md-ellipsis">
-      1. Matrix Size Optimization
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="1. Matrix Size Optimization">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#real-time-applications" class="md-nav__link">
-    <span class="md-ellipsis">
-      Real-time Applications
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#batch-processing" class="md-nav__link">
-    <span class="md-ellipsis">
-      Batch Processing
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#2-algorithm-selection" class="md-nav__link">
-    <span class="md-ellipsis">
-      2. Algorithm Selection
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="2. Algorithm Selection">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#matrix-multiplication" class="md-nav__link">
-    <span class="md-ellipsis">
-      Matrix Multiplication
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#statistical-functions" class="md-nav__link">
-    <span class="md-ellipsis">
-      Statistical Functions
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#3-memory-management" class="md-nav__link">
-    <span class="md-ellipsis">
-      3. Memory Management
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="3. Memory Management">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#pre-allocation" class="md-nav__link">
-    <span class="md-ellipsis">
-      Pre-allocation
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#memory-monitoring" class="md-nav__link">
-    <span class="md-ellipsis">
-      Memory Monitoring
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#4-data-type-optimization" class="md-nav__link">
-    <span class="md-ellipsis">
-      4. Data Type Optimization
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="4. Data Type Optimization">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#choose-appropriate-types" class="md-nav__link">
-    <span class="md-ellipsis">
-      Choose Appropriate Types
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#use-case-optimization" class="md-nav__link">
+  <a href="#usage-examples" class="md-nav__link">
     <span class="md-ellipsis">
-      Use Case Optimization
+      Usage Examples
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Use Case Optimization">
+    <nav class="md-nav" aria-label="Usage Examples">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#real-time-applications_1" class="md-nav__link">
+  <a href="#basic-arithmetic" class="md-nav__link">
     <span class="md-ellipsis">
-      Real-time Applications
+      Basic Arithmetic
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#interactive-applications" class="md-nav__link">
+  <a href="#list-operations" class="md-nav__link">
     <span class="md-ellipsis">
-      Interactive Applications
+      List Operations
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#batch-processing_1" class="md-nav__link">
+  <a href="#function-definition" class="md-nav__link">
     <span class="md-ellipsis">
-      Batch Processing
+      Function Definition
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#data-science-applications" class="md-nav__link">
+  <a href="#variables-and-conditionals" class="md-nav__link">
     <span class="md-ellipsis">
-      Data Science Applications
+      Variables and Conditionals
     </span>
   </a>
   
@@ -4299,37 +4179,37 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#edge-case-performance" class="md-nav__link">
+  <a href="#integration-with-grapa-features" class="md-nav__link">
     <span class="md-ellipsis">
-      Edge Case Performance
+      Integration with Grapa Features
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Edge Case Performance">
+    <nav class="md-nav" aria-label="Integration with Grapa Features">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#empty-and-small-matrices" class="md-nav__link">
+  <a href="#1-native-list-operations" class="md-nav__link">
     <span class="md-ellipsis">
-      Empty and Small Matrices
+      1. Native List Operations
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#special-matrix-types" class="md-nav__link">
+  <a href="#2-functional-programming" class="md-nav__link">
     <span class="md-ellipsis">
-      Special Matrix Types
+      2. Functional Programming
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#extreme-values" class="md-nav__link">
+  <a href="#3-metaprogramming" class="md-nav__link">
     <span class="md-ellipsis">
-      Extreme Values
+      3. Metaprogramming
     </span>
   </a>
   
@@ -4341,28 +4221,37 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#performance-monitoring" class="md-nav__link">
+  <a href="#advanced-features" class="md-nav__link">
     <span class="md-ellipsis">
-      Performance Monitoring
+      Advanced Features
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Performance Monitoring">
+    <nav class="md-nav" aria-label="Advanced Features">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#timing-operations" class="md-nav__link">
+  <a href="#1-macros" class="md-nav__link">
     <span class="md-ellipsis">
-      Timing Operations
+      1. Macros
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#memory-estimation" class="md-nav__link">
+  <a href="#2-higher-order-functions" class="md-nav__link">
     <span class="md-ellipsis">
-      Memory Estimation
+      2. Higher-Order Functions
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-recursive-functions" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Recursive Functions
     </span>
   </a>
   
@@ -4374,37 +4263,130 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#best-practices-summary" class="md-nav__link">
+  <a href="#best-practices" class="md-nav__link">
     <span class="md-ellipsis">
-      Best Practices Summary
+      Best Practices
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Best Practices Summary">
+    <nav class="md-nav" aria-label="Best Practices">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#dos" class="md-nav__link">
+  <a href="#1-error-handling" class="md-nav__link">
     <span class="md-ellipsis">
-      Do's
+      1. Error Handling
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#donts" class="md-nav__link">
+  <a href="#2-performance-optimization" class="md-nav__link">
     <span class="md-ellipsis">
-      Don'ts
+      2. Performance Optimization
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#performance-checklist" class="md-nav__link">
+  <a href="#3-integration-patterns" class="md-nav__link">
     <span class="md-ellipsis">
-      Performance Checklist
+      3. Integration Patterns
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#use-cases" class="md-nav__link">
+    <span class="md-ellipsis">
+      Use Cases
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Use Cases">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-educational-programming" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Educational Programming
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-symbolic-computation" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Symbolic Computation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-prototyping" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Prototyping
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-legacy-system-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Legacy System Integration
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#future-enhancements" class="md-nav__link">
+    <span class="md-ellipsis">
+      Future Enhancements
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Future Enhancements">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-advanced-lisp-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Advanced LISP Features
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-performance-improvements" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Performance Improvements
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-tooling-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Tooling Integration
     </span>
   </a>
   
@@ -4438,347 +4420,420 @@
                 
                   
 
+  <nav class="md-tags" >
+    
+      
+      
+      
+        <span class="md-tag">functional-programming</span>
+      
+    
+      
+      
+      
+        <span class="md-tag">language-integration</span>
+      
+    
+      
+      
+      
+        <span class="md-tag">lisp</span>
+      
+    
+      
+      
+      
+        <span class="md-tag">metaprogramming</span>
+      
+    
+      
+      
+      
+        <span class="md-tag">user</span>
+      
+    
+  </nav>
 
 
-<h1 id="vector-performance-optimization-guide">Vector Performance Optimization Guide</h1>
+
+<h1 id="lisp-integration">LISP Integration</h1>
 <h2 id="overview">Overview</h2>
-<p>This guide provides comprehensive performance optimization recommendations for Grapa's vector operations, based on systematic benchmarking and analysis. It covers performance characteristics, optimization strategies, and best practices for different use cases.</p>
-<h2 id="performance-characteristics">Performance Characteristics</h2>
-<h3 id="algorithm-complexities">Algorithm Complexities</h3>
-<table>
-<thead>
-<tr>
-<th>Operation</th>
-<th>Complexity</th>
-<th>Performance Impact</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Matrix multiplication</td>
-<td>O(n³)</td>
-<td>High for large matrices</td>
-</tr>
-<tr>
-<td>Determinant calculation</td>
-<td>O(n³)</td>
-<td>High for large matrices</td>
-</tr>
-<tr>
-<td>Eigenvalue calculation</td>
-<td>O(n³) with iterations</td>
-<td>Very high for large matrices</td>
-</tr>
-<tr>
-<td>Covariance calculation</td>
-<td>O(n²m)</td>
-<td>Moderate for large matrices</td>
-</tr>
-<tr>
-<td>Basic operations (sum, mean)</td>
-<td>O(n²)</td>
-<td>Low for all sizes</td>
-</tr>
-<tr>
-<td>Transpose</td>
-<td>O(n²)</td>
-<td>Very low for all sizes</td>
-</tr>
-</tbody>
-</table>
-<h3 id="performance-benchmarks">Performance Benchmarks</h3>
-<table>
-<thead>
-<tr>
-<th>Matrix Size</th>
-<th>Creation (ms)</th>
-<th>Multiplication (ms)</th>
-<th>Determinant (ms)</th>
-<th>Memory (KB)</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>10x10</td>
-<td>&lt;1</td>
-<td>&lt;1</td>
-<td>&lt;1</td>
-<td>0.8</td>
-</tr>
-<tr>
-<td>50x50</td>
-<td>&lt;1</td>
-<td>&lt;1</td>
-<td>&lt;1</td>
-<td>20</td>
-</tr>
-<tr>
-<td>100x100</td>
-<td>&lt;1</td>
-<td>&lt;1</td>
-<td>&lt;1</td>
-<td>80</td>
-</tr>
-<tr>
-<td>200x200</td>
-<td>&lt;1</td>
-<td>27,000</td>
-<td>&lt;1</td>
-<td>320</td>
-</tr>
-<tr>
-<td>500x500</td>
-<td>&lt;1</td>
-<td>N/A</td>
-<td>&lt;1</td>
-<td>2,000</td>
-</tr>
-</tbody>
-</table>
-<h2 id="optimization-strategies">Optimization Strategies</h2>
-<h3 id="1-matrix-size-optimization">1. Matrix Size Optimization</h3>
-<h4 id="real-time-applications">Real-time Applications</h4>
-<div class="highlight"><pre><span></span><code>/* For real-time applications, keep matrices small */
-// ✅ Good - Fast response
-small_matrix = [[1, 2], [3, 4]].vector();
-result = small_matrix.dot(small_matrix);  // &lt; 1ms
+<p>Grapa's LISP integration demonstrates how the language can implement its own inspiration. Since Grapa is LISP-inspired with late-binding, functional programming, and code-as-data capabilities, implementing LISP syntax provides a natural bridge between traditional LISP concepts and Grapa's modern features.</p>
+<p>This integration showcases:
+- <strong>LISP syntax parsing</strong> using Grapa's executable BNF
+- <strong>Functional programming</strong> with LISP-style expressions
+- <strong>Macro system</strong> implementation
+- <strong>List processing</strong> with native Grapa operations
+- <strong>Dynamic function definition</strong> and evaluation</p>
+<h2 id="key-lisp-concepts-in-grapa">Key LISP Concepts in Grapa</h2>
+<h3 id="1-s-expressions"><strong>1. S-Expressions</strong></h3>
+<p>LISP's fundamental data structure - nested lists representing code and data:</p>
+<div class="highlight"><pre><span></span><code>/* LISP S-expression syntax */
+custom_command = rule &#39;(&#39; $STR* &#39;)&#39; { op(expression:$2){
+    /* Parse and evaluate S-expression */
+    return evaluate_sexp($2);
+} };
 
-// ❌ Avoid - Slow response
-large_matrix = create_large_matrix(100);  // 27+ seconds
-result = large_matrix.dot(large_matrix);
+/* Usage */
+op(parse)(&quot;(+ 1 2 3)&quot;)();  /* Returns 6 */
+op(parse)(&quot;(list 1 2 3)&quot;)();  /* Returns [1, 2, 3] */
 </code></pre></div>
-<p><strong>Recommendations:</strong>
-- Keep matrices &lt; 50x50 for sub-second response
-- Use &lt; 100x100 for interactive applications
-- Consider breaking large problems into smaller blocks</p>
-<h4 id="batch-processing">Batch Processing</h4>
-<div class="highlight"><pre><span></span><code>/* For batch processing, monitor memory usage */
-// ✅ Good - Manageable memory
-medium_matrix = create_matrix(200);  // 320KB memory
-result = medium_matrix.cov();        // Good performance
-
-// ⚠️ Monitor - Large memory usage
-large_matrix = create_matrix(500);   // 2MB memory
-result = large_matrix.cov();         // Monitor performance
-</code></pre></div>
-<h3 id="2-algorithm-selection">2. Algorithm Selection</h3>
-<h4 id="matrix-multiplication">Matrix Multiplication</h4>
-<div class="highlight"><pre><span></span><code>/* Use appropriate algorithms for your use case */
-// For small matrices - standard multiplication is fine
-small_result = mat_a.dot(mat_b);  // Fast for &lt; 100x100
-
-// For large matrices - consider alternatives
-if (mat_a.shape().get(0) &gt; 100) {
-    // Consider breaking into smaller blocks
-    result = block_multiply(mat_a, mat_b);
-} else {
-    result = mat_a.dot(mat_b);
-}
-</code></pre></div>
-<h4 id="statistical-functions">Statistical Functions</h4>
-<div class="highlight"><pre><span></span><code>/* Choose efficient statistical operations */
-// ✅ Fast - Good for all sizes
-sum_result = data.sum();
-mean_result = data.mean();
-
-// ⚠️ Moderate - Good for &lt; 200x200
-cov_result = data.cov();
-
-// ❌ Slow - Use only for &lt; 50x50
-eigen_result = data.eigh();
-</code></pre></div>
-<h3 id="3-memory-management">3. Memory Management</h3>
-<h4 id="pre-allocation">Pre-allocation</h4>
-<div class="highlight"><pre><span></span><code>/* Pre-allocate matrices when possible */
-// ✅ Good - Reuse allocated memory
-matrix = create_matrix(50);
-for (i = 0; i &lt; 1000; i++) {
-    result = matrix.dot(matrix);  // Reuse same matrix
-}
-
-// ❌ Poor - Repeated allocation
-for (i = 0; i &lt; 1000; i++) {
-    matrix = create_matrix(50);   // Allocate each time
-    result = matrix.dot(matrix);
-}
-</code></pre></div>
-<h4 id="memory-monitoring">Memory Monitoring</h4>
-<div class="highlight"><pre><span></span><code>/* Monitor memory usage for large operations */
-large_matrix = create_matrix(200);
-estimated_memory = large_matrix.shape().reduce(op(acc, dim){acc * dim}, 1) * 8 / 1024;
-(&quot;Estimated memory usage: &quot; + estimated_memory + &quot; KB&quot;).echo();
-</code></pre></div>
-<h3 id="4-data-type-optimization">4. Data Type Optimization</h3>
-<h4 id="choose-appropriate-types">Choose Appropriate Types</h4>
-<div class="highlight"><pre><span></span><code>/* Use INT for integer data, FLOAT for decimal */
-// ✅ Good - Use INT for integer data
-integer_data = [1, 2, 3, 4, 5].vector();
-
-// ✅ Good - Use FLOAT for decimal data
-decimal_data = [1.5, 2.7, 3.2, 4.1, 5.9].vector();
-
-// ⚠️ Consider - Precision vs performance trade-off
-high_precision = [1.123456789, 2.987654321].vector();
-</code></pre></div>
-<h2 id="use-case-optimization">Use Case Optimization</h2>
-<h3 id="real-time-applications_1">Real-time Applications</h3>
-<p><strong>Requirements:</strong> Sub-second response time
-<strong>Recommended Matrix Size:</strong> &lt; 50x50</p>
-<div class="highlight"><pre><span></span><code>/* Real-time optimization strategies */
-// 1. Use small matrices
-small_matrix = [[1, 2], [3, 4]].vector();
-
-// 2. Pre-compute when possible
-precomputed_result = expensive_operation(small_matrix);
-
-// 3. Use fast operations
-fast_result = small_matrix.sum();  // O(n²) - very fast
-
-// 4. Avoid expensive operations
-// ❌ Avoid in real-time
-eigen_result = small_matrix.eigh();  // O(n³) with iterations
-</code></pre></div>
-<h3 id="interactive-applications">Interactive Applications</h3>
-<p><strong>Requirements:</strong> &lt; 5 second response time
-<strong>Recommended Matrix Size:</strong> &lt; 100x100</p>
-<div class="highlight"><pre><span></span><code>/* Interactive optimization strategies */
-// 1. Use moderate matrix sizes
-medium_matrix = create_matrix(50);
-
-// 2. Provide progress feedback
-(&quot;Computing...&quot;).echo();
-result = medium_matrix.dot(medium_matrix);
-(&quot;Complete!&quot;).echo();
-
-// 3. Use appropriate operations
-cov_result = medium_matrix.cov();  // Good performance
-</code></pre></div>
-<h3 id="batch-processing_1">Batch Processing</h3>
-<p><strong>Requirements:</strong> Efficient processing of large datasets
-<strong>Recommended Matrix Size:</strong> &lt; 500x500</p>
-<div class="highlight"><pre><span></span><code>/* Batch processing optimization strategies */
-// 1. Monitor memory usage
-large_matrix = create_matrix(200);
-memory_usage = estimate_memory(large_matrix);
-
-// 2. Use memory-efficient operations
-sum_result = large_matrix.sum();  // Memory efficient
-
-// 3. Consider breaking large problems
-if (large_matrix.shape().get(0) &gt; 200) {
-    result = process_in_blocks(large_matrix);
-} else {
-    result = process_directly(large_matrix);
-}
-</code></pre></div>
-<h3 id="data-science-applications">Data Science Applications</h3>
-<p><strong>Requirements:</strong> Accurate results with reasonable performance
-<strong>Recommended Matrix Size:</strong> &lt; 200x200</p>
-<div class="highlight"><pre><span></span><code>/* Data science optimization strategies */
-// 1. Use appropriate statistical functions
-data = load_dataset();
-cov_matrix = data.cov();  // Good for data analysis
-
-// 2. Consider data characteristics
-if (is_sparse(data)) {
-    result = sparse_operations(data);
-} else {
-    result = dense_operations(data);
-}
-
-// 3. Use efficient algorithms
-// For correlation analysis
-correlation = data.cov();  // More efficient than manual calculation
-</code></pre></div>
-<h2 id="edge-case-performance">Edge Case Performance</h2>
-<h3 id="empty-and-small-matrices">Empty and Small Matrices</h3>
-<div class="highlight"><pre><span></span><code>/* Edge cases perform excellently */
-empty_vec = [].vector();
-empty_sum = empty_vec.sum();  // 0ms - very fast
-
-small_mat = [[1]].vector();
-small_det = small_mat.det();  // 0ms - very fast
-</code></pre></div>
-<h3 id="special-matrix-types">Special Matrix Types</h3>
-<div class="highlight"><pre><span></span><code>/* Special matrices are optimized */
-identity = [[1, 0], [0, 1]].vector();
-id_det = identity.det();  // 0ms - very fast
-
-sparse = [[1, 0, 0], [0, 1, 0], [0, 0, 1]].vector();
-sparse_det = sparse.det();  // 0ms - very fast
-</code></pre></div>
-<h3 id="extreme-values">Extreme Values</h3>
-<div class="highlight"><pre><span></span><code>/* Extreme values handled efficiently */
-large_nums = [[1e15, 2e15], [3e15, 4e15]].vector();
-large_det = large_nums.det();  // Handled correctly
-
-small_nums = [[1e-15, 2e-15], [3e-15, 4e-15]].vector();
-small_det = small_nums.det();  // Handled correctly
-</code></pre></div>
-<h2 id="performance-monitoring">Performance Monitoring</h2>
-<h3 id="timing-operations">Timing Operations</h3>
-<div class="highlight"><pre><span></span><code>/* Monitor operation performance */
-start_time = $TIME().utc();
-result = matrix.dot(matrix);
-end_time = $TIME().utc();
-operation_time = (($TIME().utc() - start_time) / 1000000).int();
-(&quot;Operation took: &quot; + operation_time + &quot;ms&quot;).echo();
-</code></pre></div>
-<h3 id="memory-estimation">Memory Estimation</h3>
-<div class="highlight"><pre><span></span><code>/* Estimate memory usage */
-estimate_memory = op(matrix) {
-    elements = matrix.shape().reduce(op(acc, dim){acc * dim}, 1);
-    bytes = elements * 8;  // 8 bytes per element
-    kb = bytes / 1024;
-    kb;
+<h3 id="2-function-definition"><strong>2. Function Definition</strong></h3>
+<p>Define new LISP functions using <code>defun</code>:</p>
+<div class="highlight"><pre><span></span><code>/* LISP function definition */
+custom_command = rule &#39;(defun&#39; $STR &#39;(&#39; $STR* &#39;)&#39; $STR* &#39;)&#39; { 
+    op(name:$2, params:$4, body:$6){
+        /* Store function definition */
+        $global.lisp_functions[$2] = {
+            params: $4,
+            body: $6
+        };
+        return &quot;Function &quot; + $2 + &quot; defined&quot;;
+    }
 };
 
-memory_usage = estimate_memory(my_matrix);
-(&quot;Estimated memory: &quot; + memory_usage + &quot; KB&quot;).echo();
+/* Usage */
+op(parse)(&quot;(defun factorial (n) (if (= n 0) 1 (* n (factorial (- n 1)))))&quot;)();
+op(parse)(&quot;(factorial 5)&quot;)();  /* Returns 120 */
 </code></pre></div>
-<h2 id="best-practices-summary">Best Practices Summary</h2>
-<h3 id="dos">Do's</h3>
+<h3 id="3-conditional-expressions"><strong>3. Conditional Expressions</strong></h3>
+<p>LISP-style conditionals with <code>if</code> and <code>cond</code>:</p>
+<div class="highlight"><pre><span></span><code>/* LISP if statement */
+custom_command = rule &#39;(if&#39; $STR $STR $STR &#39;)&#39; { 
+    op(condition:$2, then:$3, else:$4){
+        if (evaluate_sexp($2)) {
+            return evaluate_sexp($3);
+        } else {
+            return evaluate_sexp($4);
+        }
+    }
+};
+
+/* Usage */
+op(parse)(&quot;(if (&gt; 5 3) \&quot;yes\&quot; \&quot;no\&quot;)&quot;)();  /* Returns &quot;yes&quot; */
+</code></pre></div>
+<h3 id="4-list-operations"><strong>4. List Operations</strong></h3>
+<p>Native LISP list manipulation:</p>
+<div class="highlight"><pre><span></span><code>/* LISP list operations */
+custom_command = rule &#39;(car&#39; $STR &#39;)&#39; { op(list:$2){
+    /* Return first element */
+    return evaluate_sexp($2)[0];
+} };
+
+custom_command = rule &#39;(cdr&#39; $STR &#39;)&#39; { op(list:$2){
+    /* Return rest of list */
+    return evaluate_sexp($2).slice(1);
+} };
+
+custom_command = rule &#39;(cons&#39; $STR $STR &#39;)&#39; { op(element:$2, list:$3){
+    /* Add element to front of list */
+    return [evaluate_sexp($2)].concat(evaluate_sexp($3));
+} };
+
+/* Usage */
+op(parse)(&quot;(car (list 1 2 3))&quot;)();  /* Returns 1 */
+op(parse)(&quot;(cdr (list 1 2 3))&quot;)();  /* Returns [2, 3] */
+op(parse)(&quot;(cons 0 (list 1 2 3))&quot;)();  /* Returns [0, 1, 2, 3] */
+</code></pre></div>
+<h2 id="implementation-example">Implementation Example</h2>
+<p>Here's a working LISP implementation in Grapa:</p>
+<div class="highlight"><pre><span></span><code>/* LISP Integration Implementation */
+/* Initialize LISP environment */
+$global.lisp_functions = {};
+$global.lisp_vars = {};
+
+/* Basic LISP syntax rules */
+custom_command = rule &#39;(&#39; $STR $STR* &#39;)&#39; { op(function:$2, args:$3){
+    return lisp_eval($2, $3);
+} };
+
+custom_command = rule &#39;(defun&#39; $STR &#39;(&#39; $STR* &#39;)&#39; $STR* &#39;)&#39; { 
+    op(name:$2, params:$4, body:$6){
+        $global.lisp_functions[$2] = {
+            params: $4,
+            body: $6
+        };
+        return &quot;Function &quot; + $2 + &quot; defined&quot;;
+    }
+};
+
+custom_command = rule &#39;(setq&#39; $STR $STR &#39;)&#39; { op(var:$2, value:$3){
+    $global.lisp_vars[$2] = evaluate_sexp($3);
+    return $global.lisp_vars[$2];
+} };
+
+custom_command = rule &#39;(if&#39; $STR $STR $STR &#39;)&#39; { 
+    op(condition:$2, then:$3, else:$4){
+        if (evaluate_sexp($2)) {
+            return evaluate_sexp($3);
+        } else {
+            return evaluate_sexp($4);
+        }
+    }
+};
+
+/* LISP evaluation function */
+lisp_eval = op(function, args) {
+    /* Built-in functions */
+    if (function == &#39;+&#39;) {
+        return args.range().map(op(i) { evaluate_sexp(args[i]) }).reduce(op(a,b) { a + b }, 0);
+    };
+    if (function == &#39;*&#39;) {
+        return args.range().map(op(i) { evaluate_sexp(args[i]) }).reduce(op(a,b) { a * b }, 1);
+    };
+    if (function == &#39;list&#39;) {
+        return args.range().map(op(i) { evaluate_sexp(args[i]) });
+    };
+    if (function == &#39;car&#39;) {
+        return evaluate_sexp(args[0])[0];
+    };
+    if (function == &#39;cdr&#39;) {
+        return evaluate_sexp(args[0]).slice(1);
+    };
+    if (function == &#39;cons&#39;) {
+        return [evaluate_sexp(args[0])].concat(evaluate_sexp(args[1]));
+    };
+
+    /* User-defined functions */
+    if ($global.lisp_functions[function]) {
+        func = $global.lisp_functions[function];
+        /* Bind parameters and evaluate body */
+        return evaluate_with_bindings(func.body, func.params, args);
+    };
+
+    return &quot;Unknown function: &quot; + function;
+};
+
+/* Helper functions */
+evaluate_sexp = op(expr) {
+    if (type(expr) == $STR) {
+        /* Check if it&#39;s a variable */
+        if ($global.lisp_vars[expr]) {
+            return $global.lisp_vars[expr];
+        };
+        /* Check if it&#39;s a number */
+        if (expr.match(/^\d+$/)) {
+            return expr.int();
+        };
+        return expr;
+    };
+    return expr;
+};
+
+evaluate_with_bindings = op(body, params, args) {
+    /* Create temporary bindings */
+    old_vars = $global.lisp_vars.copy();
+
+    /* Bind parameters */
+    params.range().map(op(i) {
+        $global.lisp_vars[params[i]] = evaluate_sexp(args[i]);
+    });
+
+    /* Evaluate body */
+    result = body.range().map(op(i) {
+        evaluate_sexp(body[i]);
+    });
+
+    /* Restore old bindings */
+    $global.lisp_vars = old_vars;
+
+    return result[result.len() - 1];  /* Return last expression */
+};
+</code></pre></div>
+<h2 id="usage-examples">Usage Examples</h2>
+<h3 id="basic-arithmetic"><strong>Basic Arithmetic</strong></h3>
+<div class="highlight"><pre><span></span><code>/* Simple arithmetic */
+op(parse)(&quot;(+ 1 2 3 4 5)&quot;)();  /* Returns 15 */
+op(parse)(&quot;(* 2 3 4)&quot;)();      /* Returns 24 */
+op(parse)(&quot;(+ (* 2 3) (* 4 5))&quot;)();  /* Returns 26 */
+</code></pre></div>
+<h3 id="list-operations"><strong>List Operations</strong></h3>
+<div class="highlight"><pre><span></span><code>/* List creation and manipulation */
+op(parse)(&quot;(list 1 2 3 4 5)&quot;)();  /* Returns [1, 2, 3, 4, 5] */
+op(parse)(&quot;(car (list 1 2 3))&quot;)();  /* Returns 1 */
+op(parse)(&quot;(cdr (list 1 2 3))&quot;)();  /* Returns [2, 3] */
+op(parse)(&quot;(cons 0 (list 1 2 3))&quot;)();  /* Returns [0, 1, 2, 3] */
+</code></pre></div>
+<h3 id="function-definition"><strong>Function Definition</strong></h3>
+<div class="highlight"><pre><span></span><code>/* Define and use functions */
+op(parse)(&quot;(defun square (x) (* x x))&quot;)();
+op(parse)(&quot;(square 5)&quot;)();  /* Returns 25 */
+
+op(parse)(&quot;(defun factorial (n) (if (= n 0) 1 (* n (factorial (- n 1)))))&quot;)();
+op(parse)(&quot;(factorial 5)&quot;)();  /* Returns 120 */
+</code></pre></div>
+<h3 id="variables-and-conditionals"><strong>Variables and Conditionals</strong></h3>
+<div class="highlight"><pre><span></span><code>/* Variable assignment and conditionals */
+op(parse)(&quot;(setq x 10)&quot;)();  /* Sets x to 10 */
+op(parse)(&quot;(if (&gt; x 5) \&quot;large\&quot; \&quot;small\&quot;)&quot;)();  /* Returns &quot;large&quot; */
+</code></pre></div>
+<h2 id="integration-with-grapa-features">Integration with Grapa Features</h2>
+<h3 id="1-native-list-operations"><strong>1. Native List Operations</strong></h3>
+<p>LISP integration leverages Grapa's native list capabilities:</p>
+<div class="highlight"><pre><span></span><code>/* Combine LISP with native Grapa */
+lisp_result = op(parse)(&quot;(list 1 2 3 4 5)&quot;)();
+grapa_result = lisp_result.map(op(x) { x * 2 });  /* Native Grapa map */
+final_result = op(parse)(&quot;(cons 0 &quot; + grapa_result + &quot;)&quot;)();  /* Back to LISP */
+</code></pre></div>
+<h3 id="2-functional-programming"><strong>2. Functional Programming</strong></h3>
+<p>LISP's functional style works naturally with Grapa:</p>
+<div class="highlight"><pre><span></span><code>/* Functional composition */
+numbers = op(parse)(&quot;(list 1 2 3 4 5)&quot;)();
+squares = numbers.map(op(x) { x * x });  /* Grapa functional */
+sum = op(parse)(&quot;(+ &quot; + squares.join(&quot; &quot;) + &quot;)&quot;)();  /* LISP sum */
+</code></pre></div>
+<h3 id="3-metaprogramming"><strong>3. Metaprogramming</strong></h3>
+<p>LISP's code-as-data philosophy aligns with Grapa's executable BNF:</p>
+<div class="highlight"><pre><span></span><code>/* Generate LISP code dynamically */
+generate_factorial = op(n) {
+    if (n &lt;= 1) {
+        return &quot;(defun factorial (n) 1)&quot;;
+    } else {
+        return &quot;(defun factorial (n) (* n (factorial (- n 1))))&quot;;
+    };
+};
+
+/* Execute generated code */
+op(parse)(generate_factorial(5))();
+</code></pre></div>
+<h2 id="advanced-features">Advanced Features</h2>
+<h3 id="1-macros"><strong>1. Macros</strong></h3>
+<p>Implement LISP-style macros for code transformation:</p>
+<div class="highlight"><pre><span></span><code>/* Macro definition */
+custom_command = rule &#39;(defmacro&#39; $STR &#39;(&#39; $STR* &#39;)&#39; $STR* &#39;)&#39; { 
+    op(name:$2, params:$4, body:$6){
+        $global.lisp_macros[$2] = {
+            params: $4,
+            body: $6
+        };
+        return &quot;Macro &quot; + $2 + &quot; defined&quot;;
+    }
+};
+
+/* Usage */
+op(parse)(&quot;(defmacro when (condition body) (if condition body nil))&quot;)();
+op(parse)(&quot;(when (&gt; 5 3) (print \&quot;condition is true\&quot;))&quot;)();
+</code></pre></div>
+<h3 id="2-higher-order-functions"><strong>2. Higher-Order Functions</strong></h3>
+<p>Implement LISP's functional programming features:</p>
+<div class="highlight"><pre><span></span><code>/* Map function */
+custom_command = rule &#39;(map&#39; $STR $STR &#39;)&#39; { op(func:$2, list:$3){
+    return evaluate_sexp(list).map(op(x) {
+        op(parse)(&quot;(&quot; + func + &quot; &quot; + x + &quot;)&quot;)();
+    });
+} };
+
+/* Usage */
+op(parse)(&quot;(map square (list 1 2 3 4 5))&quot;)();  /* Returns [1, 4, 9, 16, 25] */
+</code></pre></div>
+<h3 id="3-recursive-functions"><strong>3. Recursive Functions</strong></h3>
+<p>Demonstrate LISP's recursive capabilities:</p>
+<div class="highlight"><pre><span></span><code>/* Recursive list processing */
+op(parse)(&quot;(defun length (lst) (if (null lst) 0 (+ 1 (length (cdr lst)))))&quot;)();
+op(parse)(&quot;(length (list 1 2 3 4 5))&quot;)();  /* Returns 5 */
+</code></pre></div>
+<h2 id="best-practices">Best Practices</h2>
+<h3 id="1-error-handling"><strong>1. Error Handling</strong></h3>
+<p>Implement robust error handling for LISP expressions:</p>
+<div class="highlight"><pre><span></span><code>/* Safe evaluation */
+safe_lisp_eval = op(expr) {
+    try {
+        return op(parse)(expr)();
+    } catch (error) {
+        return &quot;LISP Error: &quot; + error;
+    };
+};
+</code></pre></div>
+<h3 id="2-performance-optimization"><strong>2. Performance Optimization</strong></h3>
+<p>Use Grapa's native operations when possible:</p>
+<div class="highlight"><pre><span></span><code>/* Optimize list operations */
+optimized_car = op(list) {
+    if (type(list) == $LIST) {
+        return list[0];  /* Use native access */
+    } else {
+        return op(parse)(&quot;(car &quot; + list + &quot;)&quot;)();  /* Fallback to LISP */
+    };
+};
+</code></pre></div>
+<h3 id="3-integration-patterns"><strong>3. Integration Patterns</strong></h3>
+<p>Combine LISP and Grapa effectively:</p>
+<div class="highlight"><pre><span></span><code>/* Hybrid approach */
+process_data = op(data) {
+    /* Use LISP for symbolic processing */
+    lisp_result = op(parse)(&quot;(process-symbolic &quot; + data + &quot;)&quot;)();
+
+    /* Use Grapa for numerical operations */
+    grapa_result = lisp_result.map(op(x) { x * 2 });
+
+    /* Return to LISP for final formatting */
+    return op(parse)(&quot;(format-result &quot; + grapa_result + &quot;)&quot;)();
+};
+</code></pre></div>
+<h2 id="use-cases">Use Cases</h2>
+<h3 id="1-educational-programming"><strong>1. Educational Programming</strong></h3>
 <ul>
-<li>✅ Use matrices &lt; 50x50 for real-time applications</li>
-<li>✅ Pre-allocate matrices when possible</li>
-<li>✅ Use appropriate data types (INT vs FLOAT)</li>
-<li>✅ Monitor memory usage for large matrices</li>
-<li>✅ Use fast operations (sum, mean) for large datasets</li>
-<li>✅ Consider breaking large problems into smaller blocks</li>
+<li><strong>Teaching LISP concepts</strong> using Grapa's modern interface</li>
+<li><strong>Demonstrating functional programming</strong> principles</li>
+<li><strong>Showing the relationship</strong> between LISP and Grapa</li>
 </ul>
-<h3 id="donts">Don'ts</h3>
+<h3 id="2-symbolic-computation"><strong>2. Symbolic Computation</strong></h3>
 <ul>
-<li>❌ Don't use large matrices (&gt; 200x200) for real-time applications</li>
-<li>❌ Don't repeatedly allocate large matrices</li>
-<li>❌ Don't use eigenvalue calculations for large matrices (&gt; 50x50)</li>
-<li>❌ Don't ignore memory usage for large datasets</li>
-<li>❌ Don't use expensive operations when fast alternatives exist</li>
+<li><strong>Mathematical expression processing</strong></li>
+<li><strong>Code generation and transformation</strong></li>
+<li><strong>Rule-based systems</strong></li>
 </ul>
-<h3 id="performance-checklist">Performance Checklist</h3>
-<p>Before using vector operations, consider:</p>
-<ol>
-<li><strong>Matrix Size</strong>: Is it appropriate for your use case?</li>
-<li><strong>Operation Type</strong>: Are you using the most efficient operation?</li>
-<li><strong>Memory Usage</strong>: Do you have sufficient memory?</li>
-<li><strong>Data Types</strong>: Are you using appropriate data types?</li>
-<li><strong>Pre-allocation</strong>: Can you reuse allocated matrices?</li>
-<li><strong>Monitoring</strong>: Are you tracking performance and memory usage?</li>
-</ol>
+<h3 id="3-prototyping"><strong>3. Prototyping</strong></h3>
+<ul>
+<li><strong>Rapid language feature testing</strong></li>
+<li><strong>Algorithm experimentation</strong></li>
+<li><strong>Educational tool development</strong></li>
+</ul>
+<h3 id="4-legacy-system-integration"><strong>4. Legacy System Integration</strong></h3>
+<ul>
+<li><strong>LISP code migration</strong> to Grapa</li>
+<li><strong>Hybrid LISP/Grapa applications</strong></li>
+<li><strong>Gradual modernization</strong> of LISP systems</li>
+</ul>
+<h2 id="future-enhancements">Future Enhancements</h2>
+<h3 id="1-advanced-lisp-features"><strong>1. Advanced LISP Features</strong></h3>
+<ul>
+<li><strong>CLOS-style object system</strong></li>
+<li><strong>Advanced macro system</strong> with gensym</li>
+<li><strong>Stream processing</strong> capabilities</li>
+<li><strong>Lazy evaluation</strong> support</li>
+</ul>
+<h3 id="2-performance-improvements"><strong>2. Performance Improvements</strong></h3>
+<ul>
+<li><strong>Compiled LISP functions</strong></li>
+<li><strong>Optimized list operations</strong></li>
+<li><strong>Memory management</strong> for large expressions</li>
+<li><strong>Parallel evaluation</strong> support</li>
+</ul>
+<h3 id="3-tooling-integration"><strong>3. Tooling Integration</strong></h3>
+<ul>
+<li><strong>LISP syntax highlighting</strong></li>
+<li><strong>Interactive REPL</strong> with history</li>
+<li><strong>Debugging tools</strong> for LISP code</li>
+<li><strong>Code analysis</strong> and optimization</li>
+</ul>
 <h2 id="conclusion">Conclusion</h2>
-<p>Grapa's vector operations provide excellent performance for most use cases. By following these optimization guidelines, you can achieve:</p>
+<p>Grapa's LISP integration demonstrates the language's ability to implement its own inspiration while providing modern enhancements. This integration showcases:</p>
 <ul>
-<li><strong>Sub-second response</strong> for real-time applications</li>
-<li><strong>Efficient processing</strong> for batch operations</li>
-<li><strong>Optimal memory usage</strong> for large datasets</li>
-<li><strong>Robust error handling</strong> for edge cases</li>
+<li><strong>Natural language relationships</strong> - Grapa implementing LISP concepts</li>
+<li><strong>Metaprogramming power</strong> - Dynamic syntax and code generation</li>
+<li><strong>Educational value</strong> - Teaching LISP through modern tools</li>
+<li><strong>Practical applications</strong> - Symbolic computation and prototyping</li>
 </ul>
-<p>The key is choosing the right matrix size and operations for your specific use case, while monitoring performance and memory usage appropriately.</p>
+<p>The LISP integration serves as both a tribute to Grapa's heritage and a demonstration of its unique capabilities in language implementation and metaprogramming.</p>
 
 
 
 
 
 
+
+  
+  
 
 
 
