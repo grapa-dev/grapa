@@ -1,0 +1,83 @@
+/*
+ * HTTPS Test Script
+ * Demonstrates using SSL certificates with the curl function
+ */
+
+/* Load the curl function */
+echo("Loading curl function...");
+
+/* Test HTTPS with self-signed certificates */
+echo("Testing HTTPS with self-signed certificates...");
+
+/* Test 1: Basic HTTPS request (will likely fail due to self-signed cert) */
+echo("Test 1: Basic HTTPS request to httpbin.org");
+result1 = get("https://httpbin.org/get");
+if (result1.error) {
+    ("Error: " + result1.error).echo();
+} else {
+    ("Success: Status " + result1.status_code).echo();
+}
+
+/* Test 2: HTTPS with insecure flag (should work) */
+echo("Test 2: HTTPS with insecure flag");
+options2 = {insecure: true};
+result2 = get("https://httpbin.org/get", options2);
+if (result2.error) {
+    ("Error: " + result2.error).echo();
+} else {
+    ("Success: Status " + result2.status_code).echo();
+}
+
+/* Test 3: HTTPS with custom CA certificate */
+echo("Test 3: HTTPS with custom CA certificate");
+options3 = {ca_file: "keys/server.crt"};
+result3 = get("https://httpbin.org/get", options3);
+if (result3.error) {
+    ("Error: " + result3.error).echo();
+} else {
+    ("Success: Status " + result3.status_code).echo();
+}
+
+/* Test 4: Client certificate authentication (for servers that require it) */
+echo("Test 4: Client certificate authentication");
+options4 = {
+    cert_file: "keys/client.crt",
+    key_file: "keys/client.key",
+    verbose: true
+};
+result4 = get("https://httpbin.org/get", options4);
+if (result4.error) {
+    ("Error: " + result4.error).echo();
+} else {
+    ("Success: Status " + result4.status_code).echo();
+}
+
+/* Test 5: Full SSL configuration */
+echo("Test 5: Full SSL configuration");
+options5 = {
+    cert_file: "keys/client.crt",
+    key_file: "keys/client.key",
+    ca_file: "keys/server.crt",
+    verbose: true
+};
+result5 = get("https://httpbin.org/get", options5);
+if (result5.error) {
+    ("Error: " + result5.error).echo();
+} else {
+    ("Success: Status " + result5.status_code).echo();
+}
+
+echo("HTTPS testing complete!");
+
+/* Display certificate information */
+echo("Available certificates:");
+echo("  - keys/server.crt (server certificate)");
+echo("  - keys/server.key (server private key)");
+echo("  - keys/client.crt (client certificate)");
+echo("  - keys/client.key (client private key)");
+
+/* Note about self-signed certificates */
+echo("");
+echo("Note: These are self-signed certificates for testing.");
+echo("For production use, you would need proper CA-signed certificates.");
+echo("The 'insecure' option can be used to bypass certificate verification for testing.");

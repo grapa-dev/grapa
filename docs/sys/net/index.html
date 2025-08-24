@@ -14,7 +14,7 @@
         <link rel="prev" href="../math/">
       
       
-        <link rel="next" href="../sys/">
+        <link rel="next" href="../../curl_function/">
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
@@ -1884,7 +1884,16 @@
         <li class="md-nav__item">
   <a href="#httpmessageraw" class="md-nav__link">
     <span class="md-ellipsis">
-      httpmessage(raw)
+      httpmessage([raw])
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#httphttps-complete-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      HTTP/HTTPS Complete Example
     </span>
   </a>
   
@@ -1894,6 +1903,29 @@
   
 </nav>
       
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../curl_function/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    HTTP/HTTPS Client
+    
+  </span>
+  
+
+      </a>
     </li>
   
 
@@ -3317,29 +3349,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../../examples/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    Examples Overview
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../../python_use_cases/" class="md-nav__link">
         
   
@@ -4082,7 +4091,16 @@
         <li class="md-nav__item">
   <a href="#httpmessageraw" class="md-nav__link">
     <span class="md-ellipsis">
-      httpmessage(raw)
+      httpmessage([raw])
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#httphttps-complete-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      HTTP/HTTPS Complete Example
     </span>
   </a>
   
@@ -4254,8 +4272,52 @@ n2.send(&#39;POST / HTTP/1.1\r\nContent-Type: application/json\r\n\r\n{try:400}&
 n2.disconnect();
 </code></pre></div>
 <h2 id="httpread">httpread()</h2>
+<p>Reads HTTP response data from the connection.</p>
 <h2 id="httpsendmethodentityheaderbody">httpsend(method,entity,header,body)</h2>
-<h2 id="httpmessageraw">httpmessage(raw)</h2>
+<p>Sends an HTTP request using the specified method, entity (path), headers, and body.</p>
+<p><strong>Parameters:</strong>
+- <code>method</code>: HTTP method (GET, POST, PUT, DELETE, etc.)
+- <code>entity</code>: HTTP path (e.g., "/api/data")
+- <code>header</code>: Object containing HTTP headers
+- <code>body</code>: Request body content</p>
+<p><strong>Example:</strong>
+<div class="highlight"><pre><span></span><code>n2 = $net();
+n2.connect(&quot;httpbin.org:80&quot;, null, null);
+header = {&quot;Host&quot;: &quot;httpbin.org&quot;, &quot;User-Agent&quot;: &quot;Grapa-HTTP/1.0&quot;};
+n2.httpsend(&quot;GET&quot;, &quot;/get&quot;, header, &quot;&quot;);
+</code></pre></div></p>
+<h2 id="httpmessageraw">httpmessage([raw])</h2>
+<p>Parses HTTP response and automatically detects content type. Returns structured response with status, headers, and parsed body.</p>
+<p><strong>Returns:</strong>
+- <code>status</code>: Object with <code>code</code>, <code>description</code>, <code>version</code>
+- <code>headers</code>: Object containing response headers
+- <code>body</code>: Parsed response body (JSON, HTML, XML, or plain text)</p>
+<p><strong>Content Type Detection:</strong>
+The C++ implementation automatically detects and parses:
+- <strong>JSON</strong> (<code>application/json</code>, <code>text/json</code>) → Grapa objects
+- <strong>HTML</strong> (<code>text/html</code>) → Structured HTML objects
+- <strong>XML</strong> (<code>text/xml</code>, <code>application/xml</code>, <code>application/xhtml+xml</code>) → Structured XML objects
+- <strong>Plain Text</strong> (<code>text/plain</code>) → Raw string</p>
+<p><strong>Example:</strong>
+<div class="highlight"><pre><span></span><code>n2 = $net();
+n2.connect(&quot;httpbin.org:80&quot;, null, null);
+header = {&quot;Host&quot;: &quot;httpbin.org&quot;};
+n2.httpsend(&quot;GET&quot;, &quot;/get&quot;, header, &quot;&quot;);
+response = n2.httpmessage();
+response.status.code.echo();  // 200
+response.body.echo();         // Parsed JSON object
+n2.disconnect();
+</code></pre></div></p>
+<h2 id="httphttps-complete-example">HTTP/HTTPS Complete Example</h2>
+<p>See <a href="../../examples/curl_function_simple.grc">curl function example</a> for a complete HTTP/HTTPS client implementation.</p>
+<p><strong>HTTPS with SSL Certificates:</strong>
+<div class="highlight"><pre><span></span><code>n2 = $net();
+n2.connect(&quot;https://example.com:443&quot;, &quot;keys/client.crt&quot;, null);
+header = {&quot;Host&quot;: &quot;example.com&quot;};
+n2.httpsend(&quot;GET&quot;, &quot;/api/data&quot;, header, &quot;&quot;);
+response = n2.httpmessage();
+n2.disconnect();
+</code></pre></div></p>
 
 
 

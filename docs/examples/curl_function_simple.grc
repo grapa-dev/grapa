@@ -1,0 +1,109 @@
+/* Simple curl function for testing */
+parse_url = op(url_str) {
+    url = {};
+    if (url_str.left(7) == "http://") {
+        url.protocol = "http";
+        url_str = url_str.right(url_str.len() - 7);
+    } else if (url_str.left(8) == "https://") {
+        url.protocol = "https";
+        url_str = url_str.right(url_str.len() - 8);
+    } else {
+        url.protocol = "http";
+    };
+    
+    slash_pos = -1;
+    i = 0;
+    while (i < url_str.len()) {
+        if (url_str.mid(i, 1) == "/") {
+            slash_pos = i;
+            break;
+        };
+        i += 1;
+    };
+    
+    host_part = "";
+    if (slash_pos >= 0) {
+        host_part = url_str.left(slash_pos);
+        url.path = "/" + url_str.right(url_str.len() - slash_pos - 1);
+    } else {
+        host_part = url_str;
+        url.path = "/";
+    };
+    
+    url.host_port = host_part;
+    
+    /* Add default port if not specified */
+    if (url.host_port.right(1) != ":" && url.protocol == "http") {
+        url.host_port += ":80";
+    } else if (url.host_port.right(1) != ":" && url.protocol == "https") {
+        url.host_port += ":443";
+    };
+    
+    return url;
+};
+
+curl = op(url_str, options) {
+    if (options.type() != $LIST) {
+        options = {};
+    };
+    
+    url = parse_url(url_str);
+    
+    /* Use supreme example certificate pattern */
+    cert = null;
+    if (url.protocol == "https" && options.cert_file) {
+        cert = options.cert_file;
+    };
+    
+    n2 = $net();
+    n2.connect(url.host_port, cert, null);
+    
+    /* Build headers like supreme example */
+    header = {"Host": url.host_port};
+    if (!options.headers) {
+        options.headers = {};
+    };
+    
+    /* Merge custom headers */
+    keys = options.headers.keys();
+    i = 0;
+    while (i < keys.len()) {
+        header[keys[i]] = options.headers[keys[i]];
+        i += 1;
+    };
+    
+    method = options.method || "GET";
+    n2.httpsend(method, url.path, header, "");
+    
+    parsed_response = n2.httpmessage();
+    n2.disconnect();
+    
+    return {
+        "status_code": parsed_response.status.code.int(),
+        "status_text": parsed_response.status.description,
+        "headers": parsed_response.headers,
+        "body": parsed_response.body
+    };
+};
+
+/* Test the functions */
+"Testing parse_url function...".echo();
+url = parse_url("http://httpbin.org/get");
+url.echo();
+
+"Testing curl function...".echo();
+result = curl("http://httpbin.org/get");
+result.status_code.echo();
+result.body.echo();
+
+"Testing curl with custom headers...".echo();
+result2 = curl("http://httpbin.org/get", {headers: {"User-Agent": "Grapa-Curl-Test/1.0"}});
+result2.status_code.echo();
+
+"Testing HTTPS with certificate...".echo();
+result3 = curl("https://httpbin.org/get", {cert_file: "keys/client.crt"});
+result3.status_code.echo();
+
+"Testing HTTPS without certificate...".echo();
+result4 = curl("https://httpbin.org/get");
+result4.status_code.echo();

@@ -1673,6 +1673,29 @@
   
   
     <li class="md-nav__item">
+      <a href="../../curl_function/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    HTTP/HTTPS Client
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../sys/sys/" class="md-nav__link">
         
   
@@ -2783,6 +2806,24 @@
   <a href="#dynamic-variable-access-in-functions" class="md-nav__link">
     <span class="md-ellipsis">
       Dynamic Variable Access in Functions
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#passing-variable-names-as-strings" class="md-nav__link">
+    <span class="md-ellipsis">
+      Passing Variable Names as Strings
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#arbitrary-variable-names-unicode-workaround" class="md-nav__link">
+    <span class="md-ellipsis">
+      Arbitrary Variable Names (Unicode Workaround)
     </span>
   </a>
   
@@ -4484,29 +4525,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../../examples/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    Examples Overview
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../../python_use_cases/" class="md-nav__link">
         
   
@@ -5630,6 +5648,24 @@
   <a href="#dynamic-variable-access-in-functions" class="md-nav__link">
     <span class="md-ellipsis">
       Dynamic Variable Access in Functions
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#passing-variable-names-as-strings" class="md-nav__link">
+    <span class="md-ellipsis">
+      Passing Variable Names as Strings
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#arbitrary-variable-names-unicode-workaround" class="md-nav__link">
+    <span class="md-ellipsis">
+      Arbitrary Variable Names (Unicode Workaround)
     </span>
   </a>
   
@@ -7183,13 +7219,30 @@ while (i &lt; keys.len()) {
     (key + &quot;: &quot; + value.str()).echo();
     i += 1;
 }
+
+/* Get all keys from a list */
+config_keys = config.keys();     /* Returns [&quot;debug&quot;, &quot;port&quot;, &quot;host&quot;] */
+
+/* Keys can be strings or identifiers */
+mixed_obj = {a: 3, &quot;b&quot;: 5, c: &quot;value&quot;};
+mixed_keys = mixed_obj.keys();   /* Returns [a, &quot;b&quot;, c] */
+
+/* Iterate using .keys() */
+all_keys = config.keys();
+i = 0;
+while (i &lt; all_keys.len()) {
+    key = all_keys[i];
+    value = config[key];
+    (key + &quot;: &quot; + value.str()).echo();
+    i += 1;
+}
 </code></pre></div>
 <p><strong>List Methods:</strong>
 - <code>list[key]</code> - Access element by key (preferred)
 - <code>list.key</code> - Access element by key (alternative)
 - <code>list.len()</code> - Get list length
 - <code>list.get(key)</code> - <strong>Not supported</strong> (use bracket notation)
-- <code>list.keys()</code> - <strong>Not supported</strong> (iterate manually)</p>
+- <code>list.keys()</code> - Get array of all keys (supports both <code>$STR</code> and <code>$ID</code> keys)</p>
 <h3 id="object-type-obj">Object Type (<code>$OBJ</code>)</h3>
 <p>Objects are instances of classes and support property access:</p>
 <div class="highlight"><pre><span></span><code>/* Define a class */
@@ -7431,7 +7484,7 @@ b = &quot;a&quot;;
 @@b;       /* Returns 5 (the value of variable a) */
 </code></pre></div>
 <h4 id="dynamic-variable-access-in-functions">Dynamic Variable Access in Functions</h4>
-<p>This enables dynamic variable access and modification in functions:</p>
+<p>This enables dynamic variable access and modification in functions by passing variable names as strings:</p>
 <div class="highlight"><pre><span></span><code>/* Function that can access any variable by name */
 f = op(var_name) {
     return @@var_name;  /* Get value of variable named in var_name */
@@ -7448,6 +7501,119 @@ f(&quot;x&quot;);     /* Returns 10 */
 f2(&quot;x&quot;, 20); /* Sets x to 20 */
 f(&quot;x&quot;);     /* Returns 20 */
 </code></pre></div>
+<h4 id="passing-variable-names-as-strings">Passing Variable Names as Strings</h4>
+<p>You can pass variable names as strings to functions without passing the actual variables, then use <code>@</code> to access them:</p>
+<div class="highlight"><pre><span></span><code>/* Function that works with variable names passed as strings */
+update_config = op(setting_name, new_value) {
+    /* Access the variable whose name is in setting_name */
+    @setting_name = new_value;
+    (&quot;Updated &quot; + setting_name + &quot; to &quot; + new_value).echo();
+};
+
+/* Function that reads multiple settings by name */
+read_settings = op(setting_names) {
+    result = {};
+    setting_names.range().each(op(i) {
+        setting_name = setting_names[i];
+        result[setting_name] = @@setting_name;  /* Get value of variable named in setting_name */
+    });
+    return result;
+};
+
+/* Usage */
+database_host = &quot;localhost&quot;;
+database_port = 5432;
+max_connections = 100;
+
+/* Update settings by passing names as strings */
+update_config(&quot;database_host&quot;, &quot;production.db.com&quot;);
+update_config(&quot;max_connections&quot;, 200);
+
+/* Read multiple settings by passing names as strings */
+settings = read_settings([&quot;database_host&quot;, &quot;database_port&quot;, &quot;max_connections&quot;]);
+/* Returns: {&quot;database_host&quot;:&quot;production.db.com&quot;,&quot;database_port&quot;:5432,&quot;max_connections&quot;:200} */
+</code></pre></div>
+<p><strong>Key Benefits:</strong>
+- <strong>Dynamic access</strong>: Functions can work with any variable without knowing its name at compile time
+- <strong>String-based API</strong>: Pass variable names as strings for flexible function interfaces
+- <strong>Batch operations</strong>: Process multiple variables by passing arrays of names
+- <strong>Configuration management</strong>: Update settings by name without hardcoding variable references
+- <strong>Language integration</strong>: Essential for implementing interpreters and language bridges</p>
+<h4 id="arbitrary-variable-names-unicode-workaround">Arbitrary Variable Names (Unicode Workaround)</h4>
+<p>Grapa supports using arbitrary strings as variable names, including Unicode characters, spaces, and special characters, through the <code>@this["variable name"]</code> syntax. This serves as a <strong>workaround for Unicode variable names</strong> until proper Unicode support is added to the <code>$ID</code> token system:</p>
+<p><div class="highlight"><pre><span></span><code>/* Create variables with Unicode characters, spaces, and special characters */
+@this[&quot;x y&quot;] = {a: 1, b: &quot;hi&quot;};
+@this[&quot;user-name&quot;] = &quot;John Doe&quot;;
+@this[&quot;config.setting&quot;] = true;
+@this[&quot;π&quot;] = 3.14159;
+@this[&quot;用户设置&quot;] = {&quot;theme&quot;: &quot;dark&quot;, &quot;language&quot;: &quot;中文&quot;};
+@this[&quot;café&quot;] = &quot;coffee shop&quot;;
+
+/* Access these variables */
+@&quot;x y&quot;;                    /* Returns {&quot;a&quot;:1,&quot;b&quot;:&quot;hi&quot;} */
+@&quot;user-name&quot;;              /* Returns &quot;John Doe&quot; */
+@&quot;config.setting&quot;;         /* Returns true */
+@&quot;π&quot;;                      /* Returns 3.14159 */
+@&quot;用户设置&quot;;                /* Returns {&quot;theme&quot;:&quot;dark&quot;,&quot;language&quot;:&quot;中文&quot;} */
+@&quot;café&quot;;                   /* Returns &quot;coffee shop&quot; */
+
+/* Modify properties of these variables */
+(@&quot;x y&quot;).a = 5;            /* Sets a to 5 */
+@&quot;用户设置&quot;.theme = &quot;light&quot;; /* Sets theme to &quot;light&quot; */
+@&quot;π&quot; = 3.14;               /* Updates π to 3.14 */
+
+/* String-based property access and modification */
+@&quot;x y&quot;[&quot;b&quot;] = &quot;xy&quot;;        /* Bracket notation with string literal */
+@&quot;x y&quot;.b = &quot;55&quot;;           /* Dot notation */
+@&quot;x y&quot;.&quot;b&quot; = 101;          /* Dot notation with string literal */
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>**Key Benefits:**
+- **Unicode support**: Use Unicode characters in variable names (π, 用户设置, café, etc.)
+- **Flexible naming**: Use spaces, hyphens, dots, and other characters in variable names
+- **Dynamic access**: Access variables using string literals with `@&quot;variable name&quot;`
+- **Property modification**: Modify properties of these variables using standard dot notation
+- **Integration with indirection**: Works seamlessly with `@` and `@@` operators
+
+**Use Cases:**
+- **International development**: Use native language variable names (用户设置, настроики, etc.)
+- **Mathematical programming**: Use mathematical symbols (π, θ, Σ, etc.)
+- **Configuration management**: Use descriptive names like `@&quot;database.connection.timeout&quot;`
+- **User data**: Store user preferences with natural names like `@&quot;user preferences&quot;`
+- **API responses**: Map external data with original field names
+- **Language integration**: Support variable names from other languages that don&#39;t follow Grapa&#39;s `$ID` rules
+
+**Note**: This is a **temporary workaround** for Unicode variable names. Future versions of Grapa will support Unicode characters directly in `$ID` tokens, making this syntax unnecessary for simple Unicode variable names.
+
+#### String-Based Property Access
+
+When accessing variables through indirection, you can use various syntaxes for property access and modification:
+
+```grapa
+/* Create a variable with properties */
+@this[&quot;x y&quot;] = {a: &quot;xy&quot;, b: &quot;xy&quot;};
+
+/* Different ways to access and modify properties */
+@&quot;x y&quot;[&quot;b&quot;] = &quot;xy&quot;;        /* Bracket notation with string literal */
+@&quot;x y&quot;.b = &quot;55&quot;;           /* Dot notation with identifier */
+@&quot;x y&quot;.&quot;b&quot; = 101;          /* Dot notation with string literal */
+
+/* All three syntaxes work for both reading and writing */
+value1 = @&quot;x y&quot;[&quot;b&quot;];      /* Bracket notation */
+value2 = @&quot;x y&quot;.b;         /* Dot notation with identifier */
+value3 = @&quot;x y&quot;.&quot;b&quot;;       /* Dot notation with string literal */
+
+/* Check the result */
+@&quot;x y&quot;;                    /* Returns {&quot;a&quot;:&quot;xy&quot;,&quot;b&quot;:101} */
+</code></pre></div></p>
+<p><strong>Property Access Syntax Options:</strong>
+- <strong>Bracket notation</strong>: <code>@"variable name"["property"]</code> - Most flexible, supports any string
+- <strong>Dot notation with identifier</strong>: <code>@"variable name".property</code> - Clean syntax for simple property names
+- <strong>Dot notation with string literal</strong>: <code>@"variable name"."property"</code> - Combines dot notation with string literals</p>
+<p><strong>Benefits:</strong>
+- <strong>Flexible property names</strong>: Use bracket notation for properties with spaces or special characters
+- <strong>Consistent syntax</strong>: All three forms work for both reading and writing
+- <strong>String-based access</strong>: Property names can be stored in variables and used dynamically
+- <strong>Unicode support</strong>: Property names can include Unicode characters</p>
 <h4 id="importance-for-native-syntax">Importance for Native Syntax</h4>
 <p>Variable indirection is crucial for implementing <strong>true native syntax</strong> because:</p>
 <ul>
@@ -7455,6 +7621,7 @@ f(&quot;x&quot;);     /* Returns 20 */
 <li><strong>Dynamic evaluation</strong>: Functions can work with variable names passed as parameters</li>
 <li><strong>Symbol tables</strong>: Enables implementation of symbol tables and environments</li>
 <li><strong>Language integration</strong>: Essential for implementing languages like LISP, PROLOG, and SQL that need dynamic variable access</li>
+<li><strong>Arbitrary names</strong>: Support for variable names that don't conform to standard identifier rules</li>
 </ul>
 <p>This feature enables Grapa's unique capability to add <strong>true native syntax</strong> for other programming languages through its rule-based grammar system.</p>
 <h3 id="const-protection">Const Protection</h3>
