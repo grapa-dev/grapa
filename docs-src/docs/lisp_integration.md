@@ -103,7 +103,7 @@ op(parse)("(cdr (list 1 2 3))")();  /* Returns [2, 3] */
 op(parse)("(cons 0 (list 1 2 3))")();  /* Returns [0, 1, 2, 3] */
 ```
 
-### Working LISP Syntax Implementation
+### Example LISP Syntax Implementation
 
 ```grapa
 /* Initialize custom_command and custom_function for LISP syntax */

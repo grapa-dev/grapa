@@ -1,7 +1,7 @@
 /* SQL Syntax Extension Example - True Native Syntax Using Grapa Grammar System */
 
 /* Step 1: Set up database table */
-("Setting up users table...").echo();
+("Setting up users table...\n").echo();
 users_table = $file().table("users");
 users_table.set("user1", "Alice", "name");
 users_table.set("user1", 25, "age");
@@ -20,10 +20,41 @@ users_table.set("user3", "Chicago", "city");
 /* Step 2: Define SQL syntax using Grapa's grammar system - NO MANUAL PARSING */
 
 /* Initialize custom_command and custom_function for SQL syntax */
-("Defining SQL syntax with native grammar...").echo();
+("Defining SQL syntax with native grammar...\n").echo();
 
-/* SELECT statement with granular grammar rules */
-custom_command = rule select $STR from $STR {op(fields:$2,table_name:$4){
+/* SELECT with individual field parsing - TRUE NATIVE SYNTAX (MOST SPECIFIC FIRST) */
+custom_command = rule select $STR ',' $STR from $STR {op(field1:$2,field2:$4,table_name:$6){
+    ("SQL SELECT: " + field1 + "," + field2 + " FROM " + table_name + "\n").echo();
+    
+    if (table_name == "users") {
+        records = users_table.ls();
+        ("Found " + records.len() + " records:\n").echo();
+        
+        i = 0;
+        while (i < records.len()) {
+            record = records[i];
+            key = record.getname(1);
+            name = users_table.get(key, "name");
+            age = users_table.get(key, "age");
+            city = users_table.get(key, "city");
+            
+            if (field1 == "name" && field2 == "age") {
+                ("  " + name + " (age " + age + ")\n").echo();
+            } else if (field1 == "name" && field2 == "city") {
+                ("  " + name + " (" + city + ")\n").echo();
+            } else if (field1 == "age" && field2 == "city") {
+                ("  " + age + " (" + city + ")\n").echo();
+            };
+            
+            i = i + 1;
+        };
+    } else {
+        ("Unknown table: " + table_name + "\n").echo();
+    };
+}};
+
+/* SELECT with native grammar - individual field parsing (LESS SPECIFIC) */
+custom_command ++= rule select $STR from $STR {op(fields:$2,table_name:$4){
     ("SQL SELECT: " + fields + " FROM " + table_name).echo();
     
     if (table_name == "users") {
@@ -53,37 +84,6 @@ custom_command = rule select $STR from $STR {op(fields:$2,table_name:$4){
     };
 }};
 
-/* SELECT with individual field parsing - TRUE NATIVE SYNTAX */
-custom_command = custom_command | rule select $STR ',' $STR from $STR {op(field1:$2,field2:$4,table_name:$6){
-    ("SQL SELECT: " + field1 + "," + field2 + " FROM " + table_name).echo();
-    
-    if (table_name == "users") {
-        records = users_table.ls();
-        ("Found " + records.len() + " records:").echo();
-        
-        i = 0;
-        while (i < records.len()) {
-            record = records[i];
-            key = record.getname(1);
-            name = users_table.get(key, "name");
-            age = users_table.get(key, "age");
-            city = users_table.get(key, "city");
-            
-            if (field1 == "name" && field2 == "age") {
-                ("  " + name + " (age " + age + ")").echo();
-            } else if (field1 == "name" && field2 == "city") {
-                ("  " + name + " (" + city + ")").echo();
-            } else if (field1 == "age" && field2 == "city") {
-                ("  " + age + " (" + city + ")").echo();
-            };
-            
-            i = i + 1;
-        };
-    } else {
-        ("Unknown table: " + table_name).echo();
-    };
-}};
-
 /* COUNT function with native grammar */
 custom_function = rule count '(' $STR ')' from $STR {op(field:$3,table_name:$6){
     ("SQL COUNT: " + field + " FROM " + table_name).echo();
@@ -100,7 +100,7 @@ custom_function = rule count '(' $STR ')' from $STR {op(field:$3,table_name:$6){
 }};
 
 /* INSERT with individual value parsing - TRUE NATIVE SYNTAX */
-custom_command = custom_command | rule insert into $STR values $STR ',' $INT ',' $STR {op(table_name:$3,name:$6,age:$8,city:$10){
+custom_command ++= rule insert into $STR values $STR ',' $INT ',' $STR {op(table_name:$3,name:$6,age:$8,city:$10){
     ("SQL INSERT: " + table_name + " VALUES " + name + "," + age + "," + city).echo();
     
     if (table_name == "users") {
@@ -118,7 +118,7 @@ custom_command = custom_command | rule insert into $STR values $STR ',' $INT ','
 }};
 
 /* UPDATE with native grammar */
-custom_command = custom_command | rule update $STR set $STR '=' $STR where $STR '=' $STR {op(table_name:$2,field:$4,value:$6,where_field:$8,where_value:$10){
+custom_command ++= rule update $STR set $STR '=' $STR where $STR '=' $STR {op(table_name:$2,field:$4,value:$6,where_field:$8,where_value:$10){
     ("SQL UPDATE: " + table_name + " SET " + field + "=" + value + " WHERE " + where_field + "=" + where_value).echo();
     
     if (table_name == "users") {
@@ -152,7 +152,7 @@ custom_command = custom_command | rule update $STR set $STR '=' $STR where $STR 
 }};
 
 /* DELETE with native grammar */
-custom_command = custom_command | rule delete from $STR where $STR '=' $STR {op(table_name:$3,where_field:$5,where_value:$7){
+custom_command ++= rule delete from $STR where $STR '=' $STR {op(table_name:$3,where_field:$5,where_value:$7){
     ("SQL DELETE: " + table_name + " WHERE " + where_field + "=" + where_value).echo();
     
     if (table_name == "users") {
@@ -181,56 +181,57 @@ custom_command = custom_command | rule delete from $STR where $STR '=' $STR {op(
 
 ("SQL native syntax defined!\n").echo();
 
-/* Step 3: Execute SQL syntax using op(parse)() - TRUE NATIVE SYNTAX */
+/* Step 3: Test SQL syntax using op()(script)() or script.exec() */
 
-("=== Executing SQL Native Syntax ===").echo();
+("=== Testing SQL Native Syntax ===\n").echo();
 
-("1. SELECT all users:").echo();
-op(parse)("select * from users")();
+("1. SELECT all users:\n").echo();
+op()('select "*" from "users"')();
 
-("\n2. SELECT specific fields (native grammar):").echo();
-op(parse)("select name,age from users")();
+("2. SELECT specific fields (native grammar):\n").echo();
+op()('select "name","age" from "users"')();
 
-("\n3. COUNT users:").echo();
-user_count = op(parse)("count(*) from users")();
-("Total users: " + user_count).echo();
+("3. COUNT users:\n").echo();
+count_result = op()('count("*") from "users"')();
+("Total users: " + count_result + "\n").echo();
 
-("\n4. INSERT new user (native grammar):").echo();
-op(parse)("insert into users values David,40,Seattle")();
+("4. INSERT new user (native grammar):\n").echo();
+op()('insert into "users" values "David","28","Seattle"')();
 
-("\n5. UPDATE user (native grammar):").echo();
-op(parse)("update users set age=45 where name=David")();
+("5. UPDATE user (native grammar):\n").echo();
+op()('update "users" set "age"="29" where "name"="Alice"')();
 
-("\n6. SELECT after changes:").echo();
-op(parse)("select * from users")();
+("6. SELECT after changes:\n").echo();
+op()('select "*" from "users"')();
 
-("\n7. DELETE user (native grammar):").echo();
-op(parse)("delete from users where name=David")();
+("7. DELETE user (native grammar):\n").echo();
+op()('delete from "users" where "name"="Charlie"')();
 
-("\n8. SELECT after DELETE:").echo();
-op(parse)("select * from users")();
+("8. SELECT after DELETE:\n").echo();
+op()('select "*" from "users"')();
 
-("\n9. COUNT after changes:").echo();
-new_count = op(parse)("count(*) from users")();
-("Updated count: " + new_count).echo();
+("9. COUNT after changes:\n").echo();
+updated_count = op()('count("*") from "users"')();
+("Updated count: " + updated_count + "\n").echo();
 
 /* Step 4: Demonstrate expression usage */
-("\n=== Expression Usage ===").echo();
+("=== Expression Usage ===").echo();
 
 ("Using COUNT in expressions:").echo();
-total = op(parse)("count(*) from users")() + 5;
-("Count + 5 = " + total).echo();
+count_plus_5 = count_result + 5;
+("Count + 5 = " + count_plus_5).echo();
 
 ("Using COUNT in comparisons:").echo();
-if (op(parse)("count(*) from users")() > 3) {
-    ("More than 3 users found!").echo();
-} else {
+if (updated_count <= 3) {
     ("3 or fewer users").echo();
+} else {
+    ("More than 3 users").echo();
 };
 
-("\n=== Power of Native Syntax ===").echo();
+("=== Power of Native Syntax ===").echo();
 ("This demonstrates TRUE native syntax using Grapa's grammar system.").echo();
 ("All parsing is handled by Grapa's grammar - no manual string manipulation.").echo();
 ("The grammar rules capture individual components as separate tokens.").echo();
 ("Implementation code receives already-parsed, structured data.").echo();
-("Multiple SQL syntax patterns coexist using the | operator.").echo(); 
+("Multiple SQL syntax patterns coexist using the ++= operator.").echo();
+("SQL syntax is now truly native to Grapa!").echo(); 

@@ -196,6 +196,167 @@ Note that with left recursion, the subtraction happens first resulting in (5-3)+
 
 Rules can be dynamically composed and extended using the `++=` operator (see [Assignment Operators](../operators/assignment.md#)), which allows you to concatenate additional rule alternatives to an existing rule. This enables dynamic grammar construction and runtime rule modification.
 
+### Appending to Existing Rules
+
+**Important**: To add additional alternatives to an existing rule, use the `++=` operator, not the `|` operator. The `|` operator only works within a single rule definition, while `++=` allows you to append to an existing rule variable.
+
+#### Self-Modifying Grammar System
+
+Grapa's grammar system is **self-modifying** - the BNF (Backus-Naur Form) in `lib/grapa/$grapa.grc` defines the rules for creating and modifying grammar rules themselves. This creates a powerful meta-programming capability where:
+
+- **The grammar defines how to define grammar rules**
+- **Rules can be modified at runtime using the same grammar system**
+- **The `|` operator creates alternatives within a single rule definition**
+- **The `++=` operator appends new alternatives to existing rule variables**
+
+#### Token Types and Syntax
+
+Based on the Grapa grammar system in `lib/grapa/$grapa.grc`, there are important distinctions between token types:
+
+**Identifier Tokens (automatic conversion):**
+```grapa
+/* Define initial rule with identifier */
+custom_command = rule test {op(){'matched first'}};
+
+/* Append additional alternatives using ++= */
+custom_command ++= rule test2 {op(){'matched second'}};
+custom_command ++= rule test3 {op(){'matched third'}};
+
+/* Test the rule - use identifiers directly */
+test;   /* Returns: 'matched first' */
+test2;  /* Returns: 'matched second' */
+test3;  /* Returns: 'matched third' */
+```
+
+**String Tokens (explicit conversion required):**
+```grapa
+/* Define initial rule with string token */
+custom_command = rule $STR('first') {op(){'matched first'}};
+
+/* Append additional alternatives using ++= */
+custom_command ++= rule $STR('second') {op(){'matched second'}};
+custom_command ++= rule $STR('third') {op(){'matched third'}};
+
+/* Test the rule - use string literals */
+"first";   /* Returns: 'matched first' */
+"second";  /* Returns: 'matched second' */
+"third";   /* Returns: 'matched third' */
+```
+
+**Key Points:**
+- **`++=` operator**: Appends new rule alternatives to existing rule variables
+- **`|` operator**: Only works within a single rule definition for alternatives
+- **`$ID` tokens**: Automatically converted (e.g., `test` becomes identifier)
+- **`$STR` tokens**: Require explicit conversion (e.g., `$STR('test')` for strings)
+- **Dynamic grammar construction**: Enables building complex grammars incrementally
+- **Runtime rule modification**: Rules can be extended during program execution
+- **Self-modifying grammar**: The BNF defines how to modify the BNF itself
+
+#### BNF Structure for Rule Definition
+
+The grammar system uses this pattern for defining rules:
+
+```grapa
+@global["$option_list"]
+	= rule <$option> '|' <$option_list> {@<prepend,{$3,$1}>}
+	| <$option> {@<createrule,{$1}>}
+	;
+```
+
+This shows:
+- **`= rule`**: Defines a new rule
+- **`|`**: Creates alternatives within the same rule definition
+- **`{@<createrule,{$1}>}`**: Creates a rule from the parsed tokens
+- **`{@<prepend,{$3,$1}>}`**: Prepends new alternatives to existing rules
+
+#### Rule Alternative Ordering for Backtracking
+
+**Critical**: Rule alternatives must be ordered from **most specific to least specific** (longest to shortest token sequences). This is essential for proper backtracking in the rule engine.
+
+**Correct Ordering Pattern:**
+```grapa
+@global["$list2"]
+	= rule ',' ',' <$list2> {@<prepend,{$3,null,null}>}    /* 3 tokens */
+	| ',' <$list2> {@<prepend,{$2,null}>}                  /* 2 tokens */
+	| <$param2> ',' <$list2> {@<prepend,{$3,$1}>}          /* 3 tokens */
+	| <$param2> ',' {@<createlist,{$1,null}>}              /* 2 tokens */
+	| <$param2> {@<createlist,{$1}>}                       /* 1 token */
+	| ',' {@<createlist,{null,null}>}                      /* 1 token */
+	;
+```
+
+**Why This Ordering Matters:**
+- **Backtracking**: The rule engine tries alternatives in order
+- **Greedy Matching**: Longer patterns must come first to be matched
+- **Prevention of Short-Circuiting**: If a simple rule comes first, it will always match and prevent longer, more specific rules from being reached
+- **Ambiguity Resolution**: More specific rules should take precedence
+
+**Example of Incorrect Ordering:**
+```grapa
+/* WRONG - Simple rule first will prevent longer rules from matching */
+custom_command = rule test {op(){'simple'}};                    /* 1 token - too early! */
+custom_command ++= rule test $STR {op(arg:$2){'with arg'}};     /* 2 tokens - never reached */
+custom_command ++= rule test $STR $STR {op(arg1:$2,arg2:$3){'with 2 args'}}; /* 3 tokens - never reached */
+```
+
+**Correct Ordering:**
+```grapa
+/* CORRECT - Most specific rules first */
+custom_command = rule test $STR $STR {op(arg1:$2,arg2:$3){'with 2 args'}}; /* 3 tokens */
+custom_command ++= rule test $STR {op(arg:$2){'with arg'}};     /* 2 tokens */
+custom_command ++= rule test {op(){'simple'}};                  /* 1 token - last */
+```
+
+#### Testing Custom Rules
+
+**Important**: Custom rules must be tested using string execution since they cannot be used in the same script where they are defined (due to compilation timing).
+
+```grapa
+/* Define custom rules */
+custom_command = rule test {op(){'simple'}};
+custom_command ++= rule test $STR {op(arg:$2){'with arg: ' + arg}};
+
+/* Test using string execution */
+op()("test")();                    /* Returns: 'simple' */
+op()("test hello")();              /* Returns: 'with arg: hello' */
+
+/* Alternative testing method */
+script1 = "test";
+script2 = "test hello";
+script1.exec();                    /* Returns: 'simple' */
+script2.exec();                    /* Returns: 'with arg: hello' */
+```
+
+**Note**: Custom rules do not persist when the application exits. They must be redefined in each session.
+
+### Language Integration Example
+
+This pattern is commonly used for implementing domain-specific languages and syntax extensions:
+
+```grapa
+/* Initialize SQL syntax */
+custom_command = rule select $STR from $STR {op(fields:$2,table:$4){
+    ("SELECT " + fields + " FROM " + table).echo();
+}};
+
+/* Add INSERT syntax */
+custom_command ++= rule insert into $STR values $STR ',' $INT ',' $STR {op(table:$3,name:$6,age:$8,city:$10){
+    ("INSERT INTO " + table + " VALUES " + name + "," + age + "," + city).echo();
+}};
+
+/* Add UPDATE syntax */
+custom_command ++= rule update $STR set $STR '=' $STR where $STR '=' $STR {op(table:$2,field:$4,value:$6,where_field:$8,where_value:$10){
+    ("UPDATE " + table + " SET " + field + "=" + value + " WHERE " + where_field + "=" + where_value).echo();
+}};
+
+/* Add DELETE syntax */
+custom_command ++= rule delete from $STR where $STR '=' $STR {op(table:$3,where_field:$5,where_value:$7){
+    ("DELETE FROM " + table + " WHERE " + where_field + "=" + where_value).echo();
+}};
+```
+
+This approach enables **true native syntax** implementation where multiple language constructs can coexist using Grapa's grammar system.
+
 ### Basic Rule Concatenation
 
 ```

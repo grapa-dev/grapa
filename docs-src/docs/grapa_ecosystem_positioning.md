@@ -24,7 +24,7 @@ Grapa's **executable BNF system** provides capabilities that modern languages ca
 - **Code-as-data manipulation** - Everything is JSON-like structures that can be modified and executed
 - **Human-readable execution trees** - Manipulate and transform code at the execution tree level
 - **Dynamic language creation** - Build domain-specific languages without external tools
-- **Multi-syntax processing** - Handle JSON, XML, HTML natively, with SQL and PROLOG as working implementations
+- **Multi-syntax processing** - Handle JSON, XML, HTML natively, with SQL, PROLOG, and LISP as example implementations
 
 **No other language provides this level of runtime flexibility and code manipulation capability.**
 
@@ -56,14 +56,14 @@ op(parse)("?- parent(john,X)")();
 - **Immediate execution** - New syntax works immediately without compilation
 - **Seamless integration** - Mix native Grapa with custom syntax in the same script
 - **Full BNF power** - Complex grammar rules with precedence and recursion
-- **Production ready** - Working implementations of SQL and PROLOG
+- **Example implementations** - Demonstrations of SQL, PROLOG, and LISP syntax using the grammar system
 
 **Comparison with Other Languages:**
 - **Python, JavaScript, Java, C#, Go, Rust**: No runtime syntax extension
 - **Lisp/Scheme**: Macro systems but limited to existing syntax patterns
 - **Racket**: Language-oriented programming but separate languages
 - **Haskell**: Template Haskell but compile-time only
-- **Grapa**: **Unique** - Full runtime grammar extension with working implementations
+- **Grapa**: **Unique** - Full runtime grammar extension with example implementations
 
 **This capability is unprecedented in modern programming languages.**
 
@@ -87,12 +87,16 @@ data = {"name": "John", "age": 30};
 /* XML processing (native) */
 xml = <user><name>John</name><age>30</age></user>;
 
-/* SQL processing (working implementation) */
+/* SQL processing (example implementation) */
 result = op(parse)("SELECT * FROM users WHERE age > 25")();
 
-/* PROLOG processing (working implementation) */
+/* PROLOG processing (example implementation) */
 op(parse)("parent(john,mary).")();
 query_results = op(parse)("?- parent(john,X)")();
+
+/* LISP processing (example implementation) */
+op(parse)("(car (1 2 3))")();
+op(parse)("(defun square (x) (* x x))")();
 
 /* All in the same script! */
 ```
@@ -235,7 +239,7 @@ This table ranks programming languages across key capabilities, showing where Gr
 | Capability/Feature | **Grapa** | Python | JavaScript | TypeScript | Go | Rust | Swift | Kotlin | Ruby |
 |-------------------|-----------|--------|------------|------------|----|------|-------|--------|------|
 | **Meta-Programming** | **⭐⭐⭐⭐⭐ (Executable BNF, Runtime Grammar)** | ⭐⭐ (eval, inspect) | ⭐⭐ (eval, Proxy) | ⭐⭐ (eval, Proxy) | ⭐ (reflect) | ⭐⭐ (macros) | ⭐ (mirror) | ⭐⭐ (reflection) | ⭐⭐⭐ (eval, metaprogramming) |
-| **Runtime Grammar Extension** | **⭐⭐⭐⭐⭐ (Working SQL, PROLOG Implementations)** | ⭐ (None) | ⭐ (None) | ⭐ (None) | ⭐ (None) | ⭐⭐ (Procedural macros) | ⭐ (None) | ⭐ (None) | ⭐ (None) |
+| **Runtime Grammar Extension** | **⭐⭐⭐⭐⭐ (Example SQL, PROLOG, LISP Implementations)** | ⭐ (None) | ⭐ (None) | ⭐ (None) | ⭐ (None) | ⭐⭐ (Procedural macros) | ⭐ (None) | ⭐ (None) | ⭐ (None) |
 | **Dynamic Syntax Creation** | **⭐⭐⭐⭐⭐ (Human-readable Execution Trees)** | ⭐⭐ (exec, eval) | ⭐⭐ (Function constructor) | ⭐⭐ (Function constructor) | ⭐ (reflect) | ⭐⭐ (procedural macros) | ⭐ (mirror) | ⭐⭐ (reflection) | ⭐⭐⭐ (eval, define_method) |
 | **Multi-Syntax Processing** | **⭐⭐⭐⭐⭐ (JSON, XML, HTML Native + unified dot notation + .findall())** | ⭐⭐ (json, xml libs) | ⭐⭐ (JSON native, xml libs) | ⭐⭐ (JSON native, xml libs) | ⭐⭐ (json, xml libs) | ⭐⭐ (serde) | ⭐⭐ (Codable) | ⭐⭐ (serialization) | ⭐⭐ (json, xml libs) |
 | **Unlimited Precision Math** | **⭐⭐⭐⭐⭐ (Native $INT, $FLOAT, $TIME)** | ⭐⭐⭐ (decimal, mpmath) | ⭐⭐ (BigInt) | ⭐⭐ (BigInt) | ⭐⭐ (big.Int) | ⭐⭐ (num-bigint) | ⭐⭐ (BigInt) | ⭐⭐ (BigInteger) | ⭐⭐ (BigDecimal) |
@@ -268,7 +272,7 @@ This table ranks programming languages across key capabilities, showing where Gr
 - **Grapa is competitive** in error handling, string interpolation, and file system access
 - **Grapa provides alternatives** for type safety and ecosystem maturity
 - **Grapa's unique strengths** are in areas where other languages require external libraries or complex setup
-- **Runtime grammar extension**: Grapa is the only modern language with working implementations of SQL and PROLOG syntax through runtime grammar extension
+- **Runtime grammar extension**: Grapa is the only modern language with example implementations of SQL, PROLOG, and LISP syntax through runtime grammar extension
 - **Multi-syntax advantage**: Grapa's unified dot notation and `.findall()` method work identically across JSON, XML, and HTML, providing enterprise-grade querying capabilities, and developers can extend multi-syntax support with custom grammar rules
 
 ## When Grapa's Superior Capabilities Are Essential
@@ -350,7 +354,7 @@ op(parse)("?- parent(john,X)")();
 - **Template engines** with dynamic syntax modification
 - **Multi-language environments** where different syntaxes need to coexist
 
-**Grapa is the only modern language with working implementations of SQL and PROLOG through runtime grammar extension.**
+**Grapa is the only modern language with example implementations of SQL, PROLOG, and LISP through runtime grammar extension.**
 
 #### **4. Binary Data Analysis**
 ```grapa

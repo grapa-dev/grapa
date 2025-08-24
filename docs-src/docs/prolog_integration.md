@@ -15,7 +15,7 @@ Grapa's executable BNF architecture allows you to add **true native PROLOG synta
 
 The PROLOG integration uses Grapa's **rule-based grammar system** exclusively. All parsing is handled by Grapa's grammar engine - **no manual string manipulation** is required.
 
-### Working PROLOG Syntax Implementation
+### Example PROLOG Syntax Implementation
 
 ```grapa
 /* Initialize custom_command and custom_function for PROLOG syntax */
@@ -27,7 +27,7 @@ custom_command = rule $STR '(' $STR ',' $STR ')' '.' {op(predicate:$1,arg1:$3,ar
 }};
 
 /* Fact with single argument */
-custom_command = custom_command | rule $STR '(' $STR ')' '.' {op(predicate:$1,arg1:$3){
+custom_command ++= rule $STR '(' $STR ')' '.' {op(predicate:$1,arg1:$3){
     /* Store single-argument fact - NO MANUAL PARSING */
     fact_key = predicate + "_" + arg1;
     fact_value = predicate + "(" + arg1 + ")";
@@ -35,7 +35,7 @@ custom_command = custom_command | rule $STR '(' $STR ')' '.' {op(predicate:$1,ar
 }};
 
 /* Rule storage with native grammar */
-custom_command = custom_command | rule $STR '(' $STR ',' $STR ')' ':-' $STR '(' $STR ',' $STR ')' '.' {op(head_pred:$1,head_arg1:$3,head_arg2:$5,body_pred:$7,body_arg1:$9,body_arg2:$11){
+custom_command ++= rule $STR '(' $STR ',' $STR ')' ':-' $STR '(' $STR ',' $STR ')' '.' {op(head_pred:$1,head_arg1:$3,head_arg2:$5,body_pred:$7,body_arg1:$9,body_arg2:$11){
     /* Store rule in knowledge base - NO MANUAL PARSING */
     rule_key = "rule_" + head_pred + "_" + head_arg1 + "_" + head_arg2;
     rule_value = head_pred + "(" + head_arg1 + "," + head_arg2 + ") :- " + body_pred + "(" + body_arg1 + "," + body_arg2 + ")";
@@ -43,7 +43,7 @@ custom_command = custom_command | rule $STR '(' $STR ',' $STR ')' ':-' $STR '(' 
 }};
 
 /* Rule with single argument */
-custom_command = custom_command | rule $STR '(' $STR ')' ':-' $STR '(' $STR ')' '.' {op(head_pred:$1,head_arg1:$3,body_pred:$5,body_arg1:$7){
+custom_command ++= rule $STR '(' $STR ')' ':-' $STR '(' $STR ')' '.' {op(head_pred:$1,head_arg1:$3,body_pred:$5,body_arg1:$7){
     /* Store single-argument rule - NO MANUAL PARSING */
     rule_key = "rule_" + head_pred + "_" + head_arg1;
     rule_value = head_pred + "(" + head_arg1 + ") :- " + body_pred + "(" + body_arg1 + ")";
@@ -57,17 +57,17 @@ custom_function = rule '?-' $STR '(' $STR ',' $STR ')' {op(predicate:$2,arg1:$4,
 }};
 
 /* Query with single variable */
-custom_function = custom_function | rule '?-' $STR '(' $STR ',' 'X' ')' {op(predicate:$2,arg1:$4){
+custom_function ++= rule '?-' $STR '(' $STR ',' 'X' ')' {op(predicate:$2,arg1:$4){
     /* PROLOG query processing - NO MANUAL PARSING */
 }};
 
 /* Query with single argument */
-custom_function = custom_function | rule '?-' $STR '(' $STR ')' {op(predicate:$2,arg1:$4){
+custom_function ++= rule '?-' $STR '(' $STR ')' {op(predicate:$2,arg1:$4){
     /* PROLOG query processing - NO MANUAL PARSING */
 }};
 ```
 
-**Key Point**: The `|` operator **adds** to existing rules rather than replacing them, allowing multiple PROLOG syntax patterns to coexist.
+**Key Point**: The `++=` operator **appends** to existing rules, allowing multiple PROLOG syntax patterns to coexist.
 
 ### Using PROLOG Syntax
 

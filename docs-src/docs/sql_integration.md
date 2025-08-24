@@ -14,7 +14,7 @@ Grapa's executable BNF architecture allows you to add **true native SQL syntax**
 
 The SQL integration uses Grapa's **rule-based grammar system** exclusively. All parsing is handled by Grapa's grammar engine - **no manual string manipulation** is required.
 
-### Working SQL Syntax Implementation
+### Example SQL Syntax Implementation
 
 ```grapa
 /* Initialize custom_command and custom_function for SQL syntax */
@@ -24,23 +24,23 @@ custom_command = rule select $STR from $STR {op(fields:$2,table_name:$4){
 }};
 
 /* SELECT with individual field parsing - TRUE NATIVE SYNTAX */
-custom_command = custom_command | rule select $STR ',' $STR from $STR {op(field1:$2,field2:$4,table_name:$6){
+custom_command ++= rule select $STR ',' $STR from $STR {op(field1:$2,field2:$4,table_name:$6){
     /* Implementation receives already-parsed, structured data */
     /* NO manual parsing - Grapa grammar captured each component */
 }};
 
 /* INSERT with individual value parsing - TRUE NATIVE SYNTAX */
-custom_command = custom_command | rule insert into $STR values $STR ',' $INT ',' $STR {op(table_name:$3,name:$6,age:$8,city:$10){
+custom_command ++= rule insert into $STR values $STR ',' $INT ',' $STR {op(table_name:$3,name:$6,age:$8,city:$10){
     /* All components parsed by Grapa's grammar system */
 }};
 
 /* UPDATE with native grammar */
-custom_command = custom_command | rule update $STR set $STR '=' $STR where $STR '=' $STR {op(table_name:$2,field:$4,value:$6,where_field:$8,where_value:$10){
+custom_command ++= rule update $STR set $STR '=' $STR where $STR '=' $STR {op(table_name:$2,field:$4,value:$6,where_field:$8,where_value:$10){
     /* All components parsed by Grapa's grammar system */
 }};
 
 /* DELETE with native grammar */
-custom_command = custom_command | rule delete from $STR where $STR '=' $STR {op(table_name:$3,where_field:$5,where_value:$7){
+custom_command ++= rule delete from $STR where $STR '=' $STR {op(table_name:$3,where_field:$5,where_value:$7){
     /* All components parsed by Grapa's grammar system */
 }};
 
@@ -50,7 +50,7 @@ custom_function = rule count '(' $STR ')' from $STR {op(field:$3,table_name:$6){
 }};
 ```
 
-**Key Point**: The `|` operator **adds** to existing rules rather than replacing them, allowing multiple SQL syntax patterns to coexist.
+**Key Point**: The `++=` operator **appends** to existing rules, allowing multiple SQL syntax patterns to coexist.
 
 ### Using SQL Syntax
 

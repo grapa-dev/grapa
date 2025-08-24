@@ -26,9 +26,9 @@ Welcome to the Grapa Examples hub! Here you'll find practical, ready-to-run scri
 ### **Language Extension Examples**
 | Example | Description |
 |---------|-------------|
-| [SQL Syntax Example](examples/sql_syntax_example.grc) | **Working Implementation** - Demonstrates how SQL syntax can be added to Grapa using custom_command and custom_function. Shows working SQL parsing and execution. |
-| [PROLOG Syntax Example](examples/prolog_syntax_example.grc) | **Working Implementation** - Demonstrates how PROLOG syntax can be added to Grapa using custom_command and custom_function. Shows working PROLOG facts, rules, and queries. |
-| [LISP Syntax Example](examples/lisp_syntax_example.grc) | **Working Implementation** - Demonstrates how LISP syntax can be added to Grapa using custom_command and custom_function. Shows working LISP S-expressions, function definitions, and evaluation. |
+| [SQL Syntax Example](examples/sql_syntax_example.grc) | **Example Implementation** - Demonstrates how SQL syntax can be added to Grapa using custom_command and custom_function. Shows working SQL parsing and execution. |
+| [PROLOG Syntax Example](examples/prolog_syntax_example.grc) | **Example Implementation** - Demonstrates how PROLOG syntax can be added to Grapa using custom_command and custom_function. Shows working PROLOG facts, rules, and queries. |
+| [LISP Syntax Example](examples/lisp_syntax_example.grc) | **Example Implementation** - Demonstrates how LISP syntax can be added to Grapa using custom_command and custom_function. Shows working LISP S-expressions, function definitions, and evaluation. |
 | [Language Design Example](examples/language_design_example.grc) | Demonstrates executable BNF system for creating custom languages, DSLs, and extending Grapa. |
 | [Isolated Rule Execution Example](examples/isolated_rule_execution_demo.grc) | Demonstrates executing custom rules in isolation for ETL and domain-specific processing. |
 | [Wrapper Function Example](examples/wrapper_function_example.grc) | Demonstrates the wrapper function pattern for ETL processing using rule tokens with custom functions. |
@@ -43,7 +43,7 @@ Welcome to the Grapa Examples hub! Here you'll find practical, ready-to-run scri
 > - Copy/paste `.grc` scripts into the Grapa REPL or save and run them with the CLI.
 > - For Python, run the `.py` script with Python 3 and the `grapapy` module installed.
 > 
-> **Note about Language Extension Examples:** The SQL and PROLOG syntax examples demonstrate how Grapa's executable BNF can be used to add custom syntax to the language. These are working implementations showing the pattern - SQL, PROLOG, and LISP are not natively supported in Grapa, but these examples show how they can be fully implemented using Grapa's rule system.
+> **Note about Language Extension Examples:** The SQL, PROLOG, and LISP syntax examples demonstrate how Grapa's executable BNF can be used to add custom syntax to the language. These are example implementations showing the pattern - SQL, PROLOG, and LISP are not natively supported in Grapa, but these examples show how they can be fully implemented using Grapa's rule system.
 
 ## See Also
 - [Getting Started](getting_started.md)
