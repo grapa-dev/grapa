@@ -4537,9 +4537,9 @@ custom_command = rule &#39;(cons&#39; $STR $STR &#39;)&#39; { op(element:$2, lis
 } };
 
 /* Usage */
-op()(&quot;(car (list 1 2 3))&quot;)();  /* Returns 1 */
-op()(&quot;(cdr (list 1 2 3))&quot;)();  /* Returns [2, 3] */
-op()(&quot;(cons 0 (list 1 2 3))&quot;)();  /* Returns [0, 1, 2, 3] */
+op()(&#39;(car &quot;(1 2 3)&quot;)&#39;)();  /* Returns 1 */
+op()(&#39;(cdr &quot;(1 2 3)&quot;)&#39;)();  /* Returns [2, 3] */
+op()(&#39;(cons &quot;0&quot; &quot;(1 2 3)&quot;)&#39;)();  /* Returns [0, 1, 2, 3] */
 </code></pre></div>
 <h3 id="example-lisp-syntax-implementation">Example LISP Syntax Implementation</h3>
 <div class="highlight"><pre><span></span><code>/* Initialize custom_command and custom_function for LISP syntax */
@@ -4605,23 +4605,17 @@ custom_command ++= rule &#39;(if&#39; $STR $STR $STR &#39;)&#39; {op(condition:$
 /* List operations with native grammar */
 custom_command ++= rule &#39;(list&#39; $STR &#39;)&#39; {op(elem1:$2){
     /* Create list with single element - NO MANUAL PARSING */
-    val1 = evaluate_sexp(elem1);
-    return [val1];
+    return [elem1];
 }};
 
 custom_command ++= rule &#39;(list&#39; $STR $STR &#39;)&#39; {op(elem1:$2,elem2:$3){
     /* Create list - NO MANUAL PARSING */
-    val1 = evaluate_sexp(elem1);
-    val2 = evaluate_sexp(elem2);
-    return [val1, val2];
+    return [elem1, elem2];
 }};
 
 custom_command ++= rule &#39;(list&#39; $STR $STR $STR &#39;)&#39; {op(elem1:$2,elem2:$3,elem3:$4){
     /* Create list with three elements - NO MANUAL PARSING */
-    val1 = evaluate_sexp(elem1);
-    val2 = evaluate_sexp(elem2);
-    val3 = evaluate_sexp(elem3);
-    return [val1, val2, val3];
+    return [elem1, elem2, elem3];
 }};
 
 /* List access operations */
@@ -4662,10 +4656,10 @@ op()(&quot;(+ (* 2 3) (* 4 5))&quot;)();  /* Returns 26 */
 </code></pre></div>
 <h3 id="list-operations"><strong>List Operations</strong></h3>
 <div class="highlight"><pre><span></span><code>/* List creation and manipulation */
-op()(&quot;(list 1 2 3 4 5)&quot;)();  /* Returns [1, 2, 3, 4, 5] */
-op()(&quot;(car (list 1 2 3))&quot;)();  /* Returns 1 */
-op()(&quot;(cdr (list 1 2 3))&quot;)();  /* Returns [2, 3] */
-op()(&quot;(cons 0 (list 1 2 3))&quot;)();  /* Returns [0, 1, 2, 3] */
+op()(&#39;(list &quot;1&quot; &quot;2&quot; &quot;3&quot; &quot;4&quot; &quot;5&quot;)&#39;)();  /* Returns [&quot;1&quot;, &quot;2&quot;, &quot;3&quot;, &quot;4&quot;, &quot;5&quot;] */
+op()(&#39;(car &quot;(1 2 3)&quot;)&#39;)();  /* Returns 1 */
+op()(&#39;(cdr &quot;(1 2 3)&quot;)&#39;)();  /* Returns [2, 3] */
+op()(&#39;(cons &quot;0&quot; &quot;(1 2 3)&quot;)&#39;)();  /* Returns [0, 1, 2, 3] */
 </code></pre></div>
 <h3 id="function-definition"><strong>Function Definition</strong></h3>
 <div class="highlight"><pre><span></span><code>/* Define and use functions */
