@@ -1095,6 +1095,75 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#appending-to-existing-rules" class="md-nav__link">
+    <span class="md-ellipsis">
+      Appending to Existing Rules
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Appending to Existing Rules">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#self-modifying-grammar-system" class="md-nav__link">
+    <span class="md-ellipsis">
+      Self-Modifying Grammar System
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#token-types-and-syntax" class="md-nav__link">
+    <span class="md-ellipsis">
+      Token Types and Syntax
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bnf-structure-for-rule-definition" class="md-nav__link">
+    <span class="md-ellipsis">
+      BNF Structure for Rule Definition
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rule-alternative-ordering-for-backtracking" class="md-nav__link">
+    <span class="md-ellipsis">
+      Rule Alternative Ordering for Backtracking
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#testing-custom-rules" class="md-nav__link">
+    <span class="md-ellipsis">
+      Testing Custom Rules
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#language-integration-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      Language Integration Example
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#basic-rule-concatenation" class="md-nav__link">
     <span class="md-ellipsis">
       Basic Rule Concatenation
@@ -4012,6 +4081,75 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#appending-to-existing-rules" class="md-nav__link">
+    <span class="md-ellipsis">
+      Appending to Existing Rules
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Appending to Existing Rules">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#self-modifying-grammar-system" class="md-nav__link">
+    <span class="md-ellipsis">
+      Self-Modifying Grammar System
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#token-types-and-syntax" class="md-nav__link">
+    <span class="md-ellipsis">
+      Token Types and Syntax
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bnf-structure-for-rule-definition" class="md-nav__link">
+    <span class="md-ellipsis">
+      BNF Structure for Rule Definition
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rule-alternative-ordering-for-backtracking" class="md-nav__link">
+    <span class="md-ellipsis">
+      Rule Alternative Ordering for Backtracking
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#testing-custom-rules" class="md-nav__link">
+    <span class="md-ellipsis">
+      Testing Custom Rules
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#language-integration-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      Language Integration Example
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#basic-rule-concatenation" class="md-nav__link">
     <span class="md-ellipsis">
       Basic Rule Concatenation
@@ -4384,6 +4522,133 @@ hi
 <p>Note that with left recursion, the subtraction happens first resulting in (5-3)+2, which produces the correct answer.</p>
 <h2 id="rule-composition-and-concatenation">Rule Composition and Concatenation</h2>
 <p>Rules can be dynamically composed and extended using the <code>++=</code> operator (see <a href="../../operators/assignment/">Assignment Operators</a>), which allows you to concatenate additional rule alternatives to an existing rule. This enables dynamic grammar construction and runtime rule modification.</p>
+<h3 id="appending-to-existing-rules">Appending to Existing Rules</h3>
+<p><strong>Important</strong>: To add additional alternatives to an existing rule, use the <code>++=</code> operator, not the <code>|</code> operator. The <code>|</code> operator only works within a single rule definition, while <code>++=</code> allows you to append to an existing rule variable.</p>
+<h4 id="self-modifying-grammar-system">Self-Modifying Grammar System</h4>
+<p>Grapa's grammar system is <strong>self-modifying</strong> - the BNF (Backus-Naur Form) in <code>lib/grapa/$grapa.grc</code> defines the rules for creating and modifying grammar rules themselves. This creates a powerful meta-programming capability where:</p>
+<ul>
+<li><strong>The grammar defines how to define grammar rules</strong></li>
+<li><strong>Rules can be modified at runtime using the same grammar system</strong></li>
+<li><strong>The <code>|</code> operator creates alternatives within a single rule definition</strong></li>
+<li><strong>The <code>++=</code> operator appends new alternatives to existing rule variables</strong></li>
+</ul>
+<h4 id="token-types-and-syntax">Token Types and Syntax</h4>
+<p>Based on the Grapa grammar system in <code>lib/grapa/$grapa.grc</code>, there are important distinctions between token types:</p>
+<p><strong>Identifier Tokens (automatic conversion):</strong>
+<div class="highlight"><pre><span></span><code>/* Define initial rule with identifier */
+custom_command = rule test {op(){&#39;matched first&#39;}};
+
+/* Append additional alternatives using ++= */
+custom_command ++= rule test2 {op(){&#39;matched second&#39;}};
+custom_command ++= rule test3 {op(){&#39;matched third&#39;}};
+
+/* Test the rule - use identifiers directly */
+test;   /* Returns: &#39;matched first&#39; */
+test2;  /* Returns: &#39;matched second&#39; */
+test3;  /* Returns: &#39;matched third&#39; */
+</code></pre></div></p>
+<p><strong>String Tokens (explicit conversion required):</strong>
+<div class="highlight"><pre><span></span><code>/* Define initial rule with string token */
+custom_command = rule $STR(&#39;first&#39;) {op(){&#39;matched first&#39;}};
+
+/* Append additional alternatives using ++= */
+custom_command ++= rule $STR(&#39;second&#39;) {op(){&#39;matched second&#39;}};
+custom_command ++= rule $STR(&#39;third&#39;) {op(){&#39;matched third&#39;}};
+
+/* Test the rule - use string literals */
+&quot;first&quot;;   /* Returns: &#39;matched first&#39; */
+&quot;second&quot;;  /* Returns: &#39;matched second&#39; */
+&quot;third&quot;;   /* Returns: &#39;matched third&#39; */
+</code></pre></div></p>
+<p><strong>Key Points:</strong>
+- <strong><code>++=</code> operator</strong>: Appends new rule alternatives to existing rule variables
+- <strong><code>|</code> operator</strong>: Only works within a single rule definition for alternatives
+- <strong><code>$ID</code> tokens</strong>: Automatically converted (e.g., <code>test</code> becomes identifier)
+- <strong><code>$STR</code> tokens</strong>: Require explicit conversion (e.g., <code>$STR('test')</code> for strings)
+- <strong>Dynamic grammar construction</strong>: Enables building complex grammars incrementally
+- <strong>Runtime rule modification</strong>: Rules can be extended during program execution
+- <strong>Self-modifying grammar</strong>: The BNF defines how to modify the BNF itself</p>
+<h4 id="bnf-structure-for-rule-definition">BNF Structure for Rule Definition</h4>
+<p>The grammar system uses this pattern for defining rules:</p>
+<div class="highlight"><pre><span></span><code>@global[&quot;$option_list&quot;]
+    = rule &lt;$option&gt; &#39;|&#39; &lt;$option_list&gt; {@&lt;prepend,{$3,$1}&gt;}
+    | &lt;$option&gt; {@&lt;createrule,{$1}&gt;}
+    ;
+</code></pre></div>
+<p>This shows:
+- <strong><code>= rule</code></strong>: Defines a new rule
+- <strong><code>|</code></strong>: Creates alternatives within the same rule definition
+- <strong><code>{@&lt;createrule,{$1}&gt;}</code></strong>: Creates a rule from the parsed tokens
+- <strong><code>{@&lt;prepend,{$3,$1}&gt;}</code></strong>: Prepends new alternatives to existing rules</p>
+<h4 id="rule-alternative-ordering-for-backtracking">Rule Alternative Ordering for Backtracking</h4>
+<p><strong>Critical</strong>: Rule alternatives must be ordered from <strong>most specific to least specific</strong> (longest to shortest token sequences). This is essential for proper backtracking in the rule engine.</p>
+<p><strong>Correct Ordering Pattern:</strong>
+<div class="highlight"><pre><span></span><code>@global[&quot;$list2&quot;]
+    = rule &#39;,&#39; &#39;,&#39; &lt;$list2&gt; {@&lt;prepend,{$3,null,null}&gt;}    /* 3 tokens */
+    | &#39;,&#39; &lt;$list2&gt; {@&lt;prepend,{$2,null}&gt;}                  /* 2 tokens */
+    | &lt;$param2&gt; &#39;,&#39; &lt;$list2&gt; {@&lt;prepend,{$3,$1}&gt;}          /* 3 tokens */
+    | &lt;$param2&gt; &#39;,&#39; {@&lt;createlist,{$1,null}&gt;}              /* 2 tokens */
+    | &lt;$param2&gt; {@&lt;createlist,{$1}&gt;}                       /* 1 token */
+    | &#39;,&#39; {@&lt;createlist,{null,null}&gt;}                      /* 1 token */
+    ;
+</code></pre></div></p>
+<p><strong>Why This Ordering Matters:</strong>
+- <strong>Backtracking</strong>: The rule engine tries alternatives in order
+- <strong>Greedy Matching</strong>: Longer patterns must come first to be matched
+- <strong>Prevention of Short-Circuiting</strong>: If a simple rule comes first, it will always match and prevent longer, more specific rules from being reached
+- <strong>Ambiguity Resolution</strong>: More specific rules should take precedence</p>
+<p><strong>Example of Incorrect Ordering:</strong>
+<div class="highlight"><pre><span></span><code>/* WRONG - Simple rule first will prevent longer rules from matching */
+custom_command = rule test {op(){&#39;simple&#39;}};                    /* 1 token - too early! */
+custom_command ++= rule test $STR {op(arg:$2){&#39;with arg&#39;}};     /* 2 tokens - never reached */
+custom_command ++= rule test $STR $STR {op(arg1:$2,arg2:$3){&#39;with 2 args&#39;}}; /* 3 tokens - never reached */
+</code></pre></div></p>
+<p><strong>Correct Ordering:</strong>
+<div class="highlight"><pre><span></span><code>/* CORRECT - Most specific rules first */
+custom_command = rule test $STR $STR {op(arg1:$2,arg2:$3){&#39;with 2 args&#39;}}; /* 3 tokens */
+custom_command ++= rule test $STR {op(arg:$2){&#39;with arg&#39;}};     /* 2 tokens */
+custom_command ++= rule test {op(){&#39;simple&#39;}};                  /* 1 token - last */
+</code></pre></div></p>
+<h4 id="testing-custom-rules">Testing Custom Rules</h4>
+<p><strong>Important</strong>: Custom rules must be tested using string execution since they cannot be used in the same script where they are defined (due to compilation timing).</p>
+<div class="highlight"><pre><span></span><code>/* Define custom rules */
+custom_command = rule test {op(){&#39;simple&#39;}};
+custom_command ++= rule test $STR {op(arg:$2){&#39;with arg: &#39; + arg}};
+
+/* Test using string execution */
+op()(&quot;test&quot;)();                    /* Returns: &#39;simple&#39; */
+op()(&quot;test hello&quot;)();              /* Returns: &#39;with arg: hello&#39; */
+
+/* Alternative testing method */
+script1 = &quot;test&quot;;
+script2 = &quot;test hello&quot;;
+script1.exec();                    /* Returns: &#39;simple&#39; */
+script2.exec();                    /* Returns: &#39;with arg: hello&#39; */
+</code></pre></div>
+<p><strong>Note</strong>: Custom rules do not persist when the application exits. They must be redefined in each session.</p>
+<h3 id="language-integration-example">Language Integration Example</h3>
+<p>This pattern is commonly used for implementing domain-specific languages and syntax extensions:</p>
+<div class="highlight"><pre><span></span><code>/* Initialize SQL syntax */
+custom_command = rule select $STR from $STR {op(fields:$2,table:$4){
+    (&quot;SELECT &quot; + fields + &quot; FROM &quot; + table).echo();
+}};
+
+/* Add INSERT syntax */
+custom_command ++= rule insert into $STR values $STR &#39;,&#39; $INT &#39;,&#39; $STR {op(table:$3,name:$6,age:$8,city:$10){
+    (&quot;INSERT INTO &quot; + table + &quot; VALUES &quot; + name + &quot;,&quot; + age + &quot;,&quot; + city).echo();
+}};
+
+/* Add UPDATE syntax */
+custom_command ++= rule update $STR set $STR &#39;=&#39; $STR where $STR &#39;=&#39; $STR {op(table:$2,field:$4,value:$6,where_field:$8,where_value:$10){
+    (&quot;UPDATE &quot; + table + &quot; SET &quot; + field + &quot;=&quot; + value + &quot; WHERE &quot; + where_field + &quot;=&quot; + where_value).echo();
+}};
+
+/* Add DELETE syntax */
+custom_command ++= rule delete from $STR where $STR &#39;=&#39; $STR {op(table:$3,where_field:$5,where_value:$7){
+    (&quot;DELETE FROM &quot; + table + &quot; WHERE &quot; + where_field + &quot;=&quot; + where_value).echo();
+}};
+</code></pre></div>
+<p>This approach enables <strong>true native syntax</strong> implementation where multiple language constructs can coexist using Grapa's grammar system.</p>
 <h3 id="basic-rule-concatenation">Basic Rule Concatenation</h3>
 <div class="highlight"><pre><span></span><code>&gt; x = rule $INT $INT {op(a:$1,b:$2){a*b}}
 rule $INT $INT {@&lt;[op,@&lt;mul,{@&lt;var,{a}&gt;,@&lt;var,{b}&gt;}&gt;],{&quot;a&quot;:$1,&quot;b&quot;:$2}&gt;}

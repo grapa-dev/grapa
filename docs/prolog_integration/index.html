@@ -2788,9 +2788,9 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#working-prolog-syntax-implementation" class="md-nav__link">
+  <a href="#example-prolog-syntax-implementation" class="md-nav__link">
     <span class="md-ellipsis">
-      Working PROLOG Syntax Implementation
+      Example PROLOG Syntax Implementation
     </span>
   </a>
   
@@ -3823,9 +3823,9 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#working-prolog-syntax-implementation" class="md-nav__link">
+  <a href="#example-prolog-syntax-implementation" class="md-nav__link">
     <span class="md-ellipsis">
-      Working PROLOG Syntax Implementation
+      Example PROLOG Syntax Implementation
     </span>
   </a>
   
@@ -3974,7 +3974,7 @@
 <p>Grapa's executable BNF architecture allows you to add <strong>true native PROLOG syntax</strong> to the language using <code>custom_command</code> and <code>custom_function</code> rules. This is <strong>not</strong> manual parsing - it's <strong>native syntax</strong> that integrates seamlessly with Grapa's grammar system.</p>
 <h2 id="true-native-syntax-implementation">True Native Syntax Implementation</h2>
 <p>The PROLOG integration uses Grapa's <strong>rule-based grammar system</strong> exclusively. All parsing is handled by Grapa's grammar engine - <strong>no manual string manipulation</strong> is required.</p>
-<h3 id="working-prolog-syntax-implementation">Working PROLOG Syntax Implementation</h3>
+<h3 id="example-prolog-syntax-implementation">Example PROLOG Syntax Implementation</h3>
 <div class="highlight"><pre><span></span><code>/* Initialize custom_command and custom_function for PROLOG syntax */
 custom_command = rule $STR &#39;(&#39; $STR &#39;,&#39; $STR &#39;)&#39; &#39;.&#39; {op(predicate:$1,arg1:$3,arg2:$5){
     /* Store fact in knowledge base - NO MANUAL PARSING */
@@ -3984,7 +3984,7 @@ custom_command = rule $STR &#39;(&#39; $STR &#39;,&#39; $STR &#39;)&#39; &#39;.&
 }};
 
 /* Fact with single argument */
-custom_command = custom_command | rule $STR &#39;(&#39; $STR &#39;)&#39; &#39;.&#39; {op(predicate:$1,arg1:$3){
+custom_command ++= rule $STR &#39;(&#39; $STR &#39;)&#39; &#39;.&#39; {op(predicate:$1,arg1:$3){
     /* Store single-argument fact - NO MANUAL PARSING */
     fact_key = predicate + &quot;_&quot; + arg1;
     fact_value = predicate + &quot;(&quot; + arg1 + &quot;)&quot;;
@@ -3992,7 +3992,7 @@ custom_command = custom_command | rule $STR &#39;(&#39; $STR &#39;)&#39; &#39;.&
 }};
 
 /* Rule storage with native grammar */
-custom_command = custom_command | rule $STR &#39;(&#39; $STR &#39;,&#39; $STR &#39;)&#39; &#39;:-&#39; $STR &#39;(&#39; $STR &#39;,&#39; $STR &#39;)&#39; &#39;.&#39; {op(head_pred:$1,head_arg1:$3,head_arg2:$5,body_pred:$7,body_arg1:$9,body_arg2:$11){
+custom_command ++= rule $STR &#39;(&#39; $STR &#39;,&#39; $STR &#39;)&#39; &#39;:-&#39; $STR &#39;(&#39; $STR &#39;,&#39; $STR &#39;)&#39; &#39;.&#39; {op(head_pred:$1,head_arg1:$3,head_arg2:$5,body_pred:$7,body_arg1:$9,body_arg2:$11){
     /* Store rule in knowledge base - NO MANUAL PARSING */
     rule_key = &quot;rule_&quot; + head_pred + &quot;_&quot; + head_arg1 + &quot;_&quot; + head_arg2;
     rule_value = head_pred + &quot;(&quot; + head_arg1 + &quot;,&quot; + head_arg2 + &quot;) :- &quot; + body_pred + &quot;(&quot; + body_arg1 + &quot;,&quot; + body_arg2 + &quot;)&quot;;
@@ -4000,7 +4000,7 @@ custom_command = custom_command | rule $STR &#39;(&#39; $STR &#39;,&#39; $STR &#
 }};
 
 /* Rule with single argument */
-custom_command = custom_command | rule $STR &#39;(&#39; $STR &#39;)&#39; &#39;:-&#39; $STR &#39;(&#39; $STR &#39;)&#39; &#39;.&#39; {op(head_pred:$1,head_arg1:$3,body_pred:$5,body_arg1:$7){
+custom_command ++= rule $STR &#39;(&#39; $STR &#39;)&#39; &#39;:-&#39; $STR &#39;(&#39; $STR &#39;)&#39; &#39;.&#39; {op(head_pred:$1,head_arg1:$3,body_pred:$5,body_arg1:$7){
     /* Store single-argument rule - NO MANUAL PARSING */
     rule_key = &quot;rule_&quot; + head_pred + &quot;_&quot; + head_arg1;
     rule_value = head_pred + &quot;(&quot; + head_arg1 + &quot;) :- &quot; + body_pred + &quot;(&quot; + body_arg1 + &quot;)&quot;;
@@ -4014,16 +4014,16 @@ custom_function = rule &#39;?-&#39; $STR &#39;(&#39; $STR &#39;,&#39; $STR &#39;
 }};
 
 /* Query with single variable */
-custom_function = custom_function | rule &#39;?-&#39; $STR &#39;(&#39; $STR &#39;,&#39; &#39;X&#39; &#39;)&#39; {op(predicate:$2,arg1:$4){
+custom_function ++= rule &#39;?-&#39; $STR &#39;(&#39; $STR &#39;,&#39; &#39;X&#39; &#39;)&#39; {op(predicate:$2,arg1:$4){
     /* PROLOG query processing - NO MANUAL PARSING */
 }};
 
 /* Query with single argument */
-custom_function = custom_function | rule &#39;?-&#39; $STR &#39;(&#39; $STR &#39;)&#39; {op(predicate:$2,arg1:$4){
+custom_function ++= rule &#39;?-&#39; $STR &#39;(&#39; $STR &#39;)&#39; {op(predicate:$2,arg1:$4){
     /* PROLOG query processing - NO MANUAL PARSING */
 }};
 </code></pre></div>
-<p><strong>Key Point</strong>: The <code>|</code> operator <strong>adds</strong> to existing rules rather than replacing them, allowing multiple PROLOG syntax patterns to coexist.</p>
+<p><strong>Key Point</strong>: The <code>++=</code> operator <strong>appends</strong> to existing rules, allowing multiple PROLOG syntax patterns to coexist.</p>
 <h3 id="using-prolog-syntax">Using PROLOG Syntax</h3>
 <p>Once defined, PROLOG syntax works <strong>natively</strong> in Grapa:</p>
 <div class="highlight"><pre><span></span><code>/* Execute PROLOG using op(parse)() - TRUE NATIVE SYNTAX */
