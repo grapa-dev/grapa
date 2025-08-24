@@ -104,9 +104,9 @@ custom_command = rule '(cons' $STR $STR ')' { op(element:$2, list:$3){
 } };
 
 /* Usage */
-op()("(car (list 1 2 3))")();  /* Returns 1 */
-op()("(cdr (list 1 2 3))")();  /* Returns [2, 3] */
-op()("(cons 0 (list 1 2 3))")();  /* Returns [0, 1, 2, 3] */
+op()('(car "(1 2 3)")')();  /* Returns 1 */
+op()('(cdr "(1 2 3)")')();  /* Returns [2, 3] */
+op()('(cons "0" "(1 2 3)")')();  /* Returns [0, 1, 2, 3] */
 ```
 
 ### Example LISP Syntax Implementation
@@ -175,23 +175,17 @@ custom_command ++= rule '(if' $STR $STR $STR ')' {op(condition:$2,then:$3,else:$
 /* List operations with native grammar */
 custom_command ++= rule '(list' $STR ')' {op(elem1:$2){
     /* Create list with single element - NO MANUAL PARSING */
-    val1 = evaluate_sexp(elem1);
-    return [val1];
+    return [elem1];
 }};
 
 custom_command ++= rule '(list' $STR $STR ')' {op(elem1:$2,elem2:$3){
     /* Create list - NO MANUAL PARSING */
-    val1 = evaluate_sexp(elem1);
-    val2 = evaluate_sexp(elem2);
-    return [val1, val2];
+    return [elem1, elem2];
 }};
 
 custom_command ++= rule '(list' $STR $STR $STR ')' {op(elem1:$2,elem2:$3,elem3:$4){
     /* Create list with three elements - NO MANUAL PARSING */
-    val1 = evaluate_sexp(elem1);
-    val2 = evaluate_sexp(elem2);
-    val3 = evaluate_sexp(elem3);
-    return [val1, val2, val3];
+    return [elem1, elem2, elem3];
 }};
 
 /* List access operations */
@@ -238,10 +232,10 @@ op()("(+ (* 2 3) (* 4 5))")();  /* Returns 26 */
 ### **List Operations**
 ```grapa
 /* List creation and manipulation */
-op()("(list 1 2 3 4 5)")();  /* Returns [1, 2, 3, 4, 5] */
-op()("(car (list 1 2 3))")();  /* Returns 1 */
-op()("(cdr (list 1 2 3))")();  /* Returns [2, 3] */
-op()("(cons 0 (list 1 2 3))")();  /* Returns [0, 1, 2, 3] */
+op()('(list "1" "2" "3" "4" "5")')();  /* Returns ["1", "2", "3", "4", "5"] */
+op()('(car "(1 2 3)")')();  /* Returns 1 */
+op()('(cdr "(1 2 3)")')();  /* Returns [2, 3] */
+op()('(cons "0" "(1 2 3)")')();  /* Returns [0, 1, 2, 3] */
 ```
 
 ### **Function Definition**
