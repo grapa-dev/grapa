@@ -131,7 +131,7 @@ The key features for true native syntax are:
 - **`custom_command ++= rule`**: Adds additional fact and rule syntax patterns
 - **`custom_function = rule`**: Defines initial query syntax (`?-`)
 - **`custom_function ++= rule`**: Adds additional query syntax patterns
-- **`op()()`**: Executes the custom syntax
+- **`op()(script)()`**: Executes the custom syntax
 - **`script.exec()`**: Alternative syntax for executing custom syntax (more readable)
 - **Token Capture**: Use `$STR` to capture predicates and arguments
 - **No Manual Parsing**: Let Grapa's grammar handle all parsing

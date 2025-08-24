@@ -248,9 +248,16 @@ custom_command ++= rule $STR('third') {op(){'matched third'}};
 - **`|` operator**: Only works within a single rule definition for alternatives
 - **`$ID` tokens**: Automatically converted (e.g., `test` becomes identifier)
 - **`$STR` tokens**: Require explicit conversion (e.g., `$STR('test')` for strings)
+- **`$INT` tokens**: Match integer literals (e.g., `42`, `100`, `-5`)
+- **`$FLOAT` tokens**: Match floating-point literals (e.g., `3.14`, `-2.5`)
 - **Dynamic grammar construction**: Enables building complex grammars incrementally
 - **Runtime rule modification**: Rules can be extended during program execution
 - **Self-modifying grammar**: The BNF defines how to modify the BNF itself
+
+**Token Usage Guidelines:**
+- **Function/predicate names**: Use `$ID` for unquoted identifiers or `$STR` for quoted strings
+- **Arguments**: Use `$STR` for quoted strings, `$INT` for integers, or `$ID` for unquoted identifiers
+- **Choice depends on calling syntax**: `$ID` requires unquoted calls, `$STR` requires quoted calls
 
 #### BNF Structure for Rule Definition
 

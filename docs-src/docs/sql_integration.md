@@ -114,7 +114,7 @@ The key features for true native syntax are:
 - **`custom_command ++= rule`**: Adds additional action-based syntax patterns
 - **`custom_function = rule`**: Defines initial expression-based syntax (COUNT, SUM, AVG)
 - **`custom_function ++= rule`**: Adds additional expression-based syntax patterns
-- **`op()()`**: Executes the custom syntax
+- **`op()(script)()`**: Executes the custom syntax
 - **`script.exec()`**: Alternative syntax for executing custom syntax (more readable)
 - **Token Capture**: Use `$STR`, `$INT`, etc. to capture individual components
 - **No Manual Parsing**: Let Grapa's grammar handle all parsing

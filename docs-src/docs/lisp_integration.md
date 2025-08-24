@@ -84,17 +84,23 @@ Native LISP list manipulation:
 /* LISP list operations */
 custom_command = rule '(car' $STR ')' { op(list:$2){
     /* Return first element */
-    return evaluate_sexp($2)[0];
+    list_val = evaluate_sexp(list);
+    return list_val[0];
 } };
 
 custom_command = rule '(cdr' $STR ')' { op(list:$2){
     /* Return rest of list */
-    return evaluate_sexp($2).slice(1);
+    list_val = evaluate_sexp(list);
+    return list_val.range(1, list_val.len());
 } };
 
 custom_command = rule '(cons' $STR $STR ')' { op(element:$2, list:$3){
     /* Add element to front of list */
-    return [evaluate_sexp($2)].concat(evaluate_sexp($3));
+    element_val = evaluate_sexp(element);
+    list_val = evaluate_sexp(list);
+    result = [element_val];
+    result += list_val;
+    return result;
 } };
 
 /* Usage */
@@ -201,7 +207,7 @@ custom_command ++= rule '(cdr' $STR ')' {op(list_expr:$2){
     /* Get rest of list - NO MANUAL PARSING */
     list_val = evaluate_sexp(list_expr);
     if (list_val.type() == $LIST) {
-        return list_val.slice(1);
+        return list_val.range(1, list_val.len());
     };
 }};
 
@@ -210,7 +216,9 @@ custom_command ++= rule '(cons' $STR $STR ')' {op(element:$2,list_expr:$3){
     element_val = evaluate_sexp(element);
     list_val = evaluate_sexp(list_expr);
     if (list_val.type() == $LIST) {
-        return [element_val].concat(list_val);
+        result = [element_val];
+        result += list_val;
+        return result;
     };
 }};
 ```
