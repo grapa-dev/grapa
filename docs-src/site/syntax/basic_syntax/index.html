@@ -2752,6 +2752,57 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#variable-indirection" class="md-nav__link">
+    <span class="md-ellipsis">
+      Variable Indirection
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Variable Indirection">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#single-indirection" class="md-nav__link">
+    <span class="md-ellipsis">
+      Single Indirection (@)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#double-indirection" class="md-nav__link">
+    <span class="md-ellipsis">
+      Double Indirection (@@)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dynamic-variable-access-in-functions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Dynamic Variable Access in Functions
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#importance-for-native-syntax" class="md-nav__link">
+    <span class="md-ellipsis">
+      Importance for Native Syntax
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#const-protection" class="md-nav__link">
     <span class="md-ellipsis">
       Const Protection
@@ -5548,6 +5599,57 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#variable-indirection" class="md-nav__link">
+    <span class="md-ellipsis">
+      Variable Indirection
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Variable Indirection">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#single-indirection" class="md-nav__link">
+    <span class="md-ellipsis">
+      Single Indirection (@)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#double-indirection" class="md-nav__link">
+    <span class="md-ellipsis">
+      Double Indirection (@@)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dynamic-variable-access-in-functions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Dynamic Variable Access in Functions
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#importance-for-native-syntax" class="md-nav__link">
+    <span class="md-ellipsis">
+      Importance for Native Syntax
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#const-protection" class="md-nav__link">
     <span class="md-ellipsis">
       Const Protection
@@ -7314,6 +7416,47 @@ retries.echo(); /* 3 */
 - <strong>Consistent</strong>: Uses existing <code>++=</code> operator and namespace system
 - <strong>Duplicate Resolution</strong>: Clear behavior for handling duplicates
 - <strong>Direct Access</strong>: Variables become directly accessible without prefix</p>
+<h3 id="variable-indirection">Variable Indirection</h3>
+<p>Grapa supports <strong>variable indirection</strong> using <code>@</code> and <code>@@</code> operators, which is essential for implementing true native syntax and dynamic variable access:</p>
+<h4 id="single-indirection">Single Indirection (<code>@</code>)</h4>
+<p>The <code>@</code> operator dereferences a variable name to get its value:</p>
+<div class="highlight"><pre><span></span><code>a = 5;
+b = &quot;a&quot;;
+@b;        /* Returns &quot;a&quot; (the value of variable b) */
+</code></pre></div>
+<h4 id="double-indirection">Double Indirection (<code>@@</code>)</h4>
+<p>The <code>@@</code> operator performs double dereferencing - first gets the value, then treats that value as another variable name:</p>
+<div class="highlight"><pre><span></span><code>a = 5;
+b = &quot;a&quot;;
+@@b;       /* Returns 5 (the value of variable a) */
+</code></pre></div>
+<h4 id="dynamic-variable-access-in-functions">Dynamic Variable Access in Functions</h4>
+<p>This enables dynamic variable access and modification in functions:</p>
+<div class="highlight"><pre><span></span><code>/* Function that can access any variable by name */
+f = op(var_name) {
+    return @@var_name;  /* Get value of variable named in var_name */
+};
+
+/* Function that can modify any variable by name */
+f2 = op(var_name, new_value) {
+    @var_name = new_value;  /* Set variable named in var_name */
+};
+
+/* Usage */
+x = 10;
+f(&quot;x&quot;);     /* Returns 10 */
+f2(&quot;x&quot;, 20); /* Sets x to 20 */
+f(&quot;x&quot;);     /* Returns 20 */
+</code></pre></div>
+<h4 id="importance-for-native-syntax">Importance for Native Syntax</h4>
+<p>Variable indirection is crucial for implementing <strong>true native syntax</strong> because:</p>
+<ul>
+<li><strong>Grammar tokens</strong>: When the grammar system captures variable names as <code>$STR</code> tokens, you can use <code>@@</code> to access the actual variable</li>
+<li><strong>Dynamic evaluation</strong>: Functions can work with variable names passed as parameters</li>
+<li><strong>Symbol tables</strong>: Enables implementation of symbol tables and environments</li>
+<li><strong>Language integration</strong>: Essential for implementing languages like LISP, PROLOG, and SQL that need dynamic variable access</li>
+</ul>
+<p>This feature enables Grapa's unique capability to add <strong>true native syntax</strong> for other programming languages through its rule-based grammar system.</p>
 <h3 id="const-protection">Const Protection</h3>
 <p>Grapa provides runtime const protection that prevents variable modification:</p>
 <div class="highlight"><pre><span></span><code>/* Create const variable */

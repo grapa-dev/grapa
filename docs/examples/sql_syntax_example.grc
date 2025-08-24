@@ -1,46 +1,27 @@
-/* SQL Syntax Integration Example
- * 
- * This example demonstrates how Grapa can support SQL syntax
- * through its executable BNF architecture using custom_command and custom_function.
- * This is an example implementation showing how SQL could be added to Grapa.
- * 
- * Key concepts:
- * - custom_command: For SQL statements (SELECT, INSERT, UPDATE)
- * - custom_function: For SQL functions (COUNT, SUM, AVG)
- * - op(parse)(): Execution pattern for custom syntax
- */
+/* SQL Syntax Extension Example - True Native Syntax Using Grapa Grammar System */
 
-("=== SQL Syntax Integration Demo ===").echo();
-
-/* Step 1: Create sample database */
-("Creating sample database...").echo();
-
-/* Create users table */
-users_table = $file().table("ROW");
-users_table.mkfield("name", "STR", "VAR");
-users_table.mkfield("age", "INT");
-users_table.mkfield("city", "STR", "VAR");
-
-/* Populate with sample data */
-users_table.set("user1", "John", "name");
+/* Step 1: Set up database table */
+("Setting up users table...").echo();
+users_table = $file().table("users");
+users_table.set("user1", "Alice", "name");
 users_table.set("user1", 25, "age");
 users_table.set("user1", "New York", "city");
 
-users_table.set("user2", "Jane", "name");
+users_table.set("user2", "Bob", "name");
 users_table.set("user2", 30, "age");
 users_table.set("user2", "Los Angeles", "city");
 
-users_table.set("user3", "Bob", "name");
+users_table.set("user3", "Charlie", "name");
 users_table.set("user3", 35, "age");
 users_table.set("user3", "Chicago", "city");
 
-("Database created with 3 users.\n").echo();
+("Users table created with 3 records.\n").echo();
 
-/* Step 2: Define SQL syntax using custom_command and custom_function */
+/* Step 2: Define SQL syntax using Grapa's grammar system - NO MANUAL PARSING */
 
-/* SELECT statement (custom_command - action) */
-("Defining SELECT syntax...").echo();
-custom_command = rule select $STR from $STR {op(fields:$2,table_name:$4){
+/* SELECT statement with granular grammar rules */
+("Defining SELECT syntax with native grammar...").echo();
+custom_command = custom_command | rule select $STR from $STR {op(fields:$2,table_name:$4){
     ("SQL SELECT: " + fields + " FROM " + table_name).echo();
     
     if (table_name == "users") {
@@ -70,9 +51,40 @@ custom_command = rule select $STR from $STR {op(fields:$2,table_name:$4){
     };
 }};
 
-/* COUNT function (custom_function - expression) */
-("Defining COUNT syntax...").echo();
-custom_function = rule count '(' $STR ')' from $STR {op(field:$3,table_name:$6){
+/* SELECT with individual field parsing - TRUE NATIVE SYNTAX */
+custom_command = custom_command | rule select $STR ',' $STR from $STR {op(field1:$2,field2:$4,table_name:$6){
+    ("SQL SELECT: " + field1 + "," + field2 + " FROM " + table_name).echo();
+    
+    if (table_name == "users") {
+        records = users_table.ls();
+        ("Found " + records.len() + " records:").echo();
+        
+        i = 0;
+        while (i < records.len()) {
+            record = records[i];
+            key = record.getname(1);
+            name = users_table.get(key, "name");
+            age = users_table.get(key, "age");
+            city = users_table.get(key, "city");
+            
+            if (field1 == "name" && field2 == "age") {
+                ("  " + name + " (age " + age + ")").echo();
+            } else if (field1 == "name" && field2 == "city") {
+                ("  " + name + " (" + city + ")").echo();
+            } else if (field1 == "age" && field2 == "city") {
+                ("  " + age + " (" + city + ")").echo();
+            };
+            
+            i = i + 1;
+        };
+    } else {
+        ("Unknown table: " + table_name).echo();
+    };
+}};
+
+/* COUNT function with native grammar */
+("Defining COUNT syntax with native grammar...").echo();
+custom_function = custom_function | rule count '(' $STR ')' from $STR {op(field:$3,table_name:$6){
     ("SQL COUNT: " + field + " FROM " + table_name).echo();
     
     if (table_name == "users") {
@@ -86,102 +98,104 @@ custom_function = rule count '(' $STR ')' from $STR {op(field:$3,table_name:$6){
     };
 }};
 
-/* INSERT statement (custom_command - action) */
-("Defining INSERT syntax...").echo();
-custom_command = rule insert into $STR values $STR {op(table_name:$3,values_str:$5){
-    ("SQL INSERT: " + table_name + " VALUES " + values_str).echo();
+/* INSERT with individual value parsing - TRUE NATIVE SYNTAX */
+("Defining INSERT syntax with native grammar...").echo();
+custom_command = custom_command | rule insert into $STR values $STR ',' $INT ',' $STR {op(table_name:$3,name:$6,age:$8,city:$10){
+    ("SQL INSERT: " + table_name + " VALUES " + name + "," + age + "," + city).echo();
     
     if (table_name == "users") {
-        values = values_str.split(",");
-        if (values.len() >= 3) {
-            existing_records = users_table.ls();
-            new_key = "user" + (existing_records.len() + 1).str();
-            
-            users_table.set(new_key, values[1].trim(), "name");
-            users_table.set(new_key, values[2].trim().int(), "age");
-            users_table.set(new_key, values[3].trim(), "city");
-            
-            ("Successfully inserted: " + values[1].trim()).echo();
-        } else {
-            ("Invalid values format. Need: name,age,city").echo();
-        };
+        existing_records = users_table.ls();
+        new_key = "user" + (existing_records.len() + 1).str();
+        
+        users_table.set(new_key, name, "name");
+        users_table.set(new_key, age, "age");
+        users_table.set(new_key, city, "city");
+        
+        ("Successfully inserted: " + name).echo();
     } else {
         ("Unknown table: " + table_name).echo();
     };
 }};
 
-("SQL syntax defined!\n").echo();
+/* UPDATE with native grammar */
+custom_command = custom_command | rule update $STR set $STR '=' $STR where $STR '=' $STR {op(table_name:$2,field:$4,value:$6,where_field:$8,where_value:$10){
+    ("SQL UPDATE: " + table_name + " SET " + field + "=" + value + " WHERE " + where_field + "=" + where_value).echo();
+    
+    if (table_name == "users") {
+        records = users_table.ls();
+        updated = 0;
+        
+        i = 0;
+        while (i < records.len()) {
+            record = records[i];
+            key = record.getname(1);
+            name = users_table.get(key, "name");
+            age = users_table.get(key, "age");
+            city = users_table.get(key, "city");
+            
+            if (where_field == "name" && name == where_value) {
+                if (field == "age") {
+                    users_table.set(key, value.int(), "age");
+                } else if (field == "city") {
+                    users_table.set(key, value, "city");
+                };
+                updated = updated + 1;
+            };
+            
+            i = i + 1;
+        };
+        
+        ("Updated " + updated + " records").echo();
+    } else {
+        ("Unknown table: " + table_name).echo();
+    };
+}};
 
-/* Step 3: Execute SQL syntax using op(parse)() */
+("SQL native syntax defined!\n").echo();
 
-("=== Executing SQL Syntax ===").echo();
+/* Step 3: Execute SQL syntax using op(parse)() - TRUE NATIVE SYNTAX */
+
+("=== Executing SQL Native Syntax ===").echo();
 
 ("1. SELECT all users:").echo();
 op(parse)("select * from users")();
 
-("\n2. SELECT specific fields:").echo();
+("\n2. SELECT specific fields (native grammar):").echo();
 op(parse)("select name,age from users")();
 
 ("\n3. COUNT users:").echo();
 user_count = op(parse)("count(*) from users")();
 ("Total users: " + user_count).echo();
 
-("\n4. INSERT new user:").echo();
+("\n4. INSERT new user (native grammar):").echo();
 op(parse)("insert into users values David,40,Seattle")();
 
-("\n5. SELECT after INSERT:").echo();
+("\n5. UPDATE user (native grammar):").echo();
+op(parse)("update users set age=45 where name=David")();
+
+("\n6. SELECT after changes:").echo();
 op(parse)("select * from users")();
 
-("\n6. COUNT after INSERT:").echo();
+("\n7. COUNT after changes:").echo();
 new_count = op(parse)("count(*) from users")();
 ("Updated count: " + new_count).echo();
 
 /* Step 4: Demonstrate expression usage */
+("\n=== Expression Usage ===").echo();
 
-("\n=== Using SQL in Expressions ===").echo();
+("Using COUNT in expressions:").echo();
+total = op(parse)("count(*) from users")() + 5;
+("Count + 5 = " + total).echo();
 
-("Using COUNT in conditional logic:").echo();
+("Using COUNT in comparisons:").echo();
 if (op(parse)("count(*) from users")() > 3) {
-    ("There are more than 3 users").echo();
+    ("More than 3 users found!").echo();
 } else {
-    ("There are 3 or fewer users").echo();
+    ("3 or fewer users").echo();
 };
 
-("Using COUNT in calculations:").echo();
-avg_age = 0;
-records = users_table.ls();
-i = 0;
-while (i < records.len()) {
-    record = records[i];
-    key = record.getname(1);
-    age = users_table.get(key, "age");
-    avg_age = avg_age + age;
-    i = i + 1;
-};
-avg_age = avg_age / records.len();
-("Average age: " + avg_age).echo();
-
-/* Step 5: Demonstrate the power of multi-syntax */
-
-("\n=== Multi-Syntax Power ===").echo();
-
-("Grapa can support multiple syntaxes:").echo();
-("- SQL: Database queries and operations (example implementation)").echo();
-("- JSON: Data structure manipulation (native)").echo();
-("- XML: Document processing (native)").echo();
-("- HTML: Web content parsing (native)").echo();
-("- Custom DSLs: Domain-specific languages").echo();
-
-("All through the same executable BNF architecture!").echo();
-
-("\n=== SQL Syntax Demo Complete ===").echo();
-
-/* 
- * Key Takeaways:
- * 
- * 1. custom_command: For actions (SELECT, INSERT, UPDATE)
- * 2. custom_function: For expressions (COUNT, SUM, AVG)
- * 3. op(parse)(): Execution pattern for custom syntax
- * 4. Multi-syntax: Grapa can support SQL (example), JSON, XML, HTML (native)
- * 5. No core changes: All implemented through rule extensions
- */ 
+("\n=== Power of Native Syntax ===").echo();
+("This demonstrates TRUE native syntax using Grapa's grammar system.").echo();
+("All parsing is handled by Grapa's grammar - no manual string manipulation.").echo();
+("The grammar rules capture individual components as separate tokens.").echo();
+("Implementation code receives already-parsed, structured data.").echo(); 
