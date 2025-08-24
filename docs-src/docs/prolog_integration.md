@@ -18,11 +18,19 @@ The PROLOG integration uses Grapa's **rule-based grammar system** exclusively. A
 ### Working PROLOG Syntax Implementation
 
 ```grapa
-/* Fact storage with native grammar - individual argument parsing */
-custom_command = custom_command | rule $STR '(' $STR ',' $STR ')' '.' {op(predicate:$1,arg1:$3,arg2:$5){
+/* Initialize custom_command and custom_function for PROLOG syntax */
+custom_command = rule $STR '(' $STR ',' $STR ')' '.' {op(predicate:$1,arg1:$3,arg2:$5){
     /* Store fact in knowledge base - NO MANUAL PARSING */
     fact_key = predicate + "_" + arg1 + "_" + arg2;
     fact_value = predicate + "(" + arg1 + "," + arg2 + ")";
+    kb.set(fact_key, fact_value);
+}};
+
+/* Fact with single argument */
+custom_command = custom_command | rule $STR '(' $STR ')' '.' {op(predicate:$1,arg1:$3){
+    /* Store single-argument fact - NO MANUAL PARSING */
+    fact_key = predicate + "_" + arg1;
+    fact_value = predicate + "(" + arg1 + ")";
     kb.set(fact_key, fact_value);
 }};
 
@@ -34,14 +42,32 @@ custom_command = custom_command | rule $STR '(' $STR ',' $STR ')' ':-' $STR '(' 
     kb.set(rule_key, rule_value);
 }};
 
+/* Rule with single argument */
+custom_command = custom_command | rule $STR '(' $STR ')' ':-' $STR '(' $STR ')' '.' {op(head_pred:$1,head_arg1:$3,body_pred:$5,body_arg1:$7){
+    /* Store single-argument rule - NO MANUAL PARSING */
+    rule_key = "rule_" + head_pred + "_" + head_arg1;
+    rule_value = head_pred + "(" + head_arg1 + ") :- " + body_pred + "(" + body_arg1 + ")";
+    kb.set(rule_key, rule_value);
+}};
+
 /* Query execution with native grammar */
-custom_function = custom_function | rule '?-' $STR '(' $STR ',' $STR ')' {op(predicate:$2,arg1:$4,arg2:$6){
+custom_function = rule '?-' $STR '(' $STR ',' $STR ')' {op(predicate:$2,arg1:$4,arg2:$6){
     /* PROLOG query processing - NO MANUAL PARSING */
     /* Implementation receives already-parsed tokens from Grapa's grammar */
 }};
+
+/* Query with single variable */
+custom_function = custom_function | rule '?-' $STR '(' $STR ',' 'X' ')' {op(predicate:$2,arg1:$4){
+    /* PROLOG query processing - NO MANUAL PARSING */
+}};
+
+/* Query with single argument */
+custom_function = custom_function | rule '?-' $STR '(' $STR ')' {op(predicate:$2,arg1:$4){
+    /* PROLOG query processing - NO MANUAL PARSING */
+}};
 ```
 
-**Key Point**: The `|` operator **adds** to existing rules rather than replacing them, allowing multiple syntax extensions to coexist.
+**Key Point**: The `|` operator **adds** to existing rules rather than replacing them, allowing multiple PROLOG syntax patterns to coexist.
 
 ### Using PROLOG Syntax
 
