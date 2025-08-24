@@ -1729,9 +1729,9 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#connecturl" class="md-nav__link">
+  <a href="#connecturl-cert-proxy" class="md-nav__link">
     <span class="md-ellipsis">
-      connect(url)
+      connect(url, cert, proxy)
     </span>
   </a>
   
@@ -1774,27 +1774,36 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#certificatefile" class="md-nav__link">
+  <a href="#proxytype-id-ip" class="md-nav__link">
     <span class="md-ellipsis">
-      certificate([file])
+      proxy(type, id, ip)
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#privatefile-passop-param" class="md-nav__link">
+  <a href="#certificatecertfile" class="md-nav__link">
     <span class="md-ellipsis">
-      private(file [,passOp [,param]])
+      certificate(certFile)
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#trustedfile-path" class="md-nav__link">
+  <a href="#privatekeyfile-passop-passparam" class="md-nav__link">
     <span class="md-ellipsis">
-      trusted(file, path)
+      private(keyFile, passOp, passParam)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#trustedcafile-capath" class="md-nav__link">
+    <span class="md-ellipsis">
+      trusted(caFile, caPath)
     </span>
   </a>
   
@@ -1896,6 +1905,81 @@
       HTTP/HTTPS Complete Example
     </span>
   </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#supported-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      Supported Features
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Supported Features">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#httphttps-capabilities" class="md-nav__link">
+    <span class="md-ellipsis">
+      ✅ HTTP/HTTPS Capabilities
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ssltls-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      ✅ SSL/TLS Features
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#proxy-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      ✅ Proxy Features
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#not-supported-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      Not Supported Features
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Not Supported Features">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#httphttps-limitations" class="md-nav__link">
+    <span class="md-ellipsis">
+      ❌ HTTP/HTTPS Limitations
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#advanced-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      ❌ Advanced Features
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -3936,9 +4020,9 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#connecturl" class="md-nav__link">
+  <a href="#connecturl-cert-proxy" class="md-nav__link">
     <span class="md-ellipsis">
-      connect(url)
+      connect(url, cert, proxy)
     </span>
   </a>
   
@@ -3981,27 +4065,36 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#certificatefile" class="md-nav__link">
+  <a href="#proxytype-id-ip" class="md-nav__link">
     <span class="md-ellipsis">
-      certificate([file])
+      proxy(type, id, ip)
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#privatefile-passop-param" class="md-nav__link">
+  <a href="#certificatecertfile" class="md-nav__link">
     <span class="md-ellipsis">
-      private(file [,passOp [,param]])
+      certificate(certFile)
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#trustedfile-path" class="md-nav__link">
+  <a href="#privatekeyfile-passop-passparam" class="md-nav__link">
     <span class="md-ellipsis">
-      trusted(file, path)
+      private(keyFile, passOp, passParam)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#trustedcafile-capath" class="md-nav__link">
+    <span class="md-ellipsis">
+      trusted(caFile, caPath)
     </span>
   </a>
   
@@ -4106,6 +4199,81 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#supported-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      Supported Features
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Supported Features">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#httphttps-capabilities" class="md-nav__link">
+    <span class="md-ellipsis">
+      ✅ HTTP/HTTPS Capabilities
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ssltls-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      ✅ SSL/TLS Features
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#proxy-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      ✅ Proxy Features
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#not-supported-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      Not Supported Features
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Not Supported Features">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#httphttps-limitations" class="md-nav__link">
+    <span class="md-ellipsis">
+      ❌ HTTP/HTTPS Limitations
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#advanced-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      ❌ Advanced Features
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -4133,21 +4301,92 @@ Grapa is fully thread safe in all supported environments (command line, Grapa sh
 <h2 id="type">type()</h2>
 <p>Returns $net.</p>
 <h2 id="mac">mac()</h2>
-<div class="highlight"><pre><span></span><code>&gt; $net().mac()
-{&quot;name&quot;:&quot;Ethernet&quot;,&quot;ip&quot;:&quot;104.0.97.19&quot;,&quot;mac&quot;:FB05B43EFC09ABC8}
-</code></pre></div>
-<h2 id="interfaces">interfaces()</h2>
-<div class="highlight"><pre><span></span><code>&gt; $net().interfaces()
+<p>Returns information about the primary network interface, including its MAC address and IP address.</p>
+<p><strong>Returns:</strong>
+- <code>name</code>: Interface name (e.g., "en0", "Ethernet")
+- <code>ip</code>: Primary IP address of the interface
+- <code>mac</code>: MAC address in hexadecimal format</p>
+<p><strong>Example:</strong>
+<div class="highlight"><pre><span></span><code>mac_info = $net().mac();
+mac_info.echo();
+/* Output example:
 {
-  {&quot;name&quot;:&quot;Ethernet&quot;,&quot;mac&quot;:&quot;FB05B43EFC09ABC8&quot;,&quot;family&quot;:&quot;IPV6&quot;,&quot;address&quot;:&quot;xxx:xxx:xxx:xxx::xxx&quot;},      
-  {&quot;name&quot;:&quot;Ethernet&quot;,&quot;mac&quot;:&quot;FB05B43EFC09ABC8&quot;,&quot;family&quot;:&quot;IPV6&quot;,&quot;address&quot;:&quot;xxx:xxx:xxxx:xxx:xxxx:xxxx:xxxx:xxx&quot;}
-  {&quot;name&quot;:&quot;Ethernet&quot;,&quot;mac&quot;:&quot;FB05B43EFC09ABC8&quot;,&quot;family&quot;:&quot;IPV4&quot;,&quot;address&quot;:&quot;104.0.97.19&quot;},
+  &quot;name&quot;: &quot;en0&quot;,
+  &quot;ip&quot;: &quot;192.168.4.95&quot;, 
+  &quot;mac&quot;: &quot;0x389B0CFFFEFB1C49&quot;
 }
-</code></pre></div>
-<h2 id="connecturl">connect(url)</h2>
-<div class="highlight"><pre><span></span><code>n2 = $net();
-n2.connect(&#39;localhost:12345&#39;);
-</code></pre></div>
+*/
+</code></pre></div></p>
+<p><strong>Use Cases:</strong>
+- <strong>Network Identification</strong>: Get the primary network interface details
+- <strong>MAC Address Retrieval</strong>: Extract the MAC address for network identification
+- <strong>IP Address Discovery</strong>: Get the primary IP address of the current machine
+- <strong>Network Diagnostics</strong>: Verify network interface configuration</p>
+<h2 id="interfaces">interfaces()</h2>
+<p>Returns detailed information about all network interfaces on the system.</p>
+<p><strong>Returns:</strong>
+Array of interface objects, each containing:
+- <code>name</code>: Interface name (e.g., "en0", "bridge100", "awdl0")
+- <code>mac</code>: MAC address in hexadecimal format
+- <code>family</code>: Address family ("IPV4" or "IPV6")
+- <code>address</code>: IP address for this interface/family combination</p>
+<p><strong>Example:</strong>
+<div class="highlight"><pre><span></span><code>interfaces = $net().interfaces();
+interfaces.echo();
+/* Output example:
+[
+  {
+    &quot;name&quot;: &quot;en0&quot;,
+    &quot;mac&quot;: &quot;389B0CFFFEFB1C49&quot;,
+    &quot;family&quot;: &quot;IPV6&quot;, 
+    &quot;address&quot;: &quot;fe80::10e1:9bf8:150d:9609&quot;
+  },
+  {
+    &quot;name&quot;: &quot;en0&quot;,
+    &quot;mac&quot;: &quot;389B0CFFFEFB1C49&quot;,
+    &quot;family&quot;: &quot;IPV4&quot;,
+    &quot;address&quot;: &quot;192.168.4.95&quot;
+  },
+  {
+    &quot;name&quot;: &quot;bridge100&quot;,
+    &quot;mac&quot;: &quot;603E5FFFFEA87664&quot;, 
+    &quot;family&quot;: &quot;IPV4&quot;,
+    &quot;address&quot;: &quot;10.211.55.2&quot;
+  }
+]
+*/
+</code></pre></div></p>
+<p><strong>Use Cases:</strong>
+- <strong>Network Discovery</strong>: List all available network interfaces
+- <strong>Multi-Interface Support</strong>: Find interfaces for specific network types (WiFi, Ethernet, VPN)
+- <strong>IPv6 Support</strong>: Identify interfaces with IPv6 addresses
+- <strong>Virtual Interfaces</strong>: Discover bridge, tunnel, and virtual interfaces
+- <strong>Network Configuration</strong>: Verify interface setup and addressing</p>
+<h2 id="connecturl-cert-proxy">connect(url, cert, proxy)</h2>
+<p>Establishes a network connection with optional SSL certificate and proxy support.</p>
+<p><strong>Parameters:</strong>
+- <code>url</code>: Connection string in format <code>hostname:port</code> (e.g., "httpbin.org:80")
+- <code>cert</code>: Path to SSL certificate file (optional, for HTTPS)
+- <code>proxy</code>: Proxy configuration object (optional)</p>
+<p><strong>Proxy Configuration:</strong>
+<div class="highlight"><pre><span></span><code>// Simple proxy string
+n2.connect(&quot;example.com:443&quot;, null, &quot;http://proxy.example.com:8080&quot;);
+
+// Detailed proxy object
+proxy = {
+    type: &quot;HTTP&quot;,
+    host: &quot;proxy.example.com&quot;,
+    port: &quot;8080&quot;
+};
+n2.connect(&quot;example.com:443&quot;, null, proxy);
+</code></pre></div></p>
+<p><strong>SSL Certificate Support:</strong>
+<div class="highlight"><pre><span></span><code>// HTTPS with client certificate
+n2.connect(&quot;example.com:443&quot;, &quot;keys/client.crt&quot;, null);
+
+// HTTPS with certificate and proxy
+n2.connect(&quot;example.com:443&quot;, &quot;keys/client.crt&quot;, proxy);
+</code></pre></div></p>
 <h2 id="bindurl">bind(url)</h2>
 <p>Using bind/listen requires setting up at least 2 net objects. One for bind and the other for listen. See listen().
 <div class="highlight"><pre><span></span><code>n1 = $net();
@@ -4162,104 +4401,627 @@ n2 = $net();
 n2.listen(&#39;@n1&#39;);
 </code></pre></div>
 <h2 id="onlistenurlmessagehandler-connecthandler-count1">onlisten(url,messageHandler [,connectHandler [,count:1]])</h2>
-<p>Accomplishes the same as bind/listen, but handled in a background thread and much easier to setup.</p>
-<p>When a connection is initiated, a new thread and new network object is created, and that new network object binds to the connect. The connectHandler is then called to provide a way to initialize data structures, and than the messageHandler is called for incoming data. The connectHandler receives 1 parameter - an updateable variable. The messageHandler recieves 2 parameters - the message and a hasmore flag. If the hasmore is 0, the data can be processed. If the message length is zero, the remote connection terminated and messageHandler should cleanup as the thread will be closing. </p>
-<p>The count defines the number of listeners - but fixed to 1 for now. Once a connection is established, the listener automatically restarts. For reasonable workloads, the 1 should be sufficient. For now if more is needed, use Bind/Listen - this though with require the use of $thread. </p>
-<p>The following sets up a simple web service. Use postman to post messages to verify.</p>
-<div class="highlight"><pre><span></span><code>processPost = op(in)
-{
-    {processed:in};
-}
-
-postHandler = op(in) 
-{
-    $local.data = in.split(&quot;\r&quot;).join(&quot;&quot;);
-    $local.len = data.len() - data.split(&quot;\n\n&quot;)[0].len() - 2;
-    if (len&lt;0) len=0;
-    $local.body = data.right(len);
-    $local.rstr = processPost(body).str();
-    &quot;HTTP/1.1 200 OK\r\nContent-Type: text/json\r\nContent-Length: &quot;+rstr.len().str()+&quot;\r\n\r\n&quot;+rstr;
+<p>Sets up a multi-threaded server that can handle multiple concurrent connections. Each connection runs in its own thread, making it perfect for building scalable network services.</p>
+<p><strong>How it works:</strong>
+1. <strong>Background Thread</strong>: The listener runs in a background thread, waiting for incoming connections
+2. <strong>Connection Acceptance</strong>: When a client connects, a new network object and thread are automatically created
+3. <strong>Handler Execution</strong>: The <code>connectHandler</code> is called first to initialize the connection, then <code>messageHandler</code> is called for each message
+4. <strong>Automatic Restart</strong>: After each connection closes, the listener automatically restarts to accept new connections</p>
+<p><strong>Parameters:</strong>
+- <code>url</code>: Server URL to bind to (e.g., ":8080", "localhost:12345", "https://:8443")
+- <code>messageHandler</code>: Lambda function called for each received message
+- <code>connectHandler</code>: Lambda function called when a new connection is established (optional)
+- <code>count</code>: Number of concurrent listeners (currently fixed to 1, but the system handles multiple connections per listener)</p>
+<p><strong>Handler Parameters:</strong>
+- <code>connectHandler(netSession)</code>: Called once per connection
+  - <code>netSession</code>: Network session object for the new connection
+- <code>messageHandler(netSession, message, hasmore)</code>: Called for each message
+  - <code>netSession</code>: Network session object (persists across messages)
+  - <code>message</code>: Received message data
+  - <code>hasmore</code>: Flag indicating if more data is available (0 = complete message)</p>
+<p><strong>Thread Safety:</strong>
+Grapa is fully thread-safe, so each connection thread can safely:
+- Access shared data structures
+- Use global variables
+- Call other Grapa functions
+- Perform database operations</p>
+<p><strong>Example - Multi-Connection HTTP Server:</strong>
+<div class="highlight"><pre><span></span><code>/* Process incoming HTTP requests */
+processRequest = op(requestData) {
+    /* Parse HTTP request and generate response */
+    if (requestData.left(3) == &quot;GET&quot;) {
+        return &quot;HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n&lt;h1&gt;Hello from Grapa Server!&lt;/h1&gt;&quot;;
+    } else {
+        return &quot;HTTP/1.1 405 Method Not Allowed\r\n\r\n&quot;;
+    };
 };
 
-postConnectHandler = op(netSession)
-{
+/* Handle new connections */
+connectionHandler = op(netSession) {
+    netSession.data = &quot;&quot;;
+    netSession.connectionId = Math.random().int();
+    (&quot;New connection established: &quot; + netSession.connectionId + &quot;\n&quot;).echo();
+};
+
+/* Handle incoming messages */
+messageHandler = op(netSession, message, hasmore) {
+    netSession.data += message;
+
+    if (hasmore == 0) {
+        /* Complete message received */
+        response = processRequest(netSession.data);
+        netSession.send(response);
+
+        /* Log the request */
+        (&quot;Connection &quot; + netSession.connectionId + &quot; processed request\n&quot;).echo();
+
+        /* Reset for next request */
+        netSession.data = &quot;&quot;;
+    };
+};
+
+/* Start the server */
+server = $net();
+server.onlisten(&#39;:8080&#39;, messageHandler, connectionHandler);
+
+/* Server is now running and handling multiple connections */
+(&quot;HTTP server started on port 8080\n&quot;).echo();
+(&quot;Each connection runs in its own thread\n&quot;).echo();
+
+/* IMPORTANT: Always disconnect when done to prevent segmentation faults */
+/* server.disconnect(); */
+</code></pre></div></p>
+<p><strong>Example - Complete Working Server/Client Test:</strong>
+<div class="highlight"><pre><span></span><code>/* Complete working example with proper cleanup */
+processPost = op(in) {
+    {processed: in};
+};
+
+postHandler = op(in) {
+    $local.data = in.split(&quot;\r&quot;).join(&quot;&quot;);
+    $local.len = data.len() - data.split(&quot;\n\n&quot;)[0].len() - 2;
+    if (len &lt; 0) len = 0;
+    $local.body = data.right(len);
+    $local.rstr = processPost(body).str();
+    &quot;HTTP/1.1 200 OK\r\nContent-Type: text/json\r\nContent-Length: &quot; + rstr.len().str() + &quot;\r\n\r\n&quot; + rstr;
+};
+
+postConnectHandler = op(netSession) {
     netSession.data = &quot;&quot;;
 };
 
-postMessageHandler = op(netSession,message,hasmore)
-{
+postMessageHandler = op(netSession, message, hasmore) {
     netSession.data += message;
-    if (hasmore==0)
-    {
+    if (hasmore == 0) {
         netSession.send(postHandler(netSession.data));
         netSession.data = &quot;&quot;;
     };
 };
 
-n=$net();
-n.onlisten(&#39;:12345&#39;,postMessageHandler,postConnectHandler);
+/* Start server */
+server = $net();
+server.onlisten(&#39;0.0.0.0:12345&#39;, postMessageHandler, postConnectHandler);
+(&quot;Server started on 0.0.0.0:12345\n&quot;).echo();
+
+/* Wait for server to start */
+Sleep(1000);
+
+/* Test client connection */
+client = $net();
+client.connect(&#39;localhost:12345&#39;);
+client.send(&#39;POST / HTTP/1.1\r\nContent-Type: application/json\r\n\r\n{test:123}&#39;);
+response = client.receive();
+response.echo();
+client.disconnect();
+
+/* Show connection details */
+server.host().echo();
+&quot;\n&quot;.echo();
+
+/* CRITICAL: Clean up server to prevent segmentation fault */
+server.disconnect();
+(&quot;Test completed successfully\n&quot;).echo();
+
+**Example - HTTPS Server with SSL/TLS:**
+```grapa
+/* HTTPS server with SSL certificate */
+httpsServer = $net();
+
+/* Configure SSL server certificate */
+httpsServer.certificate(&quot;keys/server.crt&quot;);
+httpsServer.private(&quot;keys/server.key&quot;);
+
+/* Handle HTTPS connections */
+httpsMessageHandler = op(netSession, message, hasmore) {
+    netSession.data += message;
+
+    if (hasmore == 0) {
+        /* Process HTTPS request */
+        if (netSession.data.left(3) == &quot;GET&quot;) {
+            response = &quot;HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n&lt;h1&gt;Secure Hello from Grapa HTTPS Server!&lt;/h1&gt;&quot;;
+        } else {
+            response = &quot;HTTP/1.1 405 Method Not Allowed\r\n\r\n&quot;;
+        };
+
+        netSession.send(response);
+        netSession.data = &quot;&quot;;
+    };
+};
+
+/* Start HTTPS server */
+httpsServer.onlisten(&#39;:8443&#39;, httpsMessageHandler);
+
+(&quot;HTTPS server started on port 8443\n&quot;).echo();
+(&quot;Using SSL certificate: keys/server.crt\n&quot;).echo();
+(&quot;Using private key: keys/server.key\n&quot;).echo();
+
+/* Remember to disconnect when done */
+/* httpsServer.disconnect(); */
+</code></pre></div></p>
+<p><strong>Example - HTTP and HTTPS Dual Server:</strong>
+<div class="highlight"><pre><span></span><code>/* Universal message handler for both HTTP and HTTPS */
+universalHandler = op(netSession, message, hasmore) {
+    netSession.data += message;
+
+    if (hasmore == 0) {
+        /* Detect if this is an HTTPS connection */
+        isSecure = netSession.ssl || false;
+        protocol = isSecure ? &quot;HTTPS&quot; : &quot;HTTP&quot;;
+
+        response = &quot;HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n&lt;h1&gt;Hello from Grapa &quot; + protocol + &quot; Server!&lt;/h1&gt;&quot;;
+        netSession.send(response);
+        netSession.data = &quot;&quot;;
+    };
+};
+
+/* HTTP Server */
+httpServer = $net();
+httpServer.onlisten(&#39;:8080&#39;, universalHandler);
+
+/* HTTPS Server */
+httpsServer = $net();
+httpsServer.certificate(&quot;keys/server.crt&quot;);
+httpsServer.private(&quot;keys/server.key&quot;);
+httpsServer.onlisten(&#39;:8443&#39;, universalHandler);
+
+(&quot;Dual server started:&quot;).echo();
+(&quot;  HTTP:  http://localhost:8080&quot;).echo();
+(&quot;  HTTPS: https://localhost:8443&quot;).echo();
+</code></pre></div></p>
+<p><strong>Example - Simple Echo Server:</strong>
+<div class="highlight"><pre><span></span><code>/* Echo server that handles multiple clients */
+echoHandler = op(netSession, message, hasmore) {
+    if (hasmore == 0) {
+        /* Echo the message back to the client */
+        netSession.send(&quot;Echo: &quot; + message);
+    };
+};
+
+/* Start echo server */
+echoServer = $net();
+echoServer.onlisten(&#39;:12345&#39;, echoHandler);
+
+(&quot;Echo server started on port 12345&quot;).echo();
+(&quot;Multiple clients can connect simultaneously&quot;).echo();
+</code></pre></div></p>
+<p><strong>Example - JSON API Server:</strong>
+<div class="highlight"><pre><span></span><code>/* API endpoint handlers */
+apiHandlers = {
+    &quot;/users&quot;: op() { return {users: [&quot;alice&quot;, &quot;bob&quot;, &quot;charlie&quot;]}; },
+    &quot;/status&quot;: op() { return {status: &quot;running&quot;, uptime: 3600}; }
+};
+
+/* Process API requests */
+processApiRequest = op(requestData) {
+    /* Parse JSON request */
+    try {
+        request = requestData.parse();
+        endpoint = request.path || &quot;/&quot;;
+
+        if (apiHandlers[endpoint]) {
+            response = apiHandlers[endpoint]();
+            return &quot;HTTP/1.1 200 OK\r\nContent-Type: application/json\r\n\r\n&quot; + response.str();
+        } else {
+            return &quot;HTTP/1.1 404 Not Found\r\n\r\n&quot;;
+        };
+    } catch (e) {
+        return &quot;HTTP/1.1 400 Bad Request\r\n\r\n&quot;;
+    };
+};
+
+/* API server message handler */
+apiMessageHandler = op(netSession, message, hasmore) {
+    netSession.data += message;
+
+    if (hasmore == 0) {
+        response = processApiRequest(netSession.data);
+        netSession.send(response);
+        netSession.data = &quot;&quot;;
+    };
+};
+
+/* Start API server */
+apiServer = $net();
+apiServer.onlisten(&#39;:3000&#39;, apiMessageHandler);
+
+(&quot;JSON API server started on port 3000&quot;).echo();
+(&quot;Handling multiple concurrent API requests&quot;).echo();
+</code></pre></div></p>
+<p><strong>SSL/TLS Server Configuration:</strong>
+<div class="highlight"><pre><span></span><code>/* Configure SSL server with certificate and private key */
+sslServer = $net();
+
+/* Set server certificate (PEM format) */
+sslServer.certificate(&quot;keys/server.crt&quot;);
+
+/* Set private key (PEM format) */
+sslServer.private(&quot;keys/server.key&quot;);
+
+/* Optional: Set password callback for encrypted private key */
+passwordCallback = op() { return &quot;server_key_password&quot;; };
+sslServer.private(&quot;keys/server_encrypted.key&quot;, passwordCallback);
+
+/* Optional: Set trusted CA certificates for client verification */
+sslServer.trusted(&quot;keys/ca.crt&quot;, &quot;keys/ca/&quot;);
+
+/* Start HTTPS server */
+sslServer.onlisten(&#39;:8443&#39;, messageHandler);
+</code></pre></div></p>
+<p><strong>Performance Characteristics:</strong>
+- <strong>Concurrent Connections</strong>: Each connection runs in its own thread
+- <strong>Scalability</strong>: Can handle hundreds of simultaneous connections
+- <strong>Memory Efficiency</strong>: Threads are created on-demand and cleaned up automatically
+- <strong>Thread Safety</strong>: Full thread safety for all Grapa operations
+- <strong>Automatic Management</strong>: No manual thread management required
+- <strong>SSL/TLS Support</strong>: Full HTTPS support with server certificates</p>
+<p>This makes Grapa's <code>onlisten</code> perfect for building:
+- <strong>Web servers</strong> and <strong>API servers</strong> (HTTP and HTTPS)
+- <strong>Chat applications</strong> and <strong>real-time services</strong>
+- <strong>Game servers</strong> and <strong>multiplayer applications</strong>
+- <strong>Data processing services</strong> with concurrent clients
+- <strong>Microservices</strong> and <strong>backend APIs</strong>
+- <strong>Secure applications</strong> requiring SSL/TLS encryption</p>
+<p><strong>⚠️ Important: Thread Cleanup</strong></p>
+<p>When using <code>onlisten()</code>, <strong>always call <code>disconnect()</code></strong> on the network object before your script exits to prevent segmentation faults:</p>
+<div class="highlight"><pre><span></span><code>/* Start server */
+server = $net();
+server.onlisten(&#39;:8080&#39;, messageHandler, connectionHandler);
+
+/* ... your server code ... */
+
+/* CRITICAL: Clean up background threads */
+server.disconnect();
 </code></pre></div>
-<p>To very, try the following.
+<p><strong>Why this is necessary:</strong>
+- <code>onlisten()</code> creates background threads for handling connections
+- Without proper cleanup, these threads can cause segmentation faults when the script exits
+- The <code>disconnect()</code> method properly terminates the background threads</p>
+<h2 id="disconnect">disconnect()</h2>
+<p>Closes the network connection.</p>
+<h2 id="proxytype-id-ip">proxy(type, id, ip)</h2>
+<p>Configures proxy settings for the connection.</p>
+<p><strong>Parameters:</strong>
+- <code>type</code>: Proxy type (e.g., "HTTP", "SOCKS")
+- <code>id</code>: Proxy identifier (host:port)
+- <code>ip</code>: Proxy IP address (host:port)</p>
+<p><strong>Example:</strong>
 <div class="highlight"><pre><span></span><code>n2 = $net();
-err = n2.connect(&#39;localhost:12345&#39;);
-err = n2.send(&#39;POST / HTTP/1.1\r\nContent-Type: application/json\r\n\r\n{try:55}&#39;);
-n2.nreceive();
-n2.receive();
+n2.proxy(&quot;HTTP&quot;, &quot;proxy.example.com:8080&quot;, &quot;proxy.example.com:8080&quot;);
+n2.connect(&quot;target.com:80&quot;, null, null);
+</code></pre></div></p>
+<h2 id="certificatecertfile">certificate(certFile)</h2>
+<p>Sets the SSL certificate file for HTTPS connections. This configures the client certificate to present to the server.</p>
+<p><strong>Parameters:</strong>
+- <code>certFile</code>: Path to the certificate file (PEM format)</p>
+<p><strong>Example:</strong>
+<div class="highlight"><pre><span></span><code>n2 = $net();
+n2.certificate(&quot;keys/client.crt&quot;);
+n2.connect(&quot;example.com:443&quot;, null, null);
+</code></pre></div></p>
+<p><strong>Use Cases:</strong>
+- <strong>Client Authentication</strong>: Present a client certificate to the server
+- <strong>Mutual TLS</strong>: Enable two-way SSL authentication
+- <strong>Server Setup</strong>: Configure server certificates for HTTPS servers</p>
+<h2 id="privatekeyfile-passop-passparam">private(keyFile, passOp, passParam)</h2>
+<p>Sets the private key file with optional password callback for HTTPS connections.</p>
+<p><strong>Parameters:</strong>
+- <code>keyFile</code>: Path to the private key file (PEM format)
+- <code>passOp</code>: Lambda function for password callback (optional)
+- <code>passParam</code>: Parameter passed to password callback (optional)</p>
+<p><strong>Example:</strong>
+<div class="highlight"><pre><span></span><code>/* Simple private key without password */
+n2 = $net();
+n2.private(&quot;keys/private.key&quot;, null, null);
+n2.connect(&quot;example.com:443&quot;, null, null);
+</code></pre></div></p>
+<p><strong>Example with Password:</strong>
+<div class="highlight"><pre><span></span><code>/* Private key with password callback */
+passwordCallback = op() { return &quot;mypassword&quot;; };
+n2 = $net();
+n2.private(&quot;keys/private.key&quot;, passwordCallback, null);
+n2.connect(&quot;example.com:443&quot;, null, null);
+</code></pre></div></p>
+<p><strong>Use Cases:</strong>
+- <strong>Client Authentication</strong>: Provide private key for client certificate
+- <strong>Server Setup</strong>: Configure server private key for HTTPS servers
+- <strong>Password Protection</strong>: Handle encrypted private keys</p>
+<h2 id="trustedcafile-capath">trusted(caFile, caPath)</h2>
+<p>Sets trusted CA certificate file and path for SSL verification. This configures which certificate authorities are trusted for verifying server certificates.</p>
+<p><strong>Parameters:</strong>
+- <code>caFile</code>: Path to CA certificate file (PEM format)
+- <code>caPath</code>: Path to CA certificate directory</p>
+<p><strong>Example:</strong>
+<div class="highlight"><pre><span></span><code>n2 = $net();
+n2.trusted(&quot;keys/ca.crt&quot;, &quot;keys/ca/&quot;);
+n2.connect(&quot;example.com:443&quot;, null, null);
+</code></pre></div></p>
+<p><strong>Example with CA Path Only:</strong>
+<div class="highlight"><pre><span></span><code>n2 = $net();
+n2.trusted(&quot;&quot;, &quot;/etc/ssl/certs/&quot;);  // Use system CA directory
+n2.connect(&quot;example.com:443&quot;, null, null);
+</code></pre></div></p>
+<p><strong>Use Cases:</strong>
+- <strong>Custom CA</strong>: Trust a specific certificate authority
+- <strong>Self-Signed Certificates</strong>: Trust your own CA for internal certificates
+- <strong>System Integration</strong>: Use system CA certificates
+- <strong>Security</strong>: Control which certificate authorities are trusted</p>
+<p><strong>Complete SSL/TLS Example:</strong>
+<div class="highlight"><pre><span></span><code>/* Configure SSL/TLS with certificates */
+n2 = $net();
+
+/* Set up trusted CA certificates */
+n2.trusted(&quot;keys/ca.crt&quot;, &quot;keys/ca/&quot;);
+
+/* Configure client certificate and private key */
+n2.certificate(&quot;keys/client.crt&quot;);
+n2.private(&quot;keys/client.key&quot;, null, null);
+
+/* Connect to HTTPS server */
+n2.connect(&quot;example.com:443&quot;, null, null);
+
+/* Verify server certificate */
+verify_result = n2.verify();
+if (verify_result.X509_error == 0) {
+    (&quot;SSL verification successful\n&quot;).echo();
+
+    /* Decode server certificate */
+    if (verify_result.X509_certificate.len() &gt; 0) {
+        cert_info = verify_result.X509_certificate.decode(&quot;PEM&quot;);
+        (&quot;Server certificate subject: &quot; + cert_info.subject_name + &quot;\n&quot;).echo();
+        (&quot;Server certificate issuer: &quot; + cert_info.issuer_name + &quot;\n&quot;).echo();
+    };
+} else {
+    (&quot;SSL verification failed: &quot; + verify_result.X509_error + &quot;\n&quot;).echo();
+};
+
+/* Get certificate chain */
+chain_result = n2.chain();
+(&quot;Certificate chain length: &quot; + chain_result.len() + &quot;\n&quot;).echo();
+
 n2.disconnect();
 </code></pre></div></p>
-<h2 id="disconnect">disconnect()</h2>
-<p>Disconnects the session. Disconnecting a listener will disconnect all sessions the listener is a parent of.</p>
-<h2 id="certificatefile">certificate([file])</h2>
-<p>Sets $net instance to SSL mode with certificate file.</p>
-<p>Use certificate() to revert back to non-SSL.</p>
-<p>See SSL_CTX_use_certificate_chain_file.</p>
-<h2 id="privatefile-passop-param">private(file [,passOp [,param]])</h2>
-<p>Server in SSL mode requires a private key file. </p>
-<p>If the private key file is password protected, also provide an $OP for the SSL routines to request the password. If a param is added, the callback will include the param. </p>
-<p>See SSL_CTX_use_PrivateKey_file.</p>
-<h2 id="trustedfile-path">trusted(file, path)</h2>
-<p>See SSL_CTX_load_verify_locations.</p>
 <h2 id="verify">verify()</h2>
-<p>Call after connecting with SSL.</p>
-<p>Returns a list:
-    result
-    certificate</p>
-<p>See the following for result codes:
-https://www.openssl.org/docs/man1.0.2/man1/verify.html</p>
-<p>Use decode("PEM") to decode the certificate.
-<div class="highlight"><pre><span></span><code>&gt; x = n2.verify();
-&gt; x.certificate.decode(&quot;PEM&quot;);
+<p>Returns SSL certificate verification information after connecting to an HTTPS server.</p>
+<p><strong>Returns:</strong>
+- <code>X509_error</code>: SSL verification error code (0 = success, non-zero = error)
+- <code>X509_certificate</code>: PEM-encoded server certificate (empty if no certificate)</p>
+<p><strong>Example:</strong>
+<div class="highlight"><pre><span></span><code>n2 = $net();
+n2.connect(&quot;https://example.com:443&quot;, null, null);
+verify_result = n2.verify();
+verify_result.X509_error.echo();  // 0 = success
+verify_result.X509_certificate.echo();  // Certificate in PEM format
+
+/* Decode certificate details */
+if (verify_result.X509_certificate.len() &gt; 0) {
+    cert_info = verify_result.X509_certificate.decode(&quot;PEM&quot;);
+    cert_info.echo();  // Shows subject_name, issuer_name, etc.
+};
+n2.disconnect();
 </code></pre></div></p>
+<p><strong>Certificate Decoding:</strong>
+Use <code>.decode("PEM")</code> on the certificate to extract readable information:
+- <code>subject_name</code>: Certificate subject (who it was issued to)
+- <code>issuer_name</code>: Certificate issuer (who issued it)</p>
 <h2 id="chain">chain()</h2>
-<p>Certificate chain.</p>
-<p>Use decode(PEM) to decode.
-<div class="highlight"><pre><span></span><code>&gt; x = n2.chain();
-&gt; x[0].decode(&quot;PEM&quot;);
+<p>Returns the SSL certificate chain from the server.</p>
+<p><strong>Returns:</strong>
+- List of certificates in the chain (PEM format)</p>
+<p><strong>Example:</strong>
+<div class="highlight"><pre><span></span><code>n2 = $net();
+n2.connect(&quot;https://example.com:443&quot;, null, null);
+chain_result = n2.chain();
+chain_result.echo();  // Certificate chain
+
+/* Decode individual certificates in the chain */
+if (chain_result.len() &gt; 0) {
+    i = 0;
+    while (i &lt; chain_result.len()) {
+        cert_info = chain_result[i].decode(&quot;PEM&quot;);
+        (&quot;Certificate &quot; + i + &quot;:&quot;).echo();
+        cert_info.echo();
+        i += 1;
+    };
+};
+n2.disconnect();
 </code></pre></div></p>
+<p><strong>Certificate Chain:</strong>
+- Returns all certificates in the server's certificate chain
+- Each certificate can be decoded with <code>.decode("PEM")</code>
+- Useful for verifying the complete trust chain</p>
 <h2 id="host">host()</h2>
-<p>After running the sample in onlisten, try the following.
-<div class="highlight"><pre><span></span><code>n.host();
-{&quot;url&quot;:&quot;:12345&quot;,&quot;host&quot;:&quot;computer name&quot;,&quot;ip&quot;:&quot;XX.XX.XX.XX&quot;,&quot;port&quot;:12345,&quot;family&quot;:2,&quot;connected&quot;:0,&quot;bound&quot;:1}
+<p>Returns detailed connection information for the current network object.</p>
+<p><strong>Returns:</strong>
+- <code>url</code>: Original connection URL or binding address
+- <code>host</code>: Local hostname
+- <code>ip</code>: Local IP address
+- <code>port</code>: Port number
+- <code>family</code>: Address family (2 = IPv4, 10 = IPv6)
+- <code>connected</code>: Connection status (1 = connected, 0 = not connected)
+- <code>bound</code>: Binding status (1 = bound, 0 = not bound)</p>
+<p><strong>Example - Server Connection Info:</strong>
+<div class="highlight"><pre><span></span><code>n2 = $net();
+n2.bind(&#39;0.0.0.0:12345&#39;);
+host_info = n2.host();
+host_info.echo();
+/* Output example:
+{
+  &quot;url&quot;: &quot;0.0.0.0:12345&quot;,
+  &quot;host&quot;: &quot;Chris-MacBook-Pro.local&quot;,
+  &quot;ip&quot;: &quot;192.168.4.95&quot;,
+  &quot;port&quot;: 12345,
+  &quot;family&quot;: 2,
+  &quot;connected&quot;: 0,
+  &quot;bound&quot;: 1
+}
+*/
 </code></pre></div></p>
+<p><strong>Example - Client Connection Info:</strong>
+<div class="highlight"><pre><span></span><code>n2 = $net();
+n2.connect(&#39;localhost:8080&#39;, null, null);
+host_info = n2.host();
+host_info.echo();
+/* Output example:
+{
+  &quot;url&quot;: &quot;localhost:8080&quot;,
+  &quot;host&quot;: &quot;localhost&quot;,
+  &quot;ip&quot;: &quot;127.0.0.1&quot;,
+  &quot;port&quot;: 8080,
+  &quot;family&quot;: 2,
+  &quot;connected&quot;: 1,
+  &quot;bound&quot;: 0
+}
+*/
+</code></pre></div></p>
+<p><strong>Use Cases:</strong>
+- <strong>Debugging</strong>: Check connection status and binding information
+- <strong>Logging</strong>: Record connection details for troubleshooting
+- <strong>Validation</strong>: Verify network object state before operations
+- <strong>Monitoring</strong>: Track connection status in server applications</p>
 <h2 id="senddata">send(data)</h2>
+<p>Sends data over the network connection.</p>
+<p><strong>Parameters:</strong>
+- <code>data</code>: Data to send (string or bytes)</p>
+<p><strong>Example:</strong>
+<div class="highlight"><pre><span></span><code>n2 = $net();
+n2.connect(&#39;localhost:12345&#39;);
+n2.send(&#39;Hello, World!&#39;);
+n2.disconnect();
+</code></pre></div></p>
 <p>See example in onlisten.</p>
 <p>NOTE: If using SSL and the remote system breaks the connection, first send will return no error. The second send will return an error. This is not the case for read - where the first read after a broken connection will return an error and close the connection.</p>
 <h2 id="receive">receive()</h2>
-<p>Blocks until data is received. Use nreceive() first to verify data exists. Or use onreceive.</p>
+<p><strong>⚠️ Important:</strong> This method <strong>blocks indefinitely</strong> if there is no data pending to receive. Always check <code>.pending()</code> first to avoid blocking.</p>
+<p><strong>Returns:</strong>
+- Received data as string</p>
+<p><strong>Example:</strong>
+<div class="highlight"><pre><span></span><code>n2 = $net();
+n2.connect(&#39;localhost:12345&#39;);
+
+/* Check if data is available before receiving */
+pending = n2.pending();
+if (pending &gt; 0) {
+    data = n2.receive();
+    data.echo();
+} else {
+    &quot;No data available to receive&quot;.echo();
+};
+
+n2.disconnect();
+</code></pre></div></p>
+<p><strong>Blocking Behavior:</strong>
+- If <code>.pending()</code> returns 0, <code>.receive()</code> will block indefinitely
+- If <code>.pending()</code> returns &gt; 0, <code>.receive()</code> will return the available data
+- Use <code>.pending()</code> to check for available data before calling <code>.receive()</code>
+- Alternative: Use <code>.onreceive()</code> for non-blocking asynchronous handling</p>
+<p><strong>When to Use Each Method:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Use When</th>
+<th>Pros</th>
+<th>Cons</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>.receive()</code></td>
+<td>Simple, single-shot data retrieval</td>
+<td>Simple to use</td>
+<td>Blocks if no data</td>
+</tr>
+<tr>
+<td><code>.onreceive()</code></td>
+<td>Continuous data processing, buffering</td>
+<td>Non-blocking, automatic buffering</td>
+<td>More complex setup</td>
+</tr>
+<tr>
+<td><code>.pending()</code> + <code>.receive()</code></td>
+<td>Manual control over data retrieval</td>
+<td>Full control</td>
+<td>Requires polling</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Best Practices:</strong>
+- <strong>Use <code>.onreceive()</code></strong> for servers, real-time applications, or when you need to process data as it arrives
+- <strong>Use <code>.receive()</code></strong> only when you know data is available (after checking <code>.pending()</code>)
+- <strong>Use <code>.pending()</code></strong> to check data availability before calling <code>.receive()</code></p>
 <p>See example in onlisten.</p>
 <h2 id="pending">pending()</h2>
-<p>Number of bytes that can be received.</p>
+<p>Returns the number of bytes that can be received without blocking.</p>
+<p><strong>⚠️ Important:</strong> Always check this before calling <code>.receive()</code> to avoid blocking indefinitely.</p>
 <p>If an SSL connection, the byte count will be what is pending in the SSL encrypted buffer, which is different than the unencrypted data. </p>
+<p><strong>Returns:</strong>
+- Number of bytes available for reading (0 = no data available)</p>
+<p><strong>Example:</strong>
+<div class="highlight"><pre><span></span><code>n2 = $net();
+n2.connect(&#39;localhost:12345&#39;);
+
+/* Check for available data */
+bytes_available = n2.pending();
+if (bytes_available &gt; 0) {
+    data = n2.receive();
+    data.echo();
+} else {
+    &quot;No data available&quot;.echo();
+};
+
+n2.disconnect();
+</code></pre></div></p>
+<p><strong>Usage Pattern:</strong>
+<div class="highlight"><pre><span></span><code>/* Safe pattern to avoid blocking */
+pending = n2.pending();
+if (pending &gt; 0) {
+    data = n2.receive();  /* Safe to call - data is available */
+} else {
+    /* No data available - don&#39;t call receive() */
+};
+</code></pre></div></p>
 <p>See example in onlisten.</p>
 <h2 id="onreceivehandler">onreceive(handler)</h2>
-<p>Handler will be called when data is received.</p>
-<div class="highlight"><pre><span></span><code>receiveHandler = op(netSession,message,hasmore)
+<p>Sets up an asynchronous receive handler that will be called when data is received.</p>
+<p><strong>🚀 Key Advantage:</strong> Automatically handles incoming data without blocking, perfect for buffering and processing data as it arrives.</p>
+<p><strong>Parameters:</strong>
+- <code>handler</code>: Lambda function to handle received data</p>
+<p><strong>Handler Parameters:</strong>
+- <code>netSession</code>: Network session object
+- <code>message</code>: Received message data
+- <code>hasmore</code>: Flag indicating if more data is available (0 = complete message)</p>
+<p><strong>Why Use onreceive() Instead of receive():</strong>
+- <strong>Non-blocking</strong>: Never blocks the main thread
+- <strong>Automatic buffering</strong>: Automatically collects incoming data
+- <strong>Real-time processing</strong>: Processes data as soon as it arrives
+- <strong>No manual polling</strong>: No need to check <code>.pending()</code> repeatedly</p>
+<p><strong>Example - Simple Data Collection:</strong>
+<div class="highlight"><pre><span></span><code>receiveHandler = op(netSession, message, hasmore)
 {
     netSession.data += message;
-    if (hasmore==0)
+    if (hasmore == 0)
     {
-        (netSession.data+&quot;\n&quot;).echo();
-        (@&lt;prompt&gt;)();
+        (&quot;Received complete message: &quot; + netSession.data).echo();
         netSession.data = &quot;&quot;;
     };
 };
@@ -4267,10 +5029,69 @@ https://www.openssl.org/docs/man1.0.2/man1/verify.html</p>
 n2 = $net();
 n2.connect(&#39;localhost:12345&#39;);
 n2.onreceive(receiveHandler);
-n2.send(&#39;POST / HTTP/1.1\r\nContent-Type: application/json\r\n\r\n{try:55}&#39;);
-n2.send(&#39;POST / HTTP/1.1\r\nContent-Type: application/json\r\n\r\n{try:400}&#39;);
+n2.send(&#39;Hello, World!&#39;);
 n2.disconnect();
-</code></pre></div>
+</code></pre></div></p>
+<p><strong>Example - Advanced Data Processing:</strong>
+<div class="highlight"><pre><span></span><code>/* Buffer for collecting data */
+dataBuffer = &quot;&quot;;
+
+receiveHandler = op(netSession, message, hasmore)
+{
+    /* Automatically collect incoming data */
+    dataBuffer += message;
+
+    if (hasmore == 0)
+    {
+        /* Process complete message */
+        (&quot;Processing complete message of &quot; + dataBuffer.len() + &quot; bytes&quot;).echo();
+
+        /* Parse and process the data */
+        if (dataBuffer.left(3) == &quot;GET&quot;) {
+            (&quot;HTTP GET request received&quot;).echo();
+        } else if (dataBuffer.left(4) == &quot;POST&quot;) {
+            (&quot;HTTP POST request received&quot;).echo();
+        };
+
+        /* Clear buffer for next message */
+        dataBuffer = &quot;&quot;;
+    };
+};
+
+n2 = $net();
+n2.connect(&#39;localhost:12345&#39;);
+n2.onreceive(receiveHandler);
+n2.send(&#39;GET / HTTP/1.1\r\nHost: localhost\r\n\r\n&#39;);
+n2.disconnect();
+</code></pre></div></p>
+<p><strong>Example - JSON Data Processing:</strong>
+<div class="highlight"><pre><span></span><code>/* Buffer for JSON data */
+jsonBuffer = &quot;&quot;;
+
+jsonHandler = op(netSession, message, hasmore)
+{
+    jsonBuffer += message;
+
+    if (hasmore == 0)
+    {
+        /* Try to parse complete JSON */
+        try {
+            jsonData = jsonBuffer.parse();
+            (&quot;Received JSON: &quot; + jsonData.str()).echo();
+        } catch (e) {
+            (&quot;Invalid JSON received: &quot; + jsonBuffer).echo();
+        };
+
+        jsonBuffer = &quot;&quot;;
+    };
+};
+
+n2 = $net();
+n2.connect(&#39;localhost:12345&#39;);
+n2.onreceive(jsonHandler);
+n2.send(&#39;{&quot;name&quot;:&quot;test&quot;,&quot;value&quot;:123}&#39;);
+n2.disconnect();
+</code></pre></div></p>
 <h2 id="httpread">httpread()</h2>
 <p>Reads HTTP response data from the connection.</p>
 <h2 id="httpsendmethodentityheaderbody">httpsend(method,entity,header,body)</h2>
@@ -4280,10 +5101,19 @@ n2.disconnect();
 - <code>entity</code>: HTTP path (e.g., "/api/data")
 - <code>header</code>: Object containing HTTP headers
 - <code>body</code>: Request body content</p>
+<p><strong>Header Support:</strong>
+- <strong>Cookie Headers</strong>: Automatically formatted with <code>;</code> separator
+- <strong>Array/Tuple Headers</strong>: Multiple values joined with <code>,</code> separator
+- <strong>List Headers</strong>: Name-value pairs properly formatted</p>
 <p><strong>Example:</strong>
 <div class="highlight"><pre><span></span><code>n2 = $net();
 n2.connect(&quot;httpbin.org:80&quot;, null, null);
-header = {&quot;Host&quot;: &quot;httpbin.org&quot;, &quot;User-Agent&quot;: &quot;Grapa-HTTP/1.0&quot;};
+header = {
+    &quot;Host&quot;: &quot;httpbin.org&quot;, 
+    &quot;User-Agent&quot;: &quot;Grapa-HTTP/1.0&quot;,
+    &quot;Cookie&quot;: [&quot;session=abc123&quot;, &quot;user=john&quot;],
+    &quot;Accept&quot;: [&quot;text/html&quot;, &quot;application/json&quot;]
+};
 n2.httpsend(&quot;GET&quot;, &quot;/get&quot;, header, &quot;&quot;);
 </code></pre></div></p>
 <h2 id="httpmessageraw">httpmessage([raw])</h2>
@@ -4298,6 +5128,14 @@ The C++ implementation automatically detects and parses:
 - <strong>HTML</strong> (<code>text/html</code>) → Structured HTML objects
 - <strong>XML</strong> (<code>text/xml</code>, <code>application/xml</code>, <code>application/xhtml+xml</code>) → Structured XML objects
 - <strong>Plain Text</strong> (<code>text/plain</code>) → Raw string</p>
+<p><strong>Cookie Parsing:</strong>
+- <strong>Set-Cookie Headers</strong>: Automatically parsed into structured format
+- <strong>Multiple Cookies</strong>: Properly separated and stored as name-value pairs</p>
+<p><strong>Chunked Transfer Encoding:</strong>
+- <strong>Automatic Detection</strong>: Detects <code>Transfer-Encoding: chunked</code>
+- <strong>RFC 7230 Compliance</strong>: Full chunked encoding parsing
+- <strong>Hex Length Parsing</strong>: Correctly parses chunk sizes in hexadecimal
+- <strong>Automatic Assembly</strong>: Reassembles chunked response bodies</p>
 <p><strong>Example:</strong>
 <div class="highlight"><pre><span></span><code>n2 = $net();
 n2.connect(&quot;httpbin.org:80&quot;, null, null);
@@ -4318,6 +5156,59 @@ n2.httpsend(&quot;GET&quot;, &quot;/api/data&quot;, header, &quot;&quot;);
 response = n2.httpmessage();
 n2.disconnect();
 </code></pre></div></p>
+<h2 id="supported-features">Supported Features</h2>
+<h3 id="httphttps-capabilities">✅ HTTP/HTTPS Capabilities</h3>
+<ul>
+<li><strong>HTTP Methods</strong>: GET, POST, PUT, DELETE, HEAD, OPTIONS, PATCH</li>
+<li><strong>HTTPS/SSL</strong>: Full SSL/TLS support with client certificates</li>
+<li><strong>Proxy Support</strong>: HTTP proxy with authentication</li>
+<li><strong>Cookie Handling</strong>: Automatic parsing and sending of cookies</li>
+<li><strong>Chunked Transfer Encoding</strong>: RFC 7230 compliant</li>
+<li><strong>Content Type Detection</strong>: Automatic JSON/HTML/XML parsing</li>
+<li><strong>Custom Headers</strong>: Full header customization support</li>
+<li><strong>Request Bodies</strong>: Support for any content type</li>
+<li><strong>Certificate Passwords</strong>: Dynamic password callback support</li>
+<li><strong>CA Certificate Verification</strong>: Trusted CA certificate support</li>
+</ul>
+<h3 id="ssltls-features">✅ SSL/TLS Features</h3>
+<ul>
+<li><strong>Client Certificates</strong>: PEM format certificate files</li>
+<li><strong>Private Keys</strong>: Password-protected private key support</li>
+<li><strong>Certificate Chains</strong>: Full certificate chain validation</li>
+<li><strong>CA Verification</strong>: Custom CA certificate and path support</li>
+<li><strong>SSL Modes</strong>: Automatic SSL retry and error handling</li>
+</ul>
+<h3 id="proxy-features">✅ Proxy Features</h3>
+<ul>
+<li><strong>HTTP Proxy</strong>: Full HTTP proxy support</li>
+<li><strong>Proxy Authentication</strong>: Basic authentication support</li>
+<li><strong>Proxy Configuration</strong>: Both string and object formats</li>
+<li><strong>Multiple Proxy Types</strong>: Extensible proxy type system</li>
+</ul>
+<h2 id="not-supported-features">Not Supported Features</h2>
+<h3 id="httphttps-limitations">❌ HTTP/HTTPS Limitations</h3>
+<ul>
+<li><strong>HTTP/2</strong>: No HTTP/2 protocol support</li>
+<li><strong>HTTP/3</strong>: No HTTP/3 protocol support</li>
+<li><strong>Multipart/Form-Data</strong>: No multipart form data encoding/decoding</li>
+<li><strong>Compression</strong>: No automatic gzip/deflate/brotli decompression</li>
+<li><strong>Rate Limiting</strong>: No built-in rate limiting</li>
+<li><strong>Resume Downloads</strong>: No partial content/resume support</li>
+<li><strong>SOCKS Proxy</strong>: Only HTTP proxy supported (SOCKS not implemented)</li>
+<li><strong>Custom DNS</strong>: No DNS override or custom resolution</li>
+<li><strong>Certificate Pinning</strong>: No HPKP (HTTP Public Key Pinning) support</li>
+<li><strong>HTTP Authentication</strong>: Only Basic auth supported (Digest, NTLM not implemented)</li>
+</ul>
+<h3 id="advanced-features">❌ Advanced Features</h3>
+<ul>
+<li><strong>WebSocket</strong>: No WebSocket protocol support</li>
+<li><strong>HTTP/2 Server Push</strong>: Not applicable (no HTTP/2)</li>
+<li><strong>HTTP/3 QUIC</strong>: Not applicable (no HTTP/3)</li>
+<li><strong>Streaming Responses</strong>: No streaming response handling</li>
+<li><strong>Connection Pooling</strong>: No connection reuse/pooling</li>
+<li><strong>Keep-Alive Management</strong>: Basic support only</li>
+<li><strong>HTTP Caching</strong>: No cache control or ETag support</li>
+</ul>
 
 
 
