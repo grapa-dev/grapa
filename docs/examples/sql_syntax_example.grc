@@ -19,9 +19,11 @@ users_table.set("user3", "Chicago", "city");
 
 /* Step 2: Define SQL syntax using Grapa's grammar system - NO MANUAL PARSING */
 
+/* Initialize custom_command and custom_function for SQL syntax */
+("Defining SQL syntax with native grammar...").echo();
+
 /* SELECT statement with granular grammar rules */
-("Defining SELECT syntax with native grammar...").echo();
-custom_command = custom_command | rule select $STR from $STR {op(fields:$2,table_name:$4){
+custom_command = rule select $STR from $STR {op(fields:$2,table_name:$4){
     ("SQL SELECT: " + fields + " FROM " + table_name).echo();
     
     if (table_name == "users") {
@@ -83,8 +85,7 @@ custom_command = custom_command | rule select $STR ',' $STR from $STR {op(field1
 }};
 
 /* COUNT function with native grammar */
-("Defining COUNT syntax with native grammar...").echo();
-custom_function = custom_function | rule count '(' $STR ')' from $STR {op(field:$3,table_name:$6){
+custom_function = rule count '(' $STR ')' from $STR {op(field:$3,table_name:$6){
     ("SQL COUNT: " + field + " FROM " + table_name).echo();
     
     if (table_name == "users") {
@@ -99,7 +100,6 @@ custom_function = custom_function | rule count '(' $STR ')' from $STR {op(field:
 }};
 
 /* INSERT with individual value parsing - TRUE NATIVE SYNTAX */
-("Defining INSERT syntax with native grammar...").echo();
 custom_command = custom_command | rule insert into $STR values $STR ',' $INT ',' $STR {op(table_name:$3,name:$6,age:$8,city:$10){
     ("SQL INSERT: " + table_name + " VALUES " + name + "," + age + "," + city).echo();
     
@@ -151,6 +151,34 @@ custom_command = custom_command | rule update $STR set $STR '=' $STR where $STR 
     };
 }};
 
+/* DELETE with native grammar */
+custom_command = custom_command | rule delete from $STR where $STR '=' $STR {op(table_name:$3,where_field:$5,where_value:$7){
+    ("SQL DELETE: " + table_name + " WHERE " + where_field + "=" + where_value).echo();
+    
+    if (table_name == "users") {
+        records = users_table.ls();
+        deleted = 0;
+        
+        i = 0;
+        while (i < records.len()) {
+            record = records[i];
+            key = record.getname(1);
+            name = users_table.get(key, "name");
+            
+            if (where_field == "name" && name == where_value) {
+                users_table.del(key);
+                deleted = deleted + 1;
+            };
+            
+            i = i + 1;
+        };
+        
+        ("Deleted " + deleted + " records").echo();
+    } else {
+        ("Unknown table: " + table_name).echo();
+    };
+}};
+
 ("SQL native syntax defined!\n").echo();
 
 /* Step 3: Execute SQL syntax using op(parse)() - TRUE NATIVE SYNTAX */
@@ -176,7 +204,13 @@ op(parse)("update users set age=45 where name=David")();
 ("\n6. SELECT after changes:").echo();
 op(parse)("select * from users")();
 
-("\n7. COUNT after changes:").echo();
+("\n7. DELETE user (native grammar):").echo();
+op(parse)("delete from users where name=David")();
+
+("\n8. SELECT after DELETE:").echo();
+op(parse)("select * from users")();
+
+("\n9. COUNT after changes:").echo();
 new_count = op(parse)("count(*) from users")();
 ("Updated count: " + new_count).echo();
 
@@ -198,4 +232,5 @@ if (op(parse)("count(*) from users")() > 3) {
 ("This demonstrates TRUE native syntax using Grapa's grammar system.").echo();
 ("All parsing is handled by Grapa's grammar - no manual string manipulation.").echo();
 ("The grammar rules capture individual components as separate tokens.").echo();
-("Implementation code receives already-parsed, structured data.").echo(); 
+("Implementation code receives already-parsed, structured data.").echo();
+("Multiple SQL syntax patterns coexist using the | operator.").echo(); 

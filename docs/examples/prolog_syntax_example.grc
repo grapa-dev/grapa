@@ -6,12 +6,23 @@ kb = $file().table("prolog_kb");
 
 /* Step 2: Define PROLOG syntax using Grapa's grammar system - NO MANUAL PARSING */
 
+/* Initialize custom_command and custom_function for PROLOG syntax */
+("Defining PROLOG syntax with native grammar...").echo();
+
 /* Fact storage with native grammar - individual argument parsing */
-("Defining PROLOG fact syntax with native grammar...").echo();
-custom_command = custom_command | rule $STR '(' $STR ',' $STR ')' '.' {op(predicate:$1,arg1:$3,arg2:$5){
+custom_command = rule $STR '(' $STR ',' $STR ')' '.' {op(predicate:$1,arg1:$3,arg2:$5){
     /* Store fact in knowledge base - NO MANUAL PARSING */
     fact_key = predicate + "_" + arg1 + "_" + arg2;
     fact_value = predicate + "(" + arg1 + "," + arg2 + ")";
+    kb.set(fact_key, fact_value);
+    ("PROLOG Fact stored: " + fact_value).echo();
+}};
+
+/* Fact with single argument */
+custom_command = custom_command | rule $STR '(' $STR ')' '.' {op(predicate:$1,arg1:$3){
+    /* Store single-argument fact - NO MANUAL PARSING */
+    fact_key = predicate + "_" + arg1;
+    fact_value = predicate + "(" + arg1 + ")";
     kb.set(fact_key, fact_value);
     ("PROLOG Fact stored: " + fact_value).echo();
 }};
@@ -25,8 +36,17 @@ custom_command = custom_command | rule $STR '(' $STR ',' $STR ')' ':-' $STR '(' 
     ("PROLOG Rule stored: " + rule_value).echo();
 }};
 
+/* Rule with single argument */
+custom_command = custom_command | rule $STR '(' $STR ')' ':-' $STR '(' $STR ')' '.' {op(head_pred:$1,head_arg1:$3,body_pred:$5,body_arg1:$7){
+    /* Store single-argument rule - NO MANUAL PARSING */
+    rule_key = "rule_" + head_pred + "_" + head_arg1;
+    rule_value = head_pred + "(" + head_arg1 + ") :- " + body_pred + "(" + body_arg1 + ")";
+    kb.set(rule_key, rule_value);
+    ("PROLOG Rule stored: " + rule_value).echo();
+}};
+
 /* Query execution with native grammar */
-custom_function = custom_function | rule '?-' $STR '(' $STR ',' $STR ')' {op(predicate:$2,arg1:$4,arg2:$6){
+custom_function = rule '?-' $STR '(' $STR ',' $STR ')' {op(predicate:$2,arg1:$4,arg2:$6){
     ("PROLOG Query: " + predicate + "(" + arg1 + "," + arg2 + ")").echo();
     
     /* Search for facts */
@@ -114,6 +134,48 @@ custom_function = custom_function | rule '?-' $STR '(' $STR ',' 'X' ')' {op(pred
     return results;
 }};
 
+/* Query with single argument */
+custom_function = custom_function | rule '?-' $STR '(' $STR ')' {op(predicate:$2,arg1:$4){
+    ("PROLOG Query: " + predicate + "(" + arg1 + ")").echo();
+    
+    /* Search for facts */
+    facts = kb.ls();
+    results = [];
+    
+    i = 0;
+    while (i < facts.len()) {
+        fact_key = facts[i].getname(1);
+        fact_value = kb.get(fact_key);
+        
+        /* Check if this fact matches our query */
+        if (fact_key.indexOf(predicate + "_") == 0) {
+            /* Extract argument from fact key */
+            key_parts = fact_key.split("_");
+            if (key_parts.len() >= 2) {
+                fact_arg1 = key_parts[1];
+                
+                /* Unification logic */
+                if (arg1 == "X" || arg1 == fact_arg1) {
+                    result = {
+                        predicate: predicate,
+                        arg1: arg1 == "X" ? fact_arg1 : arg1
+                    };
+                    results.push(result);
+                    ("Found: " + predicate + "(" + result.arg1 + ")").echo();
+                };
+            };
+        };
+        
+        i = i + 1;
+    };
+    
+    if (results.len() == 0) {
+        ("No solutions found").echo();
+    };
+    
+    return results;
+}};
+
 ("PROLOG native syntax defined!\n").echo();
 
 /* Step 3: Execute PROLOG syntax using op(parse)() - TRUE NATIVE SYNTAX */
@@ -125,10 +187,12 @@ op(parse)("parent(john,mary).")();
 op(parse)("parent(john,bob).")();
 op(parse)("parent(mary,alice).")();
 op(parse)("parent(bob,charlie).")();
+op(parse)("likes(john,coffee).")();
 
 ("\n2. Adding rules (native grammar):").echo();
 op(parse)("ancestor(X,Y) :- parent(X,Y).")();
 op(parse)("ancestor(X,Y) :- parent(X,Z), ancestor(Z,Y).")();
+op(parse)("drinks(X,Y) :- likes(X,Y).")();
 
 ("\n3. Querying facts (native grammar):").echo();
 ("Query: Who are John's children?").echo();
@@ -140,10 +204,15 @@ results1 = op(parse)("?- parent(john,X)")();
 results2 = op(parse)("?- parent(X,alice)")();
 ("Results: " + results2).echo();
 
-("\n5. Querying ancestors (native grammar):").echo();
-("Query: Who are John's ancestors?").echo();
-results3 = op(parse)("?- ancestor(john,X)")();
+("\n5. Querying single-argument facts (native grammar):").echo();
+("Query: What does John like?").echo();
+results3 = op(parse)("?- likes(john,X)")();
 ("Results: " + results3).echo();
+
+("\n6. Querying ancestors (native grammar):").echo();
+("Query: Who are John's ancestors?").echo();
+results4 = op(parse)("?- ancestor(john,X)")();
+("Results: " + results4).echo();
 
 /* Step 4: Demonstrate expression usage */
 ("\n=== Expression Usage ===").echo();
@@ -164,4 +233,5 @@ if (op(parse)("?- parent(john,X)")().len() > 1) {
 ("All parsing is handled by Grapa's grammar - no manual string manipulation.").echo();
 ("The grammar rules capture individual components as separate tokens.").echo();
 ("Implementation code receives already-parsed, structured data.").echo();
+("Multiple PROLOG syntax patterns coexist using the | operator.").echo();
 ("PROLOG syntax is now truly native to Grapa!").echo();

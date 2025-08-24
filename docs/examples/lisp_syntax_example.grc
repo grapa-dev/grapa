@@ -7,9 +7,11 @@ $global.lisp_vars = {};
 
 /* Step 2: Define LISP syntax using Grapa's grammar system - NO MANUAL PARSING */
 
+/* Initialize custom_command and custom_function for LISP syntax */
+("Defining LISP syntax with native grammar...").echo();
+
 /* S-expressions with native grammar - individual argument parsing */
-("Defining LISP S-expression syntax with native grammar...").echo();
-custom_command = custom_command | rule '(' $STR $STR $STR ')' {op(function:$2,arg1:$3,arg2:$4){
+custom_command = rule '(' $STR $STR $STR ')' {op(function:$2,arg1:$3,arg2:$4){
     /* Evaluate S-expression - NO MANUAL PARSING */
     result = lisp_eval(function, [arg1, arg2]);
     ("LISP S-expression: (" + function + " " + arg1 + " " + arg2 + ") = " + result).echo();
@@ -24,6 +26,14 @@ custom_command = custom_command | rule '(' $STR $STR $STR $STR ')' {op(function:
     return result;
 }};
 
+/* S-expressions with single argument */
+custom_command = custom_command | rule '(' $STR $STR ')' {op(function:$2,arg1:$3){
+    /* Evaluate S-expression - NO MANUAL PARSING */
+    result = lisp_eval(function, [arg1]);
+    ("LISP S-expression: (" + function + " " + arg1 + ") = " + result).echo();
+    return result;
+}};
+
 /* Function definition with native grammar */
 custom_command = custom_command | rule '(defun' $STR '(' $STR $STR ')' $STR ')' {op(name:$2,param1:$4,param2:$5,body:$7){
     /* Store function definition - NO MANUAL PARSING */
@@ -32,6 +42,17 @@ custom_command = custom_command | rule '(defun' $STR '(' $STR $STR ')' $STR ')' 
         body: body
     };
     ("LISP Function defined: " + name + "(" + param1 + " " + param2 + ")").echo();
+    return name;
+}};
+
+/* Function definition with single parameter */
+custom_command = custom_command | rule '(defun' $STR '(' $STR ')' $STR ')' {op(name:$2,param1:$4,body:$6){
+    /* Store function definition - NO MANUAL PARSING */
+    $global.lisp_functions[name] = {
+        params: [param1],
+        body: body
+    };
+    ("LISP Function defined: " + name + "(" + param1 + ")").echo();
     return name;
 }};
 
@@ -114,6 +135,15 @@ custom_command = custom_command | rule '(list' $STR $STR $STR ')' {op(elem1:$2,e
     val2 = evaluate_sexp(elem2);
     val3 = evaluate_sexp(elem3);
     result = [val1, val2, val3];
+    ("LISP List: " + result).echo();
+    return result;
+}};
+
+/* List with single element */
+custom_command = custom_command | rule '(list' $STR ')' {op(elem1:$2){
+    /* Create list with single element - NO MANUAL PARSING */
+    val1 = evaluate_sexp(elem1);
+    result = [val1];
     ("LISP List: " + result).echo();
     return result;
 }};
@@ -208,21 +238,27 @@ result2 = op(parse)("(* 3 4)")();
 result3 = op(parse)("(+ 1 2 3)")();
 ("Result: " + result3).echo();
 
+result4 = op(parse)("(- 10 3)")();
+("Result: " + result4).echo();
+
 ("\n2. Variable assignment (native grammar):").echo();
 op(parse)("(setq x 10)")();
 op(parse)("(setq y 20)")();
 
 ("\n3. Using variables (native grammar):").echo();
-result4 = op(parse)("(+ x y)")();
-("Result: " + result4).echo();
+result5 = op(parse)("(+ x y)")();
+("Result: " + result5).echo();
 
 ("\n4. Conditional expressions (native grammar):").echo();
-result5 = op(parse)("(if (> 5 3) \"yes\" \"no\")")();
-("Result: " + result5).echo();
+result6 = op(parse)("(if (> 5 3) \"yes\" \"no\")")();
+("Result: " + result6).echo();
 
 ("\n5. List operations (native grammar):").echo();
 list1 = op(parse)("(list 1 2 3)")();
 ("List created: " + list1).echo();
+
+list2 = op(parse)("(list 1)")();
+("Single element list: " + list2).echo();
 
 car_result = op(parse)("(car (list 1 2 3))")();
 ("Car result: " + car_result).echo();
@@ -234,7 +270,8 @@ cons_result = op(parse)("(cons 0 (list 1 2 3))")();
 ("Cons result: " + cons_result).echo();
 
 ("\n6. Function definition (native grammar):").echo();
-op(parse)("(defun square (x y) (* x y))")();
+op(parse)("(defun square (x) (* x x))")();
+op(parse)("(defun add (x y) (+ x y))")();
 
 /* Step 4: Demonstrate expression usage */
 ("\n=== Expression Usage ===").echo();
@@ -256,4 +293,5 @@ if (op(parse)("(> 10 5)")()) {
 ("All parsing is handled by Grapa's grammar - no manual string manipulation.").echo();
 ("The grammar rules capture individual components as separate tokens.").echo();
 ("Implementation code receives already-parsed, structured data.").echo();
+("Multiple LISP syntax patterns coexist using the | operator.").echo();
 ("LISP syntax is now truly native to Grapa!").echo();

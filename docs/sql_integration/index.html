@@ -3969,24 +3969,39 @@
 <h2 id="true-native-syntax-implementation">True Native Syntax Implementation</h2>
 <p>The SQL integration uses Grapa's <strong>rule-based grammar system</strong> exclusively. All parsing is handled by Grapa's grammar engine - <strong>no manual string manipulation</strong> is required.</p>
 <h3 id="working-sql-syntax-implementation">Working SQL Syntax Implementation</h3>
-<div class="highlight"><pre><span></span><code>/* SELECT with individual field parsing - TRUE NATIVE SYNTAX */
-custom_command = custom_command | rule select $STR &#39;,&#39; $STR from $STR {op(field1:$2,field2:$4,table_name:$6){
+<div class="highlight"><pre><span></span><code>/* Initialize custom_command and custom_function for SQL syntax */
+custom_command = rule select $STR from $STR {op(fields:$2,table_name:$4){
     /* Implementation receives already-parsed tokens from Grapa&#39;s grammar */
     /* NO manual parsing - Grapa grammar handled everything */
 }};
 
-/* INSERT with individual value parsing - TRUE NATIVE SYNTAX */
-custom_command = custom_command | rule insert into $STR values $STR &#39;,&#39; $INT &#39;,&#39; $STR {op(table_name:$3,name:$6,age:$8,city:$10){
+/* SELECT with individual field parsing - TRUE NATIVE SYNTAX */
+custom_command = custom_command | rule select $STR &#39;,&#39; $STR from $STR {op(field1:$2,field2:$4,table_name:$6){
     /* Implementation receives already-parsed, structured data */
     /* NO manual parsing - Grapa grammar captured each component */
+}};
+
+/* INSERT with individual value parsing - TRUE NATIVE SYNTAX */
+custom_command = custom_command | rule insert into $STR values $STR &#39;,&#39; $INT &#39;,&#39; $STR {op(table_name:$3,name:$6,age:$8,city:$10){
+    /* All components parsed by Grapa&#39;s grammar system */
 }};
 
 /* UPDATE with native grammar */
 custom_command = custom_command | rule update $STR set $STR &#39;=&#39; $STR where $STR &#39;=&#39; $STR {op(table_name:$2,field:$4,value:$6,where_field:$8,where_value:$10){
     /* All components parsed by Grapa&#39;s grammar system */
 }};
+
+/* DELETE with native grammar */
+custom_command = custom_command | rule delete from $STR where $STR &#39;=&#39; $STR {op(table_name:$3,where_field:$5,where_value:$7){
+    /* All components parsed by Grapa&#39;s grammar system */
+}};
+
+/* COUNT function with native grammar */
+custom_function = rule count &#39;(&#39; $STR &#39;)&#39; from $STR {op(field:$3,table_name:$6){
+    /* Expression-based SQL function */
+}};
 </code></pre></div>
-<p><strong>Key Point</strong>: The <code>|</code> operator <strong>adds</strong> to existing rules rather than replacing them, allowing multiple syntax extensions to coexist.</p>
+<p><strong>Key Point</strong>: The <code>|</code> operator <strong>adds</strong> to existing rules rather than replacing them, allowing multiple SQL syntax patterns to coexist.</p>
 <h3 id="using-sql-syntax">Using SQL Syntax</h3>
 <p>Once defined, SQL syntax works <strong>natively</strong> in Grapa:</p>
 <div class="highlight"><pre><span></span><code>/* Execute SQL using op(parse)() - TRUE NATIVE SYNTAX */
