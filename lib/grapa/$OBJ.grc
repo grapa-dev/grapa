@@ -85,6 +85,7 @@
 	html = op(){@local."$comp"=rule <$function>;@this.encode("HTML");};
 	findall = @<[op,@<findall,{@<this>,@<var,{pattern}>}>],{pattern}>;
 	range = @<[op,@<range,{@<this>,@<var,{stop}>,@<var,{step}>}>],{stop:null,step:null}>;
+	keys = @<keys,{@<this>}>;
 };
 
 

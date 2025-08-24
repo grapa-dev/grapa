@@ -2493,6 +2493,14 @@ public:
 };
 GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleMatch(GrapaCHAR& pName) { return new GrapaLibraryRuleMatchEvent(pName); }
 
+class GrapaLibraryRuleKeysEvent : public GrapaLibraryEvent
+{
+public:
+	GrapaLibraryRuleKeysEvent(GrapaCHAR& pName) { mName.FROM(pName); };
+	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
+};
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleKeys(GrapaCHAR& pName) { return new GrapaLibraryRuleKeysEvent(pName); }
+
 class GrapaLibraryRuleSplitEvent : public GrapaLibraryEvent
 {
 public:
@@ -3175,7 +3183,8 @@ GrapaLibraryEvent* GrapaLibraryRuleEvent::LoadLib(GrapaScriptExec *vScriptExec, 
 		{ "interpolate", &GrapaLibraryRuleEvent::HandleInterpolate },
 		{ "replace", &GrapaLibraryRuleEvent::HandleReplace },
         { "grep", &GrapaLibraryRuleEvent::HandleGrep },
-        { "match", &GrapaLibraryRuleEvent::HandleMatch },
+		{ "match", &GrapaLibraryRuleEvent::HandleMatch },
+		{ "keys", &GrapaLibraryRuleEvent::HandleKeys },
 		{ "split", &GrapaLibraryRuleEvent::HandleSplit },
 		{ "join", &GrapaLibraryRuleEvent::HandleJoin },
 		{ "shape", &GrapaLibraryRuleEvent::HandleShape },
@@ -18447,14 +18456,32 @@ GrapaRuleEvent* GrapaLibraryRuleGrepEvent::Run(GrapaScriptExec* vScriptExec, Gra
 
 GrapaRuleEvent* GrapaLibraryRuleMatchEvent::Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput)
 {
-    GrapaRuleEvent* result = NULL;
-    GrapaLibraryRuleGrepEvent rg(mName);
-    GrapaRuleEvent* grep_result = rg.Run(vScriptExec,pNameSpace,pOperation,pInput);
-    if (grep_result&&grep_result->mValue.mToken==GrapaTokenType::ERR ) return grep_result;
-    bool hasValue = (grep_result&&grep_result->mValue.mToken==GrapaTokenType::ARRAY&&grep_result->vQueue&&grep_result->vQueue->mCount);
-    grep_result->CLEAR();
-    delete grep_result;
-    return new GrapaRuleEvent(0, GrapaCHAR(), GrapaCHAR::SetBool(hasValue));
+	GrapaRuleEvent* result = NULL;
+	GrapaLibraryRuleGrepEvent rg(mName);
+	GrapaRuleEvent* grep_result = rg.Run(vScriptExec, pNameSpace, pOperation, pInput);
+	if (grep_result && grep_result->mValue.mToken == GrapaTokenType::ERR) return grep_result;
+	bool hasValue = (grep_result && grep_result->mValue.mToken == GrapaTokenType::ARRAY && grep_result->vQueue && grep_result->vQueue->mCount);
+	grep_result->CLEAR();
+	delete grep_result;
+	return new GrapaRuleEvent(0, GrapaCHAR(), GrapaCHAR::SetBool(hasValue));
+}
+
+GrapaRuleEvent* GrapaLibraryRuleKeysEvent::Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput)
+{
+	GrapaLibraryParam r1(vScriptExec, pNameSpace, pInput ? pInput->Head(0) : NULL);
+	GrapaRuleEvent* result = new GrapaRuleEvent();
+	result->mValue.mToken = GrapaTokenType::ARRAY;
+	result->vQueue = new GrapaRuleQueue();
+	if (r1.vVal && r1.vVal->mValue.mToken == GrapaTokenType::LIST)
+	{
+		GrapaRuleEvent* p = r1.vVal->vQueue ? r1.vVal->vQueue->Head() : NULL;
+		while (p)
+		{
+			result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR(), p->mName));
+			p = p->Next();
+		}
+	}
+	return result;
 }
 
 GrapaRuleEvent* GrapaLibraryRuleSplitEvent::Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput)
