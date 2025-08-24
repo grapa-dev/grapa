@@ -111,11 +111,11 @@ prj/winlib-amd64/grapa
 prj/winlib-amd64/x64
 
 # Build artifacts (top-level only)
-./*.lib
-./*.a
-./*.so
-grapa
-grapa.exe
+/*.lib
+/*.a
+/*.so
+/grapa
+/grapa.exe
 
 # mypy
 .mypy_cache/
