@@ -1043,6 +1043,63 @@ retries.echo(); /* 3 */
 - **Duplicate Resolution**: Clear behavior for handling duplicates
 - **Direct Access**: Variables become directly accessible without prefix
 
+### Variable Indirection
+
+Grapa supports **variable indirection** using `@` and `@@` operators, which is essential for implementing true native syntax and dynamic variable access:
+
+#### Single Indirection (`@`)
+
+The `@` operator dereferences a variable name to get its value:
+
+```grapa
+a = 5;
+b = "a";
+@b;        /* Returns "a" (the value of variable b) */
+```
+
+#### Double Indirection (`@@`)
+
+The `@@` operator performs double dereferencing - first gets the value, then treats that value as another variable name:
+
+```grapa
+a = 5;
+b = "a";
+@@b;       /* Returns 5 (the value of variable a) */
+```
+
+#### Dynamic Variable Access in Functions
+
+This enables dynamic variable access and modification in functions:
+
+```grapa
+/* Function that can access any variable by name */
+f = op(var_name) {
+    return @@var_name;  /* Get value of variable named in var_name */
+};
+
+/* Function that can modify any variable by name */
+f2 = op(var_name, new_value) {
+    @var_name = new_value;  /* Set variable named in var_name */
+};
+
+/* Usage */
+x = 10;
+f("x");     /* Returns 10 */
+f2("x", 20); /* Sets x to 20 */
+f("x");     /* Returns 20 */
+```
+
+#### Importance for Native Syntax
+
+Variable indirection is crucial for implementing **true native syntax** because:
+
+- **Grammar tokens**: When the grammar system captures variable names as `$STR` tokens, you can use `@@` to access the actual variable
+- **Dynamic evaluation**: Functions can work with variable names passed as parameters
+- **Symbol tables**: Enables implementation of symbol tables and environments
+- **Language integration**: Essential for implementing languages like LISP, PROLOG, and SQL that need dynamic variable access
+
+This feature enables Grapa's unique capability to add **true native syntax** for other programming languages through its rule-based grammar system.
+
 ### Const Protection
 
 Grapa provides runtime const protection that prevents variable modification:

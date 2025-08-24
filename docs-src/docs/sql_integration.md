@@ -8,241 +8,115 @@ tags:
 ---
 # SQL Integration in Grapa
 
-> **Status:** Example Implementation
-> 
-> This document describes how SQL syntax can be integrated into Grapa using the executable BNF system. This is currently demonstrated through example scripts showing the pattern for extending Grapa's grammar with domain-specific syntax.
+Grapa's executable BNF architecture allows you to add **true native SQL syntax** to the language using `custom_command` and `custom_function` rules. This is **not** manual parsing - it's **native syntax** that integrates seamlessly with Grapa's grammar system.
 
-## Overview
+## True Native Syntax Implementation
 
-Grapa's executable BNF architecture allows for seamless integration of SQL syntax alongside native Grapa code. While SQL is not natively supported, the language provides the building blocks to implement SQL-like functionality through custom syntax rules and the `$file().table()` system.
+The SQL integration uses Grapa's **rule-based grammar system** exclusively. All parsing is handled by Grapa's grammar engine - **no manual string manipulation** is required.
 
-## Key Features
-
-### **Native Database Integration**
-- **`$file().table()`** - Built-in relational database with B-tree indexing
-- **Automatic field management** - No need to pre-define schemas
-- **Complex object support** - Store structured data as JSON objects
-- **Efficient queries** - Leverage built-in indexing for performance
-
-### **SQL Syntax Extension Pattern**
-- **Custom commands** - Define SQL-like syntax using `custom_command`
-- **Custom functions** - Implement SQL operations as Grapa functions
-- **Executable BNF** - Parse SQL statements using Grapa's grammar system
-- **Seamless integration** - Mix SQL and Grapa syntax in the same script
-
-## Implementation Examples
-
-### **Basic SQL Pattern**
+### Working SQL Syntax Implementation
 
 ```grapa
-/* Define SQL syntax as variables */
-custom_command = op(fields, table_name) {
-    ("SQL SELECT: " + fields + " FROM " + table_name).echo();
-    /* Implementation using $file().table() */
+/* SELECT with individual field parsing - TRUE NATIVE SYNTAX */
+custom_command = custom_command | rule select $STR ',' $STR from $STR {op(field1:$2,field2:$4,table_name:$6){
+    /* Implementation receives already-parsed tokens from Grapa's grammar */
+    /* NO manual parsing - Grapa grammar handled everything */
+}};
+
+/* INSERT with individual value parsing - TRUE NATIVE SYNTAX */
+custom_command = custom_command | rule insert into $STR values $STR ',' $INT ',' $STR {op(table_name:$3,name:$6,age:$8,city:$10){
+    /* Implementation receives already-parsed, structured data */
+    /* NO manual parsing - Grapa grammar captured each component */
+}};
+
+/* UPDATE with native grammar */
+custom_command = custom_command | rule update $STR set $STR '=' $STR where $STR '=' $STR {op(table_name:$2,field:$4,value:$6,where_field:$8,where_value:$10){
+    /* All components parsed by Grapa's grammar system */
+}};
+```
+
+**Key Point**: The `|` operator **adds** to existing rules rather than replacing them, allowing multiple syntax extensions to coexist.
+
+### Using SQL Syntax
+
+Once defined, SQL syntax works **natively** in Grapa:
+
+```grapa
+/* Execute SQL using op(parse)() - TRUE NATIVE SYNTAX */
+op(parse)("select name,age from users")();
+op(parse)("insert into users values David,40,Seattle")();
+op(parse)("update users set age=45 where name=David")();
+
+/* Use in expressions */
+user_count = op(parse)("count(*) from users")();
+if (user_count > 3) {
+    ("More than 3 users found!").echo();
 };
+```
 
-custom_function = op(field, table_name) {
-    ("SQL COUNT: " + field + " FROM " + table_name).echo();
-    /* Implementation using $file().table() */
+## Power of Syntax Extension
+
+This demonstrates **true native syntax** - not string storage or manual parsing:
+
+- **Grammar Integration**: SQL syntax is processed by the same parser that handles all Grapa syntax
+- **Token Capture**: Individual components (field names, values, operators) are captured as separate tokens
+- **Structured Data**: Implementation code receives already-parsed, structured data
+- **No Manual Parsing**: Zero string manipulation or manual parsing required
+- **Seamless Integration**: SQL expressions work in Grapa expressions, conditionals, and functions
+- **Rule Addition**: Uses `|` operator to add to existing grammar rules without replacement
+
+## Two Implementation Approaches
+
+### 1. Syntax Extension (Recommended)
+Uses `custom_command = custom_command | rule` and `custom_function = custom_function | rule` to define **true native syntax**:
+
+```grapa
+/* TRUE NATIVE SYNTAX - No manual parsing */
+custom_command = custom_command | rule select $STR from $STR {op(fields:$2,table:$4){
+    /* Grapa grammar provides already-parsed tokens */
+}};
+```
+
+### 2. Function-based (Not Recommended)
+Uses manual string parsing and manipulation:
+
+```grapa
+/* MANUAL PARSING - Not true native syntax */
+sql_select = op(fields, table) {
+    /* Manual parsing required */
+    field_list = fields.split(",");
+    /* ... manual string manipulation ... */
 };
-
-/* Use SQL syntax directly */
-custom_command("name, age", "users");
-custom_function("age", "users");
 ```
 
-### **Advanced SQL Features**
+**Recommendation**: Always use **syntax extension** for true native language integration.
 
-```grapa
-/* INSERT pattern */
-insert_command = op(table_name, values) {
-    values_str = values.str();
-    ("SQL INSERT: " + table_name + " VALUES " + values_str).echo();
-    /* Implementation using kb.set() */
-};
+## SQL Syntax Extension Pattern
 
-/* UPDATE pattern */
-update_command = op(table_name, set_clause, where_clause) {
-    ("SQL UPDATE: " + table_name + " SET " + set_clause + " WHERE " + where_clause).echo();
-    /* Implementation using kb.set() with conditions */
-};
+The key features for true native syntax are:
 
-/* Use complex SQL directly */
-insert_command("users", {"name": "Alice", "age": 25});
-update_command("users", "age = 26", "name = 'Alice'");
-```
+- **`custom_command = custom_command | rule`**: Defines action-based syntax (SELECT, INSERT, UPDATE)
+- **`custom_function = custom_function | rule`**: Defines expression-based syntax (COUNT, SUM, AVG)
+- **`op(parse)()`**: Executes the custom syntax
+- **Token Capture**: Use `$STR`, `$INT`, etc. to capture individual components
+- **No Manual Parsing**: Let Grapa's grammar handle all parsing
+- **Rule Addition**: Use `|` operator to add to existing rules
 
-### **Complete SQL Implementation Example**
+## Comparison with Other Languages
 
-See [SQL Syntax Example](../examples/sql_syntax_example.grc) for a full implementation demonstrating:
+Unlike other programming languages that require:
+- Manual parser implementation
+- String manipulation
+- Token extraction
+- Custom lexers
 
-- **SELECT statements** with field specification
-- **INSERT operations** with value mapping
-- **WHERE clauses** with condition parsing
-- **JOIN operations** using multiple tables
-- **Aggregate functions** like COUNT, SUM, AVG
-
-## Database Operations
-
-### **Table Creation and Management**
-
-```grapa
-/* Create a table */
-kb = $file().table("ROW");
-
-/* Define fields (optional - Grapa handles this automatically) */
-kb.mkfield("name", "STR", "VAR");
-kb.mkfield("age", "INT", "FIX", 4);
-kb.mkfield("city", "STR", "VAR");
-
-/* Store data */
-kb.set("user1", "Alice", "name");
-kb.set("user1", 25, "age");
-kb.set("user1", "New York", "city");
-```
-
-### **Query Operations**
-
-```grapa
-/* Retrieve data */
-user_data = kb.get("user1", "name");  /* "Alice" */
-user_age = kb.get("user1", "age");    /* 25 */
-
-/* Complex queries using functional methods */
-all_users = kb.keys().range().map(op(i) {
-    key = kb.keys()[i];
-    {"name": kb.get(key, "name"), "age": kb.get(key, "age")};
-});
-```
-
-## Integration with Other Syntaxes
-
-### **SQL + JSON Processing**
-
-```grapa
-/* SQL with JSON fields */
-sql_result = custom_command("name, preferences", "users");
-json_data = sql_result.parse();  /* Parse JSON preferences */
-
-/* SQL query with JSON path filtering */
-filtered_result = custom_command("name", "users", "preferences.city = 'New York'");
-```
-
-### **SQL + XML Processing**
-
-```grapa
-/* Export SQL results to XML */
-sql_data = custom_command("name, age, city", "users");
-xml_output = sql_data.to_xml();  /* Convert to XML format */
-```
+Grapa provides **true native syntax** through its executable BNF architecture, making SQL (and other languages) **first-class citizens** in the language.
 
 ## Use Cases
 
-### **Data Analysis Pipelines**
+- **Database Operations**: Native SQL syntax for database queries
+- **Data Analysis**: SQL expressions in data processing pipelines
+- **Report Generation**: SQL queries embedded in Grapa applications
+- **Multi-Syntax Applications**: Mix SQL, JSON, XML, and custom DSLs seamlessly
 
-```grapa
-/* Multi-format data processing */
-json_data = load_json("customers.json");
-xml_data = load_xml("orders.xml");
-sql_data = custom_command("customer_id, total", "sales");
-
-/* Unified processing */
-result = process_all_formats(json_data, xml_data, sql_data);
-```
-
-### **Web Applications**
-
-```grapa
-/* API with SQL-like queries */
-api_handler = op(request) {
-    if (request.type == "sql") {
-        result = custom_command(request.fields, request.table, request.where);
-        return result.to_json();
-    };
-};
-```
-
-### **ETL Processes**
-
-```grapa
-/* Extract from SQL-like source */
-source_data = custom_command("*", "source_table");
-
-/* Transform using Grapa */
-transformed = source_data.range().map(op(record) {
-    /* Apply transformations */
-    record.age = record.age + 1;
-    record.status = record.age > 18 ? "adult" : "minor";
-    return record;
-});
-
-/* Load to target */
-transformed.range().map(op(record) {
-    kb.set(record.id, record.name, "name");
-    kb.set(record.id, record.age, "age");
-});
-```
-
-## Best Practices
-
-### **Performance Optimization**
-
-1. **Use indexing** - Leverage `$file().table()` built-in B-tree indexing
-2. **Batch operations** - Group multiple operations together
-3. **Selective queries** - Only retrieve needed fields
-4. **Connection pooling** - Reuse table connections
-
-### **Error Handling**
-
-```grapa
-/* SQL with error handling */
-try {
-    result = custom_command("name, age", "users", "age > 25");
-} catch (error) {
-    ("SQL Error: " + error).echo();
-    /* Fallback to native Grapa query */
-    result = kb.keys().range().map(op(i) {
-        key = kb.keys()[i];
-        age = kb.get(key, "age");
-        if (age > 25) {
-            return {"name": kb.get(key, "name"), "age": age};
-        };
-    });
-}
-```
-
-### **Security Considerations**
-
-1. **Input validation** - Sanitize SQL-like input
-2. **Parameter binding** - Use parameterized queries
-3. **Access control** - Implement proper permissions
-4. **SQL injection prevention** - Validate and escape input
-
-## Future Enhancements
-
-### **Planned Features**
-
-- **Native SQL parser** - Built-in SQL syntax support
-- **Advanced joins** - Multi-table relationship support
-- **Stored procedures** - SQL-like function definitions
-- **Transaction support** - ACID compliance for complex operations
-
-### **Integration Roadmap**
-
-- **SQLite compatibility** - Direct SQLite query support
-- **PostgreSQL integration** - Native PostgreSQL driver
-- **MySQL support** - MySQL query compatibility
-- **NoSQL bridges** - MongoDB, Redis integration
-
-## Related Documentation
-
-- [Multi-Syntax Programming](multi_syntax_programming.md) - Overview of syntax integration
-- [Database Quick Reference](../database/quick_reference.md) - Native database operations
-- [Executable BNF](language_design_with_executable_bnf.md) - Grammar extension system
-- [Examples](../examples.md) - Complete SQL implementation examples
-
-## Example Files
-
-- [SQL Syntax Example](../examples/sql_syntax_example.grc) - Complete SQL implementation
-- [Database Test Suite](../../test/database/) - Database operation tests
-- [Multi-Format Examples](../examples/) - SQL + JSON + XML integration examples
+This demonstrates Grapa's unique capability to add **true native syntax** for other programming languages and domain-specific languages through its rule-based grammar system.
