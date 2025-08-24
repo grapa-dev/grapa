@@ -1087,8 +1087,11 @@ Sets file content or properties.
 
 ## Utility Methods
 
-### `.exec()`
+### `.exec(callback)`
 Executes a string as Grapa code, parsing and evaluating it as if it were typed directly in the console. This is functionally equivalent to `op()(script)()`.
+
+**Parameters:**
+- `callback` (optional) - Function to handle console output during script execution
 
 ```grapa
 /* Basic number parsing */
@@ -1131,11 +1134,51 @@ script.exec();                        /* Returns: 8 */
 op()(script)();                       /* Returns: 8 (equivalent) */
 ```
 
+**Callback Parameter Usage:**
+The optional `callback` parameter allows you to intercept and process console output during script execution.
+
+```grapa
+/* Basic callback usage */
+output_handler = op(data) {
+    "Captured output: " + data.str();
+};
+
+"echo 'Hello World'".exec(output_handler);
+/* Captures: "Captured output: Hello World" */
+
+/* Output filtering */
+error_filter = op(data) {
+    if (data.str().indexOf("ERROR") >= 0) {
+        "Critical: " + data.str();
+    };
+};
+
+"echo 'Processing...'; echo 'ERROR: File not found'".exec(error_filter);
+/* Only captures error messages */
+
+/* Output logging */
+logger = op(data) {
+    $file().write("script.log", data.str() + "\n", "a");
+};
+
+"echo 'Log entry 1'; echo 'Log entry 2'".exec(logger);
+/* Writes output to script.log */
+
+/* Output transformation */
+json_formatter = op(data) {
+    {timestamp: $time(), message: data.str()};
+};
+
+"echo 'User login'; echo 'Data processed'".exec(json_formatter);
+/* Returns: [{timestamp: 1234567890, message: "User login"}, ...] */
+```
+
 **Relationship to `op()()`:**
 - `script.exec()` is functionally equivalent to `op()(script)()`
 - Both use the same underlying Grapa parser and execution engine
 - Both support the same syntax including hex/binary literals, expressions, functions, etc.
 - `.exec()` is a more convenient syntax for the same functionality
+- `.exec(callback)` provides additional console output interception capabilities
 
 **Key Features:**
 - **Full Grapa Parser**: Parses any valid Grapa syntax including literals, expressions, functions, and data structures
@@ -1145,7 +1188,7 @@ op()(script)();                       /* Returns: 8 (equivalent) */
 - **Expression Evaluation**: Supports complex mathematical and logical expressions
 - **Function Execution**: Can execute function definitions and calls
 - **Data Structure Creation**: Parses arrays, objects, and their method calls
-- **Customizable Execution**: Optional callback, set, and get functions for custom behavior
+- **Console Output Interception**: Optional callback function to capture and process console output
 
 **Use Cases:**
 - **String-to-Number Conversion**: Parse hex/binary strings to numbers
@@ -1153,7 +1196,9 @@ op()(script)();                       /* Returns: 8 (equivalent) */
 - **Configuration Parsing**: Parse configuration strings as Grapa expressions
 - **User Input Processing**: Safely execute user-provided expressions
 - **Template Evaluation**: Evaluate expressions embedded in strings
-- **Custom Execution Context**: Use callback/set/get for specialized execution environments
+- **Script Output Monitoring**: Capture and process console output during execution
+- **Output Logging**: Redirect script output to files or external systems
+- **Output Filtering**: Process and filter console output based on content
 
 ### `.getname(index)`
 Gets the name of an object property.

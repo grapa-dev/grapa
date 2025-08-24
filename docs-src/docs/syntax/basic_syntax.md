@@ -1286,7 +1286,7 @@ Person = class {
     age = 0;
     city = "";
     
-    /* Constructor */
+    /* Constructor - Note: This is a regular method, not a true constructor */
     init = op(n, a, c) {
         name = n;
         age = a;
@@ -1304,6 +1304,16 @@ person = obj Person;
 person.init("John", 30, "NYC");
 person.getInfo();
 ```
+
+> **Important Note on Constructors and Destructors:**
+> 
+> **Constructors**: Grapa objects do **not** have automatic constructors that run when objects are created. The `init` method shown above is a regular method that must be called explicitly. Object creation with `obj Class` only creates an empty instance.
+> 
+> **Destructors**: Grapa objects do **not** have destructors. Memory management is handled automatically by Grapa's garbage collector. There are no `~ClassName()` or `finalize()` methods.
+> 
+> **Current Behavior**: When you create an object with `obj Class`, you get an empty instance that you must manually initialize by calling methods like `init()`.
+> 
+> **Future Enhancement**: True constructors and destructors may be added in future versions of Grapa.
 
 #### Inheritance
 ```grapa

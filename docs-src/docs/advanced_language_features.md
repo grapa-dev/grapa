@@ -627,6 +627,73 @@ The `+=` operator will be enhanced to safely add methods to system classes:
 $ARRAY += (custom_method: op() { $this.len(); });
 ```
 
+### **Current Limitations and Future Enhancements**
+
+#### **Object Lifecycle Management**
+**Current State**: Grapa objects do not have automatic constructors or destructors.
+
+**What's Missing:**
+- **Automatic Constructors**: No `constructor()` method that runs when objects are created
+- **Automatic Destructors**: No `destructor()` or `finalize()` method for cleanup
+- **Object Initialization**: Objects created with `obj Class` are empty and must be manually initialized
+
+**Workaround:**
+```grapa
+/* Manual initialization pattern */
+Person = class {
+    name = "";
+    age = 0;
+    
+    /* Manual init method - must be called explicitly */
+    init = op(n, a) {
+        name = n;
+        age = a;
+    };
+};
+
+/* Create and manually initialize */
+person = obj Person;
+person.init("Alice", 30);  /* Must call init explicitly */
+```
+
+**Future Enhancement**: Automatic constructor/destructor support will be added to make object creation more intuitive.
+
+#### **Operator Overloading**
+**Current State**: Operators work only with built-in types and predefined behaviors.
+
+**What's Missing:**
+- **Custom Operator Behavior**: Cannot define `+`, `-`, `*`, `/`, `==`, etc. for custom classes
+- **Object Arithmetic**: Cannot perform arithmetic operations on custom objects
+- **Custom Comparisons**: Cannot define custom equality or comparison behavior
+
+**Workaround:**
+```grapa
+/* Use method names instead of operators */
+Vector = class {
+    x = 0;
+    y = 0;
+    
+    /* Custom methods instead of operators */
+    add = op(other) {
+        result = obj Vector;
+        result.x = x + other.x;
+        result.y = y + other.y;
+        result;
+    };
+    
+    equals = op(other) {
+        x == other.x && y == other.y;
+    };
+};
+
+/* Usage */
+v1 = obj Vector; v1.x = 1; v1.y = 2;
+v2 = obj Vector; v2.x = 3; v2.y = 4;
+v3 = v1.add(v2);  /* Instead of v1 + v2 */
+```
+
+**Future Enhancement**: Operator overloading will allow defining custom behavior for operators on custom classes.
+
 ### **7. Complex Context Objects in Functional Programming**
 
 Grapa's functional methods support **any data structure as initializers**, enabling sophisticated state machines and context-aware operations. This goes far beyond simple accumulation to enable complex data processing pipelines.

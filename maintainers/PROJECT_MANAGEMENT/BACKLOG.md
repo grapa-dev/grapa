@@ -100,10 +100,18 @@ This backlog tracks all future, long-term, and queued tasks for the Grapa projec
 - **Next Steps**: Submit article to Wikipedia, monitor feedback, maintain article
 
 ### **Grapa curl Function Enhancement** 🔥 **HIGH PRIORITY**
-- **Status**: Basic HTTP/HTTPS with SSL certificates implemented, POST support missing
+- **Status**: ✅ **POST/PUT/DELETE with Request Bodies implemented**, basic HTTP/HTTPS with SSL certificates working
 - **Goal**: Achieve 100% feature parity with CLI curl command
+- **✅ Completed Features**:
+  - **POST/PUT/DELETE with Request Bodies**: ✅ **WORKING** - Support for `data` (JSON) and `form` (URL-encoded) options
+  - **HTTP/HTTPS**: ✅ **WORKING** - Full SSL/TLS support with client certificates
+  - **Proxy Support**: ✅ **WORKING** - HTTP proxy with string and object configuration
+  - **SSL Certificate Handling**: ✅ **WORKING** - Client certificates, private keys, trusted CAs
+  - **Custom Headers**: ✅ **WORKING** - Full header customization support
+  - **URL Parsing**: ✅ **WORKING** - Automatic protocol, host, port, and path extraction
+  - **Content Type Detection**: ✅ **WORKING** - Automatic JSON/HTML/XML parsing
+  - **Error Handling**: ✅ **WORKING** - Robust handling of invalid inputs and edge cases
 - **Missing Features**:
-  - **POST/PUT/DELETE with Request Bodies**: Add support for `data` and `form` options in curl function
   - **Multipart/form-data**: Implement multipart form data encoding/decoding (requires C++ backend support)
   - **HTTP/2 and HTTP/3**: Protocol support (requires C++ backend implementation)
   - **Compression**: Automatic gzip/deflate/brotli decompression (requires C++ backend support)
@@ -120,7 +128,9 @@ This backlog tracks all future, long-term, and queued tasks for the Grapa projec
   - **Redirect Following**: Automatic redirect handling
   - **Timeout Configuration**: Configurable timeouts
   - **Verbose Output**: Detailed request/response logging
-- **Estimated Effort**: Medium Release (2-4 weeks for POST support, 3-6 months for full parity)
+- **Testing**: ✅ **Regression tests created** in `test/network/curl_function_test.grc` and `test/network/curl_function_optimized_test.grc`
+- **Documentation**: ✅ **User examples created** in `docs-src/docs/examples/curl_function_simple.grc`
+- **Estimated Effort**: Medium Release (2-4 weeks for remaining features, 3-6 months for full parity)
 - **Dependencies**: C++ backend enhancements for advanced features
 - **Priority**: High - essential for complete HTTP client functionality
 - **Reference**: `wikipedia_grapa_article.txt` - Complete article with instructions
@@ -169,13 +179,88 @@ This backlog tracks all future, long-term, and queued tasks for the Grapa projec
 
 ### **Infrastructure & Dependencies**
 - [ ] **OpenSSL 3.0 Migration**: Upgrade from OpenSSL 1.1.1 to OpenSSL 3.0 for security improvements and modern cryptographic standards
-  - **Security Benefits**: Latest security patches, improved cryptographic algorithms, better TLS support
-  - **Compatibility**: Ensure all cryptographic functions work with OpenSSL 3.0 APIs
-  - **Testing**: Comprehensive testing of all crypto operations after migration
-  - **Dependencies**: Update build scripts, dependency management, and platform-specific configurations
+- **Priority**: HIGH - Linux compatibility blocker (OpenSSL 1.1.1 is EOL)
+- **Security Benefits**: Latest security patches, improved cryptographic algorithms, better TLS support
+- **Compatibility**: Ensure all cryptographic functions work with OpenSSL 3.0 APIs
+- **Regression Testing**: Comprehensive test suite created in `test/network/openssl_compatibility_test.grc`
+- **Test Coverage**: Certificate loading, SSL verification, HTTPS communication, client cert auth, proxy SSL, protocol versions, chain validation, error handling, performance
+- **Pre-Upgrade**: Run `./grapa test/network/openssl_compatibility_test.grc` and document baseline results
+- **Post-Upgrade**: Run same test and compare for any regressions before release
+- **Documentation**: See `test/network/README.md` for detailed testing procedures and troubleshooting
+- **Testing**: Comprehensive testing of all crypto operations after migration
+- **Dependencies**: Update build scripts, dependency management, and platform-specific configurations
+- **Status**: Ready for implementation - testing framework in place
+
+- [ ] **FLTK X11 Dependency Investigation**: Research options for removing X11 dependency from FLTK
+- **Priority**: HIGH - Dependency modernization for broader platform compatibility
+- **Current State**: FLTK pulls in X11 dependencies
+- **Goal**: Investigate if X11 dependency can be removed or minimized
+- **Investigation Areas**:
+  - FLTK configuration options for X11-less builds
+  - Alternative GUI backends or configurations
+  - Platform-specific dependency management
+  - Impact on current GUI functionality
+- **Deliverables**: Research report on X11 dependency removal options
+- **Status**: Requires investigation and testing
+
+### **Language Features & Enhancements**
+- [ ] **Object Constructors and Destructors**: Implement automatic constructor/destructor support for Grapa objects
+- **Current State**: Objects created with `obj Class` are empty and must be manually initialized
+- **Proposed Enhancement**: Add automatic constructor execution on object creation and destructor on cleanup
+- **Implementation**: Extend class system to support `constructor()` and `destructor()` methods
+- **Benefits**: More intuitive object-oriented programming, automatic initialization
+- **Priority**: Low - nice to have feature
+- **Estimated Effort**: Medium Release (2-4 weeks)
+
+- [ ] **Operator Overloading**: Enable objects/classes to implement custom operator behavior
+- **Current State**: Operators work only with built-in types and predefined behaviors
+- **Proposed Enhancement**: Allow classes to define methods with operator names (e.g., `+`, `-`, `*`, `/`, `==`, etc.)
+- **Implementation**: C++ operator handlers would search for operator-named methods on objects
+- **Complexity**: Each operator handler needs runtime method lookup for custom implementations
+- **Benefits**: More expressive object-oriented programming, custom arithmetic operations
+- **Priority**: Low - nice to have feature  
+- **Estimated Effort**: Large Release (1-2 months) - requires extensive C++ changes
   - **Risk Assessment**: Medium - requires careful API compatibility testing
   - **Estimated Effort**: 2-4 weeks
   - **Priority**: High within medium priority - security and compatibility upgrade
+
+- [ ] **Module Loading Path Enhancement**: Add support for specifying file paths in module loading
+- **Current State**: Automatic loading only searches predefined paths, no way to specify custom locations
+- **Proposed Enhancement**: Allow path specification in module loading calls
+- **Options**: 
+  - **Path-based**: `x = fld1/fld2/my_class();` (forward slash path)
+  - **Dot notation**: `x = fld1.fld2.my_class();` (dot-separated path)
+  - **Hybrid approach**: Support both syntaxes
+- **Benefits**: Better organization of modules, avoid single large folder structure
+- **Trade-offs**: 
+  - **Pros**: More flexible module organization, better project structure
+  - **Cons**: Adds complexity to loading system, potential for path conflicts
+- **Implementation Complexity**: Medium - requires C++ changes to module loading system
+- **Priority**: Low - current system works well, enhancement would be nice-to-have
+- **Estimated Effort**: Medium Release (2-4 weeks) - requires careful design and testing
+- **Status**: Under consideration - not yet decided if this enhancement is needed
+
+- [ ] **$LIST and $file API Unification**: Combine common operations between list and file objects
+- **Current State**: `$LIST` and `$file` have separate command sets despite conceptual similarities
+- **Common Operations Identified**:
+  - **Getting items**: `list.get(key)` vs `file.get(key)` 
+  - **Setting items**: `list.set(key, value)` vs `file.set(key, value)`
+  - **Listing items**: `list.keys()` vs `file.ls()`
+  - **Item existence**: `list.has(key)` vs `file.exists(path)`
+  - **Item removal**: `list.remove(key)` vs `file.rm(path)`
+- **Proposed Enhancement**: Unify common operations with consistent method names
+- **Options**:
+  - **Unified interface**: Common base class or trait system
+  - **Method aliases**: Keep existing methods, add unified aliases
+  - **Protocol-based**: Define common protocols/interfaces
+- **Benefits**: 
+  - **Consistent API**: Same method names for similar operations
+  - **Easier learning**: One set of concepts for list/file operations
+  - **Code reuse**: Common patterns work across both types
+- **Implementation Complexity**: Medium - requires careful API design and backward compatibility
+- **Priority**: Low - current APIs work well, enhancement would improve consistency
+- **Estimated Effort**: Medium Release (3-4 weeks) - API design, implementation, testing, documentation
+- **Backward Compatibility**: Must maintain existing method names for compatibility
 - [ ] **FLTK 1.4.4 Migration**: Upgrade from FLTK 1.3.11 to FLTK 1.4.4 for improved compatibility and support
   - **Official Recommendation**: FLTK team explicitly recommends 1.4.4 over 1.3.11
   - **End of Life**: 1.3.11 is considered "old software" and may not compile on new platforms
@@ -207,6 +292,20 @@ This backlog tracks all future, long-term, and queued tasks for the Grapa projec
 - [ ] **Consider adding support for custom operators**
 
 ### **Database Features**
+- [ ] **GrapaDB File Structure Modernization**: Update index storage/retrieval and dictionary structure for future features
+- **Priority**: HIGH - Foundation for future database enhancements
+- **Current State**: Existing file structure may limit future feature implementation
+- **Scope**: 
+  - **Index Storage/Retrieval**: Modernize how indexes are stored and accessed
+  - **Dictionary Updates**: Update both records and indexes dictionary structures
+  - **Future Feature Support**: Ensure structure supports planned enhancements
+- **Impact**: 
+  - **Breaking Changes**: May require data migration for existing databases
+  - **Performance**: Improved index performance and scalability
+  - **Features**: Enables advanced database features planned for future
+- **Timing**: Should be done before adoption focus, but deferred for now
+- **Status**: Deferred - not immediate priority but important for future
+- **Dependencies**: None - can be implemented independently
 - [ ] **Add support for more database backends**
 - [ ] **Implement connection pooling**
 - [ ] **Add support for transactions**

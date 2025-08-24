@@ -9,6 +9,7 @@ Grapa's module system consists of three main components:
 1. **Include System** - Compile-time file inclusion
 2. **Dynamic Class Loading** - Runtime class resolution with search paths
 3. **Automatic File Loading** - Automatic loading of `.grc` files for function calls
+4. **Manual File Loading** - Manual file reading and execution using `$file()` commands
 
 ## Automatic File Loading
 
@@ -32,6 +33,79 @@ x = mycode();  /* Searches for mycode.grc and loads it */
 x.test();      /* Calls the test method */
 ```
 
+### Class Assignment Auto-Loading
+
+When you assign a class that doesn't exist, Grapa searches for a `.grc` file with the same name and looks for a class definition:
+
+```grapa
+/* File: myclass.grc */
+@global["myclass"] = class {
+    message = "Hello from myclass!";
+    
+    greet = op() {
+        message.echo();
+    };
+};
+
+/* Usage - automatically loads myclass.grc */
+x = myclass();  /* Searches for myclass.grc and loads the myclass class */
+x.greet();      /* Calls the greet method */
+```
+
+**Important**: The filename must match the class name. If `myclass.grc` doesn't define a class named `myclass`, the assignment will fail.
+
+### Function Return Value Auto-Loading
+
+If a `.grc` file doesn't define a class with the matching name, it can still be loaded as a function that returns a value:
+
+```grapa
+/* File: utils.grc */
+utils = op() {
+    return "Utility functions loaded";
+};
+
+/* Usage - automatically loads utils.grc */
+result = utils();  /* Searches for utils.grc and calls the utils function */
+result.echo();     /* Outputs: "Utility functions loaded" */
+```
+
+### Function-Only Files (Re-loading Behavior)
+
+Files that only define functions (without defining `$global["filename"]`) will re-load every time they're called:
+
+```grapa
+/* File: $editor.grc - Example from lib/grapa/$editor.grc */
+$global.createEditor = op(label) {
+    /* Editor creation logic */
+};
+
+$global.newEditor = op(label) {
+    /* Editor initialization logic */
+};
+
+/* No $global["$editor"] definition - will re-load every time */
+
+/* Usage - re-loads every time */
+$editor();  /* Re-loads and executes $editor.grc */
+$editor();  /* Re-loads and executes $editor.grc again */
+```
+
+**Important**: To prevent re-loading, define `$global["filename"]` in your file:
+
+```grapa
+/* File: utils.grc - Cached version */
+$global.utils = op() {
+    return "Utility functions loaded";
+};
+
+/* Define the global to prevent re-loading */
+$global["utils"] = $global.utils;
+
+/* Usage - loads once, then cached */
+result = utils();  /* Loads utils.grc and caches the function */
+result = utils();  /* Uses cached version, doesn't re-load */
+```
+
 ### Search Paths for Auto-Loading
 
 The automatic file loading mechanism searches in this order:
@@ -53,7 +127,7 @@ The library directory is determined in this order:
 
 ## Runtime vs Compile-Time Loading
 
-Grapa provides two different mechanisms for loading code:
+Grapa provides three different mechanisms for loading code:
 
 ### Automatic File Loading (Runtime)
 - **When**: Files are loaded when functions/classes are first called
@@ -66,6 +140,12 @@ Grapa provides two different mechanisms for loading code:
 - **How**: Explicitly includes files with `include "file.grc"`
 - **Use case**: Core dependencies, always-required modules
 - **Example**: `include "lib/core/utils.grc"` loads file during compilation
+
+### Manual File Loading (Runtime)
+- **When**: Files are loaded manually using `$file()` commands
+- **How**: Read file content and execute with `op()()` or `exec()`
+- **Use case**: Dynamic file loading from any location, custom loading logic
+- **Example**: `$file().read("path/to/file.grc").exec()` loads and executes file content
 
 ## Include System
 
@@ -141,6 +221,25 @@ current_path = $sys().getenv($PATH);
 new_path = current_path + ["lib/new"];
 $sys().putenv($PATH, new_path);
 ```
+
+#### Search Path Modification Command
+
+You can modify the search paths using the `$sys().putenv()` command:
+
+```grapa
+/* Add a new search path */
+$sys().putenv($PATH, $sys().getenv($PATH) + ["lib/new_feature"]);
+
+/* Replace all search paths */
+$sys().putenv($PATH, ["lib/prod", "lib/stable"]);
+
+/* Remove a specific path */
+current_paths = $sys().getenv($PATH);
+filtered_paths = current_paths.filter(op(path) { path != "lib/old_feature"; });
+$sys().putenv($PATH, filtered_paths);
+```
+
+**Note**: The automatic file loading mechanism uses these search paths, but there's no way to specify a custom location for individual file loads. For custom file locations, use manual file loading instead.
 
 #### $LIB Environment Variable
 
@@ -252,6 +351,79 @@ $sys().putenv($PATH, [
 $sys().putenv($LIB, "/opt/grapa/lib");
 ```
 
+## Manual File Loading
+
+For cases where you need to load files from specific locations or implement custom loading logic, you can use manual file loading with `$file()` commands.
+
+### Basic Manual File Loading
+
+```grapa
+/* Read and execute a file from any location */
+file_content = $file().read("/path/to/custom/file.grc");
+result = file_content.exec();
+
+/* Load and execute with error handling */
+load_file = op(file_path) {
+    if ($file().exists(file_path)) {
+        content = $file().read(file_path);
+        return content.exec();
+    } else {
+        return {"error": "File not found: " + file_path};
+    };
+};
+
+/* Usage */
+result = load_file("/custom/path/utils.grc");
+```
+
+### Dynamic File Loading
+
+```grapa
+/* Load files based on configuration */
+config = {
+    "dev_mode": true,
+    "custom_paths": ["/dev/lib", "/prod/lib"]
+};
+
+load_from_config = op() {
+    if (config.dev_mode) {
+        /* Load development files */
+        dev_content = $file().read(config.custom_paths[0] + "/dev_utils.grc");
+        return dev_content.exec();
+    } else {
+        /* Load production files */
+        prod_content = $file().read(config.custom_paths[1] + "/prod_utils.grc");
+        return prod_content.exec();
+    };
+};
+```
+
+### File Loading with Parameters
+
+```grapa
+/* Load and execute with parameters */
+load_with_params = op(file_path, params) {
+    content = $file().read(file_path);
+    
+    /* Create a function that accepts parameters */
+    func = op()(content)();
+    
+    /* Call with parameters */
+    return func(params);
+};
+
+/* Usage */
+result = load_with_params("/path/to/script.grc", {"name": "Alice", "age": 30});
+```
+
+### Comparison of Loading Methods
+
+| Method | When to Use | Advantages | Limitations |
+|--------|-------------|------------|-------------|
+| **Include** | Compile-time dependencies | Fast, always available | Fixed at compile time |
+| **Automatic** | Runtime dynamic loading | Convenient, automatic discovery | Limited to search paths |
+| **Manual** | Custom locations, dynamic logic | Full control, any location | Requires explicit code |
+
 ## Advanced Usage
 
 ### Dynamic Path Management
@@ -297,6 +469,39 @@ $sys().putenv($PATH, [
 - Classes are cached after first load
 - Subsequent references use cached version
 - No re-parsing or re-compilation needed
+
+### Function Caching Behavior
+
+**Files with `$global["filename"]` definition:**
+- Loaded once and cached
+- Subsequent calls use cached version
+- Best performance for frequently used functions
+
+**Files without `$global["filename"]` definition:**
+- Re-loaded every time they're called
+- Each call re-executes the entire file
+- Suitable for initialization scripts or one-time setup
+
+### Performance Examples
+
+```grapa
+/* Cached function (good performance) */
+/* File: cached_utils.grc */
+$global.cached_utils = op() { return "cached"; };
+$global["cached_utils"] = $global.cached_utils;
+
+/* Non-cached function (re-loads every time) */
+/* File: uncached_utils.grc */
+$global.uncached_utils = op() { return "uncached"; };
+/* No $global["uncached_utils"] definition */
+
+/* Usage */
+cached_utils();  /* Loads once, then cached */
+cached_utils();  /* Uses cache - fast */
+
+uncached_utils();  /* Loads and executes file */
+uncached_utils();  /* Loads and executes file again - slower */
+```
 
 ### File Type Selection
 
@@ -377,11 +582,20 @@ Grapa's module system provides:
 - **Compile-time includes** for code organization
 - **Runtime class loading** with flexible search paths
 - **Automatic file loading** for seamless function calls
+- **Manual file loading** for custom locations and dynamic logic
 - **Environment variable management** for configuration
 - **Performance optimization** with pre-compiled files
 - **Extensible architecture** for custom search providers
 
 This system is more sophisticated than traditional import/export modules and provides greater flexibility for dynamic loading and configuration.
+
+### Key Behaviors
+
+1. **Filename Matching**: For automatic loading, the filename must match the class name (e.g., `myclass.grc` must define `@global["myclass"]`)
+2. **Class vs Function**: Files can define either classes (for assignment) or functions (for function calls)
+3. **Search Paths**: Automatic loading uses predefined search paths that can be modified with `$sys().putenv($PATH, ...)`
+4. **Manual Control**: For files outside search paths, use `$file().read()` and manual execution
+5. **Caching Behavior**: Files with `$global["filename"]` are cached; files without it re-load every time
 
 ## Related Documentation
 
