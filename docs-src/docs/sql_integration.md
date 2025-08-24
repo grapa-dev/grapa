@@ -57,13 +57,13 @@ custom_function = rule count '(' $STR ')' from $STR {op(field:$3,table_name:$6){
 Once defined, SQL syntax works **natively** in Grapa:
 
 ```grapa
-/* Execute SQL using op(parse)() - TRUE NATIVE SYNTAX */
-op(parse)("select name,age from users")();
-op(parse)("insert into users values David,40,Seattle")();
-op(parse)("update users set age=45 where name=David")();
+/* Execute SQL using op()() - TRUE NATIVE SYNTAX */
+op()("select name,age from users")();
+op()("insert into users values David,40,Seattle")();
+op()("update users set age=45 where name=David")();
 
 /* Use in expressions */
-user_count = op(parse)("count(*) from users")();
+user_count = op()("count(*) from users")();
 if (user_count > 3) {
     ("More than 3 users found!").echo();
 };
@@ -83,11 +83,11 @@ This demonstrates **true native syntax** - not string storage or manual parsing:
 ## Two Implementation Approaches
 
 ### 1. Syntax Extension (Recommended)
-Uses `custom_command = custom_command | rule` and `custom_function = custom_function | rule` to define **true native syntax**:
+Uses `custom_command ++= rule` and `custom_function ++= rule` to define **true native syntax**:
 
 ```grapa
 /* TRUE NATIVE SYNTAX - No manual parsing */
-custom_command = custom_command | rule select $STR from $STR {op(fields:$2,table:$4){
+custom_command = rule select $STR from $STR {op(fields:$2,table:$4){
     /* Grapa grammar provides already-parsed tokens */
 }};
 ```
@@ -110,9 +110,12 @@ sql_select = op(fields, table) {
 
 The key features for true native syntax are:
 
-- **`custom_command = custom_command | rule`**: Defines action-based syntax (SELECT, INSERT, UPDATE)
-- **`custom_function = custom_function | rule`**: Defines expression-based syntax (COUNT, SUM, AVG)
-- **`op(parse)()`**: Executes the custom syntax
+- **`custom_command = rule`**: Defines initial action-based syntax (SELECT, INSERT, UPDATE)
+- **`custom_command ++= rule`**: Adds additional action-based syntax patterns
+- **`custom_function = rule`**: Defines initial expression-based syntax (COUNT, SUM, AVG)
+- **`custom_function ++= rule`**: Adds additional expression-based syntax patterns
+- **`op()()`**: Executes the custom syntax
+- **`script.exec()`**: Alternative syntax for executing custom syntax (more readable)
 - **Token Capture**: Use `$STR`, `$INT`, etc. to capture individual components
 - **No Manual Parsing**: Let Grapa's grammar handle all parsing
 - **Rule Addition**: Use `|` operator to add to existing rules

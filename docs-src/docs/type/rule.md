@@ -320,11 +320,19 @@ custom_command ++= rule test $STR {op(arg:$2){'with arg: ' + arg}};
 op()("test")();                    /* Returns: 'simple' */
 op()("test hello")();              /* Returns: 'with arg: hello' */
 
-/* Alternative testing method */
+/* Alternative testing method - more readable */
 script1 = "test";
 script2 = "test hello";
 script1.exec();                    /* Returns: 'simple' */
 script2.exec();                    /* Returns: 'with arg: hello' */
+
+/* Both methods are equivalent:
+   op()("test")()     ==  "test".exec()
+   op()("test hello")() ==  "test hello".exec()
+   
+   Note: exec() cannot take parameters, but op()() can.
+   For most testing scenarios, exec() provides better readability.
+*/
 ```
 
 **Note**: Custom rules do not persist when the application exits. They must be redefined in each session.
@@ -505,7 +513,7 @@ function_with_conditional_syntax() {
 
 ### Dynamic Compilation with Custom Syntax
 
-**Important**: Custom syntax changes don't affect already-compiled code. They only apply to new code compiled with `op(parse)()`:
+**Important**: Custom syntax changes don't affect already-compiled code. They only apply to new code compiled with `op()`():
 
 #### Compilation vs. Runtime
 
@@ -531,10 +539,10 @@ function dynamic_compilation() {
     
     // Compile and execute new code dynamically
     script_text = "result = custom_cmd 10; echo result;";
-    op(parse)(script_text)();  // Uses current custom syntax
+    op()(script_text)();  // Uses current custom syntax
     
     // Or compile to a function for reuse
-    compiled_function = op(parse)(script_text);
+    compiled_function = op()(script_text);
     compiled_function();  // Executes with custom syntax
 }
 ```
@@ -556,7 +564,7 @@ function create_sql_dsl() {
     
     // Now you can write SQL-like code
     script = "SELECT name,age FROM users WHERE age > 18;";
-    query = op(parse)(script)();
+    query = op()(script)();
     return query;
 }
 ```
@@ -570,7 +578,7 @@ function load_plugin(plugin_config) {
     
     // Compile plugin script with new syntax
     plugin_script = plugin_config.script;
-    plugin_function = op(parse)(plugin_script);
+    plugin_function = op()(plugin_script);
     
     // Execute with plugin syntax available
     plugin_function();

@@ -74,13 +74,13 @@ custom_function ++= rule '?-' $STR '(' $STR ')' {op(predicate:$2,arg1:$4){
 Once defined, PROLOG syntax works **natively** in Grapa:
 
 ```grapa
-/* Execute PROLOG using op(parse)() - TRUE NATIVE SYNTAX */
-op(parse)("parent(john,mary).")();
-op(parse)("ancestor(X,Y) :- parent(X,Y).")();
-results = op(parse)("?- parent(john,X)")();
+/* Execute PROLOG using op()() - TRUE NATIVE SYNTAX */
+op()("parent(john,mary)")();
+op()("ancestor(X,Y) :- parent(X,Y)")();
+results = op()("?- parent(john,X)")();
 
 /* Use in expressions */
-parent_count = op(parse)("?- parent(john,X)")().len();
+parent_count = op()("?- parent(john,X)")();
 if (parent_count > 1) {
     ("John has multiple children").echo();
 };
@@ -100,11 +100,11 @@ This demonstrates **true native syntax** - not string storage or manual parsing:
 ## Two Implementation Approaches
 
 ### 1. Syntax Extension (Recommended)
-Uses `custom_command = custom_command | rule` and `custom_function = custom_function | rule` to define **true native syntax**:
+Uses `custom_command ++= rule` and `custom_function ++= rule` to define **true native syntax**:
 
 ```grapa
 /* TRUE NATIVE SYNTAX - No manual parsing */
-custom_command = custom_command | rule $STR '(' $STR ')' '.' {op(predicate:$1,args:$3){
+custom_command = rule $STR '(' $STR ')' '.' {op(predicate:$1,args:$3){
     /* Grapa grammar provides already-parsed tokens */
 }};
 ```
@@ -127,9 +127,12 @@ prolog_fact = op(predicate, args) {
 
 The key features for true native syntax are:
 
-- **`custom_command = custom_command | rule`**: Defines fact and rule syntax
-- **`custom_function = custom_function | rule`**: Defines query syntax (`?-`)
-- **`op(parse)()`**: Executes the custom syntax
+- **`custom_command = rule`**: Defines initial fact and rule syntax
+- **`custom_command ++= rule`**: Adds additional fact and rule syntax patterns
+- **`custom_function = rule`**: Defines initial query syntax (`?-`)
+- **`custom_function ++= rule`**: Adds additional query syntax patterns
+- **`op()()`**: Executes the custom syntax
+- **`script.exec()`**: Alternative syntax for executing custom syntax (more readable)
 - **Token Capture**: Use `$STR` to capture predicates and arguments
 - **No Manual Parsing**: Let Grapa's grammar handle all parsing
 - **Rule Addition**: Use `|` operator to add to existing rules
