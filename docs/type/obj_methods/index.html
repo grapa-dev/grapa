@@ -1794,9 +1794,9 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#exec" class="md-nav__link">
+  <a href="#execcallback" class="md-nav__link">
     <span class="md-ellipsis">
-      .exec()
+      .exec(callback)
     </span>
   </a>
   
@@ -5515,9 +5515,9 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#exec" class="md-nav__link">
+  <a href="#execcallback" class="md-nav__link">
     <span class="md-ellipsis">
-      .exec()
+      .exec(callback)
     </span>
   </a>
   
@@ -6525,8 +6525,10 @@ key = obj.secret(&quot;EC&quot;);    /* Returns Elliptic Curve key */
 - <code>data</code> - Data to write</p>
 <hr />
 <h2 id="utility-methods">Utility Methods</h2>
-<h3 id="exec"><code>.exec()</code></h3>
+<h3 id="execcallback"><code>.exec(callback)</code></h3>
 <p>Executes a string as Grapa code, parsing and evaluating it as if it were typed directly in the console. This is functionally equivalent to <code>op()(script)()</code>.</p>
+<p><strong>Parameters:</strong>
+- <code>callback</code> (optional) - Function to handle console output during script execution</p>
 <div class="highlight"><pre><span></span><code>/* Basic number parsing */
 &quot;5&quot;.exec();                          /* Returns: 5 */
 &quot;5.5&quot;.exec();                        /* Returns: 5.5 */
@@ -6566,11 +6568,48 @@ script = &quot;5 + 3&quot;;
 script.exec();                        /* Returns: 8 */
 op()(script)();                       /* Returns: 8 (equivalent) */
 </code></pre></div>
+<p><strong>Callback Parameter Usage:</strong>
+The optional <code>callback</code> parameter allows you to intercept and process console output during script execution.</p>
+<div class="highlight"><pre><span></span><code>/* Basic callback usage */
+output_handler = op(data) {
+    &quot;Captured output: &quot; + data.str();
+};
+
+&quot;echo &#39;Hello World&#39;&quot;.exec(output_handler);
+/* Captures: &quot;Captured output: Hello World&quot; */
+
+/* Output filtering */
+error_filter = op(data) {
+    if (data.str().indexOf(&quot;ERROR&quot;) &gt;= 0) {
+        &quot;Critical: &quot; + data.str();
+    };
+};
+
+&quot;echo &#39;Processing...&#39;; echo &#39;ERROR: File not found&#39;&quot;.exec(error_filter);
+/* Only captures error messages */
+
+/* Output logging */
+logger = op(data) {
+    $file().write(&quot;script.log&quot;, data.str() + &quot;\n&quot;, &quot;a&quot;);
+};
+
+&quot;echo &#39;Log entry 1&#39;; echo &#39;Log entry 2&#39;&quot;.exec(logger);
+/* Writes output to script.log */
+
+/* Output transformation */
+json_formatter = op(data) {
+    {timestamp: $time(), message: data.str()};
+};
+
+&quot;echo &#39;User login&#39;; echo &#39;Data processed&#39;&quot;.exec(json_formatter);
+/* Returns: [{timestamp: 1234567890, message: &quot;User login&quot;}, ...] */
+</code></pre></div>
 <p><strong>Relationship to <code>op()()</code>:</strong>
 - <code>script.exec()</code> is functionally equivalent to <code>op()(script)()</code>
 - Both use the same underlying Grapa parser and execution engine
 - Both support the same syntax including hex/binary literals, expressions, functions, etc.
-- <code>.exec()</code> is a more convenient syntax for the same functionality</p>
+- <code>.exec()</code> is a more convenient syntax for the same functionality
+- <code>.exec(callback)</code> provides additional console output interception capabilities</p>
 <p><strong>Key Features:</strong>
 - <strong>Full Grapa Parser</strong>: Parses any valid Grapa syntax including literals, expressions, functions, and data structures
 - <strong>Hex/Binary Support</strong>: Automatically recognizes and parses hex (<code>0x</code>) and binary (<code>0b</code>) literals
@@ -6579,14 +6618,16 @@ op()(script)();                       /* Returns: 8 (equivalent) */
 - <strong>Expression Evaluation</strong>: Supports complex mathematical and logical expressions
 - <strong>Function Execution</strong>: Can execute function definitions and calls
 - <strong>Data Structure Creation</strong>: Parses arrays, objects, and their method calls
-- <strong>Customizable Execution</strong>: Optional callback, set, and get functions for custom behavior</p>
+- <strong>Console Output Interception</strong>: Optional callback function to capture and process console output</p>
 <p><strong>Use Cases:</strong>
 - <strong>String-to-Number Conversion</strong>: Parse hex/binary strings to numbers
 - <strong>Dynamic Code Execution</strong>: Execute code stored in strings
 - <strong>Configuration Parsing</strong>: Parse configuration strings as Grapa expressions
 - <strong>User Input Processing</strong>: Safely execute user-provided expressions
 - <strong>Template Evaluation</strong>: Evaluate expressions embedded in strings
-- <strong>Custom Execution Context</strong>: Use callback/set/get for specialized execution environments</p>
+- <strong>Script Output Monitoring</strong>: Capture and process console output during execution
+- <strong>Output Logging</strong>: Redirect script output to files or external systems
+- <strong>Output Filtering</strong>: Process and filter console output based on content</p>
 <h3 id="getnameindex"><code>.getname(index)</code></h3>
 <p>Gets the name of an object property.</p>
 <div class="highlight"><pre><span></span><code>obj.getname();       /* Returns: property name */

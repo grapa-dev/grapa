@@ -2712,6 +2712,39 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#current-limitations-and-future-enhancements" class="md-nav__link">
+    <span class="md-ellipsis">
+      Current Limitations and Future Enhancements
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Current Limitations and Future Enhancements">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#object-lifecycle-management" class="md-nav__link">
+    <span class="md-ellipsis">
+      Object Lifecycle Management
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#operator-overloading" class="md-nav__link">
+    <span class="md-ellipsis">
+      Operator Overloading
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#7-complex-context-objects-in-functional-programming" class="md-nav__link">
     <span class="md-ellipsis">
       7. Complex Context Objects in Functional Programming
@@ -4363,6 +4396,39 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#current-limitations-and-future-enhancements" class="md-nav__link">
+    <span class="md-ellipsis">
+      Current Limitations and Future Enhancements
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Current Limitations and Future Enhancements">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#object-lifecycle-management" class="md-nav__link">
+    <span class="md-ellipsis">
+      Object Lifecycle Management
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#operator-overloading" class="md-nav__link">
+    <span class="md-ellipsis">
+      Operator Overloading
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#7-complex-context-objects-in-functional-programming" class="md-nav__link">
     <span class="md-ellipsis">
       7. Complex Context Objects in Functional Programming
@@ -5010,6 +5076,62 @@ The <code>+=</code> operator will be enhanced to safely add methods to system cl
 <div class="highlight"><pre><span></span><code>/* Future capability (not yet implemented) */
 $ARRAY += (custom_method: op() { $this.len(); });
 </code></pre></div></p>
+<h3 id="current-limitations-and-future-enhancements"><strong>Current Limitations and Future Enhancements</strong></h3>
+<h4 id="object-lifecycle-management"><strong>Object Lifecycle Management</strong></h4>
+<p><strong>Current State</strong>: Grapa objects do not have automatic constructors or destructors.</p>
+<p><strong>What's Missing:</strong>
+- <strong>Automatic Constructors</strong>: No <code>constructor()</code> method that runs when objects are created
+- <strong>Automatic Destructors</strong>: No <code>destructor()</code> or <code>finalize()</code> method for cleanup
+- <strong>Object Initialization</strong>: Objects created with <code>obj Class</code> are empty and must be manually initialized</p>
+<p><strong>Workaround:</strong>
+<div class="highlight"><pre><span></span><code>/* Manual initialization pattern */
+Person = class {
+    name = &quot;&quot;;
+    age = 0;
+
+    /* Manual init method - must be called explicitly */
+    init = op(n, a) {
+        name = n;
+        age = a;
+    };
+};
+
+/* Create and manually initialize */
+person = obj Person;
+person.init(&quot;Alice&quot;, 30);  /* Must call init explicitly */
+</code></pre></div></p>
+<p><strong>Future Enhancement</strong>: Automatic constructor/destructor support will be added to make object creation more intuitive.</p>
+<h4 id="operator-overloading"><strong>Operator Overloading</strong></h4>
+<p><strong>Current State</strong>: Operators work only with built-in types and predefined behaviors.</p>
+<p><strong>What's Missing:</strong>
+- <strong>Custom Operator Behavior</strong>: Cannot define <code>+</code>, <code>-</code>, <code>*</code>, <code>/</code>, <code>==</code>, etc. for custom classes
+- <strong>Object Arithmetic</strong>: Cannot perform arithmetic operations on custom objects
+- <strong>Custom Comparisons</strong>: Cannot define custom equality or comparison behavior</p>
+<p><strong>Workaround:</strong>
+<div class="highlight"><pre><span></span><code>/* Use method names instead of operators */
+Vector = class {
+    x = 0;
+    y = 0;
+
+    /* Custom methods instead of operators */
+    add = op(other) {
+        result = obj Vector;
+        result.x = x + other.x;
+        result.y = y + other.y;
+        result;
+    };
+
+    equals = op(other) {
+        x == other.x &amp;&amp; y == other.y;
+    };
+};
+
+/* Usage */
+v1 = obj Vector; v1.x = 1; v1.y = 2;
+v2 = obj Vector; v2.x = 3; v2.y = 4;
+v3 = v1.add(v2);  /* Instead of v1 + v2 */
+</code></pre></div></p>
+<p><strong>Future Enhancement</strong>: Operator overloading will allow defining custom behavior for operators on custom classes.</p>
 <h3 id="7-complex-context-objects-in-functional-programming"><strong>7. Complex Context Objects in Functional Programming</strong></h3>
 <p>Grapa's functional methods support <strong>any data structure as initializers</strong>, enabling sophisticated state machines and context-aware operations. This goes far beyond simple accumulation to enable complex data processing pipelines.</p>
 <h4 id="stateful-operations-with-dynamic-behavior"><strong>Stateful Operations with Dynamic Behavior</strong></h4>
