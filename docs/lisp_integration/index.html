@@ -2855,17 +2855,17 @@
   
 </li>
         
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#implementation-example" class="md-nav__link">
+          <li class="md-nav__item">
+  <a href="#working-lisp-syntax-implementation" class="md-nav__link">
     <span class="md-ellipsis">
-      Implementation Example
+      Working LISP Syntax Implementation
     </span>
   </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -4113,17 +4113,17 @@
   
 </li>
         
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#implementation-example" class="md-nav__link">
+          <li class="md-nav__item">
+  <a href="#working-lisp-syntax-implementation" class="md-nav__link">
     <span class="md-ellipsis">
-      Implementation Example
+      Working LISP Syntax Implementation
     </span>
   </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -4535,111 +4535,116 @@ op(parse)(&quot;(car (list 1 2 3))&quot;)();  /* Returns 1 */
 op(parse)(&quot;(cdr (list 1 2 3))&quot;)();  /* Returns [2, 3] */
 op(parse)(&quot;(cons 0 (list 1 2 3))&quot;)();  /* Returns [0, 1, 2, 3] */
 </code></pre></div>
-<h2 id="implementation-example">Implementation Example</h2>
-<p>Here's a working LISP implementation in Grapa:</p>
-<div class="highlight"><pre><span></span><code>/* LISP Integration Implementation */
-/* Initialize LISP environment */
-$global.lisp_functions = {};
-$global.lisp_vars = {};
+<h3 id="working-lisp-syntax-implementation">Working LISP Syntax Implementation</h3>
+<div class="highlight"><pre><span></span><code>/* Initialize custom_command and custom_function for LISP syntax */
+custom_command = rule &#39;(&#39; $STR $STR $STR &#39;)&#39; {op(function:$2,arg1:$3,arg2:$4){
+    /* Evaluate S-expression - NO MANUAL PARSING */
+    result = lisp_eval(function, [arg1, arg2]);
+    return result;
+}};
 
-/* Basic LISP syntax rules */
-custom_command = rule &#39;(&#39; $STR $STR* &#39;)&#39; { op(function:$2, args:$3){
-    return lisp_eval($2, $3);
-} };
+/* S-expressions with single argument */
+custom_command = custom_command | rule &#39;(&#39; $STR $STR &#39;)&#39; {op(function:$2,arg1:$3){
+    /* Evaluate S-expression - NO MANUAL PARSING */
+    result = lisp_eval(function, [arg1]);
+    return result;
+}};
 
-custom_command = rule &#39;(defun&#39; $STR &#39;(&#39; $STR* &#39;)&#39; $STR* &#39;)&#39; { 
-    op(name:$2, params:$4, body:$6){
-        $global.lisp_functions[$2] = {
-            params: $4,
-            body: $6
-        };
-        return &quot;Function &quot; + $2 + &quot; defined&quot;;
-    }
-};
+/* S-expressions with three arguments */
+custom_command = custom_command | rule &#39;(&#39; $STR $STR $STR $STR &#39;)&#39; {op(function:$2,arg1:$3,arg2:$4,arg3:$5){
+    /* Evaluate S-expression - NO MANUAL PARSING */
+    result = lisp_eval(function, [arg1, arg2, arg3]);
+    return result;
+}};
 
-custom_command = rule &#39;(setq&#39; $STR $STR &#39;)&#39; { op(var:$2, value:$3){
-    $global.lisp_vars[$2] = evaluate_sexp($3);
-    return $global.lisp_vars[$2];
-} };
-
-custom_command = rule &#39;(if&#39; $STR $STR $STR &#39;)&#39; { 
-    op(condition:$2, then:$3, else:$4){
-        if (evaluate_sexp($2)) {
-            return evaluate_sexp($3);
-        } else {
-            return evaluate_sexp($4);
-        }
-    }
-};
-
-/* LISP evaluation function */
-lisp_eval = op(function, args) {
-    /* Built-in functions */
-    if (function == &#39;+&#39;) {
-        return args.range().map(op(i) { evaluate_sexp(args[i]) }).reduce(op(a,b) { a + b }, 0);
+/* Function definition with native grammar */
+custom_command = custom_command | rule &#39;(defun&#39; $STR &#39;(&#39; $STR $STR &#39;)&#39; $STR &#39;)&#39; {op(name:$2,param1:$4,param2:$5,body:$7){
+    /* Store function definition - NO MANUAL PARSING */
+    $global.lisp_functions[name] = {
+        params: [param1, param2],
+        body: body
     };
-    if (function == &#39;*&#39;) {
-        return args.range().map(op(i) { evaluate_sexp(args[i]) }).reduce(op(a,b) { a * b }, 1);
+    return name;
+}};
+
+/* Function definition with single parameter */
+custom_command = custom_command | rule &#39;(defun&#39; $STR &#39;(&#39; $STR &#39;)&#39; $STR &#39;)&#39; {op(name:$2,param1:$4,body:$6){
+    /* Store function definition - NO MANUAL PARSING */
+    $global.lisp_functions[name] = {
+        params: [param1],
+        body: body
     };
-    if (function == &#39;list&#39;) {
-        return args.range().map(op(i) { evaluate_sexp(args[i]) });
+    return name;
+}};
+
+/* Variable assignment with native grammar */
+custom_command = custom_command | rule &#39;(setq&#39; $STR $STR &#39;)&#39; {op(var:$2,value:$3){
+    /* Set variable - NO MANUAL PARSING */
+    evaluated_value = evaluate_sexp(value);
+    $global.lisp_vars[var] = evaluated_value;
+    return evaluated_value;
+}};
+
+/* Conditional expression with native grammar */
+custom_command = custom_command | rule &#39;(if&#39; $STR $STR $STR &#39;)&#39; {op(condition:$2,then:$3,else:$4){
+    /* Evaluate conditional - NO MANUAL PARSING */
+    cond_result = evaluate_sexp(condition);
+    if (cond_result) {
+        return evaluate_sexp(then);
+    } else {
+        return evaluate_sexp(else);
     };
-    if (function == &#39;car&#39;) {
-        return evaluate_sexp(args[0])[0];
+}};
+
+/* List operations with native grammar */
+custom_command = custom_command | rule &#39;(list&#39; $STR &#39;)&#39; {op(elem1:$2){
+    /* Create list with single element - NO MANUAL PARSING */
+    val1 = evaluate_sexp(elem1);
+    return [val1];
+}};
+
+custom_command = custom_command | rule &#39;(list&#39; $STR $STR &#39;)&#39; {op(elem1:$2,elem2:$3){
+    /* Create list - NO MANUAL PARSING */
+    val1 = evaluate_sexp(elem1);
+    val2 = evaluate_sexp(elem2);
+    return [val1, val2];
+}};
+
+custom_command = custom_command | rule &#39;(list&#39; $STR $STR $STR &#39;)&#39; {op(elem1:$2,elem2:$3,elem3:$4){
+    /* Create list with three elements - NO MANUAL PARSING */
+    val1 = evaluate_sexp(elem1);
+    val2 = evaluate_sexp(elem2);
+    val3 = evaluate_sexp(elem3);
+    return [val1, val2, val3];
+}};
+
+/* List access operations */
+custom_command = custom_command | rule &#39;(car&#39; $STR &#39;)&#39; {op(list_expr:$2){
+    /* Get first element - NO MANUAL PARSING */
+    list_val = evaluate_sexp(list_expr);
+    if (list_val.type() == $LIST) {
+        return list_val[0];
     };
-    if (function == &#39;cdr&#39;) {
-        return evaluate_sexp(args[0]).slice(1);
+}};
+
+custom_command = custom_command | rule &#39;(cdr&#39; $STR &#39;)&#39; {op(list_expr:$2){
+    /* Get rest of list - NO MANUAL PARSING */
+    list_val = evaluate_sexp(list_expr);
+    if (list_val.type() == $LIST) {
+        return list_val.slice(1);
     };
-    if (function == &#39;cons&#39;) {
-        return [evaluate_sexp(args[0])].concat(evaluate_sexp(args[1]));
+}};
+
+custom_command = custom_command | rule &#39;(cons&#39; $STR $STR &#39;)&#39; {op(element:$2,list_expr:$3){
+    /* Construct list - NO MANUAL PARSING */
+    element_val = evaluate_sexp(element);
+    list_val = evaluate_sexp(list_expr);
+    if (list_val.type() == $LIST) {
+        return [element_val].concat(list_val);
     };
-
-    /* User-defined functions */
-    if ($global.lisp_functions[function]) {
-        func = $global.lisp_functions[function];
-        /* Bind parameters and evaluate body */
-        return evaluate_with_bindings(func.body, func.params, args);
-    };
-
-    return &quot;Unknown function: &quot; + function;
-};
-
-/* Helper functions */
-evaluate_sexp = op(expr) {
-    if (type(expr) == $STR) {
-        /* Check if it&#39;s a variable */
-        if ($global.lisp_vars[expr]) {
-            return $global.lisp_vars[expr];
-        };
-        /* Check if it&#39;s a number */
-        if (expr.match(/^\d+$/)) {
-            return expr.int();
-        };
-        return expr;
-    };
-    return expr;
-};
-
-evaluate_with_bindings = op(body, params, args) {
-    /* Create temporary bindings */
-    old_vars = $global.lisp_vars.copy();
-
-    /* Bind parameters */
-    params.range().map(op(i) {
-        $global.lisp_vars[params[i]] = evaluate_sexp(args[i]);
-    });
-
-    /* Evaluate body */
-    result = body.range().map(op(i) {
-        evaluate_sexp(body[i]);
-    });
-
-    /* Restore old bindings */
-    $global.lisp_vars = old_vars;
-
-    return result[result.len() - 1];  /* Return last expression */
-};
+}};
 </code></pre></div>
+<p><strong>Key Point</strong>: The <code>|</code> operator <strong>adds</strong> to existing rules rather than replacing them, allowing multiple LISP syntax patterns to coexist.</p>
 <h2 id="usage-examples">Usage Examples</h2>
 <h3 id="basic-arithmetic"><strong>Basic Arithmetic</strong></h3>
 <div class="highlight"><pre><span></span><code>/* Simple arithmetic */
