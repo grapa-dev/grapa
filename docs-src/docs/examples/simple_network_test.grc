@@ -106,3 +106,4 @@ interfaces = $net().interfaces();
 server.disconnect();
 
 ("Simple network test completed successfully!\n").echo();
+
