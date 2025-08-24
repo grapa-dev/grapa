@@ -4517,17 +4517,23 @@ op()(&quot;(if (&gt; 5 3) \&quot;yes\&quot; \&quot;no\&quot;)&quot;)();  /* Retu
 <div class="highlight"><pre><span></span><code>/* LISP list operations */
 custom_command = rule &#39;(car&#39; $STR &#39;)&#39; { op(list:$2){
     /* Return first element */
-    return evaluate_sexp($2)[0];
+    list_val = evaluate_sexp(list);
+    return list_val[0];
 } };
 
 custom_command = rule &#39;(cdr&#39; $STR &#39;)&#39; { op(list:$2){
     /* Return rest of list */
-    return evaluate_sexp($2).slice(1);
+    list_val = evaluate_sexp(list);
+    return list_val.range(1, list_val.len());
 } };
 
 custom_command = rule &#39;(cons&#39; $STR $STR &#39;)&#39; { op(element:$2, list:$3){
     /* Add element to front of list */
-    return [evaluate_sexp($2)].concat(evaluate_sexp($3));
+    element_val = evaluate_sexp(element);
+    list_val = evaluate_sexp(list);
+    result = [element_val];
+    result += list_val;
+    return result;
 } };
 
 /* Usage */
@@ -4631,7 +4637,7 @@ custom_command ++= rule &#39;(cdr&#39; $STR &#39;)&#39; {op(list_expr:$2){
     /* Get rest of list - NO MANUAL PARSING */
     list_val = evaluate_sexp(list_expr);
     if (list_val.type() == $LIST) {
-        return list_val.slice(1);
+        return list_val.range(1, list_val.len());
     };
 }};
 
@@ -4640,7 +4646,9 @@ custom_command ++= rule &#39;(cons&#39; $STR $STR &#39;)&#39; {op(element:$2,lis
     element_val = evaluate_sexp(element);
     list_val = evaluate_sexp(list_expr);
     if (list_val.type() == $LIST) {
-        return [element_val].concat(list_val);
+        result = [element_val];
+        result += list_val;
+        return result;
     };
 }};
 </code></pre></div>

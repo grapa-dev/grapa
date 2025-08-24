@@ -4565,9 +4565,15 @@ custom_command ++= rule $STR(&#39;third&#39;) {op(){&#39;matched third&#39;}};
 - <strong><code>|</code> operator</strong>: Only works within a single rule definition for alternatives
 - <strong><code>$ID</code> tokens</strong>: Automatically converted (e.g., <code>test</code> becomes identifier)
 - <strong><code>$STR</code> tokens</strong>: Require explicit conversion (e.g., <code>$STR('test')</code> for strings)
+- <strong><code>$INT</code> tokens</strong>: Match integer literals (e.g., <code>42</code>, <code>100</code>, <code>-5</code>)
+- <strong><code>$FLOAT</code> tokens</strong>: Match floating-point literals (e.g., <code>3.14</code>, <code>-2.5</code>)
 - <strong>Dynamic grammar construction</strong>: Enables building complex grammars incrementally
 - <strong>Runtime rule modification</strong>: Rules can be extended during program execution
 - <strong>Self-modifying grammar</strong>: The BNF defines how to modify the BNF itself</p>
+<p><strong>Token Usage Guidelines:</strong>
+- <strong>Function/predicate names</strong>: Use <code>$ID</code> for unquoted identifiers or <code>$STR</code> for quoted strings
+- <strong>Arguments</strong>: Use <code>$STR</code> for quoted strings, <code>$INT</code> for integers, or <code>$ID</code> for unquoted identifiers
+- <strong>Choice depends on calling syntax</strong>: <code>$ID</code> requires unquoted calls, <code>$STR</code> requires quoted calls</p>
 <h4 id="bnf-structure-for-rule-definition">BNF Structure for Rule Definition</h4>
 <p>The grammar system uses this pattern for defining rules:</p>
 <div class="highlight"><pre><span></span><code>@global[&quot;$option_list&quot;]
