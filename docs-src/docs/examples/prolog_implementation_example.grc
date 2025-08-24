@@ -200,3 +200,4 @@ test_parse = parse_term('parent(john,mary)');
 "- Backtracking for multiple solutions";
 "- Cut operator (!) implementation";
 "- Built-in predicates (is, =, \\=, etc.)";
+

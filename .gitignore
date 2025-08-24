@@ -99,8 +99,16 @@ venv.bak/
 .ropeproject
 
 # mkdocs documentation
-/site
+docs-src/site
 docs-src/site/
+
+# Windows build directories
+prj/win-amd64/.vs
+prj/win-amd64/grapa
+prj/win-amd64/x64
+prj/winlib-amd64/.vs
+prj/winlib-amd64/grapa
+prj/winlib-amd64/x64
 
 # mypy
 .mypy_cache/

@@ -14,6 +14,7 @@
 - **Variable Binding**: Resolved reference/copy issues in throw/catch blocks
 - **mVar Field Analysis**: Deep dive into core reference semantics and identified optimization areas
 - **Error Type Enhancement**: Added `.err()` method to `$LIST` for type conversion to `$ERR`
+- **Variable Indirection Documentation**: Enhanced documentation of `@` and `@@` operators and arbitrary variable names using `@this["variable name"]` syntax
 
 ### ✅ **Control Flow System Complete**
 - **Complete Implementation**: All runtime flow controls (break, continue, return, exit) are fully functional

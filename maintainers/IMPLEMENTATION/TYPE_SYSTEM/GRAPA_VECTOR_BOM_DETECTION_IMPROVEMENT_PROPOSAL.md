@@ -150,3 +150,4 @@ bool convert_utf16_to_utf8(const char*& vS, u64& vL, bool is_le) {
 ## Conclusion
 
 The current implementation provides basic BOM detection but has Unicode limitations. The recommended enhancement adds proper UTF-16 support with conversion to UTF-8, ensuring compatibility with Grapa's Unicode infrastructure while maintaining excellent performance for the common UTF-8 case.
+

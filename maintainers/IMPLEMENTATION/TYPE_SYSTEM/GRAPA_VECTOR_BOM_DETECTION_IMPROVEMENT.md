@@ -215,3 +215,4 @@ if (cols == 1 && !isQuoted && vL >= 2)
 ## Conclusion
 
 The current hardcoded BOM detection should be replaced with byte constants for better reliability and support for multiple BOM types. This will improve the robustness of CSV parsing with international content.
+

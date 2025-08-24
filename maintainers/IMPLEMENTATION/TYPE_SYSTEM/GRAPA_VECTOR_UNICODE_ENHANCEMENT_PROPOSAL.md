@@ -241,3 +241,4 @@ These enhancements would bring GrapaVector's header support in line with modern 
 4. **Future-proof architecture** for additional Unicode features
 
 The changes can be implemented incrementally with careful attention to backward compatibility.
+

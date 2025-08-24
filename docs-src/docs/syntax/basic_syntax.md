@@ -1069,7 +1069,7 @@ b = "a";
 
 #### Dynamic Variable Access in Functions
 
-This enables dynamic variable access and modification in functions:
+This enables dynamic variable access and modification in functions by passing variable names as strings:
 
 ```grapa
 /* Function that can access any variable by name */
@@ -1089,6 +1089,132 @@ f2("x", 20); /* Sets x to 20 */
 f("x");     /* Returns 20 */
 ```
 
+#### Passing Variable Names as Strings
+
+You can pass variable names as strings to functions without passing the actual variables, then use `@` to access them:
+
+```grapa
+/* Function that works with variable names passed as strings */
+update_config = op(setting_name, new_value) {
+    /* Access the variable whose name is in setting_name */
+    @setting_name = new_value;
+    ("Updated " + setting_name + " to " + new_value).echo();
+};
+
+/* Function that reads multiple settings by name */
+read_settings = op(setting_names) {
+    result = {};
+    setting_names.range().each(op(i) {
+        setting_name = setting_names[i];
+        result[setting_name] = @@setting_name;  /* Get value of variable named in setting_name */
+    });
+    return result;
+};
+
+/* Usage */
+database_host = "localhost";
+database_port = 5432;
+max_connections = 100;
+
+/* Update settings by passing names as strings */
+update_config("database_host", "production.db.com");
+update_config("max_connections", 200);
+
+/* Read multiple settings by passing names as strings */
+settings = read_settings(["database_host", "database_port", "max_connections"]);
+/* Returns: {"database_host":"production.db.com","database_port":5432,"max_connections":200} */
+```
+
+**Key Benefits:**
+- **Dynamic access**: Functions can work with any variable without knowing its name at compile time
+- **String-based API**: Pass variable names as strings for flexible function interfaces
+- **Batch operations**: Process multiple variables by passing arrays of names
+- **Configuration management**: Update settings by name without hardcoding variable references
+- **Language integration**: Essential for implementing interpreters and language bridges
+
+#### Arbitrary Variable Names (Unicode Workaround)
+
+Grapa supports using arbitrary strings as variable names, including Unicode characters, spaces, and special characters, through the `@this["variable name"]` syntax. This serves as a **workaround for Unicode variable names** until proper Unicode support is added to the `$ID` token system:
+
+```grapa
+/* Create variables with Unicode characters, spaces, and special characters */
+@this["x y"] = {a: 1, b: "hi"};
+@this["user-name"] = "John Doe";
+@this["config.setting"] = true;
+@this["π"] = 3.14159;
+@this["用户设置"] = {"theme": "dark", "language": "中文"};
+@this["café"] = "coffee shop";
+
+/* Access these variables */
+@"x y";                    /* Returns {"a":1,"b":"hi"} */
+@"user-name";              /* Returns "John Doe" */
+@"config.setting";         /* Returns true */
+@"π";                      /* Returns 3.14159 */
+@"用户设置";                /* Returns {"theme":"dark","language":"中文"} */
+@"café";                   /* Returns "coffee shop" */
+
+/* Modify properties of these variables */
+(@"x y").a = 5;            /* Sets a to 5 */
+@"用户设置".theme = "light"; /* Sets theme to "light" */
+@"π" = 3.14;               /* Updates π to 3.14 */
+
+/* String-based property access and modification */
+@"x y"["b"] = "xy";        /* Bracket notation with string literal */
+@"x y".b = "55";           /* Dot notation */
+@"x y"."b" = 101;          /* Dot notation with string literal */
+```
+```
+
+**Key Benefits:**
+- **Unicode support**: Use Unicode characters in variable names (π, 用户设置, café, etc.)
+- **Flexible naming**: Use spaces, hyphens, dots, and other characters in variable names
+- **Dynamic access**: Access variables using string literals with `@"variable name"`
+- **Property modification**: Modify properties of these variables using standard dot notation
+- **Integration with indirection**: Works seamlessly with `@` and `@@` operators
+
+**Use Cases:**
+- **International development**: Use native language variable names (用户设置, настроики, etc.)
+- **Mathematical programming**: Use mathematical symbols (π, θ, Σ, etc.)
+- **Configuration management**: Use descriptive names like `@"database.connection.timeout"`
+- **User data**: Store user preferences with natural names like `@"user preferences"`
+- **API responses**: Map external data with original field names
+- **Language integration**: Support variable names from other languages that don't follow Grapa's `$ID` rules
+
+**Note**: This is a **temporary workaround** for Unicode variable names. Future versions of Grapa will support Unicode characters directly in `$ID` tokens, making this syntax unnecessary for simple Unicode variable names.
+
+#### String-Based Property Access
+
+When accessing variables through indirection, you can use various syntaxes for property access and modification:
+
+```grapa
+/* Create a variable with properties */
+@this["x y"] = {a: "xy", b: "xy"};
+
+/* Different ways to access and modify properties */
+@"x y"["b"] = "xy";        /* Bracket notation with string literal */
+@"x y".b = "55";           /* Dot notation with identifier */
+@"x y"."b" = 101;          /* Dot notation with string literal */
+
+/* All three syntaxes work for both reading and writing */
+value1 = @"x y"["b"];      /* Bracket notation */
+value2 = @"x y".b;         /* Dot notation with identifier */
+value3 = @"x y"."b";       /* Dot notation with string literal */
+
+/* Check the result */
+@"x y";                    /* Returns {"a":"xy","b":101} */
+```
+
+**Property Access Syntax Options:**
+- **Bracket notation**: `@"variable name"["property"]` - Most flexible, supports any string
+- **Dot notation with identifier**: `@"variable name".property` - Clean syntax for simple property names
+- **Dot notation with string literal**: `@"variable name"."property"` - Combines dot notation with string literals
+
+**Benefits:**
+- **Flexible property names**: Use bracket notation for properties with spaces or special characters
+- **Consistent syntax**: All three forms work for both reading and writing
+- **String-based access**: Property names can be stored in variables and used dynamically
+- **Unicode support**: Property names can include Unicode characters
+
 #### Importance for Native Syntax
 
 Variable indirection is crucial for implementing **true native syntax** because:
@@ -1097,6 +1223,7 @@ Variable indirection is crucial for implementing **true native syntax** because:
 - **Dynamic evaluation**: Functions can work with variable names passed as parameters
 - **Symbol tables**: Enables implementation of symbol tables and environments
 - **Language integration**: Essential for implementing languages like LISP, PROLOG, and SQL that need dynamic variable access
+- **Arbitrary names**: Support for variable names that don't conform to standard identifier rules
 
 This feature enables Grapa's unique capability to add **true native syntax** for other programming languages through its rule-based grammar system.
 
