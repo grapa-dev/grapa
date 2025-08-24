@@ -4619,11 +4619,19 @@ custom_command ++= rule test $STR {op(arg:$2){&#39;with arg: &#39; + arg}};
 op()(&quot;test&quot;)();                    /* Returns: &#39;simple&#39; */
 op()(&quot;test hello&quot;)();              /* Returns: &#39;with arg: hello&#39; */
 
-/* Alternative testing method */
+/* Alternative testing method - more readable */
 script1 = &quot;test&quot;;
 script2 = &quot;test hello&quot;;
 script1.exec();                    /* Returns: &#39;simple&#39; */
 script2.exec();                    /* Returns: &#39;with arg: hello&#39; */
+
+/* Both methods are equivalent:
+   op()(&quot;test&quot;)()     ==  &quot;test&quot;.exec()
+   op()(&quot;test hello&quot;)() ==  &quot;test hello&quot;.exec()
+
+   Note: exec() cannot take parameters, but op()() can.
+   For most testing scenarios, exec() provides better readability.
+*/
 </code></pre></div>
 <p><strong>Note</strong>: Custom rules do not persist when the application exits. They must be redefined in each session.</p>
 <h3 id="language-integration-example">Language Integration Example</h3>
@@ -4768,7 +4776,7 @@ result = global_cmd 10;  // Works here too
 }
 </code></pre></div>
 <h3 id="dynamic-compilation-with-custom-syntax">Dynamic Compilation with Custom Syntax</h3>
-<p><strong>Important</strong>: Custom syntax changes don't affect already-compiled code. They only apply to new code compiled with <code>op(parse)()</code>:</p>
+<p><strong>Important</strong>: Custom syntax changes don't affect already-compiled code. They only apply to new code compiled with <code>op()</code>():</p>
 <h4 id="compilation-vs-runtime">Compilation vs. Runtime</h4>
 <div class="highlight"><pre><span></span><code>// This script was compiled with the original grammar
 function test() {
@@ -4788,10 +4796,10 @@ function test() {
 
     // Compile and execute new code dynamically
     script_text = &quot;result = custom_cmd 10; echo result;&quot;;
-    op(parse)(script_text)();  // Uses current custom syntax
+    op()(script_text)();  // Uses current custom syntax
 
     // Or compile to a function for reuse
-    compiled_function = op(parse)(script_text);
+    compiled_function = op()(script_text);
     compiled_function();  // Executes with custom syntax
 }
 </code></pre></div>
@@ -4809,7 +4817,7 @@ function test() {
 
     // Now you can write SQL-like code
     script = &quot;SELECT name,age FROM users WHERE age &gt; 18;&quot;;
-    query = op(parse)(script)();
+    query = op()(script)();
     return query;
 }
 </code></pre></div>
@@ -4820,7 +4828,7 @@ function test() {
 
     // Compile plugin script with new syntax
     plugin_script = plugin_config.script;
-    plugin_function = op(parse)(plugin_script);
+    plugin_function = op()(plugin_script);
 
     // Execute with plugin syntax available
     plugin_function();

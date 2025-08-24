@@ -4026,13 +4026,13 @@ custom_function ++= rule &#39;?-&#39; $STR &#39;(&#39; $STR &#39;)&#39; {op(pred
 <p><strong>Key Point</strong>: The <code>++=</code> operator <strong>appends</strong> to existing rules, allowing multiple PROLOG syntax patterns to coexist.</p>
 <h3 id="using-prolog-syntax">Using PROLOG Syntax</h3>
 <p>Once defined, PROLOG syntax works <strong>natively</strong> in Grapa:</p>
-<div class="highlight"><pre><span></span><code>/* Execute PROLOG using op(parse)() - TRUE NATIVE SYNTAX */
-op(parse)(&quot;parent(john,mary).&quot;)();
-op(parse)(&quot;ancestor(X,Y) :- parent(X,Y).&quot;)();
-results = op(parse)(&quot;?- parent(john,X)&quot;)();
+<div class="highlight"><pre><span></span><code>/* Execute PROLOG using op()() - TRUE NATIVE SYNTAX */
+op()(&quot;parent(john,mary)&quot;)();
+op()(&quot;ancestor(X,Y) :- parent(X,Y)&quot;)();
+results = op()(&quot;?- parent(john,X)&quot;)();
 
 /* Use in expressions */
-parent_count = op(parse)(&quot;?- parent(john,X)&quot;)().len();
+parent_count = op()(&quot;?- parent(john,X)&quot;)();
 if (parent_count &gt; 1) {
     (&quot;John has multiple children&quot;).echo();
 };
@@ -4049,9 +4049,9 @@ if (parent_count &gt; 1) {
 </ul>
 <h2 id="two-implementation-approaches">Two Implementation Approaches</h2>
 <h3 id="1-syntax-extension-recommended">1. Syntax Extension (Recommended)</h3>
-<p>Uses <code>custom_command = custom_command | rule</code> and <code>custom_function = custom_function | rule</code> to define <strong>true native syntax</strong>:</p>
+<p>Uses <code>custom_command ++= rule</code> and <code>custom_function ++= rule</code> to define <strong>true native syntax</strong>:</p>
 <div class="highlight"><pre><span></span><code>/* TRUE NATIVE SYNTAX - No manual parsing */
-custom_command = custom_command | rule $STR &#39;(&#39; $STR &#39;)&#39; &#39;.&#39; {op(predicate:$1,args:$3){
+custom_command = rule $STR &#39;(&#39; $STR &#39;)&#39; &#39;.&#39; {op(predicate:$1,args:$3){
     /* Grapa grammar provides already-parsed tokens */
 }};
 </code></pre></div>
@@ -4068,9 +4068,12 @@ prolog_fact = op(predicate, args) {
 <h2 id="prolog-syntax-extension-pattern">PROLOG Syntax Extension Pattern</h2>
 <p>The key features for true native syntax are:</p>
 <ul>
-<li><strong><code>custom_command = custom_command | rule</code></strong>: Defines fact and rule syntax</li>
-<li><strong><code>custom_function = custom_function | rule</code></strong>: Defines query syntax (<code>?-</code>)</li>
-<li><strong><code>op(parse)()</code></strong>: Executes the custom syntax</li>
+<li><strong><code>custom_command = rule</code></strong>: Defines initial fact and rule syntax</li>
+<li><strong><code>custom_command ++= rule</code></strong>: Adds additional fact and rule syntax patterns</li>
+<li><strong><code>custom_function = rule</code></strong>: Defines initial query syntax (<code>?-</code>)</li>
+<li><strong><code>custom_function ++= rule</code></strong>: Adds additional query syntax patterns</li>
+<li><strong><code>op()()</code></strong>: Executes the custom syntax</li>
+<li><strong><code>script.exec()</code></strong>: Alternative syntax for executing custom syntax (more readable)</li>
 <li><strong>Token Capture</strong>: Use <code>$STR</code> to capture predicates and arguments</li>
 <li><strong>No Manual Parsing</strong>: Let Grapa's grammar handle all parsing</li>
 <li><strong>Rule Addition</strong>: Use <code>|</code> operator to add to existing rules</li>

@@ -4004,13 +4004,13 @@ custom_function = rule count &#39;(&#39; $STR &#39;)&#39; from $STR {op(field:$3
 <p><strong>Key Point</strong>: The <code>++=</code> operator <strong>appends</strong> to existing rules, allowing multiple SQL syntax patterns to coexist.</p>
 <h3 id="using-sql-syntax">Using SQL Syntax</h3>
 <p>Once defined, SQL syntax works <strong>natively</strong> in Grapa:</p>
-<div class="highlight"><pre><span></span><code>/* Execute SQL using op(parse)() - TRUE NATIVE SYNTAX */
-op(parse)(&quot;select name,age from users&quot;)();
-op(parse)(&quot;insert into users values David,40,Seattle&quot;)();
-op(parse)(&quot;update users set age=45 where name=David&quot;)();
+<div class="highlight"><pre><span></span><code>/* Execute SQL using op()() - TRUE NATIVE SYNTAX */
+op()(&quot;select name,age from users&quot;)();
+op()(&quot;insert into users values David,40,Seattle&quot;)();
+op()(&quot;update users set age=45 where name=David&quot;)();
 
 /* Use in expressions */
-user_count = op(parse)(&quot;count(*) from users&quot;)();
+user_count = op()(&quot;count(*) from users&quot;)();
 if (user_count &gt; 3) {
     (&quot;More than 3 users found!&quot;).echo();
 };
@@ -4027,9 +4027,9 @@ if (user_count &gt; 3) {
 </ul>
 <h2 id="two-implementation-approaches">Two Implementation Approaches</h2>
 <h3 id="1-syntax-extension-recommended">1. Syntax Extension (Recommended)</h3>
-<p>Uses <code>custom_command = custom_command | rule</code> and <code>custom_function = custom_function | rule</code> to define <strong>true native syntax</strong>:</p>
+<p>Uses <code>custom_command ++= rule</code> and <code>custom_function ++= rule</code> to define <strong>true native syntax</strong>:</p>
 <div class="highlight"><pre><span></span><code>/* TRUE NATIVE SYNTAX - No manual parsing */
-custom_command = custom_command | rule select $STR from $STR {op(fields:$2,table:$4){
+custom_command = rule select $STR from $STR {op(fields:$2,table:$4){
     /* Grapa grammar provides already-parsed tokens */
 }};
 </code></pre></div>
@@ -4046,9 +4046,12 @@ sql_select = op(fields, table) {
 <h2 id="sql-syntax-extension-pattern">SQL Syntax Extension Pattern</h2>
 <p>The key features for true native syntax are:</p>
 <ul>
-<li><strong><code>custom_command = custom_command | rule</code></strong>: Defines action-based syntax (SELECT, INSERT, UPDATE)</li>
-<li><strong><code>custom_function = custom_function | rule</code></strong>: Defines expression-based syntax (COUNT, SUM, AVG)</li>
-<li><strong><code>op(parse)()</code></strong>: Executes the custom syntax</li>
+<li><strong><code>custom_command = rule</code></strong>: Defines initial action-based syntax (SELECT, INSERT, UPDATE)</li>
+<li><strong><code>custom_command ++= rule</code></strong>: Adds additional action-based syntax patterns</li>
+<li><strong><code>custom_function = rule</code></strong>: Defines initial expression-based syntax (COUNT, SUM, AVG)</li>
+<li><strong><code>custom_function ++= rule</code></strong>: Adds additional expression-based syntax patterns</li>
+<li><strong><code>op()()</code></strong>: Executes the custom syntax</li>
+<li><strong><code>script.exec()</code></strong>: Alternative syntax for executing custom syntax (more readable)</li>
 <li><strong>Token Capture</strong>: Use <code>$STR</code>, <code>$INT</code>, etc. to capture individual components</li>
 <li><strong>No Manual Parsing</strong>: Let Grapa's grammar handle all parsing</li>
 <li><strong>Rule Addition</strong>: Use <code>|</code> operator to add to existing rules</li>
