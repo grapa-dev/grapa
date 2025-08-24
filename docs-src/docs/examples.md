@@ -38,6 +38,14 @@ Welcome to the Grapa Examples hub! Here you'll find practical, ready-to-run scri
 |---------|-------------|
 | [Python Integration Example](examples/python_integration_example.py) | Demonstrates how to use Grapa from Python, including math, strings, arrays, file, and grep operations. |
 
+### **Network and HTTP Examples**
+| Example | Description |
+|---------|-------------|
+| [HTTP/HTTPS Client (curl)](examples/curl_function_simple.grc) | **User-facing example** - Complete HTTP/HTTPS client implementation replicating curl functionality with SSL certificates, proxy support, and request bodies. |
+| [Network Server/Client Test](examples/network_server_client_test.grc) | **User-facing example** - Multi-threaded HTTP/HTTPS server with concurrent client connections, demonstrating Grapa's networking capabilities. |
+| [Simple Network Test](examples/simple_network_test.grc) | **User-facing example** - Basic networking operations including interface discovery, connection testing, and network information. |
+| [HTTPS Testing](examples/https_test.grc) | **User-facing example** - HTTPS connection testing with SSL certificates and verification. |
+
 > **How to use these examples:**
 > - Click any example to view the source.
 > - Copy/paste `.grc` scripts into the Grapa REPL or save and run them with the CLI.

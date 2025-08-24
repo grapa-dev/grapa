@@ -36,6 +36,7 @@
 - **Multi-Syntax Support**: JSON, XML, HTML (native), SQL/PROLOG/LISP (example implementations), and custom syntax through executable BNF
 - **Parallel Processing**: Built-in parallel data operations with `.map()`, `.filter()`, `.reduce()`
 - **Machine Learning**: Linear regression, statistical analysis, and ML algorithms using optimized vector operations
+- **HTTP/HTTPS Networking**: Complete HTTP client with SSL/TLS, proxy support, cookie handling, and chunked encoding
 - **Unlimited Precision**: Native support for arbitrary-precision arithmetic
 - **Cross-Platform**: Runs on Windows, macOS, and Linux
 

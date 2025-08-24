@@ -126,6 +126,7 @@ nav:
           - File Operations: sys/file.md
           - Math Functions: sys/math.md
           - Network Functions: sys/net.md
+          - HTTP/HTTPS Client: curl_function.md
           - System Functions: sys/sys.md
           - Thread Functions: sys/thread.md
           - Function Quick Reference: function_quick_reference.md
@@ -178,7 +179,6 @@ nav:
           - Kotlin: migrations/kotlin_to_grapa_migration.md
           - Swift: migrations/swift_to_grapa_migration.md
       - Examples: examples.md
-      - Examples Overview: examples/README.md
       - Python Use Cases: python_use_cases.md
       - GRC Scripts: grc_scripts.md
       - GRZ Format: grz_format.md

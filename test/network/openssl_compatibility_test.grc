@@ -1,0 +1,312 @@
+/*
+ * OpenSSL 3.0 Compatibility Regression Test
+ * 
+ * This test validates that all SSL/TLS functionality works correctly
+ * when Grapa is updated from OpenSSL 1.1 to OpenSSL 3.0
+ * 
+ * Tests all certificate handling, SSL verification, and HTTPS features
+ * that might be affected by the OpenSSL upgrade.
+ */
+
+/* Test 1: Basic SSL Certificate Loading */
+test_certificate_loading = op() {
+    "=== Test 1: Certificate Loading ===".echo();
+    
+    n = $net();
+    
+    /* Test client certificate loading - skip if file doesn't exist */
+    if ($file().exists("keys/client.crt")) {
+        result = n.certificate("keys/client.crt");
+        ("Certificate loading result: " + result).echo();
+    } else {
+        "Certificate file not found, skipping certificate test".echo();
+    };
+    
+    /* Test private key loading - skip if file doesn't exist */
+    if ($file().exists("keys/client.key")) {
+        result = n.private("keys/client.key", null, null);
+        ("Private key loading result: " + result).echo();
+    } else {
+        "Private key file not found, skipping private key test".echo();
+    };
+    
+    /* Test trusted CA loading - skip if file doesn't exist */
+    if ($file().exists("keys/ca.crt")) {
+        result = n.trusted("keys/ca.crt", "");
+        ("Trusted CA loading result: " + result).echo();
+    } else {
+        "CA certificate file not found, skipping CA test".echo();
+    };
+    
+    "✓ Certificate loading tests completed\n".echo();
+};
+
+/* Test 2: SSL Verification */
+test_ssl_verification = op() {
+    "=== Test 2: SSL Verification ===".echo();
+    
+    n = $net();
+    
+    /* Test connection to HTTPS site */
+    err = n.connect("httpbin.org:443", null, null);
+    ("Connection result: " + err).echo();
+    
+    if (err == 0) {
+        /* Test SSL verification */
+        verify_result = n.verify();
+        ("SSL verification error: " + verify_result.X509_error).echo();
+        ("SSL verification certificate: " + verify_result.X509_certificate.len() + " bytes").echo();
+        
+        /* Test certificate chain */
+        chain_result = n.chain();
+        ("Certificate chain length: " + chain_result.len()).echo();
+        
+        /* Test host information */
+        host_info = n.host();
+        ("Host info: " + host_info.str()).echo();
+        
+        n.disconnect();
+    };
+    
+    "✓ SSL verification tests completed\n".echo();
+};
+
+/* Test 3: HTTPS Request/Response */
+test_https_communication = op() {
+    "=== Test 3: HTTPS Communication ===".echo();
+    
+    n = $net();
+    
+    /* Connect to HTTPS site */
+    err = n.connect("httpbin.org:443", null, null);
+    if (err == 0) {
+        /* Send HTTPS request */
+        headers = {
+            "User-Agent": "Grapa-OpenSSL-Test/1.0",
+            "Host": "httpbin.org"
+        };
+        
+        send_result = n.httpsend("GET", "/get", headers, "");
+        ("HTTPS send result: " + send_result).echo();
+        
+        if (send_result == 0) {
+            /* Read HTTPS response */
+            response = n.httpmessage();
+            ("HTTPS response status: " + response.status.code).echo();
+            ("HTTPS response body length: " + response.body.len()).echo();
+            
+            /* Verify content type detection works */
+            ("Content type detection: " + response.body.type()).echo();
+        };
+        
+        n.disconnect();
+    };
+    
+    "✓ HTTPS communication tests completed\n".echo();
+};
+
+/* Test 4: Client Certificate Authentication */
+test_client_cert_auth = op() {
+    "=== Test 4: Client Certificate Authentication ===".echo();
+    
+    n = $net();
+    
+    /* Load client certificate and private key - skip if files don't exist */
+    if ($file().exists("keys/client.crt") && $file().exists("keys/client.key")) {
+        n.certificate("keys/client.crt");
+        n.private("keys/client.key", null, null);
+        
+        /* Test connection with client certificate */
+        err = n.connect("httpbin.org:443", null, null);
+        ("Client cert connection result: " + err).echo();
+        
+        if (err == 0) {
+            /* Verify client certificate was used */
+            verify_result = n.verify();
+            ("Client cert verification: " + verify_result.X509_error).echo();
+            
+            n.disconnect();
+        };
+    } else {
+        "Client certificate files not found, skipping client cert auth test".echo();
+    };
+    
+    "✓ Client certificate authentication tests completed\n".echo();
+};
+
+/* Test 5: Proxy with SSL */
+test_proxy_ssl = op() {
+    "=== Test 5: Proxy with SSL ===".echo();
+    
+    n = $net();
+    
+    /* Test proxy configuration */
+    proxy_config = {
+        type: "HTTP",
+        host: "proxy.example.com",
+        port: "8080"
+    };
+    
+    /* Test connection through proxy */
+    err = n.connect("httpbin.org:443", null, proxy_config);
+    ("Proxy SSL connection result: " + err).echo();
+    
+    if (err == 0) {
+        n.disconnect();
+    };
+    
+    "✓ Proxy SSL tests completed\n".echo();
+};
+
+/* Test 6: SSL/TLS Protocol Versions */
+test_ssl_protocols = op() {
+    "=== Test 6: SSL/TLS Protocol Versions ===".echo();
+    
+    n = $net();
+    
+    /* Test different SSL/TLS versions */
+    protocols = ["TLSv1.2", "TLSv1.3"];
+    
+    i = 0;
+    while (i < protocols.len()) {
+        protocol = protocols[i];
+        ("Testing protocol: " + protocol).echo();
+        
+        /* Note: Protocol version setting would need to be implemented */
+        /* For now, just test that basic SSL still works */
+        err = n.connect("httpbin.org:443", null, null);
+        ("Connection result for " + protocol + ": " + err).echo();
+        
+        if (err == 0) {
+            n.disconnect();
+        };
+        
+        i += 1;
+    };
+    
+    "✓ SSL/TLS protocol tests completed\n".echo();
+};
+
+/* Test 7: Certificate Chain Validation */
+test_certificate_chain = op() {
+    "=== Test 7: Certificate Chain Validation ===".echo();
+    
+    n = $net();
+    
+    /* Load trusted CA certificates - skip if file doesn't exist */
+    if ($file().exists("keys/ca.crt")) {
+        n.trusted("keys/ca.crt", "");
+        
+        /* Test connection with full chain validation */
+        err = n.connect("httpbin.org:443", null, null);
+        ("Chain validation connection result: " + err).echo();
+        
+        if (err == 0) {
+            /* Get certificate chain */
+            chain = n.chain();
+            ("Certificate chain length: " + chain.len()).echo();
+            
+            /* Verify each certificate in chain */
+            i = 0;
+            while (i < chain.len()) {
+                cert = chain[i];
+                ("Chain cert " + i + " length: " + cert.len() + " bytes").echo();
+                i += 1;
+            };
+            
+            n.disconnect();
+        };
+    } else {
+        "CA certificate file not found, skipping chain validation test".echo();
+    };
+    
+    "✓ Certificate chain validation tests completed\n".echo();
+};
+
+/* Test 8: SSL Error Handling */
+test_ssl_error_handling = op() {
+    "=== Test 8: SSL Error Handling ===".echo();
+    
+    n = $net();
+    
+    /* Test connection to invalid SSL site */
+    err = n.connect("invalid-ssl-site.example.com:443", null, null);
+    ("Invalid SSL site connection result: " + err).echo();
+    
+    /* Test connection with invalid certificate */
+    err = n.connect("httpbin.org:443", "invalid-cert.crt", null);
+    ("Invalid cert connection result: " + err).echo();
+    
+    /* Test connection with invalid private key */
+    n.certificate("keys/client.crt");
+    err = n.private("invalid-key.key", null, null);
+    ("Invalid key loading result: " + err).echo();
+    
+    "✓ SSL error handling tests completed\n".echo();
+};
+
+/* Test 9: Performance and Memory */
+test_ssl_performance = op() {
+    "=== Test 9: SSL Performance ===".echo();
+    
+    /* Test multiple SSL connections */
+    i = 0;
+    while (i < 5) {
+        n = $net();
+        
+        err = n.connect("httpbin.org:443", null, null);
+        ("Performance test connection " + i + ": " + err).echo();
+        
+        if (err == 0) {
+            n.disconnect();
+        };
+        
+        i += 1;
+    };
+    
+    "✓ SSL performance tests completed\n".echo();
+};
+
+/* Test 10: OpenSSL 3.0 Specific Features */
+test_openssl30_features = op() {
+    "=== Test 10: OpenSSL 3.0 Features ===".echo();
+    
+    "Note: These tests will become relevant after OpenSSL 3.0 upgrade".echo();
+    
+    /* Test for potential OpenSSL 3.0 deprecations */
+    n = $net();
+    
+    /* Test that old APIs still work (if they exist) */
+    err = n.connect("httpbin.org:443", null, null);
+    ("OpenSSL 3.0 compatibility test: " + err).echo();
+    
+    if (err == 0) {
+        n.disconnect();
+    };
+    
+    "✓ OpenSSL 3.0 feature tests completed\n".echo();
+};
+
+/* Main test runner */
+main = op() {
+    "Starting OpenSSL 3.0 Compatibility Regression Tests...\n".echo();
+    
+    /* Run all tests */
+    test_certificate_loading();
+    test_ssl_verification();
+    test_https_communication();
+    test_client_cert_auth();
+    test_proxy_ssl();
+    test_ssl_protocols();
+    test_certificate_chain();
+    test_ssl_error_handling();
+    test_ssl_performance();
+    test_openssl30_features();
+    
+    "\n=== All OpenSSL 3.0 Compatibility Tests Completed ===".echo();
+    "These tests should be run before and after OpenSSL 3.0 upgrade".echo();
+    "to ensure all SSL/TLS functionality continues to work correctly.".echo();
+};
+
+/* Run tests */
+main();

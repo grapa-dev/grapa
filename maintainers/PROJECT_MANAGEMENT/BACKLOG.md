@@ -98,6 +98,31 @@ This backlog tracks all future, long-term, and queued tasks for the Grapa projec
 - **Status**: Article content prepared and ready for submission
 - **Goal**: Improve Grapa's discoverability and establish official Wikipedia presence
 - **Next Steps**: Submit article to Wikipedia, monitor feedback, maintain article
+
+### **Grapa curl Function Enhancement** 🔥 **HIGH PRIORITY**
+- **Status**: Basic HTTP/HTTPS with SSL certificates implemented, POST support missing
+- **Goal**: Achieve 100% feature parity with CLI curl command
+- **Missing Features**:
+  - **POST/PUT/DELETE with Request Bodies**: Add support for `data` and `form` options in curl function
+  - **Multipart/form-data**: Implement multipart form data encoding/decoding (requires C++ backend support)
+  - **HTTP/2 and HTTP/3**: Protocol support (requires C++ backend implementation)
+  - **Compression**: Automatic gzip/deflate/brotli decompression (requires C++ backend support)
+  - **SOCKS Proxy**: Extend proxy support beyond HTTP to SOCKS protocols
+  - **Advanced HTTP Authentication**: Digest, NTLM authentication methods
+  - **Rate Limiting**: Built-in rate limiting capabilities
+  - **Resume Downloads**: Partial content/resume support for large files
+  - **Custom DNS**: DNS override and custom resolution
+  - **Certificate Pinning**: HPKP (HTTP Public Key Pinning) support
+  - **WebSocket**: WebSocket protocol support
+  - **Streaming Responses**: Streaming response handling
+  - **Connection Pooling**: Connection reuse/pooling
+  - **HTTP Caching**: Cache control and ETag support
+  - **Redirect Following**: Automatic redirect handling
+  - **Timeout Configuration**: Configurable timeouts
+  - **Verbose Output**: Detailed request/response logging
+- **Estimated Effort**: Medium Release (2-4 weeks for POST support, 3-6 months for full parity)
+- **Dependencies**: C++ backend enhancements for advanced features
+- **Priority**: High - essential for complete HTTP client functionality
 - **Reference**: `wikipedia_grapa_article.txt` - Complete article with instructions
 - **Priority**: Medium - marketing and visibility
 

@@ -815,6 +815,23 @@ while (i < keys.len()) {
     (key + ": " + value.str()).echo();
     i += 1;
 }
+
+/* Get all keys from a list */
+config_keys = config.keys();     /* Returns ["debug", "port", "host"] */
+
+/* Keys can be strings or identifiers */
+mixed_obj = {a: 3, "b": 5, c: "value"};
+mixed_keys = mixed_obj.keys();   /* Returns [a, "b", c] */
+
+/* Iterate using .keys() */
+all_keys = config.keys();
+i = 0;
+while (i < all_keys.len()) {
+    key = all_keys[i];
+    value = config[key];
+    (key + ": " + value.str()).echo();
+    i += 1;
+}
 ```
 
 **List Methods:**
@@ -822,7 +839,7 @@ while (i < keys.len()) {
 - `list.key` - Access element by key (alternative)
 - `list.len()` - Get list length
 - `list.get(key)` - **Not supported** (use bracket notation)
-- `list.keys()` - **Not supported** (iterate manually)
+- `list.keys()` - Get array of all keys (supports both `$STR` and `$ID` keys)
 
 ### Object Type (`$OBJ`)
 

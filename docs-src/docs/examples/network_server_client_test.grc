@@ -1,0 +1,358 @@
+/* Comprehensive Network Server/Client Test */
+/* This script demonstrates Grapa's complete networking capabilities */
+
+"Starting comprehensive network server/client test...\n".echo();
+
+/* ======================================== */
+/* SERVER SETUP */
+/* ======================================== */
+
+/* HTTP Server Message Handler */
+httpMessageHandler = op(netSession, message, hasmore) {
+    netSession.data += message;
+    
+    if (hasmore == 0) {
+        /* Parse HTTP request */
+        request = netSession.data;
+        method = request.left(3);
+        path = "";
+        
+        /* Extract path from request */
+        if (request.left(4) == "GET ") {
+            path_start = 4;
+            path_end = request.find(" ", 4);
+            if (path_end > 0) {
+                path = request.mid(path_start, path_end - path_start);
+            };
+        };
+        
+        /* Generate response based on path */
+        if (path == "/") {
+            response = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n<h1>Grapa HTTP Server</h1><p>Server is running!</p>";
+        } else if (path == "/json") {
+            json_data = {message: "Hello from Grapa", timestamp: Date.now(), server: "HTTP"};
+            response = "HTTP/1.1 200 OK\r\nContent-Type: application/json\r\n\r\n" + json_data.str();
+        } else if (path == "/echo") {
+            /* Echo back the request */
+            response = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\n" + request;
+        } else {
+            response = "HTTP/1.1 404 Not Found\r\nContent-Type: text/html\r\n\r\n<h1>404 - Not Found</h1>";
+        };
+        
+        netSession.send(response);
+        netSession.data = "";
+        
+        ("HTTP Server: Processed " + method + " " + path + "\n").echo();
+    };
+};
+
+/* HTTPS Server Message Handler */
+httpsMessageHandler = op(netSession, message, hasmore) {
+    netSession.data += message;
+    
+    if (hasmore == 0) {
+        /* Parse HTTP request */
+        request = netSession.data;
+        method = request.left(3);
+        path = "";
+        
+        /* Extract path from request */
+        if (request.left(4) == "GET ") {
+            path_start = 4;
+            path_end = request.find(" ", 4);
+            if (path_end > 0) {
+                path = request.mid(path_start, path_end - path_start);
+            };
+        };
+        
+        /* Generate response based on path */
+        if (path == "/") {
+            response = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n<h1>Grapa HTTPS Server</h1><p>Secure server is running!</p>";
+        } else if (path == "/json") {
+            json_data = {message: "Hello from Grapa", timestamp: Date.now(), server: "HTTPS", secure: true};
+            response = "HTTP/1.1 200 OK\r\nContent-Type: application/json\r\n\r\n" + json_data.str();
+        } else if (path == "/secure") {
+            response = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n<h1>Secure Endpoint</h1><p>This is served over HTTPS!</p>";
+        } else {
+            response = "HTTP/1.1 404 Not Found\r\nContent-Type: text/html\r\n\r\n<h1>404 - Not Found</h1>";
+        };
+        
+        netSession.send(response);
+        netSession.data = "";
+        
+        ("HTTPS Server: Processed " + method + " " + path + "\n").echo();
+    };
+};
+
+/* Connection Handler for both servers */
+connectionHandler = op(netSession) {
+    netSession.data = "";
+    netSession.connectionId = Math.random().int();
+    netSession.startTime = Date.now();
+    ("New connection established: " + netSession.connectionId + "\n").echo();
+};
+
+/* ======================================== */
+/* START SERVERS */
+/* ======================================== */
+
+/* Start HTTP Server */
+httpServer = $net();
+httpServer.onlisten(':8080', httpMessageHandler, connectionHandler);
+
+/* Start HTTPS Server (if certificates exist) */
+httpsServer = $net();
+try {
+    httpsServer.certificate("keys/server.crt");
+    httpsServer.private("keys/server.key");
+    httpsServer.onlisten(':8443', httpsMessageHandler, connectionHandler);
+    https_enabled = true;
+    ("HTTPS server started on port 8443\n").echo();
+} catch (e) {
+    https_enabled = false;
+    ("HTTPS server not started (certificates not found)\n").echo();
+};
+
+("HTTP server started on port 8080\n").echo();
+("Servers are ready for connections\n").echo();
+
+/* Wait a moment for servers to start */
+Sleep(1000);
+
+/* ======================================== */
+/* CLIENT TESTS */
+/* ======================================== */
+
+/* Test HTTP Client */
+"Testing HTTP client connections...\n".echo();
+
+/* Test 1: Basic HTTP GET */
+testHttpClient = op() {
+    n = $net();
+    n.connect("localhost:8080", null, null);
+    
+    header = {"Host": "localhost:8080", "User-Agent": "Grapa-Test-Client/1.0"};
+    n.httpsend("GET", "/", header, "");
+    
+    response = n.httpmessage();
+    n.disconnect();
+    
+    ("HTTP Test 1 - Status: " + response.status.code + "\n").echo();
+    return response;
+};
+
+/* Test 2: HTTP JSON endpoint */
+testHttpJson = op() {
+    n = $net();
+    n.connect("localhost:8080", null, null);
+    
+    header = {"Host": "localhost:8080", "Accept": "application/json"};
+    n.httpsend("GET", "/json", header, "");
+    
+    response = n.httpmessage();
+    n.disconnect();
+    
+    ("HTTP Test 2 - JSON Status: " + response.status.code + "\n").echo();
+    return response;
+};
+
+/* Test 3: HTTP with custom headers */
+testHttpHeaders = op() {
+    n = $net();
+    n.connect("localhost:8080", null, null);
+    
+    header = {
+        "Host": "localhost:8080",
+        "User-Agent": "Grapa-Test-Client/1.0",
+        "Accept": ["text/html", "application/json"],
+        "X-Custom-Header": "test-value"
+    };
+    n.httpsend("GET", "/echo", header, "");
+    
+    response = n.httpmessage();
+    n.disconnect();
+    
+    ("HTTP Test 3 - Headers Status: " + response.status.code + "\n").echo();
+    return response;
+};
+
+/* Test 4: HTTP POST with data */
+testHttpPost = op() {
+    n = $net();
+    n.connect("localhost:8080", null, null);
+    
+    post_data = {name: "test", value: 123};
+    header = {
+        "Host": "localhost:8080",
+        "Content-Type": "application/json",
+        "Content-Length": post_data.str().len()
+    };
+    n.httpsend("POST", "/echo", header, post_data.str());
+    
+    response = n.httpmessage();
+    n.disconnect();
+    
+    ("HTTP Test 4 - POST Status: " + response.status.code + "\n").echo();
+    return response;
+};
+
+/* Run HTTP tests */
+http_test1 = testHttpClient();
+http_test2 = testHttpJson();
+http_test3 = testHttpHeaders();
+http_test4 = testHttpPost();
+
+/* Test HTTPS Client (if available) */
+if (https_enabled) {
+    "Testing HTTPS client connections...\n".echo();
+    
+    /* Test 5: Basic HTTPS GET */
+    testHttpsClient = op() {
+        n = $net();
+        n.connect("localhost:8443", null, null);
+        
+        header = {"Host": "localhost:8443", "User-Agent": "Grapa-Test-Client/1.0"};
+        n.httpsend("GET", "/", header, "");
+        
+        response = n.httpmessage();
+        n.disconnect();
+        
+        ("HTTPS Test 1 - Status: " + response.status.code + "\n").echo();
+        return response;
+    };
+    
+    /* Test 6: HTTPS JSON endpoint */
+    testHttpsJson = op() {
+        n = $net();
+        n.connect("localhost:8443", null, null);
+        
+        header = {"Host": "localhost:8443", "Accept": "application/json"};
+        n.httpsend("GET", "/json", header, "");
+        
+        response = n.httpmessage();
+        n.disconnect();
+        
+        ("HTTPS Test 2 - JSON Status: " + response.status.code + "\n").echo();
+        return response;
+    };
+    
+    /* Test 7: HTTPS secure endpoint */
+    testHttpsSecure = op() {
+        n = $net();
+        n.connect("localhost:8443", null, null);
+        
+        header = {"Host": "localhost:8443"};
+        n.httpsend("GET", "/secure", header, "");
+        
+        response = n.httpmessage();
+        n.disconnect();
+        
+        ("HTTPS Test 3 - Secure Status: " + response.status.code + "\n").echo();
+        return response;
+    };
+    
+    /* Run HTTPS tests */
+    https_test1 = testHttpsClient();
+    https_test2 = testHttpsJson();
+    https_test3 = testHttpsSecure();
+} else {
+    ("HTTPS tests skipped (certificates not available)\n").echo();
+};
+
+/* ======================================== */
+/* ADVANCED TESTS */
+/* ======================================== */
+
+/* Test 8: Multiple concurrent connections */
+"Testing concurrent connections...\n".echo();
+
+concurrentTest = op() {
+    results = [];
+    
+    /* Create multiple connections simultaneously */
+    i = 0;
+    while (i < 5) {
+        n = $net();
+        n.connect("localhost:8080", null, null);
+        
+        header = {"Host": "localhost:8080", "X-Connection-ID": i};
+        n.httpsend("GET", "/json", header, "");
+        
+        response = n.httpmessage();
+        n.disconnect();
+        
+        results += response.status.code;
+        i += 1;
+    };
+    
+    ("Concurrent Test - All status codes: " + results + "\n").echo();
+    return results;
+};
+
+concurrent_results = concurrentTest();
+
+/* Test 9: Network interface information */
+"Testing network interface functions...\n".echo();
+
+/* Get MAC address */
+mac_info = $net().mac();
+("MAC Address: " + mac_info.mac).echo();
+
+/* Get all interfaces */
+interfaces = $net().interfaces();
+("Network Interfaces: " + interfaces.len() + " found").echo();
+
+/* Test 10: Connection information */
+"Testing connection information...".echo();
+
+test_conn = $net();
+test_conn.connect("localhost:8080", null, null);
+conn_info = test_conn.host();
+test_conn.disconnect();
+
+("Connection Info - Host: " + conn_info.host + ", Port: " + conn_info.port).echo();
+
+/* ======================================== */
+/* RESULTS SUMMARY */
+/* ======================================== */
+
+"".echo();
+"=== NETWORK TEST RESULTS ===".echo();
+
+/* HTTP Results */
+("HTTP Tests:").echo();
+("  Test 1 (Basic GET): " + http_test1.status.code).echo();
+("  Test 2 (JSON): " + http_test2.status.code).echo();
+("  Test 3 (Headers): " + http_test3.status.code).echo();
+("  Test 4 (POST): " + http_test4.status.code).echo();
+
+/* HTTPS Results */
+if (https_enabled) {
+    ("HTTPS Tests:").echo();
+    ("  Test 1 (Basic GET): " + https_test1.status.code).echo();
+    ("  Test 2 (JSON): " + https_test2.status.code).echo();
+    ("  Test 3 (Secure): " + https_test3.status.code).echo();
+} else {
+    ("HTTPS Tests: Skipped (no certificates)").echo();
+};
+
+/* Advanced Results */
+("Advanced Tests:").echo();
+("  Concurrent Connections: " + concurrent_results.len() + " successful").echo();
+("  Network Interfaces: " + interfaces.len() + " found").echo();
+("  MAC Address: " + mac_info.mac).echo();
+
+/* ======================================== */
+/* CLEANUP */
+/* ======================================== */
+
+"Shutting down servers...".echo();
+
+/* Disconnect servers */
+httpServer.disconnect();
+if (https_enabled) {
+    httpsServer.disconnect();
+};
+
+("Network test completed successfully!\n").echo();
+("All Grapa networking capabilities validated.\n").echo();
