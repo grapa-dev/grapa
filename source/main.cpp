@@ -11,7 +11,7 @@
 #include "grapa/GrapaCompress.h"
 #include "grapa/GrapaLibRule.h"
 
-#define gGrapaUseWidget true
+#define gGrapaUseWidget false
 
 extern bool gGrapaWidgetMainThread;
 
