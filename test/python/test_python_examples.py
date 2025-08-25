@@ -60,10 +60,11 @@ def absolute_value(num):
         return num
     else:
         return -num
-xy.eval('''
-    absolute_value = op(n=0){$local.locals={"g":n};$py().eval("absolute_value(g)",locals);};
+result = xy.eval('''
+    absolute_value = op(n=0){$py().eval("absolute_value(g)",{"g":n});};
     absolute_value(-5);
 ''')
+print('absolute_value(-5) with object result:', result)
 
 print('--- XML to JSON ---')
 result = xy.eval('(<test "v"=5.4>this is a test</test>).list();')

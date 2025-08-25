@@ -134,7 +134,13 @@ class FLTKBuilder:
         """Build FLTK for Linux"""
         print(f"🐧 Building FLTK 1.4.4 for {target}...")
         
-        # Configure FLTK
+        # Run autogen (matching the working 1.3 build process)
+        print("🔧 Running autogen...")
+        env = os.environ.copy()
+        env['NOCONFIGURE'] = '1'
+        subprocess.run(["./autogen.sh"], cwd=self.fltk_source, env=env, check=True)
+        
+        # Configure FLTK (matching the working 1.3 build process)
         configure_cmd = [
             "./configure",
             "--enable-static",
@@ -145,12 +151,17 @@ class FLTKBuilder:
             f"--prefix=/tmp/fltk-1.4.4-{target}"
         ]
         
-        print(f"🔧 Configuring: {' '.join(configure_cmd)}")
-        subprocess.run(configure_cmd, cwd=self.fltk_source, check=True)
+        # Set environment variables for PIC compilation
+        env = os.environ.copy()
+        env['CFLAGS'] = '-fPIC'
+        env['CXXFLAGS'] = '-fPIC'
         
-        # Build FLTK
+        print(f"🔧 Configuring: {' '.join(configure_cmd)}")
+        subprocess.run(configure_cmd, cwd=self.fltk_source, env=env, check=True)
+        
+        # Build FLTK libraries (full build)
         print("🔨 Building FLTK libraries...")
-        subprocess.run(["make", "-j", str(os.cpu_count())], cwd=self.fltk_source, check=True)
+        subprocess.run(["make", "-j", str(os.cpu_count())], cwd=self.fltk_source, env=env, check=True)
         
         # Copy libraries
         target_dir = self.get_target_dir("linux", target.split("-")[1])
