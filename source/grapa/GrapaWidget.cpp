@@ -1307,7 +1307,56 @@ GrapaWidget::GrapaWidget(GrapaScriptExec* pScriptExec, GrapaNames* pNameSpace)
 
 GrapaWidget::~GrapaWidget()
 {
-	CLEAR();
+	// During destruction, we must clear synchronously to avoid use-after-free
+	// Don't use the messaging system during destructor
+	mDelete = false;
+	if (vWidget)
+	{
+		if (mJpeg)
+		{
+			delete mJpeg;
+			mJpeg = NULL;
+		}
+		if (mJpegImage)
+		{
+			vWidget->image(NULL);
+			delete mJpeg;
+			mJpeg = NULL;
+		}
+		if (mJpegDeImage)
+		{
+			vWidget->deimage(NULL);
+			delete mJpegDeImage;
+			mJpegDeImage = NULL;
+		}
+		if (vParent)
+		{
+			if (vParent->vWidget)
+			{
+				GrapaWidget* x = (GrapaWidget*)vParent->vWidget->user_data();
+				Fl_Group* g = NULL;
+				if (x && x->vWidget) g = x->vWidget->as_group();
+				if (g)
+				{
+					g->remove(vWidget);
+					g->redraw();
+				}
+			}
+			vParent = NULL;
+		}
+		vScriptExec->vScriptState->ClearQueue();
+		mThread.mScriptExec.vScriptState->ClearQueue();
+		mThread.mScriptExec.vScriptState->Stop();
+		vWidget->user_data(NULL);
+		Fl_Widget* oldwidget = vWidget;
+		vWidget = NULL;
+		// Delete the widget directly during destruction
+		oldwidget->hide();
+		Fl::delete_widget(oldwidget);
+	}
+	mNameSpace.GetNameQueue()->PopEvent(&mNameQueue);
+	mNameSpace.CLEAR();
+	
 	vPtrEvent->vWidget = NULL;
 	delete vPtrEvent;
 	vPtrEvent = NULL;
@@ -1321,7 +1370,46 @@ GrapaWidget::~GrapaWidget()
 
 void GrapaWidget::CLEAR()
 {
+	// Check if we're on the main thread - if not, use the messaging system
+	if (!gGrapaWidgetMainThread) {
+		// Create a callback structure for the main thread
+		GrapaExecCB* cb = new GrapaExecCB();
+		cb->vWidget = this;
+		cb->vCmd = NULL; // No command needed for clear operation
+		cb->vScriptExec = vScriptExec;
+		cb->vNameSpace = vNameSpace;
+		while (cb->vNameSpace->GetParrent()) cb->vNameSpace = cb->vNameSpace->GetParrent();
+
+		// Post to main thread
+		Fl::awake(GrapaWidget::ClearCB, cb);
+		return;
+	}
+
+	// We're on the main thread, so we can safely call Fl::lock() and do the work
 	Fl::lock();
+	ClearInternal();
+	Fl::unlock();
+}
+
+void GrapaWidget::ClearCB(void* b)
+{
+	GrapaExecCB* cb = (GrapaExecCB*)b;
+	Fl::lock();
+
+	// Call the internal Clear function on the main thread (bypassing the thread check)
+	cb->vWidget->ClearInternal();
+
+	// Clean up
+	if (cb->vCmd) {
+		cb->vCmd->CLEAR();
+		delete cb->vCmd;
+	}
+	delete cb;
+	Fl::unlock();
+}
+
+void GrapaWidget::ClearInternal()
+{
 	mDelete = false;
 	if (vWidget)
 	{
@@ -1369,7 +1457,6 @@ void GrapaWidget::CLEAR()
 	}
 	mNameSpace.GetNameQueue()->PopEvent(&mNameQueue);
 	mNameSpace.CLEAR();
-	Fl::unlock();
 }
 
 void GrapaWidget::TO(GrapaBYTE& pValue)
@@ -1399,6 +1486,47 @@ void GrapaWidget::FROM(const GrapaBYTE& pValue)
 
 GrapaError GrapaWidget::New(const char* widget, s64 x, s64 y, s64 w, s64 h, const char* label, GrapaRuleEvent* attr)
 {
+	// Check if we're on the main thread - if not, use the messaging system
+	if (!gGrapaWidgetMainThread) {
+		// Create a callback structure for the main thread
+		GrapaExecCB* cb = new GrapaExecCB();
+		cb->vWidget = this;
+		cb->vCmd = vScriptExec->CopyItem(new GrapaRuleEvent(0, GrapaCHAR("new"), GrapaCHAR(widget)));
+		cb->vScriptExec = vScriptExec;
+		cb->vNameSpace = vNameSpace;
+		while (cb->vNameSpace->GetParrent()) cb->vNameSpace = cb->vNameSpace->GetParrent();
+		
+		// Store the parameters for the main thread callback
+		cb->vCmd->mValue.mToken = GrapaTokenType::LIST;
+		cb->vCmd->vQueue = new GrapaRuleQueue();
+		cb->vCmd->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("x"), GrapaInt(x).getBytes()));
+		cb->vCmd->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("y"), GrapaInt(y).getBytes()));
+		cb->vCmd->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("w"), GrapaInt(w).getBytes()));
+		cb->vCmd->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("h"), GrapaInt(h).getBytes()));
+		if (label && *label) {
+			cb->vCmd->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("label"), GrapaCHAR(label)));
+		}
+		if (attr) {
+			cb->vCmd->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("attr"), attr->mValue));
+		}
+		
+		// Post to main thread
+		Fl::awake(GrapaWidget::NewCB, cb);
+		return 0;
+	}
+
+	// We're on the main thread, so we can safely call Fl::lock() and do the work
+	Fl::lock();
+	GrapaError result = NewInternal(widget, x, y, w, h, label, attr);
+	Fl::unlock();
+	return result;
+}
+
+GrapaError GrapaWidget::NewInternal(const char* widget, s64 x, s64 y, s64 w, s64 h, const char* label, GrapaRuleEvent* attr)
+{
+	// This is the internal implementation that does the actual widget creation
+	// It assumes we're already on the main thread and locks are already handled
+	
 	GrapaCHAR cbwidget(widget);
 	cbwidget.ToLower();
 	if (cbwidget.Cmp("window")
@@ -1420,8 +1548,6 @@ GrapaError GrapaWidget::New(const char* widget, s64 x, s64 y, s64 w, s64 h, cons
 		return -1;
 
 	mWidgetName.FROM(cbwidget);
-
-	Fl::lock();
 
 	if (label&&*label)
 		mLabel.FROM(label);
@@ -1575,7 +1701,6 @@ GrapaError GrapaWidget::New(const char* widget, s64 x, s64 y, s64 w, s64 h, cons
 	 }
 	if (vWidget && needsShow)
 		Fl::awake(ShowCB, this);
-	Fl::unlock();
 	return(0);
 }
 
@@ -2271,6 +2396,48 @@ void GrapaWidget::ExecCB(void* b)
 	wid.vWidget = NULL;
 	q.PopHead();
 	q.CLEAR();
+	cb->vCmd->CLEAR();
+	delete cb->vCmd;
+	delete cb;
+	Fl::unlock();
+}
+
+void GrapaWidget::NewCB(void* b)
+{
+	GrapaExecCB* cb = (GrapaExecCB*)b;
+	Fl::lock();
+	
+	// Extract parameters from the callback data
+	GrapaCHAR widgetName;
+	s64 x = 0, y = 0, w = 1, h = 1;
+	GrapaCHAR label;
+	GrapaRuleEvent* attr = NULL;
+	
+				if (cb->vCmd && cb->vCmd->vQueue) {
+				GrapaRuleEvent* param = cb->vCmd->vQueue->Head();
+				while (param) {
+					if (param->mName.StrLowerCmp("x") == 0) {
+						x = GrapaInt(param->mValue).LongValue();
+					} else if (param->mName.StrLowerCmp("y") == 0) {
+						y = GrapaInt(param->mValue).LongValue();
+					} else if (param->mName.StrLowerCmp("w") == 0) {
+						w = GrapaInt(param->mValue).LongValue();
+					} else if (param->mName.StrLowerCmp("h") == 0) {
+						h = GrapaInt(param->mValue).LongValue();
+					} else if (param->mName.StrLowerCmp("label") == 0) {
+						label.FROM(param->mValue);
+					} else if (param->mName.StrLowerCmp("attr") == 0) {
+						attr = new GrapaRuleEvent(*param);
+					}
+					                     param = param->Next();
+				}
+			}
+	
+	// Call the internal New function on the main thread (bypassing the thread check)
+	cb->vWidget->NewInternal((char*)cb->vCmd->mValue.mBytes, x, y, w, h, (char*)label.mBytes, attr);
+	
+	// Clean up
+	if (attr) delete attr;
 	cb->vCmd->CLEAR();
 	delete cb->vCmd;
 	delete cb;

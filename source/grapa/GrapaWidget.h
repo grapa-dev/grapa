@@ -97,6 +97,8 @@ public:
 	bool FROM(const GrapaWidget& pData);
 	void FROM(const GrapaBYTE& pValue);
 	GrapaError New(const char* widget, s64 x = 0, s64 y = 0, s64 w = 1, s64 h = 1, const char* label = NULL, GrapaRuleEvent* attr = NULL);
+	GrapaError NewInternal(const char* widget, s64 x = 0, s64 y = 0, s64 w = 1, s64 h = 1, const char* label = NULL, GrapaRuleEvent* attr = NULL);
+	void ClearInternal();
 	GrapaError SetNamesChildren(Fl_Group* g, GrapaNames* pNameSpace);
 	GrapaError SetThreadChildren(Fl_Group* g, GrapaWidgetThread* pThread);
 	GrapaError Add(GrapaCHAR& pName, GrapaWidget* bi, GrapaWidget* b2=NULL);
@@ -106,6 +108,7 @@ public:
 	GrapaError Remove(s64 pIndex);
 	GrapaError Join(GrapaRuleEvent* pList);
 	static void CloseCB(void* b);
+	static void ClearCB(void* b);
 	static void ShowCB(void* b);
 	GrapaError Show();
 	static void HideCB(void* b);
@@ -121,6 +124,7 @@ public:
 	GrapaError EventKey(int key, int& r);
 	GrapaError Append(GrapaCHAR& pValue);
 	static void ExecCB(void* b);
+	static void NewCB(void* b);
 	GrapaRuleEvent* Child(GrapaCHAR& pValue);
 	GrapaRuleEvent* Child(s64 pIndex=0);
 	GrapaRuleEvent* Set(GrapaRuleEvent* data);

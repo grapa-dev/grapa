@@ -7,11 +7,11 @@
 // the file "COPYING" which should have been included with this file.  If this
 // file is missing or damaged, see the license at:
 //
-//     http://www.fltk.org/COPYING.php
+//     https://www.fltk.org/COPYING.php
 //
-// Please report all bugs and problems on the following page:
+// Please see the following page on how to report bugs and issues:
 //
-//     http://www.fltk.org/str.php
+//     https://www.fltk.org/bugs.php
 //
 
 /* \file
@@ -31,9 +31,10 @@
 */
 class FL_EXPORT Fl_Single_Window : public Fl_Window {
 public:
-  void show();
-  void show(int a, char **b) {Fl_Window::show(a,b);}
-  void flush();
+  void show() FL_OVERRIDE;
+  /** Same as Fl_Window::show(int argc, char **argv) */
+  void show(int argc, char **argv) { Fl_Window::show(argc, argv);}
+
    /**
     Creates a new Fl_Single_Window widget using the given
     size, and label (title) string.
@@ -50,6 +51,11 @@ public:
     Same as Fl_Window::make_current()
   */
   void make_current() { Fl_Window::make_current(); }
+
+  /**
+    Same as Fl_Window::flush()
+  */
+  void flush() FL_OVERRIDE { Fl_Window::flush(); }
 };
 
 #endif

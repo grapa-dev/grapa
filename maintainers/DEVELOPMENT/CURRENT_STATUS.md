@@ -127,18 +127,26 @@
 ## Next Focus: Adoption Drivers
 
 ### 📋 **Next Priority Tasks**
-1. **Dependency Upgrades**: FLTK and OpenSSL modernization
-   - **OpenSSL 3.0 Migration**: Upgrade from OpenSSL 1.1.1 to 3.0 (Linux compatibility)
-   - **FLTK Investigation**: Research X11 dependency removal options
-   - **Testing Required**: Comprehensive testing after upgrades
-2. **Python Extension EOL Dependencies**: Remove end-of-life dependencies for Mac platform
-3. **Installation Packaging**: Create easy installation packages for all supported platforms
+1. **🔄 FLTK 1.4.4 Upgrade - Platform Investigation Shift**: 
+   - **Static Libraries Built**: FLTK 1.4.4 static libraries successfully built for mac-arm64
+   - **Threading Issues Resolved**: Fixed Cocoa threading violations in `GrapaWidget::New()` and `GrapaWidget::CLEAR()`
+   - **Memory Corruption Fixed**: Resolved critical use-after-free bug in `GrapaWidget` destructor by ensuring synchronous cleanup
+   - **Build Script Created**: `scripts/build/build_fltk.py` automates FLTK builds across platforms
+   - **Documentation Updated**: Threading system documented in `maintainers/IMPLEMENTATION/GRAPA_WIDGET_THREADING_SYSTEM.md`
+   - **Testing Status**: ✅ **STABLE** - Multiple test runs confirmed stability without crashes or memory errors
+   - **⚠️ Widget Display Issue**: Widget does not appear on mac-arm64 (both FLTK 1.3 and 1.4.4 affected)
+   - **🔄 Platform Shift**: Investigation moving to Windows due to persistent macOS widget display issues
+   - **Next**: Build FLTK 1.4.4 for Windows (win-amd64/win-arm64) and test widget functionality there
+2. **OpenSSL 3.0 Migration**: Upgrade from OpenSSL 1.1.1 to 3.0 (Linux compatibility)
+3. **FLTK X11 Dependency Investigation**: Research X11 dependency removal options for Linux
+4. **Python Extension EOL Dependencies**: Remove end-of-life dependencies for Mac platform
+5. **Installation Packaging**: Create easy installation packages for all supported platforms
    - **Focus**: Executable distribution only (no libraries/includes unless required)
    - **Platforms**: All supported platforms with streamlined installation
-4. **Python 3.13+ Compatibility**: Syntax alignment and library integration
-5. **Error Handling Enhancement**: Improve error messages and recovery mechanisms
-6. **Documentation Improvements**: User guides, tutorials, and examples
-7. **Ecosystem Development**: Package management, IDE support, community tools
+6. **Python 3.13+ Compatibility**: Syntax alignment and library integration
+7. **Error Handling Enhancement**: Improve error messages and recovery mechanisms
+8. **Documentation Improvements**: User guides, tutorials, and examples
+9. **Ecosystem Development**: Package management, IDE support, community tools
 
 ## Technical Debt & Future Work
 

@@ -1,6 +1,4 @@
 //
-// "$Id$"
-//
 // Filled dial header file for the Fast Light Tool Kit (FLTK).
 //
 // Copyright 1998-2010 by Bill Spitzak and others.
@@ -9,11 +7,11 @@
 // the file "COPYING" which should have been included with this file.  If this
 // file is missing or damaged, see the license at:
 //
-//     http://www.fltk.org/COPYING.php
+//     https://www.fltk.org/COPYING.php
 //
-// Please report all bugs and problems on the following page:
+// Please see the following page on how to report bugs and issues:
 //
-//     http://www.fltk.org/str.php
+//     https://www.fltk.org/bugs.php
 //
 
 /* \file
@@ -28,11 +26,7 @@
 class FL_EXPORT Fl_Fill_Dial : public Fl_Dial {
 public:
   /** Creates a filled dial, also setting its type to FL_FILL_DIAL. */
-  Fl_Fill_Dial(int X,int Y,int W,int H, const char *L);
+  Fl_Fill_Dial(int X,int Y,int W,int H, const char *L = NULL);
 };
 
 #endif
-
-//
-// End of "$Id$".
-//

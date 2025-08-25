@@ -83,7 +83,8 @@ class BuildConfig:
             return [
                 "-framework CoreFoundation",
                 "-framework AppKit", 
-                "-framework IOKit"
+                "-framework IOKit",
+                "-framework ScreenCaptureKit"
             ]
         return []
 
@@ -167,8 +168,9 @@ class GrapaBuilder:
             # Build static library
             self._run_mac_build_command(config, is_library=True, is_static=True)
             
-            # Build shared library
-            self._run_mac_build_command(config, is_library=True, is_static=False)
+            # Build shared library (skip if exe_only)
+            if not exe_only:
+                self._run_mac_build_command(config, is_library=True, is_static=False)
             
             if not exe_only:
                 # Create package
@@ -258,8 +260,7 @@ class GrapaBuilder:
                 
                 subprocess.run([
                     "clang++", "-shared", "-Isource"
-                ] + cpp_files + ["utf8proc.o"] + openssl_libs + fl_libs + blst_libs + pcre2_lib + [
-                    "-framework", "CoreFoundation", "-framework", "AppKit", "-framework", "IOKit",
+                ] + cpp_files + ["utf8proc.o"] + openssl_libs + fl_libs + blst_libs + pcre2_lib + config.frameworks + [
                     "-std=c++17", "-m64", "-O3", "-pthread", "-fPIC", "-o", "libgrapa.so"
                 ], check=True)
                 shutil.copy("libgrapa.so", f"source/grapa-other/{config.target}/libgrapa.so")
@@ -278,8 +279,8 @@ class GrapaBuilder:
             cmd = [
                 "clang++", "-Isource", "source/main.cpp", "source/grapa/*.cpp", "utf8proc.o",
                 f"source/openssl-lib/{config.target}/*.a", f"source/fl-lib/{config.target}/*.a", 
-                f"source/blst-lib/{config.target}/*.a", f"source/pcre2-lib/{config.target}/libpcre2-8.a",
-                "-framework", "CoreFoundation", "-framework", "AppKit", "-framework", "IOKit",
+                f"source/blst-lib/{config.target}/*.a", f"source/pcre2-lib/{config.target}/libpcre2-8.a"
+            ] + config.frameworks + [
                 "-std=c++17", "-m64", "-O3", "-pthread", "-o", config.output_name
             ]
             print(f"Current working directory: {os.getcwd()}")
