@@ -70,8 +70,8 @@ class FLTKBuilder:
             target_platform = platform
         return self.fl_lib_dir / f"{target_platform}-{arch}"
     
-    def clean_build(self):
-        """Clean FLTK build artifacts"""
+    def clean_build(self, target: str = None):
+        """Clean FLTK build artifacts for specific target or all targets"""
         print("🧹 Cleaning FLTK build artifacts...")
         
         # Clean FLTK source build
@@ -83,13 +83,25 @@ class FLTKBuilder:
                 print("⚠️  FLTK clean failed (may not be built yet)")
         
         # Clean target directories
-        for target_dir in self.fl_lib_dir.glob("*"):
-            if target_dir.is_dir():
+        if target:
+            # Clean only the specific target
+            platform, arch = target.split("-")
+            target_dir = self.get_target_dir(platform, arch)
+            if target_dir.exists():
                 for lib_file in target_dir.glob("*.a"):
                     lib_file.unlink()
                     print(f"🗑️  Removed {lib_file}")
-        
-        print("✅ Build artifacts cleaned")
+                print(f"✅ Cleaned libraries for {target}")
+            else:
+                print(f"⚠️  Target directory {target_dir} does not exist")
+        else:
+            # Clean all target directories (original behavior)
+            for target_dir in self.fl_lib_dir.glob("*"):
+                if target_dir.is_dir():
+                    for lib_file in target_dir.glob("*.a"):
+                        lib_file.unlink()
+                        print(f"🗑️  Removed {lib_file}")
+            print("✅ All build artifacts cleaned")
     
     def build_mac(self, target: str):
         """Build FLTK for macOS"""
@@ -134,11 +146,17 @@ class FLTKBuilder:
         """Build FLTK for Linux"""
         print(f"🐧 Building FLTK 1.4.4 for {target}...")
         
-        # Run autogen (matching the working 1.3 build process)
-        print("🔧 Running autogen...")
-        env = os.environ.copy()
-        env['NOCONFIGURE'] = '1'
-        subprocess.run(["./autogen.sh"], cwd=self.fltk_source, env=env, check=True)
+        # Run autogen if available (matching the working 1.3 build process)
+        if shutil.which("autoconf"):
+            print("🔧 Running autogen...")
+            env = os.environ.copy()
+            env['NOCONFIGURE'] = '1'
+            try:
+                subprocess.run(["./autogen.sh"], cwd=self.fltk_source, env=env, check=True)
+            except subprocess.CalledProcessError:
+                print("⚠️  Autogen failed, continuing without it...")
+        else:
+            print("⚠️  Autoconf not found, skipping autogen step...")
         
         # Configure FLTK (matching the working 1.3 build process)
         configure_cmd = [
@@ -159,9 +177,16 @@ class FLTKBuilder:
         print(f"🔧 Configuring: {' '.join(configure_cmd)}")
         subprocess.run(configure_cmd, cwd=self.fltk_source, env=env, check=True)
         
-        # Build FLTK libraries (full build)
+        # Build FLTK libraries (skip fluid to avoid linking issues)
         print("🔨 Building FLTK libraries...")
-        subprocess.run(["make", "-j", str(os.cpu_count())], cwd=self.fltk_source, env=env, check=True)
+        # Build the builtin libraries first (jpeg, png, zlib)
+        for subdir in ["jpeg", "png", "zlib"]:
+            print(f"🔨 Building {subdir} library...")
+            subprocess.run(["make", "-j", str(os.cpu_count())], cwd=self.fltk_source / subdir, env=env, check=True)
+        
+        # Build the core libraries from the src directory
+        print("🔨 Building core FLTK libraries...")
+        subprocess.run(["make", "-j", str(os.cpu_count())], cwd=self.fltk_source / "src", env=env, check=True)
         
         # Copy libraries
         target_dir = self.get_target_dir("linux", target.split("-")[1])
@@ -288,10 +313,49 @@ class FLTKBuilder:
         """Build FLTK for AWS Linux (same as Linux but with AWS-specific notes)"""
         print(f"☁️  Building FLTK 1.4.4 for {target} (AWS Linux)...")
         
-        # AWS Linux is essentially the same as regular Linux
+        # AWS Linux is essentially the same as regular Linux, but we need to copy to AWS directories
+        # First, build using the Linux method (which puts libraries in linux-* directories)
         self.build_linux(target)
         
+        # Now copy the libraries from linux-* to aws-* directories
+        platform, arch = target.split("-")
+        linux_dir = self.get_target_dir("linux", arch)
+        aws_dir = self.get_target_dir("aws", arch)
+        
+        # Create AWS directory if it doesn't exist
+        aws_dir.mkdir(parents=True, exist_ok=True)
+        
+        # Copy all libraries from linux directory to aws directory
+        for lib_file in linux_dir.glob("*.a"):
+            shutil.copy2(lib_file, aws_dir)
+            print(f"📦 Copied {lib_file.name} to {aws_dir}")
+        
         print("☁️  AWS Linux build complete")
+    
+    def detect_platform(self) -> Tuple[str, str]:
+        """Detect current platform and architecture (copied from build.py)"""
+        system = platform.system().lower()
+        machine = platform.machine().lower()
+        
+        if system == "windows":
+            return "windows", "amd64"
+        elif system == "darwin":
+            # On Mac, machine can be "arm64" or "x86_64"
+            if machine == "arm64":
+                return "mac", "arm64"
+            elif machine == "x86_64":
+                return "mac", "amd64"
+            else:
+                raise RuntimeError(f"Unsupported Mac architecture: {machine}")
+        elif system == "linux":
+            # Check if this is AWS Linux by looking for Amazon Linux specific files
+            if (os.path.exists("/etc/system-release") and 
+                ("Amazon Linux" in open("/etc/system-release").read())):
+                return "aws", "arm64" if machine == "aarch64" else "amd64"
+            else:
+                return "linux", "arm64" if machine == "aarch64" else "amd64"
+        else:
+            raise RuntimeError(f"Unsupported platform: {system}")
     
     def build_for_target(self, target: str):
         """Build FLTK for a specific target"""
@@ -307,6 +371,14 @@ class FLTKBuilder:
             self.build_aws(target)
         else:
             raise ValueError(f"Unsupported platform: {platform}")
+    
+    def build_for_current_platform(self):
+        """Build FLTK for the current platform (auto-detected)"""
+        platform, arch = self.detect_platform()
+        target = f"{platform}-{arch}"
+        print(f"🔍 Auto-detected platform: {platform} {arch}")
+        print(f"🎯 Building for target: {target}")
+        self.build_for_target(target)
     
     def list_targets(self):
         """List all supported targets"""
@@ -406,23 +478,41 @@ Examples:
             builder.list_targets()
             return 0
         
+        # Clean if requested
         if args.clean:
-            builder.clean_build()
-            return 0
+            if args.target:
+                # Clean only the specific target
+                builder.clean_build(args.target)
+            else:
+                # Clean only the current platform (auto-detected)
+                platform, arch = builder.detect_platform()
+                target = f"{platform}-{arch}"
+                print(f"🔍 Auto-detected platform for cleaning: {platform} {arch}")
+                builder.clean_build(target)
         
-        if args.target:
-            # Build for specific target
-            builder.build_for_target(args.target)
-            if args.verify:
-                builder.verify_build(args.target)
-        else:
-            # Build for current platform
-            platform, arch = builder.detect_platform()
-            target = f"{platform}-{arch}"
-            print(f"🎯 Detected platform: {target}")
-            builder.build_for_target(target)
-            if args.verify:
-                builder.verify_build(target)
+        # Build if not just listing targets
+        if not args.list_targets:
+            verification_passed = True  # Default to True if no verification requested
+            
+            if args.target:
+                # Build for specific target
+                builder.build_for_target(args.target)
+                if args.verify:
+                    verification_passed = builder.verify_build(args.target)
+            else:
+                # Build for current platform (auto-detected)
+                builder.build_for_current_platform()
+                if args.verify:
+                    platform, arch = builder.detect_platform()
+                    target = f"{platform}-{arch}"
+                    verification_passed = builder.verify_build(target)
+            
+            if verification_passed:
+                print("🎉 FLTK build completed successfully!")
+                return 0
+            else:
+                print("❌ FLTK build completed but verification failed!")
+                return 1
         
         print("🎉 FLTK build completed successfully!")
         return 0

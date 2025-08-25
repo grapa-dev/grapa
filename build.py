@@ -62,6 +62,10 @@ class BuildConfig:
         """Get compiler flags for the platform"""
         base_flags = ["-Isource", "-DUTF8PROC_STATIC", "-std=c++17", "-O3", "-pthread"]
         
+        # Define FLTK_USE_X11 for Linux/AWS builds since FLTK was built with X11 support
+        if self.platform in ["linux", "aws"]:
+            base_flags.append("-DFLTK_USE_X11")
+        
         if self.platform == "mac":
             base_flags.extend(["-m64"])
         elif self.platform in ["linux", "aws"]:
@@ -199,11 +203,12 @@ class GrapaBuilder:
             else:
                 self._run_linux_build_command(config, is_library=True, is_static=True)
             
-            # Build shared library
-            if config.platform == "aws":
-                self._run_aws_build_command(config, is_library=True, is_static=False)
-            else:
-                self._run_linux_build_command(config, is_library=True, is_static=False)
+            # Build shared library (skip if exe_only)
+            if not exe_only:
+                if config.platform == "aws":
+                    self._run_aws_build_command(config, is_library=True, is_static=False)
+                else:
+                    self._run_linux_build_command(config, is_library=True, is_static=False)
             
             if not exe_only:
                 # Create package
@@ -258,11 +263,19 @@ class GrapaBuilder:
                 blst_libs = glob.glob(f"source/blst-lib/{config.target}/*.a")
                 pcre2_lib = glob.glob(f"source/pcre2-lib/{config.target}/libpcre2-8.a")
                 
-                subprocess.run([
+                cmd = [
                     "clang++", "-shared", "-Isource"
                 ] + cpp_files + ["utf8proc.o"] + openssl_libs + fl_libs + blst_libs + pcre2_lib + config.frameworks + [
                     "-std=c++17", "-m64", "-O3", "-pthread", "-fPIC", "-o", "libgrapa.so"
-                ], check=True)
+                ]
+                print(f"Executing shared library build command: {' '.join(cmd)}")
+                try:
+                    result = os.system(" ".join(cmd))
+                    if result != 0:
+                        raise RuntimeError(f"Shared library build failed with exit code {result}")
+                except Exception as e:
+                    print(f"❌ Shared library build failed: {e}")
+                    raise
                 shutil.copy("libgrapa.so", f"source/grapa-other/{config.target}/libgrapa.so")
                 os.remove("libgrapa.so")
         else:
@@ -301,6 +314,32 @@ class GrapaBuilder:
                 print(f"❌ Executable not found: {config.output_name}")
                 raise RuntimeError(f"Executable {config.output_name} was not created")
     
+    def _get_x11_libs(self):
+        """Get X11 libraries based on FLTK configuration"""
+        try:
+            # Check if FLTK_USE_X11 is defined in the configuration
+            with open("source/FL/fl_config.h", "r") as f:
+                config_content = f.read()
+                if "define FLTK_USE_X11" in config_content:
+                    return ["-lX11", "-lXfixes", "-lXft", "-lXext", "-lXrender", "-lXinerama", "-lfontconfig", "-lXcursor"]
+                else:
+                    # Even if FLTK_USE_X11 is not defined, the library might still contain X11 code
+                    # Check if the FLTK library contains X11 symbols
+                    import subprocess
+                    try:
+                        result = subprocess.run(["nm", "-D", "source/fl-lib/linux-arm64/libfltk.a"], 
+                                              capture_output=True, text=True, timeout=10)
+                        if "X11" in result.stdout or "Xft" in result.stdout:
+                            print("⚠️  FLTK library contains X11 symbols, including X11 libraries")
+                            return ["-lX11", "-lXfixes", "-lXft", "-lXext", "-lXrender", "-lXinerama", "-lfontconfig", "-lXcursor"]
+                    except:
+                        pass
+                    print("⚠️  FLTK_USE_X11 not defined, skipping X11 libraries")
+                    return []
+        except FileNotFoundError:
+            print("⚠️  FLTK config not found, skipping X11 libraries")
+            return []
+
     def _run_linux_build_command(self, config: BuildConfig, is_library: bool = False, is_static: bool = False):
         """Run Linux build command (Ubuntu)"""
         import glob
@@ -328,9 +367,11 @@ class GrapaBuilder:
                 # Build static library
                 cpp_files = glob.glob("source/grapa/*.cpp")
                 subprocess.run([
-                    "g++", "-Isource", "-c"
+                    "g++"
+                ] + config.flags + [
+                    "-c"
                 ] + cpp_files + [
-                    "-std=c++17", "-O3", "-pthread", "-fPIC"
+                    "-fPIC"
                 ], check=True)
                 # Get all .o files (including utf8proc.o if it exists)
                 obj_files = glob.glob("*.o")
@@ -347,11 +388,14 @@ class GrapaBuilder:
                 blst_libs = glob.glob(f"source/blst-lib/{config.target}/*.a")
                 pcre2_lib = glob.glob(f"source/pcre2-lib/{config.target}/libpcre2-8.a")
                 
-                cmd = ["g++", "-shared", "-Isource", "-DUTF8PROC_STATIC"] + cpp_files + ["source/utf8proc/utf8proc.c"] + openssl_libs + fl_libs + blst_libs + pcre2_lib + [
-                    f"-Lsource/openssl-lib/{config.target}", "-std=c++17", "-lcrypto",
-                    "-lX11", "-lXfixes", "-lXft", "-lXext", "-lXrender", "-lXinerama",
-                    "-lfontconfig", "-lXcursor", "-ldl", "-lm", "-static-libgcc",
-                    "-O3", "-pthread", "-fPIC", "-o", "libgrapa.so"
+                # Get X11 libraries conditionally
+                x11_libs = self._get_x11_libs()
+                
+                cmd = ["g++", "-shared"] + config.flags + cpp_files + ["source/utf8proc/utf8proc.c"] + openssl_libs + fl_libs + blst_libs + pcre2_lib + [
+                    f"-Lsource/openssl-lib/{config.target}", "-lcrypto"
+                ] + x11_libs + [
+                    "-ldl", "-lm", "-static-libgcc",
+                    "-fPIC", "-o", "libgrapa.so"
                 ]
                 
                 subprocess.run(cmd, check=True)
@@ -365,13 +409,18 @@ class GrapaBuilder:
             blst_libs = glob.glob(f"source/blst-lib/{config.target}/*.a")
             pcre2_lib = glob.glob(f"source/pcre2-lib/{config.target}/libpcre2-8.a")
             
+            # Get X11 libraries conditionally
+            x11_libs = self._get_x11_libs()
+            
             cmd = [
-                "g++", "-Isource", "-DUTF8PROC_STATIC", "source/main.cpp"
+                "g++"
+            ] + config.flags + [
+                "source/main.cpp"
             ] + cpp_files + ["source/utf8proc/utf8proc.c"] + openssl_libs + fl_libs + blst_libs + [
-                f"source/pcre2-lib/{config.target}/libpcre2-8.a", f"-Lsource/openssl-lib/{config.target}", "-std=c++17", "-lcrypto", 
-                "-lX11", "-lXfixes", "-lXft", "-lXext", "-lXrender", "-lXinerama", 
-                "-lfontconfig", "-lXcursor", "-ldl", "-lm", "-static-libgcc", 
-                "-O3", "-pthread", "-o", config.output_name
+                f"source/pcre2-lib/{config.target}/libpcre2-8.a", f"-Lsource/openssl-lib/{config.target}", "-lcrypto"
+            ] + x11_libs + [
+                "-ldl", "-lm", "-static-libgcc", 
+                "-o", config.output_name
             ]
             
             print(f"Current working directory: {os.getcwd()}")
@@ -421,9 +470,11 @@ class GrapaBuilder:
                 # Build static library
                 cpp_files = glob.glob("source/grapa/*.cpp")
                 subprocess.run([
-                    "g++", "-Isource", "-c"
+                    "g++"
+                ] + config.flags + [
+                    "-c"
                 ] + cpp_files + [
-                    "-std=c++17", "-O3", "-pthread"
+                    "-fPIC"
                 ], check=True)
                 # Get all .o files
                 obj_files = glob.glob("*.o")
@@ -440,11 +491,14 @@ class GrapaBuilder:
                 blst_libs = glob.glob(f"source/blst-lib/{config.target}/*.a")
                 pcre2_lib = glob.glob(f"source/pcre2-lib/{config.target}/libpcre2-8.a")
                 
-                cmd = ["g++", "-shared", "-Isource", "-DUTF8PROC_STATIC"] + cpp_files + ["source/utf8proc/utf8proc.c"] + openssl_libs + fl_libs + blst_libs + pcre2_lib + [
-                    f"-Lsource/openssl-lib/{config.target}", "-std=c++17", "-lcrypto",
-                    "-lX11", "-lXfixes", "-lXft", "-lXext", "-lXrender", "-lXinerama",
-                    "-lfontconfig", "-lXcursor", "-ldl", "-lm", "-static-libgcc",
-                    "-O3", "-pthread", "-fPIC", "-o", "libgrapa.so"
+                # Get X11 libraries conditionally
+                x11_libs = self._get_x11_libs()
+                
+                cmd = ["g++", "-shared"] + config.flags + cpp_files + ["source/utf8proc/utf8proc.c"] + openssl_libs + fl_libs + blst_libs + pcre2_lib + [
+                    f"-Lsource/openssl-lib/{config.target}", "-lcrypto"
+                ] + x11_libs + [
+                    "-ldl", "-lm", "-static-libgcc",
+                    "-fPIC", "-o", "libgrapa.so"
                 ]
                 
                 print(f"Executing shared library build command: {' '.join(cmd)}")
@@ -459,13 +513,18 @@ class GrapaBuilder:
             blst_libs = glob.glob(f"source/blst-lib/{config.target}/*.a")
             pcre2_lib = glob.glob(f"source/pcre2-lib/{config.target}/libpcre2-8.a")
             
+            # Get X11 libraries conditionally
+            x11_libs = self._get_x11_libs()
+            
             cmd = [
-                "g++", "-Isource", "-DUTF8PROC_STATIC", "source/main.cpp"
+                "g++"
+            ] + config.flags + [
+                "source/main.cpp"
             ] + cpp_files + ["source/utf8proc/utf8proc.c"] + openssl_libs + fl_libs + blst_libs + [
-                f"source/pcre2-lib/{config.target}/libpcre2-8.a", f"-Lsource/openssl-lib/{config.target}", "-std=c++17", "-lcrypto", 
-                "-lX11", "-lXfixes", "-lXft", "-lXext", "-lXrender", "-lXinerama", 
-                "-lfontconfig", "-lXcursor", "-ldl", "-lm", "-static-libgcc", 
-                "-O3", "-pthread", "-o", config.output_name
+                f"source/pcre2-lib/{config.target}/libpcre2-8.a", f"-Lsource/openssl-lib/{config.target}", "-lcrypto"
+            ] + x11_libs + [
+                "-ldl", "-lm", "-static-libgcc", 
+                "-o", config.output_name
             ]
             
             print(f"Current working directory: {os.getcwd()}")
