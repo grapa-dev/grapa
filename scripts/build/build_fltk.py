@@ -332,30 +332,7 @@ class FLTKBuilder:
         
         print("☁️  AWS Linux build complete")
     
-    def detect_platform(self) -> Tuple[str, str]:
-        """Detect current platform and architecture (copied from build.py)"""
-        system = platform.system().lower()
-        machine = platform.machine().lower()
-        
-        if system == "windows":
-            return "windows", "amd64"
-        elif system == "darwin":
-            # On Mac, machine can be "arm64" or "x86_64"
-            if machine == "arm64":
-                return "mac", "arm64"
-            elif machine == "x86_64":
-                return "mac", "amd64"
-            else:
-                raise RuntimeError(f"Unsupported Mac architecture: {machine}")
-        elif system == "linux":
-            # Check if this is AWS Linux by looking for Amazon Linux specific files
-            if (os.path.exists("/etc/system-release") and 
-                ("Amazon Linux" in open("/etc/system-release").read())):
-                return "aws", "arm64" if machine == "aarch64" else "amd64"
-            else:
-                return "linux", "arm64" if machine == "aarch64" else "amd64"
-        else:
-            raise RuntimeError(f"Unsupported platform: {system}")
+
     
     def build_for_target(self, target: str):
         """Build FLTK for a specific target"""
