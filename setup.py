@@ -96,10 +96,11 @@ if sys.platform.startswith('linux'):
     lib_pathfile = 'grapa-lib/' + from_os + '/' + lib_filename
     runtime_library_dirs = ['$ORIGIN/grapapy-' + grapapy_version]
 elif sys.platform.startswith('darwin'):
-    from_os = 'mac-amd64'
     if is_arm:
         is_apple = True
         from_os = 'mac-arm64'
+    else:
+        raise RuntimeError("mac-amd64 is no longer supported. Please use an Apple Silicon Mac (arm64).")
     extra_link_args = [
         '-Wl,-rpath,@loader_path',
         '-std=c++17','-stdlib=libc++',

@@ -12,7 +12,7 @@ Usage:
     python3 scripts/build/build_fltk.py --target mac-arm64 # Build for specific target
 
 Supported Platforms:
-    - mac-arm64, mac-amd64
+    - mac-arm64 (Apple Silicon only)
     - linux-arm64, linux-amd64  
     - win-arm64, win-amd64
     - aws-arm64, aws-amd64
@@ -36,6 +36,8 @@ class FLTKBuilder:
         self.fl_lib_dir = self.project_root / "source" / "fl-lib"
         self.fl_headers_dir = self.project_root / "source" / "FL"
         
+
+        
     def detect_platform(self) -> Tuple[str, str]:
         """Detect current platform and architecture"""
         system = platform.system().lower()
@@ -44,13 +46,11 @@ class FLTKBuilder:
         if system == "windows":
             return "windows", "amd64"
         elif system == "darwin":
-            # On Mac, machine can be "arm64" or "x86_64"
+            # On Mac, only support Apple Silicon (arm64)
             if machine == "arm64":
                 return "mac", "arm64"
-            elif machine == "x86_64":
-                return "mac", "amd64"
             else:
-                raise RuntimeError(f"Unsupported Mac architecture: {machine}")
+                raise RuntimeError(f"mac-amd64 is no longer supported. Please use an Apple Silicon Mac (arm64). Current architecture: {machine}")
         elif system == "linux":
             # Check if this is AWS Linux by looking for Amazon Linux specific files
             if (os.path.exists("/etc/system-release") and 
@@ -107,7 +107,7 @@ class FLTKBuilder:
         """Build FLTK for macOS"""
         print(f"🍎 Building FLTK 1.4.4 for {target}...")
         
-        # Configure FLTK
+        # Configure FLTK 1.4.4
         configure_cmd = [
             "./configure",
             "--enable-static",
@@ -115,9 +115,12 @@ class FLTKBuilder:
             "--enable-localjpeg",
             "--enable-localpng",
             "--enable-localzlib",
-            f"--prefix=/tmp/fltk-1.4.4-{target}",
-            "LDFLAGS=-framework ScreenCaptureKit"
+            f"--prefix=/tmp/fltk-1.4.4-{target}"
         ]
+        
+        # Always include ScreenCaptureKit for mac-arm64 (requires macOS 15.0+)
+        configure_cmd.append("LDFLAGS=-framework ScreenCaptureKit")
+        print("✅ Including ScreenCaptureKit framework for mac-arm64")
         
         print(f"🔧 Configuring: {' '.join(configure_cmd)}")
         subprocess.run(configure_cmd, cwd=self.fltk_source, check=True)
@@ -338,6 +341,17 @@ class FLTKBuilder:
         """Build FLTK for a specific target"""
         platform, arch = target.split("-")
         
+        # Validate target is supported
+        supported_targets = [
+            "mac-arm64",
+            "linux-arm64", "linux-amd64", 
+            "windows-arm64", "windows-amd64",
+            "aws-arm64", "aws-amd64"
+        ]
+        
+        if target not in supported_targets:
+            raise ValueError(f"Unsupported target: {target}. Supported targets: {', '.join(supported_targets)}")
+        
         if platform == "mac":
             self.build_mac(target)
         elif platform == "linux":
@@ -360,7 +374,7 @@ class FLTKBuilder:
     def list_targets(self):
         """List all supported targets"""
         targets = [
-            "mac-arm64", "mac-amd64",
+            "mac-arm64",
             "linux-arm64", "linux-amd64", 
             "windows-arm64", "windows-amd64",
             "aws-arm64", "aws-amd64"

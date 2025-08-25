@@ -16,7 +16,7 @@ Usage:
 
 Supported Platforms (when run on that platform):
     - windows (amd64)
-    - mac (arm64, amd64)
+    - mac (arm64 only - Apple Silicon required)
     - linux (arm64, amd64)
     - aws (arm64, amd64)
 """
@@ -84,12 +84,17 @@ class BuildConfig:
     def _get_frameworks(self) -> List[str]:
         """Get framework flags for Mac"""
         if self.platform == "mac":
-            return [
+            frameworks = [
                 "-framework CoreFoundation",
                 "-framework AppKit", 
-                "-framework IOKit",
-                "-framework ScreenCaptureKit"
+                "-framework IOKit"
             ]
+            
+            # Always include ScreenCaptureKit for mac-arm64 (requires macOS 15.0+)
+            frameworks.append("-framework ScreenCaptureKit")
+            print("✅ Including ScreenCaptureKit framework for mac-arm64")
+            
+            return frameworks
         return []
 
 class GrapaBuilder:
@@ -108,13 +113,11 @@ class GrapaBuilder:
         if system == "windows":
             return "windows", "amd64"
         elif system == "darwin":
-            # On Mac, machine can be "arm64" or "x86_64"
+            # On Mac, only support Apple Silicon (arm64)
             if machine == "arm64":
                 return "mac", "arm64"
-            elif machine == "x86_64":
-                return "mac", "amd64"
             else:
-                raise RuntimeError(f"Unsupported Mac architecture: {machine}")
+                raise RuntimeError(f"mac-amd64 is no longer supported. Please use an Apple Silicon Mac (arm64). Current architecture: {machine}")
         elif system == "linux":
             # Check if this is AWS Linux by looking for Amazon Linux specific files
             if (os.path.exists("/etc/system-release") and 

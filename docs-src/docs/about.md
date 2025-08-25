@@ -11,7 +11,7 @@ Grapa is a modern, grammar-based programming language and data processing platfo
 - **Python Integration:** Use GrapaPy for idiomatic, high-performance scripting and data workflows
 - **Executable BNF & Mutable Grammar:** Define and experiment with grammars at runtime
 - **Education & Prototyping:** Rapidly prototype languages, teach compiler concepts, and experiment with meta-programming
-- **Cross-Platform:** Windows, Mac, Linux, AWS, and more
+- **Cross-Platform:** Windows, macOS (Apple Silicon), Linux, AWS, and more
 
 ## Who Should Use Grapa?
 - **Data Engineers & Scientists:** For high-throughput ETL, analytics, and automation
@@ -42,7 +42,7 @@ Grapa is a modern, grammar-based programming language and data processing platfo
 - **Parallelism:** Built-in support for parallel map/filter/reduce, $thread, $net
 - **Unified Path System:** Navigate seamlessly between file systems and databases
 - **Integration:** Python (GrapaPy), CLI, extensible via modules
-- **Cross-Platform:** Windows, Mac, Linux, AWS
+- **Cross-Platform:** Windows, macOS (Apple Silicon), Linux, AWS
 
 ## Documentation Structure (Onboarding Map)
 - **[Getting Started](getting_started.md):** Installation, first steps, and onboarding

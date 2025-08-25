@@ -14,16 +14,17 @@ tags:
 
 ### Step 1: Download and Extract
 1. Download the appropriate binary for your system from the `bin/` directory:
-   - **macOS (Intel):** `grapa-mac-amd64.tar.gz`
    - **macOS (Apple Silicon):** `grapa-mac-arm64.tar.gz`
    - **Linux (Intel):** `grapa-linux-amd64.tar.gz`
    - **Linux (ARM):** `grapa-linux-arm64.tar.gz`
    - **Windows:** `grapa-win-amd64.zip`
 
+> **Note:** Grapa requires macOS 15.0+ (Apple Silicon only). Intel Macs are no longer supported due to Apple's discontinuation of Intel Mac support in macOS 15.0.
+
 2. Extract the archive to a location of your choice:
    ```bash
    # macOS/Linux
-   tar -xzf grapa-mac-amd64.tar.gz
+   tar -xzf grapa-mac-arm64.tar.gz
    
    # Windows
    # Extract the .zip file using your preferred tool

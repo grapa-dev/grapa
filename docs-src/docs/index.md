@@ -38,7 +38,7 @@
 - **Machine Learning**: Linear regression, statistical analysis, and ML algorithms using optimized vector operations
 - **HTTP/HTTPS Networking**: Complete HTTP client with SSL/TLS, proxy support, cookie handling, and chunked encoding
 - **Unlimited Precision**: Native support for arbitrary-precision arithmetic
-- **Cross-Platform**: Runs on Windows, macOS, and Linux
+- **Cross-Platform**: Runs on Windows, macOS (Apple Silicon), and Linux
 
 ## New Features
 - **Searchable API Reference:** Find all built-in functions, types, and methods in one place.

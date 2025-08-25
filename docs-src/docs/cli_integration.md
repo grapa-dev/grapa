@@ -9,7 +9,6 @@ The fastest way to use the Grapa CLI is to download a pre-built binary for your 
 - [Grapa Binaries on GitHub](https://github.com/grapa-dev/grapa/tree/main/bin)
 
 Available binaries:
-- **macOS (Intel):** `grapa-mac-amd64.tar.gz`
 - **macOS (Apple Silicon):** `grapa-mac-arm64.tar.gz`
 - **Linux (Intel):** `grapa-linux-amd64.tar.gz`
 - **Linux (ARM):** `grapa-linux-arm64.tar.gz`
@@ -22,6 +21,8 @@ Available binaries:
    - Windows: Use your preferred tool to extract the `.zip` file.
 3. (macOS/Linux) Make the binary executable: `chmod +x grapa`
 4. Move the binary to a directory in your PATH (e.g., `/usr/local/bin`) or add its location to your PATH.
+
+> **Note:** Grapa requires macOS 15.0+ (Apple Silicon only). Intel Macs are no longer supported due to Apple's discontinuation of Intel Mac support in macOS 15.0.
 
 ## Option 2: Build from Source
 

@@ -49,6 +49,8 @@ grapa -f "my_script.grc"
 2. **Extract** the archive to a directory
 3. **Add** the directory to your PATH (optional but recommended)
 
+> **Note:** Grapa requires macOS 15.0+ (Apple Silicon only). Intel Macs are no longer supported due to Apple's discontinuation of Intel Mac support in macOS 15.0.
+
 ---
 
 ## Your First Grapa Program
