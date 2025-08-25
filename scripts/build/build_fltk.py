@@ -182,12 +182,61 @@ class FLTKBuilder:
             raise RuntimeError("No suitable compiler found. Install Visual Studio or MinGW.")
     
     def _build_windows_msvc(self, target: str):
-        """Build FLTK using Visual Studio"""
-        # This would need Visual Studio build configuration
-        # For now, provide instructions
-        print("⚠️  Visual Studio build not yet implemented")
-        print("Please build FLTK manually using Visual Studio or use MinGW")
-        print("See FLTK documentation for Visual Studio build instructions")
+        """Build FLTK using Visual Studio and CMake"""
+        print("🔧 Building FLTK using Visual Studio and CMake...")
+        
+        # Create build directory
+        build_dir = self.fltk_source / "build"
+        build_dir.mkdir(exist_ok=True)
+        
+        # Configure with CMake for Visual Studio
+        print("🔧 Configuring with CMake for Visual Studio...")
+        cmake_cmd = [
+            "cmake",
+            "-G", "Visual Studio 17 2022",  # Adjust version as needed
+            "-A", "x64",  # 64-bit architecture
+            "-D", "CMAKE_BUILD_TYPE=Release",
+            "-D", "FLTK_BUILD_SHARED_LIBS=OFF",  # Build static libraries
+            "-D", "FLTK_BUILD_EXAMPLES=OFF",
+            "-D", "FLTK_BUILD_TEST=OFF",
+            "-D", "FLTK_BUILD_FLUID=OFF",
+            "-D", "FLTK_BUILD_FLTK_OPTIONS=OFF",
+            "-D", "FLTK_USE_SYSTEM_LIBJPEG=OFF",
+            "-D", "FLTK_USE_SYSTEM_LIBPNG=OFF", 
+            "-D", "FLTK_USE_SYSTEM_ZLIB=OFF",
+            "-D", "CMAKE_INSTALL_PREFIX=/tmp/fltk-1.4.4-windows-amd64",
+            ".."
+        ]
+        
+        print(f"🔧 Running: {' '.join(cmake_cmd)}")
+        subprocess.run(cmake_cmd, cwd=build_dir, check=True)
+        
+        # Build FLTK
+        print("🔨 Building FLTK libraries...")
+        build_cmd = [
+            "cmake", "--build", ".", "--config", "Release"
+        ]
+        subprocess.run(build_cmd, cwd=build_dir, check=True)
+        
+        # Copy libraries
+        target_dir = self.get_target_dir("win", target.split("-")[1])
+        target_dir.mkdir(parents=True, exist_ok=True)
+        
+        # Copy static libraries from build directory
+        lib_dir = build_dir / "lib" / "Release"
+        if lib_dir.exists():
+            for lib_file in lib_dir.glob("*.lib"):
+                shutil.copy2(lib_file, target_dir)
+                print(f"📦 Copied {lib_file.name} to {target_dir}")
+        else:
+            print(f"⚠️  Library directory not found: {lib_dir}")
+        
+        # Copy headers (only if not already copied)
+        if not self.fl_headers_dir.exists():
+            shutil.copytree(self.fltk_source / "FL", self.fl_headers_dir)
+            print(f"📋 Copied FLTK headers to {self.fl_headers_dir}")
+        
+        print(f"✅ FLTK build complete for {target}")
     
     def _build_windows_mingw(self, target: str):
         """Build FLTK using MinGW"""
