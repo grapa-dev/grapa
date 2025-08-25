@@ -108,6 +108,26 @@
   - Performance analysis and optimization guidance
   - Integration with existing documentation structure
 
+### ✅ **Mac-amd64 Support Removal Complete**
+- **Build System Updates**: Successfully removed Intel Mac support from all build scripts:
+  - **build.py**: Updated `detect_platform()` to reject mac-amd64 with clear error message
+  - **setup.py**: Updated macOS detection to reject Intel Macs with RuntimeError
+  - **scripts/build/build_fltk.py**: Removed mac-amd64 from supported targets and added validation
+  - **Documentation**: Updated all platform support references to specify Apple Silicon only
+- **Documentation Updates**: Updated all user-facing documentation:
+  - **cli_quickstart.md**: Removed mac-amd64 binary references, added platform requirement notes
+  - **cli_integration.md**: Removed mac-amd64 binary references, added platform requirement notes
+  - **getting_started.md**: Added note about macOS 15.0+ Apple Silicon requirement
+  - **about.md**: Updated cross-platform mentions to specify "macOS (Apple Silicon)"
+  - **index.md**: Updated cross-platform mentions to specify "macOS (Apple Silicon)"
+- **Cleanup**: Removed FLTK 1.3.11 fallback logic and conditional ScreenCaptureKit handling
+- **Key Benefits**:
+  - **Simplified Build System**: No more conditional logic for different macOS versions
+  - **Clear User Guidance**: Users immediately informed about platform requirements
+  - **Future-Proof**: Aligned with Apple's discontinuation of Intel Mac support in macOS 15.0
+  - **Consistent Messaging**: All documentation consistently states Apple Silicon requirement
+- **Validation**: All build scripts properly reject mac-amd64 with clear error messages
+
 ## Current Focus: C++ Backend Optimization
 
 ### ✅ **Console Exit Optimization Complete**
@@ -127,7 +147,7 @@
 ## Next Focus: Adoption Drivers
 
 ### 📋 **Next Priority Tasks**
-1. **✅ FLTK 1.4.4 Upgrade - Windows Success**: 
+1. **✅ FLTK 1.4.4 Upgrade - Platform Support Optimization**: 
    - **Static Libraries Built**: FLTK 1.4.4 static libraries successfully built for mac-arm64 and win-amd64
    - **Threading Issues Resolved**: Fixed Cocoa threading violations in `GrapaWidget::New()` and `GrapaWidget::CLEAR()`
    - **Memory Corruption Fixed**: Resolved critical use-after-free bug in `GrapaWidget` destructor by ensuring synchronous cleanup
@@ -136,6 +156,7 @@
    - **Testing Status**: ✅ **STABLE** - Multiple test runs confirmed stability without crashes or memory errors
    - **✅ Windows Widget Working**: Widget functionality confirmed working on Windows with FLTK 1.4.4
    - **⚠️ macOS Widget Display Issue**: Widget does not appear on mac-arm64 (both FLTK 1.3 and 1.4.4 affected)
+   - **✅ Mac-amd64 Support Removed**: Successfully removed Intel Mac support from build system and documentation
    - **Next**: Investigate macOS widget display issue or proceed with other adoption drivers
 2. **OpenSSL 3.0 Migration**: Upgrade from OpenSSL 1.1.1 to 3.0 (Linux compatibility)
 3. **FLTK X11 Dependency Investigation**: Research X11 dependency removal options for Linux
@@ -229,4 +250,5 @@ The project has reached a **mature, stable state** with all core language featur
 - Machine learning capabilities are documented and validated
 - Linear regression implementation demonstrates practical ML applications
 - **Control flow system provides solid foundation for exception handling and other advanced features with enhanced error collection in parallel methods**
+- **Mac-amd64 support successfully removed from build system and documentation**
 - Next major milestone: Dependency modernization and installation packaging
