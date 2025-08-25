@@ -77,18 +77,30 @@ class FLTKBuilder:
         # Clean FLTK source build
         if self.fltk_source.exists():
             try:
-                subprocess.run(["make", "clean"], cwd=self.fltk_source, check=True)
-                print("✅ FLTK source cleaned")
+                if platform.system().lower() == "windows":
+                    # On Windows, clean CMake build directory if it exists
+                    build_dir = self.fltk_source / "build"
+                    if build_dir.exists():
+                        shutil.rmtree(build_dir)
+                        print("✅ FLTK build directory cleaned")
+                else:
+                    # On Unix-like systems, use make clean
+                    subprocess.run(["make", "clean"], cwd=self.fltk_source, check=True)
+                    print("✅ FLTK source cleaned")
             except subprocess.CalledProcessError:
                 print("⚠️  FLTK clean failed (may not be built yet)")
         
         # Clean target directories
         if target:
             # Clean only the specific target
-            platform, arch = target.split("-")
-            target_dir = self.get_target_dir(platform, arch)
+            platform_name, arch = target.split("-")
+            target_dir = self.get_target_dir(platform_name, arch)
             if target_dir.exists():
+                # Handle both .a (Unix) and .lib (Windows) files
                 for lib_file in target_dir.glob("*.a"):
+                    lib_file.unlink()
+                    print(f"🗑️  Removed {lib_file}")
+                for lib_file in target_dir.glob("*.lib"):
                     lib_file.unlink()
                     print(f"🗑️  Removed {lib_file}")
                 print(f"✅ Cleaned libraries for {target}")
@@ -99,6 +111,9 @@ class FLTKBuilder:
             for target_dir in self.fl_lib_dir.glob("*"):
                 if target_dir.is_dir():
                     for lib_file in target_dir.glob("*.a"):
+                        lib_file.unlink()
+                        print(f"🗑️  Removed {lib_file}")
+                    for lib_file in target_dir.glob("*.lib"):
                         lib_file.unlink()
                         print(f"🗑️  Removed {lib_file}")
             print("✅ All build artifacts cleaned")
@@ -388,15 +403,27 @@ class FLTKBuilder:
         platform, arch = target.split("-")
         target_dir = self.get_target_dir(platform, arch)
         
-        expected_libs = [
-            "libfltk.a",
-            "libfltk_forms.a", 
-            "libfltk_gl.a",
-            "libfltk_images.a",
-            "libfltk_jpeg.a",
-            "libfltk_png.a",
-            "libfltk_z.a"
-        ]
+        # Different library extensions for different platforms
+        if platform == "win" or platform == "windows":
+            expected_libs = [
+                "fltk.lib",
+                "fltk_forms.lib", 
+                "fltk_gl.lib",
+                "fltk_images.lib",
+                "fltk_jpeg.lib",
+                "fltk_png.lib",
+                "fltk_z.lib"
+            ]
+        else:
+            expected_libs = [
+                "libfltk.a",
+                "libfltk_forms.a", 
+                "libfltk_gl.a",
+                "libfltk_images.a",
+                "libfltk_jpeg.a",
+                "libfltk_png.a",
+                "libfltk_z.a"
+            ]
         
         print(f"🔍 Verifying build for {target}...")
         missing_libs = []
