@@ -334,7 +334,7 @@ def pick_libraries():
         #return ['@rpath/grapa']
         return ['source/grapa-lib/libgrapa.a']
     if my_system == 'Windows':
-        return ["grapa","Gdi32","Advapi32","User32","Ole32","Shell32","Comdlg32"]
+        return ["grapa","Gdi32","Advapi32","User32","Ole32","Shell32","Comdlg32","winspool"]
     raise ValueError("Unknown platform: " + my_system)
 
 # Set up include_dirs for Windows SDK paths
