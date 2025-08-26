@@ -189,7 +189,7 @@
 
 ### 📋 **Next Priority Tasks**
 1. **✅ OpenSSL 3.5.2 Windows Build - COMPLETE**:
-   - **Status**: OpenSSL 3.5.2 static libraries successfully built for Windows with deprecation warnings resolved
+   - **Status**: OpenSSL 3.5.2 static libraries successfully built for Windows with all deprecation warnings and linker issues resolved
    - **Progress Made**:
      - ✅ Perl (Strawberry Perl) successfully installed and detected
      - ✅ Visual Studio 2022 Enterprise environment properly configured
@@ -199,12 +199,68 @@
      - ✅ C++ code updated to reference non-static library names (removed _static suffix)
      - ✅ Old _static library files cleaned up
      - ✅ Added `OPENSSL_SUPPRESS_DEPRECATED` flag to OpenSSL build to suppress deprecation warnings
-     - ✅ Added `/wd4996` compiler flag to treat deprecation warnings as non-fatal
-     - ✅ Added `crypt32.lib` to linker dependencies to resolve Windows certificate store functions
+     - ✅ Added `/wd4996` compiler flag to `prj/winlib-amd64/grapalib.vcxproj` for all configurations
+     - ✅ Added `crypt32.lib` to `prj/win-amd64/grapa.vcxproj` linker dependencies
+     - ✅ Added `crypt32.lib` to `setup.py` Windows libraries list for Python package build
    - **Files Generated**: libcrypto.lib, libssl.lib, app.pdb, ossl_static.pdb
-   - **Impact**: Windows build now compiles successfully with OpenSSL 3.5.2 (0 warnings, 0 errors)
+   - **Impact**: Complete Windows build now works (static library, executable, and Python package) with OpenSSL 3.5.2 (236 warnings, 0 errors)
 
-2. **✅ Cryptographic Documentation Enhancement - COMPLETE**:
+2. **🔧 OpenSSL 3.5.2 Linux Build - HIGH PRIORITY**:
+   - **Status**: Need to replicate Windows/Mac OpenSSL 3.5.2 build success on Linux platform
+   - **Required Steps**:
+     - 🔄 Run `scripts/build/build_openssl.py` to build OpenSSL 3.5.2 for Linux
+     - 🔄 Verify all 6 files copied to `source/openssl-lib/linux-amd64/` (libcrypto.a, libssl.a, etc.)
+     - 🔄 Test `python build.py` to ensure Linux build works with new OpenSSL 3.5.2
+     - 🔄 Validate cryptographic functions work correctly on Linux
+     - 🔄 Test Python package build and installation on Linux
+   - **Expected Issues**:
+     - May need to add `-DOPENSSL_SUPPRESS_DEPRECATED` to Linux compiler flags
+     - May need to update Linux-specific build configurations
+     - May need to handle Linux-specific deprecation warnings differently
+   - **Files to Check**: `scripts/build/build_openssl.py`, Linux build configurations, `setup.py` Linux section
+
+### 🐧 **Linux Platform Build Guide**
+
+**Prerequisites**:
+- Ensure NASM is installed: `sudo apt-get install nasm` (Ubuntu/Debian) or equivalent
+- Ensure Perl is installed: `sudo apt-get install perl` (Ubuntu/Debian) or equivalent
+- Ensure build tools are available: `sudo apt-get install build-essential`
+
+**Step-by-Step Process**:
+
+1. **Build OpenSSL 3.5.2**:
+   ```bash
+   python scripts/build/build_openssl.py
+   ```
+   - Verify output shows "Build successful for linux-amd64"
+   - Check that files are copied to `source/openssl-lib/linux-amd64/`
+
+2. **Test Grapa Build**:
+   ```bash
+   python build.py
+   ```
+   - If deprecation warnings cause build failures, add `-DOPENSSL_SUPPRESS_DEPRECATED` to Linux compiler flags
+   - Check for any Linux-specific linker issues
+
+3. **Validate Cryptographic Functions**:
+   ```bash
+   ./grapa -c "'test'.encode({method: 'sha3-256'}).uhex().echo();"
+   ./grapa -c "'test'.encode({method: 'base64'}).str().echo();"
+   ./grapa -c "'test'.encode({method: 'base58'}).str().echo();"
+   ```
+
+4. **Test Python Package**:
+   ```bash
+   python build.py  # Should build and install grapapy package
+   python -c "import grapapy; print('GrapaPy import successful')"
+   ```
+
+**Troubleshooting**:
+- If OpenSSL build fails, check NASM and Perl installation
+- If deprecation warnings cause build failures, update Linux build configurations
+- If Python package fails, check `setup.py` Linux section for missing dependencies
+
+3. **✅ Cryptographic Documentation Enhancement - COMPLETE**:
    - **Status**: Documentation updated to cover all supported digest and encoding methods
    - **Progress Made**:
      - ✅ Scanned `GrapaEncode.cpp` to identify all supported digests and encoding methods
