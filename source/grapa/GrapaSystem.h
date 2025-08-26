@@ -196,8 +196,8 @@ public:
 	GrapaRuleQueue *mPath;
 	GrapaCHAR mVersion;
 	GrapaRuleQueue* mStaticLib;
+	GrapaRuleQueue* mCliArgv;
 	GrapaRuleQueue* mArgv;
-	GrapaCHAR mArgcin;
 	GrapaCHAR mOutputFilex;
 	GrapaDebug mDebug;
 	time_t mStartTime;

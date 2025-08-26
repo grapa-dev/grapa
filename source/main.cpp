@@ -70,7 +70,7 @@ int main(int argc, const char* argv[])
             ss.Trim(',');
             if (ss.mLength)
             {
-                gSystem->mArgv->PushTail(new GrapaRuleEvent(0, GrapaCHAR(), ss));
+                gSystem->mCliArgv->PushTail(new GrapaRuleEvent(0, GrapaCHAR(), ss));
             }
         }
     }

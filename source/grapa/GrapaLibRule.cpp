@@ -3661,17 +3661,19 @@ GrapaRuleEvent* GrapaLibraryRuleGetEnvEvent::Run(GrapaScriptExec* vScriptExec, G
 			result->mValue.mToken = GrapaTokenType::LIST;
 			result->vQueue = vScriptExec->CopyQueue(gSystem->mStaticLib);
 		}
-		else if (r1.vVal->mValue.Cmp("$ARGCIN") == 0 || (r1.vVal->mValue.mToken == GrapaTokenType::SYSID && r1.vVal->mValue.Cmp("ARGCIN") == 0))
-		{
-			err = 0;
-			result = new GrapaRuleEvent(0, GrapaCHAR(), gSystem->mArgcin);
-		}
 		else if (r1.vVal->mValue.Cmp("$ARGV") == 0 || (r1.vVal->mValue.mToken == GrapaTokenType::SYSID && r1.vVal->mValue.Cmp("ARGV") == 0))
 		{
 			err = 0;
 			result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaCHAR());
 			result->mValue.mToken = GrapaTokenType::ARRAY;
 			result->vQueue = vScriptExec->CopyQueue(gSystem->mArgv);
+		}
+		else if (r1.vVal->mValue.Cmp("$CLIARGV") == 0 || (r1.vVal->mValue.mToken == GrapaTokenType::SYSID && r1.vVal->mValue.Cmp("ARGV") == 0))
+		{
+			err = 0;
+			result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaCHAR());
+			result->mValue.mToken = GrapaTokenType::ARRAY;
+			result->vQueue = vScriptExec->CopyQueue(gSystem->mCliArgv);
 		}
 		else if (r1.vVal->mValue.Cmp("$LIB") == 0 || (r1.vVal->mValue.mToken == GrapaTokenType::SYSID && r1.vVal->mValue.Cmp("LIB") == 0))
 		{

@@ -90,7 +90,7 @@ GrapaCHAR GrapaLink::Start(bool& needExit, bool& showConsole, bool& showWidget, 
 	//   - grapa file.grc and grapa -f file.grc both work
 	//   - All combinations of flags and script/command execution work as documented
 
-	GrapaRuleEvent* e = gSystem->mArgv->Head();
+	GrapaRuleEvent* e = gSystem->mCliArgv->Head();
 	bool found_c = false, found_f = false;
 	GrapaCHAR c_arg, f_arg;
 	std::vector<GrapaRuleEvent*> positional_args;
@@ -162,7 +162,6 @@ GrapaCHAR GrapaLink::Start(bool& needExit, bool& showConsole, bool& showWidget, 
 	}
 	// --- Argument parsing improvements for $ARGV and -s/-S ---
 	// Use a local GrapaRuleQueue for $ARGV if GrapaSystem does not have mArgvList
-	GrapaRuleQueue* argvList = new GrapaRuleQueue();
 	int used_script_arg_index = -1;
 	if (found_c && c_arg.mLength) {
 		char debugMsg[256];
@@ -232,7 +231,7 @@ GrapaCHAR GrapaLink::Start(bool& needExit, bool& showConsole, bool& showWidget, 
 	// Now collect $ARGV: all positional_args not used as script/command
 	for (size_t i = 0; i < positional_args.size(); ++i) {
 		if ((int)i != used_script_arg_index) {
-			argvList->PushTail(new GrapaRuleEvent(positional_args[i]->mValue));
+			gSystem->mArgv->PushTail(new GrapaRuleEvent(positional_args[i]->mValue));
 		}
 	}
 

@@ -254,6 +254,7 @@ GrapaSystem::GrapaSystem()
 	mPath = NULL;
 	mVersion.FROM(grapa_version);
 	mStaticLib = NULL;
+	mCliArgv = new GrapaRuleQueue();
 	mArgv = new GrapaRuleQueue();
 	mLinkInitialized = false;
 	mNextSessionId = 1;  // Start session IDs at 1
@@ -277,6 +278,12 @@ GrapaSystem::~GrapaSystem()
 		mStaticLib->CLEAR();
 		delete mStaticLib;
 		mStaticLib = NULL;
+	}
+	if (mCliArgv)
+	{
+		mCliArgv->CLEAR();
+		delete mCliArgv;
+		mCliArgv = NULL;
 	}
 	if (mArgv)
 	{
