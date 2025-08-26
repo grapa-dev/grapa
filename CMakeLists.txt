@@ -69,5 +69,6 @@ target_link_libraries(grapapy PRIVATE
     "-framework CoreFoundation"
     "-framework AppKit"
     "-framework IOKit"
+    "-framework ScreenCaptureKit"
     )
 endif (APPLE)

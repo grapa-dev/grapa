@@ -105,7 +105,7 @@ elif sys.platform.startswith('darwin'):
         '-Wl,-rpath,@loader_path',
         '-std=c++17','-stdlib=libc++',
         '-O3','-pthread','-fPIC',
-        '-framework','CoreFoundation','-framework','AppKit','-framework','IOKit','-O3','-pthread'
+        '-framework','CoreFoundation','-framework','AppKit','-framework','IOKit','-framework','ScreenCaptureKit','-O3','-pthread'
         ]
     extra_compile_args = [
         '-std=c++17',
