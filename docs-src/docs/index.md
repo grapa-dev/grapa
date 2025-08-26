@@ -37,6 +37,7 @@
 - **Parallel Processing**: Built-in parallel data operations with `.map()`, `.filter()`, `.reduce()`
 - **Machine Learning**: Linear regression, statistical analysis, and ML algorithms using optimized vector operations
 - **HTTP/HTTPS Networking**: Complete HTTP client with SSL/TLS, proxy support, cookie handling, and chunked encoding
+- **Comprehensive Cryptography**: Production-ready cryptographic capabilities with OpenSSL 3.5.2 integration (RSA, EC, DH, AES, hash functions, key exchange)
 - **Unlimited Precision**: Native support for arbitrary-precision arithmetic
 - **Cross-Platform**: Runs on Windows, macOS (Apple Silicon), and Linux
 

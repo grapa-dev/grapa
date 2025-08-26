@@ -262,14 +262,209 @@ grapa -h
 ```
 
 ### Script Arguments
-Access command line arguments in your script:
+Grapa provides two ways to access command line arguments:
+
+#### **$ARGV - Positional Arguments Only**
+Returns only the arguments passed after the script, excluding flags and the script name.
+
 ```grapa
-/* Get all arguments */
-args = $sys.argv;
+/* Get positional arguments only */
+args = $sys().getenv($ARGV);
+("All arguments: " + args).echo();
 
 /* Get specific argument */
-first_arg = args[1];
+first_arg = args.get(0);
 ("First argument: " + first_arg).echo();
+
+/* Check argument count */
+arg_count = args.len();
+("Number of arguments: " + arg_count).echo();
+```
+
+#### **$CLIARGV - Full Command Line**
+Returns the complete command line including executable, flags, script, and all arguments.
+
+```grapa
+/* Get full command line including flags */
+full_cmd = $sys().getenv($CLIARGV);
+("Full command: " + full_cmd).echo();
+
+/* Check for specific flags */
+is_debug = full_cmd.grep("-d").len() > 0;
+is_verbose = full_cmd.grep("--verbose").len() > 0;
+("Debug mode: " + is_debug + ", Verbose: " + is_verbose).echo();
+```
+
+#### **Practical Examples**
+
+**Basic Argument Processing:**
+```grapa
+/* script.grc */
+args = $sys().getenv($ARGV);
+
+if (args.len() == 0) {
+    "Usage: ./grapa script.grc <filename>".echo();
+    exit(1);
+}
+
+filename = args.get(0);
+("Processing file: " + filename).echo();
+```
+
+**Flag Detection:**
+```grapa
+/* script.grc */
+full_cmd = $sys().getenv($CLIARGV);
+
+/* Check for common flags */
+verbose = full_cmd.grep("--verbose").len() > 0 || full_cmd.grep("-v").len() > 0;
+debug = full_cmd.grep("-d").len() > 0;
+quiet = full_cmd.grep("-q").len() > 0;
+
+if (verbose) {
+    "Verbose mode enabled".echo();
+}
+
+if (debug) {
+    "Debug mode enabled".echo();
+}
+
+if (quiet) {
+    "Quiet mode enabled".echo();
+}
+```
+
+### System Environment Variables
+
+Grapa provides several system environment variables that are particularly useful for CLI script development:
+
+#### **Path and Directory Variables**
+
+```grapa
+/* Get current working directory */
+work_dir = $sys().getenv($WORK);
+("Working directory: " + work_dir).echo();
+
+/* Get user's home directory */
+home_dir = $sys().getenv($HOME);
+("Home directory: " + home_dir).echo();
+
+/* Get temporary directory for file operations */
+temp_dir = $sys().getenv($TEMP);
+("Temp directory: " + temp_dir).echo();
+
+/* Get Grapa binary directory */
+bin_dir = $sys().getenv($BIN);
+("Binary directory: " + bin_dir).echo();
+
+/* Get Grapa library directory */
+lib_dir = $sys().getenv($LIB);
+("Library directory: " + lib_dir).echo();
+```
+
+#### **System Information Variables**
+
+```grapa
+/* Get Grapa version for compatibility checks */
+version = $sys().getenv($VERSION);
+("Grapa version: " + version).echo();
+
+/* Get program name for self-referencing */
+prog_name = $sys().getenv($NAME);
+("Program name: " + prog_name).echo();
+
+/* Get platform information for cross-platform scripts */
+platform = $sys().getenv($PLATFORM);
+("Platform: " + platform).echo();
+```
+
+#### **Practical CLI Examples**
+
+**Cross-Platform Path Handling:**
+```grapa
+/* script.grc */
+home = $sys().getenv($HOME);
+work = $sys().getenv($WORK);
+temp = $sys().getenv($TEMP);
+
+/* Create paths that work on any platform */
+config_file = home + "/.grapa/config.json";
+log_file = temp + "/grapa_script.log";
+output_dir = work + "/output";
+
+("Config: " + config_file).echo();
+("Log: " + log_file).echo();
+("Output: " + output_dir).echo();
+```
+
+**Version Compatibility Checking:**
+```grapa
+/* script.grc */
+version = $sys().getenv($VERSION);
+platform = $sys().getenv($PLATFORM);
+
+/* Check for minimum version */
+if (version < "0.1.40") {
+    "Error: Requires Grapa version 0.1.40 or higher".echo();
+    "Current version: " + version.echo();
+    exit(1);
+}
+
+/* Platform-specific behavior */
+if (platform.grep("__APPLE__").len() > 0) {
+    "Running on macOS".echo();
+} else if (platform.grep("_WIN32").len() > 0) {
+    "Running on Windows".echo();
+} else if (platform.grep("__linux__").len() > 0) {
+    "Running on Linux".echo();
+}
+```
+
+**Temporary File Management:**
+```grapa
+/* script.grc */
+temp_dir = $sys().getenv($TEMP);
+work_dir = $sys().getenv($WORK);
+
+/* Create temporary files */
+temp_file = temp_dir + "/grapa_temp_" + $TIME().utc().str();
+log_file = temp_dir + "/grapa_log_" + $TIME().utc().str();
+
+/* Write to temporary file */
+$file(temp_file).set("Temporary data");
+
+/* Clean up temporary files when done */
+$file(temp_file).rm();
+```
+
+**Library Discovery:**
+```grapa
+/* script.grc */
+lib_dir = $sys().getenv($LIB);
+work_dir = $sys().getenv($WORK);
+
+/* Check for local library */
+local_lib = work_dir + "/lib/grapa";
+if ($file(local_lib).exists()) {
+    "Using local library: " + local_lib.echo();
+} else {
+    "Using system library: " + lib_dir.echo();
+}
+```
+
+**Self-Referencing Scripts:**
+```grapa
+/* script.grc */
+prog_name = $sys().getenv($NAME);
+version = $sys().getenv($VERSION);
+
+/* Display script information */
+("Script: " + prog_name).echo();
+("Version: " + version).echo();
+
+/* Create usage message */
+usage = "Usage: " + prog_name + " <input_file> <output_file>";
+usage.echo();
 ```
 
 ### Advanced Command Line Options

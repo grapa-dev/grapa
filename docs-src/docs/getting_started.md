@@ -312,7 +312,8 @@ Grapa automatically searches for `.grc` and `.grz` files in this order:
 - Learn about [Testing](testing.md) your Grapa code
 - Dive into advanced system functions for advanced features
 - Check out the [Grep functionality](grep.md) for advanced pattern matching
-- Review the [Syntax Quick Reference](syntax/basic_syntax.md) for more syntax rules and tips 
+- Review the [Syntax Quick Reference](syntax/basic_syntax.md) for more syntax rules and tips
+- Learn about [Command Line Arguments](sys/sys.md#command-line-arguments) for CLI script development 
 
 > **Tip:** Use `.range()` to generate arrays of numbers: `(n).range(start, step)`. 
 

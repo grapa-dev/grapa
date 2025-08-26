@@ -7,6 +7,7 @@ Grapa is a modern, grammar-based programming language and data processing platfo
 - **Unlimited Precision:** Arbitrary-precision math for $INT, $FLOAT, $TIME
 - **True Parallelism:** Production-ready parallel ETL/data processing (map/reduce/filter, $thread, $net)
 - **Machine Learning:** Linear regression, statistical analysis, and ML algorithms using optimized vector operations
+- **Comprehensive Cryptography:** Production-ready cryptographic capabilities with OpenSSL 3.5.2 integration (RSA, EC, DH, AES, hash functions, key exchange, digital signatures)
 - **Unified File/Database API:** Seamless navigation and processing of files and databases
 - **Python Integration:** Use GrapaPy for idiomatic, high-performance scripting and data workflows
 - **Executable BNF & Mutable Grammar:** Define and experiment with grammars at runtime
@@ -16,18 +17,21 @@ Grapa is a modern, grammar-based programming language and data processing platfo
 ## Who Should Use Grapa?
 - **Data Engineers & Scientists:** For high-throughput ETL, analytics, and automation
 - **Machine Learning Practitioners:** For linear regression, statistical analysis, and ML prototyping
+- **Security Engineers & Cryptographers:** For cryptographic operations, key management, and security applications
 - **Educators & Researchers:** For teaching, language prototyping, and meta-programming
 - **Python/CLI Power Users:** For offloading heavy data processing or integrating with existing workflows
 - **Anyone needing:**
   - Unlimited precision math
   - Parallel/concurrent scripting
   - Machine learning and statistical analysis
+  - Cryptographic operations and security applications
   - Unified file/database access
   - Custom language/grammar experimentation
 
 ## Why/When to Use Grapa?
 - When you need to process large data sets with true parallelism
 - When you want to implement machine learning algorithms with optimized vector operations
+- When you need production-ready cryptographic operations with OpenSSL 3.5.2 integration
 - When you want to experiment with grammars, compilers, or language design
 - When Python’s GIL or precision limits are a bottleneck
 - When you want a scripting language that is both high-level and deeply extensible

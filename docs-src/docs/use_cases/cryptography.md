@@ -1623,6 +1623,42 @@ result2 = safe_crypto_operation("modinv", {"value": 3, "modulus": 0});  /* Inval
 - **Regular Updates**: Security patches and improvements
 - **OpenSSL 3.5.2**: Latest version with enhanced security and performance
 
+### Detailed API Compatibility Analysis
+
+#### C++ Files Using OpenSSL APIs
+
+Based on comprehensive code analysis, the following C++ files use OpenSSL APIs:
+
+1. **`source/grapa/GrapaTinyAES.cpp`** - AES encryption/decryption
+   - **Functions Used**: `EVP_CIPHER_CTX_new()`, `EVP_CIPHER_CTX_free()`, `EVP_CipherInit_ex()`, `EVP_CipherUpdate()`, `EVP_CipherFinal_ex()`
+   - **Compatibility**: ✅ **FULLY COMPATIBLE** - All EVP functions used are unchanged in OpenSSL 3.x
+   - **Migration Impact**: None
+
+2. **`source/grapa/GrapaValue.cpp`** - Big number operations
+   - **Functions Used**: `BN_*` functions for mathematical operations
+   - **Compatibility**: ✅ **FULLY COMPATIBLE** - BN functions are unchanged in OpenSSL 3.x
+   - **Migration Impact**: None
+
+3. **`source/grapa/GrapaLink.cpp`** - SSL/TLS networking
+   - **Functions Used**: SSL context and connection management
+   - **Compatibility**: ✅ **FULLY COMPATIBLE** - Basic SSL functions are unchanged
+   - **Migration Impact**: None
+
+4. **`source/grapa/GrapaNet.cpp`** - Network SSL/TLS implementation
+   - **Functions Used**: `SSL_CTX_new()`, `SSL_CTX_use_certificate_chain_file()`, `SSL_CTX_use_PrivateKey_file()`, `SSL_new()`, `SSL_set_connect_state()`
+   - **Compatibility**: ⚠️ **MINOR CHANGES** - `TLS_client_method()` recommended over `TLSv1_2_client_method()`
+   - **Migration Impact**: Minimal - may need to update TLS method selection
+
+5. **`source/grapa/GrapaSystem.cpp`** - Random number generation
+   - **Functions Used**: `RAND_*` functions
+   - **Compatibility**: ✅ **FULLY COMPATIBLE** - RAND functions are unchanged in OpenSSL 3.x
+   - **Migration Impact**: None
+
+6. **`source/grapa/GrapaEncode.cpp`** - Cryptographic operations
+   - **Functions Used**: `EVP_PKEY_*`, `RSA_*`, `EC_*`, `DH_*`, `EVP_Digest*`, `EVP_Cipher*`
+   - **Compatibility**: ✅ **FULLY COMPATIBLE** - All functions updated for OpenSSL 3.x
+   - **Migration Impact**: Successfully migrated to OpenSSL 3.x APIs
+
 ### Functions Using OpenSSL
 
 #### Mathematical Cryptography (OpenSSL BIGNUM)
@@ -1642,6 +1678,57 @@ result2 = safe_crypto_operation("modinv", {"value": 3, "modulus": 0});  /* Inval
 | `verify()` | `EVP_VerifyInit_ex()` | Verify digital signatures |
 | `secret()` | `EVP_PKEY_derive()` | Derive shared secrets |
 
+### Build System Integration
+
+#### OpenSSL Headers and Libraries
+- **Headers**: `source/openssl/` (OpenSSL 3.5.2 headers)
+- **Static Libraries**: `source/openssl-lib/` (platform-specific)
+- **Build Script**: `scripts/build/build_openssl.py` for automated cross-platform builds
+
+#### Platform Support
+- **mac-arm64**: Apple Silicon (M1/M2/M3)
+- **mac-amd64**: Intel Mac
+- **linux-arm64**: ARM64 Linux
+- **linux-amd64**: x86_64 Linux
+- **windows-amd64**: Windows x64
+- **aws-arm64**: AWS Graviton
+- **aws-amd64**: AWS x86_64
+
+### Regression Testing Procedures
+
+#### Network Tests (Primary OpenSSL Usage)
+- **`test/network/openssl_compatibility_test.grc`** - Direct OpenSSL compatibility testing
+- **`test/network/curl_function_test.grc`** - HTTPS/SSL functionality testing
+- **`test/network/curl_function_optimized_test.grc`** - Optimized curl function testing
+
+#### Core Tests (Mathematical Functions)
+- **`test/core/test_cosine_comprehensive.grc`** - Mathematical operations
+- **`test/core/test_cosine_detailed.grc`** - Detailed cosine calculations
+- **`test/core/test_float_comparison.grc`** - Float comparison operations
+
+#### Documentation Examples (SSL/HTTPS)
+- **`docs-src/docs/examples/https_test.grc`** - HTTPS functionality examples
+- **`docs-src/docs/examples/curl_function_simple.grc`** - SSL/TLS certificate handling
+
+### Risk Assessment and Mitigation
+
+#### Low Risk (No Changes Expected)
+- **AES Encryption/Decryption**: EVP functions are fully compatible
+- **Big Number Operations**: BN functions are unchanged
+- **Random Number Generation**: RAND functions are unchanged
+- **Basic SSL Context Management**: Core SSL functions are compatible
+
+#### Medium Risk (Minor Changes Possible)
+- **TLS Method Selection**: May need to update from `TLSv1_2_client_method()` to `TLS_client_method()`
+- **Certificate Chain Handling**: Minor API changes possible but unlikely
+- **Provider System**: OpenSSL 3.x introduces providers but legacy compatibility maintained
+
+#### Mitigation Strategies
+1. **Incremental Testing**: Test each component individually before full integration
+2. **Backward Compatibility**: OpenSSL 3.x maintains legacy API support
+3. **Static Linking**: Reduces runtime dependency issues
+4. **Comprehensive Regression Testing**: All documented tests must pass
+
 ### OpenSSL 3.x Compatibility
 
 Grapa has been updated to use OpenSSL 3.5.2 with full compatibility:
@@ -1650,6 +1737,65 @@ Grapa has been updated to use OpenSSL 3.5.2 with full compatibility:
 - **Opaque Structures**: Properly handles OpenSSL 3.x's opaque RSA and EC structures
 - **API Updates**: Updated to use modern OpenSSL 3.x APIs while maintaining backward compatibility
 - **Security Enhancements**: Benefits from OpenSSL 3.x's improved security features
+
+### Migration Implementation Steps
+
+#### Phase 1: Pre-Migration Testing
+1. **Catalog Current Test Results**: Run all regression tests and document results
+2. **Create Test Baseline**: Document expected outputs for all test files
+3. **Verify Current OpenSSL Version**: Confirm current version is 1.1.1
+
+#### Phase 2: Build Script Development
+1. **Create `scripts/build/build_openssl.py`**: Implement cross-platform OpenSSL build script
+2. **Test Build Process**: Verify script works on all supported platforms
+3. **Implement Clean/Verify**: Add clean and verification functionality
+
+#### Phase 3: OpenSSL 3.5.2 Build
+1. **Build Static Libraries**: Use new build script to create OpenSSL 3.5.2 static libraries
+2. **Update Include Files**: Replace `source/openssl/` headers with OpenSSL 3.5.2 headers
+3. **Deploy Libraries**: Copy built libraries to `source/openssl-lib/` by platform
+
+#### Phase 4: Code Compatibility Testing
+1. **Compile Test**: Verify all C++ code compiles with OpenSSL 3.5.2
+2. **API Compatibility**: Test all OpenSSL function calls work correctly
+3. **Fix Any Issues**: Address any compilation or runtime issues
+
+#### Phase 5: Regression Testing
+1. **Run All Tests**: Execute all cataloged regression tests
+2. **Compare Results**: Compare with pre-migration baseline
+3. **Investigate Differences**: Address any unexpected changes in behavior
+
+#### Phase 6: Integration Testing
+1. **Build Grapa**: Verify Grapa builds successfully with OpenSSL 3.5.2
+2. **Test All Targets**: Test executable, static library, and shared library builds
+3. **Platform Testing**: Verify builds work on all supported platforms
+
+### Success Criteria
+
+#### Build Success
+- All Grapa targets build successfully with OpenSSL 3.5.2
+- No compilation errors or warnings related to OpenSSL
+- Static libraries link correctly
+
+#### Functional Success
+- All network tests pass with identical results
+- All mathematical tests produce identical results
+- All documentation examples work correctly
+- SSL/TLS connections work with modern protocols
+
+#### Performance Success
+- No significant performance degradation
+- Memory usage remains similar
+- Startup time remains similar
+
+### Rollback Plan
+
+If issues are encountered during migration:
+
+1. **Immediate Rollback**: Revert to OpenSSL 1.1.1 libraries and headers
+2. **Investigation**: Document specific issues encountered
+3. **Fix Development**: Address issues in isolation
+4. **Re-testing**: Validate fixes before re-attempting migration
 
 ## References
 

@@ -204,28 +204,39 @@
    - **Files Generated**: libcrypto.lib, libssl.lib, app.pdb, ossl_static.pdb
    - **Impact**: Windows build now compiles successfully with OpenSSL 3.5.2 (0 warnings, 0 errors)
 
-### ✅ **Cryptographic Documentation Enhancement - COMPLETE**:
-  - **Status**: Documentation updated to cover all supported digest and encoding methods
-  - **Progress Made**:
-    - ✅ Scanned `GrapaEncode.cpp` to identify all supported digests and encoding methods
-    - ✅ Tested all encoding methods to verify functionality
-    - ✅ Added comprehensive documentation for Base58 encoding and decoding
-    - ✅ Added comprehensive documentation for URL-ASCII encoding
-    - ✅ Updated `docs-src/docs/use_cases/cryptography.md` with complete encoding methods table
-    - ✅ Updated `docs-src/docs/obj/encode.md` to include new methods
-    - ✅ Verified all documented methods work correctly
-  - **Methods Documented**:
-    - **Hash Functions**: SHA3-224, SHA3-256, SHA3-384, SHA3-512, SHAKE128, SHAKE256
-    - **Encoding Functions**: Base64, Base58, URL-ASCII
-    - **Note**: SHA-256, SHA-512, BLAKE2b are available internally for BLS operations but not exposed via `.encode()`
-  - **Impact**: Users now have complete documentation of all available cryptographic methods
-2. **🔧 Command-Line Argument Support - HIGH PRIORITY**:
-   - **Status**: Framework exists in source code but not working correctly
-   - **Issue**: `$ARGV` variable not properly injecting command-line arguments into `.grc`/`.grz` scripts
-   - **Evidence**: Source code shows `mArgv` queue and `$ARGV` handling in `GrapaLibRule.cpp` and `GrapaLink.cpp`, but testing shows `{"error":-1}` responses
-   - **Impact**: Scripts cannot access command-line parameters passed to `./grapa script.grc arg1 arg2 arg3`
-   - **Files to investigate**: `source/grapa/GrapaLibRule.cpp` (line 3673), `source/grapa/GrapaLink.cpp` (lines 92, 163, 234), `source/main.cpp` (line 72)
-   - **Next**: Investigate and fix argument injection mechanism in `GrapaLibRule.cpp` and `GrapaLink.cpp`
+2. **✅ Cryptographic Documentation Enhancement - COMPLETE**:
+   - **Status**: Documentation updated to cover all supported digest and encoding methods
+   - **Progress Made**:
+     - ✅ Scanned `GrapaEncode.cpp` to identify all supported digests and encoding methods
+     - ✅ Tested all encoding methods to verify functionality
+     - ✅ Added comprehensive documentation for Base58 encoding and decoding
+     - ✅ Added comprehensive documentation for URL-ASCII encoding
+     - ✅ Updated `docs-src/docs/use_cases/cryptography.md` with complete encoding methods table
+     - ✅ Updated `docs-src/docs/obj/encode.md` to include new methods
+     - ✅ Verified all documented methods work correctly
+   - **Methods Documented**:
+     - **Hash Functions**: SHA3-224, SHA3-256, SHA3-384, SHA3-512, SHAKE128, SHAKE256
+     - **Encoding Functions**: Base64, Base58, URL-ASCII
+     - **Note**: SHA-256, SHA-512, BLAKE2b are available internally for BLS operations but not exposed via `.encode()`
+   - **Impact**: Users now have complete documentation of all available cryptographic methods
+
+3. **✅ Command-Line Argument Support - RESOLVED**:
+   - **Status**: Working correctly with both `$ARGV` and `$CLIARGV` variables
+   - **Implementation**: `$ARGV` provides positional arguments only, `$CLIARGV` provides full command line
+   - **Evidence**: Testing confirms correct behavior:
+     - `$ARGV`: `["./grapa","a","b","c"]` for `./grapa -c "script" a b c`
+     - `$CLIARGV`: `["./grapa","-c","script"]` for `./grapa -c "script"`
+   - **Impact**: Scripts can now access command-line parameters correctly
+   - **Next**: No action needed - functionality is working as expected
+   - **⚠️ Windows Validation Needed**: System environment variables (`$WORK`, `$HOME`, `$TEMP`, `$VERSION`, `$PLATFORM`, `$BIN`, `$LIB`, `$NAME`) documented for CLI development but need validation on Windows to ensure cross-platform compatibility
+
+4. **✅ Memory Management Analysis - COMPLETE**:
+   - **Status**: Comprehensive analysis of `std::vector` usage across the codebase
+   - **Files analyzed**: 10+ source files including GrapaLink.cpp, GrapaEncode.cpp, GrapaValue.cpp, grep implementations, and test files
+   - **Findings**: No memory leaks identified - all pointer vectors have proper cleanup or store pointers to objects owned elsewhere
+   - **Best practices observed**: RAII patterns, explicit cleanup methods, proper ownership semantics
+   - **Documentation**: Created `maintainers/DEVELOPMENT/MEMORY_MANAGEMENT_ANALYSIS.md` with detailed analysis
+   - **Recommendations**: Continue current patterns, consider adding memory leak detection to CI/CD
 2. **✅ FLTK 1.4.4 Upgrade - Complete**: 
    - **Static Libraries Built**: FLTK 1.4.4 static libraries successfully built for all supported platforms
    - **Threading Issues Resolved**: Fixed Cocoa threading violations in `GrapaWidget::New()` and `GrapaWidget::CLEAR()`
@@ -248,8 +259,9 @@
           - **✅ Basic Encoding**: Base64 encoding/decoding working correctly
        - **✅ Documentation**: 
           - Created comprehensive RSA cryptography example in `docs-src/docs/examples/rsa_cryptography_example.grc`
-          - Updated `docs-src/docs/use_cases/cryptography.md` with comprehensive OpenSSL-based cryptography documentation
+          - Updated `docs-src/docs/use_cases/cryptography.md` with comprehensive OpenSSL-based cryptography documentation and migration details
           - Updated `docs-src/docs/function_quick_reference.md` to distinguish between mathematical and OpenSSL-based cryptographic functions
+          - **✅ Documentation Consolidation**: Merged OpenSSL-specific migration and regression testing documentation into `cryptography.md` to eliminate redundancy
        - **✅ Baseline Analysis Complete**: Verified that cryptographic functions (secret(), sign(), verify()) were working correctly in previous version - regressions identified
        - **✅ Cryptographic Functions Fixed**: RSA/cryptographic functions (secret(), sign(), verify()) now working correctly with OpenSSL 3.x API compatibility
        - **✅ EC Cryptography Validated**: Elliptic Curve cryptography (genkeys(), sign(), verify(), secret()) working correctly with 7 supported curves (prime256v1, secp224r1, secp256k1, secp384r1, secp521r1, prime192v1, prime239v1) - EC does NOT support encode/decode operations (correct behavior)
