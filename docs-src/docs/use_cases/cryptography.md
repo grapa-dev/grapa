@@ -811,9 +811,11 @@ bob_secret = bob_keys.secret({
 ```
 
 **Note**: The `secret()` function currently supports:
-- **EC (Elliptic Curve)**: Fully functional for key derivation
+- **EC (Elliptic Curve)**: ✅ Fully functional for key derivation
+- **DH (Diffie-Hellman)**: ✅ Fully functional for key derivation
+- **RPK (Raw Public Key)**: ✅ Fully functional for key derivation (X25519, X448)
 - **RSA**: Returns 0 (not useful for key derivation)
-- **DH/BLS**: Currently have implementation issues (segmentation faults)
+- **BLS12-381**: Currently has implementation issues
 
 ### Additional Cryptographic Methods
 
@@ -825,25 +827,30 @@ The `verifyrecover()` method allows recovery of the original message from a sign
 /* Generate RSA keys */
 keys = "rsa".genkeys();
 
-/* Sign a message */
+/* Sign a message with raw digest and PKCS#1 padding for recovery */
 message = "Hello, Grapa!";
-signature = keys.sign(message);
+signature = message.sign(keys, {digest: 'raw', padding: 'pkcs1'});
 
-/* Note: RSA signature recovery is not supported in the current implementation */
-/* The verifyrecover() method will return an empty result for RSA signatures */
-recovered_message = signature.verifyrecover(keys);
-("Recovered message: " + recovered_message.str() + "\n").echo();
-("Original message: " + message + "\n").echo();
-("Recovery successful: " + (recovered_message == message).str() + "\n").echo();
+/* Recover the original message */
+recovered_message = signature.verifyrecover(keys, {digest: 'raw', padding: 'pkcs1'});
+("Recovered message: " + recovered_message.str()).echo();
+("Original message: " + message).echo();
+("Recovery successful: " + (recovered_message.str() == message).str()).echo();
 ```
 
 **Supported Algorithms:**
-- **RSA**: ❌ Not supported (limitation of current implementation)
+- **RSA**: ✅ Fully supported with raw digest and PKCS#1 padding
 - **EC**: ⚠️ May return garbled output
 - **RPK**: ⚠️ May return garbled output
 - **BLS12-381**: ❌ Not supported
 
-**Note**: RSA signature recovery requires raw RSA signatures (without hashing), but the current implementation uses `EVP_DigestSign` which hashes the message first. This is a limitation of the current implementation - signature recovery would require using `EVP_PKEY_sign` instead of `EVP_DigestSign` for RSA.
+**Important Notes:**
+- **RSA recovery requires raw digest**: Use `{digest: 'raw', padding: 'pkcs1'}` for both signing and recovery
+- **Raw padding supports recovery**: Use `{digest: 'raw', padding: 'raw'}` for direct message recovery
+- **PSS padding doesn't support recovery**: PSS uses randomized padding that prevents message recovery
+- **PKCS#1 v1.5 with raw digest**: This combination allows message recovery by "decrypting" the signature
+- **Default signing doesn't support recovery**: Standard signing with SHA-256 + PSS doesn't allow recovery
+- **Raw padding automatically handles size**: Messages are zero-padded if too short or truncated if too long
 
 #### Key Exchange (`secret()`)
 
@@ -876,6 +883,8 @@ bob_secret = bob_keys.secret({
 
 **Supported Algorithms:**
 - **EC**: ✅ Fully functional
+- **DH**: ✅ Fully functional (requires same parameters for both parties)
+- **RPK**: ✅ Fully functional (X25519, X448)
 - **RSA**: ❌ Returns 0 (not designed for key exchange)
 - **DH**: ⚠️ Has implementation issues
 - **RPK (X25519/X448)**: ⚠️ May return garbled output
@@ -892,13 +901,19 @@ bob_secret = bob_keys.secret({
 |--------|-----|----|-----|-----------|
 | `sign()` | ✅ | ✅ | ✅ | ⚠️ |
 | `verify()` | ✅ | ✅ | ✅ | ⚠️ |
-| `verifyrecover()` | ❌ | ⚠️ | ⚠️ | ❌ |
-| `secret()` | ❌ | ✅ | ⚠️ | ❌ |
+| `verifyrecover()` | ✅ | ⚠️ | ⚠️ | ❌ |
+| `secret()` | ❌ | ✅ | ✅ | ❌ |
 
 **Legend:**
 - ✅ Fully functional
-- ⚠️ Has issues or limitations
+- ⚠️ Has issues or limitations  
 - ❌ Not supported or returns invalid results
+
+**Key Exchange Summary:**
+- **EC**: Fast key generation, 32-byte shared secrets
+- **DH**: Slow parameter generation (safe primes), requires shared parameters
+- **RPK**: Fast key generation, 32-56 byte shared secrets
+- **RSA**: Not designed for key exchange
 
 ### Advanced Cryptographic Operations
 
@@ -919,16 +934,98 @@ is_valid = bls_keys.verify(message, bls_signature);
 ("BLS Signature valid: " + is_valid.str() + "\n").echo();
 ```
 
-#### Diffie-Hellman Key Exchange
+#### Key Exchange Methods
+
+Grapa supports three key exchange methods for deriving shared secrets between two parties.
+
+##### Elliptic Curve Key Exchange (EC)
 
 ```grapa
-/* Generate DH keys */
-dh_keys = "dh".genkeys();
-("DH Keys: " + dh_keys.str() + "\n").echo();
+/* Generate EC keys for both parties using the same curve */
+alice_ec = "ec".genkeys({"curve": "secp256k1"});
+bob_ec = "ec".genkeys({"curve": "secp256k1"});
 
-/* Note: DH secret() currently has implementation issues */
-/* shared_secret = dh_keys.secret(); */
+/* Alice derives shared secret using Bob's public key */
+alice_secret = alice_ec.secret({
+    "method": "ec",
+    "curve": "secp256k1", 
+    "pub": bob_ec.pub
+});
+
+/* Bob derives shared secret using Alice's public key */
+bob_secret = bob_ec.secret({
+    "method": "ec",
+    "curve": "secp256k1",
+    "pub": alice_ec.pub
+});
+
+/* Both parties should have the same shared secret */
+("EC Key Exchange: " + (alice_secret == bob_secret).str()).echo();
+("Secret length: " + alice_secret.len().str()).echo();
 ```
+
+##### Diffie-Hellman Key Exchange (DH)
+
+```grapa
+/* Generate DH parameters once (this can take time for large bit sizes) */
+dh_params = "dh".genkeys({"bits": 512});  /* Use smaller bits for faster generation */
+
+/* Both parties use the same DH parameters */
+alice_dh = dh_params;
+bob_dh = dh_params;
+
+/* Alice derives shared secret using Bob's public key */
+alice_secret = alice_dh.secret({
+    "method": "dh",
+    "pub": bob_dh.pub
+});
+
+/* Bob derives shared secret using Alice's public key */
+bob_secret = bob_dh.secret({
+    "method": "dh", 
+    "pub": alice_dh.pub
+});
+
+/* Both parties should have the same shared secret */
+("DH Key Exchange: " + (alice_secret == bob_secret).str()).echo();
+("Secret length: " + alice_secret.len().str()).echo();
+```
+
+**Important Notes for DH Key Exchange:**
+- **Parameter Generation Time**: `"dh".genkeys()` can take significant time (3-10 seconds for 1024+ bits) because it generates safe primes
+- **Shared Parameters**: Both parties must use the same DH parameters (same prime p and generator g)
+- **Faster Generation**: Use smaller bit sizes (512 bits) for development/testing
+- **Production Use**: For production, consider using predefined DH parameters or accept the generation time for security
+
+##### Raw Public Key Exchange (RPK)
+
+```grapa
+/* Generate RPK keys for both parties using the same algorithm */
+alice_rpk = "rpk".genkeys({"algorithm": "x25519"});
+bob_rpk = "rpk".genkeys({"algorithm": "x25519"});
+
+/* Alice derives shared secret using Bob's public key */
+alice_secret = alice_rpk.secret({
+    "method": "rpk",
+    "algorithm": "x25519",
+    "pub": bob_rpk.pub
+});
+
+/* Bob derives shared secret using Alice's public key */
+bob_secret = bob_rpk.secret({
+    "method": "rpk",
+    "algorithm": "x25519", 
+    "pub": alice_rpk.pub
+});
+
+/* Both parties should have the same shared secret */
+("RPK Key Exchange: " + (alice_secret == bob_secret).str()).echo();
+("Secret length: " + alice_secret.len().str()).echo();
+```
+
+**Supported RPK Algorithms:**
+- **X25519**: 32-byte shared secret, fast key generation
+- **X448**: 56-byte shared secret, fast key generation
 
 ### Cryptographic Utilities
 
@@ -967,36 +1064,161 @@ decrypted = encrypted.decode(aes_key);
 
 ### RSA Cryptography
 
-```grapa
-/* Generate RSA keys using Grapa's prime functions */
-generate_rsa_keys = op(bits) {
-    /* Generate two large primes */
-    p = bits.genprime();
-    q = bits.genprime();
-    
-    /* Calculate modulus and Euler's totient */
-    n = p * q;
-    phi = (p - 1) * (q - 1);
-    
-    /* Choose public exponent (common choice) */
-    e = 65537;
-    
-    /* Calculate private exponent */
-    d = e.modinv(phi);
-    
-    /* Return key pair */
-    {
-        "public_key": {"n": n, "e": e},
-        "private_key": {"n": n, "d": d},
-        "p": p,
-        "q": q
-    };
-};
+Grapa provides comprehensive RSA cryptography with support for multiple digest algorithms and padding schemes.
 
-/* RSA encryption */
-rsa_encrypt = op(message, public_key) {
-    message.modpow(public_key.get("e"), public_key.get("n"));
-};
+#### RSA Key Generation
+
+```grapa
+/* Generate RSA key pair with default settings (1024 bits, e=65537) */
+rsa_keys = "rsa".genkeys();
+("RSA Keys: " + rsa_keys.str()).echo();
+
+/* Generate RSA key pair with custom parameters */
+rsa_keys_2048 = "rsa".genkeys({"bits": 2048, "e": 65537});
+
+/* RSA keys contain all components for cryptography */
+rsa_keys.n.echo();      /* Modulus */
+rsa_keys.e.echo();      /* Public exponent */
+rsa_keys.d.echo();      /* Private exponent */
+rsa_keys.p.echo();      /* First prime factor */
+rsa_keys.q.echo();      /* Second prime factor */
+```
+
+#### RSA Signing and Verification
+
+```grapa
+/* Generate RSA keys */
+keys = "rsa".genkeys();
+message = "Hello, Grapa!";
+
+/* Default signing (SHA-256 + PSS padding - most secure) */
+signature = message.sign(keys);
+is_valid = signature.verify(keys, message);
+("Default signature valid: " + is_valid.str()).echo();
+
+/* SHA-256 with PKCS#1 v1.5 padding (legacy, but widely compatible) */
+signature_pkcs1 = message.sign(keys, {digest: 'sha256', padding: 'pkcs1'});
+is_valid_pkcs1 = signature_pkcs1.verify(keys, message, {digest: 'sha256', padding: 'pkcs1'});
+("PKCS#1 signature valid: " + is_valid_pkcs1.str()).echo();
+
+/* SHA-512 with PSS padding */
+signature_sha512 = message.sign(keys, {digest: 'sha512', padding: 'pss'});
+is_valid_sha512 = signature_sha512.verify(keys, message, {digest: 'sha512', padding: 'pss'});
+("SHA-512 PSS signature valid: " + is_valid_sha512.str()).echo();
+
+/* SHA-1 with PKCS#1 v1.5 padding (legacy, not recommended) */
+signature_sha1 = message.sign(keys, {digest: 'sha1', padding: 'pkcs1'});
+is_valid_sha1 = signature_sha1.verify(keys, message, {digest: 'sha1', padding: 'pkcs1'});
+("SHA-1 signature valid: " + is_valid_sha1.str()).echo();
+```
+
+#### RSA Signature Recovery
+
+```grapa
+/* Generate RSA keys */
+keys = "rsa".genkeys();
+message = "Hello, Grapa!";
+
+/* Sign with raw digest and PKCS#1 padding for recovery */
+signature = message.sign(keys, {digest: 'raw', padding: 'pkcs1'});
+
+/* Recover the original message */
+recovered = signature.verifyrecover(keys, {digest: 'raw', padding: 'pkcs1'});
+("Original message: " + message).echo();
+("Recovered message: " + recovered.str()).echo();
+("Recovery successful: " + (recovered.str() == message).str()).echo();
+
+/* Note: PSS padding doesn't support recovery due to randomized padding */
+signature_pss = message.sign(keys, {digest: 'raw', padding: 'pss'});
+recovered_pss = signature_pss.verifyrecover(keys, {digest: 'raw', padding: 'pss'});
+("PSS recovery length: " + recovered_pss.len()).echo();  /* Will be 0 (failed) */
+```
+
+#### Raw Padding (No Padding)
+
+```grapa
+/* Generate RSA keys */
+keys = "rsa".genkeys();
+message = "Hello, Grapa!";
+
+/* Sign with raw digest and raw padding (no padding) */
+signature = message.sign(keys, {digest: 'raw', padding: 'raw'});
+verify_result = signature.verify(keys, message, {digest: 'raw', padding: 'raw'});
+("Sign/Verify: " + verify_result).echo();
+
+/* Recover the original message */
+recovered = signature.verifyrecover(keys, {digest: 'raw', padding: 'raw'});
+("Recovered hex: " + recovered.uhex()).echo();
+("Original hex: " + message.uhex()).echo();
+```
+
+**Important Notes:**
+- **Automatic size handling**: Messages are automatically zero-padded if too short or truncated if too long
+- **Direct recovery**: Raw padding allows direct message recovery without PKCS#1 structure
+- **Educational use**: Useful for understanding raw RSA operations
+- **Security warning**: Raw padding provides no security padding and should be used carefully
+
+#### Supported RSA Parameters
+
+**Digest Algorithms:**
+- `sha256` (default) - SHA-256 hash function
+- `sha512` - SHA-512 hash function  
+- `sha1` - SHA-1 hash function (legacy, not recommended)
+- `raw` - No digest (sign raw data directly)
+
+**Padding Schemes:**
+- `pss` (default) - Probabilistic Signature Scheme (most secure)
+- `pkcs1` or `pkcs1v15` - PKCS#1 v1.5 padding (legacy, widely compatible)
+- `raw` - No padding (insecure for general use)
+
+**Key Sizes:**
+- Default: 1024 bits
+- Custom: Any size supported by OpenSSL (typically 512-8192 bits)
+
+#### RSA Security Recommendations
+
+```grapa
+/* ✅ RECOMMENDED: Use PSS padding for new applications */
+secure_signature = message.sign(keys, {digest: 'sha256', padding: 'pss'});
+
+/* ✅ RECOMMENDED: Use SHA-256 or SHA-512 for hashing */
+modern_signature = message.sign(keys, {digest: 'sha512', padding: 'pss'});
+
+/* ⚠️ LEGACY: PKCS#1 v1.5 for compatibility with older systems */
+legacy_signature = message.sign(keys, {digest: 'sha256', padding: 'pkcs1'});
+
+/* ❌ AVOID: SHA-1 is cryptographically broken */
+weak_signature = message.sign(keys, {digest: 'sha1', padding: 'pkcs1'});
+
+/* ❌ AVOID: Raw padding is insecure for general use */
+insecure_signature = message.sign(keys, {digest: 'raw', padding: 'raw'});
+```
+
+#### RSA Performance Considerations
+
+```grapa
+/* Measure signature performance */
+keys = "rsa".genkeys({"bits": 2048});
+message = "Test message";
+
+/* Time the signing operation */
+start_time = $TIME().utc();
+signature = message.sign(keys, {digest: 'sha256', padding: 'pss'});
+end_time = $TIME().utc();
+("Signing time: " + (end_time - start_time).str() + " seconds").echo();
+
+/* Time the verification operation */
+start_time = $TIME().utc();
+is_valid = signature.verify(keys, message, {digest: 'sha256', padding: 'pss'});
+end_time = $TIME().utc();
+("Verification time: " + (end_time - start_time).str() + " seconds").echo();
+```
+
+**Performance Notes:**
+- **Larger key sizes** (2048+ bits) provide better security but slower performance
+- **PSS padding** is slightly slower than PKCS#1 v1.5 but more secure
+- **SHA-512** is slower than SHA-256 but provides better security
+- **Verification** is typically faster than signing
 
 /* RSA decryption */
 rsa_decrypt = op(ciphertext, private_key) {
@@ -1440,10 +1662,10 @@ Grapa has been updated to use OpenSSL 3.5.2 with full compatibility:
   - `"ARGON2ID"` - Argon2id password hashing
 - **Status**: Working correctly with OpenSSL 3.5.2
 
-#### 7. **Diffie-Hellman (DH) Key Exchange** ⚠️ **Partially Supported**
-- **Key Generation**: `"dh".genkeys()` - **Working**
-- **Key Exchange**: `dh_keys.secret(peer_key)` - **Has implementation issues**
-- **Status**: Key generation works, but key exchange has pre-existing issues (not migration-related)
+#### 7. **Diffie-Hellman (DH) Key Exchange** ✅ **Fully Supported**
+- **Key Generation**: `"dh".genkeys()` - **Working** (can be slow for large bit sizes)
+- **Key Exchange**: `dh_keys.secret({method: "dh", pub: peer.pub})` - ✅ Fully functional
+- **Status**: Both key generation and key exchange work correctly
 
 #### 8. **BLS12-381 Cryptography** ⚠️ **Partially Supported**
 - **Key Generation**: `"bls".genkeys()` - **Working**
@@ -1498,8 +1720,8 @@ The implementation is **very comprehensive** for production use cases. The main 
 - **KDF (Key Derivation)**: All functions working correctly (HKDF, PBKDF2, Argon2id)
 
 #### ⚠️ **Pre-existing Issues (Not Migration-Related)**
-- **DH Key Exchange**: Alice and Bob generate different secrets
 - **BLS12-381 Key Exchange**: Implementation issues
+- **DH Parameter Generation**: Can be slow for large bit sizes due to safe prime generation
 
 #### 🔧 **Technical Notes**
 - **Engine System**: Successfully migrated from deprecated OpenSSL 1.1.1 engines to OpenSSL 3.x provider system

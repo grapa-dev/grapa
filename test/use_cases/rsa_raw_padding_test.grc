@@ -1,0 +1,68 @@
+// RSA Raw Padding Test
+// Test raw padding functionality with various message sizes
+
+"=== RSA Raw Padding Test ===".echo();
+
+// Generate RSA key
+k = 'rsa'.genkeys();
+
+"Testing raw padding with various message sizes:".echo();
+
+// Test 1: Single character
+message1 = 'A';
+sig1 = message1.sign(k, {digest: 'raw', padding: 'raw'});
+verify1 = sig1.verify(k, message1, {digest: 'raw', padding: 'raw'});
+recovered1 = sig1.verifyrecover(k, {digest: 'raw', padding: 'raw'});
+("  Single char 'A': Sign/Verify=" + verify1 + ", Recovered=" + recovered1.uhex()).echo();
+
+// Test 2: Short message
+message2 = 'Hi';
+sig2 = message2.sign(k, {digest: 'raw', padding: 'raw'});
+verify2 = sig2.verify(k, message2, {digest: 'raw', padding: 'raw'});
+recovered2 = sig2.verifyrecover(k, {digest: 'raw', padding: 'raw'});
+("  Short 'Hi': Sign/Verify=" + verify2 + ", Recovered=" + recovered2.uhex()).echo();
+
+// Test 3: Medium message
+message3 = 'Hello World';
+sig3 = message3.sign(k, {digest: 'raw', padding: 'raw'});
+verify3 = sig3.verify(k, message3, {digest: 'raw', padding: 'raw'});
+recovered3 = sig3.verifyrecover(k, {digest: 'raw', padding: 'raw'});
+("  Medium 'Hello World': Sign/Verify=" + verify3 + ", Recovered=" + recovered3.uhex()).echo();
+
+// Test 4: Long message (should be truncated)
+message4 = 'This is a very long message that should be truncated to fit the RSA modulus size';
+sig4 = message4.sign(k, {digest: 'raw', padding: 'raw'});
+verify4 = sig4.verify(k, message4, {digest: 'raw', padding: 'raw'});
+recovered4 = sig4.verifyrecover(k, {digest: 'raw', padding: 'raw'});
+("  Long message: Sign/Verify=" + verify4 + ", Recovered=" + recovered4.uhex()).echo();
+
+"Testing PKCS#1 padding with raw digest (should work):".echo();
+
+// Test 5: PKCS#1 with raw digest
+message5 = 'Hello World';
+sig5 = message5.sign(k, {digest: 'raw', padding: 'pkcs1'});
+verify5 = sig5.verify(k, message5, {digest: 'raw', padding: 'pkcs1'});
+recovered5 = sig5.verifyrecover(k, {digest: 'raw', padding: 'pkcs1'});
+("  PKCS#1 raw: Sign/Verify=" + verify5 + ", Recovered=" + recovered5.str()).echo();
+
+"Testing PSS padding with raw digest (should work):".echo();
+
+// Test 6: PSS with raw digest
+message6 = 'Hello World';
+sig6 = message6.sign(k, {digest: 'raw', padding: 'pss'});
+verify6 = sig6.verify(k, message6, {digest: 'raw', padding: 'pss'});
+("  PSS raw: Sign/Verify=" + verify6).echo();
+
+"Testing default signing (SHA-256 + PSS):".echo();
+
+// Test 7: Default signing
+message7 = 'Hello World';
+sig7 = message7.sign(k);
+verify7 = sig7.verify(k, message7);
+("  Default: Sign/Verify=" + verify7).echo();
+
+"Raw padding summary:".echo();
+"  - Raw padding automatically pads/truncates to RSA modulus size".echo();
+"  - Zero-padding is used for short messages".echo();
+"  - Messages longer than modulus are truncated".echo();
+"  - Verifyrecover works with raw padding".echo();

@@ -2853,8 +2853,22 @@ bool GrapaEncode::Sign(GrapaRuleEvent* pData, GrapaBYTE& pSignature, GrapaRuleEv
 				return false;
 			}
 			
+			// For raw padding, we need to pad the input to the exact size of the RSA modulus
+			// Get the RSA modulus size
+			const RSA* rsa = EVP_PKEY_get0_RSA(key);
+			int modulus_size = RSA_size(rsa);
+			
+			// Create padded input buffer
+			GrapaBYTE padded_input;
+			padded_input.SetLength(modulus_size);
+			memset(padded_input.mBytes, 0, modulus_size); // Zero-pad
+			
+			// Copy the actual data (truncate if too long, pad with zeros if too short)
+			size_t copy_size = (pData->mValue.mLength < modulus_size) ? pData->mValue.mLength : modulus_size;
+			memcpy(padded_input.mBytes + (modulus_size - copy_size), pData->mValue.mBytes, copy_size);
+			
 			size_t outlen = 0;
-			err = EVP_PKEY_sign(sign_ctx, NULL, &outlen, pData->mValue.mBytes, pData->mValue.mLength);
+			err = EVP_PKEY_sign(sign_ctx, NULL, &outlen, padded_input.mBytes, padded_input.mLength);
 			if (err <= 0 || outlen == 0) {
 				EVP_PKEY_CTX_free(sign_ctx);
 				EVP_MD_CTX_free(ctxm);
@@ -2863,7 +2877,7 @@ bool GrapaEncode::Sign(GrapaRuleEvent* pData, GrapaBYTE& pSignature, GrapaRuleEv
 			}
 			
 			pSignature.SetLength(outlen);
-			err = EVP_PKEY_sign(sign_ctx, pSignature.mBytes, &outlen, pData->mValue.mBytes, pData->mValue.mLength);
+			err = EVP_PKEY_sign(sign_ctx, pSignature.mBytes, &outlen, padded_input.mBytes, padded_input.mLength);
 			EVP_PKEY_CTX_free(sign_ctx);
 			EVP_MD_CTX_free(ctxm);
 			EVP_PKEY_free(key);
@@ -3252,7 +3266,21 @@ bool GrapaEncode::Verify(GrapaRuleEvent* pData, const GrapaBYTE& pSignature, Gra
 				return false;
 			}
 			
-			err = EVP_PKEY_verify(verify_ctx, pSignature.mBytes, pSignature.mLength, pData->mValue.mBytes, pData->mValue.mLength);
+			// For raw padding, we need to pad the input to the exact size of the RSA modulus
+			// Get the RSA modulus size
+			const RSA* rsa = EVP_PKEY_get0_RSA(key);
+			int modulus_size = RSA_size(rsa);
+			
+			// Create padded input buffer
+			GrapaBYTE padded_input;
+			padded_input.SetLength(modulus_size);
+			memset(padded_input.mBytes, 0, modulus_size); // Zero-pad
+			
+			// Copy the actual data (truncate if too long, pad with zeros if too short)
+			size_t copy_size = (pData->mValue.mLength < modulus_size) ? pData->mValue.mLength : modulus_size;
+			memcpy(padded_input.mBytes + (modulus_size - copy_size), pData->mValue.mBytes, copy_size);
+			
+			err = EVP_PKEY_verify(verify_ctx, pSignature.mBytes, pSignature.mLength, padded_input.mBytes, padded_input.mLength);
 			EVP_PKEY_CTX_free(verify_ctx);
 			EVP_MD_CTX_free(ctxm);
 			EVP_PKEY_free(key);
@@ -3607,38 +3635,80 @@ bool GrapaEncode::Secret(GrapaRuleEvent* pKey, GrapaBYTE& pSecret)
 		if (x == NULL) return false;
 		if (x->mValue.StrLowerCmp("dh") != 0) return false;
 
-		BIGNUM * pub;
-		pub = NULL;
-
+		// Get the DH parameters from our key
+		const DH* dh_params = (DH*)mDH;
+		if (dh_params == NULL) return false;
+		
+		// Create a new DH key with the same parameters
+		DH* peer_dh = DHparams_dup(dh_params);
+		if (peer_dh == NULL) {
+			return false;
+		}
+		
+		// Get the peer's public key
 		x = pKey->vQueue->Search("pub", idx);
 		while (x && x->mValue.mToken == GrapaTokenType::PTR) x = x->vRulePointer;
-		if (x) pub = BN_bin2bn((u8*)x->mValue.mBytes, x->mValue.mLength, NULL);
-
+		if (x) {
+			BIGNUM* pub = BN_bin2bn((u8*)x->mValue.mBytes, x->mValue.mLength, NULL);
+			if (pub == NULL) {
+				DH_free(peer_dh);
+				return false;
+			}
+			
+			// Set the peer's public key
+			if (DH_set0_key(peer_dh, pub, NULL) <= 0) {
+				BN_free(pub);
+				DH_free(peer_dh);
+				return false;
+			}
+		} else {
+			DH_free(peer_dh);
+			return false;
+		}
+		
+		// Compute the shared secret using DH_compute_key
+		int secret_len = DH_size((DH*)mDH);
+		if (secret_len <= 0) {
+			DH_free(peer_dh);
+			return false;
+		}
+		
+		unsigned char* secret_buf = (unsigned char*)OPENSSL_malloc(secret_len);
+		if (secret_buf == NULL) {
+			DH_free(peer_dh);
+			return false;
+		}
+		
+		// Compute the shared secret
+		int computed_len = DH_compute_key(secret_buf, DH_get0_pub_key(peer_dh), (DH*)mDH);
+		if (computed_len <= 0) {
+			OPENSSL_free(secret_buf);
+			DH_free(peer_dh);
+			return false;
+		}
+		
+		// Convert to GrapaInt and set the result
+		GrapaInt g;
 		GrapaBYTE gc;
-		gc.SetLength(DH_size((DH*)mDH));
-		err = DH_compute_key(gc.mBytes, pub, (DH*)mDH);
-		char es[1024];
-		if (err <= 0)
-		{
-			unsigned long xer = ERR_get_error();
-			ERR_error_string_n(xer, es, 1024);
-		}
-		BN_free(pub);
-		if (err >= 1)
-		{
-			GrapaInt g;
-			gc.SetLength(err);
-			g.FromBytes(gc,true);
-			pSecret = g.getBytes(true);
-			return true;
-		}
-
-		return false;
+		gc.SetLength(computed_len);
+		memcpy(gc.mBytes, secret_buf, computed_len);
+		g.FromBytes(gc, true);
+		pSecret = g.getBytes(true);
+		
+		// Clean up
+		OPENSSL_free(secret_buf);
+		DH_free(peer_dh);
+		
+		return true;
 	}
 	else if (mEC)
 	{
 		int err = 0;
-		EVP_PKEY_CTX* ctx1 = (EVP_PKEY_CTX*)mEC;
+		EVP_PKEY* key = (EVP_PKEY*)mEC;
+		
+		// Create the derivation context
+		EVP_PKEY_CTX* ctx1 = EVP_PKEY_CTX_new(key, NULL);
+		if (ctx1 == NULL) return false;
 
 		s64 idx;
 
@@ -3647,7 +3717,7 @@ bool GrapaEncode::Secret(GrapaRuleEvent* pKey, GrapaBYTE& pSecret)
 		if (x == NULL) return false;
 		if (x->mValue.StrLowerCmp("ec") != 0) return false;
 
-		BIGNUM* pub1 = NULL;;
+		BIGNUM* pub1 = NULL;
 		int nid = 0;
 
 		x = pKey->vQueue->Search("curve", idx);
@@ -3674,35 +3744,118 @@ bool GrapaEncode::Secret(GrapaRuleEvent* pKey, GrapaBYTE& pSecret)
 		while (x && x->mValue.mToken == GrapaTokenType::PTR) x = x->vRulePointer;
 		if (x)
 		{
-			EC_KEY* keyx = EC_KEY_new_by_curve_name(nid);
-			pub1 = BN_bin2bn((u8*)x->mValue.mBytes, x->mValue.mLength, NULL);
-			EC_POINT* pubx = EC_POINT_bn2point(EC_KEY_get0_group(keyx), pub1, NULL, NULL);
-			err = EC_KEY_set_public_key(keyx, pubx);
-			EVP_PKEY* ekeyx = EVP_PKEY_new();
-			err = EVP_PKEY_set1_EC_KEY(ekeyx, keyx);
-			err = EVP_PKEY_derive_init(ctx1);
-			if (err >= 1)
-				err = EVP_PKEY_derive_set_peer(ctx1, ekeyx);
-			size_t keylen = 0;
-			if (err >= 1)
-				err = EVP_PKEY_derive(ctx1, NULL, &keylen);
-			if (err >= 1)
-			{
-				GrapaInt g;
-				GrapaBYTE gc;
-				gc.SetLength(keylen);
-				err = EVP_PKEY_derive(ctx1, gc.mBytes, &keylen);
-				if (err >= 1)
-				{
-					gc.SetLength(keylen);
-					g.FromBytes(gc,true);
-					pSecret = g.getBytes(true);
-				}
+			// Create a new EVP_PKEY context for the peer's public key
+			EVP_PKEY* peer_key = EVP_PKEY_new();
+			if (peer_key == NULL) return false;
+			
+			// Create EC_KEY for the peer
+			EC_KEY* peer_ec = EC_KEY_new_by_curve_name(nid);
+			if (peer_ec == NULL) {
+				EVP_PKEY_free(peer_key);
+				return false;
 			}
-			EVP_PKEY_free(ekeyx);
-			EC_POINT_free(pubx);
-			EC_KEY_free(keyx);
+			
+			// Convert the public key bytes to BIGNUM
+			pub1 = BN_bin2bn((u8*)x->mValue.mBytes, x->mValue.mLength, NULL);
+			if (pub1 == NULL) {
+				EC_KEY_free(peer_ec);
+				EVP_PKEY_free(peer_key);
+				return false;
+			}
+			
+			// Convert BIGNUM to EC_POINT
+			EC_POINT* pub_point = EC_POINT_bn2point(EC_KEY_get0_group(peer_ec), pub1, NULL, NULL);
+			if (pub_point == NULL) {
+				BN_free(pub1);
+				EC_KEY_free(peer_ec);
+				EVP_PKEY_free(peer_key);
+				return false;
+			}
+			
+			// Set the public key in the EC_KEY
+			err = EC_KEY_set_public_key(peer_ec, pub_point);
+			if (err <= 0) {
+				EC_POINT_free(pub_point);
+				BN_free(pub1);
+				EC_KEY_free(peer_ec);
+				EVP_PKEY_free(peer_key);
+				return false;
+			}
+			
+			// Set the EC_KEY in the EVP_PKEY
+			err = EVP_PKEY_set1_EC_KEY(peer_key, peer_ec);
+			if (err <= 0) {
+				EC_POINT_free(pub_point);
+				BN_free(pub1);
+				EC_KEY_free(peer_ec);
+				EVP_PKEY_free(peer_key);
+				return false;
+			}
+			
+			// Initialize the derivation context
+			err = EVP_PKEY_derive_init(ctx1);
+			if (err <= 0) {
+				EC_POINT_free(pub_point);
+				BN_free(pub1);
+				EC_KEY_free(peer_ec);
+				EVP_PKEY_free(peer_key);
+				return false;
+			}
+			
+			// Set the peer key
+			err = EVP_PKEY_derive_set_peer(ctx1, peer_key);
+			if (err <= 0) {
+				EC_POINT_free(pub_point);
+				BN_free(pub1);
+				EC_KEY_free(peer_ec);
+				EVP_PKEY_free(peer_key);
+				return false;
+			}
+			
+			// Get the required key length
+			size_t keylen = 0;
+			err = EVP_PKEY_derive(ctx1, NULL, &keylen);
+			if (err <= 0 || keylen == 0) {
+				EC_POINT_free(pub_point);
+				BN_free(pub1);
+				EC_KEY_free(peer_ec);
+				EVP_PKEY_free(peer_key);
+				return false;
+			}
+			
+			// Derive the shared secret
+			GrapaBYTE gc;
+			gc.SetLength(keylen);
+			err = EVP_PKEY_derive(ctx1, gc.mBytes, &keylen);
+			if (err <= 0) {
+				EC_POINT_free(pub_point);
+				BN_free(pub1);
+				EC_KEY_free(peer_ec);
+				EVP_PKEY_free(peer_key);
+				return false;
+			}
+			
+			// Convert to GrapaInt and set the result
+			GrapaInt g;
+			gc.SetLength(keylen);
+			g.FromBytes(gc, true);
+			pSecret = g.getBytes(true);
+			
+			// Clean up
+			EC_POINT_free(pub_point);
+			BN_free(pub1);
+			EC_KEY_free(peer_ec);
+			EVP_PKEY_free(peer_key);
+			
+			// Clean up our key objects
+			EVP_PKEY_CTX_free(ctx1);
 		}
+		else
+		{
+			// Clean up our key objects if no peer key found
+			EVP_PKEY_CTX_free(ctx1);
+		}
+		
 		return(err >= 1);
 	}
 	else if (mRPK)
