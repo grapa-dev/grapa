@@ -197,6 +197,38 @@
    - **Impact**: Scripts can now access command-line parameters correctly
    - **Next**: No action needed - functionality is working as expected
    - **⚠️ Windows Validation Needed**: System environment variables (`$WORK`, `$HOME`, `$TEMP`, `$VERSION`, `$PLATFORM`, `$BIN`, `$LIB`, `$NAME`) documented for CLI development but need validation on Windows to ensure cross-platform compatibility
+
+### Memory Management Analysis
+- **✅ COMPLETED**: Comprehensive analysis of `std::vector` usage across the codebase
+- **Files analyzed**: 10+ source files including GrapaLink.cpp, GrapaEncode.cpp, GrapaValue.cpp, grep implementations, and test files
+- **Findings**: No memory leaks identified - all pointer vectors have proper cleanup or store pointers to objects owned elsewhere
+- **Best practices observed**: RAII patterns, explicit cleanup methods, proper ownership semantics
+- **Documentation**: Created `maintainers/DEVELOPMENT/MEMORY_MANAGEMENT_ANALYSIS.md` with detailed analysis
+- **Recommendations**: Continue current patterns, consider adding memory leak detection to CI/CD
+
+### OpenSSL Deprecation Warnings - Windows Build Issue
+- **🔴 HIGH PRIORITY**: Windows builds failing due to OSSL_DEPRECATED warnings treated as errors
+- **Root cause**: MSVC compiler stricter than Mac Clang - treats deprecation warnings as errors
+- **Impact**: Windows builds fail while Mac builds succeed with warnings
+- **Affected functions**: RSA, DH, EC, and other OpenSSL 1.1.1 API calls in GrapaEncode.cpp, GrapaLibRule.cpp, GrapaPrime.cpp, GrapaState.cpp
+- **Strategy**: Fix Windows build configuration to suppress deprecation warnings (no code changes)
+- **Future**: Plan OpenSSL 3.x API migration as separate project
+
+**Windows Agent Task Prompt:**
+```
+The Windows build is failing due to OSSL_DEPRECATED warnings being treated as errors by MSVC compiler. 
+The Mac build succeeds with the same warnings because Clang is more lenient.
+
+Investigate and fix the Windows build configuration to suppress deprecation warnings without changing any code.
+Focus on:
+1. CMakeLists.txt compiler flags for Windows
+2. GitHub Actions workflow settings
+3. MSVC-specific warning suppression flags
+4. Any other build configuration that treats warnings as errors
+
+The goal is to make Windows builds succeed with the same deprecation warnings that Mac shows, 
+allowing the existing OpenSSL 1.1.1 API calls to continue working unchanged.
+```
 2. **✅ FLTK 1.4.4 Upgrade - Complete**: 
    - **Static Libraries Built**: FLTK 1.4.4 static libraries successfully built for all supported platforms
    - **Threading Issues Resolved**: Fixed Cocoa threading violations in `GrapaWidget::New()` and `GrapaWidget::CLEAR()`
