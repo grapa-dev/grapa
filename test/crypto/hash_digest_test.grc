@@ -1,0 +1,101 @@
+/* Hash Digest Support Test
+   Tests all possible hash digest algorithms to identify which ones are supported */
+
+"=== Hash Digest Support Test ===".echo();
+
+/* Common hash algorithms to test */
+digests = [
+    /* SHA family */
+    "md5", "sha1", "sha224", "sha256", "sha384", "sha512",
+    
+    /* SHA3 family */
+    "sha3-224", "sha3-256", "sha3-384", "sha3-512",
+    
+    /* SHAKE family */
+    "shake128", "shake256",
+    
+    /* BLAKE2 family */
+    "blake2b256", "blake2b384", "blake2b512",
+    "blake2s128", "blake2s256",
+    
+    /* Other algorithms */
+    "ripemd160", "whirlpool", "sm3", "gost",
+    
+    /* Additional OpenSSL algorithms */
+    "sha512-224", "sha512-256", "sha3-224", "sha3-256", "sha3-384", "sha3-512",
+    "md4", "md5-sha1", "sha1", "sha224", "sha256", "sha384", "sha512",
+    "sha512-224", "sha512-256", "sha3-224", "sha3-256", "sha3-384", "sha3-512",
+    "shake128", "shake256", "blake2b512", "blake2s256", "md5", "md4",
+    "ripemd160", "whirlpool", "sm3", "gost", "streebog256", "streebog512"
+];
+
+/* Remove duplicates */
+unique_digests = [];
+digests.range().each(op(i) {
+    digest = digests.get(i);
+    if (!unique_digests.contains(digest)) {
+        unique_digests.push(digest);
+    }
+});
+
+"Testing " + unique_digests.len().str() + " hash algorithms:".echo();
+"".echo();
+
+/* Test each digest */
+supported = [];
+unsupported = [];
+
+unique_digests.range().each(op(i) {
+    digest = unique_digests.get(i);
+    
+    try {
+        md_keys = "md".genkeys({"digest": digest});
+        message = "Hello World";
+        hash = message.encode(md_keys);
+        
+        /* Verify it's working correctly */
+        if (hash.type() == "$RAW" && hash.uhex().len() > 0) {
+            supported.push(digest);
+            (digest + ": ✅ SUPPORTED (" + hash.uhex().len().str() + " chars)").echo();
+        } else {
+            unsupported.push(digest);
+            (digest + ": ❌ ERROR (wrong type or empty)").echo();
+        }
+    } catch (e) {
+        unsupported.push(digest);
+        (digest + ": ❌ NOT SUPPORTED").echo();
+    }
+});
+
+"".echo();
+"=== SUMMARY ===".echo();
+("Supported algorithms: " + supported.len().str()).echo();
+("Unsupported algorithms: " + unsupported.len().str()).echo();
+
+"".echo();
+"✅ SUPPORTED ALGORITHMS:".echo();
+supported.range().each(op(i) {
+    ("  - " + supported.get(i)).echo();
+});
+
+"".echo();
+"❌ UNSUPPORTED ALGORITHMS:".echo();
+unsupported.range().each(op(i) {
+    ("  - " + unsupported.get(i)).echo();
+});
+
+"".echo();
+"=== DETAILED TESTING OF SUPPORTED ALGORITHMS ===".echo();
+supported.range().each(op(i) {
+    digest = supported.get(i);
+    md_keys = "md".genkeys({"digest": digest});
+    message = "Hello World";
+    hash = message.encode(md_keys);
+    
+    (digest + ":").echo();
+    ("  Type: " + hash.type()).echo();
+    ("  Hex: " + hash.hex()).echo();
+    ("  UHex: " + hash.uhex()).echo();
+    ("  Length: " + hash.uhex().len().str() + " chars (" + (hash.uhex().len() / 2).str() + " bytes)").echo();
+    "".echo();
+});

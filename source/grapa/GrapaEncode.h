@@ -34,7 +34,7 @@ public:
 	bool Sign(GrapaRuleEvent* pData, GrapaBYTE& pSignature, GrapaRuleEvent* pParams);
 	bool SignAdd(GrapaRuleEvent* pData, GrapaBYTE& pSignature, GrapaRuleEvent* pParams);
 	bool Verify(GrapaRuleEvent* pData, const GrapaBYTE& pSignature, GrapaRuleEvent* pParams);
-	bool VerifyRecover(GrapaBYTE& pData, const GrapaBYTE& pSignature);
+	bool VerifyRecover(GrapaBYTE& pData, const GrapaBYTE& pSignature, GrapaRuleEvent* pParams);
 	bool Secret(GrapaRuleEvent* pKey, GrapaBYTE& pSecret);private:
 private:
 	void Clear();

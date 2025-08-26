@@ -385,6 +385,45 @@ Grapa provides specialized unsigned methods for cryptographic applications and b
 0xFFFF.uraw();      /* "0x0FFFF" (with formatting) */
 ```
 
+**Critical: Cryptographic Function Output Interpretation**
+
+When using cryptographic functions like `encode()` and `sign()`, the results are returned as `GrapaTokenType::RAW` data. This data may appear negative when displayed with `.hex()` if the high bit is set:
+
+```grapa
+/* Cryptographic function output */
+md_keys = "md".genkeys({"digest": "sha256"});
+message = "Hello World";
+hash = message.encode(md_keys);
+
+/* ❌ INCORRECT: May show negative hex if high bit is set */
+hash.hex().echo();  /* May show: -5A6E592BF40BDFBFB5FEE8CC30484E6F29D39A40F4325CD4A84D88265260EB92 */
+
+/* ✅ CORRECT: Use unsigned methods for cryptographic output */
+hash.uint().hex().echo();  /* Shows: A591A6D40BF420404A011733CFB7B190D62C65BF0BCDA32B57B277D9AD9F146E */
+hash.uhex().echo();        /* Shows: A591A6D40BF420404A011733CFB7B190D62C65BF0BCDA32B57B277D9AD9F146E */
+```
+
+**Why this happens:**
+- **`encode()` and `sign()` return `GrapaTokenType::RAW` data**
+- **`GrapaInt::FromBytes()` interprets `RAW` data with high bit set as negative**
+- **Cryptographic outputs often have the high bit set** (e.g., SHA256 hashes)
+- **Use `uint()` or `uhex()` for proper unsigned interpretation**
+
+**Best practice for cryptographic code:**
+```grapa
+/* Always use unsigned methods for cryptographic operations */
+hash = message.encode(md_keys);
+signature = keys.sign(message);
+
+/* For display and comparison */
+hash_hex = hash.uhex();
+signature_hex = signature.uhex();
+
+/* For mathematical operations */
+hash_uint = hash.uint();
+result = hash_uint.modpow(exponent, modulus);
+```
+
 ### Hex Representation Methods: `.hex()` vs `.raw()`
 
 Grapa provides two different hex representation methods that serve different purposes:

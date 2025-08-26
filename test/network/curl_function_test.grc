@@ -22,7 +22,7 @@ parse_url = op(url_str) {
         url_str = url_str.right(url_str.len() - 8);
     } else {
         url.protocol = "http";  /* Default to HTTP */
-    }
+    };
     
     /* Split host:port/path */
     slash_pos = -1;
@@ -31,9 +31,9 @@ parse_url = op(url_str) {
         if (url_str.mid(i, 1) == "/") {
             slash_pos = i;
             break;
-        }
+        };
         i += 1;
-    }
+    };
     
     host_part = "";
     if (slash_pos >= 0) {
@@ -42,7 +42,7 @@ parse_url = op(url_str) {
     } else {
         host_part = url_str;
         url.path = "/";
-    }
+    };
     
     /* Use Grapa's built-in URL parsing for host:port */
     url.host_port = host_part;
@@ -67,7 +67,7 @@ build_query = op(params) {
         value = params[key];
         query_parts += url_encode(key.str()) + "=" + url_encode(value.str());
         i += 1;
-    }
+    };
     
     return query_parts.join("&");
 };
@@ -84,7 +84,7 @@ build_headers = op(headers) {
         value = headers[key];
         header_lines += key + ": " + value;
         i += 1;
-    }
+    };
     
     return header_lines.join("\r\n");
 };
@@ -94,7 +94,7 @@ curl = op(url_str, options) {
     /* Default options */
     if (options.type() != $LIST) {
         options = {};
-    }
+    };
     
     /* Set defaults */
     if (!options.method) options.method = "GET";
@@ -110,13 +110,13 @@ curl = op(url_str, options) {
     /* Add default headers */
     if (!options.headers["User-Agent"]) {
         options.headers["User-Agent"] = "Grapa-Curl/1.0";
-    }
+    };
     if (!options.headers["Accept"]) {
         options.headers["Accept"] = "*/*";
-    }
+    };
     if (!options.headers["Connection"]) {
         options.headers["Connection"] = "close";
-    }
+    };
     
     /* Handle request body */
     body = "";
@@ -125,27 +125,27 @@ curl = op(url_str, options) {
             /* JSON data */
             if (!options.headers["Content-Type"]) {
                 options.headers["Content-Type"] = "application/json";
-            }
+            };
             body = options.data.str();
         } else if (options.data.type() == $STR) {
             /* Raw string data */
             if (!options.headers["Content-Type"]) {
                 options.headers["Content-Type"] = "text/plain";
-            }
+            };
             body = options.data;
-        }
+        };
     } else if (options.form) {
         /* Form data */
         if (!options.headers["Content-Type"]) {
             options.headers["Content-Type"] = "application/x-www-form-urlencoded";
-        }
+        };
         body = build_query(options.form);
-    }
+    };
     
     /* Add content length if there's a body */
     if (body.len() > 0) {
         options.headers["Content-Length"] = body.len();
-    }
+    };
     
     /* Build HTTP request */
     request_line = options.method + " " + url.path + " HTTP/1.1\r\n";
@@ -160,9 +160,9 @@ curl = op(url_str, options) {
         ("* User-Agent: " + options.headers["User-Agent"]).echo();
         if (body.len() > 0) {
             ("* Content-Length: " + body.len()).echo();
-        }
+        };
         ("* ").echo();
-    }
+    };
     
     /* Create network connection */
     net = $net();

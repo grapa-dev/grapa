@@ -12923,7 +12923,7 @@ GrapaRuleEvent* GrapaLibraryRuleVerifyRecoverEvent::Run(GrapaScriptExec* vScript
 		if (isset)
 		{
 			GrapaBYTE d;
-			bool success = key.VerifyRecover(d, r1.vVal->mValue);
+			bool success = key.VerifyRecover(d, r1.vVal->mValue, r3.vVal);
 			result = new GrapaRuleEvent(0, GrapaCHAR(), d);
 		}
 	}
@@ -16315,9 +16315,11 @@ GrapaRuleEvent* GrapaLibraryRuleBaseEvent::Run(GrapaScriptExec* vScriptExec, Gra
 		case GrapaTokenType::TIME:
 		case GrapaTokenType::BOOL:
 		case GrapaTokenType::TABLE:
-		case GrapaTokenType::RAW:
 		case GrapaTokenType::STR:
 			a.FromBytes(r1.vVal->mValue, isUnsigned.GetItem(0)!=0);
+		case GrapaTokenType::RAW:
+			/* RAW data (especially cryptographic) should always be unsigned */
+			a.FromBytes(r1.vVal->mValue, true);
 			result = new GrapaRuleEvent(0, item, a.ToString(base.GetItem(0)));
 			result->mValue.mToken = GrapaTokenType::STR;
 			break;

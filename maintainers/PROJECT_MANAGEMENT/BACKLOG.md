@@ -277,6 +277,36 @@ This backlog tracks all future, long-term, and queued tasks for the Grapa projec
 - [ ] **Improve memory management for long-running scripts**
 - [ ] **Add caching for frequently accessed data structures**
 - [ ] **Performance Benchmarking**: Implement systematic performance comparison with ripgrep and other tools
+- [ ] **Cryptographic Performance and Security Analysis**: Comprehensive evaluation of Grapa's cryptographic capabilities
+  - **Performance Analysis**: Benchmark all cryptographic algorithms for speed and memory usage
+    - **RSA**: Compare performance across different key sizes (1024, 2048, 3072, 4096 bits)
+    - **EC Curves**: Performance comparison of all 7 supported curves (prime256v1, secp224r1, secp256k1, secp384r1, secp521r1, prime192v1, prime239v1)
+    - **Block Ciphers**: AES variants, ChaCha20-Poly1305, SM4, ARIA, Camellia performance analysis
+    - **Hash Functions**: SHA family, SHA3, SHAKE performance comparison
+    - **RPK Algorithms**: ED25519/X25519, ED448/X448, HMAC, Poly1305, SipHash, CMAC, TLS1_PRF, Scrypt, SM2 performance
+    - **KDF Functions**: HKDF, PBKDF2, Argon2id performance analysis
+  - **Security Considerations**: Evaluate security properties and best practices
+    - **Algorithm Security**: Review current algorithm choices against NIST recommendations
+    - **Key Size Recommendations**: Document minimum key sizes for different security levels
+    - **Random Number Generation**: Audit entropy sources and random number generation quality
+    - **Side-Channel Resistance**: Evaluate resistance to timing attacks and other side channels
+    - **Post-Quantum Readiness**: Assess current algorithms against quantum computing threats
+  - **Memory Usage Analysis**: Profile memory consumption patterns for cryptographic operations
+    - **Large Number Operations**: Memory usage for different bit sizes
+    - **Key Generation**: Memory requirements for different key types
+    - **Encryption/Decryption**: Memory usage during bulk operations
+  - **Optimization Opportunities**: Identify performance bottlenecks and improvement areas
+    - **OpenSSL Integration**: Leverage OpenSSL's optimized implementations
+    - **Algorithm Selection**: Provide guidance on algorithm choice based on use case
+    - **Batch Operations**: Optimize for bulk cryptographic operations
+  - **Documentation Updates**: Create comprehensive performance and security guidance
+    - **Performance Benchmarks**: Document expected performance for each algorithm
+    - **Security Recommendations**: Provide algorithm selection guidance based on security requirements
+    - **Best Practices**: Document cryptographic best practices and common pitfalls
+  - **Estimated Effort**: Medium Release (2-4 weeks)
+  - **Dependencies**: None - can be implemented independently
+  - **Priority**: Medium - important for production use and security assessment
+  - **Deliverables**: Performance benchmark suite, security analysis report, updated documentation
 
 ### **Documentation**
 - [ ] **Maintain and periodically audit API documentation for completeness and cross-linking**
@@ -357,7 +387,90 @@ This backlog tracks all future, long-term, and queued tasks for the Grapa projec
 
 ---
 
-## 🔧 **INFRASTRUCTURE & PLATFORM** (1 item)
+## 🔧 **INFRASTRUCTURE & PLATFORM** (2 items)
+
+### **OpenSSL Hash Digest Expansion** 🔧 **CRYPTOGRAPHIC ENHANCEMENT**
+- **Status**: ✅ **Current hash digest support identified and working**
+- **Goal**: Expand hash digest support to include all additional algorithms supported by OpenSSL 3.5.2
+- **Current Support**: 
+  - ✅ **OpenSSL-based (md.genkeys)**: MD5, SHA1, SHA224, SHA256, SHA384, SHA512
+  - ✅ **GrapaHash-based (direct encode)**: SHA3-224, SHA3-256, SHA3-384, SHA3-512, SHAKE128, SHAKE256
+  - ✅ **Implementation**: Dual system - OpenSSL's `EVP_DigestInit_ex` functions vs custom `GrapaHash` implementations
+  - ✅ **Output handling**: Fixed `.hex()` method to always use unsigned interpretation for `GrapaTokenType::RAW` data
+- **Missing Algorithms** (OpenSSL 3.5.2 supports these but Grapa doesn't implement them):
+  - **BLAKE2 family**: blake2b256, blake2b384, blake2b512, blake2s128, blake2s256
+  - **Other algorithms**: RIPEMD160, WHIRLPOOL, SM3, GOST
+- **Dual Hash System Analysis**:
+  - **OpenSSL System**: Uses `md.genkeys({"digest": "algorithm"})` → `message.encode(md_keys)` pattern
+  - **GrapaHash System**: Uses direct `message.encode("ALGORITHM")` pattern
+  - **Current Overlap**: SHA3 and SHAKE families are implemented in both systems
+  - **Architectural Decision Needed**: Whether to maintain dual system or consolidate to single approach
+- **Implementation Options**:
+  - **Option 1**: Add missing algorithms to OpenSSL system (md.genkeys approach)
+  - **Option 2**: Add missing algorithms to GrapaHash system (direct encode approach)  
+  - **Option 3**: Consolidate to single system (recommended for long-term maintenance)
+- **Consolidation Benefits**:
+  - **Single API**: Consistent interface for all hash algorithms
+  - **Maintenance**: One system to maintain instead of two
+  - **Performance**: Leverage OpenSSL's optimized implementations
+  - **Standards**: OpenSSL is industry standard, well-tested, and actively maintained
+- **Consolidation Approach**:
+  - **Phase 1**: Add missing algorithms to OpenSSL system
+  - **Phase 2**: Deprecate GrapaHash system (mark as deprecated but keep working)
+  - **Phase 3**: Remove GrapaHash system after sufficient migration period
+- **Testing Strategy**:
+  - Test each new algorithm with `md.genkeys({"digest": "algorithm"})` and `message.encode(md_keys)`
+  - Verify hex output is positive (unsigned interpretation working correctly)
+  - Compare hash outputs with known test vectors for validation
+  - Ensure backward compatibility during transition period
+- **Estimated Effort**: Small Release (2-3 days for full consolidation)
+- **Dependencies**: None - can be implemented independently
+- **Priority**: Medium - enhances cryptographic capabilities and improves architecture
+- **Risk Level**: Low - simple addition to existing working infrastructure
+
+### **PFC (Pairing-Friendly Curve) Implementation Fix** 🔧 **CRYPTOGRAPHIC ENHANCEMENT**
+- **Status**: ❌ **Partially implemented but has critical issues**
+- **Goal**: Fix BLS12-381 implementation for "pfc" (Pairing-Friendly Curve) cryptography
+- **Current Implementation**: 
+  - ✅ **Key Generation**: Works with `ikm` (Input Keying Material) or `sk` (private key) parameters
+  - ❌ **Private Key Generation**: Generated private keys appear to be all zeros
+  - ❌ **Signing**: Returns errors when attempting to sign messages
+  - ❌ **Signature Aggregation**: `SignAdd` functionality not working properly
+  - ❌ **Verification**: Cannot verify signatures due to signing issues
+- **Issues Identified**:
+  - **Key Generation Bug**: `blst::blst_keygen()` may not be working correctly, producing invalid private keys
+  - **Signing Process**: Complex BLS12-381 signing implementation has bugs
+  - **BLST Library Integration**: Potential issues with BLST library usage or configuration
+  - **Algorithm Support**: Only supports BBS (Boneh-Boyen-Shacham) signatures, not standard BLS signatures
+- **Technical Analysis**:
+  - **Implementation Location**: `source/grapa/GrapaEncode.cpp` lines 275-1338 (Grapa_bls12_381 class)
+  - **Key Generation**: Uses `blst::blst_keygen()` function for private key generation
+  - **Signing**: Complex implementation with BBS signature scheme
+  - **Dependencies**: Requires BLST library (`prj/blst/`) for BLS12-381 operations
+- **Required Fixes**:
+  - **Fix Key Generation**: Ensure `blst::blst_keygen()` produces valid private keys
+  - **Fix Signing Process**: Debug and fix the BLS12-381 signing implementation
+  - **Add Standard BLS Support**: Implement standard BLS signatures in addition to BBS
+  - **Fix Signature Aggregation**: Ensure `SignAdd` works correctly for signature aggregation
+  - **Add Verification**: Implement proper signature verification
+  - **Error Handling**: Improve error reporting for debugging
+- **Testing Requirements**:
+  - Test key generation with various input keying materials
+  - Verify generated private keys are valid (non-zero)
+  - Test signing with known test vectors
+  - Test signature verification
+  - Test signature aggregation functionality
+  - Compare with known BLS12-381 implementations
+- **Documentation Updates**:
+  - Update `docs-src/docs/use_cases/cryptography.md` with working PFC examples
+  - Document BLS12-381 algorithm options and parameters
+  - Add signature aggregation examples
+  - Update status from "Partially Supported" to "Fully Supported"
+- **Estimated Effort**: Medium Release (2-4 weeks)
+- **Dependencies**: BLST library must be properly configured and working
+- **Priority**: Medium - important for advanced cryptographic capabilities
+- **Risk Level**: Medium - complex cryptographic implementation requiring careful testing
+- **Deliverables**: Working PFC implementation, comprehensive tests, updated documentation
 
 ### **Platform-Aware Library Directory Implementation** 🔧 **INFRASTRUCTURE ENHANCEMENT**
 - **Status**: Initial implementation complete but reverted due to compilation issues and testing challenges

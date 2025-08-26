@@ -59,7 +59,8 @@ limitations under the License.
 #include <openssl/evp.h>
 #include <openssl/engine.h>
 #include <openssl/ec.h>
-#include <openssl/kdf.h>	
+#include <openssl/kdf.h>
+#include <openssl/err.h>	
 
 #include <blst/blst.hpp>
 
@@ -1324,7 +1325,7 @@ void GrapaEncode::Clear()
 	mRSA = NULL;
 	if (mDH) DH_free((DH*)mDH);
 	mDH = NULL;
-	if (mEC) EVP_PKEY_CTX_free((EVP_PKEY_CTX*)mEC);
+	if (mEC) EVP_PKEY_free((EVP_PKEY*)mEC);
 	mEC = NULL;
 	if (mBCe) EVP_CIPHER_CTX_free((EVP_CIPHER_CTX*)mBCe);
 	mBCe = NULL;
@@ -1349,39 +1350,47 @@ bool GrapaEncode::FROM(GrapaRuleEvent* pKey)
 
 	if (x->mValue.StrLowerCmp("rsa")==0)
 	{
-		mRSA = (RSAs*)RSA_new_method(NULL);
+		mRSA = (void*)RSA_new_method(NULL);
 
+		// Use OpenSSL 3.x API to set RSA key components
+		BIGNUM *n = NULL, *e = NULL, *d = NULL, *p = NULL, *q = NULL, *dmp1 = NULL, *dmq1 = NULL, *iqmp = NULL;
+		
 		x = pKey->vQueue->Search("n", idx);
 		while (x && x->mValue.mToken == GrapaTokenType::PTR) x = x->vRulePointer;
-		if (x) ((RSAs*)mRSA)->n = BN_bin2bn((u8*)x->mValue.mBytes, x->mValue.mLength, NULL);
+		if (x) n = BN_bin2bn((u8*)x->mValue.mBytes, x->mValue.mLength, NULL);
 
 		x = pKey->vQueue->Search("e", idx);
 		while (x && x->mValue.mToken == GrapaTokenType::PTR) x = x->vRulePointer;
-		if (x) ((RSAs*)mRSA)->e = BN_bin2bn((u8*)x->mValue.mBytes, x->mValue.mLength, NULL);
+		if (x) e = BN_bin2bn((u8*)x->mValue.mBytes, x->mValue.mLength, NULL);
 
 		x = pKey->vQueue->Search("d", idx);
 		while (x && x->mValue.mToken == GrapaTokenType::PTR) x = x->vRulePointer;
-		if (x) ((RSAs*)mRSA)->d = BN_bin2bn((u8*)x->mValue.mBytes, x->mValue.mLength, NULL);
+		if (x) d = BN_bin2bn((u8*)x->mValue.mBytes, x->mValue.mLength, NULL);
 
 		x = pKey->vQueue->Search("p", idx);
 		while (x && x->mValue.mToken == GrapaTokenType::PTR) x = x->vRulePointer;
-		if (x) ((RSAs*)mRSA)->p = BN_bin2bn((u8*)x->mValue.mBytes, x->mValue.mLength, NULL);
+		if (x) p = BN_bin2bn((u8*)x->mValue.mBytes, x->mValue.mLength, NULL);
 
 		x = pKey->vQueue->Search("q", idx);
 		while (x && x->mValue.mToken == GrapaTokenType::PTR) x = x->vRulePointer;
-		if (x) ((RSAs*)mRSA)->q = BN_bin2bn((u8*)x->mValue.mBytes, x->mValue.mLength, NULL);
+		if (x) q = BN_bin2bn((u8*)x->mValue.mBytes, x->mValue.mLength, NULL);
 
 		x = pKey->vQueue->Search("dmp1", idx);
 		while (x && x->mValue.mToken == GrapaTokenType::PTR) x = x->vRulePointer;
-		if (x) ((RSAs*)mRSA)->dmp1 = BN_bin2bn((u8*)x->mValue.mBytes, x->mValue.mLength, NULL);
+		if (x) dmp1 = BN_bin2bn((u8*)x->mValue.mBytes, x->mValue.mLength, NULL);
 
 		x = pKey->vQueue->Search("dmq1", idx);
 		while (x && x->mValue.mToken == GrapaTokenType::PTR) x = x->vRulePointer;
-		if (x) ((RSAs*)mRSA)->dmq1 = BN_bin2bn((u8*)x->mValue.mBytes, x->mValue.mLength, NULL);
+		if (x) dmq1 = BN_bin2bn((u8*)x->mValue.mBytes, x->mValue.mLength, NULL);
 
 		x = pKey->vQueue->Search("iqmp", idx);
 		while (x && x->mValue.mToken == GrapaTokenType::PTR) x = x->vRulePointer;
-		if (x) ((RSAs*)mRSA)->iqmp = BN_bin2bn((u8*)x->mValue.mBytes, x->mValue.mLength, NULL);
+		if (x) iqmp = BN_bin2bn((u8*)x->mValue.mBytes, x->mValue.mLength, NULL);
+
+		// Set the key components using OpenSSL 3.x API
+		if (n && e) RSA_set0_key((RSA*)mRSA, n, e, d);
+		if (p && q) RSA_set0_factors((RSA*)mRSA, p, q);
+		if (dmp1 && dmq1 && iqmp) RSA_set0_crt_params((RSA*)mRSA, dmp1, dmq1, iqmp);
 
 		return true;
 	}
@@ -1399,6 +1408,16 @@ bool GrapaEncode::FROM(GrapaRuleEvent* pKey)
 			nid = NID_secp224r1;
 		else if (x->mValue.StrLowerCmp("prime256v1") == 0)
 			nid = NID_X9_62_prime256v1;
+		else if (x->mValue.StrLowerCmp("secp256k1") == 0)
+			nid = NID_secp256k1;
+		else if (x->mValue.StrLowerCmp("secp384r1") == 0)
+			nid = NID_secp384r1;
+		else if (x->mValue.StrLowerCmp("secp521r1") == 0)
+			nid = NID_secp521r1;
+		else if (x->mValue.StrLowerCmp("prime192v1") == 0)
+			nid = NID_X9_62_prime192v1;
+		else if (x->mValue.StrLowerCmp("prime239v1") == 0)
+			nid = NID_X9_62_prime239v1;
 		else
 			return false;
 		EC_KEY* keyy = EC_KEY_new_by_curve_name(nid);
@@ -1444,8 +1463,7 @@ bool GrapaEncode::FROM(GrapaRuleEvent* pKey)
 			EVP_PKEY_free(ekeyy);
 			return false;
 		}
-		mEC = EVP_PKEY_CTX_new(ekeyy, ENGINE_get_default_EC());
-		EVP_PKEY_free(ekeyy);
+		mEC = (void*)ekeyy;
 		return true;
 	}
 	else if (x->mValue.StrLowerCmp("dh") == 0)
@@ -1589,6 +1607,10 @@ bool GrapaEncode::FROM(GrapaRuleEvent* pKey)
 			else if (algorithmname.StrLowerCmp("HMAC") == 0) algorithm = EVP_PKEY_HMAC;
 			else if (algorithmname.StrLowerCmp("POLY1305") == 0) algorithm = EVP_PKEY_POLY1305;
 			else if (algorithmname.StrLowerCmp("SIPHASH") == 0) algorithm = EVP_PKEY_SIPHASH;
+			else if (algorithmname.StrLowerCmp("CMAC") == 0) algorithm = EVP_PKEY_CMAC;
+			else if (algorithmname.StrLowerCmp("TLS1_PRF") == 0) algorithm = EVP_PKEY_TLS1_PRF;
+			else if (algorithmname.StrLowerCmp("SCRYPT") == 0) algorithm = EVP_PKEY_SCRYPT;
+			else if (algorithmname.StrLowerCmp("SM2") == 0) algorithm = EVP_PKEY_SM2;
 			else return false;
 			mRPK = EVP_PKEY_new_raw_private_key(algorithm, NULL, prv.mBytes, prv.mLength);
 		}
@@ -1599,6 +1621,7 @@ bool GrapaEncode::FROM(GrapaRuleEvent* pKey)
 			else if (algorithmname.StrLowerCmp("X25519") == 0) algorithm = EVP_PKEY_X25519;
 			else if (algorithmname.StrLowerCmp("ED448") == 0) algorithm = EVP_PKEY_ED448;
 			else if (algorithmname.StrLowerCmp("X448") == 0) algorithm = EVP_PKEY_X448;
+			else if (algorithmname.StrLowerCmp("SM2") == 0) algorithm = EVP_PKEY_SM2;
 			else return false;
 			mRPK = EVP_PKEY_new_raw_public_key(algorithm, NULL, pub.mBytes, pub.mLength);
 		}
@@ -1727,7 +1750,7 @@ GrapaRuleEvent* GrapaEncode::GenKeys(const GrapaCHAR& pMethod, GrapaRuleEvent* p
 		BIGNUM* n;
 		GrapaCHAR s;
 
-		mRSA = (RSAs*)RSA_new_method(NULL);
+		mRSA = (void*)RSA_new_method(NULL);
 
 		gb = e.getBytes(true);
 		n = BN_bin2bn((u8*)gb.mBytes, gb.mLength, NULL);
@@ -1743,61 +1766,83 @@ GrapaRuleEvent* GrapaEncode::GenKeys(const GrapaCHAR& pMethod, GrapaRuleEvent* p
 		GrapaInt g;
 		gb.mToken = GrapaTokenType::INT;
 
-		gb.SetSize(BN_num_bytes(((RSAs*)mRSA)->n) + 1);
-		sz = BN_bn2bin(((RSAs*)mRSA)->n, (u8*)gb.mBytes);
-		gb.SetLength(sz);
-		g.FromBytes(gb,true);
-		g.dataSigned = 0;
-		result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("n"), g.getBytes(true)));
+		// Use OpenSSL 3.x API to get RSA key components
+		const BIGNUM *n_bn = NULL, *e_bn = NULL, *d_bn = NULL, *p_bn = NULL, *q_bn = NULL, *dmp1_bn = NULL, *dmq1_bn = NULL, *iqmp_bn = NULL;
+		RSA_get0_key((RSA*)mRSA, &n_bn, &e_bn, &d_bn);
+		RSA_get0_factors((RSA*)mRSA, &p_bn, &q_bn);
+		RSA_get0_crt_params((RSA*)mRSA, &dmp1_bn, &dmq1_bn, &iqmp_bn);
 
-		gb.SetSize(BN_num_bytes(((RSAs*)mRSA)->e) + 1);
-		sz = BN_bn2bin(((RSAs*)mRSA)->e, (u8*)gb.mBytes);
-		gb.SetLength(sz);
-		g.FromBytes(gb,true);
-		g.dataSigned = 0;
-		result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("e"), g.getBytes(true)));
+		if (n_bn) {
+			gb.SetSize(BN_num_bytes(n_bn) + 1);
+			sz = BN_bn2bin(n_bn, (u8*)gb.mBytes);
+			gb.SetLength(sz);
+			g.FromBytes(gb,true);
+			g.dataSigned = 0;
+			result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("n"), g.getBytes(true)));
+		}
 
-		gb.SetSize(BN_num_bytes(((RSAs*)mRSA)->d) + 1);
-		sz = BN_bn2bin(((RSAs*)mRSA)->d, (u8*)gb.mBytes);
-		gb.SetLength(sz);
-		g.FromBytes(gb,true);
-		g.dataSigned = 0;
-		result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("d"), g.getBytes(true)));
+		if (e_bn) {
+			gb.SetSize(BN_num_bytes(e_bn) + 1);
+			sz = BN_bn2bin(e_bn, (u8*)gb.mBytes);
+			gb.SetLength(sz);
+			g.FromBytes(gb,true);
+			g.dataSigned = 0;
+			result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("e"), g.getBytes(true)));
+		}
 
-		gb.SetSize(BN_num_bytes(((RSAs*)mRSA)->p) + 1);
-		sz = BN_bn2bin(((RSAs*)mRSA)->p, (u8*)gb.mBytes);
-		gb.SetLength(sz);
-		g.FromBytes(gb,true);
-		g.dataSigned = 0;
-		result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("p"), g.getBytes(true)));
+		if (d_bn) {
+			gb.SetSize(BN_num_bytes(d_bn) + 1);
+			sz = BN_bn2bin(d_bn, (u8*)gb.mBytes);
+			gb.SetLength(sz);
+			g.FromBytes(gb,true);
+			g.dataSigned = 0;
+			result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("d"), g.getBytes(true)));
+		}
 
-		gb.SetSize(BN_num_bytes(((RSAs*)mRSA)->q) + 1);
-		sz = BN_bn2bin(((RSAs*)mRSA)->q, (u8*)gb.mBytes);
-		gb.SetLength(sz);
-		g.FromBytes(gb,true);
-		g.dataSigned = 0;
-		result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("q"), g.getBytes(true)));
+		if (p_bn) {
+			gb.SetSize(BN_num_bytes(p_bn) + 1);
+			sz = BN_bn2bin(p_bn, (u8*)gb.mBytes);
+			gb.SetLength(sz);
+			g.FromBytes(gb,true);
+			g.dataSigned = 0;
+			result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("p"), g.getBytes(true)));
+		}
 
-		gb.SetSize(BN_num_bytes(((RSAs*)mRSA)->dmp1) + 1);
-		sz = BN_bn2bin(((RSAs*)mRSA)->dmp1, (u8*)gb.mBytes);
-		gb.SetLength(sz);
-		g.FromBytes(gb,true);
-		g.dataSigned = 0;
-		result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("dmp1"), g.getBytes(true)));
+		if (q_bn) {
+			gb.SetSize(BN_num_bytes(q_bn) + 1);
+			sz = BN_bn2bin(q_bn, (u8*)gb.mBytes);
+			gb.SetLength(sz);
+			g.FromBytes(gb,true);
+			g.dataSigned = 0;
+			result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("q"), g.getBytes(true)));
+		}
 
-		gb.SetSize(BN_num_bytes(((RSAs*)mRSA)->dmq1) + 1);
-		sz = BN_bn2bin(((RSAs*)mRSA)->dmq1, (u8*)gb.mBytes);
-		gb.SetLength(sz);
-		g.FromBytes(gb,true);
-		g.dataSigned = 0;
-		result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("dmq1"), g.getBytes(true)));
+		if (dmp1_bn) {
+			gb.SetSize(BN_num_bytes(dmp1_bn) + 1);
+			sz = BN_bn2bin(dmp1_bn, (u8*)gb.mBytes);
+			gb.SetLength(sz);
+			g.FromBytes(gb,true);
+			g.dataSigned = 0;
+			result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("dmp1"), g.getBytes(true)));
+		}
 
-		gb.SetSize(BN_num_bytes(((RSAs*)mRSA)->iqmp) + 1);
-		sz = BN_bn2bin(((RSAs*)mRSA)->iqmp, (u8*)gb.mBytes);
-		gb.SetLength(sz);
-		g.FromBytes(gb,true);
-		g.dataSigned = 0;
-		result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("iqmp"), g.getBytes(true)));
+		if (dmq1_bn) {
+			gb.SetSize(BN_num_bytes(dmq1_bn) + 1);
+			sz = BN_bn2bin(dmq1_bn, (u8*)gb.mBytes);
+			gb.SetLength(sz);
+			g.FromBytes(gb,true);
+			g.dataSigned = 0;
+			result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("dmq1"), g.getBytes(true)));
+		}
+
+		if (iqmp_bn) {
+			gb.SetSize(BN_num_bytes(iqmp_bn) + 1);
+			sz = BN_bn2bin(iqmp_bn, (u8*)gb.mBytes);
+			gb.SetLength(sz);
+			g.FromBytes(gb,true);
+			g.dataSigned = 0;
+			result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("iqmp"), g.getBytes(true)));
+		}
 
 		return result;
 		//	https://en.wikipedia.org/wiki/RSA_(cryptosystem
@@ -1971,6 +2016,16 @@ GrapaRuleEvent* GrapaEncode::GenKeys(const GrapaCHAR& pMethod, GrapaRuleEvent* p
 			nid = NID_secp224r1;
 		else if (((GrapaCHAR*)&pCurve)->StrLowerCmp("prime256v1") == 0)
 			nid = NID_X9_62_prime256v1;
+		else if (((GrapaCHAR*)&pCurve)->StrLowerCmp("secp256k1") == 0)
+			nid = NID_secp256k1;
+		else if (((GrapaCHAR*)&pCurve)->StrLowerCmp("secp384r1") == 0)
+			nid = NID_secp384r1;
+		else if (((GrapaCHAR*)&pCurve)->StrLowerCmp("secp521r1") == 0)
+			nid = NID_secp521r1;
+		else if (((GrapaCHAR*)&pCurve)->StrLowerCmp("prime192v1") == 0)
+			nid = NID_X9_62_prime192v1;
+		else if (((GrapaCHAR*)&pCurve)->StrLowerCmp("prime239v1") == 0)
+			nid = NID_X9_62_prime239v1;
 		else
 			return result;
 
@@ -1991,8 +2046,7 @@ GrapaRuleEvent* GrapaEncode::GenKeys(const GrapaCHAR& pMethod, GrapaRuleEvent* p
 		EVP_PKEY* ekey1 = EVP_PKEY_new();
 		err = EVP_PKEY_set1_EC_KEY(ekey1, key1);
 		EC_KEY_free(key1);
-		mEC = (void*)EVP_PKEY_CTX_new(ekey1, ENGINE_get_default_EC());
-		EVP_PKEY_free(ekey1);
+						mEC = (void*)ekey1;
 
 		result = new GrapaRuleEvent();
 		result->mValue.mToken = GrapaTokenType::LIST;
@@ -2058,7 +2112,7 @@ GrapaRuleEvent* GrapaEncode::GenKeys(const GrapaCHAR& pMethod, GrapaRuleEvent* p
 		}
 		//const EVP_CIPHER* cipher = EVP_aes_256_cbc();
 		//if (ciphername.StrLowerCmp("aes_256_cbc") == 0) cipher = EVP_aes_256_cbc();
-		EVP_CIPHER* cipher = (EVP_CIPHER*) EVP_get_cipherbyname((char*)ciphername.mBytes);
+		EVP_CIPHER* cipher = (EVP_CIPHER*)EVP_get_cipherbyname((char*)ciphername.mBytes);
 		if (cipher == NULL) return result;
 		//const EVP_MD* md = EVP_sha512();
 		//if (digestname.StrLowerCmp("sha512") == 0) md = EVP_sha512();
@@ -2164,19 +2218,19 @@ GrapaRuleEvent* GrapaEncode::GenKeys(const GrapaCHAR& pMethod, GrapaRuleEvent* p
 			else if (algorithmname.StrLowerCmp("X25519") == 0) algorithm = EVP_PKEY_X25519;
 			else if (algorithmname.StrLowerCmp("ED448") == 0) algorithm = EVP_PKEY_ED448;
 			else if (algorithmname.StrLowerCmp("X448") == 0) algorithm = EVP_PKEY_X448;
-			else if (algorithmname.StrLowerCmp("HMAC") == 0) algorithm = EVP_PKEY_HMAC;
-			else if (algorithmname.StrLowerCmp("POLY1305") == 0) algorithm = EVP_PKEY_POLY1305;
-			else if (algorithmname.StrLowerCmp("SIPHASH") == 0) algorithm = EVP_PKEY_SIPHASH;
+			else if (algorithmname.StrLowerCmp("SM2") == 0) algorithm = EVP_PKEY_SM2;
 			else return result;
 			mRPK = EVP_PKEY_new_raw_private_key(algorithm, NULL, prv.mBytes, prv.mLength);
 		}
-		else if (pub.mLength)
+		else
+		if (pub.mLength)
 		{
 			int algorithm = NID_ED25519;
 			if (algorithmname.StrLowerCmp("ED25519") == 0) algorithm = EVP_PKEY_ED25519;
 			else if (algorithmname.StrLowerCmp("X25519") == 0) algorithm = EVP_PKEY_X25519;
 			else if (algorithmname.StrLowerCmp("ED448") == 0) algorithm = EVP_PKEY_ED448;
 			else if (algorithmname.StrLowerCmp("X448") == 0) algorithm = EVP_PKEY_X448;
+			else if (algorithmname.StrLowerCmp("SM2") == 0) algorithm = EVP_PKEY_SM2;
 			else return result;
 			mRPK = EVP_PKEY_new_raw_public_key(algorithm, NULL, pub.mBytes, pub.mLength);
 		}
@@ -2190,6 +2244,10 @@ GrapaRuleEvent* GrapaEncode::GenKeys(const GrapaCHAR& pMethod, GrapaRuleEvent* p
 			else if (algorithmname.StrLowerCmp("HMAC") == 0) algorithm = EVP_PKEY_HMAC;
 			else if (algorithmname.StrLowerCmp("POLY1305") == 0) algorithm = EVP_PKEY_POLY1305;
 			else if (algorithmname.StrLowerCmp("SIPHASH") == 0) algorithm = EVP_PKEY_SIPHASH;
+			else if (algorithmname.StrLowerCmp("CMAC") == 0) algorithm = EVP_PKEY_CMAC;
+			else if (algorithmname.StrLowerCmp("TLS1_PRF") == 0) algorithm = EVP_PKEY_TLS1_PRF;
+			else if (algorithmname.StrLowerCmp("SCRYPT") == 0) algorithm = EVP_PKEY_SCRYPT;
+			else if (algorithmname.StrLowerCmp("SM2") == 0) algorithm = EVP_PKEY_SM2;
 			else return result;
 			EVP_PKEY_CTX* pkeyctx = EVP_PKEY_CTX_new_id(algorithm, NULL);
 			if (pkeyctx == NULL) return result;
@@ -2406,7 +2464,7 @@ bool GrapaEncode::Encode(const GrapaBYTE& pData, GrapaBYTE& pEnc, const GrapaInt
 		//int err = EVP_PKEY_assign_RSA(key, mRSA);
 		int err = EVP_PKEY_set1_RSA(key, (RSA*)mRSA);
 		if (err <= 0) return false;
-		EVP_PKEY_CTX* ctx = EVP_PKEY_CTX_new(key, ENGINE_get_default_RSA());
+		EVP_PKEY_CTX* ctx = EVP_PKEY_CTX_new(key, NULL);
 		if (ctx == NULL)
 		{
 			EVP_PKEY_free(key);
@@ -2432,7 +2490,7 @@ bool GrapaEncode::Encode(const GrapaBYTE& pData, GrapaBYTE& pEnc, const GrapaInt
 		EVP_PKEY_free(key);
 		return true;
 	}
-	else if (mRPK)
+			else if (mRPK)
 	{
 		EVP_PKEY_CTX* ctx = EVP_PKEY_CTX_new((EVP_PKEY*)mRPK, NULL);
 		if (ctx == NULL) return false;
@@ -2493,7 +2551,7 @@ bool GrapaEncode::Encode(const GrapaBYTE& pData, GrapaBYTE& pEnc, const GrapaInt
 			return false;
 		}
 		pEnc.Append(out, outl);
-		pEnc.mToken = GrapaTokenType::RAW;
+		pEnc.mToken = GrapaTokenType::STR;
 		return true;
 	}
 	else if (mMD)
@@ -2551,7 +2609,7 @@ bool GrapaEncode::Decode(const GrapaBYTE& pEnc, GrapaBYTE& pData, const GrapaInt
 		//int err = EVP_PKEY_assign_RSA(key, mRSA);
 		int err = EVP_PKEY_set1_RSA(key, (RSA*)mRSA);
 		if (err <= 0) return false;
-		EVP_PKEY_CTX* ctx = EVP_PKEY_CTX_new(key, ENGINE_get_default_RSA());
+		EVP_PKEY_CTX* ctx = EVP_PKEY_CTX_new(key, NULL);
 		if (ctx == NULL)
 		{
 			EVP_PKEY_free(key);
@@ -2727,44 +2785,318 @@ bool GrapaEncode::Sign(GrapaRuleEvent* pData, GrapaBYTE& pSignature, GrapaRuleEv
 {
 	if (mRSA)
 	{
-		switch (pData->mValue.mToken)
-		{
-		case GrapaTokenType::STR:
-		case GrapaTokenType::RAW:
-			break;
-		default:
+		if (pData->mValue.mToken != GrapaTokenType::STR && pData->mValue.mToken != GrapaTokenType::RAW)
 			return false;
+		
+		// Get parameters with sensible defaults
+		GrapaCHAR digestname(""); // Default to empty (will use SHA-256)
+		GrapaCHAR paddingname("pss"); // Default to PSS (most secure)
+		GrapaCHAR mgf1name(""); // Default to empty (will use same as digest)
+		int saltlen = -1; // Default to -1 (auto-determine)
+		
+		if (pParams && pParams->vQueue)
+		{
+			s64 idx;
+			GrapaRuleEvent* x = pParams->vQueue->Search("digest", idx);
+			while (x && x->mValue.mToken == GrapaTokenType::PTR) x = x->vRulePointer;
+			if (x) digestname.FROM(x->mValue);
+			
+			x = pParams->vQueue->Search("padding", idx);
+			while (x && x->mValue.mToken == GrapaTokenType::PTR) x = x->vRulePointer;
+			if (x) paddingname.FROM(x->mValue);
+			
+			x = pParams->vQueue->Search("mgf1", idx);
+			while (x && x->mValue.mToken == GrapaTokenType::PTR) x = x->vRulePointer;
+			if (x) mgf1name.FROM(x->mValue);
+			
+			x = pParams->vQueue->Search("saltlen", idx);
+			while (x && x->mValue.mToken == GrapaTokenType::PTR) x = x->vRulePointer;
+			if (x) {
+				GrapaInt sl;
+				sl.FromBytes(x->mValue, true);
+				saltlen = sl.LongValue();
+			}
 		}
+		
 		EVP_PKEY* key = EVP_PKEY_new();
 		int err = EVP_PKEY_set1_RSA(key, (RSA*)mRSA);
 		if (err <= 0) return false;
-		EVP_PKEY_CTX* ctx = EVP_PKEY_CTX_new(key, ENGINE_get_default_RSA());
-		if (ctx == NULL)
+		
+		EVP_MD_CTX* ctxm = EVP_MD_CTX_new();
+		EVP_PKEY_CTX* pctx = NULL;
+		
+		// Determine padding scheme
+		if (paddingname.StrLowerCmp("raw") == 0)
 		{
-			EVP_PKEY_free(key);
-			return false;
-		}
-		err = EVP_PKEY_sign_init(ctx);
-		if (err >= 1)
-			err = EVP_PKEY_CTX_set_rsa_padding(ctx, RSA_PKCS1_PADDING);
-		//if (err >= 1)
-		//	err = EVP_PKEY_CTX_set_signature_md(ctx, EVP_sha256());
-		size_t outlen = 0;
-		if (err >= 1)
-			err = EVP_PKEY_sign(ctx, NULL, &outlen, pData->mValue.mBytes, pData->mValue.mLength);
-		if (err >= 1 && outlen)
-		{
+			// Raw signing - no padding, sign the data directly
+			EVP_PKEY_CTX* sign_ctx = EVP_PKEY_CTX_new(key, NULL);
+			if (!sign_ctx) {
+				EVP_MD_CTX_free(ctxm);
+				EVP_PKEY_free(key);
+				return false;
+			}
+			
+			err = EVP_PKEY_sign_init(sign_ctx);
+			if (err <= 0) {
+				EVP_PKEY_CTX_free(sign_ctx);
+				EVP_MD_CTX_free(ctxm);
+				EVP_PKEY_free(key);
+				return false;
+			}
+			
+			// Set no padding for raw signing
+			err = EVP_PKEY_CTX_set_rsa_padding(sign_ctx, RSA_NO_PADDING);
+			if (err <= 0) {
+				EVP_PKEY_CTX_free(sign_ctx);
+				EVP_MD_CTX_free(ctxm);
+				EVP_PKEY_free(key);
+				return false;
+			}
+			
+			size_t outlen = 0;
+			err = EVP_PKEY_sign(sign_ctx, NULL, &outlen, pData->mValue.mBytes, pData->mValue.mLength);
+			if (err <= 0 || outlen == 0) {
+				EVP_PKEY_CTX_free(sign_ctx);
+				EVP_MD_CTX_free(ctxm);
+				EVP_PKEY_free(key);
+				return false;
+			}
+			
 			pSignature.SetLength(outlen);
-			pSignature.mToken = GrapaTokenType::RAW;
-			err = EVP_PKEY_sign(ctx, pSignature.mBytes, &outlen, pData->mValue.mBytes, pData->mValue.mLength);
-			if (err >= 1)
-				pSignature.SetLength(outlen);
-			else
+			err = EVP_PKEY_sign(sign_ctx, pSignature.mBytes, &outlen, pData->mValue.mBytes, pData->mValue.mLength);
+			EVP_PKEY_CTX_free(sign_ctx);
+			EVP_MD_CTX_free(ctxm);
+			EVP_PKEY_free(key);
+			
+			if (err <= 0) {
 				pSignature.SetLength(0);
+				return false;
+			}
+			
+			pSignature.SetLength(outlen);
+			return true;
 		}
-		EVP_PKEY_CTX_free(ctx);
-		EVP_PKEY_free(key);
-		return(err >= 1);
+		else if (paddingname.StrLowerCmp("pkcs1") == 0 || paddingname.StrLowerCmp("pkcs1v15") == 0)
+		{
+			// PKCS#1 v1.5 padding (legacy, but widely compatible)
+			if (digestname.StrLowerCmp("raw") == 0) {
+				// Raw digest - sign the data directly without hashing
+				EVP_PKEY_CTX* sign_ctx = EVP_PKEY_CTX_new(key, NULL);
+				if (!sign_ctx) {
+					EVP_MD_CTX_free(ctxm);
+					EVP_PKEY_free(key);
+					return false;
+				}
+				
+				err = EVP_PKEY_sign_init(sign_ctx);
+				if (err <= 0) {
+					EVP_PKEY_CTX_free(sign_ctx);
+					EVP_MD_CTX_free(ctxm);
+					EVP_PKEY_free(key);
+					return false;
+				}
+				
+				// Set PKCS#1 v1.5 padding
+				err = EVP_PKEY_CTX_set_rsa_padding(sign_ctx, RSA_PKCS1_PADDING);
+				if (err <= 0) {
+					EVP_PKEY_CTX_free(sign_ctx);
+					EVP_MD_CTX_free(ctxm);
+					EVP_PKEY_free(key);
+					return false;
+				}
+				
+				size_t outlen = 0;
+				err = EVP_PKEY_sign(sign_ctx, NULL, &outlen, pData->mValue.mBytes, pData->mValue.mLength);
+				if (err <= 0 || outlen == 0) {
+					EVP_PKEY_CTX_free(sign_ctx);
+					EVP_MD_CTX_free(ctxm);
+					EVP_PKEY_free(key);
+					return false;
+				}
+				
+				pSignature.SetLength(outlen);
+				err = EVP_PKEY_sign(sign_ctx, pSignature.mBytes, &outlen, pData->mValue.mBytes, pData->mValue.mLength);
+				EVP_PKEY_CTX_free(sign_ctx);
+				EVP_MD_CTX_free(ctxm);
+				EVP_PKEY_free(key);
+				
+				if (err <= 0) {
+					pSignature.SetLength(0);
+					return false;
+				}
+				
+				pSignature.SetLength(outlen);
+				return true;
+			} else {
+				// Normal digest-based signing
+				const EVP_MD* md;
+				if (digestname.mLength == 0) {
+					md = EVP_sha256(); // Default to SHA-256
+				} else {
+					md = EVP_get_digestbyname((const char*)digestname.mBytes);
+				}
+				if (md == NULL) {
+					EVP_MD_CTX_free(ctxm);
+					EVP_PKEY_free(key);
+					return false;
+				}
+				
+				err = EVP_DigestSignInit(ctxm, &pctx, md, NULL, key);
+				if (err >= 1) {
+					// Set PKCS#1 v1.5 padding (this is the default, but explicit for clarity)
+					err = EVP_PKEY_CTX_set_rsa_padding(pctx, RSA_PKCS1_PADDING);
+				}
+				size_t outlen = 0;
+				if (err >= 1)
+					err = EVP_DigestSign(ctxm, NULL, &outlen, pData->mValue.mBytes, pData->mValue.mLength);
+				if (err >= 1)
+					pSignature.SetLength(outlen);
+				if (err >= 1)
+					err = EVP_DigestSign(ctxm, pSignature.mBytes, &outlen, pData->mValue.mBytes, pData->mValue.mLength);
+				if (err >= 1)
+					pSignature.SetLength(outlen);
+				else
+					pSignature.SetLength(0);
+				EVP_MD_CTX_free(ctxm);
+				EVP_PKEY_free(key);
+				return(err >= 1);
+			}
+		}
+		else
+		{
+			// PSS padding (default, most secure)
+			if (digestname.StrLowerCmp("raw") == 0) {
+				// Raw digest - sign the data directly without hashing
+				EVP_PKEY_CTX* sign_ctx = EVP_PKEY_CTX_new(key, NULL);
+				if (!sign_ctx) {
+					EVP_MD_CTX_free(ctxm);
+					EVP_PKEY_free(key);
+					return false;
+				}
+				
+				err = EVP_PKEY_sign_init(sign_ctx);
+				if (err <= 0) {
+					EVP_PKEY_CTX_free(sign_ctx);
+					EVP_MD_CTX_free(ctxm);
+					EVP_PKEY_free(key);
+					return false;
+				}
+				
+				// Set PSS padding
+				err = EVP_PKEY_CTX_set_rsa_padding(sign_ctx, RSA_PKCS1_PSS_PADDING);
+				if (err <= 0) {
+					EVP_PKEY_CTX_free(sign_ctx);
+					EVP_MD_CTX_free(ctxm);
+					EVP_PKEY_free(key);
+					return false;
+				}
+				
+				// Set MGF1 digest (required for PSS)
+				const EVP_MD* mgf1_md = EVP_sha256(); // Default MGF1 digest
+				if (mgf1name.mLength > 0) {
+					mgf1_md = EVP_get_digestbyname((const char*)mgf1name.mBytes);
+					if (mgf1_md == NULL) {
+						EVP_PKEY_CTX_free(sign_ctx);
+						EVP_MD_CTX_free(ctxm);
+						EVP_PKEY_free(key);
+						return false;
+					}
+				}
+				err = EVP_PKEY_CTX_set_rsa_mgf1_md(sign_ctx, mgf1_md);
+				if (err <= 0) {
+					EVP_PKEY_CTX_free(sign_ctx);
+					EVP_MD_CTX_free(ctxm);
+					EVP_PKEY_free(key);
+					return false;
+				}
+				
+				if (saltlen != -1) {
+					err = EVP_PKEY_CTX_set_rsa_pss_saltlen(sign_ctx, saltlen);
+					if (err <= 0) {
+						EVP_PKEY_CTX_free(sign_ctx);
+						EVP_MD_CTX_free(ctxm);
+						EVP_PKEY_free(key);
+						return false;
+					}
+				}
+				
+				size_t outlen = 0;
+				err = EVP_PKEY_sign(sign_ctx, NULL, &outlen, pData->mValue.mBytes, pData->mValue.mLength);
+				if (err <= 0 || outlen == 0) {
+					EVP_PKEY_CTX_free(sign_ctx);
+					EVP_MD_CTX_free(ctxm);
+					EVP_PKEY_free(key);
+					return false;
+				}
+				
+				pSignature.SetLength(outlen);
+				err = EVP_PKEY_sign(sign_ctx, pSignature.mBytes, &outlen, pData->mValue.mBytes, pData->mValue.mLength);
+				EVP_PKEY_CTX_free(sign_ctx);
+				EVP_MD_CTX_free(ctxm);
+				EVP_PKEY_free(key);
+				
+				if (err <= 0) {
+					pSignature.SetLength(0);
+					return false;
+				}
+				
+				pSignature.SetLength(outlen);
+				return true;
+			} else {
+				// Normal digest-based signing
+				const EVP_MD* md;
+				if (digestname.mLength == 0) {
+					md = EVP_sha256(); // Default to SHA-256
+				} else {
+					md = EVP_get_digestbyname((const char*)digestname.mBytes);
+				}
+				if (md == NULL) {
+					EVP_MD_CTX_free(ctxm);
+					EVP_PKEY_free(key);
+					return false;
+				}
+				
+				// Determine MGF1 digest (default to same as main digest)
+				const EVP_MD* mgf1_md = md;
+				if (mgf1name.mLength > 0) {
+					mgf1_md = EVP_get_digestbyname((const char*)mgf1name.mBytes);
+					if (mgf1_md == NULL) {
+						EVP_MD_CTX_free(ctxm);
+						EVP_PKEY_free(key);
+						return false;
+					}
+				}
+				
+				err = EVP_DigestSignInit(ctxm, &pctx, md, NULL, key);
+				if (err >= 1) {
+					// Set PSS padding
+					err = EVP_PKEY_CTX_set_rsa_padding(pctx, RSA_PKCS1_PSS_PADDING);
+				}
+				if (err >= 1) {
+					// Set MGF1 digest
+					err = EVP_PKEY_CTX_set_rsa_mgf1_md(pctx, mgf1_md);
+				}
+				if (err >= 1 && saltlen != -1) {
+					// Set salt length if specified
+					err = EVP_PKEY_CTX_set_rsa_pss_saltlen(pctx, saltlen);
+				}
+				
+				size_t outlen = 0;
+				if (err >= 1)
+					err = EVP_DigestSign(ctxm, NULL, &outlen, pData->mValue.mBytes, pData->mValue.mLength);
+				if (err >= 1)
+					pSignature.SetLength(outlen);
+				if (err >= 1)
+					err = EVP_DigestSign(ctxm, pSignature.mBytes, &outlen, pData->mValue.mBytes, pData->mValue.mLength);
+				if (err >= 1)
+					pSignature.SetLength(outlen);
+				else
+					pSignature.SetLength(0);
+				EVP_MD_CTX_free(ctxm);
+				EVP_PKEY_free(key);
+				return(err >= 1);
+			}
+		}
 	}
 	else if (mRPK)
 	{
@@ -2778,7 +3110,8 @@ bool GrapaEncode::Sign(GrapaRuleEvent* pData, GrapaBYTE& pSignature, GrapaRuleEv
 		}
 		int err;
 		EVP_MD_CTX* ctxm = EVP_MD_CTX_new();
-		err = EVP_DigestSignInit(ctxm, NULL, NULL, NULL, (EVP_PKEY*)mRPK);
+		EVP_PKEY_CTX* pctx = NULL;
+		err = EVP_DigestSignInit(ctxm, &pctx, NULL, NULL, (EVP_PKEY*)mRPK);
 		size_t outlen = 0;
 		if (err >= 1)
 			err = EVP_DigestSign(ctxm, NULL, &outlen, pData->mValue.mBytes, pData->mValue.mLength);
@@ -2804,21 +3137,21 @@ bool GrapaEncode::Sign(GrapaRuleEvent* pData, GrapaBYTE& pSignature, GrapaRuleEv
 			return false;
 		}
 		int err;
-		EVP_PKEY_CTX* ctx1 = (EVP_PKEY_CTX*)mEC;
-		err = EVP_PKEY_sign_init(ctx1);
+		EVP_MD_CTX* ctxm = EVP_MD_CTX_new();
+		EVP_PKEY_CTX* pctx = NULL;
+		err = EVP_DigestSignInit(ctxm, &pctx, EVP_sha256(), NULL, (EVP_PKEY*)mEC);
 		size_t outlen = 0;
 		if (err >= 1)
-			err = EVP_PKEY_sign(ctx1, NULL, &outlen, pData->mValue.mBytes, pData->mValue.mLength);
-		if (err >= 1 && outlen)
-		{
+			err = EVP_DigestSign(ctxm, NULL, &outlen, pData->mValue.mBytes, pData->mValue.mLength);
+		if (err >= 1)
 			pSignature.SetLength(outlen);
-			pSignature.mToken = GrapaTokenType::RAW;
-			err = EVP_PKEY_sign(ctx1, pSignature.mBytes, &outlen, pData->mValue.mBytes, pData->mValue.mLength);
-			if (err >= 1)
-				pSignature.SetLength(outlen);
-			else
-				pSignature.SetLength(0);
-		}
+		if (err >= 1)
+			err = EVP_DigestSign(ctxm, pSignature.mBytes, &outlen, pData->mValue.mBytes, pData->mValue.mLength);
+		if (err >= 1)
+			pSignature.SetLength(outlen);
+		else
+			pSignature.SetLength(0);
+		EVP_MD_CTX_free(ctxm);
 		return(err >= 1);
 	}
 	else if (mPFC)
@@ -2851,36 +3184,252 @@ bool GrapaEncode::Verify(GrapaRuleEvent* pData, const GrapaBYTE& pSignature, Gra
 	bool match = false;
 	if (mRSA)
 	{
-		switch (pData->mValue.mToken)
-		{
-		case GrapaTokenType::STR:
-		case GrapaTokenType::RAW:
-			break;
-		default:
+		if (pData->mValue.mToken != GrapaTokenType::STR && pData->mValue.mToken != GrapaTokenType::RAW)
 			return false;
+		
+		// Get parameters with sensible defaults (must match Sign function)
+		GrapaCHAR digestname(""); // Default to empty (will use SHA-256)
+		GrapaCHAR paddingname("pss"); // Default to PSS (most secure)
+		GrapaCHAR mgf1name(""); // Default to empty (will use same as digest)
+		int saltlen = -1; // Default to -1 (auto-determine)
+		
+		if (pParams && pParams->vQueue)
+		{
+			s64 idx;
+			GrapaRuleEvent* x = pParams->vQueue->Search("digest", idx);
+			while (x && x->mValue.mToken == GrapaTokenType::PTR) x = x->vRulePointer;
+			if (x) digestname.FROM(x->mValue);
+			
+			x = pParams->vQueue->Search("padding", idx);
+			while (x && x->mValue.mToken == GrapaTokenType::PTR) x = x->vRulePointer;
+			if (x) paddingname.FROM(x->mValue);
+			
+			x = pParams->vQueue->Search("mgf1", idx);
+			while (x && x->mValue.mToken == GrapaTokenType::PTR) x = x->vRulePointer;
+			if (x) mgf1name.FROM(x->mValue);
+			
+			x = pParams->vQueue->Search("saltlen", idx);
+			while (x && x->mValue.mToken == GrapaTokenType::PTR) x = x->vRulePointer;
+			if (x) {
+				GrapaInt sl;
+				sl.FromBytes(x->mValue, true);
+				saltlen = sl.LongValue();
+			}
 		}
+		
 		EVP_PKEY* key = EVP_PKEY_new();
 		int err = EVP_PKEY_set1_RSA(key, (RSA*)mRSA);
-		if (err <= 0) return match;
-		EVP_PKEY_CTX* ctx = EVP_PKEY_CTX_new(key, ENGINE_get_default_RSA());
-		if (ctx == NULL)
+		if (err <= 0) return false;
+		
+		EVP_MD_CTX* ctxm = EVP_MD_CTX_new();
+		EVP_PKEY_CTX* pctx = NULL;
+		
+		// Determine padding scheme (must match Sign function)
+		if (paddingname.StrLowerCmp("raw") == 0)
 		{
+			// Raw verification - no padding, verify the data directly
+			EVP_PKEY_CTX* verify_ctx = EVP_PKEY_CTX_new(key, NULL);
+			if (!verify_ctx) {
+				EVP_MD_CTX_free(ctxm);
+				EVP_PKEY_free(key);
+				return false;
+			}
+			
+			err = EVP_PKEY_verify_init(verify_ctx);
+			if (err <= 0) {
+				EVP_PKEY_CTX_free(verify_ctx);
+				EVP_MD_CTX_free(ctxm);
+				EVP_PKEY_free(key);
+				return false;
+			}
+			
+			// Set no padding for raw verification
+			err = EVP_PKEY_CTX_set_rsa_padding(verify_ctx, RSA_NO_PADDING);
+			if (err <= 0) {
+				EVP_PKEY_CTX_free(verify_ctx);
+				EVP_MD_CTX_free(ctxm);
+				EVP_PKEY_free(key);
+				return false;
+			}
+			
+			err = EVP_PKEY_verify(verify_ctx, pSignature.mBytes, pSignature.mLength, pData->mValue.mBytes, pData->mValue.mLength);
+			EVP_PKEY_CTX_free(verify_ctx);
+			EVP_MD_CTX_free(ctxm);
 			EVP_PKEY_free(key);
-			return match;
+			
+			return (err == 1);
 		}
-		err = EVP_PKEY_verify_init(ctx);
-		if (err >= 1)
-			err = EVP_PKEY_CTX_set_rsa_padding(ctx, RSA_PKCS1_PADDING);
-		//if (err >= 1)
-		//	err = EVP_PKEY_CTX_set_signature_md(ctx, EVP_sha256());
-		if (err >= 1)
+		else if (paddingname.StrLowerCmp("pkcs1") == 0 || paddingname.StrLowerCmp("pkcs1v15") == 0)
 		{
-			err = EVP_PKEY_verify(ctx, pSignature.mBytes, pSignature.mLength, pData->mValue.mBytes, pData->mValue.mLength);
-			match = err == 1;
+			// PKCS#1 v1.5 padding verification
+			if (digestname.StrLowerCmp("raw") == 0) {
+				// Raw digest - verify the data directly without hashing
+				EVP_PKEY_CTX* verify_ctx = EVP_PKEY_CTX_new(key, NULL);
+				if (!verify_ctx) {
+					EVP_MD_CTX_free(ctxm);
+					EVP_PKEY_free(key);
+					return false;
+				}
+				
+				err = EVP_PKEY_verify_init(verify_ctx);
+				if (err <= 0) {
+					EVP_PKEY_CTX_free(verify_ctx);
+					EVP_MD_CTX_free(ctxm);
+					EVP_PKEY_free(key);
+					return false;
+				}
+				
+				// Set PKCS#1 v1.5 padding
+				err = EVP_PKEY_CTX_set_rsa_padding(verify_ctx, RSA_PKCS1_PADDING);
+				if (err <= 0) {
+					EVP_PKEY_CTX_free(verify_ctx);
+					EVP_MD_CTX_free(ctxm);
+					EVP_PKEY_free(key);
+					return false;
+				}
+				
+				err = EVP_PKEY_verify(verify_ctx, pSignature.mBytes, pSignature.mLength, pData->mValue.mBytes, pData->mValue.mLength);
+				EVP_PKEY_CTX_free(verify_ctx);
+				EVP_MD_CTX_free(ctxm);
+				EVP_PKEY_free(key);
+				
+				return (err == 1);
+			} else {
+				// Normal digest-based verification
+				const EVP_MD* md;
+				if (digestname.mLength == 0) {
+					md = EVP_sha256(); // Default to SHA-256
+				} else {
+					md = EVP_get_digestbyname((const char*)digestname.mBytes);
+				}
+				if (md == NULL) {
+					EVP_MD_CTX_free(ctxm);
+					EVP_PKEY_free(key);
+					return false;
+				}
+				
+				err = EVP_DigestVerifyInit(ctxm, &pctx, md, NULL, key);
+				if (err >= 1) {
+					// Set PKCS#1 v1.5 padding
+					err = EVP_PKEY_CTX_set_rsa_padding(pctx, RSA_PKCS1_PADDING);
+				}
+				if (err >= 1)
+					err = EVP_DigestVerify(ctxm, pSignature.mBytes, pSignature.mLength, pData->mValue.mBytes, pData->mValue.mLength);
+				EVP_MD_CTX_free(ctxm);
+				EVP_PKEY_free(key);
+				return(err == 1);
+			}
 		}
-		EVP_PKEY_CTX_free(ctx);
-		EVP_PKEY_free(key);
-		return(match);
+		else
+		{
+			// PSS padding verification (default, most secure)
+			if (digestname.StrLowerCmp("raw") == 0) {
+				// Raw digest - verify the data directly without hashing
+				EVP_PKEY_CTX* verify_ctx = EVP_PKEY_CTX_new(key, NULL);
+				if (!verify_ctx) {
+					EVP_MD_CTX_free(ctxm);
+					EVP_PKEY_free(key);
+					return false;
+				}
+				
+				err = EVP_PKEY_verify_init(verify_ctx);
+				if (err <= 0) {
+					EVP_PKEY_CTX_free(verify_ctx);
+					EVP_MD_CTX_free(ctxm);
+					EVP_PKEY_free(key);
+					return false;
+				}
+				
+				// Set PSS padding
+				err = EVP_PKEY_CTX_set_rsa_padding(verify_ctx, RSA_PKCS1_PSS_PADDING);
+				if (err <= 0) {
+					EVP_PKEY_CTX_free(verify_ctx);
+					EVP_MD_CTX_free(ctxm);
+					EVP_PKEY_free(key);
+					return false;
+				}
+				
+				// Set MGF1 digest (required for PSS)
+				const EVP_MD* mgf1_md = EVP_sha256(); // Default MGF1 digest
+				if (mgf1name.mLength > 0) {
+					mgf1_md = EVP_get_digestbyname((const char*)mgf1name.mBytes);
+					if (mgf1_md == NULL) {
+						EVP_PKEY_CTX_free(verify_ctx);
+						EVP_MD_CTX_free(ctxm);
+						EVP_PKEY_free(key);
+						return false;
+					}
+				}
+				err = EVP_PKEY_CTX_set_rsa_mgf1_md(verify_ctx, mgf1_md);
+				if (err <= 0) {
+					EVP_PKEY_CTX_free(verify_ctx);
+					EVP_MD_CTX_free(ctxm);
+					EVP_PKEY_free(key);
+					return false;
+				}
+				
+				if (saltlen != -1) {
+					err = EVP_PKEY_CTX_set_rsa_pss_saltlen(verify_ctx, saltlen);
+					if (err <= 0) {
+						EVP_PKEY_CTX_free(verify_ctx);
+						EVP_MD_CTX_free(ctxm);
+						EVP_PKEY_free(key);
+						return false;
+					}
+				}
+				
+				err = EVP_PKEY_verify(verify_ctx, pSignature.mBytes, pSignature.mLength, pData->mValue.mBytes, pData->mValue.mLength);
+				EVP_PKEY_CTX_free(verify_ctx);
+				EVP_MD_CTX_free(ctxm);
+				EVP_PKEY_free(key);
+				
+				return (err == 1);
+			} else {
+				// Normal digest-based verification
+				const EVP_MD* md;
+				if (digestname.mLength == 0) {
+					md = EVP_sha256(); // Default to SHA-256
+				} else {
+					md = EVP_get_digestbyname((const char*)digestname.mBytes);
+				}
+				if (md == NULL) {
+					EVP_MD_CTX_free(ctxm);
+					EVP_PKEY_free(key);
+					return false;
+				}
+				
+				// Determine MGF1 digest (default to same as main digest)
+				const EVP_MD* mgf1_md = md;
+				if (mgf1name.mLength > 0) {
+					mgf1_md = EVP_get_digestbyname((const char*)mgf1name.mBytes);
+					if (mgf1_md == NULL) {
+						EVP_MD_CTX_free(ctxm);
+						EVP_PKEY_free(key);
+						return false;
+					}
+				}
+				
+				err = EVP_DigestVerifyInit(ctxm, &pctx, md, NULL, key);
+				if (err >= 1) {
+					// Set PSS padding
+					err = EVP_PKEY_CTX_set_rsa_padding(pctx, RSA_PKCS1_PSS_PADDING);
+				}
+				if (err >= 1) {
+					// Set MGF1 digest
+					err = EVP_PKEY_CTX_set_rsa_mgf1_md(pctx, mgf1_md);
+				}
+				if (err >= 1 && saltlen != -1) {
+					// Set salt length if specified
+					err = EVP_PKEY_CTX_set_rsa_pss_saltlen(pctx, saltlen);
+				}
+				
+				if (err >= 1)
+					err = EVP_DigestVerify(ctxm, pSignature.mBytes, pSignature.mLength, pData->mValue.mBytes, pData->mValue.mLength);
+				EVP_MD_CTX_free(ctxm);
+				EVP_PKEY_free(key);
+				return(err == 1);
+			}
+		}
 	}
 	else if (mRPK)
 	{
@@ -2894,7 +3443,8 @@ bool GrapaEncode::Verify(GrapaRuleEvent* pData, const GrapaBYTE& pSignature, Gra
 		}
 		int err;
 		EVP_MD_CTX* ctxm = EVP_MD_CTX_new();
-		err = EVP_DigestVerifyInit(ctxm, NULL, NULL, NULL, (EVP_PKEY*)mRPK);
+		EVP_PKEY_CTX* pctx = NULL;
+		err = EVP_DigestVerifyInit(ctxm, &pctx, NULL, NULL, (EVP_PKEY*)mRPK);
 		if (err >= 1)
 		{
 			err = EVP_DigestVerify(ctxm, pSignature.mBytes, pSignature.mLength, pData->mValue.mBytes, pData->mValue.mLength);
@@ -2914,13 +3464,15 @@ bool GrapaEncode::Verify(GrapaRuleEvent* pData, const GrapaBYTE& pSignature, Gra
 			return false;
 		}
 		int err;
-		EVP_PKEY_CTX* ctx1 = (EVP_PKEY_CTX*)mEC;
-		err = EVP_PKEY_verify_init(ctx1);
+		                EVP_MD_CTX* ctxm = EVP_MD_CTX_new();
+                EVP_PKEY_CTX* pctx = NULL;
+                err = EVP_DigestVerifyInit(ctxm, &pctx, EVP_sha256(), NULL, (EVP_PKEY*)mEC);
 		if (err >= 1)
 		{
-			err = EVP_PKEY_verify(ctx1, pSignature.mBytes, pSignature.mLength, pData->mValue.mBytes, pData->mValue.mLength);
+			err = EVP_DigestVerify(ctxm, pSignature.mBytes, pSignature.mLength, pData->mValue.mBytes, pData->mValue.mLength);
 			match = err == 1;
 		}
+		EVP_MD_CTX_free(ctxm);
 		return(err >= 1);
 	}
 	else if (mPFC)
@@ -2937,40 +3489,107 @@ bool GrapaEncode::Verify(GrapaRuleEvent* pData, const GrapaBYTE& pSignature, Gra
 	return match;
 }
 
-bool GrapaEncode::VerifyRecover(GrapaBYTE& pData, const GrapaBYTE& pSignature)
+bool GrapaEncode::VerifyRecover(GrapaBYTE& pData, const GrapaBYTE& pSignature, GrapaRuleEvent* pParams)
 {
+	pData.SetLength(0);
 	if (mRSA)
 	{
+		// Get parameters with sensible defaults (must match Sign function)
+		GrapaCHAR digestname(""); // Default to empty (will use SHA-256)
+		GrapaCHAR paddingname("pkcs1"); // Default to PKCS#1 v1.5 for verifyrecover (most compatible)
+		GrapaCHAR mgf1name(""); // Default to empty (will use same as digest)
+		int saltlen = -1; // Default to -1 (auto-determine)
+		
+		// Parse parameters if provided
+		if (pParams && pParams->vQueue)
+		{
+			s64 idx;
+			GrapaRuleEvent* x = pParams->vQueue->Search("digest", idx);
+			while (x && x->mValue.mToken == GrapaTokenType::PTR) x = x->vRulePointer;
+			if (x) digestname.FROM(x->mValue);
+			
+			x = pParams->vQueue->Search("padding", idx);
+			while (x && x->mValue.mToken == GrapaTokenType::PTR) x = x->vRulePointer;
+			if (x) paddingname.FROM(x->mValue);
+			
+			x = pParams->vQueue->Search("mgf1", idx);
+			while (x && x->mValue.mToken == GrapaTokenType::PTR) x = x->vRulePointer;
+			if (x) mgf1name.FROM(x->mValue);
+			
+			x = pParams->vQueue->Search("saltlen", idx);
+			while (x && x->mValue.mToken == GrapaTokenType::PTR) x = x->vRulePointer;
+			if (x) {
+				GrapaInt sl;
+				sl.FromBytes(x->mValue, true);
+				saltlen = sl.LongValue();
+			}
+		}
+		
 		EVP_PKEY* key = EVP_PKEY_new();
 		int err = EVP_PKEY_set1_RSA(key, (RSA*)mRSA);
-		ENGINE* eng = ENGINE_get_default_RSA();
-		EVP_PKEY_CTX* ctx = EVP_PKEY_CTX_new(key, eng);
-		if (ctx == NULL)
-		{
+		if (err <= 0) return false;
+		
+		EVP_PKEY_CTX* ctx = EVP_PKEY_CTX_new(key, NULL);
+		if (ctx == NULL) {
 			EVP_PKEY_free(key);
 			return false;
 		}
+		
+		// Configure recovery based on parameters
 		err = EVP_PKEY_verify_recover_init(ctx);
-		if (err >= 1)
+		if (err < 1) {
+			EVP_PKEY_CTX_free(ctx);
+			EVP_PKEY_free(key);
+			return false;
+		}
+		
+		// Set padding based on paddingname parameter
+		if (paddingname.StrLowerCmp("raw") == 0) {
+			err = EVP_PKEY_CTX_set_rsa_padding(ctx, RSA_NO_PADDING);
+		} else if (paddingname.StrLowerCmp("pkcs1") == 0 || paddingname.StrLowerCmp("pkcs1v15") == 0) {
 			err = EVP_PKEY_CTX_set_rsa_padding(ctx, RSA_PKCS1_PADDING);
-		//if (err >= 1)
-		//	err = EVP_PKEY_CTX_set_signature_md(ctx, EVP_sha256());
+		} else if (paddingname.StrLowerCmp("pss") == 0) {
+			err = EVP_PKEY_CTX_set_rsa_padding(ctx, RSA_PKCS1_PSS_PADDING);
+			if (err >= 1 && mgf1name.mLength > 0) {
+				const EVP_MD* mgf1_md = EVP_get_digestbyname((const char*)mgf1name.mBytes);
+				if (mgf1_md) {
+					err = EVP_PKEY_CTX_set_rsa_mgf1_md(ctx, mgf1_md);
+				}
+			}
+			if (err >= 1 && saltlen != -1) {
+				err = EVP_PKEY_CTX_set_rsa_pss_saltlen(ctx, saltlen);
+			}
+		} else {
+			// Default to PKCS#1 v1.5 for verifyrecover
+			err = EVP_PKEY_CTX_set_rsa_padding(ctx, RSA_PKCS1_PADDING);
+		}
+		
+		if (err < 1) {
+			EVP_PKEY_CTX_free(ctx);
+			EVP_PKEY_free(key);
+			return false;
+		}
+		
+		// Attempt recovery with configured parameters
 		size_t outlen = 0;
-		if (err >= 1)
-			err = EVP_PKEY_verify_recover(ctx, NULL, &outlen, pSignature.mBytes, pSignature.mLength);
-		if (err >= 1)
-		{
+		err = EVP_PKEY_verify_recover(ctx, NULL, &outlen, pSignature.mBytes, pSignature.mLength);
+		
+		if (err >= 1 && outlen > 0) {
 			pData.SetLength(outlen);
 			pData.mToken = GrapaTokenType::RAW;
 			err = EVP_PKEY_verify_recover(ctx, pData.mBytes, &outlen, pSignature.mBytes, pSignature.mLength);
-			if (err >= 1)
+			if (err >= 1) {
 				pData.SetLength(outlen);
-			else
+			} else {
 				pData.SetLength(0);
+			}
+		} else {
+			pData.SetLength(0);
 		}
+		
 		EVP_PKEY_CTX_free(ctx);
 		EVP_PKEY_free(key);
-		return(err >= 1);
+		return (pData.mLength > 0);
 	}
 	return false;
 }
@@ -3039,6 +3658,16 @@ bool GrapaEncode::Secret(GrapaRuleEvent* pKey, GrapaBYTE& pSecret)
 			nid = NID_secp224r1;
 		else if (x->mValue.StrLowerCmp("prime256v1") == 0)
 			nid = NID_X9_62_prime256v1;
+		else if (x->mValue.StrLowerCmp("secp256k1") == 0)
+			nid = NID_secp256k1;
+		else if (x->mValue.StrLowerCmp("secp384r1") == 0)
+			nid = NID_secp384r1;
+		else if (x->mValue.StrLowerCmp("secp521r1") == 0)
+			nid = NID_secp521r1;
+		else if (x->mValue.StrLowerCmp("prime192v1") == 0)
+			nid = NID_X9_62_prime192v1;
+		else if (x->mValue.StrLowerCmp("prime239v1") == 0)
+			nid = NID_X9_62_prime239v1;
 		else
 			return false;
 		x = pKey->vQueue->Search("pub", idx);
@@ -3114,3 +3743,4 @@ bool GrapaEncode::Secret(GrapaRuleEvent* pKey, GrapaBYTE& pSecret)
 	}
 	return(false);
 }
+

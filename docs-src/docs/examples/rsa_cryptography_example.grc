@@ -1,0 +1,293 @@
+/*
+ * RSA and Cryptographic Functions Example for Grapa
+ * 
+ * This example demonstrates Grapa's extensive cryptographic capabilities:
+ * - RSA key generation, encryption, decryption, signing, and verification
+ * - Elliptic Curve (EC) cryptography
+ * - Diffie-Hellman (DH) key exchange
+ * - BLS12-381 pairing-based cryptography
+ * - Hash functions and encoding
+ * 
+ * Note: These functions require proper initialization and may have OpenSSL 3.x compatibility issues
+ * that need to be addressed in the C++ backend.
+ */
+
+"=== RSA and Cryptographic Functions Example ===".echo();
+
+/* ======================================== */
+/* 1. BASIC ENCODING/DECODING */
+/* ======================================== */
+
+"1. Basic Encoding/Decoding:".echo();
+
+/* Base64 encoding/decoding */
+test_data = "Hello, Grapa Cryptography!";
+base64_encoded = test_data.encode("base64");
+base64_decoded = base64_encoded.decode("base64");
+
+("Original: " + test_data).echo();
+("Base64 encoded: " + base64_encoded).echo();
+("Base64 decoded: " + base64_decoded).echo();
+("Match: " + (test_data == base64_decoded)).echo();
+
+/* Hex encoding/decoding */
+hex_encoded = test_data.encode("hex");
+hex_decoded = hex_encoded.decode("hex");
+
+("Hex encoded: " + hex_encoded).echo();
+("Hex decoded: " + hex_decoded).echo();
+("Match: " + (test_data == hex_decoded)).echo();
+
+"".echo();
+
+/* ======================================== */
+/* 2. HASH FUNCTIONS */
+/* ======================================== */
+
+"2. Hash Functions:".echo();
+
+/* SHA-256 hashing */
+sha256_hash = test_data.encode("sha256");
+("SHA-256 hash: " + sha256_hash).echo();
+
+/* MD5 hashing (for legacy compatibility) */
+md5_hash = test_data.encode("md5");
+("MD5 hash: " + md5_hash).echo();
+
+"".echo();
+
+/* ======================================== */
+/* 3. RSA KEY GENERATION */
+/* ======================================== */
+
+"3. RSA Key Generation:".echo();
+
+/* Generate RSA key pair */
+/* Note: This may cause segmentation fault due to OpenSSL 3.x compatibility issues */
+try {
+    rsa_keys = "rsa".genkeys();
+    ("RSA keys generated: " + rsa_keys.str()).echo();
+} catch 'error': {
+    ("RSA key generation failed: " + error).echo();
+    ("This is likely due to OpenSSL 3.x compatibility issues in the C++ backend").echo();
+};
+
+"".echo();
+
+/* ======================================== */
+/* 4. ELLIPTIC CURVE CRYPTOGRAPHY */
+/* ======================================== */
+
+"4. Elliptic Curve Cryptography:".echo();
+
+/* Generate EC key pair */
+try {
+    ec_keys = "ec".genkeys({curve: "prime256v1"});
+    ("EC keys generated: " + ec_keys.str()).echo();
+} catch 'error': {
+    ("EC key generation failed: " + error).echo();
+    ("This is likely due to OpenSSL 3.x compatibility issues in the C++ backend").echo();
+};
+
+"".echo();
+
+/* ======================================== */
+/* 5. DIFFIE-HELLMAN KEY EXCHANGE */
+/* ======================================== */
+
+"5. Diffie-Hellman Key Exchange:".echo();
+
+/* Generate DH parameters and keys */
+try {
+    dh_keys = "dh".genkeys();
+    ("DH keys generated: " + dh_keys.str()).echo();
+} catch 'error': {
+    ("DH key generation failed: " + error).echo();
+    ("This is likely due to OpenSSL 3.x compatibility issues in the C++ backend").echo();
+};
+
+"".echo();
+
+/* ======================================== */
+/* 6. RSA ENCRYPTION/DECRYPTION */
+/* ======================================== */
+
+"6. RSA Encryption/Decryption:".echo();
+
+/* Example of how RSA encryption would work (if keys were properly generated) */
+message = "Secret message for RSA encryption";
+
+try {
+    /* This would encrypt with public key */
+    encrypted = message.encode("rsa", {method: "rsa", key: rsa_keys});
+    ("RSA encrypted: " + encrypted.str()).echo();
+    
+    /* This would decrypt with private key */
+    decrypted = encrypted.decode("rsa", {method: "rsa", key: rsa_keys});
+    ("RSA decrypted: " + decrypted.str()).echo();
+} catch 'error': {
+    ("RSA encryption/decryption failed: " + error).echo();
+    ("This requires properly generated RSA keys").echo();
+};
+
+"".echo();
+
+/* ======================================== */
+/* 7. DIGITAL SIGNATURES */
+/* ======================================== */
+
+"7. Digital Signatures:".echo();
+
+/* Sign data with private key */
+try {
+    signature = message.sign("sha256", {method: "rsa", key: rsa_keys});
+    ("Digital signature: " + signature.str()).echo();
+    
+    /* Verify signature with public key */
+    verified = message.verify("sha256", signature, {method: "rsa", key: rsa_keys});
+    ("Signature verified: " + verified).echo();
+} catch 'error': {
+    ("Digital signature failed: " + error).echo();
+    ("This requires properly generated keys").echo();
+};
+
+"".echo();
+
+/* ======================================== */
+/* 8. SECRET KEY DERIVATION */
+/* ======================================== */
+
+"8. Secret Key Derivation:".echo();
+
+/* Generate shared secret using DH */
+try {
+    shared_secret = "dh".secret({method: "dh", pub: dh_keys.pub});
+    ("Shared secret: " + shared_secret.str()).echo();
+} catch 'error': {
+    ("Secret derivation failed: " + error).echo();
+    ("This requires properly generated DH keys").echo();
+};
+
+"".echo();
+
+/* ======================================== */
+/* 9. AES ENCRYPTION */
+/* ======================================== */
+
+"9. AES Encryption:".echo();
+
+/* Generate AES key and IV */
+aes_key = "AES256".genkeys();
+aes_iv = "AES256".genkeys();
+
+try {
+    /* Encrypt with AES-256 */
+    aes_encrypted = message.encode("AES256", {
+        cipher: "AES256",
+        key: aes_key,
+        iv: aes_iv
+    });
+    ("AES encrypted: " + aes_encrypted.str()).echo();
+    
+    /* Decrypt with AES-256 */
+    aes_decrypted = aes_encrypted.decode("AES256", {
+        cipher: "AES256", 
+        key: aes_key,
+        iv: aes_iv
+    });
+    ("AES decrypted: " + aes_decrypted.str()).echo();
+} catch 'error': {
+    ("AES encryption failed: " + error).echo();
+    ("This requires properly generated AES keys").echo();
+};
+
+"".echo();
+
+/* ======================================== */
+/* 10. BLS12-381 PAIRING CRYPTOGRAPHY */
+/* ======================================== */
+
+"10. BLS12-381 Pairing Cryptography:".echo();
+
+/* Generate BLS12-381 keys */
+try {
+    bls_keys = "bls12-381".genkeys();
+    ("BLS12-381 keys generated: " + bls_keys.str()).echo();
+    
+    /* Sign with BLS */
+    bls_signature = message.sign("bls12-381", {method: "bls12-381", key: bls_keys});
+    ("BLS signature: " + bls_signature.str()).echo();
+    
+    /* Verify BLS signature */
+    bls_verified = message.verify("bls12-381", bls_signature, {method: "bls12-381", key: bls_keys});
+    ("BLS signature verified: " + bls_verified).echo();
+} catch 'error': {
+    ("BLS12-381 operations failed: " + error).echo();
+    ("This requires properly generated BLS keys").echo();
+};
+
+"".echo();
+
+/* ======================================== */
+/* 11. CRYPTOGRAPHIC UTILITIES */
+/* ======================================== */
+
+"11. Cryptographic Utilities:".echo();
+
+/* Generate random data */
+random_data = "random".genkeys({length: 32});
+("Random data: " + random_data.str()).echo();
+
+/* Generate secure random numbers */
+secure_random = "secure_random".genkeys({min: 1, max: 1000});
+("Secure random number: " + secure_random.str()).echo();
+
+"".echo();
+
+/* ======================================== */
+/* 12. ERROR HANDLING AND COMPATIBILITY */
+/* ======================================== */
+
+"12. Error Handling and Compatibility:".echo();
+
+"Note: Many of these functions may fail due to OpenSSL 3.x compatibility issues.".echo();
+"The following functions are known to work:".echo();
+"- Basic encoding/decoding (base64, hex)".echo();
+"- Hash functions (sha256, md5)".echo();
+"- Basic string operations".echo();
+
+"The following functions may have OpenSSL 3.x compatibility issues:".echo();
+"- RSA key generation and operations".echo();
+"- EC key generation and operations".echo();
+"- DH key generation and operations".echo();
+"- Digital signatures (sign, verify)".echo();
+"- Secret key derivation".echo();
+
+"To fix these issues, the C++ backend needs updates for OpenSSL 3.x API changes.".echo();
+
+"".echo();
+
+/* ======================================== */
+/* SUMMARY */
+/* ======================================== */
+
+"=== Summary ===".echo();
+"✅ Working functions:".echo();
+"- Basic encoding/decoding (base64, hex)".echo();
+"- Hash functions (sha256, md5)".echo();
+"- String operations".echo();
+
+"⚠️ Functions with OpenSSL 3.x compatibility issues:".echo();
+"- RSA cryptography".echo();
+"- EC cryptography".echo();
+"- DH key exchange".echo();
+"- Digital signatures".echo();
+"- Secret derivation".echo();
+
+"Next steps:".echo();
+"1. Fix OpenSSL 3.x compatibility issues in C++ backend".echo();
+"2. Update deprecated OpenSSL function calls".echo();
+"3. Test all cryptographic functions after fixes".echo();
+"4. Create comprehensive documentation for working functions".echo();
+
+"=== RSA and Cryptographic Functions Example Complete ===".echo();

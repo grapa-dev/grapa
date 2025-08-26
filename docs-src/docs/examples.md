@@ -21,6 +21,7 @@ Welcome to the Grapa Examples hub! Here you'll find practical, ready-to-run scri
 | [Advanced Language Features Demo](examples/advanced_language_features_demo.grc) | Comprehensive demonstration of all advanced language features already implemented in Grapa, including pattern matching, metaprogramming, concurrency, type system, data structures, and debugging tools. |
 | [Hex and Binary Examples](examples/hex_binary_examples.grc) | Demonstrates Grapa's enhanced hex and binary literal support including underscores, floats, string parsing, and practical use cases like color values and bit flags. |
 | [Unsigned Methods Examples](examples/unsigned_methods_examples.grc) | Comprehensive demonstration of Grapa's unsigned methods (.uint(), .uraw(), .uhex(), .ubin()) for cryptographic applications, binary data processing, and handling large numbers without sign issues. |
+| [RSA and Cryptographic Functions](examples/rsa_cryptography_example.grc) | Comprehensive demonstration of Grapa's cryptographic capabilities including RSA, EC, DH, BLS12-381, hash functions, and encoding. **Note:** Some functions may have OpenSSL 3.x compatibility issues. |
 
 
 ### **Language Extension Examples**

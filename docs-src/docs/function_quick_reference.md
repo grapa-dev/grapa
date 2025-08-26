@@ -29,7 +29,8 @@ tags:
 `isint`, `iferr`, `message`, `string`, `echo`, `console`, `prompt`
 
 ## Cryptography
-`genprime`, `staticprime`, `isprime`, `isaks`, `random`, `setbit`, `clearbit`, `genbits`, `genkeys`, `encode`, `encoderaw`, `decode`, `sign`, `signadd`, `verify`, `verifyrecover`, `secret`
+**Mathematical**: `genprime`, `staticprime`, `isprime`, `isaks`, `random`, `setbit`, `clearbit`, `genbits`
+**OpenSSL-Based**: `genkeys`, `encode`, `encoderaw`, `decode`, `sign`, `signadd`, `verify`, `verifyrecover`, `secret`
 
 ## Math - Basic
 `setfloat`, `setfix`, `root`, `pow`, `mod`, `modpow`, `modinv`, `abs`, `gcd`, `e`, `pi`, `ln`, `log`, `add`, `sub`, `mul`, `div`

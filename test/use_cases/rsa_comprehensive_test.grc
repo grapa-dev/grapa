@@ -1,0 +1,59 @@
+// RSA Comprehensive Test
+// Test all combinations of digest and padding for sign/verify/verifyrecover
+
+"=== RSA Comprehensive Test ===".echo();
+
+// Generate RSA key
+k = 'rsa'.genkeys();
+message = 'Hello World';
+
+"Testing SHA-256 with PSS padding (default, most secure):".echo();
+sig_pss = message.sign(k, {digest: 'sha256', padding: 'pss'});
+verify_result = sig_pss.verify(k, message, {digest: 'sha256', padding: 'pss'});
+("  Sign/Verify: " + verify_result).echo();
+
+"Testing SHA-256 with PKCS#1 v1.5 padding:".echo();
+sig_pkcs1 = message.sign(k, {digest: 'sha256', padding: 'pkcs1'});
+verify_result = sig_pkcs1.verify(k, message, {digest: 'sha256', padding: 'pkcs1'});
+("  Sign/Verify: " + verify_result).echo();
+
+"Testing RAW digest with PKCS#1 v1.5 padding (supports recovery):".echo();
+sig_raw_pkcs1 = message.sign(k, {digest: 'raw', padding: 'pkcs1'});
+verify_result = sig_raw_pkcs1.verify(k, message, {digest: 'raw', padding: 'pkcs1'});
+("  Sign/Verify: " + verify_result).echo();
+recovered = sig_raw_pkcs1.verifyrecover(k, {digest: 'raw', padding: 'pkcs1'});
+("  Recovered message: " + recovered.str()).echo();
+
+"Testing RAW digest with RAW padding (no padding):".echo();
+sig_raw_raw = message.sign(k, {digest: 'raw', padding: 'raw'});
+verify_result = sig_raw_raw.verify(k, message, {digest: 'raw', padding: 'raw'});
+("  Sign/Verify: " + verify_result).echo();
+recovered = sig_raw_raw.verifyrecover(k, {digest: 'raw', padding: 'raw'});
+("  Recovered message: " + recovered.str()).echo();
+
+"Testing default parameters (should use SHA-256 + PSS):".echo();
+sig_default = message.sign(k);
+verify_result = sig_default.verify(k, message);
+("  Sign/Verify: " + verify_result).echo();
+
+"Testing SHA-512 with PSS padding:".echo();
+sig_sha512_pss = message.sign(k, {digest: 'sha512', padding: 'pss'});
+verify_result = sig_sha512_pss.verify(k, message, {digest: 'sha512', padding: 'pss'});
+("  Sign/Verify: " + verify_result).echo();
+
+"Testing SHA-1 with PKCS#1 v1.5 padding (legacy):".echo();
+sig_sha1_pkcs1 = message.sign(k, {digest: 'sha1', padding: 'pkcs1'});
+verify_result = sig_sha1_pkcs1.verify(k, message, {digest: 'sha1', padding: 'pkcs1'});
+("  Sign/Verify: " + verify_result).echo();
+
+"Testing cross-compatibility (verify with wrong digest should fail):".echo();
+verify_wrong = sig_pss.verify(k, message, {digest: 'sha256', padding: 'pkcs1'});
+("  PSS signature with PKCS#1 verify: " + verify_wrong).echo();
+
+"Testing signature length differences:".echo();
+("  PSS signature length: " + sig_pss.len()).echo();
+("  PKCS#1 signature length: " + sig_pkcs1.len()).echo();
+("  RAW PKCS#1 signature length: " + sig_raw_pkcs1.len()).echo();
+("  RAW RAW signature length: " + sig_raw_raw.len()).echo();
+
+"=== Test Complete ===".echo();
