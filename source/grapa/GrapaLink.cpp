@@ -161,7 +161,6 @@ GrapaCHAR GrapaLink::Start(bool& needExit, bool& showConsole, bool& showWidget, 
 		e = e ? e->Next() : nullptr;
 	}
 	// --- Argument parsing improvements for $ARGV and -s/-S ---
-	// Use a local GrapaRuleQueue for $ARGV if GrapaSystem does not have mArgvList
 	int used_script_arg_index = -1;
 	if (found_c && c_arg.mLength) {
 		char debugMsg[256];
@@ -231,7 +230,7 @@ GrapaCHAR GrapaLink::Start(bool& needExit, bool& showConsole, bool& showWidget, 
 	// Now collect $ARGV: all positional_args not used as script/command
 	for (size_t i = 0; i < positional_args.size(); ++i) {
 		if ((int)i != used_script_arg_index) {
-			gSystem->mArgv->PushTail(new GrapaRuleEvent(positional_args[i]->mValue));
+			gSystem->mArgv->PushTail(new GrapaRuleEvent(0,GrapaCHAR(),positional_args[i]->mValue));
 		}
 	}
 
