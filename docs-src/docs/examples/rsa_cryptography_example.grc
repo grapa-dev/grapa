@@ -22,7 +22,7 @@
 
 /* Base64 encoding/decoding */
 test_data = "Hello, Grapa Cryptography!";
-base64_encoded = test_data.encode("base64");
+base64_encoded = test_data.encode({method: "base64"});
 base64_decoded = base64_encoded.decode("base64");
 
 ("Original: " + test_data).echo();

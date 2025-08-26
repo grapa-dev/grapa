@@ -15,7 +15,7 @@ Usage:
 Supported Platforms:
     - mac-arm64 (Apple Silicon only)
     - linux-arm64, linux-amd64  
-    - windows-arm64, windows-amd64
+    - win-arm64, win-amd64
     - aws-arm64, aws-amd64
 """
 
@@ -43,7 +43,7 @@ class OpenSSLBuilder:
         machine = platform.machine().lower()
         
         if system == "windows":
-            return "windows", "amd64"
+            return "win", "amd64"
         elif system == "darwin":
             # On Mac, only support Apple Silicon (arm64)
             if machine == "arm64":
@@ -115,8 +115,8 @@ class OpenSSLBuilder:
         
         # Set environment variables
         env = os.environ.copy()
-        env['CFLAGS'] = '-fPIC'
-        env['CXXFLAGS'] = '-fPIC'
+        env['CFLAGS'] = '-fPIC -DOPENSSL_SUPPRESS_DEPRECATED'
+        env['CXXFLAGS'] = '-fPIC -DOPENSSL_SUPPRESS_DEPRECATED'
         
         print(f"🔧 Configuring: {' '.join(configure_cmd)}")
         subprocess.run(configure_cmd, cwd=self.openssl_source, env=env, check=True)
@@ -161,8 +161,8 @@ class OpenSSLBuilder:
         
         # Set environment variables for PIC compilation
         env = os.environ.copy()
-        env['CFLAGS'] = '-fPIC'
-        env['CXXFLAGS'] = '-fPIC'
+        env['CFLAGS'] = '-fPIC -DOPENSSL_SUPPRESS_DEPRECATED'
+        env['CXXFLAGS'] = '-fPIC -DOPENSSL_SUPPRESS_DEPRECATED'
         
         print(f"🔧 Configuring: {' '.join(configure_cmd)}")
         subprocess.run(configure_cmd, cwd=self.openssl_source, env=env, check=True)
@@ -206,26 +206,60 @@ class OpenSSLBuilder:
         """Build OpenSSL using Visual Studio"""
         print("🔧 Building OpenSSL using Visual Studio...")
         
-        # Configure with Perl
+        # Configure with Perl - try to find Perl in common locations
         print("🔧 Configuring with Perl...")
-        configure_cmd = [
-            "perl", "Configure", "VC-WIN64A", "no-shared", "no-dso", "no-hw", "no-engine"
+        
+        # Try to find Perl in common installation locations
+        perl_paths = [
+            "perl",  # Try PATH first
+            r"C:\Strawberry\perl\bin\perl.exe",
+            r"C:\Perl64\bin\perl.exe",
+            r"C:\Perl\bin\perl.exe"
         ]
         
-        subprocess.run(configure_cmd, cwd=self.openssl_source, check=True)
+        perl_cmd = None
+        for perl_path in perl_paths:
+            try:
+                result = subprocess.run([perl_path, "--version"], 
+                                      capture_output=True, text=True, check=False)
+                if result.returncode == 0:
+                    perl_cmd = perl_path
+                    print(f"✅ Found Perl at: {perl_cmd}")
+                    break
+            except:
+                continue
+        
+        if not perl_cmd:
+            raise RuntimeError("Perl not found. Please install Strawberry Perl or ensure it's in PATH.")
+        
+        # Set environment variables to suppress deprecation warnings
+        env = os.environ.copy()
+        env['CFLAGS'] = '-DOPENSSL_SUPPRESS_DEPRECATED'
+        env['CXXFLAGS'] = '-DOPENSSL_SUPPRESS_DEPRECATED'
+        
+        configure_cmd = [
+            perl_cmd, "Configure", "VC-WIN64A", "no-shared", "no-dso", "no-hw", "no-engine"
+        ]
+        
+        subprocess.run(configure_cmd, cwd=self.openssl_source, env=env, check=True)
         
         # Build OpenSSL
         print("🔨 Building OpenSSL libraries...")
-        subprocess.run(["nmake"], cwd=self.openssl_source, check=True)
+        subprocess.run(["nmake"], cwd=self.openssl_source, env=env, check=True)
         
         # Copy libraries
-        target_dir = self.get_target_dir("windows", target.split("-")[1])
+        target_dir = self.get_target_dir("win", target.split("-")[1])
         target_dir.mkdir(parents=True, exist_ok=True)
         
-        # Copy static libraries (OpenSSL builds them in the root directory)
+        # Copy all library files (OpenSSL builds them in the root directory)
         for lib_file in self.openssl_source.glob("*.lib"):
             shutil.copy2(lib_file, target_dir)
             print(f"📦 Copied {lib_file.name} to {target_dir}")
+        
+        # Copy PDB files if they exist
+        for pdb_file in self.openssl_source.glob("*.pdb"):
+            shutil.copy2(pdb_file, target_dir)
+            print(f"📦 Copied {pdb_file.name} to {target_dir}")
         
         # Copy headers (only if --update-headers is specified)
         if self.update_headers:
@@ -253,7 +287,7 @@ class OpenSSLBuilder:
         supported_targets = [
             "mac-arm64",
             "linux-arm64", "linux-amd64", 
-            "windows-arm64", "windows-amd64",
+            "win-arm64", "win-amd64",
             "aws-arm64", "aws-amd64"
         ]
         
@@ -264,7 +298,7 @@ class OpenSSLBuilder:
             self.build_mac(target)
         elif platform == "linux":
             self.build_linux(target)
-        elif platform == "windows":
+        elif platform == "win":
             self.build_windows(target)
         elif platform == "aws":
             self.build_aws(target)
@@ -276,7 +310,7 @@ class OpenSSLBuilder:
         targets = [
             "mac-arm64",
             "linux-arm64", "linux-amd64", 
-            "windows-arm64", "windows-amd64",
+            "win-arm64", "win-amd64",
             "aws-arm64", "aws-amd64"
         ]
         
@@ -295,7 +329,7 @@ class OpenSSLBuilder:
         ]
         
         # Add Windows equivalents
-        if platform == "windows":
+        if platform == "win":
             expected_libs = [
                 "libcrypto.lib",
                 "libssl.lib"

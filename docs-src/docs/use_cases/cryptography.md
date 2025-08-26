@@ -113,15 +113,15 @@ large_gcd = large_a.gcd(large_b);
 ```grapa
 /* SHA3 hash functions */
 data = "Hello, Grapa!";
-sha3_224 = data.encode("SHA3-224");
-sha3_256 = data.encode("SHA3-256");
-sha3_384 = data.encode("SHA3-384");
-sha3_512 = data.encode("SHA3-512");
+sha3_224 = data.encode({method: "sha3-224"});
+sha3_256 = data.encode({method: "sha3-256"});
+sha3_384 = data.encode({method: "sha3-384"});
+sha3_512 = data.encode({method: "sha3-512"});
 
-("SHA3-224: " + sha3_224.hex() + "\n").echo();
-("SHA3-256: " + sha3_256.hex() + "\n").echo();
-("SHA3-384: " + sha3_384.hex() + "\n").echo();
-("SHA3-512: " + sha3_512.hex() + "\n").echo();
+("SHA3-224: " + sha3_224.uhex() + "\n").echo();
+("SHA3-256: " + sha3_256.uhex() + "\n").echo();
+("SHA3-384: " + sha3_384.uhex() + "\n").echo();
+("SHA3-512: " + sha3_512.uhex() + "\n").echo();
 ```
 
 ### SHAKE Functions
@@ -129,11 +129,11 @@ sha3_512 = data.encode("SHA3-512");
 ```grapa
 /* SHAKE hash functions */
 data = "Hello, Grapa!";
-shake128 = data.encode("SHAKE128");
-shake256 = data.encode("SHAKE256");
+shake128 = data.encode({method: "shake128"});
+shake256 = data.encode({method: "shake256"});
 
-("SHAKE128: " + shake128.hex() + "\n").echo();
-("SHAKE256: " + shake256.hex() + "\n").echo();
+("SHAKE128: " + shake128.uhex() + "\n").echo();
+("SHAKE256: " + shake256.uhex() + "\n").echo();
 ```
 
 ### Hash Function Output Sizes
@@ -146,6 +146,68 @@ shake256 = data.encode("SHAKE256");
 | SHA3-512 | 64 bytes (512 bits) |
 | SHAKE128 | 32 bytes (256 bits) default |
 | SHAKE256 | 64 bytes (512 bits) default |
+
+## Encoding and Decoding Methods
+
+Grapa supports several encoding and decoding methods for data transformation and transmission.
+
+### Supported Encoding Methods
+
+| Method | Description | Encode | Decode | Use Case |
+|--------|-------------|--------|--------|----------|
+| **SHA3-224** | SHA3-224 hash function | ✅ | ❌ | Cryptographic hashing |
+| **SHA3-256** | SHA3-256 hash function | ✅ | ❌ | Cryptographic hashing |
+| **SHA3-384** | SHA3-384 hash function | ✅ | ❌ | Cryptographic hashing |
+| **SHA3-512** | SHA3-512 hash function | ✅ | ❌ | Cryptographic hashing |
+| **SHAKE128** | SHAKE128 hash function | ✅ | ❌ | Cryptographic hashing |
+| **SHAKE256** | SHAKE256 hash function | ✅ | ❌ | Cryptographic hashing |
+| **BASE64** | Base64 encoding | ✅ | ✅ | Data transmission, binary to text |
+| **BASE58** | Base58 encoding | ✅ | ✅ | Cryptocurrency addresses, compact encoding |
+| **URL-ASCII** | URL percent-encoding | ✅ | ❌ | URL-safe encoding |
+
+### Base64 Encoding
+
+Base64 is a binary-to-text encoding scheme that represents binary data in ASCII string format.
+
+```grapa
+/* Base64 encoding and decoding */
+data = "Hello, Grapa!";
+encoded = data.encode({method: "base64"});
+decoded = encoded.decode({method: "base64"});
+
+("Original: " + data + "\n").echo();
+("Base64 encoded: " + encoded.str() + "\n").echo();
+("Base64 decoded: " + decoded.str() + "\n").echo();
+```
+
+### Base58 Encoding
+
+Base58 is a binary-to-text encoding scheme commonly used in cryptocurrency applications. It's similar to Base64 but excludes similar-looking characters (0, O, I, l).
+
+```grapa
+/* Base58 encoding and decoding */
+data = "Hello, Grapa!";
+encoded = data.encode({method: "base58"});
+decoded = encoded.decode({method: "base58"});
+
+("Original: " + data + "\n").echo();
+("Base58 encoded: " + encoded.str() + "\n").echo();
+("Base58 decoded: " + decoded.str() + "\n").echo();
+```
+
+### URL-ASCII Encoding
+
+URL-ASCII encoding (percent-encoding) converts special characters to their percent-encoded equivalents for safe transmission in URLs.
+
+```grapa
+/* URL-ASCII encoding */
+data = "Hello World & Friends!";
+encoded = data.encode({method: "url-ascii"});
+
+("Original: " + data + "\n").echo();
+("URL-ASCII encoded: " + encoded.str() + "\n").echo();
+/* Note: URL-ASCII decode is not currently implemented */
+```
 
 ## Data Conversion
 
@@ -518,25 +580,30 @@ decrypted = encrypted.decode(keys);
 ("Success: " + (message == decrypted.str()).str() + "\n").echo();
 ```
 
-#### Base64 and Hex Encoding
+#### Base64, Base58, and URL Encoding
 
 ```grapa
 /* Basic encoding formats */
 data = "Hello, Grapa!";
 
 /* Base64 encoding */
-base64_encoded = data.encode("base64");
+base64_encoded = data.encode({method: "base64"});
 ("Base64: " + base64_encoded.str() + "\n").echo();
 
-/* Hex encoding */
-hex_encoded = data.encode("hex");
-("Hex: " + hex_encoded.str() + "\n").echo();
+/* Base58 encoding */
+base58_encoded = data.encode({method: "base58"});
+("Base58: " + base58_encoded.str() + "\n").echo();
+
+/* URL-ASCII encoding (percent-encoding) */
+url_data = "Hello World & Friends!";
+url_encoded = url_data.encode({method: "url-ascii"});
+("URL-ASCII: " + url_encoded.str() + "\n").echo();
 
 /* Decode back */
-base64_decoded = base64_encoded.decode("base64");
-hex_decoded = hex_encoded.decode("hex");
+base64_decoded = base64_encoded.decode({method: "base64"});
+base58_decoded = base58_encoded.decode({method: "base58"});
 ("Base64 decoded: " + base64_decoded.str() + "\n").echo();
-("Hex decoded: " + hex_decoded.str() + "\n").echo();
+("Base58 decoded: " + base58_decoded.str() + "\n").echo();
 ```
 
 ### Digital Signatures
@@ -1033,18 +1100,18 @@ bob_secret = bob_rpk.secret({
 #### Hash Functions
 
 ```grapa
-/* SHA-256 hash */
+/* SHA3-256 hash */
 data = "Hello, Grapa!";
-sha256_hash = data.encode("SHA256");
-("SHA-256: " + sha256_hash.hex() + "\n").echo();
+sha3_256_hash = data.encode({method: "sha3-256"});
+("SHA3-256: " + sha3_256_hash.uhex() + "\n").echo();
 
-/* MD5 hash */
-md5_hash = data.encode("MD5");
-("MD5: " + md5_hash.hex() + "\n").echo();
+/* SHAKE128 hash */
+shake128_hash = data.encode({method: "shake128"});
+("SHAKE128: " + shake128_hash.uhex() + "\n").echo();
 
-/* SHA-1 hash */
-sha1_hash = data.encode("SHA1");
-("SHA-1: " + sha1_hash.hex() + "\n").echo();
+/* SHAKE256 hash */
+shake256_hash = data.encode({method: "shake256"});
+("SHAKE256: " + shake256_hash.uhex() + "\n").echo();
 ```
 
 #### AES Encryption
@@ -1287,7 +1354,7 @@ result = diffie_hellman_exchange();
 /* Simple digital signature using hash functions */
 create_signature = op(message, private_key) {
     /* Hash the message */
-    message_hash = message.encode("SHA3-256");
+    message_hash = message.encode({method: "sha3-256"});
     
     /* Sign the hash using private key */
     signature = message_hash.modpow(private_key.get("d"), private_key.get("n"));
@@ -1297,7 +1364,7 @@ create_signature = op(message, private_key) {
 
 verify_signature = op(message, signature, public_key) {
     /* Hash the message */
-    message_hash = message.encode("SHA3-256");
+    message_hash = message.encode({method: "sha3-256"});
     
     /* Verify signature using public key */
     recovered_hash = signature.modpow(public_key.get("e"), public_key.get("n"));
@@ -1323,18 +1390,18 @@ is_valid = verify_signature(message, signature, keys.get("public_key"));
 /* Hash data for integrity verification */
 hash_data = op(data) {
     {
-        "sha3_224": data.encode("SHA3-224").hex(),
-        "sha3_256": data.encode("SHA3-256").hex(),
-        "sha3_384": data.encode("SHA3-384").hex(),
-        "sha3_512": data.encode("SHA3-512").hex(),
-        "shake128": data.encode("SHAKE128").hex(),
-        "shake256": data.encode("SHAKE256").hex()
+        "sha3_224": data.encode({method: "sha3-224"}).uhex(),
+        "sha3_256": data.encode({method: "sha3-256"}).uhex(),
+        "sha3_384": data.encode({method: "sha3-384"}).uhex(),
+        "sha3_512": data.encode({method: "sha3-512"}).uhex(),
+        "shake128": data.encode({method: "shake128"}).uhex(),
+        "shake256": data.encode({method: "shake256"}).uhex()
     };
 };
 
 /* Verify data integrity */
 verify_integrity = op(data, expected_hash) {
-    actual_hash = data.encode("SHA3-256").hex().lower();
+    actual_hash = data.encode({method: "sha3-256"}).uhex().lower();
     expected_hash.lower() == actual_hash;
 };
 
@@ -1358,11 +1425,11 @@ hash_password = op(password, salt) {
     combined = password + salt;
     
     /* Hash multiple times for security */
-    hash1 = combined.encode("SHA3-256");
-    hash2 = hash1.encode("SHA3-256");
-    hash3 = hash2.encode("SHA3-256");
+    hash1 = combined.encode({method: "sha3-256"});
+    hash2 = hash1.encode({method: "sha3-256"});
+    hash3 = hash2.encode({method: "sha3-256"});
     
-    hash3.hex();
+    hash3.uhex();
 };
 
 /* Verify password */
@@ -1422,13 +1489,13 @@ secure_hash_compare = op(hash1, hash2) {
 secure_password_hash = op(password, salt) {
     /* Use multiple rounds */
     combined = password + salt;
-    hash = combined.encode("SHA3-256");
+    hash = combined.encode({method: "sha3-256"});
     
     /* Multiple iterations */
-    hash = hash.encode("SHA3-256");
-    hash = hash.encode("SHA3-256");
+    hash = hash.encode({method: "sha3-256"});
+    hash = hash.encode({method: "sha3-256"});
     
-    hash.hex();
+    hash.uhex();
 };
 ```
 

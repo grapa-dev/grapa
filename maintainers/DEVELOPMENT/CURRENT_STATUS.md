@@ -188,7 +188,38 @@
 ## Next Focus: Adoption Drivers
 
 ### 📋 **Next Priority Tasks**
-1. **🔧 Command-Line Argument Support - HIGH PRIORITY**:
+1. **✅ OpenSSL 3.5.2 Windows Build - COMPLETE**:
+   - **Status**: OpenSSL 3.5.2 static libraries successfully built for Windows with deprecation warnings resolved
+   - **Progress Made**:
+     - ✅ Perl (Strawberry Perl) successfully installed and detected
+     - ✅ Visual Studio 2022 Enterprise environment properly configured
+     - ✅ NASM (Netwide Assembler) successfully installed and available in PATH
+     - ✅ OpenSSL build script enhanced with correct platform naming (win-amd64)
+     - ✅ OpenSSL 3.5.2 static libraries built and copied to source/openssl-lib/win-amd64/
+     - ✅ C++ code updated to reference non-static library names (removed _static suffix)
+     - ✅ Old _static library files cleaned up
+     - ✅ Added `OPENSSL_SUPPRESS_DEPRECATED` flag to OpenSSL build to suppress deprecation warnings
+     - ✅ Added `/wd4996` compiler flag to treat deprecation warnings as non-fatal
+     - ✅ Added `crypt32.lib` to linker dependencies to resolve Windows certificate store functions
+   - **Files Generated**: libcrypto.lib, libssl.lib, app.pdb, ossl_static.pdb
+   - **Impact**: Windows build now compiles successfully with OpenSSL 3.5.2 (0 warnings, 0 errors)
+
+### ✅ **Cryptographic Documentation Enhancement - COMPLETE**:
+  - **Status**: Documentation updated to cover all supported digest and encoding methods
+  - **Progress Made**:
+    - ✅ Scanned `GrapaEncode.cpp` to identify all supported digests and encoding methods
+    - ✅ Tested all encoding methods to verify functionality
+    - ✅ Added comprehensive documentation for Base58 encoding and decoding
+    - ✅ Added comprehensive documentation for URL-ASCII encoding
+    - ✅ Updated `docs-src/docs/use_cases/cryptography.md` with complete encoding methods table
+    - ✅ Updated `docs-src/docs/obj/encode.md` to include new methods
+    - ✅ Verified all documented methods work correctly
+  - **Methods Documented**:
+    - **Hash Functions**: SHA3-224, SHA3-256, SHA3-384, SHA3-512, SHAKE128, SHAKE256
+    - **Encoding Functions**: Base64, Base58, URL-ASCII
+    - **Note**: SHA-256, SHA-512, BLAKE2b are available internally for BLS operations but not exposed via `.encode()`
+  - **Impact**: Users now have complete documentation of all available cryptographic methods
+2. **🔧 Command-Line Argument Support - HIGH PRIORITY**:
    - **Status**: Framework exists in source code but not working correctly
    - **Issue**: `$ARGV` variable not properly injecting command-line arguments into `.grc`/`.grz` scripts
    - **Evidence**: Source code shows `mArgv` queue and `$ARGV` handling in `GrapaLibRule.cpp` and `GrapaLink.cpp`, but testing shows `{"error":-1}` responses

@@ -376,6 +376,8 @@ Method | Options | Description
 "AES256" | {key [,iv]} | key is 32 bits and iv is 16 bits
 "ZIP-GRAPA" | |
 "BASE64" | |
+"BASE58" | |
+"URL-ASCII" | |
 "ESCAPE" | |
 "FLOAT" | |
 "JSON" | | Only encode.
@@ -406,7 +408,9 @@ v.encode("AES256",{key:"12345678123456781234567812345678",iv:"1234567812345678"}
 v.encode("SHA3-256");
 v.encode("SHAKE128");
 {1,2,3}.encode("ZIP-GRAPA").decode("ZIP-GRAPA");
-v.encode("BASE64").decode("BASE64").str();
+v.encode({method: "base64"}).decode({method: "base64"}).str();
+v.encode({method: "base58"}).decode({method: "base58"}).str();
+v.encode({method: "url-ascii"}).str();
 ```
 
 
