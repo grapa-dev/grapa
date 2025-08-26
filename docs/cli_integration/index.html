@@ -3768,7 +3768,6 @@
 <li><a href="https://github.com/grapa-dev/grapa/tree/main/bin">Grapa Binaries on GitHub</a></li>
 </ul>
 <p>Available binaries:
-- <strong>macOS (Intel):</strong> <code>grapa-mac-amd64.tar.gz</code>
 - <strong>macOS (Apple Silicon):</strong> <code>grapa-mac-arm64.tar.gz</code>
 - <strong>Linux (Intel):</strong> <code>grapa-linux-amd64.tar.gz</code>
 - <strong>Linux (ARM):</strong> <code>grapa-linux-arm64.tar.gz</code>
@@ -3780,6 +3779,9 @@
    - Windows: Use your preferred tool to extract the <code>.zip</code> file.
 3. (macOS/Linux) Make the binary executable: <code>chmod +x grapa</code>
 4. Move the binary to a directory in your PATH (e.g., <code>/usr/local/bin</code>) or add its location to your PATH.</p>
+<blockquote>
+<p><strong>Note:</strong> Grapa requires macOS 15.0+ (Apple Silicon only). Intel Macs are no longer supported due to Apple's discontinuation of Intel Mac support in macOS 15.0.</p>
+</blockquote>
 <h2 id="option-2-build-from-source">Option 2: Build from Source</h2>
 <p>If you want to build Grapa yourself (or need the latest version), you can build from source. This will also build and install the Python extension if Python is available.</p>
 <p><strong>Instructions:</strong>

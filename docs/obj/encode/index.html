@@ -4347,6 +4347,8 @@ Method | Options | Description
 "AES256" | {key [,iv]} | key is 32 bits and iv is 16 bits
 "ZIP-GRAPA" | |
 "BASE64" | |
+"BASE58" | |
+"URL-ASCII" | |
 "ESCAPE" | |
 "FLOAT" | |
 "JSON" | | Only encode.
@@ -4372,7 +4374,9 @@ v.encode(g).decode(g).str();
 v.encode(&quot;SHA3-256&quot;);
 v.encode(&quot;SHAKE128&quot;);
 {1,2,3}.encode(&quot;ZIP-GRAPA&quot;).decode(&quot;ZIP-GRAPA&quot;);
-v.encode(&quot;BASE64&quot;).decode(&quot;BASE64&quot;).str();
+v.encode({method: &quot;base64&quot;}).decode({method: &quot;base64&quot;}).str();
+v.encode({method: &quot;base58&quot;}).decode({method: &quot;base58&quot;}).str();
+v.encode({method: &quot;url-ascii&quot;}).str();
 </code></pre></div>
 <h2 id="rawdata-encdatadecode-method-options">rawdata = encdata.decode (method, options)</h2>
 <p>See encode.</p>

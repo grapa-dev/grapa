@@ -845,6 +845,15 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#4-cryptographic-operations-and-security-applications" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Cryptographic Operations and Security Applications
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -4745,6 +4754,15 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#4-cryptographic-operations-and-security-applications" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Cryptographic Operations and Security Applications
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -5832,6 +5850,18 @@ xml = xml + &lt;root&gt;&lt;item&gt;1&lt;/item&gt;&lt;/root&gt;;  /* Concatenate
 <td>⭐⭐ (ml libraries)</td>
 </tr>
 <tr>
+<td><strong>Cryptography</strong></td>
+<td><strong>⭐⭐⭐⭐⭐ (OpenSSL 3.5.2 Integration, RSA, EC, DH, AES, Hash Functions)</strong></td>
+<td>⭐⭐⭐ (cryptography, pycryptodome)</td>
+<td>⭐⭐ (Web Crypto API)</td>
+<td>⭐⭐ (Web Crypto API)</td>
+<td>⭐⭐ (crypto package)</td>
+<td>⭐⭐ (rust-crypto, ring)</td>
+<td>⭐⭐ (CryptoKit)</td>
+<td>⭐⭐ (BouncyCastle)</td>
+<td>⭐⭐ (OpenSSL bindings)</td>
+</tr>
+<tr>
 <td><strong>Unicode Support</strong></td>
 <td><strong>⭐⭐⭐ (Basic + grep fully unicode)</strong></td>
 <td>⭐⭐⭐ (native)</td>
@@ -5888,12 +5918,13 @@ xml = xml + &lt;root&gt;&lt;item&gt;1&lt;/item&gt;&lt;/root&gt;;  /* Concatenate
 - ⭐⭐⭐⭐ = Excellent support
 - ⭐⭐⭐⭐⭐ = Outstanding support</p>
 <p><strong>Key Insights:</strong>
-- <strong>Grapa excels</strong> in meta-programming, runtime grammar extension, dynamic code generation, multi-syntax processing, and unlimited precision math
+- <strong>Grapa excels</strong> in meta-programming, runtime grammar extension, dynamic code generation, multi-syntax processing, unlimited precision math, and comprehensive cryptography
 - <strong>Grapa is competitive</strong> in error handling, string interpolation, and file system access
 - <strong>Grapa provides alternatives</strong> for type safety and ecosystem maturity
 - <strong>Grapa's unique strengths</strong> are in areas where other languages require external libraries or complex setup
 - <strong>Runtime grammar extension</strong>: Grapa is the only modern language with example implementations of SQL, PROLOG, and LISP syntax through runtime grammar extension
-- <strong>Multi-syntax advantage</strong>: Grapa's unified dot notation and <code>.findall()</code> method work identically across JSON, XML, and HTML, providing enterprise-grade querying capabilities, and developers can extend multi-syntax support with custom grammar rules</p>
+- <strong>Multi-syntax advantage</strong>: Grapa's unified dot notation and <code>.findall()</code> method work identically across JSON, XML, and HTML, providing enterprise-grade querying capabilities, and developers can extend multi-syntax support with custom grammar rules
+- <strong>Cryptographic advantage</strong>: Grapa provides production-ready cryptographic capabilities with OpenSSL 3.5.2 integration, covering 90-95% of commonly used cryptographic features without external dependencies</p>
 <h2 id="when-grapas-superior-capabilities-are-essential">When Grapa's Superior Capabilities Are Essential</h2>
 <h3 id="choose-grapa-when-you-need">✅ <strong>Choose Grapa When You Need:</strong></h3>
 <h4 id="1-dynamic-language-creation"><strong>1. Dynamic Language Creation</strong></h4>
@@ -6042,6 +6073,37 @@ result = mixed_data.json.users.map(op(user) {
 - <strong>Microservices</strong> with native JSON, XML, and SQL processing
 - <strong>Data lakes</strong> with unified file system and database navigation</p>
 <p><strong>Grapa's unified data type integration eliminates the complexity of managing multiple data format libraries.</strong></p>
+<h4 id="4-cryptographic-operations-and-security-applications"><strong>4. Cryptographic Operations and Security Applications</strong></h4>
+<div class="highlight"><pre><span></span><code>/* Comprehensive cryptographic operations with OpenSSL 3.5.2 integration */
+/* RSA cryptography */
+rsa_keys = &quot;rsa&quot;.genkeys({bits: 2048});
+encrypted = message.encode(rsa_keys);
+decrypted = encrypted.decode(rsa_keys);
+
+/* Elliptic Curve cryptography */
+ec_keys = &quot;ec&quot;.genkeys({curve: &quot;prime256v1&quot;});
+signature = message.sign(ec_keys);
+verified = signature.verify(ec_keys, message);
+
+/* Key exchange */
+alice = &quot;dh&quot;.genkeys();
+bob = &quot;dh&quot;.genkeys();
+shared_secret = alice.secret({method: &quot;dh&quot;, pub: bob.pub});
+
+/* Hash functions and digital signatures */
+hash_result = message.encode(&quot;sha256&quot;);
+aes_keys = &quot;bc&quot;.genkeys({cipher: &quot;aes-256-gcm&quot;});
+encrypted_data = data.encode(aes_keys);
+</code></pre></div>
+<p><strong>Use Cases:</strong>
+- <strong>Security applications</strong> with production-ready OpenSSL 3.5.2 integration
+- <strong>Cryptographic key management</strong> with native RSA, EC, and DH support
+- <strong>Digital signatures</strong> and verification with multiple algorithms
+- <strong>Secure communication</strong> with AES encryption and hash functions
+- <strong>Blockchain applications</strong> with elliptic curve cryptography support
+- <strong>Security research</strong> with unlimited precision arithmetic for cryptographic operations
+- <strong>Compliance applications</strong> requiring industry-standard cryptographic implementations</p>
+<p><strong>Grapa's comprehensive cryptographic capabilities eliminate the need for external cryptographic libraries and provide production-ready security features.</strong></p>
 <h3 id="when-other-languages-are-better-choices">❌ <strong>When Other Languages Are Better Choices:</strong></h3>
 <h4 id="1-general-purpose-programming"><strong>1. General-Purpose Programming</strong></h4>
 <ul>

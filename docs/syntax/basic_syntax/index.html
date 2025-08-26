@@ -6858,6 +6858,38 @@ while (i &lt; array.len()) {
 /* .uraw() includes 0x prefix and leading zeros */
 0xFFFF.uraw();      /* &quot;0x0FFFF&quot; (with formatting) */
 </code></pre></div></p>
+<p><strong>Critical: Cryptographic Function Output Interpretation</strong></p>
+<p>When using cryptographic functions like <code>encode()</code> and <code>sign()</code>, the results are returned as <code>GrapaTokenType::RAW</code> data. This data may appear negative when displayed with <code>.hex()</code> if the high bit is set:</p>
+<div class="highlight"><pre><span></span><code>/* Cryptographic function output */
+md_keys = &quot;md&quot;.genkeys({&quot;digest&quot;: &quot;sha256&quot;});
+message = &quot;Hello World&quot;;
+hash = message.encode(md_keys);
+
+/* ❌ INCORRECT: May show negative hex if high bit is set */
+hash.hex().echo();  /* May show: -5A6E592BF40BDFBFB5FEE8CC30484E6F29D39A40F4325CD4A84D88265260EB92 */
+
+/* ✅ CORRECT: Use unsigned methods for cryptographic output */
+hash.uint().hex().echo();  /* Shows: A591A6D40BF420404A011733CFB7B190D62C65BF0BCDA32B57B277D9AD9F146E */
+hash.uhex().echo();        /* Shows: A591A6D40BF420404A011733CFB7B190D62C65BF0BCDA32B57B277D9AD9F146E */
+</code></pre></div>
+<p><strong>Why this happens:</strong>
+- <strong><code>encode()</code> and <code>sign()</code> return <code>GrapaTokenType::RAW</code> data</strong>
+- <strong><code>GrapaInt::FromBytes()</code> interprets <code>RAW</code> data with high bit set as negative</strong>
+- <strong>Cryptographic outputs often have the high bit set</strong> (e.g., SHA256 hashes)
+- <strong>Use <code>uint()</code> or <code>uhex()</code> for proper unsigned interpretation</strong></p>
+<p><strong>Best practice for cryptographic code:</strong>
+<div class="highlight"><pre><span></span><code>/* Always use unsigned methods for cryptographic operations */
+hash = message.encode(md_keys);
+signature = keys.sign(message);
+
+/* For display and comparison */
+hash_hex = hash.uhex();
+signature_hex = signature.uhex();
+
+/* For mathematical operations */
+hash_uint = hash.uint();
+result = hash_uint.modpow(exponent, modulus);
+</code></pre></div></p>
 <h3 id="hex-representation-methods-hex-vs-raw">Hex Representation Methods: <code>.hex()</code> vs <code>.raw()</code></h3>
 <p>Grapa provides two different hex representation methods that serve different purposes:</p>
 <p><strong><code>.hex()</code> - Value Representation:</strong>

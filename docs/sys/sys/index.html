@@ -1794,6 +1794,90 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#command-line-arguments" class="md-nav__link">
+    <span class="md-ellipsis">
+      Command Line Arguments
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Command Line Arguments">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#argv-positional-arguments-only" class="md-nav__link">
+    <span class="md-ellipsis">
+      $ARGV - Positional Arguments Only
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cliargv-full-command-line" class="md-nav__link">
+    <span class="md-ellipsis">
+      $CLIARGV - Full Command Line
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#practical-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      Practical Examples
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cli-development-with-system-variables" class="md-nav__link">
+    <span class="md-ellipsis">
+      CLI Development with System Variables
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="CLI Development with System Variables">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#essential-for-cli-scripts" class="md-nav__link">
+    <span class="md-ellipsis">
+      Essential for CLI Scripts
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#useful-for-advanced-cli-scripts" class="md-nav__link">
+    <span class="md-ellipsis">
+      Useful for Advanced CLI Scripts
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cli-script-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      CLI Script Example
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#putenvname-value-setenvname-value" class="md-nav__link">
     <span class="md-ellipsis">
       putenv(name, value) / setenv(name, value)
@@ -3982,6 +4066,90 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#command-line-arguments" class="md-nav__link">
+    <span class="md-ellipsis">
+      Command Line Arguments
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Command Line Arguments">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#argv-positional-arguments-only" class="md-nav__link">
+    <span class="md-ellipsis">
+      $ARGV - Positional Arguments Only
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cliargv-full-command-line" class="md-nav__link">
+    <span class="md-ellipsis">
+      $CLIARGV - Full Command Line
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#practical-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      Practical Examples
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cli-development-with-system-variables" class="md-nav__link">
+    <span class="md-ellipsis">
+      CLI Development with System Variables
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="CLI Development with System Variables">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#essential-for-cli-scripts" class="md-nav__link">
+    <span class="md-ellipsis">
+      Essential for CLI Scripts
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#useful-for-advanced-cli-scripts" class="md-nav__link">
+    <span class="md-ellipsis">
+      Useful for Advanced CLI Scripts
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cli-script-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      CLI Script Example
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#putenvname-value-setenvname-value" class="md-nav__link">
     <span class="md-ellipsis">
       putenv(name, value) / setenv(name, value)
@@ -4243,8 +4411,13 @@ $ARRAY
 </tr>
 <tr>
 <td><code>$ARGV</code></td>
-<td>Command line arguments array</td>
-<td><code>["grapa.exe", "script.grc", "param"]</code></td>
+<td>Positional command line arguments only</td>
+<td><code>["a", "b", "c"]</code></td>
+</tr>
+<tr>
+<td><code>$CLIARGV</code></td>
+<td>Full command line including flags and script</td>
+<td><code>["./grapa", "-c", "script", "a", "b", "c"]</code></td>
 </tr>
 <tr>
 <td><code>$LIB</code></td>
@@ -4308,10 +4481,188 @@ $sys().getenv($ARGCIN);
 /* Returns stdin data when using -S option */
 /* Example: echo &quot;data&quot; | grapa -S -c &quot;$sys().getenv(&#39;$ARGCIN&#39;).echo()&quot; */
 </code></pre></div></p>
+<h3 id="command-line-arguments">Command Line Arguments</h3>
+<p>Grapa provides two ways to access command line arguments:</p>
+<h4 id="argv-positional-arguments-only"><strong>$ARGV - Positional Arguments Only</strong></h4>
+<p>Returns only the positional arguments passed after the script, excluding flags and the script name itself.</p>
+<p><strong>Example Usage:</strong>
+<div class="highlight"><pre><span></span><code>./grapa<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;script.grc&quot;</span><span class="w"> </span>arg1<span class="w"> </span>arg2<span class="w"> </span>arg3
+</code></pre></div></p>
+<div class="highlight"><pre><span></span><code>/* Get positional arguments */
+args = $sys().getenv($ARGV);
+args.echo();
+/* Output: [&quot;arg1&quot;, &quot;arg2&quot;, &quot;arg3&quot;] */
+
+/* Access specific argument */
+first_arg = args.get(0);
+(&quot;First argument: &quot; + first_arg).echo();
+/* Output: First argument: arg1 */
+
+/* Check number of arguments */
+arg_count = args.len();
+(&quot;Number of arguments: &quot; + arg_count).echo();
+/* Output: Number of arguments: 3 */
+</code></pre></div>
+<h4 id="cliargv-full-command-line"><strong>$CLIARGV - Full Command Line</strong></h4>
+<p>Returns the complete command line including the executable name, flags, script, and all arguments.</p>
+<p><strong>Example Usage:</strong>
+<div class="highlight"><pre><span></span><code>./grapa<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;script.grc&quot;</span><span class="w"> </span>arg1<span class="w"> </span>arg2<span class="w"> </span>arg3
+</code></pre></div></p>
+<div class="highlight"><pre><span></span><code>/* Get full command line */
+full_cmd = $sys().getenv($CLIARGV);
+full_cmd.echo();
+/* Output: [&quot;./grapa&quot;, &quot;-c&quot;, &quot;script.grc&quot;, &quot;arg1&quot;, &quot;arg2&quot;, &quot;arg3&quot;] */
+
+/* Access executable name */
+exe_name = full_cmd.get(0);
+(&quot;Executable: &quot; + exe_name).echo();
+/* Output: Executable: ./grapa */
+
+/* Check if debug mode is enabled */
+is_debug = full_cmd.grep(&quot;-d&quot;).len() &gt; 0;
+(&quot;Debug mode: &quot; + is_debug).echo();
+/* Output: Debug mode: false */
+</code></pre></div>
+<h4 id="practical-examples"><strong>Practical Examples</strong></h4>
+<p><strong>Basic Argument Processing:</strong>
+<div class="highlight"><pre><span></span><code>/* script.grc */
+args = $sys().getenv($ARGV);
+
+if (args.len() == 0) {
+    &quot;Usage: ./grapa script.grc &lt;filename&gt;&quot;.echo();
+    exit(1);
+}
+
+filename = args.get(0);
+(&quot;Processing file: &quot; + filename).echo();
+</code></pre></div></p>
+<p><strong>Command Line Flag Detection:</strong>
+<div class="highlight"><pre><span></span><code>/* script.grc */
+full_cmd = $sys().getenv($CLIARGV);
+
+/* Check for verbose flag */
+verbose = full_cmd.grep(&quot;--verbose&quot;).len() &gt; 0 || full_cmd.grep(&quot;-v&quot;).len() &gt; 0;
+
+/* Check for debug flag */
+debug = full_cmd.grep(&quot;-d&quot;).len() &gt; 0;
+
+if (verbose) {
+    &quot;Verbose mode enabled&quot;.echo();
+}
+
+if (debug) {
+    &quot;Debug mode enabled&quot;.echo();
+}
+</code></pre></div></p>
+<p><strong>Argument Validation:</strong>
+<div class="highlight"><pre><span></span><code>/* script.grc */
+args = $sys().getenv($ARGV);
+
+/* Validate required arguments */
+if (args.len() &lt; 2) {
+    &quot;Error: Requires at least 2 arguments&quot;.echo();
+    &quot;Usage: ./grapa script.grc &lt;input_file&gt; &lt;output_file&gt;&quot;.echo();
+    exit(1);
+}
+
+input_file = args.get(0);
+output_file = args.get(1);
+
+/* Validate file existence */
+if (!$file(input_file).exists()) {
+    (&quot;Error: Input file not found: &quot; + input_file).echo();
+    exit(1);
+}
+
+(&quot;Processing &quot; + input_file + &quot; -&gt; &quot; + output_file).echo();
+</code></pre></div></p>
+<p><strong>Environment-Based Configuration:</strong>
+<div class="highlight"><pre><span></span><code>/* script.grc */
+args = $sys().getenv($ARGV);
+full_cmd = $sys().getenv($CLIARGV);
+
+/* Set environment based on arguments */
+if (args.grep(&quot;--production&quot;).len() &gt; 0) {
+    $sys().putenv(&quot;ENVIRONMENT&quot;, &quot;production&quot;);
+} else if (args.grep(&quot;--staging&quot;).len() &gt; 0) {
+    $sys().putenv(&quot;ENVIRONMENT&quot;, &quot;staging&quot;);
+} else {
+    $sys().putenv(&quot;ENVIRONMENT&quot;, &quot;development&quot;);
+}
+
+/* Check for debug mode */
+if (full_cmd.grep(&quot;-d&quot;).len() &gt; 0) {
+    $sys().putenv(&quot;DEBUG_MODE&quot;, &quot;true&quot;);
+}
+
+env = $sys().getenv(&quot;ENVIRONMENT&quot;);
+debug = $sys().getenv(&quot;DEBUG_MODE&quot;);
+
+(&quot;Environment: &quot; + env).echo();
+(&quot;Debug mode: &quot; + debug).echo();
+</code></pre></div></p>
 <p><strong>Platform Values for $PLATFORM:</strong>
 - <strong>Operating Systems:</strong> <code>__APPLE__</code>, <code>_WIN32</code>, <code>_WIN64</code>, <code>__linux__</code>, <code>__ANDROID__</code>
 - <strong>Compilers:</strong> <code>_MSC_VER</code>, <code>_MSC_FULL_VER</code>, <code>__GNUC__</code>, <code>__GNUC_MINOR__</code>, <code>__clang__</code>, <code>__MINGW32__</code>, <code>__MINGW64__</code>
 - <strong>Architectures:</strong> <code>__i386__</code>, <code>__x86_64__</code>, <code>__arm__</code>, <code>__ARM_ARCH_5T__</code>, <code>__ARM_ARCH_7A__</code>, <code>__powerpc64__</code>, <code>__aarch64__</code></p>
+<h3 id="cli-development-with-system-variables">CLI Development with System Variables</h3>
+<p>These system environment variables are particularly useful for CLI script development:</p>
+<h4 id="essential-for-cli-scripts"><strong>Essential for CLI Scripts</strong></h4>
+<ul>
+<li><strong><code>$WORK</code></strong>: Current working directory - essential for relative path operations</li>
+<li><strong><code>$HOME</code></strong>: User's home directory - for user-specific configuration files</li>
+<li><strong><code>$TEMP</code></strong>: Temporary directory - for temporary file operations</li>
+<li><strong><code>$VERSION</code></strong>: Grapa version - for compatibility checking</li>
+<li><strong><code>$PLATFORM</code></strong>: Platform information - for cross-platform script behavior</li>
+</ul>
+<h4 id="useful-for-advanced-cli-scripts"><strong>Useful for Advanced CLI Scripts</strong></h4>
+<ul>
+<li><strong><code>$BIN</code></strong>: Binary directory - for finding related executables</li>
+<li><strong><code>$LIB</code></strong>: Library directory - for library discovery and loading</li>
+<li><strong><code>$NAME</code></strong>: Program name - for self-referencing in usage messages</li>
+</ul>
+<h4 id="cli-script-example"><strong>CLI Script Example</strong></h4>
+<div class="highlight"><pre><span></span><code>/* cli_script.grc */
+/* Get essential system information */
+work_dir = $sys().getenv($WORK);
+home_dir = $sys().getenv($HOME);
+temp_dir = $sys().getenv($TEMP);
+version = $sys().getenv($VERSION);
+platform = $sys().getenv($PLATFORM);
+
+/* Create cross-platform paths */
+config_dir = home_dir + &quot;/.grapa&quot;;
+log_file = temp_dir + &quot;/grapa_script.log&quot;;
+output_dir = work_dir + &quot;/output&quot;;
+
+/* Version compatibility check */
+if (version &lt; &quot;0.1.40&quot;) {
+    (&quot;Error: Requires Grapa version 0.1.40 or higher. Current: &quot; + version).echo();
+    exit(1);
+}
+
+/* Platform-specific behavior */
+if (platform.grep(&quot;__APPLE__&quot;).len() &gt; 0) {
+    &quot;Running on macOS&quot;.echo();
+} else if (platform.grep(&quot;_WIN32&quot;).len() &gt; 0) {
+    &quot;Running on Windows&quot;.echo();
+} else {
+    &quot;Running on Linux/Other&quot;.echo();
+}
+
+/* Create directories if they don&#39;t exist */
+if (!$file(config_dir).exists()) {
+    $file(config_dir).mk();
+}
+
+if (!$file(output_dir).exists()) {
+    $file(output_dir).mk();
+}
+
+(&quot;Config: &quot; + config_dir).echo();
+(&quot;Log: &quot; + log_file).echo();
+(&quot;Output: &quot; + output_dir).echo();
+</code></pre></div>
 <h3 id="putenvname-value-setenvname-value">putenv(name, value) / setenv(name, value)</h3>
 <p>Sets environment variables and system information. Both <code>putenv()</code> and <code>setenv()</code> are aliases for the same functionality.</p>
 <h3 id="constobject">const(object)</h3>

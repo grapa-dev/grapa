@@ -915,6 +915,81 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Script Arguments">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#argv-positional-arguments-only" class="md-nav__link">
+    <span class="md-ellipsis">
+      $ARGV - Positional Arguments Only
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cliargv-full-command-line" class="md-nav__link">
+    <span class="md-ellipsis">
+      $CLIARGV - Full Command Line
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#practical-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      Practical Examples
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#system-environment-variables" class="md-nav__link">
+    <span class="md-ellipsis">
+      System Environment Variables
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="System Environment Variables">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#path-and-directory-variables" class="md-nav__link">
+    <span class="md-ellipsis">
+      Path and Directory Variables
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#system-information-variables" class="md-nav__link">
+    <span class="md-ellipsis">
+      System Information Variables
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#practical-cli-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      Practical CLI Examples
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
         
           <li class="md-nav__item">
@@ -4377,6 +4452,81 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Script Arguments">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#argv-positional-arguments-only" class="md-nav__link">
+    <span class="md-ellipsis">
+      $ARGV - Positional Arguments Only
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cliargv-full-command-line" class="md-nav__link">
+    <span class="md-ellipsis">
+      $CLIARGV - Full Command Line
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#practical-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      Practical Examples
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#system-environment-variables" class="md-nav__link">
+    <span class="md-ellipsis">
+      System Environment Variables
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="System Environment Variables">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#path-and-directory-variables" class="md-nav__link">
+    <span class="md-ellipsis">
+      Path and Directory Variables
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#system-information-variables" class="md-nav__link">
+    <span class="md-ellipsis">
+      System Information Variables
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#practical-cli-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      Practical CLI Examples
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
         
           <li class="md-nav__item">
@@ -4601,22 +4751,22 @@
 <h3 id="step-1-download-and-extract">Step 1: Download and Extract</h3>
 <ol>
 <li>Download the appropriate binary for your system from the <code>bin/</code> directory:</li>
-<li><strong>macOS (Intel):</strong> <code>grapa-mac-amd64.tar.gz</code></li>
 <li><strong>macOS (Apple Silicon):</strong> <code>grapa-mac-arm64.tar.gz</code></li>
 <li><strong>Linux (Intel):</strong> <code>grapa-linux-amd64.tar.gz</code></li>
 <li><strong>Linux (ARM):</strong> <code>grapa-linux-arm64.tar.gz</code></li>
-<li>
-<p><strong>Windows:</strong> <code>grapa-win-amd64.zip</code></p>
-</li>
-<li>
-<p>Extract the archive to a location of your choice:
+<li><strong>Windows:</strong> <code>grapa-win-amd64.zip</code></li>
+</ol>
+<blockquote>
+<p><strong>Note:</strong> Grapa requires macOS 15.0+ (Apple Silicon only). Intel Macs are no longer supported due to Apple's discontinuation of Intel Mac support in macOS 15.0.</p>
+</blockquote>
+<ol>
+<li>Extract the archive to a location of your choice:
    <div class="highlight"><pre><span></span><code><span class="c1"># macOS/Linux</span>
-tar<span class="w"> </span>-xzf<span class="w"> </span>grapa-mac-amd64.tar.gz
+tar<span class="w"> </span>-xzf<span class="w"> </span>grapa-mac-arm64.tar.gz
 
 <span class="c1"># Windows</span>
 <span class="c1"># Extract the .zip file using your preferred tool</span>
-</code></pre></div></p>
-</li>
+</code></pre></div></li>
 </ol>
 <h3 id="step-2-make-executable-macoslinux">Step 2: Make Executable (macOS/Linux)</h3>
 <div class="highlight"><pre><span></span><code>chmod<span class="w"> </span>+x<span class="w"> </span>grapa
@@ -4809,13 +4959,179 @@ grapa
 grapa<span class="w"> </span>-h
 </code></pre></div>
 <h3 id="script-arguments">Script Arguments</h3>
-<p>Access command line arguments in your script:
-<div class="highlight"><pre><span></span><code>/* Get all arguments */
-args = $sys.argv;
+<p>Grapa provides two ways to access command line arguments:</p>
+<h4 id="argv-positional-arguments-only"><strong>$ARGV - Positional Arguments Only</strong></h4>
+<p>Returns only the arguments passed after the script, excluding flags and the script name.</p>
+<div class="highlight"><pre><span></span><code>/* Get positional arguments only */
+args = $sys().getenv($ARGV);
+(&quot;All arguments: &quot; + args).echo();
 
 /* Get specific argument */
-first_arg = args[1];
+first_arg = args.get(0);
 (&quot;First argument: &quot; + first_arg).echo();
+
+/* Check argument count */
+arg_count = args.len();
+(&quot;Number of arguments: &quot; + arg_count).echo();
+</code></pre></div>
+<h4 id="cliargv-full-command-line"><strong>$CLIARGV - Full Command Line</strong></h4>
+<p>Returns the complete command line including executable, flags, script, and all arguments.</p>
+<div class="highlight"><pre><span></span><code>/* Get full command line including flags */
+full_cmd = $sys().getenv($CLIARGV);
+(&quot;Full command: &quot; + full_cmd).echo();
+
+/* Check for specific flags */
+is_debug = full_cmd.grep(&quot;-d&quot;).len() &gt; 0;
+is_verbose = full_cmd.grep(&quot;--verbose&quot;).len() &gt; 0;
+(&quot;Debug mode: &quot; + is_debug + &quot;, Verbose: &quot; + is_verbose).echo();
+</code></pre></div>
+<h4 id="practical-examples"><strong>Practical Examples</strong></h4>
+<p><strong>Basic Argument Processing:</strong>
+<div class="highlight"><pre><span></span><code>/* script.grc */
+args = $sys().getenv($ARGV);
+
+if (args.len() == 0) {
+    &quot;Usage: ./grapa script.grc &lt;filename&gt;&quot;.echo();
+    exit(1);
+}
+
+filename = args.get(0);
+(&quot;Processing file: &quot; + filename).echo();
+</code></pre></div></p>
+<p><strong>Flag Detection:</strong>
+<div class="highlight"><pre><span></span><code>/* script.grc */
+full_cmd = $sys().getenv($CLIARGV);
+
+/* Check for common flags */
+verbose = full_cmd.grep(&quot;--verbose&quot;).len() &gt; 0 || full_cmd.grep(&quot;-v&quot;).len() &gt; 0;
+debug = full_cmd.grep(&quot;-d&quot;).len() &gt; 0;
+quiet = full_cmd.grep(&quot;-q&quot;).len() &gt; 0;
+
+if (verbose) {
+    &quot;Verbose mode enabled&quot;.echo();
+}
+
+if (debug) {
+    &quot;Debug mode enabled&quot;.echo();
+}
+
+if (quiet) {
+    &quot;Quiet mode enabled&quot;.echo();
+}
+</code></pre></div></p>
+<h3 id="system-environment-variables">System Environment Variables</h3>
+<p>Grapa provides several system environment variables that are particularly useful for CLI script development:</p>
+<h4 id="path-and-directory-variables"><strong>Path and Directory Variables</strong></h4>
+<div class="highlight"><pre><span></span><code>/* Get current working directory */
+work_dir = $sys().getenv($WORK);
+(&quot;Working directory: &quot; + work_dir).echo();
+
+/* Get user&#39;s home directory */
+home_dir = $sys().getenv($HOME);
+(&quot;Home directory: &quot; + home_dir).echo();
+
+/* Get temporary directory for file operations */
+temp_dir = $sys().getenv($TEMP);
+(&quot;Temp directory: &quot; + temp_dir).echo();
+
+/* Get Grapa binary directory */
+bin_dir = $sys().getenv($BIN);
+(&quot;Binary directory: &quot; + bin_dir).echo();
+
+/* Get Grapa library directory */
+lib_dir = $sys().getenv($LIB);
+(&quot;Library directory: &quot; + lib_dir).echo();
+</code></pre></div>
+<h4 id="system-information-variables"><strong>System Information Variables</strong></h4>
+<div class="highlight"><pre><span></span><code>/* Get Grapa version for compatibility checks */
+version = $sys().getenv($VERSION);
+(&quot;Grapa version: &quot; + version).echo();
+
+/* Get program name for self-referencing */
+prog_name = $sys().getenv($NAME);
+(&quot;Program name: &quot; + prog_name).echo();
+
+/* Get platform information for cross-platform scripts */
+platform = $sys().getenv($PLATFORM);
+(&quot;Platform: &quot; + platform).echo();
+</code></pre></div>
+<h4 id="practical-cli-examples"><strong>Practical CLI Examples</strong></h4>
+<p><strong>Cross-Platform Path Handling:</strong>
+<div class="highlight"><pre><span></span><code>/* script.grc */
+home = $sys().getenv($HOME);
+work = $sys().getenv($WORK);
+temp = $sys().getenv($TEMP);
+
+/* Create paths that work on any platform */
+config_file = home + &quot;/.grapa/config.json&quot;;
+log_file = temp + &quot;/grapa_script.log&quot;;
+output_dir = work + &quot;/output&quot;;
+
+(&quot;Config: &quot; + config_file).echo();
+(&quot;Log: &quot; + log_file).echo();
+(&quot;Output: &quot; + output_dir).echo();
+</code></pre></div></p>
+<p><strong>Version Compatibility Checking:</strong>
+<div class="highlight"><pre><span></span><code>/* script.grc */
+version = $sys().getenv($VERSION);
+platform = $sys().getenv($PLATFORM);
+
+/* Check for minimum version */
+if (version &lt; &quot;0.1.40&quot;) {
+    &quot;Error: Requires Grapa version 0.1.40 or higher&quot;.echo();
+    &quot;Current version: &quot; + version.echo();
+    exit(1);
+}
+
+/* Platform-specific behavior */
+if (platform.grep(&quot;__APPLE__&quot;).len() &gt; 0) {
+    &quot;Running on macOS&quot;.echo();
+} else if (platform.grep(&quot;_WIN32&quot;).len() &gt; 0) {
+    &quot;Running on Windows&quot;.echo();
+} else if (platform.grep(&quot;__linux__&quot;).len() &gt; 0) {
+    &quot;Running on Linux&quot;.echo();
+}
+</code></pre></div></p>
+<p><strong>Temporary File Management:</strong>
+<div class="highlight"><pre><span></span><code>/* script.grc */
+temp_dir = $sys().getenv($TEMP);
+work_dir = $sys().getenv($WORK);
+
+/* Create temporary files */
+temp_file = temp_dir + &quot;/grapa_temp_&quot; + $TIME().utc().str();
+log_file = temp_dir + &quot;/grapa_log_&quot; + $TIME().utc().str();
+
+/* Write to temporary file */
+$file(temp_file).set(&quot;Temporary data&quot;);
+
+/* Clean up temporary files when done */
+$file(temp_file).rm();
+</code></pre></div></p>
+<p><strong>Library Discovery:</strong>
+<div class="highlight"><pre><span></span><code>/* script.grc */
+lib_dir = $sys().getenv($LIB);
+work_dir = $sys().getenv($WORK);
+
+/* Check for local library */
+local_lib = work_dir + &quot;/lib/grapa&quot;;
+if ($file(local_lib).exists()) {
+    &quot;Using local library: &quot; + local_lib.echo();
+} else {
+    &quot;Using system library: &quot; + lib_dir.echo();
+}
+</code></pre></div></p>
+<p><strong>Self-Referencing Scripts:</strong>
+<div class="highlight"><pre><span></span><code>/* script.grc */
+prog_name = $sys().getenv($NAME);
+version = $sys().getenv($VERSION);
+
+/* Display script information */
+(&quot;Script: &quot; + prog_name).echo();
+(&quot;Version: &quot; + version).echo();
+
+/* Create usage message */
+usage = &quot;Usage: &quot; + prog_name + &quot; &lt;input_file&gt; &lt;output_file&gt;&quot;;
+usage.echo();
 </code></pre></div></p>
 <h3 id="advanced-command-line-options">Advanced Command Line Options</h3>
 <div class="highlight"><pre><span></span><code><span class="c1"># Execute command from stdin (standard Python/Node.js behavior)</span>
