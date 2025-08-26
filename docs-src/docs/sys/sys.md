@@ -62,7 +62,8 @@ Gets environment variables and system information.
 | `$PATH` | System PATH environment variable | `"C:\Windows\System32;C:\Windows"` |
 | `$STATICLIB` | Static library path | `"lib/grapa"` |
 | `$ARGCIN` | Stdin data (when using -S option) | `"data from stdin"` |
-| `$ARGV` | Command line arguments array | `["grapa.exe", "script.grc", "param"]` |
+| `$ARGV` | Positional command line arguments only | `["a", "b", "c"]` |
+| `$CLIARGV` | Full command line including flags and script | `["./grapa", "-c", "script", "a", "b", "c"]` |
 | `$LIB` | Library directory path | `"lib"` |
 | `$BIN` | Binary directory path | `"bin"` |
 | `$NAME` | Program name | `"grapa"` |
@@ -91,10 +92,211 @@ $sys().getenv($ARGCIN);
 /* Example: echo "data" | grapa -S -c "$sys().getenv('$ARGCIN').echo()" */
 ```
 
+### Command Line Arguments
+
+Grapa provides two ways to access command line arguments:
+
+#### **$ARGV - Positional Arguments Only**
+Returns only the positional arguments passed after the script, excluding flags and the script name itself.
+
+**Example Usage:**
+```bash
+./grapa -c "script.grc" arg1 arg2 arg3
+```
+
+```grapa
+/* Get positional arguments */
+args = $sys().getenv($ARGV);
+args.echo();
+/* Output: ["arg1", "arg2", "arg3"] */
+
+/* Access specific argument */
+first_arg = args.get(0);
+("First argument: " + first_arg).echo();
+/* Output: First argument: arg1 */
+
+/* Check number of arguments */
+arg_count = args.len();
+("Number of arguments: " + arg_count).echo();
+/* Output: Number of arguments: 3 */
+```
+
+#### **$CLIARGV - Full Command Line**
+Returns the complete command line including the executable name, flags, script, and all arguments.
+
+**Example Usage:**
+```bash
+./grapa -c "script.grc" arg1 arg2 arg3
+```
+
+```grapa
+/* Get full command line */
+full_cmd = $sys().getenv($CLIARGV);
+full_cmd.echo();
+/* Output: ["./grapa", "-c", "script.grc", "arg1", "arg2", "arg3"] */
+
+/* Access executable name */
+exe_name = full_cmd.get(0);
+("Executable: " + exe_name).echo();
+/* Output: Executable: ./grapa */
+
+/* Check if debug mode is enabled */
+is_debug = full_cmd.grep("-d").len() > 0;
+("Debug mode: " + is_debug).echo();
+/* Output: Debug mode: false */
+```
+
+#### **Practical Examples**
+
+**Basic Argument Processing:**
+```grapa
+/* script.grc */
+args = $sys().getenv($ARGV);
+
+if (args.len() == 0) {
+    "Usage: ./grapa script.grc <filename>".echo();
+    exit(1);
+}
+
+filename = args.get(0);
+("Processing file: " + filename).echo();
+```
+
+**Command Line Flag Detection:**
+```grapa
+/* script.grc */
+full_cmd = $sys().getenv($CLIARGV);
+
+/* Check for verbose flag */
+verbose = full_cmd.grep("--verbose").len() > 0 || full_cmd.grep("-v").len() > 0;
+
+/* Check for debug flag */
+debug = full_cmd.grep("-d").len() > 0;
+
+if (verbose) {
+    "Verbose mode enabled".echo();
+}
+
+if (debug) {
+    "Debug mode enabled".echo();
+}
+```
+
+**Argument Validation:**
+```grapa
+/* script.grc */
+args = $sys().getenv($ARGV);
+
+/* Validate required arguments */
+if (args.len() < 2) {
+    "Error: Requires at least 2 arguments".echo();
+    "Usage: ./grapa script.grc <input_file> <output_file>".echo();
+    exit(1);
+}
+
+input_file = args.get(0);
+output_file = args.get(1);
+
+/* Validate file existence */
+if (!$file(input_file).exists()) {
+    ("Error: Input file not found: " + input_file).echo();
+    exit(1);
+}
+
+("Processing " + input_file + " -> " + output_file).echo();
+```
+
+**Environment-Based Configuration:**
+```grapa
+/* script.grc */
+args = $sys().getenv($ARGV);
+full_cmd = $sys().getenv($CLIARGV);
+
+/* Set environment based on arguments */
+if (args.grep("--production").len() > 0) {
+    $sys().putenv("ENVIRONMENT", "production");
+} else if (args.grep("--staging").len() > 0) {
+    $sys().putenv("ENVIRONMENT", "staging");
+} else {
+    $sys().putenv("ENVIRONMENT", "development");
+}
+
+/* Check for debug mode */
+if (full_cmd.grep("-d").len() > 0) {
+    $sys().putenv("DEBUG_MODE", "true");
+}
+
+env = $sys().getenv("ENVIRONMENT");
+debug = $sys().getenv("DEBUG_MODE");
+
+("Environment: " + env).echo();
+("Debug mode: " + debug).echo();
+```
+
 **Platform Values for $PLATFORM:**
 - **Operating Systems:** `__APPLE__`, `_WIN32`, `_WIN64`, `__linux__`, `__ANDROID__`
 - **Compilers:** `_MSC_VER`, `_MSC_FULL_VER`, `__GNUC__`, `__GNUC_MINOR__`, `__clang__`, `__MINGW32__`, `__MINGW64__`
 - **Architectures:** `__i386__`, `__x86_64__`, `__arm__`, `__ARM_ARCH_5T__`, `__ARM_ARCH_7A__`, `__powerpc64__`, `__aarch64__`
+
+### CLI Development with System Variables
+
+These system environment variables are particularly useful for CLI script development:
+
+#### **Essential for CLI Scripts**
+- **`$WORK`**: Current working directory - essential for relative path operations
+- **`$HOME`**: User's home directory - for user-specific configuration files
+- **`$TEMP`**: Temporary directory - for temporary file operations
+- **`$VERSION`**: Grapa version - for compatibility checking
+- **`$PLATFORM`**: Platform information - for cross-platform script behavior
+
+#### **Useful for Advanced CLI Scripts**
+- **`$BIN`**: Binary directory - for finding related executables
+- **`$LIB`**: Library directory - for library discovery and loading
+- **`$NAME`**: Program name - for self-referencing in usage messages
+
+#### **CLI Script Example**
+```grapa
+/* cli_script.grc */
+/* Get essential system information */
+work_dir = $sys().getenv($WORK);
+home_dir = $sys().getenv($HOME);
+temp_dir = $sys().getenv($TEMP);
+version = $sys().getenv($VERSION);
+platform = $sys().getenv($PLATFORM);
+
+/* Create cross-platform paths */
+config_dir = home_dir + "/.grapa";
+log_file = temp_dir + "/grapa_script.log";
+output_dir = work_dir + "/output";
+
+/* Version compatibility check */
+if (version < "0.1.40") {
+    ("Error: Requires Grapa version 0.1.40 or higher. Current: " + version).echo();
+    exit(1);
+}
+
+/* Platform-specific behavior */
+if (platform.grep("__APPLE__").len() > 0) {
+    "Running on macOS".echo();
+} else if (platform.grep("_WIN32").len() > 0) {
+    "Running on Windows".echo();
+} else {
+    "Running on Linux/Other".echo();
+}
+
+/* Create directories if they don't exist */
+if (!$file(config_dir).exists()) {
+    $file(config_dir).mk();
+}
+
+if (!$file(output_dir).exists()) {
+    $file(output_dir).mk();
+}
+
+("Config: " + config_dir).echo();
+("Log: " + log_file).echo();
+("Output: " + output_dir).echo();
+```
 
 ### putenv(name, value) / setenv(name, value)
 Sets environment variables and system information. Both `putenv()` and `setenv()` are aliases for the same functionality.

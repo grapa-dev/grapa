@@ -65,6 +65,11 @@ tags:
 ## Time
 `utc`, `tz`
 
+## System
+`getenv`, `putenv`, `setenv`, `const`, `setconst`, `compile`, `compilef`, `eval`, `sleep`
+
+**Command Line Arguments**: `$ARGV` (positional args), `$CLIARGV` (full command line)
+
 ## File System
 **Navigation**: `file_pwd` (working dir), `file_cd` (change working dir), `file_phd` (home dir), `file_chd` (change home dir)
 **Operations**: `file_ls`, `file_mk`, `file_rm`, `file_set`, `file_get`, `file_info` (metadata: type, size, existence)

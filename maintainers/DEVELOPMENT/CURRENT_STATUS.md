@@ -188,13 +188,15 @@
 ## Next Focus: Adoption Drivers
 
 ### 📋 **Next Priority Tasks**
-1. **🔧 Command-Line Argument Support - HIGH PRIORITY**:
-   - **Status**: Framework exists in source code but not working correctly
-   - **Issue**: `$ARGV` variable not properly injecting command-line arguments into `.grc`/`.grz` scripts
-   - **Evidence**: Source code shows `mArgv` queue and `$ARGV` handling in `GrapaLibRule.cpp` and `GrapaLink.cpp`, but testing shows `{"error":-1}` responses
-   - **Impact**: Scripts cannot access command-line parameters passed to `./grapa script.grc arg1 arg2 arg3`
-   - **Files to investigate**: `source/grapa/GrapaLibRule.cpp` (line 3673), `source/grapa/GrapaLink.cpp` (lines 92, 163, 234), `source/main.cpp` (line 72)
-   - **Next**: Investigate and fix argument injection mechanism in `GrapaLibRule.cpp` and `GrapaLink.cpp`
+1. **✅ Command-Line Argument Support - RESOLVED**:
+   - **Status**: Working correctly with both `$ARGV` and `$CLIARGV` variables
+   - **Implementation**: `$ARGV` provides positional arguments only, `$CLIARGV` provides full command line
+   - **Evidence**: Testing confirms correct behavior:
+     - `$ARGV`: `["./grapa","a","b","c"]` for `./grapa -c "script" a b c`
+     - `$CLIARGV`: `["./grapa","-c","script"]` for `./grapa -c "script"`
+   - **Impact**: Scripts can now access command-line parameters correctly
+   - **Next**: No action needed - functionality is working as expected
+   - **⚠️ Windows Validation Needed**: System environment variables (`$WORK`, `$HOME`, `$TEMP`, `$VERSION`, `$PLATFORM`, `$BIN`, `$LIB`, `$NAME`) documented for CLI development but need validation on Windows to ensure cross-platform compatibility
 2. **✅ FLTK 1.4.4 Upgrade - Complete**: 
    - **Static Libraries Built**: FLTK 1.4.4 static libraries successfully built for all supported platforms
    - **Threading Issues Resolved**: Fixed Cocoa threading violations in `GrapaWidget::New()` and `GrapaWidget::CLEAR()`
@@ -217,8 +219,9 @@
           - **✅ Basic Encoding**: Base64 encoding/decoding working correctly
        - **✅ Documentation**: 
           - Created comprehensive RSA cryptography example in `docs-src/docs/examples/rsa_cryptography_example.grc`
-          - Updated `docs-src/docs/use_cases/cryptography.md` with comprehensive OpenSSL-based cryptography documentation
+          - Updated `docs-src/docs/use_cases/cryptography.md` with comprehensive OpenSSL-based cryptography documentation and migration details
           - Updated `docs-src/docs/function_quick_reference.md` to distinguish between mathematical and OpenSSL-based cryptographic functions
+          - **✅ Documentation Consolidation**: Merged OpenSSL-specific migration and regression testing documentation into `cryptography.md` to eliminate redundancy
        - **✅ Baseline Analysis Complete**: Verified that cryptographic functions (secret(), sign(), verify()) were working correctly in previous version - regressions identified
        - **✅ Cryptographic Functions Fixed**: RSA/cryptographic functions (secret(), sign(), verify()) now working correctly with OpenSSL 3.x API compatibility
        - **✅ EC Cryptography Validated**: Elliptic Curve cryptography (genkeys(), sign(), verify(), secret()) working correctly with 7 supported curves (prime256v1, secp224r1, secp256k1, secp384r1, secp521r1, prime192v1, prime239v1) - EC does NOT support encode/decode operations (correct behavior)
