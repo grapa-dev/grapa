@@ -110,6 +110,7 @@ class OpenSSLBuilder:
             "no-hw",
             "no-engine",
             "no-asm",
+            "enable-deprecated",
             "--prefix=/tmp/openssl-3.5.2-mac-arm64"
         ]
         
@@ -145,8 +146,12 @@ class OpenSSLBuilder:
         
         print(f"✅ OpenSSL build complete for {target}")
 
-    def build_linux(self, target: str):
+    def build_linux(self, target: str, platform_override: str = None):
         """Build OpenSSL for Linux"""
+        platform, arch = target.split("-")
+        if platform_override:
+            platform = platform_override
+            
         print(f"🐧 Building OpenSSL 3.5.2 for {target}...")
         
         # Configure OpenSSL for Linux
@@ -156,7 +161,8 @@ class OpenSSLBuilder:
             "no-dso",
             "no-hw",
             "no-engine",
-            "--prefix=/tmp/openssl-3.5.2-linux-" + target.split("-")[1]
+            "enable-deprecated",
+            "--prefix=/tmp/openssl-3.5.2-" + platform + "-" + arch
         ]
         
         # Set environment variables for PIC compilation
@@ -172,7 +178,7 @@ class OpenSSLBuilder:
         subprocess.run(["make", "-j", str(os.cpu_count())], cwd=self.openssl_source, env=env, check=True)
         
         # Copy libraries
-        target_dir = self.get_target_dir("linux", target.split("-")[1])
+        target_dir = self.get_target_dir(platform, arch)
         target_dir.mkdir(parents=True, exist_ok=True)
         
         # Copy static libraries (OpenSSL builds them in the root directory)
@@ -276,8 +282,8 @@ class OpenSSLBuilder:
         """Build OpenSSL for AWS Linux"""
         print(f"☁️  Building OpenSSL 3.5.2 for {target}...")
         
-        # AWS Linux uses the same build process as regular Linux
-        self.build_linux(target)
+        # AWS Linux uses the same build process as regular Linux, but with correct platform
+        self.build_linux(target, platform_override="aws")
 
     def build_for_target(self, target: str):
         """Build OpenSSL for a specific target"""
