@@ -1866,7 +1866,7 @@ GrapaRuleEvent* GrapaEncode::GenKeys(const GrapaCHAR& pMethod, GrapaRuleEvent* p
 	}
 	else if (((GrapaCHAR*)&pMethod)->StrLowerCmp("dh") == 0)
 	{
-		u32 bits = 1024;
+		u32 bits = 512;
 		u32 pG = 2;
 		GrapaInt pP;
 		if (pParams && pParams->vQueue)

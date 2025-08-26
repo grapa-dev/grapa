@@ -992,6 +992,7 @@ bob_secret = bob_dh.secret({
 ```
 
 **Important Notes for DH Key Exchange:**
+- **Default Bit Size**: `"dh".genkeys()` now defaults to 512 bits for faster generation (was 1024 bits)
 - **Parameter Generation Time**: `"dh".genkeys()` can take significant time (3-10 seconds for 1024+ bits) because it generates safe primes
 - **Shared Parameters**: Both parties must use the same DH parameters (same prime p and generator g)
 - **Faster Generation**: Use smaller bit sizes (512 bits) for development/testing

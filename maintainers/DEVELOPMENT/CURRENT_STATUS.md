@@ -188,7 +188,14 @@
 ## Next Focus: Adoption Drivers
 
 ### 📋 **Next Priority Tasks**
-1. **✅ FLTK 1.4.4 Upgrade - Complete**: 
+1. **🔧 Command-Line Argument Support - HIGH PRIORITY**:
+   - **Status**: Framework exists in source code but not working correctly
+   - **Issue**: `$ARGV` variable not properly injecting command-line arguments into `.grc`/`.grz` scripts
+   - **Evidence**: Source code shows `mArgv` queue and `$ARGV` handling in `GrapaLibRule.cpp` and `GrapaLink.cpp`, but testing shows `{"error":-1}` responses
+   - **Impact**: Scripts cannot access command-line parameters passed to `./grapa script.grc arg1 arg2 arg3`
+   - **Files to investigate**: `source/grapa/GrapaLibRule.cpp` (line 3673), `source/grapa/GrapaLink.cpp` (lines 92, 163, 234), `source/main.cpp` (line 72)
+   - **Next**: Investigate and fix argument injection mechanism in `GrapaLibRule.cpp` and `GrapaLink.cpp`
+2. **✅ FLTK 1.4.4 Upgrade - Complete**: 
    - **Static Libraries Built**: FLTK 1.4.4 static libraries successfully built for all supported platforms
    - **Threading Issues Resolved**: Fixed Cocoa threading violations in `GrapaWidget::New()` and `GrapaWidget::CLEAR()`
    - **Memory Corruption Fixed**: Resolved critical use-after-free bug in `GrapaWidget` destructor by ensuring synchronous cleanup
@@ -220,6 +227,7 @@
        - **✅ RPK (Raw Public Key) Validated**: ED25519/ED448 signatures and X25519/X448 key exchange working correctly
        - **⚠️ Deprecation Warnings**: Many OpenSSL 1.1.1 functions deprecated but still functional
        - **⚠️ Test Issues**: Some vector math tests may have compatibility issues (segmentation fault in cosine test)
+       - **✅ DH Performance Improved**: Default bit size reduced from 1024 to 512 bits for faster key generation
        - **⚠️ DH Implementation Issues**: Diffie-Hellman key exchange not working correctly (Alice and Bob generate different secrets) - pre-existing issue, not migration-related
        - **Next**: Address deprecation warnings and investigate remaining test issues
 3. **FLTK X11 Dependency Investigation**: Research X11 dependency removal options for Linux
@@ -271,6 +279,7 @@
 - **ML capabilities documented and integrated**
 - **Control flow system fully implemented and tested**
 - **FLTK 1.4.4 upgrade completed for Windows with working widget functionality**
+- **DH key generation performance improved with 512-bit default**
 
 ### 🎯 **Current Targets**
 - Dependency modernization (FLTK/OpenSSL) for broader platform compatibility
