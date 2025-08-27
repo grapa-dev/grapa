@@ -1,0 +1,12 @@
+#!/usr/bin/make -f
+
+%:
+	dh $@
+
+override_dh_auto_install:
+	# Binary package - no build needed
+	dh_auto_install
+
+override_dh_strip:
+	# Don't strip the binary as it's already optimized
+	dh_strip --exclude=usr/bin/grapa 

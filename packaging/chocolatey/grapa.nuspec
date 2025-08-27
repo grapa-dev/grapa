@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2015/06/nuspec.xsd">
+  <metadata>
+    <id>grapa</id>
+    <version>0.1.51</version>
+    <title>Grapa Programming Language</title>
+    <authors>Grapa Team</authors>
+    <projectUrl>https://github.com/grapa-dev/grapa</projectUrl>
+    <licenseUrl>https://github.com/grapa/grapa/blob/main/LICENSE</licenseUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <projectSourceUrl>https://github.com/grapa/grapa</projectSourceUrl>
+    <docsUrl>https://github.com/grapa-dev/grapa/tree/main/docs-src</docsUrl>
+    <bugTrackerUrl>https://github.com/grapa/grapa/issues</bugTrackerUrl>
+    <tags>grapa programming-language development tools</tags>
+    <summary>Grapa is a modern, high-performance programming language with unlimited precision arithmetic</summary>
+    <description>
+Grapa is a modern, high-performance programming language with unlimited precision 
+arithmetic, advanced vector operations, and comprehensive cryptographic capabilities.
+
+Features:
+* Unlimited precision arithmetic for integers and floating-point numbers
+* Advanced vector and matrix operations with optimized algorithms
+* Comprehensive cryptography with OpenSSL 3.5.2 integration
+* Machine learning capabilities including linear regression
+* Unicode string support and advanced text processing
+* Cross-platform compatibility (Linux, macOS, Windows)
+* Python integration via GrapaPy
+* Command-line interface with script execution
+* Database integration with unified file/database API
+
+For more information, visit: https://github.com/grapa-dev/grapa
+    </description>
+    <releaseNotes>
+Initial release of Grapa programming language package.
+    </releaseNotes>
+  </metadata>
+  <files>
+    <file src="tools\**" target="tools" />
+  </files>
+</package>
