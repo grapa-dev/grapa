@@ -124,4 +124,10 @@ dep/openssl-3.5.2/
 # mypy
 .mypy_cache/
 .dmypy.json
-dmypy.json 
+dmypy.json
+
+# Temporary build artifacts and working directories
+temp/
+*.deb
+*.rpm
+*.tar.gz 
