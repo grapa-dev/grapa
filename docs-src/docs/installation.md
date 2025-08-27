@@ -13,7 +13,7 @@ Grapa is available through native package managers on all supported platforms, m
 | **Ubuntu/Debian AMD64** | apt | 🔄 **In Progress** | ✅ Available |
 | **Amazon Linux ARM64** | yum | 🔄 **In Progress** | ✅ Available |
 | **Amazon Linux AMD64** | yum | 🔄 **In Progress** | ✅ Available |
-| **Windows AMD64** | Chocolatey | 🔄 **In Progress** | ✅ Available |
+| **Windows AMD64** | Chocolatey | ✅ **Available** | ✅ Available |
 
 **Legend:**
 - ✅ **Available**: Ready for installation via package manager
@@ -51,7 +51,7 @@ sudo yum install grapa
 choco install grapa
 ```
 
-**Note**: Package manager installation is in progress. For immediate installation, see [Manual Installation](#manual-installation) below.
+**Note**: Chocolatey installation is available. For manual installation, see [Manual Installation](#manual-installation) below.
 
 ## Verify Installation
 
@@ -147,6 +147,11 @@ choco install grapa
 **Update:**
 ```powershell
 choco upgrade grapa
+```
+
+**Uninstall:**
+```powershell
+choco uninstall grapa
 ```
 
 ## Manual Installation
@@ -264,6 +269,52 @@ grapa -c "'Hello World'.echo()"
 sudo rpm -e grapa
 ```
 
+### Windows (Manual Installation)
+
+**Download and install the Windows executable:**
+
+```powershell
+# Download the Windows binary
+Invoke-WebRequest -Uri "https://github.com/grapa-dev/grapa/releases/download/v0.1.51/grapa-win-amd64.exe" -OutFile "grapa.exe"
+
+# Move to a directory in your PATH (run PowerShell as Administrator)
+Move-Item grapa.exe "C:\Windows\System32\grapa.exe"
+
+# Verify installation
+grapa --version
+```
+
+**Alternative installation to user directory:**
+```powershell
+# Create a directory for Grapa
+New-Item -ItemType Directory -Path "$env:USERPROFILE\grapa" -Force
+
+# Download the Windows binary
+Invoke-WebRequest -Uri "https://github.com/grapa-dev/grapa/releases/download/v0.1.51/grapa-win-amd64.exe" -OutFile "$env:USERPROFILE\grapa\grapa.exe"
+
+# Add to PATH (add this to your PowerShell profile)
+$env:PATH += ";$env:USERPROFILE\grapa"
+
+# Verify installation
+grapa --version
+```
+
+**Test basic functionality:**
+```powershell
+grapa -c "2+2"
+grapa -c "'Hello World'.echo()"
+```
+
+**Uninstall:**
+```powershell
+# Remove from System32 (if installed there)
+Remove-Item "C:\Windows\System32\grapa.exe" -Force
+
+# Or remove from user directory
+Remove-Item "$env:USERPROFILE\grapa\grapa.exe" -Force
+Remove-Item "$env:USERPROFILE\grapa" -Force
+```
+
 ### Other Platforms
 
 For other platforms, download the appropriate binary from the [GitHub releases page](https://github.com/grapa-dev/grapa/releases):
@@ -325,7 +376,11 @@ For other platforms, download the appropriate binary from the [GitHub releases p
 
 2. **Check file permissions:**
    ```bash
+   # Linux/macOS
    ls -la $(which grapa)
+   
+   # Windows
+   Get-ChildItem (Get-Command grapa).Source
    ```
 
 ### Package Manager Issues
@@ -355,9 +410,60 @@ For other platforms, download the appropriate binary from the [GitHub releases p
    
    # Amazon Linux/Red Hat
    sudo yum clean all
+   
+   # Windows
+   choco cache remove
    ```
 
 3. **Check network connectivity** and try again.
+
+### Windows-Specific Issues
+
+#### Chocolatey Not Found
+If `choco` command is not recognized:
+
+1. **Install Chocolatey** (run PowerShell as Administrator):
+   ```powershell
+   Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+   ```
+
+2. **Refresh environment variables:**
+   ```powershell
+   refreshenv
+   ```
+
+3. **Verify Chocolatey installation:**
+   ```powershell
+   choco --version
+   ```
+
+#### Execution Policy Issues
+If you encounter execution policy errors:
+
+1. **Check current execution policy:**
+   ```powershell
+   Get-ExecutionPolicy
+   ```
+
+2. **Set appropriate execution policy** (run PowerShell as Administrator):
+   ```powershell
+   Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
+   ```
+
+#### PATH Issues
+If Grapa is installed but not found in PATH:
+
+1. **Check if Grapa is in Chocolatey's bin directory:**
+   ```powershell
+   Test-Path "C:\ProgramData\chocolatey\bin\grapa.exe"
+   ```
+
+2. **Add Chocolatey to PATH manually:**
+   ```powershell
+   $env:PATH += ";C:\ProgramData\chocolatey\bin"
+   ```
+
+3. **Restart PowerShell** to ensure PATH changes take effect.
 
 ## Getting Help
 

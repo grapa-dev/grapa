@@ -36,5 +36,6 @@ Initial release of Grapa programming language package.
   </metadata>
   <files>
     <file src="tools\**" target="tools" />
+    <file src="..\..\bin\grapa-win-amd64.exe" target="tools\grapa.exe" />
   </files>
 </package>
