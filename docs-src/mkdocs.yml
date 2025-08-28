@@ -82,6 +82,7 @@ nav:
       - Overview: getting_started.md
       - Installation: installation.md
       - CLI Integration: cli_integration.md
+      - VSCode Extension: vscode_extension.md
       - Run Command: run.md
       - Python Integration: python_integration.md
       - Grapa in the Ecosystem: grapa_ecosystem_positioning.md
