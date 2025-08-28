@@ -14,6 +14,7 @@
 	list = @<"list",{@<this>}>; 
 	array = @<"array",{@<this>}>; 
 	vector = @<[op,@<"vector",{@<this>,@<var,{dim}>}>],{"dim":0}>; 
+	table = @<[op,@<"table",{@<this>,@<var,{type}>}>],{type}>; 
 	base = @<[op,@<"base",{@<this>,@<var,{radix}>}>],{"radix":10}>; 
 	hex = @<"base",{@<this>,16}>; 
 	uhex = @<"base",{@<this>,16,1}>; 
@@ -60,7 +61,7 @@
 	verify = @<[op,@<"verify",{@<this>,@<var,{method}>,@<var,{data}>,@<var,{params}>}>],{"method":null,"data":null,"params":null}>;
 	verifyrecover = @<[op,@<"verifyrecover",{@<this>,@<var,{method}>,@<var,{params}>}>],{"method":null,"params":null}>;
 	secret = @<[op,@<"secret",{@<this>,@<var,{key}>}>],{"key":null}>;
-	setfile = @<[op,@<"file_set",{@<var,{mode}>,@<var,{path}>,@<this>,@<var,{data}>}>],{mode,path,data}>;
+	setfield = @<[op,@<"file_setfield",{@<var,{mode}>,@<var,{path}>,@<this>,@<var,{data}>}>],{mode,path,data}>;
 	map = @<[op,@<map,{@<this>,@<var,{func}>,@<var,{data}>,@<var,{threads}>}>],{func,data:null,threads:null}>;
 	filter = @<[op,@<filter,{@<this>,@<var,{func}>,@<var,{data}>,@<var,{threads}>}>],{func,data:null,threads:null}>;
 	reduce = @<[op,@<reduce,{@<this>,@<var,{func}>,@<var,{init}>,@<var,{data}>}>],{func,init:null,data:null}>;

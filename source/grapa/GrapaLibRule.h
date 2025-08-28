@@ -110,8 +110,8 @@ public:
 	GrapaLibraryEvent* HandleMkField(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleRmField(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleInfo(GrapaCHAR& pName);
-	GrapaLibraryEvent* HandleSet(GrapaCHAR& pName);
-	GrapaLibraryEvent* HandleGet(GrapaCHAR& pName);
+	GrapaLibraryEvent* HandleFileSet(GrapaCHAR& pName);
+	GrapaLibraryEvent* HandleFileGet(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleFileSplit(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleInclude(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleDump(GrapaCHAR& pName);

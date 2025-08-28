@@ -1275,10 +1275,12 @@ void GrapaItemState::Running()
 					state = GrapaTokenItemType::NUMBIN;
 					break;
 				}
-				else if (state != GrapaTokenItemType::EXP && c == '.')
+				else if (state != GrapaTokenItemType::EXP && (c == '.' || c=='_'))
 				{
 					if (state == GrapaTokenType::FLOAT)
 					{
+						char* lastDot = strrchr((char*)msgStr.mBytes, '_');
+						if (lastDot) lastDot[0] = '.';
 						GrapaFloat d(mFloatFix, mFloatMax, mFloatExtra, 0);
 						d.FromString(msgStr, 10);
 						PushOutput(GrapaTokenType::FLOAT, d.getBytes(), quote);
@@ -1327,12 +1329,16 @@ void GrapaItemState::Running()
 							state = GrapaTokenType::START;
 							break;
 						}
+						char* lastDot = strrchr((char*)msgStr.mBytes, '_');
+						if (lastDot) lastDot[0] = '.';
 						GrapaFloat d(mFloatFix, mFloatMax, mFloatExtra, 0);
 						d.FromString(msgStr, 10);
 						PushOutput(GrapaTokenType::FLOAT, d.getBytes(), quote);
 					}
 					else if (state == GrapaTokenItemType::EXP)
 					{
+						char* lastDot = strrchr((char*)msgStr.mBytes, '_');
+						if (lastDot) lastDot[0] = '.';
 						GrapaFloat d1(mFloatFix, mFloatMax, mFloatExtra, 0);
 						d1.FromString(msgStr, 10);
 						a.FromString(expStr, 10);
@@ -1368,11 +1374,7 @@ void GrapaItemState::Running()
 					//msgStr.GrapaBYTE::Append(mItemParams->mParam[GrapaItemEnum::HEX][addHex]);
 					msgStr.GrapaBYTE::Append(c);
 				}
-				else if (c == '_')
-				{
-					msgStr.GrapaBYTE::Append(c);
-				}
-				else if (c == '.')
+				else if (c == '.' || c == '_')
 				{
 					msgStr.GrapaBYTE::Append('.');
 				}
@@ -1395,6 +1397,8 @@ void GrapaItemState::Running()
 					{
 						if (strchr(mItemParams->mParam[GrapaItemEnum::HEX], msgStr.mBytes[msgStr.mLength - 1]) && strchr(mItemParams->mParam[GrapaItemEnum::HEX], c))
 						{
+							char* lastDot = strrchr((char*)msgStr.mBytes, '_');
+							if (lastDot) lastDot[0] = '.';
 							GrapaFloat d(mFloatFix, mFloatMax, mFloatExtra, 0);
 							d.FromString(msgStr, 16);
 							PushOutput(GrapaTokenType::FLOAT, d.getBytes(), quote);
@@ -1409,8 +1413,10 @@ void GrapaItemState::Running()
 						{
 							char* lastDot = strrchr((char*)msgStr.mBytes, '.');
 							GrapaCHAR saveStr(lastDot + 1, msgStr.mLength - (lastDot - ((char*)msgStr.mBytes)) - 1);
-							if (saveStr.mLength && strspn((char*)saveStr.mBytes, mItemParams->mParam[GrapaItemEnum::HEX]) == saveStr.mLength && !strchr(mItemParams->mParam[GrapaItemEnum::ID], c))
+							if (saveStr.mLength && strspn((char*)saveStr.mBytes, mItemParams->mParam[GrapaItemEnum::HEX]) == saveStr.mLength && !strchr(mItemParams->mParam[GrapaItemEnum::ID], c) && c != '_')
 							{
+								lastDot = strrchr((char*)msgStr.mBytes, '_');
+								if (lastDot) lastDot[0] = '.';
 								GrapaFloat d(mFloatFix, mFloatMax, mFloatExtra, 0);
 								d.FromString(msgStr, 16);
 								PushOutput(GrapaTokenType::FLOAT, d.getBytes(), quote);
@@ -1448,6 +1454,8 @@ void GrapaItemState::Running()
 						}
 						else
 						{
+							char* lastDot = strrchr((char*)msgStr.mBytes, '_');
+							if (lastDot) lastDot[0] = '.';
 							GrapaFloat d(mFloatFix, mFloatMax, mFloatExtra, 0);
 							d.FromString(msgStr, 16);
 							PushOutput(GrapaTokenType::FLOAT, d.getBytes(), quote);
@@ -1470,11 +1478,7 @@ void GrapaItemState::Running()
 				{
 					msgStr.GrapaBYTE::Append(c);
 				}
-				else if (c == '_')
-				{
-					msgStr.GrapaBYTE::Append(c);
-				}
-				else if (c == '.')
+				else if (c == '.' || c == '_')
 				{
 					msgStr.GrapaBYTE::Append('.');
 				}
@@ -1497,6 +1501,8 @@ void GrapaItemState::Running()
 					{
 						if (strchr(mItemParams->mParam[GrapaItemEnum::BIN], msgStr.mBytes[msgStr.mLength - 1]) && strchr(mItemParams->mParam[GrapaItemEnum::BIN], c))
 						{
+							char* lastDot = strrchr((char*)msgStr.mBytes, '_');
+							if (lastDot) lastDot[0] = '.';
 							GrapaFloat d(mFloatFix, mFloatMax, mFloatExtra, 0);
 							d.FromString(msgStr, 2);
 							PushOutput(GrapaTokenType::FLOAT, d.getBytes(), quote);
@@ -1511,8 +1517,10 @@ void GrapaItemState::Running()
 						{
 							char* lastDot = strrchr((char*)msgStr.mBytes, '.');
 							GrapaCHAR saveStr(lastDot + 1, msgStr.mLength - (lastDot - ((char*)msgStr.mBytes)) - 1);
-							if (saveStr.mLength && strspn((char*)saveStr.mBytes, mItemParams->mParam[GrapaItemEnum::BIN]) == saveStr.mLength && !strchr(mItemParams->mParam[GrapaItemEnum::ID], c))
+							if (saveStr.mLength && strspn((char*)saveStr.mBytes, mItemParams->mParam[GrapaItemEnum::BIN]) == saveStr.mLength && !strchr(mItemParams->mParam[GrapaItemEnum::ID], c) && c != '_')
 							{
+								char* lastDot = strrchr((char*)msgStr.mBytes, '_');
+								if (lastDot) lastDot[0] = '.';
 								GrapaFloat d(mFloatFix, mFloatMax, mFloatExtra, 0);
 								d.FromString(msgStr, 2);
 								PushOutput(GrapaTokenType::FLOAT, d.getBytes(), quote);
@@ -1550,6 +1558,8 @@ void GrapaItemState::Running()
 						}
 						else
 						{
+							char* lastDot = strrchr((char*)msgStr.mBytes, '_');
+							if (lastDot) lastDot[0] = '.';
 							GrapaFloat d(mFloatFix, mFloatMax, mFloatExtra, 0);
 							d.FromString(msgStr, 2);
 							PushOutput(GrapaTokenType::FLOAT, d.getBytes(), quote);
@@ -3344,6 +3354,7 @@ GrapaRuleEvent* GrapaScriptState::SearchTarget(GrapaNames* pNameSpace, GrapaRule
 			e2 = SearchVariable(pNameSpace, e);
 			break;
 		case GrapaTokenType::OBJ:
+		case GrapaTokenType::TABLE:
 			e2 = e;
 			break;
 		}

@@ -1326,21 +1326,21 @@ public:
 };
 GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleInfo(GrapaCHAR& pName) { return new GrapaLibraryRuleInfoEvent(pName); }
 
-class GrapaLibraryRuleSetEvent : public GrapaLibraryEvent
+class GrapaLibraryRuleFileSetEvent : public GrapaLibraryEvent
 {
 public:
-	GrapaLibraryRuleSetEvent(GrapaCHAR& pName) { mName.FROM(pName); };
+	GrapaLibraryRuleFileSetEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
-GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleSet(GrapaCHAR& pName) { return new GrapaLibraryRuleSetEvent(pName); }
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleFileSet(GrapaCHAR& pName) { return new GrapaLibraryRuleFileSetEvent(pName); }
 
-class GrapaLibraryRuleGetEvent : public GrapaLibraryEvent
+class GrapaLibraryRuleFileGetEvent : public GrapaLibraryEvent
 {
 public:
-	GrapaLibraryRuleGetEvent(GrapaCHAR& pName) { mName.FROM(pName); };
+	GrapaLibraryRuleFileGetEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
-GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleGet(GrapaCHAR& pName) { return new GrapaLibraryRuleGetEvent(pName); }
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleFileGet(GrapaCHAR& pName) { return new GrapaLibraryRuleFileGetEvent(pName); }
 
 class GrapaLibraryRuleFileSplitEvent : public GrapaLibraryEvent
 {
@@ -3212,7 +3212,7 @@ GrapaLibraryEvent* GrapaLibraryRuleEvent::LoadLib(GrapaScriptExec *vScriptExec, 
 		{ "cmp", &GrapaLibraryRuleEvent::HandleCmp },
 		{ "utc", &GrapaLibraryRuleEvent::HandleUtc },
 		{ "tz", &GrapaLibraryRuleEvent::HandleTz },
-		{ "file_table", &GrapaLibraryRuleEvent::HandleTable },
+		{ "table", &GrapaLibraryRuleEvent::HandleTable },
 		{ "file_pwd", &GrapaLibraryRuleEvent::HandlePwd },
 		{ "file_cd", &GrapaLibraryRuleEvent::HandleCd },
 		{ "file_phd", &GrapaLibraryRuleEvent::HandlePhd },
@@ -3223,8 +3223,8 @@ GrapaLibraryEvent* GrapaLibraryRuleEvent::LoadLib(GrapaScriptExec *vScriptExec, 
 		{ "file_mkfield", &GrapaLibraryRuleEvent::HandleMkField },
 		{ "file_rmfield", &GrapaLibraryRuleEvent::HandleRmField },
 		{ "file_info", &GrapaLibraryRuleEvent::HandleInfo },
-		{ "file_set", &GrapaLibraryRuleEvent::HandleSet },
-		{ "file_get", &GrapaLibraryRuleEvent::HandleGet },
+		{ "file_setfield", &GrapaLibraryRuleEvent::HandleFileSet },
+		{ "file_getfield", &GrapaLibraryRuleEvent::HandleFileGet },
 		{ "file_split", &GrapaLibraryRuleEvent::HandleFileSplit },
 		{ "file_dump", &GrapaLibraryRuleEvent::HandleDump },
 		{ "net_mac", &GrapaLibraryRuleEvent::HandleMac },
@@ -10473,6 +10473,7 @@ GrapaRuleEvent* GrapaLibraryRuleIfNullEvent::Run(GrapaScriptExec* vScriptExec, G
 
 GrapaRuleEvent* GrapaLibraryRuleTableEvent::Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput)
 {
+	GrapaLibraryParam r1(vScriptExec, pNameSpace, pInput ? pInput->Head(0) : NULL);
 	GrapaLibraryParam r2(vScriptExec, pNameSpace, pInput ? pInput->Head(1) : NULL);
 	u64 firstTree;
 	GrapaError err = -1;
@@ -10491,6 +10492,23 @@ GrapaRuleEvent* GrapaLibraryRuleTableEvent::Run(GrapaScriptExec *vScriptExec, Gr
 	err = g.CloseFile();
 	GrapaLocalDatabase ldb(vScriptExec->vScriptState);
 	ldb.DatabaseSet(result->mValue);
+	if (r1.vVal)
+	{
+		switch (r1.vVal->mValue.mToken)
+		{
+		case GrapaTokenType::LIST:
+		{
+			GrapaCHAR setField;
+			GrapaRuleEvent* e = (GrapaRuleEvent*)r1.vVal->vQueue->Head(0);
+			while (e)
+			{
+				err = ldb.FieldSet(e->mName, setField, e->mValue);
+				e = e->Next();
+			}
+		}
+			break;
+		}
+	}
 	return(result);
 }
 
@@ -10882,7 +10900,7 @@ GrapaRuleEvent* GrapaLibraryRuleInfoEvent::Run(GrapaScriptExec* vScriptExec, Gra
 	return(result);
 }
 
-GrapaRuleEvent* GrapaLibraryRuleSetEvent::Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput)
+GrapaRuleEvent* GrapaLibraryRuleFileSetEvent::Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput)
 {
 	GrapaError err = -1;
 	GrapaRuleEvent* result = NULL;
@@ -10953,7 +10971,7 @@ GrapaRuleEvent* GrapaLibraryRuleSetEvent::Run(GrapaScriptExec *vScriptExec, Grap
 	return(result);
 }
 
-GrapaRuleEvent* GrapaLibraryRuleGetEvent::Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput)
+GrapaRuleEvent* GrapaLibraryRuleFileGetEvent::Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput)
 {
 	GrapaError err = -1;
 	GrapaRuleEvent* result = NULL;
