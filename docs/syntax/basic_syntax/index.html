@@ -2918,6 +2918,15 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#class-constructor-with-new" class="md-nav__link">
+    <span class="md-ellipsis">
+      Class Constructor with $new()
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#inheritance" class="md-nav__link">
     <span class="md-ellipsis">
       Inheritance
@@ -5825,6 +5834,15 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#class-constructor-with-new" class="md-nav__link">
+    <span class="md-ellipsis">
+      Class Constructor with $new()
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#inheritance" class="md-nav__link">
     <span class="md-ellipsis">
       Inheritance
@@ -7843,7 +7861,7 @@ Person = class {
     age = 0;
     city = &quot;&quot;;
 
-    /* Constructor - Note: This is a regular method, not a true constructor */
+    /* Manual initialization method - for classes without $new() constructor */
     init = op(n, a, c) {
         name = n;
         age = a;
@@ -7861,12 +7879,37 @@ person = obj Person;
 person.init(&quot;John&quot;, 30, &quot;NYC&quot;);
 person.getInfo();
 </code></pre></div>
+<h4 id="class-constructor-with-new">Class Constructor with $new()</h4>
+<p>Grapa supports a single <code>$new()</code> constructor in class definitions that is automatically called when creating instances:</p>
+<div class="highlight"><pre><span></span><code>/* Define a class with $new() constructor */
+MyClass = class {
+    n = 0;
+
+    /* Constructor - automatically called when creating instances */
+    $new = op(g:-1) {
+        n = g;
+    };
+};
+
+/* Create instances - constructor is called automatically */
+x = MyClass();      /* n = -1 (default value) */
+y = MyClass(4);     /* n = 4 */
+
+x.n.echo();         /* Output: -1 */
+y.n.echo();         /* Output: 4 */
+</code></pre></div>
+<p><strong>Key Points:</strong>
+- <strong>Single Constructor</strong>: Only one <code>$new()</code> method is supported per class
+- <strong>Automatic Invocation</strong>: The constructor is called automatically when creating instances
+- <strong>Parameter Support</strong>: The constructor can accept parameters with default values
+- <strong>Instance Creation</strong>: Use <code>Class()</code> syntax instead of <code>obj Class</code> when using <code>$new()</code></p>
 <blockquote>
 <p><strong>Important Note on Constructors and Destructors:</strong></p>
-<p><strong>Constructors</strong>: Grapa objects do <strong>not</strong> have automatic constructors that run when objects are created. The <code>init</code> method shown above is a regular method that must be called explicitly. Object creation with <code>obj Class</code> only creates an empty instance.</p>
+<p><strong>Constructors</strong>: Grapa supports automatic constructors through the <code>$new()</code> method. When a class defines a <code>$new()</code> method, it is automatically called when creating instances using <code>Class()</code> syntax. For classes without <code>$new()</code>, you can use the manual <code>init()</code> method approach with <code>obj Class</code>.</p>
 <p><strong>Destructors</strong>: Grapa objects do <strong>not</strong> have destructors. Memory management is handled automatically by Grapa's garbage collector. There are no <code>~ClassName()</code> or <code>finalize()</code> methods.</p>
-<p><strong>Current Behavior</strong>: When you create an object with <code>obj Class</code>, you get an empty instance that you must manually initialize by calling methods like <code>init()</code>.</p>
-<p><strong>Future Enhancement</strong>: True constructors and destructors may be added in future versions of Grapa.</p>
+<p><strong>Current Behavior</strong>: 
+- <strong>With <code>$new()</code></strong>: Use <code>Class()</code> syntax for automatic constructor invocation
+- <strong>Without <code>$new()</code></strong>: Use <code>obj Class</code> and manually call initialization methods like <code>init()</code></p>
 </blockquote>
 <h4 id="inheritance">Inheritance</h4>
 <div class="highlight"><pre><span></span><code>/* Base class */

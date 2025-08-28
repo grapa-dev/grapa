@@ -686,11 +686,26 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#windows-chocolatey" class="md-nav__link">
+  <a href="#windows-manual-installer" class="md-nav__link">
     <span class="md-ellipsis">
-      Windows (Chocolatey)
+      Windows (Manual Installer)
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="Windows (Manual Installer)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#manual-installation-alternative" class="md-nav__link">
+    <span class="md-ellipsis">
+      Manual Installation (Alternative)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
         
@@ -806,6 +821,30 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Windows (Manual Installation)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#option-1-automated-installation-recommended" class="md-nav__link">
+    <span class="md-ellipsis">
+      Option 1: Automated Installation (Recommended)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#option-2-manual-installation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Option 2: Manual Installation
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
         
           <li class="md-nav__item">
@@ -870,9 +909,9 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#chocolatey-not-found" class="md-nav__link">
+  <a href="#installation-script-issues" class="md-nav__link">
     <span class="md-ellipsis">
-      Chocolatey Not Found
+      Installation Script Issues
     </span>
   </a>
   
@@ -891,6 +930,15 @@
   <a href="#path-issues" class="md-nav__link">
     <span class="md-ellipsis">
       PATH Issues
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#powershell-profile-management" class="md-nav__link">
+    <span class="md-ellipsis">
+      PowerShell Profile Management
     </span>
   </a>
   
@@ -4247,11 +4295,26 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#windows-chocolatey" class="md-nav__link">
+  <a href="#windows-manual-installer" class="md-nav__link">
     <span class="md-ellipsis">
-      Windows (Chocolatey)
+      Windows (Manual Installer)
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="Windows (Manual Installer)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#manual-installation-alternative" class="md-nav__link">
+    <span class="md-ellipsis">
+      Manual Installation (Alternative)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
         
@@ -4367,6 +4430,30 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Windows (Manual Installation)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#option-1-automated-installation-recommended" class="md-nav__link">
+    <span class="md-ellipsis">
+      Option 1: Automated Installation (Recommended)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#option-2-manual-installation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Option 2: Manual Installation
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
         
           <li class="md-nav__item">
@@ -4431,9 +4518,9 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#chocolatey-not-found" class="md-nav__link">
+  <a href="#installation-script-issues" class="md-nav__link">
     <span class="md-ellipsis">
-      Chocolatey Not Found
+      Installation Script Issues
     </span>
   </a>
   
@@ -4452,6 +4539,15 @@
   <a href="#path-issues" class="md-nav__link">
     <span class="md-ellipsis">
       PATH Issues
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#powershell-profile-management" class="md-nav__link">
+    <span class="md-ellipsis">
+      PowerShell Profile Management
     </span>
   </a>
   
@@ -4547,7 +4643,7 @@
 </tr>
 <tr>
 <td><strong>Windows AMD64</strong></td>
-<td>Chocolatey</td>
+<td>Manual Installer</td>
 <td>✅ <strong>Available</strong></td>
 <td>✅ Available</td>
 </tr>
@@ -4573,9 +4669,9 @@ sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> <
 </code></pre></div>
 <p><strong>Note</strong>: Package manager installation is in progress. For immediate installation, see <a href="#manual-installation">Manual Installation</a> below.</p>
 <h3 id="windows">Windows</h3>
-<div class="highlight"><pre><span></span><code><span class="n">choco</span> <span class="n">install</span> <span class="n">grapa</span>
+<div class="highlight"><pre><span></span><code><span class="c"># Manual installation required - see Windows section below</span>
 </code></pre></div>
-<p><strong>Note</strong>: Chocolatey installation is available. For manual installation, see <a href="#manual-installation">Manual Installation</a> below.</p>
+<p><strong>Note</strong>: Windows installation uses an automated installer script. See <a href="#windows-manual-installation">Windows Installation</a> below.</p>
 <h2 id="verify-installation">Verify Installation</h2>
 <p>After installation, verify that Grapa is working correctly:</p>
 <div class="highlight"><pre><span></span><code>grapa<span class="w"> </span>--version
@@ -4624,20 +4720,83 @@ sudo<span class="w"> </span>apt<span class="w"> </span>upgrade<span class="w"> <
 <p><strong>Update:</strong>
 <div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>yum<span class="w"> </span>update<span class="w"> </span>grapa
 </code></pre></div></p>
-<h3 id="windows-chocolatey">Windows (Chocolatey)</h3>
+<h3 id="windows-manual-installer">Windows (Manual Installer)</h3>
 <p><strong>Prerequisites:</strong>
 - Windows 10 or later
-- Chocolatey package manager installed
-- amd64 architecture</p>
+- amd64 architecture
+- PowerShell (Administrator privileges required)</p>
 <p><strong>Installation:</strong>
-<div class="highlight"><pre><span></span><code><span class="n">choco</span> <span class="n">install</span> <span class="n">grapa</span>
+Download the latest Windows release and run the automated installer:</p>
+<ol>
+<li>
+<p><strong>Download the Windows package:</strong>
+   <div class="highlight"><pre><span></span><code><span class="c"># Download the latest Windows release</span>
+<span class="nb">Invoke-WebRequest</span> <span class="n">-Uri</span> <span class="s2">&quot;https://github.com/grapa-dev/grapa/releases/download/v0.1.51/grapa-win-amd64.zip&quot;</span> <span class="n">-OutFile</span> <span class="s2">&quot;grapa-win-amd64.zip&quot;</span>
 </code></pre></div></p>
+</li>
+<li>
+<p><strong>Extract and run the installer:</strong>
+   <div class="highlight"><pre><span></span><code><span class="nb">Expand-Archive</span> <span class="n">-Path</span> <span class="s2">&quot;grapa-win-amd64.zip&quot;</span> <span class="n">-DestinationPath</span> <span class="s2">&quot;grapa-win-amd64&quot;</span> <span class="n">-Force</span>
+<span class="nb">cd </span><span class="n">grapa-win-amd64</span>
+<span class="p">.\</span><span class="nb">install-grapa</span><span class="p">.</span><span class="n">ps1</span>
+</code></pre></div></p>
+</li>
+</ol>
 <p><strong>Update:</strong>
-<div class="highlight"><pre><span></span><code><span class="n">choco</span> <span class="n">upgrade</span> <span class="n">grapa</span>
+<div class="highlight"><pre><span></span><code><span class="c"># Download and install the latest version</span>
+<span class="nb">Invoke-WebRequest</span> <span class="n">-Uri</span> <span class="s2">&quot;https://github.com/grapa-dev/grapa/releases/download/v0.1.51/grapa-win-amd64.zip&quot;</span> <span class="n">-OutFile</span> <span class="s2">&quot;grapa-win-amd64.zip&quot;</span>
+<span class="nb">Expand-Archive</span> <span class="n">-Path</span> <span class="s2">&quot;grapa-win-amd64.zip&quot;</span> <span class="n">-DestinationPath</span> <span class="s2">&quot;grapa-win-amd64&quot;</span> <span class="n">-Force</span>
+<span class="nb">cd </span><span class="n">grapa-win-amd64</span>
+<span class="p">.\</span><span class="nb">install-grapa</span><span class="p">.</span><span class="n">ps1</span> <span class="n">-Force</span>
 </code></pre></div></p>
 <p><strong>Uninstall:</strong>
-<div class="highlight"><pre><span></span><code><span class="n">choco</span> <span class="n">uninstall</span> <span class="n">grapa</span>
+<div class="highlight"><pre><span></span><code><span class="c"># Run the installer with uninstall flag</span>
+<span class="p">.\</span><span class="nb">install-grapa</span><span class="p">.</span><span class="n">ps1</span> <span class="n">-Uninstall</span>
 </code></pre></div></p>
+<p><strong>Installation Location:</strong>
+After installation, Grapa will be available at:
+- <strong>Executable</strong>: <code>C:\Program Files\Grapa\bin\grapa.exe</code>
+- <strong>Library</strong>: <code>C:\Program Files\Grapa\lib\grapa.lib</code>
+- <strong>PATH</strong>: Automatically added to system PATH for command-line access</p>
+<p><strong>Note</strong>: The installer automatically adds <code>C:\Program Files\Grapa\bin</code> to your system PATH during installation.</p>
+<h4 id="manual-installation-alternative">Manual Installation (Alternative)</h4>
+<p>If you prefer to install manually without the automated installer:</p>
+<ol>
+<li>
+<p><strong>Download the Windows package:</strong>
+   <div class="highlight"><pre><span></span><code><span class="c"># Download the latest Windows release</span>
+<span class="nb">Invoke-WebRequest</span> <span class="n">-Uri</span> <span class="s2">&quot;https://github.com/grapa-dev/grapa/releases/download/v0.1.51/grapa-win-amd64.zip&quot;</span> <span class="n">-OutFile</span> <span class="s2">&quot;grapa-win-amd64.zip&quot;</span>
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>Extract the package:</strong>
+   <div class="highlight"><pre><span></span><code><span class="nb">Expand-Archive</span> <span class="n">-Path</span> <span class="s2">&quot;grapa-win-amd64.zip&quot;</span> <span class="n">-DestinationPath</span> <span class="s2">&quot;grapa-win-amd64&quot;</span> <span class="n">-Force</span>
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>Install manually:</strong>
+   <div class="highlight"><pre><span></span><code><span class="c"># Create installation directory</span>
+<span class="nb">New-Item</span> <span class="n">-ItemType</span> <span class="n">Directory</span> <span class="n">-Force</span> <span class="n">-Path</span> <span class="s2">&quot;C:\Program Files\Grapa\bin&quot;</span> <span class="p">|</span> <span class="nb">Out-Null</span>
+<span class="nb">New-Item</span> <span class="n">-ItemType</span> <span class="n">Directory</span> <span class="n">-Force</span> <span class="n">-Path</span> <span class="s2">&quot;C:\Program Files\Grapa\lib&quot;</span> <span class="p">|</span> <span class="nb">Out-Null</span>
+
+<span class="c"># Copy files</span>
+<span class="nb">Copy-Item</span> <span class="n">-Path</span> <span class="s2">&quot;grapa-win-amd64\grapa.exe&quot;</span> <span class="n">-Destination</span> <span class="s2">&quot;C:\Program Files\Grapa\bin\&quot;</span> <span class="n">-Force</span>
+<span class="nb">Copy-Item</span> <span class="n">-Path</span> <span class="s2">&quot;grapa-win-amd64\grapa.lib&quot;</span> <span class="n">-Destination</span> <span class="s2">&quot;C:\Program Files\Grapa\lib\&quot;</span> <span class="n">-Force</span>
+
+<span class="c"># Add to PATH (requires Administrator privileges)</span>
+<span class="nv">$currentPath</span> <span class="p">=</span> <span class="no">[Environment]</span><span class="p">::</span><span class="n">GetEnvironmentVariable</span><span class="p">(</span><span class="s1">&#39;PATH&#39;</span><span class="p">,</span> <span class="s1">&#39;Machine&#39;</span><span class="p">)</span>
+<span class="nv">$grapaPath</span> <span class="p">=</span> <span class="s2">&quot;C:\Program Files\Grapa\bin&quot;</span>
+<span class="k">if</span> <span class="p">(</span><span class="nv">$currentPath</span> <span class="o">-notlike</span> <span class="s2">&quot;*$grapaPath*&quot;</span><span class="p">)</span> <span class="p">{</span>
+    <span class="no">[Environment]</span><span class="p">::</span><span class="n">SetEnvironmentVariable</span><span class="p">(</span><span class="s1">&#39;PATH&#39;</span><span class="p">,</span> <span class="nv">$currentPath</span> <span class="p">+</span> <span class="s2">&quot;;&quot;</span> <span class="p">+</span> <span class="nv">$grapaPath</span><span class="p">,</span> <span class="s1">&#39;Machine&#39;</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>Verify installation:</strong>
+   <div class="highlight"><pre><span></span><code><span class="n">grapa</span> <span class="p">-</span><span class="n">-version</span>
+</code></pre></div></p>
+</li>
+</ol>
 <h2 id="manual-installation">Manual Installation</h2>
 <p>If you prefer manual installation or your platform isn't supported by package managers, you can download and install Grapa directly.</p>
 <h3 id="macos-manual-installation">macOS (Manual Installation)</h3>
@@ -4724,40 +4883,94 @@ grapa<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;&#
 <div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>rpm<span class="w"> </span>-e<span class="w"> </span>grapa
 </code></pre></div></p>
 <h3 id="windows-manual-installation">Windows (Manual Installation)</h3>
-<p><strong>Download and install the Windows executable:</strong></p>
-<div class="highlight"><pre><span></span><code><span class="c"># Download the Windows binary</span>
-<span class="nb">Invoke-WebRequest</span> <span class="n">-Uri</span> <span class="s2">&quot;https://github.com/grapa-dev/grapa/releases/download/v0.1.51/grapa-win-amd64.exe&quot;</span> <span class="n">-OutFile</span> <span class="s2">&quot;grapa.exe&quot;</span>
+<p><strong>Download and install the Windows package:</strong></p>
+<h4 id="option-1-automated-installation-recommended">Option 1: Automated Installation (Recommended)</h4>
+<ol>
+<li>
+<p><strong>Download the Windows package:</strong>
+   <div class="highlight"><pre><span></span><code><span class="c"># Download the latest Windows release</span>
+<span class="nb">Invoke-WebRequest</span> <span class="n">-Uri</span> <span class="s2">&quot;https://github.com/grapa-dev/grapa/releases/download/v0.1.51/grapa-win-amd64.zip&quot;</span> <span class="n">-OutFile</span> <span class="s2">&quot;grapa-win-amd64.zip&quot;</span>
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>Extract the package:</strong>
+   <div class="highlight"><pre><span></span><code><span class="nb">Expand-Archive</span> <span class="n">-Path</span> <span class="s2">&quot;grapa-win-amd64.zip&quot;</span> <span class="n">-DestinationPath</span> <span class="s2">&quot;grapa-win-amd64&quot;</span> <span class="n">-Force</span>
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>Run the automated installer</strong> (run PowerShell as Administrator):
+   <div class="highlight"><pre><span></span><code><span class="nb">cd </span><span class="n">grapa-win-amd64</span>
+<span class="p">.\</span><span class="nb">install-grapa</span><span class="p">.</span><span class="n">ps1</span>
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>Verify installation:</strong>
+   <div class="highlight"><pre><span></span><code><span class="n">grapa</span> <span class="p">-</span><span class="n">-version</span>
+</code></pre></div></p>
+</li>
+</ol>
+<h4 id="option-2-manual-installation">Option 2: Manual Installation</h4>
+<ol>
+<li>
+<p><strong>Download the Windows package:</strong>
+   <div class="highlight"><pre><span></span><code><span class="c"># Download the latest Windows release</span>
+<span class="nb">Invoke-WebRequest</span> <span class="n">-Uri</span> <span class="s2">&quot;https://github.com/grapa-dev/grapa/releases/download/v0.1.51/grapa-win-amd64.zip&quot;</span> <span class="n">-OutFile</span> <span class="s2">&quot;grapa-win-amd64.zip&quot;</span>
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>Extract the package:</strong>
+   <div class="highlight"><pre><span></span><code><span class="nb">Expand-Archive</span> <span class="n">-Path</span> <span class="s2">&quot;grapa-win-amd64.zip&quot;</span> <span class="n">-DestinationPath</span> <span class="s2">&quot;grapa-win-amd64&quot;</span> <span class="n">-Force</span>
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>Install manually</strong> (run PowerShell as Administrator):
+   <div class="highlight"><pre><span></span><code><span class="c"># Create installation directory</span>
+<span class="nb">New-Item</span> <span class="n">-ItemType</span> <span class="n">Directory</span> <span class="n">-Force</span> <span class="n">-Path</span> <span class="s2">&quot;C:\Program Files\Grapa\bin&quot;</span> <span class="p">|</span> <span class="nb">Out-Null</span>
+<span class="nb">New-Item</span> <span class="n">-ItemType</span> <span class="n">Directory</span> <span class="n">-Force</span> <span class="n">-Path</span> <span class="s2">&quot;C:\Program Files\Grapa\lib&quot;</span> <span class="p">|</span> <span class="nb">Out-Null</span>
 
-<span class="c"># Move to a directory in your PATH (run PowerShell as Administrator)</span>
-<span class="nb">Move-Item</span> <span class="n">grapa</span><span class="p">.</span><span class="n">exe</span> <span class="s2">&quot;C:\Windows\System32\grapa.exe&quot;</span>
+<span class="c"># Copy files</span>
+<span class="nb">Copy-Item</span> <span class="n">-Path</span> <span class="s2">&quot;grapa-win-amd64\grapa.exe&quot;</span> <span class="n">-Destination</span> <span class="s2">&quot;C:\Program Files\Grapa\bin\&quot;</span> <span class="n">-Force</span>
+<span class="nb">Copy-Item</span> <span class="n">-Path</span> <span class="s2">&quot;grapa-win-amd64\grapa.lib&quot;</span> <span class="n">-Destination</span> <span class="s2">&quot;C:\Program Files\Grapa\lib\&quot;</span> <span class="n">-Force</span>
 
-<span class="c"># Verify installation</span>
-<span class="n">grapa</span> <span class="p">-</span><span class="n">-version</span>
-</code></pre></div>
-<p><strong>Alternative installation to user directory:</strong>
-<div class="highlight"><pre><span></span><code><span class="c"># Create a directory for Grapa</span>
-<span class="nb">New-Item</span> <span class="n">-ItemType</span> <span class="n">Directory</span> <span class="n">-Path</span> <span class="s2">&quot;$env:USERPROFILE\grapa&quot;</span> <span class="n">-Force</span>
-
-<span class="c"># Download the Windows binary</span>
-<span class="nb">Invoke-WebRequest</span> <span class="n">-Uri</span> <span class="s2">&quot;https://github.com/grapa-dev/grapa/releases/download/v0.1.51/grapa-win-amd64.exe&quot;</span> <span class="n">-OutFile</span> <span class="s2">&quot;$env:USERPROFILE\grapa\grapa.exe&quot;</span>
-
-<span class="c"># Add to PATH (add this to your PowerShell profile)</span>
-<span class="nv">$env:PATH</span> <span class="p">+=</span> <span class="s2">&quot;;$env:USERPROFILE\grapa&quot;</span>
-
-<span class="c"># Verify installation</span>
-<span class="n">grapa</span> <span class="p">-</span><span class="n">-version</span>
+<span class="c"># Add to PATH (requires Administrator privileges)</span>
+<span class="nv">$currentPath</span> <span class="p">=</span> <span class="no">[Environment]</span><span class="p">::</span><span class="n">GetEnvironmentVariable</span><span class="p">(</span><span class="s1">&#39;PATH&#39;</span><span class="p">,</span> <span class="s1">&#39;Machine&#39;</span><span class="p">)</span>
+<span class="nv">$grapaPath</span> <span class="p">=</span> <span class="s2">&quot;C:\Program Files\Grapa\bin&quot;</span>
+<span class="k">if</span> <span class="p">(</span><span class="nv">$currentPath</span> <span class="o">-notlike</span> <span class="s2">&quot;*$grapaPath*&quot;</span><span class="p">)</span> <span class="p">{</span>
+    <span class="no">[Environment]</span><span class="p">::</span><span class="n">SetEnvironmentVariable</span><span class="p">(</span><span class="s1">&#39;PATH&#39;</span><span class="p">,</span> <span class="nv">$currentPath</span> <span class="p">+</span> <span class="s2">&quot;;&quot;</span> <span class="p">+</span> <span class="nv">$grapaPath</span><span class="p">,</span> <span class="s1">&#39;Machine&#39;</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>Verify installation:</strong>
+   <div class="highlight"><pre><span></span><code><span class="n">grapa</span> <span class="p">-</span><span class="n">-version</span>
+</code></pre></div></p>
+</li>
+</ol>
+<p><strong>Installation Location:</strong>
+After installation, Grapa will be available at:
+- <strong>Executable</strong>: <code>C:\Program Files\Grapa\bin\grapa.exe</code>
+- <strong>Library</strong>: <code>C:\Program Files\Grapa\lib\grapa.lib</code>
+- <strong>PATH</strong>: Automatically added to system PATH for command-line access</p>
+<p><strong>Uninstall:</strong>
+<div class="highlight"><pre><span></span><code><span class="c"># Run PowerShell as Administrator</span>
+<span class="p">.\</span><span class="nb">install-grapa</span><span class="p">.</span><span class="n">ps1</span> <span class="n">-Uninstall</span>
 </code></pre></div></p>
 <p><strong>Test basic functionality:</strong>
 <div class="highlight"><pre><span></span><code><span class="n">grapa</span> <span class="n">-c</span> <span class="s2">&quot;2+2&quot;</span>
 <span class="n">grapa</span> <span class="n">-c</span> <span class="s2">&quot;&#39;Hello World&#39;.echo()&quot;</span>
 </code></pre></div></p>
-<p><strong>Uninstall:</strong>
-<div class="highlight"><pre><span></span><code><span class="c"># Remove from System32 (if installed there)</span>
-<span class="nb">Remove-Item</span> <span class="s2">&quot;C:\Windows\System32\grapa.exe&quot;</span> <span class="n">-Force</span>
+<p><strong>Verify PATH and installation:</strong>
+<div class="highlight"><pre><span></span><code><span class="c"># Check if grapa is in PATH</span>
+<span class="nb">Get-Command</span> <span class="n">grapa</span>
 
-<span class="c"># Or remove from user directory</span>
-<span class="nb">Remove-Item</span> <span class="s2">&quot;$env:USERPROFILE\grapa\grapa.exe&quot;</span> <span class="n">-Force</span>
-<span class="nb">Remove-Item</span> <span class="s2">&quot;$env:USERPROFILE\grapa&quot;</span> <span class="n">-Force</span>
+<span class="c"># Check grapa version</span>
+<span class="n">grapa</span> <span class="p">-</span><span class="n">-version</span>
+
+<span class="c"># Check where grapa is installed</span>
+<span class="p">(</span><span class="nb">Get-Command</span> <span class="n">grapa</span><span class="p">).</span><span class="n">Source</span>
+
+<span class="c"># Test basic functionality</span>
+<span class="n">grapa</span> <span class="n">-c</span> <span class="s2">&quot;2+2&quot;</span>
 </code></pre></div></p>
 <h3 id="other-platforms">Other Platforms</h3>
 <p>For other platforms, download the appropriate binary from the <a href="https://github.com/grapa-dev/grapa/releases">GitHub releases page</a>:</p>
@@ -4771,7 +4984,7 @@ grapa<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;&#
 - <code>grapa-linux-amd64</code> - Linux AMD64
 - <code>grapa-linux-arm64</code> - Linux ARM64<br />
 - <code>grapa-mac-arm64</code> - macOS ARM64 (Apple Silicon)
-- <code>grapa.exe</code> - Windows AMD64</p>
+- <code>grapa-win-amd64.zip</code> - Windows AMD64 (includes installer script)</p>
 <h2 id="troubleshooting">Troubleshooting</h2>
 <h3 id="grapa-command-not-found">"grapa: command not found"</h3>
 <ol>
@@ -4787,7 +5000,7 @@ dpkg<span class="w"> </span>-l<span class="w"> </span><span class="p">|</span><s
 rpm<span class="w"> </span>-qa<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>grapa
 
 <span class="c1"># Windows</span>
-choco<span class="w"> </span>list<span class="w"> </span>grapa
+Test-Path<span class="w"> </span><span class="s2">&quot;C:\Program Files\Grapa\bin\grapa.exe&quot;</span>
 </code></pre></div></p>
 </li>
 <li>
@@ -4799,7 +5012,7 @@ choco<span class="w"> </span>list<span class="w"> </span>grapa
 <span class="nb">echo</span><span class="w"> </span><span class="nv">$PATH</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="s2">&quot;/usr/bin&quot;</span>
 
 <span class="c1"># Windows</span>
-<span class="nb">echo</span><span class="w"> </span><span class="nv">$env</span>:PATH<span class="w"> </span><span class="p">|</span><span class="w"> </span>Select-String<span class="w"> </span><span class="s2">&quot;chocolatey&quot;</span>
+<span class="nb">echo</span><span class="w"> </span><span class="nv">$env</span>:PATH<span class="w"> </span><span class="p">|</span><span class="w"> </span>Select-String<span class="w"> </span><span class="s2">&quot;Grapa&quot;</span>
 </code></pre></div></p>
 </li>
 <li>
@@ -4839,9 +5052,6 @@ sudo<span class="w"> </span>apt<span class="w"> </span>update
 
 <span class="c1"># Amazon Linux/Red Hat</span>
 sudo<span class="w"> </span>yum<span class="w"> </span>update
-
-<span class="c1"># Windows</span>
-choco<span class="w"> </span>upgrade<span class="w"> </span>all
 </code></pre></div></p>
 </li>
 <li>
@@ -4854,9 +5064,6 @@ sudo<span class="w"> </span>apt<span class="w"> </span>clean
 
 <span class="c1"># Amazon Linux/Red Hat</span>
 sudo<span class="w"> </span>yum<span class="w"> </span>clean<span class="w"> </span>all
-
-<span class="c1"># Windows</span>
-choco<span class="w"> </span>cache<span class="w"> </span>remove
 </code></pre></div></p>
 </li>
 <li>
@@ -4864,22 +5071,23 @@ choco<span class="w"> </span>cache<span class="w"> </span>remove
 </li>
 </ol>
 <h3 id="windows-specific-issues">Windows-Specific Issues</h3>
-<h4 id="chocolatey-not-found">Chocolatey Not Found</h4>
-<p>If <code>choco</code> command is not recognized:</p>
+<h4 id="installation-script-issues">Installation Script Issues</h4>
+<p>If the <code>install-grapa.ps1</code> script fails:</p>
 <ol>
 <li>
-<p><strong>Install Chocolatey</strong> (run PowerShell as Administrator):
-   <div class="highlight"><pre><span></span><code><span class="nb">Set-ExecutionPolicy</span> <span class="n">Bypass</span> <span class="n">-Scope</span> <span class="k">Process</span> <span class="n">-Force</span><span class="p">;</span> <span class="no">[System.Net.ServicePointManager]</span><span class="p">::</span><span class="n">SecurityProtocol</span> <span class="p">=</span> <span class="no">[System.Net.ServicePointManager]</span><span class="p">::</span><span class="n">SecurityProtocol</span> <span class="o">-bor</span> <span class="n">3072</span><span class="p">;</span> <span class="nb">iex </span><span class="p">((</span><span class="nb">New-Object</span> <span class="n">System</span><span class="p">.</span><span class="n">Net</span><span class="p">.</span><span class="n">WebClient</span><span class="p">).</span><span class="n">DownloadString</span><span class="p">(</span><span class="s1">&#39;https://community.chocolatey.org/install.ps1&#39;</span><span class="p">))</span>
+<p><strong>Check execution policy</strong> (run PowerShell as Administrator):
+   <div class="highlight"><pre><span></span><code><span class="nb">Get-ExecutionPolicy</span>
+<span class="nb">Set-ExecutionPolicy</span> <span class="n">RemoteSigned</span> <span class="n">-Scope</span> <span class="n">CurrentUser</span>
 </code></pre></div></p>
 </li>
 <li>
-<p><strong>Refresh environment variables:</strong>
-   <div class="highlight"><pre><span></span><code><span class="n">refreshenv</span>
+<p><strong>Verify the script exists:</strong>
+   <div class="highlight"><pre><span></span><code><span class="nb">Test-Path</span> <span class="s2">&quot;install-grapa.ps1&quot;</span>
 </code></pre></div></p>
 </li>
 <li>
-<p><strong>Verify Chocolatey installation:</strong>
-   <div class="highlight"><pre><span></span><code><span class="n">choco</span> <span class="p">-</span><span class="n">-version</span>
+<p><strong>Run the script with verbose output:</strong>
+   <div class="highlight"><pre><span></span><code><span class="p">.\</span><span class="nb">install-grapa</span><span class="p">.</span><span class="n">ps1</span> <span class="n">-Verbose</span>
 </code></pre></div></p>
 </li>
 </ol>
@@ -4901,19 +5109,46 @@ choco<span class="w"> </span>cache<span class="w"> </span>remove
 <p>If Grapa is installed but not found in PATH:</p>
 <ol>
 <li>
-<p><strong>Check if Grapa is in Chocolatey's bin directory:</strong>
-   <div class="highlight"><pre><span></span><code><span class="nb">Test-Path</span> <span class="s2">&quot;C:\ProgramData\chocolatey\bin\grapa.exe&quot;</span>
+<p><strong>Check if Grapa is in the installation directory:</strong>
+   <div class="highlight"><pre><span></span><code><span class="nb">Test-Path</span> <span class="s2">&quot;C:\Program Files\Grapa\bin\grapa.exe&quot;</span>
 </code></pre></div></p>
 </li>
 <li>
-<p><strong>Add Chocolatey to PATH manually:</strong>
-   <div class="highlight"><pre><span></span><code><span class="nv">$env:PATH</span> <span class="p">+=</span> <span class="s2">&quot;;C:\ProgramData\chocolatey\bin&quot;</span>
+<p><strong>Add Grapa to PATH manually:</strong>
+   <div class="highlight"><pre><span></span><code><span class="nv">$env:PATH</span> <span class="p">+=</span> <span class="s2">&quot;;C:\Program Files\Grapa\bin&quot;</span>
 </code></pre></div></p>
 </li>
 <li>
 <p><strong>Restart PowerShell</strong> to ensure PATH changes take effect.</p>
 </li>
 </ol>
+<h4 id="powershell-profile-management">PowerShell Profile Management</h4>
+<p>For persistent PATH changes across PowerShell sessions:</p>
+<ol>
+<li>
+<p><strong>Check if you have a PowerShell profile:</strong>
+   <div class="highlight"><pre><span></span><code><span class="nb">Test-Path</span> <span class="nv">$PROFILE</span>
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>Create a PowerShell profile if it doesn't exist:</strong>
+   <div class="highlight"><pre><span></span><code><span class="k">if</span> <span class="p">(!(</span><span class="nb">Test-Path</span> <span class="nv">$PROFILE</span><span class="p">))</span> <span class="p">{</span>
+    <span class="nb">New-Item</span> <span class="n">-Type</span> <span class="n">File</span> <span class="n">-Path</span> <span class="nv">$PROFILE</span> <span class="n">-Force</span>
+<span class="p">}</span>
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>Add Grapa to your PowerShell profile:</strong>
+   <div class="highlight"><pre><span></span><code><span class="nb">Add-Content</span> <span class="nv">$PROFILE</span> <span class="s2">&quot;</span><span class="se">`$</span><span class="s2">env:PATH += </span><span class="se">`&quot;</span><span class="s2">;C:\Program Files\Grapa\bin</span><span class="se">`&quot;</span><span class="s2">&quot;</span>
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>Reload your profile:</strong>
+   <div class="highlight"><pre><span></span><code><span class="p">.</span> <span class="nv">$PROFILE</span>
+</code></pre></div></p>
+</li>
+</ol>
+<p><strong>Note</strong>: This adds the standard Grapa installation path to your PowerShell profile. If you installed Grapa to a different location, replace <code>C:\Program Files\Grapa\bin</code> with your actual installation path.</p>
 <h2 id="getting-help">Getting Help</h2>
 <p>If you encounter issues not covered here:</p>
 <ol>

@@ -5147,13 +5147,39 @@ $ARRAY += (custom_method: op() { $this.len(); });
 </code></pre></div></p>
 <h3 id="current-limitations-and-future-enhancements"><strong>Current Limitations and Future Enhancements</strong></h3>
 <h4 id="object-lifecycle-management"><strong>Object Lifecycle Management</strong></h4>
-<p><strong>Current State</strong>: Grapa objects do not have automatic constructors or destructors.</p>
+<p><strong>Current State</strong>: Grapa supports automatic constructors through the <code>$new()</code> method, but still lacks automatic destructors.</p>
+<p><strong>What's Available:</strong>
+- <strong>Automatic Constructors</strong>: <code>$new()</code> method is automatically called when creating instances using <code>Class()</code> syntax
+- <strong>Parameter Support</strong>: Constructors can accept parameters with default values
+- <strong>Single Constructor</strong>: Only one <code>$new()</code> method is supported per class</p>
 <p><strong>What's Missing:</strong>
-- <strong>Automatic Constructors</strong>: No <code>constructor()</code> method that runs when objects are created
 - <strong>Automatic Destructors</strong>: No <code>destructor()</code> or <code>finalize()</code> method for cleanup
-- <strong>Object Initialization</strong>: Objects created with <code>obj Class</code> are empty and must be manually initialized</p>
-<p><strong>Workaround:</strong>
-<div class="highlight"><pre><span></span><code>/* Manual initialization pattern */
+- <strong>Multiple Constructors</strong>: Only one <code>$new()</code> method per class is supported</p>
+<p><strong>Current Usage:</strong>
+<div class="highlight"><pre><span></span><code>/* Automatic constructor with $new() */
+Person = class {
+    name = &quot;&quot;;
+    age = 0;
+
+    /* Automatic constructor - called when creating instances */
+    $new = op(n:&quot;&quot;, a:0) {
+        name = n;
+        age = a;
+    };
+
+    /* Method */
+    getInfo = op() {
+        (&quot;Name: &quot; + name + &quot;, Age: &quot; + age.str()).echo();
+    };
+};
+
+/* Create instances - constructor called automatically */
+person1 = Person();           /* name=&quot;&quot;, age=0 */
+person2 = Person(&quot;Alice&quot;, 30); /* name=&quot;Alice&quot;, age=30 */
+person2.getInfo();            /* Output: Name: Alice, Age: 30 */
+</code></pre></div></p>
+<p><strong>Alternative Manual Pattern:</strong>
+<div class="highlight"><pre><span></span><code>/* Manual initialization pattern (for classes without $new()) */
 Person = class {
     name = &quot;&quot;;
     age = 0;
@@ -5169,7 +5195,7 @@ Person = class {
 person = obj Person;
 person.init(&quot;Alice&quot;, 30);  /* Must call init explicitly */
 </code></pre></div></p>
-<p><strong>Future Enhancement</strong>: Automatic constructor/destructor support will be added to make object creation more intuitive.</p>
+<p><strong>Future Enhancement</strong>: Multiple constructors and automatic destructor support may be added in future versions.</p>
 <h4 id="operator-overloading"><strong>Operator Overloading</strong></h4>
 <p><strong>Current State</strong>: Operators work only with built-in types and predefined behaviors.</p>
 <p><strong>What's Missing:</strong>

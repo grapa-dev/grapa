@@ -4333,12 +4333,12 @@
 <tr>
 <td><code>struct Bar {}</code></td>
 <td><code>obj Bar {}</code></td>
-<td>Use object constructors</td>
+<td>Use manual initialization</td>
 </tr>
 <tr>
 <td><code>class Foo {}</code></td>
 <td><code>class Foo {}</code></td>
-<td>Use object constructors</td>
+<td>Use <code>$new()</code> constructor or manual initialization</td>
 </tr>
 <tr>
 <td><code>inheritance</code></td>
@@ -4439,8 +4439,8 @@
 <h3 id="nice-to-have_1">Nice to Have</h3>
 <p>These would improve developer experience but aren't essential:</p>
 <ul>
-<li><strong>Structs</strong>: <code>struct Bar {}</code> - Use object constructors</li>
-<li><strong>Classes</strong>: <code>class Foo {}</code> - Use object constructors</li>
+<li><strong>Structs</strong>: <code>struct Bar {}</code> - Use manual initialization with <code>obj Bar</code></li>
+<li><strong>Classes</strong>: <code>class Foo {}</code> - Use <code>$new()</code> constructor or manual initialization</li>
 <li><strong>Inheritance</strong>: - Use object composition</li>
 <li><strong>Method overriding</strong>: - Use regular method definitions</li>
 <li><strong>Method overloading</strong>: - Use different function names</li>

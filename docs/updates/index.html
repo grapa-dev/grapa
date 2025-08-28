@@ -3771,9 +3771,9 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#windows-chocolatey" class="md-nav__link">
+  <a href="#windows-manual-installer" class="md-nav__link">
     <span class="md-ellipsis">
-      Windows (Chocolatey)
+      Windows (Manual Installer)
     </span>
   </a>
   
@@ -3873,9 +3873,9 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#windows-chocolatey_1" class="md-nav__link">
+  <a href="#windows-manual-installer_1" class="md-nav__link">
     <span class="md-ellipsis">
-      Windows (Chocolatey)
+      Windows (Manual Installer)
     </span>
   </a>
   
@@ -4017,9 +4017,9 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#windows-chocolatey" class="md-nav__link">
+  <a href="#windows-manual-installer" class="md-nav__link">
     <span class="md-ellipsis">
-      Windows (Chocolatey)
+      Windows (Manual Installer)
     </span>
   </a>
   
@@ -4119,9 +4119,9 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#windows-chocolatey_1" class="md-nav__link">
+  <a href="#windows-manual-installer_1" class="md-nav__link">
     <span class="md-ellipsis">
-      Windows (Chocolatey)
+      Windows (Manual Installer)
     </span>
   </a>
   
@@ -4235,15 +4235,12 @@ sudo<span class="w"> </span>yum<span class="w"> </span>update<span class="w"> </
 <span class="c1"># Update all packages (including Grapa)</span>
 sudo<span class="w"> </span>yum<span class="w"> </span>update
 </code></pre></div>
-<h3 id="windows-chocolatey">Windows (Chocolatey)</h3>
-<div class="highlight"><pre><span></span><code><span class="c"># Check for updates</span>
-<span class="n">choco</span> <span class="n">outdated</span>
-
-<span class="c"># Update Grapa</span>
-<span class="n">choco</span> <span class="n">upgrade</span> <span class="n">grapa</span>
-
-<span class="c"># Update all packages (including Grapa)</span>
-<span class="n">choco</span> <span class="n">upgrade</span> <span class="n">all</span>
+<h3 id="windows-manual-installer">Windows (Manual Installer)</h3>
+<div class="highlight"><pre><span></span><code><span class="c"># Download and install the latest version</span>
+<span class="nb">Invoke-WebRequest</span> <span class="n">-Uri</span> <span class="s2">&quot;https://github.com/grapa-dev/grapa/releases/download/v0.1.51/grapa-win-amd64.zip&quot;</span> <span class="n">-OutFile</span> <span class="s2">&quot;grapa-win-amd64.zip&quot;</span>
+<span class="nb">Expand-Archive</span> <span class="n">-Path</span> <span class="s2">&quot;grapa-win-amd64.zip&quot;</span> <span class="n">-DestinationPath</span> <span class="s2">&quot;grapa-win-amd64&quot;</span> <span class="n">-Force</span>
+<span class="nb">cd </span><span class="n">grapa-win-amd64</span>
+<span class="p">.\</span><span class="nb">install-grapa</span><span class="p">.</span><span class="n">ps1</span> <span class="n">-Force</span>
 </code></pre></div>
 <h2 id="automatic-update-notifications">Automatic Update Notifications</h2>
 <h3 id="system-level-notifications">System-Level Notifications</h3>
@@ -4251,7 +4248,7 @@ sudo<span class="w"> </span>yum<span class="w"> </span>update
 <ul>
 <li><strong>macOS</strong>: System Preferences → Software Update (for system packages)</li>
 <li><strong>Linux</strong>: Package manager update notifications in terminal</li>
-<li><strong>Windows</strong>: Windows Update (if using winget) or Chocolatey notifications</li>
+<li><strong>Windows</strong>: Manual download and installation from GitHub releases</li>
 </ul>
 <h3 id="package-manager-notifications">Package Manager Notifications</h3>
 <p>When you run package manager commands, you'll see notifications about available updates:</p>
@@ -4306,12 +4303,12 @@ yum<span class="w"> </span>list<span class="w"> </span>available<span class="w">
 <span class="c1"># Install specific version</span>
 sudo<span class="w"> </span>yum<span class="w"> </span>install<span class="w"> </span>grapa-0.1.50-1
 </code></pre></div>
-<h3 id="windows-chocolatey_1">Windows (Chocolatey)</h3>
-<div class="highlight"><pre><span></span><code><span class="c"># List available versions</span>
-<span class="n">choco</span> <span class="n">list</span> <span class="n">grapa</span> <span class="p">-</span><span class="n">-all-versions</span>
-
-<span class="c"># Install specific version</span>
-<span class="n">choco</span> <span class="n">install</span> <span class="n">grapa</span> <span class="p">-</span><span class="n">-version</span><span class="p">=</span><span class="n">0</span><span class="p">.</span><span class="n">1</span><span class="p">.</span><span class="n">50</span>
+<h3 id="windows-manual-installer_1">Windows (Manual Installer)</h3>
+<div class="highlight"><pre><span></span><code><span class="c"># Download and install specific version</span>
+<span class="nb">Invoke-WebRequest</span> <span class="n">-Uri</span> <span class="s2">&quot;https://github.com/grapa-dev/grapa/releases/download/v0.1.50/grapa-win-amd64.zip&quot;</span> <span class="n">-OutFile</span> <span class="s2">&quot;grapa-win-amd64.zip&quot;</span>
+<span class="nb">Expand-Archive</span> <span class="n">-Path</span> <span class="s2">&quot;grapa-win-amd64.zip&quot;</span> <span class="n">-DestinationPath</span> <span class="s2">&quot;grapa-win-amd64&quot;</span> <span class="n">-Force</span>
+<span class="nb">cd </span><span class="n">grapa-win-amd64</span>
+<span class="p">.\</span><span class="nb">install-grapa</span><span class="p">.</span><span class="n">ps1</span> <span class="n">-Force</span>
 </code></pre></div>
 <h2 id="troubleshooting-updates">Troubleshooting Updates</h2>
 <h3 id="update-fails">Update Fails</h3>
