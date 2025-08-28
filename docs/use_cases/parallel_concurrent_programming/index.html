@@ -3961,10 +3961,10 @@ processed_data = parallel_process(large_dataset, 8);
 fetch_urls = op(urls) {
     responses = urls.map(op(url) {
         try {
-            response = $net().get(url);
-            {&quot;url&quot;: url, &quot;success&quot;: true, &quot;data&quot;: response.get(&quot;body&quot;)};
-        } catch (error) {
-            {&quot;url&quot;: url, &quot;success&quot;: false, &quot;error&quot;: error.get(&quot;message&quot;)};
+                    response = $net().get(url);
+        {&quot;url&quot;: url, &quot;success&quot;: true, &quot;data&quot;: response.getfield(&quot;body&quot;)};
+    } catch (error) {
+        {&quot;url&quot;: url, &quot;success&quot;: false, &quot;error&quot;: error.getfield(&quot;message&quot;)};
         };
     });
     responses;
@@ -3978,8 +3978,8 @@ api_endpoints = [
 ];
 
 results = fetch_urls(api_endpoints);
-successful = results.filter(op(r) { r.get(&quot;success&quot;); });
-failed = results.filter(op(r) { !r.get(&quot;success&quot;); });
+successful = results.filter(op(r) { r.getfield(&quot;success&quot;); });
+failed = results.filter(op(r) { !r.getfield(&quot;success&quot;); });
 
 (&quot;Successful requests: &quot; + successful.len().str()).echo();
 (&quot;Failed requests: &quot; + failed.len().str()).echo();
@@ -4028,7 +4028,7 @@ while (i &lt; 10) {
 
 /* Wait for all threads to complete */
 threads.map(op(t) { t.join(); });
-(&quot;Final counter value: &quot; + counter.get().str()).echo();
+(&quot;Final counter value: &quot; + counter.getfield().str()).echo();
 </code></pre></div>
 <ul>
 <li><strong>See also:</strong> <a href="../../python_use_cases/#4-parallelconcurrent-programming-verified">Python Parallelism Examples</a> </li>

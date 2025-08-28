@@ -3995,8 +3995,8 @@ bubble_sort_with_trace = op(array) {
             /* Swap if needed */
             if (array.get(j) &gt; array.get(j + 1)) {
                 temp = array.get(j);
-                array.set(j, array.get(j + 1));
-                array.set(j + 1, temp);
+                        array.setfield(j, array.getfield(j + 1));
+        array.setfield(j + 1, temp);
 
                 trace += {
                     &quot;step&quot;: &quot;Swap &quot; + array.get(j).str() + &quot; and &quot; + array.get(j + 1).str(),
@@ -4083,15 +4083,15 @@ simple_web_framework = op() {
 
     {
         &quot;get&quot;: op(path, handler) {
-            routes.set(&quot;GET:&quot; + path, handler);
+            routes.setfield(&quot;GET:&quot; + path, handler);
         },
         &quot;post&quot;: op(path, handler) {
-            routes.set(&quot;POST:&quot; + path, handler);
+            routes.setfield(&quot;POST:&quot; + path, handler);
         },
         &quot;handle_request&quot;: op(method, path, data) {
             route_key = method + &quot;:&quot; + path;
             if (routes.has(route_key)) {
-                handler = routes.get(route_key);
+                handler = routes.getfield(route_key);
                 handler(data);
             } else {
                 {&quot;status&quot;: 404, &quot;body&quot;: &quot;Not Found&quot;};
@@ -4109,15 +4109,15 @@ app.get(&quot;/hello&quot;, op(data) {
 });
 
 app.post(&quot;/echo&quot;, op(data) {
-    {&quot;status&quot;: 200, &quot;body&quot;: &quot;Echo: &quot; + data.get(&quot;message&quot;)};
+    {&quot;status&quot;: 200, &quot;body&quot;: &quot;Echo: &quot; + data.getfield(&quot;message&quot;)};
 });
 
 /* Handle requests */
 response1 = app.handle_request(&quot;GET&quot;, &quot;/hello&quot;, {});
 response2 = app.handle_request(&quot;POST&quot;, &quot;/echo&quot;, {&quot;message&quot;: &quot;Hello from Grapa!&quot;});
 
-(&quot;Response 1: &quot; + response1.get(&quot;body&quot;)).echo();
-(&quot;Response 2: &quot; + response2.get(&quot;body&quot;)).echo();
+(&quot;Response 1: &quot; + response1.getfield(&quot;body&quot;)).echo();
+(&quot;Response 2: &quot; + response2.getfield(&quot;body&quot;)).echo();
 </code></pre></div>
 <ul>
 <li><strong>See also:</strong> <a href="../../python_use_cases/#7-education-prototyping-verified">Python Education Examples</a> </li>

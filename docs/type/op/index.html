@@ -4657,7 +4657,7 @@ dynamic_func(7);
 <div class="highlight"><pre><span></span><code>/* Store function in table */
 table = $file().table(&quot;ROW&quot;);
 table.mkfield(&quot;func&quot;, &quot;OP&quot;);
-table.set(&quot;my_func&quot;, op(x){x * x}, &quot;func&quot;);
+table.setfield(&quot;my_func&quot;, op(x){x * x}, &quot;func&quot;);
 
 /* Retrieve and execute */
 stored_func = table.get(&quot;my_func&quot;, &quot;func&quot;);

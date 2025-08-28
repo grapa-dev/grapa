@@ -4790,7 +4790,7 @@ f.type()
 $TABLE
 
 # Basic operations
-f.set(&quot;test&quot;, &quot;value&quot;)
+f.setfield(&quot;test&quot;, &quot;value&quot;)
 f.ls()
 [{&quot;$KEY&quot;:&quot;test&quot;,&quot;$TYPE&quot;:&quot;ROW&quot;,&quot;$BYTES&quot;:5}]
 
@@ -4943,10 +4943,10 @@ f.mkfield(&quot;total_amount&quot;, &quot;FLOAT&quot;, &quot;FIX&quot;, 8);  /* 
 f.mkfield(&quot;status&quot;, &quot;STR&quot;, &quot;VAR&quot;);             /* Variable string */
 
 /* Add records */
-f.set(&quot;order_001&quot;, 1001, &quot;customer_id&quot;);
-f.set(&quot;order_001&quot;, 1640995200, &quot;order_date&quot;);  /* Unix timestamp */
-f.set(&quot;order_001&quot;, 299.99, &quot;total_amount&quot;);
-f.set(&quot;order_001&quot;, &quot;pending&quot;, &quot;status&quot;);
+f.setfield(&quot;order_001&quot;, 1001, &quot;customer_id&quot;);
+f.setfield(&quot;order_001&quot;, 1640995200, &quot;order_date&quot;);  /* Unix timestamp */
+f.setfield(&quot;order_001&quot;, 299.99, &quot;total_amount&quot;);
+f.setfield(&quot;order_001&quot;, &quot;pending&quot;, &quot;status&quot;);
 
 /* Retrieve complete record */
 order = f.get(&quot;order_001&quot;, &quot;customer_id&quot;);     /* Returns integer 1001 */
@@ -4964,11 +4964,11 @@ f.mkfield(&quot;sales_amount&quot;, &quot;FLOAT&quot;, &quot;FIX&quot;, 8);  /* 
 f.mkfield(&quot;quantity&quot;, &quot;INT&quot;);                  /* Integer field */
 
 /* Add data (records created automatically) */
-f.set(&quot;sale_001&quot;, 1640995200, &quot;date&quot;);
-f.set(&quot;sale_001&quot;, 1001, &quot;product_id&quot;);
-f.set(&quot;sale_001&quot;, &quot;North&quot;, &quot;region&quot;);
-f.set(&quot;sale_001&quot;, 299.99, &quot;sales_amount&quot;);
-f.set(&quot;sale_001&quot;, 2, &quot;quantity&quot;);
+f.setfield(&quot;sale_001&quot;, 1640995200, &quot;date&quot;);
+f.setfield(&quot;sale_001&quot;, 1001, &quot;product_id&quot;);
+f.setfield(&quot;sale_001&quot;, &quot;North&quot;, &quot;region&quot;);
+f.setfield(&quot;sale_001&quot;, 299.99, &quot;sales_amount&quot;);
+f.setfield(&quot;sale_001&quot;, 2, &quot;quantity&quot;);
 
 /* Column-oriented queries are efficient */
 /* (In a real implementation, you&#39;d have aggregation functions) */

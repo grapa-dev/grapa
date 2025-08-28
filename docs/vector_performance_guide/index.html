@@ -4637,7 +4637,7 @@ result = large_matrix.cov();         // Monitor performance
 small_result = mat_a.dot(mat_b);  // Fast for &lt; 100x100
 
 // For large matrices - consider alternatives
-if (mat_a.shape().get(0) &gt; 100) {
+if (mat_a.shape().getfield(0) &gt; 100) {
     // Consider breaking into smaller blocks
     result = block_multiply(mat_a, mat_b);
 } else {
@@ -4734,7 +4734,7 @@ memory_usage = estimate_memory(large_matrix);
 sum_result = large_matrix.sum();  // Memory efficient
 
 // 3. Consider breaking large problems
-if (large_matrix.shape().get(0) &gt; 200) {
+if (large_matrix.shape().getfield(0) &gt; 200) {
     result = process_in_blocks(large_matrix);
 } else {
     result = process_directly(large_matrix);

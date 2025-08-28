@@ -4305,13 +4305,13 @@ custom_function = rule count &#39;(&#39; $STR &#39;)&#39; from $STR {op(field:$3
 /* Step 2: Define JSON syntax for API data */
 custom_function = rule $STR &#39;-&gt;&#39; $STR {op(json:$1,path:$3){
     /* JSON path extraction */
-    return json.json().get(path);
+    return json.json().getfield(path);
 }};
 
 custom_function = rule json_extract &#39;(&#39; $STR &#39;,&#39; $STR &#39;)&#39; {op(json:$3,path:$5){
     /* JSON extraction with error handling */
     try {
-        return json.json().get(path);
+        return json.json().getfield(path);
     } catch (error) {
         return $err(&quot;JSON extraction failed&quot;);
     };
@@ -4393,8 +4393,8 @@ custom_command = rule select $STR from $STR where $STR &#39;-&gt;&#39; $STR &#39
 
         records = get_table(table).ls();
         filtered = records.filter(op(record) {
-            json_data = record.get(json_field);
-            return json_data.json().get(path) == value;
+            json_data = record.getfield(json_field);
+            return json_data.json().getfield(path) == value;
         });
 
         display_results(fields, filtered);

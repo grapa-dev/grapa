@@ -3868,7 +3868,7 @@
 <h1 id="webdata-scraping-automation">Web/Data Scraping &amp; Automation</h1>
 <blockquote>
 <p><strong>Best Practices:</strong>
-- Use <code>$net().get(url)</code> for HTTP requests; always check <code>.get("status")</code> for HTTP status.
+- Use <code>$net().get(url)</code> for HTTP requests; always check <code>.getfield("status")</code> for HTTP status.
 - Parse HTML/XML with <code>$XML().parse(html)</code> or <code>.html()</code>.
 - Use <code>.select()</code> or <code>.findall()</code> to extract elements or attributes.
 - Rate limit requests with <code>$sys().sleep(ms)</code> to avoid overloading servers.
@@ -3890,19 +3890,19 @@ scrape_pages = op(urls, delay_ms) {
             /* Perform HTTP GET request */
             response = $net().get(url);
             /* Check for successful response */
-            if (response.get(&quot;status&quot;) == 200) {
+            if (response.getfield(&quot;status&quot;) == 200) {
                 {
                     &quot;url&quot;: url,
                     &quot;success&quot;: true,
-                    &quot;content&quot;: response.get(&quot;body&quot;),
-                    &quot;size&quot;: response.get(&quot;body&quot;).len()
+                    &quot;content&quot;: response.getfield(&quot;body&quot;),
+                    &quot;size&quot;: response.getfield(&quot;body&quot;).len()
                 };
             } else {
-                {&quot;url&quot;: url, &quot;success&quot;: false, &quot;error&quot;: &quot;HTTP &quot; + response.get(&quot;status&quot;).str()};
+                {&quot;url&quot;: url, &quot;success&quot;: false, &quot;error&quot;: &quot;HTTP &quot; + response.getfield(&quot;status&quot;).str()};
             };
         } catch (error) {
             /* Handle network or HTTP errors */
-            {&quot;url&quot;: url, &quot;success&quot;: false, &quot;error&quot;: error.get(&quot;message&quot;)};
+            {&quot;url&quot;: url, &quot;success&quot;: false, &quot;error&quot;: error.getfield(&quot;message&quot;)};
         };
     });
     results;
@@ -3916,8 +3916,8 @@ extract_data = op(html_content) {
     links = doc.select(&quot;a[href]&quot;);
 
     {
-        &quot;titles&quot;: titles.map(op(t) { t.get(&quot;text&quot;); }),
-        &quot;links&quot;: links.map(op(l) { l.get(&quot;href&quot;); })
+        &quot;titles&quot;: titles.map(op(t) { t.getfield(&quot;text&quot;); }),
+        &quot;links&quot;: links.map(op(l) { l.getfield(&quot;href&quot;); })
     };
 };
 
@@ -3933,10 +3933,10 @@ scraped_data = scrape_pages(target_urls, 1000);
 
 /* Extract data from each successfully scraped page */
 extracted_data = scraped_data.map(op(page) { 
-    if (page.get(&quot;success&quot;)) {
-        extract_data(page.get(&quot;content&quot;));
+    if (page.getfield(&quot;success&quot;)) {
+        extract_data(page.getfield(&quot;content&quot;));
     } else {
-        {&quot;error&quot;: page.get(&quot;error&quot;)};
+        {&quot;error&quot;: page.getfield(&quot;error&quot;)};
     };
 });
 </code></pre></div>
@@ -3948,15 +3948,15 @@ collect_api_data = op(base_url, endpoints) {
             url = base_url + endpoint;
             response = $net().get(url);
 
-            if (response.get(&quot;status&quot;) == 200) {
+            if (response.getfield(&quot;status&quot;) == 200) {
                 /* Parse JSON response */
-                data = $JSON().parse(response.get(&quot;body&quot;));
+                data = $JSON().parse(response.getfield(&quot;body&quot;));
                 {&quot;endpoint&quot;: endpoint, &quot;success&quot;: true, &quot;data&quot;: data};
             } else {
-                {&quot;endpoint&quot;: endpoint, &quot;success&quot;: false, &quot;error&quot;: &quot;HTTP &quot; + response.get(&quot;status&quot;).str()};
+                {&quot;endpoint&quot;: endpoint, &quot;success&quot;: false, &quot;error&quot;: &quot;HTTP &quot; + response.getfield(&quot;status&quot;).str()};
             };
         } catch (error) {
-            {&quot;endpoint&quot;: endpoint, &quot;success&quot;: false, &quot;error&quot;: error.get(&quot;message&quot;)};
+            {&quot;endpoint&quot;: endpoint, &quot;success&quot;: false, &quot;error&quot;: error.getfield(&quot;message&quot;)};
         };
     });
     results;
@@ -3967,8 +3967,8 @@ api_endpoints = [&quot;/users&quot;, &quot;/products&quot;, &quot;/orders&quot;]
 api_data = collect_api_data(&quot;https://api.example.com&quot;, api_endpoints);
 
 /* Process collected data */
-successful_data = api_data.filter(op(result) { result.get(&quot;success&quot;); });
-failed_requests = api_data.filter(op(result) { !result.get(&quot;success&quot;); });
+successful_data = api_data.filter(op(result) { result.getfield(&quot;success&quot;); });
+failed_requests = api_data.filter(op(result) { !result.getfield(&quot;success&quot;); });
 
 (&quot;Successfully collected data from &quot; + successful_data.len().str() + &quot; endpoints&quot;).echo();
 (&quot;Failed requests: &quot; + failed_requests.len().str()).echo();
@@ -3985,14 +3985,14 @@ submit_form = op(form_data) {
             &quot;Content-Type&quot;: &quot;application/json&quot;
         });
 
-        if (response.get(&quot;status&quot;) == 200) {
-            result = $JSON().parse(response.get(&quot;body&quot;));
+        if (response.getfield(&quot;status&quot;) == 200) {
+            result = $JSON().parse(response.getfield(&quot;body&quot;));
             {&quot;success&quot;: true, &quot;result&quot;: result};
         } else {
-            {&quot;success&quot;: false, &quot;error&quot;: &quot;HTTP &quot; + response.get(&quot;status&quot;).str()};
+            {&quot;success&quot;: false, &quot;error&quot;: &quot;HTTP &quot; + response.getfield(&quot;status&quot;).str()};
         };
     } catch (error) {
-        {&quot;success&quot;: false, &quot;error&quot;: error.get(&quot;message&quot;)};
+        {&quot;success&quot;: false, &quot;error&quot;: error.getfield(&quot;message&quot;)};
     };
 };
 
@@ -4005,10 +4005,10 @@ form_data = {
 
 /* Submit the form */
 result = submit_form(form_data);
-if (result.get(&quot;success&quot;)) {
-    (&quot;Form submitted successfully: &quot; + result.get(&quot;result&quot;).get(&quot;message&quot;)).echo();
+if (result.getfield(&quot;success&quot;)) {
+    (&quot;Form submitted successfully: &quot; + result.getfield(&quot;result&quot;).getfield(&quot;message&quot;)).echo();
 } else {
-    (&quot;Form submission failed: &quot; + result.get(&quot;error&quot;)).echo();
+    (&quot;Form submission failed: &quot; + result.getfield(&quot;error&quot;)).echo();
 }
 </code></pre></div>
 <ul>

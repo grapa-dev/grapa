@@ -4675,8 +4675,8 @@ f.pwd(); /* Returns: /my_database/users/admins/user_data */
 /* Add data to the ROW database */
 f.mkfield(&quot;id&quot;, &quot;INT&quot;, &quot;FIX&quot;, 4);
 f.mkfield(&quot;name&quot;, &quot;STR&quot;, &quot;VAR&quot;);
-f.set(&quot;user1&quot;, 1001, &quot;id&quot;);
-f.set(&quot;user1&quot;, &quot;John Doe&quot;, &quot;name&quot;);
+    f.setfield(&quot;user1&quot;, 1001, &quot;id&quot;);
+    f.setfield(&quot;user1&quot;, &quot;John Doe&quot;, &quot;name&quot;);
 </code></pre></div>
 <h3 id="direct-path-navigation">Direct Path Navigation</h3>
 <div class="highlight"><pre><span></span><code>f = $file();
@@ -4752,7 +4752,7 @@ f.mk(&quot;app&quot;, &quot;GROUP&quot;);
 f.cd(&quot;app&quot;);
 
 /* Configuration (file system) */
-f.set(&quot;config.json&quot;, &#39;{&quot;version&quot;: &quot;1.0&quot;}&#39;);
+    f.setfield(&quot;config.json&quot;, &#39;{&quot;version&quot;: &quot;1.0&quot;}&#39;);
 
 /* User data (database) */
 f.mk(&quot;users&quot;, &quot;ROW&quot;);
