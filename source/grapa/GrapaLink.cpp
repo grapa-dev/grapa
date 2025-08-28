@@ -115,6 +115,8 @@ GrapaCHAR GrapaLink::Start(bool& needExit, bool& showConsole, bool& showWidget, 
 		} else if ((e->mValue.Cmp("-i") == 0) || (e->mValue.Cmp("--interactive") == 0)) {
 			interactiveMode = true;
 			showConsole = true;
+		} else if ((e->mValue.Cmp("--no-prompt") == 0) || (e->mValue.Cmp("--quiet-interactive") == 0)) {
+			gSystem->mSuppressPrompt = true;
 		} else if (e->mValue.Cmp("-c") == 0) {
 			found_c = true;
 			// Find the next non-flag argument as the command
@@ -478,6 +480,7 @@ GrapaCHAR GrapaLink::Start(bool& needExit, bool& showConsole, bool& showWidget, 
 		outStr.Append("\t-q,--quiet\t:Suppress header\n");
 		outStr.Append("\t--verbose\t:Show version header (default: hidden)\n");
 		outStr.Append("\t-i,--interactive\t:Run in interactive mode\n");
+		outStr.Append("\t--no-prompt\t:Suppress interactive mode prompts\n");
 		outStr.Append("\t-d,--debug\t:Debug mode (shows debug output)\n");
 		outStr.Append("\n");
 		outStr.Append("Execution:\n");

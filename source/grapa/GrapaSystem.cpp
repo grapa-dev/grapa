@@ -208,25 +208,26 @@ GrapaSystem::GrapaSystem()
 	// Enable UTF-8 mode for Windows console
 	SetConsoleOutputCP(CP_UTF8);
 	SetConsoleCP(CP_UTF8);
-	DWORD mode;
-
-	// Enable virtual terminal processing for better Unicode support
-	HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
-	HANDLE hIn = GetStdHandle(STD_INPUT_HANDLE);
-
-	if (hOut != INVALID_HANDLE_VALUE) {
-		if (GetConsoleMode(hOut, &mode)) {
-			mode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING;
-			SetConsoleMode(hOut, mode);
-		}
-
-		if (hIn != INVALID_HANDLE_VALUE) {
-			if (GetConsoleMode(hIn, &mode)) {
-				mode |= ENABLE_VIRTUAL_TERMINAL_INPUT;
-				SetConsoleMode(hIn, mode);
+	
+			// Enable virtual terminal processing for better Unicode support
+		HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
+		if (hOut != INVALID_HANDLE_VALUE) {
+			DWORD mode;
+			if (GetConsoleMode(hOut, &mode)) {
+				mode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING;
+				SetConsoleMode(hOut, mode);
 			}
-		}
-
+			
+			// Also set input handle for better Unicode input
+			HANDLE hIn = GetStdHandle(STD_INPUT_HANDLE);
+			if (hIn != INVALID_HANDLE_VALUE) {
+				DWORD inMode;
+				if (GetConsoleMode(hIn, &inMode)) {
+					inMode |= ENABLE_VIRTUAL_TERMINAL_INPUT;
+					SetConsoleMode(hIn, inMode);
+				}
+			}
+		
 		// Set console font to support Unicode characters
 		CONSOLE_FONT_INFOEX cfi;
 		cfi.cbSize = sizeof(cfi);
@@ -235,7 +236,7 @@ GrapaSystem::GrapaSystem()
 		cfi.dwFontSize.Y = 16;
 		cfi.FontFamily = FF_DONTCARE;
 		cfi.FontWeight = FW_NORMAL;
-
+		
 		// Try Consolas first (best Unicode support), then Cascadia Code, then fallback
 		wcscpy_s(cfi.FaceName, L"Consolas");
 		if (!SetCurrentConsoleFontEx(hOut, FALSE, &cfi)) {
@@ -254,10 +255,11 @@ GrapaSystem::GrapaSystem()
 	mPath = NULL;
 	mVersion.FROM(grapa_version);
 	mStaticLib = NULL;
-	mCliArgv = new GrapaRuleQueue();
 	mArgv = new GrapaRuleQueue();
+	mCliArgv = new GrapaRuleQueue();  // Initialize CLI arguments queue
 	mLinkInitialized = false;
 	mNextSessionId = 1;  // Start session IDs at 1
+	mSuppressPrompt = false;  // Initialize prompt suppression flag
 }
 
 GrapaSystem::~GrapaSystem()
@@ -279,17 +281,17 @@ GrapaSystem::~GrapaSystem()
 		delete mStaticLib;
 		mStaticLib = NULL;
 	}
-	if (mCliArgv)
-	{
-		mCliArgv->CLEAR();
-		delete mCliArgv;
-		mCliArgv = NULL;
-	}
 	if (mArgv)
 	{
 		mArgv->CLEAR();
 		delete mArgv;
 		mArgv = NULL;
+	}
+	if (mCliArgv)
+	{
+		mCliArgv->CLEAR();
+		delete mCliArgv;
+		mCliArgv = NULL;
 	}
 }
 
@@ -438,9 +440,6 @@ std::string GrapaSystem::GetUtf8Char()
     DWORD read;
     WCHAR wch[2];
     
-	//DWORD waitResult = WaitForSingleObject(mStdinRef, 100);
-	//if (PeekConsoleInput(mStdinRef, &inputRecord, 1, &numEvents) && numEvents > 0) {
-
     // Windows: Use Windows API UTF-8 conversion for reliability
     if (gSystem->mStop) return result;
     
@@ -911,11 +910,6 @@ void My_Console::Run(GrapaCB cb, void* data)
 					Fl::wait(1);
 				Fl::unlock();
 			}
-			// the folloiwng is a hack because on Windows the console input is blocking - so this will just work if exit; is the only command entered on the console.
-			// if exit; is in some portion of the code like an if, then another enter key will need to be pressed on Windows. 
-			// Mac and Linux will recognize the mExit because it uses a timerer to periodically check for mExit while waiting for the input.
-			if (sendBuffer.Cmp("exit") == 0 || sendBuffer.Cmp("exit;") == 0 || sendBuffer.Cmp("exit()") == 0 || sendBuffer.Cmp("exit();") == 0)
-				gSystem->mStop = true;
 			if ((ch.empty() || ch == "\n") && !gSystem->mStop)
 			{
 				sendBuffer.Append("$\n");
@@ -923,7 +917,7 @@ void My_Console::Run(GrapaCB cb, void* data)
 				sendBuffer.SetLength(0);
 			}
 		} while (!gSystem->mStop && (sendBuffer.mLength || ch == "\n" || ch == "\r") && !ch.empty());
-}
+	}
 }
 
 My_Pack::My_Pack(int x, int y, int w, int h, const char* l)

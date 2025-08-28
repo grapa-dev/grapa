@@ -516,12 +516,58 @@
   
   
     <li class="md-nav__item">
+      <a href="../../installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Installation
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../cli_integration/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     CLI Integration
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../vscode_extension/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    VSCode Extension
     
   </span>
   
@@ -3278,6 +3324,48 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#interactive-mode" class="md-nav__link">
+    <span class="md-ellipsis">
+      Interactive Mode
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Interactive Mode">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#line-continuation-with-backslash" class="md-nav__link">
+    <span class="md-ellipsis">
+      Line Continuation with Backslash
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#interactive-mode-commands" class="md-nav__link">
+    <span class="md-ellipsis">
+      Interactive Mode Commands
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-interactive-session" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example Interactive Session
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#control-structures" class="md-nav__link">
     <span class="md-ellipsis">
       Control Structures
@@ -5051,6 +5139,29 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../updates/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Updates
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -6120,6 +6231,48 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#interactive-mode" class="md-nav__link">
+    <span class="md-ellipsis">
+      Interactive Mode
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Interactive Mode">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#line-continuation-with-backslash" class="md-nav__link">
+    <span class="md-ellipsis">
+      Line Continuation with Backslash
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#interactive-mode-commands" class="md-nav__link">
+    <span class="md-ellipsis">
+      Interactive Mode Commands
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-interactive-session" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example Interactive Session
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#control-structures" class="md-nav__link">
     <span class="md-ellipsis">
       Control Structures
@@ -6754,8 +6907,8 @@ while (i &lt; array.len()) {
 20.random();      /* Works: Random number 0-19 */
 3.14.floor();     /* Works: Floor to 3 */
 42.str();         /* Works: Convert to string */
-145.len();        /* Works: Length of number (3) */
 145.echo();       /* Works: Output the number */
+/* Note: .len() method not yet implemented for numbers */
 </code></pre></div>
 <p><strong>Note:</strong> Numbers work seamlessly with dot notation for method calls.</p>
 <h3 id="hex-and-binary-literals">Hex and Binary Literals</h3>
@@ -6764,16 +6917,16 @@ while (i &lt; array.len()) {
 0x12;              /* 18 in decimal */
 0xABCD;            /* 43981 in decimal */
 0xAbCd;            /* 43981 in decimal (case insensitive) */
-0x12_34;           /* 4660 in decimal (with underscore separator) */
+0x1234;            /* 4660 in decimal (note: underscore separators not yet implemented) */
 0x12.34;           /* 18.203125 in decimal (hex float) */
-0x12_34.56_78;     /* 4660.33984375 in decimal (hex float with underscores) */
+0x1234.5678;       /* 4660.33984375 in decimal (hex float, note: underscore separators not yet implemented) */
 
 /* Binary literals */
 0b010;             /* 2 in decimal */
 0b1010;            /* 10 in decimal */
-0b010_101;         /* 21 in decimal (with underscore separator) */
+0b010101;          /* 21 in decimal (note: underscore separators not yet implemented) */
 0b010.011;         /* 2.375 in decimal (binary float) */
-0b010_101.011_001; /* 21.1875 in decimal (binary float with underscores) */
+0b010101.011001;   /* 21.1875 in decimal (binary float, note: underscore separators not yet implemented) */
 
 /* Type behavior */
 0x12.type();       /* $INT */
@@ -6790,20 +6943,20 @@ while (i &lt; array.len()) {
 0b010.float();     /* 2.0 (float conversion) */
 </code></pre></div>
 <p><strong>Key Features:</strong>
-- <strong>Underscore separators</strong>: Use <code>_</code> to group digits for readability (e.g., <code>0x12_34_56</code>)
 - <strong>Case insensitive</strong>: <code>0xABCD</code> and <code>0xAbCd</code> are equivalent
 - <strong>Float support</strong>: Both hex and binary support decimal points
 - <strong>Type consistency</strong>: Returns <code>$INT</code> for integers, <code>$FLOAT</code> for floats
 - <strong>Method support</strong>: All number methods work on hex/binary literals
-- <strong>String parsing</strong>: Use <code>.exec()</code> to parse hex/binary strings: <code>'0x12'.exec()</code> → <code>18</code></p>
+- <strong>String parsing</strong>: Use <code>.exec()</code> to parse hex/binary strings: <code>'0x12'.exec()</code> → <code>18</code>
+- <strong>Underscore separators</strong>: Not yet implemented (planned feature for readability)</p>
 <p><strong>String Conversion:</strong>
 <div class="highlight"><pre><span></span><code>/* Parse hex/binary strings */
 &#39;0x12&#39;.exec();           /* 18 */
 &#39;0x12.34&#39;.exec();        /* 18.203125 */
 &#39;0b101&#39;.exec();          /* 5 */
 &#39;0b101.011&#39;.exec();      /* 5.375 */
-&#39;0x12_34&#39;.exec();        /* 4660 */
-&#39;0b010_101&#39;.exec();      /* 21 */
+&#39;0x1234&#39;.exec();         /* 4660 (note: underscore separators not yet implemented) */
+&#39;0b010101&#39;.exec();       /* 21 (note: underscore separators not yet implemented) */
 </code></pre></div></p>
 <h3 id="unsigned-number-methods-cryptographic">Unsigned Number Methods (Cryptographic)</h3>
 <p>Grapa provides specialized unsigned methods for cryptographic applications and binary data processing. These methods treat negative numbers as unsigned integers using two's complement representation:</p>
@@ -8149,6 +8302,30 @@ MyClass = class {
 <blockquote>
 <p><strong>Note:</strong> All comment types (<code>/* */</code>, <code>/** */</code>, <code>//</code>, <code>///</code>) are fully supported throughout Grapa code, including inside class definitions, function bodies, and at the end of lines. <strong><code>#</code> comments are not supported</strong> and will cause syntax errors.</p>
 </blockquote>
+<h2 id="interactive-mode">Interactive Mode</h2>
+<p>When running Grapa in interactive mode (<code>grapa -i</code>), you can enter commands line by line. The interactive console provides special features for multi-line input:</p>
+<h3 id="line-continuation-with-backslash">Line Continuation with Backslash</h3>
+<p>Use <code>\</code> (backslash) at the end of a line to continue the command on the next line:</p>
+<div class="highlight"><pre><span></span><code>grapa: /&gt;a = \
+5
+
+grapa: /&gt;a
+5
+</code></pre></div>
+<p>This allows you to enter multi-line commands without executing each line separately.</p>
+<h3 id="interactive-mode-commands">Interactive Mode Commands</h3>
+<ul>
+<li><strong>Exit interactive mode</strong>: Enter <code>.</code> (single dot) on a line by itself</li>
+<li><strong>Line continuation</strong>: Use <code>\</code> at the end of a line to continue on the next line</li>
+<li><strong>Multi-line blocks</strong>: Use <code>$[</code> and <code>$]</code> for complex multi-line code blocks</li>
+</ul>
+<h3 id="example-interactive-session">Example Interactive Session</h3>
+<div class="highlight"><pre><span></span><code>grapa: /&gt;name = &quot;John&quot;
+grapa: /&gt;age = 25
+grapa: /&gt;(&quot;Hello &quot; + name + &quot;, you are &quot; + age + &quot; years old&quot;).echo()
+Hello John, you are 25 years old
+grapa: /&gt;.
+</code></pre></div>
 <h2 id="control-structures">Control Structures</h2>
 <h3 id="if-statements">If Statements</h3>
 <div class="highlight"><pre><span></span><code>if (condition) {

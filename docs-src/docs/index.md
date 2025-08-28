@@ -11,7 +11,9 @@
 
 ## Getting Started
 - [Quickstart Guide](getting_started.md)
+- [Installation](installation.md) - Install Grapa on your platform
 - [CLI Quickstart](cli_quickstart.md)
+- [VSCode Extension](vscode_extension.md) - IDE support for Grapa development
 - [API Reference](api_reference.md)
 - [Migration Guides](migrations/python_to_grapa_migration.md)
 - [Examples](examples.md)
@@ -48,6 +50,7 @@
 
 ## Need Help?
 - [Troubleshooting](troubleshooting.md)
+- [Updates](updates.md) - Keep Grapa up to date
 
 ---
 

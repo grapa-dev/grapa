@@ -262,8 +262,8 @@ Numbers can be used directly with dot notation for method calls:
 20.random();      /* Works: Random number 0-19 */
 3.14.floor();     /* Works: Floor to 3 */
 42.str();         /* Works: Convert to string */
-145.len();        /* Works: Length of number (3) */
 145.echo();       /* Works: Output the number */
+/* Note: .len() method not yet implemented for numbers */
 ```
 
 **Note:** Numbers work seamlessly with dot notation for method calls.
@@ -277,16 +277,16 @@ Grapa supports hexadecimal and binary literals with underscore separators for re
 0x12;              /* 18 in decimal */
 0xABCD;            /* 43981 in decimal */
 0xAbCd;            /* 43981 in decimal (case insensitive) */
-0x12_34;           /* 4660 in decimal (with underscore separator) */
+0x1234;            /* 4660 in decimal (note: underscore separators not yet implemented) */
 0x12.34;           /* 18.203125 in decimal (hex float) */
-0x12_34.56_78;     /* 4660.33984375 in decimal (hex float with underscores) */
+0x1234.5678;       /* 4660.33984375 in decimal (hex float, note: underscore separators not yet implemented) */
 
 /* Binary literals */
 0b010;             /* 2 in decimal */
 0b1010;            /* 10 in decimal */
-0b010_101;         /* 21 in decimal (with underscore separator) */
+0b010101;          /* 21 in decimal (note: underscore separators not yet implemented) */
 0b010.011;         /* 2.375 in decimal (binary float) */
-0b010_101.011_001; /* 21.1875 in decimal (binary float with underscores) */
+0b010101.011001;   /* 21.1875 in decimal (binary float, note: underscore separators not yet implemented) */
 
 /* Type behavior */
 0x12.type();       /* $INT */
@@ -304,12 +304,12 @@ Grapa supports hexadecimal and binary literals with underscore separators for re
 ```
 
 **Key Features:**
-- **Underscore separators**: Use `_` to group digits for readability (e.g., `0x12_34_56`)
 - **Case insensitive**: `0xABCD` and `0xAbCd` are equivalent
 - **Float support**: Both hex and binary support decimal points
 - **Type consistency**: Returns `$INT` for integers, `$FLOAT` for floats
 - **Method support**: All number methods work on hex/binary literals
 - **String parsing**: Use `.exec()` to parse hex/binary strings: `'0x12'.exec()` → `18`
+- **Underscore separators**: Not yet implemented (planned feature for readability)
 
 **String Conversion:**
 ```grapa
@@ -318,8 +318,8 @@ Grapa supports hexadecimal and binary literals with underscore separators for re
 '0x12.34'.exec();        /* 18.203125 */
 '0b101'.exec();          /* 5 */
 '0b101.011'.exec();      /* 5.375 */
-'0x12_34'.exec();        /* 4660 */
-'0b010_101'.exec();      /* 21 */
+'0x1234'.exec();         /* 4660 (note: underscore separators not yet implemented) */
+'0b010101'.exec();       /* 21 (note: underscore separators not yet implemented) */
 ```
 
 ### Unsigned Number Methods (Cryptographic)
@@ -1914,6 +1914,40 @@ MyClass = class {
 ```
 
 > **Note:** All comment types (`/* */`, `/** */`, `//`, `///`) are fully supported throughout Grapa code, including inside class definitions, function bodies, and at the end of lines. **`#` comments are not supported** and will cause syntax errors.
+
+## Interactive Mode
+
+When running Grapa in interactive mode (`grapa -i`), you can enter commands line by line. The interactive console provides special features for multi-line input:
+
+### Line Continuation with Backslash
+
+Use `\` (backslash) at the end of a line to continue the command on the next line:
+
+```grapa
+grapa: />a = \
+5
+
+grapa: />a
+5
+```
+
+This allows you to enter multi-line commands without executing each line separately.
+
+### Interactive Mode Commands
+
+- **Exit interactive mode**: Enter `.` (single dot) on a line by itself
+- **Line continuation**: Use `\` at the end of a line to continue on the next line
+- **Multi-line blocks**: Use `$[` and `$]` for complex multi-line code blocks
+
+### Example Interactive Session
+
+```grapa
+grapa: />name = "John"
+grapa: />age = 25
+grapa: />("Hello " + name + ", you are " + age + " years old").echo()
+Hello John, you are 25 years old
+grapa: />.
+```
 
 ## Control Structures
 

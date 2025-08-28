@@ -1,0 +1,252 @@
+{
+  "Hello World": {
+    "prefix": "hello",
+    "body": [
+      "'Hello, World!'.echo();"
+    ],
+    "description": "Simple hello world example"
+  },
+  "String Echo": {
+    "prefix": "echo",
+    "body": [
+      "'${1:text}'.echo();"
+    ],
+    "description": "Echo a string"
+  },
+  "String Length": {
+    "prefix": "len",
+    "body": [
+      "'${1:text}'.len()"
+    ],
+    "description": "Get string length"
+  },
+  "Array Creation": {
+    "prefix": "array",
+    "body": [
+      "${1:name} = [${2:item1}, ${3:item2}];"
+    ],
+    "description": "Create an array"
+  },
+  "Array Get": {
+    "prefix": "get",
+    "body": [
+      "${1:array}.get(${2:index})"
+    ],
+    "description": "Get array element"
+  },
+  "Array Add": {
+    "prefix": "add",
+    "body": [
+      "${1:array}.add(${2:item});"
+    ],
+    "description": "Add item to array"
+  },
+  "File Read": {
+    "prefix": "read",
+    "body": [
+      "file ${1:file} = '${2:filename}';",
+      "${1:file}.read()"
+    ],
+    "description": "Read file contents"
+  },
+  "File Write": {
+    "prefix": "write",
+    "body": [
+      "file ${1:file} = '${2:filename}';",
+      "${1:file}.write('${3:content}');"
+    ],
+    "description": "Write to file"
+  },
+  "File Exists": {
+    "prefix": "exists",
+    "body": [
+      "file ${1:file} = '${2:filename}';",
+      "if (${1:file}.exists()) {",
+      "\t${3:// file exists}",
+      "}"
+    ],
+    "description": "Check if file exists"
+  },
+  "Directory List": {
+    "prefix": "ls",
+    "body": [
+      "file ${1:dir} = '${2:path}';",
+      "${1:dir}.ls()"
+    ],
+    "description": "List directory contents"
+  },
+  "Change Directory": {
+    "prefix": "cd",
+    "body": [
+      "file ${1:dir} = '${2:path}';",
+      "${1:dir}.cd();"
+    ],
+    "description": "Change directory"
+  },
+  "If Statement": {
+    "prefix": "if",
+    "body": [
+      "if (${1:condition}) {",
+      "\t${2:// code}",
+      "}"
+    ],
+    "description": "If statement"
+  },
+  "If-Else Statement": {
+    "prefix": "ifelse",
+    "body": [
+      "if (${1:condition}) {",
+      "\t${2:// code}",
+      "} else {",
+      "\t${3:// code}",
+      "}"
+    ],
+    "description": "If-else statement"
+  },
+  "While Loop": {
+    "prefix": "while",
+    "body": [
+      "while (${1:condition}) {",
+      "\t${2:// code}",
+      "}"
+    ],
+    "description": "While loop"
+  },
+  "For Loop": {
+    "prefix": "for",
+    "body": [
+      "for (${1:i} = 0; ${1:i} < ${2:limit}; ${1:i}++) {",
+      "\t${3:// code}",
+      "}"
+    ],
+    "description": "For loop"
+  },
+  "RSA Key Generation": {
+    "prefix": "rsa",
+    "body": [
+      "${1:rsa} = \"rsa\".genkeys(${2:});"
+    ],
+    "description": "Generate RSA keys"
+  },
+  "RSA Sign": {
+    "prefix": "sign",
+    "body": [
+      "${1:data}.sign(${2:keys});"
+    ],
+    "description": "Sign data with keys"
+  },
+  "RSA Verify": {
+    "prefix": "verify",
+    "body": [
+      "${1:signature}.verify(${2:keys}, '${3:data}');"
+    ],
+    "description": "Verify signature with keys"
+  },
+  "EC Key Generation": {
+    "prefix": "ec",
+    "body": [
+      "${1:ec} = \"ec\".genkeys(${2:});"
+    ],
+    "description": "Generate EC keys"
+  },
+  "DH Key Generation": {
+    "prefix": "dh",
+    "body": [
+      "${1:dh} = \"dh\".genkeys(${2:});"
+    ],
+    "description": "Generate DH keys"
+  },
+  "Hash Encoding": {
+    "prefix": "hash",
+    "body": [
+      "'${1:data}'.encode('${2:sha256}');"
+    ],
+    "description": "Hash data"
+  },
+  "Error Handling": {
+    "prefix": "iferr",
+    "body": [
+      "${1:result}.iferr('${2:fallback}')"
+    ],
+    "description": "Handle errors with fallback"
+  },
+  "Null Handling": {
+    "prefix": "ifnull",
+    "body": [
+      "${1:value}.ifnull('${2:default}')"
+    ],
+    "description": "Handle null values with default"
+  },
+  "Database Query": {
+    "prefix": "query",
+    "body": [
+      "${1:table}.query('${2:SELECT * FROM table}')"
+    ],
+    "description": "Execute database query"
+  },
+  "Database Insert": {
+    "prefix": "insert",
+    "body": [
+      "${1:table}.insert({${2:field}: '${3:value}'});"
+    ],
+    "description": "Insert record into table"
+  },
+  "Block Comment": {
+    "prefix": "comment",
+    "body": [
+      "/*",
+      " * ${1:comment}",
+      " */"
+    ],
+    "description": "Block comment"
+  },
+  "Function Definition": {
+    "prefix": "function",
+    "body": [
+      "${1:functionName} = {",
+      "\t${2:// function body}",
+      "\treturn ${3:value};",
+      "};"
+    ],
+    "description": "Function definition"
+  },
+  "JSON Object": {
+    "prefix": "json",
+    "body": [
+      "${1:obj} = {",
+      "\t${2:key}: '${3:value}'",
+      "};"
+    ],
+    "description": "Create JSON object"
+  },
+  "Vector": {
+    "prefix": "vector",
+    "body": [
+      "${1:vec} = #[${2:1}, ${3:2}, ${4:3}]#;"
+    ],
+    "description": "Create vector with #[]# syntax"
+  },
+  "JSON Access": {
+    "prefix": "jsonget",
+    "body": [
+      "${1:obj}.get('${2:key}')"
+    ],
+    "description": "Access JSON property"
+  },
+  "JSON Set": {
+    "prefix": "jsonset",
+    "body": [
+      "${1:obj}.set('${2:key}', '${3:value}');"
+    ],
+    "description": "Set JSON property"
+  },
+  "Multi-line Assignment": {
+    "prefix": "multiline",
+    "body": [
+      "${1:variable} = \\\\",
+      "${2:value1}",
+      "${3:value2};"
+    ],
+    "description": "Multi-line assignment with line feed escaping"
+  }
+}

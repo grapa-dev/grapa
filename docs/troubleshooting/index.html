@@ -516,12 +516,58 @@
   
   
     <li class="md-nav__item">
+      <a href="../installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Installation
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../cli_integration/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     CLI Integration
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../vscode_extension/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    VSCode Extension
     
   </span>
   
@@ -4053,6 +4099,29 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../updates/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Updates
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -4577,16 +4646,16 @@ while (i &lt;= 10) {
 <p><strong>Problem</strong>: Confusion about when to use bracket notation vs <code>.get()</code> method.</p>
 <p><strong>Solution</strong>: Understand the distinction between different object types:</p>
 <h4 id="arrays-and-lists">Arrays and Lists</h4>
-<div class="highlight"><pre><span></span><code>/* ✅ Arrays support both bracket notation and .get() */
+<div class="highlight"><pre><span></span><code>/* ✅ Arrays support bracket notation */
 element = [&quot;a&quot;, &quot;b&quot;, &quot;c&quot;];
 value = element[1];        /* Returns &quot;b&quot; */
-value = element.get(1);    /* Returns &quot;b&quot; */
+/* Note: .get() method not yet implemented for arrays */
 
-/* ✅ Lists support bracket notation, .get(), and .getname() */
+/* ✅ Lists support bracket notation and .getname() */
 obj = {&quot;a&quot;: 11, &quot;b&quot;: 22, &quot;c&quot;: 33};
 value = obj[&quot;b&quot;];          /* Returns 22 */
-value = obj.get(&quot;b&quot;);      /* Returns 22 */
 name = obj.getname(1);     /* Returns &quot;b&quot; */
+/* Note: .get() method not yet implemented for lists */
 </code></pre></div>
 <h4 id="file-and-table-objects">$file and $TABLE Objects</h4>
 <div class="highlight"><pre><span></span><code>/* ✅ ALWAYS use .get() for $file and $TABLE objects */

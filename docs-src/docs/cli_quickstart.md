@@ -255,7 +255,7 @@ grapa -c "'Hello, World!'.echo()"
 grapa -f script.grc
 
 # Interactive mode
-grapa
+grapa -i
 
 # Help
 grapa -h
@@ -493,6 +493,70 @@ grapa -d -c "'Hello'.echo()" > normal.txt 2> debug.txt
 # Interactive mode
 grapa -i
 ```
+
+## Interactive Mode
+
+Grapa's interactive mode (`-i` flag) provides a REPL (Read-Eval-Print Loop) for experimenting with code and testing commands line by line.
+
+### Starting Interactive Mode
+```bash
+# Start interactive mode
+grapa -i
+
+# Or simply run grapa without arguments
+grapa
+```
+
+### Interactive Mode Features
+
+#### **Line Continuation with Backslash**
+Use `\` (backslash) at the end of a line to continue commands across multiple lines:
+
+```grapa
+grapa: />a = \
+5
+
+grapa: />a
+5
+```
+
+#### **Multi-line Code Blocks**
+For complex multi-line code, use `$[` and `$]` to define code blocks:
+
+```grapa
+grapa: />$[
+grapa: />if (x > 10) {
+grapa: />    ("x is greater than 10").echo();
+grapa: />} else {
+grapa: />    ("x is 10 or less").echo();
+grapa: />}
+grapa: />$]
+```
+
+#### **Interactive Mode Commands**
+- **Exit**: Enter `.` (single dot) on a line by itself
+- **Line continuation**: Use `\` at the end of a line
+- **Multi-line blocks**: Use `$[` and `$]` for complex code
+
+#### **Example Interactive Session**
+```grapa
+grapa: />name = "Alice"
+grapa: />age = 30
+grapa: />("Hello " + name + ", you are " + age + " years old").echo()
+Hello Alice, you are 30 years old
+grapa: />numbers = [1, 2, 3, 4, 5]
+grapa: />sum = numbers.reduce(op(acc, x) { acc + x; }, 0)
+grapa: />("Sum of numbers: " + sum).echo()
+Sum of numbers: 15
+grapa: />.
+```
+
+### Interactive Mode Tips
+- **Variable persistence**: Variables remain available throughout the session
+- **Command history**: Use arrow keys to navigate previous commands
+- **Multi-line input**: Use backslash for line continuation
+- **Quick testing**: Perfect for testing small code snippets
+- **Learning**: Great for exploring Grapa's features
 
 ## Using Language Capabilities from CLI
 

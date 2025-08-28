@@ -1,0 +1,215 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "Grapa",
+  "scopeName": "source.grapa",
+  "patterns": [
+    {
+      "include": "#comments"
+    },
+    {
+      "include": "#vectors"
+    },
+    {
+      "include": "#json"
+    },
+    {
+      "include": "#xml"
+    },
+    {
+      "include": "#strings"
+    },
+    {
+      "include": "#numbers"
+    },
+    {
+      "include": "#keywords"
+    },
+    {
+      "include": "#variables"
+    },
+    {
+      "include": "#operators"
+    },
+    {
+      "include": "#functions"
+    }
+  ],
+  "repository": {
+    "comments": {
+      "patterns": [
+        {
+          "name": "comment.block.grapa",
+          "begin": "/\\*",
+          "end": "\\*/",
+          "patterns": [
+            {
+              "name": "comment.line.number-sign.grapa",
+              "match": "\\*"
+            }
+          ]
+        },
+        {
+          "name": "comment.line.double-slash.grapa",
+          "match": "//.*$"
+        }
+      ]
+    },
+            "strings": {
+            "patterns": [
+                {
+                    "name": "string.quoted.double.grapa",
+                    "begin": "\"",
+                    "end": "\"",
+                    "patterns": [
+                        {
+                            "name": "constant.character.escape.grapa",
+                            "match": "\\\\."
+                        }
+                    ]
+                },
+                {
+                    "name": "string.quoted.single.grapa",
+                    "begin": "'",
+                    "end": "'",
+                    "patterns": [
+                        {
+                            "name": "constant.character.escape.grapa",
+                            "match": "\\\\."
+                        }
+                    ]
+                }
+            ]
+        },
+        "vectors": {
+            "name": "meta.vector.grapa",
+            "begin": "#\\[",
+            "end": "\\]#",
+            "patterns": [
+                {
+                    "include": "#numbers"
+                },
+                {
+                    "include": "#strings"
+                },
+                {
+                    "include": "#variables"
+                }
+            ]
+        },
+        "json": {
+            "name": "meta.json.grapa",
+            "begin": "\\{",
+            "end": "\\}",
+            "patterns": [
+                {
+                    "name": "string.quoted.double.grapa",
+                    "match": "\"[^\"]*\""
+                },
+                {
+                    "name": "constant.numeric.grapa",
+                    "match": "\\b\\d+(\\.\\d+)?\\b"
+                },
+                {
+                    "name": "keyword.control.grapa",
+                    "match": "\\b(true|false|null)\\b"
+                }
+            ]
+        },
+        "xml": {
+            "patterns": [
+                {
+                    "name": "entity.name.tag.grapa",
+                    "match": "<([a-zA-Z][a-zA-Z0-9]*)\\b>"
+                },
+                {
+                    "name": "entity.name.tag.grapa", 
+                    "match": "</([a-zA-Z][a-zA-Z0-9]*)\\b>"
+                }
+            ]
+        },
+    "numbers": {
+      "patterns": [
+        {
+          "name": "constant.numeric.integer.grapa",
+          "match": "\\b\\d+\\b"
+        },
+        {
+          "name": "constant.numeric.float.grapa",
+          "match": "\\b\\d+\\.\\d+\\b"
+        },
+        {
+          "name": "constant.numeric.hex.grapa",
+          "match": "\\b0x[0-9a-fA-F]+\\b"
+        }
+      ]
+    },
+    "keywords": {
+      "patterns": [
+        {
+          "name": "keyword.control.grapa",
+          "match": "\\b(if|else|while|for|break|continue|return)\\b"
+        },
+        {
+          "name": "keyword.operator.grapa",
+          "match": "\\b(and|or|not|in)\\b"
+        },
+        {
+          "name": "keyword.other.grapa",
+          "match": "\\b(iferr|ifnull)\\b"
+        }
+      ]
+    },
+    "variables": {
+      "patterns": [
+        {
+          "name": "variable.language.grapa",
+          "match": "\\$[A-Z]+\\b"
+        },
+        {
+          "name": "variable.other.grapa",
+          "match": "\\$[a-zA-Z_][a-zA-Z0-9_]*\\b"
+        }
+      ]
+    },
+    "operators": {
+      "patterns": [
+        {
+          "name": "keyword.operator.assignment.grapa",
+          "match": "="
+        },
+        {
+          "name": "keyword.operator.arithmetic.grapa",
+          "match": "\\+|-|\\*|/|%|\\*\\*"
+        },
+        {
+          "name": "keyword.operator.comparison.grapa",
+          "match": "==|!=|<|>|<=|>="
+        },
+        {
+          "name": "keyword.operator.logical.grapa",
+          "match": "&&|\\|\\||!"
+        },
+        {
+          "name": "keyword.operator.bitwise.grapa",
+          "match": "&|\\||\\^|~|<<|>>"
+        },
+        {
+          "name": "keyword.operator.access.grapa",
+          "match": "\\."
+        },
+        {
+          "name": "keyword.operator.access.grapa",
+          "match": "\\[|\\]"
+        }
+      ]
+    },
+    "functions": {
+      "patterns": [
+        {
+          "name": "entity.name.function.grapa",
+          "match": "\\b[a-zA-Z_][a-zA-Z0-9_]*\\s*\\("
+        }
+      ]
+    }
+  }
+}

@@ -92,7 +92,24 @@ This backlog tracks all future, long-term, and queued tasks for the Grapa projec
 
 ---
 
-## 🆕 **NEW INITIATIVES** (4 items)
+## 🆕 **NEW INITIATIVES** (5 items)
+
+### **Package Manager Organization Integration** ⚠️ **NOT FEASIBLE**
+- **Goal**: Work with package manager organizations to make Grapa available through official repositories
+- **Status**: **BLOCKED** - Package managers require full source code inclusion, which is not feasible for Grapa
+- **Feedback**: Received confirmation that without full source code, official repository inclusion is unlikely
+- **Decision**: Current distribution methods (GitHub Releases, VSCode Extension) are sufficient
+- **Current Distribution Channels**:
+  - **GitHub Releases**: Direct binary downloads for all platforms
+  - **VSCode Extension**: Visual Studio Marketplace for IDE integration
+  - **Homebrew**: Community formula (not official core)
+  - **Chocolatey**: Community package (not official)
+- **Benefits Achieved**:
+  - Effective distribution through existing channels
+  - No source code disclosure requirements
+  - Maintains project's intellectual property protection
+  - Sufficient user adoption and discoverability
+- **Priority**: **LOW** - Current distribution channels meet user needs effectively
 
 ### **Wikipedia Article Creation** ✅ **READY TO IMPLEMENT**
 - **Status**: Article content prepared and ready for submission

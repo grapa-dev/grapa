@@ -292,8 +292,26 @@ New-Item -ItemType Directory -Path "$env:USERPROFILE\grapa" -Force
 # Download the Windows binary
 Invoke-WebRequest -Uri "https://github.com/grapa-dev/grapa/releases/download/v0.1.51/grapa-win-amd64.exe" -OutFile "$env:USERPROFILE\grapa\grapa.exe"
 
-# Add to PATH (add this to your PowerShell profile)
+# Add to PATH for current session
 $env:PATH += ";$env:USERPROFILE\grapa"
+
+# Add to PATH permanently (recommended)
+[Environment]::SetEnvironmentVariable("PATH", $env:PATH + ";$env:USERPROFILE\grapa", "User")
+
+# Verify installation
+grapa --version
+```
+
+**Alternative installation to Program Files:**
+```powershell
+# Create a directory for Grapa (run PowerShell as Administrator)
+New-Item -ItemType Directory -Path "C:\Program Files\grapa" -Force
+
+# Download the Windows binary
+Invoke-WebRequest -Uri "https://github.com/grapa-dev/grapa/releases/download/v0.1.51/grapa-win-amd64.exe" -OutFile "C:\Program Files\grapa\grapa.exe"
+
+# Add to system PATH (run PowerShell as Administrator)
+[Environment]::SetEnvironmentVariable("PATH", $env:PATH + ";C:\Program Files\grapa", "Machine")
 
 # Verify installation
 grapa --version
@@ -303,6 +321,21 @@ grapa --version
 ```powershell
 grapa -c "2+2"
 grapa -c "'Hello World'.echo()"
+```
+
+**Verify PATH and installation:**
+```powershell
+# Check if grapa is in PATH
+Get-Command grapa
+
+# Check grapa version
+grapa --version
+
+# Check where grapa is installed
+(Get-Command grapa).Source
+
+# Test basic functionality
+grapa -c "2+2"
 ```
 
 **Uninstall:**
@@ -464,6 +497,33 @@ If Grapa is installed but not found in PATH:
    ```
 
 3. **Restart PowerShell** to ensure PATH changes take effect.
+
+#### PowerShell Profile Management
+For persistent PATH changes across PowerShell sessions:
+
+1. **Check if you have a PowerShell profile:**
+   ```powershell
+   Test-Path $PROFILE
+   ```
+
+2. **Create a PowerShell profile if it doesn't exist:**
+   ```powershell
+   if (!(Test-Path $PROFILE)) {
+       New-Item -Type File -Path $PROFILE -Force
+   }
+   ```
+
+3. **Add Grapa to your PowerShell profile:**
+   ```powershell
+   Add-Content $PROFILE "`$env:PATH += `";C:\path\to\grapa`""
+   ```
+
+4. **Reload your profile:**
+   ```powershell
+   . $PROFILE
+   ```
+
+**Note**: Replace `C:\path\to\grapa` with your actual Grapa installation path.
 
 ## Getting Help
 

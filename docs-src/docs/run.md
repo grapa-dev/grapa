@@ -11,7 +11,25 @@ From Linux
 
 To exit while in the console, enter a '.' character.
 
-If using paste to enter a block of code to run, ensure each line is not larger than the maximum line line for the console - break up the code into shorter lines.
+## Interactive Mode
+
+When running Grapa in interactive mode (`-i` flag), you can enter commands line by line. The interactive console provides several features for multi-line input:
+
+### Line Continuation with Backslash
+Use `\` (backslash) at the end of a line to continue the command on the next line:
+
+```grapa
+grapa: />a = \
+5
+
+grapa: />a
+5
+```
+
+This allows you to enter multi-line commands without executing each line separately.
+
+### Multi-line Code Blocks
+If using paste to enter a block of code to run, ensure each line is not larger than the maximum line length for the console - break up the code into shorter lines.
 
 If using paste to enter multiple lines that need to be run at the same time (such as when a single command spans multiple lines), enter `$[` sequence first and `$]` sequence at the end. This will trigger the lexical engine to signal to the grammar engine to pause grammar analysis until after all the tokens have been generated for the input stream. 
 

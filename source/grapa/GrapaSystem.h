@@ -192,6 +192,7 @@ class GrapaSystem
 {
 public:
 	bool mStop, mLinkInitialized;
+	bool mSuppressPrompt;  // Flag to suppress interactive mode prompts
 	GrapaCHAR mBinName, mBinDir, mWorkDir, mLibDir, mHomeDir, mTempDir, mGrammar;
 	GrapaRuleQueue *mPath;
 	GrapaCHAR mVersion;
