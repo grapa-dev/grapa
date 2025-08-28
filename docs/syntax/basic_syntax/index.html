@@ -8292,7 +8292,7 @@ current_time = $TIME().utc();
 
 /* File functions */
 file_obj = $file();
-table_obj = $file().table(&quot;ROW&quot;);
+table_obj = {}.table(&quot;ROW&quot;);
 </code></pre></div>
 <h2 id="comments">Comments</h2>
 <p>Grapa supports both block comments and line comments for comprehensive code documentation:</p>
@@ -8763,7 +8763,7 @@ enabled = config.enabled.ifnull(true);  /* Returns true */
 <div class="highlight"><pre><span></span><code>/* User Management System Example */
 
 /* Create table in global namespace */
-$global.users = $file().table(&quot;ROW&quot;);
+$global.users = {}.table(&quot;ROW&quot;);
 
 /* Define table schema */
 users.mkfield(&quot;name&quot;, &quot;STR&quot;, &quot;VAR&quot;);
