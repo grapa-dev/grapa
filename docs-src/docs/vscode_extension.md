@@ -144,10 +144,13 @@ Configure the extension behavior in VSCode settings:
 
 ### Basic Syntax Highlighting
 ```grapa
-// This is a comment
-$file myFile = 'data.txt';
-myFile.write('Hello World');
-myFile.read().echo();
+/* This is a comment */
+'Hello, Grapa!'.echo();
+
+/* File operations */
+$file().set("data.txt", "Hello World");
+content = $file().get("data.txt").str();
+content.echo();
 ```
 
 ### Using Snippets

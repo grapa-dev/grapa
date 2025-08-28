@@ -68,9 +68,16 @@ For detailed installation instructions, see the [Grapa Installation Guide](https
 
 ### File Operations
 ```grapa
-$file myFile = 'data.txt';
-myFile.write('Hello World');
-myFile.read().echo();
+/* Write to file */
+$file().set("data.txt", "Hello World");
+
+/* Read from file (returns hex format) */
+content = $file().get("data.txt");
+content.echo();
+
+/* Read and convert to string */
+text = $file().get("data.txt").str();
+text.echo();
 ```
 
 ### Cryptography

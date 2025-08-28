@@ -44,42 +44,46 @@
   "File Read": {
     "prefix": "read",
     "body": [
-      "file ${1:file} = '${2:filename}';",
-      "${1:file}.read()"
+      "content = \$file().get(\"${1:filename}\");",
+      "content.echo();"
     ],
-    "description": "Read file contents"
+    "description": "Read file contents (hex format)"
+  },
+  "File Read String": {
+    "prefix": "readstr",
+    "body": [
+      "content = \$file().get(\"${1:filename}\").str();",
+      "content.echo();"
+    ],
+    "description": "Read file contents as string"
   },
   "File Write": {
     "prefix": "write",
     "body": [
-      "file ${1:file} = '${2:filename}';",
-      "${1:file}.write('${3:content}');"
+      "\$file().set(\"${1:filename}\", \"${2:content}\");"
     ],
     "description": "Write to file"
   },
-  "File Exists": {
-    "prefix": "exists",
+  "File Info": {
+    "prefix": "fileinfo",
     "body": [
-      "file ${1:file} = '${2:filename}';",
-      "if (${1:file}.exists()) {",
-      "\t${3:// file exists}",
-      "}"
+      "info = \$file().info(\"${1:filename}\");",
+      "info.echo();"
     ],
-    "description": "Check if file exists"
+    "description": "Get file information"
   },
   "Directory List": {
     "prefix": "ls",
     "body": [
-      "file ${1:dir} = '${2:path}';",
-      "${1:dir}.ls()"
+      "files = \$file().ls(\"${1:path}\");",
+      "files.echo();"
     ],
     "description": "List directory contents"
   },
   "Change Directory": {
     "prefix": "cd",
     "body": [
-      "file ${1:dir} = '${2:path}';",
-      "${1:dir}.cd();"
+      "\$file().cd(\"${1:path}\");"
     ],
     "description": "Change directory"
   },
