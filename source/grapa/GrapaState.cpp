@@ -3416,6 +3416,12 @@ GrapaRuleEvent* GrapaScriptState::SearchFileVariable(GrapaNames* pNameSpace, Gra
 
 void GrapaScriptState::SendPrompt(GrapaNames* pNameSpace)
 {
+	// Check if prompt suppression is enabled
+	if (gSystem->mSuppressPrompt) {
+		mNeedsPrompt = false;
+		return;
+	}
+	
 	GrapaCHAR prompt, path;
 	prompt.Append(pNameSpace->GetResponse()->mPrompt);
 	if (pNameSpace->GetResponse()->mPrompt.mLength) prompt.Append(' ');
