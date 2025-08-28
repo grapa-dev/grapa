@@ -1,0 +1,221 @@
+{
+  "name": "vscode-grapa",
+  "displayName": "Grapa Programming Language",
+  "description": "Language support for Grapa programming language. Provides syntax highlighting, autocomplete, code snippets, and interactive execution for .grc files.",
+  "version": "0.1.0",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Programming Languages",
+    "Snippets",
+    "Other"
+  ],
+  "keywords": [
+    "grapa",
+    "programming",
+    "language",
+    "syntax",
+    "execution"
+  ],
+  "publisher": "chris-matichuk",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/grapa-dev/grapa.git"
+  },
+  "license": "MIT",
+  "main": "./out/extension.js",
+  "activationEvents": [
+    "onLanguage:grapa",
+    "onCommand:grapa.runFile",
+    "onCommand:grapa.runSelection",
+    "onCommand:grapa.runCommand",
+    "onCommand:grapa.startInteractive",
+    "onCommand:grapa.restartSession",
+    "onCommand:grapa.interruptSession",
+    "onCommand:grapa.startInteractiveTerminal",
+    "onCommand:grapa.debugFile",
+    "onStartupFinished"
+  ],
+  "contributes": {
+            "languages": [
+            {
+                "id": "grapa",
+                "aliases": ["Grapa", "grapa"],
+                "extensions": [".grc"],
+                "configuration": "./language-configuration.json"
+            }
+        ],
+    "grammars": [
+      {
+        "language": "grapa",
+        "scopeName": "source.grapa",
+        "path": "./syntaxes/grapa.tmLanguage.json"
+      }
+    ],
+    "commands": [
+      {
+        "command": "grapa.runFile",
+        "title": "Grapa: Run File",
+        "category": "Grapa"
+      },
+      {
+        "command": "grapa.runSelection",
+        "title": "Grapa: Run Selection",
+        "category": "Grapa"
+      },
+      {
+        "command": "grapa.runCommand",
+        "title": "Grapa: Run Command",
+        "category": "Grapa"
+      },
+      {
+        "command": "grapa.startInteractive",
+        "title": "Grapa: Start Interactive Session",
+        "category": "Grapa"
+      },
+      {
+        "command": "grapa.restartSession",
+        "title": "Grapa: Restart Interactive Session",
+        "category": "Grapa"
+      },
+      {
+        "command": "grapa.interruptSession",
+        "title": "Grapa: Interrupt Current Command",
+        "category": "Grapa"
+      },
+      {
+        "command": "grapa.startInteractiveTerminal",
+        "title": "Grapa: Start Interactive Terminal",
+        "category": "Grapa"
+      },
+      {
+        "command": "grapa.debugFile",
+        "title": "Grapa: Debug File",
+        "category": "Grapa"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "grapa.runFile",
+        "key": "ctrl+shift+r",
+        "when": "editorLangId == grapa"
+      },
+      {
+        "command": "grapa.runSelection",
+        "key": "ctrl+shift+s",
+        "when": "editorLangId == grapa && editorHasSelection"
+      },
+      {
+        "command": "grapa.interruptSession",
+        "key": "ctrl+shift+i",
+        "when": "editorLangId == grapa"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "command": "grapa.runFile",
+          "group": "navigation",
+          "when": "editorLangId == grapa"
+        },
+        {
+          "command": "grapa.runSelection",
+          "group": "navigation",
+          "when": "editorLangId == grapa && editorHasSelection"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "grapa.runFile",
+          "when": "editorLangId == grapa"
+        },
+        {
+          "command": "grapa.runSelection",
+          "when": "editorLangId == grapa && editorHasSelection"
+        },
+        {
+          "command": "grapa.runCommand"
+        },
+        {
+          "command": "grapa.startInteractive"
+        },
+        {
+          "command": "grapa.restartSession"
+        },
+        {
+          "command": "grapa.interruptSession"
+        },
+        {
+          "command": "grapa.startInteractiveTerminal"
+        },
+        {
+          "command": "grapa.debugFile",
+          "when": "editorLangId == grapa"
+        }
+      ]
+    },
+    "snippets": [
+      {
+        "language": "grapa",
+        "path": "./snippets/grapa.json"
+      }
+    ],
+    "configuration": {
+      "title": "Grapa",
+      "properties": {
+        "grapa.executablePath": {
+          "type": "string",
+          "default": "./grapa",
+          "description": "Path to the Grapa executable"
+        },
+        "grapa.debugMode": {
+          "type": "boolean",
+          "default": false,
+          "description": "Enable debug mode for Grapa execution"
+        },
+        "grapa.autoRunOnSave": {
+          "type": "boolean",
+          "default": false,
+          "description": "Automatically run Grapa files when saved"
+        },
+        "grapa.preferInteractiveMode": {
+          "type": "boolean",
+          "default": true,
+          "description": "Prefer interactive mode for running selections (variables persist between runs)"
+        },
+        "grapa.sessionTimeout": {
+          "type": "number",
+          "default": 30000,
+          "description": "Timeout in milliseconds for interactive session commands (0 = no timeout)"
+        },
+        "grapa.autoEscapeLineFeeds": {
+          "type": "boolean",
+          "default": true,
+          "description": "Automatically escape line feeds with \\ (backslash) in interactive mode for multi-line code"
+        },
+        "grapa.showInteractiveOutput": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show interactive session output in the output panel"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src --ext ts",
+    "test": "node ./out/test/runTest.js"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.85.0",
+    "@types/node": "18.x",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "eslint": "^8.0.0",
+    "typescript": "^5.0.0"
+  }
+}

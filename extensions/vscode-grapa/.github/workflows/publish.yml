@@ -1,0 +1,45 @@
+name: Publish VSCode Extension
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to publish (e.g., 0.1.0)'
+        required: true
+        default: '0.1.0'
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        cache-dependency-path: extensions/vscode-grapa/package-lock.json
+        
+    - name: Install dependencies
+      run: |
+        cd extensions/vscode-grapa
+        npm ci
+        
+    - name: Compile extension
+      run: |
+        cd extensions/vscode-grapa
+        npm run compile
+        
+    - name: Package extension
+      run: |
+        cd extensions/vscode-grapa
+        npm install -g @vscode/vsce
+        vsce package
+        
+    - name: Publish to Visual Studio Marketplace
+      run: |
+        cd extensions/vscode-grapa
+        vsce publish -p ${{ secrets.VSCE_PAT }}

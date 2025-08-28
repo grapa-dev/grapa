@@ -21,6 +21,9 @@ This directory contains all build system and deployment documentation for the Gr
 - **[SETUPAWSDOCKER.md](SETUPAWSDOCKER.md)** - AWS and Docker setup instructions
 - **[BUILD_DOCKER_MANUAL.md](BUILD_DOCKER_MANUAL.md)** - Docker build manual and containerization guide
 
+### **Extension Deployment**
+- **[VSCODE_EXTENSION_DEPLOYMENT.md](VSCODE_EXTENSION_DEPLOYMENT.md)** - VSCode extension development, building, and deployment
+
 ## 📖 **Archived Documentation**
 
 All deprecated files have been moved to:

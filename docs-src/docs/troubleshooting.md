@@ -132,16 +132,16 @@ while (i <= 10) {
 
 #### Arrays and Lists
 ```grapa
-/* ✅ Arrays support both bracket notation and .get() */
+/* ✅ Arrays support bracket notation */
 element = ["a", "b", "c"];
 value = element[1];        /* Returns "b" */
-value = element.get(1);    /* Returns "b" */
+/* Note: .get() method not yet implemented for arrays */
 
-/* ✅ Lists support bracket notation, .get(), and .getname() */
+/* ✅ Lists support bracket notation and .getname() */
 obj = {"a": 11, "b": 22, "c": 33};
 value = obj["b"];          /* Returns 22 */
-value = obj.get("b");      /* Returns 22 */
 name = obj.getname(1);     /* Returns "b" */
+/* Note: .get() method not yet implemented for lists */
 ```
 
 #### $file and $TABLE Objects

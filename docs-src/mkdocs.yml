@@ -80,6 +80,7 @@ nav:
   - Home: index.md
   - Getting Started:
       - Overview: getting_started.md
+      - Installation: installation.md
       - CLI Integration: cli_integration.md
       - Run Command: run.md
       - Python Integration: python_integration.md
@@ -200,3 +201,4 @@ nav:
   - Support:
       - Troubleshooting: troubleshooting.md
       - Testing: testing.md
+      - Updates: updates.md

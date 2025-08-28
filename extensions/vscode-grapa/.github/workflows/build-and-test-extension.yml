@@ -1,0 +1,48 @@
+name: Build and Test VSCode Extension
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - 'extensions/vscode-grapa/**'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'extensions/vscode-grapa/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        cache-dependency-path: extensions/vscode-grapa/package-lock.json
+        
+    - name: Install dependencies
+      run: |
+        cd extensions/vscode-grapa
+        npm ci
+        
+    - name: Compile extension
+      run: |
+        cd extensions/vscode-grapa
+        npm run compile
+        
+    - name: Package extension
+      run: |
+        cd extensions/vscode-grapa
+        npm install -g @vscode/vsce
+        vsce package
+        
+    - name: Upload extension artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: vscode-grapa-extension
+        path: extensions/vscode-grapa/*.vsix
