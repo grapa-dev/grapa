@@ -4504,7 +4504,7 @@ f.mk(&quot;dir_name&quot;, &quot;DIR&quot;)     # Directory alias (same as GROUP
 <p><strong>Note</strong>: <code>"DIR"</code> and <code>"GROUP"</code> are equivalent - both create the same hierarchical database type internally. Use whichever naming convention makes more sense for your use case.</p>
 <h3 id="in-memory-database">In-Memory Database</h3>
 <div class="highlight"><pre><span></span><code># Create in-memory table
-f = $file().table()
+f = {}.table()
 f.type()  # Returns: $TABLE
 </code></pre></div>
 <h2 id="field-creation">Field Creation</h2>

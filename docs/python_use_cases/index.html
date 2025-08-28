@@ -3886,7 +3886,7 @@ lock_obj.unlock();
 <div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">grapapy</span>
 <span class="n">xy</span> <span class="o">=</span> <span class="n">grapapy</span><span class="o">.</span><span class="n">grapa</span><span class="p">()</span>
 
-<span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s2">&quot;$global.table = $file().table(&#39;ROW&#39;);&quot;</span><span class="p">)</span>
+<span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s2">&quot;$global.table = </span><span class="si">{}</span><span class="s2">.table(&#39;ROW&#39;);&quot;</span><span class="p">)</span>
 <span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s2">&quot;table.mkfield(&#39;name&#39;, &#39;STR&#39;, &#39;VAR&#39;);&quot;</span><span class="p">)</span>
 <span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s2">&quot;table.set(&#39;user1&#39;, &#39;Alice&#39;, &#39;name&#39;);&quot;</span><span class="p">)</span>
 <span class="n">name</span> <span class="o">=</span> <span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s2">&quot;table.get(&#39;user1&#39;, &#39;name&#39;);&quot;</span><span class="p">)</span>

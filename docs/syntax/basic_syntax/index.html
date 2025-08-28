@@ -7552,7 +7552,7 @@ s += &quot;x&quot;;      /* Idiomatic and preferred */
 <h4 id="global-namespace">Global Namespace</h4>
 <p>Use <code>$global</code> for variables that need to persist across function calls:</p>
 <div class="highlight"><pre><span></span><code>/* Create global variable */
-$global.my_table = $file().table(&quot;ROW&quot;);
+$global.my_table = {}.table(&quot;ROW&quot;);
 
 /* Use global variable */
 my_table.mkfield(&quot;name&quot;, &quot;STR&quot;, &quot;VAR&quot;);
@@ -8200,7 +8200,7 @@ mapped = filtered.map(op(x){x*2});
 <div class="highlight"><pre><span></span><code>files = $file().ls();
 file_info = files.get(0);   /* Correct */
 
-table = $file().table(&quot;ROW&quot;);
+table = {}.table(&quot;ROW&quot;);
 table.mkfield(&quot;name&quot;, &quot;STR&quot;, &quot;VAR&quot;);
 table.set(&quot;user1&quot;, &quot;Alice&quot;, &quot;name&quot;);
 value = table.get(&quot;user1&quot;, &quot;name&quot;);   /* Correct */
@@ -8229,7 +8229,7 @@ element.type();        /* Returns $ARRAY */
 obj = {&quot;a&quot;: 11, &quot;b&quot;: 22, &quot;c&quot;: 33};
 obj.type();            /* Returns $LIST */
 
-table = $file().table(&quot;ROW&quot;);
+table = {}.table(&quot;ROW&quot;);
 table.type();          /* Returns $TABLE */
 
 /* Runtime type checking */
@@ -8812,7 +8812,7 @@ fs.rm(&quot;test_dir&quot;);
 </code></pre></div>
 <h3 id="table-operations">Table Operations</h3>
 <div class="highlight"><pre><span></span><code>/* Table operations */
-$global.table = $file().table(&quot;ROW&quot;);
+$global.table = {}.table(&quot;ROW&quot;);
 
 /* Create fields */
 table.mkfield(&quot;name&quot;, &quot;STR&quot;, &quot;VAR&quot;);

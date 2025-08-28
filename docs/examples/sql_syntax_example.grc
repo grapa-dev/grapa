@@ -2,7 +2,7 @@
 
 /* Step 1: Set up database table */
 ("Setting up users table...\n").echo();
-users_table = $file().table("users");
+users_table = {}.table("users");
 users_table.set("user1", "Alice", "name");
 users_table.set("user1", 25, "age");
 users_table.set("user1", "New York", "city");

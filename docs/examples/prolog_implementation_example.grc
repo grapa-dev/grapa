@@ -5,7 +5,7 @@
  */
 
 /* Initialize PROLOG knowledge base and variable system */
-kb = $file().table();
+kb = {}.table();
 $global.prolog_vars = {};
 $global.query_results = [];
 

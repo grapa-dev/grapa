@@ -5058,7 +5058,7 @@ $sys().putenv(&quot;GRAPA_DEBUG_MODE&quot;, &quot;1&quot;);
 $sys().putenv(&quot;GRAPA_DEBUG_COMPONENTS&quot;, &quot;database&quot;);
 
 // Perform operations with debug output
-db = $file().table(&#39;ROW&#39;);
+db = {}.table(&#39;ROW&#39;);
 db.mkfield(&#39;name&#39;, &#39;STR&#39;);
 
 // Disable debug when done
@@ -5595,7 +5595,7 @@ grapa<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;</
 <h3 id="database-and-file-operations">Database and File Operations</h3>
 <div class="highlight"><pre><span></span><code><span class="c1"># Database operations</span>
 grapa<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;</span>
-<span class="s2">db = \$file().table(&#39;ROW&#39;);</span>
+<span class="s2">db = {}.table(&#39;ROW&#39;);</span>
 <span class="s2">db.mkfield(&#39;name&#39;, &#39;STR&#39;);</span>
 <span class="s2">db.mkfield(&#39;age&#39;, &#39;INT&#39;);</span>
 <span class="s2">db.set(&#39;user1&#39;, &#39;Alice&#39;, &#39;name&#39;);</span>

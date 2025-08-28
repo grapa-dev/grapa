@@ -5673,7 +5673,7 @@ op()(&quot;echo(&#39;This should use .echo() method&#39;)&quot;)();  // Test inc
 $sys().putenv(&quot;GRAPA_SESSION_DEBUG_COMPONENTS&quot;, &quot;database,grep,vector&quot;);
 
 // When these components are instrumented, they will show debug output
-db = $file().table(&quot;ROW&quot;);  // database operations
+db = {}.table(&quot;ROW&quot;);  // database operations
 &quot;hello world&quot;.grep(&quot;hello&quot;);  // grep operations
 </code></pre></div>
 <h3 id="example-6-session-specific-debug">Example 6: Session-Specific Debug</h3>
@@ -5684,14 +5684,14 @@ $sys().putenv(&quot;GRAPA_SESSION_DEBUG_COMPONENTS&quot;, &quot;compiler&quot;);
 
 // This session will show debug output even if system debug is disabled
 // (when components are instrumented)
-db = $file().table(&quot;ROW&quot;);
+db = {}.table(&quot;ROW&quot;);
 </code></pre></div>
 <h3 id="example-7-component-specific-levels-future">Example 7: Component-Specific Levels (Future)</h3>
 <div class="highlight"><pre><span></span><code>// Set different debug levels for different components
 $sys().putenv(&quot;GRAPA_SESSION_DEBUG_COMPONENTS&quot;, &quot;database:3,grep:2,vector:1&quot;);
 
 // When instrumented, components will show debug output based on their level
-db = $file().table(&quot;ROW&quot;);  // database level 3 (most verbose)
+db = {}.table(&quot;ROW&quot;);  // database level 3 (most verbose)
 &quot;hello world&quot;.grep(&quot;hello&quot;);  // grep level 2 (medium verbose)
 vec = [1, 2, 3];  // vector level 1 (basic debug)
 </code></pre></div>

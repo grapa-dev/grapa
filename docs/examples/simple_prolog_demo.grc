@@ -6,7 +6,7 @@
 "=== PROLOG Knowledge Base Demo ===".echo();
 
 /* Initialize knowledge base */
-kb = $file().table();
+kb = {}.table();
 
 /* Store facts */
 kb.set('fact1', 'parent(john,mary)');

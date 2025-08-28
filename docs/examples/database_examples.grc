@@ -8,7 +8,7 @@
 "=== ROW Database Example (Transactional) ===\n".echo();
 
 /* Create ROW database for transactional workloads */
-$row_db = $file().table("ROW");
+$row_db = {}.table("ROW");
 "✓ ROW database created\n".echo();
 
 /* Create fields for user management */
@@ -60,7 +60,7 @@ $row_records = $row_db.ls();
 "\n=== COL Database Example (Analytical) ===\n".echo();
 
 /* Create COL database for analytical workloads */
-$col_db = $file().table("COL");
+$col_db = {}.table("COL");
 "✓ COL database created\n".echo();
 
 /* Create fields for analytics data */
@@ -103,7 +103,7 @@ $col_records = $col_db.ls();
 "\n=== GROUP Database Example (Hierarchical) ===\n".echo();
 
 /* Create GROUP database for hierarchical structures */
-$group_db = $file().table("GROUP");
+$group_db = {}.table("GROUP");
 "✓ GROUP database created\n".echo();
 
 /* Create nested databases within the group */

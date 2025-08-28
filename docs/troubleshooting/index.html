@@ -4569,11 +4569,11 @@
 <p><strong>Solutions</strong>:</p>
 <h4 id="namespace-issues">Namespace Issues</h4>
 <div class="highlight"><pre><span></span><code><span class="c1"># ❌ Problem: Object lost between calls</span>
-<span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s1">&#39;table = $file().table(&quot;ROW&quot;)&#39;</span><span class="p">)</span>
+<span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s1">&#39;table = </span><span class="si">{}</span><span class="s1">.table(&quot;ROW&quot;)&#39;</span><span class="p">)</span>
 <span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s1">&#39;table.mkfield(&quot;name&quot;, &quot;STR&quot;)&#39;</span><span class="p">)</span>  <span class="c1"># Error: table not found</span>
 
 <span class="c1"># ✅ Solution: Use global namespace</span>
-<span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s1">&#39;$global.table = $file().table(&quot;ROW&quot;)&#39;</span><span class="p">)</span>
+<span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s1">&#39;$global.table = </span><span class="si">{}</span><span class="s1">.table(&quot;ROW&quot;)&#39;</span><span class="p">)</span>
 <span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s1">&#39;table.mkfield(&quot;name&quot;, &quot;STR&quot;)&#39;</span><span class="p">)</span>  <span class="c1"># Success</span>
 </code></pre></div>
 <h4 id="type-conversion-issues">Type Conversion Issues</h4>
@@ -4592,7 +4592,7 @@
 <p><strong>Solutions</strong>:</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># ✅ Always use $global for persistent objects</span>
 <span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s1">&#39;$global.fs = $file()&#39;</span><span class="p">)</span>
-<span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s1">&#39;$global.table = $file().table(&quot;ROW&quot;)&#39;</span><span class="p">)</span>
+<span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s1">&#39;$global.table = </span><span class="si">{}</span><span class="s1">.table(&quot;ROW&quot;)&#39;</span><span class="p">)</span>
 
 <span class="c1"># ✅ Use variable names directly after global declaration</span>
 <span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s1">&#39;fs.set(&quot;test.txt&quot;, &quot;content&quot;)&#39;</span><span class="p">)</span>
@@ -4723,7 +4723,7 @@ config.&quot;a-b&quot;();  /* 44 */
 <p><strong>Problem</strong>: Objects don't persist between Python calls.</p>
 <p><strong>Solution</strong>: Always use <code>$global</code> for objects that need to persist:</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># ✅ Correct pattern</span>
-<span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s1">&#39;$global.table = $file().table(&quot;ROW&quot;)&#39;</span><span class="p">)</span>
+<span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s1">&#39;$global.table = </span><span class="si">{}</span><span class="s1">.table(&quot;ROW&quot;)&#39;</span><span class="p">)</span>
 <span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s1">&#39;table.mkfield(&quot;name&quot;, &quot;STR&quot;, &quot;VAR&quot;)&#39;</span><span class="p">)</span>
 <span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s1">&#39;table.set(&quot;user1&quot;, &quot;John&quot;, &quot;name&quot;)&#39;</span><span class="p">)</span>
 </code></pre></div>
@@ -4742,7 +4742,7 @@ config.&quot;a-b&quot;();  /* 44 */
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">grapa_instance</span><span class="p">,</span> <span class="n">table_name</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">xy</span> <span class="o">=</span> <span class="n">grapa_instance</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">table_name</span> <span class="o">=</span> <span class="n">table_name</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;$global.</span><span class="si">{</span><span class="n">table_name</span><span class="si">}</span><span class="s1"> = $file().table(&quot;ROW&quot;)&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;$global.</span><span class="si">{</span><span class="n">table_name</span><span class="si">}</span><span class="s1"> = </span><span class="si">{}</span><span class="s1">.table(&quot;ROW&quot;)&#39;</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">mkfield</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">field_type</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;VAR&quot;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">size</span><span class="p">:</span>
@@ -4798,11 +4798,11 @@ config.&quot;a-b&quot;();  /* 44 */
 </code></pre></div>
 <h3 id="2-use-descriptive-variable-names">2. Use Descriptive Variable Names</h3>
 <div class="highlight"><pre><span></span><code><span class="c1"># ✅ Good: Clear variable names</span>
-<span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s1">&#39;$global.user_table = $file().table(&quot;ROW&quot;)&#39;</span><span class="p">)</span>
+<span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s1">&#39;$global.user_table = </span><span class="si">{}</span><span class="s1">.table(&quot;ROW&quot;)&#39;</span><span class="p">)</span>
 <span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s1">&#39;$global.file_system = $file()&#39;</span><span class="p">)</span>
 
 <span class="c1"># ❌ Bad: Unclear variable names</span>
-<span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s1">&#39;$global.t = $file().table(&quot;ROW&quot;)&#39;</span><span class="p">)</span>
+<span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s1">&#39;$global.t = </span><span class="si">{}</span><span class="s1">.table(&quot;ROW&quot;)&#39;</span><span class="p">)</span>
 <span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s1">&#39;$global.f = $file()&#39;</span><span class="p">)</span>
 </code></pre></div>
 <h3 id="3-check-return-values">3. Check Return Values</h3>
@@ -4824,7 +4824,7 @@ config.&quot;a-b&quot;();  /* 44 */
 <h2 id="common-patterns-and-solutions">Common Patterns and Solutions</h2>
 <h3 id="table-operations-pattern">Table Operations Pattern</h3>
 <div class="highlight"><pre><span></span><code><span class="c1"># ✅ Complete table operation pattern</span>
-<span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s1">&#39;$global.table = $file().table(&quot;ROW&quot;)&#39;</span><span class="p">)</span>
+<span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s1">&#39;$global.table = </span><span class="si">{}</span><span class="s1">.table(&quot;ROW&quot;)&#39;</span><span class="p">)</span>
 <span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s1">&#39;table.mkfield(&quot;name&quot;, &quot;STR&quot;, &quot;VAR&quot;)&#39;</span><span class="p">)</span>
 <span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s1">&#39;table.mkfield(&quot;age&quot;, &quot;INT&quot;)&#39;</span><span class="p">)</span>
 <span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s1">&#39;table.mkfield(&quot;salary&quot;, &quot;FLOAT&quot;, &quot;FIX&quot;, 8)&#39;</span><span class="p">)</span>

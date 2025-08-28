@@ -4655,7 +4655,7 @@ dynamic_func(7);
 </code></pre></div>
 <h3 id="function-storage-and-retrieval">Function Storage and Retrieval</h3>
 <div class="highlight"><pre><span></span><code>/* Store function in table */
-table = $file().table(&quot;ROW&quot;);
+table = {}.table(&quot;ROW&quot;);
 table.mkfield(&quot;func&quot;, &quot;OP&quot;);
 table.setfield(&quot;my_func&quot;, op(x){x * x}, &quot;func&quot;);
 

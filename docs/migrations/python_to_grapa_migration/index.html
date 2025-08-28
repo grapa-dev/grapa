@@ -5107,7 +5107,7 @@ file_info = files.get(0);   /* Correct */
 <li>Bracket and dot notation are NOT valid for $file.</li>
 </ul>
 <h3 id="table">$TABLE</h3>
-<div class="highlight"><pre><span></span><code>table = $file().table(&quot;ROW&quot;);
+<div class="highlight"><pre><span></span><code>table = {}.table(&quot;ROW&quot;);
 table.mkfield(&quot;name&quot;, &quot;STR&quot;, &quot;VAR&quot;);
 table.set(&quot;user1&quot;, &quot;Alice&quot;, &quot;name&quot;);
 
@@ -5503,7 +5503,7 @@ $file().rm(&quot;test.txt&quot;);
 <p><strong>Python equivalent requires:</strong> <code>pathlib</code> or <code>os</code> module</p>
 <h4 id="native-tabledatabase-operations"><strong>Native Table/Database Operations</strong></h4>
 <div class="highlight"><pre><span></span><code>/* Built-in table operations */
-table = $file().table(&quot;ROW&quot;);
+table = {}.table(&quot;ROW&quot;);
 table.mkfield(&quot;name&quot;, &quot;STR&quot;, &quot;VAR&quot;);
 table.mkfield(&quot;age&quot;, &quot;INT&quot;);
 table.set(&quot;user1&quot;, &quot;John&quot;, &quot;name&quot;);

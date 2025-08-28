@@ -4784,7 +4784,7 @@
 @global[&quot;$index_lookup&quot;] = rule @tb[8] {@&lt;var,{$1}&gt;}
 
 /* Database/File object references */
-@global[&quot;$db_lookup&quot;] = rule @$file().table(&quot;ROW&quot;) {@&lt;var,{$1}&gt;}
+@global[&quot;$db_lookup&quot;] = rule @{}.table(&quot;ROW&quot;) {@&lt;var,{$1}&gt;}
 </code></pre></div>
 <h4 id="post-processing-with-optional-op"><strong>Post-Processing with Optional $OP</strong></h4>
 <div class="highlight"><pre><span></span><code>/* Rule with compile-time data transformation */
