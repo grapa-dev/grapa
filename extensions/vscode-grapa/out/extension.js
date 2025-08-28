@@ -70,6 +70,9 @@ function activate(context) {
     const startInteractiveTerminal = vscode.commands.registerCommand('grapa.startInteractiveTerminal', () => {
         executor.startInteractiveTerminal();
     });
+    const debugPathDetection = vscode.commands.registerCommand('grapa.debugPathDetection', () => {
+        executor.debugPathDetection();
+    });
     // Register language features
     const completionProvider = vscode.languages.registerCompletionItemProvider({ language: 'grapa' }, languageProvider, '.', '(', ' ');
     const hoverProvider = vscode.languages.registerHoverProvider({ language: 'grapa' }, languageProvider);
@@ -84,7 +87,7 @@ function activate(context) {
         }
     });
     // Add subscriptions to context
-    context.subscriptions.push(runFile, runSelection, runCommand, debugFile, startInteractive, restartSession, interruptSession, startInteractiveTerminal, completionProvider, hoverProvider, signatureProvider, autoRunOnSave, 
+    context.subscriptions.push(runFile, runSelection, runCommand, debugFile, startInteractive, restartSession, interruptSession, startInteractiveTerminal, debugPathDetection, completionProvider, hoverProvider, signatureProvider, autoRunOnSave, 
     // Cleanup executor on deactivation
     { dispose: () => executor.dispose() });
 }

@@ -93,6 +93,11 @@
         "command": "grapa.debugFile",
         "title": "Grapa: Debug File",
         "category": "Grapa"
+      },
+      {
+        "command": "grapa.debugPathDetection",
+        "title": "Grapa: Debug PATH Detection",
+        "category": "Grapa"
       }
     ],
     "keybindings": [

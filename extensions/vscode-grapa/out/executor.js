@@ -104,17 +104,37 @@ class GrapaExecutor {
                 console.log('Configured path does not exist:', executablePath);
             }
         }
-        // Try to find grapa in system PATH (like other language extensions)
+        // Check PATH directories directly (more reliable than 'where' command)
+        try {
+            const pathDirs = process.env.PATH?.split(process.platform === 'win32' ? ';' : ':') || [];
+            console.log('Checking PATH directories:', pathDirs);
+            console.log('Looking for grapa.exe in each directory...');
+            for (const dir of pathDirs) {
+                const potentialPath = path.join(dir, process.platform === 'win32' ? 'grapa.exe' : 'grapa');
+                console.log(`Checking: ${potentialPath} (exists: ${fs.existsSync(potentialPath)})`);
+                if (fs.existsSync(potentialPath)) {
+                    console.log('Found Grapa in PATH directory:', potentialPath);
+                    return potentialPath;
+                }
+            }
+            console.log('No grapa.exe found in any PATH directory');
+        }
+        catch (error) {
+            console.log('PATH directory checking failed:', error instanceof Error ? error.message : String(error));
+        }
+        // Fallback: Try 'where' command (may not work on all systems)
         try {
             const { execSync } = require('child_process');
-            const whichResult = execSync('which grapa', { encoding: 'utf8' }).trim();
+            // Use 'where' on Windows, 'which' on Unix-like systems
+            const command = process.platform === 'win32' ? 'where grapa' : 'which grapa';
+            const whichResult = execSync(command, { encoding: 'utf8' }).trim();
             if (whichResult && fs.existsSync(whichResult)) {
-                console.log('Found Grapa in system PATH:', whichResult);
+                console.log('Found Grapa via where/which command:', whichResult);
                 return whichResult;
             }
         }
         catch (error) {
-            console.log('Grapa not found in system PATH');
+            console.log('where/which command failed:', error instanceof Error ? error.message : String(error));
         }
         // Try to find grapa in common installation locations
         const commonSystemPaths = [
@@ -122,24 +142,32 @@ class GrapaExecutor {
             '/usr/bin/grapa',
             '/opt/homebrew/bin/grapa', // Homebrew on Apple Silicon
             '/usr/local/opt/grapa/bin/grapa', // Homebrew on Intel
-            'C:\\Program Files\\Grapa\\grapa.exe', // Windows
-            'C:\\Program Files (x86)\\Grapa\\grapa.exe' // Windows 32-bit
+            'C:\\Program Files\\Grapa\\bin\\grapa.exe', // Windows (corrected path)
+            'C:\\Program Files (x86)\\Grapa\\bin\\grapa.exe' // Windows 32-bit (corrected path)
         ];
+        console.log('Checking common system paths...');
         for (const systemPath of commonSystemPaths) {
+            console.log(`Checking system path: ${systemPath} (exists: ${fs.existsSync(systemPath)})`);
             if (fs.existsSync(systemPath)) {
                 console.log('Found Grapa at system location:', systemPath);
                 return systemPath;
             }
         }
         // Fallback: Try to find grapa in workspace (for development)
+        // Only check workspace if no system installation found
         const workspaceRoot = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath;
         console.log('Workspace root:', workspaceRoot);
         if (workspaceRoot) {
+            // Prioritize platform-specific binaries in workspace
             const workspacePaths = [
+                // Platform-specific binaries (highest priority for development)
+                path.join(workspaceRoot, 'bin', 'grapa-win-amd64', 'grapa.exe'), // Windows development
+                path.join(workspaceRoot, 'bin', 'grapa-mac-arm64'), // macOS development
+                path.join(workspaceRoot, 'bin', 'grapa-linux-amd64'), // Linux development
+                path.join(workspaceRoot, 'bin', 'grapa-linux-arm64'), // Linux ARM development
+                // Generic workspace paths (lower priority)
                 path.join(workspaceRoot, 'grapa'),
                 path.join(workspaceRoot, 'bin', 'grapa'),
-                path.join(workspaceRoot, 'bin', 'grapa-mac-arm64'),
-                path.join(workspaceRoot, 'bin', 'grapa-linux-amd64'),
                 path.join(workspaceRoot, 'bin', 'grapa-win-amd64.exe'),
                 path.join(workspaceRoot, 'bin', 'linux-amd64', 'grapa'),
                 path.join(workspaceRoot, 'bin', 'linux-arm64', 'grapa'),
@@ -346,7 +374,13 @@ class GrapaExecutor {
         if (process.platform !== 'win32') {
             escapedCode = escapedCode.replace(/\$/g, '\\$');
         }
-        terminal.sendText(`"${executablePath}" -c "${escapedCode}"`);
+        // Use PowerShell call operator for Windows to avoid parsing issues
+        if (process.platform === 'win32') {
+            terminal.sendText(`& "${executablePath}" -c "${escapedCode}"`);
+        }
+        else {
+            terminal.sendText(`"${executablePath}" -c "${escapedCode}"`);
+        }
         terminal.show();
     }
     async runCurrentFile() {
@@ -367,7 +401,13 @@ class GrapaExecutor {
             return;
         }
         const terminal = await this.createTerminal('Grapa');
-        terminal.sendText(`"${executablePath}" "${filePath}"`);
+        // Use PowerShell call operator for Windows to avoid parsing issues
+        if (process.platform === 'win32') {
+            terminal.sendText(`& "${executablePath}" "${filePath}"`);
+        }
+        else {
+            terminal.sendText(`"${executablePath}" "${filePath}"`);
+        }
         terminal.show();
     }
     async runCommand() {
@@ -403,7 +443,13 @@ class GrapaExecutor {
         });
         // Wait a moment for the terminal to be ready, then send the command
         setTimeout(() => {
-            terminal.sendText(`${executablePath} -i`);
+            // Use PowerShell call operator for Windows to avoid parsing issues
+            if (process.platform === 'win32') {
+                terminal.sendText(`& "${executablePath}" -i`);
+            }
+            else {
+                terminal.sendText(`${executablePath} -i`);
+            }
         }, 1000);
         terminal.show();
         await this.showInfo('Interactive terminal opened. Grapa will start in a moment...');
@@ -497,7 +543,13 @@ class GrapaExecutor {
             return;
         }
         const terminal = await this.createTerminal('Grapa Debug');
-        terminal.sendText(`"${executablePath}" -d "${filePath}"`);
+        // Use PowerShell call operator for Windows to avoid parsing issues
+        if (process.platform === 'win32') {
+            terminal.sendText(`& "${executablePath}" -d "${filePath}"`);
+        }
+        else {
+            terminal.sendText(`"${executablePath}" -d "${filePath}"`);
+        }
         terminal.show();
     }
     async runFile(filePath) {
@@ -507,8 +559,48 @@ class GrapaExecutor {
             return;
         }
         const terminal = await this.createTerminal('Grapa');
-        terminal.sendText(`"${executablePath}" "${filePath}"`);
+        // Use PowerShell call operator for Windows to avoid parsing issues
+        if (process.platform === 'win32') {
+            terminal.sendText(`& "${executablePath}" "${filePath}"`);
+        }
+        else {
+            terminal.sendText(`"${executablePath}" "${filePath}"`);
+        }
         terminal.show();
+    }
+    // Debug function to test PATH detection
+    async debugPathDetection() {
+        console.log('=== DEBUG: PATH Detection Test ===');
+        console.log('Platform:', process.platform);
+        console.log('Current working directory:', process.cwd());
+        console.log('Raw PATH environment variable:', process.env.PATH);
+        // Test direct file access
+        const testPath = 'C:\\Program Files\\Grapa\\bin\\grapa.exe';
+        console.log(`Testing direct access to: ${testPath}`);
+        console.log(`File exists: ${fs.existsSync(testPath)}`);
+        // Test PATH parsing
+        const pathDirs = process.env.PATH?.split(process.platform === 'win32' ? ';' : ':') || [];
+        console.log('Parsed PATH directories:', pathDirs);
+        // Check if the Grapa directory is in PATH
+        const grapaDir = 'C:\\Program Files\\Grapa\\bin';
+        const isInPath = pathDirs.includes(grapaDir);
+        console.log(`Is '${grapaDir}' in PATH: ${isInPath}`);
+        // Try to find grapa.exe in each PATH directory
+        for (const dir of pathDirs) {
+            const potentialPath = path.join(dir, 'grapa.exe');
+            const exists = fs.existsSync(potentialPath);
+            console.log(`PATH check: ${potentialPath} (exists: ${exists})`);
+            if (exists) {
+                console.log('✅ Found grapa.exe in PATH!');
+                break;
+            }
+        }
+        // Test the findGrapaExecutable function
+        console.log('=== Testing findGrapaExecutable function ===');
+        const result = await this.findGrapaExecutable();
+        console.log('findGrapaExecutable result:', result);
+        console.log('=== END DEBUG ===');
+        await this.showInfo(`Debug complete. Check console for details. Result: ${result || 'NOT FOUND'}`);
     }
     // Cleanup on deactivation
     dispose() {

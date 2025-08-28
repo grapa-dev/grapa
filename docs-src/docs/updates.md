@@ -43,16 +43,13 @@ sudo yum update grapa
 sudo yum update
 ```
 
-### Windows (Chocolatey)
+### Windows (Manual Installer)
 ```powershell
-# Check for updates
-choco outdated
-
-# Update Grapa
-choco upgrade grapa
-
-# Update all packages (including Grapa)
-choco upgrade all
+# Download and install the latest version
+Invoke-WebRequest -Uri "https://github.com/grapa-dev/grapa/releases/download/v0.1.51/grapa-win-amd64.zip" -OutFile "grapa-win-amd64.zip"
+Expand-Archive -Path "grapa-win-amd64.zip" -DestinationPath "grapa-win-amd64" -Force
+cd grapa-win-amd64
+.\install-grapa.ps1 -Force
 ```
 
 ## Automatic Update Notifications
@@ -63,7 +60,7 @@ Most package managers will notify you when updates are available:
 
 - **macOS**: System Preferences → Software Update (for system packages)
 - **Linux**: Package manager update notifications in terminal
-- **Windows**: Windows Update (if using winget) or Chocolatey notifications
+- **Windows**: Manual download and installation from GitHub releases
 
 ### Package Manager Notifications
 
@@ -138,13 +135,13 @@ yum list available grapa
 sudo yum install grapa-0.1.50-1
 ```
 
-### Windows (Chocolatey)
+### Windows (Manual Installer)
 ```powershell
-# List available versions
-choco list grapa --all-versions
-
-# Install specific version
-choco install grapa --version=0.1.50
+# Download and install specific version
+Invoke-WebRequest -Uri "https://github.com/grapa-dev/grapa/releases/download/v0.1.50/grapa-win-amd64.zip" -OutFile "grapa-win-amd64.zip"
+Expand-Archive -Path "grapa-win-amd64.zip" -DestinationPath "grapa-win-amd64" -Force
+cd grapa-win-amd64
+.\install-grapa.ps1 -Force
 ```
 
 ## Troubleshooting Updates

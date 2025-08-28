@@ -46,6 +46,10 @@ export function activate(context: vscode.ExtensionContext) {
         executor.startInteractiveTerminal();
     });
 
+    const debugPathDetection = vscode.commands.registerCommand('grapa.debugPathDetection', () => {
+        executor.debugPathDetection();
+    });
+
     // Register language features
     const completionProvider = vscode.languages.registerCompletionItemProvider(
         { language: 'grapa' },
@@ -84,6 +88,7 @@ export function activate(context: vscode.ExtensionContext) {
         restartSession,
         interruptSession,
         startInteractiveTerminal,
+        debugPathDetection,
         completionProvider,
         hoverProvider,
         signatureProvider,

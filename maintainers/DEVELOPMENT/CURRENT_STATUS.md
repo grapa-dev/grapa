@@ -95,9 +95,47 @@ Based on the backlog review, the next high-priority tasks for adoption are:
 - **Decision**: Current distribution methods (GitHub Releases, VSCode Extension) are sufficient
 - **Impact**: **LOW** - Current distribution channels meet user needs effectively
 
-### 5. **Windows Installation Documentation Enhancement** - ✅ **COMPLETED**
-- **Goal**: Ensure comprehensive Windows installation instructions with proper PATH management
-- **Status**: ✅ **COMPLETED** - Enhanced Windows installation documentation
+### 5. **Windows Installation System Overhaul** - ✅ **COMPLETED**
+- **Goal**: Replace Chocolatey with automated manual installer and update all build/packaging systems
+- **Status**: ✅ **COMPLETED** - Complete Windows installation system overhaul
+
+#### Windows Installation Changes Summary:
+
+**Build System Updates (`build.py`)**:
+- ✅ Modified `_create_windows_package()` to copy `grapa.exe` and `grapa.lib` to `bin/grapa-win-amd64/`
+- ✅ Added copying of installer files (`install-grapa.ps1`, `README-Windows-Installation.md`) to `bin/grapa-win-amd64/`
+- ✅ Added automatic zip file creation (`grapa-win-amd64.zip`) from the `bin/grapa-win-amd64/` directory
+- ✅ Added `os.makedirs(target_lib_dir, exist_ok=True)` to ensure target directories exist before copying
+
+**Packaging System Updates**:
+- ✅ **Removed**: `packaging/chocolatey/` directory and all Chocolatey package files
+- ✅ **Created**: `packaging/windows-installer/` directory with automated installer
+- ✅ **Added**: `install-grapa.ps1` - PowerShell installer with version checking, confirmation prompts, and PATH management
+- ✅ **Added**: `README-Windows-Installation.md` - Comprehensive installation instructions
+- ✅ **Updated**: `packaging/scripts/build-all-packages.sh` to remove Chocolatey build function and add Windows installer build function
+
+**Documentation Updates**:
+- ✅ **Updated**: `docs-src/docs/installation.md` - Replaced Chocolatey with manual installer instructions
+- ✅ **Updated**: `docs-src/docs/updates.md` - Replaced Chocolatey update commands with manual installer commands
+- ✅ **Updated**: `packaging/README.md` - Replaced Chocolatey package documentation with Windows installer documentation
+- ✅ **Removed**: All Chocolatey references from installation tables, status indicators, and troubleshooting sections
+
+**GitHub Release Integration**:
+- ✅ **Updated**: `grapa-win-amd64.zip` to include installer files (`install-grapa.ps1`, `README-Windows-Installation.md`)
+- ✅ **Removed**: Standalone `grapa-win-amd64.exe` from releases (now only distributed in zip)
+- ✅ **Enhanced**: Installation process with automated PATH management and version checking
+
+**VSCode Extension Integration**:
+- ✅ **Fixed**: PATH detection issues in VSCode extension for Windows
+- ✅ **Enhanced**: `findGrapaExecutable()` method with robust PATH directory checking
+- ✅ **Fixed**: PowerShell command execution using `&` operator to avoid parsing errors
+- ✅ **Added**: Debug command (`grapa.debugPathDetection`) for troubleshooting PATH issues
+
+#### Cross-Platform Validation Required:
+The Windows installation system overhaul should be validated and replicated on all platforms:
+- **macOS**: Verify Homebrew integration and manual installer approach
+- **Linux**: Verify apt/yum integration and manual installer approach
+- **Consistency**: Ensure all platforms have similar automated installer capabilities
 - **Improvements Made**:
   - Added permanent PATH management using `[Environment]::SetEnvironmentVariable()`
   - Added Program Files installation option

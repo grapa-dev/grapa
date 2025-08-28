@@ -13,7 +13,7 @@ Grapa is available through native package managers on all supported platforms, m
 | **Ubuntu/Debian AMD64** | apt | 🔄 **In Progress** | ✅ Available |
 | **Amazon Linux ARM64** | yum | 🔄 **In Progress** | ✅ Available |
 | **Amazon Linux AMD64** | yum | 🔄 **In Progress** | ✅ Available |
-| **Windows AMD64** | Chocolatey | ✅ **Available** | ✅ Available |
+| **Windows AMD64** | Manual Installer | ✅ **Available** | ✅ Available |
 
 **Legend:**
 - ✅ **Available**: Ready for installation via package manager
@@ -48,10 +48,10 @@ sudo yum install grapa
 
 ### Windows
 ```powershell
-choco install grapa
+# Manual installation required - see Windows section below
 ```
 
-**Note**: Chocolatey installation is available. For manual installation, see [Manual Installation](#manual-installation) below.
+**Note**: Windows installation uses an automated installer script. See [Windows Installation](#windows-manual-installation) below.
 
 ## Verify Installation
 
@@ -132,26 +132,42 @@ sudo yum install grapa
 sudo yum update grapa
 ```
 
-### Windows (Chocolatey)
+### Windows (Manual Installer)
 
 **Prerequisites:**
 - Windows 10 or later
-- Chocolatey package manager installed
 - amd64 architecture
+- PowerShell (Administrator privileges required)
 
 **Installation:**
-```powershell
-choco install grapa
-```
+Download the latest Windows release and run the automated installer:
+
+1. **Download the Windows package:**
+   ```powershell
+   # Download the latest Windows release
+   Invoke-WebRequest -Uri "https://github.com/grapa-dev/grapa/releases/download/v0.1.51/grapa-win-amd64.zip" -OutFile "grapa-win-amd64.zip"
+   ```
+
+2. **Extract and run the installer:**
+   ```powershell
+   Expand-Archive -Path "grapa-win-amd64.zip" -DestinationPath "grapa-win-amd64" -Force
+   cd grapa-win-amd64
+   .\install-grapa.ps1
+   ```
 
 **Update:**
 ```powershell
-choco upgrade grapa
+# Download and install the latest version
+Invoke-WebRequest -Uri "https://github.com/grapa-dev/grapa/releases/download/v0.1.51/grapa-win-amd64.zip" -OutFile "grapa-win-amd64.zip"
+Expand-Archive -Path "grapa-win-amd64.zip" -DestinationPath "grapa-win-amd64" -Force
+cd grapa-win-amd64
+.\install-grapa.ps1 -Force
 ```
 
 **Uninstall:**
 ```powershell
-choco uninstall grapa
+# Run the installer with uninstall flag
+.\install-grapa.ps1 -Uninstall
 ```
 
 **Installation Location:**
@@ -160,11 +176,11 @@ After installation, Grapa will be available at:
 - **Library**: `C:\Program Files\Grapa\lib\grapa.lib`
 - **PATH**: Automatically added to system PATH for command-line access
 
-**Note**: The Chocolatey package automatically adds `C:\Program Files\Grapa\bin` to your system PATH during installation.
+**Note**: The installer automatically adds `C:\Program Files\Grapa\bin` to your system PATH during installation.
 
-#### Installing from GitHub Release (If Package Not Published)
+#### Manual Installation (Alternative)
 
-If the Chocolatey package hasn't been published yet, you can install directly from a GitHub release:
+If you prefer to install manually without the automated installer:
 
 1. **Download the Windows package:**
    ```powershell
@@ -317,50 +333,78 @@ sudo rpm -e grapa
 
 ### Windows (Manual Installation)
 
-**Download and install the Windows executable:**
+**Download and install the Windows package:**
 
+#### Option 1: Automated Installation (Recommended)
+
+1. **Download the Windows package:**
+   ```powershell
+   # Download the latest Windows release
+   Invoke-WebRequest -Uri "https://github.com/grapa-dev/grapa/releases/download/v0.1.51/grapa-win-amd64.zip" -OutFile "grapa-win-amd64.zip"
+   ```
+
+2. **Extract the package:**
+   ```powershell
+   Expand-Archive -Path "grapa-win-amd64.zip" -DestinationPath "grapa-win-amd64" -Force
+   ```
+
+3. **Run the automated installer** (run PowerShell as Administrator):
+   ```powershell
+   cd grapa-win-amd64
+   .\install-grapa.ps1
+   ```
+
+4. **Verify installation:**
+   ```powershell
+   grapa --version
+   ```
+
+#### Option 2: Manual Installation
+
+1. **Download the Windows package:**
+   ```powershell
+   # Download the latest Windows release
+   Invoke-WebRequest -Uri "https://github.com/grapa-dev/grapa/releases/download/v0.1.51/grapa-win-amd64.zip" -OutFile "grapa-win-amd64.zip"
+   ```
+
+2. **Extract the package:**
+   ```powershell
+   Expand-Archive -Path "grapa-win-amd64.zip" -DestinationPath "grapa-win-amd64" -Force
+   ```
+
+3. **Install manually** (run PowerShell as Administrator):
+   ```powershell
+   # Create installation directory
+   New-Item -ItemType Directory -Force -Path "C:\Program Files\Grapa\bin" | Out-Null
+   New-Item -ItemType Directory -Force -Path "C:\Program Files\Grapa\lib" | Out-Null
+   
+   # Copy files
+   Copy-Item -Path "grapa-win-amd64\grapa.exe" -Destination "C:\Program Files\Grapa\bin\" -Force
+   Copy-Item -Path "grapa-win-amd64\grapa.lib" -Destination "C:\Program Files\Grapa\lib\" -Force
+   
+   # Add to PATH (requires Administrator privileges)
+   $currentPath = [Environment]::GetEnvironmentVariable('PATH', 'Machine')
+   $grapaPath = "C:\Program Files\Grapa\bin"
+   if ($currentPath -notlike "*$grapaPath*") {
+       [Environment]::SetEnvironmentVariable('PATH', $currentPath + ";" + $grapaPath, 'Machine')
+   }
+   ```
+
+4. **Verify installation:**
+   ```powershell
+   grapa --version
+   ```
+
+**Installation Location:**
+After installation, Grapa will be available at:
+- **Executable**: `C:\Program Files\Grapa\bin\grapa.exe`
+- **Library**: `C:\Program Files\Grapa\lib\grapa.lib`
+- **PATH**: Automatically added to system PATH for command-line access
+
+**Uninstall:**
 ```powershell
-# Download the Windows binary
-Invoke-WebRequest -Uri "https://github.com/grapa-dev/grapa/releases/download/v0.1.51/grapa-win-amd64.exe" -OutFile "grapa.exe"
-
-# Move to a directory in your PATH (run PowerShell as Administrator)
-Move-Item grapa.exe "C:\Windows\System32\grapa.exe"
-
-# Verify installation
-grapa --version
-```
-
-**Alternative installation to user directory:**
-```powershell
-# Create a directory for Grapa
-New-Item -ItemType Directory -Path "$env:USERPROFILE\grapa" -Force
-
-# Download the Windows binary
-Invoke-WebRequest -Uri "https://github.com/grapa-dev/grapa/releases/download/v0.1.51/grapa-win-amd64.exe" -OutFile "$env:USERPROFILE\grapa\grapa.exe"
-
-# Add to PATH for current session
-$env:PATH += ";$env:USERPROFILE\grapa"
-
-# Add to PATH permanently (recommended)
-[Environment]::SetEnvironmentVariable("PATH", $env:PATH + ";$env:USERPROFILE\grapa", "User")
-
-# Verify installation
-grapa --version
-```
-
-**Alternative installation to Program Files:**
-```powershell
-# Create a directory for Grapa (run PowerShell as Administrator)
-New-Item -ItemType Directory -Path "C:\Program Files\grapa" -Force
-
-# Download the Windows binary
-Invoke-WebRequest -Uri "https://github.com/grapa-dev/grapa/releases/download/v0.1.51/grapa-win-amd64.exe" -OutFile "C:\Program Files\grapa\grapa.exe"
-
-# Add to system PATH (run PowerShell as Administrator)
-[Environment]::SetEnvironmentVariable("PATH", $env:PATH + ";C:\Program Files\grapa", "Machine")
-
-# Verify installation
-grapa --version
+# Run PowerShell as Administrator
+.\install-grapa.ps1 -Uninstall
 ```
 
 **Test basic functionality:**
@@ -384,16 +428,6 @@ grapa --version
 grapa -c "2+2"
 ```
 
-**Uninstall:**
-```powershell
-# Remove from System32 (if installed there)
-Remove-Item "C:\Windows\System32\grapa.exe" -Force
-
-# Or remove from user directory
-Remove-Item "$env:USERPROFILE\grapa\grapa.exe" -Force
-Remove-Item "$env:USERPROFILE\grapa" -Force
-```
-
 ### Other Platforms
 
 For other platforms, download the appropriate binary from the [GitHub releases page](https://github.com/grapa-dev/grapa/releases):
@@ -407,7 +441,7 @@ For other platforms, download the appropriate binary from the [GitHub releases p
 - `grapa-linux-amd64` - Linux AMD64
 - `grapa-linux-arm64` - Linux ARM64  
 - `grapa-mac-arm64` - macOS ARM64 (Apple Silicon)
-- `grapa.exe` - Windows AMD64
+- `grapa-win-amd64.zip` - Windows AMD64 (includes installer script)
 
 ## Troubleshooting
 
@@ -425,7 +459,7 @@ For other platforms, download the appropriate binary from the [GitHub releases p
    rpm -qa | grep grapa
    
    # Windows
-   choco list grapa
+   Test-Path "C:\Program Files\Grapa\bin\grapa.exe"
    ```
 
 2. **Check if PATH is set correctly:**
@@ -437,7 +471,7 @@ For other platforms, download the appropriate binary from the [GitHub releases p
    echo $PATH | grep "/usr/bin"
    
    # Windows
-   echo $env:PATH | Select-String "chocolatey"
+   echo $env:PATH | Select-String "Grapa"
    ```
 
 3. **Try restarting your terminal** after installation.
@@ -474,9 +508,6 @@ For other platforms, download the appropriate binary from the [GitHub releases p
    
    # Amazon Linux/Red Hat
    sudo yum update
-   
-   # Windows
-   choco upgrade all
    ```
 
 2. **Clear package manager cache:**
@@ -489,31 +520,29 @@ For other platforms, download the appropriate binary from the [GitHub releases p
    
    # Amazon Linux/Red Hat
    sudo yum clean all
-   
-   # Windows
-   choco cache remove
    ```
 
 3. **Check network connectivity** and try again.
 
 ### Windows-Specific Issues
 
-#### Chocolatey Not Found
-If `choco` command is not recognized:
+#### Installation Script Issues
+If the `install-grapa.ps1` script fails:
 
-1. **Install Chocolatey** (run PowerShell as Administrator):
+1. **Check execution policy** (run PowerShell as Administrator):
    ```powershell
-   Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+   Get-ExecutionPolicy
+   Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
    ```
 
-2. **Refresh environment variables:**
+2. **Verify the script exists:**
    ```powershell
-   refreshenv
+   Test-Path "install-grapa.ps1"
    ```
 
-3. **Verify Chocolatey installation:**
+3. **Run the script with verbose output:**
    ```powershell
-   choco --version
+   .\install-grapa.ps1 -Verbose
    ```
 
 #### Execution Policy Issues

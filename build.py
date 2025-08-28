@@ -152,7 +152,11 @@ class GrapaBuilder:
                 if os.path.exists("grapa.lib"):
                     os.remove("grapa.lib")
                 shutil.copy("prj/winlib-amd64/x64/Release/grapa.lib", "grapa.lib")
-                shutil.copy("prj/winlib-amd64/x64/Release/grapa.lib", f"source/grapa-lib/{config.target}/grapa.lib")
+                
+                # Ensure target directory exists
+                target_lib_dir = f"source/grapa-lib/{config.target}"
+                os.makedirs(target_lib_dir, exist_ok=True)
+                shutil.copy("prj/winlib-amd64/x64/Release/grapa.lib", f"{target_lib_dir}/grapa.lib")
                 # Clean build artifacts
                 self._clean_windows_build()
                 # Create package
@@ -583,7 +587,7 @@ class GrapaBuilder:
                 shutil.rmtree(dir_path)
     
     def _create_windows_package(self, config: BuildConfig):
-        """Create Windows package - replace files in bin/grapa-win-amd64"""
+        """Create Windows package - replace files in bin/grapa-win-amd64 and create zip"""
         # Create the target directory if it doesn't exist
         target_dir = f"bin/grapa-{config.target}"
         os.makedirs(target_dir, exist_ok=True)
@@ -597,7 +601,32 @@ class GrapaBuilder:
             shutil.copy("grapa.lib", f"{target_dir}/grapa.lib")
             print(f"✅ Copied grapa.lib to {target_dir}/")
         
+        # Copy installation files
+        installer_dir = "packaging/windows-installer"
+        if os.path.exists(f"{installer_dir}/install-grapa.ps1"):
+            shutil.copy(f"{installer_dir}/install-grapa.ps1", f"{target_dir}/install-grapa.ps1")
+            print(f"✅ Copied install-grapa.ps1 to {target_dir}/")
+        
+        if os.path.exists(f"{installer_dir}/README-Windows-Installation.md"):
+            shutil.copy(f"{installer_dir}/README-Windows-Installation.md", f"{target_dir}/README-Windows-Installation.md")
+            print(f"✅ Copied README-Windows-Installation.md to {target_dir}/")
+        
+        # Create zip file
+        zip_path = f"bin/grapa-{config.target}.zip"
+        if os.path.exists(zip_path):
+            os.remove(zip_path)
+        
+        # Create zip with all files in the directory
+        import zipfile
+        with zipfile.ZipFile(zip_path, 'w', zipfile.ZIP_DEFLATED) as zipf:
+            for root, dirs, files in os.walk(target_dir):
+                for file in files:
+                    file_path = os.path.join(root, file)
+                    arcname = os.path.relpath(file_path, target_dir)
+                    zipf.write(file_path, arcname)
+        
         print(f"✅ Windows package files updated in {target_dir}/")
+        print(f"✅ Created zip file: {zip_path}")
     
     def _create_mac_package(self, config: BuildConfig):
         """Create Mac package"""

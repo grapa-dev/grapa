@@ -9,7 +9,7 @@ Grapa is distributed as a single executable for each supported platform, package
 - **macOS**: Homebrew formula
 - **Ubuntu/Debian**: .deb packages
 - **Amazon Linux/Red Hat**: .rpm packages  
-- **Windows**: Chocolatey package
+- **Windows**: Manual installer script
 
 ## Directory Structure
 
@@ -28,11 +28,9 @@ packaging/
 │   ├── grapa/
 │   │   └── usr/bin/
 │   └── build-rpm.sh
-├── chocolatey/        # Windows Chocolatey package
-│   ├── grapa.nuspec
-│   └── tools/
-│       ├── chocolateyinstall.ps1
-│       └── chocolateyuninstall.ps1
+├── windows-installer/ # Windows manual installer
+│   ├── install-grapa.ps1
+│   └── README-Windows-Installation.md
 ├── scripts/           # Build and release automation
 │   └── build-all-packages.sh
 ├── templates/         # Package generation templates
@@ -53,13 +51,13 @@ This script will:
 1. Calculate SHA256 checksums for all binaries
 2. Update package files with correct checksums
 3. Build .deb and .rpm packages
-4. Prepare Homebrew and Chocolatey packages
+4. Prepare Homebrew and Windows installer
 
 ### Prerequisites
 
 - **Linux**: `dpkg-deb`, `rpmbuild` (optional)
 - **macOS**: Homebrew (for testing)
-- **Windows**: Chocolatey (for testing)
+- **Windows**: PowerShell (for testing installer)
 
 ## Package Details
 
@@ -108,19 +106,20 @@ cd packaging/rpm
 rpmbuild -bb grapa.spec
 ```
 
-### Chocolatey (Windows)
+### Windows Installer
 
-**Package**: `packaging/chocolatey/`
+**Package**: `packaging/windows-installer/`
 
 **Features**:
-- Downloads Windows executable
-- Installs to Chocolatey bin directory
-- Automatic PATH integration via shim
+- Automated PowerShell installer script
+- Installs to `C:\Program Files\Grapa\bin\`
+- Automatic PATH integration
+- Version checking and confirmation prompts
 
 **Testing**:
 ```powershell
-choco pack packaging/chocolatey/grapa.nuspec
-choco install grapa -s .
+cd packaging/windows-installer
+.\install-grapa.ps1 -Help
 ```
 
 ## Version Management
@@ -131,7 +130,7 @@ choco install grapa -s .
    - `packaging/homebrew/grapa.rb`
    - `packaging/debian/grapa/DEBIAN/control`
    - `packaging/rpm/grapa.spec`
-   - `packaging/chocolatey/grapa.nuspec`
+   - `packaging/windows-installer/install-grapa.ps1`
 
 2. **Update build script version**:
    - `packaging/scripts/build-all-packages.sh`
@@ -145,7 +144,7 @@ choco install grapa -s .
 
 The build script automatically calculates and updates SHA256 checksums for:
 - Homebrew formula (mac-arm64, mac-amd64)
-- Chocolatey install script (win-amd64)
+- Windows installer (win-amd64)
 
 ## Distribution
 
@@ -154,7 +153,7 @@ The build script automatically calculates and updates SHA256 checksums for:
 **Homebrew**: Submit formula to Homebrew core or maintain a custom tap
 **Debian**: Upload .deb to Ubuntu/Debian repositories
 **RPM**: Upload .rpm to Red Hat/Amazon Linux repositories  
-**Chocolatey**: Upload package to Chocolatey community repository
+**Windows**: Include installer in GitHub releases
 
 ### Release Process
 
@@ -183,10 +182,10 @@ sudo dpkg -i packaging/debian/grapa_0.1.51_amd64.deb
 sudo rpm -i packaging/rpm/RPMS/x86_64/grapa-0.1.51-1.x86_64.rpm
 ```
 
-**Chocolatey**:
+**Windows**:
 ```powershell
-choco pack packaging/chocolatey/grapa.nuspec
-choco install grapa -s .
+cd packaging/windows-installer
+.\install-grapa.ps1 -Help
 ```
 
 ### Verification

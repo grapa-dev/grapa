@@ -104,21 +104,19 @@ build_rpm() {
     fi
 }
 
-# Build Chocolatey package
-build_chocolatey() {
-    echo "🪟 Building Chocolatey package..."
+# Build Windows installer
+build_windows() {
+    echo "🪟 Building Windows installer..."
     
-    # Calculate SHA256 for Windows binary
+    # Check if Windows binary exists
     if [ -f "$PROJECT_ROOT/bin/grapa-win-amd64.exe" ]; then
-        SHA256_WIN=$(calculate_sha256 "$PROJECT_ROOT/bin/grapa-win-amd64.exe")
-        update_sha256 "$PROJECT_ROOT/bin/grapa-win-amd64.exe" "$SHA256_WIN" "win-amd64"
-        echo "✅ Updated Chocolatey install script with SHA256: $SHA256_WIN"
+        echo "✅ Windows binary found: grapa-win-amd64.exe"
     else
         echo "❌ grapa-win-amd64.exe not found"
         return 1
     fi
     
-    echo "✅ Chocolatey package ready"
+    echo "✅ Windows installer ready"
 }
 
 # Main build process
@@ -135,14 +133,14 @@ main() {
     build_homebrew
     build_debian
     build_rpm
-    build_chocolatey
+    build_windows
     
     echo "🎉 All packages built successfully!"
     echo ""
     echo "📦 Generated packages:"
     echo "  - Homebrew: $PROJECT_ROOT/packaging/homebrew/grapa.rb"
     echo "  - Debian: $PROJECT_ROOT/packaging/debian/grapa_${VERSION}_amd64.deb"
-    echo "  - Chocolatey: $PROJECT_ROOT/packaging/chocolatey/"
+    echo "  - Windows: $PROJECT_ROOT/packaging/windows-installer/"
     echo ""
     echo "📋 Next steps:"
     echo "  1. Test packages on target platforms"
