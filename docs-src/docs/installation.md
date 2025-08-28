@@ -154,6 +154,52 @@ choco upgrade grapa
 choco uninstall grapa
 ```
 
+**Installation Location:**
+After installation, Grapa will be available at:
+- **Executable**: `C:\Program Files\Grapa\bin\grapa.exe`
+- **Library**: `C:\Program Files\Grapa\lib\grapa.lib`
+- **PATH**: Automatically added to system PATH for command-line access
+
+**Note**: The Chocolatey package automatically adds `C:\Program Files\Grapa\bin` to your system PATH during installation.
+
+#### Installing from GitHub Release (If Package Not Published)
+
+If the Chocolatey package hasn't been published yet, you can install directly from a GitHub release:
+
+1. **Download the Windows package:**
+   ```powershell
+   # Download the latest Windows release
+   Invoke-WebRequest -Uri "https://github.com/grapa-dev/grapa/releases/download/v0.1.51/grapa-win-amd64.zip" -OutFile "grapa-win-amd64.zip"
+   ```
+
+2. **Extract the package:**
+   ```powershell
+   Expand-Archive -Path "grapa-win-amd64.zip" -DestinationPath "grapa-win-amd64" -Force
+   ```
+
+3. **Install manually:**
+   ```powershell
+   # Create installation directory
+   New-Item -ItemType Directory -Force -Path "C:\Program Files\Grapa\bin" | Out-Null
+   New-Item -ItemType Directory -Force -Path "C:\Program Files\Grapa\lib" | Out-Null
+   
+   # Copy files
+   Copy-Item -Path "grapa-win-amd64\grapa.exe" -Destination "C:\Program Files\Grapa\bin\" -Force
+   Copy-Item -Path "grapa-win-amd64\grapa.lib" -Destination "C:\Program Files\Grapa\lib\" -Force
+   
+   # Add to PATH (requires Administrator privileges)
+   $currentPath = [Environment]::GetEnvironmentVariable('PATH', 'Machine')
+   $grapaPath = "C:\Program Files\Grapa\bin"
+   if ($currentPath -notlike "*$grapaPath*") {
+       [Environment]::SetEnvironmentVariable('PATH', $currentPath + ";" + $grapaPath, 'Machine')
+   }
+   ```
+
+4. **Verify installation:**
+   ```powershell
+   grapa --version
+   ```
+
 ## Manual Installation
 
 If you prefer manual installation or your platform isn't supported by package managers, you can download and install Grapa directly.
@@ -486,14 +532,14 @@ If you encounter execution policy errors:
 #### PATH Issues
 If Grapa is installed but not found in PATH:
 
-1. **Check if Grapa is in Chocolatey's bin directory:**
+1. **Check if Grapa is in the installation directory:**
    ```powershell
-   Test-Path "C:\ProgramData\chocolatey\bin\grapa.exe"
+   Test-Path "C:\Program Files\Grapa\bin\grapa.exe"
    ```
 
-2. **Add Chocolatey to PATH manually:**
+2. **Add Grapa to PATH manually:**
    ```powershell
-   $env:PATH += ";C:\ProgramData\chocolatey\bin"
+   $env:PATH += ";C:\Program Files\Grapa\bin"
    ```
 
 3. **Restart PowerShell** to ensure PATH changes take effect.
@@ -515,7 +561,7 @@ For persistent PATH changes across PowerShell sessions:
 
 3. **Add Grapa to your PowerShell profile:**
    ```powershell
-   Add-Content $PROFILE "`$env:PATH += `";C:\path\to\grapa`""
+   Add-Content $PROFILE "`$env:PATH += `";C:\Program Files\Grapa\bin`""
    ```
 
 4. **Reload your profile:**
@@ -523,7 +569,7 @@ For persistent PATH changes across PowerShell sessions:
    . $PROFILE
    ```
 
-**Note**: Replace `C:\path\to\grapa` with your actual Grapa installation path.
+**Note**: This adds the standard Grapa installation path to your PowerShell profile. If you installed Grapa to a different location, replace `C:\Program Files\Grapa\bin` with your actual installation path.
 
 ## Getting Help
 

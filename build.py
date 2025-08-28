@@ -583,10 +583,21 @@ class GrapaBuilder:
                 shutil.rmtree(dir_path)
     
     def _create_windows_package(self, config: BuildConfig):
-        """Create Windows package"""
-        subprocess.run([
-            "7z", "a", f"bin/grapa-{config.target}.zip", "grapa.exe", "grapa.lib"
-        ], check=True)
+        """Create Windows package - replace files in bin/grapa-win-amd64"""
+        # Create the target directory if it doesn't exist
+        target_dir = f"bin/grapa-{config.target}"
+        os.makedirs(target_dir, exist_ok=True)
+        
+        # Copy the newly built files to the target directory
+        if os.path.exists("grapa.exe"):
+            shutil.copy("grapa.exe", f"{target_dir}/grapa.exe")
+            print(f"✅ Copied grapa.exe to {target_dir}/")
+        
+        if os.path.exists("grapa.lib"):
+            shutil.copy("grapa.lib", f"{target_dir}/grapa.lib")
+            print(f"✅ Copied grapa.lib to {target_dir}/")
+        
+        print(f"✅ Windows package files updated in {target_dir}/")
     
     def _create_mac_package(self, config: BuildConfig):
         """Create Mac package"""
