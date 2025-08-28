@@ -4021,7 +4021,7 @@
 <td>"exec"</td>
 <td>:heavy_minus_sign:</td>
 <td>:heavy_check_mark:</td>
-<td>$OP - runs an $OP within a widget. $self will contain the reference to the widget. Example: w.child("tx").setfield({exec:op(){$this.getfield(["text"]);}}); If the goal is to run the $OP in the background in the widget, use the post method.</td>
+<td>$OP - runs an $OP within a widget. $self will contain the reference to the widget. Example: w.child("tx").set({exec:op(){$this.get(["text"]);}}); If the goal is to run the $OP in the background in the widget, use the post method.</td>
 </tr>
 <tr>
 <td>widget</td>
@@ -4414,16 +4414,16 @@
 <div class="highlight"><pre><span></span><code>w = $WIDGET(&quot;double_window&quot;, 20, 50, 340, 220, &quot;test&quot;, {color: &quot;BLUE&quot;});
 w.show();
 w +=  (tx:$WIDGET(&quot;text_display&quot;, 20, 50, 300, 150));
-w.child(&quot;tx&quot;).setfield({text:&quot;blank&quot;});
+w.child(&quot;tx&quot;).set({text:&quot;blank&quot;});
 
 w += (menu: $WIDGET(&quot;menu_bar&quot;, 0, 0, 640, 30));
-m1_cb = op(o,cbdata,item) {o.parent().child(&quot;tx&quot;).setfield({text:&quot;M1&quot;});};
+m1_cb = op(o,cbdata,item) {o.parent().child(&quot;tx&quot;).set({text:&quot;M1&quot;});};
 w.child(&quot;menu&quot;) += (M1: {path: &quot;&amp;File/&amp;M1&quot;, flags: [&quot;DIVIDER&quot;], shortcut: &quot;^a&quot;, callback: m1_cb});
-m2_cb = op(o,cbdata,item) {o.parent().child(&quot;tx&quot;).setfield({text:&quot;M2&quot;});};
+m2_cb = op(o,cbdata,item) {o.parent().child(&quot;tx&quot;).set({text:&quot;M2&quot;});};
 w.child(&quot;menu&quot;) += (M2: {path: &quot;&amp;File/&amp;M2&quot;, shortcut: &quot;^b&quot;, callback: m2_cb});
 
 w.child(&quot;menu&quot;).get([ {&quot;M1&quot;:[&quot;path&quot;,&quot;shortcut&quot;]} ]);
-w.child(&quot;menu&quot;).setfield({child:{M1: {label: &quot;M1X&quot;, &quot;labelsize&quot;:18}}});
+w.child(&quot;menu&quot;).set({child:{M1: {label: &quot;M1X&quot;, &quot;labelsize&quot;:18}}});
 </code></pre></div>
 <h2 id="on_post-handlers">on_post handlers</h2>
 <p>Enables sending scripts (raw text script, not an $OP) to a widget to be compiled and run in a thread specific to that widget (async to other threads). </p>
@@ -4456,12 +4456,12 @@ w.child(&quot;menu&quot;).setfield({child:{M1: {label: &quot;M1X&quot;, &quot;la
 <p>The script below will setup on_post handlers in the text_display widget, and then will exec a function in that widget to "post" a text script to be compiled and run in a thread. </p>
 <div class="highlight"><pre><span></span><code>w = $WIDGET(&quot;double_window&quot;, 0, 0, 340, 260, &quot;test&quot;, {color: &quot;BLUE&quot;});
 w.show();
-w += (ns:$WIDGET(&quot;button&quot;, 20, 20, 40, 20, &quot;clear&quot;, {on_release: op(o){o.next().setfield({&quot;text&quot;:&quot;&quot;});} }));
+w += (ns:$WIDGET(&quot;button&quot;, 20, 20, 40, 20, &quot;clear&quot;, {on_release: op(o){o.next().set({&quot;text&quot;:&quot;&quot;});} }));
 w += (tx:$WIDGET(&quot;text_display&quot;, 20, 40, 300, 200));
-w.child(&quot;tx&quot;).setfield({  
+w.child(&quot;tx&quot;).set({  
     on_post_start: op(o)
     {
-        o.setfield({text:&quot;&quot;});
+        o.set({text:&quot;&quot;});
         o.append(&quot;on_post_start\n&quot;);
     },
     on_post_echo: op(o,data)
@@ -4474,7 +4474,7 @@ w.child(&quot;tx&quot;).setfield({
     }
    });
 
-w.child(&quot;tx&quot;).setfield({exec:op(){&quot;(1).echo();2;&quot;.post();}});
+w.child(&quot;tx&quot;).set({exec:op(){&quot;(1).echo();2;&quot;.post();}});
 </code></pre></div>
 <p>The result of the sccript below will create a window with a button and a text_display, with the text_display set to:
 <div class="highlight"><pre><span></span><code>on_post_start
