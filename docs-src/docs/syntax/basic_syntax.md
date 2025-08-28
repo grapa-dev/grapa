@@ -1325,7 +1325,7 @@ Person = class {
     age = 0;
     city = "";
     
-    /* Constructor - Note: This is a regular method, not a true constructor */
+    /* Manual initialization method - for classes without $new() constructor */
     init = op(n, a, c) {
         name = n;
         age = a;
@@ -1344,15 +1344,44 @@ person.init("John", 30, "NYC");
 person.getInfo();
 ```
 
+#### Class Constructor with $new()
+
+Grapa supports a single `$new()` constructor in class definitions that is automatically called when creating instances:
+
+```grapa
+/* Define a class with $new() constructor */
+MyClass = class {
+    n = 0;
+    
+    /* Constructor - automatically called when creating instances */
+    $new = op(g:-1) {
+        n = g;
+    };
+};
+
+/* Create instances - constructor is called automatically */
+x = MyClass();      /* n = -1 (default value) */
+y = MyClass(4);     /* n = 4 */
+
+x.n.echo();         /* Output: -1 */
+y.n.echo();         /* Output: 4 */
+```
+
+**Key Points:**
+- **Single Constructor**: Only one `$new()` method is supported per class
+- **Automatic Invocation**: The constructor is called automatically when creating instances
+- **Parameter Support**: The constructor can accept parameters with default values
+- **Instance Creation**: Use `Class()` syntax instead of `obj Class` when using `$new()`
+
 > **Important Note on Constructors and Destructors:**
 > 
-> **Constructors**: Grapa objects do **not** have automatic constructors that run when objects are created. The `init` method shown above is a regular method that must be called explicitly. Object creation with `obj Class` only creates an empty instance.
+> **Constructors**: Grapa supports automatic constructors through the `$new()` method. When a class defines a `$new()` method, it is automatically called when creating instances using `Class()` syntax. For classes without `$new()`, you can use the manual `init()` method approach with `obj Class`.
 > 
 > **Destructors**: Grapa objects do **not** have destructors. Memory management is handled automatically by Grapa's garbage collector. There are no `~ClassName()` or `finalize()` methods.
 > 
-> **Current Behavior**: When you create an object with `obj Class`, you get an empty instance that you must manually initialize by calling methods like `init()`.
-> 
-> **Future Enhancement**: True constructors and destructors may be added in future versions of Grapa.
+> **Current Behavior**: 
+> - **With `$new()`**: Use `Class()` syntax for automatic constructor invocation
+> - **Without `$new()`**: Use `obj Class` and manually call initialization methods like `init()`
 
 #### Inheritance
 ```grapa

@@ -353,9 +353,9 @@ keys.map(op(key) {
 - **Associated types**: `type Output` - Use regular types
 - **Default implementations**: - Use regular method definitions
 - **Trait bounds**: `where T: Display` - Use dynamic typing
-- **Impl blocks**: `impl MyStruct` - Use object constructors
+- **Impl blocks**: `impl MyStruct` - Use manual initialization methods
 - **Derive macros**: `#[derive(Debug)]` - Use regular methods
-- **Structs**: `struct MyStruct` - Use object constructors
+- **Structs**: `struct MyStruct` - Use `$new()` constructor or manual initialization
 - **Enums**: `enum MyEnum` - Use objects with type fields
 - **Modules**: `mod my_module` - Use Grapa's file system
 - **Crates**: - Use Grapa's library system

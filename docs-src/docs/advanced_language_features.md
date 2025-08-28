@@ -630,16 +630,45 @@ $ARRAY += (custom_method: op() { $this.len(); });
 ### **Current Limitations and Future Enhancements**
 
 #### **Object Lifecycle Management**
-**Current State**: Grapa objects do not have automatic constructors or destructors.
+**Current State**: Grapa supports automatic constructors through the `$new()` method, but still lacks automatic destructors.
+
+**What's Available:**
+- **Automatic Constructors**: `$new()` method is automatically called when creating instances using `Class()` syntax
+- **Parameter Support**: Constructors can accept parameters with default values
+- **Single Constructor**: Only one `$new()` method is supported per class
 
 **What's Missing:**
-- **Automatic Constructors**: No `constructor()` method that runs when objects are created
 - **Automatic Destructors**: No `destructor()` or `finalize()` method for cleanup
-- **Object Initialization**: Objects created with `obj Class` are empty and must be manually initialized
+- **Multiple Constructors**: Only one `$new()` method per class is supported
 
-**Workaround:**
+**Current Usage:**
 ```grapa
-/* Manual initialization pattern */
+/* Automatic constructor with $new() */
+Person = class {
+    name = "";
+    age = 0;
+    
+    /* Automatic constructor - called when creating instances */
+    $new = op(n:"", a:0) {
+        name = n;
+        age = a;
+    };
+    
+    /* Method */
+    getInfo = op() {
+        ("Name: " + name + ", Age: " + age.str()).echo();
+    };
+};
+
+/* Create instances - constructor called automatically */
+person1 = Person();           /* name="", age=0 */
+person2 = Person("Alice", 30); /* name="Alice", age=30 */
+person2.getInfo();            /* Output: Name: Alice, Age: 30 */
+```
+
+**Alternative Manual Pattern:**
+```grapa
+/* Manual initialization pattern (for classes without $new()) */
 Person = class {
     name = "";
     age = 0;
@@ -656,7 +685,7 @@ person = obj Person;
 person.init("Alice", 30);  /* Must call init explicitly */
 ```
 
-**Future Enhancement**: Automatic constructor/destructor support will be added to make object creation more intuitive.
+**Future Enhancement**: Multiple constructors and automatic destructor support may be added in future versions.
 
 #### **Operator Overloading**
 **Current State**: Operators work only with built-in types and predefined behaviors.

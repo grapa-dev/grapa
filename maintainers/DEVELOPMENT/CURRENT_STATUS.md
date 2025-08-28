@@ -169,3 +169,17 @@
 - **Documentation**: Comprehensive coverage of implemented features
 - **Testing**: Core functionality thoroughly tested
 - **Focus**: Installation packaging for easy deployment across platforms
+
+## 📚 **Recent Documentation Updates**
+
+### **✅ Class Constructor Documentation - COMPLETE**
+- **Basic Syntax Guide**: Added `$new()` constructor documentation with examples
+- **Advanced Features**: Updated Object Lifecycle Management section
+- **Migration Guides**: Updated JavaScript, TypeScript, Swift, and Rust migration guides with constructor examples
+- **Key Features Documented**:
+  - Single `$new()` constructor per class
+  - Automatic invocation when using `Class()` syntax
+  - Parameter support with default values
+  - Alternative manual initialization patterns
+- **Documentation Clarification**: Fixed misleading comment about "not a true constructor" and updated migration guides to be more specific about `$new()` support
+- **Status**: ✅ **COMPLETED** - All relevant documentation updated and clarified

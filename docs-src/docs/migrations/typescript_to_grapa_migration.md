@@ -424,7 +424,7 @@ These would improve developer experience but aren't essential:
 - **Modules**: `import/export` - Use Grapa's include system and dynamic class loading
 - **Decorators**: `@decorator` - Use function composition
 - **Enums**: `enum MyEnum` - Use objects with constants
-- **Class syntax**: `class MyClass` - Use object constructors
+- **Class syntax**: `class MyClass` - Use `class MyClass {}` with `$new()` constructor or manual initialization
 - **Access modifiers**: `private`, `public` - Use naming conventions
 - **Abstract classes**: `abstract class` - Use regular classes
 - **Method overloading**: - Use different function names

@@ -567,7 +567,7 @@ These would improve developer experience but aren't essential:
 - **Optional chaining**: `obj?.prop?.sub` - Use `.iferr()` for superior safe property access with custom fallback values: `obj.prop.iferr(null).sub.iferr("default")`
 - **Nullish coalescing**: `x ?? y` - Use `.ifnull()` for superior nullish coalescing: `x.ifnull(y)`
 - **Logical assignment**: `x ||= y` - Use explicit assignment: `if (!x) { x = y; }` (no `||=` operator)
-- **Class syntax**: `class MyClass` - Use object constructors and functions
+- **Class syntax**: `class MyClass` - Use `class MyClass {}` with `$new()` constructor or manual initialization
 - **Private fields**: `#private` - Use naming conventions like `_private`
 - **Getters/setters**: `get prop()` - Use regular methods
 - **Symbols**: `Symbol('key')` - Use string keys
@@ -578,10 +578,10 @@ These would improve developer experience but aren't essential:
 - **Modules**: `import/export` - Use Grapa's include system and dynamic class loading
 - **Dynamic imports**: `import()` - Use `$file().read()` and `$sys().eval()`
 - **Top-level await**: - Use regular execution
-- **Class fields**: `class { field = 1 }` - Use constructor assignment
+- **Class fields**: `class { field = 1 }` - Use `$new()` constructor or direct property assignment
 - **Private methods**: `#method()` - Use naming conventions like `_method()`
 - **Static fields**: `static field = 1` - Use module-level variables
-- **Class expressions**: `const MyClass = class {}` - Use object constructors
+- **Class expressions**: `const MyClass = class {}` - Use `class MyClass {}` with `$new()` constructor
 - **Computed property names**: `{[key]: value}` - Use explicit assignment: `obj[key] = value;`
 - **Method shorthand**: `{method() {}}` - Use regular method syntax
 - **Property shorthand**: `{name}` - Use explicit assignment: `{name: name}`
@@ -635,6 +635,71 @@ if (match("hello world", "world")) {
 ```
 
 This is a handy workaround until Grapa adds a native `.match()` method.
+
+### Class Constructors
+
+**JavaScript:**
+```javascript
+class MyClass {
+    constructor(value = -1) {
+        this.n = value;
+    }
+    
+    getValue() {
+        return this.n;
+    }
+}
+
+const x = new MyClass();      // n = -1
+const y = new MyClass(4);     // n = 4
+```
+
+**Grapa:**
+```grapa
+/* Using $new() constructor (automatic) */
+MyClass = class {
+    n = 0;
+    
+    /* Constructor - automatically called when creating instances */
+    $new = op(value:-1) {
+        n = value;
+    };
+    
+    getValue = op() {
+        n;
+    };
+};
+
+/* Create instances - constructor called automatically */
+x = MyClass();      /* n = -1 */
+y = MyClass(4);     /* n = 4 */
+
+x.getValue().echo();  /* Output: -1 */
+y.getValue().echo();  /* Output: 4 */
+```
+
+**Alternative Manual Pattern:**
+```grapa
+/* Manual initialization (for classes without $new()) */
+MyClass = class {
+    n = 0;
+    
+    /* Manual init method - must be called explicitly */
+    init = op(value:-1) {
+        n = value;
+    };
+    
+    getValue = op() {
+        n;
+    };
+};
+
+/* Create and manually initialize */
+x = obj MyClass;
+x.init();           /* n = -1 */
+y = obj MyClass;
+y.init(4);          /* n = 4 */
+```
 
 ### Access Control and Visibility
 

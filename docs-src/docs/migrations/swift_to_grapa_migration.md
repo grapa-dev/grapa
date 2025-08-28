@@ -45,8 +45,8 @@
 | `guard let x = y else { ... }` | —             | Rarely needed, not blocking |
 | `#available(iOS 13, *)`     | —                | Rarely needed, not blocking |
 | `@available(iOS 13, *)`     | —                | Rarely needed, not blocking |
-| `struct Bar {}`             | `obj Bar {}`     | Use object constructors |
-| `class Foo {}`              | `class Foo {}`   | Use object constructors |
+| `struct Bar {}`             | `obj Bar {}`     | Use manual initialization |
+| `class Foo {}`              | `class Foo {}`   | Use `$new()` constructor or manual initialization |
 | `inheritance`               | `class (ParentClass)` | Grapa supports inheritance |
 | `method overriding`         | —                | Use regular method definitions |
 | `method overloading`        | —                | Use different function names |
@@ -95,8 +95,8 @@ These represent fundamental language features that genuinely cannot be accomplis
 ### Nice to Have
 These would improve developer experience but aren't essential:
 
-- **Structs**: `struct Bar {}` - Use object constructors
-- **Classes**: `class Foo {}` - Use object constructors
+- **Structs**: `struct Bar {}` - Use manual initialization with `obj Bar`
+- **Classes**: `class Foo {}` - Use `$new()` constructor or manual initialization
 - **Inheritance**: - Use object composition
 - **Method overriding**: - Use regular method definitions
 - **Method overloading**: - Use different function names
