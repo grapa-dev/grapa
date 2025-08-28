@@ -11,7 +11,7 @@
         <link rel="canonical" href="https://grapa-dev.github.io/grapa/run/">
       
       
-        <link rel="prev" href="../cli_integration/">
+        <link rel="prev" href="../vscode_extension/">
       
       
         <link rel="next" href="../python_integration/">
@@ -564,6 +564,29 @@
                 
   
   
+  
+  
+    <li class="md-nav__item">
+      <a href="../vscode_extension/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    VSCode Extension
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
     
   
   
@@ -576,6 +599,19 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Run Command
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
@@ -587,6 +623,58 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#interactive-mode" class="md-nav__link">
+    <span class="md-ellipsis">
+      Interactive Mode
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Interactive Mode">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#line-continuation-with-backslash" class="md-nav__link">
+    <span class="md-ellipsis">
+      Line Continuation with Backslash
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#multi-line-code-blocks" class="md-nav__link">
+    <span class="md-ellipsis">
+      Multi-line Code Blocks
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -3716,6 +3804,47 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#interactive-mode" class="md-nav__link">
+    <span class="md-ellipsis">
+      Interactive Mode
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Interactive Mode">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#line-continuation-with-backslash" class="md-nav__link">
+    <span class="md-ellipsis">
+      Line Continuation with Backslash
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#multi-line-code-blocks" class="md-nav__link">
+    <span class="md-ellipsis">
+      Multi-line Code Blocks
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -3738,7 +3867,19 @@
 <div class="highlight"><pre><span></span><code>./grapa [parameters]
 </code></pre></div></p>
 <p>To exit while in the console, enter a '.' character.</p>
-<p>If using paste to enter a block of code to run, ensure each line is not larger than the maximum line line for the console - break up the code into shorter lines.</p>
+<h2 id="interactive-mode">Interactive Mode</h2>
+<p>When running Grapa in interactive mode (<code>-i</code> flag), you can enter commands line by line. The interactive console provides several features for multi-line input:</p>
+<h3 id="line-continuation-with-backslash">Line Continuation with Backslash</h3>
+<p>Use <code>\</code> (backslash) at the end of a line to continue the command on the next line:</p>
+<div class="highlight"><pre><span></span><code>grapa: /&gt;a = \
+5
+
+grapa: /&gt;a
+5
+</code></pre></div>
+<p>This allows you to enter multi-line commands without executing each line separately.</p>
+<h3 id="multi-line-code-blocks">Multi-line Code Blocks</h3>
+<p>If using paste to enter a block of code to run, ensure each line is not larger than the maximum line length for the console - break up the code into shorter lines.</p>
 <p>If using paste to enter multiple lines that need to be run at the same time (such as when a single command spans multiple lines), enter <code>$[</code> sequence first and <code>$]</code> sequence at the end. This will trigger the lexical engine to signal to the grammar engine to pause grammar analysis until after all the tokens have been generated for the input stream. </p>
 <h1 id="command-line-options">Command line options</h1>
 <p>Once copied into a location (and PATH updated if needed), you'll be able to run the tool using "grapa" from a terminal or command shell from any location. Running the tool with "grapa --env" will display a few of the directories where the tool will look for information.</p>

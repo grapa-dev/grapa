@@ -562,6 +562,29 @@
   
   
     <li class="md-nav__item">
+      <a href="../vscode_extension/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    VSCode Extension
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../run/" class="md-nav__link">
         
   
@@ -1019,6 +1042,90 @@
   <a href="#advanced-command-line-options" class="md-nav__link">
     <span class="md-ellipsis">
       Advanced Command Line Options
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#interactive-mode" class="md-nav__link">
+    <span class="md-ellipsis">
+      Interactive Mode
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Interactive Mode">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#starting-interactive-mode" class="md-nav__link">
+    <span class="md-ellipsis">
+      Starting Interactive Mode
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#interactive-mode-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      Interactive Mode Features
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Interactive Mode Features">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#line-continuation-with-backslash" class="md-nav__link">
+    <span class="md-ellipsis">
+      Line Continuation with Backslash
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#multi-line-code-blocks" class="md-nav__link">
+    <span class="md-ellipsis">
+      Multi-line Code Blocks
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#interactive-mode-commands" class="md-nav__link">
+    <span class="md-ellipsis">
+      Interactive Mode Commands
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-interactive-session" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example Interactive Session
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#interactive-mode-tips" class="md-nav__link">
+    <span class="md-ellipsis">
+      Interactive Mode Tips
     </span>
   </a>
   
@@ -4590,6 +4697,90 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#interactive-mode" class="md-nav__link">
+    <span class="md-ellipsis">
+      Interactive Mode
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Interactive Mode">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#starting-interactive-mode" class="md-nav__link">
+    <span class="md-ellipsis">
+      Starting Interactive Mode
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#interactive-mode-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      Interactive Mode Features
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Interactive Mode Features">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#line-continuation-with-backslash" class="md-nav__link">
+    <span class="md-ellipsis">
+      Line Continuation with Backslash
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#multi-line-code-blocks" class="md-nav__link">
+    <span class="md-ellipsis">
+      Multi-line Code Blocks
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#interactive-mode-commands" class="md-nav__link">
+    <span class="md-ellipsis">
+      Interactive Mode Commands
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-interactive-session" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example Interactive Session
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#interactive-mode-tips" class="md-nav__link">
+    <span class="md-ellipsis">
+      Interactive Mode Tips
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#using-language-capabilities-from-cli" class="md-nav__link">
     <span class="md-ellipsis">
       Using Language Capabilities from CLI
@@ -4999,7 +5190,7 @@ grapa<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;&#
 grapa<span class="w"> </span>-f<span class="w"> </span>script.grc
 
 <span class="c1"># Interactive mode</span>
-grapa
+grapa<span class="w"> </span>-i
 
 <span class="c1"># Help</span>
 grapa<span class="w"> </span>-h
@@ -5204,6 +5395,59 @@ grapa<span class="w"> </span>-d<span class="w"> </span>-c<span class="w"> </span
 <span class="c1"># Interactive mode</span>
 grapa<span class="w"> </span>-i
 </code></pre></div>
+<h2 id="interactive-mode">Interactive Mode</h2>
+<p>Grapa's interactive mode (<code>-i</code> flag) provides a REPL (Read-Eval-Print Loop) for experimenting with code and testing commands line by line.</p>
+<h3 id="starting-interactive-mode">Starting Interactive Mode</h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># Start interactive mode</span>
+grapa<span class="w"> </span>-i
+
+<span class="c1"># Or simply run grapa without arguments</span>
+grapa
+</code></pre></div>
+<h3 id="interactive-mode-features">Interactive Mode Features</h3>
+<h4 id="line-continuation-with-backslash"><strong>Line Continuation with Backslash</strong></h4>
+<p>Use <code>\</code> (backslash) at the end of a line to continue commands across multiple lines:</p>
+<div class="highlight"><pre><span></span><code>grapa: /&gt;a = \
+5
+
+grapa: /&gt;a
+5
+</code></pre></div>
+<h4 id="multi-line-code-blocks"><strong>Multi-line Code Blocks</strong></h4>
+<p>For complex multi-line code, use <code>$[</code> and <code>$]</code> to define code blocks:</p>
+<div class="highlight"><pre><span></span><code>grapa: /&gt;$[
+grapa: /&gt;if (x &gt; 10) {
+grapa: /&gt;    (&quot;x is greater than 10&quot;).echo();
+grapa: /&gt;} else {
+grapa: /&gt;    (&quot;x is 10 or less&quot;).echo();
+grapa: /&gt;}
+grapa: /&gt;$]
+</code></pre></div>
+<h4 id="interactive-mode-commands"><strong>Interactive Mode Commands</strong></h4>
+<ul>
+<li><strong>Exit</strong>: Enter <code>.</code> (single dot) on a line by itself</li>
+<li><strong>Line continuation</strong>: Use <code>\</code> at the end of a line</li>
+<li><strong>Multi-line blocks</strong>: Use <code>$[</code> and <code>$]</code> for complex code</li>
+</ul>
+<h4 id="example-interactive-session"><strong>Example Interactive Session</strong></h4>
+<div class="highlight"><pre><span></span><code>grapa: /&gt;name = &quot;Alice&quot;
+grapa: /&gt;age = 30
+grapa: /&gt;(&quot;Hello &quot; + name + &quot;, you are &quot; + age + &quot; years old&quot;).echo()
+Hello Alice, you are 30 years old
+grapa: /&gt;numbers = [1, 2, 3, 4, 5]
+grapa: /&gt;sum = numbers.reduce(op(acc, x) { acc + x; }, 0)
+grapa: /&gt;(&quot;Sum of numbers: &quot; + sum).echo()
+Sum of numbers: 15
+grapa: /&gt;.
+</code></pre></div>
+<h3 id="interactive-mode-tips">Interactive Mode Tips</h3>
+<ul>
+<li><strong>Variable persistence</strong>: Variables remain available throughout the session</li>
+<li><strong>Command history</strong>: Use arrow keys to navigate previous commands</li>
+<li><strong>Multi-line input</strong>: Use backslash for line continuation</li>
+<li><strong>Quick testing</strong>: Perfect for testing small code snippets</li>
+<li><strong>Learning</strong>: Great for exploring Grapa's features</li>
+</ul>
 <h2 id="using-language-capabilities-from-cli">Using Language Capabilities from CLI</h2>
 <h3 id="performance-and-timing">Performance and Timing</h3>
 <div class="highlight"><pre><span></span><code><span class="c1"># Performance profiling using built-in timing</span>

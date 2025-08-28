@@ -8,28 +8,28 @@
       
       
       
-        <link rel="canonical" href="https://grapa-dev.github.io/grapa/database/troubleshooting/">
+        <link rel="canonical" href="https://grapa-dev.github.io/grapa/vscode_extension/">
       
       
-        <link rel="prev" href="../column_store/">
+        <link rel="prev" href="../cli_integration/">
       
       
-        <link rel="next" href="../../syntax/basic_syntax/">
+        <link rel="next" href="../run/">
       
       
-      <link rel="icon" href="../../assets/images/favicon.png">
+      <link rel="icon" href="../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.15">
     
     
       
-        <title>Troubleshooting - Grapa Documentation</title>
+        <title>VSCode Extension - Grapa Documentation</title>
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.342714a4.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.342714a4.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+        <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
       
       
 
@@ -48,7 +48,7 @@
       
     
     
-    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -74,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#database-troubleshooting-guide" class="md-skip">
+        <a href="#vscode-extension" class="md-skip">
           Skip to content
         </a>
       
@@ -88,7 +88,7 @@
 
 <header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../.." title="Grapa Documentation" class="md-header__button md-logo" aria-label="Grapa Documentation" data-md-component="logo">
+    <a href=".." title="Grapa Documentation" class="md-header__button md-logo" aria-label="Grapa Documentation" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -108,7 +108,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Troubleshooting
+              VSCode Extension
             
           </span>
         </div>
@@ -205,7 +205,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../../about/" class="md-tabs__link">
+      <a href="../about/" class="md-tabs__link">
         
   
   
@@ -224,7 +224,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../.." class="md-tabs__link">
+      <a href=".." class="md-tabs__link">
         
   
   
@@ -241,11 +241,13 @@
   
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
-        <a href="../../getting_started/" class="md-tabs__link">
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../getting_started/" class="md-tabs__link">
           
   
   
@@ -263,7 +265,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../../cli_quickstart/" class="md-tabs__link">
+      <a href="../cli_quickstart/" class="md-tabs__link">
         
   
   
@@ -280,13 +282,11 @@
   
   
   
-    
-  
   
     
     
-      <li class="md-tabs__item md-tabs__item--active">
-        <a href="../../api_reference/" class="md-tabs__link">
+      <li class="md-tabs__item">
+        <a href="../api_reference/" class="md-tabs__link">
           
   
   
@@ -313,7 +313,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../migrations/python_to_grapa_migration/" class="md-tabs__link">
+        <a href="../migrations/python_to_grapa_migration/" class="md-tabs__link">
           
   
   
@@ -336,7 +336,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../use_cases/" class="md-tabs__link">
+        <a href="../use_cases/" class="md-tabs__link">
           
   
   
@@ -356,7 +356,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../troubleshooting/" class="md-tabs__link">
+        <a href="../troubleshooting/" class="md-tabs__link">
           
   
   
@@ -390,7 +390,7 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../.." title="Grapa Documentation" class="md-nav__button md-logo" aria-label="Grapa Documentation" data-md-component="logo">
+    <a href=".." title="Grapa Documentation" class="md-nav__button md-logo" aria-label="Grapa Documentation" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -408,7 +408,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../about/" class="md-nav__link">
+      <a href="../about/" class="md-nav__link">
         
   
   
@@ -430,243 +430,12 @@
   
   
     <li class="md-nav__item">
-      <a href="../.." class="md-nav__link">
+      <a href=".." class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     Home
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
-        
-          
-          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    Getting Started
-    
-  </span>
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_3">
-            <span class="md-nav__icon md-icon"></span>
-            Getting Started
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../getting_started/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    Overview
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../installation/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    Installation
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../cli_integration/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    CLI Integration
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../vscode_extension/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    VSCode Extension
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../run/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    Run Command
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../python_integration/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    Python Integration
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../grapa_ecosystem_positioning/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    Grapa in the Ecosystem
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../cli_quickstart/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    Quickstart
     
   </span>
   
@@ -699,10 +468,802 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
         
           
-          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    Getting Started
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Getting Started
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../getting_started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Overview
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Installation
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cli_integration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    CLI Integration
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    VSCode Extension
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    VSCode Extension
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#installation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Installation
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Installation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#from-visual-studio-marketplace" class="md-nav__link">
+    <span class="md-ellipsis">
+      From Visual Studio Marketplace
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      Prerequisites
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#features" class="md-nav__link">
+    <span class="md-ellipsis">
+      Features
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Features">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#syntax-highlighting" class="md-nav__link">
+    <span class="md-ellipsis">
+      Syntax Highlighting
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#intellisense-autocomplete" class="md-nav__link">
+    <span class="md-ellipsis">
+      IntelliSense &amp; Autocomplete
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#code-snippets" class="md-nav__link">
+    <span class="md-ellipsis">
+      Code Snippets
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Code Snippets">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#control-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      Control Flow
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#file-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      File Operations
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cryptography" class="md-nav__link">
+    <span class="md-ellipsis">
+      Cryptography
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#data-structures" class="md-nav__link">
+    <span class="md-ellipsis">
+      Data Structures
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#error-handling" class="md-nav__link">
+    <span class="md-ellipsis">
+      Error Handling
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#interactive-execution" class="md-nav__link">
+    <span class="md-ellipsis">
+      Interactive Execution
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Interactive Execution">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#interactive-terminal" class="md-nav__link">
+    <span class="md-ellipsis">
+      Interactive Terminal
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#code-selection-execution" class="md-nav__link">
+    <span class="md-ellipsis">
+      Code Selection Execution
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#error-detection" class="md-nav__link">
+    <span class="md-ellipsis">
+      Error Detection
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#quick-start" class="md-nav__link">
+    <span class="md-ellipsis">
+      Quick Start
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Quick Start">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-open-a-grapa-file" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Open a Grapa File
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-write-some-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Write Some Code
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-run-the-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Run the Code
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#commands" class="md-nav__link">
+    <span class="md-ellipsis">
+      Commands
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Commands">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#available-commands" class="md-nav__link">
+    <span class="md-ellipsis">
+      Available Commands
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#keyboard-shortcuts" class="md-nav__link">
+    <span class="md-ellipsis">
+      Keyboard Shortcuts
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configuration
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Configuration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#extension-settings" class="md-nav__link">
+    <span class="md-ellipsis">
+      Extension Settings
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#setting-descriptions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Setting Descriptions
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#usage-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      Usage Examples
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Usage Examples">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#basic-syntax-highlighting" class="md-nav__link">
+    <span class="md-ellipsis">
+      Basic Syntax Highlighting
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#using-snippets" class="md-nav__link">
+    <span class="md-ellipsis">
+      Using Snippets
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#interactive-mode" class="md-nav__link">
+    <span class="md-ellipsis">
+      Interactive Mode
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#multi-line-code-execution" class="md-nav__link">
+    <span class="md-ellipsis">
+      Multi-line Code Execution
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#troubleshooting" class="md-nav__link">
+    <span class="md-ellipsis">
+      Troubleshooting
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Troubleshooting">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#common-issues" class="md-nav__link">
+    <span class="md-ellipsis">
+      Common Issues
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Common Issues">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#extension-not-loading" class="md-nav__link">
+    <span class="md-ellipsis">
+      Extension Not Loading
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#grapa-executable-not-found" class="md-nav__link">
+    <span class="md-ellipsis">
+      Grapa Executable Not Found
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#interactive-mode-not-working" class="md-nav__link">
+    <span class="md-ellipsis">
+      Interactive Mode Not Working
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#snippets-not-working" class="md-nav__link">
+    <span class="md-ellipsis">
+      Snippets Not Working
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#debug-mode" class="md-nav__link">
+    <span class="md-ellipsis">
+      Debug Mode
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#integration-with-other-tools" class="md-nav__link">
+    <span class="md-ellipsis">
+      Integration with Other Tools
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Integration with Other Tools">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#git-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      Git Integration
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#terminal-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      Terminal Integration
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#debugging" class="md-nav__link">
+    <span class="md-ellipsis">
+      Debugging
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#best-practices" class="md-nav__link">
+    <span class="md-ellipsis">
+      Best Practices
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Best Practices">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#code-organization" class="md-nav__link">
+    <span class="md-ellipsis">
+      Code Organization
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#interactive-development" class="md-nav__link">
+    <span class="md-ellipsis">
+      Interactive Development
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#error-handling_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Error Handling
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#support" class="md-nav__link">
+    <span class="md-ellipsis">
+      Support
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Support">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#getting-help" class="md-nav__link">
+    <span class="md-ellipsis">
+      Getting Help
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#resources" class="md-nav__link">
+    <span class="md-ellipsis">
+      Resources
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../run/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Run Command
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../python_integration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Python Integration
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../grapa_ecosystem_positioning/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Grapa in the Ecosystem
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cli_quickstart/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Quickstart
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
             
   
   
@@ -715,7 +1276,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_5">
             <span class="md-nav__icon md-icon"></span>
             Reference
@@ -729,7 +1290,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../api_reference/" class="md-nav__link">
+      <a href="../api_reference/" class="md-nav__link">
         
   
   
@@ -793,7 +1354,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../type/array/" class="md-nav__link">
+      <a href="../type/array/" class="md-nav__link">
         
   
   
@@ -816,7 +1377,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../type/bool/" class="md-nav__link">
+      <a href="../type/bool/" class="md-nav__link">
         
   
   
@@ -839,7 +1400,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../type/code/" class="md-nav__link">
+      <a href="../type/code/" class="md-nav__link">
         
   
   
@@ -862,7 +1423,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../type/err/" class="md-nav__link">
+      <a href="../type/err/" class="md-nav__link">
         
   
   
@@ -885,7 +1446,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../type/float/" class="md-nav__link">
+      <a href="../type/float/" class="md-nav__link">
         
   
   
@@ -908,7 +1469,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../type/id/" class="md-nav__link">
+      <a href="../type/id/" class="md-nav__link">
         
   
   
@@ -931,7 +1492,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../type/int/" class="md-nav__link">
+      <a href="../type/int/" class="md-nav__link">
         
   
   
@@ -954,7 +1515,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../type/list/" class="md-nav__link">
+      <a href="../type/list/" class="md-nav__link">
         
   
   
@@ -977,7 +1538,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../type/obj_methods/" class="md-nav__link">
+      <a href="../type/obj_methods/" class="md-nav__link">
         
   
   
@@ -1000,7 +1561,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../type/op/" class="md-nav__link">
+      <a href="../type/op/" class="md-nav__link">
         
   
   
@@ -1023,7 +1584,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../type/raw/" class="md-nav__link">
+      <a href="../type/raw/" class="md-nav__link">
         
   
   
@@ -1046,7 +1607,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../type/rule/" class="md-nav__link">
+      <a href="../type/rule/" class="md-nav__link">
         
   
   
@@ -1069,7 +1630,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../type/str/" class="md-nav__link">
+      <a href="../type/str/" class="md-nav__link">
         
   
   
@@ -1092,7 +1653,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../type/sysid/" class="md-nav__link">
+      <a href="../type/sysid/" class="md-nav__link">
         
   
   
@@ -1115,7 +1676,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../type/sysint/" class="md-nav__link">
+      <a href="../type/sysint/" class="md-nav__link">
         
   
   
@@ -1138,7 +1699,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../type/sysstr/" class="md-nav__link">
+      <a href="../type/sysstr/" class="md-nav__link">
         
   
   
@@ -1161,7 +1722,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../type/table/" class="md-nav__link">
+      <a href="../type/table/" class="md-nav__link">
         
   
   
@@ -1184,7 +1745,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../type/tag/" class="md-nav__link">
+      <a href="../type/tag/" class="md-nav__link">
         
   
   
@@ -1207,7 +1768,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../type/time/" class="md-nav__link">
+      <a href="../type/time/" class="md-nav__link">
         
   
   
@@ -1230,7 +1791,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../type/tuple/" class="md-nav__link">
+      <a href="../type/tuple/" class="md-nav__link">
         
   
   
@@ -1253,7 +1814,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../type/vector/" class="md-nav__link">
+      <a href="../type/vector/" class="md-nav__link">
         
   
   
@@ -1276,7 +1837,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../type/widget/" class="md-nav__link">
+      <a href="../type/widget/" class="md-nav__link">
         
   
   
@@ -1299,7 +1860,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../type/widget/attributes/" class="md-nav__link">
+      <a href="../type/widget/attributes/" class="md-nav__link">
         
   
   
@@ -1322,7 +1883,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../type/xml/" class="md-nav__link">
+      <a href="../type/xml/" class="md-nav__link">
         
   
   
@@ -1394,7 +1955,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../operators/function/" class="md-nav__link">
+      <a href="../operators/function/" class="md-nav__link">
         
   
   
@@ -1417,7 +1978,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../operators/assignment/" class="md-nav__link">
+      <a href="../operators/assignment/" class="md-nav__link">
         
   
   
@@ -1440,7 +2001,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../operators/math/" class="md-nav__link">
+      <a href="../operators/math/" class="md-nav__link">
         
   
   
@@ -1463,7 +2024,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../operators/bit/" class="md-nav__link">
+      <a href="../operators/bit/" class="md-nav__link">
         
   
   
@@ -1486,7 +2047,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../operators/compare/" class="md-nav__link">
+      <a href="../operators/compare/" class="md-nav__link">
         
   
   
@@ -1509,7 +2070,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../operators/condition/" class="md-nav__link">
+      <a href="../operators/condition/" class="md-nav__link">
         
   
   
@@ -1532,7 +2093,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../operators/loop/" class="md-nav__link">
+      <a href="../operators/loop/" class="md-nav__link">
         
   
   
@@ -1555,7 +2116,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../operators/command/" class="md-nav__link">
+      <a href="../operators/command/" class="md-nav__link">
         
   
   
@@ -1578,7 +2139,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../operators/constants/" class="md-nav__link">
+      <a href="../operators/constants/" class="md-nav__link">
         
   
   
@@ -1650,7 +2211,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../sys/file/" class="md-nav__link">
+      <a href="../sys/file/" class="md-nav__link">
         
   
   
@@ -1673,7 +2234,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../sys/math/" class="md-nav__link">
+      <a href="../sys/math/" class="md-nav__link">
         
   
   
@@ -1696,7 +2257,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../sys/net/" class="md-nav__link">
+      <a href="../sys/net/" class="md-nav__link">
         
   
   
@@ -1719,7 +2280,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../curl_function/" class="md-nav__link">
+      <a href="../curl_function/" class="md-nav__link">
         
   
   
@@ -1742,7 +2303,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../sys/sys/" class="md-nav__link">
+      <a href="../sys/sys/" class="md-nav__link">
         
   
   
@@ -1765,7 +2326,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../sys/thread/" class="md-nav__link">
+      <a href="../sys/thread/" class="md-nav__link">
         
   
   
@@ -1788,7 +2349,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../function_quick_reference/" class="md-nav__link">
+      <a href="../function_quick_reference/" class="md-nav__link">
         
   
   
@@ -1860,7 +2421,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../obj/document/" class="md-nav__link">
+      <a href="../obj/document/" class="md-nav__link">
         
   
   
@@ -1883,7 +2444,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../obj/encode/" class="md-nav__link">
+      <a href="../obj/encode/" class="md-nav__link">
         
   
   
@@ -1906,7 +2467,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../obj/grep/" class="md-nav__link">
+      <a href="../obj/grep/" class="md-nav__link">
         
   
   
@@ -1929,7 +2490,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../obj/grep_python/" class="md-nav__link">
+      <a href="../obj/grep_python/" class="md-nav__link">
         
   
   
@@ -1952,7 +2513,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../obj/iterate/" class="md-nav__link">
+      <a href="../obj/iterate/" class="md-nav__link">
         
   
   
@@ -1975,7 +2536,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../obj/transform/" class="md-nav__link">
+      <a href="../obj/transform/" class="md-nav__link">
         
   
   
@@ -2047,7 +2608,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../grep/" class="md-nav__link">
+      <a href="../grep/" class="md-nav__link">
         
   
   
@@ -2075,8 +2636,6 @@
                 
   
   
-    
-  
   
   
     
@@ -2087,11 +2646,11 @@
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_7" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_7" >
         
           
           <label class="md-nav__link" for="__nav_5_7" id="__nav_5_7_label" tabindex="0">
@@ -2107,7 +2666,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_7_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_7_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_5_7">
             <span class="md-nav__icon md-icon"></span>
             Database
@@ -2121,7 +2680,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../quick_reference/" class="md-nav__link">
+      <a href="../database/quick_reference/" class="md-nav__link">
         
   
   
@@ -2144,7 +2703,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../column_store/" class="md-nav__link">
+      <a href="../database/column_store/" class="md-nav__link">
         
   
   
@@ -2164,32 +2723,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    Troubleshooting
-    
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../database/troubleshooting/" class="md-nav__link">
         
   
   
@@ -2200,461 +2737,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#common-issues-and-solutions" class="md-nav__link">
-    <span class="md-ellipsis">
-      Common Issues and Solutions
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Common Issues and Solutions">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#column-store-performance-issues" class="md-nav__link">
-    <span class="md-ellipsis">
-      Column Store Performance Issues
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Column Store Performance Issues">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#issue-slow-performance-on-small-datasets" class="md-nav__link">
-    <span class="md-ellipsis">
-      Issue: Slow Performance on Small Datasets
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#issue-infinite-loops-during-data-setting" class="md-nav__link">
-    <span class="md-ellipsis">
-      Issue: Infinite Loops During Data Setting
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#issue-fragmented-data-storage-errors" class="md-nav__link">
-    <span class="md-ellipsis">
-      Issue: Fragmented Data Storage Errors
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#field-creation-issues" class="md-nav__link">
-    <span class="md-ellipsis">
-      Field Creation Issues
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Field Creation Issues">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#issue-fields-not-created-properly" class="md-nav__link">
-    <span class="md-ellipsis">
-      Issue: Fields Not Created Properly
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#issue-storage-type-mismatch" class="md-nav__link">
-    <span class="md-ellipsis">
-      Issue: Storage Type Mismatch
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#database-type-selection" class="md-nav__link">
-    <span class="md-ellipsis">
-      Database Type Selection
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Database Type Selection">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#issue-wrong-database-type-for-use-case" class="md-nav__link">
-    <span class="md-ellipsis">
-      Issue: Wrong Database Type for Use Case
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#storage-efficiency-issues" class="md-nav__link">
-    <span class="md-ellipsis">
-      Storage Efficiency Issues
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Storage Efficiency Issues">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#issue-high-storage-overhead" class="md-nav__link">
-    <span class="md-ellipsis">
-      Issue: High Storage Overhead
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#issue-poor-query-performance" class="md-nav__link">
-    <span class="md-ellipsis">
-      Issue: Poor Query Performance
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#debug-information" class="md-nav__link">
-    <span class="md-ellipsis">
-      Debug Information
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Debug Information">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#using-the-debug-function" class="md-nav__link">
-    <span class="md-ellipsis">
-      Using the Debug Function
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#common-debug-output-analysis" class="md-nav__link">
-    <span class="md-ellipsis">
-      Common Debug Output Analysis
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Common Debug Output Analysis">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#column-store-debug-output" class="md-nav__link">
-    <span class="md-ellipsis">
-      Column Store Debug Output
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#row-store-debug-output" class="md-nav__link">
-    <span class="md-ellipsis">
-      Row Store Debug Output
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#performance-optimization" class="md-nav__link">
-    <span class="md-ellipsis">
-      Performance Optimization
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Performance Optimization">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#column-store-optimization" class="md-nav__link">
-    <span class="md-ellipsis">
-      Column Store Optimization
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Column Store Optimization">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#schema-design" class="md-nav__link">
-    <span class="md-ellipsis">
-      Schema Design
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#query-design" class="md-nav__link">
-    <span class="md-ellipsis">
-      Query Design
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#storage-management" class="md-nav__link">
-    <span class="md-ellipsis">
-      Storage Management
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#row-store-optimization" class="md-nav__link">
-    <span class="md-ellipsis">
-      Row Store Optimization
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Row Store Optimization">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#schema-design_1" class="md-nav__link">
-    <span class="md-ellipsis">
-      Schema Design
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#query-design_1" class="md-nav__link">
-    <span class="md-ellipsis">
-      Query Design
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#error-messages-and-solutions" class="md-nav__link">
-    <span class="md-ellipsis">
-      Error Messages and Solutions
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Error Messages and Solutions">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#common-error-codes" class="md-nav__link">
-    <span class="md-ellipsis">
-      Common Error Codes
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Common Error Codes">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#error-1-general-failure" class="md-nav__link">
-    <span class="md-ellipsis">
-      Error -1: General Failure
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#error-2-not-found" class="md-nav__link">
-    <span class="md-ellipsis">
-      Error -2: Not Found
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#specific-error-scenarios" class="md-nav__link">
-    <span class="md-ellipsis">
-      Specific Error Scenarios
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Specific Error Scenarios">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#field-creation-errors" class="md-nav__link">
-    <span class="md-ellipsis">
-      Field Creation Errors
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#database-type-errors" class="md-nav__link">
-    <span class="md-ellipsis">
-      Database Type Errors
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#storage-parameter-errors" class="md-nav__link">
-    <span class="md-ellipsis">
-      Storage Parameter Errors
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#best-practices-summary" class="md-nav__link">
-    <span class="md-ellipsis">
-      Best Practices Summary
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Best Practices Summary">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#database-selection" class="md-nav__link">
-    <span class="md-ellipsis">
-      Database Selection
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#field-design" class="md-nav__link">
-    <span class="md-ellipsis">
-      Field Design
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#performance-monitoring" class="md-nav__link">
-    <span class="md-ellipsis">
-      Performance Monitoring
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#maintenance" class="md-nav__link">
-    <span class="md-ellipsis">
-      Maintenance
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -2716,7 +2798,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../syntax/basic_syntax/" class="md-nav__link">
+      <a href="../syntax/basic_syntax/" class="md-nav__link">
         
   
   
@@ -2739,7 +2821,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../syntax/operator/" class="md-nav__link">
+      <a href="../syntax/operator/" class="md-nav__link">
         
   
   
@@ -2762,7 +2844,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../syntax/precedence/" class="md-nav__link">
+      <a href="../syntax/precedence/" class="md-nav__link">
         
   
   
@@ -2785,7 +2867,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../syntax/grammar_design/" class="md-nav__link">
+      <a href="../syntax/grammar_design/" class="md-nav__link">
         
   
   
@@ -2816,7 +2898,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../debugging/" class="md-nav__link">
+      <a href="../debugging/" class="md-nav__link">
         
   
   
@@ -2839,7 +2921,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../execution_pipeline_overview/" class="md-nav__link">
+      <a href="../execution_pipeline_overview/" class="md-nav__link">
         
   
   
@@ -2903,7 +2985,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../advanced_topics/" class="md-nav__link">
+      <a href="../advanced_topics/" class="md-nav__link">
         
   
   
@@ -2926,7 +3008,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../advanced_language_features/" class="md-nav__link">
+      <a href="../advanced_language_features/" class="md-nav__link">
         
   
   
@@ -2949,7 +3031,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../advanced_concurrency_and_callbacks/" class="md-nav__link">
+      <a href="../advanced_concurrency_and_callbacks/" class="md-nav__link">
         
   
   
@@ -2972,7 +3054,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../advanced/array_vector_interoperability/" class="md-nav__link">
+      <a href="../advanced/array_vector_interoperability/" class="md-nav__link">
         
   
   
@@ -2995,7 +3077,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../multi_syntax_programming/" class="md-nav__link">
+      <a href="../multi_syntax_programming/" class="md-nav__link">
         
   
   
@@ -3018,7 +3100,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../language_design_with_executable_bnf/" class="md-nav__link">
+      <a href="../language_design_with_executable_bnf/" class="md-nav__link">
         
   
   
@@ -3041,7 +3123,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../isolated_rule_execution/" class="md-nav__link">
+      <a href="../isolated_rule_execution/" class="md-nav__link">
         
   
   
@@ -3064,7 +3146,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../deep_expert_implementation_overview/" class="md-nav__link">
+      <a href="../deep_expert_implementation_overview/" class="md-nav__link">
         
   
   
@@ -3087,7 +3169,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../xml_list_integration/" class="md-nav__link">
+      <a href="../xml_list_integration/" class="md-nav__link">
         
   
   
@@ -3110,7 +3192,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../unified_dot_notation/" class="md-nav__link">
+      <a href="../unified_dot_notation/" class="md-nav__link">
         
   
   
@@ -3133,7 +3215,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../module_system/" class="md-nav__link">
+      <a href="../module_system/" class="md-nav__link">
         
   
   
@@ -3156,7 +3238,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../machine_learning/" class="md-nav__link">
+      <a href="../machine_learning/" class="md-nav__link">
         
   
   
@@ -3179,7 +3261,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../vector_performance_guide/" class="md-nav__link">
+      <a href="../vector_performance_guide/" class="md-nav__link">
         
   
   
@@ -3251,7 +3333,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../sql_integration/" class="md-nav__link">
+      <a href="../sql_integration/" class="md-nav__link">
         
   
   
@@ -3274,7 +3356,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../prolog_integration/" class="md-nav__link">
+      <a href="../prolog_integration/" class="md-nav__link">
         
   
   
@@ -3297,7 +3379,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../lisp_integration/" class="md-nav__link">
+      <a href="../lisp_integration/" class="md-nav__link">
         
   
   
@@ -3417,7 +3499,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../migrations/python_to_grapa_migration/" class="md-nav__link">
+      <a href="../migrations/python_to_grapa_migration/" class="md-nav__link">
         
   
   
@@ -3440,7 +3522,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../migrations/js_to_grapa_migration/" class="md-nav__link">
+      <a href="../migrations/js_to_grapa_migration/" class="md-nav__link">
         
   
   
@@ -3463,7 +3545,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../migrations/rust_to_grapa_migration/" class="md-nav__link">
+      <a href="../migrations/rust_to_grapa_migration/" class="md-nav__link">
         
   
   
@@ -3486,7 +3568,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../migrations/typescript_to_grapa_migration/" class="md-nav__link">
+      <a href="../migrations/typescript_to_grapa_migration/" class="md-nav__link">
         
   
   
@@ -3509,7 +3591,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../migrations/go_to_grapa_migration/" class="md-nav__link">
+      <a href="../migrations/go_to_grapa_migration/" class="md-nav__link">
         
   
   
@@ -3532,7 +3614,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../migrations/ruby_to_grapa_migration/" class="md-nav__link">
+      <a href="../migrations/ruby_to_grapa_migration/" class="md-nav__link">
         
   
   
@@ -3555,7 +3637,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../migrations/kotlin_to_grapa_migration/" class="md-nav__link">
+      <a href="../migrations/kotlin_to_grapa_migration/" class="md-nav__link">
         
   
   
@@ -3578,7 +3660,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../migrations/swift_to_grapa_migration/" class="md-nav__link">
+      <a href="../migrations/swift_to_grapa_migration/" class="md-nav__link">
         
   
   
@@ -3609,7 +3691,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../examples/" class="md-nav__link">
+      <a href="../examples/" class="md-nav__link">
         
   
   
@@ -3632,7 +3714,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../python_use_cases/" class="md-nav__link">
+      <a href="../python_use_cases/" class="md-nav__link">
         
   
   
@@ -3655,7 +3737,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../grc_scripts/" class="md-nav__link">
+      <a href="../grc_scripts/" class="md-nav__link">
         
   
   
@@ -3678,7 +3760,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../grz_format/" class="md-nav__link">
+      <a href="../grz_format/" class="md-nav__link">
         
   
   
@@ -3701,7 +3783,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../grapapy_namespace_solution/" class="md-nav__link">
+      <a href="../grapapy_namespace_solution/" class="md-nav__link">
         
   
   
@@ -3724,7 +3806,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../directory_navigation/" class="md-nav__link">
+      <a href="../directory_navigation/" class="md-nav__link">
         
   
   
@@ -3747,7 +3829,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../unified_path_system/" class="md-nav__link">
+      <a href="../unified_path_system/" class="md-nav__link">
         
   
   
@@ -3818,7 +3900,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../use_cases/" class="md-nav__link">
+      <a href="../use_cases/" class="md-nav__link">
         
   
   
@@ -3841,7 +3923,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../use_cases/etl_data_engineering/" class="md-nav__link">
+      <a href="../use_cases/etl_data_engineering/" class="md-nav__link">
         
   
   
@@ -3864,7 +3946,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../use_cases/compiler_bnf_learning/" class="md-nav__link">
+      <a href="../use_cases/compiler_bnf_learning/" class="md-nav__link">
         
   
   
@@ -3887,7 +3969,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../use_cases/high_precision_math/" class="md-nav__link">
+      <a href="../use_cases/high_precision_math/" class="md-nav__link">
         
   
   
@@ -3910,7 +3992,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../use_cases/parallel_concurrent_programming/" class="md-nav__link">
+      <a href="../use_cases/parallel_concurrent_programming/" class="md-nav__link">
         
   
   
@@ -3933,7 +4015,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../use_cases/web_data_scraping/" class="md-nav__link">
+      <a href="../use_cases/web_data_scraping/" class="md-nav__link">
         
   
   
@@ -3956,7 +4038,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../use_cases/database_file_system/" class="md-nav__link">
+      <a href="../use_cases/database_file_system/" class="md-nav__link">
         
   
   
@@ -3979,7 +4061,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../use_cases/education_prototyping/" class="md-nav__link">
+      <a href="../use_cases/education_prototyping/" class="md-nav__link">
         
   
   
@@ -4002,7 +4084,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../use_cases/cryptography/" class="md-nav__link">
+      <a href="../use_cases/cryptography/" class="md-nav__link">
         
   
   
@@ -4025,7 +4107,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../use_cases/multi_syntax_data_processing/" class="md-nav__link">
+      <a href="../use_cases/multi_syntax_data_processing/" class="md-nav__link">
         
   
   
@@ -4048,7 +4130,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../use_cases/language_design_and_dsls/" class="md-nav__link">
+      <a href="../use_cases/language_design_and_dsls/" class="md-nav__link">
         
   
   
@@ -4119,7 +4201,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../troubleshooting/" class="md-nav__link">
+      <a href="../troubleshooting/" class="md-nav__link">
         
   
   
@@ -4142,7 +4224,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../testing/" class="md-nav__link">
+      <a href="../testing/" class="md-nav__link">
         
   
   
@@ -4165,7 +4247,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../updates/" class="md-nav__link">
+      <a href="../updates/" class="md-nav__link">
         
   
   
@@ -4215,144 +4297,30 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#common-issues-and-solutions" class="md-nav__link">
+  <a href="#installation" class="md-nav__link">
     <span class="md-ellipsis">
-      Common Issues and Solutions
+      Installation
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Common Issues and Solutions">
+    <nav class="md-nav" aria-label="Installation">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#column-store-performance-issues" class="md-nav__link">
+  <a href="#from-visual-studio-marketplace" class="md-nav__link">
     <span class="md-ellipsis">
-      Column Store Performance Issues
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Column Store Performance Issues">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#issue-slow-performance-on-small-datasets" class="md-nav__link">
-    <span class="md-ellipsis">
-      Issue: Slow Performance on Small Datasets
+      From Visual Studio Marketplace
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#issue-infinite-loops-during-data-setting" class="md-nav__link">
+  <a href="#prerequisites" class="md-nav__link">
     <span class="md-ellipsis">
-      Issue: Infinite Loops During Data Setting
+      Prerequisites
     </span>
   </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#issue-fragmented-data-storage-errors" class="md-nav__link">
-    <span class="md-ellipsis">
-      Issue: Fragmented Data Storage Errors
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#field-creation-issues" class="md-nav__link">
-    <span class="md-ellipsis">
-      Field Creation Issues
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Field Creation Issues">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#issue-fields-not-created-properly" class="md-nav__link">
-    <span class="md-ellipsis">
-      Issue: Fields Not Created Properly
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#issue-storage-type-mismatch" class="md-nav__link">
-    <span class="md-ellipsis">
-      Issue: Storage Type Mismatch
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#database-type-selection" class="md-nav__link">
-    <span class="md-ellipsis">
-      Database Type Selection
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Database Type Selection">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#issue-wrong-database-type-for-use-case" class="md-nav__link">
-    <span class="md-ellipsis">
-      Issue: Wrong Database Type for Use Case
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#storage-efficiency-issues" class="md-nav__link">
-    <span class="md-ellipsis">
-      Storage Efficiency Issues
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Storage Efficiency Issues">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#issue-high-storage-overhead" class="md-nav__link">
-    <span class="md-ellipsis">
-      Issue: High Storage Overhead
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#issue-poor-query-performance" class="md-nav__link">
-    <span class="md-ellipsis">
-      Issue: Poor Query Performance
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
         
@@ -4362,104 +4330,83 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#debug-information" class="md-nav__link">
+  <a href="#features" class="md-nav__link">
     <span class="md-ellipsis">
-      Debug Information
+      Features
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Debug Information">
+    <nav class="md-nav" aria-label="Features">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#using-the-debug-function" class="md-nav__link">
+  <a href="#syntax-highlighting" class="md-nav__link">
     <span class="md-ellipsis">
-      Using the Debug Function
+      Syntax Highlighting
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#common-debug-output-analysis" class="md-nav__link">
+  <a href="#intellisense-autocomplete" class="md-nav__link">
     <span class="md-ellipsis">
-      Common Debug Output Analysis
+      IntelliSense &amp; Autocomplete
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Common Debug Output Analysis">
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#code-snippets" class="md-nav__link">
+    <span class="md-ellipsis">
+      Code Snippets
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Code Snippets">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#column-store-debug-output" class="md-nav__link">
+  <a href="#control-flow" class="md-nav__link">
     <span class="md-ellipsis">
-      Column Store Debug Output
+      Control Flow
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#row-store-debug-output" class="md-nav__link">
+  <a href="#file-operations" class="md-nav__link">
     <span class="md-ellipsis">
-      Row Store Debug Output
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#performance-optimization" class="md-nav__link">
-    <span class="md-ellipsis">
-      Performance Optimization
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Performance Optimization">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#column-store-optimization" class="md-nav__link">
-    <span class="md-ellipsis">
-      Column Store Optimization
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Column Store Optimization">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#schema-design" class="md-nav__link">
-    <span class="md-ellipsis">
-      Schema Design
+      File Operations
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#query-design" class="md-nav__link">
+  <a href="#cryptography" class="md-nav__link">
     <span class="md-ellipsis">
-      Query Design
+      Cryptography
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#storage-management" class="md-nav__link">
+  <a href="#data-structures" class="md-nav__link">
     <span class="md-ellipsis">
-      Storage Management
+      Data Structures
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#error-handling" class="md-nav__link">
+    <span class="md-ellipsis">
+      Error Handling
     </span>
   </a>
   
@@ -4471,28 +4418,28 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#row-store-optimization" class="md-nav__link">
+  <a href="#interactive-execution" class="md-nav__link">
     <span class="md-ellipsis">
-      Row Store Optimization
+      Interactive Execution
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Row Store Optimization">
+    <nav class="md-nav" aria-label="Interactive Execution">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#schema-design_1" class="md-nav__link">
+  <a href="#interactive-terminal" class="md-nav__link">
     <span class="md-ellipsis">
-      Schema Design
+      Interactive Terminal
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#query-design_1" class="md-nav__link">
+  <a href="#code-selection-execution" class="md-nav__link">
     <span class="md-ellipsis">
-      Query Design
+      Code Selection Execution
     </span>
   </a>
   
@@ -4500,6 +4447,15 @@
         
       </ul>
     </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#error-detection" class="md-nav__link">
+    <span class="md-ellipsis">
+      Error Detection
+    </span>
+  </a>
   
 </li>
         
@@ -4509,87 +4465,39 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#error-messages-and-solutions" class="md-nav__link">
+  <a href="#quick-start" class="md-nav__link">
     <span class="md-ellipsis">
-      Error Messages and Solutions
+      Quick Start
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Error Messages and Solutions">
+    <nav class="md-nav" aria-label="Quick Start">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#common-error-codes" class="md-nav__link">
+  <a href="#1-open-a-grapa-file" class="md-nav__link">
     <span class="md-ellipsis">
-      Common Error Codes
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Common Error Codes">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#error-1-general-failure" class="md-nav__link">
-    <span class="md-ellipsis">
-      Error -1: General Failure
+      1. Open a Grapa File
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#error-2-not-found" class="md-nav__link">
+  <a href="#2-write-some-code" class="md-nav__link">
     <span class="md-ellipsis">
-      Error -2: Not Found
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#specific-error-scenarios" class="md-nav__link">
-    <span class="md-ellipsis">
-      Specific Error Scenarios
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Specific Error Scenarios">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#field-creation-errors" class="md-nav__link">
-    <span class="md-ellipsis">
-      Field Creation Errors
+      2. Write Some Code
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#database-type-errors" class="md-nav__link">
+  <a href="#3-run-the-code" class="md-nav__link">
     <span class="md-ellipsis">
-      Database Type Errors
+      3. Run the Code
     </span>
   </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#storage-parameter-errors" class="md-nav__link">
-    <span class="md-ellipsis">
-      Storage Parameter Errors
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
         
@@ -4599,46 +4507,304 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#best-practices-summary" class="md-nav__link">
+  <a href="#commands" class="md-nav__link">
     <span class="md-ellipsis">
-      Best Practices Summary
+      Commands
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Best Practices Summary">
+    <nav class="md-nav" aria-label="Commands">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#database-selection" class="md-nav__link">
+  <a href="#available-commands" class="md-nav__link">
     <span class="md-ellipsis">
-      Database Selection
+      Available Commands
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#field-design" class="md-nav__link">
+  <a href="#keyboard-shortcuts" class="md-nav__link">
     <span class="md-ellipsis">
-      Field Design
+      Keyboard Shortcuts
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configuration
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Configuration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#extension-settings" class="md-nav__link">
+    <span class="md-ellipsis">
+      Extension Settings
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#performance-monitoring" class="md-nav__link">
+  <a href="#setting-descriptions" class="md-nav__link">
     <span class="md-ellipsis">
-      Performance Monitoring
+      Setting Descriptions
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#usage-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      Usage Examples
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Usage Examples">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#basic-syntax-highlighting" class="md-nav__link">
+    <span class="md-ellipsis">
+      Basic Syntax Highlighting
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#maintenance" class="md-nav__link">
+  <a href="#using-snippets" class="md-nav__link">
     <span class="md-ellipsis">
-      Maintenance
+      Using Snippets
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#interactive-mode" class="md-nav__link">
+    <span class="md-ellipsis">
+      Interactive Mode
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#multi-line-code-execution" class="md-nav__link">
+    <span class="md-ellipsis">
+      Multi-line Code Execution
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#troubleshooting" class="md-nav__link">
+    <span class="md-ellipsis">
+      Troubleshooting
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Troubleshooting">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#common-issues" class="md-nav__link">
+    <span class="md-ellipsis">
+      Common Issues
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Common Issues">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#extension-not-loading" class="md-nav__link">
+    <span class="md-ellipsis">
+      Extension Not Loading
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#grapa-executable-not-found" class="md-nav__link">
+    <span class="md-ellipsis">
+      Grapa Executable Not Found
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#interactive-mode-not-working" class="md-nav__link">
+    <span class="md-ellipsis">
+      Interactive Mode Not Working
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#snippets-not-working" class="md-nav__link">
+    <span class="md-ellipsis">
+      Snippets Not Working
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#debug-mode" class="md-nav__link">
+    <span class="md-ellipsis">
+      Debug Mode
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#integration-with-other-tools" class="md-nav__link">
+    <span class="md-ellipsis">
+      Integration with Other Tools
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Integration with Other Tools">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#git-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      Git Integration
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#terminal-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      Terminal Integration
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#debugging" class="md-nav__link">
+    <span class="md-ellipsis">
+      Debugging
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#best-practices" class="md-nav__link">
+    <span class="md-ellipsis">
+      Best Practices
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Best Practices">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#code-organization" class="md-nav__link">
+    <span class="md-ellipsis">
+      Code Organization
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#interactive-development" class="md-nav__link">
+    <span class="md-ellipsis">
+      Interactive Development
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#error-handling_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Error Handling
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#support" class="md-nav__link">
+    <span class="md-ellipsis">
+      Support
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Support">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#getting-help" class="md-nav__link">
+    <span class="md-ellipsis">
+      Getting Help
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#resources" class="md-nav__link">
+    <span class="md-ellipsis">
+      Resources
     </span>
   </a>
   
@@ -4665,194 +4831,273 @@
 
 
 
-<h1 id="database-troubleshooting-guide">Database Troubleshooting Guide</h1>
-<h2 id="common-issues-and-solutions">Common Issues and Solutions</h2>
-<h3 id="column-store-performance-issues">Column Store Performance Issues</h3>
-<h4 id="issue-slow-performance-on-small-datasets">Issue: Slow Performance on Small Datasets</h4>
-<p><strong>Symptoms</strong>: Column store operations are slower than expected for small datasets
-<strong>Cause</strong>: Column store overhead is not justified for small datasets
-<strong>Solution</strong>: 
-- Use row store (<code>"ROW"</code>) for small, transactional datasets
-- Reserve column store for analytical workloads with large datasets</p>
-<h4 id="issue-infinite-loops-during-data-setting">Issue: Infinite Loops During Data Setting</h4>
-<p><strong>Symptoms</strong>: Database operations hang or crash during field creation or data setting
-<strong>Cause</strong>: Growth parameters not properly set, causing fragmented data handling issues
-<strong>Solution</strong>:
-- Ensure <code>storeGrow</code> parameter is specified for fixed fields
-- The system automatically sets <code>storeGrow = storeSize</code> if not specified
-- Check field creation parameters</p>
-<h4 id="issue-fragmented-data-storage-errors">Issue: Fragmented Data Storage Errors</h4>
-<p><strong>Symptoms</strong>: Crashes or errors when working with column store fixed fields
-<strong>Cause</strong>: FREC_DATA storage issues due to improper initialization
-<strong>Solution</strong>:
-- Verify field creation parameters are correct
-- Use appropriate storage types for your data
-- Check debug output for specific error messages</p>
-<h3 id="field-creation-issues">Field Creation Issues</h3>
-<h4 id="issue-fields-not-created-properly">Issue: Fields Not Created Properly</h4>
-<p><strong>Symptoms</strong>: Fields appear to be created but don't work as expected
-<strong>Cause</strong>: Incorrect field type or storage parameters
-<strong>Solution</strong>:
-- Verify field type is supported (<code>BOOL</code>, <code>INT</code>, <code>FLOAT</code>, <code>STR</code>, <code>TIME</code>, <code>TABLE</code>, <code>RAW</code>)
-- Check storage type is appropriate (<code>FIX</code>, <code>VAR</code>, <code>PAR</code>)
-- Ensure size parameters are reasonable</p>
-<h4 id="issue-storage-type-mismatch">Issue: Storage Type Mismatch</h4>
-<p><strong>Symptoms</strong>: Data not stored or retrieved correctly
-<strong>Cause</strong>: Storage type not suitable for the data being stored
-<strong>Solution</strong>:
-- Use <code>FIX</code> for small, fixed-size data
-- Use <code>VAR</code> for variable-length data
-- Use <code>PAR</code> for large data requiring partial updates</p>
-<h3 id="database-type-selection">Database Type Selection</h3>
-<h4 id="issue-wrong-database-type-for-use-case">Issue: Wrong Database Type for Use Case</h4>
-<p><strong>Symptoms</strong>: Poor performance for intended workload
-<strong>Cause</strong>: Database type not optimized for the access pattern
-<strong>Solution</strong>:</p>
-<p><strong>Choose Row Store When</strong>:
-- Frequent record updates
-- Point queries on specific records
-- Small to medium datasets
-- Transactional workloads</p>
-<p><strong>Choose Column Store When</strong>:
-- Analytical queries and aggregations
-- Column scans across many records
-- Large datasets with many columns
-- Sparse data (many NULL values)</p>
-<h3 id="storage-efficiency-issues">Storage Efficiency Issues</h3>
-<h4 id="issue-high-storage-overhead">Issue: High Storage Overhead</h4>
-<p><strong>Symptoms</strong>: Database uses more storage than expected
-<strong>Cause</strong>: Inefficient storage type or growth parameters
-<strong>Solution</strong>:
-- Use appropriate storage types for your data
-- Monitor growth parameters
-- Consider data compression for similar data types</p>
-<h4 id="issue-poor-query-performance">Issue: Poor Query Performance</h4>
-<p><strong>Symptoms</strong>: Queries are slower than expected
-<strong>Cause</strong>: Access pattern not optimized for database type
-<strong>Solution</strong>:
-- Design queries for the database type (row vs column oriented)
-- Use appropriate field types and storage options
-- Consider indexing strategies</p>
-<h2 id="debug-information">Debug Information</h2>
-<h3 id="using-the-debug-function">Using the Debug Function</h3>
-<p>The <code>dump()</code> function provides detailed information about database structure:</p>
-<div class="highlight"><pre><span></span><code>f.dump().echo()
-</code></pre></div>
-<p><strong>Information Provided</strong>:
-- Database type and structure
-- Field definitions and storage types
-- Data distribution and storage efficiency
-- Tree structure details</p>
-<h3 id="common-debug-output-analysis">Common Debug Output Analysis</h3>
-<h4 id="column-store-debug-output">Column Store Debug Output</h4>
-<p>Look for:
-- <code>CTABLE_TREE</code> - Confirms column store database
-- <code>FREC_DATA</code> - Fragmented data storage for fixed fields
-- <code>SDATA_TREE</code> - Tree storage for variable fields
-- Growth parameters and storage efficiency</p>
-<h4 id="row-store-debug-output">Row Store Debug Output</h4>
-<p>Look for:
-- <code>RTABLE_TREE</code> - Confirms row store database
-- <code>BYTE_DATA</code> - Contiguous storage for fixed fields
-- Field offsets and sizes
-- Record structure information</p>
-<h2 id="performance-optimization">Performance Optimization</h2>
-<h3 id="column-store-optimization">Column Store Optimization</h3>
-<h4 id="schema-design">Schema Design</h4>
-<ul>
-<li>Use fixed fields for small, frequently accessed data</li>
-<li>Consider data sparsity when designing schemas</li>
-<li>Choose appropriate storage types</li>
-</ul>
-<h4 id="query-design">Query Design</h4>
-<ul>
-<li>Design for column-oriented access patterns</li>
-<li>Use aggregations and column scans when possible</li>
-<li>Avoid frequent point queries</li>
-</ul>
-<h4 id="storage-management">Storage Management</h4>
-<ul>
-<li>Monitor growth parameters</li>
-<li>Consider data compression</li>
-<li>Plan for data growth patterns</li>
-</ul>
-<h3 id="row-store-optimization">Row Store Optimization</h3>
-<h4 id="schema-design_1">Schema Design</h4>
-<ul>
-<li>Group related fields together</li>
-<li>Use fixed fields for primary keys</li>
-<li>Consider record size for optimal performance</li>
-</ul>
-<h4 id="query-design_1">Query Design</h4>
-<ul>
-<li>Design for record-based access patterns</li>
-<li>Use point queries efficiently</li>
-<li>Minimize column scans</li>
-</ul>
-<h2 id="error-messages-and-solutions">Error Messages and Solutions</h2>
-<h3 id="common-error-codes">Common Error Codes</h3>
-<h4 id="error-1-general-failure">Error -1: General Failure</h4>
-<p><strong>Possible Causes</strong>:
-- Invalid parameters
-- Insufficient resources
-- File system issues</p>
-<p><strong>Solutions</strong>:
-- Check parameter validity
-- Verify file system permissions
-- Ensure sufficient disk space</p>
-<h4 id="error-2-not-found">Error -2: Not Found</h4>
-<p><strong>Possible Causes</strong>:
-- File or field doesn't exist
-- Incorrect path or name</p>
-<p><strong>Solutions</strong>:
-- Verify file/field exists
-- Check path and naming
-- Use <code>ls()</code> to verify contents</p>
-<h3 id="specific-error-scenarios">Specific Error Scenarios</h3>
-<h4 id="field-creation-errors">Field Creation Errors</h4>
-<div class="highlight"><pre><span></span><code># Error: Field not created
-f.mkfield(&quot;test&quot;, &quot;INVALID_TYPE&quot;)
-# Solution: Use valid field type
-f.mkfield(&quot;test&quot;, &quot;STR&quot;, &quot;VAR&quot;)
-</code></pre></div>
-<h4 id="database-type-errors">Database Type Errors</h4>
-<div class="highlight"><pre><span></span><code># Error: Wrong database type for workload
-f.mk(&quot;small_db&quot;, &quot;COL&quot;)  # Column store for small dataset
-# Solution: Use row store for small datasets
-f.mk(&quot;small_db&quot;, &quot;ROW&quot;)
-</code></pre></div>
-<h4 id="storage-parameter-errors">Storage Parameter Errors</h4>
-<div class="highlight"><pre><span></span><code># Error: Missing size parameter for fixed field
-f.mkfield(&quot;age&quot;, &quot;INT&quot;, &quot;FIX&quot;)  # Missing size
-# Solution: Specify size for fixed fields
-f.mkfield(&quot;age&quot;, &quot;INT&quot;, &quot;FIX&quot;, 4)
-</code></pre></div>
-<h2 id="best-practices-summary">Best Practices Summary</h2>
-<h3 id="database-selection">Database Selection</h3>
+<h1 id="vscode-extension">VSCode Extension</h1>
+<p>The Grapa VSCode extension provides comprehensive language support for Grapa programming, making it easy to write, run, and debug Grapa code directly in Visual Studio Code.</p>
+<h2 id="installation">Installation</h2>
+<h3 id="from-visual-studio-marketplace">From Visual Studio Marketplace</h3>
 <ol>
-<li><strong>Row Store</strong>: Transactional workloads, small datasets, frequent updates</li>
-<li><strong>Column Store</strong>: Analytical workloads, large datasets, sparse data</li>
+<li>Open VSCode</li>
+<li>Go to Extensions (Ctrl+Shift+X)</li>
+<li>Search for "Grapa Programming Language"</li>
+<li>Click Install</li>
 </ol>
-<h3 id="field-design">Field Design</h3>
+<h3 id="prerequisites">Prerequisites</h3>
+<ul>
+<li><strong>Grapa executable</strong> must be installed on your system</li>
+<li>See <a href="../installation.md">Installation Guide</a> for Grapa setup instructions</li>
+</ul>
+<h2 id="features">Features</h2>
+<h3 id="syntax-highlighting">Syntax Highlighting</h3>
+<ul>
+<li><strong>Color-coded Grapa code</strong> for <code>.grc</code> files</li>
+<li><strong>Proper highlighting</strong> for Grapa-specific syntax</li>
+<li><strong>Support for</strong> strings, numbers, comments, operators, and system types</li>
+</ul>
+<h3 id="intellisense-autocomplete">IntelliSense &amp; Autocomplete</h3>
+<ul>
+<li><strong>Smart code completion</strong> for Grapa types and methods</li>
+<li><strong>Context-aware suggestions</strong> based on current code</li>
+<li><strong>Hover information</strong> with detailed documentation</li>
+</ul>
+<h3 id="code-snippets">Code Snippets</h3>
+<p>Over 40 pre-built snippets for common Grapa patterns:</p>
+<h4 id="control-flow"><strong>Control Flow</strong></h4>
+<ul>
+<li><code>if</code> - If statement</li>
+<li><code>ifelse</code> - If-else statement  </li>
+<li><code>while</code> - While loop</li>
+<li><code>for</code> - For loop</li>
+</ul>
+<h4 id="file-operations"><strong>File Operations</strong></h4>
+<ul>
+<li><code>read</code> - File reading</li>
+<li><code>write</code> - File writing</li>
+<li><code>exists</code> - File existence check</li>
+<li><code>ls</code> - Directory listing</li>
+<li><code>cd</code> - Change directory</li>
+</ul>
+<h4 id="cryptography"><strong>Cryptography</strong></h4>
+<ul>
+<li><code>rsa</code> - RSA key generation</li>
+<li><code>sign</code> - RSA signing</li>
+<li><code>verify</code> - RSA verification</li>
+<li><code>ec</code> - EC key generation</li>
+<li><code>dh</code> - DH key generation</li>
+<li><code>hash</code> - Hash encoding</li>
+</ul>
+<h4 id="data-structures"><strong>Data Structures</strong></h4>
+<ul>
+<li><code>array</code> - Array creation</li>
+<li><code>json</code> - JSON object</li>
+<li><code>vector</code> - Vector creation</li>
+<li><code>function</code> - Function definition</li>
+</ul>
+<h4 id="error-handling"><strong>Error Handling</strong></h4>
+<ul>
+<li><code>iferr</code> - Error handling with fallback</li>
+<li><code>ifnull</code> - Null value handling</li>
+</ul>
+<h3 id="interactive-execution">Interactive Execution</h3>
+<p>Two modes for running Grapa code:</p>
+<h4 id="interactive-terminal"><strong>Interactive Terminal</strong></h4>
+<ul>
+<li><strong>Fully interactive</strong> - Type commands directly</li>
+<li><strong>Real-time execution</strong> - See results immediately</li>
+<li><strong>Variable persistence</strong> - Variables persist between commands</li>
+</ul>
+<h4 id="code-selection-execution"><strong>Code Selection Execution</strong></h4>
+<ul>
+<li><strong>Run selected code</strong> - Execute highlighted code</li>
+<li><strong>Variable persistence</strong> - Variables persist between runs</li>
+<li><strong>Multi-line support</strong> - Execute complex code blocks</li>
+</ul>
+<h3 id="error-detection">Error Detection</h3>
+<ul>
+<li><strong>Syntax validation</strong> - Real-time error checking</li>
+<li><strong>Error highlighting</strong> - Visual error indicators</li>
+<li><strong>Debug information</strong> - Detailed error messages</li>
+</ul>
+<h2 id="quick-start">Quick Start</h2>
+<h3 id="1-open-a-grapa-file">1. Open a Grapa File</h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># Create a new .grc file</span>
+touch<span class="w"> </span>hello.grc
+</code></pre></div>
+<h3 id="2-write-some-code">2. Write Some Code</h3>
+<div class="highlight"><pre><span></span><code>&#39;Hello, Grapa!&#39;.echo();
+10.range().echo();
+</code></pre></div>
+<h3 id="3-run-the-code">3. Run the Code</h3>
+<ul>
+<li><strong>Press Ctrl+Shift+S</strong> to run selected code</li>
+<li><strong>Press Ctrl+Shift+R</strong> to run the entire file</li>
+<li><strong>Use Ctrl+Shift+P</strong> → "Grapa: Start Interactive Terminal" for REPL mode</li>
+</ul>
+<h2 id="commands">Commands</h2>
+<h3 id="available-commands">Available Commands</h3>
+<ul>
+<li><strong>Grapa: Run File</strong> - Execute current <code>.grc</code> file</li>
+<li><strong>Grapa: Run Selection</strong> - Run selected code</li>
+<li><strong>Grapa: Run Command</strong> - Execute custom command</li>
+<li><strong>Grapa: Start Interactive Terminal</strong> - Open interactive terminal</li>
+<li><strong>Grapa: Start Interactive Session</strong> - Start session for code selections</li>
+<li><strong>Grapa: Restart Session</strong> - Restart interactive session</li>
+<li><strong>Grapa: Interrupt Session</strong> - Stop current execution</li>
+<li><strong>Grapa: Debug File</strong> - Run with debug mode</li>
+</ul>
+<h3 id="keyboard-shortcuts">Keyboard Shortcuts</h3>
+<ul>
+<li><strong>Ctrl+Shift+R</strong> - Run current file</li>
+<li><strong>Ctrl+Shift+S</strong> - Run selected code</li>
+<li><strong>Ctrl+Shift+I</strong> - Interrupt current command</li>
+</ul>
+<h2 id="configuration">Configuration</h2>
+<h3 id="extension-settings">Extension Settings</h3>
+<p>Configure the extension behavior in VSCode settings:</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;grapa.executablePath&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;./grapa&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;grapa.debugMode&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;grapa.autoRunOnSave&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;grapa.preferInteractiveMode&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;grapa.sessionTimeout&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">30000</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;grapa.autoEscapeLineFeeds&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;grapa.showInteractiveOutput&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="p">}</span>
+</code></pre></div>
+<h3 id="setting-descriptions">Setting Descriptions</h3>
+<ul>
+<li><strong><code>executablePath</code></strong> - Path to Grapa executable</li>
+<li><strong><code>debugMode</code></strong> - Enable debug output</li>
+<li><strong><code>autoRunOnSave</code></strong> - Automatically run files when saved</li>
+<li><strong><code>preferInteractiveMode</code></strong> - Use interactive mode for selections</li>
+<li><strong><code>sessionTimeout</code></strong> - Timeout for interactive commands</li>
+<li><strong><code>autoEscapeLineFeeds</code></strong> - Auto-escape line feeds in multi-line code</li>
+<li><strong><code>showInteractiveOutput</code></strong> - Show output in interactive mode</li>
+</ul>
+<h2 id="usage-examples">Usage Examples</h2>
+<h3 id="basic-syntax-highlighting">Basic Syntax Highlighting</h3>
+<div class="highlight"><pre><span></span><code>// This is a comment
+$file myFile = &#39;data.txt&#39;;
+myFile.write(&#39;Hello World&#39;);
+myFile.read().echo();
+</code></pre></div>
+<h3 id="using-snippets">Using Snippets</h3>
 <ol>
-<li><strong>Fixed Fields</strong>: Small, frequently accessed data</li>
-<li><strong>Variable Fields</strong>: Medium-sized variable data</li>
-<li><strong>Partitioned Fields</strong>: Large data requiring partial updates</li>
+<li><strong>Type snippet prefix</strong> (e.g., <code>rsa</code>)</li>
+<li><strong>Press Tab</strong> to expand</li>
+<li><strong>Fill in placeholders</strong> as needed</li>
 </ol>
-<h3 id="performance-monitoring">Performance Monitoring</h3>
-<ol>
-<li>Use <code>dump()</code> function regularly</li>
-<li>Monitor storage efficiency</li>
-<li>Track query performance patterns</li>
-<li>Adjust parameters based on usage</li>
-</ol>
-<h3 id="maintenance">Maintenance</h3>
-<ol>
-<li>Regular performance analysis</li>
-<li>Storage optimization</li>
-<li>Schema evolution planning</li>
-<li>Backup and recovery procedures </li>
-</ol>
+<p>Example with RSA snippet:
+<div class="highlight"><pre><span></span><code>// Type &#39;rsa&#39; + Tab
+rsa = &quot;rsa&quot;.genkeys(2048);
+signature = &#39;Hello&#39;.sign(rsa);
+&#39;Hello&#39;.verify(rsa, signature).echo();
+</code></pre></div></p>
+<h3 id="interactive-mode">Interactive Mode</h3>
+<div class="highlight"><pre><span></span><code>// Start interactive terminal
+grapa: /&gt; &#39;Hello, Grapa!&#39;.echo();
+Hello, Grapa!
+grapa: /&gt; 10.range();
+[0,1,2,3,4,5,6,7,8,9]
+grapa: /&gt; x = 5;
+grapa: /&gt; x * 2;
+10
+</code></pre></div>
+<h3 id="multi-line-code-execution">Multi-line Code Execution</h3>
+<div class="highlight"><pre><span></span><code>// Select this block and press Ctrl+Shift+S
+if (true) {
+    &#39;This is a multi-line block&#39;.echo();
+    &#39;It will execute as a single unit&#39;.echo();
+}
+</code></pre></div>
+<h2 id="troubleshooting">Troubleshooting</h2>
+<h3 id="common-issues">Common Issues</h3>
+<h4 id="extension-not-loading"><strong>Extension Not Loading</strong></h4>
+<ul>
+<li>Check VSCode developer console for errors</li>
+<li>Verify <code>.grc</code> files are recognized as Grapa files</li>
+<li>Restart VSCode after installation</li>
+</ul>
+<h4 id="grapa-executable-not-found"><strong>Grapa Executable Not Found</strong></h4>
+<ul>
+<li>Verify Grapa is installed and in PATH</li>
+<li>Check <code>grapa.executablePath</code> setting</li>
+<li>Test <code>grapa --version</code> in terminal</li>
+</ul>
+<h4 id="interactive-mode-not-working"><strong>Interactive Mode Not Working</strong></h4>
+<ul>
+<li>Use "Grapa: Start Interactive Terminal" for manual typing</li>
+<li>Use "Grapa: Start Interactive Session" for code selections</li>
+<li>Check executable path configuration</li>
+</ul>
+<h4 id="snippets-not-working"><strong>Snippets Not Working</strong></h4>
+<ul>
+<li>Type snippet prefix and press Tab</li>
+<li>Check for syntax errors in snippet definitions</li>
+<li>Verify snippet file is properly loaded</li>
+</ul>
+<h3 id="debug-mode">Debug Mode</h3>
+<p>Enable debug mode for detailed logging:
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;grapa.debugMode&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="p">}</span>
+</code></pre></div></p>
+<p>Check the Output panel (View → Output → Grapa) for debug information.</p>
+<h2 id="integration-with-other-tools">Integration with Other Tools</h2>
+<h3 id="git-integration">Git Integration</h3>
+<ul>
+<li><strong>Version control</strong> for <code>.grc</code> files</li>
+<li><strong>Diff highlighting</strong> for Grapa syntax</li>
+<li><strong>Blame information</strong> for code history</li>
+</ul>
+<h3 id="terminal-integration">Terminal Integration</h3>
+<ul>
+<li><strong>Integrated terminal</strong> with Grapa support</li>
+<li><strong>Command execution</strong> directly from VSCode</li>
+<li><strong>Output capture</strong> and display</li>
+</ul>
+<h3 id="debugging">Debugging</h3>
+<ul>
+<li><strong>Breakpoint support</strong> for Grapa code</li>
+<li><strong>Variable inspection</strong> during execution</li>
+<li><strong>Call stack</strong> and error tracking</li>
+</ul>
+<h2 id="best-practices">Best Practices</h2>
+<h3 id="code-organization">Code Organization</h3>
+<ul>
+<li><strong>Use <code>.grc</code> extension</strong> for Grapa files</li>
+<li><strong>Organize code</strong> in logical functions</li>
+<li><strong>Add comments</strong> for complex logic</li>
+</ul>
+<h3 id="interactive-development">Interactive Development</h3>
+<ul>
+<li><strong>Use interactive terminal</strong> for experimentation</li>
+<li><strong>Use code selection</strong> for testing specific parts</li>
+<li><strong>Leverage snippets</strong> for common patterns</li>
+</ul>
+<h3 id="error-handling_1">Error Handling</h3>
+<ul>
+<li><strong>Use <code>iferr()</code></strong> for error handling</li>
+<li><strong>Use <code>ifnull()</code></strong> for null value handling</li>
+<li><strong>Enable debug mode</strong> for troubleshooting</li>
+</ul>
+<h2 id="support">Support</h2>
+<h3 id="getting-help">Getting Help</h3>
+<ul>
+<li><strong>GitHub Issues</strong> - Report bugs and request features</li>
+<li><strong>Documentation</strong> - Complete Grapa language reference</li>
+<li><strong>Community</strong> - Grapa discussions and support</li>
+</ul>
+<h3 id="resources">Resources</h3>
+<ul>
+<li><strong><a href="../index.md">Grapa Language Documentation</a></strong> - Complete language reference</li>
+<li><strong><a href="../installation.md">Installation Guide</a></strong> - Setup instructions</li>
+<li><strong><a href="../examples.md">Examples</a></strong> - Code examples and patterns</li>
+<li><strong><a href="../api_reference.md">API Reference</a></strong> - Built-in functions and types</li>
+</ul>
+<hr />
+<p><strong>Extension Version</strong>: 0.1.0<br />
+<strong>Publisher</strong>: Chris Matichuk<br />
+<strong>Marketplace</strong>: <a href="https://marketplace.visualstudio.com/">Grapa Programming Language</a></p>
 
 
 
@@ -4909,16 +5154,16 @@ f.mkfield(&quot;age&quot;, &quot;INT&quot;, &quot;FIX&quot;, 4)
     
     
       
-      <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.top", "search.suggest", "content.code.copy", "content.action.edit", "content.action.view", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"base": "..", "features": ["navigation.tabs", "navigation.top", "search.suggest", "content.code.copy", "content.action.edit", "content.action.view", "content.tabs.link"], "search": "../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.56ea9cef.min.js"></script>
+      <script src="../assets/javascripts/bundle.56ea9cef.min.js"></script>
       
         <script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.0/dist/mermaid.min.js"></script>
       
-        <script src="../../javascripts/mermaid-init.js"></script>
+        <script src="../javascripts/mermaid-init.js"></script>
       
-        <script src="../../javascripts/search-fix.js"></script>
+        <script src="../javascripts/search-fix.js"></script>
       
     
   </body>
