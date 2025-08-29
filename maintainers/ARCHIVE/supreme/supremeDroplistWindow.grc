@@ -52,7 +52,7 @@ $global.addSupremeDropWeeks = op()
 				$root.child("scrollitems").post(op(cbdata){
 					$local.r = supremeDroplist(cbdata);
 					$root.child("scrollitems").child("items").clear();
-					$local.width = $self.get("w");
+					$local.width = $self.getfield("w");
 					$local.i = 0;
 					$local.n = r.len();
 					while(i<n)

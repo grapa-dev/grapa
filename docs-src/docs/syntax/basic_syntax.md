@@ -10,21 +10,24 @@ tags:
 
 > **Important: Access Patterns for Data Types (Tested, v0.0.39)**
 >
-> | Type      | .get("key") | .get(index) | Bracket Notation | Dot Notation | .len() | .size() |
-> |-----------|:-----------:|:-----------:|:----------------:|:------------:|:------:|:-------:|
-> | $ARRAY    |      ❌      |     ❌      |       ✅         |      —       |   ✅   |    ❌   |
-> | $LIST     |      ❌      |     ❌      |       ✅         |     ✅       |   ✅   |    ❌   |
-> | $OBJ      |      ❌      |     ❌      |       ✅         |     ✅       |   ❌   |    ❌   |
-> | $file     |      ✅      |     ❌      |        —         |      —       |   ❌   |    ❌   |
-> | $TABLE    |     ✅*      |     ❌      |        —         |      —       |   ❌   |    ❌   |
+> | Type      | .getfield("key") | .getfield(index) | Bracket Notation | Dot Notation | .len() | .size() | .get()/.set() |
+> |-----------|:---------------:|:----------------:|:----------------:|:------------:|:------:|:-------:|:-------------:|
+> | $ARRAY    |        ❌        |        ❌        |       ✅         |      —       |   ✅   |    ❌   |      ❌       |
+> | $LIST     |        ❌        |        ❌        |       ✅         |     ✅       |   ✅   |    ❌   |      ❌       |
+> | $OBJ      |        ❌        |        ❌        |       ✅         |     ✅       |   ❌   |    ❌   |      ❌       |
+> | $file     |        ✅        |        ❌        |        —         |      —       |   ❌   |    ❌   |      ❌       |
+> | $TABLE    |       ✅*        |        ❌        |        —         |      —       |   ❌   |    ❌   |      ❌       |
+> | $WIDGET   |        —         |        —         |        —         |      —       |   —   |    —   |      ✅       |
 >
-> *$TABLE .get() requires two arguments: key and field.
+> *$TABLE .getfield() requires two arguments: key and field.
+> **`.get()/.set()` methods are exclusively for `$WIDGET` types.
 >
 > **Key Findings:**
 > - **Arrays (`[]`)**: Use `array[index]` and `array.len()` for access and length
 > - **Lists (`{}`)**: Use `list[key]` or `list.key` for access, `list.len()` for length
 > - **Objects (class)**: Use `object.property` or `object[key]` for access
-> - **`.get()` method**: Only works on `$file` and `$TABLE` types
+> - **`.getfield()/.setfield()` method**: Use for `$file` and `$TABLE` types
+> - **`.get()/.set()` method**: Exclusively for `$WIDGET` types
 > - **`.size()` method**: Not supported on any type (use `.len()` instead)
 > - **`.keys()` method**: Not supported on `$LIST` (use iteration instead)
 >
@@ -32,15 +35,18 @@ tags:
 > - For arrays: `array[index]` and `array.len()`
 > - For lists: `list[key]` (preferred) or `list.key`, and `list.len()`
 > - For objects: `object.property` (preferred) or `object[key]`
+> - For files: `file.getfield(key)` and `file.setfield(key, value)`
+> - For tables: `table.getfield(key, field)` and `table.setfield(key, value, field)`
+> - For widgets: `widget.get(name, params)` and `widget.set(name, data)`
 > - Avoid `.get()`, `.size()`, and `.keys()` on arrays, lists, and objects
 
-> **Clarification on .get() Usage:**
-> - `.get()` is **required** for `$file` and `$TABLE` access.
-> - `.get()` is **not supported** for `$ARRAY`, `$LIST`, or `$OBJ` (returns empty string).
-> - Use bracket and dot notation for `$ARRAY`, `$LIST`, and `$OBJ`.
+> **Clarification on .get()/.set() Usage:**
+> - **`.get()/.set()` for `$file` and `$TABLE`**: Use `.getfield()/.setfield()` instead
+> - **`.get()/.set()` for `$WIDGET`**: These methods are exclusively for widget operations
+> - **`.get()/.set()` for `$ARRAY`, `$LIST`, or `$OBJ`**: Not supported (use bracket/dot notation)
 > - **Length**: Use `.len()` for arrays and lists, not `.size()`.
 > - **Keys**: For lists, iterate manually instead of using `.keys()`.
-> - If more objects support `.get()` in the future, this guide will be updated.
+> - **Design Decision**: `.get()/.set()` methods are now exclusively for `$WIDGET` types to avoid confusion
 
 ---
 
@@ -253,6 +259,34 @@ while (i < array.len()) {
 }
 ```
 
+### Numbers
+
+Grapa supports various number formats:
+
+```grapa
+/* Integer literals */
+42;                 /* Decimal integer */
+0x2A;              /* Hexadecimal integer */
+0b101010;          /* Binary integer */
+
+/* Float literals */
+3.14;              /* Standard decimal notation */
+3_14;              /* Underscore decimal notation (equivalent) */
+2.5;               /* Standard decimal notation */
+2_5;               /* Underscore decimal notation (equivalent) */
+
+/* Verification */
+(3.14 == 3_14).echo();    /* true */
+(2.5 == 2_5).echo();      /* true */
+```
+
+**Float Decimal Separators:**
+- **Dots (`.`)**: Standard decimal notation (e.g., `3.14`)
+- **Underscores (`_`)**: Alternative decimal notation (e.g., `3_14`)
+- **Interchangeable**: Both notations are completely equivalent
+- **Single separator**: Only one decimal separator allowed per number (standard mathematical definition)
+- **Modern support**: Aligns with other modern programming languages
+
 ### Number Method Calls and Dot Notation
 
 Numbers can be used directly with dot notation for method calls:
@@ -262,8 +296,8 @@ Numbers can be used directly with dot notation for method calls:
 20.random();      /* Works: Random number 0-19 */
 3.14.floor();     /* Works: Floor to 3 */
 42.str();         /* Works: Convert to string */
+145.len();        /* Works: Length of number (3) */
 145.echo();       /* Works: Output the number */
-/* Note: .len() method not yet implemented for numbers */
 ```
 
 **Note:** Numbers work seamlessly with dot notation for method calls.
@@ -277,16 +311,16 @@ Grapa supports hexadecimal and binary literals with underscore separators for re
 0x12;              /* 18 in decimal */
 0xABCD;            /* 43981 in decimal */
 0xAbCd;            /* 43981 in decimal (case insensitive) */
-0x1234;            /* 4660 in decimal (note: underscore separators not yet implemented) */
+0x1234;            /* 4660 in decimal */
 0x12.34;           /* 18.203125 in decimal (hex float) */
-0x1234.5678;       /* 4660.33984375 in decimal (hex float, note: underscore separators not yet implemented) */
+0x1234.5678;       /* 4660.33984375 in decimal (hex float) */
 
 /* Binary literals */
 0b010;             /* 2 in decimal */
 0b1010;            /* 10 in decimal */
-0b010101;          /* 21 in decimal (note: underscore separators not yet implemented) */
+0b010101;          /* 21 in decimal */
 0b010.011;         /* 2.375 in decimal (binary float) */
-0b010101.011001;   /* 21.1875 in decimal (binary float, note: underscore separators not yet implemented) */
+0b010101.011001;   /* 21.1875 in decimal (binary float) */
 
 /* Type behavior */
 0x12.type();       /* $INT */
@@ -318,8 +352,8 @@ Grapa supports hexadecimal and binary literals with underscore separators for re
 '0x12.34'.exec();        /* 18.203125 */
 '0b101'.exec();          /* 5 */
 '0b101.011'.exec();      /* 5.375 */
-'0x1234'.exec();         /* 4660 (note: underscore separators not yet implemented) */
-'0b010101'.exec();       /* 21 (note: underscore separators not yet implemented) */
+'0x1234'.exec();         /* 4660 */
+'0b010101'.exec();       /* 21 */
 ```
 
 ### Unsigned Number Methods (Cryptographic)
@@ -956,7 +990,7 @@ Use `$global` for variables that need to persist across function calls:
 
 ```grapa
 /* Create global variable */
-$global.my_table = $file().table("ROW");
+$global.my_table = {}.table("ROW");
 
 /* Use global variable */
 my_table.mkfield("name", "STR", "VAR");
@@ -1738,19 +1772,19 @@ mapped = filtered.map(op(x){x*2});
 
 ### $file and $TABLE Access
 
-For `$file` and `$TABLE` objects, always use `.get()` method:
+For `$file` and `$TABLE` objects, always use `.getfield()` and `.setfield()` methods:
 
 ```grapa
 files = $file().ls();
-file_info = files.get(0);   /* Correct */
+file_info = files.getfield(0);   /* Correct */
 
-table = $file().table("ROW");
+table = {}.table("ROW");
 table.mkfield("name", "STR", "VAR");
-table.set("user1", "Alice", "name");
-value = table.get("user1", "name");   /* Correct */
+table.setfield("user1", "Alice", "name");
+value = table.getfield("user1", "name");   /* Correct */
 ```
 
-- Always use `.get()` for `$file` and `$TABLE`.
+- Always use `.getfield()` and `.setfield()` for `$file` and `$TABLE`.
 - Bracket and dot notation are not valid for `$file` and `$TABLE`.
 
 ### Type System Philosophy
@@ -1776,7 +1810,7 @@ element.type();        /* Returns $ARRAY */
 obj = {"a": 11, "b": 22, "c": 33};
 obj.type();            /* Returns $LIST */
 
-table = $file().table("ROW");
+table = {}.table("ROW");
 table.type();          /* Returns $TABLE */
 
 /* Runtime type checking */
@@ -1814,13 +1848,13 @@ if (input.type() == $STR) {
 
 ```grapa
 /* File operations */
-fs.set("file.txt", "content");
-content = fs.get("file.txt").str();
+fs.setfield("file.txt", "content");
+content = fs.getfield("file.txt");
 
 /* Table operations */
 table.mkfield("name", "STR", "VAR");
-table.set("key", "value", "field");
-value = table.get("key", "field").str();
+table.setfield("key", "value", "field");
+value = table.getfield("key", "field");
 ```
 
 ### Function Definitions with Default Parameters
@@ -1851,7 +1885,7 @@ current_time = $TIME().utc();
 
 /* File functions */
 file_obj = $file();
-table_obj = $file().table("ROW");
+table_obj = {}.table("ROW");
 ```
 
 ## Comments
@@ -2434,7 +2468,7 @@ enabled = config.enabled.ifnull(true);  /* Returns true */
 /* User Management System Example */
 
 /* Create table in global namespace */
-$global.users = $file().table("ROW");
+$global.users = {}.table("ROW");
 
 /* Define table schema */
 users.mkfield("name", "STR", "VAR");
@@ -2490,7 +2524,7 @@ fs.rm("test_dir");
 
 ```grapa
 /* Table operations */
-$global.table = $file().table("ROW");
+$global.table = {}.table("ROW");
 
 /* Create fields */
 table.mkfield("name", "STR", "VAR");
@@ -3189,3 +3223,38 @@ custom_function = rule select $INT {op(p:$2){p*5}};
 select 4;        // Returns 20
 x = select 8;    // x = 40
 ```
+
+### Numbers
+
+Grapa supports various number formats:
+
+```grapa
+/* Integer literals */
+42;                 /* Decimal integer */
+0x2A;              /* Hexadecimal integer */
+0b101010;          /* Binary integer */
+
+/* Float literals */
+3.14;              /* Standard decimal notation */
+3_14;              /* Underscore decimal notation (equivalent) */
+2.5;               /* Standard decimal notation */
+2_5;               /* Underscore decimal notation (equivalent) */
+
+/* Verification */
+(3.14 == 3_14).echo();    /* true */
+(2.5 == 2_5).echo();      /* true */
+```
+
+**Float Decimal Separators:**
+- **Dots (`.`)**: Standard decimal notation (e.g., `3.14`)
+- **Underscores (`_`)**: Alternative decimal notation (e.g., `3_14`)
+- **Interchangeable**: Both notations are completely equivalent
+- **Single separator**: Only one decimal separator allowed per number (standard mathematical definition)
+- **Modern support**: Aligns with other modern programming languages
+
+/* Hex and binary floats */
+0x12.34;           /* Hex float */
+0b101.011;         /* Binary float */
+```
+
+// ... existing code ...

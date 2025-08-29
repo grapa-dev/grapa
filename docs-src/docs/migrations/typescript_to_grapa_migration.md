@@ -33,7 +33,7 @@ This guide helps TypeScript users transition to Grapa by mapping common TypeScri
 | `let s: string = "hi";` | `s = "hi";` |
 | `s += "!";` | `s += "!";` |
 | `let arr: number[] = [1,2,3];` | `arr = [1, 2, 3];` |
-| `arr[0]` | `arr[0]`<br>`arr.get(0)` |
+| `arr[0]` | `arr[0]` |
 | `let obj: {[key: string]: number} = {};` | `obj = {}` |
 | `obj["key"]` | `obj["key"]`<br>`obj.key`<br>`obj."key"` |
 | `const {a, b} = obj` | `@local ++= obj; a.echo(); b.echo();` |
@@ -53,7 +53,7 @@ This guide helps TypeScript users transition to Grapa by mapping common TypeScri
 >
 > **String Interpolation:** For combining strings and values, use `"Hello ${name}".interpolate()` instead of `"Hello " + name`. String interpolation is more powerful and less error-prone than concatenation. It also provides elegant solutions for complex method chaining: `"${'hello'.upper()} ${'world'.lower()}".interpolate()`.
 
-> **Note:** `.get("key")` is only for `$file` and `$TABLE`. For `$LIST`/`$OBJ`, use `obj["key"]`, `obj.key`, or `obj."key"`. For `$ARRAY`, use `arr[index]` or `arr.get(index)`.
+> **Note:** `.getfield("key")` is for `$file` and `$TABLE`. `.get()/.set()` is for `$WIDGET`. For `$LIST`/`$OBJ`, use `obj["key"]`, `obj.key`, or `obj."key"`. For `$ARRAY`, use `arr[index]` (bracket notation only).
 
 ## Access Patterns: Objects, Lists, Arrays, Files, and Tables
 
@@ -82,7 +82,7 @@ name = obj.getname(1);  /* Returns "b" (key name at index 1) */
 arr = [10, 20, 30];
 
 value = arr[1];         /* Returns 20 */
-value = arr.get(1);     /* Returns 20 */
+/* Note: .get(index) is not supported for arrays - use bracket notation */
 ```
 
 - Use bracket notation or `.get(index)` for $ARRAY.
@@ -101,7 +101,7 @@ file_info = files.get(0);   /* Correct */
 ### $TABLE
 
 ```grapa
-table = $file().table("ROW");
+table = {}.table("ROW");
 table.mkfield("name", "STR", "VAR");
 table.set("user1", "Alice", "name");
 
@@ -120,6 +120,17 @@ value = table.get("user1", "name");   /* Correct */
 > | $TABLE    |     ✓*      |     ✗      |        —         |      —       |
 > | $OBJ      |      ✗      |     ✗      |       ✗         |     ✓       |
 > *$TABLE .get() requires two arguments: key and field.
+>
+> *$TABLE .getfield() requires two arguments: key and field.
+>
+> **Key Findings:**
+> - **Arrays (`[]`)**: Use `array[index]` and `array.len()` for access and length
+> - **Lists (`{}`)**: Use `list[key]` or `list.key` for access, `list.len()` for length
+> - **Objects (class)**: Use `object.property` or `object[key]` for access
+> - **`.getfield()/.setfield()` method**: Use for `$file` and `$TABLE` types
+> - **`.get()/.set()` method**: Exclusively for `$WIDGET` types
+> - **`.size()` method**: Not supported on any type (use `.len()` instead)
+> - **`.keys()` method**: Not supported on `$LIST` (use iteration instead)
 
 See [Basic Syntax Guide](../syntax/basic_syntax.md) for empirical test results and future updates.
 

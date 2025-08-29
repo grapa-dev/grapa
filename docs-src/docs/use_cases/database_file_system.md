@@ -105,7 +105,7 @@ monitor_directory = op(directory, interval_ms) {
     /* Create initial file state */
     initial_files.map(op(file) {
         stats = $file().stat(file);
-        initial_state.set(file, {
+        initial_state.setfield(file, {
             "size": stats.get("size"),
             "modified": stats.get("modified")
         });
@@ -118,7 +118,7 @@ monitor_directory = op(directory, interval_ms) {
         
         current_files.map(op(file) {
             stats = $file().stat(file);
-            current_state.set(file, {
+            current_state.setfield(file, {
                 "size": stats.get("size"),
                 "modified": stats.get("modified")
             });
@@ -166,7 +166,7 @@ backup_database = op(database_name, backup_dir) {
     tables.map(op(table) {
         /* Export table data */
         table_data = $TABLE().select("SELECT * FROM " + table);
-        backup_data.set(table, table_data);
+        backup_data.setfield(table, table_data);
     });
     
     /* Save backup to file */
@@ -202,11 +202,11 @@ restore_database = op(backup_file) {
             sample_row.keys().map(op(key) {
                 value = sample_row.get(key);
                 if (value.type() == "$INT") {
-                    schema.set(key, "INT");
+                    schema.setfield(key, "INT");
                 } else if (value.type() == "$FLOAT") {
-                    schema.set(key, "FLOAT");
+                    schema.setfield(key, "FLOAT");
                 } else {
-                    schema.set(key, "STR");
+                    schema.setfield(key, "STR");
                 };
             });
             

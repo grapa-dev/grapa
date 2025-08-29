@@ -4,7 +4,7 @@
 
 /* Create COL table */
 "Creating COL table...".echo();
-fcol = $file().table("COL");
+fcol = {}.table("COL");
 "COL table created".echo();
 
 /* Check table type */

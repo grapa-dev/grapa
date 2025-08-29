@@ -57,11 +57,11 @@ feature_stds = X.std(0);
 /* Scale the features */
 X_scaled = [];
 i = 0;
-while (i < X.shape().get(0)) {
+    while (i < X.shape().getfield(0)) {
     row = [];
     j = 0;
-    while (j < X.shape().get(1)) {
-        standardized_val = (X.get(i).get(j) - feature_means.get(j)) / feature_stds.get(j);
+            while (j < X.shape().getfield(1)) {
+            standardized_val = (X.getfield(i).getfield(j) - feature_means.getfield(j)) / feature_stds.getfield(j);
         row += standardized_val;
         j = j + 1;
     }
@@ -82,11 +82,11 @@ X_scaled = X_scaled.vector();
 add_bias_column = op(X) {
     X_with_bias = [];
     i = 0;
-    while (i < X.shape().get(0)) {
+    while (i < X.shape().getfield(0)) {
         row = [1];  /* Bias term */
         j = 0;
-        while (j < X.shape().get(1)) {
-            row += X.get(i).get(j);
+        while (j < X.shape().getfield(1)) {
+            row += X.getfield(i).getfield(j);
             j = j + 1;
         }
         X_with_bias += row;
@@ -124,7 +124,7 @@ predictions = X_with_bias.dot(coefficients);
 ("First 5 predictions:").echo();
 i = 0;
 while (i < 5) {
-    ("  Sample " + i + ": True=" + y.get(i) + ", Predicted=" + predictions.get(i)).echo();
+    ("  Sample " + i + ": True=" + y.getfield(i) + ", Predicted=" + predictions.getfield(i)).echo();
     i = i + 1;
 }
 
@@ -173,7 +173,7 @@ rmse = calculate_rmse(y, predictions);
 /* Ridge regression with L2 regularization */
 ridge_regression = op(X, y, lambda) {
     /* Add regularization term */
-    n_features = X.shape().get(1);
+    n_features = X.shape().getfield(1);
     regularization_matrix = [];
     i = 0;
     while (i < n_features) {
@@ -228,11 +228,11 @@ new_data = [[1.5, 2.5], [3.0, 4.0], [5.5, 6.5]].vector();
 /* Scale new data using same parameters */
 new_data_scaled = [];
 i = 0;
-while (i < new_data.shape().get(0)) {
+while (i < new_data.shape().getfield(0)) {
     row = [];
     j = 0;
-    while (j < new_data.shape().get(1)) {
-        standardized_val = (new_data.get(i).get(j) - feature_means.get(j)) / feature_stds.get(j);
+    while (j < new_data.shape().getfield(1)) {
+        standardized_val = (new_data.getfield(i).getfield(j) - feature_means.getfield(j)) / feature_stds.getfield(j);
         row += standardized_val;
         j = j + 1;
     }
@@ -248,8 +248,8 @@ new_predictions = new_data_with_bias.dot(coefficients);
 
 ("Predictions for new data:").echo();
 i = 0;
-while (i < new_data.shape().get(0)) {
-    ("  Input: " + new_data.get(i) + " -> Prediction: " + new_predictions.get(i)).echo();
+while (i < new_data.shape().getfield(0)) {
+    ("  Input: " + new_data.getfield(i) + " -> Prediction: " + new_predictions.getfield(i)).echo();
     i = i + 1;
 }
 

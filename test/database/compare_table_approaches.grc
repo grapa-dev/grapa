@@ -14,12 +14,12 @@ vtable.mkfield("name", "STR");
 vtable.mkfield("age", "INT");
 
 /* Set data */
-vtable.set("user1", "John", "name");
-vtable.set("user1", 25, "age");
+vtable.setfield("user1", "John", "name");
+vtable.setfield("user1", 25, "age");
 
 /* Get data */
-vname_raw = vtable.get("user1", "name");
-vage_raw = vtable.get("user1", "age");
+vname_raw = vtable.getfield("user1", "name");
+vage_raw = vtable.getfield("user1", "age");
 
 ("Virtual table - Name raw type: " + vname_raw.type()).echo();
 "\n".echo();
@@ -33,23 +33,23 @@ vage = vage_raw.int();
 "\n".echo();
 
 /* ======================================== */
-/* Test 2: File-Based Table ($file().table()) */
+/* Test 2: File-Based Table ({}.table()) */
 /* ======================================== */
-"Test 2: File-Based Table ($file().table())".echo();
+"Test 2: File-Based Table ({}.table())".echo();
 "\n".echo();
 
 fs = $file();
-ftable = fs.table("ROW");
+ftable = {}.table("ROW");
 ftable.mkfield("name", "STR");
 ftable.mkfield("age", "INT");
 
 /* Set data */
-ftable.set("user1", "Jane", "name");
-ftable.set("user1", 30, "age");
+ftable.setfield("user1", "Jane", "name");
+ftable.setfield("user1", 30, "age");
 
 /* Get data */
-fname_raw = ftable.get("user1", "name");
-fage_raw = ftable.get("user1", "age");
+fname_raw = ftable.getfield("user1", "name");
+fage_raw = ftable.getfield("user1", "age");
 
 ("File table - Name raw type: " + fname_raw.type()).echo();
 "\n".echo();

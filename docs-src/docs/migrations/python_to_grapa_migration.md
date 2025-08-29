@@ -37,13 +37,14 @@
 > | $file     |      ✅      |     ❌      |        —         |      —       |   ❌   |    ❌   |
 > | $TABLE    |     ✅*      |     ❌      |        —         |      —       |   ❌   |    ❌   |
 >
-> *$TABLE .get() requires two arguments: key and field.
+> *$TABLE .getfield() requires two arguments: key and field.
 >
 > **Key Findings:**
 > - **Arrays (`[]`)**: Use `array[index]` and `array.len()` for access and length
 > - **Lists (`{}`)**: Use `list[key]` or `list.key` for access, `list.len()` for length
 > - **Objects (class)**: Use `object.property` or `object[key]` for access
-> - **`.get()` method**: Only works on `$file` and `$TABLE` types
+> - **`.getfield()/.setfield()` method**: Use for `$file` and `$TABLE` types
+> - **`.get()/.set()` method**: Exclusively for `$WIDGET` types
 > - **`.size()` method**: Not supported on any type (use `.len()` instead)
 > - **`.keys()` method**: Not supported on `$LIST` (use iteration instead)
 
@@ -109,7 +110,7 @@ This guide helps Python users transition to Grapa by mapping common Python idiom
 >
 > **Nullish Coalescing:** For providing default values, use `value.ifnull("default")` instead of `value or "default"`. The `.ifnull()` method treats a broader range of values as nullish (including zeros, empty collections, and errors).
 
-> **Note:** `.get("key")` is only for `$file` (and possibly one other system object). For `$LIST`/`$OBJ`, use `obj["key"]`, `obj.key`, or `obj."key"`. For `$ARRAY`, use `arr[index]` (and `arr.get(index)` if supported).
+> **Note:** `.getfield("key")` is for `$file` and `$TABLE`. `.get()/.set()` is for `$WIDGET`. For `$LIST`/`$OBJ`, use `obj["key"]`, `obj.key`, or `obj."key"`. For `$ARRAY`, use `arr[index]` (bracket notation only).
 
 ## Access Patterns: Objects, Lists, Arrays, Files, and Tables
 
@@ -138,10 +139,11 @@ name = obj.getname(1);  /* Returns "b" (key name at index 1) */
 arr = [10, 20, 30];
 
 value = arr[1];         /* Returns 20 */
-value = arr.get(1);     /* Returns 20 */
+/* Note: .get(index) is not supported for arrays - use bracket notation */
 ```
 
-- Use bracket notation or `.get(index)` for $ARRAY.
+- Use bracket notation for $ARRAY access.
+- `.get(index)` is not supported for arrays.
 - Dot notation and `.get("key")` are NOT valid for $ARRAY.
 
 ### Array Comprehension Alternatives
@@ -173,39 +175,57 @@ large_result = (10000).range()
 - **Better performance** for large datasets
 - **Memory efficient** processing
 
-### Hex and Binary Literals
-
-Grapa supports the same hex and binary literal syntax as Python, with enhanced features:
+### Numeric Literals
 
 ```python
-# Python hex and binary literals
+# Python - basic numeric literals
+int_val = 42
+float_val = 3.14
 hex_val = 0x12        # 18 in decimal
-hex_float = 0x12.34   # Not supported in Python
 bin_val = 0b101       # 5 in decimal
-bin_float = 0b101.011 # Not supported in Python
 ```
 
 ```grapa
-// Grapa hex and binary literals (enhanced)
+// Grapa - enhanced numeric literals with modern features
+int_val = 42;              // 42 in decimal
+float_val = 3.14;          // 3.14 in decimal
+float_alt = 3_14;          // 3.14 using underscore separator (Grapa enhancement)
 hex_val = 0x12;              // 18 in decimal
 hex_float = 0x12.34;         // 18.203125 in decimal (Grapa enhancement)
-hex_underscore = 0x12_34;    // 4660 in decimal (Grapa enhancement)
+hex_underscore = 0x12_34;    // 18.203125 in decimal (interpreted as 0x12.34, underscore separators not yet implemented)
 bin_val = 0b101;             // 5 in decimal
 bin_float = 0b101.011;       // 5.375 in decimal (Grapa enhancement)
-bin_underscore = 0b101_011;  // 43 in decimal (Grapa enhancement)
-
-// String parsing (Grapa enhancement)
-hex_from_string = '0x12'.exec();           // 18
-bin_from_string = '0b101'.exec();          // 5
-hex_float_from_string = '0x12.34'.exec();  // 18.203125
+bin_underscore = 0b101_011;  // 5.375 in decimal (interpreted as 0b101.011, underscore separators not yet implemented)
 ```
 
 **Grapa enhancements over Python:**
 - ✅ **Float support**: Both hex and binary support decimal points
-- ✅ **Underscore separators**: Use `_` for readability (e.g., `0x12_34_56`)
+- ✅ **Underscore separators**: Use `_` as decimal separator (e.g., `0x12_34` same as `0x12.34`)
 - ✅ **String parsing**: Use `.exec()` to parse hex/binary strings
 - ✅ **Case insensitive**: `0xABCD` and `0xAbCd` are equivalent
 - ✅ **Method support**: All number methods work on hex/binary literals
+- ✅ **Decimal separator flexibility**: Both dots (`.`) and underscores (`_`) work as decimal separators for floats
+
+**Float Decimal Separators:**
+Grapa supports both standard dot notation and underscore notation for decimal separators in floats:
+
+```grapa
+// Standard decimal notation
+3.14;              // 3.14
+2.5;               // 2.5
+1.0;               // 1.0
+
+// Underscore decimal notation (equivalent)
+3_14;              // 3.14
+2_5;               // 2.5
+1_0;               // 1.0
+
+// Verification
+(3.14 == 3_14).echo();    // true
+(2.5 == 2_5).echo();      // true
+```
+
+This feature provides flexibility in float syntax while maintaining the standard mathematical definition of floating-point numbers.
 
 ### Unsigned Number Methods
 
@@ -255,7 +275,7 @@ file_info = files.get(0);   /* Correct */
 ### $TABLE
 
 ```grapa
-table = $file().table("ROW");
+table = {}.table("ROW");
 table.mkfield("name", "STR", "VAR");
 table.set("user1", "Alice", "name");
 
@@ -280,7 +300,7 @@ See [Basic Syntax Guide](../syntax/basic_syntax.md) for empirical test results a
 ## Common Pitfalls
 - ✅ **For loops now supported** - Use `for x in arr { ... }` for native iteration
 - No `try/catch`—use `.iferr()` for fallback or check for `$ERR`
-- No `.get()`/`.set()` on lists/arrays—use `[]` for access (except for `$file`/$TABLE`)
+- No `.get()`/`.set()` on lists/arrays—use `[]` for access (except for `$file`/$TABLE)
 - ✅ **Line comments now supported** - Use `// comment` or `/// doc comment` in addition to block comments
 - No attribute-style access for dict/list keys—use `[]`, or dot notation for `$LIST`/`$OBJ`
 - No implicit truthy/falsy—use explicit boolean checks
@@ -676,7 +696,7 @@ $file().rm("test.txt");
 #### **Native Table/Database Operations**
 ```grapa
 /* Built-in table operations */
-table = $file().table("ROW");
+table = {}.table("ROW");
 table.mkfield("name", "STR", "VAR");
 table.mkfield("age", "INT");
 table.set("user1", "John", "name");

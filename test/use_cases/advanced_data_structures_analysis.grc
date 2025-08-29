@@ -142,7 +142,7 @@ cleanup = op() { cleanup_called = true; };
 managed_ref = create_managed_ref({data: "important"}, cleanup);
 ("Managed ref created").echo();
 
-data = managed_ref.get();
+data = managed_ref.getfield();
 ("Managed ref data: " + data).echo();
 
 ref_count = managed_ref.retain();

@@ -72,19 +72,19 @@ bubble_sort_with_trace = op(array) {
             /* Show current state */
             current_state = array.copy();
             trace += {
-                "step": "Compare " + array.get(j).str() + " and " + array.get(j + 1).str(),
+                "step": "Compare " + array[j].str() + " and " + array[j + 1].str(),
                 "array": current_state,
                 "comparing": [j, j + 1]
             };
             
             /* Swap if needed */
-            if (array.get(j) > array.get(j + 1)) {
-                temp = array.get(j);
-                array.set(j, array.get(j + 1));
-                array.set(j + 1, temp);
+            if (array[j] > array[j + 1]) {
+                temp = array[j];
+                array[j] = array[j + 1];
+                array[j + 1] = temp;
                 
                 trace += {
-                    "step": "Swap " + array.get(j).str() + " and " + array.get(j + 1).str(),
+                    "step": "Swap " + array[j].str() + " and " + array[j + 1].str(),
                     "array": array.copy(),
                     "swapped": [j, j + 1]
                 };
@@ -172,15 +172,15 @@ simple_web_framework = op() {
     
     {
         "get": op(path, handler) {
-            routes.set("GET:" + path, handler);
+            routes.setfield("GET:" + path, handler);
         },
         "post": op(path, handler) {
-            routes.set("POST:" + path, handler);
+            routes.setfield("POST:" + path, handler);
         },
         "handle_request": op(method, path, data) {
             route_key = method + ":" + path;
             if (routes.has(route_key)) {
-                handler = routes.get(route_key);
+                handler = routes.getfield(route_key);
                 handler(data);
             } else {
                 {"status": 404, "body": "Not Found"};
@@ -198,15 +198,15 @@ app.get("/hello", op(data) {
 });
 
 app.post("/echo", op(data) {
-    {"status": 200, "body": "Echo: " + data.get("message")};
+    {"status": 200, "body": "Echo: " + data.getfield("message")};
 });
 
 /* Handle requests */
 response1 = app.handle_request("GET", "/hello", {});
 response2 = app.handle_request("POST", "/echo", {"message": "Hello from Grapa!"});
 
-("Response 1: " + response1.get("body")).echo();
-("Response 2: " + response2.get("body")).echo();
+("Response 1: " + response1.getfield("body")).echo();
+("Response 2: " + response2.getfield("body")).echo();
 ```
 
 - **See also:** [Python Education Examples](../python_use_cases.md#7-education-prototyping-verified) 

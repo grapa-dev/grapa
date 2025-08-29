@@ -52,9 +52,9 @@ str += " World";
 
 /* Test 8: Object property assignment */
 obj = $obj();
-obj.set("count", 0);
-obj.set("count", obj.get("count") + 1);
-"Object count: ${obj.get('count')}".interpolate().echo();  /* Should output: 1 */
+obj.setfield("count", 0);
+obj.setfield("count", obj.getfield("count") + 1);
+"Object count: ${obj.getfield('count')}".interpolate().echo();  /* Should output: 1 */
 
 /* Test 9: Complex expressions with assignment */
 value = 100;
@@ -92,10 +92,10 @@ message += "!";
 
 /* Test 14: Object building with += */
 config = $obj();
-config.set("name", "test");
-config.set("enabled", true);
-config.set("count", 0);
-config.set("count", config.get("count") + 10);
-"Config object: name=${config.get('name')}, enabled=${config.get('enabled')}, count=${config.get('count')}".interpolate().echo();
+config.setfield("name", "test");
+config.setfield("enabled", true);
+config.setfield("count", 0);
+config.setfield("count", config.getfield("count") + 10);
+"Config object: name=${config.getfield('name')}, enabled=${config.getfield('enabled')}, count=${config.getfield('count')}".interpolate().echo();
 
 "=== All Enhanced Assignment Operators Tests Completed ===".echo();

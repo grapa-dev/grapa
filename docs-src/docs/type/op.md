@@ -286,9 +286,9 @@ dynamic_func(7);
 ### Function Storage and Retrieval
 ```grapa
 /* Store function in table */
-table = $file().table("ROW");
+table = {}.table("ROW");
 table.mkfield("func", "OP");
-table.set("my_func", op(x){x * x}, "func");
+table.setfield("my_func", op(x){x * x}, "func");
 
 /* Retrieve and execute */
 stored_func = table.get("my_func", "func");

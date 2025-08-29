@@ -58,7 +58,7 @@ The rule token `< >` provides sophisticated reference and lookup capabilities:
 @global["$index_lookup"] = rule @tb[8] {@<var,{$1}>}
 
 /* Database/File object references */
-@global["$db_lookup"] = rule @$file().table("ROW") {@<var,{$1}>}
+@global["$db_lookup"] = rule @{}.table("ROW") {@<var,{$1}>}
 ```
 
 #### **Post-Processing with Optional $OP**

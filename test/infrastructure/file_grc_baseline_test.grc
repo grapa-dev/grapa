@@ -70,21 +70,21 @@ f.rm("test_mk_dir");
 ("=== Testing set() method ===").echo();
 /* set(name, p, d) - name, p, d parameters for setting data */
 ("Testing set() with name and data parameters:").echo();
-f.set("test_file.txt", "Hello, World!");
+f.setfield("test_file.txt", "Hello, World!");
 (f.ls()).echo();
 
 ("Testing set() with name, p, and d parameters:").echo();
-f.set("test_file2.txt", "field_name", "field_value");
+f.setfield("test_file2.txt", "field_name", "field_value");
 (f.ls()).echo();
 
 ("=== Testing get() method ===").echo();
 /* get(name, p) - name and p parameters for getting data */
 ("Testing get() with name parameter:").echo();
-content = f.get("test_file.txt");
+content = f.getfield("test_file.txt");
 (content).echo();
 
 ("Testing get() with name and p parameters:").echo();
-content2 = f.get("test_file2.txt", "field_name");
+content2 = f.getfield("test_file2.txt", "field_name");
 (content2).echo();
 
 ("=== Testing info() method ===").echo();

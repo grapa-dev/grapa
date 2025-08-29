@@ -53,11 +53,11 @@ f.pwd().echo();
 "----------------------\n".echo();
 
 "Creating test file...\n".echo();
-f.set("test_file.txt", "This is a test file created by Grapa file system commands.\nLine 2 of the test file.\nLine 3 with some data.");
+f.setfield("test_file.txt", "This is a test file created by Grapa file system commands.\nLine 2 of the test file.\nLine 3 with some data.");
 "File created successfully.\n".echo();
 
 "Reading test file content:\n".echo();
-content = f.get("test_file.txt");
+content = f.getfield("test_file.txt");
 content.echo();
 "\n".echo();
 
@@ -76,7 +76,7 @@ f.pwd().echo();
 "\n".echo();
 
 "Creating file in test directory...\n".echo();
-f.set("nested_file.txt", "This file is inside the test directory.");
+f.setfield("nested_file.txt", "This file is inside the test directory.");
 "File created in test directory.\n".echo();
 
 "Listing contents of test directory:\n".echo();
@@ -134,7 +134,7 @@ while (i <= 100) {
     large_content = large_content + "Line " + i + ": This is test data for file splitting operations.\n";
     i = i + 1;
 };
-f.set("large_test_file.txt", large_content);
+f.setfield("large_test_file.txt", large_content);
 "Large file created.\n".echo();
 
 "File size: ".echo();
@@ -160,7 +160,7 @@ f.rm("test_dir");
 "-----------------------\n".echo();
 
 "Testing error handling with non-existent file:\n".echo();
-error_result = f.get("non_existent_file.txt");
+error_result = f.getfield("non_existent_file.txt");
 "Result: ".echo();
 error_result.echo();
 "\n".echo();

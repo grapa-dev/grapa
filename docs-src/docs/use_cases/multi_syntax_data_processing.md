@@ -45,13 +45,13 @@ custom_function = rule count '(' $STR ')' from $STR {op(field:$3,table_name:$6){
 /* Step 2: Define JSON syntax for API data */
 custom_function = rule $STR '->' $STR {op(json:$1,path:$3){
     /* JSON path extraction */
-    return json.json().get(path);
+    return json.json().getfield(path);
 }};
 
 custom_function = rule json_extract '(' $STR ',' $STR ')' {op(json:$3,path:$5){
     /* JSON extraction with error handling */
     try {
-        return json.json().get(path);
+        return json.json().getfield(path);
     } catch (error) {
         return $err("JSON extraction failed");
     };
@@ -137,8 +137,8 @@ custom_command = rule select $STR from $STR where $STR '->' $STR '=' $STR {
         
         records = get_table(table).ls();
         filtered = records.filter(op(record) {
-            json_data = record.get(json_field);
-            return json_data.json().get(path) == value;
+            json_data = record.getfield(json_field);
+            return json_data.json().getfield(path) == value;
         });
         
         display_results(fields, filtered);

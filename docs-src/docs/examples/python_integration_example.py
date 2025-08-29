@@ -44,7 +44,7 @@ def file_operations():
         # Create and write to a file using correct API
         code = '''
         f = $file();
-        f.set("python_test.txt", "Hello from Python integration!\\nThis is a test file created by Python.\\n");
+        f.setfield("python_test.txt", "Hello from Python integration!\\nThis is a test file created by Python.\\n");
         "File created successfully"
         '''
         result = g.eval(code)
@@ -53,7 +53,7 @@ def file_operations():
         # Read the file back using correct API
         code = '''
         f = $file();
-        content = f.get("python_test.txt");
+        content = f.getfield("python_test.txt");
         content
         '''
         result = g.eval(code)

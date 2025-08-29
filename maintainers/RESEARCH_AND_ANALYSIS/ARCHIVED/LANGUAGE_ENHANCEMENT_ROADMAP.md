@@ -232,7 +232,7 @@ These represent fundamental language features that genuinely cannot be accomplis
 ### **Common Stumbling Blocks**
 *These gaps are common stumbling blocks for new users coming from Python, JavaScript, or similar languages:*
 
-- **No `.get()` or `.set()` methods on lists/arrays**: Must use `[]` for access and assignment
+- **No `.getfield()` or `.setfield()` methods on lists/arrays**: Must use `[]` for access and assignment
 - **No `.match()` method on strings**: Use `.grep()` for regex/pattern matching
 - **No `//` line comments**: Only block comments (`/* ... */`) are supported
 - **No `.append()` or `.push()` on arrays/lists**: Use `+=` for appending

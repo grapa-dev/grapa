@@ -9,12 +9,12 @@ table.mkfield("name", "STR");
 table.mkfield("age", "INT");
 
 /* Set data */
-table.set("user1", "John", "name");
-table.set("user1", 25, "age");
+table.setfield("user1", "John", "name");
+table.setfield("user1", 25, "age");
 
 /* Get raw data */
-name_raw = table.get("user1", "name");
-age_raw = table.get("user1", "age");
+name_raw = table.getfield("user1", "name");
+age_raw = table.getfield("user1", "age");
 
 /* Examine raw data */
 ("Name raw data: " + name_raw).echo();
@@ -35,8 +35,8 @@ name_str2 = name_raw.toString();
 "\n".echo();
 
 /* Try setting a different string value */
-table.set("user1", "Jane", "name");
-name_raw2 = table.get("user1", "name");
+table.setfield("user1", "Jane", "name");
+name_raw2 = table.getfield("user1", "name");
 ("New name raw data: " + name_raw2).echo();
 "\n".echo();
 ("New name as string: '" + name_raw2.str() + "'").echo();

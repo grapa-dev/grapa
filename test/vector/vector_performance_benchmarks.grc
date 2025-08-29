@@ -73,12 +73,12 @@ matrix_sizes = [2, 5, 10, 20, 50, 100];
 matrix_results = [];
 
 matrix_sizes.range().each(op(i) {
-    size = matrix_sizes.get(i);
+            size = matrix_sizes.getfield(i);
     result = benchmark_matrix_mult(size);
     matrix_results += result;
     
-    ("  " + size + "x" + size + ": " + result.get("multiplication_time_ms") + "ms (" + 
-     result.get("ops_per_sec") + " ops/sec)").echo();
+        ("  " + size + "x" + size + ": " + result.getfield("multiplication_time_ms") + "ms (" +
+    result.getfield("ops_per_sec") + " ops/sec)").echo();
 });
 
 /* ======================================== */
@@ -139,15 +139,15 @@ cov_results = [];
 eigen_results = [];
 
 stat_sizes.range().each(op(i) {
-    size = stat_sizes.get(i);
+            size = stat_sizes.getfield(i);
     
     cov_result = benchmark_covariance(size);
     cov_results += cov_result;
-    ("  Covariance " + size + "x" + size + ": " + cov_result.get("covariance_time_ms") + "ms").echo();
+    ("  Covariance " + size + "x" + size + ": " + cov_result.getfield("covariance_time_ms") + "ms").echo();
     
     eigen_result = benchmark_eigenvalues(size);
     eigen_results += eigen_result;
-    ("  Eigenvalues " + size + "x" + size + ": " + eigen_result.get("eigenvalue_time_ms") + "ms").echo();
+    ("  Eigenvalues " + size + "x" + size + ": " + eigen_result.getfield("eigenvalue_time_ms") + "ms").echo();
 });
 
 /* ======================================== */
@@ -170,7 +170,7 @@ memory_sizes = [10, 50, 100, 200, 500];
 memory_results = [];
 
 memory_sizes.range().each(op(i) {
-    size = memory_sizes.get(i);
+            size = memory_sizes.getfield(i);
     ("Testing memory usage for " + size + "x" + size + " matrix...").echo();
     
     start_time = $TIME().utc();
@@ -218,28 +218,28 @@ compare_operations = op(size) {
     /* Matrix operations */
     start_time = $TIME().utc();
     transposed = matrix.t();
-    operations.set("transpose", (($TIME().utc() - start_time) / 1000000).int());
+    operations.setfield("transpose", (($TIME().utc() - start_time) / 1000000).int());
     
     start_time = $TIME().utc();
     inverse = matrix.inv();
-    operations.set("inverse", (($TIME().utc() - start_time) / 1000000).int());
+    operations.setfield("inverse", (($TIME().utc() - start_time) / 1000000).int());
     
     start_time = $TIME().utc();
     determinant = matrix.det();
-    operations.set("determinant", (($TIME().utc() - start_time) / 1000000).int());
+    operations.setfield("determinant", (($TIME().utc() - start_time) / 1000000).int());
     
     start_time = $TIME().utc();
     rank_val = matrix.rank();
-    operations.set("rank", (($TIME().utc() - start_time) / 1000000).int());
+    operations.setfield("rank", (($TIME().utc() - start_time) / 1000000).int());
     
     /* Statistical operations */
     start_time = $TIME().utc();
     sum_val = matrix.sum();
-    operations.set("sum", (($TIME().utc() - start_time) / 1000000).int());
+    operations.setfield("sum", (($TIME().utc() - start_time) / 1000000).int());
     
     start_time = $TIME().utc();
     mean_val = matrix.mean();
-    operations.set("mean", (($TIME().utc() - start_time) / 1000000).int());
+    operations.setfield("mean", (($TIME().utc() - start_time) / 1000000).int());
     
     operations;
 };
@@ -249,14 +249,14 @@ comp_sizes = [10, 20, 50];
 operation_comparisons = [];
 
 comp_sizes.range().each(op(i) {
-    size = comp_sizes.get(i);
+            size = comp_sizes.getfield(i);
     comparison = compare_operations(size);
-    comparison.set("size", size);
+    comparison.setfield("size", size);
     operation_comparisons += comparison;
     
     ("  " + size + "x" + size + " operations:").echo();
     comparison.keys().filter(op(key){key != "size"}).each(op(key) {
-        time = comparison.get(key);
+        time = comparison.getfield(key);
         ("    " + key + ": " + time + "ms").echo();
     });
 });
@@ -312,37 +312,37 @@ stress_result = stress_test();
 /* Calculate averages and trends */
 ("Matrix Multiplication Performance:").echo();
 matrix_results.each(op(result) {
-    size = result.get("size");
-    time = result.get("multiplication_time_ms");
-    ops_per_sec = result.get("ops_per_sec");
+            size = result.getfield("size");
+        time = result.getfield("multiplication_time_ms");
+        ops_per_sec = result.getfield("ops_per_sec");
     ("  " + size + "x" + size + ": " + time + "ms (" + ops_per_sec + " ops/sec)").echo();
 });
 
 ("\nStatistical Function Performance:").echo();
 ("Covariance:").echo();
 cov_results.each(op(result) {
-    size = result.get("size");
-    time = result.get("covariance_time_ms");
+            size = result.getfield("size");
+        time = result.getfield("covariance_time_ms");
     ("  " + size + "x" + size + ": " + time + "ms").echo();
 });
 
 ("Eigenvalues:").echo();
 eigen_results.each(op(result) {
-    size = result.get("size");
-    time = result.get("eigenvalue_time_ms");
+            size = result.getfield("size");
+        time = result.getfield("eigenvalue_time_ms");
     ("  " + size + "x" + size + ": " + time + "ms").echo();
 });
 
 ("\nMemory Usage Summary:").echo();
 memory_results.each(op(result) {
-    size = result.get("size");
-    memory = result.get("estimated_memory_mb");
-    time = result.get("operation_time_ms");
+            size = result.getfield("size");
+        memory = result.getfield("estimated_memory_mb");
+        time = result.getfield("operation_time_ms");
     ("  " + size + "x" + size + ": ~" + memory.str() + "MB, " + time + "ms for operations").echo();
 });
 
 ("\nLarge Dataset Stress Test:").echo();
-("  200x200 matrix: " + stress_result.get("total_time_ms") + "ms total").echo();
+("  200x200 matrix: " + stress_result.getfield("total_time_ms") + "ms total").echo();
 
 /* ======================================== */
 /* 7. Optimization Recommendations */

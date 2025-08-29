@@ -28,13 +28,14 @@
 > | $file     |      ✅      |     ❌      |        —         |      —       |   ❌   |    ❌   |
 > | $TABLE    |     ✅*      |     ❌      |        —         |      —       |   ❌   |    ❌   |
 >
-> *$TABLE .get() requires two arguments: key and field.
+> *$TABLE .getfield() requires two arguments: key and field.
 >
 > **Key Findings:**
 > - **Arrays (`[]`)**: Use `array[index]` and `array.len()` for access and length
 > - **Lists (`{}`)**: Use `list[key]` or `list.key` for access, `list.len()` for length
 > - **Objects (class)**: Use `object.property` or `object[key]` for access
-> - **`.get()` method**: Only works on `$file` and `$TABLE` types
+> - **`.getfield()/.setfield()` method**: Use for `$file` and `$TABLE` types
+> - **`.get()/.set()` method**: Exclusively for `$WIDGET` types
 > - **`.size()` method**: Not supported on any type (use `.len()` instead)
 > - **`.keys()` method**: Not supported on `$LIST` (use iteration instead)
 
@@ -54,7 +55,7 @@ This guide helps JavaScript users transition to Grapa by mapping common JS idiom
 | `if (cond) { ... }` | `if (cond) { ... }` |
 | `function f(x) { ... }` | `f = op(x) { ... };` |
 | `arr.push(x)` | `arr += x;` |
-| `arr[index]` | `arr[index]`<br>`arr.get(index)` |
+| `arr[index]` | `arr[index]` |
 | `obj.key` | `obj["key"]`<br>`obj.key`<br>`obj."key"` |
 | (file access) | `file.get("key")` |
 | `try { ... } catch { ... }` | `result.iferr(fallback)`<br>`if (result.type() == $ERR) { ... }` |
@@ -92,7 +93,7 @@ This guide helps JavaScript users transition to Grapa by mapping common JS idiom
 > - **Keys**: For lists, iterate manually instead of using `.keys()`.
 > - If more objects support `.get()` in the future, this guide will be updated.
 
-> **Note:** `.get("key")` is only for `$file` (and possibly one other system object). For `$LIST`/`$OBJ`, use `obj["key"]`, `obj.key`, or `obj."key"`. For `$ARRAY`, use `arr[index]` (and `arr.get(index)` if supported).
+> **Note:** `.getfield("key")` is for `$file` and `$TABLE`. `.get()/.set()` is for `$WIDGET`. For `$LIST`/`$OBJ`, use `obj["key"]`, `obj.key`, or `obj."key"`. For `$ARRAY`, use `arr[index]` (bracket notation only).
 
 ## Access Patterns: Objects, Lists, Arrays, Files, and Tables
 
@@ -121,7 +122,7 @@ name = obj.getname(1);  /* Returns "b" (key name at index 1) */
 arr = [10, 20, 30];
 
 value = arr[1];         /* Returns 20 */
-value = arr.get(1);     /* Returns 20 */
+/* Note: .get(index) is not supported for arrays - use bracket notation */
 ```
 
 - Use bracket notation or `.get(index)` for $ARRAY.
@@ -140,7 +141,7 @@ file_info = files.get(0);   /* Correct */
 ### $TABLE
 
 ```grapa
-table = $file().table("ROW");
+table = {}.table("ROW");
 table.mkfield("name", "STR", "VAR");
 table.set("user1", "Alice", "name");
 
@@ -500,7 +501,7 @@ $file().rm("test.txt");
 #### **Native Table/Database Operations**
 ```grapa
 /* Built-in table operations */
-table = $file().table("ROW");
+table = {}.table("ROW");
 table.mkfield("name", "STR", "VAR");
 table.mkfield("age", "INT");
 table.set("user1", "John", "name");

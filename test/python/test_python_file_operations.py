@@ -50,11 +50,11 @@ class GrapaFileHelper:
         """Create or write to file"""
         # Escape quotes in content
         escaped_content = content.replace('"', '\\"').replace('\n', '\\n')
-        return self.xy.eval(fr'f.set("{name}", "{escaped_content}");')
+        return self.xy.eval(fr'f.setfield("{name}", "{escaped_content}");')
     
     def get(self, name):
         """Read file content"""
-        return self.xy.eval(fr'f.get("{name}");')
+        return self.xy.eval(fr'f.getfield("{name}");')
     
     def info(self, name):
         """Get file information"""
@@ -82,13 +82,13 @@ class GrapaTableHelper:
         # Escape quotes in value
         if isinstance(value, str):
             escaped_value = value.replace('"', '\\"')
-            return self.xy.eval(fr'table.set("{record_id}", "{escaped_value}", "{field_name}");')
+            return self.xy.eval(fr'table.setfield("{record_id}", "{escaped_value}", "{field_name}");')
         else:
-            return self.xy.eval(fr'table.set("{record_id}", {value}, "{field_name}");')
+            return self.xy.eval(fr'table.setfield("{record_id}", {value}, "{field_name}");')
     
     def get(self, record_id, field_name):
         """Get a value from the table"""
-        return self.xy.eval(fr'table.get("{record_id}", "{field_name}");')
+        return self.xy.eval(fr'table.getfield("{record_id}", "{field_name}");')
     
     def ls(self):
         """List all records in the table"""
@@ -230,7 +230,7 @@ def test_file_split():
                 content = content + "Line " + i + ": Test data for splitting.\n";
                 i = i + 1;
             };
-            f.set("large_test_file.txt", content);
+            f.setfield("large_test_file.txt", content);
         ''')
         
         file_info = file_helper.info("large_test_file.txt")
@@ -310,7 +310,7 @@ def test_data_processing():
             ]
         }
         
-        xy.eval(r'f.set("test_data.json", json_data);', {"json_data": json.dumps(json_data, indent=2)})
+        xy.eval(r'f.setfield("test_data.json", json_data);', {"json_data": json.dumps(json_data, indent=2)})
         
         # Process CSV data
         print("Processing CSV data...")
@@ -392,7 +392,7 @@ def test_performance():
         xy.eval(r'''
             i = 1;
             while (i <= 100) {
-                f.set("test_file_" + i + ".txt", "Content for file " + i);
+                f.setfield("test_file_" + i + ".txt", "Content for file " + i);
                 i = i + 1;
             }
         ''')
@@ -406,7 +406,7 @@ def test_performance():
         xy.eval(r'''
             i = 1;
             while (i <= 100) {
-                content = f.get("test_file_" + i + ".txt");
+                content = f.getfield("test_file_" + i + ".txt");
                 i = i + 1;
             }
         ''')

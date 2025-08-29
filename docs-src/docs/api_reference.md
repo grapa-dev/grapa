@@ -679,18 +679,18 @@ transposed = t(matrix);
 File and directory operations.
 
 ### File Operations
-- `$file().get(path)` - Read file content
-- `$file().set(path, content)` - Write to file
+- `$file().getfield(path)` - Read file content
+- `$file().setfield(path, content)` - Write to file
 - `$file().ls(path)` - List directory contents
 - `$file().info(path)` - Get file information
 
 ### Examples
 ```grapa
 /* Read file */
-content = $file().get("data.txt").str();
+content = $file().getfield("data.txt");
 
 /* Write file */
-$file().set("output.txt", "Hello from Grapa!");
+$file().setfield("output.txt", "Hello from Grapa!");
 
 /* List files */
 files = $file().ls(".");

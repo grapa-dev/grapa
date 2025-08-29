@@ -6,7 +6,7 @@
 /* Create COL table */
 "Creating COL table...".echo();
 "\n".echo();
-fcol = $file().table("COL");
+fcol = {}.table("COL");
 
 /* Test with INT field first */
 "Creating INT field...".echo();
@@ -17,13 +17,13 @@ fcol.mkfield("age", "INT", "FIX", 4);
 
 "Setting INT data...".echo();
 "\n".echo();
-fcol.set("1", "age", 30);
+fcol.setfield("1", "age", 30);
 "INT data set successfully".echo();
 "\n".echo();
 
 "Getting INT data...".echo();
 "\n".echo();
-fcol.get("1", "age").echo();
+fcol.getfield("1", "age").echo();
 "\n".echo();
 "INT data retrieved successfully".echo();
 "\n".echo();
@@ -40,13 +40,13 @@ fcol.mkfield("name", "STR", "VAR");
 
 "Setting STR data...".echo();
 "\n".echo();
-fcol.set("1", "name", "Alice");
+fcol.setfield("1", "name", "Alice");
 "STR data set successfully".echo();
 "\n".echo();
 
 "Getting STR data...".echo();
 "\n".echo();
-fcol.get("1", "name").echo();
+fcol.getfield("1", "name").echo();
 "\n".echo();
 "STR data retrieved successfully".echo();
 "\n".echo();

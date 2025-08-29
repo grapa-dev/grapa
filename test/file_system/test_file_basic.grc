@@ -103,13 +103,13 @@ docs_files.echo();
 "Creating test file...".echo();
 "\n".echo();
 test_content = "This is a test file created by Grapa file system tests.\nLine 2 with some data.\nLine 3 with more content.";
-f.set("test_basic.txt", test_content);
+f.setfield("test_basic.txt", test_content);
 "File created successfully.".echo();
 "\n".echo();
 
 "Reading test file content:".echo();
 "\n".echo();
-read_content = f.get("test_basic.txt");
+read_content = f.getfield("test_basic.txt");
 read_content.echo();
 "\n".echo();
 "".echo();
@@ -148,7 +148,7 @@ f.pwd().echo();
 
 "Creating file in nested directory...".echo();
 "\n".echo();
-f.set("nested_file.txt", "This file is in a nested directory.");
+f.setfield("nested_file.txt", "This file is in a nested directory.");
 "File created in nested directory.".echo();
 "\n".echo();
 
@@ -251,7 +251,7 @@ f.rm("test_basic_dir");
 
 "Non-existent file get: ".echo();
 "\n".echo();
-error_result = f.get("non_existent.txt");
+error_result = f.getfield("non_existent.txt");
 error_result.echo();
 "\n".echo();
 "".echo();

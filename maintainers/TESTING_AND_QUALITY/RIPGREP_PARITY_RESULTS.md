@@ -108,7 +108,7 @@ The combination of Grapa `$file()` and `grep()` provides complete file system pa
 - **File enumeration**: `rg pattern` → `$file().ls()` + iterate
 - **Directory traversal**: `rg -r pattern` → `$file().cd()` + recursive `ls()`
 - **File filtering**: `rg --include="*.txt"` → `$file().ls()` + filter by extension
-- **Content searching**: `rg pattern file.txt` → `$file().get("file.txt").str().grep(pattern)`
+- **Content searching**: `rg pattern file.txt` → `$file().getfield("file.txt").str().grep(pattern)`
 - **Metadata access**: File size, type → `$file().info("file")`
 
 **Example Workflow:**
@@ -119,11 +119,11 @@ files = fs.ls();
 i = 0;
 while (i < files.len()) {
     file_info = files[i];
-    if (file_info.get("$KEY").str().grep("\\.txt$", "").len() > 0) {
-        content = fs.get(file_info.get("$KEY")).str();
+    if (file_info.getfield("$KEY").str().grep("\\.txt$", "").len() > 0) {
+        content = fs.getfield(file_info.getfield("$KEY")).str();
         matches = content.grep("pattern", "");
         if (matches.len() > 0) {
-            (file_info.get("$KEY").str() + ": " + matches.str() + "\n").echo();
+            (file_info.getfield("$KEY").str() + ": " + matches.str() + "\n").echo();
         }
     }
     i = i + 1;

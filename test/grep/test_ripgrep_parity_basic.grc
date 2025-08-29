@@ -10,7 +10,7 @@ fs.chd("test/grep/inputs");
 
 /* Test 1: Simple literal match */
 "Test 1: Simple literal match\n".echo();
-input = fs.get("basic.txt").str();
+input = fs.getfield("basic.txt").str();
 result = input.grep("foo", "");
 ("Input file: basic.txt\n").echo();
 ("Pattern: foo\n").echo();

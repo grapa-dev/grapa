@@ -13,6 +13,33 @@ Example:
 
 **Note**: Scientific notation (e.g., `1e-10`, `1.5e+3`) is not currently supported. Use decimal notation instead (e.g., `0.0000000001` instead of `1e-10`).
 
+## Decimal Separator Support
+
+Grapa supports both dot (`.`) and underscore (`_`) as decimal separators for float literals. This provides flexibility in float syntax while maintaining the standard mathematical definition of floating-point numbers.
+
+```grapa
+/* Standard decimal notation */
+3.14;              /* 3.14 */
+2.5;               /* 2.5 */
+1.0;               /* 1.0 */
+
+/* Underscore decimal notation (equivalent) */
+3_14;              /* 3.14 */
+2_5;               /* 2.5 */
+1_0;               /* 1.0 */
+
+/* Verification */
+(3.14 == 3_14).echo();    /* true */
+(2.5 == 2_5).echo();      /* true */
+(1.0 == 1_0).echo();      /* true */
+```
+
+**Key Points:**
+- **Interchangeable**: Dots and underscores are completely equivalent for decimal separators
+- **Single separator**: Only one decimal separator is allowed per number (standard mathematical definition)
+- **Modern language support**: This feature aligns with other modern programming languages
+- **Readability**: Provides flexibility for different coding styles and preferences
+
 You can also create using hex format:
 ```
 > -0x4.5

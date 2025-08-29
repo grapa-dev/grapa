@@ -23,7 +23,7 @@ while (i <= 200) {
     large_content = large_content + "Line " + i + ": This is test data for file splitting operations.\n";
     i = i + 1;
 }
-f.set("large_test_file.txt", large_content);
+f.setfield("large_test_file.txt", large_content);
 ("Large file created with " + large_content.length() + " characters").echo();
 "\n".echo();
 
@@ -55,8 +55,8 @@ split_files.echo();
 "\n".echo();
 i = 0;
 while (i < split_files.length()) {
-    file_info = f.info(split_files.get(i));
-    (split_files.get(i) + ": " + file_info.get("$BYTES") + " bytes").echo();
+    file_info = f.info(split_files.getfield(i));
+(split_files.getfield(i) + ": " + file_info.getfield("$BYTES") + " bytes").echo();
 	"\n".echo();
     i = i + 1;
 }
@@ -76,7 +76,7 @@ while (i <= 100) {
     csv_content = csv_content + "User" + i + "," + (20 + i) + ",City" + i + ",Job" + i + "\n";
     i = i + 1;
 }
-f.set("test_data.csv", csv_content);
+f.setfield("test_data.csv", csv_content);
 
 "Creating CSV split output directory...".echo();
 "\n".echo();
@@ -117,7 +117,7 @@ custom_content = custom_content + "Section2|Content for section 2|End of section
 custom_content = custom_content + "Section3|Content for section 3|End of section 3\n";
 custom_content = custom_content + "Section4|Content for section 4|End of section 4\n";
 custom_content = custom_content + "Section5|Content for section 5|End of section 5\n";
-f.set("custom_delim.txt", custom_content);
+f.setfield("custom_delim.txt", custom_content);
 
 "Creating custom delimiter output directory...".echo();
 "\n".echo();
@@ -146,7 +146,7 @@ start_content = "Block1\nContent for block 1\nEnd of block 1\n";
 start_content = start_content + "Block2\nContent for block 2\nEnd of block 2\n";
 start_content = start_content + "Block3\nContent for block 3\nEnd of block 3\n";
 start_content = start_content + "Block4\nContent for block 4\nEnd of block 4\n";
-f.set("start_test.txt", start_content);
+f.setfield("start_test.txt", start_content);
 
 "Creating start option output directory...".echo();
 "\n".echo();
@@ -232,16 +232,16 @@ invalid_result.echo();
 "Checking first split file...".echo();
 "\n".echo();
 f.cd("split_output");
-first_file = f.ls().get(0);
-first_content = f.get(first_file);
+first_file = f.ls().getfield(0);
+first_content = f.getfield(first_file);
 ("First split file (" + first_file + ") content length: " + first_content.length()).echo();
 "\n".echo();
 
 "Checking CSV split file with header...".echo();
 "\n".echo();
 f.cd("../csv_split_output");
-csv_file = f.ls().get(0);
-csv_content_check = f.get(csv_file);
+csv_file = f.ls().getfield(0);
+csv_content_check = f.getfield(csv_file);
 ("CSV split file (" + csv_file + ") starts with header: " + (csv_content_check.indexOf("Name,Age,City,Occupation") >= 0)).echo();
 "\n".echo();
 
@@ -260,7 +260,7 @@ while (i <= 1000) {
     very_large_content += "Very large file line " + i + " with substantial content for testing large file operations.\n";
     i = i + 1;
 }
-f.set("very_large_file.txt", very_large_content);
+f.setfield("very_large_file.txt", very_large_content);
 
 "Very large file info: ".echo();
 "\n".echo();
@@ -304,7 +304,7 @@ f.cd("split_output");
 split_files = f.ls();
 i = 0;
 while (i < split_files.length()) {
-    f.rm(split_files.get(i));
+    f.rm(split_files.getfield(i));
     i = i + 1;
 }
 f.cd("..");
@@ -314,7 +314,7 @@ f.cd("csv_split_output");
 csv_files = f.ls();
 i = 0;
 while (i < csv_files.length()) {
-    f.rm(csv_files.get(i));
+    f.rm(csv_files.getfield(i));
     i = i + 1;
 }
 f.cd("..");
@@ -324,7 +324,7 @@ f.cd("custom_split_output");
 custom_files = f.ls();
 i = 0;
 while (i < custom_files.length()) {
-    f.rm(custom_files.get(i));
+    f.rm(custom_files.getfield(i));
     i = i + 1;
 }
 f.cd("..");
@@ -334,7 +334,7 @@ f.cd("start_split_output");
 start_files = f.ls();
 i = 0;
 while (i < start_files.length()) {
-    f.rm(start_files.get(i));
+    f.rm(start_files.getfield(i));
     i = i + 1;
 }
 f.cd("..");
@@ -344,7 +344,7 @@ f.cd("very_large_split_output");
 very_large_files = f.ls();
 i = 0;
 while (i < very_large_files.length()) {
-    f.rm(very_large_files.get(i));
+    f.rm(very_large_files.getfield(i));
     i = i + 1;
 }
 f.cd("..");

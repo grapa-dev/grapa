@@ -4,66 +4,61 @@
 
 /* Create ROW table */
 "Creating ROW table...\n".echo();
-frow = $file().table("ROW");
+frow = {}.table("ROW");
 frow.mkfield("name", "STR", "VAR");
 frow.mkfield("age", "INT", "FIX", 4);
 frow.mkfield("city", "STR", "VAR");
-
 "ROW table created\n".echo();
-"---\n".echo();
 
 /* Create COL table */
+"---\n".echo();
 "Creating COL table...\n".echo();
-fcol = $file().table("COL");
+fcol = {}.table("COL");
 fcol.mkfield("name", "STR", "VAR");
 fcol.mkfield("age", "INT", "FIX", 4);
 fcol.mkfield("city", "STR", "VAR");
-
 "COL table created\n".echo();
-"---\n".echo();
+
+/* Define helper operators */
+setFields = op(pData,rName,pName,pAge,pCity) {
+        pData.setfield(rName, pName, "name");
+        pData.setfield(rName, pAge, "age");
+        pData.setfield(rName, pCity, "city");
+};
+getFields = op(pData,rName) {
+        {"name":pData.getfield(rName, "name"),"age":pData.getfield(rName, "age"), "city":pData.getfield(rName, "city")};
+};
 
 /* Add same data to both tables */
+"---\n".echo();
 "Adding data to ROW table...\n".echo();
-frow.set("1", "name", "Alice");
-frow.set("1", "age", 30);
-frow.set("1", "city", "New York");
-frow.set("2", "name", "Bob");
-frow.set("2", "age", 25);
-frow.set("2", "city", "Los Angeles");
+setFields(frow,"user1","Alice",30,"New York");
+setFields(frow,"user2","Bob",25,"Los Angeles");
 
 "Adding data to COL table...\n".echo();
-fcol.set("1", "name", "Alice");
-fcol.set("1", "age", 30);
-fcol.set("1", "city", "New York");
-fcol.set("2", "name", "Bob");
-fcol.set("2", "age", 25);
-fcol.set("2", "city", "Los Angeles");
+setFields(fcol,"user1","Alice",30,"New York");
+setFields(fcol,"user2","Bob",25,"Los Angeles");
 
 "Data added to both tables\n".echo();
-"---\n".echo();
 
-/* Compare debug output */
+/* Debug output */
+"---\n".echo();
 "ROW table debug output:\n".echo();
 frow.dump().echo();
 "---\n".echo();
-
 "COL table debug output:\n".echo();
 fcol.dump().echo();
-"---\n".echo();
 
 /* Test field operations */
+"---\n".echo();
 "Testing field operations...\n".echo();
-"ROW table - Record 1 name: ".echo();
-frow.get("1", "name").echo();
-"\n".echo();
-"COL table - Record 1 name: ".echo();
-fcol.get("1", "name").echo();
-"\n".echo();
-"ROW table - Record 2 age: ".echo();
-frow.get("2", "age").echo();
-"\n".echo();
-"COL table - Record 2 age: ".echo();
-fcol.get("2", "age").echo();
-"\n".echo();
+"ROW table - Record 1: ".echo();
+(getFields(frow,"user1").str() + "\n").echo();
+"COL table - Record 1: ".echo();
+(getFields(fcol,"user1").str() + "\n").echo();
+"ROW table - Record 2: ".echo();
+(getFields(frow,"user2").str() + "\n").echo();
+"COL table - Record 2: ".echo();
+(getFields(fcol,"user2").str() + "\n").echo();
 
 "Test completed\n".echo(); 

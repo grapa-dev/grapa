@@ -15,7 +15,7 @@
 - No built-in documentation/help system
 - No native Unicode support outside grep
 - No direct async/concurrent programming support
-- **No `.get()` or `.set()` methods on lists/arrays:** Must use `[]` for access and assignment. This is a common Python/JavaScript habit that does not work in Grapa.
+- **No `.getfield()` or `.setfield()` methods on lists/arrays:** Must use `[]` for access and assignment. This is a common Python/JavaScript habit that does not work in Grapa.
 - **No `.match()` method on strings:** Use `.grep()` for regex/pattern matching. `.match()` is not implemented.
 - **No `//` line comments:** Only block comments (`/* ... */`) are supported. Using `//` will cause syntax errors.
 - **End-of-line comments inside `{}` code blocks do not work:** Block comments at the end of a line within a code block can cause parsing errors.

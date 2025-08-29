@@ -10,7 +10,7 @@ fs.chd("test/grep/inputs");
 
 /* Test 1: Unicode literal match */
 "Test 1: Unicode literal match\n".echo();
-input = fs.get("unicode.txt").str();
+input = fs.getfield("unicode.txt").str();
 result = input.grep("café", "");
 ("Input file: unicode.txt\n").echo();
 ("Pattern: café\n").echo();

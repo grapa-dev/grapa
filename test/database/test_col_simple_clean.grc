@@ -6,7 +6,7 @@
 /* Create COL table */
 "Creating COL table...".echo();
 "\n".echo();
-fcol = $file().table("COL");
+fcol = {}.table("COL");
 "COL table created".echo();
 "\n".echo();
 
@@ -32,36 +32,36 @@ fcol.mkfield("city", "STR", "VAR");
 /* Try setting data one field at a time */
 "Setting name field...".echo();
 "\n".echo();
-fcol.set("1", "name", "Alice");
+fcol.setfield("1", "name", "Alice");
 "Name field set".echo();
 "\n".echo();
 
 "Setting age field...".echo();
 "\n".echo();
-fcol.set("1", "age", 30);
+fcol.setfield("1", "age", 30);
 "Age field set".echo();
 "\n".echo();
 
 "Setting city field...".echo();
 "\n".echo();
-fcol.set("1", "city", "New York");
+fcol.setfield("1", "city", "New York");
 "City field set".echo();
 "\n".echo();
 
 /* Try getting data */
 "Getting name...".echo();
 "\n".echo();
-fcol.get("1", "name").echo();
+fcol.getfield("1", "name").echo();
 "\n".echo();
 
 "Getting age...".echo();
 "\n".echo();
-fcol.get("1", "age").echo();
+fcol.getfield("1", "age").echo();
 "\n".echo();
 
 "Getting city...".echo();
 "\n".echo();
-fcol.get("1", "city").echo();
+fcol.getfield("1", "city").echo();
 "\n".echo();
 
 "Test completed successfully!".echo(); 

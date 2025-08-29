@@ -53,16 +53,16 @@ user2.echo();
 "-----------------------------\n".echo();
 
 "Using set() method...\n".echo();
-db.set("user3", "Bob Johnson");
-db.set("user4", "Alice Brown");
+db.setfield("user3", "Bob Johnson");
+db.setfield("user4", "Alice Brown");
 
 "Using get() method...\n".echo();
-user3 = db.get("user3");
+user3 = db.getfield("user3");
 "get('user3'): ".echo();
 user3.echo();
 "\n".echo();
 
-user4 = db.get("user4");
+user4 = db.getfield("user4");
 "get('user4'): ".echo();
 user4.echo();
 "\n".echo();

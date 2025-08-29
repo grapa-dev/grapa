@@ -10,7 +10,7 @@
 "\n=== Test 1: ROW Database Type Validation ===\n".echo();
 "Testing row-oriented storage for transactional workloads\n".echo();
 
-row_db = $file().table("ROW");
+row_db = {}.table("ROW");
 "✓ ROW database created\n".echo();
 
 /* Create fields */
@@ -21,20 +21,20 @@ row_db.mkfield("city", "STR", "VAR");
 "✓ ROW fields created\n".echo();
 
 /* Insert data */
-row_db.set("user1", 1, "id");
-row_db.set("user1", "Alice", "name");
-row_db.set("user1", 25, "age");
-row_db.set("user1", "New York", "city");
+row_db.setfield("user1", 1, "id");
+row_db.setfield("user1", "Alice", "name");
+row_db.setfield("user1", 25, "age");
+row_db.setfield("user1", "New York", "city");
 
-row_db.set("user2", 2, "id");
-row_db.set("user2", "Bob", "name");
-row_db.set("user2", 30, "age");
-row_db.set("user2", "Los Angeles", "city");
+row_db.setfield("user2", 2, "id");
+row_db.setfield("user2", "Bob", "name");
+row_db.setfield("user2", 30, "age");
+row_db.setfield("user2", "Los Angeles", "city");
 "✓ ROW data inserted\n".echo();
 
 /* Retrieve data */
-row_user1_name = row_db.get("user1", "name");
-row_user1_age = row_db.get("user1", "age").raw().int();
+row_user1_name = row_db.getfield("user1", "name");
+row_user1_age = row_db.getfield("user1", "age").raw().int();
 ("✓ ROW retrieval: " + row_user1_name + ", age " + row_user1_age.str() + "\n").echo();
 
 /* List records */
@@ -47,7 +47,7 @@ row_records = row_db.ls();
 "\n=== Test 2: COL Database Type Validation ===\n".echo();
 "Testing column-oriented storage for analytical workloads\n".echo();
 
-col_db = $file().table("COL");
+col_db = {}.table("COL");
 "✓ COL database created\n".echo();
 
 /* Create fields */
@@ -58,20 +58,20 @@ col_db.mkfield("city", "STR", "VAR");
 "✓ COL fields created\n".echo();
 
 /* Insert data */
-col_db.set("user1", 1, "id");
-col_db.set("user1", "Alice", "name");
-col_db.set("user1", 25, "age");
-col_db.set("user1", "New York", "city");
+col_db.setfield("user1", 1, "id");
+col_db.setfield("user1", "Alice", "name");
+col_db.setfield("user1", 25, "age");
+col_db.setfield("user1", "New York", "city");
 
-col_db.set("user2", 2, "id");
-col_db.set("user2", "Bob", "name");
-col_db.set("user2", 30, "age");
-col_db.set("user2", "Los Angeles", "city");
+col_db.setfield("user2", 2, "id");
+col_db.setfield("user2", "Bob", "name");
+col_db.setfield("user2", 30, "age");
+col_db.setfield("user2", "Los Angeles", "city");
 "✓ COL data inserted\n".echo();
 
 /* Retrieve data */
-col_user1_name = col_db.get("user1", "name");
-col_user1_age = col_db.get("user1", "age").raw().int();
+col_user1_name = col_db.getfield("user1", "name");
+col_user1_age = col_db.getfield("user1", "age").raw().int();
 ("✓ COL retrieval: " + col_user1_name + ", age " + col_user1_age.str() + "\n").echo();
 
 /* List records */
@@ -84,7 +84,7 @@ col_records = col_db.ls();
 "\n=== Test 3: GROUP Database Type Validation ===\n".echo();
 "Testing hierarchical storage for nested structures\n".echo();
 
-group_db = $file().table("GROUP");
+group_db = {}.table("GROUP");
 "✓ GROUP database created\n".echo();
 
 /* Create nested databases within the group */
@@ -104,9 +104,9 @@ users_db.mkfield("age", "INT", "FIX", 4);
 "✓ Users fields created\n".echo();
 
 /* Insert data in users database */
-users_db.set("user1", 1, "id");
-users_db.set("user1", "Alice", "name");
-users_db.set("user1", 25, "age");
+users_db.setfield("user1", 1, "id");
+users_db.setfield("user1", "Alice", "name");
+users_db.setfield("user1", 25, "age");
 "✓ Users data inserted\n".echo();
 
 /* Navigate to analytics database */
@@ -115,14 +115,14 @@ analytics_db = group_db.cd("analytics");
 
 /* Create fields in analytics database */
 analytics_db.mkfield("metric", "STR", "VAR");
-analytics_db.mkfield("value", "FLT", "FIX", 8);
+analytics_db.mkfield("value", "FLOAT", "FIX", 8);
 analytics_db.mkfield("timestamp", "INT", "FIX", 8);
 "✓ Analytics fields created\n".echo();
 
 /* Insert data in analytics database */
-analytics_db.set("metric1", "page_views", "metric");
-analytics_db.set("metric1", 1250.5, "value");
-analytics_db.set("metric1", 1640995200, "timestamp");
+analytics_db.setfield("metric1", "page_views", "metric");
+analytics_db.setfield("metric1", 1250.5, "value");
+analytics_db.setfield("metric1", 1640995200, "timestamp");
 "✓ Analytics data inserted\n".echo();
 
 /* Navigate back to root and list contents */
@@ -137,23 +137,23 @@ group_contents = group_db.ls();
 "Testing data integrity across all database types\n".echo();
 
 /* Verify ROW data integrity */
-row_user2_name = row_db.get("user2", "name");
-row_user2_city = row_db.get("user2", "city");
+row_user2_name = row_db.getfield("user2", "name");
+row_user2_city = row_db.getfield("user2", "city");
 ("✓ ROW integrity: " + row_user2_name + " from " + row_user2_city + "\n").echo();
 
 /* Verify COL data integrity */
-col_user2_name = col_db.get("user2", "name");
-col_user2_city = col_db.get("user2", "city");
+col_user2_name = col_db.getfield("user2", "name");
+col_user2_city = col_db.getfield("user2", "city");
 ("✓ COL integrity: " + col_user2_name + " from " + col_user2_city + "\n").echo();
 
 /* Verify GROUP nested data integrity */
 users_db = group_db.cd("users");
-group_user1_name = users_db.get("user1", "name");
-group_user1_age = users_db.get("user1", "age").raw().int();
+group_user1_name = users_db.getfield("user1", "name");
+group_user1_age = users_db.getfield("user1", "age").raw().int();
 ("✓ GROUP nested integrity: " + group_user1_name + ", age " + group_user1_age.str() + "\n").echo();
 
 analytics_db = group_db.cd("analytics");
-group_metric_value = analytics_db.get("metric1", "value").raw().flt();
+group_metric_value = analytics_db.getfield("metric1", "value").raw().flt();
 ("✓ GROUP analytics integrity: metric value " + group_metric_value.str() + "\n").echo();
 
 /* ================================================================================ */
@@ -163,24 +163,24 @@ group_metric_value = analytics_db.get("metric1", "value").raw().flt();
 "Testing BTree operations across all database types\n".echo();
 
 /* Test ROW BTree operations */
-row_db.set("user3", 3, "id");
-row_db.set("user3", "Charlie", "name");
-row_db.set("user3", 35, "age");
-row_db.set("user3", "Chicago", "city");
+row_db.setfield("user3", 3, "id");
+row_db.setfield("user3", "Charlie", "name");
+row_db.setfield("user3", 35, "age");
+row_db.setfield("user3", "Chicago", "city");
 "✓ ROW BTree insert operation\n".echo();
 
 /* Test COL BTree operations */
-col_db.set("user3", 3, "id");
-col_db.set("user3", "Charlie", "name");
-col_db.set("user3", 35, "age");
-col_db.set("user3", "Chicago", "city");
+col_db.setfield("user3", 3, "id");
+col_db.setfield("user3", "Charlie", "name");
+col_db.setfield("user3", 35, "age");
+col_db.setfield("user3", "Chicago", "city");
 "✓ COL BTree insert operation\n".echo();
 
 /* Test GROUP BTree operations */
 users_db = group_db.cd("users");
-users_db.set("user2", 2, "id");
-users_db.set("user2", "Bob", "name");
-users_db.set("user2", 30, "age");
+users_db.setfield("user2", 2, "id");
+users_db.setfield("user2", "Bob", "name");
+users_db.setfield("user2", 30, "age");
 "✓ GROUP BTree insert operation\n".echo();
 
 /* Verify all operations */

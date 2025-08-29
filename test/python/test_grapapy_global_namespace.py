@@ -18,11 +18,11 @@ class GrapaFileHelper:
         return self.xy.eval('fs.phd();')
     def set(self, name, content):
         escaped_content = content.replace('"', '\\"').replace('\n', '\\n')
-        return self.xy.eval(f'fs.set("{name}", "{escaped_content}");')
+        return self.xy.eval(f'fs.setfield("{name}", "{escaped_content}");')
     def get(self, name):
-        return self.xy.eval(f'fs.get("{name}");')
+        return self.xy.eval(f'fs.getfield("{name}");')
     def get_str(self, name):
-        return self.xy.eval(f'fs.get("{name}").str();')
+        return self.xy.eval(f'fs.getfield("{name}").str();')
     def info(self, name):
         return self.xy.eval(f'fs.info("{name}");')
     def ls(self):
@@ -37,7 +37,7 @@ class GrapaFileHelper:
 class GrapaTableHelper:
     def __init__(self, grapa_instance, store_type="ROW"):
         self.xy = grapa_instance
-        self.xy.eval(f'$global.table = $file().table("{store_type}");')
+        self.xy.eval(f'$global.table = {}.table("{store_type}");')
     def mkfield(self, name, ftype, fmode=None, flen=None):
         if fmode and flen:
             return self.xy.eval(f'table.mkfield("{name}", "{ftype}", "{fmode}", {flen});')
@@ -46,11 +46,11 @@ class GrapaTableHelper:
         else:
             return self.xy.eval(f'table.mkfield("{name}", "{ftype}");')
     def set(self, key, value, field):
-        return self.xy.eval(f'table.set("{key}", {repr(value)}, "{field}");')
+        return self.xy.eval(f'table.setfield("{key}", {repr(value)}, "{field}");')
     def get(self, key, field, conv=None):
         if conv:
-            return self.xy.eval(f'table.get("{key}", "{field}").{conv}();')
-        return self.xy.eval(f'table.get("{key}", "{field}");')
+            return self.xy.eval(f'table.getfield("{key}", "{field}").{conv}();')
+        return self.xy.eval(f'table.getfield("{key}", "{field}");')
     def ls(self):
         return self.xy.eval('table.ls();')
     def rmfield(self, name):

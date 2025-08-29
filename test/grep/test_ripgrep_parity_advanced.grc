@@ -10,7 +10,7 @@ fs.chd("test/grep/inputs");
 
 /* Test 1: Multiline pattern */
 "Test 1: Multiline pattern\n".echo();
-input = fs.get("multiline.txt").str();
+input = fs.getfield("multiline.txt").str();
 result = input.grep("^foo.*bar$", "m");
 ("Input file: multiline.txt\n").echo();
 ("Pattern: ^foo.*bar$, Options: m\n").echo();
@@ -21,7 +21,7 @@ result = input.grep("^foo.*bar$", "m");
 
 /* Test 2: Lookahead assertion */
 "Test 2: Lookahead assertion\n".echo();
-input = fs.get("lookaround.txt").str();
+input = fs.getfield("lookaround.txt").str();
 result = input.grep("foo(?=bar)", "");
 ("Input file: lookaround.txt\n").echo();
 ("Pattern: foo(?=bar), Options: (none)\n").echo();
@@ -32,7 +32,7 @@ result = input.grep("foo(?=bar)", "");
 
 /* Test 3: After context */
 "Test 3: After context\n".echo();
-input = fs.get("context.txt").str();
+input = fs.getfield("context.txt").str();
 result = input.grep("foo", "A1");
 ("Input file: context.txt\n").echo();
 ("Pattern: foo, Options: A1\n").echo();
@@ -61,7 +61,7 @@ result = input.grep("foo", "C1");
 
 /* Test 6: Custom delimiter (if supported) */
 "Test 6: Custom delimiter\n".echo();
-input = fs.get("delimiter.txt").str();
+input = fs.getfield("delimiter.txt").str();
 result = input.grep("foo", "o", "|||");
 ("Input file: delimiter.txt\n").echo();
 ("Pattern: foo, Options: o, Delimiter: |||\n").echo();
@@ -72,7 +72,7 @@ result = input.grep("foo", "o", "|||");
 
 /* Test 7: Invalid pattern error handling */
 "Test 7: Invalid pattern error handling\n".echo();
-input = fs.get("error.txt").str();
+input = fs.getfield("error.txt").str();
 result = input.grep("(unclosed", "");
 ("Input file: error.txt\n").echo();
 ("Pattern: (unclosed, Options: (none)\n").echo();

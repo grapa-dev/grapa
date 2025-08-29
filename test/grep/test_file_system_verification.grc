@@ -19,12 +19,12 @@ fs = $file();
 test_file = "verification_test.txt";
 
 /* Create and write to file */
-fs.set(test_file, "Hello from verification test!");
+fs.setfield(test_file, "Hello from verification test!");
 ("Created file: " + test_file).echo();
 "\n".echo();
 
 /* Read from file */
-content = fs.get(test_file).str();
+content = fs.getfield(test_file).str();
 ("File content: " + content).echo();
 "\n".echo();
 
@@ -49,7 +49,7 @@ file_info = fs.info(test_file);
 
 /* Get file size from info */
 if (file_info.type() != $ERR) {
-    size = file_info.get("$BYTES");
+    size = file_info.getfield("$BYTES");
     ("File size: " + size + " bytes").echo();
 	"\n".echo();
     
@@ -78,7 +78,7 @@ fs.mk(subdir);
 
 /* Create file in subdirectory */
 subdir_file = subdir + "/subdir_test.txt";
-fs.set(subdir_file, "File in subdirectory");
+fs.setfield(subdir_file, "File in subdirectory");
 ("Created file in subdirectory: " + subdir_file).echo();
 "\n".echo();
 
@@ -111,14 +111,14 @@ row_table.mkfield("age", "INT");
 row_table.mkfield("salary", "FLOAT");
 
 /* Insert data */
-row_table.set("user1", "John Doe", "name");
-row_table.set("user1", 30, "age");
-row_table.set("user1", 50000.50, "salary");
+row_table.setfield("user1", "John Doe", "name");
+row_table.setfield("user1", 30, "age");
+row_table.setfield("user1", 50000.50, "salary");
 
 /* Retrieve data */
-name = row_table.get("user1", "name").str();
-age = row_table.get("user1", "age").int();
-salary = row_table.get("user1", "salary").float();
+name = row_table.getfield("user1", "name").str();
+age = row_table.getfield("user1", "age").int();
+salary = row_table.getfield("user1", "salary").float();
 
 ("User data - Name: " + name + ", Age: " + age + ", Salary: " + salary).echo();
 "\n".echo();
@@ -144,7 +144,7 @@ while (i < 100) {
     i += 1;
 };
 
-fs.set("large_test_file.txt", large_content);
+fs.setfield("large_test_file.txt", large_content);
 "Created large file for splitting".echo();
 "\n".echo();
 
@@ -170,7 +170,7 @@ if (split_files.len() > 1) {
 "\n".echo();
 
 /* Try to read non-existent file */
-nonexistent = fs.get("this_file_does_not_exist.txt");
+nonexistent = fs.getfield("this_file_does_not_exist.txt");
 if (nonexistent.type() == $ERR) {
     " Error handling test PASSED (non-existent file)".echo();
 } else {
@@ -179,7 +179,7 @@ if (nonexistent.type() == $ERR) {
 "\n".echo();
 
 /* Try to access non-existent table field */
-invalid_field = row_table.get("user1", "nonexistent_field");
+invalid_field = row_table.getfield("user1", "nonexistent_field");
 if (invalid_field.type() == $ERR) {
     " Error handling test PASSED (non-existent field)".echo();
 } else {
@@ -204,7 +204,7 @@ if (split_files.len() > 0) {
     fs.cd("split_output");
     i = 0;
     while (i < split_files.len()) {
-        fs.rm(split_files.get(i));
+        fs.rm(split_files.getfield(i));
         i += 1;
     };
     fs.cd("..");
@@ -226,16 +226,16 @@ start_time = $TIME().utc();
 i = 0;
 while (i < 50) {
     record_id = "record" + i;
-    row_table.set(record_id, "User " + i, "name");
-    row_table.set(record_id, 20 + i, "age");
-    row_table.set(record_id, 30000.0 + i * 1000, "salary");
+    row_table.setfield(record_id, "User " + i, "name");
+row_table.setfield(record_id, 20 + i, "age");
+row_table.setfield(record_id, 30000.0 + i * 1000, "salary");
     i += 1;
 };
 
 /* Read back some records */
-record25_name = row_table.get("record25", "name").str();
-record25_age = row_table.get("record25", "age").int();
-record25_salary = row_table.get("record25", "salary").float();
+record25_name = row_table.getfield("record25", "name").str();
+record25_age = row_table.getfield("record25", "age").int();
+record25_salary = row_table.getfield("record25", "salary").float();
 
 end_time = $TIME().utc();
 performance_time = ((end_time - start_time) / 1000000).int();

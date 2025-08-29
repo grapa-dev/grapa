@@ -135,8 +135,8 @@ f.pwd(); /* Returns: /my_database/users/admins/user_data */
 /* Add data to the ROW database */
 f.mkfield("id", "INT", "FIX", 4);
 f.mkfield("name", "STR", "VAR");
-f.set("user1", 1001, "id");
-f.set("user1", "John Doe", "name");
+    f.setfield("user1", 1001, "id");
+    f.setfield("user1", "John Doe", "name");
 ```
 
 ### Direct Path Navigation
@@ -226,7 +226,7 @@ f.mk("app", "GROUP");
 f.cd("app");
 
 /* Configuration (file system) */
-f.set("config.json", '{"version": "1.0"}');
+    f.setfield("config.json", '{"version": "1.0"}');
 
 /* User data (database) */
 f.mk("users", "ROW");

@@ -181,7 +181,7 @@ python test/python/test_string_distance_validation.py
 - Creates Grapa instance with `xy = grapapy.grapa()`
 - Executes Grapa code with `xy.eval("grapa_code")`
 - File system operations from Python (`$file()`)
-- Database operations from Python (`$file().table()`)
+- Database operations from Python (`{}.table()`)
 - File split functionality from Python
 - Data processing with CSV and JSON
 - Error handling and exception management

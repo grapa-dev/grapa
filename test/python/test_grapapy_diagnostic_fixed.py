@@ -20,11 +20,11 @@ class GrapaFileHelper:
         return self.xy.eval(r'f.phd();')
     def set(self, name, content):
         escaped_content = content.replace('"', '\\"').replace('\n', '\\n')
-        return self.xy.eval(fr'f.set("{name}", "{escaped_content}");')
+        return self.xy.eval(fr'f.setfield("{name}", "{escaped_content}");')
     def get(self, name):
-        return self.xy.eval(fr'f.get("{name}");')
+        return self.xy.eval(fr'f.getfield("{name}");')
     def get_str(self, name):
-        return self.xy.eval(fr'f.get("{name}").str();')
+        return self.xy.eval(fr'f.getfield("{name}").str();')
     def info(self, name):
         return self.xy.eval(fr'f.info("{name}");')
     def ls(self):

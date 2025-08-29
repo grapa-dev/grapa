@@ -463,7 +463,7 @@ user.describe({properties: true, methods: true});
 /* Returns: "List with 3 properties (keys: name, age, greet)" */
 
 /* Structure description for complex objects */
-table = $file().table("ROW");
+table = {}.table("ROW");
 table.describe({structure: true});
 /* Returns detailed structure information */
 

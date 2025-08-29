@@ -14,13 +14,13 @@ GrapaPy brings the power of Grapa to Python users, making advanced data processi
 > - Use `$global` for persistent objects (file handles, tables, etc.)—local variables are lost between calls.
 > - No `for`/`foreach` loops—use `while` for iteration.
 > - No `try/catch`—check for `$ERR` return values and handle errors explicitly.
-> - Use `[]` for list/array access, not `.get()` (which is for objects/tables).
+> - Use `[]` for list/array access, not `.getfield()` (which is for files/tables).
 > - Use `.map()`, `.reduce()`, `.filter()` as methods on arrays/lists, not as global functions.
 > - Every statement and block must end with a semicolon (`;`).
 > - Block comments (`/* ... */`) and line comments (`// ...`) are both supported. `#` comments are not supported.
 > - Explicit type conversion is required for results (e.g., `.str()`, `.int()`, `.float()`).
 > - No implicit truthy/falsy—use explicit boolean checks.
-> - No attribute-style access for dict/list keys—use `[]` or `.get()` for objects.
+> - No attribute-style access for dict/list keys—use `[]` or `.getfield()` for files/tables.
 > - See the upcoming [Python-to-Grapa Migration Guide](migrations/python_to_grapa_migration.md) for a full mapping and more examples.
 
 ## Thread Safety and Parallelism
@@ -166,7 +166,7 @@ print(content)
 import grapapy
 xy = grapapy.grapa()
 
-xy.eval("$global.table = $file().table('ROW');")
+xy.eval("$global.table = {}.table('ROW');")
 xy.eval("table.mkfield('name', 'STR', 'VAR');")
 xy.eval("table.set('user1', 'Alice', 'name');")
 name = xy.eval("table.get('user1', 'name');")

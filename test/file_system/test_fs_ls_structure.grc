@@ -7,7 +7,7 @@ fs = $file();
 
 /* Create a test file */
 test_file = "ls_test_file.txt";
-fs.set(test_file, "Test content");
+fs.setfield(test_file, "Test content");
 
 /* Test fs.ls() */
 "Testing fs.ls()...\n".echo();

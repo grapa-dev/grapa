@@ -223,7 +223,7 @@ xml = xml + <root><item>1</item></root>;  /* Concatenate XML */
 
 ### **Superior ETL and Data Processing** 📊
 Grapa **exceeds** modern languages in Extract, Transform, Load operations:
-- **Native database integration** with `$file().table()` (ROW, COL, GROUP storage types) - **No external ORM required**
+- **Native database integration** with `{}.table()` (ROW, COL, GROUP storage types) - **No external ORM required**
 - **Advanced binary data processing** with 100% ripgrep-compatible capabilities - **Superior to Python, JavaScript**
 - **Unicode support** for international data with native pattern matching
 - **Execution trees** for efficient data transformation - **Unique capability**
@@ -245,7 +245,7 @@ This table ranks programming languages across key capabilities, showing where Gr
 | **Unlimited Precision Math** | **⭐⭐⭐⭐⭐ (Native $INT, $FLOAT, $TIME)** | ⭐⭐⭐ (decimal, mpmath) | ⭐⭐ (BigInt) | ⭐⭐ (BigInt) | ⭐⭐ (big.Int) | ⭐⭐ (num-bigint) | ⭐⭐ (BigInt) | ⭐⭐ (BigInteger) | ⭐⭐ (BigDecimal) |
 | **Pattern Matching** | **⭐⭐⭐⭐⭐ (100% ripgrep, Binary Support)** | ⭐⭐ (re module) | ⭐⭐ (RegExp) | ⭐⭐ (RegExp) | ⭐⭐ (regexp) | ⭐⭐⭐ (regex) | ⭐⭐ (NSRegularExpression) | ⭐⭐ (Regex) | ⭐⭐ (Regexp) |
 | **Parallel Processing** | **⭐⭐⭐⭐⭐ (Built-in Threading, No Setup)** | ⭐⭐ (multiprocessing) | ⭐⭐ (Web Workers) | ⭐⭐ (Web Workers) | ⭐⭐⭐ (goroutines) | ⭐⭐⭐ (async/await) | ⭐⭐ (GCD) | ⭐⭐ (coroutines) | ⭐⭐ (Thread) |
-| **Database Integration** | **⭐⭐⭐⭐⭐ (Native $file().table())** | ⭐⭐ (SQLAlchemy, ORMs) | ⭐⭐ (IndexedDB, SQLite) | ⭐⭐ (IndexedDB, SQLite) | ⭐⭐ (database/sql) | ⭐⭐ (SQLx, Diesel) | ⭐⭐ (Core Data) | ⭐⭐ (Room, Exposed) | ⭐⭐ (Active Record) |
+| **Database Integration** | **⭐⭐⭐⭐⭐ (Native {}.table())** | ⭐⭐ (SQLAlchemy, ORMs) | ⭐⭐ (IndexedDB, SQLite) | ⭐⭐ (IndexedDB, SQLite) | ⭐⭐ (database/sql) | ⭐⭐ (SQLx, Diesel) | ⭐⭐ (Core Data) | ⭐⭐ (Room, Exposed) | ⭐⭐ (Active Record) |
 | **Type Safety** | **⭐⭐⭐ (Runtime Type Checking)** | ⭐⭐ (mypy, type hints) | ⭐ (dynamic) | ⭐⭐⭐⭐ (static) | ⭐⭐⭐⭐ (static) | ⭐⭐⭐⭐⭐ (static) | ⭐⭐⭐⭐ (static) | ⭐⭐⭐⭐ (static) | ⭐ (dynamic) |
 | **Error Handling** | **⭐⭐⭐⭐ (try/catch/finally, .iferr())** | ⭐⭐⭐ (try/except) | ⭐⭐ (try/catch) | ⭐⭐ (try/catch) | ⭐⭐⭐ (error returns) | ⭐⭐⭐⭐ (Result<T,E>) | ⭐⭐⭐ (do-catch) | ⭐⭐⭐ (try/catch) | ⭐⭐ (begin/rescue) |
 | **String Interpolation** | **⭐⭐⭐⭐⭐ (Advanced .interpolate())** | ⭐⭐⭐⭐ (f-strings) | ⭐⭐⭐⭐ (template literals) | ⭐⭐⭐⭐ (template literals) | ⭐⭐ (fmt.Sprintf) | ⭐⭐ (format!) | ⭐⭐⭐⭐ (string interpolation) | ⭐⭐⭐⭐ (string templates) | ⭐⭐⭐⭐ (string interpolation) |

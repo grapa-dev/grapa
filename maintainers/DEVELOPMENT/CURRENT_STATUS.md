@@ -71,15 +71,18 @@ Based on the backlog review, the next high-priority tasks for adoption are:
 
 ### 2. **Post-Validation Issues Implementation** - HIGH PRIORITY
 - **Goal**: Fix 6 critical implementation issues discovered during documentation validation
-- **Status**: Ready to start (see `POST_VALIDATION_ISSUES_LOG.md` for details)
+- **Status**: In Progress (see `POST_VALIDATION_ISSUES_LOG.md` for details)
 - **Effort**: High (3-4 weeks for complete implementation)
 - **Impact**: Critical (documentation accuracy, developer experience, API consistency)
 - **Issues to Fix**:
-  - Underscore separators in hex/binary literals
-  - Number length method for integers
-  - Array/List .get() method implementation
-  - Network blocking issues
-  - Empty vector operations
+  - ✅ **Underscore separators in hex/binary literals** - **COMPLETED** (feature working correctly, documentation corrected)
+  - ✅ **Number length method for integers** - **COMPLETED** (feature already working, documentation was incorrect)
+  - ❌ **Array/List .get() method** - **WON'T IMPLEMENT** (design decision - `.get()/.set()` now exclusively for `$WIDGET`)
+  - ✅ **Network blocking issues** - **COMPLETED** (script updated with non-blocking patterns and timeouts)
+  - ✅ **Empty vector operations** - **COMPLETED** (documentation corrected to reflect actual behavior)
+  - ✅ **Database examples syntax issues** - **COMPLETED** (replaced docs-src database examples with working version from test/database/database_examples.grc)
+  - ✅ **Documentation method name consistency** - **COMPLETED** (updated all docs-src files to use .getfield()/.setfield() instead of .get()/.set() for $file and $TABLE)
+  - ✅ **Database field type consistency** - **COMPLETED** (fixed "FLT" field type to "FLOAT" in test and documentation files)
   - HTTPS test functionality
 
 ### 3. **Wikipedia Article Creation** - HIGH PRIORITY
@@ -144,7 +147,16 @@ The Windows installation system overhaul should be validated and replicated on a
   - Improved troubleshooting for PATH issues
 - **Impact**: Better Windows user experience and installation reliability
 
-### 6. **Enhanced Debug Mode** - MEDIUM PRIORITY
+### 6. **Method Name Standardization** - ✅ **COMPLETED**
+- **Goal**: Update `.get()` to `.getfield()` and `.set()` to `.setfield()` across all documentation and tests to avoid confusion with common `.set()` understanding
+- **Status**: ✅ **COMPLETED** - All occurrences updated across:
+  - **Documentation**: `docs-src/docs/` - All use cases, API references, and examples updated
+  - **VSCode Extension**: `extensions/vscode-grapa/` - Snippets and README updated
+  - **Tests**: `test/` - All test files updated including vector benchmarks, use cases, and Python integration tests
+  - **Maintainers**: `maintainers/` - Testing guidelines and archived roadmaps updated
+  - **Widget Documentation**: `docs-src/docs/type/widget/attributes.md` - All widget examples updated
+
+### 7. **Enhanced Debug Mode** - MEDIUM PRIORITY
 - **Goal**: Implement comprehensive debugging capabilities
 - **Status**: Ready to start
 - **Effort**: High (execution tracing, variable inspection, profiling)

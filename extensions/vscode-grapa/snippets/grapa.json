@@ -30,7 +30,7 @@
   "Array Get": {
     "prefix": "get",
     "body": [
-      "${1:array}.get(${2:index})"
+      "${1:array}.getfield(${2:index})"
     ],
     "description": "Get array element"
   },
@@ -44,7 +44,7 @@
   "File Read": {
     "prefix": "read",
     "body": [
-      "content = \$file().get(\"${1:filename}\");",
+      "content = \$file().getfield(\"${1:filename}\");",
       "content.echo();"
     ],
     "description": "Read file contents (hex format)"
@@ -52,7 +52,7 @@
   "File Read String": {
     "prefix": "readstr",
     "body": [
-      "content = \$file().get(\"${1:filename}\").str();",
+      "content = \$file().getfield(\"${1:filename}\").str();",
       "content.echo();"
     ],
     "description": "Read file contents as string"
@@ -60,7 +60,7 @@
   "File Write": {
     "prefix": "write",
     "body": [
-      "\$file().set(\"${1:filename}\", \"${2:content}\");"
+      "\$file().setfield(\"${1:filename}\", \"${2:content}\");"
     ],
     "description": "Write to file"
   },
@@ -233,14 +233,14 @@
   "JSON Access": {
     "prefix": "jsonget",
     "body": [
-      "${1:obj}.get('${2:key}')"
+      "${1:obj}.getfield('${2:key}')"
     ],
     "description": "Access JSON property"
   },
   "JSON Set": {
     "prefix": "jsonset",
     "body": [
-      "${1:obj}.set('${2:key}', '${3:value}');"
+      "${1:obj}.setfield('${2:key}', '${3:value}');"
     ],
     "description": "Set JSON property"
   },

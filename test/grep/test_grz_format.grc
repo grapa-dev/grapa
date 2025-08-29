@@ -69,11 +69,11 @@ if (decoded.version == current_version) {
 "6. File operations with .grz\n".echo();
 
 /* Save .grz object to file */
-$file().set("test_grz_demo.grz", compressed);
+$file().setfield("test_grz_demo.grz", compressed);
 "Saved .grz file: test_grz_demo.grz".echo();
 
 /* Load .grz file */
-loaded_data = $file().get("test_grz_demo.grz");
+loaded_data = $file().getfield("test_grz_demo.grz");
 "Loaded .grz data:".echo();
 loaded_data.echo();
 
@@ -90,7 +90,7 @@ loaded_func = loaded_decoded.op;
 
 /* Create utility function */
 get_grz_version = op(filename) {
-    grz_data = $file().get(filename);
+    grz_data = $file().getfield(filename);
     decoded = grz_data.decode("ZIP-GRAPA");
     decoded.version;
 };

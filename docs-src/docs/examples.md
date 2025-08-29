@@ -20,6 +20,7 @@ Welcome to the Grapa Examples hub! Here you'll find practical, ready-to-run scri
 | [Database Examples](examples/database_examples.grc) | Demonstrates database operations including table creation, data manipulation, queries, and advanced database features. |
 | [Advanced Language Features Demo](examples/advanced_language_features_demo.grc) | Comprehensive demonstration of all advanced language features already implemented in Grapa, including pattern matching, metaprogramming, concurrency, type system, data structures, and debugging tools. |
 | [Hex and Binary Examples](examples/hex_binary_examples.grc) | Demonstrates Grapa's enhanced hex and binary literal support including underscores, floats, string parsing, and practical use cases like color values and bit flags. |
+| [Float Decimal Separators](examples/float_decimal_separators.grc) | Shows how Grapa supports both dot (`.`) and underscore (`_`) as decimal separators for float literals, providing flexibility in float syntax. |
 | [Unsigned Methods Examples](examples/unsigned_methods_examples.grc) | Comprehensive demonstration of Grapa's unsigned methods (.uint(), .uraw(), .uhex(), .ubin()) for cryptographic applications, binary data processing, and handling large numbers without sign issues. |
 | [RSA and Cryptographic Functions](examples/rsa_cryptography_example.grc) | Comprehensive demonstration of Grapa's cryptographic capabilities including RSA, EC, DH, BLS12-381, hash functions, and encoding. **Note:** Some functions may have OpenSSL 3.x compatibility issues. |
 
@@ -156,9 +157,9 @@ chars = [x for x in "hello"];  /* ["h", "e", "l", "l", "o"] */
 0b010.echo();             /* 2 */
 0b1010.echo();            /* 10 */
 
-/* With underscores for readability */
-0x12_34.echo();           /* 4660 */
-0b010_101.echo();         /* 21 */
+/* With underscores as decimal separators */
+0x12_34.echo();           /* 18.203125 (same as 0x12.34) */
+0b010_101.echo();         /* 2.625 (same as 0b010.101) */
 
 /* Hex and binary floats */
 0x12.34.echo();           /* 18.203125 */
@@ -461,7 +462,7 @@ evens.echo();  /* Output: [0,2,4,6,8] */
 > - Use `.range()` to generate a sequence array: e.g., `(10).range(0,1)` gives `[0,1,2,3,4,5,6,7,8,9]`.
 > - Use functional chaining: `.map()`, `.reduce()`, `.filter()` for processing lists, arrays, and parsed data.
 > - Always check for `$ERR` when accessing keys or attributes that may not exist (e.g., `if (item.type() != $ERR)`).
-> - Use `[]` for list/array access, not `.get()` (which is for objects/tables).
+> - Use `[]` for list/array access, not `.getfield()` (which is for files/tables).
 > - Handle errors explicitly; Grapa does not support `try/catch`—check return values and use `if` statements for error handling.
 > - See [docs/obj/transform.md](obj/transform.md) for advanced range/sequence usage.
 > **Parallel ETL Advantage:**
@@ -602,7 +603,7 @@ The following returns the length of each word in a string:
 ### File Processing
 ```grapa
 /* Read and process a file */
-content = $file().read("data.txt");
+content = $file().getfield("data.txt");
 lines = content.split("\n");
 filtered = lines.filter(op(line) { line.len() > 0; });
 result = filtered.map(op(line) { line.upper(); });
@@ -614,7 +615,7 @@ casefolded.echo();
 ### JSON Processing
 ```grapa
 /* Parse and process JSON data */
-json_data = $file().read("data.json").json();
+json_data = $file().getfield("data.json").json();
 users = json_data.users;
 active_users = users.filter(op(user) { user.active == true; });
 names = active_users.map(op(user) { user.name; });

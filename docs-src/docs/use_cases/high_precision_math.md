@@ -199,7 +199,7 @@ analyze_prime_gaps = op(primes) {
     gaps = [];
     i = 1;
     while (i < primes.len()) {
-        gap = primes.get(i) - primes.get(i - 1);
+        gap = primes.getfield(i) - primes.getfield(i - 1);
         gaps += gap;
         i += 1;
     };

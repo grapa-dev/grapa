@@ -9,21 +9,21 @@
 kb = {}.table();
 
 /* Store facts */
-kb.set('fact1', 'parent(john,mary)');
-kb.set('fact2', 'parent(mary,jane)');
-kb.set('fact3', 'likes(mary,wine)');
+kb.setfield('fact1', 'parent(john,mary)');
+kb.setfield('fact2', 'parent(mary,jane)');
+kb.setfield('fact3', 'likes(mary,wine)');
 
 "Stored Facts:".echo();
-kb.get('fact1').echo();
-kb.get('fact2').echo();
-kb.get('fact3').echo();
+kb.getfield('fact1').echo();
+kb.getfield('fact2').echo();
+kb.getfield('fact3').echo();
 
 /* Simple query - find all parent facts */
 "".echo();
 "Query: All parent facts:".echo();
 keys = ['fact1', 'fact2', 'fact3'];
 keys.range().map(op(i) {
-    fact = kb.get(keys[i]);
+    fact = kb.getfield(keys[i]);
     if (fact.indexOf('parent') == 0) {
         fact.echo();
     };

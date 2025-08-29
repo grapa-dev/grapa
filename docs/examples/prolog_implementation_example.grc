@@ -11,21 +11,21 @@ $global.query_results = [];
 
 /* ===== FACT STORAGE ===== */
 /* Store facts: parent(john, mary), parent(mary, jane), etc. */
-kb.set('parent_john_mary', 'parent(john,mary)');
-kb.set('parent_mary_jane', 'parent(mary,jane)');
-kb.set('parent_jane_bob', 'parent(jane,bob)');
-kb.set('parent_bob_alice', 'parent(bob,alice)');
+kb.setfield('parent_john_mary', 'parent(john,mary)');
+kb.setfield('parent_mary_jane', 'parent(mary,jane)');
+kb.setfield('parent_jane_bob', 'parent(jane,bob)');
+kb.setfield('parent_bob_alice', 'parent(bob,alice)');
 
 /* Store more facts: likes(mary, wine), likes(john, mary) */
-kb.set('likes_mary_wine', 'likes(mary,wine)');
-kb.set('likes_john_mary', 'likes(john,mary)');
-kb.set('likes_jane_books', 'likes(jane,books)');
+kb.setfield('likes_mary_wine', 'likes(mary,wine)');
+kb.setfield('likes_john_mary', 'likes(john,mary)');
+kb.setfield('likes_jane_books', 'likes(jane,books)');
 
 /* ===== RULE STORAGE ===== */
 /* Rules: ancestor(X,Y) :- parent(X,Y) */
-kb.set('ancestor_rule1', 'ancestor(X,Y) :- parent(X,Y)');
+kb.setfield('ancestor_rule1', 'ancestor(X,Y) :- parent(X,Y)');
 /* ancestor(X,Z) :- parent(X,Y), ancestor(Y,Z) */
-kb.set('ancestor_rule2', 'ancestor(X,Z) :- parent(X,Y), ancestor(Y,Z)');
+kb.setfield('ancestor_rule2', 'ancestor(X,Z) :- parent(X,Y), ancestor(Y,Z)');
 
 /* ===== PROLOG INTERPRETER FUNCTIONS ===== */
 
@@ -113,7 +113,7 @@ query_facts = op(query_term) {
     
     kb_keys.range().map(op(i) {
         key = kb_keys[i];
-        fact = kb.get(key);
+        fact = kb.getfield(key);
         
         /* Try to unify query with this fact */
         bindings = unify(query_term, fact);

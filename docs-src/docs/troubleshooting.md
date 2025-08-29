@@ -26,11 +26,11 @@ This guide covers common issues encountered when working with Grapa and GrapaPy,
 #### Namespace Issues
 ```python
 # ❌ Problem: Object lost between calls
-xy.eval('table = $file().table("ROW")')
+xy.eval('table = {}.table("ROW")')
 xy.eval('table.mkfield("name", "STR")')  # Error: table not found
 
 # ✅ Solution: Use global namespace
-xy.eval('$global.table = $file().table("ROW")')
+xy.eval('$global.table = {}.table("ROW")')
 xy.eval('table.mkfield("name", "STR")')  # Success
 ```
 
@@ -57,7 +57,7 @@ result = xy.eval('table.get("user1", "name").str()')  # String
 ```python
 # ✅ Always use $global for persistent objects
 xy.eval('$global.fs = $file()')
-xy.eval('$global.table = $file().table("ROW")')
+xy.eval('$global.table = {}.table("ROW")')
 
 # ✅ Use variable names directly after global declaration
 xy.eval('fs.set("test.txt", "content")')
@@ -135,22 +135,22 @@ while (i <= 10) {
 /* ✅ Arrays support bracket notation */
 element = ["a", "b", "c"];
 value = element[1];        /* Returns "b" */
-/* Note: .get() method not yet implemented for arrays */
+/* Note: .get() method not supported for arrays - use bracket notation */
 
 /* ✅ Lists support bracket notation and .getname() */
 obj = {"a": 11, "b": 22, "c": 33};
 value = obj["b"];          /* Returns 22 */
 name = obj.getname(1);     /* Returns "b" */
-/* Note: .get() method not yet implemented for lists */
+/* Note: .get() method not supported for lists - use bracket notation */
 ```
 
 #### $file and $TABLE Objects
 ```grapa
-/* ✅ ALWAYS use .get() for $file and $TABLE objects */
+/* ✅ ALWAYS use .getfield() and .setfield() for $file and $TABLE objects */
 files = fs.ls();
-file_info = files.get(0);
+file_info = files.getfield(0);
 
-table_data = table.get("user1", "name");
+table_data = table.getfield("user1", "name");
 
 /* ❌ Avoid bracket notation for $file and $TABLE objects */
 file_info = files[0];  /* May not work reliably */
@@ -232,7 +232,7 @@ else:
 
 ```python
 # ✅ Correct pattern
-xy.eval('$global.table = $file().table("ROW")')
+xy.eval('$global.table = {}.table("ROW")')
 xy.eval('table.mkfield("name", "STR", "VAR")')
 xy.eval('table.set("user1", "John", "name")')
 ```
@@ -261,7 +261,7 @@ class GrapaTableHelper:
     def __init__(self, grapa_instance, table_name):
         self.xy = grapa_instance
         self.table_name = table_name
-        self.xy.eval(f'$global.{table_name} = $file().table("ROW")')
+        self.xy.eval(f'$global.{table_name} = {}.table("ROW")')
     
     def mkfield(self, name, field_type, mode="VAR", size=None):
         if size:
@@ -341,11 +341,11 @@ print("Step 3: File object created")
 
 ```python
 # ✅ Good: Clear variable names
-xy.eval('$global.user_table = $file().table("ROW")')
+xy.eval('$global.user_table = {}.table("ROW")')
 xy.eval('$global.file_system = $file()')
 
 # ❌ Bad: Unclear variable names
-xy.eval('$global.t = $file().table("ROW")')
+xy.eval('$global.t = {}.table("ROW")')
 xy.eval('$global.f = $file()')
 ```
 
@@ -377,7 +377,7 @@ except Exception as e:
 
 ```python
 # ✅ Complete table operation pattern
-xy.eval('$global.table = $file().table("ROW")')
+xy.eval('$global.table = {}.table("ROW")')
 xy.eval('table.mkfield("name", "STR", "VAR")')
 xy.eval('table.mkfield("age", "INT")')
 xy.eval('table.mkfield("salary", "FLOAT", "FIX", 8)')

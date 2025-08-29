@@ -1581,7 +1581,7 @@ log_content.grep("error", "A2B1io")  /* 2 lines after, 1 before, match-only, cas
 - **String Concatenation:**
   - When concatenating strings, wrap the entire expression in parentheses: `(str1+str2).echo();`.
 - **Array Access:**
-  - Access arrays with `.get(index)`, not with square brackets: `arr.get(0);`.
+  - Access arrays with bracket notation, not with `.get(index)`: `arr[0];`.
 - **Object Property Access:**
   - Access object properties with `.get("key")`, not with square brackets: `obj.get("key");`.
 - **General:**

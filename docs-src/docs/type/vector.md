@@ -94,9 +94,9 @@ shape = vec.shape();      /* Get dimensions: [6] */
 reshaped = vec.reshape([2, 3]);  /* Reshape to 2x3: #[[1,2,3],[4,5,6]]# */
 transposed = vec.t();     /* Matrix transpose (for 2D vectors) */
 
-/* Statistical operations */
-total = vec.sum();        /* Sum all elements */
-average = vec.mean();     /* Mean of all elements */
+/* Statistical operations (2D vectors only) */
+total = vec.sum();        /* Sum all elements (2D vectors only) */
+average = vec.mean();     /* Mean of all elements (2D vectors only) */
 det_value = vec.det();    /* Determinant (for square matrices) */
 rank_value = vec.rank();  /* Matrix rank */
 cov_matrix = vec.cov();   /* Covariance matrix */
@@ -186,9 +186,9 @@ For comprehensive machine learning capabilities, see [Machine Learning Guide](..
 ```grapa
 vec = [1, 2, 3, 4, 5];
 
-/* Statistical functions */
-vec.sum();                /* Sum of all elements */
-vec.mean();               /* Arithmetic mean */
+/* Statistical functions (2D vectors only) */
+vec.sum();                /* Sum of all elements (2D vectors only) */
+vec.mean();               /* Arithmetic mean (2D vectors only) */
 vec.std();                /* Standard deviation */
 vec.min();                /* Minimum value */
 vec.max();                /* Maximum value */
@@ -390,8 +390,8 @@ vec1 == {a:1, b:2};       /* false - different data structure */
 ### Empty Vectors and Matrices
 ```grapa
 empty_vec = [].vector();
-empty_sum = empty_vec.sum();  /* Returns null */
-empty_mean = empty_vec.mean(); /* Returns null */
+empty_sum = empty_vec.sum();  /* Returns {"error":-1} */
+empty_mean = empty_vec.mean(); /* Returns {"error":-1} */
 
 empty_mat = [[]].vector();
 empty_det = empty_mat.det();  /* Returns 0.0 */
@@ -432,6 +432,35 @@ small_det = small_mat.det();  /* Handled correctly */
 - **Null Returns**: Invalid operations return null instead of errors
 - **Mathematical Correctness**: Singular matrices and special cases handled correctly
 - **Performance**: Edge cases perform excellently (0ms for most operations)
+
+### Dimensionality Requirements
+
+**Important**: Some vector operations have specific dimensionality requirements:
+
+#### **2D-Only Operations**
+The following operations currently only work on 2-dimensional vectors (matrices):
+- `.sum()` - Sum along specified axis
+- `.mean()` - Mean along specified axis
+- `.cov()` - Covariance matrix calculation
+
+**1D vectors will return `{"error":-1}` for these operations.**
+
+```grapa
+/* 1D vector - operations fail */
+vec_1d = #[1, 2, 3, 4, 5]#;
+result = vec_1d.sum();  /* Returns {"error":-1} */
+
+/* 2D vector - operations work */
+vec_2d = [[1, 2, 3, 4, 5]].vector();
+result = vec_2d.sum();  /* Returns #[15]# */
+
+/* Alternative for 1D vectors */
+vec_1d = #[1, 2, 3, 4, 5]#;
+sum_manual = vec_1d.reduce(op(acc, x){acc + x}, 0);  /* Manual sum */
+mean_manual = sum_manual / vec_1d.len();             /* Manual mean */
+```
+
+**Future Enhancement**: Support for 1D vector operations is planned to improve usability for common statistical calculations.
 
 ## Integration with Other Types
 
@@ -477,10 +506,12 @@ Grapa vectors can contain mixed data types, making them ideal for real-world dat
 
 #### **Numeric Vectors**
 ```grapa
-/* Integer vectors */
+/* Integer vectors (2D required for sum/mean) */
 int_vec = #[1, 2, 3, 4, 5]#;
-sum = int_vec.sum();                    /* 15 */
-mean = int_vec.mean();                  /* 3.0 */
+/* Note: .sum() and .mean() require 2D vectors */
+int_vec_2d = [[1, 2, 3, 4, 5]].vector();
+sum = int_vec_2d.sum();                 /* #[15]# */
+mean = int_vec_2d.mean();               /* #[3.0]# */
 
 /* Float vectors with high precision */
 precise_vec = #[1.123456789, 2.987654321, 3.141592653]#;

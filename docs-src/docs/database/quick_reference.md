@@ -22,7 +22,7 @@ f.mk("dir_name", "DIR")     # Directory alias (same as GROUP internally)
 ### In-Memory Database
 ```grapa
 # Create in-memory table
-f = $file().table()
+f = {}.table()
 f.type()  # Returns: $TABLE
 ```
 
@@ -63,22 +63,22 @@ f.mkfield("data", "FLOAT", "FIX", 8, 16)
 ### Setting Data
 ```grapa
 # Set field value
-f.set("record_id", "value", "field_name")
+f.setfield("record_id", "value", "field_name")
 
 # Set multiple fields
-f.set("user1", "John Doe", "name")
-f.set("user1", 30, "age")
-f.set("user1", 75000.50, "salary")
+f.setfield("user1", "John Doe", "name")
+f.setfield("user1", 30, "age")
+f.setfield("user1", 75000.50, "salary")
 ```
 
 ### Getting Data
 ```grapa
 # Get field value
-value = f.get("record_id", "field_name")
+value = f.getfield("record_id", "field_name")
 
 # Get multiple fields
-name = f.get("user1", "name")
-age = f.get("user1", "age")
+name = f.getfield("user1", "name")
+age = f.getfield("user1", "age")
 ```
 
 ### Listing Records

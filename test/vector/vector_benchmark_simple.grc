@@ -75,7 +75,7 @@ operations = {
 
 operations.keys().each(op(key) {
     start_time = $TIME().utc();
-    operations.get(key)();
+    operations.getfield(key)();
     time = (($TIME().utc() - start_time) / 1000000).int();
     ("    " + key + ": " + time + "ms").echo();
 });

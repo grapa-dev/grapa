@@ -10,8 +10,8 @@ result.echo();  /* Should output: Task 42 completed */
 
 /* Test 2: HTTP status interpolation */
 response = $obj();
-response.set("status", 404);
-result = "HTTP ${response.get('status')}".interpolate();
+response.setfield("status", 404);
+result = "HTTP ${response.getfield('status')}".interpolate();
 result.echo();  /* Should output: HTTP 404 */
 
 /* Test 3: URL interpolation */
@@ -22,7 +22,7 @@ url.echo();  /* Should output: https://api.example.com?page=5 */
 
 /* Test 4: Version comparison interpolation */
 decoded = $obj();
-decoded.set("version", "1.2.3");
+decoded.setfield("version", "1.2.3");
 current_version = "1.2.4";
 result = "Version mismatch: ${decoded['version']} vs ${current_version}".interpolate();
 result.echo();  /* Should output: Version mismatch: 1.2.3 vs 1.2.4 */
@@ -39,7 +39,7 @@ result.echo();  /* Should output: Processed 5 items in 150 ms */
 
 /* Test 7: File name interpolation */
 file = $obj();
-file.set("name", "test.txt");
+file.setfield("name", "test.txt");
 result = "File: ${file.name}".interpolate();
 result.echo();  /* Should output: File: test.txt */
 

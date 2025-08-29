@@ -1,7 +1,7 @@
 # Web/Data Scraping & Automation
 
 > **Best Practices:**
-> - Use `$net().get(url)` for HTTP requests; always check `.get("status")` for HTTP status.
+> - Use `$net().get(url)` for HTTP requests; always check `.getfield("status")` for HTTP status.
 > - Parse HTML/XML with `$XML().parse(html)` or `.html()`.
 > - Use `.select()` or `.findall()` to extract elements or attributes.
 > - Rate limit requests with `$sys().sleep(ms)` to avoid overloading servers.
@@ -24,19 +24,19 @@ scrape_pages = op(urls, delay_ms) {
             /* Perform HTTP GET request */
             response = $net().get(url);
             /* Check for successful response */
-            if (response.get("status") == 200) {
+            if (response.getfield("status") == 200) {
                 {
                     "url": url,
                     "success": true,
-                    "content": response.get("body"),
-                    "size": response.get("body").len()
+                    "content": response.getfield("body"),
+                    "size": response.getfield("body").len()
                 };
             } else {
-                {"url": url, "success": false, "error": "HTTP " + response.get("status").str()};
+                {"url": url, "success": false, "error": "HTTP " + response.getfield("status").str()};
             };
         } catch (error) {
             /* Handle network or HTTP errors */
-            {"url": url, "success": false, "error": error.get("message")};
+            {"url": url, "success": false, "error": error.getfield("message")};
         };
     });
     results;
@@ -50,8 +50,8 @@ extract_data = op(html_content) {
     links = doc.select("a[href]");
     
     {
-        "titles": titles.map(op(t) { t.get("text"); }),
-        "links": links.map(op(l) { l.get("href"); })
+        "titles": titles.map(op(t) { t.getfield("text"); }),
+        "links": links.map(op(l) { l.getfield("href"); })
     };
 };
 
@@ -67,10 +67,10 @@ scraped_data = scrape_pages(target_urls, 1000);
 
 /* Extract data from each successfully scraped page */
 extracted_data = scraped_data.map(op(page) { 
-    if (page.get("success")) {
-        extract_data(page.get("content"));
+    if (page.getfield("success")) {
+        extract_data(page.getfield("content"));
     } else {
-        {"error": page.get("error")};
+        {"error": page.getfield("error")};
     };
 });
 ```
@@ -84,15 +84,15 @@ collect_api_data = op(base_url, endpoints) {
             url = base_url + endpoint;
             response = $net().get(url);
             
-            if (response.get("status") == 200) {
+            if (response.getfield("status") == 200) {
                 /* Parse JSON response */
-                data = $JSON().parse(response.get("body"));
+                data = $JSON().parse(response.getfield("body"));
                 {"endpoint": endpoint, "success": true, "data": data};
             } else {
-                {"endpoint": endpoint, "success": false, "error": "HTTP " + response.get("status").str()};
+                {"endpoint": endpoint, "success": false, "error": "HTTP " + response.getfield("status").str()};
             };
         } catch (error) {
-            {"endpoint": endpoint, "success": false, "error": error.get("message")};
+            {"endpoint": endpoint, "success": false, "error": error.getfield("message")};
         };
     });
     results;
@@ -103,8 +103,8 @@ api_endpoints = ["/users", "/products", "/orders"];
 api_data = collect_api_data("https://api.example.com", api_endpoints);
 
 /* Process collected data */
-successful_data = api_data.filter(op(result) { result.get("success"); });
-failed_requests = api_data.filter(op(result) { !result.get("success"); });
+successful_data = api_data.filter(op(result) { result.getfield("success"); });
+failed_requests = api_data.filter(op(result) { !result.getfield("success"); });
 
 ("Successfully collected data from " + successful_data.len().str() + " endpoints").echo();
 ("Failed requests: " + failed_requests.len().str()).echo();
@@ -123,14 +123,14 @@ submit_form = op(form_data) {
             "Content-Type": "application/json"
         });
         
-        if (response.get("status") == 200) {
-            result = $JSON().parse(response.get("body"));
+        if (response.getfield("status") == 200) {
+            result = $JSON().parse(response.getfield("body"));
             {"success": true, "result": result};
         } else {
-            {"success": false, "error": "HTTP " + response.get("status").str()};
+            {"success": false, "error": "HTTP " + response.getfield("status").str()};
         };
     } catch (error) {
-        {"success": false, "error": error.get("message")};
+        {"success": false, "error": error.getfield("message")};
     };
 };
 
@@ -143,10 +143,10 @@ form_data = {
 
 /* Submit the form */
 result = submit_form(form_data);
-if (result.get("success")) {
-    ("Form submitted successfully: " + result.get("result").get("message")).echo();
+if (result.getfield("success")) {
+    ("Form submitted successfully: " + result.getfield("result").getfield("message")).echo();
 } else {
-    ("Form submission failed: " + result.get("error")).echo();
+    ("Form submission failed: " + result.getfield("error")).echo();
 }
 ```
 

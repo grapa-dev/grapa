@@ -69,14 +69,14 @@ For detailed installation instructions, see the [Grapa Installation Guide](https
 ### File Operations
 ```grapa
 /* Write to file */
-$file().set("data.txt", "Hello World");
+$file().setfield("data.txt", "Hello World");
 
 /* Read from file (returns hex format) */
-content = $file().get("data.txt");
+content = $file().getfield("data.txt");
 content.echo();
 
 /* Read and convert to string */
-text = $file().get("data.txt").str();
+text = $file().getfield("data.txt").str();
 text.echo();
 ```
 

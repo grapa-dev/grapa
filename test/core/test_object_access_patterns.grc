@@ -9,7 +9,7 @@ Person = class {
     getInfo = op() {
         ("Name: " + name + ", Age: " + age.str() + ", City: " + city).echo();
     };
-    get = op() {
+    getfield = op() {
         {"name": name, "age": age, "city": city};
     };
     getLocal = op() {
@@ -38,12 +38,12 @@ p["name"].echo();
 p.getInfo();
 "\n".echo();
 
-"-- get() (getter method, returns object) --\n".echo();
-info = p.get();
+"-- getfield() (getter method, returns object) --\n".echo();
+info = p.getfield();
 info.echo();
 "\n".echo();
 
-"-- Accessing fields from get() result --\n".echo();
+"-- Accessing fields from getfield() result --\n".echo();
 info["name"].echo();
 info["age"].echo();
 info["city"].echo();

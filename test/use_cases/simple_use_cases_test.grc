@@ -18,13 +18,13 @@ test_parallel_csv_processing = op() {
     ("test_files created: " + test_files.str() + "\n").echo();
     
     /* Create test files */
-    $file().set("test1.csv", "name,age,city\nJohn,30,NYC\nJane,25,LA");
-    $file().set("test2.csv", "name,age,city\nBob,35,Chicago\nAlice,28,Boston");
-    $file().set("test3.csv", "name,age,city\nCharlie,40,Seattle\nDiana,32,Portland");
+    $file().setfield("test1.csv", "name,age,city\nJohn,30,NYC\nJane,25,LA");
+$file().setfield("test2.csv", "name,age,city\nBob,35,Chicago\nAlice,28,Boston");
+$file().setfield("test3.csv", "name,age,city\nCharlie,40,Seattle\nDiana,32,Portland");
     "Files created\n".echo();
     
     /* Test the parallel processing */
-    $local.data = test_files.map(op(file) { $file().get(file).str().split("\n"); });
+    $local.data = test_files.map(op(file) { $file().getfield(file).str().split("\n"); });
     ("data created: " + $local.data.str() + "\n").echo();
     
     /* Transform: Clean and validate data */
@@ -221,10 +221,10 @@ test_file_system = op() {
     
     /* Create test file */
     test_content = "line 1\nline 2\nline 3\nline 4\nline 5";
-    $file().set("test_file.txt", test_content);
+    $file().setfield("test_file.txt", test_content);
     
     /* Read and process file */
-    content = $file().get("test_file.txt").str();
+    content = $file().getfield("test_file.txt").str();
     lines = content.split("\n");
     filtered = lines.filter(op(line) { line.len() > 0; });
     
@@ -242,21 +242,21 @@ test_table_operations = op() {
     "Starting test_table_operations\n".echo();
     
     /* Create table */
-    table = $file().table("ROW");
+    table = {}.table("ROW");
     table.mkfield("name", "STR", "VAR");
     table.mkfield("age", "INT", "FIX", 4);
     
     /* Add data */
-    table.set("user1", "John", "name");
-    table.set("user1", 30, "age");
-    table.set("user2", "Jane", "name");
-    table.set("user2", 25, "age");
+    table.setfield("user1", "John", "name");
+    table.setfield("user1", 30, "age");
+    table.setfield("user2", "Jane", "name");
+    table.setfield("user2", 25, "age");
     
     /* Retrieve data */
-    name1 = table.get("user1", "name");
-    age1_raw = table.get("user1", "age");
-    name2 = table.get("user2", "name");
-    age2_raw = table.get("user2", "age");
+    name1 = table.getfield("user1", "name");
+    age1_raw = table.getfield("user1", "age");
+    name2 = table.getfield("user2", "name");
+    age2_raw = table.getfield("user2", "age");
     /*
     WORKAROUND: Table INT and FLOAT fields are returned as $STR containing raw bytes.
     Use .raw().int() or .raw().float() to get the correct value.

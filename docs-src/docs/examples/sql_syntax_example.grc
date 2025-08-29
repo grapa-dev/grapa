@@ -2,18 +2,18 @@
 
 /* Step 1: Set up database table */
 ("Setting up users table...\n").echo();
-users_table = $file().table("users");
-users_table.set("user1", "Alice", "name");
-users_table.set("user1", 25, "age");
-users_table.set("user1", "New York", "city");
+users_table = {}.table("users");
+users_table.setfield("user1", "Alice", "name");
+users_table.setfield("user1", 25, "age");
+users_table.setfield("user1", "New York", "city");
 
-users_table.set("user2", "Bob", "name");
-users_table.set("user2", 30, "age");
-users_table.set("user2", "Los Angeles", "city");
+users_table.setfield("user2", "Bob", "name");
+users_table.setfield("user2", 30, "age");
+users_table.setfield("user2", "Los Angeles", "city");
 
-users_table.set("user3", "Charlie", "name");
-users_table.set("user3", 35, "age");
-users_table.set("user3", "Chicago", "city");
+users_table.setfield("user3", "Charlie", "name");
+users_table.setfield("user3", 35, "age");
+users_table.setfield("user3", "Chicago", "city");
 
 ("Users table created with 3 records.\n").echo();
 
@@ -34,9 +34,9 @@ custom_command = rule select $STR ',' $STR from $STR {op(field1:$2,field2:$4,tab
         while (i < records.len()) {
             record = records[i];
             key = record.getname(1);
-            name = users_table.get(key, "name");
-            age = users_table.get(key, "age");
-            city = users_table.get(key, "city");
+            name = users_table.getfield(key, "name");
+            age = users_table.getfield(key, "age");
+            city = users_table.getfield(key, "city");
             
             if (field1 == "name" && field2 == "age") {
                 ("  " + name + " (age " + age + ")\n").echo();
@@ -65,9 +65,9 @@ custom_command ++= rule select $STR from $STR {op(fields:$2,table_name:$4){
         while (i < records.len()) {
             record = records[i];
             key = record.getname(1);
-            name = users_table.get(key, "name");
-            age = users_table.get(key, "age");
-            city = users_table.get(key, "city");
+            name = users_table.getfield(key, "name");
+            age = users_table.getfield(key, "age");
+            city = users_table.getfield(key, "city");
             
             if (fields == "*") {
                 ("  " + name + " (age " + age + ", " + city + ")").echo();
@@ -107,9 +107,9 @@ custom_command ++= rule insert into $STR values $STR ',' $INT ',' $STR {op(table
         existing_records = users_table.ls();
         new_key = "user" + (existing_records.len() + 1).str();
         
-        users_table.set(new_key, name, "name");
-        users_table.set(new_key, age, "age");
-        users_table.set(new_key, city, "city");
+        users_table.setfield(new_key, name, "name");
+        users_table.setfield(new_key, age, "age");
+        users_table.setfield(new_key, city, "city");
         
         ("Successfully inserted: " + name).echo();
     } else {
@@ -129,15 +129,15 @@ custom_command ++= rule update $STR set $STR '=' $STR where $STR '=' $STR {op(ta
         while (i < records.len()) {
             record = records[i];
             key = record.getname(1);
-            name = users_table.get(key, "name");
-            age = users_table.get(key, "age");
-            city = users_table.get(key, "city");
+            name = users_table.getfield(key, "name");
+            age = users_table.getfield(key, "age");
+            city = users_table.getfield(key, "city");
             
             if (where_field == "name" && name == where_value) {
                 if (field == "age") {
-                    users_table.set(key, value.int(), "age");
+                    users_table.setfield(key, value.int(), "age");
                 } else if (field == "city") {
-                    users_table.set(key, value, "city");
+                    users_table.setfield(key, value, "city");
                 };
                 updated = updated + 1;
             };
@@ -163,7 +163,7 @@ custom_command ++= rule delete from $STR where $STR '=' $STR {op(table_name:$3,w
         while (i < records.len()) {
             record = records[i];
             key = record.getname(1);
-            name = users_table.get(key, "name");
+            name = users_table.getfield(key, "name");
             
             if (where_field == "name" && name == where_value) {
                 users_table.del(key);

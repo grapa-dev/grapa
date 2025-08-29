@@ -16,12 +16,12 @@ test_file = "simple_test.txt";
 /* Create and write to file */
 ("Creating file: " + test_file).echo();
 "\n".echo();
-fs.set(test_file, "Hello from simple file test!");
+fs.setfield(test_file, "Hello from simple file test!");
 
 /* Read from file */
 "Reading file content...".echo();
 "\n".echo();
-content = fs.get(test_file).str();
+content = fs.getfield(test_file).str();
 ("File content: " + content).echo();
 "\n".echo();
 
@@ -61,16 +61,16 @@ table.mkfield("city", "STR");
 /* Insert data for one record */
 "Setting record data...".echo();
 "\n".echo();
-table.set("user1", "John Doe", "name");
-table.set("user1", 30, "age");
-table.set("user1", "New York", "city");
+table.setfield("user1", "John Doe", "name");
+table.setfield("user1", 30, "age");
+table.setfield("user1", "New York", "city");
 
 /* Retrieve and verify data */
 "Retrieving record data...".echo();
 "\n".echo();
-name = table.get("user1", "name");
-age = table.get("user1", "age");
-city = table.get("user1", "city");
+name = table.getfield("user1", "name");
+age = table.getfield("user1", "age");
+city = table.getfield("user1", "city");
 
 ("Record data - Name: " + name + ", Age: " + age + ", City: " + city).echo();
 "\n".echo();
@@ -93,16 +93,16 @@ if (name == "John Doe" && age == 30 && city == "New York") {
     /* Insert data for one record */
     "Setting record data with virtual table...".echo();
 	"\n".echo();
-    vtable.set("user1", "John Doe", "name");
-    vtable.set("user1", 30, "age");
-    vtable.set("user1", "New York", "city");
+    vtable.setfield("user1", "John Doe", "name");
+    vtable.setfield("user1", 30, "age");
+    vtable.setfield("user1", "New York", "city");
     
     /* Retrieve and verify data */
     "Retrieving record data from virtual table...".echo();
 	"\n".echo();
-    vname = vtable.get("user1", "name");
-    vage = vtable.get("user1", "age");
-    vcity = vtable.get("user1", "city");
+    vname = vtable.getfield("user1", "name");
+    vage = vtable.getfield("user1", "age");
+    vcity = vtable.getfield("user1", "city");
     
     ("Virtual table record data - Name: " + vname + ", Age: " + vage + ", City: " + vcity).echo();
 	"\n".echo();

@@ -142,10 +142,10 @@ test_file = "test_output.txt";
 test_content = "Hello from Grapa test!";
 
 /* Write to file */
-fs.set(test_file, test_content);
+fs.setfield(test_file, test_content);
 
 /* Read from file */
-read_content = fs.get(test_file).str();
+read_content = fs.getfield(test_file).str();
 if (read_content == test_content) {
     "✓ File content test passed\n".echo();
 } else {

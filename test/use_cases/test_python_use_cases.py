@@ -40,7 +40,7 @@ def test_etl_data_engineering():
     xy.eval("$global.fs = $file();")
     total_lines = 0
     for file in test_files:
-        content = xy.eval("fs.get(filename);", {"filename": file})
+        content = xy.eval("fs.getfield(filename);", {"filename": file})
         if content:
             # Handle bytes object and escaped newlines
             content_str = str(content)
@@ -168,8 +168,8 @@ def test_database_file_system_integration():
     # Test file system operations
     test_content = "Hello World!"
     xy.eval("$global.fs = $file();")
-    xy.eval("fs.set('test.txt', content);", {"content": test_content})
-    content = xy.eval("fs.get('test.txt');")
+    xy.eval("fs.setfield('test.txt', content);", {"content": test_content})
+    content = xy.eval("fs.getfield('test.txt');")
     print(f"File content: {content}")
     
     # Handle bytes content
@@ -179,10 +179,10 @@ def test_database_file_system_integration():
         content_str = str(content)
     
     # Test table operations
-    xy.eval("$global.table = $file().table('ROW');")
+    xy.eval("$global.table = {}.table('ROW');")
     xy.eval("table.mkfield('name', 'STR', 'VAR');")
-    xy.eval("table.set('user1', 'Alice', 'name');")
-    name = xy.eval("table.get('user1', 'name');")
+    xy.eval("table.setfield('user1', 'Alice', 'name');")
+    name = xy.eval("table.getfield('user1', 'name');")
     print(f"Table name: {name}")
     
     # Handle bytes content for table name too
@@ -260,15 +260,15 @@ def test_error_handling():
     
     # Test invalid file access
     try:
-        result = xy.eval("$file().get('nonexistent.txt');")
+        result = xy.eval("$file().getfield('nonexistent.txt');")
         print(f"File access result: {result}")
     except Exception as e:
         print(f"Expected error for nonexistent file: {e}")
     
     # Test invalid table access
     try:
-        result = xy.eval("$global.table = $file().table('ROW');")
-        result = xy.eval("table.get('nonexistent', 'field');")
+        result = xy.eval("$global.table = {}.table('ROW');")
+        result = xy.eval("table.getfield('nonexistent', 'field');")
         print(f"Table access result: {result}")
     except Exception as e:
         print(f"Expected error for nonexistent field: {e}")

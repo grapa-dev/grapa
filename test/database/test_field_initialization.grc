@@ -27,33 +27,33 @@ f.mkfield("department", "STR", "VAR");
 "----------------------------------------\n".echo();
 
 "Creating a record by setting only the name field...\n".echo();
-f.set("employee1", "John Doe", "name");
+f.setfield("employee1", "John Doe", "name");
 
 "Checking all field values after record creation:\n".echo();
 "$KEY (record name): ".echo();
-f.get("employee1", "$KEY").echo();
+f.getfield("employee1", "$KEY").echo();
 "\n".echo();
 
 "name field: ".echo();
-f.get("employee1", "name").echo();
+f.getfield("employee1", "name").echo();
 "\n".echo();
 
 "age field (not set): ".echo();
-age_value = f.get("employee1", "age");
+age_value = f.getfield("employee1", "age");
 age_value.echo();
 " (length: ".echo();
 age_value.length().echo();
 ")\n".echo();
 
 "salary field (not set): ".echo();
-salary_value = f.get("employee1", "salary");
+salary_value = f.getfield("employee1", "salary");
 salary_value.echo();
 " (length: ".echo();
 salary_value.length().echo();
 ")\n".echo();
 
 "department field (not set): ".echo();
-dept_value = f.get("employee1", "department");
+dept_value = f.getfield("employee1", "department");
 dept_value.echo();
 " (length: ".echo();
 dept_value.length().echo();
@@ -64,29 +64,29 @@ dept_value.length().echo();
 "--------------------------\n".echo();
 
 "Setting all remaining fields...\n".echo();
-f.set("employee1", 30, "age");
-f.set("employee1", 75000.50, "salary");
-f.set("employee1", "Engineering", "department");
+f.setfield("employee1", 30, "age");
+f.setfield("employee1", 75000.50, "salary");
+f.setfield("employee1", "Engineering", "department");
 
 "Checking all field values after setting all fields:\n".echo();
 "$KEY: ".echo();
-f.get("employee1", "$KEY").echo();
+f.getfield("employee1", "$KEY").echo();
 "\n".echo();
 
 "name: ".echo();
-f.get("employee1", "name").echo();
+f.getfield("employee1", "name").echo();
 "\n".echo();
 
 "age: ".echo();
-f.get("employee1", "age").echo();
+f.getfield("employee1", "age").echo();
 "\n".echo();
 
 "salary: ".echo();
-f.get("employee1", "salary").echo();
+f.getfield("employee1", "salary").echo();
 "\n".echo();
 
 "department: ".echo();
-f.get("employee1", "department").echo();
+f.getfield("employee1", "department").echo();
 "\n".echo();
 
 /* Test 4: Create another record with different approach */
@@ -94,30 +94,30 @@ f.get("employee1", "department").echo();
 "-----------------------------------\n".echo();
 
 "Creating another record by setting multiple fields at once...\n".echo();
-f.set("employee2", "Jane Smith", "name");
-f.set("employee2", 28, "age");
-f.set("employee2", 65000.25, "salary");
-f.set("employee2", "Marketing", "department");
+f.setfield("employee2", "Jane Smith", "name");
+f.setfield("employee2", 28, "age");
+f.setfield("employee2", 65000.25, "salary");
+f.setfield("employee2", "Marketing", "department");
 
 "Checking employee2 field values:\n".echo();
 "$KEY: ".echo();
-f.get("employee2", "$KEY").echo();
+f.getfield("employee2", "$KEY").echo();
 "\n".echo();
 
 "name: ".echo();
-f.get("employee2", "name").echo();
+f.getfield("employee2", "name").echo();
 "\n".echo();
 
 "age: ".echo();
-f.get("employee2", "age").echo();
+f.getfield("employee2", "age").echo();
 "\n".echo();
 
 "salary: ".echo();
-f.get("employee2", "salary").echo();
+f.getfield("employee2", "salary").echo();
 "\n".echo();
 
 "department: ".echo();
-f.get("employee2", "department").echo();
+f.getfield("employee2", "department").echo();
 "\n".echo();
 
 /* Test 5: List database contents */

@@ -69,7 +69,7 @@ result = large_matrix.cov();         // Monitor performance
 small_result = mat_a.dot(mat_b);  // Fast for < 100x100
 
 // For large matrices - consider alternatives
-if (mat_a.shape().get(0) > 100) {
+if (mat_a.shape().getfield(0) > 100) {
     // Consider breaking into smaller blocks
     result = block_multiply(mat_a, mat_b);
 } else {
@@ -189,7 +189,7 @@ memory_usage = estimate_memory(large_matrix);
 sum_result = large_matrix.sum();  // Memory efficient
 
 // 3. Consider breaking large problems
-if (large_matrix.shape().get(0) > 200) {
+if (large_matrix.shape().getfield(0) > 200) {
     result = process_in_blocks(large_matrix);
 } else {
     result = process_directly(large_matrix);
@@ -225,7 +225,7 @@ correlation = data.cov();  // More efficient than manual calculation
 ```grapa
 /* Edge cases perform excellently */
 empty_vec = [].vector();
-empty_sum = empty_vec.sum();  // 0ms - very fast
+empty_sum = empty_vec.sum();  // Returns {"error":-1} for empty vectors
 
 small_mat = [[1]].vector();
 small_det = small_mat.det();  // 0ms - very fast

@@ -9,10 +9,10 @@ test_file = "simple_verification.txt";
 
 /* Test 1: File Creation and Reading */
 "Test 1: File Creation and Reading\n".echo();
-fs.set(test_file, "Hello from simple verification!");
+fs.setfield(test_file, "Hello from simple verification!");
 ("Created file: " + test_file + "\n").echo();
 
-content = fs.get(test_file).str();
+content = fs.getfield(test_file).str();
 ("File content: " + content + "\n").echo();
 
 if (content == "Hello from simple verification!") {
@@ -36,11 +36,11 @@ table = fs.table("ROW");
 table.mkfield("name", "STR");
 table.mkfield("age", "INT");
 
-table.set("user1", "John", "name");
-table.set("user1", 25, "age");
+table.setfield("user1", "John", "name");
+table.setfield("user1", 25, "age");
 
-name = table.get("user1", "name");
-age = table.get("user1", "age");
+name = table.getfield("user1", "name");
+age = table.getfield("user1", "age");
 
 ("Table data - Name: " + name + ", Age: " + age + "\n").echo();
 

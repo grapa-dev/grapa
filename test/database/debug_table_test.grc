@@ -17,22 +17,22 @@ table.mkfield("age", "INT");
 "\n".echo();
 
 /* Set data */
-table.set("user1", "John", "name");
+table.setfield("user1", "John", "name");
 "Set name to 'John'".echo();
 "\n".echo();
 
-table.set("user1", 25, "age");
+table.setfield("user1", 25, "age");
 "Set age to 25".echo();
 "\n".echo();
 
 /* Get data and check types */
-name_result = table.get("user1", "name");
+name_result = table.getfield("user1", "name");
 "Name result type: ".echo();
 "\n".echo();
 name_result.type().echo();
 "\n".echo();
 
-age_result = table.get("user1", "age");
+age_result = table.getfield("user1", "age");
 "Age result type: ".echo();
 "\n".echo();
 age_result.type().echo();

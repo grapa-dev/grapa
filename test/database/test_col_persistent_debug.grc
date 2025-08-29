@@ -25,10 +25,10 @@ echo("---")
 
 /* Create first record */
 echo("Creating first record...")
-f.set("1", "name", "Alice")
-f.set("1", "age", 30)
-f.set("1", "city", "New York")
-f.set("1", "salary", 75000.50)
+f.setfield("1", "name", "Alice")
+f.setfield("1", "age", 30)
+f.setfield("1", "city", "New York")
+f.setfield("1", "salary", 75000.50)
 
 echo("First record created")
 f.dump().echo()
@@ -36,10 +36,10 @@ echo("---")
 
 /* Create second record */
 echo("Creating second record...")
-f.set("2", "name", "Bob")
-f.set("2", "age", 25)
-f.set("2", "city", "Los Angeles")
-f.set("2", "salary", 65000.75)
+f.setfield("2", "name", "Bob")
+f.setfield("2", "age", 25)
+f.setfield("2", "city", "Los Angeles")
+f.setfield("2", "salary", 65000.75)
 
 echo("Second record created")
 f.dump().echo()
@@ -47,27 +47,27 @@ echo("---")
 
 /* Test getting field values */
 echo("Testing get operations:")
-echo("Record 1 - name:", f.get("1", "name"))
-echo("Record 1 - age:", f.get("1", "age"))
-echo("Record 1 - city:", f.get("1", "city"))
-echo("Record 1 - salary:", f.get("1", "salary"))
+echo("Record 1 - name:", f.getfield("1", "name"))
+echo("Record 1 - age:", f.getfield("1", "age"))
+echo("Record 1 - city:", f.getfield("1", "city"))
+echo("Record 1 - salary:", f.getfield("1", "salary"))
 echo("---")
 
-echo("Record 2 - name:", f.get("2", "name"))
-echo("Record 2 - age:", f.get("2", "age"))
-echo("Record 2 - city:", f.get("2", "city"))
-echo("Record 2 - salary:", f.get("2", "salary"))
+echo("Record 2 - name:", f.getfield("2", "name"))
+echo("Record 2 - age:", f.getfield("2", "age"))
+echo("Record 2 - city:", f.getfield("2", "city"))
+echo("Record 2 - salary:", f.getfield("2", "salary"))
 echo("---")
 
 /* Test unset field */
 echo("Testing unset field:")
-echo("Record 1 - unset field:", f.get("1", "nonexistent"))
+echo("Record 1 - unset field:", f.getfield("1", "nonexistent"))
 echo("---")
 
 /* Update a field */
 echo("Updating record 1 age to 31...")
-f.set("1", "age", 31)
-echo("Record 1 - updated age:", f.get("1", "age"))
+f.setfield("1", "age", 31)
+echo("Record 1 - updated age:", f.getfield("1", "age"))
 echo("---")
 
 /* Final database state */

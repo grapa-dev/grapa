@@ -28,7 +28,7 @@ tags:
 - Every statement and every block (including after closing braces) must end with a semicolon (`;`).
 - Use block comments (`/* ... */`) or line comments (`// ...`). `#` comments are not supported.
 - To append to arrays, use the `+=` operator (not `.push()` or `.append()`).
-- Use `[]` for list/array access, not `.get()` (which is for objects/tables).
+- Use `[]` for list/array access, not `.getfield()` (which is for files/tables).
 - Check for `$ERR` when accessing keys or attributes that may not exist.
 - See [Syntax Quick Reference](syntax/basic_syntax.md) for more.
 

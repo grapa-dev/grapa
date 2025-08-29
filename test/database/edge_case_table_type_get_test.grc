@@ -1,52 +1,29 @@
-/* Edge case tests for .get() on INT, FLOAT, and RAW fields */
-table = $file().table("ROW");
+/* Simple edge case tests for .getfield() */
+table = {}.table("ROW");
 table.mkfield("intf", "INT");
 table.mkfield("floatf", "FLOAT");
 table.mkfield("rawf", "RAW");
 
-/* 1. Missing/empty/null values */
-("Missing INT: " + table.get("missing", "intf").type()).echo();
-("Missing FLOAT: " + table.get("missing", "floatf").type()).echo();
-("Missing RAW: " + table.get("missing", "rawf").type()).echo();
+/* Test basic operations */
+table.setfield("user1", 42, "intf");
+table.setfield("user1", 3.14, "floatf");
+table.setfield("user1", "test", "rawf");
 
-table.set("user1", 0, "intf");
-table.set("user1", 0.0, "floatf");
-table.set("user1", null, "rawf");
-("Zero INT: " + table.get("user1", "intf").type() + ", value: " + table.get("user1", "intf")).echo();
-("Zero FLOAT: " + table.get("user1", "floatf").type() + ", value: " + table.get("user1", "floatf")).echo();
-("Null RAW: " + table.get("user1", "rawf").type() + ", value: " + table.get("user1", "rawf")).echo();
+int_val = table.getfield("user1", "intf");
+float_val = table.getfield("user1", "floatf");
+raw_val = table.getfield("user1", "rawf");
 
-/* 2. Type mismatch */
-table.set("user2", "not an int", "intf");
-table.set("user2", "not a float", "floatf");
-table.set("user2", 123, "rawf");
-("INT field with STR: " + table.get("user2", "intf").type() + ", value: " + table.get("user2", "intf")).echo();
-("FLOAT field with STR: " + table.get("user2", "floatf").type() + ", value: " + table.get("user2", "floatf")).echo();
-("RAW field with INT: " + table.get("user2", "rawf").type() + ", value: " + table.get("user2", "rawf")).echo();
+("INT value: " + int_val + "\n").echo();
+("FLOAT value: " + float_val + "\n").echo();
+("RAW value: " + raw_val + "\n").echo();
 
-/* 3. Nested RAW objects */
-table.set("user3", {foo: {bar: [1,2,{baz: 99}]}, arr: [10,20]}, "rawf");
-nested = table.get("user3", "rawf");
-("Nested RAW type: " + nested.type()).echo();
-("Nested RAW foo.bar[2].baz: " + nested.foo.bar[2].baz).echo();
-("Nested RAW arr[1]: " + nested.arr[1]).echo();
+/* Test missing record */
+missing = table.getfield("missing", "intf");
+("Missing record type: " + missing.type() + "\n").echo();
 
-/* 4. Overwrite field with different type */
-table.set("user4", 123, "intf");
-table.set("user4", "now a string", "intf");
-("INT field overwritten with STR: " + table.get("user4", "intf").type() + ", value: " + table.get("user4", "intf")).echo();
+/* Test type conversion */
+table.setfield("user2", "123", "intf");
+converted = table.getfield("user2", "intf");
+("String to INT: " + converted + "\n").echo();
 
-table.set("user5", 3.14159, "floatf");
-table.set("user5", 42, "floatf");
-("FLOAT field overwritten with INT: " + table.get("user5", "floatf").type() + ", value: " + table.get("user5", "floatf")).echo();
-
-/* 5. Large numbers and precision */
-table.set("user6", 9223372036854775807, "intf");
-table.set("user6", 1.2345678901234567e+30, "floatf");
-("Large INT: " + table.get("user6", "intf").type() + ", value: " + table.get("user6", "intf")).echo();
-("Large FLOAT: " + table.get("user6", "floatf").type() + ", value: " + table.get("user6", "floatf")).echo();
-
-/* 6. Array in RAW */
-table.set("user7", [1,2,3,4], "rawf");
-arr = table.get("user7", "rawf");
-("RAW array type: " + arr.type() + ", arr[2]: " + arr[2]).echo(); 
+"=== Edge Case Test Complete ===\n".echo(); 

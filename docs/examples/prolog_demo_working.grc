@@ -9,18 +9,18 @@ kb = {}.table();
 "Store PROLOG facts\n".echo();
 "================================================================================\n".echo();
 
-kb.set('fact1', 'parent(john,mary)');
-kb.set('fact2', 'parent(mary,jane)');
-kb.set('fact3', 'parent(jane,bob)');
-kb.set('fact4', 'likes(mary,wine)');
-kb.set('fact5', 'likes(john,mary)');
+kb.setfield('fact1', 'parent(john,mary)');
+kb.setfield('fact2', 'parent(mary,jane)');
+kb.setfield('fact3', 'parent(jane,bob)');
+kb.setfield('fact4', 'likes(mary,wine)');
+kb.setfield('fact5', 'likes(john,mary)');
 
 "Stored facts:\n".echo();
-("fact1: " + kb.get('fact1') + "\n").echo();
-("fact2: " + kb.get('fact2') + "\n").echo();
-("fact3: " + kb.get('fact3') + "\n").echo();
-("fact4: " + kb.get('fact4') + "\n").echo();
-("fact5: " + kb.get('fact5') + "\n").echo();
+("fact1: " + kb.getfield('fact1') + "\n").echo();
+("fact2: " + kb.getfield('fact2') + "\n").echo();
+("fact3: " + kb.getfield('fact3') + "\n").echo();
+("fact4: " + kb.getfield('fact4') + "\n").echo();
+("fact5: " + kb.getfield('fact5') + "\n").echo();
 
 "================================================================================\n".echo();
 "Query: Find all parent facts\n".echo();
@@ -30,7 +30,7 @@ keys = ['fact1', 'fact2', 'fact3', 'fact4', 'fact5'];
 parent_facts = [];
 
 keys.range().map(op(i) {
-    fact = kb.get(keys[i]);
+    fact = kb.getfield(keys[i]);
     if (fact.indexOf('parent') == 0) {
         parent_facts = parent_facts.add(fact);
     };
@@ -55,12 +55,12 @@ $global.Y = 'mary';
 "Rule storage\n".echo();
 "================================================================================\n".echo();
 
-kb.set('rule1', 'ancestor(X,Y) :- parent(X,Y)');
-kb.set('rule2', 'ancestor(X,Z) :- parent(X,Y), ancestor(Y,Z)');
+kb.setfield('rule1', 'ancestor(X,Y) :- parent(X,Y)');
+kb.setfield('rule2', 'ancestor(X,Z) :- parent(X,Y), ancestor(Y,Z)');
 
 "Stored rules:\n".echo();
-("rule1: " + kb.get('rule1') + "\n").echo();
-("rule2: " + kb.get('rule2') + "\n").echo();
+("rule1: " + kb.getfield('rule1') + "\n").echo();
+("rule2: " + kb.getfield('rule2') + "\n").echo();
 
 "================================================================================\n".echo();
 "PROLOG Implementation Complete\n".echo();

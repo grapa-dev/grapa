@@ -20,33 +20,33 @@ $row_db.mkfield("active", "BOOL", "FIX", 1);
 "✓ Fields created for user management\n".echo();
 
 /* Insert user records (transactional operations) */
-$row_db.set("user1", 1, "id");
-$row_db.set("user1", "Alice Johnson", "name");
-$row_db.set("user1", "alice@example.com", "email");
-$row_db.set("user1", 28, "age");
-$row_db.set("user1", 1, "active");
+$row_db.setfield("user1", 1, "id");
+$row_db.setfield("user1", "Alice Johnson", "name");
+$row_db.setfield("user1", "alice@example.com", "email");
+$row_db.setfield("user1", 28, "age");
+$row_db.setfield("user1", 1, "active");
 
-$row_db.set("user2", 2, "id");
-$row_db.set("user2", "Bob Smith", "name");
-$row_db.set("user2", "bob@example.com", "email");
-$row_db.set("user2", 32, "age");
-$row_db.set("user2", 1, "active");
+$row_db.setfield("user2", 2, "id");
+$row_db.setfield("user2", "Bob Smith", "name");
+$row_db.setfield("user2", "bob@example.com", "email");
+$row_db.setfield("user2", 32, "age");
+$row_db.setfield("user2", 1, "active");
 
-$row_db.set("user3", 3, "id");
-$row_db.set("user3", "Carol Davis", "name");
-$row_db.set("user3", "carol@example.com", "email");
-$row_db.set("user3", 25, "age");
-$row_db.set("user3", 0, "active");
+$row_db.setfield("user3", 3, "id");
+$row_db.setfield("user3", "Carol Davis", "name");
+$row_db.setfield("user3", "carol@example.com", "email");
+$row_db.setfield("user3", 25, "age");
+$row_db.setfield("user3", 0, "active");
 "✓ 3 user records inserted\n".echo();
 
 /* Retrieve user data (point queries) */
-$user1_name = $row_db.get("user1", "name").str();
-$user1_age = $row_db.get("user1", "age").raw().int();
+$user1_name = $row_db.getfield("user1", "name").str();
+$user1_age = $row_db.getfield("user1", "age").raw().int();
 ("✓ Retrieved user1: " + $user1_name + ", age " + $user1_age.str() + "\n").echo();
 
 /* Update user data (transactional update) */
-$row_db.set("user1", 29, "age");
-$updated_age = $row_db.get("user1", "age").raw().int();
+$row_db.setfield("user1", 29, "age");
+$updated_age = $row_db.getfield("user1", "age").raw().int();
 ("✓ Updated user1 age to: " + $updated_age.str() + "\n").echo();
 
 /* List all records */
@@ -65,31 +65,31 @@ $col_db = {}.table("COL");
 
 /* Create fields for analytics data */
 $col_db.mkfield("metric", "STR", "VAR");
-$col_db.mkfield("value", "FLT", "FIX", 8);
+$col_db.mkfield("value", "FLOAT", "FIX", 8);
 $col_db.mkfield("timestamp", "INT", "FIX", 8);
 $col_db.mkfield("category", "STR", "VAR");
 "✓ Fields created for analytics\n".echo();
 
 /* Insert analytics data (column-oriented storage) */
-$col_db.set("metric1", "page_views", "metric");
-$col_db.set("metric1", 1250.5, "value");
-$col_db.set("metric1", 1640995200, "timestamp");
-$col_db.set("metric1", "traffic", "category");
+$col_db.setfield("metric1", "page_views", "metric");
+$col_db.setfield("metric1", 1250.5, "value");
+$col_db.setfield("metric1", 1640995200, "timestamp");
+$col_db.setfield("metric1", "traffic", "category");
 
-$col_db.set("metric2", "conversion_rate", "metric");
-$col_db.set("metric2", 0.0234, "value");
-$col_db.set("metric2", 1640995200, "timestamp");
-$col_db.set("metric2", "sales", "category");
+$col_db.setfield("metric2", "conversion_rate", "metric");
+$col_db.setfield("metric2", 0.0234, "value");
+$col_db.setfield("metric2", 1640995200, "timestamp");
+$col_db.setfield("metric2", "sales", "category");
 
-$col_db.set("metric3", "avg_session_duration", "metric");
-$col_db.set("metric3", 245.7, "value");
-$col_db.set("metric3", 1640995200, "timestamp");
-$col_db.set("metric3", "engagement", "category");
+$col_db.setfield("metric3", "avg_session_duration", "metric");
+$col_db.setfield("metric3", 245.7, "value");
+$col_db.setfield("metric3", 1640995200, "timestamp");
+$col_db.setfield("metric3", "engagement", "category");
 "✓ 3 analytics records inserted\n".echo();
 
 /* Retrieve analytics data */
-$page_views = $col_db.get("metric1", "value").raw().flt();
-$conversion_rate = $col_db.get("metric2", "value").raw().flt();
+$page_views = $col_db.getfield("metric1", "value").raw().flt();
+$conversion_rate = $col_db.getfield("metric2", "value").raw().flt();
 ("✓ Analytics data: page_views=" + $page_views.str() + ", conversion_rate=" + $conversion_rate.str() + "\n").echo();
 
 /* List all records */
@@ -123,9 +123,9 @@ $users_db.mkfield("role", "STR", "VAR");
 "✓ Users fields created\n".echo();
 
 /* Insert user data in nested database */
-$users_db.set("admin1", 1, "id");
-$users_db.set("admin1", "Admin User", "name");
-$users_db.set("admin1", "administrator", "role");
+$users_db.setfield("admin1", 1, "id");
+$users_db.setfield("admin1", "Admin User", "name");
+$users_db.setfield("admin1", "administrator", "role");
 "✓ Admin user inserted in nested database\n".echo();
 
 /* Navigate to analytics database */
@@ -134,12 +134,12 @@ $analytics_db = $group_db.cd("analytics");
 
 /* Create fields in analytics database */
 $analytics_db.mkfield("metric", "STR", "VAR");
-$analytics_db.mkfield("value", "FLT", "FIX", 8);
+$analytics_db.mkfield("value", "FLOAT", "FIX", 8);
 "✓ Analytics fields created\n".echo();
 
 /* Insert analytics data in nested database */
-$analytics_db.set("metric1", "system_uptime", "metric");
-$analytics_db.set("metric1", 99.95, "value");
+$analytics_db.setfield("metric1", "system_uptime", "metric");
+$analytics_db.setfield("metric1", 99.95, "value");
 "✓ System metric inserted in nested database\n".echo();
 
 /* Navigate back to root and list contents */
@@ -149,7 +149,7 @@ $group_contents = $group_db.ls();
 
 /* Navigate back to users and retrieve data */
 $users_db = $group_db.cd("users");
-$admin_name = $users_db.get("admin1", "name").str();
+$admin_name = $users_db.getfield("admin1", "name").str();
 ("✓ Retrieved from nested users DB: " + $admin_name + "\n").echo();
 
 /* ================================================================================ */
@@ -159,9 +159,9 @@ $admin_name = $users_db.get("admin1", "name").str();
 "\n=== Cross-Database Operations ===\n".echo();
 
 /* Demonstrate data integrity across all database types */
-$row_user2_name = $row_db.get("user2", "name").str();
-$col_metric_name = $col_db.get("metric1", "metric").str();
-$group_admin_role = $users_db.get("admin1", "role").str();
+$row_user2_name = $row_db.getfield("user2", "name").str();
+$col_metric_name = $col_db.getfield("metric1", "metric").str();
+$group_admin_role = $users_db.getfield("admin1", "role").str();
 
 ("✓ Cross-database validation:\n").echo();
 ("  ROW: " + $row_user2_name + "\n").echo();

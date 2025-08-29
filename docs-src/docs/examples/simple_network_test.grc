@@ -9,26 +9,31 @@
 
 /* Simple message handler */
 messageHandler = op(netSession, message, hasmore) {
-    netSession.data += message;
-    
+	
+	netSession.data += message;
+
     if (hasmore == 0) {
         /* Parse basic HTTP request */
-        request = netSession.data;
-        method = request.left(3);
-        
+        $local.method = "?";
+		$local.response = "\n";
+       
         /* Generate simple response */
-        if (method == "GET") {
+        if (netSession.data.left(3).upper() == "GET") {
+			method = "GET";
             response = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n<h1>Simple Grapa Server</h1><p>Method: " + method + "</p>";
-        } else if (method == "POST") {
-            response = "HTTP/1.1 200 OK\r\nContent-Type: text/json\r\n\r\n{\"status\":\"success\",\"method\":\"" + method + "\"}";
+        } else if (netSession.data.left(4).upper() == "POST") {
+            method = "POST";
+			response = "HTTP/1.1 200 OK\r\nContent-Type: text/json\r\n\r\n{\"status\":\"success\",\"method\":\"" + method + "\"}";
         } else {
             response = "HTTP/1.1 405 Method Not Allowed\r\n\r\n";
         };
         
-        netSession.send(response);
         netSession.data = "";
-        
-        ("Server: Processed " + method + " request\n").echo();
+
+        ("Server: Processed " + method + "\n").echo();
+		("Server: Response " + response).echo();
+
+        netSession.send(response);
     };
 };
 
@@ -48,9 +53,6 @@ server.onlisten('0.0.0.0:8080', messageHandler, connectionHandler);
 
 ("HTTP server started on port 8080\n").echo();
 ("Waiting for connections...\n").echo();
-
-/* Wait for server to start */
-Sleep(1000);
 
 /* ======================================== */
 /* CLIENT TESTS */
@@ -82,7 +84,7 @@ client2.disconnect();
 
 /* Test MAC address */
 mac_info = $net().mac();
-("MAC Address: " + mac_info.mac + "\n").echo();
+("MAC Address: " + mac_info.mac.uhex() + "\n").echo();
 
 /* Test interfaces */
 interfaces = $net().interfaces();

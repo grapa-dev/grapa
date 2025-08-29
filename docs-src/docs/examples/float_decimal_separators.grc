@@ -1,0 +1,78 @@
+/* Float Decimal Separators Example
+ * Demonstrates Grapa's support for both dot (.) and underscore (_) 
+ * as decimal separators for float literals
+ */
+
+"=== Float Decimal Separators Demo ===".echo();
+
+/* Standard decimal notation */
+"Standard decimal notation:".echo();
+3.14.echo();              /* 3.14 */
+2.5.echo();               /* 2.5 */
+1.0.echo();               /* 1.0 */
+0.5.echo();               /* 0.5 */
+10.25.echo();             /* 10.25 */
+
+/* Underscore decimal notation (equivalent) */
+"Underscore decimal notation (equivalent):".echo();
+3_14.echo();              /* 3.14 */
+2_5.echo();               /* 2.5 */
+1_0.echo();               /* 1.0 */
+0_5.echo();               /* 0.5 */
+10_25.echo();             /* 10.25 */
+
+/* Verification that they are equivalent */
+"Verification (should all be true):".echo();
+(3.14 == 3_14).echo();    /* true */
+(2.5 == 2_5).echo();      /* true */
+(1.0 == 1_0).echo();      /* true */
+(0.5 == 0_5).echo();      /* true */
+(10.25 == 10_25).echo();  /* true */
+
+/* Mathematical operations work the same */
+"Mathematical operations:".echo();
+(3.14 + 2.5).echo();      /* 5.64 */
+(3_14 + 2_5).echo();      /* 5.64 */
+((3.14 + 2.5) == (3_14 + 2_5)).echo();  /* true */
+
+/* Method calls work on both notations */
+"Method calls:".echo();
+3.14.floor().echo();      /* 3 */
+3_14.floor().echo();      /* 3 */
+3.14.ceil().echo();       /* 4 */
+3_14.ceil().echo();       /* 4 */
+
+/* Type checking */
+"Type checking:".echo();
+(3.14.type()).echo();     /* $FLOAT */
+(3_14.type()).echo();     /* $FLOAT */
+
+/* Edge cases */
+"Edge cases:".echo();
+(0.1 == 0_1).echo();      /* true */
+(100.5 == 100_5).echo();  /* true */
+(1000.25 == 1000_25).echo(); /* true */
+
+/* Invalid cases (multiple decimal separators cause errors) */
+"Note: Multiple decimal separators are invalid (standard mathematical definition):".echo();
+"3.14.15 would be invalid".echo();
+"3_14_15 would be invalid".echo();
+
+/* Practical examples */
+"Practical examples:".echo();
+pi = 3_14159;             /* Using underscore for readability */
+radius = 5_5;             /* 5.5 */
+area = pi * radius * radius;
+("Area of circle with radius " + radius + ": " + area).echo();
+
+/* Financial calculations */
+"Financial calculations:".echo();
+price = 19_99;            /* $19.99 */
+tax_rate = 0_085;         /* 8.5% */
+tax = price * tax_rate;
+total = price + tax;
+("Price: $" + price).echo();
+("Tax: $" + tax).echo();
+("Total: $" + total).echo();
+
+"=== Demo Complete ===".echo();

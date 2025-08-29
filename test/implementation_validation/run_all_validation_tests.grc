@@ -52,16 +52,16 @@ sum = mapped.reduce(op(acc, x) { acc + x; }, 0);
 
 /* Test object operations */
 config = $obj();
-config.set("name", "test_config");
-config.set("version", "1.0");
-config.set("enabled", true);
-"Config: ${config.get('name')} v${config.get('version')} (enabled: ${config.get('enabled')})".interpolate().echo();
+config.setfield("name", "test_config");
+config.setfield("version", "1.0");
+config.setfield("enabled", true);
+"Config: ${config.getfield('name')} v${config.getfield('version')} (enabled: ${config.getfield('enabled')})".interpolate().echo();
 
 /* Test error handling with .iferr() */
 test_obj = $obj();
-test_obj.set("valid_key", "valid_value");
-valid_result = test_obj.get("valid_key").iferr("default");
-invalid_result = test_obj.get("invalid_key").iferr("default");
+test_obj.setfield("valid_key", "valid_value");
+valid_result = test_obj.getfield("valid_key").iferr("default");
+invalid_result = test_obj.getfield("invalid_key").iferr("default");
 "Error handling test: valid=${valid_result}, invalid=${invalid_result}".interpolate().echo();
 
 /* Test null handling with .ifnull() */
@@ -163,8 +163,8 @@ final_test = op() {
     
     /* Object operations */
     config = $obj();
-    config.set("language", name);
-    config.set("version", version);
+    config.setfield("language", name);
+    config.setfield("version", version);
     
     /* Return composite result */
     {

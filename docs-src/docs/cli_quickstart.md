@@ -99,7 +99,7 @@ $sys().putenv("GRAPA_DEBUG_MODE", "1");
 $sys().putenv("GRAPA_DEBUG_COMPONENTS", "database");
 
 // Perform operations with debug output
-db = $file().table('ROW');
+db = {}.table('ROW');
 db.mkfield('name', 'STR');
 
 // Disable debug when done
@@ -162,11 +162,11 @@ result = function(10, 20);
 ### Reading Files
 ```grapa
 /* Read entire file */
-content = $file().get("data.txt").str();
+content = $file().getfield("data.txt");
 ("File content: " + content).echo();
 
 /* Read file as lines */
-lines = $file().get("data.txt").str().split("\n");
+lines = $file().getfield("data.txt").split("\n");
 for (line in lines) {
     ("Line: " + line).echo();
 }
@@ -175,10 +175,10 @@ for (line in lines) {
 ### Writing Files
 ```grapa
 /* Write to file */
-$file().set("output.txt", "Hello from Grapa!");
+$file().setfield("output.txt", "Hello from Grapa!");
 
 /* Append to file */
-$file().set("log.txt", "New entry\n", "a");
+$file().setfield("log.txt", "New entry\n", "a");
 ```
 
 ## Data Processing
@@ -431,7 +431,7 @@ temp_file = temp_dir + "/grapa_temp_" + $TIME().utc().str();
 log_file = temp_dir + "/grapa_log_" + $TIME().utc().str();
 
 /* Write to temporary file */
-$file(temp_file).set("Temporary data");
+$file(temp_file).setfield("Temporary data");
 
 /* Clean up temporary files when done */
 $file(temp_file).rm();
@@ -720,7 +720,7 @@ iferr {
 ```bash
 # Database operations
 grapa -c "
-db = \$file().table('ROW');
+db = {}.table('ROW');
 db.mkfield('name', 'STR');
 db.mkfield('age', 'INT');
 db.set('user1', 'Alice', 'name');
@@ -772,7 +772,7 @@ for (task in tasks) {
 ### Configuration Files
 ```grapa
 /* Read JSON config */
-config_text = $file().get("config.json").str();
+config_text = $file().getfield("config.json");
 config = config_text.json();
 
 /* Use configuration */

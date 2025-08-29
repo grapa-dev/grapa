@@ -32,7 +32,7 @@ digests = [
 /* Remove duplicates */
 unique_digests = [];
 digests.range().each(op(i) {
-    digest = digests.get(i);
+    digest = digests.getfield(i);
     if (!unique_digests.contains(digest)) {
         unique_digests.push(digest);
     }
@@ -46,7 +46,7 @@ supported = [];
 unsupported = [];
 
 unique_digests.range().each(op(i) {
-    digest = unique_digests.get(i);
+    digest = unique_digests.getfield(i);
     
     try {
         md_keys = "md".genkeys({"digest": digest});
@@ -75,19 +75,19 @@ unique_digests.range().each(op(i) {
 "".echo();
 "✅ SUPPORTED ALGORITHMS:".echo();
 supported.range().each(op(i) {
-    ("  - " + supported.get(i)).echo();
+    ("  - " + supported.getfield(i)).echo();
 });
 
 "".echo();
 "❌ UNSUPPORTED ALGORITHMS:".echo();
 unsupported.range().each(op(i) {
-    ("  - " + unsupported.get(i)).echo();
+    ("  - " + unsupported.getfield(i)).echo();
 });
 
 "".echo();
 "=== DETAILED TESTING OF SUPPORTED ALGORITHMS ===".echo();
 supported.range().each(op(i) {
-    digest = supported.get(i);
+    digest = supported.getfield(i);
     md_keys = "md".genkeys({"digest": digest});
     message = "Hello World";
     hash = message.encode(md_keys);

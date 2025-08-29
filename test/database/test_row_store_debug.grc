@@ -7,7 +7,7 @@
 "--------------------------------\n".echo();
 
 "Creating virtual $TABLE in memory...\n".echo();
-f = $file().table();
+f = {}.table();
 "Database type: ".echo();
 f.type().echo();
 "\n".echo();
@@ -28,20 +28,20 @@ f.dump().echo();
 "-----------------------------------------\n".echo();
 
 "Setting data for employee1...\n".echo();
-f.set("employee1", "John Doe", "name");
-f.set("employee1", 30, "age");
-f.set("employee1", 75000.50, "salary");
-f.set("employee1", "Engineering", "department");
+f.setfield("employee1", "John Doe", "name");
+f.setfield("employee1", 30, "age");
+f.setfield("employee1", 75000.50, "salary");
+f.setfield("employee1", "Engineering", "department");
 
 "Database structure after employee1:\n".echo();
 f.dump().echo();
 "\n".echo();
 
 "Setting data for employee2...\n".echo();
-f.set("employee2", "Jane Smith", "name");
-f.set("employee2", 28, "age");
-f.set("employee2", 72000.25, "salary");
-f.set("employee2", "Marketing", "department");
+f.setfield("employee2", "Jane Smith", "name");
+f.setfield("employee2", 28, "age");
+f.setfield("employee2", 72000.25, "salary");
+f.setfield("employee2", "Marketing", "department");
 
 "Database structure after employee2:\n".echo();
 f.dump().echo();
@@ -52,10 +52,10 @@ f.dump().echo();
 "----------------------------------------\n".echo();
 
 "Retrieving employee1 data...\n".echo();
-name1 = f.get("employee1", "name");
-age1 = f.get("employee1", "age");
-salary1 = f.get("employee1", "salary");
-dept1 = f.get("employee1", "department");
+name1 = f.getfield("employee1", "name");
+age1 = f.getfield("employee1", "age");
+salary1 = f.getfield("employee1", "salary");
+dept1 = f.getfield("employee1", "department");
 
 "employee1.name: ${name1}\n".interpolate().echo();
 "employee1.age: ${age1}\n".interpolate().echo();
@@ -63,10 +63,10 @@ dept1 = f.get("employee1", "department");
 "employee1.department: ${dept1}\n".interpolate().echo();
 
 "Retrieving employee2 data...\n".echo();
-name2 = f.get("employee2", "name");
-age2 = f.get("employee2", "age");
-salary2 = f.get("employee2", "salary");
-dept2 = f.get("employee2", "department");
+name2 = f.getfield("employee2", "name");
+age2 = f.getfield("employee2", "age");
+salary2 = f.getfield("employee2", "salary");
+dept2 = f.getfield("employee2", "department");
 
 "employee2.name: ${name2}\n".interpolate().echo();
 "employee2.age: ${age2}\n".interpolate().echo();
@@ -78,7 +78,7 @@ dept2 = f.get("employee2", "department");
 "-------------------\n".echo();
 
 "Testing unset field (should be empty)...\n".echo();
-unset_field = f.get("employee1", "id");
+unset_field = f.getfield("employee1", "id");
 "employee1.id (unset): ${unset_field}\n".interpolate().echo();
 
 /* Test 5: Update existing field */
@@ -86,8 +86,8 @@ unset_field = f.get("employee1", "id");
 "-------------------\n".echo();
 
 "Updating employee1 salary...\n".echo();
-f.set("employee1", 80000.75, "salary");
-updated_salary = f.get("employee1", "salary");
+f.setfield("employee1", 80000.75, "salary");
+updated_salary = f.getfield("employee1", "salary");
 "employee1.salary (updated): ${updated_salary}\n".interpolate().echo();
 
 "Final database structure:\n".echo();

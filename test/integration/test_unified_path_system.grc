@@ -16,7 +16,7 @@ f = $file();
 "Creating file system structure...\n".echo();
 f.mk("test_project");
 f.cd("test_project");
-f.set("config.txt", "Project configuration data");
+f.setfield("config.txt", "Project configuration data");
 f.mk("data");
 f.cd("data");
 
@@ -25,8 +25,8 @@ f.mk("users_db", "COL");
 f.cd("users_db");
 f.mkfield("name", "STR", "VAR");
 f.mkfield("age", "INT", "FIX", 4);
-f.set("user1", "John Doe", "name");
-f.set("user1", 30, "age");
+f.setfield("user1", "John Doe", "name");
+f.setfield("user1", 30, "age");
 
 "Current path: ".echo();
 f.pwd().echo();
@@ -97,7 +97,7 @@ f.cd("data");
 f.mk("nested_db", "ROW");
 f.cd("nested_db");
 f.mkfield("description", "STR", "VAR");
-f.set("item1", "Nested database item", "description");
+f.setfield("item1", "Nested database item", "description");
 
 "Current path: ".echo();
 f.pwd().echo();
@@ -122,7 +122,7 @@ f.pwd().echo();
 
 "Starting in file system...\n".echo();
 f.cd("/test_project/data");
-f.set("file_data.txt", "File system data");
+f.setfield("file_data.txt", "File system data");
 "File system contents: ".echo();
 f.ls().echo();
 "\n".echo();
@@ -134,7 +134,7 @@ f.ls().echo();
 "\n".echo();
 
 "Reading from database: ".echo();
-f.get("user1", "name").echo();
+f.getfield("user1", "name").echo();
 "\n".echo();
 
 "Transitioning back to file system...\n".echo();
@@ -144,7 +144,7 @@ f.ls().echo();
 "\n".echo();
 
 "Reading from file system: ".echo();
-f.get("file_data.txt").echo();
+f.getfield("file_data.txt").echo();
 "\n".echo();
 
 /* Test 6: Complex Path Navigation */
@@ -165,7 +165,7 @@ f.cd("level3");
 f.mk("deep_db", "COL");
 f.cd("deep_db");
 f.mkfield("depth", "INT", "FIX", 4);
-f.set("record1", 3, "depth");
+             f.setfield("record1", 3, "depth");
 
 "Deep database path: ".echo();
 f.pwd().echo();
@@ -213,15 +213,15 @@ error_result2.echo();
 
 "Setting data in database...\n".echo();
 f.cd("/test_project/data/users_db");
-f.set("user2", "Jane Smith", "name");
-f.set("user2", 25, "age");
+             f.setfield("user2", "Jane Smith", "name");
+             f.setfield("user2", 25, "age");
 
 "Navigating away and back...\n".echo();
 f.cd("/test_project");
 f.cd("data/users_db");
 
 "Verifying data persistence: ".echo();
-f.get("user2", "name").echo();
+             f.getfield("user2", "name").echo();
 "\n".echo();
 
 /* Test 9: Performance with Unified Paths */
@@ -237,7 +237,7 @@ while (i <= 10) {
     f.mk("db" + i, "COL");
     f.cd("db" + i);
     f.mkfield("value", "INT", "FIX", 4);
-    f.set("record1", i, "value");
+                 f.setfield("record1", i, "value");
     f.cd("..");
     i = i + 1;
 }
@@ -250,7 +250,7 @@ f.ls().echo();
 i = 1;
 while (i <= 10) {
     f.cd("db" + i);
-    value = f.get("record1", "value");
+                 value = f.getfield("record1", "value");
     "db" + i + " value: " + value + "\n".echo();
     f.cd("..");
     i = i + 1;

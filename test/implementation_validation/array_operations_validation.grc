@@ -14,7 +14,7 @@ tasks += task;
 /* Test 2: Results array with += operator */
 results = [];
 response = $obj();
-response.set("status", 200);
+response.setfield("status", 200);
 results += response;
 "Results array length: ${results.len()}".interpolate().echo();  /* Should output: 1 */
 

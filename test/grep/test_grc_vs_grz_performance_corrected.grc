@@ -12,7 +12,7 @@ if (grz_info.type() == $ERR) {
 /* Step 2: Time runtime execution of .grc (avoiding compile-time includes) */
 "Running test/run_tests.grc (runtime execution)...\n".echo();
 grc_start = $TIME().utc();
-op()($file().get("test/run_tests.grc"))();
+op()($file().getfield("test/run_tests.grc"))();
 grc_end = $TIME().utc();
 grc_time = ((grc_end - grc_start) / 1000000).int();
 "test/run_tests.grc time: " + grc_time.str() + " ms\n".echo();
@@ -20,7 +20,7 @@ grc_time = ((grc_end - grc_start) / 1000000).int();
 /* Step 3: Time execution of .grz (proper method) */
 "Running test/run_tests.grz (pre-compiled)...\n".echo();
 grz_start = $TIME().utc();
-$file().get("test/run_tests.grz").decode("ZIP-GRAPA")["op"]();
+$file().getfield("test/run_tests.grz").decode("ZIP-GRAPA")["op"]();
 grz_end = $TIME().utc();
 grz_time = ((grz_end - grz_start) / 1000000).int();
 "test/run_tests.grz time: " + grz_time.str() + " ms\n".echo();

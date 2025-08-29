@@ -13,7 +13,7 @@
 >
 > - For $LIST and $OBJ, use bracket or dot notation (e.g., obj["key"], obj.key, obj[2]).
 > - For $ARRAY, use bracket notation (e.g., arr[1]).
-> - Only $file and $TABLE support .get().
+> - Only $file and $TABLE support .getfield() and .setfield().
 > - This is based on direct testing in Grapa v0.0.39.
 
 ---
@@ -33,7 +33,7 @@ This guide helps Rust users transition to Grapa by mapping common Rust idioms, p
 | `let s = String::from("hi");` | `s = "hi";` |
 | `s.push_str("!");` | `s += "!";` |
 | `let arr = vec![1,2,3];` | `arr = [1, 2, 3];` |
-| `arr[0]` | `arr[0]`<br>`arr.get(0)` |
+| `arr[0]` | `arr[0]` |
 | `let map = HashMap::new();` | `obj = {}` |
 | `map["key"]` | `obj["key"]`<br>`obj.key`<br>`obj."key"` |
 | `for x in arr { ... }` | `for x in arr { ... }`<br>`i = 0; while (i < arr.len()) { x = arr[i]; ...; i += 1; }`<br>`arr.map(op(x) { ... })`<br>`(n).range(0,1).map(op(i) { ... })` |
@@ -56,7 +56,7 @@ This guide helps Rust users transition to Grapa by mapping common Rust idioms, p
 >
 > **Nullish Coalescing:** For providing default values, use `value.ifnull("default")` instead of Rust's `unwrap_or()` or `?` operator. The `.ifnull()` method treats a broader range of values as nullish (including zeros, empty collections, and errors).
 
-> **Note:** `.get("key")` is only for `$file` and `$TABLE`. For `$LIST`/`$OBJ`, use `obj["key"]`, `obj.key`, or `obj."key"`. For `$ARRAY`, use `arr[index]` or `arr.get(index)`.
+> **Note:** `.getfield("key")` is for `$file` and `$TABLE`. `.get()/.set()` is for `$WIDGET`. For `$LIST`/`$OBJ`, use `obj["key"]`, `obj.key`, or `obj."key"`. For `$ARRAY`, use `arr[index]` (bracket notation only).
 
 ## Access Patterns: Objects, Lists, Arrays, Files, and Tables
 
@@ -85,7 +85,7 @@ name = obj.getname(1);  /* Returns "b" (key name at index 1) */
 arr = [10, 20, 30];
 
 value = arr[1];         /* Returns 20 */
-value = arr.get(1);     /* Returns 20 */
+/* Note: .get(index) is not supported for arrays - use bracket notation */
 ```
 
 - Use bracket notation or `.get(index)` for $ARRAY.
@@ -104,7 +104,7 @@ file_info = files.get(0);   /* Correct */
 ### $TABLE
 
 ```grapa
-table = $file().table("ROW");
+table = {}.table("ROW");
 table.mkfield("name", "STR", "VAR");
 table.set("user1", "Alice", "name");
 
