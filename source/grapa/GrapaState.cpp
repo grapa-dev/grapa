@@ -1915,8 +1915,8 @@ bool GrapaRuleEvent::IsNullIsNegIsZero(bool& isNeg, bool& isNull)
 		switch (mValue.mToken)
 		{
 		case GrapaTokenType::ERR:
-			isNull = true;
-			isZero = true;
+			isNull = false;
+			isZero = false;
 			break;
 		case GrapaTokenType::STR:
 		case GrapaTokenType::SYSSTR:

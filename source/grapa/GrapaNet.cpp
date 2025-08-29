@@ -81,7 +81,7 @@ GrapaNet::GrapaNet()
 	mStarted = false;
 	mConnected = false;
 	mBound = false;
-	((GrapaNetPrivate*)vInstance)->mSocket = 1;
+	((GrapaNetPrivate*)vInstance)->mSocket = -1;
 #ifdef _WIN32
 	memset(&((GrapaNetPrivate*)vInstance)->wsaData, 0, sizeof(((GrapaNetPrivate*)vInstance)->wsaData));
 	memset(&((GrapaNetPrivate*)vInstance)->mHints, 0, sizeof(((GrapaNetPrivate*)vInstance)->mHints));
@@ -146,10 +146,35 @@ void GrapaNet::GetService(const GrapaCHAR& pURL, GrapaCHAR& pNodeName, GrapaCHAR
 	pNodeName.SetLength(0);
 	pServiceName.SetLength(0);
 	isIPv6 = false;
+
+	u.ToLower();
+
+	// Remove protocol prefix if present (http:// or https://)
+	if (u.StrNCmp("http://", 7) == 0)
+	{
+		u = GrapaCHAR((char*)u.mBytes+7,u.mLength-7);
+		pServiceName = "80";   // Default HTTP port
+	}
+	if (u.StrNCmp("https://", 8) == 0)
+	{
+		u = GrapaCHAR((char*)u.mBytes + 8, u.mLength - 8);
+		pServiceName = "443";  // Default HTTPS port
+	}
+	
+	// Find the first slash to separate hostname:port from path
+	char* pathStart = strchr((char*)u.mBytes, '/');
+	if (pathStart)
+	{
+		// Remove the path portion
+		u.SetLength(pathStart - (char*)u.mBytes);
+	}
+	
+	// Now parse hostname:port
 	char* s1 = strchr((char*)u.mBytes, '[');
 	char* s2 = s1 ? strchr(s1, ']') : NULL;
 	if (s2)
 	{
+		// IPv6 format: [hostname]:port
 		isIPv6 = true;
 		pNodeName.SetLength(s2 - s1 - 1);
 		memcpy((char*)pNodeName.mBytes, &s1[1], (size_t)pNodeName.mLength);
@@ -157,6 +182,7 @@ void GrapaNet::GetService(const GrapaCHAR& pURL, GrapaCHAR& pNodeName, GrapaCHAR
 	}
 	else
 	{
+		// IPv4 format: hostname:port
 		s1 = (char*)u.mBytes;
 		s2 = strchr((char*)u.mBytes, ':');
 		if (s2)
@@ -167,17 +193,22 @@ void GrapaNet::GetService(const GrapaCHAR& pURL, GrapaCHAR& pNodeName, GrapaCHAR
 		}
 		else
 		{
+			// No port specified, use default
 			pNodeName.FROM(u);
 			s1 = NULL;
 		}
 	}
+	
 	if (s1)
 	{
+		// Extract port number
 		pServiceName.SetLength(u.mLength - (((char*)u.mBytes) - s1) - 1);
 		memcpy((char*)pServiceName.mBytes, &s1[1], (size_t)pServiceName.mLength);
 	}
+	
 	pNodeName.Trim();
 	pServiceName.Trim();
+
 }
 
 GrapaError GrapaNet::Connect(const GrapaCHAR& pURL)
@@ -430,7 +461,8 @@ GrapaError GrapaNet::Connect(const GrapaCHAR& pURL)
 	((GrapaNetPrivate*)vInstance)->mHints.ai_canonname = NULL;
 	((GrapaNetPrivate*)vInstance)->mHints.ai_addr = NULL;
 	((GrapaNetPrivate*)vInstance)->mHints.ai_next = NULL;
-	if (getaddrinfo(nodeName, serviceName, &((GrapaNetPrivate*)vInstance)->mHints, &result) != 0) return(-1);
+	if (getaddrinfo(nodeName, serviceName, &((GrapaNetPrivate*)vInstance)->mHints, &result) != 0) 
+		return(-1);
 	((GrapaNetPrivate*)vInstance)->mSocket = socket(result->ai_family, result->ai_socktype, result->ai_protocol);
 	if (((GrapaNetPrivate*)vInstance)->mSocket == -1)
 	{
@@ -1474,8 +1506,8 @@ GrapaError GrapaNet::Certificate(GrapaCHAR& certFile)
 	{
 		SSL_load_error_strings();
 		ERR_load_crypto_strings();
-		OpenSSL_add_all_algorithms();
-		(void)SSL_library_init();
+		// OpenSSL_add_all_algorithms();  // REMOVED - deprecated in OpenSSL 3.x
+		// (void)SSL_library_init();      // REMOVED - deprecated in OpenSSL 3.x
 		gSystem->mLinkInitialized = true;
 	}
 
@@ -1489,9 +1521,12 @@ GrapaError GrapaNet::Certificate(GrapaCHAR& certFile)
 		//long SSL_CTX_add_extra_chain_cert(tSSL, X509 * x509);
 		err = SSL_CTX_use_certificate_chain_file(tSSL, (char*)vCertFile.mBytes);
 		err = (err == 1) ? 0 : -1;
-		SSL_CTX_free(tSSL);
 		if (err)
+		{
 			vIsSSL = false;
+			err = ERR_get_error();
+		}
+		SSL_CTX_free(tSSL);
 	}
 	return(err);
 }

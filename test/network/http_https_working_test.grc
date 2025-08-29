@@ -1,0 +1,23 @@
+/* Working HTTP/HTTPS Test - Using exact syntax from manual tests */
+
+"Testing HTTP GET...\n".echo();
+clienta = $net();
+clienta.connect('http://httpbin.org/get', null, null);
+clienta.send('GET / HTTP/1.1\r\nHost: localhost:8080\r\n\r\n');
+responsea = "";
+$sys().sleep(3000);
+while(clienta.pending()) responsea = responsea + clienta.receive();
+clienta.disconnect();
+"HTTP GET completed\n".echo();
+
+"Testing HTTPS GET...\n".echo();
+clienta = $net();
+clienta.connect('https://httpbin.org/get', "keys/client.crt", null);
+clienta.send('GET / HTTP/1.1\r\nHost: localhost:8080\r\n\r\n');
+responsea = "";
+$sys().sleep(3000);
+while(clienta.pending()) responsea = responsea + clienta.receive();
+clienta.disconnect();
+"HTTPS GET completed\n".echo();
+
+"All tests completed.\n".echo();

@@ -1,0 +1,34 @@
+"\n=====\n".echo();
+"https with cert\n".echo();
+clienta = $net();
+clienta.connect('http://httpbin.org', null, null);
+clienta.send('GET / HTTP/1.1\r\nHost: localhost:8080\r\n\r\n');
+responsea = "";
+$sys().sleep(3000);
+while(clienta.pending()) responsea += clienta.receive();
+clienta.disconnect();
+responsea.echo();
+
+"\n=====\n".echo();
+"http with no cert\n".echo();
+clienta = $net();
+clienta.connect('http://httpbin.org', "keys/client.crt", null);
+clienta.send('GET / HTTP/1.1\r\nHost: localhost:8080\r\n\r\n');
+responsea = "";
+$sys().sleep(3000);
+while(clienta.pending()) responsea += clienta.receive();
+clienta.disconnect();
+responsea.echo();
+
+"\n=====\n".echo();
+"https with no cert\n".echo();
+clienta = $net();
+clienta.connect('http://httpbin.org', null, null);
+clienta.send('GET / HTTP/1.1\r\nHost: localhost:8080\r\n\r\n');
+responsea = "";
+$sys().sleep(3000);
+while(clienta.pending()) responsea += clienta.receive();
+clienta.disconnect();
+responsea.echo();
+
+"\nDONE\n".echo();

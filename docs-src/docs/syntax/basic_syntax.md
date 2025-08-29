@@ -2006,16 +2006,50 @@ if (age >= 18) {
 
 Grapa supports implicit truthy/falsy evaluation in conditions, similar to modern languages like Python and JavaScript:
 
+#### Comprehensive Truthiness Chart
+
+The following table shows all possible values and their truthiness evaluation in Grapa:
+
+| Value Type | Example | Truthiness | `if (value)` Result | Notes |
+|------------|---------|------------|-------------------|-------|
+| **Boolean** | `true` | Truthy | Executes | Always truthy |
+| **Boolean** | `false` | Falsy | Skips | Always falsy |
+| **Integer** | `1`, `42`, `-1`, `-100` | Truthy | Executes | Any non-zero number |
+| **Integer** | `0` | Falsy | Skips | Zero is falsy |
+| **Float** | `1.5`, `-2.7`, `0.1` | Truthy | Executes | Any non-zero number |
+| **Float** | `0.0` | Falsy | Skips | Zero is falsy |
+| **String** | `"hello"`, `"0"`, `"false"` | Truthy | Executes | Any non-empty string |
+| **String** | `""` | Falsy | Skips | Empty string is falsy |
+| **Array** | `[1,2,3]`, `["a","b"]` | Truthy | Executes | Non-empty arrays |
+| **Array** | `[]` | Falsy | Skips | Empty array is falsy |
+| **List** | `{a:1, b:2}`, `{1,2,3}` | Truthy | Executes | Non-empty lists |
+| **List** | `{}` | Falsy | Skips | Empty list is falsy |
+| **Vector** | `#[1,2,3]#` | Truthy | Executes | Non-empty vectors |
+| **Vector** | `#[]#` | Falsy | Skips | Empty vector is falsy |
+| **Null** | `null` | Falsy | Skips | Null is always falsy |
+| **Error** | `$ERR()`, `9/0`, `undefined_property` | Falsy | Skips | Error objects are falsy |
+| **Function** | `some_function` | Truthy | Executes | Functions are truthy |
+| **File** | `$file()` | Truthy | Executes | File objects are truthy |
+| **Network** | `$net()` | Truthy | Executes | Network objects are truthy |
+| **System** | `$sys()` | Truthy | Executes | System objects are truthy |
+
 #### Truthy Values
 ```grapa
 /* These values are considered truthy in conditions */
 if (true) { /* Always truthy */ }
 if (1) { /* Non-zero numbers */ }
 if (-1) { /* Negative numbers */ }
+if (3.14) { /* Non-zero floats */ }
 if ("hello") { /* Non-empty strings */ }
+if ("0") { /* String "0" is truthy (non-empty) */ }
+if ("false") { /* String "false" is truthy (non-empty) */ }
 if ([1, 2, 3]) { /* Non-empty arrays */ }
 if ({a: 1, b: 2}) { /* Non-empty lists */ }
+if (#[1,2,3]#) { /* Non-empty vectors */ }
 if (some_function) { /* Functions */ }
+if ($file()) { /* File objects */ }
+if ($net()) { /* Network objects */ }
+if ($sys()) { /* System objects */ }
 ```
 
 #### Falsy Values
@@ -2023,11 +2057,35 @@ if (some_function) { /* Functions */ }
 /* These values are considered falsy in conditions */
 if (false) { /* Always falsy */ }
 if (0) { /* Zero */ }
+if (0.0) { /* Zero float */ }
 if ("") { /* Empty strings */ }
 if ([]) { /* Empty arrays */ }
 if ({}) { /* Empty lists */ }
+if (#[]#) { /* Empty vectors */ }
 if (null) { /* Null values */ }
+if ($ERR()) { /* Error objects */ }
+if (9/0) { /* Division by zero creates error */ }
+if (undefined_property) { /* Undefined properties create errors */ }
 ```
+
+#### Comparison Behavior Chart
+
+The following table shows how different values compare to each other:
+
+| Comparison | Result | Explanation |
+|------------|--------|-------------|
+| `0 == false` | `true` | Both are falsy values |
+| `1 == true` | `false` | Different types, different values |
+| `"" == false` | `true` | Both are falsy values |
+| `"0" == 0` | `true` | String "0" converts to number 0 |
+| `"1" == 1` | `true` | String "1" converts to number 1 |
+| `"hello" == 0` | `false` | Non-numeric string doesn't equal 0 |
+| `"hello" == 1` | `false` | Non-numeric string doesn't equal 1 |
+| `null == false` | `true` | Both are falsy values |
+| `null == 0` | `false` | Null and 0 are different types |
+| `$ERR() == false` | `true` | Both are falsy values |
+| `$ERR() == null` | `true` | Error objects are null-like |
+| `0 == $ERR()` | `false` | Different types |
 
 #### Practical Examples
 ```grapa
@@ -2052,9 +2110,42 @@ if (config) {
     ("Using default settings").echo();
 }
 
+/* Check for errors */
+if (result.type() == $ERR) {
+    ("Error occurred: " + result).echo();
+} else {
+    ("Success: " + result).echo();
+}
+
 /* Ternary operator with truthy/falsy */
 status = user_input ? "active" : "inactive";
 message = items ? "Items found" : "No items";
+error_msg = result.type() == $ERR ? "Failed" : "Success";
+```
+
+#### Error Handling Best Practices
+
+```grapa
+/* Correct way to check for errors */
+result = some_operation();
+if (result.type() == $ERR) {
+    ("Error: " + result).echo();
+} else {
+    ("Success: " + result).echo();
+}
+
+/* Alternative: Check if result is truthy (not an error) */
+result = some_operation();
+if (result) {
+    ("Success: " + result).echo();
+} else {
+    ("Error occurred").echo();
+}
+
+/* Check for specific error conditions */
+if (result.type() == $ERR && result == "division by zero") {
+    ("Cannot divide by zero").echo();
+}
 ```
 
 ### Comparison Operators

@@ -270,59 +270,27 @@ static int DoComparison(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, Gr
 		}
 		else if (r1.vVal->mValue.mToken == GrapaTokenType::INT && (r2.vVal->mValue.mToken == GrapaTokenType::STR || r2.vVal->mValue.mToken == GrapaTokenType::SYSSTR || r2.vVal->mValue.mToken == GrapaTokenType::ID || r2.vVal->mValue.mToken == GrapaTokenType::SYSID))
 		{
-			// INT vs STR - try to convert string to number first
+			// INT vs STR - convert INT to string and do string comparison
 			GrapaInt a;
 			a.FromBytes(r1.vVal->mValue);
-			
-			// Try to convert string to number
-			GrapaFloat compResult;
-			compResult.FromString(r2.vVal->mValue, 10);
-			if (compResult.mNaN)
-			{
-				// String is not numeric, treat as string comparison
-				GrapaCHAR aStr = a.ToString();
-				GrapaCHAR bStr(r2.vVal->mValue);
-				int strCmp = aStr.StrCmp(bStr);
-				if (strCmp < 0) return -1;
-				if (strCmp > 0) return 1;
-				return 0;
-			}
-			else
-			{
-				// Compare as numbers
-				GrapaFloat aa(vScriptExec->vScriptState->mItemState.mFloatFix, vScriptExec->vScriptState->mItemState.mFloatMax, vScriptExec->vScriptState->mItemState.mFloatExtra, a);
-				if (aa < compResult) return -1;
-				if (aa > compResult) return 1;
-				return 0;
-			}
+			GrapaCHAR aStr = a.ToString();
+			GrapaCHAR bStr(r2.vVal->mValue);
+			int strCmp = aStr.StrCmp(bStr);
+			if (strCmp < 0) return -1;
+			if (strCmp > 0) return 1;
+			return 0;
 		}
 		else if (r2.vVal->mValue.mToken == GrapaTokenType::INT && (r1.vVal->mValue.mToken == GrapaTokenType::STR || r1.vVal->mValue.mToken == GrapaTokenType::SYSSTR || r1.vVal->mValue.mToken == GrapaTokenType::ID || r1.vVal->mValue.mToken == GrapaTokenType::SYSID))
 		{
-			// STR vs INT - try to convert string to number first
+			// STR vs INT - convert INT to string and do string comparison
 			GrapaInt b;
 			b.FromBytes(r2.vVal->mValue);
-			
-			// Try to convert string to number
-			GrapaFloat compResult;
-			compResult.FromString(r1.vVal->mValue, 10);
-			if (compResult.mNaN)
-			{
-				// String is not numeric, treat as string comparison
-				GrapaCHAR aStr(r1.vVal->mValue);
-				GrapaCHAR bStr = b.ToString();
-				int strCmp = aStr.StrCmp(bStr);
-				if (strCmp < 0) return -1;
-				if (strCmp > 0) return 1;
-				return 0;
-			}
-			else
-			{
-				// Compare as numbers
-				GrapaFloat bb(vScriptExec->vScriptState->mItemState.mFloatFix, vScriptExec->vScriptState->mItemState.mFloatMax, vScriptExec->vScriptState->mItemState.mFloatExtra, b);
-				if (compResult < bb) return -1;
-				if (compResult > bb) return 1;
-				return 0;
-			}
+			GrapaCHAR aStr(r1.vVal->mValue);
+			GrapaCHAR bStr = b.ToString();
+			int strCmp = aStr.StrCmp(bStr);
+			if (strCmp < 0) return -1;
+			if (strCmp > 0) return 1;
+			return 0;
 		}
 	}
 	

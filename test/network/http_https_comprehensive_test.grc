@@ -1,0 +1,207 @@
+/* HTTP/HTTPS Comprehensive Network Test
+   Tests both HTTP and HTTPS connections with GET and POST methods
+   Includes certificate handling and error checking
+*/
+
+"===== HTTP/HTTPS COMPREHENSIVE NETWORK TEST =====\n".echo();
+
+/* Test 1: HTTP GET Request */
+"----- Test 1: HTTP GET Request -----\n".echo();
+clienta = $net();
+err = clienta.connect('http://httpbin.org/get', null, null);
+if(err == 0) {
+    "HTTP connection successful\n".echo();
+    clienta.send('GET / HTTP/1.1\r\nHost: httpbin.org\r\nConnection: close\r\n\r\n');
+    responsea = "";
+    $sys().sleep(1000);
+    while(clienta.pending()) {
+        chunk = clienta.receive();
+        if(chunk != null) responsea = responsea + chunk;
+    }
+    clienta.disconnect();
+    "HTTP GET response received\n".echo();
+    if(responsea.grep("HTTP/1.1 200", "x").len() > 0) {
+        "HTTP GET: Status 200 OK\n".echo();
+    } else {
+        "HTTP GET: Unexpected status\n".echo();
+    }
+} else {
+    "HTTP connection failed\n".echo();
+}
+
+/* Test 2: HTTPS GET Request (no certificate) */
+"----- Test 2: HTTPS GET Request (no certificate) -----\n".echo();
+clienta = $net();
+err = clienta.connect('https://httpbin.org/get', null, null);
+if(err == 0) {
+    "HTTPS connection successful (no cert)\n".echo();
+    clienta.send('GET / HTTP/1.1\r\nHost: httpbin.org\r\nConnection: close\r\n\r\n');
+    responsea = "";
+    $sys().sleep(1000);
+    while(clienta.pending()) {
+        chunk = clienta.receive();
+        if(chunk != null) responsea = responsea + chunk;
+    }
+    clienta.disconnect();
+    "HTTPS GET response received\n".echo();
+    if(responsea.grep("HTTP/1.1 200", "x").len() > 0) {
+        "HTTPS GET: Status 200 OK\n".echo();
+    } else {
+        "HTTPS GET: Unexpected status\n".echo();
+    }
+} else {
+    "HTTPS connection failed\n".echo();
+}
+
+/* Test 3: HTTPS GET Request (with certificate) */
+"----- Test 3: HTTPS GET Request (with certificate) -----\n".echo();
+clienta = $net();
+err = clienta.connect('https://httpbin.org/get', "keys/client.crt", null);
+if(err == 0) {
+    "HTTPS connection successful (with cert)\n".echo();
+    clienta.send('GET / HTTP/1.1\r\nHost: httpbin.org\r\nConnection: close\r\n\r\n');
+    responsea = "";
+    $sys().sleep(1000);
+    while(clienta.pending()) {
+        chunk = clienta.receive();
+        if(chunk != null) responsea = responsea + chunk;
+    }
+    clienta.disconnect();
+    "HTTPS GET response received\n".echo();
+    if(responsea.grep("HTTP/1.1 200", "x").len() > 0) {
+        "HTTPS GET: Status 200 OK\n".echo();
+    } else {
+        "HTTPS GET: Unexpected status\n".echo();
+    }
+} else {
+    "HTTPS connection failed\n".echo();
+}
+
+/* Test 4: HTTP POST Request */
+"----- Test 4: HTTP POST Request -----\n".echo();
+clienta = $net();
+err = clienta.connect('http://httpbin.org/post', null, null);
+if(err == 0) {
+    "HTTP connection successful\n".echo();
+    postData = '{"test": "data", "message": "Hello from Grapa"}';
+    postHeaders = 'POST /post HTTP/1.1\r\nHost: httpbin.org\r\nContent-Type: application/json\r\nContent-Length: 47\r\nConnection: close\r\n\r\n';
+    clienta.send(postHeaders + postData);
+    responsea = "";
+    $sys().sleep(1000);
+    while(clienta.pending()) {
+        chunk = clienta.receive();
+        if(chunk != null) responsea = responsea + chunk;
+    }
+    clienta.disconnect();
+    "HTTP POST response received\n".echo();
+    if(responsea.grep("HTTP/1.1 200", "x").len() > 0) {
+        "HTTP POST: Status 200 OK\n".echo();
+    } else {
+        "HTTP POST: Unexpected status\n".echo();
+    }
+} else {
+    "HTTP connection failed\n".echo();
+}
+
+/* Test 5: HTTPS POST Request (no certificate) */
+"----- Test 5: HTTPS POST Request (no certificate) -----\n".echo();
+clienta = $net();
+err = clienta.connect('https://httpbin.org/post', null, null);
+if(err == 0) {
+    "HTTPS connection successful (no cert)\n".echo();
+    postData = '{"test": "data", "message": "Hello from Grapa HTTPS"}';
+    postHeaders = 'POST /post HTTP/1.1\r\nHost: httpbin.org\r\nContent-Type: application/json\r\nContent-Length: 54\r\nConnection: close\r\n\r\n';
+    clienta.send(postHeaders + postData);
+    responsea = "";
+    $sys().sleep(1000);
+    while(clienta.pending()) {
+        chunk = clienta.receive();
+        if(chunk != null) responsea = responsea + chunk;
+    }
+    clienta.disconnect();
+    "HTTPS POST response received\n".echo();
+    if(responsea.grep("HTTP/1.1 200", "x").len() > 0) {
+        "HTTPS POST: Status 200 OK\n".echo();
+    } else {
+        "HTTPS POST: Unexpected status\n".echo();
+    }
+} else {
+    "HTTPS connection failed\n".echo();
+}
+
+/* Test 6: HTTPS POST Request (with certificate) */
+"----- Test 6: HTTPS POST Request (with certificate) -----\n".echo();
+clienta = $net();
+err = clienta.connect('https://httpbin.org/post', "keys/client.crt", null);
+if(err == 0) {
+    "HTTPS connection successful (with cert)\n".echo();
+    postData = '{"test": "data", "message": "Hello from Grapa HTTPS with cert"}';
+    postHeaders = 'POST /post HTTP/1.1\r\nHost: httpbin.org\r\nContent-Type: application/json\r\nContent-Length: 65\r\nConnection: close\r\n\r\n';
+    clienta.send(postHeaders + postData);
+    responsea = "";
+    $sys().sleep(1000);
+    while(clienta.pending()) {
+        chunk = clienta.receive();
+        if(chunk != null) responsea = responsea + chunk;
+    }
+    clienta.disconnect();
+    "HTTPS POST response received\n".echo();
+    if(responsea.grep("HTTP/1.1 200", "x").len() > 0) {
+        "HTTPS POST: Status 200 OK\n".echo();
+    } else {
+        "HTTPS POST: Unexpected status\n".echo();
+    }
+} else {
+    "HTTPS connection failed\n".echo();
+}
+
+/* Test 7: Custom Port Test */
+"----- Test 7: Custom Port Test (HTTP on port 80) -----\n".echo();
+clienta = $net();
+err = clienta.connect('http://httpbin.org:80/get', null, null);
+if(err == 0) {
+    "HTTP connection successful (explicit port 80)\n".echo();
+    clienta.send('GET / HTTP/1.1\r\nHost: httpbin.org\r\nConnection: close\r\n\r\n');
+    responsea = "";
+    $sys().sleep(1000);
+    while(clienta.pending()) {
+        chunk = clienta.receive();
+        if(chunk != null) responsea = responsea + chunk;
+    }
+    clienta.disconnect();
+    "HTTP GET response received\n".echo();
+    if(responsea.grep("HTTP/1.1 200", "x").len() > 0) {
+        "HTTP GET: Status 200 OK\n".echo();
+    } else {
+        "HTTP GET: Unexpected status\n".echo();
+    }
+} else {
+    "HTTP connection failed\n".echo();
+}
+
+/* Test 8: Custom Port Test (HTTPS on port 443) */
+"----- Test 8: Custom Port Test (HTTPS on port 443) -----\n".echo();
+clienta = $net();
+err = clienta.connect('https://httpbin.org:443/get', null, null);
+if(err == 0) {
+    "HTTPS connection successful (explicit port 443)\n".echo();
+    clienta.send('GET / HTTP/1.1\r\nHost: httpbin.org\r\nConnection: close\r\n\r\n');
+    responsea = "";
+    $sys().sleep(1000);
+    while(clienta.pending()) {
+        chunk = clienta.receive();
+        if(chunk != null) responsea = responsea + chunk;
+    }
+    clienta.disconnect();
+    "HTTPS GET response received\n".echo();
+    if(responsea.grep("HTTP/1.1 200", "x").len() > 0) {
+        "HTTPS GET: Status 200 OK\n".echo();
+    } else {
+        "HTTPS GET: Unexpected status\n".echo();
+    }
+} else {
+    "HTTPS connection failed\n".echo();
+}
+
+"===== NETWORK TEST COMPLETE =====\n".echo();
+"All tests finished. Check results above.\n".echo();
