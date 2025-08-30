@@ -923,6 +923,14 @@ public:
 };
 GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleFindAll(GrapaCHAR& pName) { return new GrapaLibraryRuleFindAllEvent(pName); }
 
+class GrapaLibraryRuleFindEvent : public GrapaLibraryEvent
+{
+public:
+	GrapaLibraryRuleFindEvent(GrapaCHAR& pName) { mName.FROM(pName); };
+	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
+};
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleFind(GrapaCHAR& pName) { return new GrapaLibraryRuleFindEvent(pName); }
+
 class GrapaLibraryRuleSortEvent : public GrapaLibraryEvent
 {
 public:
@@ -3002,6 +3010,7 @@ GrapaLibraryEvent* GrapaLibraryRuleEvent::LoadLib(GrapaScriptExec *vScriptExec, 
 		{ "call", &GrapaLibraryRuleEvent::HandleCall },
 		{ "search", &GrapaLibraryRuleEvent::HandleSearch },
 		{ "findall", &GrapaLibraryRuleEvent::HandleFindAll },
+		{ "find", &GrapaLibraryRuleEvent::HandleFind },
 		{ "sort", &GrapaLibraryRuleEvent::HandleSort },
 		{ "argsort", &GrapaLibraryRuleEvent::HandleArgSort },
 		{ "unique", &GrapaLibraryRuleEvent::HandleUnique },
@@ -7921,6 +7930,334 @@ GrapaRuleEvent* GrapaLibraryRuleFindAllEvent::Run(GrapaScriptExec* vScriptExec, 
 	return(result);
 };
 
+GrapaRuleEvent* GrapaLibraryRuleFindEvent::Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput)
+{
+	GrapaRuleEvent* result = NULL;
+	GrapaLibraryParam r1(vScriptExec, pNameSpace, pInput ? pInput->Head(0) : NULL);  // input
+	GrapaLibraryParam r2(vScriptExec, pNameSpace, pInput ? pInput->Head(1) : NULL);  // term
+	GrapaLibraryParam r3(vScriptExec, pNameSpace, pInput ? pInput->Head(2) : NULL);  // start (optional)
+	GrapaLibraryParam r4(vScriptExec, pNameSpace, pInput ? pInput->Head(3) : NULL);  // size (optional)
+	
+	if (r1.vVal && r2.vVal)
+	{
+		// Check if input and term are string or raw data types
+		if ((r1.vVal->mValue.mToken == GrapaTokenType::STR || r1.vVal->mValue.mToken == GrapaTokenType::RAW) &&
+			(r2.vVal->mValue.mToken == GrapaTokenType::STR || r2.vVal->mValue.mToken == GrapaTokenType::RAW))
+		{
+			// Get start position (default to 0)
+			u64 start_pos = 0;
+			if (r3.vVal && r3.vVal->mValue.mToken == GrapaTokenType::INT)
+			{
+				GrapaInt start_int;
+				start_int.FromBytes(r3.vVal->mValue);
+				start_pos = start_int.GetItem(0);
+			}
+			
+			// Get size limit (default to full data length)
+			u64 size_limit = r1.vVal->mValue.mLength - start_pos;
+			if (r4.vVal && r4.vVal->mValue.mToken == GrapaTokenType::INT)
+			{
+				GrapaInt size_int;
+				size_int.FromBytes(r4.vVal->mValue);
+				u64 requested_size = size_int.GetItem(0);
+				if (requested_size < size_limit)
+					size_limit = requested_size;
+			}
+			
+			// Validate start position
+			if (start_pos >= r1.vVal->mValue.mLength)
+			{
+				// Start position is beyond data length, return -1 (not found)
+				result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaInt(-1).getBytes());
+			}
+			else
+			{
+				// Binary search implementation for RAW data
+				const u8* input_data = r1.vVal->mValue.mBytes;
+				const u8* term_data = r2.vVal->mValue.mBytes;
+				u64 input_len = r1.vVal->mValue.mLength;
+				u64 term_len = r2.vVal->mValue.mLength;
+				
+				// Validate that term is not longer than input
+				if (term_len > input_len)
+				{
+					result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaInt(-1).getBytes());
+				}
+				else
+				{
+					// Search within the specified range
+					u64 search_end = start_pos + size_limit;
+					if (search_end > input_len)
+						search_end = input_len;
+					
+					// Binary search for the term
+					bool found = false;
+					u64 found_pos = 0;
+					
+					for (u64 i = start_pos; i <= search_end - term_len; i++)
+					{
+						bool match = true;
+						for (u64 j = 0; j < term_len; j++)
+						{
+							if (input_data[i + j] != term_data[j])
+							{
+								match = false;
+								break;
+							}
+						}
+						if (match)
+						{
+							found = true;
+							found_pos = i;
+							break;
+						}
+					}
+					
+					if (found)
+					{
+						// Found! Return the position
+						result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaInt(found_pos).getBytes());
+					}
+					else
+					{
+						// Not found, return -1
+						result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaInt(-1).getBytes());
+					}
+				}
+			}
+		}
+		// Special case: LIST input with ARRAY term - extract values and use array search logic
+		else if (r1.vVal->mValue.mToken == GrapaTokenType::LIST && r2.vVal->mValue.mToken == GrapaTokenType::ARRAY)
+		{
+			// Get start position (default to 0)
+			u64 start_pos = 0;
+			if (r3.vVal && r3.vVal->mValue.mToken == GrapaTokenType::INT)
+			{
+				GrapaInt start_int;
+				start_int.FromBytes(r3.vVal->mValue);
+				start_pos = start_int.GetItem(0);
+			}
+			
+			// Get size limit (default to full data length)
+			u64 size_limit = 0;
+			if (r1.vVal->vQueue)
+				size_limit = r1.vVal->vQueue->mCount - start_pos;
+			if (r4.vVal && r4.vVal->mValue.mToken == GrapaTokenType::INT)
+			{
+				GrapaInt size_int;
+				size_int.FromBytes(r4.vVal->mValue);
+				u64 requested_size = size_int.GetItem(0);
+				if (requested_size < size_limit)
+					size_limit = requested_size;
+			}
+			
+			// Validate start position
+			if (r1.vVal->vQueue && start_pos >= r1.vVal->vQueue->mCount)
+			{
+				// Start position is beyond data length, return -1 (not found)
+				result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaInt(-1).getBytes());
+			}
+			else if (r1.vVal->vQueue && r2.vVal->vQueue)
+			{
+				u64 input_count = r1.vVal->vQueue->mCount;
+				u64 term_count = r2.vVal->vQueue->mCount;
+				
+				// Validate that term is not longer than input
+				if (term_count > input_count)
+				{
+					result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaInt(-1).getBytes());
+				}
+				else
+				{
+					// Search within the specified range
+					u64 search_end = start_pos + size_limit;
+					if (search_end > input_count)
+						search_end = input_count;
+					
+					// Search for the term using DoComparison
+					bool found = false;
+					u64 found_pos = 0;
+					
+					// Create a temporary queue for DoComparison
+					GrapaRuleQueue tempQueue;
+					GrapaRuleEvent* inputPtr = CreatePtr(NULL);
+					GrapaRuleEvent* termPtr = CreatePtr(NULL);
+					tempQueue.PushTail(inputPtr);
+					tempQueue.PushTail(termPtr);
+					
+					for (u64 i = start_pos; i <= search_end - term_count; i++)
+					{
+						bool match = true;
+						
+						// Check if all elements from position i match the term
+						for (u64 j = 0; j < term_count; j++)
+						{
+							// Get the input element at position i + j
+							GrapaRuleEvent* inputElement = (GrapaRuleEvent*)r1.vVal->vQueue->Head(i + j);
+							// Get the term element at position j
+							GrapaRuleEvent* termElement = (GrapaRuleEvent*)r2.vVal->vQueue->Head(j);
+							
+							if (inputElement && termElement)
+							{
+								// Use DoComparison for comprehensive comparison
+								inputPtr->vRulePointer = inputElement;
+								termPtr->vRulePointer = termElement;
+								int comparison = DoComparison(vScriptExec, pNameSpace, pOperation, &tempQueue);
+								
+								if (comparison != 0)
+								{
+									match = false;
+									break;
+								}
+							}
+							else
+							{
+								match = false;
+								break;
+							}
+						}
+						
+						if (match)
+						{
+							found = true;
+							found_pos = i;
+							break;
+						}
+					}
+					
+					if (found)
+					{
+						// Found! Return the position
+						result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaInt(found_pos).getBytes());
+					}
+					else
+					{
+						// Not found, return -1
+						result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaInt(-1).getBytes());
+					}
+				}
+			}
+		}
+		// Check if input and term are array or list data types
+		else if ((r1.vVal->mValue.mToken == GrapaTokenType::ARRAY || r1.vVal->mValue.mToken == GrapaTokenType::LIST) &&
+			(r2.vVal->mValue.mToken == GrapaTokenType::ARRAY || r2.vVal->mValue.mToken == GrapaTokenType::LIST))
+		{
+			// Get start position (default to 0)
+			u64 start_pos = 0;
+			if (r3.vVal && r3.vVal->mValue.mToken == GrapaTokenType::INT)
+			{
+				GrapaInt start_int;
+				start_int.FromBytes(r3.vVal->mValue);
+				start_pos = start_int.GetItem(0);
+			}
+			
+			// Get size limit (default to full data length)
+			u64 size_limit = 0;
+			if (r1.vVal->vQueue)
+				size_limit = r1.vVal->vQueue->mCount - start_pos;
+			if (r4.vVal && r4.vVal->mValue.mToken == GrapaTokenType::INT)
+			{
+				GrapaInt size_int;
+				size_int.FromBytes(r4.vVal->mValue);
+				u64 requested_size = size_int.GetItem(0);
+				if (requested_size < size_limit)
+					size_limit = requested_size;
+			}
+			
+			// Validate start position
+			if (r1.vVal->vQueue && start_pos >= r1.vVal->vQueue->mCount)
+			{
+				// Start position is beyond data length, return -1 (not found)
+				result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaInt(-1).getBytes());
+			}
+			else if (r1.vVal->vQueue && r2.vVal->vQueue)
+			{
+				u64 input_count = r1.vVal->vQueue->mCount;
+				u64 term_count = r2.vVal->vQueue->mCount;
+				
+				// Validate that term is not longer than input
+				if (term_count > input_count)
+				{
+					result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaInt(-1).getBytes());
+				}
+				else
+				{
+					// Search within the specified range
+					u64 search_end = start_pos + size_limit;
+					if (search_end > input_count)
+						search_end = input_count;
+					
+					// Search for the term using DoComparison
+					bool found = false;
+					u64 found_pos = 0;
+					
+					// Create a temporary queue for DoComparison
+					GrapaRuleQueue tempQueue;
+					GrapaRuleEvent* inputPtr = CreatePtr(NULL);
+					GrapaRuleEvent* termPtr = CreatePtr(NULL);
+					tempQueue.PushTail(inputPtr);
+					tempQueue.PushTail(termPtr);
+					
+					for (u64 i = start_pos; i <= search_end - term_count; i++)
+					{
+						bool match = true;
+						
+						// Check if all elements from position i match the term
+						for (u64 j = 0; j < term_count; j++)
+						{
+							// Get the input element at position i + j
+							GrapaRuleEvent* inputElement = (GrapaRuleEvent*)r1.vVal->vQueue->Head(i + j);
+							// Get the term element at position j
+							GrapaRuleEvent* termElement = (GrapaRuleEvent*)r2.vVal->vQueue->Head(j);
+							
+							if (inputElement && termElement)
+							{
+								// Use DoComparison for comprehensive comparison
+								inputPtr->vRulePointer = inputElement;
+								termPtr->vRulePointer = termElement;
+								int comparison = DoComparison(vScriptExec, pNameSpace, pOperation, &tempQueue);
+								
+								if (comparison != 0)
+								{
+									match = false;
+									break;
+								}
+							}
+							else
+							{
+								match = false;
+								break;
+							}
+						}
+						
+						if (match)
+						{
+							found = true;
+							found_pos = i;
+							break;
+						}
+					}
+					
+					if (found)
+					{
+						// Found! Return the position
+						result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaInt(found_pos).getBytes());
+					}
+					else
+					{
+						// Not found, return -1
+						result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaInt(-1).getBytes());
+					}
+				}
+			}
+		}
+	}
+	
+	if (result == NULL)
+		result = Error(vScriptExec, pNameSpace, -1);
+	return(result);
+};
+
 struct CompareOPStruct
 {
 	GrapaScriptExec* vScriptExec;
@@ -9230,32 +9567,24 @@ GrapaRuleEvent* GrapaLibraryRuleSwitchEvent::Run(GrapaScriptExec *vScriptExec, G
 	pNameSpace->GetNameQueue()->PushTail(vLocals);
 	vLocals->vQueue->PushTail(CreatePtr(r1));
 
+	GrapaRuleQueue tempQueue;
+	tempQueue.PushTail(CreatePtr(r1));
+	GrapaRuleEvent* caseCmpPtr = CreatePtr(NULL);
+	tempQueue.PushTail(caseCmpPtr);
+
 	while (caseItem && caseItem->vQueue)
 	{
 		GrapaRuleEvent* caseCompareX = vScriptExec->ProcessPlan(pNameSpace, (GrapaRuleEvent*)caseItem->vQueue->Head(0));
 		GrapaRuleEvent* caseCmpVal = caseCompareX; while (caseCmpVal && caseCmpVal->vRulePointer) caseCmpVal = caseCmpVal->vRulePointer;
 		if (caseCmpVal && caseCmpVal->mValue.mToken != GrapaTokenType::ERR)
 		{
-			if (caseCmpVal->mValue.mToken == GrapaTokenType::BOOL && !caseCmpVal->IsZero())
-				isEqual = true;
-			else
-			{
-				if ((r1 == NULL || r1->IsNull()) && (caseCmpVal == NULL || caseCmpVal->IsNull())) isEqual = true;
-				else if ((r1 == NULL || r1->IsNull()) || (caseCmpVal == NULL || caseCmpVal->IsNull())) isEqual = false;
-				else if (r1->mId && r1->mId == caseCmpVal->mId) isEqual = true;
-				else if (r1->mValue.StrCmp(caseCmpVal->mValue) == 0) isEqual = true;
-				else if (!isEqual && r1 && caseCmpVal && r1->mValue.mBytes && caseCmpVal->mValue.mBytes)
-				{
-					GrapaInt a, b;
-					if (r1->mValue.mToken == GrapaTokenType::INT && r1->mValue.mToken == caseCmpVal->mValue.mToken)
-					{
-						a.FromBytes(r1->mValue);
-						b.FromBytes(caseCmpVal->mValue);
-						if (a == b)
-							isEqual = true;
-					}
-				}
-			}
+			// Use DoComparison for comprehensive comparison
+			//GrapaRuleQueue tempQueue;
+			//tempQueue.PushTail(CreatePtr(r1));
+			//tempQueue.PushTail(CreatePtr(caseCmpVal));
+			caseCmpPtr->vRulePointer = caseCmpVal;
+			int comparison = DoComparison(vScriptExec, pNameSpace, pOperation, &tempQueue);
+			isEqual = (comparison == 0);
 		}
 		if (caseCompareX)
 		{
@@ -16390,7 +16719,6 @@ GrapaRuleEvent* GrapaLibraryRuleStrEvent::Run(GrapaScriptExec *vScriptExec, Grap
 		{
 		case GrapaTokenType::INT:
 		case GrapaTokenType::SYSINT:
-		case GrapaTokenType::BOOL:
 		case GrapaTokenType::RAW:
 		case GrapaTokenType::STR:
 		case GrapaTokenType::ID:
@@ -16401,6 +16729,9 @@ GrapaRuleEvent* GrapaLibraryRuleStrEvent::Run(GrapaScriptExec *vScriptExec, Grap
 
 			result = new GrapaRuleEvent(0, item, r1.vVal->mValue.ToStr());
 			result->mValue.mToken = GrapaTokenType::STR;
+			break;
+		case GrapaTokenType::BOOL:
+			result = new GrapaRuleEvent(GrapaTokenType::STR, 0, "", (r1.vVal->mValue.mBytes && r1.vVal->mValue.mLength && r1.vVal->mValue.mBytes[0] && r1.vVal->mValue.mBytes[0] != '0' && !r1.vVal->IsNull()) ? "true" : "false");
 			break;
 		case GrapaTokenType::FLOAT:
 			{
@@ -17249,6 +17580,23 @@ GrapaRuleEvent* GrapaLibraryRuleLeftEvent::Run(GrapaScriptExec *vScriptExec, Gra
 		}
 		break;
 		case GrapaTokenType::LIST:
+		{
+			size_t char_pos = (len < 0) ? (r1.vVal->vQueue->mCount + len) : static_cast<size_t>(len);
+			if (char_pos < 0) char_pos = 0;
+			if (char_pos > r1.vVal->vQueue->mCount) char_pos = r1.vVal->vQueue->mCount;
+			result = new GrapaRuleEvent(r1.vVal->mValue.mToken, 0, "", "");
+			result->vQueue = new GrapaRuleQueue();
+			GrapaRuleEvent* rp = r1.vVal->vQueue->Head(0);
+			while(rp && char_pos)
+			{
+				GrapaRuleEvent* item = rp;
+				while (item->mValue.mToken == GrapaTokenType::PTR && item->vRulePointer) item = item->vRulePointer;
+				result->vQueue->PushTail(CreatePtr(item));
+				rp = rp->Next();
+				char_pos--;
+			}
+		}
+		break;
 		case GrapaTokenType::ERR:
 		case GrapaTokenType::XML:
 		case GrapaTokenType::EL:
@@ -17257,13 +17605,23 @@ GrapaRuleEvent* GrapaLibraryRuleLeftEvent::Run(GrapaScriptExec *vScriptExec, Gra
 		case GrapaTokenType::CODE:
 			break;
 		case GrapaTokenType::ARRAY:
-			if (v.FROM(vScriptExec, r1.vVal, 0))
+		{
+			size_t char_pos = (len < 0) ? (r1.vVal->vQueue->mCount + len) : static_cast<size_t>(len);
+			if (char_pos < 0) char_pos = 0;
+			if (char_pos > r1.vVal->vQueue->mCount) char_pos = r1.vVal->vQueue->mCount;
+			result = new GrapaRuleEvent(r1.vVal->mValue.mToken, 0, "", "");
+			result->vQueue = new GrapaRuleQueue();
+			GrapaRuleEvent* rp = r1.vVal->vQueue->Head(0);
+			while(rp && char_pos)
 			{
-				GrapaVector v3;
-				if (v.Left(vScriptExec, pNameSpace, len, v3)) break;
-				result = v3.ToArray();
+				GrapaRuleEvent* item = rp;
+				while (item->mValue.mToken == GrapaTokenType::PTR && item->vRulePointer) item = item->vRulePointer;
+				result->vQueue->PushTail(CreatePtr(item));
+				rp = rp->Next();
+				char_pos--;
 			}
-			break;
+		}
+		break;
 		case GrapaTokenType::TUPLE:
 			if (v.FROM(vScriptExec, r1.vVal, 0))
 			{
@@ -17353,6 +17711,22 @@ GrapaRuleEvent* GrapaLibraryRuleRightEvent::Run(GrapaScriptExec *vScriptExec, Gr
 		}
 		break;
 		case GrapaTokenType::LIST:
+		{
+			size_t char_pos = (len < 0) ? (r1.vVal->vQueue->mCount + len) : static_cast<size_t>(len);
+			if (char_pos < 0) char_pos = 0;
+			if (char_pos > r1.vVal->vQueue->mCount) char_pos = r1.vVal->vQueue->mCount;
+			result = new GrapaRuleEvent(r1.vVal->mValue.mToken, 0, "", "");
+			result->vQueue = new GrapaRuleQueue();
+			GrapaRuleEvent* rp = r1.vVal->vQueue->Head(r1.vVal->vQueue->mCount - char_pos);
+			while(rp)
+			{
+				GrapaRuleEvent* item = rp;
+				while (item->mValue.mToken == GrapaTokenType::PTR && item->vRulePointer) item = item->vRulePointer;
+				result->vQueue->PushTail(CreatePtr(item));
+				rp = rp->Next();
+			}
+		}
+		break;
 		case GrapaTokenType::ERR:
 		case GrapaTokenType::XML:
 		case GrapaTokenType::EL:
@@ -17361,13 +17735,22 @@ GrapaRuleEvent* GrapaLibraryRuleRightEvent::Run(GrapaScriptExec *vScriptExec, Gr
 		case GrapaTokenType::CODE:
 			break;
 		case GrapaTokenType::ARRAY:
-			if (v.FROM(vScriptExec, r1.vVal, 0))
+		{
+			size_t char_pos = (len < 0) ? (r1.vVal->vQueue->mCount + len) : static_cast<size_t>(len);
+			if (char_pos < 0) char_pos = 0;
+			if (char_pos > r1.vVal->vQueue->mCount) char_pos = r1.vVal->vQueue->mCount;
+			result = new GrapaRuleEvent(r1.vVal->mValue.mToken, 0, "", "");
+			result->vQueue = new GrapaRuleQueue();
+			GrapaRuleEvent* rp = r1.vVal->vQueue->Head(r1.vVal->vQueue->mCount - char_pos);
+			while(rp)
 			{
-				GrapaVector v3;
-				if (v.Right(vScriptExec, pNameSpace, len, v3)) break;
-				result = v3.ToArray();
+				GrapaRuleEvent* item = rp;
+				while (item->mValue.mToken == GrapaTokenType::PTR && item->vRulePointer) item = item->vRulePointer;
+				result->vQueue->PushTail(CreatePtr(item));
+				rp = rp->Next();
 			}
-			break;
+		}
+		break;
 		case GrapaTokenType::TUPLE:
 			if (v.FROM(vScriptExec, r1.vVal, 0))
 			{
@@ -17402,6 +17785,7 @@ GrapaRuleEvent* GrapaLibraryRuleMidEvent::Run(GrapaScriptExec *vScriptExec, Grap
 	GrapaLibraryParam r1(vScriptExec, pNameSpace, pInput ? pInput->Head(0) : NULL);
 	GrapaLibraryParam r2(vScriptExec, pNameSpace, pInput ? pInput->Head(1) : NULL);
 	GrapaLibraryParam r3(vScriptExec, pNameSpace, pInput ? pInput->Head(2) : NULL);
+	GrapaRuleEvent* rp = NULL;
 	if (r1.vVal && r2.vVal && r3.vVal)
 	{
 		GrapaInt a;
@@ -17427,14 +17811,13 @@ GrapaRuleEvent* GrapaLibraryRuleMidEvent::Run(GrapaScriptExec *vScriptExec, Grap
 		switch (r1.vVal->mValue.mToken)
 		{
 		case GrapaTokenType::STR:
-		case GrapaTokenType::RAW:
 		{
 			result = new GrapaRuleEvent(r1.vVal->mValue.mToken, 0, "", "");
 			if (r1.vVal->mValue.mLength)
 			{
 				// For strings, use Unicode character counting instead of byte counting
 				std::string input_str(reinterpret_cast<const char*>(r1.vVal->mValue.mBytes), r1.vVal->mValue.mLength);
-				
+
 				// Count total grapheme clusters
 				std::vector<std::string> clusters;
 				size_t offset = 0;
@@ -17444,43 +17827,81 @@ GrapaRuleEvent* GrapaLibraryRuleMidEvent::Run(GrapaScriptExec *vScriptExec, Grap
 					clusters.push_back(cluster);
 					offset += cluster.size();
 				}
-				
+
 				size_t total_chars = clusters.size();
-				
+
 				// Handle negative position (from end)
 				size_t char_pos = (pos < 0) ? (total_chars + pos) : static_cast<size_t>(pos);
 				if (char_pos < 0) char_pos = 0;
 				if (char_pos > total_chars) char_pos = total_chars;
-				
+
 				// Handle length
 				size_t char_len = (len < 0) ? (total_chars - char_pos + len) : static_cast<size_t>(len);
 				if (char_len < 0) char_len = 0;
 				if ((char_pos + char_len) > total_chars) {
 					char_len = total_chars - char_pos;
 				}
-				
+
 				// Find byte offset for start position
 				size_t start_byte_offset = 0;
 				for (size_t i = 0; i < char_pos && i < clusters.size(); i++) {
 					start_byte_offset += clusters[i].size();
 				}
-				
+
 				// Find byte offset for end position
 				size_t end_byte_offset = start_byte_offset;
 				for (size_t i = char_pos; i < (char_pos + char_len) && i < clusters.size(); i++) {
 					end_byte_offset += clusters[i].size();
 				}
-				
+
 				// Extract substring
 				size_t extract_bytes = end_byte_offset - start_byte_offset;
 				result->mValue.FROM((char*)&r1.vVal->mValue.mBytes[start_byte_offset], extract_bytes);
 			}
 		}
 		break;
+		case GrapaTokenType::RAW:
+		{
+			// Handle negative position (from end)
+			size_t char_pos = (pos < 0) ? (r1.vVal->mValue.mLength + pos) : static_cast<size_t>(pos);
+			if (char_pos < 0) char_pos = 0;
+			if (char_pos > r1.vVal->mValue.mLength) char_pos = r1.vVal->mValue.mLength;
+			// Handle length
+			size_t char_len = (len < 0) ? (r1.vVal->mValue.mLength - char_pos + len) : static_cast<size_t>(len);
+			if (char_len < 0) char_len = 0;
+			if ((char_pos + char_len) > r1.vVal->mValue.mLength)
+				char_len = r1.vVal->mValue.mLength - char_pos;
+			result = new GrapaRuleEvent(r1.vVal->mValue.mToken, 0, "", "");
+			result->mValue.FROM((char*)&r1.vVal->mValue.mBytes[char_pos], char_len);
+			result->mValue.mToken = r1.vVal->mValue.mToken;
+		}
+		break;
 		case GrapaTokenType::ARRAY:
+		case GrapaTokenType::LIST:
+		{
+			size_t char_pos = (pos < 0) ? (r1.vVal->vQueue->mCount + pos) : static_cast<size_t>(pos);
+			if (char_pos < 0) char_pos = 0;
+			if (char_pos > r1.vVal->vQueue->mCount) char_pos = r1.vVal->vQueue->mCount;
+			// Handle length
+			size_t char_len = (len < 0) ? (r1.vVal->vQueue->mCount - char_pos + len) : static_cast<size_t>(len);
+			if (char_len < 0) char_len = 0;
+			if ((char_pos + char_len) > r1.vVal->vQueue->mCount)
+				char_len = r1.vVal->vQueue->mCount - char_pos;
+			result = new GrapaRuleEvent(r1.vVal->mValue.mToken, 0, "", "");
+			result->vQueue = new GrapaRuleQueue();
+			rp = r1.vVal->vQueue->Head(char_pos);
+			while(rp && char_len)
+			{
+				GrapaRuleEvent* item = rp;
+				while (item->mValue.mToken == GrapaTokenType::PTR && item->vRulePointer) item = item->vRulePointer;
+				result->vQueue->PushTail(CreatePtr(item));
+				rp = rp->Next();
+				char_len--;
+			}
+		}
+			break;
 		case GrapaTokenType::TUPLE:
 		case GrapaTokenType::VECTOR:
-		case GrapaTokenType::LIST:
 		case GrapaTokenType::ERR:
 		case GrapaTokenType::XML:
 		case GrapaTokenType::EL:

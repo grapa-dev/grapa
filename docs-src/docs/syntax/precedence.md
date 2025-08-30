@@ -6,7 +6,7 @@ Operator precedence determines the order in which parts of an expression are eva
 - Higher precedence operators are evaluated before lower precedence ones.
 - Parentheses `()` can always be used to override precedence and clarify intent.
 - All statements and blocks in Grapa must end with a semicolon (`;`).
-- Only block comments (`/* ... */`) are allowed.
+- Use block comments (`/* ... */`) or line comments (`// ...`). `#` comments are not supported.
 
 ---
 
@@ -53,7 +53,7 @@ flag = 1 < 2 && 3 > 2;   /* flag is true */
 
 ## Grapa-Specific Notes
 - Every statement and block must end with a semicolon (`;`).
-- Only block comments (`/* ... */`) are allowed.
+- Use block comments (`/* ... */`) or line comments (`// ...`). `#` comments are not supported.
 - Use parentheses to clarify precedence in complex expressions.
 - For more on syntax, see the [Syntax Quick Reference](basic_syntax.md).
 

@@ -99,7 +99,7 @@ result = $sys.function_name(params);
 expression = $sys.add(term, expression);
 
 // In library files
-function = op(){@this.$sys.function_name(@var.{params});};
+function = op(){@$this.$sys.function_name(@var.{params});};
 ```
 
 ## Object Inspection and Reflection

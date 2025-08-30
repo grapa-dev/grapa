@@ -13,8 +13,8 @@ Grapa was originally designed as a **language for creating languages**. The curr
 ```grapa
 @global["$complex_rule"]
     = rule <$value1> '+' <$value2> {
-        @local.p1 = $1;  // Save $1 before it gets reset
-        @local.p2 = $3;  // Save $3 before it gets reset
+        @$local.p1 = $1;  // Save $1 before it gets reset
+@$local.p2 = $3;  // Save $3 before it gets reset
         
         // Now use the saved values for complex operations
         if (p1.type() == $STR && p2.type() == $STR) {

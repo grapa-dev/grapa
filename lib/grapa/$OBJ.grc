@@ -28,6 +28,7 @@
 	right = @<[op,@<right,{@<this>,@<var,{count}>}>],{"count":0}>; 
 	mid = @<[op,@<mid,{@<this>,@<var,{start}>,@<var,{count}>}>],{"start":0,"count":0}>; 
 	midtrim = @<[op,@<midtrim,{@<this>,@<var,{items}>,@<var,{offset}>,@<var,{size}>}>],{"items":null,"offset":0,"size":0}>; 
+	find = @<[op,@<find,{@<this>,@<var,{term}>,@<var,{start}>,@<var,{count}>}>],{term,start,count}>; 
 	rtrim = @<[op,@<rtrim,{@<this>,@<var,{chars}>}>],{"chars":null}>; 
 	ltrim = @<[op,@<ltrim,{@<this>,@<var,{chars}>}>],{"chars":null}>; 
 	trim = @<[op,@<trim,{@<this>,@<var,{chars}>}>],{"chars":null}>; 

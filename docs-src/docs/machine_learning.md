@@ -274,62 +274,62 @@ calculate_mae = op(y_true, y_pred) {
 LinearRegression = {
     /* Initialize model */
     init: op() {
-        this.coefficients = null;
-        this.feature_means = null;
-        this.feature_stds = null;
-        this.is_fitted = false;
+        $this.coefficients = null;
+$this.feature_means = null;
+$this.feature_stds = null;
+$this.is_fitted = false;
     },
     
     /* Fit the model */
     fit: op(X, y, method = "normal", lambda = 0.0) {
         /* Store feature statistics for scaling */
-        this.feature_means = X.mean(0);
-        this.feature_stds = X.std(0);
+        $this.feature_means = X.mean(0);
+        $this.feature_stds = X.std(0);
         
         /* Scale features */
-        X_scaled = this.standardize_features(X);
+        X_scaled = $this.standardize_features(X);
         
         /* Add bias term */
-        X_with_bias = this.add_bias_column(X_scaled);
+        X_with_bias = $this.add_bias_column(X_scaled);
         
         if (method == "normal") {
             /* Normal equation method */
-            this.coefficients = this.normal_equation(X_with_bias, y);
+            $this.coefficients = $this.normal_equation(X_with_bias, y);
         } else if (method == "gradient") {
             /* Gradient descent method */
-            this.coefficients = this.gradient_descent(X_with_bias, y, 0.01, 1000);
+            $this.coefficients = $this.gradient_descent(X_with_bias, y, 0.01, 1000);
         } else if (method == "ridge") {
             /* Ridge regression */
-            this.coefficients = this.ridge_regression(X_with_bias, y, lambda);
+            $this.coefficients = $this.ridge_regression(X_with_bias, y, lambda);
         }
         
-        this.is_fitted = true;
+        $this.is_fitted = true;
     },
     
     /* Make predictions */
     predict: op(X) {
-        if (!this.is_fitted) {
+        if (!$this.is_fitted) {
             throw "Model not fitted. Call fit() first.";
         }
         
         /* Scale features */
-        X_scaled = this.standardize_features(X);
+        X_scaled = $this.standardize_features(X);
         
         /* Add bias term */
-        X_with_bias = this.add_bias_column(X_scaled);
+        X_with_bias = $this.add_bias_column(X_scaled);
         
         /* Make predictions */
-        predictions = X_with_bias.dot(this.coefficients);
+        predictions = X_with_bias.dot($this.coefficients);
         predictions;
     },
     
     /* Calculate performance metrics */
     score: op(X, y) {
-        predictions = this.predict(X);
-        r_squared = this.calculate_r_squared(y, predictions);
-        mse = this.calculate_mse(y, predictions);
-        rmse = this.calculate_rmse(y, predictions);
-        mae = this.calculate_mae(y, predictions);
+        predictions = $this.predict(X);
+        r_squared = $this.calculate_r_squared(y, predictions);
+        mse = $this.calculate_mse(y, predictions);
+        rmse = $this.calculate_rmse(y, predictions);
+        mae = $this.calculate_mae(y, predictions);
         
         {
             "r_squared": r_squared,

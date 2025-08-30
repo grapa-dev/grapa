@@ -302,6 +302,8 @@ result = some_operation().iferr(0);
 > ```grapa
 > big = (1000000).range(0,1).map(op(x) { x * x; }, 8);  // Limit to 8 threads
 > ```
+> 
+> **Performance Note:** `.map()` and `.filter()` must copy results from worker threads, which can be expensive for very large datasets. For large datasets with simple operations, consider using sequential `for` or `while` loops instead.
 
 > **Tip:** Grapa's parallel ETL/data processing is robust, production-ready, and a core design goal. Unlike JavaScript, you can use parallel methods like `.map()` and `.filter()` out of the box for high-throughput data tasks.
 
@@ -643,11 +645,11 @@ This is a handy workaround until Grapa adds a native `.match()` method.
 ```javascript
 class MyClass {
     constructor(value = -1) {
-        this.n = value;
+        $this.n = value;
     }
     
     getValue() {
-        return this.n;
+        return $this.n;
     }
 }
 
@@ -708,21 +710,21 @@ y.init(4);          /* n = 4 */
 ```javascript
 class Example {
     constructor() {
-        this.publicVar = "public";
-        this._protectedVar = "protected";
-        this.#privateVar = "private";
+        $this.publicVar = "public";
+$this._protectedVar = "protected";
+$this.#privateVar = "private";
     }
     
     publicMethod() {
-        return this.publicVar;
+        return $this.publicVar;
     }
     
     _protectedMethod() {
-        return this._protectedVar;
+        return $this._protectedVar;
     }
     
     #privateMethod() {
-        return this.#privateVar;
+        return $this.#privateVar;
     }
 }
 ```

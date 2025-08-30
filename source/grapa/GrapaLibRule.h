@@ -66,6 +66,7 @@ public:
 	GrapaLibraryEvent* HandleCall(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleSearch(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleFindAll(GrapaCHAR& pName);
+	GrapaLibraryEvent* HandleFind(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleSort(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleArgSort(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleUnique(GrapaCHAR& pName);

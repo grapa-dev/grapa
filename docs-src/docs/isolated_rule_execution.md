@@ -273,7 +273,7 @@ Create isolated validation rules for business logic and data integrity.
 @global["validation_rules"] = {
     /* Email validation */
     email_validation: rule $STR '@' $STR '.' $STR {op(local:$1,domain:$3,tld:$5){
-        if (local.len() > 0 && domain.len() > 0 && tld.len() > 0) {
+        if ($local.len() > 0 && domain.len() > 0 && tld.len() > 0) {
             return {valid: true, email: local + "@" + domain + "." + tld};
         } else {
             return {valid: false, error: "Invalid email format"};

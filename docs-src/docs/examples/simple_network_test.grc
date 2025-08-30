@@ -13,9 +13,16 @@ messageHandler = op(netSession, message, hasmore) {
 	netSession.data += message;
 
     if (hasmore == 0) {
-        /* Parse basic HTTP request */
+        /* Check for connection close */
+        if (netSession.data.len() == 0) {
+            ("Server:" + netSession.connectionId.str() + ": CLOSE\n").echo();
+            netSession.disconnect();
+            return(null);
+        };
+        
+        /* Parse basic HTTP request - use $local for thread safety */
         $local.method = "?";
-		$local.response = "\n";
+		$local.response = "";
        
         /* Generate simple response */
         if (netSession.data.left(3).upper() == "GET") {
@@ -40,7 +47,7 @@ messageHandler = op(netSession, message, hasmore) {
 /* Connection handler */
 connectionHandler = op(netSession) {
     netSession.data = "";
-    netSession.connectionId = Math.random().int();
+    netSession.connectionId = 32.random();  /* Use appropriate random generation */
     ("New connection: " + netSession.connectionId + "\n").echo();
 };
 
@@ -65,6 +72,7 @@ client1 = $net();
 client1.connect('localhost:8080', null, null);
 client1.send('GET / HTTP/1.1\r\nHost: localhost:8080\r\n\r\n');
 response1 = client1.receive();
+while (client1.pending()) response1 += client.receive();
 ("Client 1 - Response length: " + response1.len() + "\n").echo();
 client1.disconnect();
 
@@ -73,6 +81,7 @@ client2 = $net();
 client2.connect('localhost:8080', null, null);
 client2.send('POST / HTTP/1.1\r\nHost: localhost:8080\r\nContent-Type: application/json\r\n\r\n{"test":123}');
 response2 = client2.receive();
+while (client2.pending()) response2 += client2.receive();
 ("Client 2 - Response length: " + response2.len() + "\n").echo();
 client2.disconnect();
 

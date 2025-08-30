@@ -80,6 +80,11 @@ X_scaled = X_scaled.vector();
 
 /* Add bias term (intercept) to design matrix */
 add_bias_column = op(X) {
+    $local.X_with_bias = null;
+    $local.i = null;
+    $local.row = null;
+    $local.j = null;
+    
     X_with_bias = [];
     i = 0;
     while (i < X.shape().getfield(0)) {
@@ -136,6 +141,11 @@ while (i < 5) {
 
 /* Calculate performance metrics */
 calculate_r_squared = op(y_true, y_pred) {
+    $local.y_mean = null;
+    $local.ss_total = null;
+    $local.ss_residual = null;
+    $local.r_squared = null;
+    
     y_mean = y_true.mean();
     ss_total = (y_true - y_mean).pow(2).sum();
     ss_residual = (y_true - y_pred).pow(2).sum();
@@ -144,11 +154,16 @@ calculate_r_squared = op(y_true, y_pred) {
 };
 
 calculate_mse = op(y_true, y_pred) {
+    $local.mse = null;
+    
     mse = (y_true - y_pred).pow(2).mean();
     mse;
 };
 
 calculate_rmse = op(y_true, y_pred) {
+    $local.mse = null;
+    $local.rmse = null;
+    
     mse = calculate_mse(y_true, y_pred);
     rmse = mse.sqrt();
     rmse;
@@ -172,6 +187,17 @@ rmse = calculate_rmse(y, predictions);
 
 /* Ridge regression with L2 regularization */
 ridge_regression = op(X, y, lambda) {
+    $local.n_features = null;
+    $local.regularization_matrix = null;
+    $local.i = null;
+    $local.row = null;
+    $local.j = null;
+    $local.XT = null;
+    $local.XTX = null;
+    $local.XTX_reg = null;
+    $local.XTy = null;
+    $local.coefficients = null;
+    
     /* Add regularization term */
     n_features = X.shape().getfield(1);
     regularization_matrix = [];

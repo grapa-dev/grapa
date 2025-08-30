@@ -529,15 +529,15 @@ class Example {
     private privateVar: string = "private";
     
     public publicMethod(): string {
-        return this.publicVar;
+        return $this.publicVar;
     }
     
     protected protectedMethod(): string {
-        return this.protectedVar;
+        return $this.protectedVar;
     }
     
     private privateMethod(): string {
-        return this.privateVar;
+        return $this.privateVar;
     }
 }
 ```

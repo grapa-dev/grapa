@@ -200,40 +200,27 @@ This backlog tracks all future, long-term, and queued tasks for the Grapa projec
 - **Documentation**: Created `maintainers/DEVELOPMENT/MEMORY_MANAGEMENT_ANALYSIS.md` with detailed analysis
 - **Recommendations**: Continue current patterns, consider adding memory leak detection to CI/CD
 
-### **Grapa curl Function Enhancement** 🔥 **HIGH PRIORITY**
-- **Status**: ✅ **POST/PUT/DELETE with Request Bodies implemented**, basic HTTP/HTTPS with SSL certificates working
-- **Goal**: Achieve 100% feature parity with CLI curl command
-- **✅ Completed Features**:
-  - **POST/PUT/DELETE with Request Bodies**: ✅ **WORKING** - Support for `data` (JSON) and `form` (URL-encoded) options
-  - **HTTP/HTTPS**: ✅ **WORKING** - Full SSL/TLS support with client certificates
-  - **Proxy Support**: ✅ **WORKING** - HTTP proxy with string and object configuration
-  - **SSL Certificate Handling**: ✅ **WORKING** - Client certificates, private keys, trusted CAs
-  - **Custom Headers**: ✅ **WORKING** - Full header customization support
-  - **URL Parsing**: ✅ **WORKING** - Automatic protocol, host, port, and path extraction
-  - **Content Type Detection**: ✅ **WORKING** - Automatic JSON/HTML/XML parsing
-  - **Error Handling**: ✅ **WORKING** - Robust handling of invalid inputs and edge cases
-- **Missing Features**:
-  - **Multipart/form-data**: Implement multipart form data encoding/decoding (requires C++ backend support)
-  - **HTTP/2 and HTTP/3**: Protocol support (requires C++ backend implementation)
-  - **Compression**: Automatic gzip/deflate/brotli decompression (requires C++ backend support)
-  - **SOCKS Proxy**: Extend proxy support beyond HTTP to SOCKS protocols
-  - **Advanced HTTP Authentication**: Digest, NTLM authentication methods
-  - **Rate Limiting**: Built-in rate limiting capabilities
-  - **Resume Downloads**: Partial content/resume support for large files
-  - **Custom DNS**: DNS override and custom resolution
-  - **Certificate Pinning**: HPKP (HTTP Public Key Pinning) support
-  - **WebSocket**: WebSocket protocol support
-  - **Streaming Responses**: Streaming response handling
-  - **Connection Pooling**: Connection reuse/pooling
-  - **HTTP Caching**: Cache control and ETag support
-  - **Redirect Following**: Automatic redirect handling
-  - **Timeout Configuration**: Configurable timeouts
-  - **Verbose Output**: Detailed request/response logging
-- **Testing**: ✅ **Regression tests created** in `test/network/curl_function_test.grc` and `test/network/curl_function_optimized_test.grc`
-- **Documentation**: ✅ **User examples created** in `docs-src/docs/examples/curl_function_simple.grc`
-- **Estimated Effort**: Medium Release (2-4 weeks for remaining features, 3-6 months for full parity)
-- **Dependencies**: C++ backend enhancements for advanced features
-- **Priority**: High - essential for complete HTTP client functionality
+### **Networking Protocol Enhancement Plan** 🔥 **HIGH PRIORITY**
+- **Status**: ✅ **HTTP/HTTPS client/server with SSL/TLS support COMPLETE**
+- **Goal**: Expand networking capabilities to support additional protocols for modern applications
+- **✅ Current Capabilities**:
+  - **HTTP/HTTPS Client**: ✅ **WORKING** - GET, POST, PUT, DELETE, HEAD, OPTIONS, PATCH
+  - **HTTPS Server**: ✅ **WORKING** - Multi-threaded server with SSL/TLS support
+  - **SSL/TLS**: ✅ **WORKING** - Complete OpenSSL integration with certificate management
+  - **TCP/UDP**: ✅ **WORKING** - Low-level socket operations (cross-platform)
+  - **Proxy Support**: ✅ **WORKING** - HTTP proxy with authentication
+  - **Web Scraping**: ✅ **WORKING** - HTTP client + XML/HTML parsing integration
+- **Proposed Protocol Additions** (Phased Implementation):
+  - **Phase 1 (Months 1-4)**: WebSocket, HTTP/2 support
+  - **Phase 2 (Months 5-8)**: FTP/SFTP, SMTP/POP3/IMAP support
+  - **Phase 3 (Months 9-12)**: DNS, MQTT support
+  - **Phase 4 (Months 13-18)**: SOCKS Proxy, HTTP/3 support
+- **Testing**: ✅ **Regression tests created** in `test/network/` directory
+- **Documentation**: ✅ **Comprehensive plan created** in `maintainers/IMPLEMENTATION/NETWORKING/NETWORKING_PROTOCOL_ENHANCEMENT_PLAN.md`
+- **Estimated Effort**: Major Release (12-18 months across 4 phases)
+- **Dependencies**: Protocol libraries (libssh2, Paho MQTT C, ngtcp2)
+- **Priority**: High - enables broader application scenarios and modern networking capabilities
+- **Reference**: [`../IMPLEMENTATION/NETWORKING/NETWORKING_PROTOCOL_ENHANCEMENT_PLAN.md`](../IMPLEMENTATION/NETWORKING/NETWORKING_PROTOCOL_ENHANCEMENT_PLAN.md)
 - **Reference**: `wikipedia_grapa_article.txt` - Complete article with instructions
 - **Priority**: Medium - marketing and visibility
 
@@ -312,6 +299,76 @@ This backlog tracks all future, long-term, and queued tasks for the Grapa projec
 - **Benefits**: More intuitive object-oriented programming, automatic initialization
 - **Priority**: Low - nice to have feature
 - **Estimated Effort**: Medium Release (2-4 weeks)
+
+- [ ] **Array and List `.left()` and `.right()` Method Fix**: Fix data type handling in array and list slicing methods
+- **Current State**: `.left()` and `.right()` methods work correctly for numeric arrays but return `[0,0,0]` for string arrays and don't support `$LIST` types
+- **Root Cause**: `GrapaVector::Left()` and `GrapaVector::Right()` methods use `memset(result.mData, 0, result.mBlock * result.mSize)` which zeroes out memory, interfering with string data copying
+- **Proposed Enhancement**: 
+  - Remove or fix the `memset` call in `GrapaVector::Left()` and `GrapaVector::Right()` methods
+  - ✅ **COMPLETED** Add support for `$LIST` type in `GrapaLibraryRuleLeftEvent` and `GrapaLibraryRuleRightEvent` - Fixed array and list slicing to properly handle all data types including strings
+  - Ensure proper data type preservation for all array elements (strings, numbers, objects)
+- **Implementation**: 
+  - Fix `source/grapa/GrapaVector.cpp` lines ~1950 and ~2000 (remove problematic `memset`)
+  - Add `$LIST` case handling in `source/grapa/GrapaLibRule.cpp` LeftEvent and RightEvent
+  - Test with mixed data type arrays and lists
+- **Benefits**: Proper array slicing for all data types, consistent behavior across `$ARRAY` and `$LIST`
+- **Priority**: Medium - affects core array/list functionality
+- **Estimated Effort**: Small Release (1-2 weeks) - focused C++ fixes
+- **Testing**: Verify with string arrays, mixed type arrays, and list types
+
+- [ ] **Vector Functions for Single Dimension Vectors**: Add support for vector operations like sum, mean, min, max on single dimension vectors
+- **Current State**: Vector operations are limited to multi-dimensional operations, no simple functions for 1D vectors
+- **Proposed Enhancement**: Add vector functions specifically for single dimension vectors
+  - **Sum**: `vector.sum()` - sum all elements in a 1D vector
+  - **Mean**: `vector.mean()` - calculate arithmetic mean of vector elements
+  - **Min/Max**: `vector.min()`, `vector.max()` - find minimum and maximum values
+  - **Standard Deviation**: `vector.std()` - calculate standard deviation
+  - **Variance**: `vector.var()` - calculate variance
+- **Implementation**: 
+  - Add vector function handlers in `source/grapa/GrapaLibRule.cpp`
+  - Implement statistical calculations for 1D vectors
+  - Ensure proper type handling for numeric vectors
+- **Benefits**: Enhanced data analysis capabilities, easier statistical operations on arrays
+- **Priority**: Medium - useful for data processing and analysis
+- **Estimated Effort**: Small Release (1-2 weeks) - focused statistical function implementation
+- **Testing**: Verify with various numeric arrays and edge cases (empty arrays, single elements)
+
+- [ ] **Add `.find()` Method**: Implement missing string method for better data manipulation
+- **Current State**: `.find()` method is missing or not working properly
+  - `.find()`: Currently only works with complex data structures ($XML, $LIST, $ARRAY) but not with simple strings
+- **Proposed Enhancement**: 
+  - **`.find()` for strings**: `"hello world".find("world")` should return position/index
+- **Implementation**: 
+  - Add string `.find()` method in string handling code
+  - Ensure consistent behavior with other languages (Python-like syntax)
+- **Benefits**: More complete string manipulation capabilities, better language parity
+- **Priority**: Medium - affects core data manipulation functionality
+- **Estimated Effort**: Small Release (1 week) - focused method implementation
+- **Testing**: Verify with various string inputs, edge cases, and boundary conditions
+
+- [x] **Boolean String Conversion**: Fixed boolean string conversion for `.echo()` and `.str()` methods
+- **Resolution**: Using `(true).echo()` and `(true).str()` syntax instead of implementing dot notation for boolean literals
+- **Current State**: Boolean values now work properly with string conversion
+  - `(false).echo()` returns "false" ✅
+  - `(true).echo()` returns "true" ✅
+  - `(false).str()` returns "false" ✅
+  - `(true).str()` returns "true" ✅
+- **Design Decision**: 
+  - **No dot notation for literals**: Boolean literals don't support `true.echo()` syntax
+  - **Parentheses approach**: Use `(true).echo()` and `(true).str()` for boolean operations
+  - **Consistency**: Follows same pattern as `(42).echo()`, `("hello").str()`, etc.
+- **Benefits**: Clean, consistent approach that maintains language design principles
+- **Status**: ✅ **COMPLETED** - Boolean string conversion now works correctly
+
+- [x] **$ERR Class Constructor Support**: Already working correctly
+- **Current State**: `$ERR` type is a `$LIST` (name/value pairs) with proper constructor support
+- **Working Examples**: 
+  - `x = $ERR()` creates empty error object `{}`
+  - `x = $ERR({error:44, desc:"hi"})` creates structured error object `{"error":44,"desc":"hi"}`
+  - Both return proper `$ERR` type when `.type()` is called
+- **Implementation**: Already implemented in C++ backend
+- **Benefits**: Structured error creation, proper error handling patterns, type safety
+- **Status**: ✅ **COMPLETED** - `$ERR` constructor works correctly
 
 - [ ] **Operator Overloading**: Enable objects/classes to implement custom operator behavior
 - **Current State**: Operators work only with built-in types and predefined behaviors
@@ -477,11 +534,50 @@ This backlog tracks all future, long-term, and queued tasks for the Grapa projec
   - **Dependencies**: Requires significant user base and developer community
   - **Complexity**: Major architectural feature requiring distribution infrastructure
   - **Note**: This is a "nice to have" for future ecosystem growth, not a current priority
+  - **Note**: Superseded by Plugin Architecture System (see above) - provides more comprehensive extension capabilities
 
 ### **Integration**
 - [ ] **Add support for more external libraries**
 - [ ] **Create bindings for popular frameworks**
-- [ ] **Implement plugin system**
+
+### **Plugin Architecture System** 🔥 **HIGH PRIORITY**
+- **Status**: Comprehensive plan created, ready for implementation
+- **Goal**: Modular plugin architecture for optional features and third-party extensions without bloating core distribution
+- **Motivation**: 
+  - **Distribution Size Problem**: Current binary ~15-20MB, with embedded features could grow to 100MB+
+  - **Python Extension Impact**: Would become 400MB+ with all platforms
+  - **Ecosystem Growth**: Enable third-party extensions and community contributions
+- **Implementation Phases**:
+  - **Phase 1 (Months 1-3)**: Core Plugin Infrastructure - Dynamic library loading, plugin discovery, lifecycle management
+  - **Phase 2 (Months 4-6)**: JavaScript Engine Plugin - QuickJS integration (~5MB) as first practical plugin
+  - **Phase 3 (Months 7-9)**: Plugin Distribution System - Repository, management tools, development kit
+  - **Phase 4 (Months 10-12)**: Advanced Features - Dependencies, performance, security
+- **Plugin Categories**:
+  - **JavaScript Engine Plugins**: QuickJS (~5MB), V8 (~50MB), SpiderMonkey (~30MB)
+  - **Database Plugins**: PostgreSQL, MySQL, MongoDB integrations
+  - **Network Protocol Plugins**: WebSocket, MQTT, FTP support
+  - **Language Integration Plugins**: Enhanced Python, Rust, Go integrations
+  - **Development Tool Plugins**: Debug visualizers, profilers, test runners
+- **Distribution Strategy**:
+  - **Core Distribution**: ~15MB (no size increase)
+  - **Plugin Distribution**: Optional separate packages (5-50MB each)
+  - **Python Extension**: Core (~60MB) + optional plugin packages
+- **Technical Implementation**:
+  - **Plugin Interface**: Standard C++ interface with Grapa integration
+  - **Metadata System**: JSON-based plugin descriptions and commands
+  - **Grapa Integration**: `$sys().plugins()` management system
+  - **Cross-Platform**: Support for Linux, macOS, Windows
+- **Success Metrics**:
+  - **Core Binary Size**: <20MB (no increase from current)
+  - **Plugin Loading Time**: <1 second for typical plugins
+  - **Memory Overhead**: <10MB per loaded plugin
+  - **Ecosystem Growth**: 5+ plugins within 6 months
+- **Estimated Effort**: Major Release (6-12 months across 4 phases)
+- **Dependencies**: None - foundational architecture work
+- **Priority**: High - enables ecosystem growth without distribution bloat
+- **Risk Level**: Medium - new architectural feature requiring careful design
+- **Reference**: [`../IMPLEMENTATION/PLUGIN_ARCHITECTURE_PLAN.md`](../IMPLEMENTATION/PLUGIN_ARCHITECTURE_PLAN.md)
+- **Next Steps**: Begin Phase 1 implementation (Core Plugin Infrastructure), design plugin loading system, create QuickJS JavaScript engine plugin as first example
 
 ### **Advanced Language Features**
 - [ ] **IDE Integration**: Improve error messages and syntax highlighting

@@ -286,6 +286,9 @@ memory_usage = estimate_memory(my_matrix);
 - ✅ Monitor memory usage for large matrices
 - ✅ Use fast operations (sum, mean) for large datasets
 - ✅ Consider breaking large problems into smaller blocks
+- ✅ Use sequential loops for large datasets with simple operations
+- ✅ Use parallel `.map()/.filter()` for smaller datasets with complex operations
+- ✅ Prefer `.reduce()` for large datasets when possible (more efficient)
 
 ### Don'ts
 - ❌ Don't use large matrices (> 200x200) for real-time applications
@@ -293,6 +296,8 @@ memory_usage = estimate_memory(my_matrix);
 - ❌ Don't use eigenvalue calculations for large matrices (> 50x50)
 - ❌ Don't ignore memory usage for large datasets
 - ❌ Don't use expensive operations when fast alternatives exist
+- ❌ Don't use `.map()/.filter()` on very large datasets with simple operations
+- ❌ Don't ignore the copy overhead of parallel operations on large datasets
 
 ### Performance Checklist
 

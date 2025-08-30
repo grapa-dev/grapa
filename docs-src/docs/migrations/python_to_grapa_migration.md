@@ -167,6 +167,17 @@ doubled = arr.filter(op(x) { x > 2; }).map(op(x) { x * 2; });
 large_result = (10000).range()
     .filter(op(x) { x % 2 == 0; }, 8)      // 8 threads
     .map(op(x) { x * x; }, 8);             // 8 threads
+
+// For very large datasets, consider sequential processing
+big_data = (1000000).range();
+result = [];
+i = 0;
+while (i < big_data.len()) {
+    if (big_data[i] % 2 == 0) {
+        result += big_data[i] * big_data[i];
+    }
+    i += 1;
+}
 ```
 
 **Key advantages:**
@@ -174,6 +185,8 @@ large_result = (10000).range()
 - **Functional programming style** with chainable operations
 - **Better performance** for large datasets
 - **Memory efficient** processing
+
+**Performance Note:** `.map()` and `.filter()` must copy results from worker threads, which can be expensive for very large datasets. For large datasets with simple operations, consider using sequential `for` or `while` loops instead.
 
 ### Numeric Literals
 

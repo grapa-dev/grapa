@@ -20,6 +20,7 @@
 	| $SYSID("FLOAT") {@<lit,{$1}>}
 	| $SYSID("ID") {@<lit,{$1}>}
 	| $SYSID("STR") {@<lit,{$1}>}
+	| $SYSID("BOOL") {@<lit,{$1}>}
 	| $SYSID("SYSSYM") {@<lit,{$1}>}
 	| $SYSID("SYSINT") {@<lit,{$1}>}
 	| $SYSID("SYSID") {@<lit,{$1}>}
@@ -37,6 +38,7 @@
 	| $SYSINT {@<lit,{$1}>}
 	| $INT {@<lit,{$1}>}
 	| $RAW {@<lit,{$1}>}
+	| $BOOL {@<lit,{$1}>}
 	;
 @global["$lib_start"]
 	= rule <$command_list> ';' {@<lit,{$1}>}
@@ -138,6 +140,7 @@
 	| $INT {@<lit,{$1}>}
 	| $RAW {@<lit,{$1}>}
 	| $FLOAT {@<lit,{$1}>}
+	| $BOOL {@<lit,{$1}>}
 	;
 @global["$token_list"]
 	= rule <$token> <$token_list> {@<prepend,{$2,$1}>}
@@ -163,9 +166,6 @@
 	| '@' '<' <$op_list> '>'
 	| '@' '[' <$code_list> ']'
 	| '@' <$litname> {@<var,{$2}>}
-	| this {@<this,{}>}
-	| global {@<global,{}>}
-	| local {@<local,{}>}
 	| $this {@<this,{}>}
 	| $parent {@<parent,{}>}
 	| $global {@<global,{}>}
@@ -180,6 +180,7 @@
 	| $RAW {@<lit,{$1}>}
 	| $SYSINT {@<lit,{$1}>}
 	| $FLOAT {@<lit,{$1}>}
+	| $BOOL {@<lit,{$1}>}
 	;
 @global["$lit"]
 	= rule '@' this {@<this,{}>}
@@ -189,9 +190,6 @@
 	| '@' '<' <$op_list> '>'
 	| '@' '[' <$code_list> ']'
 	| '@' <$litname> {@<var,{$2}>}
-	| this {@<this,{}>}
-	| global {@<global,{}>}
-	| local {@<local,{}>}
 	| $this {@<this,{}>}
 	| $parent {@<parent,{}>}
 	| $global {@<global,{}>}
@@ -206,6 +204,7 @@
 	| $RAW {@<lit,{$1}>}
 	| $SYSINT {@<lit,{$1}>}
 	| $FLOAT {@<lit,{$1}>}
+	| $BOOL {@<lit,{$1}>}
 	;
 @global["$param2"]
 	= rule <$litname> ':' <$comp> {@<name,{$1,$3}>}
@@ -639,7 +638,6 @@
 	;
 @global["$command"]
 	= rule '{' <$command_list> ';' '}' {@<scope,{$2}>}
-	| $SYSID("INCLUDE") <$comp> {@<include,{$2}>}
 	| include <$comp> {@<include,{$2}>}
 	| $SYSID("RESET") {@<reset,{}>}
 	| if '(' <$comp> ')' <$command> ';' <$else> {@<if,{$3,$5,$7}>}
@@ -660,8 +658,10 @@
     | continue {@<continue,{}>}
 	| return '(' <$comp> ')' {@<return,{$3}>}
 	| return <$comp> {@<return,{$2}>}
+	| return {@<return,{}>}
 	| throw '(' <$comp> ')' {@<throw,{$3}>}
 	| throw <$comp> {@<throw,{$2}>}
+	| throw {@<throw,{}>}
 	| exit '(' ')'{@<exit,{}>}
 	| exit {@<exit,{}>}
     | reset {@<reset,{}>}

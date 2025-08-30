@@ -337,7 +337,7 @@ rest.echo();    /* [3, 4, 5] */
 @local ++= {a:10, c:3};  /* 'a' now refers to 10, not 1 */
 
 /* Remove duplicates if needed */
-@local.unique();  /* Removes duplicate entries */
+@$local.unique();  /* Removes duplicate entries */
 ```
 
 #### **4b. Grapa's Switch-Based Pattern Matching** ✅ **IMPLEMENTED**

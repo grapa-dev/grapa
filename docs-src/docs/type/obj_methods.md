@@ -464,48 +464,81 @@ obj.setconst("new value"); /* Sets object to constant string */
 ## String Manipulation Methods
 
 ### `.left(count)`
-Returns the leftmost characters of a string. **Unicode-aware**: Counts Unicode characters (grapheme clusters), not bytes.
+Returns the leftmost characters of a string or elements of an array/list. **Unicode-aware**: Counts Unicode characters (grapheme clusters), not bytes. Also works with `$ARRAY` and `$LIST` types.
 
 ```grapa
+/* String examples */
 "Hello, World!".left(5);   /* Returns: "Hello" */
 "héllo".left(3);          /* Returns: "hél" (3 Unicode characters) */
 "🚀héllo".left(3);        /* Returns: "🚀hé" (3 Unicode characters) */
 "👨‍👩‍👧‍👦".left(2);       /* Returns: "👨‍👩‍" (2 Unicode characters) */
+
+/* Array examples */
+['a','b','c','d','e'].left(3); /* Returns: ["a","b","c"] */
+['a','b','c','d','e'].left(-2); /* Returns: ["a","b","c"] */
+
+/* List examples */
+{a:1, b:2, c:3, d:4, e:5}.left(3); /* Returns: {a:1, b:2, c:3} */
+{a:1, b:2, c:3, d:4, e:5}.left(-2); /* Returns: {a:1, b:2, c:3} */
 ```
 
 **Parameters:**
-- `count` (default: 0) - Number of Unicode characters to return (negative counts from right)
+- `count` (default: 0) - Number of Unicode characters to return (for strings) or elements to return (for arrays/lists) (negative counts from right)
+
+**Data Types:** `$STR`, `$ARRAY`, `$LIST`
 
 **Unicode Support:** This function now properly handles Unicode characters, emoji, and complex grapheme clusters by counting characters rather than bytes.
 
 ### `.right(count)`
-Returns the rightmost characters of a string. **Unicode-aware**: Counts Unicode characters (grapheme clusters), not bytes.
+Returns the rightmost characters of a string or elements of an array/list. **Unicode-aware**: Counts Unicode characters (grapheme clusters), not bytes. Also works with `$ARRAY` and `$LIST` types.
 
 ```grapa
+/* String examples */
 "Hello, World!".right(5);  /* Returns: "orld!" */
 "héllo".right(3);         /* Returns: "llo" (3 Unicode characters) */
 "🚀héllo".right(3);       /* Returns: "llo" (3 Unicode characters) */
 "👨‍👩‍👧‍👦".right(2);      /* Returns: "👧‍👦" (2 Unicode characters) */
+
+/* Array examples */
+['a','b','c','d','e'].right(3); /* Returns: ["c","d","e"] */
+['a','b','c','d','e'].right(-2); /* Returns: ["d","e"] */
+
+/* List examples */
+{a:1, b:2, c:3, d:4, e:5}.right(3); /* Returns: {c:3, d:4, e:5} */
+{a:1, b:2, c:3, d:4, e:5}.right(-2); /* Returns: {d:4, e:5} */
 ```
 
 **Parameters:**
-- `count` (default: 0) - Number of Unicode characters to return (negative counts from left)
+- `count` (default: 0) - Number of Unicode characters to return (for strings) or elements to return (for arrays/lists) (negative counts from left)
+
+**Data Types:** `$STR`, `$ARRAY`, `$LIST`
 
 **Unicode Support:** This function now properly handles Unicode characters, emoji, and complex grapheme clusters by counting characters rather than bytes.
 
 ### `.mid(start, count)`
-Returns a substring starting at the specified position. **Unicode-aware**: Counts Unicode characters (grapheme clusters), not bytes.
+Returns a substring starting at the specified position. **Unicode-aware**: Counts Unicode characters (grapheme clusters), not bytes. Also works with `$ARRAY` and `$LIST` types.
 
 ```grapa
+/* String examples */
 "Hello, World!".mid(2, 5); /* Returns: "llo, " */
 "héllo".mid(1, 3);        /* Returns: "éll" (3 Unicode characters from position 1) */
 "🚀héllo".mid(1, 3);      /* Returns: "hél" (3 Unicode characters from position 1) */
 "👨‍👩‍👧‍👦".mid(1, 2);     /* Returns: "👩‍👧‍" (2 Unicode characters from position 1) */
+
+/* Array examples */
+['a','b','c','d','e'].mid(2, 4); /* Returns: ["c","d","e"] */
+['a','b','c','d','e'].mid(2, 2); /* Returns: ["c","d"] */
+['a','b','c','d','e'].mid(-3, 1); /* Returns: ["c"] */
+
+/* List examples */
+{a:1, b:2, c:3, d:4, e:5}.mid(2, 3); /* Returns: {c:3, d:4, e:5} */
 ```
 
 **Parameters:**
-- `start` (default: 0) - Starting position (Unicode character position)
-- `count` (default: 0) - Number of Unicode characters to return
+- `start` (default: 0) - Starting position (Unicode character position for strings, element position for arrays/lists)
+- `count` (default: 0) - Number of Unicode characters to return (for strings) or elements to return (for arrays/lists)
+
+**Data Types:** `$STR`, `$ARRAY`, `$LIST`
 
 **Unicode Support:** This function now properly handles Unicode characters, emoji, and complex grapheme clusters by counting characters rather than bytes.
 
@@ -810,6 +843,8 @@ Applies a function to each element of an array (parallel by default).
 - `data` (default: null) - Additional data for the function
 - `threads` (default: null) - Number of threads for parallel execution
 
+**Performance Note:** `.map()` and `.filter()` must copy results from worker threads, which can be expensive for large datasets. For large datasets where multiprocessing isn't needed, consider using sequential `for` or `while` loops instead.
+
 ### `.filter(func, data, threads)`
 Filters elements based on a predicate function (parallel by default).
 
@@ -823,6 +858,8 @@ Filters elements based on a predicate function (parallel by default).
 - `data` (default: null) - Additional data for the function
 - `threads` (default: null) - Number of threads for parallel execution
 
+**Performance Note:** `.filter()` must copy results from worker threads, which can be expensive for large datasets. For large datasets where multiprocessing isn't needed, consider using sequential `for` or `while` loops instead.
+
 ### `.reduce(func, init, data)`
 Reduces an array to a single value using a function.
 
@@ -835,6 +872,8 @@ Reduces an array to a single value using a function.
 - `func` - Reduction function
 - `init` (default: null) - Initial value
 - `data` (default: null) - Additional data for the function
+
+**Performance Note:** `.reduce()` can use PTR references internally and doesn't require copying results from worker threads, making it more efficient than `.map()` and `.filter()` for large datasets.
 
 ### `.range(stop, step)`
 Generates a range of numbers.
@@ -885,6 +924,47 @@ Matches patterns in text using regex.
 - `end` (default: null) - End position
 - `count` (default: null) - Maximum number of matches
 - `offset` (default: null) - Offset for results
+
+### `.find(term, start, size)`
+Searches for a substring or binary pattern within a string or RAW data, returning the 0-based index of the first occurrence or -1 if not found.
+
+```grapa
+/* String search */
+"hello world".find("world");                      /* Returns: 6 */
+"hello world".find("xyz");                        /* Returns: -1 */
+"hello world".find("o", 5);                       /* Returns: 7 (search from position 5) */
+"hello world".find("o", 1, 5);                    /* Returns: 4 (search from position 1, limit 5 chars) */
+
+/* RAW data search */
+0x10FE0021FA.uraw().find(0xFE0021.uraw());       /* Returns: 1 */
+0x10FE0021FA.uraw().find(0x21.uraw());           /* Returns: 3 */
+
+/* Search with null bytes */
+$RAW("hello\0world").find("world".raw());        /* Returns: 6 */
+$RAW("hello\0world").find("\0".raw());           /* Returns: 5 */
+```
+
+**Parameters:**
+- `term` (required) - The substring or binary pattern to search for
+- `start` (optional) - Starting position for the search (default: 0)
+- `size` (optional) - Maximum number of characters/bytes to search (default: to end)
+
+**Supported Data Types:**
+- **$STR**: Searches for Unicode substrings
+- **$RAW**: Performs binary search (handles null bytes and binary data)
+- **$ARRAY**: Searches for subarrays using comprehensive comparison
+- **$LIST**: Searches for sublists using comprehensive comparison
+
+**Return Value:**
+- Returns the 0-based index of the first occurrence
+- Returns -1 if the term is not found
+- Returns -1 if start position is beyond the string/data length
+
+**Note:** For RAW data, use `.uraw()` to create search terms from hex values to avoid padding issues.
+
+**Array and List Search:** The `.find()` method supports searching for subarrays and sublists using the same comprehensive comparison logic as `switch` statements, ensuring consistent behavior across the language.
+
+**Array-in-List Search:** When searching a `$LIST` with an `$ARRAY` term, the method searches for the array values within the list values and returns the position where the match is found. Use `.mid()` to extract the subset. For example: `{a:1,b:2,c:3}.find([2,3])` returns `1`, and `{a:1,b:2,c:3}.mid(1, 2)` returns `{b:2,c:3}`.
 
 ### `.findall(pattern)`
 Finds all occurrences of a pattern in complex data structures. Works with `$XML`, `$LIST`, and `$ARRAY` data types using specific query patterns.

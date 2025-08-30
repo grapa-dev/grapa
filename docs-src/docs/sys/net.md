@@ -11,6 +11,114 @@ Also see [$OBJ document](../obj/document.md)
 
 Provides a socket library, cross functional with all platforms supported. 
 
+## Thread Safety and Concurrency Patterns
+
+### **Critical: Use `$local` Variables in Message Handlers**
+
+Network message handlers run in concurrent contexts and **must** use `$local` variables to avoid race conditions:
+
+```grapa
+/* ✅ CORRECT - Thread-safe message handler */
+httpMessageHandler = op(netSession, message, hasmore) {
+    netSession.data += message;
+    
+    if (hasmore == 0) {
+        /* Check for connection close */
+        if (netSession.data.len() == 0) {
+            ("Server:" + netSession.connectionId.str() + ": CLOSE\n").echo();
+            netSession.disconnect();
+            return(null);
+        };
+        
+        /* Use $local for all variables to avoid race conditions */
+        $local.datasplit = netSession.data.split(" ");
+        $local.method = datasplit[0];
+        $local.path = datasplit[1];
+        $local.response = "";
+        
+        /* Process request and generate response */
+        if (path == "/") {
+            response = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n<h1>Server</h1>";
+        } else {
+            response = "HTTP/1.1 404 Not Found\r\n\r\n";
+        };
+        
+        netSession.data = "";
+        netSession.send(response);
+    };
+};
+
+/* ❌ INCORRECT - Thread-unsafe (race conditions) */
+badMessageHandler = op(netSession, message, hasmore) {
+    netSession.data += message;
+    
+    if (hasmore == 0) {
+        /* Global variables - causes race conditions in concurrent execution */
+        request = netSession.data;  // ❌ Race condition!
+        method = request.left(3);   // ❌ Race condition!
+        path = "";                  // ❌ Race condition!
+        
+        /* Process request... */
+    };
+};
+```
+
+### **Connection Management Patterns**
+
+#### **Proper Connection Disconnection**
+Always check for empty data and disconnect appropriately:
+
+```grapa
+/* Check for connection close condition */
+if (netSession.data.len() == 0) {
+    ("Server:" + netSession.connectionId.str() + ": CLOSE\n").echo();
+    netSession.disconnect();
+    return(null);
+};
+```
+
+#### **Connection ID Generation**
+Use appropriate random generation for connection tracking:
+
+```grapa
+connectionHandler = op(netSession) {
+    netSession.data = "";
+    netSession.connectionId = 32.random();  /* ✅ Appropriate for connection IDs */
+    ("New connection: " + netSession.connectionId + "\n").echo();
+};
+```
+
+### **Concurrent Client Testing**
+
+Demonstrate true concurrency using `.map()`:
+
+```grapa
+/* ✅ CORRECT - True concurrent execution */
+concurrent_results = [testHttpClient, testHttpJson, testHttpHeaders, testHttpPost]
+    .map(op(x) { @x().len(); });
+
+/* ❌ INCORRECT - Sequential execution */
+http_test1 = testHttpClient();  /* Sequential */
+http_test2 = testHttpJson();    /* Sequential */
+http_test3 = testHttpHeaders(); /* Sequential */
+http_test4 = testHttpPost();    /* Sequential */
+```
+
+### **HTTP Parsing Best Practices**
+
+Use proper string parsing methods:
+
+```grapa
+/* ✅ CORRECT - Proper HTTP parsing */
+$local.datasplit = netSession.data.split(" ");
+$local.method = datasplit[0];
+$local.path = datasplit[1];
+
+/* ❌ INCORRECT - Manual parsing prone to errors */
+method = request.left(3);  /* Assumes 3-character method */
+path_start = request.find(" ", 4);  /* Complex manual parsing */
+```
+
 ## type()
 Returns $net.
 

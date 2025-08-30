@@ -58,12 +58,23 @@ This guide covers the essential syntax patterns for writing Grapa code, based on
 
 Grapa provides sophisticated namespace scoping with `$global`, `$this`, and `$local` identifiers. Proper use of local variables is crucial for thread safety and avoiding variable conflicts.
 
+**Important**: All namespace accessors must use the `$` prefix. The old syntax without `$` (e.g., `global.x`, `this.x`, `local.x`) is no longer supported.
+
 ```grapa
 /* ✅ RECOMMENDED - Declare local variables upfront */
 myFunction = op() {
     $local.result = null;
     $local.temp = {};
     $local.i = 0;
+    
+    // Now safe to use variables without conflicts
+    result = process();
+    return result;
+};
+
+/* ✅ ALTERNATIVE - Reset $local to a list */
+myFunction2 = op() {
+    $local = {result: null, temp: {}, i: 0};
     
     // Now safe to use variables without conflicts
     result = process();
@@ -1126,7 +1137,7 @@ func({name:"Bob", age:25});
 @local ++= {a:10, c:3};  /* 'a' now refers to 10, not 1 */
 
 /* Remove duplicates if needed */
-@local.unique();  /* Removes duplicate entries */
+@$local.unique();  /* Removes duplicate entries */
 ```
 
 #### Advanced Patterns
@@ -1575,17 +1586,27 @@ Use `.range()` for array slicing operations:
 arr = ["a", "b", "c", "d", "e"];
 
 /* Get elements from index 1 to end */
-slice1 = arr.range(1, arr.len());  /* ["b", "c", "d", "e"] */
+slice1 = arr.mid(1, 4);  /* ["b", "c", "d", "e"] */
 
 /* Get first 3 elements */
-slice2 = arr.range(0, 3);  /* ["a", "b", "c"] */
+slice2 = arr.mid(0, 3);  /* ["a", "b", "c"] */
 
 /* Get elements from index 1 to 3 */
-slice3 = arr.range(1, 3);  /* ["b", "c"] */
+slice3 = arr.mid(1, 2);  /* ["b", "c"] */
+
+/* Alternative using .range() for sequence generation */
+range1 = arr.range(1, 1);  /* [1, 2, 3, 4] - generates sequence, not array slice */
+range2 = arr.range(0, 1);  /* [0, 1, 2] - generates sequence, not array slice */
+range3 = arr.range(1, 1);  /* [1, 2] - generates sequence, not array slice */
 ```
 
-- Use `.range(start, end)` for array slicing
+- Use `.mid(start, count)` for array slicing (recommended)
+- Use `.left(count)` and `.right(count)` for extracting from the beginning or end
+- Use `.range(start, step)` for sequence generation (not array slicing)
 - This replaces slice notation like `arr[1:]`, `arr[:3]`, `arr[1:3]`
+- The count parameter in `.mid()` specifies how many elements to return
+- Note: `.range()` generates new sequences, while `.mid()`, `.left()`, and `.right()` extract from existing arrays
+- Note: `.left()`, `.right()`, and `.mid()` also work with `$LIST` types
 
 ### Array Methods
 
@@ -3167,12 +3188,12 @@ text = "Hello World 123";
 matches = text.grep("\\d+");  /* Find all digits */
 
 /* Boolean pattern matching */
-has_digits = text.match("\\d+");  /* true/false */
-has_letters = text.match("[a-zA-Z]+");  /* true/false */
+has_digits = text.grep("\\d+").len() > 0;  /* true/false */
+has_letters = text.grep("[a-zA-Z]+").len() > 0;  /* true/false */
 
 /* Complex pattern matching */
 email_pattern = "[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}";
-is_valid_email = email.match(email_pattern);
+is_valid_email = email.grep(email_pattern).len() > 0;
 ```
 
 ### **Metaprogramming Syntax**

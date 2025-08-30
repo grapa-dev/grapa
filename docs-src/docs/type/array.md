@@ -148,6 +148,36 @@ arr ++= 7, 2;                             /* Insert at position 2 */
 arr -= 3;                                 /* Remove element with value 3 */
 ```
 
+### Array Slicing
+
+Arrays support slicing operations for extracting portions of elements:
+
+#### Left Slicing (.left())
+```grapa
+arr = [1, 2, 3, 4, 5];
+
+arr.left(3);                              /* [1, 2, 3] */
+arr.left(-2);                             /* [1, 2, 3] */
+```
+
+#### Right Slicing (.right())
+```grapa
+arr = [1, 2, 3, 4, 5];
+
+arr.right(3);                             /* [3, 4, 5] */
+arr.right(-2);                            /* [4, 5] */
+```
+
+#### Middle Slicing (.mid())
+```grapa
+arr = [1, 2, 3, 4, 5];
+
+arr.mid(1, 3);                            /* [2, 3, 4] */
+arr.mid(-3, 2);                           /* [3, 4] */
+```
+
+> **Note:** Slicing methods work with any array size. For empty arrays, slicing returns an empty array. Negative indices count from the end.
+
 ### Array Rotation
 
 Arrays support left and right rotation operations for reordering elements:

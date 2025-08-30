@@ -2,7 +2,7 @@
 
 /* Define ETL processing functions */
 clean_data = op(p){p.trim().lower()};
-validate_email = op(p){p.grep(/^[^@]+@[^@]+\.[^@]+$/)?p:null};
+validate_email = op(p){p.grep("^[^@]+@[^@]+\\.[^@]+$").len() > 0 ? p : null};
 format_output = op(p){p.upper() + " - PROCESSED"};
 filter_length = op(p){p.len() > 5 ? p : null};
 
@@ -23,26 +23,42 @@ filter_length = op(p){p.len() > 5 ? p : null};
 
 /* ETL pipeline function */
 etl_process = op(input_data) {
-    /* Apply ETL pipeline steps */
-    cleaned = op()(input_data, @global["$etl_pipeline"].clean_step)();
-    validated = op()(cleaned, @global["$etl_pipeline"].validate_step)();
-    filtered = op()(validated, @global["$etl_pipeline"].filter_step)();
-    formatted = op()(filtered, @global["$etl_pipeline"].format_step)();
+    $local.cleaned = null;
+    $local.validated = null;
+    $local.filtered = null;
+    $local.formatted = null;
     
+    /* Apply ETL pipeline steps directly */
+    cleaned = clean_data(input_data);
+    validated = validate_email(cleaned);
+    
+    /* Check if validation passed */
+    if (validated == null) {
+        return "VALIDATION_FAILED";
+    };
+    
+    filtered = filter_length(validated);
+    
+    /* Check if filtering passed */
+    if (filtered == null) {
+        return "FILTER_FAILED";
+    };
+    
+    formatted = format_output(filtered);
     return formatted;
 };
 
 /* Test the ETL pipeline */
 test_data = "  john.doe@example.com  ";
 result = etl_process(test_data);
-result
+("Test 1 - Valid email: " + test_data + " -> " + result + "\n").echo();
 
 /* Test with invalid data */
 test_data2 = "invalid-email";
 result2 = etl_process(test_data2);
-result2
+("Test 2 - Invalid email: " + test_data2 + " -> " + result2 + "\n").echo();
 
 /* Test with short valid email */
 test_data3 = "a@b.c";
 result3 = etl_process(test_data3);
-result3 
+("Test 3 - Short email: " + test_data3 + " -> " + result3 + "\n").echo(); 

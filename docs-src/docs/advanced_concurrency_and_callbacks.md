@@ -345,6 +345,37 @@ large_data = (1000000).range(0,1);
 result = large_data.map(op(x) { x * x; }, 8);  /* Limit to 8 threads */
 ```
 
+### Performance Considerations: Parallel vs Sequential
+
+**Important:** `.map()` and `.filter()` must copy results from worker threads, which can be expensive for large datasets. Consider the trade-offs:
+
+```grapa
+/* For large datasets with simple operations - use sequential */
+big_data = (1000000).range();
+result = [];
+i = 0;
+while (i < big_data.len()) {
+    result += big_data[i] * 2;
+    i += 1;
+}
+
+/* For smaller datasets with complex work - use parallel */
+small_data = (1000).range();
+result = small_data.map(op(x) { 
+    /* Complex calculation that benefits from parallelization */
+    complex_calculation = x * x + x.sqrt() + x.sin();
+    complex_calculation;
+}, 4);
+
+/* .reduce() is more efficient - can use PTR references */
+sum = big_data.reduce(op(acc, x) { acc + x; }, 0, 4);
+```
+
+**When to use each approach:**
+- **Use sequential (for/while)** for large datasets with simple operations
+- **Use parallel (.map/.filter)** for smaller datasets with complex operations
+- **Use .reduce()** for large datasets when possible (more efficient)
+
 ### Callback Design Patterns
 
 ```grapa

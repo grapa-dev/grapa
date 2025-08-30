@@ -1,85 +1,77 @@
-/* Basic HTTP/HTTPS Network Test */
+/* Basic HTTP/HTTPS Network Test - Using proper Grapa patterns */
 
 "Starting HTTP/HTTPS tests...\n".echo();
 
 /* Test 1: HTTP GET */
 "Test 1: HTTP GET\n".echo();
-clienta = $net();
-err = clienta.connect('http://httpbin.org/get', null, null);
-if(err == 0) {
+$local.clienta = $net();
+$local.err = clienta.connect('http://httpbin.org', null, null);
+if(err.type() != $ERR) {
     "HTTP connection successful\n".echo();
     clienta.send('GET / HTTP/1.1\r\nHost: httpbin.org\r\nConnection: close\r\n\r\n');
-    responsea = "";
-    $sys().sleep(1000);
+    $local.responsea = clienta.receive();
     while(clienta.pending()) {
-        chunk = clienta.receive();
-        if(chunk != null) responsea = responsea + chunk;
-    }
+        responsea += clienta.receive();
+    };
     clienta.disconnect();
-    "HTTP GET completed\n".echo();
+    ("HTTP GET completed, response length: " + responsea.len() + "\n").echo();
 } else {
-    "HTTP connection failed\n".echo();
-}
+    ("HTTP connection failed: " + err + "\n").echo();
+};
 
 /* Test 2: HTTPS GET */
 "Test 2: HTTPS GET\n".echo();
-clienta = $net();
-err = clienta.connect('https://httpbin.org/get', null, null);
-if(err == 0) {
+$local.clientb = $net();
+$local.err2 = clientb.connect('https://httpbin.org', null, null);
+if(err2.type() != $ERR) {
     "HTTPS connection successful\n".echo();
-    clienta.send('GET / HTTP/1.1\r\nHost: httpbin.org\r\nConnection: close\r\n\r\n');
-    responsea = "";
-    $sys().sleep(1000);
-    while(clienta.pending()) {
-        chunk = clienta.receive();
-        if(chunk != null) responsea = responsea + chunk;
-    }
-    clienta.disconnect();
-    "HTTPS GET completed\n".echo();
+    clientb.send('GET / HTTP/1.1\r\nHost: httpbin.org\r\nConnection: close\r\n\r\n');
+    $local.responseb = clientb.receive();
+    while(clientb.pending()) {
+        responseb += clientb.receive();
+    };
+    clientb.disconnect();
+    ("HTTPS GET completed, response length: " + responseb.len() + "\n").echo();
 } else {
-    "HTTPS connection failed\n".echo();
-}
+    ("HTTPS connection failed: " + err2 + "\n").echo();
+};
 
 /* Test 3: HTTP POST */
 "Test 3: HTTP POST\n".echo();
-clienta = $net();
-err = clienta.connect('http://httpbin.org/post', null, null);
-if(err == 0) {
-    "HTTP connection successful\n".echo();
-    postData = '{"test": "data"}';
-    postHeaders = 'POST /post HTTP/1.1\r\nHost: httpbin.org\r\nContent-Type: application/json\r\nContent-Length: 17\r\nConnection: close\r\n\r\n';
-    clienta.send(postHeaders + postData);
-    responsea = "";
-    $sys().sleep(1000);
-    while(clienta.pending()) {
-        chunk = clienta.receive();
-        if(chunk != null) responsea = responsea + chunk;
-    }
-    clienta.disconnect();
-    "HTTP POST completed\n".echo();
+$local.clientc = $net();
+$local.err3 = clientc.connect('http://httpbin.org/post', null, null);
+if(err3.type() != $ERR) {
+    "HTTP POST connection successful\n".echo();
+    $local.postData = '{"test": "data", "message": "Hello from Grapa"}';
+    $local.postHeaders = 'POST /post HTTP/1.1\r\nHost: httpbin.org\r\nContent-Type: application/json\r\nContent-Length: ' + postData.len() + '\r\nConnection: close\r\n\r\n';
+    clientc.send(postHeaders + postData);
+    $local.responsec = clientc.receive();
+    while(clientc.pending()) {
+        responsec += clientc.receive();
+    };
+    clientc.disconnect();
+    ("HTTP POST completed, response length: " + responsec.len() + "\n").echo();
 } else {
-    "HTTP connection failed\n".echo();
-}
+    ("HTTP POST connection failed: " + err3 + "\n").echo();
+};
 
 /* Test 4: HTTPS POST */
 "Test 4: HTTPS POST\n".echo();
-clienta = $net();
-err = clienta.connect('https://httpbin.org/post', null, null);
-if(err == 0) {
-    "HTTPS connection successful\n".echo();
-    postData = '{"test": "data"}';
-    postHeaders = 'POST /post HTTP/1.1\r\nHost: httpbin.org\r\nContent-Type: application/json\r\nContent-Length: 17\r\nConnection: close\r\n\r\n';
-    clienta.send(postHeaders + postData);
-    responsea = "";
-    $sys().sleep(1000);
-    while(clienta.pending()) {
-        chunk = clienta.receive();
-        if(chunk != null) responsea = responsea + chunk;
-    }
-    clienta.disconnect();
-    "HTTPS POST completed\n".echo();
+$local.clientd = $net();
+$local.err4 = clientd.connect('https://httpbin.org/post', null, null);
+if(err4.type() != $ERR) {
+    "HTTPS POST connection successful\n".echo();
+    $local.postData2 = '{"test": "data", "message": "Hello from Grapa HTTPS"}';
+    $local.postHeaders2 = 'POST /post HTTP/1.1\r\nHost: httpbin.org\r\nContent-Type: application/json\r\nContent-Length: ' + postData2.len() + '\r\nConnection: close\r\n\r\n';
+    clientd.send(postHeaders2 + postData2);
+    $local.responsed = clientd.receive();
+    while(clientd.pending()) {
+        responsed += clientd.receive();
+    };
+    clientd.disconnect();
+    ("HTTPS POST completed, response length: " + responsed.len() + "\n").echo();
 } else {
-    "HTTPS connection failed\n".echo();
-}
+    ("HTTPS POST connection failed: " + err4 + "\n").echo();
+};
 
 "All tests completed.\n".echo();

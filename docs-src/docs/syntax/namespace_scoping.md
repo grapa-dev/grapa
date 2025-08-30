@@ -26,17 +26,12 @@ Grapa defines three fundamental namespace types that can be accessed using speci
 
 ## Syntax
 
-All three namespaces can be accessed with or without the `$` prefix:
+All three namespaces must be accessed with the `$` prefix:
 
 ```grapa
-// These are equivalent:
-global.x = 5;
+// Only these forms are valid:
 $global.x = 5;
-
-this.property = "value";
 $this.property = "value";
-
-local.temp = 10;
 $local.temp = 10;
 ```
 
@@ -169,7 +164,35 @@ processData = op(data) {
 };
 ```
 
-### 3. Avoid Global Variables in Functions
+### 3. Alternative: Reset `$local` to a List
+You can also declare multiple local variables at once by resetting `$local` to a list:
+
+```grapa
+/* Method 1: Individual declarations */
+f1 = op() {
+    $local.a = 1;
+    $local.b = "hi";
+    $local.c = true;
+    return $local;
+};
+
+/* Method 2: Reset $local to a list */
+f2 = op() {
+    $local = {a: 1, b: "hi", c: true};
+    return $local;
+};
+
+/* Method 3: Mixed approach */
+f3 = op() {
+    $local.g = 1;  /* Individual declaration */
+    $local = {a: 1, b: "hi"};  /* Reset to list */
+    return $local;
+};
+```
+
+**Note**: When you reset `$local` to a list, it replaces all existing local variables with the new list structure. This is useful for bulk initialization but be careful not to lose previously declared variables.
+
+### 4. Avoid Global Variables in Functions
 Unless absolutely necessary, avoid using global variables within functions:
 
 ```grapa
@@ -187,7 +210,7 @@ goodFunction = op() {
 };
 ```
 
-### 4. Thread-Safe Design
+### 5. Thread-Safe Design
 For functions that may run in parallel contexts:
 
 ```grapa
@@ -201,6 +224,59 @@ threadSafeProcessor = op(input) {
 };
 ```
 
+### 6. **Critical: Network Programming Thread Safety**
+**Network message handlers and concurrent functions MUST use `$local` variables:**
+
+```grapa
+/* ✅ CRITICAL - Thread-safe network message handler */
+httpMessageHandler = op(netSession, message, hasmore) {
+    netSession.data += message;
+    
+    if (hasmore == 0) {
+        /* Check for connection close */
+        if (netSession.data.len() == 0) {
+            netSession.disconnect();
+            return(null);
+        };
+        
+        /* ALL variables must be $local to avoid race conditions */
+        $local.datasplit = netSession.data.split(" ");
+        $local.method = datasplit[0];
+        $local.path = datasplit[1];
+        $local.response = "";
+        
+        /* Process request safely */
+        if (path == "/") {
+            response = "HTTP/1.1 200 OK\r\n\r\n<h1>Server</h1>";
+        } else {
+            response = "HTTP/1.1 404 Not Found\r\n\r\n";
+        };
+        
+        netSession.send(response);
+    };
+};
+
+/* ❌ DANGEROUS - Race conditions in concurrent execution */
+badMessageHandler = op(netSession, message, hasmore) {
+    netSession.data += message;
+    
+    if (hasmore == 0) {
+        /* Global variables cause race conditions! */
+        request = netSession.data;  // ❌ Race condition!
+        method = request.left(3);   // ❌ Race condition!
+        path = "";                  // ❌ Race condition!
+        
+        /* Multiple concurrent handlers will overwrite each other's variables */
+    };
+};
+```
+
+**Why this is critical:**
+- Network message handlers run concurrently
+- Global variables are shared across all concurrent executions
+- Race conditions can cause data corruption, crashes, or incorrect behavior
+- `$local` ensures each concurrent execution has its own variable instances
+
 ## Namespace Hierarchy
 
 Variables are resolved in the following order:
@@ -210,8 +286,8 @@ Variables are resolved in the following order:
 
 ```grapa
 // Example showing hierarchy
-global.x = "global";
-this.x = "object";
+$global.x = "global";
+$this.x = "object";
 
 myFunction = op() {
     $local.x = "local";
@@ -227,9 +303,6 @@ myFunction = op() {
 The namespace system is implemented in `lib/grapa/$grapa.grc`:
 
 ```grapa
-| this {@<this,{}>}
-| global {@<global,{}>}
-| local {@<local,{}>}
 | $this {@<this,{}>}
 | $global {@<global,{}>}
 | $local {@<local,{}>}

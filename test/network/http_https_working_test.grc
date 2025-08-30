@@ -1,23 +1,35 @@
-/* Working HTTP/HTTPS Test - Using exact syntax from manual tests */
+/* Working HTTP/HTTPS Test - Using proper Grapa patterns */
 
 "Testing HTTP GET...\n".echo();
-clienta = $net();
-clienta.connect('http://httpbin.org/get', null, null);
-clienta.send('GET / HTTP/1.1\r\nHost: localhost:8080\r\n\r\n');
-responsea = "";
-$sys().sleep(3000);
-while(clienta.pending()) responsea = responsea + clienta.receive();
-clienta.disconnect();
-"HTTP GET completed\n".echo();
+$local.clienta = $net();
+$local.err = clienta.connect('http://httpbin.org', null, null);
+if(err.type() != $ERR) {
+    "HTTP connection successful\n".echo();
+    clienta.send('GET / HTTP/1.1\r\nHost: httpbin.org\r\nConnection: close\r\n\r\n');
+    $local.responsea = clienta.receive();
+    while(clienta.pending()) {
+        responsea += clienta.receive();
+    };
+    clienta.disconnect();
+    ("HTTP GET completed, response length: " + responsea.len() + "\n").echo();
+} else {
+    ("HTTP connection failed: " + err + "\n").echo();
+};
 
 "Testing HTTPS GET...\n".echo();
-clienta = $net();
-clienta.connect('https://httpbin.org/get', "keys/client.crt", null);
-clienta.send('GET / HTTP/1.1\r\nHost: localhost:8080\r\n\r\n');
-responsea = "";
-$sys().sleep(3000);
-while(clienta.pending()) responsea = responsea + clienta.receive();
-clienta.disconnect();
-"HTTPS GET completed\n".echo();
+$local.clientb = $net();
+$local.err2 = clientb.connect('https://httpbin.org', "keys/client.crt", null);
+if(err2.type() != $ERR) {
+    "HTTPS connection successful\n".echo();
+    clientb.send('GET / HTTP/1.1\r\nHost: httpbin.org\r\nConnection: close\r\n\r\n');
+    $local.responseb = clientb.receive();
+    while(clientb.pending()) {
+        responseb += clientb.receive();
+    };
+    clientb.disconnect();
+    ("HTTPS GET completed, response length: " + responseb.len() + "\n").echo();
+} else {
+    ("HTTPS connection failed: " + err2 + "\n").echo();
+};
 
 "All tests completed.\n".echo();

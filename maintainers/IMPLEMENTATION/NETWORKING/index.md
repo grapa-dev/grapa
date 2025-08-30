@@ -12,9 +12,9 @@ This directory contains comprehensive implementation documentation for Grapa's n
 
 ## Overview
 
-**Total Files:** 6 documentation files
-**Last Updated:** August 17, 2024
-**Status:** Complete networking implementation documentation
+**Total Files:** 7 documentation files
+**Last Updated:** January 2025
+**Status:** Complete networking implementation documentation with future enhancement plan
 
 ## Architecture
 
@@ -49,6 +49,9 @@ Grapa's networking system is built on a cross-platform foundation with the follo
 ### **Application Features**
 - **[HTTP_SERVER_IMPLEMENTATION.md](HTTP_SERVER_IMPLEMENTATION.md)** - HTTPS server setup and management
 - **[WEB_SCRAPING_IMPLEMENTATION.md](WEB_SCRAPING_IMPLEMENTATION.md)** - Web scraping capabilities
+
+### **Future Planning**
+- **[NETWORKING_PROTOCOL_ENHANCEMENT_PLAN.md](NETWORKING_PROTOCOL_ENHANCEMENT_PLAN.md)** - Comprehensive plan for expanding protocol support
 
 ## Implementation Files
 
@@ -165,11 +168,15 @@ titles = html.select("h1, h2, h3");
 
 ## Future Enhancements
 
-### **Planned Features**
+### **Comprehensive Protocol Support**
+See **[NETWORKING_PROTOCOL_ENHANCEMENT_PLAN.md](NETWORKING_PROTOCOL_ENHANCEMENT_PLAN.md)** for detailed roadmap including:
 - **WebSocket support** for real-time communication
 - **HTTP/2 and HTTP/3** protocol support
-- **Enhanced proxy support** with authentication
-- **Connection pooling** for improved performance
+- **FTP/SFTP** for file transfer operations
+- **SMTP/POP3/IMAP** for email capabilities
+- **DNS** for custom resolution
+- **MQTT** for IoT applications
+- **SOCKS Proxy** for enhanced proxy support
 
 ### **Performance Optimizations**
 - **Zero-copy operations** for high-throughput scenarios

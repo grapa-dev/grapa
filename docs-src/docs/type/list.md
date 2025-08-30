@@ -113,6 +113,36 @@ list ++= {g:7}, 2;                        /* Insert at position 2 */
 list -= {b:2};                            /* Remove element with key "b" */
 ```
 
+### List Slicing
+
+Lists support slicing operations for extracting portions of key-value pairs:
+
+#### Left Slicing (.left())
+```grapa
+list = {a:1, b:2, c:3, d:4, e:5};
+
+list.left(3);                              /* {a:1, b:2, c:3} */
+list.left(-2);                             /* {a:1, b:2, c:3} */
+```
+
+#### Right Slicing (.right())
+```grapa
+list = {a:1, b:2, c:3, d:4, e:5};
+
+list.right(3);                             /* {c:3, d:4, e:5} */
+list.right(-2);                            /* {d:4, e:5} */
+```
+
+#### Middle Slicing (.mid())
+```grapa
+list = {a:1, b:2, c:3, d:4, e:5};
+
+list.mid(1, 3);                            /* {b:2, c:3, d:4} */
+list.mid(-3, 2);                           /* {c:3, d:4} */
+```
+
+> **Note:** Slicing methods work with any list size. For empty lists, slicing returns an empty list. Negative indices count from the end.
+
 ### List Rotation
 
 Lists support left and right rotation operations for reordering key-value pairs:

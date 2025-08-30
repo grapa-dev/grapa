@@ -58,7 +58,17 @@ Grapa provides powerful tools for web scraping, API integration, and automation 
 - Rate limiting and error handling
 - Concurrent scraping operations
 
-### [6. Education & Prototyping](education_prototyping.md)
+### [6. Network Programming Patterns](network_programming_patterns.md)
+Comprehensive guide for building thread-safe and concurrent network applications in Grapa, with critical patterns for server/client development.
+
+**Key Features:**
+- Thread-safe message handlers with `$local` variables
+- Concurrent server/client operations
+- Proper connection management and cleanup
+- HTTP/HTTPS parsing best practices
+- Error handling and validation patterns
+
+### [7. Education & Prototyping](education_prototyping.md)
 Grapa's dynamic grammar and meta-programming are ideal for rapid prototyping and teaching programming concepts.
 
 **Key Features:**
@@ -67,7 +77,7 @@ Grapa's dynamic grammar and meta-programming are ideal for rapid prototyping and
 - Custom language and DSL creation
 - Algorithm visualization
 
-### [7. Cryptography](cryptography.md)
+### [8. Cryptography](cryptography.md)
 Comprehensive cryptographic capabilities through OpenSSL integration and custom implementations for production-ready security applications.
 
 **Key Features:**
@@ -76,7 +86,7 @@ Comprehensive cryptographic capabilities through OpenSSL integration and custom 
 - Hash functions (SHA3 family, SHAKE)
 - RSA, Diffie-Hellman, and digital signatures
 
-### [8. Multi-Syntax Data Processing](multi_syntax_data_processing.md)
+### [9. Multi-Syntax Data Processing](multi_syntax_data_processing.md)
 Grapa's executable BNF architecture enables native support for multiple syntaxes (SQL, JSON, XML, HTML) within a single language, making it ideal for complex data integration and ETL workflows.
 
 **Key Features:**
@@ -86,7 +96,7 @@ Grapa's executable BNF architecture enables native support for multiple syntaxes
 - Custom DSL creation for domain-specific tasks
 - Unified multi-syntax data pipelines
 
-### [9. Language Design and Domain-Specific Languages](language_design_and_dsls.md)
+### [10. Language Design and Domain-Specific Languages](language_design_and_dsls.md)
 Grapa's executable BNF system provides unprecedented power for creating custom languages and domain-specific languages (DSLs) directly within the language itself.
 
 **Key Features:**

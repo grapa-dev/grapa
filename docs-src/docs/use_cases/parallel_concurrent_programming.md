@@ -46,7 +46,7 @@ parallel_process = op(data, num_threads) {
     while (i < num_threads) {
         start = i * chunk_size;
         end = (i == num_threads - 1) ? data.len() : (i + 1) * chunk_size;
-        chunks += data.slice(start, end);
+        chunks += data.mid(start, end - start);
         i += 1;
     };
     
@@ -63,16 +63,19 @@ processed_data = parallel_process(large_dataset, 8);
 ("Processed " + processed_data.len().str() + " items in parallel").echo();
 ```
 
-## Example: Concurrent Network Operations
+## Example: Concurrent Network Operations with Automatic Completion
+
+Grapa's `.map()` function provides sophisticated parallel execution with automatic completion and result collection:
+
 ```grapa
-/* Fetch multiple URLs concurrently */
+/* Fetch multiple URLs concurrently with automatic completion */
 fetch_urls = op(urls) {
     responses = urls.map(op(url) {
         try {
-                    response = $net().get(url);
-        {"url": url, "success": true, "data": response.getfield("body")};
-    } catch (error) {
-        {"url": url, "success": false, "error": error.getfield("message")};
+            response = $net().get(url);
+            {"url": url, "success": true, "data": response.getfield("body")};
+        } catch (error) {
+            {"url": url, "success": false, "error": error.getfield("message")};
         };
     });
     responses;
@@ -85,13 +88,24 @@ api_endpoints = [
     "https://api.example.com/orders"
 ];
 
+/* All 3 requests execute simultaneously */
+/* Command completes when ALL requests finish */
+/* Returns array of results in same order as input */
 results = fetch_urls(api_endpoints);
+
 successful = results.filter(op(r) { r.getfield("success"); });
 failed = results.filter(op(r) { !r.getfield("success"); });
 
 ("Successful requests: " + successful.len().str()).echo();
 ("Failed requests: " + failed.len().str()).echo();
 ```
+
+**Key Benefits:**
+- **Parallel Execution**: All requests start simultaneously
+- **Automatic Completion**: Command waits for ALL requests to finish
+- **Result Collection**: Returns array of results in same order as input
+- **Performance**: Total time = slowest request, not sum of all requests
+- **Thread Safety**: Each request runs independently with no race conditions
 
 ## Example: Thread-Safe Data Processing
 ```grapa

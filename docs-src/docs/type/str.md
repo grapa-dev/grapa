@@ -92,6 +92,7 @@ All string manipulation functions in Grapa are Unicode-aware:
 "héllo".left(3);    /* Returns: "hél" (3 Unicode characters) */
 "🚀héllo".right(3); /* Returns: "llo" (3 Unicode characters) */
 "héllo".mid(1, 3);  /* Returns: "éll" (3 Unicode characters from position 1) */
+/* Note: .left(), .right(), and .mid() also work with $ARRAY and $LIST types */
 
 /* Unicode-aware reversal */
 "héllo".reverse();  /* Returns: "olléh" (Unicode characters reversed) */
@@ -116,7 +117,7 @@ unicode_text.bytes();  /* Returns: 11 (byte count) */
 unicode_text.raw();    /* Returns: 0x68C3A96C6C6F20F09F9A80 (hex bytes) */
 ```
 
-> **See Also:** [Object Methods Documentation](obj_methods.md) for comprehensive details on Unicode-aware string functions including `.len()`, `.bytes()`, `.raw()`, `.left()`, `.right()`, `.mid()`, `.reverse()`, `.lpad()`, and `.rpad()`.
+> **See Also:** [Object Methods Documentation](obj_methods.md) for comprehensive details on Unicode-aware string functions including `.len()`, `.bytes()`, `.raw()`, `.left()`, `.right()`, `.mid()`, `.reverse()`, `.lpad()`, and `.rpad()`. Note that `.left()`, `.right()`, and `.mid()` also support `$ARRAY` and `$LIST` types.
 
 > **Note:** While string content supports full Unicode, **identifiers** (variable names, function names) are limited to ASCII characters only. This is a lexical limitation in the parser. See [$ID Documentation](id.md) for details.
 
@@ -129,6 +130,56 @@ Commands | Results
 "this is a test".split(""); | ["t","h","i","s"," ","i","s"," ","a"," ","t","e","s","t"]
 "this is a test".raw(); | 0x7468697320697320612074657374
 "this is a test".raw().int(); | 2361031878030638688519054699098996
+"this is a test".find("test"); | 10
+"this is a test".find("xyz"); | -1
+
+### String Search with `.find()`
+
+The `.find()` method searches for a substring or binary pattern within a string or RAW data, returning the 0-based index of the first occurrence or -1 if not found.
+
+```grapa
+/* Basic string search */
+"hello world".find("world");      /* Returns: 6 */
+"hello world".find("xyz");        /* Returns: -1 (not found) */
+"hello world".find("o");          /* Returns: 4 (first occurrence) */
+
+/* RAW data search */
+0x10FE0021FA.uraw().find(0xFE0021.uraw());  /* Returns: 1 */
+0x10FE0021FA.uraw().find(0x21.uraw());      /* Returns: 3 */
+
+/* Search with null bytes */
+$RAW("hello\0world").find("world".raw());   /* Returns: 6 */
+$RAW("hello\0world").find("\0".raw());      /* Returns: 5 */
+
+/* Optional start position */
+"hello world".find("o", 5);       /* Returns: 7 (search from position 5) */
+"hello world".find("o", 8);       /* Returns: -1 (not found after position 8) */
+
+/* Optional start position and size limit */
+"hello world".find("o", 1, 5);    /* Returns: 4 (search from position 1, limit 5 chars) */
+```
+
+**Parameters:**
+- `term` (required): The substring or binary pattern to search for
+- `start` (optional): Starting position for the search (default: 0)
+- `size` (optional): Maximum number of characters/bytes to search (default: to end)
+
+**Supported Data Types:**
+- **$STR**: Searches for Unicode substrings
+- **$RAW**: Performs binary search (handles null bytes and binary data)
+- **$ARRAY**: Searches for subarrays using comprehensive comparison
+- **$LIST**: Searches for sublists using comprehensive comparison
+
+**Return Value:**
+- Returns the 0-based index of the first occurrence
+- Returns -1 if the term is not found
+- Returns -1 if start position is beyond the string/data length
+
+> **Note:** For RAW data, use `.uraw()` to create search terms from hex values to avoid padding issues.
+> 
+> **Array and List Search:** The `.find()` method supports searching for subarrays and sublists using the same comprehensive comparison logic as `switch` statements, ensuring consistent behavior across the language.
+> 
+> **Array-in-List Search:** When searching a `$LIST` with an `$ARRAY` term, the method searches for the array values within the list values and returns the position where the match is found. Use `.mid()` to extract the subset. For example: `{a:1,b:2,c:3}.find([2,3])` returns `1`, and `{a:1,b:2,c:3}.mid(1, 2)` returns `{b:2,c:3}`.
 
 ### Pattern Matching
 ```grapa
