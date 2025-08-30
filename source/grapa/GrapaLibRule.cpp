@@ -6908,7 +6908,7 @@ GrapaRuleEvent* GrapaLibraryRuleSearchEvent::Run(GrapaScriptExec *vScriptExec, G
 					}
 					if (e == NULL)
 					{
-						if (attrList->Next() == NULL && root->mValue.mToken != GrapaTokenType::ERR && (root->mValue.mToken == GrapaTokenType::OBJ || root->mValue.mToken == GrapaTokenType::LIST || root->mValue.mToken == GrapaTokenType::TAG))
+						if (attrList->Next() == NULL && root->mValue.mToken != GrapaTokenType::ERR && (root->mValue.mToken == GrapaTokenType::OBJ || root->mValue.mToken == GrapaTokenType::LIST || root->mValue.mToken == GrapaTokenType::TAG || root->mValue.mToken == GrapaTokenType::RULEOP))
 						{
 							// this is a HACK to pass the item back to Assign...look at the Assign that checks for ERR
 							// ended up needing to put code in various places to remove the vRulePointer and vClass if not used

@@ -52,7 +52,32 @@ tags:
 
 This guide covers the essential syntax patterns for writing Grapa code, based on working examples and best practices.
 
-**See also:** [Operator Precedence Table](precedence.md)
+**See also:** [Operator Precedence Table](precedence.md), [Namespace Scoping](namespace_scoping.md)
+
+## Variable Scoping
+
+Grapa provides sophisticated namespace scoping with `$global`, `$this`, and `$local` identifiers. Proper use of local variables is crucial for thread safety and avoiding variable conflicts.
+
+```grapa
+/* ✅ RECOMMENDED - Declare local variables upfront */
+myFunction = op() {
+    $local.result = null;
+    $local.temp = {};
+    $local.i = 0;
+    
+    // Now safe to use variables without conflicts
+    result = process();
+    return result;
+};
+
+/* ❌ AVOID - Potential conflicts with global scope */
+badFunction = op() {
+    result = process();  // Could overwrite global 'result'
+    return result;
+};
+```
+
+**See [Namespace Scoping](namespace_scoping.md) for comprehensive details on variable scoping, thread safety, and best practices.**
 
 ## Output and Echo
 

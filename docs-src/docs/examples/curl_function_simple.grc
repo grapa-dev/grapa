@@ -1,6 +1,27 @@
 /* Complete working curl function with proper line feeds */
 
 curl = op(url_str, options) {
+
+	// Devine local variables (avoiding using parent versions)
+	$local.method = null;
+	$local.cert = null;
+	$local.url_part = null;
+	$local.host = null;
+	$local.client = null;
+	$local.err = null;
+	$local.slash_pos = null;
+	$local.i = null;
+	$local.request = null;
+	$local.response = null;
+	$local.header_end = null;
+	$local.headers_raw = null;
+	$local.response_body = null;
+	$local.lines = null;
+	$local.status_line = null;
+	$local.status_parts = null;
+	$local.status_code = null;
+	$local.status_text = null;
+	        
     /* Handle null or invalid options */
     if (options == null || options.type() != $LIST) {
         options = {};
@@ -68,7 +89,7 @@ curl = op(url_str, options) {
     while (client.pending()) {
         response += client.receive();
     };
-    
+   
     /* Parse response */
     header_end = -1;
     i = 0;

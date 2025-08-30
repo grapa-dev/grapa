@@ -147,6 +147,7 @@ nav:
           - Troubleshooting: database/troubleshooting.md
       - Language Reference:
           - Basic Syntax: syntax/basic_syntax.md
+          - Namespace Scoping: syntax/namespace_scoping.md
           - Operators: syntax/operator.md
           - Precedence: syntax/precedence.md
           - Grammar Design: syntax/grammar_design.md
