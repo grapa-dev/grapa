@@ -43,7 +43,7 @@
     match = @<[op,@<match,{@<this>,@<var,{pattern}>,@<var,{flags}>,@<var,{start}>,@<var,{end}>,@<var,{count}>,@<var,{offset}>}>],{pattern:null,flags:null,start:null,end:null,count:null,offset:null}>;
 	split = @<[op,@<"split",{@<this>,@<var,{delim}>,@<var,{max}>,@<var,{axis}>}>],{"delim":null,"max":null,"axis":null}>;
 	join = @<[op,@<"join",{@<this>,@<var,{delim}>,@<var,{axis}>}>],{"delim":null,"axis":null}>;
-	identity = @<"identity",{@<this>}>; 
+	identity = @<"vector_identity",{@<this>}>; 
 	diagonal = @<[op,@<diagonal,{@<this>,@<var,{offset}>}>],{offset:null}>; 
 	upper = @<"upper",{@<this>}>; 
 	lower = @<"lower",{@<this>}>; 
