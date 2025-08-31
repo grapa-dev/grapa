@@ -264,6 +264,10 @@ public:
 	GrapaLibraryEvent* HandleEigH(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleSum(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleMean(GrapaCHAR& pName);
+	GrapaLibraryEvent* HandleMin(GrapaCHAR& pName);
+	GrapaLibraryEvent* HandleMax(GrapaCHAR& pName);
+	GrapaLibraryEvent* HandleStd(GrapaCHAR& pName);
+	GrapaLibraryEvent* HandleVariance(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleLower(GrapaCHAR& pName);
     GrapaLibraryEvent* HandleUpper(GrapaCHAR& pName);
     GrapaLibraryEvent* HandleCaseFold(GrapaCHAR& pName);

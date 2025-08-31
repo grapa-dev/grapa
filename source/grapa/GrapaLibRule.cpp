@@ -2573,6 +2573,39 @@ public:
 };
 GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleMean(GrapaCHAR& pName) { return new GrapaLibraryRuleMeanEvent(pName); }
 
+class GrapaLibraryRuleMinEvent : public GrapaLibraryEvent
+{
+public:
+	GrapaLibraryRuleMinEvent(GrapaCHAR& pName) { mName.FROM(pName); };
+	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
+};
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleMin(GrapaCHAR& pName) { return new GrapaLibraryRuleMinEvent(pName); }
+
+class GrapaLibraryRuleMaxEvent : public GrapaLibraryEvent
+{
+public:
+	GrapaLibraryRuleMaxEvent(GrapaCHAR& pName) { mName.FROM(pName); };
+	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
+};
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleMax(GrapaCHAR& pName) { return new GrapaLibraryRuleMaxEvent(pName); }
+
+class GrapaLibraryRuleStdEvent : public GrapaLibraryEvent
+{
+public:
+	GrapaLibraryRuleStdEvent(GrapaCHAR& pName) { mName.FROM(pName); };
+	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
+};
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleStd(GrapaCHAR& pName) { return new GrapaLibraryRuleStdEvent(pName); }
+
+class GrapaLibraryRuleVarianceEvent : public GrapaLibraryEvent
+{
+public:
+	GrapaLibraryRuleVarianceEvent(GrapaCHAR& pName) { mName.FROM(pName); };
+	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
+};
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleVariance(GrapaCHAR& pName) { return new GrapaLibraryRuleVarianceEvent(pName); }
+
+
 class GrapaLibraryRuleLowerEvent : public GrapaLibraryEvent
 {
 public:
@@ -3174,6 +3207,10 @@ GrapaLibraryEvent* GrapaLibraryRuleEvent::LoadLib(GrapaScriptExec *vScriptExec, 
 		{ "eigh", &GrapaLibraryRuleEvent::HandleEigH },
 		{ "sum", &GrapaLibraryRuleEvent::HandleSum },
 		{ "mean", &GrapaLibraryRuleEvent::HandleMean },
+		{ "min", &GrapaLibraryRuleEvent::HandleMin },
+		{ "max", &GrapaLibraryRuleEvent::HandleMax },
+		{ "std", &GrapaLibraryRuleEvent::HandleStd },
+		{ "variance", &GrapaLibraryRuleEvent::HandleVariance },
 		{ "lower", &GrapaLibraryRuleEvent::HandleLower },
         { "upper", &GrapaLibraryRuleEvent::HandleUpper },
         { "casefold", &GrapaLibraryRuleEvent::HandleCaseFold },
@@ -3480,6 +3517,10 @@ GrapaLibraryEvent* GrapaLibraryRuleEvent::LoadLib(GrapaScriptExec *vScriptExec, 
 			else if (pName.Cmp("eigh") == 0) lib = new GrapaLibraryRuleEigHEvent(pName);
 			else if (pName.Cmp("sum") == 0) lib = new GrapaLibraryRuleSumEvent(pName);
 			else if (pName.Cmp("mean") == 0) lib = new GrapaLibraryRuleMeanEvent(pName);
+			else if (pName.Cmp("min") == 0) lib = new GrapaLibraryRuleMinEvent(pName);
+			else if (pName.Cmp("max") == 0) lib = new GrapaLibraryRuleMaxEvent(pName);
+			else if (pName.Cmp("std") == 0) lib = new GrapaLibraryRuleStdEvent(pName);
+			else if (pName.Cmp("variance") == 0) lib = new GrapaLibraryRuleVarEvent(pName);
 			else if (pName.Cmp("lower") == 0) lib = new GrapaLibraryRuleLowerEvent(pName);
             else if (pName.Cmp("upper") == 0) lib = new GrapaLibraryRuleUpperEvent(pName);
 
@@ -20023,6 +20064,174 @@ GrapaRuleEvent* GrapaLibraryRuleMeanEvent::Run(GrapaScriptExec* vScriptExec, Gra
 		result = new GrapaRuleEvent(GrapaTokenType::VECTOR, 0, "", "");
 		result->vVector = new GrapaVector();
 		if (r1.vVal->vVector->Mean(vScriptExec, *result->vVector, axis == 0))
+		{
+			result->CLEAR();
+			delete result;
+			result = Error(vScriptExec, pNameSpace, -1);
+		}
+	}
+	if (result == NULL)
+		result = Error(vScriptExec, pNameSpace, -1);
+	return(result);
+}
+
+GrapaRuleEvent* GrapaLibraryRuleMinEvent::Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput)
+{
+	GrapaRuleEvent* result = NULL;
+	GrapaLibraryParam r1(vScriptExec, pNameSpace, pInput ? pInput->Head(0) : NULL);
+	GrapaLibraryParam r2(vScriptExec, pNameSpace, pInput ? pInput->Head(1) : NULL);
+	s64 axis = 0;
+	if (r2.vVal && r2.vVal->mValue.mToken == GrapaTokenType::INT)
+	{
+		GrapaInt a;
+		a.FromBytes(r2.vVal->mValue);
+		axis = a.LongValue();
+	}
+	if (r1.vVal && (r1.vVal->mValue.mToken == GrapaTokenType::ARRAY || r1.vVal->mValue.mToken == GrapaTokenType::TUPLE))
+	{
+		GrapaVector aa;
+		aa.FROM(vScriptExec->vScriptState->mItemState.mFloatFix, vScriptExec->vScriptState->mItemState.mFloatMax, vScriptExec->vScriptState->mItemState.mFloatExtra, r1.vVal, 0);
+		GrapaVector cc;
+		if (aa.Min(vScriptExec, cc, axis == 0) || cc.mData == NULL)
+		{
+			result = Error(vScriptExec, pNameSpace, -1);
+		}
+		else
+		{
+			result = cc.ToArray();
+		}
+	}
+	else if (r1.vVal && r1.vVal->mValue.mToken == GrapaTokenType::VECTOR)
+	{
+		result = new GrapaRuleEvent(GrapaTokenType::VECTOR, 0, "", "");
+		result->vVector = new GrapaVector();
+		if (r1.vVal->vVector->Min(vScriptExec, *result->vVector, axis == 0))
+		{
+			result->CLEAR();
+			delete result;
+			result = Error(vScriptExec, pNameSpace, -1);
+		}
+	}
+	if (result == NULL)
+		result = Error(vScriptExec, pNameSpace, -1);
+	return(result);
+}
+
+GrapaRuleEvent* GrapaLibraryRuleMaxEvent::Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput)
+{
+	GrapaRuleEvent* result = NULL;
+	GrapaLibraryParam r1(vScriptExec, pNameSpace, pInput ? pInput->Head(0) : NULL);
+	GrapaLibraryParam r2(vScriptExec, pNameSpace, pInput ? pInput->Head(1) : NULL);
+	s64 axis = 0;
+	if (r2.vVal && r2.vVal->mValue.mToken == GrapaTokenType::INT)
+	{
+		GrapaInt a;
+		a.FromBytes(r2.vVal->mValue);
+		axis = a.LongValue();
+	}
+	if (r1.vVal && (r1.vVal->mValue.mToken == GrapaTokenType::ARRAY || r1.vVal->mValue.mToken == GrapaTokenType::TUPLE))
+	{
+		GrapaVector aa;
+		aa.FROM(vScriptExec->vScriptState->mItemState.mFloatFix, vScriptExec->vScriptState->mItemState.mFloatMax, vScriptExec->vScriptState->mItemState.mFloatExtra, r1.vVal, 0);
+		GrapaVector cc;
+		if (aa.Max(vScriptExec, cc, axis == 0) || cc.mData == NULL)
+		{
+			result = Error(vScriptExec, pNameSpace, -1);
+		}
+		else
+		{
+			result = cc.ToArray();
+		}
+	}
+	else if (r1.vVal && r1.vVal->mValue.mToken == GrapaTokenType::VECTOR)
+	{
+		result = new GrapaRuleEvent(GrapaTokenType::VECTOR, 0, "", "");
+		result->vVector = new GrapaVector();
+		if (r1.vVal->vVector->Max(vScriptExec, *result->vVector, axis == 0))
+		{
+			result->CLEAR();
+			delete result;
+			result = Error(vScriptExec, pNameSpace, -1);
+		}
+	}
+	if (result == NULL)
+		result = Error(vScriptExec, pNameSpace, -1);
+	return(result);
+}
+
+GrapaRuleEvent* GrapaLibraryRuleStdEvent::Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput)
+{
+	GrapaRuleEvent* result = NULL;
+	GrapaLibraryParam r1(vScriptExec, pNameSpace, pInput ? pInput->Head(0) : NULL);
+	GrapaLibraryParam r2(vScriptExec, pNameSpace, pInput ? pInput->Head(1) : NULL);
+	s64 axis = 0;
+	if (r2.vVal && r2.vVal->mValue.mToken == GrapaTokenType::INT)
+	{
+		GrapaInt a;
+		a.FromBytes(r2.vVal->mValue);
+		axis = a.LongValue();
+	}
+	if (r1.vVal && (r1.vVal->mValue.mToken == GrapaTokenType::ARRAY || r1.vVal->mValue.mToken == GrapaTokenType::TUPLE))
+	{
+		GrapaVector aa;
+		aa.FROM(vScriptExec->vScriptState->mItemState.mFloatFix, vScriptExec->vScriptState->mItemState.mFloatMax, vScriptExec->vScriptState->mItemState.mFloatExtra, r1.vVal, 0);
+		GrapaVector cc;
+		if (aa.Std(vScriptExec, cc, axis == 0) || cc.mData == NULL)
+		{
+			result = Error(vScriptExec, pNameSpace, -1);
+		}
+		else
+		{
+			result = cc.ToArray();
+		}
+	}
+	else if (r1.vVal && r1.vVal->mValue.mToken == GrapaTokenType::VECTOR)
+	{
+		result = new GrapaRuleEvent(GrapaTokenType::VECTOR, 0, "", "");
+		result->vVector = new GrapaVector();
+		if (r1.vVal->vVector->Std(vScriptExec, *result->vVector, axis == 0))
+		{
+			result->CLEAR();
+			delete result;
+			result = Error(vScriptExec, pNameSpace, -1);
+		}
+	}
+	if (result == NULL)
+		result = Error(vScriptExec, pNameSpace, -1);
+	return(result);
+}
+
+GrapaRuleEvent* GrapaLibraryRuleVarianceEvent::Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput)
+{
+	GrapaRuleEvent* result = NULL;
+	GrapaLibraryParam r1(vScriptExec, pNameSpace, pInput ? pInput->Head(0) : NULL);
+	GrapaLibraryParam r2(vScriptExec, pNameSpace, pInput ? pInput->Head(1) : NULL);
+	s64 axis = 0;
+	if (r2.vVal && r2.vVal->mValue.mToken == GrapaTokenType::INT)
+	{
+		GrapaInt a;
+		a.FromBytes(r2.vVal->mValue);
+		axis = a.LongValue();
+	}
+	if (r1.vVal && (r1.vVal->mValue.mToken == GrapaTokenType::ARRAY || r1.vVal->mValue.mToken == GrapaTokenType::TUPLE))
+	{
+		GrapaVector aa;
+		aa.FROM(vScriptExec->vScriptState->mItemState.mFloatFix, vScriptExec->vScriptState->mItemState.mFloatMax, vScriptExec->vScriptState->mItemState.mFloatExtra, r1.vVal, 0);
+		GrapaVector cc;
+		if (aa.Var(vScriptExec, cc, axis == 0) || cc.mData == NULL)
+		{
+			result = Error(vScriptExec, pNameSpace, -1);
+		}
+		else
+		{
+			result = cc.ToArray();
+		}
+	}
+	else if (r1.vVal && r1.vVal->mValue.mToken == GrapaTokenType::VECTOR)
+	{
+		result = new GrapaRuleEvent(GrapaTokenType::VECTOR, 0, "", "");
+		result->vVector = new GrapaVector();
+		if (r1.vVal->vVector->Var(vScriptExec, *result->vVector, axis == 0))
 		{
 			result->CLEAR();
 			delete result;

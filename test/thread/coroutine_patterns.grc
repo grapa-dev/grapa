@@ -1,0 +1,288 @@
+/* Coroutine Patterns Test
+   Tests advanced coroutine patterns: producer-consumer, pipeline, cooperative multitasking */
+
+/* Thread-safe variable declarations */
+$global queue = [];
+$global queue_lock = $thread();
+$global data_ready = $thread();
+$global space_available = $thread();
+$global max_size = 5;
+$global pipeline_data = [];
+$global pipeline_lock = $thread();
+$global tasks = [];
+$global completed_tasks = 0;
+$global task_lock = $thread();
+$global resource_pool = {
+    available: ["Resource_A", "Resource_B", "Resource_C"],
+    in_use: {},
+    lock: $thread()
+};
+
+"=== Coroutine Patterns Test ===".echo();
+
+/* Test 1: Producer-Consumer Coroutine Pattern */
+"Test 1: Producer-Consumer Coroutine Pattern\n".echo();
+
+/* Producer thread */
+producer = $thread();
+producer.start(
+    op() {
+        "Producer: Starting production\n".echo();
+        
+        for (i = 0; i < 8; i++) {
+            queue_lock.lock();
+            while (queue.len() >= max_size) {
+                queue_lock.unlock();
+                producer.suspend();  /* Wait for space */
+                queue_lock.lock();
+            };
+            
+            queue.push("Item " + i);
+            queue_lock.unlock();
+            data_ready.signal();
+            ("Producer: Added Item " + i + "\n").echo();
+            $sys().sleep(100);
+        };
+        
+        "Producer: Production complete\n".echo();
+        return "Producer completed";
+    },
+    null,
+    op(input, result) {
+        ("Producer callback: " + result + "\n").echo();
+    }
+);
+
+/* Consumer threads */
+for (consumer_id = 0; consumer_id < 2; consumer_id++) {
+    consumer = $thread();
+    consumer.start(
+        op(id) {
+            "Consumer " + id + ": Starting consumption\n".echo();
+            
+            items_consumed = 0;
+            while (items_consumed < 4) {
+                queue_lock.lock();
+                while (queue.len() == 0) {
+                    queue_lock.unlock();
+                    consumer.suspend();  /* Wait for data */
+                    queue_lock.lock();
+                };
+                
+                item = queue.shift();
+                queue_lock.unlock();
+                
+                ("Consumer " + id + ": Consumed " + item + "\n").echo();
+                items_consumed++;
+                $sys().sleep(150);
+            };
+            
+            ("Consumer " + id + ": Consumption complete\n").echo();
+            return "Consumer " + id + " completed";
+        },
+        consumer_id,
+        op(input, result) {
+            ("Consumer callback: " + result + "\n").echo();
+        }
+    );
+};
+
+$sys().sleep(1000);
+
+/* Test 2: Pipeline Processing */
+"Test 2: Pipeline Processing\n".echo();
+
+/* Stage 1: Generator */
+generator = $thread();
+generator.start(
+    op() {
+        "Generator: Starting\n".echo();
+        
+        for (i = 0; i < 5; i++) {
+            pipeline_lock.lock();
+            pipeline_data.push(i * 2);
+            pipeline_lock.unlock();
+            
+            ("Generator: Produced " + (i * 2) + "\n").echo();
+            generator.suspend();  /* Yield to processor */
+            $sys().sleep(50);
+        };
+        
+        "Generator: Complete\n".echo();
+        return "Generator done";
+    },
+    null,
+    op(input, result) {
+        ("Generator callback: " + result + "\n").echo();
+    }
+);
+
+/* Stage 2: Processor */
+processor = $thread();
+processor.start(
+    op() {
+        "Processor: Starting\n".echo();
+        
+        for (i = 0; i < 5; i++) {
+            /* Wait for data */
+            while (pipeline_data.len() == 0) {
+                processor.suspend();
+            };
+            
+            pipeline_lock.lock();
+            data = pipeline_data.shift();
+            pipeline_lock.unlock();
+            
+            processed = data * 3 + 1;
+            ("Processor: " + data + " -> " + processed + "\n").echo();
+            
+            processor.suspend();  /* Yield to outputter */
+            $sys().sleep(75);
+        };
+        
+        "Processor: Complete\n".echo();
+        return "Processor done";
+    },
+    null,
+    op(input, result) {
+        ("Processor callback: " + result + "\n").echo();
+    }
+);
+
+/* Stage 3: Outputter */
+outputter = $thread();
+outputter.start(
+    op() {
+        "Outputter: Starting\n".echo();
+        
+        for (i = 0; i < 5; i++) {
+            ("Outputter: Processing step " + i + "\n").echo();
+            
+            /* Resume other stages */
+            if (generator.suspended()) {
+                generator.resume();
+            };
+            if (processor.suspended()) {
+                processor.resume();
+            };
+            
+            outputter.suspend();  /* Yield control */
+            $sys().sleep(100);
+        };
+        
+        "Outputter: Complete\n".echo();
+        return "Outputter done";
+    },
+    null,
+    op(input, result) {
+        ("Outputter callback: " + result + "\n").echo();
+    }
+);
+
+$sys().sleep(800);
+
+/* Test 3: Cooperative Multitasking */
+"Test 3: Cooperative Multitasking\n".echo();
+
+/* Create tasks */
+for (i = 0; i < 3; i++) {
+    task = $thread();
+    task.start(
+        op(task_id) {
+            "Task " + task_id + ": Starting\n".echo();
+            
+            for (j = 0; j < 3; j++) {
+                ("Task " + task_id + ": Step " + j + "\n").echo();
+                task.suspend();  /* Yield control */
+                $sys().sleep(50);
+            };
+            
+            task_lock.lock();
+            completed_tasks++;
+            task_lock.unlock();
+            
+            ("Task " + task_id + ": Completed\n").echo();
+            return "Task " + task_id + " done";
+        },
+        i,
+        op(input, result) {
+            ("Task callback: " + result + "\n").echo();
+        }
+    );
+    tasks.push(task);
+}
+
+/* Simple scheduler */
+scheduler = $thread();
+scheduler.start(
+    op() {
+        "Scheduler: Starting\n".echo();
+        
+        while (completed_tasks < 3) {
+            for (i = 0; i < tasks.len(); i++) {
+                if (tasks[i].suspended()) {
+                    ("Scheduler: Resuming task " + i + "\n").echo();
+                    tasks[i].resume();
+                    $sys().sleep(25);
+                };
+            };
+        };
+        
+        "Scheduler: All tasks complete\n".echo();
+        return "Scheduler done";
+    },
+    null,
+    op(input, result) {
+        ("Scheduler callback: " + result + "\n").echo();
+    }
+);
+
+$sys().sleep(600);
+
+/* Test 4: Resource Pool Management */
+"Test 4: Resource Pool Management\n".echo();
+
+/* Resource requesters */
+for (requester_id = 0; requester_id < 4; requester_id++) {
+    requester = $thread();
+    requester.start(
+        op(id) {
+            ("Requester " + id + ": Requesting resource\n").echo();
+            
+            resource_pool.lock.lock();
+            if (resource_pool.available.len() > 0) {
+                resource = resource_pool.available.pop();
+                resource_pool.in_use[id] = resource;
+                resource_pool.lock.unlock();
+                
+                ("Requester " + id + ": Got " + resource + "\n").echo();
+                $sys().sleep(200);  /* Use resource */
+                
+                resource_pool.lock.lock();
+                resource_pool.available.push(resource);
+                delete resource_pool.in_use[id];
+                resource_pool.lock.unlock();
+                
+                ("Requester " + id + ": Returned " + resource + "\n").echo();
+            } else {
+                resource_pool.lock.unlock();
+                ("Requester " + id + ": No resources available\n").echo();
+            };
+            
+            return "Requester " + id + " completed";
+        },
+        requester_id,
+        op(input, result) {
+            ("Requester callback: " + result + "\n").echo();
+        }
+    );
+};
+
+$sys().sleep(600);
+
+/* Summary */
+"=== Coroutine Patterns Test Summary ===\n".echo();
+("Final queue size: " + queue.len() + "\n").echo();
+("Completed tasks: " + completed_tasks + "\n").echo();
+("Available resources: " + resource_pool.available.len() + "\n").echo();
+("Coroutine patterns test complete!\n").echo();

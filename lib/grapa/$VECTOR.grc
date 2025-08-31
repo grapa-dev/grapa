@@ -9,6 +9,10 @@
 	cov = @<[op,@<"cov",{@<this,{}>,@<var,{axis}>}>],{"axis":null}>; 
 	sum = @<[op,@<"sum",{@<this,{}>,@<var,{axis}>}>],{"axis":null}>; 
 	mean = @<[op,@<"mean",{@<this,{}>,@<var,{axis}>}>],{"axis":null}>; 
+	min = @<[op,@<"min",{@<this,{}>,@<var,{axis}>}>],{"axis":null}>; 
+	max = @<[op,@<"max",{@<this,{}>,@<var,{axis}>}>],{"axis":null}>; 
+	std = @<[op,@<"std",{@<this,{}>,@<var,{axis}>}>],{"axis":null}>; 
+	variance = @<[op,@<"variance",{@<this,{}>,@<var,{axis}>}>],{"axis":null}>; 
 	shape = @<"shape",{@<this>}>; 
 	reshape = @<[op,@<"reshape",{@<this,{}>,@<var,{shape}>}>],{"shape":null}>; 
 	norm = @<"norm",{@<this>}>; 

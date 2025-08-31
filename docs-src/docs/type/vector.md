@@ -94,9 +94,13 @@ shape = vec.shape();      /* Get dimensions: [6] */
 reshaped = vec.reshape([2, 3]);  /* Reshape to 2x3: #[[1,2,3],[4,5,6]]# */
 transposed = vec.t();     /* Matrix transpose (for 2D vectors) */
 
-/* Statistical operations (2D vectors only) */
-total = vec.sum();        /* Sum all elements (2D vectors only) */
-average = vec.mean();     /* Mean of all elements (2D vectors only) */
+/* Statistical operations (1D and 2D vectors) */
+total = vec.sum();        /* Sum all elements */
+average = vec.mean();     /* Mean of all elements */
+min_val = vec.min();      /* Minimum value */
+max_val = vec.max();      /* Maximum value */
+std_dev = vec.std();      /* Standard deviation */
+variance_val = vec.variance();  /* Variance */
 det_value = vec.det();    /* Determinant (for square matrices) */
 rank_value = vec.rank();  /* Matrix rank */
 cov_matrix = vec.cov();   /* Covariance matrix */
@@ -186,12 +190,13 @@ For comprehensive machine learning capabilities, see [Machine Learning Guide](..
 ```grapa
 vec = [1, 2, 3, 4, 5];
 
-/* Statistical functions (2D vectors only) */
-vec.sum();                /* Sum of all elements (2D vectors only) */
-vec.mean();               /* Arithmetic mean (2D vectors only) */
-vec.std();                /* Standard deviation */
+/* Statistical functions (1D and 2D vectors) */
+vec.sum();                /* Sum of all elements */
+vec.mean();               /* Arithmetic mean */
 vec.min();                /* Minimum value */
 vec.max();                /* Maximum value */
+vec.std();                /* Standard deviation */
+vec.variance();           /* Variance */
 
 /* Mathematical functions */
 vec.abs();                /* Absolute values */
@@ -239,6 +244,10 @@ data_3d.sum(2);           /* Sum along axis 2 */
 
 data_3d.mean();           /* Mean of all elements */
 data_3d.mean(0);          /* Mean along axis 0 */
+data_3d.min();            /* Minimum of all elements */
+data_3d.max();            /* Maximum of all elements */
+data_3d.std();            /* Standard deviation of all elements */
+data_3d.variance();       /* Variance of all elements */
 data_3d.cov();            /* Covariance matrix */
 data_3d.cov(0);           /* Covariance along axis 0 */
 
@@ -439,28 +448,35 @@ small_det = small_mat.det();  /* Handled correctly */
 
 #### **2D-Only Operations**
 The following operations currently only work on 2-dimensional vectors (matrices):
-- `.sum()` - Sum along specified axis
-- `.mean()` - Mean along specified axis
 - `.cov()` - Covariance matrix calculation
 
 **1D vectors will return `{"error":-1}` for these operations.**
 
-```grapa
-/* 1D vector - operations fail */
-vec_1d = #[1, 2, 3, 4, 5]#;
-result = vec_1d.sum();  /* Returns {"error":-1} */
+#### **1D and 2D Operations**
+The following operations work on both 1-dimensional and 2-dimensional vectors:
+- `.sum()` - Sum of all elements
+- `.mean()` - Mean of all elements  
+- `.min()` - Minimum value
+- `.max()` - Maximum value
+- `.std()` - Standard deviation
+- `.variance()` - Variance
 
-/* 2D vector - operations work */
+```grapa
+/* 1D vector - operations work */
+vec_1d = #[1, 2, 3, 4, 5]#;
+result = vec_1d.sum();  /* Returns 15 */
+mean_result = vec_1d.mean();  /* Returns 3.0 */
+min_result = vec_1d.min();  /* Returns 1 */
+max_result = vec_1d.max();  /* Returns 5 */
+std_result = vec_1d.std();  /* Returns 1.5811388300841896659994467722163 */
+var_result = vec_1d.variance();  /* Returns 2.5 */
+
+/* 2D vector - operations also work */
 vec_2d = [[1, 2, 3, 4, 5]].vector();
 result = vec_2d.sum();  /* Returns #[15]# */
-
-/* Alternative for 1D vectors */
-vec_1d = #[1, 2, 3, 4, 5]#;
-sum_manual = vec_1d.reduce(op(acc, x){acc + x}, 0);  /* Manual sum */
-mean_manual = sum_manual / vec_1d.len();             /* Manual mean */
 ```
 
-**Future Enhancement**: Support for 1D vector operations is planned to improve usability for common statistical calculations.
+**Note**: All statistical functions now support both 1D and 2D vectors, making them more versatile for data analysis tasks.
 
 ## Integration with Other Types
 
@@ -506,12 +522,19 @@ Grapa vectors can contain mixed data types, making them ideal for real-world dat
 
 #### **Numeric Vectors**
 ```grapa
-/* Integer vectors (2D required for sum/mean) */
+/* Integer vectors (1D and 2D supported) */
 int_vec = #[1, 2, 3, 4, 5]#;
-/* Note: .sum() and .mean() require 2D vectors */
+sum = int_vec.sum();                    /* 15 */
+mean = int_vec.mean();                  /* 3.0 */
+min_val = int_vec.min();                /* 1 */
+max_val = int_vec.max();                /* 5 */
+std_dev = int_vec.std();                /* 1.5811388300841896659994467722163 */
+variance_val = int_vec.variance();      /* 2.5 */
+
+/* 2D vectors also supported */
 int_vec_2d = [[1, 2, 3, 4, 5]].vector();
-sum = int_vec_2d.sum();                 /* #[15]# */
-mean = int_vec_2d.mean();               /* #[3.0]# */
+sum_2d = int_vec_2d.sum();              /* #[15]# */
+mean_2d = int_vec_2d.mean();            /* #[3.0]# */
 
 /* Float vectors with high precision */
 precise_vec = #[1.123456789, 2.987654321, 3.141592653]#;
@@ -607,6 +630,12 @@ avg_q1 = q1_sales.mean();  /* 110.0 */
 avg_q2 = q2_sales.mean();  /* 123.333... */
 avg_q3 = q3_sales.mean();  /* 116.666... */
 avg_q4 = q4_sales.mean();  /* 130.0 */
+
+/* Statistical analysis */
+min_q1 = q1_sales.min();   /* 80 */
+max_q1 = q1_sales.max();   /* 150 */
+std_q1 = q1_sales.std();   /* 35.355339059327378 */
+var_q1 = q1_sales.variance(); /* 1250.0 */
 
 /* Best performing product */
 max_sales = total_sales.max();  /* 630 */

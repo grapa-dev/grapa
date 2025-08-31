@@ -51,8 +51,144 @@ result = tree();     /* Execute tree */
 **Features:**
 - **Human-Readable Trees** - Execution trees are inspectable and manipulable
 - **Code Generation** - Generate code dynamically
-- **Introspection** - Examine compiled code structure
-- **Template Systems** - Advanced string interpolation with script execution
+- **Runtime Modification** - Modify code structure at runtime
+- **Reflection** - Inspect and analyze code structure
+
+### **2. Advanced Metaprogramming - Grapa's Core Innovation**
+
+**Metaprogramming is the essence of Grapa's design** - the language is fundamentally built around the concept that code is data and data is code. Grapa's metaprogramming capabilities surpass even LISP in many ways:
+
+#### **$OP and $CODE - The Language Core**
+
+Grapa's programming language **IS** metaprogramming. Every piece of code is built from `$OP` and `$CODE` structures:
+
+```grapa
+/* Grapa's programming language IS metaprogramming */
+my_op = $OP("add", op(x, y) { return x + y; });
+result = my_op(5, 3);  /* Dynamic function creation and execution */
+
+/* Code construction at runtime */
+dynamic_code = $CODE([
+    $OP("echo", op(msg) { msg.echo(); }),
+    $OP("call", op() { "Hello from dynamic code!".echo(); })
+]);
+dynamic_code.run();
+```
+
+#### **Runtime Rule Mutation**
+
+The rules engine is **fully mutable at runtime** because all rules are stored in variables:
+
+```grapa
+/* Rules engine is fully mutable at runtime */
+$RULE("custom_syntax", "my_command $STR", op(cmd, str) {
+    "Custom syntax executed: " + str.echo();
+});
+
+/* Rules are stored in variables - fully dynamic */
+my_rules = $RULE("dynamic_rule", "$INT + $INT", op(a, b) {
+    return a + b;
+});
+
+/* Modify rules at runtime */
+@global["$expression"] ++= rule 'custom' $STR { op(text:$2) { "Custom: " + text; } };
+```
+
+#### **Token-to-Code Transformation**
+
+The rules engine converts tokens directly into executable `$OP` and `$CODE` structures:
+
+```grapa
+/* Every syntax construct becomes executable code */
+expression = "5 + 3";
+/* Internally becomes: $CODE([$OP("add", $INT(5), $INT(3))]) */
+
+/* Custom syntax becomes executable code */
+custom_expression = "custom 'hello world'";
+/* Internally becomes: $CODE([$OP("custom", $STR("hello world"))]) */
+```
+
+#### **Why Grapa Surpasses LISP in Metaprogramming**
+
+**LISP's Approach:**
+```lisp
+;; LISP uses S-expressions (symbolic expressions)
+(defun add (x y) (+ x y))
+;; Code is represented as lists: (defun add (x y) (+ x y))
+```
+
+**Grapa's Approach:**
+```grapa
+/* Grapa uses executable BNF with direct code generation */
+@global["$function"] = rule 'defun' $ID '(' $params ')' $body {
+    op(name:$2, params:$4, body:$6) {
+        /* Directly creates executable $OP structure */
+        return $OP(name, op(params) { body; });
+    }
+};
+
+/* Usage creates executable code immediately */
+defun add(x, y) { x + y; }
+/* Becomes: $OP("add", op(x, y) { x + y; }) */
+```
+
+#### **Advanced Metaprogramming Patterns**
+
+```grapa
+/* Code generation and execution */
+generate_function = op(name, body) {
+    return $OP(name, op() { body; });
+};
+
+dynamic_func = generate_function("hello", "Hello World!".echo());
+dynamic_func();  /* Executes: "Hello World!" */
+
+/* Runtime code analysis */
+analyze_code = op(code) {
+    return {
+        type: code.type(),
+        description: code.describe(),
+        parameters: code.parameters()
+    };
+};
+
+/* Code transformation */
+transform_code = op(code, transformer) {
+    return transformer(code);
+};
+```
+
+#### **Multi-Syntax Metaprogramming**
+
+Grapa's metaprogramming extends beyond its own syntax:
+
+```grapa
+/* Add SQL syntax to the language */
+custom_command = rule select $STR from $STR {op(fields:$2,table:$4){
+    /* SQL becomes executable Grapa code */
+    return query_database(fields, table);
+}};
+
+/* Add PROLOG syntax to the language */
+custom_command ++= rule $STR '(' $STR ')' '.' {op(predicate:$1,args:$3){
+    /* PROLOG becomes executable Grapa code */
+    return add_fact(predicate, args);
+}};
+
+/* Execute multi-syntax code */
+op()("select name, age from users")();  /* SQL syntax */
+op()("parent(john,mary)")();            /* PROLOG syntax */
+```
+
+#### **Why This Makes Grapa Unique**
+
+1. **Everything is Code**: Variables, functions, classes, syntax - all are `$OP` and `$CODE` structures
+2. **Runtime Grammar Mutation**: The language grammar can change while running
+3. **Direct Code Generation**: No intermediate representations - tokens become executable code
+4. **Multi-Syntax Support**: Can add any syntax to the language at runtime
+5. **Human-Readable Execution Trees**: Code structure is inspectable and manipulable
+
+**This is why Grapa is probably more metaprogramming-focused than any other language** - metaprogramming isn't a feature, it's the foundation of the entire language design.
 
 ### **3. Functional Programming**
 

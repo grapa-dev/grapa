@@ -1,0 +1,282 @@
+/* Synchronization Primitives Test
+   Tests thread synchronization methods: trylock, lock, unlock, wait, signal, waiting */
+
+/* Thread-safe variable declarations */
+$global data_ready = false;
+$global active_workers = 0;
+$global workers = [];
+$global resources = [1, 2, 3];
+$global resource_count = 3;
+$global consumers = [];
+$global access_order = [];
+
+"=== Synchronization Primitives Test ===".echo();
+
+/* Test 1: Basic locking operations */
+"Test 1: Basic locking operations\n".echo();
+lock = $thread();
+
+/* Test trylock on unlocked lock */
+result = lock.trylock();
+("Trylock on unlocked lock: " + result + "\n").echo();
+
+/* Test trylock on locked lock */
+result = lock.trylock();
+("Trylock on locked lock: " + result + "\n").echo();
+
+/* Unlock and test again */
+lock.unlock();
+result = lock.trylock();
+("Trylock after unlock: " + result + "\n").echo();
+
+/* Test blocking lock */
+lock.unlock();
+"Testing blocking lock\n".echo();
+lock.lock();
+"Lock acquired\n".echo();
+lock.unlock();
+"Lock released\n".echo();
+
+/* Test 2: Condition variables - wait and signal */
+"Test 2: Condition variables - wait and signal\n".echo();
+condition = $thread();
+
+/* Create producer thread */
+producer = $thread();
+producer.start(
+    op() {
+        "Producer: Starting work\n".echo();
+        $sys().sleep(100);  /* Simulate work */
+        "Producer: Data ready, signaling consumer\n".echo();
+        data_ready = true;
+        condition.signal();  /* Signal waiting consumer */
+        "Producer: Signal sent\n".echo();
+        return "Producer completed";
+    },
+    null,
+    op(input, result) {
+        ("Producer callback: " + result + "\n").echo();
+    }
+);
+
+/* Create consumer thread */
+consumer = $thread();
+consumer.start(
+    op() {
+        "Consumer: Starting, waiting for data\n".echo();
+        
+        /* Wait for data to be ready */
+        while (!data_ready) {
+            condition.wait();  /* Wait for signal */
+            "Consumer: Woken up, checking data\n".echo();
+        };
+        
+        "Consumer: Data received, processing\n".echo();
+        $sys().sleep(50);
+        "Consumer: Processing complete\n".echo();
+        return "Consumer completed";
+    },
+    null,
+    op(input, result) {
+        ("Consumer callback: " + result + "\n").echo();
+    }
+);
+
+/* Wait for both threads to complete */
+$sys().sleep(300);
+
+/* Test 3: Multiple waiters and signals */
+"Test 3: Multiple waiters and signals\n".echo();
+shared_condition = $thread();
+worker_count = 3;
+
+/* Create multiple worker threads */
+for (i = 0; i < worker_count; i++) {
+    worker = $thread();
+    worker.start(
+        op(worker_id) {
+            ("Worker " + worker_id + ": Starting\n").echo();
+            
+            /* Wait for master signal */
+            shared_condition.wait();
+            ("Worker " + worker_id + ": Woken up\n").echo();
+            
+            /* Simulate work */
+            $sys().sleep(50);
+            ("Worker " + worker_id + ": Work completed\n").echo();
+            
+            return "Worker " + worker_id + " completed";
+        },
+        i,
+        op(input, result) {
+            ("Worker callback: " + result + "\n").echo();
+        }
+    );
+    workers.push(worker);
+};
+
+/* Wait a bit then signal all workers */
+$sys().sleep(100);
+"Master: Signaling all workers\n".echo();
+shared_condition.signal();
+
+/* Wait for workers to complete */
+$sys().sleep(200);
+
+/* Test 4: Waiting state inspection */
+"Test 4: Waiting state inspection\n".echo();
+test_condition = $thread();
+
+/* Check initial waiting state */
+waiting = test_condition.waiting();
+("Initial waiting state: " + waiting + "\n").echo();
+
+/* Create a thread that will wait */
+waiter = $thread();
+waiter.start(
+    op() {
+        "Waiter: About to wait\n".echo();
+        test_condition.wait();
+        "Waiter: Woken up\n".echo();
+        return "Waiter completed";
+    },
+    null,
+    op(input, result) {
+        ("Waiter callback: " + result + "\n").echo();
+    }
+);
+
+/* Wait a bit then check waiting state */
+$sys().sleep(50);
+waiting = test_condition.waiting();
+("Waiting state while thread is waiting: " + waiting + "\n").echo();
+
+/* Signal the waiting thread */
+test_condition.signal();
+
+/* Wait for completion and check final state */
+$sys().sleep(100);
+waiting = test_condition.waiting();
+("Final waiting state: " + waiting + "\n").echo();
+
+/* Test 5: Complex synchronization scenario */
+"Test 5: Complex synchronization scenario\n".echo();
+resource_lock = $thread();
+resource_available = $thread();
+
+/* Create resource consumers */
+for (i = 0; i < 5; i++) {
+    consumer = $thread();
+    consumer.start(
+        op(consumer_id) {
+            ("Consumer " + consumer_id + ": Requesting resource\n").echo();
+            
+            /* Try to acquire resource */
+            resource_lock.lock();
+            
+            if (resource_count > 0) {
+                /* Resource available */
+                resource = resources.pop();
+                resource_count--;
+                resource_lock.unlock();
+                
+                ("Consumer " + consumer_id + ": Got resource " + resource + "\n").echo();
+                $sys().sleep(100);  /* Use resource */
+                
+                /* Return resource */
+                resource_lock.lock();
+                resources.push(resource);
+                resource_count++;
+                resource_lock.unlock();
+                
+                ("Consumer " + consumer_id + ": Returned resource " + resource + "\n").echo();
+                resource_available.signal();  /* Signal that resource is available */
+            } else {
+                /* No resources available, wait */
+                resource_lock.unlock();
+                ("Consumer " + consumer_id + ": No resources, waiting\n").echo();
+                resource_available.wait();
+                
+                /* Try again */
+                ("Consumer " + consumer_id + ": Retrying after wait\n").echo();
+                resource_lock.lock();
+                if (resource_count > 0) {
+                    resource = resources.pop();
+                    resource_count--;
+                    resource_lock.unlock();
+                    
+                    ("Consumer " + consumer_id + ": Got resource " + resource + " after wait\n").echo();
+                    $sys().sleep(100);
+                    
+                    resource_lock.lock();
+                    resources.push(resource);
+                    resource_count++;
+                    resource_lock.unlock();
+                    
+                    ("Consumer " + consumer_id + ": Returned resource " + resource + "\n").echo();
+                } else {
+                    resource_lock.unlock();
+                    ("Consumer " + consumer_id + ": Still no resources\n").echo();
+                };
+            };
+            
+            return "Consumer " + consumer_id + " completed";
+        },
+        i,
+        op(input, result) {
+            ("Consumer callback: " + result + "\n").echo();
+        }
+    );
+    consumers.push(consumer);
+};
+
+/* Wait for all consumers to complete */
+$sys().sleep(800);
+
+/* Check final resource state */
+("Final resource count: " + resource_count + "\n").echo();
+("Final resources: " + resources + "\n").echo();
+
+/* Test 6: Lock contention and fairness */
+"Test 6: Lock contention and fairness\n".echo();
+contention_lock = $thread();
+
+/* Create competing threads */
+competitors = [];
+for (i = 0; i < 4; i++) {
+    competitor = $thread();
+    competitor.start(
+        op(competitor_id) {
+            ("Competitor " + competitor_id + ": Attempting to acquire lock\n").echo();
+            
+            /* Try to acquire lock */
+            contention_lock.lock();
+            ("Competitor " + competitor_id + ": Lock acquired\n").echo();
+            
+            /* Record access order */
+            access_order.push(competitor_id);
+            
+            /* Hold lock for a bit */
+            $sys().sleep(50);
+            
+            /* Release lock */
+            contention_lock.unlock();
+            ("Competitor " + competitor_id + ": Lock released\n").echo();
+            
+            return "Competitor " + competitor_id + " completed";
+        },
+        i,
+        op(input, result) {
+            ("Competitor callback: " + result + "\n").echo();
+        }
+    );
+    competitors.push(competitor);
+};
+
+/* Wait for all competitors to complete */
+$sys().sleep(400);
+
+/* Show access order */
+("Access order: " + access_order + "\n").echo();
+
+"=== Synchronization Primitives Test Complete ===\n".echo();

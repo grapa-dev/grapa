@@ -2163,7 +2163,28 @@ GrapaError GrapaVector::Sum(GrapaScriptExec* pScriptExec, GrapaVector& result, b
 	result.CLEAR();
 	if (mData == NULL)
 		return -1;
-	if (mDim == 2)
+	if (mDim == 1)
+	{
+		// Handle 1-dimensional vector - sum all elements
+		GrapaFloat sum(pScriptExec->vScriptState->mItemState.mFloatFix, pScriptExec->vScriptState->mItemState.mFloatMax, pScriptExec->vScriptState->mItemState.mFloatExtra, 0);
+		for (u64 i = 0; i < mCounts[0]; i++)
+		{
+			GrapaVectorParam p1(pScriptExec, mData, mBlock, i);
+			sum = sum + *p1.aa;
+		}
+		result.mDim = 1;
+		result.mSetBlock = mSetBlock;
+		result.mBlock = mBlock;
+		result.mMaxBlock = _minvectordatablock_;
+		result.mCounts = (u64*)GrapaMem::Create(sizeof(u64) * result.mDim);
+		result.mCounts[0] = 1;
+		result.mSize = 1;
+		result.mData = (GrapaVectorItem*)GrapaMem::Create(result.mBlock * result.mSize);
+		memset(result.mData, 0, result.mBlock * result.mSize);
+		result.Set(0, sum);
+		return 0;
+	}
+	else if (mDim == 2)
 	{
 		u64 rows = isRows ? mCounts[1] : mCounts[0];
 		u64 cols = isRows ? mCounts[0] : mCounts[1];
@@ -2198,7 +2219,28 @@ GrapaError GrapaVector::Mean(GrapaScriptExec* pScriptExec, GrapaVector& result, 
 	result.CLEAR();
 	if (mData == NULL)
 		return -1;
-	if (mDim == 2)
+	if (mDim == 1)
+	{
+		// Handle 1-dimensional vector - mean of all elements
+		GrapaFloat sum(pScriptExec->vScriptState->mItemState.mFloatFix, pScriptExec->vScriptState->mItemState.mFloatMax, pScriptExec->vScriptState->mItemState.mFloatExtra, 0);
+		for (u64 i = 0; i < mCounts[0]; i++)
+		{
+			GrapaVectorParam p1(pScriptExec, mData, mBlock, i);
+			sum = sum + *p1.aa;
+		}
+		result.mDim = 1;
+		result.mSetBlock = mSetBlock;
+		result.mBlock = mBlock;
+		result.mMaxBlock = _minvectordatablock_;
+		result.mCounts = (u64*)GrapaMem::Create(sizeof(u64) * result.mDim);
+		result.mCounts[0] = 1;
+		result.mSize = 1;
+		result.mData = (GrapaVectorItem*)GrapaMem::Create(result.mBlock * result.mSize);
+		memset(result.mData, 0, result.mBlock * result.mSize);
+		result.Set(0, sum/mCounts[0]);
+		return 0;
+	}
+	else if (mDim == 2)
 	{
 		u64 rows = isRows ? mCounts[1] : mCounts[0];
 		u64 cols = isRows ? mCounts[0] : mCounts[1];
@@ -2222,6 +2264,308 @@ GrapaError GrapaVector::Mean(GrapaScriptExec* pScriptExec, GrapaVector& result, 
 				sum = sum + *p1.aa;
 			}
 			result.Set(j, sum/rows);
+		}
+		return 0;
+	}
+	return -1;
+}
+
+GrapaError GrapaVector::Min(GrapaScriptExec* pScriptExec, GrapaVector& result, bool isRows)
+{
+	result.CLEAR();
+	if (mData == NULL)
+		return -1;
+	if (mDim == 1)
+	{
+		// Handle 1-dimensional vector - minimum of all elements
+		if (mCounts[0] == 0) return -1;
+		GrapaVectorParam p1(pScriptExec, mData, mBlock, 0);
+		GrapaFloat min_val = *p1.aa;
+		for (u64 i = 1; i < mCounts[0]; i++)
+		{
+			GrapaVectorParam p2(pScriptExec, mData, mBlock, i);
+			if (*p2.aa < min_val) min_val = *p2.aa;
+		}
+		result.mDim = 1;
+		result.mSetBlock = mSetBlock;
+		result.mBlock = mBlock;
+		result.mMaxBlock = _minvectordatablock_;
+		result.mCounts = (u64*)GrapaMem::Create(sizeof(u64) * result.mDim);
+		result.mCounts[0] = 1;
+		result.mSize = 1;
+		result.mData = (GrapaVectorItem*)GrapaMem::Create(result.mBlock * result.mSize);
+		memset(result.mData, 0, result.mBlock * result.mSize);
+		result.Set(0, min_val);
+		return 0;
+	}
+	else if (mDim == 2)
+	{
+		u64 rows = isRows ? mCounts[1] : mCounts[0];
+		u64 cols = isRows ? mCounts[0] : mCounts[1];
+		result.mDim = isRows ? 2 : 1;
+		result.mSetBlock = mSetBlock;
+		result.mBlock = mBlock;
+		result.mMaxBlock = _minvectordatablock_;
+		result.mCounts = (u64*)GrapaMem::Create(sizeof(u64) * result.mDim);
+		result.mCounts[0] = cols;
+		if (isRows) result.mCounts[1] = 1;
+		result.mSize = cols;
+		result.mData = (GrapaVectorItem*)GrapaMem::Create(result.mBlock * result.mSize);
+		memset(result.mData, 0, result.mBlock * result.mSize);
+		for (u64 j = 0; j < cols; j++)
+		{
+			u64 pos = isRows ? (j * mCounts[1]) : j;
+			GrapaVectorParam p1(pScriptExec, mData, mBlock, pos);
+			GrapaFloat min_val = *p1.aa;
+			for (u64 i = 1; i < rows; i++)
+			{
+				pos = isRows ? (j * mCounts[1] + i) : (i * mCounts[1] + j);
+				GrapaVectorParam p2(pScriptExec, mData, mBlock, pos);
+				if (*p2.aa < min_val) min_val = *p2.aa;
+			}
+			result.Set(j, min_val);
+		}
+		return 0;
+	}
+	return -1;
+}
+
+GrapaError GrapaVector::Max(GrapaScriptExec* pScriptExec, GrapaVector& result, bool isRows)
+{
+	result.CLEAR();
+	if (mData == NULL)
+		return -1;
+	if (mDim == 1)
+	{
+		// Handle 1-dimensional vector - maximum of all elements
+		if (mCounts[0] == 0) return -1;
+		GrapaVectorParam p1(pScriptExec, mData, mBlock, 0);
+		GrapaFloat max_val = *p1.aa;
+		for (u64 i = 1; i < mCounts[0]; i++)
+		{
+			GrapaVectorParam p2(pScriptExec, mData, mBlock, i);
+			if (*p2.aa > max_val) max_val = *p2.aa;
+		}
+		result.mDim = 1;
+		result.mSetBlock = mSetBlock;
+		result.mBlock = mBlock;
+		result.mMaxBlock = _minvectordatablock_;
+		result.mCounts = (u64*)GrapaMem::Create(sizeof(u64) * result.mDim);
+		result.mCounts[0] = 1;
+		result.mSize = 1;
+		result.mData = (GrapaVectorItem*)GrapaMem::Create(result.mBlock * result.mSize);
+		memset(result.mData, 0, result.mBlock * result.mSize);
+		result.Set(0, max_val);
+		return 0;
+	}
+	else if (mDim == 2)
+	{
+		u64 rows = isRows ? mCounts[1] : mCounts[0];
+		u64 cols = isRows ? mCounts[0] : mCounts[1];
+		result.mDim = isRows ? 2 : 1;
+		result.mSetBlock = mSetBlock;
+		result.mBlock = mBlock;
+		result.mMaxBlock = _minvectordatablock_;
+		result.mCounts = (u64*)GrapaMem::Create(sizeof(u64) * result.mDim);
+		result.mCounts[0] = cols;
+		if (isRows) result.mCounts[1] = 1;
+		result.mSize = cols;
+		result.mData = (GrapaVectorItem*)GrapaMem::Create(result.mBlock * result.mSize);
+		memset(result.mData, 0, result.mBlock * result.mSize);
+		for (u64 j = 0; j < cols; j++)
+		{
+			u64 pos = isRows ? (j * mCounts[1]) : j;
+			GrapaVectorParam p1(pScriptExec, mData, mBlock, pos);
+			GrapaFloat max_val = *p1.aa;
+			for (u64 i = 1; i < rows; i++)
+			{
+				pos = isRows ? (j * mCounts[1] + i) : (i * mCounts[1] + j);
+				GrapaVectorParam p2(pScriptExec, mData, mBlock, pos);
+				if (*p2.aa > max_val) max_val = *p2.aa;
+			}
+			result.Set(j, max_val);
+		}
+		return 0;
+	}
+	return -1;
+}
+
+GrapaError GrapaVector::Std(GrapaScriptExec* pScriptExec, GrapaVector& result, bool isRows)
+{
+	result.CLEAR();
+	if (mData == NULL)
+		return -1;
+	if (mDim == 1)
+	{
+		// Handle 1-dimensional vector - standard deviation of all elements
+		if (mCounts[0] < 2) return -1; // Need at least 2 values for std dev
+		
+		// Calculate mean first
+		GrapaFloat sum(pScriptExec->vScriptState->mItemState.mFloatFix, pScriptExec->vScriptState->mItemState.mFloatMax, pScriptExec->vScriptState->mItemState.mFloatExtra, 0);
+		for (u64 i = 0; i < mCounts[0]; i++)
+		{
+			GrapaVectorParam p1(pScriptExec, mData, mBlock, i);
+			sum = sum + *p1.aa;
+		}
+		GrapaFloat mean = sum / mCounts[0];
+		
+		// Calculate variance
+		GrapaFloat variance(pScriptExec->vScriptState->mItemState.mFloatFix, pScriptExec->vScriptState->mItemState.mFloatMax, pScriptExec->vScriptState->mItemState.mFloatExtra, 0);
+		for (u64 i = 0; i < mCounts[0]; i++)
+		{
+			GrapaVectorParam p1(pScriptExec, mData, mBlock, i);
+			GrapaFloat diff = *p1.aa - mean;
+			variance = variance + (diff * diff);
+		}
+		variance = variance / (mCounts[0] - 1); // Sample variance (n-1)
+		
+		// Calculate standard deviation (square root of variance)
+		GrapaInt two(2);
+		GrapaFloat std_dev = variance.Root(two);
+		
+		result.mDim = 1;
+		result.mSetBlock = mSetBlock;
+		result.mBlock = mBlock;
+		result.mMaxBlock = _minvectordatablock_;
+		result.mCounts = (u64*)GrapaMem::Create(sizeof(u64) * result.mDim);
+		result.mCounts[0] = 1;
+		result.mSize = 1;
+		result.mData = (GrapaVectorItem*)GrapaMem::Create(result.mBlock * result.mSize);
+		memset(result.mData, 0, result.mBlock * result.mSize);
+		result.Set(0, std_dev);
+		return 0;
+	}
+	else if (mDim == 2)
+	{
+		u64 rows = isRows ? mCounts[1] : mCounts[0];
+		u64 cols = isRows ? mCounts[0] : mCounts[1];
+		if (rows < 2) return -1; // Need at least 2 values for std dev
+		
+		result.mDim = isRows ? 2 : 1;
+		result.mSetBlock = mSetBlock;
+		result.mBlock = mBlock;
+		result.mMaxBlock = _minvectordatablock_;
+		result.mCounts = (u64*)GrapaMem::Create(sizeof(u64) * result.mDim);
+		result.mCounts[0] = cols;
+		if (isRows) result.mCounts[1] = 1;
+		result.mSize = cols;
+		result.mData = (GrapaVectorItem*)GrapaMem::Create(result.mBlock * result.mSize);
+		memset(result.mData, 0, result.mBlock * result.mSize);
+		
+		for (u64 j = 0; j < cols; j++)
+		{
+			// Calculate mean for this column/row
+			GrapaFloat sum(pScriptExec->vScriptState->mItemState.mFloatFix, pScriptExec->vScriptState->mItemState.mFloatMax, pScriptExec->vScriptState->mItemState.mFloatExtra, 0);
+			for (u64 i = 0; i < rows; i++)
+			{
+				u64 pos = isRows ? (j * mCounts[1] + i) : (i * mCounts[1] + j);
+				GrapaVectorParam p1(pScriptExec, mData, mBlock, pos);
+				sum = sum + *p1.aa;
+			}
+			GrapaFloat mean = sum / rows;
+			
+			// Calculate variance for this column/row
+			GrapaFloat variance(pScriptExec->vScriptState->mItemState.mFloatFix, pScriptExec->vScriptState->mItemState.mFloatMax, pScriptExec->vScriptState->mItemState.mFloatExtra, 0);
+			for (u64 i = 0; i < rows; i++)
+			{
+				u64 pos = isRows ? (j * mCounts[1] + i) : (i * mCounts[1] + j);
+				GrapaVectorParam p1(pScriptExec, mData, mBlock, pos);
+				GrapaFloat diff = *p1.aa - mean;
+				variance = variance + (diff * diff);
+			}
+			variance = variance / (rows - 1); // Sample variance (n-1)
+			
+			// Calculate standard deviation
+			GrapaInt two(2);
+			GrapaFloat std_dev = variance.Root(two);
+			result.Set(j, std_dev);
+		}
+		return 0;
+	}
+	return -1;
+}
+
+GrapaError GrapaVector::Var(GrapaScriptExec* pScriptExec, GrapaVector& result, bool isRows)
+{
+	result.CLEAR();
+	if (mData == NULL)
+		return -1;
+	if (mDim == 1)
+	{
+		// Handle 1-dimensional vector - variance of all elements
+		if (mCounts[0] < 2) return -1; // Need at least 2 values for variance
+		
+		// Calculate mean first
+		GrapaFloat sum(pScriptExec->vScriptState->mItemState.mFloatFix, pScriptExec->vScriptState->mItemState.mFloatMax, pScriptExec->vScriptState->mItemState.mFloatExtra, 0);
+		for (u64 i = 0; i < mCounts[0]; i++)
+		{
+			GrapaVectorParam p1(pScriptExec, mData, mBlock, i);
+			sum = sum + *p1.aa;
+		}
+		GrapaFloat mean = sum / mCounts[0];
+		
+		// Calculate variance
+		GrapaFloat variance(pScriptExec->vScriptState->mItemState.mFloatFix, pScriptExec->vScriptState->mItemState.mFloatMax, pScriptExec->vScriptState->mItemState.mFloatExtra, 0);
+		for (u64 i = 0; i < mCounts[0]; i++)
+		{
+			GrapaVectorParam p1(pScriptExec, mData, mBlock, i);
+			GrapaFloat diff = *p1.aa - mean;
+			variance = variance + (diff * diff);
+		}
+		variance = variance / (mCounts[0] - 1); // Sample variance (n-1)
+		
+		result.mDim = 1;
+		result.mSetBlock = mSetBlock;
+		result.mBlock = mBlock;
+		result.mMaxBlock = _minvectordatablock_;
+		result.mCounts = (u64*)GrapaMem::Create(sizeof(u64) * result.mDim);
+		result.mCounts[0] = 1;
+		result.mSize = 1;
+		result.mData = (GrapaVectorItem*)GrapaMem::Create(result.mBlock * result.mSize);
+		memset(result.mData, 0, result.mBlock * result.mSize);
+		result.Set(0, variance);
+		return 0;
+	}
+	else if (mDim == 2)
+	{
+		u64 rows = isRows ? mCounts[1] : mCounts[0];
+		u64 cols = isRows ? mCounts[0] : mCounts[1];
+		if (rows < 2) return -1; // Need at least 2 values for variance
+		
+		result.mDim = isRows ? 2 : 1;
+		result.mSetBlock = mSetBlock;
+		result.mBlock = mBlock;
+		result.mMaxBlock = _minvectordatablock_;
+		result.mCounts = (u64*)GrapaMem::Create(sizeof(u64) * result.mDim);
+		result.mCounts[0] = cols;
+		if (isRows) result.mCounts[1] = 1;
+		result.mSize = cols;
+		result.mData = (GrapaVectorItem*)GrapaMem::Create(result.mBlock * result.mSize);
+		memset(result.mData, 0, result.mBlock * result.mSize);
+		
+		for (u64 j = 0; j < cols; j++)
+		{
+			// Calculate mean for this column/row
+			GrapaFloat sum(pScriptExec->vScriptState->mItemState.mFloatFix, pScriptExec->vScriptState->mItemState.mFloatMax, pScriptExec->vScriptState->mItemState.mFloatExtra, 0);
+			for (u64 i = 0; i < rows; i++)
+			{
+				u64 pos = isRows ? (j * mCounts[1] + i) : (i * mCounts[1] + j);
+				GrapaVectorParam p1(pScriptExec, mData, mBlock, pos);
+				sum = sum + *p1.aa;
+			}
+			GrapaFloat mean = sum / rows;
+			
+			// Calculate variance for this column/row
+			GrapaFloat variance(pScriptExec->vScriptState->mItemState.mFloatFix, pScriptExec->vScriptState->mItemState.mFloatMax, pScriptExec->vScriptState->mItemState.mFloatExtra, 0);
+			for (u64 i = 0; i < rows; i++)
+			{
+				u64 pos = isRows ? (j * mCounts[1] + i) : (i * mCounts[1] + j);
+				GrapaVectorParam p1(pScriptExec, mData, mBlock, pos);
+				GrapaFloat diff = *p1.aa - mean;
+				variance = variance + (diff * diff);
+			}
+			variance = variance / (rows - 1); // Sample variance (n-1)
+			result.Set(j, variance);
 		}
 		return 0;
 	}
