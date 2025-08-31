@@ -380,7 +380,7 @@ These are advanced features that most developers won't miss:
 - **Atomic operations**: - Use Grapa's threading
 - **Memory ordering**: - Use Grapa's memory model
 
-> **Note:** Many "missing" features are actually available in Grapa through different mechanisms. For example, Rust's ownership system is replaced by Grapa's automatic memory management, and Rust's async/await is replaced by Grapa's built-in parallel processing.
+> **Note:** Many "missing" features are actually available in Grapa through different mechanisms. For example, Rust's ownership system is replaced by Grapa's automatic memory management, and Rust's async/await is replaced by Grapa's built-in parallel processing - see [Why Async/Await is Unnecessary](../advanced_concurrency_and_callbacks.md#why-asyncawait-is-unnecessary-in-grapa).
 
 ### Data Structures and Collections
 

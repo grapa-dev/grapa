@@ -93,7 +93,7 @@ This guide helps Python users transition to Grapa by mapping common Python idiom
 | `def f(*args): ...` | `f = op(args) { ... };` |
 | `f"Hello {name}"` | `"Hello ${name}".interpolate()`<br>`"Hello " + name` (concatenation) |
 | `if (x := f()) > 0:` | `x = f(); if (x > 0) { ... }` |
-| `async def f(): await g()` | Use Grapa's built-in parallelism: `data.map(op(x) { process(x); }, 8)` |
+| `async def f(): await g()` | Use Grapa's built-in parallelism: `data.map(op(x) { process(x); }, 8)` - see [Why Async/Await is Unnecessary](../advanced_concurrency_and_callbacks.md#why-asyncawait-is-unnecessary-in-grapa) |
 | `(x*2 for x in arr)` | `arr.map(op(x) { x * 2; })` (Grapa is eager by default) |
 | `[x*2 for x in arr if x > 0]` | `arr.filter(op(x) { x > 0; }).map(op(x) { x * 2; })` |
 | `[x for x in range(10) if x % 2 == 0]` | `(10).range().filter(op(x) { x % 2 == 0; })` |

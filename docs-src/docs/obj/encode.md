@@ -443,7 +443,16 @@ b.verifyrecover(a).str();
 ```
 
 ## value = key.secret (key)
-Diffie-Hellman key exchange. Node A generates the staring keys and sends "p" and "g" to node B. Node B then generates its keys using "p" and "g" from node A. Both nodes can then generate the shared secret, and they will be equal.  
+Key exchange for generating shared secrets between two parties. Supports three different key exchange protocols:
+
+### 1. Traditional Diffie-Hellman (DH)
+Both parties must use the same prime modulus (`p`) and generator (`g`). Node A generates keys and sends `p` and `g` to Node B. Node B then generates its keys using the same `p` and `g` from Node A.
+
+### 2. Elliptic Curve (EC) Key Exchange
+Both parties generate independent keys on the same curve. No parameter sharing required - both parties just need to agree on the curve name.
+
+### 3. Raw Public Key (RPK) Key Exchange
+Both parties generate independent keys using the same algorithm (e.g., X25519, Ed25519). No parameter sharing required - both parties just need to agree on the algorithm.  
 
 ```
 grapa: />nodeA = "dh".genkeys();

@@ -20,7 +20,7 @@
 |-----------------------------|------------------|-------------|
 | `import kotlin.math.*`      | —                | **GAP**: No module/import system |
 | `@file:JvmName("Foo")`     | —                | **GAP**: No annotation/meta-programming |
-| `coroutineScope { ... }`    | —                | **GAP**: No coroutine/async support |
+| `coroutineScope { ... }`    | Use Grapa's built-in parallelism: `data.map(op(x) { process(x); }, 8)` - see [Why Async/Await is Unnecessary](../advanced_concurrency_and_callbacks.md#why-asyncawait-is-unnecessary-in-grapa) |
 | `finally`                   | —                | **GAP**: No finally/ensure |
 | `x!!` (non-null assert)     | —                | **GAP**: No null assertion |
 | `x?.foo()` (safe call)      | `x.foo.iferr("default")` | **SOLVED**: Use `.iferr()` for superior safe property access |

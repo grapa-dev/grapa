@@ -80,7 +80,7 @@ This guide helps JavaScript users transition to Grapa by mapping common JS idiom
 | `[...arr1, ...arr2]` | `arr1 += arr2` |
 | `x ||= y` | `if (!x) { x = y; }` (no `||=` operator) |
 | `BigInt(123)` | `123` (Grapa handles unlimited precision natively) |
-| `async function f() { await g() }` | Use Grapa's built-in parallelism: `data.map(op(x) { process(x); }, 8)` |
+| `async function f() { await g() }` | Use Grapa's built-in parallelism: `data.map(op(x) { process(x); }, 8)` - see [Why Async/Await is Unnecessary](../advanced_concurrency_and_callbacks.md#why-asyncawait-is-unnecessary-in-grapa) |
 | `function* gen() { yield x }` | Use `.map()` (Grapa is eager by default) |
 
 > **Note:** Both `x = x + 1;` and `x += 1;` (and `s = s + "x";` and `s += "x";`) are valid in Grapa. The `+=` form is idiomatic and preferred in most cases.

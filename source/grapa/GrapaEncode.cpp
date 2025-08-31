@@ -3635,71 +3635,33 @@ bool GrapaEncode::Secret(GrapaRuleEvent* pKey, GrapaBYTE& pSecret)
 		if (x == NULL) return false;
 		if (x->mValue.StrLowerCmp("dh") != 0) return false;
 
-		// Get the DH parameters from our key
-		const DH* dh_params = (DH*)mDH;
-		if (dh_params == NULL) return false;
-		
-		// Create a new DH key with the same parameters
-		DH* peer_dh = DHparams_dup(dh_params);
-		if (peer_dh == NULL) {
-			return false;
-		}
-		
-		// Get the peer's public key
+		BIGNUM * pub;
+		pub = NULL;
+
 		x = pKey->vQueue->Search("pub", idx);
 		while (x && x->mValue.mToken == GrapaTokenType::PTR) x = x->vRulePointer;
-		if (x) {
-			BIGNUM* pub = BN_bin2bn((u8*)x->mValue.mBytes, x->mValue.mLength, NULL);
-			if (pub == NULL) {
-				DH_free(peer_dh);
-				return false;
-			}
-			
-			// Set the peer's public key
-			if (DH_set0_key(peer_dh, pub, NULL) <= 0) {
-				BN_free(pub);
-				DH_free(peer_dh);
-				return false;
-			}
-		} else {
-			DH_free(peer_dh);
-			return false;
-		}
-		
-		// Compute the shared secret using DH_compute_key
-		int secret_len = DH_size((DH*)mDH);
-		if (secret_len <= 0) {
-			DH_free(peer_dh);
-			return false;
-		}
-		
-		unsigned char* secret_buf = (unsigned char*)OPENSSL_malloc(secret_len);
-		if (secret_buf == NULL) {
-			DH_free(peer_dh);
-			return false;
-		}
-		
-		// Compute the shared secret
-		int computed_len = DH_compute_key(secret_buf, DH_get0_pub_key(peer_dh), (DH*)mDH);
-		if (computed_len <= 0) {
-			OPENSSL_free(secret_buf);
-			DH_free(peer_dh);
-			return false;
-		}
-		
-		// Convert to GrapaInt and set the result
-		GrapaInt g;
+		if (x) pub = BN_bin2bn((u8*)x->mValue.mBytes, x->mValue.mLength, NULL);
+
 		GrapaBYTE gc;
-		gc.SetLength(computed_len);
-		memcpy(gc.mBytes, secret_buf, computed_len);
-		g.FromBytes(gc, true);
-		pSecret = g.getBytes(true);
-		
-		// Clean up
-		OPENSSL_free(secret_buf);
-		DH_free(peer_dh);
-		
-		return true;
+		gc.SetLength(DH_size((DH*)mDH));
+		err = DH_compute_key(gc.mBytes, pub, (DH*)mDH);
+		char es[1024];
+		if (err <= 0)
+		{
+			unsigned long xer = ERR_get_error();
+			ERR_error_string_n(xer, es, 1024);
+		}
+		BN_free(pub);
+		if (err >= 1)
+		{
+			GrapaInt g;
+			gc.SetLength(err);
+			g.FromBytes(gc,true);
+			pSecret = g.getBytes(true);
+			return true;
+		}
+
+		return false;
 	}
 	else if (mEC)
 	{

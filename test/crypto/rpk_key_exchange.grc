@@ -1,0 +1,30 @@
+/*
+ * RPK (Raw Public Key) Key Exchange Test
+ * 
+ * This test demonstrates RPK key exchange using X25519 algorithm.
+ * Both parties generate independent keys using the same algorithm.
+ */
+
+"=== RPK Key Exchange Test ===".echo();
+("").echo();
+
+/* Generate RPK keys using X25519 algorithm */
+rpk_alice = "rpk".genkeys({alg: "X25519"});
+rpk_bob = "rpk".genkeys({alg: "X25519"});
+
+/* Generate shared secrets */
+rpk_alice_secret = rpk_alice.secret({
+    method: "rpk",
+    alg: "X25519",
+    pub: rpk_bob.pub
+});
+rpk_bob_secret = rpk_bob.secret({
+    method: "rpk",
+    alg: "X25519",
+    pub: rpk_alice.pub
+});
+
+("Alice secret: " + rpk_alice_secret.uhex() + "\n").echo();
+("Bob secret: " + rpk_bob_secret.uhex() + "\n").echo();
+("Secrets match: " + (rpk_alice_secret == rpk_bob_secret).str() + "\n").echo();
+("").echo();

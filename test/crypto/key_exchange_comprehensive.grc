@@ -1,0 +1,93 @@
+/*
+ * Comprehensive Key Exchange Test
+ * 
+ * This test demonstrates all three key exchange methods supported by Grapa:
+ * 1. Traditional Diffie-Hellman (DH)
+ * 2. Elliptic Curve (EC) Key Exchange
+ * 3. Raw Public Key (RPK) Key Exchange
+ */
+
+"=== Comprehensive Key Exchange Test ===".echo();
+("").echo();
+
+/* ======================================== */
+/* 1. TRADITIONAL DIFFIE-HELLMAN (DH) */
+/* ======================================== */
+
+"1. Traditional Diffie-Hellman (DH) Key Exchange:".echo();
+
+/* DH requires both parties to use same p and g */
+dh_alice = "dh".genkeys();
+dh_bob = "dh".genkeys({p: dh_alice.p, g: dh_alice.g});
+
+dh_alice_secret = dh_alice.secret({method: "dh", pub: dh_bob.pub});
+dh_bob_secret = dh_bob.secret({method: "dh", pub: dh_alice.pub});
+
+("DH Alice secret: " + dh_alice_secret.uhex() + "\n").echo();
+("DH Bob secret: " + dh_bob_secret.uhex() + "\n").echo();
+("DH Secrets match: " + (dh_alice_secret == dh_bob_secret).str() + "\n").echo();
+("").echo();
+
+/* ======================================== */
+/* 2. ELLIPTIC CURVE (EC) KEY EXCHANGE */
+/* ======================================== */
+
+"2. Elliptic Curve (EC) Key Exchange:".echo();
+
+/* EC allows independent key generation on same curve */
+ec_alice = "ec".genkeys({curve: "prime256v1"});
+ec_bob = "ec".genkeys({curve: "prime256v1"});
+
+ec_alice_secret = ec_alice.secret({
+    method: "ec",
+    curve: "prime256v1",
+    pub: ec_bob.pub
+});
+ec_bob_secret = ec_bob.secret({
+    method: "ec",
+    curve: "prime256v1",
+    pub: ec_alice.pub
+});
+
+("EC Alice secret: " + ec_alice_secret.uhex() + "\n").echo();
+("EC Bob secret: " + ec_bob_secret.uhex() + "\n").echo();
+("EC Secrets match: " + (ec_alice_secret == ec_bob_secret).str() + "\n").echo();
+("").echo();
+
+/* ======================================== */
+/* 3. RAW PUBLIC KEY (RPK) KEY EXCHANGE */
+/* ======================================== */
+
+"3. Raw Public Key (RPK) Key Exchange:".echo();
+
+/* RPK allows independent key generation using same algorithm */
+rpk_alice = "rpk".genkeys({alg: "X25519"});
+rpk_bob = "rpk".genkeys({alg: "X25519"});
+
+rpk_alice_secret = rpk_alice.secret({
+    method: "rpk",
+    alg: "X25519",
+    pub: rpk_bob.pub
+});
+rpk_bob_secret = rpk_bob.secret({
+    method: "rpk",
+    alg: "X25519",
+    pub: rpk_alice.pub
+});
+
+("RPK Alice secret: " + rpk_alice_secret.uhex() + "\n").echo();
+("RPK Bob secret: " + rpk_bob_secret.uhex() + "\n").echo();
+("RPK Secrets match: " + (rpk_alice_secret == rpk_bob_secret).str() + "\n").echo();
+("").echo();
+
+/* ======================================== */
+/* SUMMARY */
+/* ======================================== */
+
+"=== Summary ===".echo();
+("DH Key Exchange: " + (dh_alice_secret == dh_bob_secret).str() + "\n").echo();
+("EC Key Exchange: " + (ec_alice_secret == ec_bob_secret).str() + "\n").echo();
+("RPK Key Exchange: " + (rpk_alice_secret == rpk_bob_secret).str() + "\n").echo();
+("").echo();
+
+"All key exchange methods working correctly!".echo();

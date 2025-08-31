@@ -1,7 +1,8 @@
-a = 'ec'.genkeys({'curve': 'prime256v1'});
-b = 'ec'.genkeys({'curve': 'prime256v1'});
-as = a.secret({'method': 'ec', 'curve': 'prime256v1', 'pub': b.pub});
-bs = b.secret({'method': 'ec', 'curve': 'prime256v1', 'pub': a.pub});
+/* Traditional DH key exchange - both parties must use same p and g */
+a = 'dh'.genkeys();
+b = 'dh'.genkeys({p: a.p, g: a.g});
+as = a.secret({method: 'dh', pub: b.pub});
+bs = b.secret({method: 'dh', pub: a.pub});
 ('Alice secret: ' + as.uhex() + '\n').echo();
 ('Bob secret: ' + bs.uhex() + '\n').echo();
 ('Secrets match: ' + (as == bs).str() + '\n').echo();
