@@ -74,4 +74,82 @@ test_arr = [1, 2, 3, 4, 5];
 "test_arr.mode() = ".echo(); test_arr.mode().echo();
 "test_arr.median() = ".echo(); test_arr.median().echo();
 
+"Testing percentile and quantile functions...\n".echo();
+
+// Test 1D arrays
+percentile_test1 = [1,2,3,4,5];
+"percentile_test1 = ".echo(); percentile_test1.echo();
+"percentile_test1.percentile() = ".echo(); percentile_test1.percentile().echo();
+"percentile_test1.percentile()[0] = ".echo(); percentile_test1.percentile()[0].echo();
+"percentile_test1.quantile() = ".echo(); percentile_test1.quantile().echo();
+"percentile_test1.quantile()[0] = ".echo(); percentile_test1.quantile()[0].echo();
+
+percentile_test2 = [1,2,3,4,5,6,7,8,9,10];
+"percentile_test2 = ".echo(); percentile_test2.echo();
+"percentile_test2.percentile() = ".echo(); percentile_test2.percentile().echo();
+"percentile_test2.percentile()[0] = ".echo(); percentile_test2.percentile()[0].echo();
+"percentile_test2.quantile() = ".echo(); percentile_test2.quantile().echo();
+"percentile_test2.quantile()[0] = ".echo(); percentile_test2.quantile()[0].echo();
+
+// Test 2D arrays
+percentile_matrix = [[1,2,3],[4,5,6],[7,8,9]];
+"percentile_matrix = ".echo(); percentile_matrix.echo();
+"percentile_matrix.percentile() = ".echo(); percentile_matrix.percentile().echo();
+"percentile_matrix.percentile(0) = ".echo(); percentile_matrix.percentile(0).echo();
+"percentile_matrix.percentile(1) = ".echo(); percentile_matrix.percentile(1).echo();
+"percentile_matrix.quantile() = ".echo(); percentile_matrix.quantile().echo();
+"percentile_matrix.quantile(0) = ".echo(); percentile_matrix.quantile(0).echo();
+"percentile_matrix.quantile(1) = ".echo(); percentile_matrix.quantile(1).echo();
+
+// Test edge cases
+"Testing edge cases for percentile/quantile...\n".echo();
+empty_percentile = [];
+"empty_percentile.percentile() = ".echo(); empty_percentile.percentile().echo();
+"empty_percentile.quantile() = ".echo(); empty_percentile.quantile().echo();
+
+single_percentile = [42];
+"single_percentile.percentile() = ".echo(); single_percentile.percentile().echo();
+"single_percentile.quantile() = ".echo(); single_percentile.quantile().echo();
+
+duplicates_percentile = [1,1,1,1,1];
+"duplicates_percentile.percentile() = ".echo(); duplicates_percentile.percentile().echo();
+"duplicates_percentile.quantile() = ".echo(); duplicates_percentile.quantile().echo();
+
+// Test consistency with existing functions
+"Verifying consistency with existing functions...\n".echo();
+test_arr_percentile = [1,2,3,4,5];
+"test_arr_percentile = ".echo(); test_arr_percentile.echo();
+"test_arr_percentile.sum() = ".echo(); test_arr_percentile.sum().echo();
+"test_arr_percentile.mean() = ".echo(); test_arr_percentile.mean().echo();
+"test_arr_percentile.var() = ".echo(); test_arr_percentile.var().echo();
+"test_arr_percentile.norm() = ".echo(); test_arr_percentile.norm().echo();
+"test_arr_percentile.mode() = ".echo(); test_arr_percentile.mode().echo();
+"test_arr_percentile.median() = ".echo(); test_arr_percentile.median().echo();
+"test_arr_percentile.percentile() = ".echo(); test_arr_percentile.percentile().echo();
+"test_arr_percentile.quantile() = ".echo(); test_arr_percentile.quantile().echo();
+
+// Test custom q values
+"Testing custom q values for percentile/quantile...\n".echo();
+
+custom_test = [1,2,3,4,5,6,7,8,9,10];
+"custom_test = ".echo(); custom_test.echo();
+"custom_test.percentile(0.25) = ".echo(); custom_test.percentile(0.25).echo();
+"custom_test.percentile(0.5) = ".echo(); custom_test.percentile(0.5).echo();
+"custom_test.percentile(0.75) = ".echo(); custom_test.percentile(0.75).echo();
+"custom_test.percentile(0.9) = ".echo(); custom_test.percentile(0.9).echo();
+"custom_test.quantile(0.25) = ".echo(); custom_test.quantile(0.25).echo();
+"custom_test.quantile(0.5) = ".echo(); custom_test.quantile(0.5).echo();
+"custom_test.quantile(0.75) = ".echo(); custom_test.quantile(0.75).echo();
+"custom_test.quantile(0.9) = ".echo(); custom_test.quantile(0.9).echo();
+
+// Test 2D with custom q values
+custom_matrix = [[1,2,3],[4,5,6],[7,8,9]];
+"custom_matrix = ".echo(); custom_matrix.echo();
+"custom_matrix.percentile(0.25, 0) = ".echo(); custom_matrix.percentile(0.25, 0).echo();
+"custom_matrix.percentile(0.75, 1) = ".echo(); custom_matrix.percentile(0.75, 1).echo();
+"custom_matrix.quantile(0.25, 0) = ".echo(); custom_matrix.quantile(0.25, 0).echo();
+"custom_matrix.quantile(0.75, 1) = ".echo(); custom_matrix.quantile(0.75, 1).echo();
+
+"All percentile and quantile tests completed!\n".echo();
+
 "All tests completed!\n".echo();

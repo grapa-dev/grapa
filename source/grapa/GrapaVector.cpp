@@ -2811,6 +2811,266 @@ GrapaError GrapaVector::Median(GrapaScriptExec* pScriptExec, GrapaVector& result
 	return -1;
 }
 
+GrapaError GrapaVector::Percentile(GrapaScriptExec* pScriptExec, GrapaVector& result, GrapaFloat q, bool isRows)
+{
+	result.CLEAR();
+	if (mData == NULL)
+		return -1;
+	if (mDim == 1)
+	{
+		// Handle 1-dimensional vector - find 50th percentile (median)
+		if (mCounts[0] == 0)
+			return -1;
+		
+		// Create a copy of the data for sorting
+		std::vector<GrapaFloat> sorted_data;
+		for (u64 i = 0; i < mCounts[0]; i++)
+		{
+			GrapaVectorParam p1(pScriptExec, mData, mBlock, i);
+			sorted_data.push_back(*p1.aa);
+		}
+		
+		// Sort the data
+		std::sort(sorted_data.begin(), sorted_data.end());
+		
+		// Calculate q-th percentile
+		GrapaFloat percentile_val;
+		u64 n = sorted_data.size();
+		if (n == 0)
+		{
+			return -1;
+		}
+		else if (n == 1)
+		{
+			percentile_val = sorted_data[0];
+		}
+		else
+		{
+			// Convert q (0-1) to percentile index
+			GrapaFloat index = q * GrapaFloat(n - 1);
+			u64 lower_index = (u64)index.ToInt().LongValue();
+			u64 upper_index = lower_index + 1;
+			
+			if (upper_index >= n)
+			{
+				// At the end of the array
+				percentile_val = sorted_data[lower_index];
+			}
+			else
+			{
+				// Interpolate between two values
+				GrapaFloat weight = index - GrapaFloat(lower_index);
+				percentile_val = sorted_data[lower_index] * (GrapaFloat(1) - weight) + sorted_data[upper_index] * weight;
+			}
+		}
+		
+		result.mDim = 1;
+		result.mSetBlock = mSetBlock;
+		result.mBlock = mBlock;
+		result.mMaxBlock = _minvectordatablock_;
+		result.mCounts = (u64*)GrapaMem::Create(sizeof(u64) * result.mDim);
+		result.mCounts[0] = 1;
+		result.mSize = 1;
+		result.mData = (GrapaVectorItem*)GrapaMem::Create(result.mBlock * result.mSize);
+		memset(result.mData, 0, result.mBlock * result.mSize);
+		result.Set(0, percentile_val);
+		return 0;
+	}
+	else if (mDim == 2)
+	{
+		u64 rows = isRows ? mCounts[1] : mCounts[0];
+		u64 cols = isRows ? mCounts[0] : mCounts[1];
+		result.mDim = isRows ? 2 : 1;
+		result.mSetBlock = mSetBlock;
+		result.mBlock = mBlock;
+		result.mMaxBlock = _minvectordatablock_;
+		result.mCounts = (u64*)GrapaMem::Create(sizeof(u64) * result.mDim);
+		result.mCounts[0] = cols;
+		if (isRows) result.mCounts[1] = 1;
+		result.mSize = cols;
+		result.mData = (GrapaVectorItem*)GrapaMem::Create(result.mBlock * result.mSize);
+		memset(result.mData, 0, result.mBlock * result.mSize);
+		for (u64 j = 0; j < cols; j++)
+		{
+			// Find 50th percentile for this column/row
+			std::vector<GrapaFloat> sorted_data;
+			for (u64 i = 0; i < rows; i++)
+			{
+				u64 pos = isRows ? (j * mCounts[1] + i) : (i * mCounts[1] + j);
+				GrapaVectorParam p1(pScriptExec, mData, mBlock, pos);
+				sorted_data.push_back(*p1.aa);
+			}
+			
+			// Sort the data
+			std::sort(sorted_data.begin(), sorted_data.end());
+			
+			// Calculate q-th percentile
+			GrapaFloat percentile_val;
+			u64 n = sorted_data.size();
+			if (n == 0)
+			{
+				percentile_val = GrapaFloat(0);  // Handle empty column/row
+			}
+			else if (n == 1)
+			{
+				percentile_val = sorted_data[0];
+			}
+			else
+			{
+							// Convert q (0-1) to percentile index
+			GrapaFloat index = q * GrapaFloat(n - 1);
+			u64 lower_index = (u64)index.ToInt().LongValue();
+			u64 upper_index = lower_index + 1;
+			
+			if (upper_index >= n)
+			{
+				// At the end of the array
+				percentile_val = sorted_data[lower_index];
+			}
+			else
+			{
+				// Interpolate between two values
+				GrapaFloat weight = index - GrapaFloat(lower_index);
+				percentile_val = sorted_data[lower_index] * (GrapaFloat(1) - weight) + sorted_data[upper_index] * weight;
+			}
+			}
+			result.Set(j, percentile_val);
+		}
+		return 0;
+	}
+	return -1;
+}
+
+GrapaError GrapaVector::Quantile(GrapaScriptExec* pScriptExec, GrapaVector& result, GrapaFloat q, bool isRows)
+{
+	result.CLEAR();
+	if (mData == NULL)
+		return -1;
+	if (mDim == 1)
+	{
+		// Handle 1-dimensional vector - find 0.5 quantile (median)
+		if (mCounts[0] == 0)
+			return -1;
+		
+		// Create a copy of the data for sorting
+		std::vector<GrapaFloat> sorted_data;
+		for (u64 i = 0; i < mCounts[0]; i++)
+		{
+			GrapaVectorParam p1(pScriptExec, mData, mBlock, i);
+			sorted_data.push_back(*p1.aa);
+		}
+		
+		// Sort the data
+		std::sort(sorted_data.begin(), sorted_data.end());
+		
+		// Calculate q-th quantile
+		GrapaFloat quantile_val;
+		u64 n = sorted_data.size();
+		if (n == 0)
+		{
+			return -1;
+		}
+		else if (n == 1)
+		{
+			quantile_val = sorted_data[0];
+		}
+		else
+		{
+			// Convert q (0-1) to quantile index
+			GrapaFloat index = q * GrapaFloat(n - 1);
+			u64 lower_index = (u64)index.ToInt().LongValue();
+			u64 upper_index = lower_index + 1;
+			
+			if (upper_index >= n)
+			{
+				// At the end of the array
+				quantile_val = sorted_data[lower_index];
+			}
+			else
+			{
+				// Interpolate between two values
+				GrapaFloat weight = index - GrapaFloat(lower_index);
+				quantile_val = sorted_data[lower_index] * (GrapaFloat(1) - weight) + sorted_data[upper_index] * weight;
+			}
+		}
+		
+		result.mDim = 1;
+		result.mSetBlock = mSetBlock;
+		result.mBlock = mBlock;
+		result.mMaxBlock = _minvectordatablock_;
+		result.mCounts = (u64*)GrapaMem::Create(sizeof(u64) * result.mDim);
+		result.mCounts[0] = 1;
+		result.mSize = 1;
+		result.mData = (GrapaVectorItem*)GrapaMem::Create(result.mBlock * result.mSize);
+		memset(result.mData, 0, result.mBlock * result.mSize);
+		result.Set(0, quantile_val);
+		return 0;
+	}
+	else if (mDim == 2)
+	{
+		u64 rows = isRows ? mCounts[1] : mCounts[0];
+		u64 cols = isRows ? mCounts[0] : mCounts[1];
+		result.mDim = isRows ? 2 : 1;
+		result.mSetBlock = mSetBlock;
+		result.mBlock = mBlock;
+		result.mMaxBlock = _minvectordatablock_;
+		result.mCounts = (u64*)GrapaMem::Create(sizeof(u64) * result.mDim);
+		result.mCounts[0] = cols;
+		if (isRows) result.mCounts[1] = 1;
+		result.mSize = cols;
+		result.mData = (GrapaVectorItem*)GrapaMem::Create(result.mBlock * result.mSize);
+		memset(result.mData, 0, result.mBlock * result.mSize);
+		for (u64 j = 0; j < cols; j++)
+		{
+			// Find 0.5 quantile for this column/row
+			std::vector<GrapaFloat> sorted_data;
+			for (u64 i = 0; i < rows; i++)
+			{
+				u64 pos = isRows ? (j * mCounts[1] + i) : (i * mCounts[1] + j);
+				GrapaVectorParam p1(pScriptExec, mData, mBlock, pos);
+				sorted_data.push_back(*p1.aa);
+			}
+			
+			// Sort the data
+			std::sort(sorted_data.begin(), sorted_data.end());
+			
+			// Calculate q-th quantile
+			GrapaFloat quantile_val;
+			u64 n = sorted_data.size();
+			if (n == 0)
+			{
+				quantile_val = GrapaFloat(0);  // Handle empty column/row
+			}
+			else if (n == 1)
+			{
+				quantile_val = sorted_data[0];
+			}
+			else
+			{
+				// Convert q (0-1) to quantile index
+				GrapaFloat index = q * GrapaFloat(n - 1);
+				u64 lower_index = (u64)index.ToInt().LongValue();
+				u64 upper_index = lower_index + 1;
+				
+				if (upper_index >= n)
+				{
+					// At the end of the array
+					quantile_val = sorted_data[lower_index];
+				}
+				else
+				{
+					// Interpolate between two values
+					GrapaFloat weight = index - GrapaFloat(lower_index);
+					quantile_val = sorted_data[lower_index] * (GrapaFloat(1) - weight) + sorted_data[upper_index] * weight;
+				}
+			}
+			result.Set(j, quantile_val);
+		}
+		return 0;
+	}
+	return -1;
+}
+
 GrapaRuleEvent* GrapaVector::ToArray()
 {
 	if (mData == NULL)

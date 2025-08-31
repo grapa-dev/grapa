@@ -38,6 +38,7 @@
 	| $SYSINT {@<lit,{$1}>}
 	| $INT {@<lit,{$1}>}
 	| $RAW {@<lit,{$1}>}
+	| $FLOAT {@<lit,{$1}>}
 	| $BOOL {@<lit,{$1}>}
 	;
 @global["$lib_start"]

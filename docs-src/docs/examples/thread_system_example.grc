@@ -77,7 +77,7 @@ $sys().sleep(200);
 
 /* Create multiple threads that increment the counter */
 for (i = 0; i < 3; i+=1) {
-    counter_worker = $thread();
+    $local.counter_worker = $thread();
     counter_worker.start(
         op(worker_id) {
             for (j = 0; j < 5; j+=1) {
@@ -130,7 +130,7 @@ producer.start(
 if (false)
 /* Consumer threads */
 for (consumer_id = 0; consumer_id < 2; consumer_id+=1) {
-    consumer = $thread();
+    $local.consumer = $thread();
     consumer.start(
         op(id) {
             ("Consumer " + id + ": Starting consumption\n").echo();
@@ -168,15 +168,15 @@ $sys().sleep(1000);
 "Example 5: Resource Pool Management\n".echo();
 
 /* Resource requesters */
-for (requester_id = 0; requester_id < 4; requester_id++) {
-    requester = $thread();
+for (requester_id = 0; requester_id < 4; requester_id+=1) {
+    $local.requester = $thread();
     requester.start(
         op(id) {
             ("Requester " + id + ": Requesting resource\n").echo();
             
             resource_pool.lock.lock();
             if (resource_pool.available.len() > 0) {
-                resource = resource_pool.available.pop();
+                $local.resource = resource_pool.available.pop();
                 resource_pool.in_use[id] = resource;
                 resource_pool.lock.unlock();
                 
@@ -194,7 +194,7 @@ for (requester_id = 0; requester_id < 4; requester_id++) {
                 ("Requester " + id + ": No resources available\n").echo();
             };
             
-            return "Requester " + id + " completed";
+            return ("Requester " + id + " completed");
         },
         requester_id,
         op(input, result) {
@@ -208,9 +208,10 @@ $sys().sleep(600);
 /* Example 6: Condition Variable Coordination */
 "Example 6: Condition Variable Coordination\n".echo();
 
+if (false)
 /* Create threads that wait for coordination */
-for (coord_id = 0; coord_id < 3; coord_id++) {
-    coordinator = $thread();
+for (coord_id = 0; coord_id < 3; coord_id+=1) {
+    $local.coordinator = $thread();
     coordinator.start(
         op(id) {
             ("Coordinator " + id + ": Starting\n").echo();
@@ -224,7 +225,7 @@ for (coord_id = 0; coord_id < 3; coord_id++) {
             coordination_condition.wait();
             ("Coordinator " + id + ": Coordinated and proceeding\n").echo();
             
-            return "Coordinator " + id + " completed";
+            return ("Coordinator " + id + " completed");
         },
         coord_id,
         op(input, result) {
@@ -273,15 +274,15 @@ started = inspection_thread.started();
 /* Example 8: Performance Demonstration */
 "Example 8: Performance Demonstration\n".echo();
 
-start_time = $TIME();
+start_time = $TIME().utc();
 
 /* Create many threads rapidly */
 for (i = 0; i < 10; i+=1) {
-    perf_thread = $thread();
+    $local.perf_thread = $thread();
     perf_thread.start(
         op(thread_id) {
             $sys().sleep(10);
-            return "Perf thread " + thread_id + " completed";
+            return ("Perf thread " + thread_id + " completed");
         },
         i,
         op(input, result) {
@@ -292,7 +293,7 @@ for (i = 0; i < 10; i+=1) {
 
 $sys().sleep(200);
 
-end_time = $TIME();
+end_time = $TIME().utc();
 creation_time = end_time - start_time;
 ("Performance test completed in " + creation_time + "ms\n").echo();
 

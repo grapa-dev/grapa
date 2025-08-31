@@ -24,6 +24,7 @@ This backlog tracks all future, long-term, and queued tasks for the Grapa projec
 - ✅ **Switch Statement Comparison**: Fixed `SwitchEvent` to use `DoComparison` for proper string-to-type comparisons
 - ✅ **Key Exchange Methods**: All three methods (DH, EC, RPK) working and documented
 - ✅ **Async/Await Documentation**: Documented why async/await is unnecessary in Grapa's concurrency model
+- ✅ **Advanced Vector Statistical Functions**: Implemented `.norm()`, `.mode()`, `.median()`, `.percentile()`, and `.quantile()` with custom q parameter support
 
 ### **Documentation Updates Completed**
 - ✅ **Comment Support**: Fixed documentation to correctly state that `//` comments are supported

@@ -24,8 +24,8 @@
 	norm = @<[op,@<"vector_norm",{@<this,{}>,@<var,{axis}>}>],{"axis":null}>; 
 	mode = @<[op,@<"vector_mode",{@<this,{}>,@<var,{axis}>}>],{"axis":null}>; 
 	median = @<[op,@<"vector_median",{@<this,{}>,@<var,{axis}>}>],{"axis":null}>; 
-	percentile = @<[op,@<"vector_percentile",{@<this,{}>,@<var,{axis}>}>],{"axis":null}>; 
-	quantile = @<[op,@<"vector_quantile",{@<this,{}>,@<var,{axis}>}>],{"axis":null}>; 
+	percentile = @<[op,@<"vector_percentile",{@<this,{}>,@<var,{q}>,@<var,{axis}>}>],{"q":null,"axis":null}>;
+	quantile = @<[op,@<"vector_quantile",{@<this,{}>,@<var,{q}>,@<var,{axis}>}>],{"q":null,"axis":null}>; 
 	skew = @<[op,@<"vector_skew",{@<this,{}>,@<var,{axis}>}>],{"axis":null}>; 
 	kurtosis = @<[op,@<"vector_kurtosis",{@<this,{}>,@<var,{axis}>}>],{"axis":null}>; 
 	};

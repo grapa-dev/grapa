@@ -1004,3 +1004,71 @@ For comprehensive examples of all vector operations, see [Vector Operations Exam
 - [Assignment Operators](../operators/assignment.md)
 - [Mathematical Operations](../operators/math.md)
 
+### Percentile and Quantile Functions
+
+Grapa provides percentile and quantile functions for advanced statistical analysis:
+
+#### `.percentile(q=null, axis=null)`
+
+Calculates the q-th percentile of the vector elements along the specified axis.
+
+**Parameters:**
+- `q` (optional): Percentile value between 0 and 1 (default: 0.5 for median)
+- `axis` (optional): Axis along which to compute the percentile
+  - `null` or `0`: Compute across all elements (default)
+  - `1`: Compute along rows (for 2D matrices)
+  - `2`: Compute along columns (for 2D matrices)
+
+**Returns:** Array containing the percentile values
+
+**Examples:**
+```grapa
+/* 1D vector - various percentiles */
+data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+median = data.percentile();  /* Returns [5.5] - default 50th percentile */
+median_val = data.percentile()[0];  /* Returns 5.5 */
+q25 = data.percentile(0.25);  /* Returns [3.25] - 25th percentile */
+q75 = data.percentile(0.75);  /* Returns [7.75] - 75th percentile */
+q90 = data.percentile(0.9);  /* Returns [9.1] - 90th percentile */
+
+/* 2D matrix - column-wise percentiles */
+matrix = [[1, 2, 3], [4, 5, 6], [7, 8, 9]];
+col_medians = matrix.percentile(0.5, 0);  /* Returns [[4], [5], [6]] */
+row_medians = matrix.percentile(0.5, 1);  /* Returns [2, 5, 8] */
+col_q25 = matrix.percentile(0.25, 0);  /* Returns [[1.5], [4.5], [7.5]] */
+row_q75 = matrix.percentile(0.75, 1);  /* Returns [5.5, 6.5, 7.5] */
+```
+
+#### `.quantile(q=null, axis=null)`
+
+Calculates the q-th quantile of the vector elements along the specified axis.
+
+**Parameters:**
+- `q` (optional): Quantile value between 0 and 1 (default: 0.5 for median)
+- `axis` (optional): Axis along which to compute the quantile
+  - `null` or `0`: Compute across all elements (default)
+  - `1`: Compute along rows (for 2D matrices)
+  - `2`: Compute along columns (for 2D matrices)
+
+**Returns:** Array containing the quantile values
+
+**Examples:**
+```grapa
+/* 1D vector - various quantiles */
+data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+median = data.quantile();  /* Returns [5.5] - default 0.5 quantile */
+median_val = data.quantile()[0];  /* Returns 5.5 */
+q25 = data.quantile(0.25);  /* Returns [3.25] - 0.25 quantile */
+q75 = data.quantile(0.75);  /* Returns [7.75] - 0.75 quantile */
+q90 = data.quantile(0.9);  /* Returns [9.1] - 0.9 quantile */
+
+/* 2D matrix - column-wise quantiles */
+matrix = [[1, 2, 3], [4, 5, 6], [7, 8, 9]];
+col_medians = matrix.quantile(0.5, 0);  /* Returns [[4], [5], [6]] */
+row_medians = matrix.quantile(0.5, 1);  /* Returns [2, 5, 8] */
+col_q25 = matrix.quantile(0.25, 0);  /* Returns [[1.5], [4.5], [7.5]] */
+row_q75 = matrix.quantile(0.75, 1);  /* Returns [5.5, 6.5, 7.5] */
+```
+
+**Note:** Both `.percentile()` and `.quantile()` support custom q values between 0 and 1. When q is not specified, they default to 0.5 (median).
+

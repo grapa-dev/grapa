@@ -351,4 +351,45 @@ sales_by_product = sales_data.sum(0); // Sum across periods
 ("✅ Use reshape() for changing dimensions\n").echo();
 ("✅ Consider memory usage for large vectors\n").echo();
 
+/* Percentile and Quantile Examples */
+("=== Percentile and Quantile Examples ===\n").echo();
+
+/* 1D vector examples */
+("1D vector examples:\n").echo();
+data_1d = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+("Data: " + data_1d.str()).echo();
+("50th percentile (default): " + data_1d.percentile().str()).echo();
+("25th percentile: " + data_1d.percentile(0.25).str()).echo();
+("75th percentile: " + data_1d.percentile(0.75).str()).echo();
+("90th percentile: " + data_1d.percentile(0.9).str()).echo();
+("0.5 quantile (default): " + data_1d.quantile().str()).echo();
+("0.25 quantile: " + data_1d.quantile(0.25).str()).echo();
+("0.75 quantile: " + data_1d.quantile(0.75).str()).echo();
+("0.9 quantile: " + data_1d.quantile(0.9).str()).echo();
+
+/* 2D matrix examples */
+("2D matrix examples:\n").echo();
+matrix_2d = [[1, 2, 3], [4, 5, 6], [7, 8, 9]];
+("Matrix: " + matrix_2d.str()).echo();
+("Column-wise percentiles (axis=0): " + matrix_2d.percentile(0.5, 0).str()).echo();
+("Row-wise percentiles (axis=1): " + matrix_2d.percentile(0.5, 1).str()).echo();
+("Column-wise 25th percentile: " + matrix_2d.percentile(0.25, 0).str()).echo();
+("Row-wise 75th percentile: " + matrix_2d.percentile(0.75, 1).str()).echo();
+("Column-wise quantiles (axis=0): " + matrix_2d.quantile(0.5, 0).str()).echo();
+("Row-wise quantiles (axis=1): " + matrix_2d.quantile(0.5, 1).str()).echo();
+
+/* Edge cases */
+("Edge cases:\n").echo();
+empty_data = [];
+("Empty data percentile: " + empty_data.percentile().str()).echo();
+("Empty data quantile: " + empty_data.quantile().str()).echo();
+
+single_data = [42];
+("Single element percentile: " + single_data.percentile().str()).echo();
+("Single element quantile: " + single_data.quantile().str()).echo();
+
+duplicate_data = [1, 1, 1, 1, 1];
+("Duplicate data percentile: " + duplicate_data.percentile().str()).echo();
+("Duplicate data quantile: " + duplicate_data.quantile().str()).echo();
+
 ("=== Vector Operations Examples Complete ===\n").echo();

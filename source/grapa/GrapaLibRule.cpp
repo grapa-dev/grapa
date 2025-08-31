@@ -20435,14 +20435,108 @@ GrapaRuleEvent* GrapaLibraryRuleVectorMedianEvent::Run(GrapaScriptExec* vScriptE
 GrapaRuleEvent* GrapaLibraryRuleVectorPercentileEvent::Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput)
 {
 	GrapaRuleEvent* result = NULL;
-	result = new GrapaRuleEvent(GrapaTokenType::STR, 0, "", "GrapaLibraryRuleVectorPercentileEvent: to be implemented");
+	GrapaLibraryParam r1(vScriptExec, pNameSpace, pInput ? pInput->Head(0) : NULL);
+	GrapaLibraryParam r2(vScriptExec, pNameSpace, pInput ? pInput->Head(1) : NULL);
+	GrapaLibraryParam r3(vScriptExec, pNameSpace, pInput ? pInput->Head(2) : NULL);
+
+	// Parse q parameter (default to 0.5 for median)
+	GrapaFloat q = 0.5;
+	if (r2.vVal && (r2.vVal->mValue.mToken == GrapaTokenType::INT || r2.vVal->mValue.mToken == GrapaTokenType::FLOAT))
+	{
+		GrapaFloat q_val;
+		q_val.FromBytes(r2.vVal->mValue);
+		q = q_val;
+	}
+
+	// Parse axis parameter
+	s64 axis = 0;
+	if (r3.vVal && r3.vVal->mValue.mToken == GrapaTokenType::INT)
+	{
+		GrapaInt a;
+		a.FromBytes(r3.vVal->mValue);
+		axis = a.LongValue();
+	}
+	if (r1.vVal && (r1.vVal->mValue.mToken == GrapaTokenType::ARRAY || r1.vVal->mValue.mToken == GrapaTokenType::TUPLE))
+	{
+		GrapaVector aa;
+		aa.FROM(vScriptExec->vScriptState->mItemState.mFloatFix, vScriptExec->vScriptState->mItemState.mFloatMax, vScriptExec->vScriptState->mItemState.mFloatExtra, r1.vVal, 0);
+		GrapaVector cc;
+		if (aa.Percentile(vScriptExec, cc, q, axis == 0) || cc.mData == NULL)
+		{
+			result = Error(vScriptExec, pNameSpace, -1);
+		}
+		else
+		{
+			result = cc.ToArray();
+		}
+	}
+	else if (r1.vVal && r1.vVal->mValue.mToken == GrapaTokenType::VECTOR)
+	{
+		result = new GrapaRuleEvent(GrapaTokenType::VECTOR, 0, "", "");
+		result->vVector = new GrapaVector();
+		if (r1.vVal->vVector->Percentile(vScriptExec, *result->vVector, q, axis == 0))
+		{
+			result->CLEAR();
+			delete result;
+			result = Error(vScriptExec, pNameSpace, -1);
+		}
+	}
+	if (result == NULL)
+		result = Error(vScriptExec, pNameSpace, -1);
 	return(result);
 }
 
 GrapaRuleEvent* GrapaLibraryRuleVectorQuantileEvent::Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput)
 {
 	GrapaRuleEvent* result = NULL;
-	result = new GrapaRuleEvent(GrapaTokenType::STR, 0, "", "GrapaLibraryRuleVectorQuantileEvent: to be implemented");
+	GrapaLibraryParam r1(vScriptExec, pNameSpace, pInput ? pInput->Head(0) : NULL);
+	GrapaLibraryParam r2(vScriptExec, pNameSpace, pInput ? pInput->Head(1) : NULL);
+	GrapaLibraryParam r3(vScriptExec, pNameSpace, pInput ? pInput->Head(2) : NULL);
+
+	// Parse q parameter (default to 0.5 for median)
+	GrapaFloat q = 0.5;
+	if (r2.vVal && (r2.vVal->mValue.mToken == GrapaTokenType::INT || r2.vVal->mValue.mToken == GrapaTokenType::FLOAT))
+	{
+		GrapaFloat q_val;
+		q_val.FromBytes(r2.vVal->mValue);
+		q = q_val;
+	}
+
+	// Parse axis parameter
+	s64 axis = 0;
+	if (r3.vVal && r3.vVal->mValue.mToken == GrapaTokenType::INT)
+	{
+		GrapaInt a;
+		a.FromBytes(r3.vVal->mValue);
+		axis = a.LongValue();
+	}
+	if (r1.vVal && (r1.vVal->mValue.mToken == GrapaTokenType::ARRAY || r1.vVal->mValue.mToken == GrapaTokenType::TUPLE))
+	{
+		GrapaVector aa;
+		aa.FROM(vScriptExec->vScriptState->mItemState.mFloatFix, vScriptExec->vScriptState->mItemState.mFloatMax, vScriptExec->vScriptState->mItemState.mFloatExtra, r1.vVal, 0);
+		GrapaVector cc;
+		if (aa.Quantile(vScriptExec, cc, q, axis == 0) || cc.mData == NULL)
+		{
+			result = Error(vScriptExec, pNameSpace, -1);
+		}
+		else
+		{
+			result = cc.ToArray();
+		}
+	}
+	else if (r1.vVal && r1.vVal->mValue.mToken == GrapaTokenType::VECTOR)
+	{
+		result = new GrapaRuleEvent(GrapaTokenType::VECTOR, 0, "", "");
+		result->vVector = new GrapaVector();
+		if (r1.vVal->vVector->Quantile(vScriptExec, *result->vVector, q, axis == 0))
+		{
+			result->CLEAR();
+			delete result;
+			result = Error(vScriptExec, pNameSpace, -1);
+		}
+	}
+	if (result == NULL)
+		result = Error(vScriptExec, pNameSpace, -1);
 	return(result);
 }
 
