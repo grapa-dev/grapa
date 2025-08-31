@@ -114,6 +114,8 @@ public:
 	GrapaError Median(GrapaScriptExec* pScriptExec, GrapaVector& result, bool rowvar = true);
 	GrapaError Percentile(GrapaScriptExec* pScriptExec, GrapaVector& result, GrapaFloat q = 0.5, bool rowvar = true);
 	GrapaError Quantile(GrapaScriptExec* pScriptExec, GrapaVector& result, GrapaFloat q = 0.5, bool rowvar = true);
+	GrapaError Skew(GrapaScriptExec* pScriptExec, GrapaVector& result, bool rowvar = true);
+	GrapaError Kurtosis(GrapaScriptExec* pScriptExec, GrapaVector& result, bool rowvar = true);
 	virtual GrapaRuleEvent* ToArray();
 	virtual GrapaRuleEvent* _toarray(u64 pos, u64& p);
 	virtual GrapaRuleEvent* ToTuple();

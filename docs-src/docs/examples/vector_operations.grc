@@ -167,6 +167,30 @@ median_axis_1 = data_2d.median(1); // Median along columns
 ("Median along axis 0 (rows): " + median_axis_0 + "\n").echo();
 ("Median along axis 1 (columns): " + median_axis_1 + "\n").echo();
 
+// Skewness and Kurtosis
+total_skew = data_2d.skew();
+total_kurt = data_2d.kurtosis();
+("Total skewness: " + total_skew + "\n").echo();
+("Total kurtosis: " + total_kurt + "\n").echo();
+
+// Axis-based skewness and kurtosis
+skew_axis_0 = data_2d.skew(0); // Skewness along rows
+skew_axis_1 = data_2d.skew(1); // Skewness along columns
+kurt_axis_0 = data_2d.kurtosis(0); // Kurtosis along rows
+kurt_axis_1 = data_2d.kurtosis(1); // Kurtosis along columns
+
+("Skewness along axis 0 (rows): " + skew_axis_0 + "\n").echo();
+("Skewness along axis 1 (columns): " + skew_axis_1 + "\n").echo();
+("Kurtosis along axis 0 (rows): " + kurt_axis_0 + "\n").echo();
+("Kurtosis along axis 1 (columns): " + kurt_axis_1 + "\n").echo();
+
+// Test with skewed data
+skewed_data = [1, 1, 1, 2, 2, 3, 4, 5, 6, 7, 8, 9, 10].vector();
+skewed_skew = skewed_data.skew();
+skewed_kurt = skewed_data.kurtosis();
+("Skewed data skewness: " + skewed_skew + "\n").echo();
+("Skewed data kurtosis: " + skewed_kurt + "\n").echo();
+
 // Covariance
 cov_matrix = data_2d.cov();
 ("Covariance matrix: " + cov_matrix + "\n").echo();

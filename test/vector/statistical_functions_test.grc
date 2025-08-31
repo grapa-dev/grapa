@@ -152,4 +152,67 @@ custom_matrix = [[1,2,3],[4,5,6],[7,8,9]];
 
 "All percentile and quantile tests completed!\n".echo();
 
+"Testing skew and kurtosis functions...\n".echo();
+
+// Test 1D arrays for skew and kurtosis
+skew_test1 = [1,2,3,4,5];
+"skew_test1 = ".echo(); skew_test1.echo();
+"skew_test1.skew() = ".echo(); skew_test1.skew().echo();
+"skew_test1.skew()[0] = ".echo(); skew_test1.skew()[0].echo();
+"skew_test1.kurtosis() = ".echo(); skew_test1.kurtosis().echo();
+"skew_test1.kurtosis()[0] = ".echo(); skew_test1.kurtosis()[0].echo();
+
+// Test skewed data
+skewed_data = [1,1,1,2,2,3,4,5,6,7,8,9,10];
+"skewed_data = ".echo(); skewed_data.echo();
+"skewed_data.skew() = ".echo(); skewed_data.skew().echo();
+"skewed_data.skew()[0] = ".echo(); skewed_data.skew()[0].echo();
+"skewed_data.kurtosis() = ".echo(); skewed_data.kurtosis().echo();
+"skewed_data.kurtosis()[0] = ".echo(); skewed_data.kurtosis()[0].echo();
+
+// Test 2D arrays
+skew_matrix = [[1,2,3],[4,5,6],[7,8,9]];
+"skew_matrix = ".echo(); skew_matrix.echo();
+"skew_matrix.skew() = ".echo(); skew_matrix.skew().echo();
+"skew_matrix.skew(0) = ".echo(); skew_matrix.skew(0).echo();
+"skew_matrix.skew(1) = ".echo(); skew_matrix.skew(1).echo();
+"skew_matrix.kurtosis() = ".echo(); skew_matrix.kurtosis().echo();
+"skew_matrix.kurtosis(0) = ".echo(); skew_matrix.kurtosis(0).echo();
+"skew_matrix.kurtosis(1) = ".echo(); skew_matrix.kurtosis(1).echo();
+
+// Test edge cases for skew and kurtosis
+"Testing edge cases for skew and kurtosis...\n".echo();
+empty_skew = [];
+"empty_skew.skew() = ".echo(); empty_skew.skew().echo();
+"empty_skew.kurtosis() = ".echo(); empty_skew.kurtosis().echo();
+
+single_skew = [42];
+"single_skew.skew() = ".echo(); single_skew.skew().echo();
+"single_skew.kurtosis() = ".echo(); single_skew.kurtosis().echo();
+
+two_values = [1,2];
+"two_values.skew() = ".echo(); two_values.skew().echo();
+"two_values.kurtosis() = ".echo(); two_values.kurtosis().echo();
+
+three_values = [1,2,3];
+"three_values.skew() = ".echo(); three_values.skew().echo();
+"three_values.kurtosis() = ".echo(); three_values.kurtosis().echo();
+
+constant_values = [5,5,5,5,5];
+"constant_values.skew() = ".echo(); constant_values.skew().echo();
+"constant_values.kurtosis() = ".echo(); constant_values.kurtosis().echo();
+
+// Test consistency with existing functions
+"Verifying consistency with existing functions...\n".echo();
+test_arr_final = [1,2,3,4,5,6,7,8,9,10];
+"test_arr_final = ".echo(); test_arr_final.echo();
+"test_arr_final.sum() = ".echo(); test_arr_final.sum().echo();
+"test_arr_final.mean() = ".echo(); test_arr_final.mean().echo();
+"test_arr_final.var() = ".echo(); test_arr_final.var().echo();
+"test_arr_final.std() = ".echo(); test_arr_final.std().echo();
+"test_arr_final.skew() = ".echo(); test_arr_final.skew().echo();
+"test_arr_final.kurtosis() = ".echo(); test_arr_final.kurtosis().echo();
+
+"All skew and kurtosis tests completed!\n".echo();
+
 "All tests completed!\n".echo();

@@ -1485,6 +1485,37 @@ GrapaError GrapaVector::Dot(GrapaScriptExec* pScriptExec, GrapaNames* pNameSpace
 	}
 	switch (mDim)
 	{
+	case 1:
+		switch (bi.mDim)
+		{
+		case 1:
+			/* 1D vector dot product - returns scalar */
+			if (mCounts[0] != bi.mCounts[0])
+				return -1;
+			result.mDim = 1;
+			result.mSetBlock = mSetBlock;
+			result.mBlock = mBlock;
+			result.mMaxBlock = _minvectordatablock_;
+			result.mCounts = (u64*)GrapaMem::Create(sizeof(u64) * result.mDim);
+			result.mCounts[0] = 1;
+			result.mSize = 1;
+			result.mData = (GrapaVectorItem*)GrapaMem::Create(result.mBlock * result.mSize);
+			memset(result.mData, 0, result.mBlock * result.mSize);
+			
+			GrapaFloat val(pScriptExec->vScriptState->mItemState.mFloatFix, pScriptExec->vScriptState->mItemState.mFloatMax, pScriptExec->vScriptState->mItemState.mFloatExtra, 0);
+			for (u64 i = 0; i < mCounts[0]; i++)
+			{
+				GrapaVectorParam p1(pScriptExec, mData, mBlock, i);
+				GrapaVectorParam p2(pScriptExec, bi.mData, bi.mBlock, i);
+				if (p1.a && p2.a)
+				{
+					val += p2.Mul(pScriptExec, pNameSpace, &p1);
+				}
+			}
+			result.Set(0, val);
+			break;
+		}
+		break;
 	case 2:
 		switch (bi.mDim)
 		{
@@ -3071,6 +3102,253 @@ GrapaError GrapaVector::Quantile(GrapaScriptExec* pScriptExec, GrapaVector& resu
 	return -1;
 }
 
+GrapaError GrapaVector::Skew(GrapaScriptExec* pScriptExec, GrapaVector& result, bool isRows)
+{
+	result.CLEAR();
+	if (mData == NULL)
+		return -1;
+	if (mDim == 1)
+	{
+		// Handle 1-dimensional vector - skewness of all elements
+		if (mCounts[0] < 3) return -1; // Need at least 3 values for skewness
+		
+		// Calculate mean first
+		GrapaFloat sum(pScriptExec->vScriptState->mItemState.mFloatFix, pScriptExec->vScriptState->mItemState.mFloatMax, pScriptExec->vScriptState->mItemState.mFloatExtra, 0);
+		for (u64 i = 0; i < mCounts[0]; i++)
+		{
+			GrapaVectorParam p1(pScriptExec, mData, mBlock, i);
+			sum = sum + *p1.aa;
+		}
+		GrapaFloat mean = sum / mCounts[0];
+		
+		// Calculate variance
+		GrapaFloat variance(pScriptExec->vScriptState->mItemState.mFloatFix, pScriptExec->vScriptState->mItemState.mFloatMax, pScriptExec->vScriptState->mItemState.mFloatExtra, 0);
+		for (u64 i = 0; i < mCounts[0]; i++)
+		{
+			GrapaVectorParam p1(pScriptExec, mData, mBlock, i);
+			GrapaFloat diff = *p1.aa - mean;
+			variance = variance + (diff * diff);
+		}
+		variance = variance / (mCounts[0] - 1); // Sample variance (n-1)
+		
+		// Calculate skewness
+		GrapaFloat skewness(pScriptExec->vScriptState->mItemState.mFloatFix, pScriptExec->vScriptState->mItemState.mFloatMax, pScriptExec->vScriptState->mItemState.mFloatExtra, 0);
+		GrapaFloat std_dev = variance.Root(GrapaInt(2));
+		if (std_dev == GrapaFloat(0)) return -1; // Cannot calculate skewness if standard deviation is zero
+		
+		for (u64 i = 0; i < mCounts[0]; i++)
+		{
+			GrapaVectorParam p1(pScriptExec, mData, mBlock, i);
+			GrapaFloat diff = *p1.aa - mean;
+			GrapaFloat z_score = diff / std_dev;
+			skewness = skewness + (z_score * z_score * z_score);
+		}
+		skewness = skewness / mCounts[0];
+		
+		result.mDim = 1;
+		result.mSetBlock = mSetBlock;
+		result.mBlock = mBlock;
+		result.mMaxBlock = _minvectordatablock_;
+		result.mCounts = (u64*)GrapaMem::Create(sizeof(u64) * result.mDim);
+		result.mCounts[0] = 1;
+		result.mSize = 1;
+		result.mData = (GrapaVectorItem*)GrapaMem::Create(result.mBlock * result.mSize);
+		memset(result.mData, 0, result.mBlock * result.mSize);
+		result.Set(0, skewness);
+		return 0;
+	}
+	else if (mDim == 2)
+	{
+		u64 rows = isRows ? mCounts[1] : mCounts[0];
+		u64 cols = isRows ? mCounts[0] : mCounts[1];
+		if (rows < 3) return -1; // Need at least 3 values for skewness
+		
+		result.mDim = isRows ? 2 : 1;
+		result.mSetBlock = mSetBlock;
+		result.mBlock = mBlock;
+		result.mMaxBlock = _minvectordatablock_;
+		result.mCounts = (u64*)GrapaMem::Create(sizeof(u64) * result.mDim);
+		result.mCounts[0] = cols;
+		if (isRows) result.mCounts[1] = 1;
+		result.mSize = cols;
+		result.mData = (GrapaVectorItem*)GrapaMem::Create(result.mBlock * result.mSize);
+		memset(result.mData, 0, result.mBlock * result.mSize);
+		
+		for (u64 j = 0; j < cols; j++)
+		{
+			// Calculate mean for this column/row
+			GrapaFloat sum(pScriptExec->vScriptState->mItemState.mFloatFix, pScriptExec->vScriptState->mItemState.mFloatMax, pScriptExec->vScriptState->mItemState.mFloatExtra, 0);
+			for (u64 i = 0; i < rows; i++)
+			{
+				u64 pos = isRows ? (j * mCounts[1] + i) : (i * mCounts[1] + j);
+				GrapaVectorParam p1(pScriptExec, mData, mBlock, pos);
+				sum = sum + *p1.aa;
+			}
+			GrapaFloat mean = sum / rows;
+			
+			// Calculate variance for this column/row
+			GrapaFloat variance(pScriptExec->vScriptState->mItemState.mFloatFix, pScriptExec->vScriptState->mItemState.mFloatMax, pScriptExec->vScriptState->mItemState.mFloatExtra, 0);
+			for (u64 i = 0; i < rows; i++)
+			{
+				u64 pos = isRows ? (j * mCounts[1] + i) : (i * mCounts[1] + j);
+				GrapaVectorParam p1(pScriptExec, mData, mBlock, pos);
+				GrapaFloat diff = *p1.aa - mean;
+				variance = variance + (diff * diff);
+			}
+			variance = variance / (rows - 1); // Sample variance (n-1)
+			
+			// Calculate skewness for this column/row
+			GrapaFloat skewness(pScriptExec->vScriptState->mItemState.mFloatFix, pScriptExec->vScriptState->mItemState.mFloatMax, pScriptExec->vScriptState->mItemState.mFloatExtra, 0);
+			GrapaFloat std_dev = variance.Root(GrapaInt(2));
+			if (std_dev == GrapaFloat(0))
+			{
+				result.Set(j, GrapaFloat(0)); // Zero skewness for constant values
+			}
+			else
+			{
+				for (u64 i = 0; i < rows; i++)
+				{
+					u64 pos = isRows ? (j * mCounts[1] + i) : (i * mCounts[1] + j);
+					GrapaVectorParam p1(pScriptExec, mData, mBlock, pos);
+					GrapaFloat diff = *p1.aa - mean;
+					GrapaFloat z_score = diff / std_dev;
+					skewness = skewness + (z_score * z_score * z_score);
+				}
+				skewness = skewness / rows;
+				result.Set(j, skewness);
+			}
+		}
+		return 0;
+	}
+	return -1;
+}
+
+GrapaError GrapaVector::Kurtosis(GrapaScriptExec* pScriptExec, GrapaVector& result, bool isRows)
+{
+	result.CLEAR();
+	if (mData == NULL)
+		return -1;
+	if (mDim == 1)
+	{
+		// Handle 1-dimensional vector - kurtosis of all elements
+		if (mCounts[0] < 4) return -1; // Need at least 4 values for kurtosis
+		
+		// Calculate mean first
+		GrapaFloat sum(pScriptExec->vScriptState->mItemState.mFloatFix, pScriptExec->vScriptState->mItemState.mFloatMax, pScriptExec->vScriptState->mItemState.mFloatExtra, 0);
+		for (u64 i = 0; i < mCounts[0]; i++)
+		{
+			GrapaVectorParam p1(pScriptExec, mData, mBlock, i);
+			sum = sum + *p1.aa;
+		}
+		GrapaFloat mean = sum / mCounts[0];
+		
+		// Calculate variance
+		GrapaFloat variance(pScriptExec->vScriptState->mItemState.mFloatFix, pScriptExec->vScriptState->mItemState.mFloatMax, pScriptExec->vScriptState->mItemState.mFloatExtra, 0);
+		for (u64 i = 0; i < mCounts[0]; i++)
+		{
+			GrapaVectorParam p1(pScriptExec, mData, mBlock, i);
+			GrapaFloat diff = *p1.aa - mean;
+			variance = variance + (diff * diff);
+		}
+		variance = variance / (mCounts[0] - 1); // Sample variance (n-1)
+		
+		// Calculate kurtosis
+		GrapaFloat kurtosis(pScriptExec->vScriptState->mItemState.mFloatFix, pScriptExec->vScriptState->mItemState.mFloatMax, pScriptExec->vScriptState->mItemState.mFloatExtra, 0);
+		GrapaFloat std_dev = variance.Root(GrapaInt(2));
+		if (std_dev == GrapaFloat(0)) return -1; // Cannot calculate kurtosis if standard deviation is zero
+		
+		for (u64 i = 0; i < mCounts[0]; i++)
+		{
+			GrapaVectorParam p1(pScriptExec, mData, mBlock, i);
+			GrapaFloat diff = *p1.aa - mean;
+			GrapaFloat z_score = diff / std_dev;
+			kurtosis = kurtosis + (z_score * z_score * z_score * z_score);
+		}
+		kurtosis = kurtosis / mCounts[0];
+		
+		// Subtract 3 to get excess kurtosis (relative to normal distribution)
+		kurtosis = kurtosis - GrapaFloat(3);
+		
+		result.mDim = 1;
+		result.mSetBlock = mSetBlock;
+		result.mBlock = mBlock;
+		result.mMaxBlock = _minvectordatablock_;
+		result.mCounts = (u64*)GrapaMem::Create(sizeof(u64) * result.mDim);
+		result.mCounts[0] = 1;
+		result.mSize = 1;
+		result.mData = (GrapaVectorItem*)GrapaMem::Create(result.mBlock * result.mSize);
+		memset(result.mData, 0, result.mBlock * result.mSize);
+		result.Set(0, kurtosis);
+		return 0;
+	}
+	else if (mDim == 2)
+	{
+		u64 rows = isRows ? mCounts[1] : mCounts[0];
+		u64 cols = isRows ? mCounts[0] : mCounts[1];
+		if (rows < 4) return -1; // Need at least 4 values for kurtosis
+		
+		result.mDim = isRows ? 2 : 1;
+		result.mSetBlock = mSetBlock;
+		result.mBlock = mBlock;
+		result.mMaxBlock = _minvectordatablock_;
+		result.mCounts = (u64*)GrapaMem::Create(sizeof(u64) * result.mDim);
+		result.mCounts[0] = cols;
+		if (isRows) result.mCounts[1] = 1;
+		result.mSize = cols;
+		result.mData = (GrapaVectorItem*)GrapaMem::Create(result.mBlock * result.mSize);
+		memset(result.mData, 0, result.mBlock * result.mSize);
+		
+		for (u64 j = 0; j < cols; j++)
+		{
+			// Calculate mean for this column/row
+			GrapaFloat sum(pScriptExec->vScriptState->mItemState.mFloatFix, pScriptExec->vScriptState->mItemState.mFloatMax, pScriptExec->vScriptState->mItemState.mFloatExtra, 0);
+			for (u64 i = 0; i < rows; i++)
+			{
+				u64 pos = isRows ? (j * mCounts[1] + i) : (i * mCounts[1] + j);
+				GrapaVectorParam p1(pScriptExec, mData, mBlock, pos);
+				sum = sum + *p1.aa;
+			}
+			GrapaFloat mean = sum / rows;
+			
+			// Calculate variance for this column/row
+			GrapaFloat variance(pScriptExec->vScriptState->mItemState.mFloatFix, pScriptExec->vScriptState->mItemState.mFloatMax, pScriptExec->vScriptState->mItemState.mFloatExtra, 0);
+			for (u64 i = 0; i < rows; i++)
+			{
+				u64 pos = isRows ? (j * mCounts[1] + i) : (i * mCounts[1] + j);
+				GrapaVectorParam p1(pScriptExec, mData, mBlock, pos);
+				GrapaFloat diff = *p1.aa - mean;
+				variance = variance + (diff * diff);
+			}
+			variance = variance / (rows - 1); // Sample variance (n-1)
+			
+			// Calculate kurtosis for this column/row
+			GrapaFloat kurtosis(pScriptExec->vScriptState->mItemState.mFloatFix, pScriptExec->vScriptState->mItemState.mFloatMax, pScriptExec->vScriptState->mItemState.mFloatExtra, 0);
+			GrapaFloat std_dev = variance.Root(GrapaInt(2));
+			if (std_dev == GrapaFloat(0))
+			{
+				result.Set(j, GrapaFloat(0)); // Zero kurtosis for constant values
+			}
+			else
+			{
+				for (u64 i = 0; i < rows; i++)
+				{
+					u64 pos = isRows ? (j * mCounts[1] + i) : (i * mCounts[1] + j);
+					GrapaVectorParam p1(pScriptExec, mData, mBlock, pos);
+					GrapaFloat diff = *p1.aa - mean;
+					GrapaFloat z_score = diff / std_dev;
+					kurtosis = kurtosis + (z_score * z_score * z_score * z_score);
+				}
+				kurtosis = kurtosis / rows;
+				// Subtract 3 to get excess kurtosis (relative to normal distribution)
+				kurtosis = kurtosis - GrapaFloat(3);
+				result.Set(j, kurtosis);
+			}
+		}
+		return 0;
+	}
+	return -1;
+}
+
 GrapaRuleEvent* GrapaVector::ToArray()
 {
 	if (mData == NULL)
@@ -4396,7 +4674,35 @@ void GrapaVector::Identity(GrapaScriptExec* pScriptExec, u64 n)
 bool GrapaVector::Diagonal(GrapaScriptExec* pScriptExec, s64 n, GrapaVector& result)
 {
 	result.CLEAR();
-	if (mDim != 2)
+	if (mDim == 1)
+	{
+		/* Create diagonal matrix from 1D vector */
+		result.mBlock = _minvectorblock_;
+		result.mMaxBlock = _minvectordatablock_;
+		result.mSetBlock = 0;
+		result.mDim = 2;
+		result.mCounts = (u64*)GrapaMem::Create(result.mDim * sizeof(u64));
+		result.mCounts[0] = mCounts[0];
+		result.mCounts[1] = mCounts[0];
+		result.mSize = mCounts[0] * mCounts[0];
+		result.mData = (GrapaVectorItem*)GrapaMem::Create(result.mBlock * result.mSize);
+		
+		/* Initialize with zeros */
+		GrapaFloat zero(pScriptExec->vScriptState->mItemState.mFloatFix, pScriptExec->vScriptState->mItemState.mFloatMax, pScriptExec->vScriptState->mItemState.mFloatExtra, 0);
+		for (u64 i = 0; i < result.mSize; i++)
+		{
+			result.Set(i, zero);
+		}
+		
+		/* Set diagonal elements from vector */
+		for (u64 i = 0; i < mCounts[0]; i++)
+		{
+			GrapaVectorParam p1(pScriptExec, mData, mBlock, i);
+			result.Set(i * result.mCounts[1] + i, *p1.aa);
+		}
+		return true;
+	}
+	else if (mDim != 2)
 		return false;
 	result.mBlock = _minvectorblock_;
 	result.mMaxBlock = _minvectordatablock_;
