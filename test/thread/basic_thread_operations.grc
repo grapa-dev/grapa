@@ -77,7 +77,7 @@ thread3 = $thread();
 thread3.start(
     op() {
         "Thread 3: Starting long work\n".echo();
-        for (i = 0; i < 10; i++) {
+        for (i = 0; i < 10; i = i + 1) {
             ("Thread 3: Working... " + i + "\n").echo();
             $sys().sleep(100);
         };
@@ -103,7 +103,7 @@ result = thread3.started();
 "Test 4: Multiple threads with coordination\n".echo();
 
 /* Create multiple worker threads */
-for (i = 0; i < 3; i++) {
+for (i = 0; i < 3; i = i + 1) {
     worker = $thread();
     worker.start(
         op(worker_id) {
@@ -111,7 +111,7 @@ for (i = 0; i < 3; i++) {
             
             /* Acquire lock to increment counter */
             lock.lock();
-            counter++;
+            counter = counter + 1;
             current = counter;
             lock.unlock();
             

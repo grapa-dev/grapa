@@ -1,0 +1,77 @@
+/* Test file for new vector statistical functions: norm, mode, median */
+
+/* Test 1: Basic 1D array tests */
+"Testing 1D arrays...\n".echo();
+
+arr1 = [1, 2, 3, 4, 5];
+"arr1 = ".echo(); arr1.echo();
+"arr1.norm() = ".echo(); arr1.norm().echo();
+"arr1.norm()[0] = ".echo(); arr1.norm()[0].echo();
+
+arr2 = [1, 2, 2, 3, 3, 3, 4, 4, 4, 4];
+"arr2 = ".echo(); arr2.echo();
+"arr2.mode() = ".echo(); arr2.mode().echo();
+"arr2.mode()[0] = ".echo(); arr2.mode()[0].echo();
+"arr2.median() = ".echo(); arr2.median().echo();
+"arr2.median()[0] = ".echo(); arr2.median()[0].echo();
+
+/* Test 2: 2D array tests with different axes */
+"Testing 2D arrays...\n".echo();
+
+matrix1 = [[1, 2, 3], [4, 5, 6]];
+"matrix1 = ".echo(); matrix1.echo();
+"matrix1.norm() = ".echo(); matrix1.norm().echo();
+"matrix1.norm(0) = ".echo(); matrix1.norm(0).echo();
+"matrix1.norm(1) = ".echo(); matrix1.norm(1).echo();
+
+matrix2 = [[1, 2, 2], [3, 3, 4], [4, 4, 4]];
+"matrix2 = ".echo(); matrix2.echo();
+"matrix2.mode() = ".echo(); matrix2.mode().echo();
+"matrix2.mode(0) = ".echo(); matrix2.mode(0).echo();
+"matrix2.mode(1) = ".echo(); matrix2.mode(1).echo();
+"matrix2.median() = ".echo(); matrix2.median().echo();
+"matrix2.median(0) = ".echo(); matrix2.median(0).echo();
+"matrix2.median(1) = ".echo(); matrix2.median(1).echo();
+
+/* Test 3: Edge cases */
+"Testing edge cases...\n".echo();
+
+empty = [];
+"empty.norm() = ".echo(); empty.norm().echo();
+
+single = [42];
+"single = ".echo(); single.echo();
+"single.norm() = ".echo(); single.norm().echo();
+"single.mode() = ".echo(); single.mode().echo();
+"single.median() = ".echo(); single.median().echo();
+
+duplicates = [1, 1, 1, 1, 1];
+"duplicates = ".echo(); duplicates.echo();
+"duplicates.mode() = ".echo(); duplicates.mode().echo();
+"duplicates.median() = ".echo(); duplicates.median().echo();
+
+/* Test 4: Mixed data types and larger arrays */
+"Testing larger arrays...\n".echo();
+
+large = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+"large.norm() = ".echo(); large.norm().echo();
+"large.median() = ".echo(); large.median().echo();
+
+mixed = [1, 2, 2, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 5];
+"mixed = ".echo(); mixed.echo();
+"mixed.mode() = ".echo(); mixed.mode().echo();
+"mixed.median() = ".echo(); mixed.median().echo();
+
+/* Test 5: Verify consistency with existing functions */
+"Verifying consistency with existing functions...\n".echo();
+
+test_arr = [1, 2, 3, 4, 5];
+"test_arr = ".echo(); test_arr.echo();
+"test_arr.sum() = ".echo(); test_arr.sum().echo();
+"test_arr.mean() = ".echo(); test_arr.mean().echo();
+"test_arr.var() = ".echo(); test_arr.var().echo();
+"test_arr.norm() = ".echo(); test_arr.norm().echo();
+"test_arr.mode() = ".echo(); test_arr.mode().echo();
+"test_arr.median() = ".echo(); test_arr.median().echo();
+
+"All tests completed!\n".echo();

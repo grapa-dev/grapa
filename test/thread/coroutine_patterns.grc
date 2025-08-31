@@ -29,7 +29,7 @@ producer.start(
     op() {
         "Producer: Starting production\n".echo();
         
-        for (i = 0; i < 8; i++) {
+        for (i = 0; i < 8; i = i + 1) {
             queue_lock.lock();
             while (queue.len() >= max_size) {
                 queue_lock.unlock();
@@ -98,7 +98,7 @@ generator.start(
     op() {
         "Generator: Starting\n".echo();
         
-        for (i = 0; i < 5; i++) {
+        for (i = 0; i < 5; i = i + 1) {
             pipeline_lock.lock();
             pipeline_data.push(i * 2);
             pipeline_lock.unlock();
@@ -123,7 +123,7 @@ processor.start(
     op() {
         "Processor: Starting\n".echo();
         
-        for (i = 0; i < 5; i++) {
+        for (i = 0; i < 5; i = i + 1) {
             /* Wait for data */
             while (pipeline_data.len() == 0) {
                 processor.suspend();
@@ -155,7 +155,7 @@ outputter.start(
     op() {
         "Outputter: Starting\n".echo();
         
-        for (i = 0; i < 5; i++) {
+        for (i = 0; i < 5; i = i + 1) {
             ("Outputter: Processing step " + i + "\n").echo();
             
             /* Resume other stages */
@@ -185,13 +185,13 @@ $sys().sleep(800);
 "Test 3: Cooperative Multitasking\n".echo();
 
 /* Create tasks */
-for (i = 0; i < 3; i++) {
+for (i = 0; i < 3; i = i + 1) {
     task = $thread();
     task.start(
         op(task_id) {
             "Task " + task_id + ": Starting\n".echo();
             
-            for (j = 0; j < 3; j++) {
+            for (j = 0; j < 3; j = j + 1) {
                 ("Task " + task_id + ": Step " + j + "\n").echo();
                 task.suspend();  /* Yield control */
                 $sys().sleep(50);

@@ -1,0 +1,111 @@
+/* Simple Thread Test
+   Basic verification of thread functionality */
+
+"=== Simple Thread Test ===".echo();
+
+/* Test 1: Basic thread creation and execution */
+"Test 1: Basic thread\n".echo();
+thread1 = $thread();
+thread1.start(
+    op() {
+        "Thread 1: Working\n".echo();
+        $sys().sleep(50);
+        "Thread 1: Done\n".echo();
+        return "Thread 1 result";
+    },
+    null,
+    op(input, result) {
+        ("Thread 1 callback: " + result + "\n").echo();
+    }
+);
+
+$sys().sleep(100);
+
+/* Test 2: Thread with parameters */
+"Test 2: Thread with parameters\n".echo();
+thread2 = $thread();
+thread2.start(
+    op(param) {
+        ("Thread 2: Got parameter '" + param + "'\n").echo();
+        $sys().sleep(30);
+        return "Thread 2 processed " + param;
+    },
+    "test parameter",
+    op(input, result) {
+        ("Thread 2 callback: " + result + "\n").echo();
+    }
+);
+
+$sys().sleep(80);
+
+/* Test 3: Thread state checking */
+"Test 3: Thread state\n".echo();
+thread3 = $thread();
+started = thread3.started();
+("Thread 3 started before start: " + started + "\n").echo();
+
+thread3.start(
+    op() {
+        "Thread 3: Running\n".echo();
+        $sys().sleep(40);
+        return "Thread 3 done";
+    },
+    null,
+    op(input, result) {
+        ("Thread 3 callback: " + result + "\n").echo();
+    }
+);
+
+started = thread3.started();
+("Thread 3 started after start: " + started + "\n").echo();
+
+$sys().sleep(80);
+
+/* Test 4: Simple lock test */
+"Test 4: Simple lock\n".echo();
+lock = $thread();
+lock.lock();
+"Lock acquired\n".echo();
+lock.unlock();
+"Lock released\n".echo();
+
+/* Test 5: Simple condition variable */
+"Test 5: Condition variable\n".echo();
+condition = $thread();
+data_ready = false;
+
+producer = $thread();
+producer.start(
+    op() {
+        "Producer: Working\n".echo();
+        $sys().sleep(30);
+        data_ready = true;
+        condition.signal();
+        "Producer: Signaled\n".echo();
+        return "Producer done";
+    },
+    null,
+    op(input, result) {
+        ("Producer callback: " + result + "\n").echo();
+    }
+);
+
+consumer = $thread();
+consumer.start(
+    op() {
+        "Consumer: Waiting\n".echo();
+        while (!data_ready) {
+            condition.wait();
+        };
+        "Consumer: Got data\n".echo();
+        return "Consumer done";
+    },
+    null,
+    op(input, result) {
+        ("Consumer callback: " + result + "\n").echo();
+    }
+);
+
+$sys().sleep(100);
+
+"=== Simple Thread Test Complete ===\n".echo();

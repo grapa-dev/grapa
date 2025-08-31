@@ -2334,16 +2334,16 @@ switch(input:"hello world") {
 
 /* Complex data structure analysis */
 switch(data:{name: "Alice", scores: [85, 92, 78]}) {
-    case (data.scores.avg() >= 90): "High performer".echo();
-    case (data.scores.avg() >= 80): "Good performer".echo();
-    case (data.scores.min() < 70): "Needs improvement".echo();
+    case (data.scores.mean()[0] >= 90): "High performer".echo();
+    case (data.scores.mean()[0] >= 80): "Good performer".echo();
+    case (data.scores.min()[0] < 70): "Needs improvement".echo();
     default: "Average performer".echo();
 };
 
 /* Array pattern matching */
 switch(arr:[1,2,3,4,5]) {
     case (arr.len() == 5 && arr[0] == 1): "Five-element array starting with 1".echo();
-    case (arr.sum() > 10): "Array sum greater than 10".echo();
+    case (arr.sum()[0] > 10): "Array sum greater than 10".echo();
     case (arr.grep(3)): "Array contains 3".echo();
     default: "No specific pattern".echo();
 };

@@ -109,6 +109,9 @@ public:
 	GrapaError Max(GrapaScriptExec* pScriptExec, GrapaVector& result, bool rowvar = true);
 	GrapaError Std(GrapaScriptExec* pScriptExec, GrapaVector& result, bool rowvar = true);
 	GrapaError Var(GrapaScriptExec* pScriptExec, GrapaVector& result, bool rowvar = true);
+	GrapaError Norm(GrapaScriptExec* pScriptExec, GrapaVector& result, bool rowvar = true);
+	GrapaError Mode(GrapaScriptExec* pScriptExec, GrapaVector& result, bool rowvar = true);
+	GrapaError Median(GrapaScriptExec* pScriptExec, GrapaVector& result, bool rowvar = true);
 	virtual GrapaRuleEvent* ToArray();
 	virtual GrapaRuleEvent* _toarray(u64 pos, u64& p);
 	virtual GrapaRuleEvent* ToTuple();

@@ -136,16 +136,36 @@ total_mean = data_2d.mean();
 ("Total sum: " + total_sum + "\n").echo();
 ("Total mean: " + total_mean + "\n").echo();
 
+// Advanced statistical functions
+total_norm = data_2d.norm();
+total_mode = data_2d.mode();
+total_median = data_2d.median();
+("Total norm: " + total_norm + "\n").echo();
+("Total mode: " + total_mode + "\n").echo();
+("Total median: " + total_median + "\n").echo();
+
 // Axis-based operations
 sum_axis_0 = data_2d.sum(0);  // Sum along rows
 sum_axis_1 = data_2d.sum(1);  // Sum along columns
 mean_axis_0 = data_2d.mean(0); // Mean along rows
 mean_axis_1 = data_2d.mean(1); // Mean along columns
+norm_axis_0 = data_2d.norm(0); // Norm along rows
+norm_axis_1 = data_2d.norm(1); // Norm along columns
+mode_axis_0 = data_2d.mode(0); // Mode along rows
+mode_axis_1 = data_2d.mode(1); // Mode along columns
+median_axis_0 = data_2d.median(0); // Median along rows
+median_axis_1 = data_2d.median(1); // Median along columns
 
 ("Sum along axis 0 (rows): " + sum_axis_0 + "\n").echo();
 ("Sum along axis 1 (columns): " + sum_axis_1 + "\n").echo();
 ("Mean along axis 0 (rows): " + mean_axis_0 + "\n").echo();
 ("Mean along axis 1 (columns): " + mean_axis_1 + "\n").echo();
+("Norm along axis 0 (rows): " + norm_axis_0 + "\n").echo();
+("Norm along axis 1 (columns): " + norm_axis_1 + "\n").echo();
+("Mode along axis 0 (rows): " + mode_axis_0 + "\n").echo();
+("Mode along axis 1 (columns): " + mode_axis_1 + "\n").echo();
+("Median along axis 0 (rows): " + median_axis_0 + "\n").echo();
+("Median along axis 1 (columns): " + median_axis_1 + "\n").echo();
 
 // Covariance
 cov_matrix = data_2d.cov();
@@ -244,6 +264,66 @@ image_data = (64).range().reshape([8, 8]).vector();
 // Apply a simple filter (average of neighbors)
 filtered = image_data.triu(-1).tril(1);  // Keep main diagonal and adjacent
 ("Filtered image: " + filtered + "\n").echo();
+
+/* Advanced Vector Sorting Examples */
+
+("--- Advanced Vector Sorting ---\n").echo();
+
+// Sample data for sorting
+sort_data = [[3, 1, 4], [1, 5, 9], [2, 6, 5], [4, 2, 7]].vector();
+("Original data: " + sort_data + "\n").echo();
+
+// Basic sorting (by first column)
+basic_sorted = sort_data.sort();
+("Basic sorted (by first column): " + basic_sorted + "\n").echo();
+
+// Custom sorting by second column
+custom_sorted = sort_data.sort(op(a, b) { a[1] - b[1]; });
+("Custom sorted (by second column): " + custom_sorted + "\n").echo();
+
+// Custom sorting by third column
+third_col_sorted = sort_data.sort(op(a, b) { a[2] - b[2]; });
+("Sorted by third column: " + third_col_sorted + "\n").echo();
+
+// Complex sorting criteria (sum of first two columns)
+complex_sorted = sort_data.sort(op(a, b) { 
+    sum_a = a[0] + a[1];
+    sum_b = b[0] + b[1];
+    sum_a - sum_b;
+});
+("Complex sorted (by sum of first two columns): " + complex_sorted + "\n").echo();
+
+// Get sorting indices
+sort_indices = sort_data.argsort();
+("Sorting indices: " + sort_indices + "\n").echo();
+
+// Argsort examples
+("--- Argsort Examples ---\n").echo();
+
+// Basic argsort
+vec_1d = #[3, 1, 4, 1, 5]#;
+indices_1d = vec_1d.argsort();
+("1D argsort indices: " + indices_1d + "\n").echo();
+
+// Argsort with custom comparison
+indices_by_second = sort_data.argsort(op(a, b) { a[1] - b[1]; });
+("Argsort by second column: " + indices_by_second + "\n").echo();
+
+// Argsort with descending order
+descending_indices = vec_1d.argsort(null, 1);
+("Descending argsort indices: " + descending_indices + "\n").echo();
+
+// Use argsort to reorder other data
+names = #["Charlie", "Alice", "David", "Bob", "Eve"]#;
+name_indices = vec_1d.argsort();
+sorted_names = names[name_indices];
+("Names reordered by vec_1d argsort: " + sorted_names + "\n").echo();
+
+// Demonstrate sort vs argsort difference
+("--- Sort vs Argsort Comparison ---\n").echo();
+("Original data: " + vec_1d + "\n").echo();
+("Sort result: " + vec_1d.sort() + "\n").echo();
+("Argsort result: " + vec_1d.argsort() + "\n").echo();
 
 // Data analysis example
 sales_data = [[100, 150, 200], [120, 180, 220], [90, 140, 190]].vector();

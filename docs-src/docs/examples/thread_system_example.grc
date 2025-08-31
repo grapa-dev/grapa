@@ -7,8 +7,6 @@
    - Resource pool management
    - Proper thread-safe variable declarations */
 
-"=== Grapa Thread System Example ===\n".echo();
-
 /* Thread-Safe Variable Declarations */
 $global shared_counter = 0;
 $global shared_queue = [];
@@ -17,6 +15,17 @@ $global data_ready = $thread();
 $global space_available = $thread();
 $global workers_complete = 0;
 $global completion_lock = $thread();
+$global counter_lock = $thread();
+$global resource_pool = {
+    available: ["Resource_A", "Resource_B", "Resource_C"],
+    in_use: {},
+    lock: $thread()
+};
+$global coordination_condition = $thread();
+$global ready_count = 0;
+$global ready_lock = $thread();
+
+"=== Grapa Thread System Example ===\n".echo();
 
 /* Example 1: Basic Thread Lifecycle */
 "Example 1: Basic Thread Lifecycle\n".echo();
@@ -66,22 +75,20 @@ $sys().sleep(200);
 /* Example 3: Thread-Safe Counter with Lock */
 "Example 3: Thread-Safe Counter with Lock\n".echo();
 
-$global counter_lock = $thread();
-
 /* Create multiple threads that increment the counter */
-for (i = 0; i < 3; i++) {
+for (i = 0; i < 3; i+=1) {
     counter_worker = $thread();
     counter_worker.start(
         op(worker_id) {
-            for (j = 0; j < 5; j++) {
+            for (j = 0; j < 5; j+=1) {
                 counter_lock.lock();
-                shared_counter++;
+                shared_counter += shared_counter;
                 current = shared_counter;
                 counter_lock.unlock();
                 ("Worker " + worker_id + ": Counter = " + current + "\n").echo();
                 $sys().sleep(50);
             };
-            return "Worker " + worker_id + " completed";
+            return ("Worker " + worker_id + " completed");
         },
         i,
         op(input, result) {
@@ -102,7 +109,7 @@ producer.start(
     op() {
         "Producer: Starting production\n".echo();
         
-        for (i = 0; i < 8; i++) {
+        for (i = 0; i < 8; i+=1) {
             queue_lock.lock();
             shared_queue.push("Item " + i);
             queue_lock.unlock();
@@ -120,14 +127,15 @@ producer.start(
     }
 );
 
+if (false)
 /* Consumer threads */
-for (consumer_id = 0; consumer_id < 2; consumer_id++) {
+for (consumer_id = 0; consumer_id < 2; consumer_id+=1) {
     consumer = $thread();
     consumer.start(
         op(id) {
-            "Consumer " + id + ": Starting consumption\n".echo();
+            ("Consumer " + id + ": Starting consumption\n").echo();
             
-            items_consumed = 0;
+            $local.items_consumed = 0;
             while (items_consumed < 4) {
                 queue_lock.lock();
                 while (shared_queue.len() == 0) {
@@ -136,7 +144,7 @@ for (consumer_id = 0; consumer_id < 2; consumer_id++) {
                     queue_lock.lock();
                 };
                 
-                item = shared_queue.shift();
+                $local.item = shared_queue.shift();
                 queue_lock.unlock();
                 
                 ("Consumer " + id + ": Consumed " + item + "\n").echo();
@@ -145,7 +153,7 @@ for (consumer_id = 0; consumer_id < 2; consumer_id++) {
             };
             
             ("Consumer " + id + ": Consumption complete\n").echo();
-            return "Consumer " + id + " completed";
+            return ("Consumer " + id + " completed");
         },
         consumer_id,
         op(input, result) {
@@ -158,12 +166,6 @@ $sys().sleep(1000);
 
 /* Example 5: Resource Pool Management */
 "Example 5: Resource Pool Management\n".echo();
-
-$global resource_pool = {
-    available: ["Resource_A", "Resource_B", "Resource_C"],
-    in_use: {},
-    lock: $thread()
-};
 
 /* Resource requesters */
 for (requester_id = 0; requester_id < 4; requester_id++) {
@@ -205,10 +207,6 @@ $sys().sleep(600);
 
 /* Example 6: Condition Variable Coordination */
 "Example 6: Condition Variable Coordination\n".echo();
-
-$global coordination_condition = $thread();
-$global ready_count = 0;
-$global ready_lock = $thread();
 
 /* Create threads that wait for coordination */
 for (coord_id = 0; coord_id < 3; coord_id++) {
@@ -278,7 +276,7 @@ started = inspection_thread.started();
 start_time = $TIME();
 
 /* Create many threads rapidly */
-for (i = 0; i < 10; i++) {
+for (i = 0; i < 10; i+=1) {
     perf_thread = $thread();
     perf_thread.start(
         op(thread_id) {

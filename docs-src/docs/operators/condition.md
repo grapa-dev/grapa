@@ -111,8 +111,8 @@ switch(input:"hello world") {
 
 /* Complex data structure analysis */
 switch(data:{name: "Alice", scores: [85, 92, 78]}) {
-    case (data.scores.avg() >= 90): "High performer".echo();
-    case (data.scores.avg() >= 80): "Good performer".echo();
+    case (data.scores.mean()[0] >= 90): "High performer".echo();
+case (data.scores.mean()[0] >= 80): "Good performer".echo();
     case (data.scores.min() < 70): "Needs improvement".echo();
     default: "Average performer".echo();
 };

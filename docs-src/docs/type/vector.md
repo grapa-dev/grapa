@@ -94,13 +94,33 @@ shape = vec.shape();      /* Get dimensions: [6] */
 reshaped = vec.reshape([2, 3]);  /* Reshape to 2x3: #[[1,2,3],[4,5,6]]# */
 transposed = vec.t();     /* Matrix transpose (for 2D vectors) */
 
+/* Advanced sorting with custom comparison functions */
+vec_2d = [[3, 1, 4], [1, 5, 9], [2, 6, 5]].vector();
+
+/* Basic sorting */
+sorted = vec_2d.sort();   /* Sort by first column */
+
+/* Custom comparison function */
+custom_sorted = vec_2d.sort(op(a, b) { a[1] - b[1]; });  /* Sort by second column */
+
+/* Sort with indices */
+indices = [2, 0, 1];  /* Sort order: third row, first row, second row */
+indexed_sort = vec_2d.sort(indices);
+
+/* Sort with return indices */
+sorted_with_indices = vec_2d.sort(null, true);  /* Returns both sorted data and indices */
+```
+
 /* Statistical operations (1D and 2D vectors) */
 total = vec.sum();        /* Sum all elements */
 average = vec.mean();     /* Mean of all elements */
 min_val = vec.min();      /* Minimum value */
 max_val = vec.max();      /* Maximum value */
 std_dev = vec.std();      /* Standard deviation */
-variance_val = vec.variance();  /* Variance */
+variance_val = vec.var(); /* Variance */
+norm_val = vec.norm();    /* L2 norm (Euclidean norm) */
+mode_val = vec.mode();    /* Most frequent value */
+median_val = vec.median(); /* Median value */
 det_value = vec.det();    /* Determinant (for square matrices) */
 rank_value = vec.rank();  /* Matrix rank */
 cov_matrix = vec.cov();   /* Covariance matrix */
@@ -196,7 +216,10 @@ vec.mean();               /* Arithmetic mean */
 vec.min();                /* Minimum value */
 vec.max();                /* Maximum value */
 vec.std();                /* Standard deviation */
-vec.variance();           /* Variance */
+vec.var();                /* Variance */
+vec.norm();               /* L2 norm (Euclidean norm) */
+vec.mode();               /* Most frequent value */
+vec.median();             /* Median value */
 
 /* Mathematical functions */
 vec.abs();                /* Absolute values */
@@ -247,7 +270,10 @@ data_3d.mean(0);          /* Mean along axis 0 */
 data_3d.min();            /* Minimum of all elements */
 data_3d.max();            /* Maximum of all elements */
 data_3d.std();            /* Standard deviation of all elements */
-data_3d.variance();       /* Variance of all elements */
+data_3d.var();            /* Variance of all elements */
+data_3d.norm();           /* L2 norm of all elements */
+data_3d.mode();           /* Most frequent value */
+data_3d.median();         /* Median value */
 data_3d.cov();            /* Covariance matrix */
 data_3d.cov(0);           /* Covariance along axis 0 */
 
@@ -477,6 +503,220 @@ result = vec_2d.sum();  /* Returns #[15]# */
 ```
 
 **Note**: All statistical functions now support both 1D and 2D vectors, making them more versatile for data analysis tasks.
+
+### Advanced Statistical Functions
+
+Grapa provides several advanced statistical functions for comprehensive data analysis:
+
+#### **Norm (L2 Norm)**
+Calculates the Euclidean norm (L2 norm) of vectors, which is the square root of the sum of squared elements.
+
+```grapa
+/* 1D vector norm */
+vec_1d = #[3, 4]#;
+norm_1d = vec_1d.norm();  /* Returns: [5.0] (√(3² + 4²) = √25 = 5) */
+
+/* 2D vector norm with axis parameter */
+vec_2d = [[3, 4], [5, 12]].vector();
+norm_2d = vec_2d.norm();  /* Returns: [[5.0], [13.0]] (norms of each row) */
+norm_2d_axis0 = vec_2d.norm(0);  /* Returns: [[5.0], [13.0]] (same as default) */
+norm_2d_axis1 = vec_2d.norm(1);  /* Returns: [5.0, 13.0] (norms of each row) */
+```
+
+#### **Mode (Most Frequent Value)**
+Finds the most frequently occurring value in the vector.
+
+```grapa
+/* 1D vector mode */
+vec_1d = #[1, 2, 2, 3, 3, 3, 4, 4, 4, 4]#;
+mode_1d = vec_1d.mode();  /* Returns: [4] (4 appears most frequently) */
+
+/* 2D vector mode with axis parameter */
+vec_2d = [[1, 2, 2], [3, 3, 4], [4, 4, 4]].vector();
+mode_2d = vec_2d.mode();  /* Returns: [[2], [3], [4]] (modes of each row) */
+mode_2d_axis0 = vec_2d.mode(0);  /* Returns: [[2], [3], [4]] (same as default) */
+mode_2d_axis1 = vec_2d.mode(1);  /* Returns: [1, 2, 4] (modes of each column) */
+```
+
+#### **Median (Middle Value)**
+Calculates the median value, which is the middle value when data is sorted.
+
+```grapa
+/* 1D vector median */
+vec_1d = #[1, 3, 5, 7, 9]#;
+median_1d = vec_1d.median();  /* Returns: [5] (middle value) */
+
+vec_1d_even = #[1, 2, 3, 4, 5, 6]#;
+median_1d_even = vec_1d_even.median();  /* Returns: [3.5] (average of 3 and 4) */
+
+/* 2D vector median with axis parameter */
+vec_2d = [[1, 3, 5], [2, 4, 6], [7, 9, 11]].vector();
+median_2d = vec_2d.median();  /* Returns: [[3], [4], [9]] (medians of each row) */
+median_2d_axis0 = vec_2d.median(0);  /* Returns: [[3], [4], [9]] (same as default) */
+median_2d_axis1 = vec_2d.median(1);  /* Returns: [2, 4, 7] (medians of each column) */
+```
+
+**Note**: All statistical functions return arrays containing the result, so use `[0]` to access scalar values:
+```grapa
+vec = #[1, 2, 3, 4, 5]#;
+norm_scalar = vec.norm()[0];    /* 7.4161984870956629487113974408007 */
+mode_scalar = vec.mode()[0];    /* 1 */
+median_scalar = vec.median()[0]; /* 3 */
+```
+
+### Advanced Vector Sorting
+
+Grapa's vector sorting provides advanced features beyond basic array sorting, including custom comparison functions, axis-based sorting, and index management.
+
+#### **Custom Comparison Functions**
+Vectors support custom comparison functions for flexible sorting criteria:
+
+```grapa
+/* 2D vector for sorting examples */
+data = [[3, 1, 4], [1, 5, 9], [2, 6, 5], [4, 2, 7]].vector();
+
+/* Sort by first column (default) */
+sorted_by_first = data.sort();  /* [[1,5,9], [2,6,5], [3,1,4], [4,2,7]] */
+
+/* Sort by second column using custom function */
+sorted_by_second = data.sort(op(a, b) { a[1] - b[1]; });  /* [[3,1,4], [4,2,7], [1,5,9], [2,6,5]] */
+
+/* Sort by third column */
+sorted_by_third = data.sort(op(a, b) { a[2] - b[2]; });  /* [[3,1,4], [2,6,5], [4,2,7], [1,5,9]] */
+
+/* Complex sorting criteria */
+complex_sorted = data.sort(op(a, b) { 
+    /* Sort by sum of first two columns */
+    sum_a = a[0] + a[1];
+    sum_b = b[0] + b[1];
+    sum_a - sum_b;
+});
+```
+
+#### **Index-Based Sorting**
+Sort vectors using predefined indices or return sorting indices:
+
+```grapa
+/* Sort using custom indices */
+custom_order = [2, 0, 1, 3];  /* Reorder: third row, first row, second row, fourth row */
+indexed_result = data.sort(custom_order);
+
+/* Get sorting indices */
+sort_indices = data.argsort();  /* Returns indices that would sort the data */
+
+/* Sort and return both data and indices */
+sorted_data, indices = data.sort(null, true);  /* Returns sorted data and original positions */
+```
+
+#### **Argsort (Argument Sort)**
+The `.argsort()` method returns the indices that would sort the vector, without actually sorting the data:
+
+```grapa
+/* Basic argsort */
+vec = #[3, 1, 4, 1, 5]#;
+indices = vec.argsort();  /* Returns: [1, 3, 0, 2, 4] */
+
+/* Argsort with custom comparison function */
+data = [[3, 1, 4], [1, 5, 9], [2, 6, 5], [4, 2, 7]].vector();
+indices_by_second = data.argsort(op(a, b) { a[1] - b[1]; });  /* Sort by second column */
+
+/* Argsort with descending order */
+descending_indices = vec.argsort(null, 1);  /* Returns: [4, 2, 0, 1, 3] */
+
+/* Use argsort to reorder data */
+original_data = #[10, 20, 30, 40, 50]#;
+sort_indices = #[3, 1, 4, 1, 5]#.argsort();  /* [1, 3, 0, 2, 4] */
+reordered_data = original_data[sort_indices];  /* [20, 40, 10, 30, 50] */
+```
+
+#### **Sort vs Argsort Comparison**
+
+| Method | Purpose | Returns | Use Case |
+|--------|---------|---------|----------|
+| `.sort()` | Sorts the data in place | Sorted vector | When you need the sorted data |
+| `.argsort()` | Returns sorting indices | Array of indices | When you need to know the sort order or reorder other data |
+
+**Examples:**
+
+```grapa
+/* Original data */
+data = #[3, 1, 4, 1, 5]#;
+
+/* Sort - returns sorted data */
+sorted_data = data.sort();  /* Returns: #[1, 1, 3, 4, 5]# */
+
+/* Argsort - returns indices */
+sort_indices = data.argsort();  /* Returns: [1, 3, 0, 2, 4] */
+
+/* Use argsort to reorder other data */
+names = #["Charlie", "Alice", "David", "Bob", "Eve"]#;
+name_indices = data.argsort();  /* [1, 3, 0, 2, 4] */
+sorted_names = names[name_indices];  /* ["Alice", "Bob", "Charlie", "David", "Eve"] */
+```
+
+**Important Note**: Vector sorting methods (`.sort()` and `.argsort()`) currently work only on vectors created with the `#[]#` syntax or `.vector()` method. Arrays created with `[]` syntax do not support these advanced sorting features. For example:
+
+```grapa
+/* ✅ Works - Vector syntax */
+vec = #[3, 1, 4, 1, 5]#;
+sorted_vec = vec.sort();  /* Works */
+indices_vec = vec.argsort();  /* Works */
+
+/* ✅ Works - Vector conversion */
+arr = [3, 1, 4, 1, 5];
+vec = arr.vector();
+sorted_vec = vec.sort();  /* Works */
+indices_vec = vec.argsort();  /* Works */
+
+/* ❌ Does NOT work - Array syntax */
+arr = [3, 1, 4, 1, 5];
+sorted_arr = arr.sort();  /* Basic array sort only */
+indices_arr = arr.argsort();  /* Basic array argsort only */
+```
+
+#### **Axis-Based Sorting**
+Sort along specific axes for multi-dimensional data:
+
+```grapa
+/* 3D vector sorting */
+data_3d = [[[1,2], [3,4]], [[5,6], [7,8]]].vector();
+
+/* Sort along axis 0 (rows) */
+sorted_axis0 = data_3d.sort(0);
+
+/* Sort along axis 1 (columns) */
+sorted_axis1 = data_3d.sort(1);
+
+/* Sort along axis 2 (elements) */
+sorted_axis2 = data_3d.sort(2);
+```
+
+#### **Sorting with Headers**
+When working with CSV data, sort by column names:
+
+```grapa
+/* CSV data with headers */
+csv_data = "Name,Age,Score\nAlice,25,95\nBob,30,87\nCharlie,22,92".vector();
+
+/* Sort by column name */
+sorted_by_age = csv_data.sort("Age");     /* Sort by Age column */
+sorted_by_score = csv_data.sort("Score"); /* Sort by Score column */
+sorted_by_name = csv_data.sort("Name");   /* Sort by Name column */
+
+/* Custom sorting on CSV data */
+custom_csv_sort = csv_data.sort(op(a, b) { 
+    /* Sort by Age, then by Score if ages are equal */
+    age_diff = a["Age"] - b["Age"];
+    if (age_diff != 0) age_diff;
+    else a["Score"] - b["Score"];
+});
+```
+
+#### **Performance Characteristics**
+- **Custom functions**: Slightly slower than built-in sorting due to function call overhead
+- **Index-based sorting**: Very fast for reordering existing data
+- **Header-based sorting**: Optimized for CSV data with column names
+- **Multi-dimensional sorting**: Efficient for large datasets with proper axis specification
 
 ## Integration with Other Types
 

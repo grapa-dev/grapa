@@ -91,7 +91,7 @@ shared_condition = $thread();
 worker_count = 3;
 
 /* Create multiple worker threads */
-for (i = 0; i < worker_count; i++) {
+for (i = 0; i < worker_count; i = i + 1) {
     worker = $thread();
     worker.start(
         op(worker_id) {
@@ -165,7 +165,7 @@ resource_lock = $thread();
 resource_available = $thread();
 
 /* Create resource consumers */
-for (i = 0; i < 5; i++) {
+for (i = 0; i < 5; i = i + 1) {
     consumer = $thread();
     consumer.start(
         op(consumer_id) {
@@ -243,7 +243,7 @@ contention_lock = $thread();
 
 /* Create competing threads */
 competitors = [];
-for (i = 0; i < 4; i++) {
+for (i = 0; i < 4; i = i + 1) {
     competitor = $thread();
     competitor.start(
         op(competitor_id) {

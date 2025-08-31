@@ -20,6 +20,9 @@ limitations under the License.
 
 #include "GrapaSystem.h"
 #include "../grep/grapa_grep_unicode.hpp"
+#include <map>
+#include <vector>
+#include <algorithm>
 
 extern GrapaSystem* gSystem;
 
@@ -2566,6 +2569,242 @@ GrapaError GrapaVector::Var(GrapaScriptExec* pScriptExec, GrapaVector& result, b
 			}
 			variance = variance / (rows - 1); // Sample variance (n-1)
 			result.Set(j, variance);
+		}
+		return 0;
+	}
+	return -1;
+}
+
+GrapaError GrapaVector::Norm(GrapaScriptExec* pScriptExec, GrapaVector& result, bool isRows)
+{
+	result.CLEAR();
+	if (mData == NULL)
+		return -1;
+	if (mDim == 1)
+	{
+		// Handle 1-dimensional vector - calculate L2 norm (Euclidean norm)
+		GrapaFloat sum_squares(pScriptExec->vScriptState->mItemState.mFloatFix, pScriptExec->vScriptState->mItemState.mFloatMax, pScriptExec->vScriptState->mItemState.mFloatExtra, 0);
+		for (u64 i = 0; i < mCounts[0]; i++)
+		{
+			GrapaVectorParam p1(pScriptExec, mData, mBlock, i);
+			sum_squares = sum_squares + (*p1.aa * *p1.aa);
+		}
+		GrapaFloat norm = sum_squares.Root(2); // Square root for L2 norm
+		result.mDim = 1;
+		result.mSetBlock = mSetBlock;
+		result.mBlock = mBlock;
+		result.mMaxBlock = _minvectordatablock_;
+		result.mCounts = (u64*)GrapaMem::Create(sizeof(u64) * result.mDim);
+		result.mCounts[0] = 1;
+		result.mSize = 1;
+		result.mData = (GrapaVectorItem*)GrapaMem::Create(result.mBlock * result.mSize);
+		memset(result.mData, 0, result.mBlock * result.mSize);
+		result.Set(0, norm);
+		return 0;
+	}
+	else if (mDim == 2)
+	{
+		u64 rows = isRows ? mCounts[1] : mCounts[0];
+		u64 cols = isRows ? mCounts[0] : mCounts[1];
+		result.mDim = isRows ? 2 : 1;
+		result.mSetBlock = mSetBlock;
+		result.mBlock = mBlock;
+		result.mMaxBlock = _minvectordatablock_;
+		result.mCounts = (u64*)GrapaMem::Create(sizeof(u64) * result.mDim);
+		result.mCounts[0] = cols;
+		if (isRows) result.mCounts[1] = 1;
+		result.mSize = cols;
+		result.mData = (GrapaVectorItem*)GrapaMem::Create(result.mBlock * result.mSize);
+		memset(result.mData, 0, result.mBlock * result.mSize);
+		for (u64 j = 0; j < cols; j++)
+		{
+			GrapaFloat sum_squares(pScriptExec->vScriptState->mItemState.mFloatFix, pScriptExec->vScriptState->mItemState.mFloatMax, pScriptExec->vScriptState->mItemState.mFloatExtra, 0);
+			for (u64 i = 0; i < rows; i++)
+			{
+				u64 pos = isRows ? (j * mCounts[1] + i) : (i * mCounts[1] + j);
+				GrapaVectorParam p1(pScriptExec, mData, mBlock, pos);
+				sum_squares = sum_squares + (*p1.aa * *p1.aa);
+			}
+			GrapaFloat norm = sum_squares.Root(2); // Square root for L2 norm
+			result.Set(j, norm);
+		}
+		return 0;
+	}
+	return -1;
+}
+
+GrapaError GrapaVector::Mode(GrapaScriptExec* pScriptExec, GrapaVector& result, bool isRows)
+{
+	result.CLEAR();
+	if (mData == NULL)
+		return -1;
+	if (mDim == 1)
+	{
+		// Handle 1-dimensional vector - find most frequent value
+		std::map<GrapaFloat, u64> frequency;
+		for (u64 i = 0; i < mCounts[0]; i++)
+		{
+			GrapaVectorParam p1(pScriptExec, mData, mBlock, i);
+			frequency[*p1.aa]++;
+		}
+		
+		// Find the value with highest frequency
+		GrapaFloat mode_val = frequency.begin()->first;
+		u64 max_freq = 0;
+		for (auto& pair : frequency)
+		{
+			if (pair.second > max_freq)
+			{
+				max_freq = pair.second;
+				mode_val = pair.first;
+			}
+		}
+		
+		result.mDim = 1;
+		result.mSetBlock = mSetBlock;
+		result.mBlock = mBlock;
+		result.mMaxBlock = _minvectordatablock_;
+		result.mCounts = (u64*)GrapaMem::Create(sizeof(u64) * result.mDim);
+		result.mCounts[0] = 1;
+		result.mSize = 1;
+		result.mData = (GrapaVectorItem*)GrapaMem::Create(result.mBlock * result.mSize);
+		memset(result.mData, 0, result.mBlock * result.mSize);
+		result.Set(0, mode_val);
+		return 0;
+	}
+	else if (mDim == 2)
+	{
+		u64 rows = isRows ? mCounts[1] : mCounts[0];
+		u64 cols = isRows ? mCounts[0] : mCounts[1];
+		result.mDim = isRows ? 2 : 1;
+		result.mSetBlock = mSetBlock;
+		result.mBlock = mBlock;
+		result.mMaxBlock = _minvectordatablock_;
+		result.mCounts = (u64*)GrapaMem::Create(sizeof(u64) * result.mDim);
+		result.mCounts[0] = cols;
+		if (isRows) result.mCounts[1] = 1;
+		result.mSize = cols;
+		result.mData = (GrapaVectorItem*)GrapaMem::Create(result.mBlock * result.mSize);
+		memset(result.mData, 0, result.mBlock * result.mSize);
+		for (u64 j = 0; j < cols; j++)
+		{
+			// Find mode for this column/row
+			std::map<GrapaFloat, u64> frequency;
+			for (u64 i = 0; i < rows; i++)
+			{
+				u64 pos = isRows ? (j * mCounts[1] + i) : (i * mCounts[1] + j);
+				GrapaVectorParam p1(pScriptExec, mData, mBlock, pos);
+				frequency[*p1.aa]++;
+			}
+			
+			// Find the value with highest frequency
+			GrapaFloat mode_val = frequency.begin()->first;
+			u64 max_freq = 0;
+			for (auto& pair : frequency)
+			{
+				if (pair.second > max_freq)
+				{
+					max_freq = pair.second;
+					mode_val = pair.first;
+				}
+			}
+			result.Set(j, mode_val);
+		}
+		return 0;
+	}
+	return -1;
+}
+
+GrapaError GrapaVector::Median(GrapaScriptExec* pScriptExec, GrapaVector& result, bool isRows)
+{
+	result.CLEAR();
+	if (mData == NULL)
+		return -1;
+	if (mDim == 1)
+	{
+		// Handle 1-dimensional vector - find median
+		if (mCounts[0] == 0)
+			return -1;
+		
+		// Create a copy of the data for sorting
+		std::vector<GrapaFloat> sorted_data;
+		for (u64 i = 0; i < mCounts[0]; i++)
+		{
+			GrapaVectorParam p1(pScriptExec, mData, mBlock, i);
+			sorted_data.push_back(*p1.aa);
+		}
+		
+		// Sort the data
+		std::sort(sorted_data.begin(), sorted_data.end());
+		
+		// Calculate median
+		GrapaFloat median_val;
+		u64 n = sorted_data.size();
+		if (n % 2 == 0)
+		{
+			// Even number of elements - average of middle two
+			median_val = (sorted_data[n/2 - 1] + sorted_data[n/2]) / 2;
+		}
+		else
+		{
+			// Odd number of elements - middle element
+			median_val = sorted_data[n/2];
+		}
+		
+		result.mDim = 1;
+		result.mSetBlock = mSetBlock;
+		result.mBlock = mBlock;
+		result.mMaxBlock = _minvectordatablock_;
+		result.mCounts = (u64*)GrapaMem::Create(sizeof(u64) * result.mDim);
+		result.mCounts[0] = 1;
+		result.mSize = 1;
+		result.mData = (GrapaVectorItem*)GrapaMem::Create(result.mBlock * result.mSize);
+		memset(result.mData, 0, result.mBlock * result.mSize);
+		result.Set(0, median_val);
+		return 0;
+	}
+	else if (mDim == 2)
+	{
+		u64 rows = isRows ? mCounts[1] : mCounts[0];
+		u64 cols = isRows ? mCounts[0] : mCounts[1];
+		result.mDim = isRows ? 2 : 1;
+		result.mSetBlock = mSetBlock;
+		result.mBlock = mBlock;
+		result.mMaxBlock = _minvectordatablock_;
+		result.mCounts = (u64*)GrapaMem::Create(sizeof(u64) * result.mDim);
+		result.mCounts[0] = cols;
+		if (isRows) result.mCounts[1] = 1;
+		result.mSize = cols;
+		result.mData = (GrapaVectorItem*)GrapaMem::Create(result.mBlock * result.mSize);
+		memset(result.mData, 0, result.mBlock * result.mSize);
+		for (u64 j = 0; j < cols; j++)
+		{
+			// Find median for this column/row
+			std::vector<GrapaFloat> sorted_data;
+			for (u64 i = 0; i < rows; i++)
+			{
+				u64 pos = isRows ? (j * mCounts[1] + i) : (i * mCounts[1] + j);
+				GrapaVectorParam p1(pScriptExec, mData, mBlock, pos);
+				sorted_data.push_back(*p1.aa);
+			}
+			
+			// Sort the data
+			std::sort(sorted_data.begin(), sorted_data.end());
+			
+			// Calculate median
+			GrapaFloat median_val;
+			u64 n = sorted_data.size();
+			if (n % 2 == 0)
+			{
+				// Even number of elements - average of middle two
+				median_val = (sorted_data[n/2 - 1] + sorted_data[n/2]) / 2;
+			}
+			else
+			{
+				// Odd number of elements - middle element
+				median_val = sorted_data[n/2];
+			}
+			result.Set(j, median_val);
 		}
 		return 0;
 	}
