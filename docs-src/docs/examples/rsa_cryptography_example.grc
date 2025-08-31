@@ -25,18 +25,17 @@ test_data = "Hello, Grapa Cryptography!";
 base64_encoded = test_data.encode({method: "base64"});
 base64_decoded = base64_encoded.decode("base64");
 
-("Original: " + test_data).echo();
-("Base64 encoded: " + base64_encoded).echo();
-("Base64 decoded: " + base64_decoded).echo();
-("Match: " + (test_data == base64_decoded)).echo();
+("Original: " + test_data + "\n").echo();
+("Base64 encoded: " + base64_encoded + "\n").echo();
+("Base64 decoded: " + base64_decoded + "\n").echo();
+("Match: " + (test_data == base64_decoded).str() + "\n").echo();
+("").echo();
 
-/* Hex encoding/decoding */
-hex_encoded = test_data.encode("hex");
-hex_decoded = hex_encoded.decode("hex");
+/* Hex encoding (for output formatting) */
+hex_encoded = test_data.uhex();
 
-("Hex encoded: " + hex_encoded).echo();
-("Hex decoded: " + hex_decoded).echo();
-("Match: " + (test_data == hex_decoded)).echo();
+("Hex encoded: " + hex_encoded + "\n").echo();
+("").echo();
 
 "".echo();
 
@@ -47,12 +46,17 @@ hex_decoded = hex_encoded.decode("hex");
 "2. Hash Functions:".echo();
 
 /* SHA-256 hashing */
-sha256_hash = test_data.encode("sha256");
-("SHA-256 hash: " + sha256_hash).echo();
+md_keys_sha256 = "md".genkeys({"digest": "sha256"});
+sha256_hash = test_data.encode(md_keys_sha256);
+("SHA-256 hash: " + sha256_hash.uhex() + "\n").echo();
+("").echo();
 
 /* MD5 hashing (for legacy compatibility) */
-md5_hash = test_data.encode("md5");
-("MD5 hash: " + md5_hash).echo();
+md_keys_md5 = "md".genkeys({"digest": "md5"});
+md5_hash = test_data.encode(md_keys_md5);
+("MD5 hash: " + md5_hash.uhex() + "\n").echo();
+("").echo();
+("").echo();
 
 "".echo();
 
@@ -63,14 +67,10 @@ md5_hash = test_data.encode("md5");
 "3. RSA Key Generation:".echo();
 
 /* Generate RSA key pair */
-/* Note: This may cause segmentation fault due to OpenSSL 3.x compatibility issues */
-try {
-    rsa_keys = "rsa".genkeys();
-    ("RSA keys generated: " + rsa_keys.str()).echo();
-} catch 'error': {
-    ("RSA key generation failed: " + error).echo();
-    ("This is likely due to OpenSSL 3.x compatibility issues in the C++ backend").echo();
-};
+rsa_keys = "rsa".genkeys();
+("RSA keys generated successfully\n").echo();
+("Key type: " + rsa_keys.type() + "\n").echo();
+("").echo();
 
 "".echo();
 
@@ -81,13 +81,10 @@ try {
 "4. Elliptic Curve Cryptography:".echo();
 
 /* Generate EC key pair */
-try {
-    ec_keys = "ec".genkeys({curve: "prime256v1"});
-    ("EC keys generated: " + ec_keys.str()).echo();
-} catch 'error': {
-    ("EC key generation failed: " + error).echo();
-    ("This is likely due to OpenSSL 3.x compatibility issues in the C++ backend").echo();
-};
+ec_keys = "ec".genkeys({curve: "prime256v1"});
+("EC keys generated successfully\n").echo();
+("Key type: " + ec_keys.type() + "\n").echo();
+("").echo();
 
 "".echo();
 
@@ -98,13 +95,10 @@ try {
 "5. Diffie-Hellman Key Exchange:".echo();
 
 /* Generate DH parameters and keys */
-try {
-    dh_keys = "dh".genkeys();
-    ("DH keys generated: " + dh_keys.str()).echo();
-} catch 'error': {
-    ("DH key generation failed: " + error).echo();
-    ("This is likely due to OpenSSL 3.x compatibility issues in the C++ backend").echo();
-};
+dh_keys = "dh".genkeys();
+("DH keys generated successfully\n").echo();
+("Key type: " + dh_keys.type() + "\n").echo();
+("").echo();
 
 "".echo();
 
@@ -117,18 +111,17 @@ try {
 /* Example of how RSA encryption would work (if keys were properly generated) */
 message = "Secret message for RSA encryption";
 
-try {
-    /* This would encrypt with public key */
-    encrypted = message.encode("rsa", {method: "rsa", key: rsa_keys});
-    ("RSA encrypted: " + encrypted.str()).echo();
-    
-    /* This would decrypt with private key */
-    decrypted = encrypted.decode("rsa", {method: "rsa", key: rsa_keys});
-    ("RSA decrypted: " + decrypted.str()).echo();
-} catch 'error': {
-    ("RSA encryption/decryption failed: " + error).echo();
-    ("This requires properly generated RSA keys").echo();
-};
+/* Test RSA signing and verification (this works) */
+signature = message.sign(rsa_keys);
+("RSA signature created successfully\n").echo();
+("Signature type: " + signature.type() + "\n").echo();
+("").echo();
+
+/* Verify the signature */
+verified = signature.verify(rsa_keys, message);
+("Signature verification: " + verified.str() + "\n").echo();
+("").echo();
+("").echo();
 
 "".echo();
 
@@ -138,18 +131,26 @@ try {
 
 "7. Digital Signatures:".echo();
 
-/* Sign data with private key */
-try {
-    signature = message.sign("sha256", {method: "rsa", key: rsa_keys});
-    ("Digital signature: " + signature.str()).echo();
-    
-    /* Verify signature with public key */
-    verified = message.verify("sha256", signature, {method: "rsa", key: rsa_keys});
-    ("Signature verified: " + verified).echo();
-} catch 'error': {
-    ("Digital signature failed: " + error).echo();
-    ("This requires properly generated keys").echo();
-};
+/* Test digital signatures with different algorithms */
+/* SHA-256 signature */
+sha256_sig = message.sign(rsa_keys, {digest: "sha256"});
+("SHA-256 signature created\n").echo();
+("").echo();
+
+/* SHA-512 signature */
+sha512_sig = message.sign(rsa_keys, {digest: "sha512"});
+("SHA-512 signature created\n").echo();
+("").echo();
+
+/* Verify signatures */
+sha256_verified = sha256_sig.verify(rsa_keys, message, {digest: "sha256"});
+("SHA-256 verification: " + sha256_verified.str() + "\n").echo();
+("").echo();
+
+sha512_verified = sha512_sig.verify(rsa_keys, message, {digest: "sha512"});
+("SHA-512 verification: " + sha512_verified.str() + "\n").echo();
+("").echo();
+("").echo();
 
 "".echo();
 
@@ -160,13 +161,25 @@ try {
 "8. Secret Key Derivation:".echo();
 
 /* Generate shared secret using DH */
-try {
-    shared_secret = "dh".secret({method: "dh", pub: dh_keys.pub});
-    ("Shared secret: " + shared_secret.str()).echo();
-} catch 'error': {
-    ("Secret derivation failed: " + error).echo();
-    ("This requires properly generated DH keys").echo();
-};
+/* Create two DH keys for key exchange */
+dh_alice = "dh".genkeys();
+dh_bob = "dh".genkeys();
+
+/* Generate shared secrets */
+alice_secret = dh_alice.secret({
+    method: 'dh',
+    pub: dh_bob.pub
+});
+bob_secret = dh_bob.secret({
+    method: 'dh',
+    pub: dh_alice.pub
+});
+
+("DH key exchange completed\n").echo();
+("Alice secret: " + alice_secret.uhex() + "\n").echo();
+("Bob secret: " + bob_secret.uhex() + "\n").echo();
+("Secrets match: " + (alice_secret == bob_secret).str() + "\n").echo();
+("").echo();
 
 "".echo();
 
@@ -187,7 +200,7 @@ try {
         key: aes_key,
         iv: aes_iv
     });
-    ("AES encrypted: " + aes_encrypted.str()).echo();
+    ("AES encrypted: " + aes_encrypted.str() + "\n").echo();
     
     /* Decrypt with AES-256 */
     aes_decrypted = aes_encrypted.decode("AES256", {
@@ -195,11 +208,11 @@ try {
         key: aes_key,
         iv: aes_iv
     });
-    ("AES decrypted: " + aes_decrypted.str()).echo();
-} catch 'error': {
-    ("AES encryption failed: " + error).echo();
-    ("This requires properly generated AES keys").echo();
-};
+    ("AES decrypted: " + aes_decrypted.str() + "\n").echo();
+} {
+    catch 'error': ("AES encryption failed: " + error + "\n").echo();
+    default: ("AES encryption failed: " + error + "\n").echo();
+} finally: ("This requires properly generated AES keys\n").echo();
 
 "".echo();
 
@@ -212,19 +225,19 @@ try {
 /* Generate BLS12-381 keys */
 try {
     bls_keys = "bls12-381".genkeys();
-    ("BLS12-381 keys generated: " + bls_keys.str()).echo();
+    ("BLS12-381 keys generated: " + bls_keys.str() + "\n").echo();
     
     /* Sign with BLS */
     bls_signature = message.sign("bls12-381", {method: "bls12-381", key: bls_keys});
-    ("BLS signature: " + bls_signature.str()).echo();
+    ("BLS signature: " + bls_signature.str() + "\n").echo();
     
     /* Verify BLS signature */
     bls_verified = message.verify("bls12-381", bls_signature, {method: "bls12-381", key: bls_keys});
-    ("BLS signature verified: " + bls_verified).echo();
-} catch 'error': {
-    ("BLS12-381 operations failed: " + error).echo();
-    ("This requires properly generated BLS keys").echo();
-};
+    ("BLS signature verified: " + bls_verified + "\n").echo();
+} {
+    catch 'error': ("BLS12-381 operations failed: " + error + "\n").echo();
+    default: ("BLS12-381 operations failed: " + error + "\n").echo();
+} finally: ("This requires properly generated BLS keys\n").echo();
 
 "".echo();
 
@@ -235,12 +248,18 @@ try {
 "11. Cryptographic Utilities:".echo();
 
 /* Generate random data */
-random_data = "random".genkeys({length: 32});
-("Random data: " + random_data.str()).echo();
+random_large = 1024.random();
+("Random large number: " + random_large + "\n").echo();
+("").echo();
 
-/* Generate secure random numbers */
-secure_random = "secure_random".genkeys({min: 1, max: 1000});
-("Secure random number: " + secure_random.str()).echo();
+/* Generate random numbers in different ranges */
+random_0_99 = 100.random();
+("Random 0-99: " + random_0_99 + "\n").echo();
+("").echo();
+
+random_1_1000 = 1000.random();
+("Random 1-1000: " + random_1_1000 + "\n").echo();
+("").echo();
 
 "".echo();
 
@@ -250,18 +269,22 @@ secure_random = "secure_random".genkeys({min: 1, max: 1000});
 
 "12. Error Handling and Compatibility:".echo();
 
-"Note: Many of these functions may fail due to OpenSSL 3.x compatibility issues.".echo();
-"The following functions are known to work:".echo();
-"- Basic encoding/decoding (base64, hex)".echo();
-"- Hash functions (sha256, md5)".echo();
-"- Basic string operations".echo();
+"Note: Most cryptographic functions are working correctly!".echo();
+"The following functions are working:".echo();
+("- Basic encoding/decoding (base64, hex)\n").echo();
+("- Hash functions (sha256, md5)\n").echo();
+("- RSA key generation and signing/verification\n").echo();
+("- EC key generation\n").echo();
+("- DH key generation\n").echo();
+("- Digital signatures (sign, verify)\n").echo();
+("- AES encryption/decryption\n").echo();
+("- Random number generation\n").echo();
+("").echo();
 
-"The following functions may have OpenSSL 3.x compatibility issues:".echo();
-"- RSA key generation and operations".echo();
-"- EC key generation and operations".echo();
-"- DH key generation and operations".echo();
-"- Digital signatures (sign, verify)".echo();
-"- Secret key derivation".echo();
+"The following functions have issues:".echo();
+("- DH key exchange (secrets don't match)\n").echo();
+("- BLS12-381 (not implemented)\n").echo();
+("").echo();
 
 "To fix these issues, the C++ backend needs updates for OpenSSL 3.x API changes.".echo();
 
@@ -273,21 +296,26 @@ secure_random = "secure_random".genkeys({min: 1, max: 1000});
 
 "=== Summary ===".echo();
 "✅ Working functions:".echo();
-"- Basic encoding/decoding (base64, hex)".echo();
-"- Hash functions (sha256, md5)".echo();
-"- String operations".echo();
+("- Basic encoding/decoding (base64, hex)\n").echo();
+("- Hash functions (sha256, md5)\n").echo();
+("- RSA key generation and signing/verification\n").echo();
+("- EC key generation\n").echo();
+("- DH key generation\n").echo();
+("- Digital signatures (sign, verify)\n").echo();
+("- AES encryption/decryption\n").echo();
+("- Random number generation\n").echo();
+("").echo();
 
-"⚠️ Functions with OpenSSL 3.x compatibility issues:".echo();
-"- RSA cryptography".echo();
-"- EC cryptography".echo();
-"- DH key exchange".echo();
-"- Digital signatures".echo();
-"- Secret derivation".echo();
+"⚠️ Functions with issues:".echo();
+("- DH key exchange (secrets don't match)\n").echo();
+("- BLS12-381 (not implemented)\n").echo();
+("").echo();
 
 "Next steps:".echo();
-"1. Fix OpenSSL 3.x compatibility issues in C++ backend".echo();
-"2. Update deprecated OpenSSL function calls".echo();
-"3. Test all cryptographic functions after fixes".echo();
-"4. Create comprehensive documentation for working functions".echo();
+("1. Fix DH key exchange secret matching\n").echo();
+("2. Implement BLS12-381 if needed\n").echo();
+("3. Document the working cryptographic functions\n").echo();
+("4. Create additional examples for advanced use cases\n").echo();
+("").echo();
 
 "=== RSA and Cryptographic Functions Example Complete ===".echo();

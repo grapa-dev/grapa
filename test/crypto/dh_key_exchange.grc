@@ -1,0 +1,7 @@
+a = 'ec'.genkeys({'curve': 'prime256v1'});
+b = 'ec'.genkeys({'curve': 'prime256v1'});
+as = a.secret({'method': 'ec', 'curve': 'prime256v1', 'pub': b.pub});
+bs = b.secret({'method': 'ec', 'curve': 'prime256v1', 'pub': a.pub});
+('Alice secret: ' + as.uhex() + '\n').echo();
+('Bob secret: ' + bs.uhex() + '\n').echo();
+('Secrets match: ' + (as == bs).str() + '\n').echo();
