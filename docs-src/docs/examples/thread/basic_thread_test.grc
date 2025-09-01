@@ -1,0 +1,76 @@
+/* Basic Thread Test - No Locks */
+"=== Basic Thread Test (No Locks) ===\n".echo();
+
+/* Test 1: Basic thread creation and execution */
+"Test 1: Basic thread creation\n".echo();
+
+worker1 = $thread();
+worker1.start(
+    op() {
+        "Worker 1: Starting\n".echo();
+        $sys().sleep(100);
+        "Worker 1: Completed\n".echo();
+        return "Worker 1 done";
+    },
+    null,
+    op(input, result) {
+        ("Worker 1 callback: " + result + "\n").echo();
+    }
+);
+
+/* Wait for worker to start */
+while(worker1.started() == false)
+    $sys().sleep(10);
+
+"Main: worker1 started\n".echo();
+
+/* Wait for worker to complete */
+while(worker1.started())
+    $sys().sleep(10);
+
+"Main: worker1 completed\n".echo();
+
+/* Test 2: Multiple threads without locks */
+"Test 2: Multiple threads without locks\n".echo();
+
+worker2 = $thread();
+worker3 = $thread();
+
+worker2.start(
+    op() {
+        "Worker 2: Starting\n".echo();
+        $sys().sleep(50);
+        "Worker 2: Completed\n".echo();
+        return "Worker 2 done";
+    },
+    null,
+    op(input, result) {
+        ("Worker 2 callback: " + result + "\n").echo();
+    }
+);
+
+worker3.start(
+    op() {
+        "Worker 3: Starting\n".echo();
+        $sys().sleep(75);
+        "Worker 3: Completed\n".echo();
+        return "Worker 3 done";
+    },
+    null,
+    op(input, result) {
+        ("Worker 3 callback: " + result + "\n").echo();
+    }
+);
+
+/* Wait for both workers to start */
+while(worker2.started() == false || worker3.started() == false)
+    $sys().sleep(10);
+
+"Main: both workers started\n".echo();
+
+/* Wait for both workers to complete */
+while(worker2.started() || worker3.started())
+    $sys().sleep(10);
+
+"Main: both workers completed\n".echo();
+"Basic thread test completed successfully!\n".echo();
