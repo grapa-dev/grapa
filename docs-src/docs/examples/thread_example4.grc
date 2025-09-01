@@ -31,6 +31,7 @@ for (consumer_id = 0; consumer_id < 2; consumer_id+=1) {
                     queue_lock.lock();
                     ("Consumer " + id + ": locked\n").echo();
                 };
+                 ("Consumer " + id + ": queue len: " + shared_queue.len() + "\n").echo();
                 $local.item = "";
                 if (shared_queue.len())
                 {
@@ -45,8 +46,8 @@ for (consumer_id = 0; consumer_id < 2; consumer_id+=1) {
                 ("Consumer " + id + ": Consumed " + item + "\n").echo();
                 items_consumed += 1;
             };
-            ("Consumer " + id + ": Consumption complete\n").echo();
-            return ("Consumer " + id + " completed");
+            ("Consumer " + id + ": Consumption complete: " + items_consumed + "\n").echo();
+            return ("Consumer " + id + " completed: "  + items_consumed );
         },
         consumer_id,
         op(input, result) {
@@ -54,9 +55,13 @@ for (consumer_id = 0; consumer_id < 2; consumer_id+=1) {
         }
     );
 };
-for (i = 0; i < 2; i+=1)
-    while(!consumer[i].started())
-        $sys().sleep(50);
+for (i = 0; i < 2; i+=1) {
+    while(consumer[i].started()==false || consumer[i].suspended()==false)
+        $sys().sleep(10);
+};
+for (i = 0; i < 2; i+=1) {
+    ("Consumer " + i + ": suspended " + consumer[i].suspended().str() + "\n").echo();
+};
 ("Consumer threads started\n").echo();
 
 /* Producer thread */
@@ -65,7 +70,7 @@ producer.start(
     op() {
         producer.suspend();
         "Producer: Starting production\n".echo();
-        for (i = 0; i < 16; i+=1) {
+        for (i = 0; i < 12; i+=1) {
             ("Producer: locking\n").echo();
             queue_lock.lock();
             ("Producer: locked\n").echo();
@@ -76,7 +81,7 @@ producer.start(
             ("Producer: Added Item " + i + "\n").echo();
             for (j = 0; j < 2; j+=1)
             {
-                if (consumer[j].started() && consumer[j].suspended())
+                if (consumer[j].suspended())
                 {
                     ("Producer: Resuming consumer  " + j + "\n").echo();
                     consumer[j].resume();
@@ -93,19 +98,28 @@ producer.start(
         ("Producer callback: " + result + "\n").echo();
     }
 );
-while(!producer.started())
-    $sys().sleep(50);
+while(producer.started()==false || producer.suspended()==false)
+    $sys().sleep(10);
+("Main: Producer suspended\n").echo();
 producer.resume();
+("Main: Producer resumed\n").echo();
+
+    $sys().sleep(300);
+
 while(producer.started())
-    $sys().sleep(50);
-("Producer completed\n").echo();
+    $sys().sleep(10);
+("Main: Producer completed\n").echo();
+
+
+
 for (i = 0; i < 2; i+=1) {
     while(consumer[i].started())
-        $sys().sleep(50);
+        $sys().sleep(10);
 };
 ("Consumer completed\n").echo();
+
 consumer = null;
 queue_lock = null;
 data_ready = null;
-("Consumer/Producer processed: " + (16-shared_queue.len()) + "\n").echo();
+("Consumer/Producer processed: " + (12-shared_queue.len()) + "\n").echo();
 ("Consumer/Producer remaining: " + shared_queue.len() + "\n").echo();
