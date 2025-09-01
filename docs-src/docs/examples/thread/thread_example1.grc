@@ -11,18 +11,18 @@ basic_thread = $thread();
 basic_thread.start(
     op() {
         "Basic thread: Starting work\n".echo();
-        $sys().sleep(50);
+        $sys().sleep(10);
         "Basic thread: Work completed\n".echo();
-        return "Basic thread result";
+        return ("Basic thread result");
     },
-    null,
+    0,
     op(input, result) {
         ("Basic thread callback: " + result + "\n").echo();
     }
 );
-sys().sleep(50);
+sys().sleep(10);
 while(basic_thread.started())
-    $sys().sleep(50);
+    $sys().sleep(10);
 "Basic thread done\n".echo();
 basic_thread = null;
 

@@ -1,0 +1,41 @@
+/* Grapa Thread System Example
+   Demonstrates the complete $thread system capabilities including:
+   - Example 6: Proper thread-safe variable declarations */
+
+"=== Grapa Thread System Example ===\n".echo();
+
+/* Example 6: Condition Variable Coordination */
+"Example 6: Condition Variable Coordination\n".echo();
+
+/* Create threads that wait for coordination */
+coordinator = [];
+coordination_condition = $thread();
+ready_count = 0;
+ready_lock = $thread();
+for (coord_id = 0; coord_id < 3; coord_id+=1) {
+    coordinator += $thread();
+    coordinator[-1].start(
+        op(id) {
+            ("Coordinator " + id + ": Starting\n").echo();
+            $sys().sleep(100);
+            
+            ready_lock.lock();
+            ready_count += 1;
+            ("Coordinator " + id + ": Ready (count: " + ready_count + ")\n").echo();
+            ready_lock.unlock();
+            
+            coordination_condition.wait();
+            ("Coordinator " + id + ": Coordinated and proceeding\n").echo();
+            
+            return ("Coordinator " + id + " completed");
+        },
+        coord_id,
+        op(input, result) {
+            ("Coordinator callback: " + result + "\n").echo();
+        }
+    );
+};
+
+$sys().sleep(200);
+"Main: Signaling all coordinators\n".echo();
+coordination_condition.signal();
