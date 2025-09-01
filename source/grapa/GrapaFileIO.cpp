@@ -37,7 +37,11 @@ limitations under the License.
 #define close _close
 #define write _write
 #define read _read
+#ifdef _THREAD_
 #define sched_yield _Thrd_yield
+#else
+#define sched_yield()
+#endif
 #endif
 #endif
 
@@ -50,7 +54,9 @@ limitations under the License.
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#ifdef _THREAD_
 #include <thread>
+#endif
 
 #if defined(__MINGW32__) || defined(__GNUC__)
 #include <sys/ioctl.h>
