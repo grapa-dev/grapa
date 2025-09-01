@@ -937,6 +937,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#decimal-separator-support" class="md-nav__link">
+    <span class="md-ellipsis">
+      Decimal Separator Support
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#float-encoding-and-decoding" class="md-nav__link">
     <span class="md-ellipsis">
       Float Encoding and Decoding
@@ -2397,6 +2406,29 @@
   
   
     <li class="md-nav__item">
+      <a href="../../syntax/namespace_scoping/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Namespace Scoping
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../syntax/operator/" class="md-nav__link">
         
   
@@ -2449,6 +2481,29 @@
   
   <span class="md-ellipsis">
     Grammar Design
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../syntax/thread_safe_variables/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Thread-Safe Variables
     
   </span>
   
@@ -2853,6 +2908,29 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../grapa_core_differentiators/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Core Differentiators
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2887,7 +2965,7 @@
   
   
   <span class="md-ellipsis">
-    Language Integrations
+    Cryptography
     
   </span>
   
@@ -2897,6 +2975,78 @@
         
         <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_12_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_5_12">
+            <span class="md-nav__icon md-icon"></span>
+            Cryptography
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../crypto/key_exchange_methods/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Key Exchange Methods
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_13" >
+        
+          
+          <label class="md-nav__link" for="__nav_5_13" id="__nav_5_13_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Language Integrations
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_13_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_13">
             <span class="md-nav__icon md-icon"></span>
             Language Integrations
           </label>
@@ -3722,6 +3872,29 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../use_cases/network_programming_patterns/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Network Programming Patterns
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -3873,6 +4046,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#decimal-separator-support" class="md-nav__link">
+    <span class="md-ellipsis">
+      Decimal Separator Support
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#float-encoding-and-decoding" class="md-nav__link">
     <span class="md-ellipsis">
       Float Encoding and Decoding
@@ -3989,6 +4171,28 @@
 5.13
 </code></pre></div></p>
 <p><strong>Note</strong>: Scientific notation (e.g., <code>1e-10</code>, <code>1.5e+3</code>) is not currently supported. Use decimal notation instead (e.g., <code>0.0000000001</code> instead of <code>1e-10</code>).</p>
+<h2 id="decimal-separator-support">Decimal Separator Support</h2>
+<p>Grapa supports both dot (<code>.</code>) and underscore (<code>_</code>) as decimal separators for float literals. This provides flexibility in float syntax while maintaining the standard mathematical definition of floating-point numbers.</p>
+<div class="highlight"><pre><span></span><code>/* Standard decimal notation */
+3.14;              /* 3.14 */
+2.5;               /* 2.5 */
+1.0;               /* 1.0 */
+
+/* Underscore decimal notation (equivalent) */
+3_14;              /* 3.14 */
+2_5;               /* 2.5 */
+1_0;               /* 1.0 */
+
+/* Verification */
+(3.14 == 3_14).echo();    /* true */
+(2.5 == 2_5).echo();      /* true */
+(1.0 == 1_0).echo();      /* true */
+</code></pre></div>
+<p><strong>Key Points:</strong>
+- <strong>Interchangeable</strong>: Dots and underscores are completely equivalent for decimal separators
+- <strong>Single separator</strong>: Only one decimal separator is allowed per number (standard mathematical definition)
+- <strong>Modern language support</strong>: This feature aligns with other modern programming languages
+- <strong>Readability</strong>: Provides flexibility for different coding styles and preferences</p>
 <p>You can also create using hex format:
 <div class="highlight"><pre><span></span><code>&gt; -0x4.5
 -4.3125

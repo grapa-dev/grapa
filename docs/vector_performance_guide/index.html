@@ -14,7 +14,7 @@
         <link rel="prev" href="../machine_learning/">
       
       
-        <link rel="next" href="../sql_integration/">
+        <link rel="next" href="../grapa_core_differentiators/">
       
       
       <link rel="icon" href="../assets/images/favicon.png">
@@ -2260,6 +2260,29 @@
   
   
     <li class="md-nav__item">
+      <a href="../syntax/namespace_scoping/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Namespace Scoping
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../syntax/operator/" class="md-nav__link">
         
   
@@ -2312,6 +2335,29 @@
   
   <span class="md-ellipsis">
     Grammar Design
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../syntax/thread_safe_variables/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Thread-Safe Variables
     
   </span>
   
@@ -3117,6 +3163,29 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../grapa_core_differentiators/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Core Differentiators
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -3151,7 +3220,7 @@
   
   
   <span class="md-ellipsis">
-    Language Integrations
+    Cryptography
     
   </span>
   
@@ -3161,6 +3230,78 @@
         
         <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_12_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_5_12">
+            <span class="md-nav__icon md-icon"></span>
+            Cryptography
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../crypto/key_exchange_methods/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Key Exchange Methods
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_13" >
+        
+          
+          <label class="md-nav__link" for="__nav_5_13" id="__nav_5_13_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Language Integrations
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_13_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_13">
             <span class="md-nav__icon md-icon"></span>
             Language Integrations
           </label>
@@ -3986,6 +4127,29 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../use_cases/network_programming_patterns/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Network Programming Patterns
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -4763,7 +4927,7 @@ correlation = data.cov();  // More efficient than manual calculation
 <h3 id="empty-and-small-matrices">Empty and Small Matrices</h3>
 <div class="highlight"><pre><span></span><code>/* Edge cases perform excellently */
 empty_vec = [].vector();
-empty_sum = empty_vec.sum();  // 0ms - very fast
+empty_sum = empty_vec.sum();  // Returns {&quot;error&quot;:-1} for empty vectors
 
 small_mat = [[1]].vector();
 small_det = small_mat.det();  // 0ms - very fast
@@ -4814,6 +4978,9 @@ memory_usage = estimate_memory(my_matrix);
 <li>✅ Monitor memory usage for large matrices</li>
 <li>✅ Use fast operations (sum, mean) for large datasets</li>
 <li>✅ Consider breaking large problems into smaller blocks</li>
+<li>✅ Use sequential loops for large datasets with simple operations</li>
+<li>✅ Use parallel <code>.map()/.filter()</code> for smaller datasets with complex operations</li>
+<li>✅ Prefer <code>.reduce()</code> for large datasets when possible (more efficient)</li>
 </ul>
 <h3 id="donts">Don'ts</h3>
 <ul>
@@ -4822,6 +4989,8 @@ memory_usage = estimate_memory(my_matrix);
 <li>❌ Don't use eigenvalue calculations for large matrices (&gt; 50x50)</li>
 <li>❌ Don't ignore memory usage for large datasets</li>
 <li>❌ Don't use expensive operations when fast alternatives exist</li>
+<li>❌ Don't use <code>.map()/.filter()</code> on very large datasets with simple operations</li>
+<li>❌ Don't ignore the copy overhead of parallel operations on large datasets</li>
 </ul>
 <h3 id="performance-checklist">Performance Checklist</h3>
 <p>Before using vector operations, consider:</p>

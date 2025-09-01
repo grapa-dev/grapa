@@ -2255,6 +2255,29 @@
   
   
     <li class="md-nav__item">
+      <a href="../../syntax/namespace_scoping/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Namespace Scoping
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../syntax/operator/" class="md-nav__link">
         
   
@@ -2307,6 +2330,29 @@
   
   <span class="md-ellipsis">
     Grammar Design
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../syntax/thread_safe_variables/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Thread-Safe Variables
     
   </span>
   
@@ -2711,6 +2757,29 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../grapa_core_differentiators/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Core Differentiators
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2745,7 +2814,7 @@
   
   
   <span class="md-ellipsis">
-    Language Integrations
+    Cryptography
     
   </span>
   
@@ -2755,6 +2824,78 @@
         
         <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_12_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_5_12">
+            <span class="md-nav__icon md-icon"></span>
+            Cryptography
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../crypto/key_exchange_methods/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Key Exchange Methods
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_13" >
+        
+          
+          <label class="md-nav__link" for="__nav_5_13" id="__nav_5_13_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Language Integrations
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_13_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_13">
             <span class="md-nav__icon md-icon"></span>
             Language Integrations
           </label>
@@ -3508,9 +3649,9 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#example-concurrent-network-operations" class="md-nav__link">
+  <a href="#example-concurrent-network-operations-with-automatic-completion" class="md-nav__link">
     <span class="md-ellipsis">
-      Example: Concurrent Network Operations
+      Example: Concurrent Network Operations with Automatic Completion
     </span>
   </a>
   
@@ -3671,6 +3812,29 @@
   
   <span class="md-ellipsis">
     Language Design and DSLs
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../network_programming_patterns/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Network Programming Patterns
     
   </span>
   
@@ -3859,9 +4023,9 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#example-concurrent-network-operations" class="md-nav__link">
+  <a href="#example-concurrent-network-operations-with-automatic-completion" class="md-nav__link">
     <span class="md-ellipsis">
-      Example: Concurrent Network Operations
+      Example: Concurrent Network Operations with Automatic Completion
     </span>
   </a>
   
@@ -3940,7 +4104,7 @@ parallel_process = op(data, num_threads) {
     while (i &lt; num_threads) {
         start = i * chunk_size;
         end = (i == num_threads - 1) ? data.len() : (i + 1) * chunk_size;
-        chunks += data.slice(start, end);
+        chunks += data.mid(start, end - start);
         i += 1;
     };
 
@@ -3956,15 +4120,16 @@ large_dataset = generate_test_data(1000000);
 processed_data = parallel_process(large_dataset, 8);
 (&quot;Processed &quot; + processed_data.len().str() + &quot; items in parallel&quot;).echo();
 </code></pre></div>
-<h2 id="example-concurrent-network-operations">Example: Concurrent Network Operations</h2>
-<div class="highlight"><pre><span></span><code>/* Fetch multiple URLs concurrently */
+<h2 id="example-concurrent-network-operations-with-automatic-completion">Example: Concurrent Network Operations with Automatic Completion</h2>
+<p>Grapa's <code>.map()</code> function provides sophisticated parallel execution with automatic completion and result collection:</p>
+<div class="highlight"><pre><span></span><code>/* Fetch multiple URLs concurrently with automatic completion */
 fetch_urls = op(urls) {
     responses = urls.map(op(url) {
         try {
-                    response = $net().get(url);
-        {&quot;url&quot;: url, &quot;success&quot;: true, &quot;data&quot;: response.getfield(&quot;body&quot;)};
-    } catch (error) {
-        {&quot;url&quot;: url, &quot;success&quot;: false, &quot;error&quot;: error.getfield(&quot;message&quot;)};
+            response = $net().get(url);
+            {&quot;url&quot;: url, &quot;success&quot;: true, &quot;data&quot;: response.getfield(&quot;body&quot;)};
+        } catch (error) {
+            {&quot;url&quot;: url, &quot;success&quot;: false, &quot;error&quot;: error.getfield(&quot;message&quot;)};
         };
     });
     responses;
@@ -3977,13 +4142,23 @@ api_endpoints = [
     &quot;https://api.example.com/orders&quot;
 ];
 
+/* All 3 requests execute simultaneously */
+/* Command completes when ALL requests finish */
+/* Returns array of results in same order as input */
 results = fetch_urls(api_endpoints);
+
 successful = results.filter(op(r) { r.getfield(&quot;success&quot;); });
 failed = results.filter(op(r) { !r.getfield(&quot;success&quot;); });
 
 (&quot;Successful requests: &quot; + successful.len().str()).echo();
 (&quot;Failed requests: &quot; + failed.len().str()).echo();
 </code></pre></div>
+<p><strong>Key Benefits:</strong>
+- <strong>Parallel Execution</strong>: All requests start simultaneously
+- <strong>Automatic Completion</strong>: Command waits for ALL requests to finish
+- <strong>Result Collection</strong>: Returns array of results in same order as input
+- <strong>Performance</strong>: Total time = slowest request, not sum of all requests
+- <strong>Thread Safety</strong>: Each request runs independently with no race conditions</p>
 <h2 id="example-thread-safe-data-processing">Example: Thread-Safe Data Processing</h2>
 <div class="highlight"><pre><span></span><code>/* Thread-safe counter with locks */
 thread_safe_counter = op() {

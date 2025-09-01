@@ -14,7 +14,7 @@
         <link rel="prev" href="../precedence/">
       
       
-        <link rel="next" href="../../debugging/">
+        <link rel="next" href="../thread_safe_variables/">
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
@@ -2262,6 +2262,29 @@
   
   
     <li class="md-nav__item">
+      <a href="../namespace_scoping/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Namespace Scoping
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../operator/" class="md-nav__link">
         
   
@@ -2693,6 +2716,29 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../thread_safe_variables/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Thread-Safe Variables
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -3087,6 +3133,29 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../grapa_core_differentiators/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Core Differentiators
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -3121,7 +3190,7 @@
   
   
   <span class="md-ellipsis">
-    Language Integrations
+    Cryptography
     
   </span>
   
@@ -3131,6 +3200,78 @@
         
         <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_12_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_5_12">
+            <span class="md-nav__icon md-icon"></span>
+            Cryptography
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../crypto/key_exchange_methods/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Key Exchange Methods
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_13" >
+        
+          
+          <label class="md-nav__link" for="__nav_5_13" id="__nav_5_13_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Language Integrations
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_13_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_13">
             <span class="md-nav__icon md-icon"></span>
             Language Integrations
           </label>
@@ -3956,6 +4097,29 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../use_cases/network_programming_patterns/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Network Programming Patterns
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -4459,8 +4623,8 @@
 <p><strong>Important</strong>: The <code>$1</code>, <code>$2</code>, <code>$3</code> parameters get reset as the code runs. For complex action codes, assign them to local variables first:</p>
 <div class="highlight"><pre><span></span><code>@global[&quot;$complex_rule&quot;]
     = rule &lt;$value1&gt; &#39;+&#39; &lt;$value2&gt; {
-        @local.p1 = $1;  // Save $1 before it gets reset
-        @local.p2 = $3;  // Save $3 before it gets reset
+        @$local.p1 = $1;  // Save $1 before it gets reset
+@$local.p2 = $3;  // Save $3 before it gets reset
 
         // Now use the saved values for complex operations
         if (p1.type() == $STR &amp;&amp; p2.type() == $STR) {

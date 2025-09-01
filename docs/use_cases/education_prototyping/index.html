@@ -2255,6 +2255,29 @@
   
   
     <li class="md-nav__item">
+      <a href="../../syntax/namespace_scoping/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Namespace Scoping
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../syntax/operator/" class="md-nav__link">
         
   
@@ -2307,6 +2330,29 @@
   
   <span class="md-ellipsis">
     Grammar Design
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../syntax/thread_safe_variables/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Thread-Safe Variables
     
   </span>
   
@@ -2711,6 +2757,29 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../grapa_core_differentiators/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Core Differentiators
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2745,7 +2814,7 @@
   
   
   <span class="md-ellipsis">
-    Language Integrations
+    Cryptography
     
   </span>
   
@@ -2755,6 +2824,78 @@
         
         <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_12_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_5_12">
+            <span class="md-nav__icon md-icon"></span>
+            Cryptography
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../crypto/key_exchange_methods/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Key Exchange Methods
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_13" >
+        
+          
+          <label class="md-nav__link" for="__nav_5_13" id="__nav_5_13_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Language Integrations
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_13_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_13">
             <span class="md-nav__icon md-icon"></span>
             Language Integrations
           </label>
@@ -3690,6 +3831,29 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../network_programming_patterns/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Network Programming Patterns
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -3987,19 +4151,19 @@ bubble_sort_with_trace = op(array) {
             /* Show current state */
             current_state = array.copy();
             trace += {
-                &quot;step&quot;: &quot;Compare &quot; + array.get(j).str() + &quot; and &quot; + array.get(j + 1).str(),
+                &quot;step&quot;: &quot;Compare &quot; + array[j].str() + &quot; and &quot; + array[j + 1].str(),
                 &quot;array&quot;: current_state,
                 &quot;comparing&quot;: [j, j + 1]
             };
 
             /* Swap if needed */
-            if (array.get(j) &gt; array.get(j + 1)) {
-                temp = array.get(j);
-                        array.setfield(j, array.getfield(j + 1));
-        array.setfield(j + 1, temp);
+            if (array[j] &gt; array[j + 1]) {
+                temp = array[j];
+                array[j] = array[j + 1];
+                array[j + 1] = temp;
 
                 trace += {
-                    &quot;step&quot;: &quot;Swap &quot; + array.get(j).str() + &quot; and &quot; + array.get(j + 1).str(),
+                    &quot;step&quot;: &quot;Swap &quot; + array[j].str() + &quot; and &quot; + array[j + 1].str(),
                     &quot;array&quot;: array.copy(),
                     &quot;swapped&quot;: [j, j + 1]
                 };

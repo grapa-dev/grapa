@@ -2260,6 +2260,29 @@
   
   
     <li class="md-nav__item">
+      <a href="../syntax/namespace_scoping/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Namespace Scoping
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../syntax/operator/" class="md-nav__link">
         
   
@@ -2312,6 +2335,29 @@
   
   <span class="md-ellipsis">
     Grammar Design
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../syntax/thread_safe_variables/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Thread-Safe Variables
     
   </span>
   
@@ -3126,6 +3172,29 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../grapa_core_differentiators/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Core Differentiators
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -3160,7 +3229,7 @@
   
   
   <span class="md-ellipsis">
-    Language Integrations
+    Cryptography
     
   </span>
   
@@ -3170,6 +3239,78 @@
         
         <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_12_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_5_12">
+            <span class="md-nav__icon md-icon"></span>
+            Cryptography
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../crypto/key_exchange_methods/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Key Exchange Methods
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_13" >
+        
+          
+          <label class="md-nav__link" for="__nav_5_13" id="__nav_5_13_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Language Integrations
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_13_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_13">
             <span class="md-nav__icon md-icon"></span>
             Language Integrations
           </label>
@@ -3995,6 +4136,29 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../use_cases/network_programming_patterns/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Network Programming Patterns
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -4761,62 +4925,62 @@ calculate_mae = op(y_true, y_pred) {
 LinearRegression = {
     /* Initialize model */
     init: op() {
-        this.coefficients = null;
-        this.feature_means = null;
-        this.feature_stds = null;
-        this.is_fitted = false;
+        $this.coefficients = null;
+$this.feature_means = null;
+$this.feature_stds = null;
+$this.is_fitted = false;
     },
 
     /* Fit the model */
     fit: op(X, y, method = &quot;normal&quot;, lambda = 0.0) {
         /* Store feature statistics for scaling */
-        this.feature_means = X.mean(0);
-        this.feature_stds = X.std(0);
+        $this.feature_means = X.mean(0);
+        $this.feature_stds = X.std(0);
 
         /* Scale features */
-        X_scaled = this.standardize_features(X);
+        X_scaled = $this.standardize_features(X);
 
         /* Add bias term */
-        X_with_bias = this.add_bias_column(X_scaled);
+        X_with_bias = $this.add_bias_column(X_scaled);
 
         if (method == &quot;normal&quot;) {
             /* Normal equation method */
-            this.coefficients = this.normal_equation(X_with_bias, y);
+            $this.coefficients = $this.normal_equation(X_with_bias, y);
         } else if (method == &quot;gradient&quot;) {
             /* Gradient descent method */
-            this.coefficients = this.gradient_descent(X_with_bias, y, 0.01, 1000);
+            $this.coefficients = $this.gradient_descent(X_with_bias, y, 0.01, 1000);
         } else if (method == &quot;ridge&quot;) {
             /* Ridge regression */
-            this.coefficients = this.ridge_regression(X_with_bias, y, lambda);
+            $this.coefficients = $this.ridge_regression(X_with_bias, y, lambda);
         }
 
-        this.is_fitted = true;
+        $this.is_fitted = true;
     },
 
     /* Make predictions */
     predict: op(X) {
-        if (!this.is_fitted) {
+        if (!$this.is_fitted) {
             throw &quot;Model not fitted. Call fit() first.&quot;;
         }
 
         /* Scale features */
-        X_scaled = this.standardize_features(X);
+        X_scaled = $this.standardize_features(X);
 
         /* Add bias term */
-        X_with_bias = this.add_bias_column(X_scaled);
+        X_with_bias = $this.add_bias_column(X_scaled);
 
         /* Make predictions */
-        predictions = X_with_bias.dot(this.coefficients);
+        predictions = X_with_bias.dot($this.coefficients);
         predictions;
     },
 
     /* Calculate performance metrics */
     score: op(X, y) {
-        predictions = this.predict(X);
-        r_squared = this.calculate_r_squared(y, predictions);
-        mse = this.calculate_mse(y, predictions);
-        rmse = this.calculate_rmse(y, predictions);
-        mae = this.calculate_mae(y, predictions);
+        predictions = $this.predict(X);
+        r_squared = $this.calculate_r_squared(y, predictions);
+        mse = $this.calculate_mse(y, predictions);
+        rmse = $this.calculate_rmse(y, predictions);
+        mae = $this.calculate_mae(y, predictions);
 
         {
             &quot;r_squared&quot;: r_squared,

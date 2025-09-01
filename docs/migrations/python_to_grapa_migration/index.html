@@ -2257,6 +2257,29 @@
   
   
     <li class="md-nav__item">
+      <a href="../../syntax/namespace_scoping/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Namespace Scoping
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../syntax/operator/" class="md-nav__link">
         
   
@@ -2309,6 +2332,29 @@
   
   <span class="md-ellipsis">
     Grammar Design
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../syntax/thread_safe_variables/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Thread-Safe Variables
     
   </span>
   
@@ -2713,6 +2759,29 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../grapa_core_differentiators/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Core Differentiators
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2747,7 +2816,7 @@
   
   
   <span class="md-ellipsis">
-    Language Integrations
+    Cryptography
     
   </span>
   
@@ -2757,6 +2826,78 @@
         
         <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_12_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_5_12">
+            <span class="md-nav__icon md-icon"></span>
+            Cryptography
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../crypto/key_exchange_methods/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Key Exchange Methods
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_13" >
+        
+          
+          <label class="md-nav__link" for="__nav_5_13" id="__nav_5_13_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Language Integrations
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_13_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_13">
             <span class="md-nav__icon md-icon"></span>
             Language Integrations
           </label>
@@ -3047,9 +3188,9 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#hex-and-binary-literals" class="md-nav__link">
+  <a href="#numeric-literals" class="md-nav__link">
     <span class="md-ellipsis">
-      Hex and Binary Literals
+      Numeric Literals
     </span>
   </a>
   
@@ -4084,6 +4225,29 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../use_cases/network_programming_patterns/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Network Programming Patterns
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -4290,9 +4454,9 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#hex-and-binary-literals" class="md-nav__link">
+  <a href="#numeric-literals" class="md-nav__link">
     <span class="md-ellipsis">
-      Hex and Binary Literals
+      Numeric Literals
     </span>
   </a>
   
@@ -4789,12 +4953,13 @@
 </tr>
 </tbody>
 </table>
-<p>*$TABLE .get() requires two arguments: key and field.</p>
+<p>*$TABLE .getfield() requires two arguments: key and field.</p>
 <p><strong>Key Findings:</strong>
 - <strong>Arrays (<code>[]</code>)</strong>: Use <code>array[index]</code> and <code>array.len()</code> for access and length
 - <strong>Lists (<code>{}</code>)</strong>: Use <code>list[key]</code> or <code>list.key</code> for access, <code>list.len()</code> for length
 - <strong>Objects (class)</strong>: Use <code>object.property</code> or <code>object[key]</code> for access
-- <strong><code>.get()</code> method</strong>: Only works on <code>$file</code> and <code>$TABLE</code> types
+- <strong><code>.getfield()/.setfield()</code> method</strong>: Use for <code>$file</code> and <code>$TABLE</code> types
+- <strong><code>.get()/.set()</code> method</strong>: Exclusively for <code>$WIDGET</code> types
 - <strong><code>.size()</code> method</strong>: Not supported on any type (use <code>.len()</code> instead)
 - <strong><code>.keys()</code> method</strong>: Not supported on <code>$LIST</code> (use iteration instead)</p>
 </blockquote>
@@ -4948,7 +5113,7 @@
 </tr>
 <tr>
 <td><code>async def f(): await g()</code></td>
-<td>Use Grapa's built-in parallelism: <code>data.map(op(x) { process(x); }, 8)</code></td>
+<td>Use Grapa's built-in parallelism: <code>data.map(op(x) { process(x); }, 8)</code> - see <a href="../../advanced_concurrency_and_callbacks/#why-asyncawait-is-unnecessary-in-grapa">Why Async/Await is Unnecessary</a></td>
 </tr>
 <tr>
 <td><code>(x*2 for x in arr)</code></td>
@@ -4992,7 +5157,7 @@
 <p><strong>Note:</strong> Both <code>x = x + 1;</code> and <code>x += 1;</code> (and <code>s = s + "x";</code> and <code>s += "x";</code>) are valid in Grapa. The <code>+=</code> form is idiomatic and preferred in most cases.</p>
 <p><strong>String Interpolation:</strong> For combining strings and values, use <code>"Hello ${name}".interpolate()</code> instead of <code>"Hello " + name</code>. String interpolation is more powerful and less error-prone than concatenation.</p>
 <p><strong>Nullish Coalescing:</strong> For providing default values, use <code>value.ifnull("default")</code> instead of <code>value or "default"</code>. The <code>.ifnull()</code> method treats a broader range of values as nullish (including zeros, empty collections, and errors).</p>
-<p><strong>Note:</strong> <code>.get("key")</code> is only for <code>$file</code> (and possibly one other system object). For <code>$LIST</code>/<code>$OBJ</code>, use <code>obj["key"]</code>, <code>obj.key</code>, or <code>obj."key"</code>. For <code>$ARRAY</code>, use <code>arr[index]</code> (and <code>arr.get(index)</code> if supported).</p>
+<p><strong>Note:</strong> <code>.getfield("key")</code> is for <code>$file</code> and <code>$TABLE</code>. <code>.get()/.set()</code> is for <code>$WIDGET</code>. For <code>$LIST</code>/<code>$OBJ</code>, use <code>obj["key"]</code>, <code>obj.key</code>, or <code>obj."key"</code>. For <code>$ARRAY</code>, use <code>arr[index]</code> (bracket notation only).</p>
 </blockquote>
 <h2 id="access-patterns-objects-lists-arrays-files-and-tables">Access Patterns: Objects, Lists, Arrays, Files, and Tables</h2>
 <p>Below are all valid ways to access elements in Grapa data structures. See the canonical <a href="../../syntax/basic_syntax/">Basic Syntax Guide</a> for the latest tested rules.</p>
@@ -5015,10 +5180,11 @@ name = obj.getname(1);  /* Returns &quot;b&quot; (key name at index 1) */
 <div class="highlight"><pre><span></span><code>arr = [10, 20, 30];
 
 value = arr[1];         /* Returns 20 */
-value = arr.get(1);     /* Returns 20 */
+/* Note: .get(index) is not supported for arrays - use bracket notation */
 </code></pre></div>
 <ul>
-<li>Use bracket notation or <code>.get(index)</code> for $ARRAY.</li>
+<li>Use bracket notation for $ARRAY access.</li>
+<li><code>.get(index)</code> is not supported for arrays.</li>
 <li>Dot notation and <code>.get("key")</code> are NOT valid for $ARRAY.</li>
 </ul>
 <h3 id="array-comprehension-alternatives">Array Comprehension Alternatives</h3>
@@ -5037,39 +5203,66 @@ doubled = arr.filter(op(x) { x &gt; 2; }).map(op(x) { x * 2; });
 large_result = (10000).range()
     .filter(op(x) { x % 2 == 0; }, 8)      // 8 threads
     .map(op(x) { x * x; }, 8);             // 8 threads
+
+// For very large datasets, consider sequential processing
+big_data = (1000000).range();
+result = [];
+i = 0;
+while (i &lt; big_data.len()) {
+    if (big_data[i] % 2 == 0) {
+        result += big_data[i] * big_data[i];
+    }
+    i += 1;
+}
 </code></pre></div>
 <p><strong>Key advantages:</strong>
 - <strong>Explicit threading control</strong> for performance optimization
 - <strong>Functional programming style</strong> with chainable operations
 - <strong>Better performance</strong> for large datasets
 - <strong>Memory efficient</strong> processing</p>
-<h3 id="hex-and-binary-literals">Hex and Binary Literals</h3>
-<p>Grapa supports the same hex and binary literal syntax as Python, with enhanced features:</p>
-<div class="highlight"><pre><span></span><code><span class="c1"># Python hex and binary literals</span>
+<p><strong>Performance Note:</strong> <code>.map()</code> and <code>.filter()</code> must copy results from worker threads, which can be expensive for very large datasets. For large datasets with simple operations, consider using sequential <code>for</code> or <code>while</code> loops instead.</p>
+<h3 id="numeric-literals">Numeric Literals</h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># Python - basic numeric literals</span>
+<span class="n">int_val</span> <span class="o">=</span> <span class="mi">42</span>
+<span class="n">float_val</span> <span class="o">=</span> <span class="mf">3.14</span>
 <span class="n">hex_val</span> <span class="o">=</span> <span class="mh">0x12</span>        <span class="c1"># 18 in decimal</span>
-<span class="n">hex_float</span> <span class="o">=</span> <span class="mh">0x12</span><span class="mf">.34</span>   <span class="c1"># Not supported in Python</span>
 <span class="n">bin_val</span> <span class="o">=</span> <span class="mb">0b101</span>       <span class="c1"># 5 in decimal</span>
-<span class="n">bin_float</span> <span class="o">=</span> <span class="mb">0b101</span><span class="mf">.011</span> <span class="c1"># Not supported in Python</span>
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>// Grapa hex and binary literals (enhanced)
+<div class="highlight"><pre><span></span><code>// Grapa - enhanced numeric literals with modern features
+int_val = 42;              // 42 in decimal
+float_val = 3.14;          // 3.14 in decimal
+float_alt = 3_14;          // 3.14 using underscore separator (Grapa enhancement)
 hex_val = 0x12;              // 18 in decimal
 hex_float = 0x12.34;         // 18.203125 in decimal (Grapa enhancement)
-hex_underscore = 0x12_34;    // 4660 in decimal (Grapa enhancement)
+hex_underscore = 0x12_34;    // 18.203125 in decimal (interpreted as 0x12.34, underscore separators not yet implemented)
 bin_val = 0b101;             // 5 in decimal
 bin_float = 0b101.011;       // 5.375 in decimal (Grapa enhancement)
-bin_underscore = 0b101_011;  // 43 in decimal (Grapa enhancement)
-
-// String parsing (Grapa enhancement)
-hex_from_string = &#39;0x12&#39;.exec();           // 18
-bin_from_string = &#39;0b101&#39;.exec();          // 5
-hex_float_from_string = &#39;0x12.34&#39;.exec();  // 18.203125
+bin_underscore = 0b101_011;  // 5.375 in decimal (interpreted as 0b101.011, underscore separators not yet implemented)
 </code></pre></div>
 <p><strong>Grapa enhancements over Python:</strong>
 - ✅ <strong>Float support</strong>: Both hex and binary support decimal points
-- ✅ <strong>Underscore separators</strong>: Use <code>_</code> for readability (e.g., <code>0x12_34_56</code>)
+- ✅ <strong>Underscore separators</strong>: Use <code>_</code> as decimal separator (e.g., <code>0x12_34</code> same as <code>0x12.34</code>)
 - ✅ <strong>String parsing</strong>: Use <code>.exec()</code> to parse hex/binary strings
 - ✅ <strong>Case insensitive</strong>: <code>0xABCD</code> and <code>0xAbCd</code> are equivalent
-- ✅ <strong>Method support</strong>: All number methods work on hex/binary literals</p>
+- ✅ <strong>Method support</strong>: All number methods work on hex/binary literals
+- ✅ <strong>Decimal separator flexibility</strong>: Both dots (<code>.</code>) and underscores (<code>_</code>) work as decimal separators for floats</p>
+<p><strong>Float Decimal Separators:</strong>
+Grapa supports both standard dot notation and underscore notation for decimal separators in floats:</p>
+<div class="highlight"><pre><span></span><code>// Standard decimal notation
+3.14;              // 3.14
+2.5;               // 2.5
+1.0;               // 1.0
+
+// Underscore decimal notation (equivalent)
+3_14;              // 3.14
+2_5;               // 2.5
+1_0;               // 1.0
+
+// Verification
+(3.14 == 3_14).echo();    // true
+(2.5 == 2_5).echo();      // true
+</code></pre></div>
+<p>This feature provides flexibility in float syntax while maintaining the standard mathematical definition of floating-point numbers.</p>
 <h3 id="unsigned-number-methods">Unsigned Number Methods</h3>
 <p>Grapa provides specialized unsigned methods for cryptographic applications that Python doesn't have:</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># Python - no built-in unsigned conversion methods</span>
@@ -5133,7 +5326,7 @@ value = table.get(&quot;user1&quot;, &quot;name&quot;);   /* Correct */
 <ul>
 <li>✅ <strong>For loops now supported</strong> - Use <code>for x in arr { ... }</code> for native iteration</li>
 <li>No <code>try/catch</code>—use <code>.iferr()</code> for fallback or check for <code>$ERR</code></li>
-<li>No <code>.get()</code>/<code>.set()</code> on lists/arrays—use <code>[]</code> for access (except for <code>$file</code>/$TABLE`)</li>
+<li>No <code>.get()</code>/<code>.set()</code> on lists/arrays—use <code>[]</code> for access (except for <code>$file</code>/$TABLE)</li>
 <li>✅ <strong>Line comments now supported</strong> - Use <code>// comment</code> or <code>/// doc comment</code> in addition to block comments</li>
 <li>No attribute-style access for dict/list keys—use <code>[]</code>, or dot notation for <code>$LIST</code>/<code>$OBJ</code></li>
 <li>No implicit truthy/falsy—use explicit boolean checks</li>

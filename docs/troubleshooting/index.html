@@ -11,7 +11,7 @@
         <link rel="canonical" href="https://grapa-dev.github.io/grapa/troubleshooting/">
       
       
-        <link rel="prev" href="../use_cases/language_design_and_dsls/">
+        <link rel="prev" href="../use_cases/network_programming_patterns/">
       
       
         <link rel="next" href="../testing/">
@@ -2255,6 +2255,29 @@
   
   
     <li class="md-nav__item">
+      <a href="../syntax/namespace_scoping/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Namespace Scoping
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../syntax/operator/" class="md-nav__link">
         
   
@@ -2307,6 +2330,29 @@
   
   <span class="md-ellipsis">
     Grammar Design
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../syntax/thread_safe_variables/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Thread-Safe Variables
     
   </span>
   
@@ -2711,6 +2757,29 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../grapa_core_differentiators/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Core Differentiators
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2745,7 +2814,7 @@
   
   
   <span class="md-ellipsis">
-    Language Integrations
+    Cryptography
     
   </span>
   
@@ -2755,6 +2824,78 @@
         
         <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_12_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_5_12">
+            <span class="md-nav__icon md-icon"></span>
+            Cryptography
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../crypto/key_exchange_methods/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Key Exchange Methods
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_13" >
+        
+          
+          <label class="md-nav__link" for="__nav_5_13" id="__nav_5_13_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Language Integrations
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_13_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_13">
             <span class="md-nav__icon md-icon"></span>
             Language Integrations
           </label>
@@ -3570,6 +3711,29 @@
   
   <span class="md-ellipsis">
     Language Design and DSLs
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../use_cases/network_programming_patterns/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Network Programming Patterns
     
   </span>
   
@@ -4649,20 +4813,20 @@ while (i &lt;= 10) {
 <div class="highlight"><pre><span></span><code>/* ✅ Arrays support bracket notation */
 element = [&quot;a&quot;, &quot;b&quot;, &quot;c&quot;];
 value = element[1];        /* Returns &quot;b&quot; */
-/* Note: .get() method not yet implemented for arrays */
+/* Note: .get() method not supported for arrays - use bracket notation */
 
 /* ✅ Lists support bracket notation and .getname() */
 obj = {&quot;a&quot;: 11, &quot;b&quot;: 22, &quot;c&quot;: 33};
 value = obj[&quot;b&quot;];          /* Returns 22 */
 name = obj.getname(1);     /* Returns &quot;b&quot; */
-/* Note: .get() method not yet implemented for lists */
+/* Note: .get() method not supported for lists - use bracket notation */
 </code></pre></div>
 <h4 id="file-and-table-objects">$file and $TABLE Objects</h4>
-<div class="highlight"><pre><span></span><code>/* ✅ ALWAYS use .get() for $file and $TABLE objects */
+<div class="highlight"><pre><span></span><code>/* ✅ ALWAYS use .getfield() and .setfield() for $file and $TABLE objects */
 files = fs.ls();
-file_info = files.get(0);
+file_info = files.getfield(0);
 
-table_data = table.get(&quot;user1&quot;, &quot;name&quot;);
+table_data = table.getfield(&quot;user1&quot;, &quot;name&quot;);
 
 /* ❌ Avoid bracket notation for $file and $TABLE objects */
 file_info = files[0];  /* May not work reliably */

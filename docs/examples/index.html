@@ -2257,6 +2257,29 @@
   
   
     <li class="md-nav__item">
+      <a href="../syntax/namespace_scoping/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Namespace Scoping
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../syntax/operator/" class="md-nav__link">
         
   
@@ -2309,6 +2332,29 @@
   
   <span class="md-ellipsis">
     Grammar Design
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../syntax/thread_safe_variables/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Thread-Safe Variables
     
   </span>
   
@@ -2713,6 +2759,29 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../grapa_core_differentiators/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Core Differentiators
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2747,7 +2816,7 @@
   
   
   <span class="md-ellipsis">
-    Language Integrations
+    Cryptography
     
   </span>
   
@@ -2757,6 +2826,78 @@
         
         <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_12_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_5_12">
+            <span class="md-nav__icon md-icon"></span>
+            Cryptography
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../crypto/key_exchange_methods/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Key Exchange Methods
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_13" >
+        
+          
+          <label class="md-nav__link" for="__nav_5_13" id="__nav_5_13_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Language Integrations
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_13_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_13">
             <span class="md-nav__icon md-icon"></span>
             Language Integrations
           </label>
@@ -4229,6 +4370,29 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../use_cases/network_programming_patterns/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Network Programming Patterns
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -5053,12 +5217,20 @@
 <td>Demonstrates Grapa's enhanced hex and binary literal support including underscores, floats, string parsing, and practical use cases like color values and bit flags.</td>
 </tr>
 <tr>
+<td><a href="float_decimal_separators.grc">Float Decimal Separators</a></td>
+<td>Shows how Grapa supports both dot (<code>.</code>) and underscore (<code>_</code>) as decimal separators for float literals, providing flexibility in float syntax.</td>
+</tr>
+<tr>
 <td><a href="unsigned_methods_examples.grc">Unsigned Methods Examples</a></td>
 <td>Comprehensive demonstration of Grapa's unsigned methods (.uint(), .uraw(), .uhex(), .ubin()) for cryptographic applications, binary data processing, and handling large numbers without sign issues.</td>
 </tr>
 <tr>
 <td><a href="rsa_cryptography_example.grc">RSA and Cryptographic Functions</a></td>
 <td>Comprehensive demonstration of Grapa's cryptographic capabilities including RSA, EC, DH, BLS12-381, hash functions, and encoding. <strong>Note:</strong> Some functions may have OpenSSL 3.x compatibility issues.</td>
+</tr>
+<tr>
+<td><a href="thread_system_example.grc">Thread System Example</a></td>
+<td>Comprehensive demonstration of Grapa's complete $thread system including coroutines, synchronization primitives, producer-consumer patterns, resource pools, and proper thread-safe variable declarations.</td>
 </tr>
 </tbody>
 </table>
@@ -5135,7 +5307,11 @@
 </tr>
 <tr>
 <td><a href="https_test.grc">HTTPS Testing</a></td>
-<td><strong>User-facing example</strong> - HTTPS connection testing with SSL certificates and verification.</td>
+<td><strong>User-facing example</strong> - HTTPS connection testing with SSL certificates and verification using the curl function.</td>
+</tr>
+<tr>
+<td><a href="http_https_network_test.grc">HTTP/HTTPS Network Test</a></td>
+<td><strong>User-facing example</strong> - Low-level HTTP/HTTPS connections using the $net() API with SSL certificates, manual request construction, and connection management.</td>
 </tr>
 </tbody>
 </table>
@@ -5239,9 +5415,9 @@ chars = [x for x in &quot;hello&quot;];  /* [&quot;h&quot;, &quot;e&quot;, &quot
 0b010.echo();             /* 2 */
 0b1010.echo();            /* 10 */
 
-/* With underscores for readability */
-0x12_34.echo();           /* 4660 */
-0b010_101.echo();         /* 21 */
+/* With underscores as decimal separators */
+0x12_34.echo();           /* 18.203125 (same as 0x12.34) */
+0b010_101.echo();         /* 2.625 (same as 0b010.101) */
 
 /* Hex and binary floats */
 0x12.34.echo();           /* 18.203125 */
@@ -5518,7 +5694,7 @@ evens.echo();  /* Output: [0,2,4,6,8] */
 - Use <code>.range()</code> to generate a sequence array: e.g., <code>(10).range(0,1)</code> gives <code>[0,1,2,3,4,5,6,7,8,9]</code>.
 - Use functional chaining: <code>.map()</code>, <code>.reduce()</code>, <code>.filter()</code> for processing lists, arrays, and parsed data.
 - Always check for <code>$ERR</code> when accessing keys or attributes that may not exist (e.g., <code>if (item.type() != $ERR)</code>).
-- Use <code>[]</code> for list/array access, not <code>.get()</code> (which is for objects/tables).
+- Use <code>[]</code> for list/array access, not <code>.getfield()</code> (which is for files/tables).
 - Handle errors explicitly; Grapa does not support <code>try/catch</code>—check return values and use <code>if</code> statements for error handling.
 - See <a href="../obj/transform/">docs/obj/transform.md</a> for advanced range/sequence usage.
 <strong>Parallel ETL Advantage:</strong>
@@ -5646,7 +5822,7 @@ result = transformed.reduce(op(state, item) {
 </code></pre></div></p>
 <h3 id="file-processing">File Processing</h3>
 <div class="highlight"><pre><span></span><code>/* Read and process a file */
-content = $file().read(&quot;data.txt&quot;);
+content = $file().getfield(&quot;data.txt&quot;);
 lines = content.split(&quot;\n&quot;);
 filtered = lines.filter(op(line) { line.len() &gt; 0; });
 result = filtered.map(op(line) { line.upper(); });
@@ -5656,7 +5832,7 @@ casefolded.echo();
 </code></pre></div>
 <h3 id="json-processing">JSON Processing</h3>
 <div class="highlight"><pre><span></span><code>/* Parse and process JSON data */
-json_data = $file().read(&quot;data.json&quot;).json();
+json_data = $file().getfield(&quot;data.json&quot;).json();
 users = json_data.users;
 active_users = users.filter(op(user) { user.active == true; });
 names = active_users.map(op(user) { user.name; });

@@ -108,8 +108,8 @@ custom_command ++= rule insert into $STR values $STR ',' $INT ',' $STR {op(table
         new_key = "user" + (existing_records.len() + 1).str();
         
         users_table.setfield(new_key, name, "name");
-users_table.setfield(new_key, age, "age");
-users_table.setfield(new_key, city, "city");
+        users_table.setfield(new_key, age, "age");
+        users_table.setfield(new_key, city, "city");
         
         ("Successfully inserted: " + name).echo();
     } else {
@@ -135,10 +135,10 @@ custom_command ++= rule update $STR set $STR '=' $STR where $STR '=' $STR {op(ta
             
             if (where_field == "name" && name == where_value) {
                 if (field == "age") {
-    users_table.setfield(key, value.int(), "age");
-} else if (field == "city") {
-    users_table.setfield(key, value, "city");
-};
+                    users_table.setfield(key, value.int(), "age");
+                } else if (field == "city") {
+                    users_table.setfield(key, value, "city");
+                };
                 updated = updated + 1;
             };
             
