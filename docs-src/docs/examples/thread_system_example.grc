@@ -1,182 +1,42 @@
 /* Grapa Thread System Example
    Demonstrates the complete $thread system capabilities including:
-   - Basic thread lifecycle management
-   - Coroutine suspend/resume functionality
-   - Synchronization primitives (locks, condition variables)
-   - Producer-consumer patterns
-   - Resource pool management
+   - Example 5: Resource pool management
    - Proper thread-safe variable declarations */
+
+"=== Grapa Thread System Example ===\n".echo();
+
+/* Example 5: Resource Pool Management */
+"Example 5: Resource Pool Management\n".echo();
 
 /* Thread-Safe Variable Declarations */
 $global shared_counter = 0;
 $global shared_queue = [];
 $global queue_lock = $thread();
-$global data_ready = $thread();
 $global space_available = $thread();
 $global workers_complete = 0;
 $global completion_lock = $thread();
 $global counter_lock = $thread();
 $global resource_pool = {
     available: ["Resource_A", "Resource_B", "Resource_C"],
-    in_use: {},
+    in_use: [],
     lock: $thread()
 };
 $global coordination_condition = $thread();
 $global ready_count = 0;
 $global ready_lock = $thread();
 
-"=== Grapa Thread System Example ===\n".echo();
-
-/* Example 1: Basic Thread Lifecycle */
-"Example 1: Basic Thread Lifecycle\n".echo();
-
-basic_thread = $thread();
-basic_thread.start(
-    op() {
-        "Basic thread: Starting work\n".echo();
-        $sys().sleep(200);
-        "Basic thread: Work completed\n".echo();
-        return "Basic thread result";
-    },
-    null,
-    op(input, result) {
-        ("Basic thread callback: " + result + "\n").echo();
-    }
-);
-
-$sys().sleep(300);
-
-/* Example 2: Coroutine Suspend/Resume */
-"Example 2: Coroutine Suspend/Resume\n".echo();
-
-coroutine = $thread();
-coroutine.start(
-    op() {
-        "Coroutine: Starting\n".echo();
-        $sys().sleep(100);
-        "Coroutine: About to suspend\n".echo();
-        coroutine.suspend();  /* Suspend self */
-        "Coroutine: Resumed from suspension\n".echo();
-        $sys().sleep(100);
-        "Coroutine: Completed\n".echo();
-        return "Coroutine completed";
-    },
-    null,
-    op(input, result) {
-        ("Coroutine callback: " + result + "\n").echo();
-    }
-);
-
-$sys().sleep(150);
-"Main: Resuming coroutine\n".echo();
-coroutine.resume();
-$sys().sleep(200);
-
-/* Example 3: Thread-Safe Counter with Lock */
-"Example 3: Thread-Safe Counter with Lock\n".echo();
-
-/* Create multiple threads that increment the counter */
-for (i = 0; i < 3; i+=1) {
-    $local.counter_worker = $thread();
-    counter_worker.start(
-        op(worker_id) {
-            for (j = 0; j < 5; j+=1) {
-                counter_lock.lock();
-                shared_counter += shared_counter;
-                current = shared_counter;
-                counter_lock.unlock();
-                ("Worker " + worker_id + ": Counter = " + current + "\n").echo();
-                $sys().sleep(50);
-            };
-            return ("Worker " + worker_id + " completed");
-        },
-        i,
-        op(input, result) {
-            ("Counter worker callback: " + result + "\n").echo();
-        }
-    );
-};
-
-$sys().sleep(400);
-("Final counter value: " + shared_counter + "\n").echo();
-
-/* Example 4: Producer-Consumer Pattern */
-"Example 4: Producer-Consumer Pattern\n".echo();
-
-/* Producer thread */
-producer = $thread();
-producer.start(
-    op() {
-        "Producer: Starting production\n".echo();
-        
-        for (i = 0; i < 8; i+=1) {
-            queue_lock.lock();
-            shared_queue.push("Item " + i);
-            queue_lock.unlock();
-            data_ready.signal();
-            ("Producer: Added Item " + i + "\n").echo();
-            $sys().sleep(100);
-        };
-        
-        "Producer: Production complete\n".echo();
-        return "Producer completed";
-    },
-    null,
-    op(input, result) {
-        ("Producer callback: " + result + "\n").echo();
-    }
-);
-
-if (false)
-/* Consumer threads */
-for (consumer_id = 0; consumer_id < 2; consumer_id+=1) {
-    $local.consumer = $thread();
-    consumer.start(
-        op(id) {
-            ("Consumer " + id + ": Starting consumption\n").echo();
-            
-            $local.items_consumed = 0;
-            while (items_consumed < 4) {
-                queue_lock.lock();
-                while (shared_queue.len() == 0) {
-                    queue_lock.unlock();
-                    data_ready.wait();
-                    queue_lock.lock();
-                };
-                
-                $local.item = shared_queue.shift();
-                queue_lock.unlock();
-                
-                ("Consumer " + id + ": Consumed " + item + "\n").echo();
-                items_consumed++;
-                $sys().sleep(150);
-            };
-            
-            ("Consumer " + id + ": Consumption complete\n").echo();
-            return ("Consumer " + id + " completed");
-        },
-        consumer_id,
-        op(input, result) {
-            ("Consumer callback: " + result + "\n").echo();
-        }
-    );
-};
-
-$sys().sleep(1000);
-
-/* Example 5: Resource Pool Management */
-"Example 5: Resource Pool Management\n".echo();
 
 /* Resource requesters */
+requester = [];
 for (requester_id = 0; requester_id < 4; requester_id+=1) {
-    $local.requester = $thread();
-    requester.start(
+    requester += $thread();
+    requester[-1].start(
         op(id) {
             ("Requester " + id + ": Requesting resource\n").echo();
-            
             resource_pool.lock.lock();
             if (resource_pool.available.len() > 0) {
-                $local.resource = resource_pool.available.pop();
+                $local.resource = resource_pool.available[-1];
+                resource_pool.available -= resource_pool.available[-1];
                 resource_pool.in_use[id] = resource;
                 resource_pool.lock.unlock();
                 
@@ -184,8 +44,8 @@ for (requester_id = 0; requester_id < 4; requester_id+=1) {
                 $sys().sleep(200);  /* Use resource */
                 
                 resource_pool.lock.lock();
-                resource_pool.available.push(resource);
-                delete resource_pool.in_use[id];
+                resource_pool.available += resource;
+                resource_pool.in_use -= resource_pool.in_use[id];
                 resource_pool.lock.unlock();
                 
                 ("Requester " + id + ": Returned " + resource + "\n").echo();
@@ -218,7 +78,7 @@ for (coord_id = 0; coord_id < 3; coord_id+=1) {
             $sys().sleep(100);
             
             ready_lock.lock();
-            ready_count++;
+            ready_count += 1;
             ("Coordinator " + id + ": Ready (count: " + ready_count + ")\n").echo();
             ready_lock.unlock();
             
@@ -253,7 +113,7 @@ inspection_thread.start(
     op() {
         "Inspection thread: Running\n".echo();
         $sys().sleep(100);
-        return "Inspection completed";
+        return ("Inspection completed");
     },
     null,
     op(input, result) {
@@ -277,9 +137,10 @@ started = inspection_thread.started();
 start_time = $TIME().utc();
 
 /* Create many threads rapidly */
+perfthreads = [];
 for (i = 0; i < 10; i+=1) {
-    $local.perf_thread = $thread();
-    perf_thread.start(
+    perfthreads += $thread();
+    perf_thread[-1].start(
         op(thread_id) {
             $sys().sleep(10);
             return ("Perf thread " + thread_id + " completed");
@@ -294,7 +155,7 @@ for (i = 0; i < 10; i+=1) {
 $sys().sleep(200);
 
 end_time = $TIME().utc();
-creation_time = end_time - start_time;
+creation_time = (end_time - start_time).int()/1000000;
 ("Performance test completed in " + creation_time + "ms\n").echo();
 
 /* Summary */
