@@ -146,10 +146,20 @@ list1 ++= list2 list1[0];  /* Insert at beginning: {"c":3,"d":4,"a":1,"b":2} */
 
 **Vectors (`$VECTOR`):**
 ```grapa
-vec1 = [1, 2, 3];
-vec2 = [4, 5, 6];
-vec1 ++= vec2;   /* Extend vector: [1,2,3,4,5,6] */
-vec1 ++= vec2 vec1[0];  /* Insert at beginning: [4,5,6,1,2,3] */
+/* Note: ++= operator for vectors is currently not working correctly */
+/* Use alternative approaches for vector concatenation: */
+
+/* For 1D vectors - convert to array, concatenate, convert back */
+vec1 = #[1, 2, 3]#;
+vec2 = #[4, 5, 6]#;
+result = vec1.array() + vec2.array();  /* [1,2,3,4,5,6] */
+vec_result = result.vector();          /* #[1,2,3,4,5,6]# */
+
+/* For 2D vectors - use array conversion */
+matrix1 = #[[1,2],[3,4]]#;
+matrix2 = #[[5,6],[7,8]]#;
+result = matrix1.array() + matrix2.array();  /* [[1,2],[3,4],[5,6],[7,8]] */
+matrix_result = result.vector();             /* #[[1,2],[3,4],[5,6],[7,8]]# */
 ```
 
 **Widgets (`$WIDGET`):**

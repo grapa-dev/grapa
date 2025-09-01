@@ -1,6 +1,44 @@
 # Current Development Status
 
-## Current Task: Comprehensive Vector Capabilities Documentation - COMPLETED
+## Current Task: Vector Operations Documentation Enhancement - COMPLETED
+**Status**: COMPLETED - All vector operations fully documented with clarifications and missing functions
+
+### What Was Accomplished
+✅ **Comprehensive Vector Operations Documentation Enhancement**
+- **Operator vs Method Clarification**: Added clear distinction between operators (`+`, `*`, `**`) and method calls (`.add()`, `.mul()`, `.pow()`)
+- **Missing Utility Functions**: Added documentation for `.left(count)`, `.right(count)`, and `.reverse()` (with array conversion workaround)
+- **Advanced Column Selection**: Documented powerful column/row selection using `sort()` with custom order parameters
+- **Vector Join Functionality**: Added comprehensive documentation for `.join()` method with vertical/horizontal concatenation
+- **Broken ++= Operator Documentation**: Documented the broken `++=` operator and provided working alternatives
+- **Enhanced Error Handling**: Added comprehensive error handling examples and type conversion documentation
+- **Complete Function Reference**: Updated all function descriptions with working examples
+- **Advanced Examples**: Added complex operation examples and creative usage patterns
+- **Type Conversion Guide**: Documented automatic type conversion behavior during operations
+
+### Previous Task: Vector Sorting Documentation - COMPLETED
+**Status**: COMPLETED - All advanced sorting features discovered and documented
+
+### What Was Accomplished
+✅ **Comprehensive Vector Sorting Documentation**
+- **Advanced Sorting Features**: Discovered and documented custom comparison functions (4th parameter)
+- **Order Vector Support**: Documented custom reordering using index vectors
+- **Signed vs Unsigned**: Documented comparison type options
+- **Complete Parameter Reference**: Updated all parameter descriptions
+- **Working Examples**: All advanced features tested and verified
+- **Interface Update**: Updated `$OBJ.grc` definitions to include 4th parameter for custom functions
+
+### Previous Task: Vector `++=` Operator Issue - RESOLVED
+**Status**: RESOLVED - Put aside as limited use case, documentation updated with workarounds
+
+### What Was Accomplished
+✅ **Vector `++=` Operator Investigation**
+- **Root Cause Analysis**: Identified `GrapaVector::Extend` uses `memcpy` for complex `GrapaVectorItem` structures containing pointers
+- **Deep Copy Issue**: `memcpy` only copies pointer addresses, not underlying `GrapaVectorValue` objects
+- **Limited Impact**: Only use case for `GrapaVector::Extend` in entire codebase is the `++=` operator
+- **Documentation Update**: Updated operator documentation to reflect limitation and provide workarounds
+- **Decision**: Put aside for now as it's not a critical functionality
+
+### Previous Task: Comprehensive Vector Capabilities Documentation - COMPLETED
 **Status**: COMPLETED - All vVector capabilities thoroughly investigated and documented
 
 ### What Was Accomplished
@@ -39,6 +77,13 @@
 - `.reshape(shape)` - Reshape vector with automatic dimension inference
 - `.split(delim, num, axis)` - Split 2D matrices (working for 2D only)
 
+**Utility Functions (All Working)**:
+- `.left(count)` - Extract leftmost elements (works for 1D and 2D)
+- `.right(count)` - Extract rightmost elements (works for 1D and 2D)
+- `.reverse()` - Reverse vector elements (use `vec.array().reverse().vector()`)
+- `.array()` - Convert to array
+- `.vector()` - Convert to vector (from array)
+
 **Sorting and Searching Functions (All Working)**:
 - `.sort(axis=null, order=null, kind=null)` - Sort elements
 - `.argsort(axis=null, order=null, kind=null)` - Sort indices
@@ -51,6 +96,12 @@
 - `vec * [op(x){x.random()}]` - Dynamic range random generation
 - `vec * [op(x, i){i % 2 == 0 ? 1 : -1}]` - Pattern generation with index
 
+**Advanced Sorting Features (Working)**:
+- Custom comparison functions: `vec.sort(null, null, null, op(a,b){a-b})`
+- Order vectors for custom reordering: `vec.sort(null, order_indices)`
+- Signed vs unsigned comparison: `vec.sort(null, null, 1)` for unsigned
+- Complex multi-criteria sorting with custom functions
+
 **Creative Vector Generation (Working)**:
 - `#[1,1,1,1,1]# * [op(x){0}]` - Generate zeros
 - `#[1,1,1,1,1]# * [op(x){1}]` - Generate ones
@@ -61,9 +112,11 @@
 - Automatic type conversion during operations
 - "Best assumptions" for mathematical operations
 
-#### **✅ Vector Concatenation (Working)**
-- Use array conversion: `vec1.array() ++ vec2.array()` then `.vector()`
-- Direct vector concatenation operators not exposed (as intended)
+#### **⚠️ Vector Concatenation (Limited)**
+- **`++=` operator**: Currently not working correctly for vectors (produces null values)
+- **Alternative approach**: Use array conversion: `vec1.array() + vec2.array()` then `.vector()`
+- **Decision**: Put aside for now as it's the only use case for `GrapaVector::Extend` in the codebase
+- **Documentation**: Updated to reflect limitation and provide workarounds
 
 ### **Functions in GrapaLibRule.cpp with vVector Usage**
 

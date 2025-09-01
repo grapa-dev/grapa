@@ -679,6 +679,10 @@ list ++= {c:3, d:4};      /* list becomes {a:1, b:2, c:3, d:4} */
 /* String extension */
 str = "hello";
 str ++= " world";         /* str becomes "hello world" */
+
+/* Note: Vector extension (++=) is currently not working correctly */
+/* Use array conversion for vector concatenation: */
+/* vec1.array() + vec2.array() then convert back to vector */
 ```
 
 ### Dot Product (`.*`)

@@ -65,8 +65,8 @@
 	map = @<[op,@<map,{@<this>,@<var,{func}>,@<var,{data}>,@<var,{threads}>}>],{func,data:null,threads:null}>;
 	filter = @<[op,@<filter,{@<this>,@<var,{func}>,@<var,{data}>,@<var,{threads}>}>],{func,data:null,threads:null}>;
 	reduce = @<[op,@<reduce,{@<this>,@<var,{func}>,@<var,{init}>,@<var,{data}>}>],{func,init:null,data:null}>;
-	sort = @<[op,@<sort,{@<this>,@<var,{axis}>,@<var,{order}>,@<var,{kind}>}>],{axis:null,order:null,kind:null}>;
-	argsort = @<[op,@<argsort,{@<this>,@<var,{axis}>,@<var,{order}>,@<var,{kind}>}>],{axis:null,order:null,kind:null}>;
+	sort = @<[op,@<sort,{@<this>,@<var,{axis}>,@<var,{order}>,@<var,{kind}>,@<var,{custom_function}>}>],{axis:null,order:null,kind:null,custom_function:null}>;
+	argsort = @<[op,@<argsort,{@<this>,@<var,{axis}>,@<var,{order}>,@<var,{kind}>,@<var,{custom_function}>}>],{axis:null,order:null,kind:null,custom_function:null}>;
 	unique = @<[op,@<unique,{@<this>,@<var,{axis}>}>],{axis}>;
 	group = @<[op,@<group,{@<this>,@<var,{axis}>,@<var,{func}>,@<var,{data}>}>],{axis:null,func:null,data:null}>;
 	isint = @<isint,{@<this>}>;

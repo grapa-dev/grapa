@@ -98,6 +98,19 @@ This backlog tracks all future, long-term, and queued tasks for the Grapa projec
 - **Reference**: [`GRAPA_VECTOR_PERFORMANCE_OPTIMIZATION_PLAN.md`](../IMPLEMENTATION/TYPE_SYSTEM/GRAPA_VECTOR_PERFORMANCE_OPTIMIZATION_PLAN.md)
 - **Estimated Effort**: Major Release (4-6 months across 5 phases)
 - **Dependencies**: Core language features completion, Syntax Improvements (for error handling)
+
+### **8. Vector ++= Operator Fix** - **BUG FIX** 🔥 **HIGH PRIORITY**
+- [ ] **Fix GrapaVector::Extend Method**: Replace `memcpy` with proper deep copying for `GrapaVectorItem` structures containing pointers
+- [ ] **Support 1D Vectors**: Extend functionality to work with 1D vectors, not just 2D matrices
+- [ ] **Memory Management**: Ensure proper memory allocation and deallocation during vector extension
+- [ ] **Testing**: Comprehensive testing for various vector types and sizes
+- **Issue**: `++=` operator produces `null` values when extending 2D vectors due to `memcpy` copying pointer addresses instead of underlying data
+- **Current Workaround**: Use `.join()` method instead: `[vec1, vec2].join(null, axis)`
+- **Impact**: Limited - only use case for `GrapaVector::Extend` in entire codebase is the `++=` operator
+- **Estimated Effort**: Bug Fix (1-2 weeks)
+- **Dependencies**: None
+- **Priority**: High - affects vector concatenation functionality
+- **Risk Level**: Low - isolated to single operator, has working alternative
 - **Priority**: Lower - performance optimization after core features are stable
 - **Performance Targets**: 2-5x improvement for homogeneous vectors, 20-30% memory reduction, 3-8x SIMD improvement
 
