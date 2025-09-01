@@ -406,7 +406,7 @@ void GrapaThread::Stop()
 
 bool GrapaThread::Started()
 {
-	if (((GrapaThreadPrivate*)vInstanceT)->mThread) return(true);
+	if (vInstanceT && ((GrapaThreadPrivate*)vInstanceT)->mThread) return(true);
 	return(false);
 }
 

@@ -21941,7 +21941,7 @@ GrapaRuleEvent* GrapaLibraryRuleStartedEvent::Run(GrapaScriptExec *vScriptExec, 
 	if (objEvent)
 	{
 		err = 0;
-		if (objEvent->vWorker->Started())
+		if (objEvent->vWorker && objEvent->vWorker->Started())
 			result = new GrapaRuleEvent(GrapaTokenType::BOOL, 0, "", "\1");
 		else
 		{
@@ -22021,7 +22021,7 @@ GrapaRuleEvent* GrapaLibraryRuleSuspendedEvent::Run(GrapaScriptExec *vScriptExec
 	if (objEvent)
 	{
 		err = 0;
-		if (objEvent->vWorker->mSuspended)
+		if (objEvent->vWorker && objEvent->vWorker->mSuspended)
 			result = new GrapaRuleEvent(GrapaTokenType::BOOL, 0, "", "\1");
 		else
 		{
