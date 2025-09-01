@@ -1,4 +1,6 @@
-# Part of $OBJ
+# Iteration Object Methods
+
+**Note:** This page provides a quick reference for iteration methods available on objects. For comprehensive documentation with examples, troubleshooting, and best practices, see [Functional Array Methods](../operators/loop.md).
 
 /*
 Thread Safety:

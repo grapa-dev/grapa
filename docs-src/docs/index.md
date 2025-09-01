@@ -37,7 +37,9 @@
 - **Execution Trees**: Direct manipulation of `$OP` objects for advanced meta-programming
 - **Multi-Syntax Support**: JSON, XML, HTML (native), SQL/PROLOG/LISP (example implementations), and custom syntax through executable BNF
 - **Parallel Processing**: Built-in parallel data operations with `.map()`, `.filter()`, `.reduce()`
+- **Comprehensive Vector Operations**: Complete matrix operations, linear algebra, statistical functions, and creative capabilities
 - **Machine Learning**: Linear regression, statistical analysis, and ML algorithms using optimized vector operations
+- **Advanced Pattern Matching**: 100% ripgrep compatibility with binary data support and Unicode awareness
 - **HTTP/HTTPS Networking**: Complete HTTP client with SSL/TLS, proxy support, cookie handling, and chunked encoding
 - **Comprehensive Cryptography**: Production-ready cryptographic capabilities with OpenSSL 3.5.2 integration (RSA, EC, DH, AES, hash functions, key exchange)
 - **Unlimited Precision**: Native support for arbitrary-precision arithmetic
@@ -47,6 +49,13 @@
 - **Searchable API Reference:** Find all built-in functions, types, and methods in one place.
 - **Tag-based Filtering:** Use tags in the API Reference and throughout the docs to filter by topic, type, or use case.
 - **Mobile-Friendly:** This site is fully responsive—try it on your phone or tablet!
+
+## Recent Major Enhancements
+- **Comprehensive Vector Operations:** Complete matrix operations, linear algebra, statistical functions, and creative capabilities
+- **Advanced Sorting & Selection:** Custom comparison functions, order vectors, signed/unsigned comparison
+- **Creative Function Application:** `vec * [op(x){...}]` for random generation, pattern creation, custom transformations
+- **Enhanced Documentation:** Improved organization, navigation, and cross-references
+- **Mixed Data Type Vectors:** Automatic type conversion and "best assumptions" for operations
 
 ## Need Help?
 - [Troubleshooting](troubleshooting.md)
