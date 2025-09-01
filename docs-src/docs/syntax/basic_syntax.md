@@ -173,6 +173,8 @@ Always wrap string concatenation expressions in parentheses:
 
 ## Loops
 
+**Note:** This section covers traditional loop constructs (`while`, `for`, `do/while`). For functional array methods (`map`, `filter`, `reduce`), see [Functional Array Methods](../operators/loop.md).
+
 ### While Loops
 
 Use `while` loops with explicit increment:

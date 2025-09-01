@@ -9,33 +9,45 @@
 
 /* Simple message handler */
 messageHandler = op(netSession, message, hasmore) {
-    netSession.data += message;
-    
+	
+	netSession.data += message;
+
     if (hasmore == 0) {
-        /* Parse basic HTTP request */
-        request = netSession.data;
-        method = request.left(3);
+        /* Check for connection close */
+        if (netSession.data.len() == 0) {
+            ("Server:" + netSession.connectionId.str() + ": CLOSE\n").echo();
+            netSession.disconnect();
+            return(null);
+        };
         
+        /* Parse basic HTTP request - use $local for thread safety */
+        $local.method = "?";
+		$local.response = "";
+       
         /* Generate simple response */
-        if (method == "GET") {
+        if (netSession.data.left(3).upper() == "GET") {
+			method = "GET";
             response = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n<h1>Simple Grapa Server</h1><p>Method: " + method + "</p>";
-        } else if (method == "POST") {
-            response = "HTTP/1.1 200 OK\r\nContent-Type: text/json\r\n\r\n{\"status\":\"success\",\"method\":\"" + method + "\"}";
+        } else if (netSession.data.left(4).upper() == "POST") {
+            method = "POST";
+			response = "HTTP/1.1 200 OK\r\nContent-Type: text/json\r\n\r\n{\"status\":\"success\",\"method\":\"" + method + "\"}";
         } else {
             response = "HTTP/1.1 405 Method Not Allowed\r\n\r\n";
         };
         
-        netSession.send(response);
         netSession.data = "";
-        
-        ("Server: Processed " + method + " request\n").echo();
+
+        ("Server: Processed " + method + "\n").echo();
+		("Server: Response " + response).echo();
+
+        netSession.send(response);
     };
 };
 
 /* Connection handler */
 connectionHandler = op(netSession) {
     netSession.data = "";
-    netSession.connectionId = Math.random().int();
+    netSession.connectionId = 32.random();  /* Use appropriate random generation */
     ("New connection: " + netSession.connectionId + "\n").echo();
 };
 
@@ -49,9 +61,6 @@ server.onlisten('0.0.0.0:8080', messageHandler, connectionHandler);
 ("HTTP server started on port 8080\n").echo();
 ("Waiting for connections...\n").echo();
 
-/* Wait for server to start */
-Sleep(1000);
-
 /* ======================================== */
 /* CLIENT TESTS */
 /* ======================================== */
@@ -63,6 +72,7 @@ client1 = $net();
 client1.connect('localhost:8080', null, null);
 client1.send('GET / HTTP/1.1\r\nHost: localhost:8080\r\n\r\n');
 response1 = client1.receive();
+while (client1.pending()) response1 += client.receive();
 ("Client 1 - Response length: " + response1.len() + "\n").echo();
 client1.disconnect();
 
@@ -71,6 +81,7 @@ client2 = $net();
 client2.connect('localhost:8080', null, null);
 client2.send('POST / HTTP/1.1\r\nHost: localhost:8080\r\nContent-Type: application/json\r\n\r\n{"test":123}');
 response2 = client2.receive();
+while (client2.pending()) response2 += client2.receive();
 ("Client 2 - Response length: " + response2.len() + "\n").echo();
 client2.disconnect();
 
@@ -82,7 +93,7 @@ client2.disconnect();
 
 /* Test MAC address */
 mac_info = $net().mac();
-("MAC Address: " + mac_info.mac + "\n").echo();
+("MAC Address: " + mac_info.mac.uhex() + "\n").echo();
 
 /* Test interfaces */
 interfaces = $net().interfaces();

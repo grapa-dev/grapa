@@ -1,4 +1,4 @@
-# Loop and Functional Array Methods
+# Functional Array Methods (map/filter/reduce)
 
 /*
 # Thread Safety
@@ -23,6 +23,8 @@ Grapa is fully thread safe in all supported environments (command line, Grapa sh
 */
 
 ## while
+**Note:** This section covers basic `while` loop syntax. For comprehensive loop documentation including `for` loops, `do/while` loops, and loop control flow, see [Basic Syntax: Loops](../syntax/basic_syntax.md#loops).
+
 Syntax:
 * while(bool) statement;
 
@@ -147,10 +149,11 @@ sum.echo();
 ---
 
 ## See also
+- [Basic Syntax: Loops](../syntax/basic_syntax.md#loops) - Traditional loop constructs (`while`, `for`, `do/while`)
 - [API Reference](../api_reference.md)
 - [Examples](../examples/README.md)
 - [Use Cases](../use_cases/index.md)
-- [Language Reference](../syntax/basic_syntax.md)
+- [Object Methods: Iterate](../obj/iterate.md) - Object method reference for iteration functions
 
 ---
 

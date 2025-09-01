@@ -1884,7 +1884,7 @@
   
   
   <span class="md-ellipsis">
-    Loop Operators
+    Functional Array Methods
     
   </span>
   
@@ -2304,7 +2304,7 @@
   
   
   <span class="md-ellipsis">
-    Iterate
+    Iteration Methods
     
   </span>
   
@@ -2607,6 +2607,29 @@
   
   
     <li class="md-nav__item">
+      <a href="../../syntax/namespace_scoping/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Namespace Scoping
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../syntax/operator/" class="md-nav__link">
         
   
@@ -2659,6 +2682,29 @@
   
   <span class="md-ellipsis">
     Grammar Design
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../syntax/thread_safe_variables/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Thread-Safe Variables
     
   </span>
   
@@ -3063,6 +3109,29 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../grapa_core_differentiators/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Core Differentiators
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -3097,7 +3166,7 @@
   
   
   <span class="md-ellipsis">
-    Language Integrations
+    Cryptography
     
   </span>
   
@@ -3107,6 +3176,78 @@
         
         <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_12_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_5_12">
+            <span class="md-nav__icon md-icon"></span>
+            Cryptography
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../crypto/key_exchange_methods/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Key Exchange Methods
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_13" >
+        
+          
+          <label class="md-nav__link" for="__nav_5_13" id="__nav_5_13_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Language Integrations
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_13_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_13">
             <span class="md-nav__icon md-icon"></span>
             Language Integrations
           </label>
@@ -3932,6 +4073,29 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../use_cases/network_programming_patterns/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Network Programming Patterns
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -4524,10 +4688,20 @@ list1 ++= list2; /* Concatenate lists: {&quot;a&quot;:1,&quot;b&quot;:2,&quot;c&
 list1 ++= list2 list1[0];  /* Insert at beginning: {&quot;c&quot;:3,&quot;d&quot;:4,&quot;a&quot;:1,&quot;b&quot;:2} */
 </code></pre></div></p>
 <p><strong>Vectors (<code>$VECTOR</code>):</strong>
-<div class="highlight"><pre><span></span><code>vec1 = [1, 2, 3];
-vec2 = [4, 5, 6];
-vec1 ++= vec2;   /* Extend vector: [1,2,3,4,5,6] */
-vec1 ++= vec2 vec1[0];  /* Insert at beginning: [4,5,6,1,2,3] */
+<div class="highlight"><pre><span></span><code>/* Note: ++= operator for vectors is currently not working correctly */
+/* Use alternative approaches for vector concatenation: */
+
+/* For 1D vectors - convert to array, concatenate, convert back */
+vec1 = #[1, 2, 3]#;
+vec2 = #[4, 5, 6]#;
+result = vec1.array() + vec2.array();  /* [1,2,3,4,5,6] */
+vec_result = result.vector();          /* #[1,2,3,4,5,6]# */
+
+/* For 2D vectors - use array conversion */
+matrix1 = #[[1,2],[3,4]]#;
+matrix2 = #[[5,6],[7,8]]#;
+result = matrix1.array() + matrix2.array();  /* [[1,2],[3,4],[5,6],[7,8]] */
+matrix_result = result.vector();             /* #[[1,2],[3,4],[5,6],[7,8]]# */
 </code></pre></div></p>
 <p><strong>Widgets (<code>$WIDGET</code>):</strong>
 <div class="highlight"><pre><span></span><code>widget1 = {name:&quot;button&quot;, type:&quot;click&quot;};

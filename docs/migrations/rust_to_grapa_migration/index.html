@@ -1534,7 +1534,7 @@
   
   
   <span class="md-ellipsis">
-    Loop Operators
+    Functional Array Methods
     
   </span>
   
@@ -1954,7 +1954,7 @@
   
   
   <span class="md-ellipsis">
-    Iterate
+    Iteration Methods
     
   </span>
   
@@ -2257,6 +2257,29 @@
   
   
     <li class="md-nav__item">
+      <a href="../../syntax/namespace_scoping/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Namespace Scoping
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../syntax/operator/" class="md-nav__link">
         
   
@@ -2309,6 +2332,29 @@
   
   <span class="md-ellipsis">
     Grammar Design
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../syntax/thread_safe_variables/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Thread-Safe Variables
     
   </span>
   
@@ -2713,6 +2759,29 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../grapa_core_differentiators/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Core Differentiators
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2747,7 +2816,7 @@
   
   
   <span class="md-ellipsis">
-    Language Integrations
+    Cryptography
     
   </span>
   
@@ -2757,6 +2826,78 @@
         
         <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_12_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_5_12">
+            <span class="md-nav__icon md-icon"></span>
+            Cryptography
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../crypto/key_exchange_methods/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Key Exchange Methods
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_13" >
+        
+          
+          <label class="md-nav__link" for="__nav_5_13" id="__nav_5_13_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Language Integrations
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_13_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_13">
             <span class="md-nav__icon md-icon"></span>
             Language Integrations
           </label>
@@ -3871,6 +4012,29 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../use_cases/network_programming_patterns/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Network Programming Patterns
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -4338,7 +4502,7 @@
 <ul>
 <li>For $LIST and $OBJ, use bracket or dot notation (e.g., obj["key"], obj.key, obj[2]).</li>
 <li>For $ARRAY, use bracket notation (e.g., arr[1]).</li>
-<li>Only $file and $TABLE support .get().</li>
+<li>Only $file and $TABLE support .getfield() and .setfield().</li>
 <li>This is based on direct testing in Grapa v0.0.39.</li>
 </ul>
 </blockquote>
@@ -4380,7 +4544,7 @@
 </tr>
 <tr>
 <td><code>arr[0]</code></td>
-<td><code>arr[0]</code><br><code>arr.get(0)</code></td>
+<td><code>arr[0]</code></td>
 </tr>
 <tr>
 <td><code>let map = HashMap::new();</code></td>
@@ -4448,7 +4612,7 @@
 <p><strong>Note:</strong> Both <code>x = x + 1;</code> and <code>x += 1;</code> (and <code>s = s + "x";</code> and <code>s += "x";</code>) are valid in Grapa. The <code>+=</code> form is idiomatic and preferred in most cases.</p>
 <p><strong>String Interpolation:</strong> For combining strings and values, use <code>"Hello ${name}".interpolate()</code> instead of <code>"Hello " + name</code>. String interpolation is more powerful and less error-prone than concatenation. It also provides elegant solutions for complex method chaining: <code>"${'hello'.upper()} ${'world'.lower()}".interpolate()</code>.</p>
 <p><strong>Nullish Coalescing:</strong> For providing default values, use <code>value.ifnull("default")</code> instead of Rust's <code>unwrap_or()</code> or <code>?</code> operator. The <code>.ifnull()</code> method treats a broader range of values as nullish (including zeros, empty collections, and errors).</p>
-<p><strong>Note:</strong> <code>.get("key")</code> is only for <code>$file</code> and <code>$TABLE</code>. For <code>$LIST</code>/<code>$OBJ</code>, use <code>obj["key"]</code>, <code>obj.key</code>, or <code>obj."key"</code>. For <code>$ARRAY</code>, use <code>arr[index]</code> or <code>arr.get(index)</code>.</p>
+<p><strong>Note:</strong> <code>.getfield("key")</code> is for <code>$file</code> and <code>$TABLE</code>. <code>.get()/.set()</code> is for <code>$WIDGET</code>. For <code>$LIST</code>/<code>$OBJ</code>, use <code>obj["key"]</code>, <code>obj.key</code>, or <code>obj."key"</code>. For <code>$ARRAY</code>, use <code>arr[index]</code> (bracket notation only).</p>
 </blockquote>
 <h2 id="access-patterns-objects-lists-arrays-files-and-tables">Access Patterns: Objects, Lists, Arrays, Files, and Tables</h2>
 <p>Below are all valid ways to access elements in Grapa data structures. See the canonical <a href="../../syntax/basic_syntax/">Basic Syntax Guide</a> for the latest tested rules.</p>
@@ -4471,7 +4635,7 @@ name = obj.getname(1);  /* Returns &quot;b&quot; (key name at index 1) */
 <div class="highlight"><pre><span></span><code>arr = [10, 20, 30];
 
 value = arr[1];         /* Returns 20 */
-value = arr.get(1);     /* Returns 20 */
+/* Note: .get(index) is not supported for arrays - use bracket notation */
 </code></pre></div>
 <ul>
 <li>Use bracket notation or <code>.get(index)</code> for $ARRAY.</li>
@@ -4726,7 +4890,7 @@ keys.map(op(key) {
 <li><strong>Memory ordering</strong>: - Use Grapa's memory model</li>
 </ul>
 <blockquote>
-<p><strong>Note:</strong> Many "missing" features are actually available in Grapa through different mechanisms. For example, Rust's ownership system is replaced by Grapa's automatic memory management, and Rust's async/await is replaced by Grapa's built-in parallel processing.</p>
+<p><strong>Note:</strong> Many "missing" features are actually available in Grapa through different mechanisms. For example, Rust's ownership system is replaced by Grapa's automatic memory management, and Rust's async/await is replaced by Grapa's built-in parallel processing - see <a href="../../advanced_concurrency_and_callbacks/#why-asyncawait-is-unnecessary-in-grapa">Why Async/Await is Unnecessary</a>.</p>
 </blockquote>
 <h3 id="data-structures-and-collections">Data Structures and Collections</h3>
 <p><strong>Why Grapa Doesn't Need Specialized Collections:</strong>

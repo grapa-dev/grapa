@@ -1,0 +1,28 @@
+/* Grapa Thread System Example
+   Demonstrates the $thread system capabilities including:
+   - Example 1: Basic thread lifecycle management
+   
+"=== Grapa Thread System Example ===\n".echo();
+
+/* Example 1: Basic Thread Lifecycle */
+"Example 1: Basic Thread Lifecycle\n".echo();
+
+basic_thread = $thread();
+basic_thread.start(
+    op() {
+        "Basic thread: Starting work\n".echo();
+        $sys().sleep(50);
+        "Basic thread: Work completed\n".echo();
+        return "Basic thread result";
+    },
+    null,
+    op(input, result) {
+        ("Basic thread callback: " + result + "\n").echo();
+    }
+);
+sys().sleep(50);
+while(basic_thread.started())
+    $sys().sleep(50);
+"Basic thread done\n".echo();
+basic_thread = null;
+

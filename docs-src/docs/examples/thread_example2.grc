@@ -1,0 +1,34 @@
+/* Grapa Thread System Example
+   Demonstrates the $thread system capabilities including:
+   - Example 2: Coroutine suspend/resume functionality*/
+   
+"=== Grapa Thread System Example ===\n".echo();
+
+
+/* Example 2: Coroutine Suspend/Resume */
+"Example 2: Coroutine Suspend/Resume\n".echo();
+
+coroutine = $thread();
+coroutine.start(
+    op() {
+        "Coroutine: Starting\n".echo();
+        "Coroutine: About to suspend\n".echo();
+        coroutine.suspend();
+        "Coroutine: Resumed from suspension\n".echo();
+        "Coroutine: Completed\n".echo();
+        return ("Coroutine completed");
+    },
+    null,
+    op(input, result) {
+        ("Coroutine callback: " + result + "\n").echo();
+    }
+);
+"Main: Waiting coroutine\n".echo();
+while(!coroutine.suspended())
+    $sys().sleep(10);
+"Main: Resuming coroutine\n".echo();
+coroutine.resume();
+while(coroutine.started())
+    $sys().sleep(10);
+"Coroutine done\n".echo();
+coroutine = null;

@@ -5,136 +5,183 @@
  * functional equivalence with modern languages.
  */
 
-("=== Advanced Language Features Demo ===").echo();
+("=== Advanced Language Features Demo ===\n").echo();
 
 /* 1. Pattern Matching */
-("--- 1. Pattern Matching ---").echo();
+("--- 1. Pattern Matching ---\n").echo();
 
-// Array destructuring via namespace concatenation
+/* Array destructuring via direct assignment */
 data = [1, 2, 3, 4, 5];
-@local ++= {first: data[0], second: data[1], rest: data.slice(2)};
-("Destructured: first=" + first + ", second=" + second + ", rest=" + rest).echo();
+first = data[0];
+second = data[1];
+rest = data.mid(2, 3); /* Use .mid() for array slicing - get 3 elements starting from index 2 */
+("Destructured: first=${first}, second=${second}, rest=${rest}\n").interpolate().echo();
 
-// Object destructuring via namespace concatenation
+/* Object destructuring via direct assignment */
 person = {name: "Alice", age: 30, city: "NY"};
-@local ++= person;
-("Destructured person: name=" + name + ", age=" + age + ", city=" + city).echo();
+name = person.name;
+age = person.age;
+city = person.city;
+("Destructured person: name=" + name + ", age=" + age + ", city=" + city + "\n").echo();
 
-// Match expressions via switch/case
+/* Match expressions via switch/case */
 value = 42;
-result = switch (value) {
-    case 10: "ten";
-    case 20: "twenty";
-    case 42: "forty-two";
-    default: "unknown";
+result = null;
+switch (value) {
+    case 10: result = "ten";
+    case 20: result = "twenty";
+    case 42: result = "forty-two";
+    default: result = "unknown";
 };
-("Switch result: " + result).echo();
+("Switch result: " + result + "\n").echo();
 
-// Guard clauses via conditional cases
+/* Guard clauses via conditional cases */
 score = 85;
-grade = switch (score) {
-    case (score >= 90): "A";
-    case (score >= 80): "B";
-    case (score >= 70): "C";
-    case (score >= 60): "D";
-    default: "F";
+grade = null;
+switch (true) {
+    case (score >= 90): grade = "A";
+    case (score >= 80): grade = "B";
+    case (score >= 70): grade = "C";
+    case (score >= 60): grade = "D";
+    default: grade = "F";
 };
-("Grade for " + score + ": " + grade).echo();
+("Grade for " + score + ": " + grade + "\n").echo();
 
-// Pattern matching via .grep() and .match()
+/* Pattern matching via .grep() */
 text = "Hello World 123";
-has_digits = text.match("\\d+");
-has_letters = text.match("[a-zA-Z]+");
-("Text analysis: has_digits=" + has_digits + ", has_letters=" + has_letters).echo();
+has_digits = text.grep("\\d+", "i").len() > 0;
+has_letters = text.grep("[a-zA-Z]+", "i").len() > 0;
+("Text analysis: has_digits=" + (has_digits ? "true" : "false") + ", has_letters=" + (has_letters ? "true" : "false") + "\n").echo();
+
+/* String search via .find() */
+search_text = "Hello World 123";
+world_pos = search_text.find("World");
+xyz_pos = search_text.find("xyz");
+o_pos = search_text.find("o", 5); /* Search from position 5 */
+("String search: 'World' at ${world_pos}, 'xyz' at ${xyz_pos}, 'o' from pos 5 at ${o_pos}\n").interpolate().echo();
+
+/* RAW data search via .find() */
+raw_data = 0x10FE0021FA.uraw();
+fe0021_pos = raw_data.find(0xFE0021.uraw());
+x21_pos = raw_data.find(0x21.uraw());
+("RAW search: 0xFE0021 at ${fe0021_pos}, 0x21 at ${x21_pos}\n").interpolate().echo();
+
+/* Array search via .find() */
+main_array = [1, 2, 3, 4, 5, 6, 7, 8];
+subarray = [3, 4, 5];
+array_pos = main_array.find(subarray);
+array_not_found = main_array.find([9, 10]);
+array_with_start = main_array.find([4, 5], 3);
+("Array search: [3,4,5] at ${array_pos}, [9,10] at ${array_not_found}, [4,5] from pos 3 at ${array_with_start}\n").interpolate().echo();
+
+/* List search via .find() */
+main_list = {a: 1, b: 2, c: 3, d: 4};
+sublist = {b: 2, c: 3};
+list_pos = main_list.find(sublist);
+list_not_found = main_list.find({x: 9, y: 10});
+("List search: {b:2,c:3} at ${list_pos}, {x:9,y:10} at ${list_not_found}\n").interpolate().echo();
+
+/* Array-in-list search via .find() */
+list_with_array_search = {a: 1, b: 2, c: 3, d: 4};
+array_in_list_pos = list_with_array_search.find([2, 3]);
+array_in_list_not_found = list_with_array_search.find([9, 10]);
+array_in_list_subset = list_with_array_search.mid(array_in_list_pos, 2);
+("Array-in-list search: [2,3] at position ${array_in_list_pos}, subset: ${array_in_list_subset}, [9,10] at ${array_in_list_not_found}\n").interpolate().echo();
 
 /* 2. Metaprogramming Capabilities */
-("--- 2. Metaprogramming Capabilities ---").echo();
+("--- 2. Metaprogramming Capabilities ---\n").echo();
 
-// Macro system via custom_command/custom_function rules
-custom_command = rule process $STR { op(data:$2) { data.upper() + " processed"; } };
-result = process "hello";
-("Custom command result: " + result).echo();
-
-// AST manipulation via execution trees (.plan())
-code = op(x) { x * 2 + 1; };
-tree = code.plan();
-("Execution tree: " + tree).echo();
-result = tree(5);
-("Tree execution result: " + result).echo();
-
-// Code reflection via .describe() and .type()
+/* Code reflection via .describe() and .type() */
 func = op(x, y) { x + y; };
-("Function description: " + func.describe()).echo();
-("Function type: " + func.type()).echo();
+("Function description: " + func.describe() + "\n").echo();
+("Function type: " + func.type() + "\n").echo();
 
-// Dynamic grammar modification via @global rules
-@global["$custom_rule"] = rule <$expression> '++' {@<increment,{$1}>};
-increment = op(x) { x + 1; };
-test_value = 5;
-result = test_value++;
-("Dynamic grammar result: " + result).echo();
-
-// Code generation and execution via op()()
+/* Code generation and execution via op()() */
 generated_code = "x * y + z";
 generated_func = op("x"=0, "y"=0, "z"=0)(generated_code);
 result = generated_func(2, 3, 4);
-("Generated function result: " + result).echo();
-
-// System-level metaprogramming via $sys().eval() and $sys().compile()
-compiled = $sys().compile("input * 2 + offset");
-result1 = $sys().eval(compiled, {"input": 5, "offset": 3});
-result2 = $sys().eval(compiled, {"input": 10, "offset": 1});
-("System eval results: " + result1 + ", " + result2).echo();
+("Generated function result: " + result + "\n").echo();
 
 /* 3. Concurrency/Async Support */
-("--- 3. Concurrency/Async Support ---").echo();
+("--- 3. Concurrency/Async Support ---\n").echo();
 
-// Parallel processing with .map(), .filter(), .reduce() with thread count
+/* Parallel processing with .map(), .filter(), .reduce() with thread count */
 numbers = (100).range();
-parallel_squares = numbers.map(op(x) { x * x; }, 4); // 4 threads
-parallel_evens = numbers.filter(op(x) { x % 2 == 0; }, 4); // 4 threads
-parallel_sum = numbers.reduce(op(acc, x) { acc + x; }, 0, 4); // 4 threads
+parallel_squares = numbers.map(op(x) { x * x; }, 4); /* 4 threads */
+parallel_evens = numbers.filter(op(x) { x % 2 == 0; }, 4); /* 4 threads */
+parallel_sum = numbers.reduce(op(acc, x) { acc + x; }, 0, 4); /* 4 threads */
 
 ("Parallel processing: squares=" + parallel_squares.len() + 
- ", evens=" + parallel_evens.len() + ", sum=" + parallel_sum).echo();
+ ", evens=" + parallel_evens.len() + ", sum=" + parallel_sum + "\n").echo();
 
-// Thread management via $thread() objects with lock/unlock/trylock
-lock_obj = $thread();
-lock_obj.lock();
-shared_data = 42;
-("Thread-safe operation: " + shared_data).echo();
-lock_obj.unlock();
-
-// Async/promise-like patterns via parallel processing
+/* Async/promise-like patterns via parallel processing */
 async_process = op(data) {
-    // Simulate async operation with parallel processing
-    data.map(op(item) { 
-        // Simulate work
+    /* Simulate async operation with parallel processing */
+    result = data.map(op(item) { 
+        /* Simulate work */
         item * 2; 
     }, 2);
+    result;
 };
 
 result = async_process([1, 2, 3, 4, 5]);
-("Async-like result: " + result).echo();
+("Async-like result: ${result}\n").interpolate().echo();
 
-// Parallel execution blocks
+/* Thread-based async operations */
+thread_worker = op(input) {
+    /* Simulate work with sleep */
+    $sys().sleep(100);  /* Sleep for 100ms */
+    input.result = input.value * 2;
+    input;
+};
+
+thread_done = op(input, result) {
+    ("Thread completed: " + result.result + "\n").echo();
+};
+
+/* Start thread-based processing */
+t = $thread();
+t.start(thread_worker, {value: 42}, thread_done);
+
+/* Parallel execution blocks */
 parallel_results = [
     op() { "Task 1 completed"; }(),
     op() { "Task 2 completed"; }(),
     op() { "Task 3 completed"; }()
 ];
-("Parallel execution: " + parallel_results).echo();
+("Parallel execution: ${parallel_results}\n").interpolate().echo();
+
+/* Thread synchronization with locks */
+shared_counter = 0;
+lock_obj = $thread();
+
+increment_worker = op(input) {
+    lock_obj.lock();
+    shared_counter += 1;
+    current_value = shared_counter;
+    lock_obj.unlock();
+    current_value;
+};
+
+/* Start multiple threads that increment the shared counter */
+t1 = $thread();
+t2 = $thread();
+t3 = $thread();
+
+t1.start(increment_worker, {}, op(input, result) { ("Thread 1: counter = " + result + "\n").echo(); });
+t2.start(increment_worker, {}, op(input, result) { ("Thread 2: counter = " + result + "\n").echo(); });
+t3.start(increment_worker, {}, op(input, result) { ("Thread 3: counter = " + result + "\n").echo(); });
 
 /* 4. Type System Enhancements */
-("--- 4. Type System Enhancements ---").echo();
+("--- 4. Type System Enhancements ---\n").echo();
 
-// Dynamic typing - types determined at runtime
-x = 5;                    // $INT
-x = "hello";              // $STR
-x = [1, 2, 3];            // $ARRAY
-("Dynamic typing: x type=" + x.type()).echo();
+/* Dynamic typing - types determined at runtime */
+x = 5;                    /* $INT */
+x = "hello";              /* $STR */
+x = [1, 2, 3];            /* $ARRAY */
+("Dynamic typing: x type=" + x.type() + "\n").echo();
 
-// Runtime type checking via .type() method
+/* Runtime type checking via .type() method */
 validate_type = op(value, expected_type) {
     actual_type = value.type();
     if (actual_type == expected_type) {
@@ -145,9 +192,9 @@ validate_type = op(value, expected_type) {
 };
 
 result = validate_type(42, $INT);
-(result).echo();
+(result + "\n").echo();
 
-// Runtime type constraints
+/* Runtime type constraints */
 safe_divide = op(a, b) {
     if (a.type() != $INT && a.type() != $FLOAT) {
         "Error: First argument must be numeric";
@@ -161,45 +208,59 @@ safe_divide = op(a, b) {
 };
 
 result = safe_divide(10, 2);
-("Type-constrained result: " + result).echo();
+("Type-constrained result: " + result + "\n").echo();
 
-// Automatic type inference
-inferred_int = 5 + 3;           // Automatically $INT
-inferred_float = 5.0 + 3;       // Automatically $FLOAT
-inferred_str = "Hello" + "World"; // Automatically $STR
+/* Automatic type inference */
+inferred_int = 5 + 3;           /* Automatically $INT */
+inferred_float = 5.0 + 3;       /* Automatically $FLOAT */
+inferred_str = "Hello" + "World"; /* Automatically $STR */
 ("Type inference: int=" + inferred_int.type() + 
  ", float=" + inferred_float.type() + 
- ", str=" + inferred_str.type()).echo();
+ ", str=" + inferred_str.type() + "\n").echo();
 
-// Generic-like functions
+/* Generic-like functions */
 generic_process = op(data) {
-    data_type = data.type();
-    
+    $local.data_type = data.type();
+    $local.result = "";
     switch (data_type) {
-        case $INT: data * 2;
-        case $STR: data.upper();
-        case $ARRAY: data.map(op(x) { x * 2; });
-        case $LIST: data.map(op(key, value) { key + ": " + value; });
-        default: "Unsupported type: " + data_type;
+        case $INT: result = data * 2;
+        case $STR: result = data.upper();
+        case $ARRAY: result = data.map(op(x) { x * 2; });
+        case $LIST: result = data.map(op(key, value) { key + ": " + value; });
+        default: result = "Unsupported type: " + data_type.str();
     }
+	result;
 };
 
 test_cases = [42, "hello", [1, 2, 3], {a: 1, b: 2}];
 results = test_cases.map(op(test) { generic_process(test); });
-("Generic-like results: " + results).echo();
+("Generic-like results: ${results}\n").interpolate().echo();
 
 /* 5. Advanced Data Structures */
-("--- 5. Advanced Data Structures ---").echo();
+("--- 5. Advanced Data Structures ---\n").echo();
 
-// Set-like functionality via arrays with .unique()
+/* Set-like functionality via arrays with .unique() */
 create_set = op(items) { items.unique(); };
 set1 = create_set([1, 2, 3, 3, 4, 4, 5]);
 set2 = create_set([3, 4, 5, 6, 7]);
 set_union = (set1 + set2).unique();
-set_intersection = set1.filter(op(item) { set2.grep(item).len() > 0; });
-("Set operations: union=" + set_union + ", intersection=" + set_intersection).echo();
 
-// Map-like functionality via objects ($LIST)
+set_intersection = set1.filter(op(item) { 
+    /* Use built-in .find() method for array intersection */
+    found = false;
+    i = 0;
+    while (i < set2.len()) {
+        if (set2[i] == item) {
+            found = true;
+            break;
+        }
+        i += 1;
+    }
+    found;
+});
+("Set operations: union=${set_union}, intersection=${set_intersection}\n").interpolate().echo();
+
+/* Map-like functionality via objects ($LIST) */
 create_map = op(key_value_pairs) {
     map_obj = {};
     key_value_pairs.map(op(pair) {
@@ -214,21 +275,21 @@ map_data = [
     {key: "city", value: "NY"}
 ];
 map_obj = create_map(map_data);
-("Map object: " + map_obj).echo();
+("Map object: ${map_obj}\n").interpolate().echo();
 
-// Weak reference patterns via function closures
-create_weak_ref = op(target) { op() { target; }; };
+/* Weak reference patterns via function closures */
+create_weak_ref = op(target) {op(){target;}();};
 original_data = {name: "Alice", data: [1, 2, 3]};
 weak_ref = create_weak_ref(original_data);
-accessed_data = weak_ref();
-("Weak ref access: " + accessed_data).echo();
+accessed_data = weak_ref;
+("Weak ref access: ${accessed_data}\n").interpolate().echo();
 
-// Iterator protocols via custom functions
+/* Iterator protocols via custom functions */
 create_iterator = op(collection) {
-    state = {index: 0, collection: collection};
     
     {
-        has_next: op() { state.index < state.collection.len(); },
+       state: {index: 0, collection: collection},
+       has_next: op() { state.index < state.collection.len(); },
         next: op() { 
             if (state.index < state.collection.len()) {
                 item = state.collection[state.index];
@@ -242,25 +303,25 @@ create_iterator = op(collection) {
 };
 
 iterator = create_iterator([1, 2, 3, 4, 5]);
-("Iterator test:").echo();
+("Iterator test:\n").echo();
 while (iterator.has_next()) {
     item = iterator.next();
-    ("  Next: " + item).echo();
+    ("  Next: " + item + "\n").echo();
 }
 
-// Priority queue
+/* Priority queue */
 create_priority_queue = op() {
-    items = [];
     
     {
-        enqueue: op(item, priority) {
+       items: [],
+       enqueue: op(item, priority) {
             items += [{item: item, priority: priority}];
             items = items.sort(op(a, b) { b.priority - a.priority; });
         },
         dequeue: op() {
             if (items.len() > 0) {
                 item = items[0];
-                items = items.slice(1);
+                items = items.mid(1);
                 item.item;
             } else {
                 null;
@@ -274,54 +335,46 @@ pq = create_priority_queue();
 pq.enqueue("Task A", 1);
 pq.enqueue("Task B", 3);
 pq.enqueue("Task C", 2);
-("Priority queue size: " + pq.size()).echo();
+("Priority queue size: " + pq.size() + "\n").echo();
 
 /* 6. Debugging and Development Tools */
-("--- 6. Debugging and Development Tools ---").echo();
+("--- 6. Debugging and Development Tools ---\n").echo();
 
-// Stack traces via .describe() and .type()
+/* Stack traces via .describe() and .type() */
 func = op(x) { x * 2; };
-("Function description: " + func.describe()).echo();
-("Function type: " + func.type()).echo();
+("Function description: " + func.describe() + "\n").echo();
+("Function type: " + func.type() + "\n").echo();
 
-// Source maps via .debug() method
-debug_info = func.debug();
-("Debug info: " + debug_info).echo();
+/* Source maps via .debug() method */
+("Debug info: ").echo();
+"Function debug information".debug(1, "function");
 
-// Profiling via $TIME() and timing functions
-start_time = $TIME();
-// Simulate work
+/* Profiling via $TIME() and timing functions */
+start_time = $TIME().utc();
+/* Simulate work */
 (1000).range().map(op(x) { x * x; });
-end_time = $TIME();
-duration = end_time - start_time;
-("Profiling: operation took " + duration + " seconds").echo();
+end_time = $TIME().utc();
+operation_time = (($TIME().utc() - start_time) / 1000000).int();
+("Profiling: operation took " + operation_time + "ms\n").echo();
 
-// Hot reloading via dynamic grammar modification
-@global["$hot_reload"] = rule reload $STR { op(script:$2) { 
-    "Reloading: " + script; 
-    // In a real implementation, this would reload the script
-} };
-result = reload "updated_script.grc";
-(result).echo();
-
-// Debug mode via -d flag (demonstrated conceptually)
+/* Debug mode via -d flag (demonstrated conceptually) */
 debug_mode = true;
 if (debug_mode) {
-    ("Debug mode: Detailed execution info available").echo();
+    ("Debug mode: Detailed execution info available\n").echo();
 }
 
-// Component-specific debugging
+/* Component-specific debugging */
 debug_component = op(component, level) {
     if (level == "verbose") {
-        ("Debug [" + component + "]: Detailed information").echo();
+        ("Debug [" + component + "]: Detailed information\n").echo();
     } else if (level == "info") {
-        ("Debug [" + component + "]: Basic information").echo();
+        ("Debug [" + component + "]: Basic information\n").echo();
     } else {
-        ("Debug [" + component + "]: Error only").echo();
+        ("Debug [" + component + "]: Error only\n").echo();
     }
 };
 
 debug_component("database", "verbose");
 debug_component("parser", "info");
 
-("=== Advanced Language Features Demo Complete ===").echo();
+("=== Advanced Language Features Demo Complete ===\n").echo();

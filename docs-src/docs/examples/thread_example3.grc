@@ -1,0 +1,47 @@
+/* Grapa Thread System Example
+   Demonstrates the $thread system capabilities including:
+   - Example 3: Synchronization primitives (locks, condition variables)*/
+   
+"=== Grapa Thread System Example ===\n".echo();
+
+
+/* Example 3: Thread-Safe Counter with Lock */
+"Example 3: Thread-Safe Counter with Lock\n".echo();
+
+/* Create multiple threads that increment the counter */
+counter_worker = [];
+shared_counter = 0;
+counter_lock = $thread();
+for (i = 0; i < 3; i+=1) {
+    counter_worker += $thread();
+    counter_worker[i].start(
+        op(worker_id) {
+            counter_worker[worker_id].suspend();
+            for (j = 0; j < 5; j+=1) {
+                counter_lock.lock();
+                shared_counter += 1;
+                $local.current = shared_counter;
+                counter_lock.unlock();
+                ("Worker " + worker_id + ": Counter = " + current + "\n").echo();
+            };
+            return ("Worker " + worker_id + " completed");
+        },
+        i,
+        op(input, result) {
+            ("Counter worker callback: " + result + "\n").echo();
+        }
+    );
+};
+for (i = 0; i < 3; i+=1) {
+    while(!counter_worker[i].suspended())
+        $sys().sleep(10);
+};
+for (i = 0; i < 3; i+=1)
+    counter_worker[i].resume();
+for (i = 0; i < 3; i+=1) {
+    while(counter_worker[i].started())
+        $sys().sleep(10);
+};
+counter_worker = null;
+counter_lock = null;
+("Final counter value: " + shared_counter + "\n").echo();

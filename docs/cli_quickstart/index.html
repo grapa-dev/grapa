@@ -2156,7 +2156,7 @@
   
   
   <span class="md-ellipsis">
-    Loop Operators
+    Functional Array Methods
     
   </span>
   
@@ -2576,7 +2576,7 @@
   
   
   <span class="md-ellipsis">
-    Iterate
+    Iteration Methods
     
   </span>
   
@@ -2879,6 +2879,29 @@
   
   
     <li class="md-nav__item">
+      <a href="../syntax/namespace_scoping/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Namespace Scoping
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../syntax/operator/" class="md-nav__link">
         
   
@@ -2931,6 +2954,29 @@
   
   <span class="md-ellipsis">
     Grammar Design
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../syntax/thread_safe_variables/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Thread-Safe Variables
     
   </span>
   
@@ -3335,6 +3381,29 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../grapa_core_differentiators/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Core Differentiators
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -3369,7 +3438,7 @@
   
   
   <span class="md-ellipsis">
-    Language Integrations
+    Cryptography
     
   </span>
   
@@ -3379,6 +3448,78 @@
         
         <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_12_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_5_12">
+            <span class="md-nav__icon md-icon"></span>
+            Cryptography
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../crypto/key_exchange_methods/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Key Exchange Methods
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_13" >
+        
+          
+          <label class="md-nav__link" for="__nav_5_13" id="__nav_5_13_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Language Integrations
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_13_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_13">
             <span class="md-nav__icon md-icon"></span>
             Language Integrations
           </label>
@@ -4194,6 +4335,29 @@
   
   <span class="md-ellipsis">
     Language Design and DSLs
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../use_cases/network_programming_patterns/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Network Programming Patterns
     
   </span>
   
@@ -5110,21 +5274,21 @@ result = function(10, 20);
 <h2 id="file-operations">File Operations</h2>
 <h3 id="reading-files">Reading Files</h3>
 <div class="highlight"><pre><span></span><code>/* Read entire file */
-content = $file().get(&quot;data.txt&quot;).str();
+content = $file().getfield(&quot;data.txt&quot;);
 (&quot;File content: &quot; + content).echo();
 
 /* Read file as lines */
-lines = $file().get(&quot;data.txt&quot;).str().split(&quot;\n&quot;);
+lines = $file().getfield(&quot;data.txt&quot;).split(&quot;\n&quot;);
 for (line in lines) {
     (&quot;Line: &quot; + line).echo();
 }
 </code></pre></div>
 <h3 id="writing-files">Writing Files</h3>
 <div class="highlight"><pre><span></span><code>/* Write to file */
-$file().set(&quot;output.txt&quot;, &quot;Hello from Grapa!&quot;);
+$file().setfield(&quot;output.txt&quot;, &quot;Hello from Grapa!&quot;);
 
 /* Append to file */
-$file().set(&quot;log.txt&quot;, &quot;New entry\n&quot;, &quot;a&quot;);
+$file().setfield(&quot;log.txt&quot;, &quot;New entry\n&quot;, &quot;a&quot;);
 </code></pre></div>
 <h2 id="data-processing">Data Processing</h2>
 <h3 id="working-with-arrays">Working with Arrays</h3>
@@ -5339,7 +5503,7 @@ temp_file = temp_dir + &quot;/grapa_temp_&quot; + $TIME().utc().str();
 log_file = temp_dir + &quot;/grapa_log_&quot; + $TIME().utc().str();
 
 /* Write to temporary file */
-$file(temp_file).set(&quot;Temporary data&quot;);
+$file(temp_file).setfield(&quot;Temporary data&quot;);
 
 /* Clean up temporary files when done */
 $file(temp_file).rm();
@@ -5642,7 +5806,7 @@ grapa<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;</
 <h2 id="common-patterns">Common Patterns</h2>
 <h3 id="configuration-files">Configuration Files</h3>
 <div class="highlight"><pre><span></span><code>/* Read JSON config */
-config_text = $file().get(&quot;config.json&quot;).str();
+config_text = $file().getfield(&quot;config.json&quot;);
 config = config_text.json();
 
 /* Use configuration */

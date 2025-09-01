@@ -22,7 +22,7 @@
     
     
       
-        <title>Loop Operators - Grapa Documentation</title>
+        <title>Functional Array Methods - Grapa Documentation</title>
       
     
     
@@ -74,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#loop-and-functional-array-methods" class="md-skip">
+        <a href="#functional-array-methods-mapfilterreduce" class="md-skip">
           Skip to content
         </a>
       
@@ -108,7 +108,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Loop Operators
+              Functional Array Methods
             
           </span>
         </div>
@@ -1548,7 +1548,7 @@
   
   
   <span class="md-ellipsis">
-    Loop Operators
+    Functional Array Methods
     
   </span>
   
@@ -1969,7 +1969,7 @@
   
   
   <span class="md-ellipsis">
-    Iterate
+    Iteration Methods
     
   </span>
   
@@ -2272,6 +2272,29 @@
   
   
     <li class="md-nav__item">
+      <a href="../../syntax/namespace_scoping/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Namespace Scoping
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../syntax/operator/" class="md-nav__link">
         
   
@@ -2324,6 +2347,29 @@
   
   <span class="md-ellipsis">
     Grammar Design
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../syntax/thread_safe_variables/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Thread-Safe Variables
     
   </span>
   
@@ -2728,6 +2774,29 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../grapa_core_differentiators/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Core Differentiators
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2762,7 +2831,7 @@
   
   
   <span class="md-ellipsis">
-    Language Integrations
+    Cryptography
     
   </span>
   
@@ -2772,6 +2841,78 @@
         
         <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_12_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_5_12">
+            <span class="md-nav__icon md-icon"></span>
+            Cryptography
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../crypto/key_exchange_methods/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Key Exchange Methods
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_13" >
+        
+          
+          <label class="md-nav__link" for="__nav_5_13" id="__nav_5_13_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Language Integrations
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_13_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_13">
             <span class="md-nav__icon md-icon"></span>
             Language Integrations
           </label>
@@ -3597,6 +3738,29 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../use_cases/network_programming_patterns/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Network Programming Patterns
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -3755,7 +3919,7 @@
 
 
 
-<h1 id="loop-and-functional-array-methods">Loop and Functional Array Methods</h1>
+<h1 id="functional-array-methods-mapfilterreduce">Functional Array Methods (map/filter/reduce)</h1>
 <p>/*</p>
 <h1 id="thread-safety">Thread Safety</h1>
 <p>Grapa is fully thread safe in all supported environments (command line, Grapa shell, and Python/GrapaPy). All built-in operations—including map, filter, reduce, $thread, and $net—are safe to use concurrently. Users do not need to take any special precautions for thread safety in these environments.</p>
@@ -3801,6 +3965,7 @@
 */</li>
 </ul>
 <h2 id="while">while</h2>
+<p><strong>Note:</strong> This section covers basic <code>while</code> loop syntax. For comprehensive loop documentation including <code>for</code> loops, <code>do/while</code> loops, and loop control flow, see <a href="../../syntax/basic_syntax/#loops">Basic Syntax: Loops</a>.</p>
 <p>Syntax:
 * while(bool) statement;</p>
 <p>Example:
@@ -3913,10 +4078,11 @@ sum.echo();
 <hr />
 <h2 id="see-also">See also</h2>
 <ul>
+<li><a href="../../syntax/basic_syntax/#loops">Basic Syntax: Loops</a> - Traditional loop constructs (<code>while</code>, <code>for</code>, <code>do/while</code>)</li>
 <li><a href="../../api_reference/">API Reference</a></li>
 <li><a href="../examples/README.md">Examples</a></li>
 <li><a href="../../use_cases/">Use Cases</a></li>
-<li><a href="../../syntax/basic_syntax/">Language Reference</a></li>
+<li><a href="../../obj/iterate/">Object Methods: Iterate</a> - Object method reference for iteration functions</li>
 </ul>
 <hr />
 <p>/<em> End of canonical map/filter/reduce documentation. </em>/</p>

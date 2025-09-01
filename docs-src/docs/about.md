@@ -6,7 +6,9 @@ Grapa is a modern, grammar-based programming language and data processing platfo
 ## Key Features
 - **Unlimited Precision:** Arbitrary-precision math for $INT, $FLOAT, $TIME
 - **True Parallelism:** Production-ready parallel ETL/data processing (map/reduce/filter, $thread, $net)
+- **Comprehensive Vector Operations:** Complete matrix operations, linear algebra, statistical functions, and creative capabilities
 - **Machine Learning:** Linear regression, statistical analysis, and ML algorithms using optimized vector operations
+- **Advanced Pattern Matching:** 100% ripgrep compatibility with binary data support and Unicode awareness
 - **Comprehensive Cryptography:** Production-ready cryptographic capabilities with OpenSSL 3.5.2 integration (RSA, EC, DH, AES, hash functions, key exchange, digital signatures)
 - **Unified File/Database API:** Seamless navigation and processing of files and databases
 - **Python Integration:** Use GrapaPy for idiomatic, high-performance scripting and data workflows
@@ -17,13 +19,17 @@ Grapa is a modern, grammar-based programming language and data processing platfo
 ## Who Should Use Grapa?
 - **Data Engineers & Scientists:** For high-throughput ETL, analytics, and automation
 - **Machine Learning Practitioners:** For linear regression, statistical analysis, and ML prototyping
+- **Mathematical Computing Users:** For comprehensive vector operations, linear algebra, and statistical analysis
 - **Security Engineers & Cryptographers:** For cryptographic operations, key management, and security applications
+- **Binary Analysis & Forensics:** For advanced pattern matching with binary data support
 - **Educators & Researchers:** For teaching, language prototyping, and meta-programming
 - **Python/CLI Power Users:** For offloading heavy data processing or integrating with existing workflows
 - **Anyone needing:**
   - Unlimited precision math
   - Parallel/concurrent scripting
   - Machine learning and statistical analysis
+  - Comprehensive vector and matrix operations
+  - Advanced pattern matching with binary data support
   - Cryptographic operations and security applications
   - Unified file/database access
   - Custom language/grammar experimentation
@@ -31,6 +37,8 @@ Grapa is a modern, grammar-based programming language and data processing platfo
 ## Why/When to Use Grapa?
 - When you need to process large data sets with true parallelism
 - When you want to implement machine learning algorithms with optimized vector operations
+- When you need comprehensive vector and matrix operations with creative function application
+- When you need advanced pattern matching with binary data support and Unicode awareness
 - When you need production-ready cryptographic operations with OpenSSL 3.5.2 integration
 - When you want to experiment with grammars, compilers, or language design
 - When Python’s GIL or precision limits are a bottleneck

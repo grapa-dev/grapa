@@ -1537,7 +1537,7 @@
   
   
   <span class="md-ellipsis">
-    Loop Operators
+    Functional Array Methods
     
   </span>
   
@@ -1957,7 +1957,7 @@
   
   
   <span class="md-ellipsis">
-    Iterate
+    Iteration Methods
     
   </span>
   
@@ -2649,6 +2649,29 @@
   
   
     <li class="md-nav__item">
+      <a href="../../syntax/namespace_scoping/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Namespace Scoping
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../syntax/operator/" class="md-nav__link">
         
   
@@ -2701,6 +2724,29 @@
   
   <span class="md-ellipsis">
     Grammar Design
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../syntax/thread_safe_variables/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Thread-Safe Variables
     
   </span>
   
@@ -3105,6 +3151,29 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../grapa_core_differentiators/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Core Differentiators
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -3139,7 +3208,7 @@
   
   
   <span class="md-ellipsis">
-    Language Integrations
+    Cryptography
     
   </span>
   
@@ -3149,6 +3218,78 @@
         
         <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_12_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_5_12">
+            <span class="md-nav__icon md-icon"></span>
+            Cryptography
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../crypto/key_exchange_methods/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Key Exchange Methods
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_13" >
+        
+          
+          <label class="md-nav__link" for="__nav_5_13" id="__nav_5_13_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Language Integrations
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_13_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_13">
             <span class="md-nav__icon md-icon"></span>
             Language Integrations
           </label>
@@ -3974,6 +4115,29 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../use_cases/network_programming_patterns/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Network Programming Patterns
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -4595,20 +4759,20 @@ f.mkfield(&quot;data&quot;, &quot;FLOAT&quot;, &quot;FIX&quot;, 8, 16)
 <h2 id="data-operations">Data Operations</h2>
 <h3 id="setting-data">Setting Data</h3>
 <div class="highlight"><pre><span></span><code># Set field value
-f.set(&quot;record_id&quot;, &quot;value&quot;, &quot;field_name&quot;)
+f.setfield(&quot;record_id&quot;, &quot;value&quot;, &quot;field_name&quot;)
 
 # Set multiple fields
-f.set(&quot;user1&quot;, &quot;John Doe&quot;, &quot;name&quot;)
-f.set(&quot;user1&quot;, 30, &quot;age&quot;)
-f.set(&quot;user1&quot;, 75000.50, &quot;salary&quot;)
+f.setfield(&quot;user1&quot;, &quot;John Doe&quot;, &quot;name&quot;)
+f.setfield(&quot;user1&quot;, 30, &quot;age&quot;)
+f.setfield(&quot;user1&quot;, 75000.50, &quot;salary&quot;)
 </code></pre></div>
 <h3 id="getting-data">Getting Data</h3>
 <div class="highlight"><pre><span></span><code># Get field value
-value = f.get(&quot;record_id&quot;, &quot;field_name&quot;)
+value = f.getfield(&quot;record_id&quot;, &quot;field_name&quot;)
 
 # Get multiple fields
-name = f.get(&quot;user1&quot;, &quot;name&quot;)
-age = f.get(&quot;user1&quot;, &quot;age&quot;)
+name = f.getfield(&quot;user1&quot;, &quot;name&quot;)
+age = f.getfield(&quot;user1&quot;, &quot;age&quot;)
 </code></pre></div>
 <h3 id="listing-records">Listing Records</h3>
 <div class="highlight"><pre><span></span><code># List all records

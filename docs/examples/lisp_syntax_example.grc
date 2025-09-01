@@ -97,7 +97,7 @@ custom_command = custom_command | rule '(cdr' $STR ')' {op(list_expr:$2){
     /* Get rest of list - NO MANUAL PARSING */
     list_val = evaluate_sexp(list_expr);
     if (list_val.type() == $LIST) {
-        result = list_val.slice(1);
+        result = list_val.mid(1);
         ("LISP Cdr: " + result).echo();
         return result;
     } else {
@@ -150,6 +150,10 @@ custom_command = custom_command | rule '(list' $STR ')' {op(elem1:$2){
 
 /* Helper functions for evaluation */
 lisp_eval = op(function, args) {
+    $local.result = null;
+    $local.i = null;
+    $local.func_def = null;
+    
     if (function == "+") {
         result = 0;
         i = 0;
@@ -206,6 +210,8 @@ lisp_eval = op(function, args) {
 };
 
 evaluate_sexp = op(expr) {
+    $local.result = null;
+    
     if (expr.type() == $INT || expr.type() == $FLOAT) {
         return expr;
     } else if (expr.type() == $STR) {

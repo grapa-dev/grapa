@@ -1534,7 +1534,7 @@
   
   
   <span class="md-ellipsis">
-    Loop Operators
+    Functional Array Methods
     
   </span>
   
@@ -1954,7 +1954,7 @@
   
   
   <span class="md-ellipsis">
-    Iterate
+    Iteration Methods
     
   </span>
   
@@ -2257,6 +2257,29 @@
   
   
     <li class="md-nav__item">
+      <a href="../../syntax/namespace_scoping/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Namespace Scoping
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../syntax/operator/" class="md-nav__link">
         
   
@@ -2309,6 +2332,29 @@
   
   <span class="md-ellipsis">
     Grammar Design
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../syntax/thread_safe_variables/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Thread-Safe Variables
     
   </span>
   
@@ -2713,6 +2759,29 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../grapa_core_differentiators/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Core Differentiators
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2747,7 +2816,7 @@
   
   
   <span class="md-ellipsis">
-    Language Integrations
+    Cryptography
     
   </span>
   
@@ -2757,6 +2826,78 @@
         
         <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_12_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_5_12">
+            <span class="md-nav__icon md-icon"></span>
+            Cryptography
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../crypto/key_exchange_methods/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Key Exchange Methods
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_13" >
+        
+          
+          <label class="md-nav__link" for="__nav_5_13" id="__nav_5_13_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Language Integrations
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_13_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_13">
             <span class="md-nav__icon md-icon"></span>
             Language Integrations
           </label>
@@ -4057,6 +4198,29 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../use_cases/network_programming_patterns/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Network Programming Patterns
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -4727,12 +4891,13 @@
 </tr>
 </tbody>
 </table>
-<p>*$TABLE .get() requires two arguments: key and field.</p>
+<p>*$TABLE .getfield() requires two arguments: key and field.</p>
 <p><strong>Key Findings:</strong>
 - <strong>Arrays (<code>[]</code>)</strong>: Use <code>array[index]</code> and <code>array.len()</code> for access and length
 - <strong>Lists (<code>{}</code>)</strong>: Use <code>list[key]</code> or <code>list.key</code> for access, <code>list.len()</code> for length
 - <strong>Objects (class)</strong>: Use <code>object.property</code> or <code>object[key]</code> for access
-- <strong><code>.get()</code> method</strong>: Only works on <code>$file</code> and <code>$TABLE</code> types
+- <strong><code>.getfield()/.setfield()</code> method</strong>: Use for <code>$file</code> and <code>$TABLE</code> types
+- <strong><code>.get()/.set()</code> method</strong>: Exclusively for <code>$WIDGET</code> types
 - <strong><code>.size()</code> method</strong>: Not supported on any type (use <code>.len()</code> instead)
 - <strong><code>.keys()</code> method</strong>: Not supported on <code>$LIST</code> (use iteration instead)</p>
 </blockquote>
@@ -4770,7 +4935,7 @@
 </tr>
 <tr>
 <td><code>arr[index]</code></td>
-<td><code>arr[index]</code><br><code>arr.get(index)</code></td>
+<td><code>arr[index]</code></td>
 </tr>
 <tr>
 <td><code>obj.key</code></td>
@@ -4870,7 +5035,7 @@
 </tr>
 <tr>
 <td><code>async function f() { await g() }</code></td>
-<td>Use Grapa's built-in parallelism: <code>data.map(op(x) { process(x); }, 8)</code></td>
+<td>Use Grapa's built-in parallelism: <code>data.map(op(x) { process(x); }, 8)</code> - see <a href="../../advanced_concurrency_and_callbacks/#why-asyncawait-is-unnecessary-in-grapa">Why Async/Await is Unnecessary</a></td>
 </tr>
 <tr>
 <td><code>function* gen() { yield x }</code></td>
@@ -4887,7 +5052,7 @@
 - <strong>Length</strong>: Use <code>.len()</code> for arrays and lists, not <code>.size()</code>.
 - <strong>Keys</strong>: For lists, iterate manually instead of using <code>.keys()</code>.
 - If more objects support <code>.get()</code> in the future, this guide will be updated.</p>
-<p><strong>Note:</strong> <code>.get("key")</code> is only for <code>$file</code> (and possibly one other system object). For <code>$LIST</code>/<code>$OBJ</code>, use <code>obj["key"]</code>, <code>obj.key</code>, or <code>obj."key"</code>. For <code>$ARRAY</code>, use <code>arr[index]</code> (and <code>arr.get(index)</code> if supported).</p>
+<p><strong>Note:</strong> <code>.getfield("key")</code> is for <code>$file</code> and <code>$TABLE</code>. <code>.get()/.set()</code> is for <code>$WIDGET</code>. For <code>$LIST</code>/<code>$OBJ</code>, use <code>obj["key"]</code>, <code>obj.key</code>, or <code>obj."key"</code>. For <code>$ARRAY</code>, use <code>arr[index]</code> (bracket notation only).</p>
 </blockquote>
 <h2 id="access-patterns-objects-lists-arrays-files-and-tables">Access Patterns: Objects, Lists, Arrays, Files, and Tables</h2>
 <p>Below are all valid ways to access elements in Grapa data structures. See the canonical <a href="../../syntax/basic_syntax/">Basic Syntax Guide</a> for the latest tested rules.</p>
@@ -4910,7 +5075,7 @@ name = obj.getname(1);  /* Returns &quot;b&quot; (key name at index 1) */
 <div class="highlight"><pre><span></span><code>arr = [10, 20, 30];
 
 value = arr[1];         /* Returns 20 */
-value = arr.get(1);     /* Returns 20 */
+/* Note: .get(index) is not supported for arrays - use bracket notation */
 </code></pre></div>
 <ul>
 <li>Use bracket notation or <code>.get(index)</code> for $ARRAY.</li>
@@ -5056,6 +5221,7 @@ value = obj.&quot;key&quot;;
 <p><strong>Warning:</strong> <code>.map()</code> and <code>.filter()</code> are parallel by default. For large arrays, specify a thread count:
 <div class="highlight"><pre><span></span><code>big = (1000000).range(0,1).map(op(x) { x * x; }, 8);  // Limit to 8 threads
 </code></pre></div></p>
+<p><strong>Performance Note:</strong> <code>.map()</code> and <code>.filter()</code> must copy results from worker threads, which can be expensive for very large datasets. For large datasets with simple operations, consider using sequential <code>for</code> or <code>while</code> loops instead.</p>
 <p><strong>Tip:</strong> Grapa's parallel ETL/data processing is robust, production-ready, and a core design goal. Unlike JavaScript, you can use parallel methods like <code>.map()</code> and <code>.filter()</code> out of the box for high-throughput data tasks.</p>
 </blockquote>
 <h2 id="customizing-grapa-for-familiar-syntax">Customizing Grapa for Familiar Syntax</h2>
@@ -5363,11 +5529,11 @@ if (match(&quot;hello world&quot;, &quot;world&quot;)) {
 <p><strong>JavaScript:</strong>
 <div class="highlight"><pre><span></span><code><span class="kd">class</span><span class="w"> </span><span class="nx">MyClass</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="kr">constructor</span><span class="p">(</span><span class="nx">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">-</span><span class="mf">1</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="nx">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">value</span><span class="p">;</span>
+<span class="w">        </span><span class="nx">$this</span><span class="p">.</span><span class="nx">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">value</span><span class="p">;</span>
 <span class="w">    </span><span class="p">}</span>
 
 <span class="w">    </span><span class="nx">getValue</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">n</span><span class="p">;</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nx">$this</span><span class="p">.</span><span class="nx">n</span><span class="p">;</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 
@@ -5421,21 +5587,21 @@ y.init(4);          /* n = 4 */
 <p><strong>JavaScript:</strong>
 <div class="highlight"><pre><span></span><code><span class="kd">class</span><span class="w"> </span><span class="nx">Example</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="kr">constructor</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="nx">publicVar</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;public&quot;</span><span class="p">;</span>
-<span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="nx">_protectedVar</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;protected&quot;</span><span class="p">;</span>
-<span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="n">#privateVar</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;private&quot;</span><span class="p">;</span>
+<span class="w">        </span><span class="nx">$this</span><span class="p">.</span><span class="nx">publicVar</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;public&quot;</span><span class="p">;</span>
+<span class="nx">$this</span><span class="p">.</span><span class="nx">_protectedVar</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;protected&quot;</span><span class="p">;</span>
+<span class="nx">$this</span><span class="p">.</span><span class="n">#privateVar</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;private&quot;</span><span class="p">;</span>
 <span class="w">    </span><span class="p">}</span>
 
 <span class="w">    </span><span class="nx">publicMethod</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">publicVar</span><span class="p">;</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nx">$this</span><span class="p">.</span><span class="nx">publicVar</span><span class="p">;</span>
 <span class="w">    </span><span class="p">}</span>
 
 <span class="w">    </span><span class="nx">_protectedMethod</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">_protectedVar</span><span class="p">;</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nx">$this</span><span class="p">.</span><span class="nx">_protectedVar</span><span class="p">;</span>
 <span class="w">    </span><span class="p">}</span>
 
 <span class="w">    </span><span class="n">#privateMethod</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">#privateVar</span><span class="p">;</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nx">$this</span><span class="p">.</span><span class="n">#privateVar</span><span class="p">;</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div></p>

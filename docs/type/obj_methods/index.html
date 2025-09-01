@@ -1654,6 +1654,15 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#findterm-start-size" class="md-nav__link">
+    <span class="md-ellipsis">
+      .find(term, start, size)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#findallpattern" class="md-nav__link">
     <span class="md-ellipsis">
       .findall(pattern)
@@ -2574,7 +2583,7 @@
   
   
   <span class="md-ellipsis">
-    Loop Operators
+    Functional Array Methods
     
   </span>
   
@@ -2994,7 +3003,7 @@
   
   
   <span class="md-ellipsis">
-    Iterate
+    Iteration Methods
     
   </span>
   
@@ -3297,6 +3306,29 @@
   
   
     <li class="md-nav__item">
+      <a href="../../syntax/namespace_scoping/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Namespace Scoping
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../syntax/operator/" class="md-nav__link">
         
   
@@ -3349,6 +3381,29 @@
   
   <span class="md-ellipsis">
     Grammar Design
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../syntax/thread_safe_variables/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Thread-Safe Variables
     
   </span>
   
@@ -3753,6 +3808,29 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../grapa_core_differentiators/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Core Differentiators
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -3787,7 +3865,7 @@
   
   
   <span class="md-ellipsis">
-    Language Integrations
+    Cryptography
     
   </span>
   
@@ -3797,6 +3875,78 @@
         
         <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_12_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_5_12">
+            <span class="md-nav__icon md-icon"></span>
+            Cryptography
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../crypto/key_exchange_methods/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Key Exchange Methods
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_13" >
+        
+          
+          <label class="md-nav__link" for="__nav_5_13" id="__nav_5_13_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Language Integrations
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_13_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_13">
             <span class="md-nav__icon md-icon"></span>
             Language Integrations
           </label>
@@ -4622,6 +4772,29 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../use_cases/network_programming_patterns/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Network Programming Patterns
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -5392,6 +5565,15 @@
   <a href="#matchpattern-flags-start-end-count-offset" class="md-nav__link">
     <span class="md-ellipsis">
       .match(pattern, flags, start, end, count, offset)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#findterm-start-size" class="md-nav__link">
+    <span class="md-ellipsis">
+      .find(term, start, size)
     </span>
   </a>
   
@@ -6170,35 +6352,65 @@ obj.setconst(&quot;new value&quot;); /* Sets object to constant string */
 <hr />
 <h2 id="string-manipulation-methods">String Manipulation Methods</h2>
 <h3 id="leftcount"><code>.left(count)</code></h3>
-<p>Returns the leftmost characters of a string. <strong>Unicode-aware</strong>: Counts Unicode characters (grapheme clusters), not bytes.</p>
-<div class="highlight"><pre><span></span><code>&quot;Hello, World!&quot;.left(5);   /* Returns: &quot;Hello&quot; */
+<p>Returns the leftmost characters of a string or elements of an array/list. <strong>Unicode-aware</strong>: Counts Unicode characters (grapheme clusters), not bytes. Also works with <code>$ARRAY</code> and <code>$LIST</code> types.</p>
+<div class="highlight"><pre><span></span><code>/* String examples */
+&quot;Hello, World!&quot;.left(5);   /* Returns: &quot;Hello&quot; */
 &quot;héllo&quot;.left(3);          /* Returns: &quot;hél&quot; (3 Unicode characters) */
 &quot;🚀héllo&quot;.left(3);        /* Returns: &quot;🚀hé&quot; (3 Unicode characters) */
 &quot;👨‍👩‍👧‍👦&quot;.left(2);       /* Returns: &quot;👨‍👩‍&quot; (2 Unicode characters) */
+
+/* Array examples */
+[&#39;a&#39;,&#39;b&#39;,&#39;c&#39;,&#39;d&#39;,&#39;e&#39;].left(3); /* Returns: [&quot;a&quot;,&quot;b&quot;,&quot;c&quot;] */
+[&#39;a&#39;,&#39;b&#39;,&#39;c&#39;,&#39;d&#39;,&#39;e&#39;].left(-2); /* Returns: [&quot;a&quot;,&quot;b&quot;,&quot;c&quot;] */
+
+/* List examples */
+{a:1, b:2, c:3, d:4, e:5}.left(3); /* Returns: {a:1, b:2, c:3} */
+{a:1, b:2, c:3, d:4, e:5}.left(-2); /* Returns: {a:1, b:2, c:3} */
 </code></pre></div>
 <p><strong>Parameters:</strong>
-- <code>count</code> (default: 0) - Number of Unicode characters to return (negative counts from right)</p>
+- <code>count</code> (default: 0) - Number of Unicode characters to return (for strings) or elements to return (for arrays/lists) (negative counts from right)</p>
+<p><strong>Data Types:</strong> <code>$STR</code>, <code>$ARRAY</code>, <code>$LIST</code></p>
 <p><strong>Unicode Support:</strong> This function now properly handles Unicode characters, emoji, and complex grapheme clusters by counting characters rather than bytes.</p>
 <h3 id="rightcount"><code>.right(count)</code></h3>
-<p>Returns the rightmost characters of a string. <strong>Unicode-aware</strong>: Counts Unicode characters (grapheme clusters), not bytes.</p>
-<div class="highlight"><pre><span></span><code>&quot;Hello, World!&quot;.right(5);  /* Returns: &quot;orld!&quot; */
+<p>Returns the rightmost characters of a string or elements of an array/list. <strong>Unicode-aware</strong>: Counts Unicode characters (grapheme clusters), not bytes. Also works with <code>$ARRAY</code> and <code>$LIST</code> types.</p>
+<div class="highlight"><pre><span></span><code>/* String examples */
+&quot;Hello, World!&quot;.right(5);  /* Returns: &quot;orld!&quot; */
 &quot;héllo&quot;.right(3);         /* Returns: &quot;llo&quot; (3 Unicode characters) */
 &quot;🚀héllo&quot;.right(3);       /* Returns: &quot;llo&quot; (3 Unicode characters) */
 &quot;👨‍👩‍👧‍👦&quot;.right(2);      /* Returns: &quot;👧‍👦&quot; (2 Unicode characters) */
+
+/* Array examples */
+[&#39;a&#39;,&#39;b&#39;,&#39;c&#39;,&#39;d&#39;,&#39;e&#39;].right(3); /* Returns: [&quot;c&quot;,&quot;d&quot;,&quot;e&quot;] */
+[&#39;a&#39;,&#39;b&#39;,&#39;c&#39;,&#39;d&#39;,&#39;e&#39;].right(-2); /* Returns: [&quot;d&quot;,&quot;e&quot;] */
+
+/* List examples */
+{a:1, b:2, c:3, d:4, e:5}.right(3); /* Returns: {c:3, d:4, e:5} */
+{a:1, b:2, c:3, d:4, e:5}.right(-2); /* Returns: {d:4, e:5} */
 </code></pre></div>
 <p><strong>Parameters:</strong>
-- <code>count</code> (default: 0) - Number of Unicode characters to return (negative counts from left)</p>
+- <code>count</code> (default: 0) - Number of Unicode characters to return (for strings) or elements to return (for arrays/lists) (negative counts from left)</p>
+<p><strong>Data Types:</strong> <code>$STR</code>, <code>$ARRAY</code>, <code>$LIST</code></p>
 <p><strong>Unicode Support:</strong> This function now properly handles Unicode characters, emoji, and complex grapheme clusters by counting characters rather than bytes.</p>
 <h3 id="midstart-count"><code>.mid(start, count)</code></h3>
-<p>Returns a substring starting at the specified position. <strong>Unicode-aware</strong>: Counts Unicode characters (grapheme clusters), not bytes.</p>
-<div class="highlight"><pre><span></span><code>&quot;Hello, World!&quot;.mid(2, 5); /* Returns: &quot;llo, &quot; */
+<p>Returns a substring starting at the specified position. <strong>Unicode-aware</strong>: Counts Unicode characters (grapheme clusters), not bytes. Also works with <code>$ARRAY</code> and <code>$LIST</code> types.</p>
+<div class="highlight"><pre><span></span><code>/* String examples */
+&quot;Hello, World!&quot;.mid(2, 5); /* Returns: &quot;llo, &quot; */
 &quot;héllo&quot;.mid(1, 3);        /* Returns: &quot;éll&quot; (3 Unicode characters from position 1) */
 &quot;🚀héllo&quot;.mid(1, 3);      /* Returns: &quot;hél&quot; (3 Unicode characters from position 1) */
 &quot;👨‍👩‍👧‍👦&quot;.mid(1, 2);     /* Returns: &quot;👩‍👧‍&quot; (2 Unicode characters from position 1) */
+
+/* Array examples */
+[&#39;a&#39;,&#39;b&#39;,&#39;c&#39;,&#39;d&#39;,&#39;e&#39;].mid(2, 4); /* Returns: [&quot;c&quot;,&quot;d&quot;,&quot;e&quot;] */
+[&#39;a&#39;,&#39;b&#39;,&#39;c&#39;,&#39;d&#39;,&#39;e&#39;].mid(2, 2); /* Returns: [&quot;c&quot;,&quot;d&quot;] */
+[&#39;a&#39;,&#39;b&#39;,&#39;c&#39;,&#39;d&#39;,&#39;e&#39;].mid(-3, 1); /* Returns: [&quot;c&quot;] */
+
+/* List examples */
+{a:1, b:2, c:3, d:4, e:5}.mid(2, 3); /* Returns: {c:3, d:4, e:5} */
 </code></pre></div>
 <p><strong>Parameters:</strong>
-- <code>start</code> (default: 0) - Starting position (Unicode character position)
-- <code>count</code> (default: 0) - Number of Unicode characters to return</p>
+- <code>start</code> (default: 0) - Starting position (Unicode character position for strings, element position for arrays/lists)
+- <code>count</code> (default: 0) - Number of Unicode characters to return (for strings) or elements to return (for arrays/lists)</p>
+<p><strong>Data Types:</strong> <code>$STR</code>, <code>$ARRAY</code>, <code>$LIST</code></p>
 <p><strong>Unicode Support:</strong> This function now properly handles Unicode characters, emoji, and complex grapheme clusters by counting characters rather than bytes.</p>
 <h3 id="midtrimitems-offset-size"><code>.midtrim(items, offset, size)</code></h3>
 <p>Trims and extracts a portion of the object based on items, offset, and size.</p>
@@ -6405,6 +6617,7 @@ matrix.diagonal(-1);       /* Returns: [4,8] (lower diagonal) */
 - <code>func</code> - Function to apply to each element
 - <code>data</code> (default: null) - Additional data for the function
 - <code>threads</code> (default: null) - Number of threads for parallel execution</p>
+<p><strong>Performance Note:</strong> <code>.map()</code> and <code>.filter()</code> must copy results from worker threads, which can be expensive for large datasets. For large datasets where multiprocessing isn't needed, consider using sequential <code>for</code> or <code>while</code> loops instead.</p>
 <h3 id="filterfunc-data-threads"><code>.filter(func, data, threads)</code></h3>
 <p>Filters elements based on a predicate function (parallel by default).</p>
 <div class="highlight"><pre><span></span><code>[1,2,3,4,5].filter(op(x) { x &gt; 2; });      /* Returns: [3,4,5] */
@@ -6414,6 +6627,7 @@ matrix.diagonal(-1);       /* Returns: [4,8] (lower diagonal) */
 - <code>func</code> - Predicate function
 - <code>data</code> (default: null) - Additional data for the function
 - <code>threads</code> (default: null) - Number of threads for parallel execution</p>
+<p><strong>Performance Note:</strong> <code>.filter()</code> must copy results from worker threads, which can be expensive for large datasets. For large datasets where multiprocessing isn't needed, consider using sequential <code>for</code> or <code>while</code> loops instead.</p>
 <h3 id="reducefunc-init-data"><code>.reduce(func, init, data)</code></h3>
 <p>Reduces an array to a single value using a function.</p>
 <div class="highlight"><pre><span></span><code>[1,2,3,4,5].reduce(op(acc, x) { acc + x; }, 0); /* Returns: 15 */
@@ -6423,6 +6637,7 @@ matrix.diagonal(-1);       /* Returns: [4,8] (lower diagonal) */
 - <code>func</code> - Reduction function
 - <code>init</code> (default: null) - Initial value
 - <code>data</code> (default: null) - Additional data for the function</p>
+<p><strong>Performance Note:</strong> <code>.reduce()</code> can use PTR references internally and doesn't require copying results from worker threads, making it more efficient than <code>.map()</code> and <code>.filter()</code> for large datasets.</p>
 <h3 id="rangestop-step"><code>.range(stop, step)</code></h3>
 <p>Generates a range of numbers.</p>
 <div class="highlight"><pre><span></span><code>(10).range();        /* Returns: [0,1,2,3,4,5,6,7,8,9] */
@@ -6459,6 +6674,38 @@ matrix.diagonal(-1);       /* Returns: [4,8] (lower diagonal) */
 - <code>end</code> (default: null) - End position
 - <code>count</code> (default: null) - Maximum number of matches
 - <code>offset</code> (default: null) - Offset for results</p>
+<h3 id="findterm-start-size"><code>.find(term, start, size)</code></h3>
+<p>Searches for a substring or binary pattern within a string or RAW data, returning the 0-based index of the first occurrence or -1 if not found.</p>
+<div class="highlight"><pre><span></span><code>/* String search */
+&quot;hello world&quot;.find(&quot;world&quot;);                      /* Returns: 6 */
+&quot;hello world&quot;.find(&quot;xyz&quot;);                        /* Returns: -1 */
+&quot;hello world&quot;.find(&quot;o&quot;, 5);                       /* Returns: 7 (search from position 5) */
+&quot;hello world&quot;.find(&quot;o&quot;, 1, 5);                    /* Returns: 4 (search from position 1, limit 5 chars) */
+
+/* RAW data search */
+0x10FE0021FA.uraw().find(0xFE0021.uraw());       /* Returns: 1 */
+0x10FE0021FA.uraw().find(0x21.uraw());           /* Returns: 3 */
+
+/* Search with null bytes */
+$RAW(&quot;hello\0world&quot;).find(&quot;world&quot;.raw());        /* Returns: 6 */
+$RAW(&quot;hello\0world&quot;).find(&quot;\0&quot;.raw());           /* Returns: 5 */
+</code></pre></div>
+<p><strong>Parameters:</strong>
+- <code>term</code> (required) - The substring or binary pattern to search for
+- <code>start</code> (optional) - Starting position for the search (default: 0)
+- <code>size</code> (optional) - Maximum number of characters/bytes to search (default: to end)</p>
+<p><strong>Supported Data Types:</strong>
+- <strong>$STR</strong>: Searches for Unicode substrings
+- <strong>$RAW</strong>: Performs binary search (handles null bytes and binary data)
+- <strong>$ARRAY</strong>: Searches for subarrays using comprehensive comparison
+- <strong>$LIST</strong>: Searches for sublists using comprehensive comparison</p>
+<p><strong>Return Value:</strong>
+- Returns the 0-based index of the first occurrence
+- Returns -1 if the term is not found
+- Returns -1 if start position is beyond the string/data length</p>
+<p><strong>Note:</strong> For RAW data, use <code>.uraw()</code> to create search terms from hex values to avoid padding issues.</p>
+<p><strong>Array and List Search:</strong> The <code>.find()</code> method supports searching for subarrays and sublists using the same comprehensive comparison logic as <code>switch</code> statements, ensuring consistent behavior across the language.</p>
+<p><strong>Array-in-List Search:</strong> When searching a <code>$LIST</code> with an <code>$ARRAY</code> term, the method searches for the array values within the list values and returns the position where the match is found. Use <code>.mid()</code> to extract the subset. For example: <code>{a:1,b:2,c:3}.find([2,3])</code> returns <code>1</code>, and <code>{a:1,b:2,c:3}.mid(1, 2)</code> returns <code>{b:2,c:3}</code>.</p>
 <h3 id="findallpattern"><code>.findall(pattern)</code></h3>
 <p>Finds all occurrences of a pattern in complex data structures. Works with <code>$XML</code>, <code>$LIST</code>, and <code>$ARRAY</code> data types using specific query patterns.</p>
 <div class="highlight"><pre><span></span><code>/* ✅ CORRECT: Use with $XML, $LIST, and $ARRAY */

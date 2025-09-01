@@ -121,7 +121,7 @@ nav:
           - Bitwise Operators: operators/bit.md
           - Comparison Operators: operators/compare.md
           - Condition Operators: operators/condition.md
-          - Loop Operators: operators/loop.md
+          - Functional Array Methods: operators/loop.md
           - Command Operators: operators/command.md
           - Constants: operators/constants.md
       - System Functions:
@@ -137,7 +137,7 @@ nav:
           - Encode: obj/encode.md
           - Grep: obj/grep.md
           - Grep Python: obj/grep_python.md
-          - Iterate: obj/iterate.md
+          - Iteration Methods: obj/iterate.md
           - Transform: obj/transform.md
       - Pattern Matching:
           - Grep Documentation: grep.md
@@ -151,6 +151,7 @@ nav:
           - Operators: syntax/operator.md
           - Precedence: syntax/precedence.md
           - Grammar Design: syntax/grammar_design.md
+          - Thread-Safe Variables: syntax/thread_safe_variables.md
       - Debugging: debugging.md
       - Execution Pipeline: execution_pipeline_overview.md
       - Advanced Topics:
@@ -167,6 +168,9 @@ nav:
           - Module System: module_system.md
           - Machine Learning: machine_learning.md
           - Vector Performance Guide: vector_performance_guide.md
+          - Core Differentiators: grapa_core_differentiators.md
+      - Cryptography:
+          - Key Exchange Methods: crypto/key_exchange_methods.md
       - Language Integrations:
           - SQL Integration: sql_integration.md
           - PROLOG Integration: prolog_integration.md
@@ -200,6 +204,7 @@ nav:
       - Cryptography: use_cases/cryptography.md
       - Multi-Syntax Data Processing: use_cases/multi_syntax_data_processing.md
       - Language Design and DSLs: use_cases/language_design_and_dsls.md
+      - Network Programming Patterns: use_cases/network_programming_patterns.md
   - Support:
       - Troubleshooting: troubleshooting.md
       - Testing: testing.md

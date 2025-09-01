@@ -1215,6 +1215,15 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#string-search-with-find" class="md-nav__link">
+    <span class="md-ellipsis">
+      String Search with .find()
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#pattern-matching" class="md-nav__link">
     <span class="md-ellipsis">
       Pattern Matching
@@ -1818,7 +1827,7 @@
   
   
   <span class="md-ellipsis">
-    Loop Operators
+    Functional Array Methods
     
   </span>
   
@@ -2238,7 +2247,7 @@
   
   
   <span class="md-ellipsis">
-    Iterate
+    Iteration Methods
     
   </span>
   
@@ -2541,6 +2550,29 @@
   
   
     <li class="md-nav__item">
+      <a href="../../syntax/namespace_scoping/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Namespace Scoping
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../syntax/operator/" class="md-nav__link">
         
   
@@ -2593,6 +2625,29 @@
   
   <span class="md-ellipsis">
     Grammar Design
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../syntax/thread_safe_variables/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Thread-Safe Variables
     
   </span>
   
@@ -2997,6 +3052,29 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../grapa_core_differentiators/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Core Differentiators
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -3031,7 +3109,7 @@
   
   
   <span class="md-ellipsis">
-    Language Integrations
+    Cryptography
     
   </span>
   
@@ -3041,6 +3119,78 @@
         
         <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_12_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_5_12">
+            <span class="md-nav__icon md-icon"></span>
+            Cryptography
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../crypto/key_exchange_methods/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Key Exchange Methods
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_13" >
+        
+          
+          <label class="md-nav__link" for="__nav_5_13" id="__nav_5_13_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Language Integrations
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_13_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_13">
             <span class="md-nav__icon md-icon"></span>
             Language Integrations
           </label>
@@ -3866,6 +4016,29 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../use_cases/network_programming_patterns/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Network Programming Patterns
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -4111,6 +4284,15 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#string-search-with-find" class="md-nav__link">
+    <span class="md-ellipsis">
+      String Search with .find()
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#pattern-matching" class="md-nav__link">
     <span class="md-ellipsis">
       Pattern Matching
@@ -4341,6 +4523,7 @@ mixed.len();  /* Returns: 8 (Unicode character count) */
 &quot;héllo&quot;.left(3);    /* Returns: &quot;hél&quot; (3 Unicode characters) */
 &quot;🚀héllo&quot;.right(3); /* Returns: &quot;llo&quot; (3 Unicode characters) */
 &quot;héllo&quot;.mid(1, 3);  /* Returns: &quot;éll&quot; (3 Unicode characters from position 1) */
+/* Note: .left(), .right(), and .mid() also work with $ARRAY and $LIST types */
 
 /* Unicode-aware reversal */
 &quot;héllo&quot;.reverse();  /* Returns: &quot;olléh&quot; (Unicode characters reversed) */
@@ -4361,7 +4544,7 @@ unicode_text.bytes();  /* Returns: 11 (byte count) */
 unicode_text.raw();    /* Returns: 0x68C3A96C6C6F20F09F9A80 (hex bytes) */
 </code></pre></div>
 <blockquote>
-<p><strong>See Also:</strong> <a href="../obj_methods/">Object Methods Documentation</a> for comprehensive details on Unicode-aware string functions including <code>.len()</code>, <code>.bytes()</code>, <code>.raw()</code>, <code>.left()</code>, <code>.right()</code>, <code>.mid()</code>, <code>.reverse()</code>, <code>.lpad()</code>, and <code>.rpad()</code>.</p>
+<p><strong>See Also:</strong> <a href="../obj_methods/">Object Methods Documentation</a> for comprehensive details on Unicode-aware string functions including <code>.len()</code>, <code>.bytes()</code>, <code>.raw()</code>, <code>.left()</code>, <code>.right()</code>, <code>.mid()</code>, <code>.reverse()</code>, <code>.lpad()</code>, and <code>.rpad()</code>. Note that <code>.left()</code>, <code>.right()</code>, and <code>.mid()</code> also support <code>$ARRAY</code> and <code>$LIST</code> types.</p>
 <p><strong>Note:</strong> While string content supports full Unicode, <strong>identifiers</strong> (variable names, function names) are limited to ASCII characters only. This is a lexical limitation in the parser. See <a href="../id/">$ID Documentation</a> for details.</p>
 </blockquote>
 <h2 id="common-string-operations">Common String Operations</h2>
@@ -4390,8 +4573,56 @@ unicode_text.raw();    /* Returns: 0x68C3A96C6C6F20F09F9A80 (hex bytes) */
 <td>"this is a test".raw().int();</td>
 <td>2361031878030638688519054699098996</td>
 </tr>
+<tr>
+<td>"this is a test".find("test");</td>
+<td>10</td>
+</tr>
+<tr>
+<td>"this is a test".find("xyz");</td>
+<td>-1</td>
+</tr>
 </tbody>
 </table>
+<h3 id="string-search-with-find">String Search with <code>.find()</code></h3>
+<p>The <code>.find()</code> method searches for a substring or binary pattern within a string or RAW data, returning the 0-based index of the first occurrence or -1 if not found.</p>
+<div class="highlight"><pre><span></span><code>/* Basic string search */
+&quot;hello world&quot;.find(&quot;world&quot;);      /* Returns: 6 */
+&quot;hello world&quot;.find(&quot;xyz&quot;);        /* Returns: -1 (not found) */
+&quot;hello world&quot;.find(&quot;o&quot;);          /* Returns: 4 (first occurrence) */
+
+/* RAW data search */
+0x10FE0021FA.uraw().find(0xFE0021.uraw());  /* Returns: 1 */
+0x10FE0021FA.uraw().find(0x21.uraw());      /* Returns: 3 */
+
+/* Search with null bytes */
+$RAW(&quot;hello\0world&quot;).find(&quot;world&quot;.raw());   /* Returns: 6 */
+$RAW(&quot;hello\0world&quot;).find(&quot;\0&quot;.raw());      /* Returns: 5 */
+
+/* Optional start position */
+&quot;hello world&quot;.find(&quot;o&quot;, 5);       /* Returns: 7 (search from position 5) */
+&quot;hello world&quot;.find(&quot;o&quot;, 8);       /* Returns: -1 (not found after position 8) */
+
+/* Optional start position and size limit */
+&quot;hello world&quot;.find(&quot;o&quot;, 1, 5);    /* Returns: 4 (search from position 1, limit 5 chars) */
+</code></pre></div>
+<p><strong>Parameters:</strong>
+- <code>term</code> (required): The substring or binary pattern to search for
+- <code>start</code> (optional): Starting position for the search (default: 0)
+- <code>size</code> (optional): Maximum number of characters/bytes to search (default: to end)</p>
+<p><strong>Supported Data Types:</strong>
+- <strong>$STR</strong>: Searches for Unicode substrings
+- <strong>$RAW</strong>: Performs binary search (handles null bytes and binary data)
+- <strong>$ARRAY</strong>: Searches for subarrays using comprehensive comparison
+- <strong>$LIST</strong>: Searches for sublists using comprehensive comparison</p>
+<p><strong>Return Value:</strong>
+- Returns the 0-based index of the first occurrence
+- Returns -1 if the term is not found
+- Returns -1 if start position is beyond the string/data length</p>
+<blockquote>
+<p><strong>Note:</strong> For RAW data, use <code>.uraw()</code> to create search terms from hex values to avoid padding issues.</p>
+<p><strong>Array and List Search:</strong> The <code>.find()</code> method supports searching for subarrays and sublists using the same comprehensive comparison logic as <code>switch</code> statements, ensuring consistent behavior across the language.</p>
+<p><strong>Array-in-List Search:</strong> When searching a <code>$LIST</code> with an <code>$ARRAY</code> term, the method searches for the array values within the list values and returns the position where the match is found. Use <code>.mid()</code> to extract the subset. For example: <code>{a:1,b:2,c:3}.find([2,3])</code> returns <code>1</code>, and <code>{a:1,b:2,c:3}.mid(1, 2)</code> returns <code>{b:2,c:3}</code>.</p>
+</blockquote>
 <h3 id="pattern-matching">Pattern Matching</h3>
 <div class="highlight"><pre><span></span><code>/* Basic pattern matching */
 &quot;hello world&quot;.match(&quot;hello&quot;);     /* true - pattern found */
