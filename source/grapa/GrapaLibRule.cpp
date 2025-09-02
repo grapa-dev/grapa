@@ -21761,9 +21761,7 @@ GrapaRuleEvent* GrapaLibraryRuleLockEvent::Run(GrapaScriptExec *vScriptExec, Gra
 	if (objEvent)
 	{
 		err = 0;
-	printf("[DEBUG] LOCK WAIT START\n");
 		objEvent->vWorker->WaitCritical();
-	printf("[DEBUG] LOCK WAIT END\n");
 	}
 	if (err && result == NULL)
 		result = Error(vScriptExec, pNameSpace, err);
@@ -21789,9 +21787,7 @@ GrapaRuleEvent* GrapaLibraryRuleUnLockEvent::Run(GrapaScriptExec *vScriptExec, G
 	if (objEvent)
 	{
 		err = 0;
-	printf("[DEBUG] UNLOCK LEAVE START\n");
 		objEvent->vWorker->LeaveCritical();
-	printf("[DEBUG] UNLOCK LEAVE END\n");
 	}
 	if (err && result == NULL)
 		result = Error(vScriptExec, pNameSpace, err);
@@ -21982,9 +21978,7 @@ GrapaRuleEvent* GrapaLibraryRuleSuspendEvent::Run(GrapaScriptExec *vScriptExec, 
 
 	if (objEvent)
 	{
-		printf("[DEBUG] SUSPEND START\n");
 		err = objEvent->vWorker->Suspend();
-		printf("[DEBUG] SUSPEND END\n");
 	}
 	if (err && result == NULL)
 		result = Error(vScriptExec, pNameSpace, err);
@@ -22008,9 +22002,7 @@ GrapaRuleEvent* GrapaLibraryRuleResumeEvent::Run(GrapaScriptExec *vScriptExec, G
 
 	if (objEvent)
 	{
-		printf("[DEBUG] RESUME START\n");
 		err = objEvent->vWorker->Resume();
-		printf("[DEBUG] RESUME END\n");
 	}
 	if (err && result == NULL)
 		result = Error(vScriptExec, pNameSpace, err);
