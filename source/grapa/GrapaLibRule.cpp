@@ -4232,6 +4232,18 @@ GrapaRuleEvent* GrapaLibraryRulePostEvent::Run(GrapaScriptExec* vScriptExec, Gra
 	return(result);
 }
 
+#include <chrono>
+#include <thread>
+
+void HighResTimerSleep(u32 milliseconds) {
+    auto start = std::chrono::high_resolution_clock::now();
+    auto target = start + std::chrono::milliseconds(milliseconds);
+    
+    while (std::chrono::high_resolution_clock::now() < target) {
+        std::this_thread::yield();  // Yield instead of busy wait
+    }
+}
+
 GrapaRuleEvent* GrapaLibraryRuleSleepEvent::Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput)
 {
 	GrapaRuleEvent* result = NULL;
@@ -4241,19 +4253,44 @@ GrapaRuleEvent* GrapaLibraryRuleSleepEvent::Run(GrapaScriptExec* vScriptExec, Gr
 		GrapaInt rInt;
 		rInt.FromBytes(r1.vVal->mValue);
 		u32 tm = rInt.GetItem(0);
-		if (tm)
-		{
 #ifdef _WIN32
-			Sleep(tm);
+		if (tm<16) tm = 16;
 #else
-			usleep(tm * 1000);
+		if (tm<10) tm = 10;
 #endif
 /*
 #ifdef _THREAD_
-			std::this_thread::sleep_for(std::chrono::milliseconds(tm));
+		std::this_thread::sleep_for(std::chrono::milliseconds(tm));
+#else
+#ifdef _WIN32
+		Sleep(tm);
+#else
+		usleep(tm * 1000);
+#endif
 #endif
 */
-		}
+printf("[DEBUG] SLEEP START\n");
+	HighResTimerSleep(tm);
+/*
+#ifdef _WIN32
+    // Windows: Use Sleep which is thread-local
+    Sleep(tm);
+#elif defined(__APPLE__)
+    // macOS: Use nanosleep which is thread-local
+    struct timespec ts;
+    ts.tv_sec = tm / 1000;
+    ts.tv_nsec = (tm % 1000) * 1000000;
+    nanosleep(&ts, NULL);
+#else
+    // Linux: Use nanosleep which is thread-local
+    struct timespec ts;
+    ts.tv_sec = tm / 1000;
+    ts.tv_nsec = (tm % 1000) * 1000000;
+    nanosleep(&ts, NULL);
+#endif
+*/
+printf("[DEBUG] SLEEP END\n");
+
 	}
 	return(result);
 }

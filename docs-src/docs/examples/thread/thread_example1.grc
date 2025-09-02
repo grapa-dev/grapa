@@ -11,7 +11,7 @@ basic_thread = $thread();
 basic_thread.start(
     op() {
         "Basic thread: Starting work\n".echo();
-        $sys().sleep(10);
+        3000.sleep();
         "Basic thread: Work completed\n".echo();
         return ("Basic thread result");
     },
@@ -20,9 +20,12 @@ basic_thread.start(
         ("Basic thread callback: " + result + "\n").echo();
     }
 );
-sys().sleep(10);
+"Main: wait for thread\n".echo();
 while(basic_thread.started())
-    $sys().sleep(10);
-"Basic thread done\n".echo();
+{
+    "Main: sleep\n".echo();
+    0.sleep();
+}
+"Main: Basic thread done\n".echo();
 basic_thread = null;
 

@@ -34,13 +34,13 @@ for (i = 0; i < 3; i+=1) {
 };
 for (i = 0; i < 3; i+=1) {
     while(!counter_worker[i].suspended())
-        $sys().sleep(10);
+        0.sleep();
 };
 for (i = 0; i < 3; i+=1)
     counter_worker[i].resume();
 for (i = 0; i < 3; i+=1) {
     while(counter_worker[i].started())
-        $sys().sleep(10);
+        0.sleep();
 };
 counter_worker = null;
 counter_lock = null;
