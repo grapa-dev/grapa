@@ -19,7 +19,9 @@ limitations under the License.
 #include "GrapaNetConnect.h"
 #include "GrapaMem.h"
 
+#ifdef _THREAD_
 #include <thread>
+#endif
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////

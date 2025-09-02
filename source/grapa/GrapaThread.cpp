@@ -209,16 +209,27 @@ void GrapaCritical::WaitCondition(bool noAdd)
 		return;
 	}
 #if defined(__MINGW32__) || defined(__GNUC__)
+	// Use predicate-based approach to prevent race conditions
 	pthread_mutex_lock(&((GrapaCriticalPrivate*)vInstanceC)->mWaitCritical);
-	//pthread_spin_lock(&mWaitCritical);
 	if (!noAdd) mWaitCount++;
 	mWaiting = true;
+	
+	// Store current state for predicate check
+	u32 currentWaitCount = mWaitCount;
+	bool currentWaiting = mWaiting;
+	
+	// Unlock main critical section BEFORE waiting
 	LeaveCritical();
-	pthread_cond_wait(&((GrapaCriticalPrivate*)vInstanceC)->mCond, &((GrapaCriticalPrivate*)vInstanceC)->mWaitCritical);
+	
+	// Wait with predicate to prevent missed signals
+	while (currentWaiting && mWaiting == currentWaiting && mWaitCount >= currentWaitCount) {
+		pthread_cond_wait(&((GrapaCriticalPrivate*)vInstanceC)->mCond, 
+		                  &((GrapaCriticalPrivate*)vInstanceC)->mWaitCritical);
+	}
+	
 	mWaiting = false;
 	mWaitCount = 0;
 	pthread_mutex_unlock(&((GrapaCriticalPrivate*)vInstanceC)->mWaitCritical);
-	//pthread_spin_unlock(&mWaitCritical);
 #else
 #ifdef _WIN32
 	((GrapaCriticalPrivate*)vInstanceC)->mCond = 0;
@@ -266,17 +277,17 @@ void GrapaCritical::SendCondition(bool force)
 	}
 #if defined(__MINGW32__) || defined(__GNUC__)
 	pthread_mutex_lock(&((GrapaCriticalPrivate*)vInstanceC)->mWaitCritical);
-	//pthread_spin_lock(&mWaitCritical);
-	if (mWaitCount == 1 && mWaiting) 	// start with a higher mWaitCount if SendCondition needs to be called multipe times
+	if (mWaitCount > 0) 	// Signal any waiting threads
 	{
-		mWaiting = false;
-		mWaitCount = 0;
 		pthread_cond_signal(&((GrapaCriticalPrivate*)vInstanceC)->mCond);
+		if (mWaitCount == 1 && mWaiting) {
+			mWaiting = false;
+			mWaitCount = 0;
+		} else if (mWaitCount > 0) {
+			mWaitCount--;
+		}
 	}
-	else if (mWaitCount)
-		mWaitCount--;
 	pthread_mutex_unlock(&((GrapaCriticalPrivate*)vInstanceC)->mWaitCritical);
-	//pthread_spin_unlock(&mWaitCritical);
 #else
 #ifdef _WIN32
 	//printf("%d:%s:%d:%d\n", this, "send condition start", mWaiting, mWaitCount);

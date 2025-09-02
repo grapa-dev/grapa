@@ -24,8 +24,8 @@ typedef s32                 GrapaError;
 #define NULL 0LL
 #endif
 
-// Enable threading support for all platforms
-#if defined(__MINGW32__) || defined(__GNUC__) || defined(_WIN32)
+// Enable threading support for Unix-like systems (not Windows)
+#if defined(__GNUC__) && !defined(_WIN32)
 #define _THREAD_
 #endif
 

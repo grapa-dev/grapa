@@ -30,7 +30,9 @@ limitations under the License.
 #include "GrapaTime.h"
 #include "../grep/grapa_grep_unicode.hpp"
 
+#ifdef _THREAD_
 #include <thread>
+#endif
 #include <cctype>
 #include <vector>
 #include <map>
