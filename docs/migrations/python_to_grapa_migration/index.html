@@ -5448,8 +5448,9 @@ evens = (10).range(0,1).filter(op(x) { x % 2 == 0; });
 <li>Grapa supports variable scoping with <code>$global</code>, <code>$local</code>, and <code>$root</code>.</li>
 <li>Use <code>$sys().getenv()</code> for environment variables.</li>
 <li>Use <code>$thread()</code> for threading and <code>$sys().sleep()</code> for sleep.</li>
-<li>Use <code>op(){}</code> for lambdas and function definitions.</li>
 </ul>
+<p><strong>⚠️ Important</strong>: When using <code>$sys().sleep()</code> in multi-threaded code, be aware that Grapa's sleep has a global queue limitation. Sleep calls are process-wide, not thread-local, and the first sleep call blocks all subsequent ones until it completes. Use <code>suspend()</code>, <code>resume()</code>, and condition variables for thread coordination instead.
+- Use <code>op(){}</code> for lambdas and function definitions.</p>
 <h2 id="see-also">See Also</h2>
 <ul>
 <li><a href="../../python_use_cases/#migration-tips-for-python-users">Migration Tips for Python Users</a></li>
@@ -5917,8 +5918,9 @@ uppercase = strings.map(op(s) { s.upper(); });
 <li>Grapa supports variable scoping with <code>$global</code>, <code>$local</code>, and <code>$root</code>.</li>
 <li>Use <code>$sys().getenv()</code> for environment variables.</li>
 <li>Use <code>$thread()</code> for threading and <code>$sys().sleep()</code> for sleep.</li>
-<li>Use <code>op(){}</code> for lambdas and function definitions.</li>
 </ul>
+<p><strong>⚠️ Important</strong>: When using <code>$sys().sleep()</code> in multi-threaded code, be aware that Grapa's sleep has a global queue limitation. Sleep calls are process-wide, not thread-local, and the first sleep call blocks all subsequent ones until it completes. Use <code>suspend()</code>, <code>resume()</code>, and condition variables for thread coordination instead.
+- Use <code>op(){}</code> for lambdas and function definitions.</p>
 <h3 id="reflection-and-introspection">Reflection and Introspection</h3>
 <p><strong>Python:</strong> <code>type()</code>, <code>dir()</code>, <code>getattr()</code>, <code>hasattr()</code>, <code>inspect</code> module
 <strong>Grapa:</strong> Enhanced <code>.describe()</code> method with configurable options</p>

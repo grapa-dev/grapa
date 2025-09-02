@@ -1,0 +1,129 @@
+/* Grapa Thread System Example
+   Demonstrates the complete $thread system capabilities including:
+   - Example 4: Producer-consumer patterns
+
+"=== Grapa Thread System Example ===\n".echo();
+
+/* Producer-Consumer Pattern */
+"Example 4: Producer-Consumer Pattern\n".echo();
+
+/* Consumer threads */
+consumer = [];
+shared_queue = [];
+queue_lock = $thread();
+consumer_count = 3;
+consumer_message_count = 4;
+
+for(consumer_id=0;consumer_id<consumer_count;consumer_id+=1)
+{
+    consumer += $thread();
+    consumer[-1].start(
+        op(id) {
+            ("Consumer " + id + ": Starting consumption\n").echo();
+            $local.items_consumed = 0;
+            while (items_consumed < consumer_message_count)
+            {
+                ("Consumer " + id + ": locking\n").echo();
+                queue_lock.lock();
+                ("Consumer " + id + ": locked\n").echo();
+                while (shared_queue.len() == 0)
+                {
+                    ("Consumer " + id + ": unlocking\n").echo();
+                    queue_lock.unlock();
+                    ("Consumer " + id + ": suspend\n").echo();
+                    consumer[id].suspend();
+                    ("Consumer " + id + ": resuming\n").echo();
+                    ("Consumer " + id + ": locking\n").echo();
+                    queue_lock.lock();
+                    ("Consumer " + id + ": locked\n").echo();
+                };
+                 ("Consumer " + id + ": queue len: " + shared_queue.len() + "\n").echo();
+                $local.item = "";
+                if (shared_queue.len())
+                {
+                    item = shared_queue[0];
+                    shared_queue -= shared_queue[0];
+                    ("Consumer " + id + ": extracted: " + item + "\n").echo();
+                    if (item=="") break;
+                };
+                ("Consumer " + id + ": unlocking\n").echo();
+                queue_lock.unlock();
+                $local.tm = 100 * 4.random();
+                ("Consumer " + id + ": slepping: " + tm + "ms\n").echo();
+                tm.sleep();
+                ("Consumer " + id + ": consumed: " + item + "\n").echo();
+                items_consumed += 1;
+            };
+            ("Consumer " + id + ": Consumption complete: " + items_consumed + "\n").echo();
+            return ("Consumer " + id + " completed: "  + items_consumed );
+        },
+        consumer_id,
+        op(input, result)
+        {
+            ("Consumer callback: " + result + "\n").echo();
+        }
+    );
+};
+for(consumer_id=0;consumer_id<consumer_count;consumer_id+=1)
+    while(consumer[consumer_id].suspended()==false) ;
+for(consumer_id=0;consumer_id<consumer_count;consumer_id+=1)
+    ("Consumer " + i + ": suspended " + consumer[consumer_id].suspended().str() + "\n").echo();
+("Consumer threads started\n").echo();
+
+/* Producer thread */
+producer = $thread();
+producer_message_count = consumer_count * consumer_message_count;
+
+producer.start(
+    op() {
+        "Producer: suspending\n".echo();
+        producer.suspend();
+        "Producer: resuming\n".echo();
+        $local.i = 0;
+        while(i<producer_message_count)
+        {
+            ("Producer: locking\n").echo();
+            queue_lock.lock();
+            ("Producer: locked\n").echo();
+            ("Producer: adding\n").echo();
+            shared_queue += "Item " + i;
+            ("Producer: unlocking\n").echo();
+            queue_lock.unlock();
+            ("Producer: Added Item " + i + "\n").echo();
+            for(consumer_id=0;consumer_id<consumer_count;consumer_id+=1)
+            {
+                if (consumer[consumer_id].suspended())
+                {
+                    ("Producer: Resuming consumer  " + j + "\n").echo();
+                    consumer[consumer_id].resume();
+                    ("Producer: Resumed consumer  " + j + "\n").echo();
+                };
+            };
+            i += 1;
+        };
+        "Producer: Production complete\n".echo();
+        return ("Producer completed");
+    },
+    null,
+    op(input, result) {
+        ("Producer callback: " + result + "\n").echo();
+    }
+);
+
+while(producer.suspended()==false) ;
+("Main: Producer suspended\n").echo();
+producer.resume();
+("Main: Producer resumed\n").echo();
+
+while(producer.started()==true);
+("Main: Producer completed\n").echo();
+
+for(consumer_id=0;consumer_id<consumer_count;consumer_id+=1)
+    while(consumer[consumer_id].started()) ;
+("Consumer completed\n").echo();
+
+consumer = null;
+queue_lock = null;
+data_ready = null;
+("Consumer/Producer processed: " + (producer_message_count-shared_queue.len()) + "\n").echo();
+("Consumer/Producer remaining: " + shared_queue.len() + "\n").echo();

@@ -5502,6 +5502,9 @@ if (value.type() == $INT) {
 <li>Grapa supports variable scoping with <code>$global</code>, <code>$local</code>, and <code>$root</code>.</li>
 <li>Use <code>$sys().getenv()</code> for environment variables.</li>
 <li>Use <code>$thread()</code> for threading and <code>$sys().sleep()</code> for sleep.</li>
+</ul>
+<p><strong>⚠️ Important</strong>: When using <code>$sys().sleep()</code> in multi-threaded code, be aware that Grapa's sleep has a global queue limitation. Sleep calls are process-wide, not thread-local, and the first sleep call blocks all subsequent ones until it completes. Use <code>suspend()</code>, <code>resume()</code>, and condition variables for thread coordination instead.</p>
+<ul>
 <li>Use <code>op(){}</code> for lambdas and function definitions.</li>
 </ul>
 <h2 id="see-also">See Also</h2>

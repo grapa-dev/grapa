@@ -2413,6 +2413,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#important-sleep-limitation-in-multi-threaded-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      ⚠️ Important: Sleep Limitation in Multi-Threaded Code
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#variable-declaration-patterns" class="md-nav__link">
     <span class="md-ellipsis">
       Variable Declaration Patterns
@@ -4166,6 +4175,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#important-sleep-limitation-in-multi-threaded-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      ⚠️ Important: Sleep Limitation in Multi-Threaded Code
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#variable-declaration-patterns" class="md-nav__link">
     <span class="md-ellipsis">
       Variable Declaration Patterns
@@ -4422,6 +4440,15 @@
 <h1 id="thread-safe-variable-declarations">Thread-Safe Variable Declarations</h1>
 <h2 id="overview">Overview</h2>
 <p>When writing concurrent code in Grapa, it's essential to understand how to properly declare and use variables that will be accessed by multiple threads. This document covers the thread-safe variable declaration patterns and best practices.</p>
+<h2 id="important-sleep-limitation-in-multi-threaded-code">⚠️ <strong>Important: Sleep Limitation in Multi-Threaded Code</strong></h2>
+<p><strong>Critical</strong>: When writing thread-safe code, be aware that Grapa's <code>.sleep()</code> function has a <strong>global sleep queue limitation</strong>:</p>
+<ul>
+<li><strong>Sleep calls are process-wide</strong>, not thread-local</li>
+<li><strong>First sleep call blocks all subsequent sleep calls</strong> until it completes</li>
+<li><strong>Sleep order determines completion order</strong>, not thread hierarchy or timing</li>
+<li><strong>This can cause unexpected coordination issues</strong> in multi-threaded applications</li>
+</ul>
+<p><strong>Recommendation</strong>: Use <code>suspend()</code>, <code>resume()</code>, and condition variables for thread coordination instead of sleep. See <a href="../../sys/thread/">Thread System</a> for detailed information and workarounds.</p>
 <h2 id="variable-declaration-patterns">Variable Declaration Patterns</h2>
 <h3 id="1-global-variables-thread-safe-by-default">1. <strong>Global Variables (Thread-Safe by Default)</strong></h3>
 <p>All variables declared at the global scope are automatically thread-safe in Grapa:</p>
