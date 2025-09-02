@@ -4,6 +4,14 @@ Grapa is available through native package managers on all supported platforms, m
 
 **Note**: Documentation and downloads are available on [GitHub](https://github.com/grapa-dev/grapa).
 
+## 🚀 **New in Version 0.1.52: Enhanced Installation System**
+
+Version 0.1.52 introduces a comprehensive installation system with:
+- **Automated install scripts** for all platforms
+- **Both static and shared libraries** for maximum compatibility
+- **Python extension support** with `--python` build option
+- **Cross-platform release management** via GitHub releases
+
 ## Installation Status
 
 | Platform | Package Manager | Status | Manual Installation |
@@ -19,6 +27,26 @@ Grapa is available through native package managers on all supported platforms, m
 - ✅ **Available**: Ready for installation via package manager
 - 🔄 **In Progress**: Package manager integration in development
 - ✅ **Available**: Manual installation available
+
+## 🎯 **Recommended Installation Method: GitHub Releases**
+
+The easiest way to install Grapa is to download the latest release from GitHub and use the automated install scripts:
+
+### **Step 1: Download Latest Release**
+1. Go to [GitHub Releases](https://github.com/grapa-dev/grapa/releases)
+2. Download the appropriate package for your platform:
+   - **Windows**: `grapa-0.1.52-win-amd64.zip`
+   - **macOS**: `grapa-0.1.52-mac-arm64.tar.gz`
+   - **Linux**: `grapa-0.1.52-linux-amd64.tar.gz` or `grapa-0.1.52-linux-arm64.tar.gz`
+   - **AWS**: `grapa-0.1.52-aws-amd64.tar.gz` or `grapa-0.1.52-aws-arm64.tar.gz`
+
+### **Step 2: Extract and Run Install Script**
+Each package contains an automated install script that handles the entire installation process.
+
+### **Alternative: Package Managers**
+If you prefer package managers, some platforms offer them (see status table below).
+
+---
 
 ## Quick Start
 
@@ -63,7 +91,7 @@ grapa --version
 
 You should see output similar to:
 ```
-Grapa version 0.1.51
+Grapa version 0.1.52
 ```
 
 ## Test Basic Functionality
@@ -145,7 +173,7 @@ Download the latest Windows release and run the automated installer:
 1. **Download the Windows package:**
    ```powershell
    # Download the latest Windows release
-   Invoke-WebRequest -Uri "https://github.com/grapa-dev/grapa/releases/download/v0.1.51/grapa-win-amd64.zip" -OutFile "grapa-win-amd64.zip"
+   Invoke-WebRequest -Uri "https://github.com/grapa-dev/grapa/releases/download/v0.1.52/grapa-0.1.52-win-amd64.zip" -OutFile "grapa-0.1.52-win-amd64.zip"
    ```
 
 2. **Extract and run the installer:**
@@ -158,9 +186,9 @@ Download the latest Windows release and run the automated installer:
 **Update:**
 ```powershell
 # Download and install the latest version
-Invoke-WebRequest -Uri "https://github.com/grapa-dev/grapa/releases/download/v0.1.51/grapa-win-amd64.zip" -OutFile "grapa-win-amd64.zip"
-Expand-Archive -Path "grapa-win-amd64.zip" -DestinationPath "grapa-win-amd64" -Force
-cd grapa-win-amd64
+Invoke-WebRequest -Uri "https://github.com/grapa-dev/grapa/releases/download/v0.1.52/grapa-0.1.52-win-amd64.zip" -OutFile "grapa-0.1.52-win-amd64.zip"
+Expand-Archive -Path "grapa-0.1.52-win-amd64.zip" -DestinationPath "grapa-0.1.52-win-amd64" -Force
+cd grapa-0.1.52-win-amd64
 .\install-grapa.ps1 -Force
 ```
 
@@ -173,7 +201,8 @@ cd grapa-win-amd64
 **Installation Location:**
 After installation, Grapa will be available at:
 - **Executable**: `C:\Program Files\Grapa\bin\grapa.exe`
-- **Library**: `C:\Program Files\Grapa\lib\grapa.lib`
+- **Static Library**: `C:\Program Files\Grapa\lib\grapa_static.lib`
+- **Shared Library**: `C:\Program Files\Grapa\lib\grapa.dll` (if available)
 - **PATH**: Automatically added to system PATH for command-line access
 
 **Note**: The installer automatically adds `C:\Program Files\Grapa\bin` to your system PATH during installation.
@@ -185,12 +214,12 @@ If you prefer to install manually without the automated installer:
 1. **Download the Windows package:**
    ```powershell
    # Download the latest Windows release
-   Invoke-WebRequest -Uri "https://github.com/grapa-dev/grapa/releases/download/v0.1.51/grapa-win-amd64.zip" -OutFile "grapa-win-amd64.zip"
+   Invoke-WebRequest -Uri "https://github.com/grapa-dev/grapa/releases/download/v0.1.52/grapa-0.1.52-win-amd64.zip" -OutFile "grapa-0.1.52-win-amd64.zip"
    ```
 
 2. **Extract the package:**
    ```powershell
-   Expand-Archive -Path "grapa-win-amd64.zip" -DestinationPath "grapa-win-amd64" -Force
+   Expand-Archive -Path "grapa-0.1.52-win-amd64.zip" -DestinationPath "grapa-0.1.52-win-amd64" -Force
    ```
 
 3. **Install manually:**
@@ -200,8 +229,11 @@ If you prefer to install manually without the automated installer:
    New-Item -ItemType Directory -Force -Path "C:\Program Files\Grapa\lib" | Out-Null
    
    # Copy files
-   Copy-Item -Path "grapa-win-amd64\grapa.exe" -Destination "C:\Program Files\Grapa\bin\" -Force
-   Copy-Item -Path "grapa-win-amd64\grapa.lib" -Destination "C:\Program Files\Grapa\lib\" -Force
+   Copy-Item -Path "grapa-0.1.52-win-amd64\grapa.exe" -Destination "C:\Program Files\Grapa\bin\" -Force
+   Copy-Item -Path "grapa-0.1.52-win-amd64\grapa_static.lib" -Destination "C:\Program Files\Grapa\lib\" -Force
+   if (Test-Path "grapa-0.1.52-win-amd64\grapa.dll") {
+       Copy-Item -Path "grapa-0.1.52-win-amd64\grapa.dll" -Destination "C:\Program Files\Grapa\lib\" -Force
+   }
    
    # Add to PATH (requires Administrator privileges)
    $currentPath = [Environment]::GetEnvironmentVariable('PATH', 'Machine')
@@ -216,6 +248,42 @@ If you prefer to install manually without the automated installer:
    grapa --version
    ```
 
+## 🐍 **Python Extension Build**
+
+Grapa 0.1.52 includes support for building Python extensions. If you need to build from source with Python support:
+
+### **Build with Python Extension**
+```bash
+# Build Grapa with Python extension support
+python3 build.py --python
+
+# On Windows, use:
+python build.py --python
+```
+
+### **Install Python Extension**
+After building, install the Python extension:
+
+**Windows:**
+```powershell
+pip install dist/grapapy-0.1.52.tar.gz
+```
+
+**Non-Windows:**
+```bash
+pip3 install dist/grapapy-0.1.52.tar.gz
+```
+
+### **Verify Python Integration**
+```python
+import grapapy
+g = grapapy.grapa()
+result = g.eval('2 + 2')
+print(f'Grapa result: {result}')
+```
+
+---
+
 ## Manual Installation
 
 If you prefer manual installation or your platform isn't supported by package managers, you can download and install Grapa directly.
@@ -227,10 +295,10 @@ If you prefer manual installation or your platform isn't supported by package ma
 #### ARM64 (Apple Silicon Macs)
 ```bash
 # Download the ARM64 binary
-curl -L -o grapa-mac-arm64.tar.gz https://github.com/grapa-dev/grapa/releases/download/v0.1.51/grapa-mac-arm64.tar.gz
+curl -L -o grapa-0.1.52-mac-arm64.tar.gz https://github.com/grapa-dev/grapa/releases/download/v0.1.52/grapa-0.1.52-mac-arm64.tar.gz
 
 # Extract the binary
-tar -xzf grapa-mac-arm64.tar.gz
+tar -xzf grapa-0.1.52-mac-arm64.tar.gz
 
 # Make it executable
 chmod +x grapa
@@ -260,10 +328,12 @@ sudo rm /usr/local/bin/grapa
 #### ARM64 (Apple Silicon, ARM servers)
 ```bash
 # Download the ARM64 package
-wget https://github.com/grapa-dev/grapa/releases/download/v0.1.51-debian/grapa_0.1.51_arm64.deb
+wget https://github.com/grapa-dev/grapa/releases/download/v0.1.52/grapa-0.1.52-linux-arm64.tar.gz
 
-# Install the package
-sudo dpkg -i grapa_0.1.51_arm64.deb
+# Extract and install
+tar -xzf grapa-0.1.52-linux-arm64.tar.gz
+cd grapa-0.1.52-linux-arm64
+sudo ./install-grapa.sh
 
 # Verify installation
 grapa --version
@@ -272,10 +342,12 @@ grapa --version
 #### AMD64 (Intel/AMD processors)
 ```bash
 # Download the AMD64 package
-wget https://github.com/grapa-dev/grapa/releases/download/v0.1.51-debian/grapa_0.1.51_amd64.deb
+wget https://github.com/grapa-dev/grapa/releases/download/v0.1.52/grapa-0.1.52-linux-amd64.tar.gz
 
-# Install the package
-sudo dpkg -i grapa_0.1.51_amd64.deb
+# Extract and install
+tar -xzf grapa-0.1.52-linux-amd64.tar.gz
+cd grapa-0.1.52-linux-amd64
+sudo ./install-grapa.sh
 
 # Verify installation
 grapa --version
@@ -289,7 +361,10 @@ grapa -c "'Hello World'.echo()"
 
 **Uninstall:**
 ```bash
-sudo dpkg -r grapa
+# Remove from system directories
+sudo rm -f /usr/local/bin/grapa
+sudo rm -f /usr/local/lib/libgrapa_static.a
+sudo rm -f /usr/local/lib/libgrapa.so
 ```
 
 ### Amazon Linux (Manual Installation)
@@ -299,10 +374,12 @@ sudo dpkg -r grapa
 #### ARM64 (Graviton processors)
 ```bash
 # Download the ARM64 package
-wget https://github.com/grapa-dev/grapa/releases/download/v0.1.51-rpm/grapa_0.1.51_arm64.rpm
+wget https://github.com/grapa-dev/grapa/releases/download/v0.1.52/grapa-0.1.52-aws-arm64.tar.gz
 
-# Install the package
-sudo rpm -i grapa_0.1.51_arm64.rpm
+# Extract and install
+tar -xzf grapa-0.1.52-aws-arm64.tar.gz
+cd grapa-0.1.52-aws-arm64
+sudo ./install-grapa.sh
 
 # Verify installation
 grapa --version
@@ -311,10 +388,12 @@ grapa --version
 #### AMD64 (Intel/AMD processors)
 ```bash
 # Download the AMD64 package
-wget https://github.com/grapa-dev/grapa/releases/download/v0.1.51-rpm/grapa_0.1.51_amd64.rpm
+wget https://github.com/grapa-dev/grapa/releases/download/v0.1.52/grapa-0.1.52-aws-amd64.tar.gz
 
-# Install the package
-sudo rpm -i grapa_0.1.51_amd64.rpm
+# Extract and install
+tar -xzf grapa-0.1.52-aws-amd64.tar.gz
+cd grapa-0.1.52-aws-amd64
+sudo ./install-grapa.sh
 
 # Verify installation
 grapa --version
@@ -328,7 +407,10 @@ grapa -c "'Hello World'.echo()"
 
 **Uninstall:**
 ```bash
-sudo rpm -e grapa
+# Remove from system directories
+sudo rm -f /usr/local/bin/grapa
+sudo rm -f /usr/local/lib/libgrapa_static.a
+sudo rm -f /usr/local/lib/libgrapa.so
 ```
 
 ### Windows (Manual Installation)
@@ -340,17 +422,17 @@ sudo rpm -e grapa
 1. **Download the Windows package:**
    ```powershell
    # Download the latest Windows release
-   Invoke-WebRequest -Uri "https://github.com/grapa-dev/grapa/releases/download/v0.1.51/grapa-win-amd64.zip" -OutFile "grapa-win-amd64.zip"
+   Invoke-WebRequest -Uri "https://github.com/grapa-dev/grapa/releases/download/v0.1.52/grapa-0.1.52-win-amd64.zip" -OutFile "grapa-0.1.52-win-amd64.zip"
    ```
 
 2. **Extract the package:**
    ```powershell
-   Expand-Archive -Path "grapa-win-amd64.zip" -DestinationPath "grapa-win-amd64" -Force
+   Expand-Archive -Path "grapa-0.1.52-win-amd64.zip" -DestinationPath "grapa-0.1.52-win-amd64" -Force
    ```
 
 3. **Run the automated installer** (run PowerShell as Administrator):
    ```powershell
-   cd grapa-win-amd64
+   cd grapa-0.1.52-win-amd64
    .\install-grapa.ps1
    ```
 
@@ -364,12 +446,12 @@ sudo rpm -e grapa
 1. **Download the Windows package:**
    ```powershell
    # Download the latest Windows release
-   Invoke-WebRequest -Uri "https://github.com/grapa-dev/grapa/releases/download/v0.1.51/grapa-win-amd64.zip" -OutFile "grapa-win-amd64.zip"
+   Invoke-WebRequest -Uri "https://github.com/grapa-dev/grapa/releases/download/v0.1.52/grapa-0.1.52-win-amd64.zip" -OutFile "grapa-0.1.52-win-amd64.zip"
    ```
 
 2. **Extract the package:**
    ```powershell
-   Expand-Archive -Path "grapa-win-amd64.zip" -DestinationPath "grapa-win-amd64" -Force
+   Expand-Archive -Path "grapa-0.1.52-win-amd64.zip" -DestinationPath "grapa-0.1.52-win-amd64" -Force
    ```
 
 3. **Install manually** (run PowerShell as Administrator):
@@ -379,8 +461,11 @@ sudo rpm -e grapa
    New-Item -ItemType Directory -Force -Path "C:\Program Files\Grapa\lib" | Out-Null
    
    # Copy files
-   Copy-Item -Path "grapa-win-amd64\grapa.exe" -Destination "C:\Program Files\Grapa\bin\" -Force
-   Copy-Item -Path "grapa-win-amd64\grapa.lib" -Destination "C:\Program Files\Grapa\lib\" -Force
+   Copy-Item -Path "grapa-0.1.52-win-amd64\grapa.exe" -Destination "C:\Program Files\Grapa\bin\" -Force
+   Copy-Item -Path "grapa-0.1.52-win-amd64\grapa_static.lib" -Destination "C:\Program Files\Grapa\lib\" -Force
+   if (Test-Path "grapa-0.1.52-win-amd64\grapa.dll") {
+       Copy-Item -Path "grapa-0.1.52-win-amd64\grapa.dll" -Destination "C:\Program Files\Grapa\bin\" -Force
+   }
    
    # Add to PATH (requires Administrator privileges)
    $currentPath = [Environment]::GetEnvironmentVariable('PATH', 'Machine')
@@ -398,7 +483,8 @@ sudo rpm -e grapa
 **Installation Location:**
 After installation, Grapa will be available at:
 - **Executable**: `C:\Program Files\Grapa\bin\grapa.exe`
-- **Library**: `C:\Program Files\Grapa\lib\grapa.lib`
+- **Static Library**: `C:\Program Files\Grapa\lib\grapa_static.lib`
+- **Shared Library**: `C:\Program Files\Grapa\lib\grapa.dll` (if available)
 - **PATH**: Automatically added to system PATH for command-line access
 
 **Uninstall:**
@@ -437,11 +523,15 @@ For other platforms, download the appropriate binary from the [GitHub releases p
 3. **Move to PATH**: `sudo mv grapa /usr/local/bin/`
 4. **Verify**: `grapa --version`
 
-**Available binaries:**
-- `grapa-linux-amd64` - Linux AMD64
-- `grapa-linux-arm64` - Linux ARM64  
-- `grapa-mac-arm64` - macOS ARM64 (Apple Silicon)
-- `grapa-win-amd64.zip` - Windows AMD64 (includes installer script)
+**Available packages:**
+- `grapa-0.1.52-linux-amd64.tar.gz` - Linux AMD64 (includes install script)
+- `grapa-0.1.52-linux-arm64.tar.gz` - Linux ARM64 (includes install script)
+- `grapa-0.1.52-mac-arm64.tar.gz` - macOS ARM64 (includes install script)
+- `grapa-0.1.52-win-amd64.zip` - Windows AMD64 (includes PowerShell install script)
+- `grapa-0.1.52-aws-amd64.tar.gz` - AWS AMD64 (includes install script)
+- `grapa-0.1.52-aws-arm64.tar.gz` - AWS ARM64 (includes install script)
+
+**Note**: All packages now include automated install scripts and both static and shared libraries for maximum compatibility.
 
 ## Troubleshooting
 

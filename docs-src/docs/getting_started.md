@@ -45,9 +45,11 @@ grapa -f "my_script.grc"
 
 ## Installation
 
-1. **Download** the appropriate binary for your platform from the releases
-2. **Extract** the archive to a directory
-3. **Add** the directory to your PATH (optional but recommended)
+1. **Download** the latest release from [GitHub Releases](https://github.com/grapa-dev/grapa/releases)
+2. **Extract** the archive and run the automated install script
+3. **Verify** installation with `grapa --version`
+
+**For detailed installation instructions, see [Installation Guide](installation.md)**
 
 > **Note:** Grapa requires macOS 15.0+ (Apple Silicon only). Intel Macs are no longer supported due to Apple's discontinuation of Intel Mac support in macOS 15.0.
 

@@ -176,12 +176,12 @@ class GrapaBuilder:
         print("✅ Static library built successfully")
         
         # Copy static library to target directory
-        shutil.copy("prj/winlib-amd64_static/x64/Release/grapalib.lib", f"{self.target_dir}/grapa_static.lib")
+        shutil.copy("prj/winlib-amd64_static/x64/Release/grapa.lib", f"{self.target_dir}/grapa_static.lib")
         print(f"✅ Copied static library to {self.target_dir}/")
         
         # Copy static library to source/grapa-lib
         os.makedirs(self.target_lib_dir, exist_ok=True)
-        shutil.copy("prj/winlib-amd64_static/x64/Release/grapalib.lib", f"{self.target_lib_dir}/grapa_static.lib")
+        shutil.copy("prj/winlib-amd64_static/x64/Release/grapa.lib", f"{self.target_lib_dir}/grapa_static.lib")
         print(f"✅ Copied static library to {self.target_lib_dir}/")
         
         # Build shared library (DLL)
@@ -195,18 +195,18 @@ class GrapaBuilder:
         
         result = subprocess.run(cmd, capture_output=True, text=True)
         if result.returncode != 0:
-            print(f"❌ Shared library build failed: {result.stderr}")
-            return False
-        
-        print("✅ Shared library built successfully")
-        
-        # Copy shared library (DLL) to target directory
-        shutil.copy("prj/winlib-amd64_shared/x64/Release/grapalib.dll", f"{self.target_dir}/grapa.dll")
-        print(f"✅ Copied shared library to {self.target_dir}/")
-        
-        # Copy shared library to source/grapa-lib
-        shutil.copy("prj/winlib-amd64_shared/x64/Release/grapalib.dll", f"{self.target_lib_dir}/grapa.dll")
-        print(f"✅ Copied shared library to {self.target_lib_dir}/")
+            print(f"⚠️  Shared library build failed: {result.stderr}")
+            print("⚠️  Continuing with static library only...")
+        else:
+            print("✅ Shared library built successfully")
+            
+            # Copy shared library (DLL) to target directory
+            shutil.copy("prj/winlib-amd64_shared/x64/Release/grapa.dll", f"{self.target_dir}/grapa.dll")
+            print(f"✅ Copied shared library to {self.target_dir}/")
+            
+            # Copy shared library to source/grapa-lib
+            shutil.copy("prj/winlib-amd64_shared/x64/Release/grapa.dll", f"{self.target_lib_dir}/grapa.dll")
+            print(f"✅ Copied shared library to {self.target_lib_dir}/")
         
         # Create install script
         self._create_install_script()
@@ -649,6 +649,75 @@ fi
         except Exception as e:
             print(f"❌ Build failed with error: {e}")
             return False
+    
+    def build_python_extension(self):
+        """Build Python extension package using setup.py
+        
+        Cross-platform compatibility:
+        - Windows: Uses 'python' and 'pip' commands
+        - Non-Windows: Uses 'python3' and 'pip3' commands
+        
+        The script automatically detects the platform and uses the appropriate commands.
+        """
+        print("🐍 Building Python extension package...")
+        
+        try:
+            # Check if setup.py exists
+            if not os.path.exists("setup.py"):
+                print("❌ setup.py not found")
+                return False
+            
+            # Determine Python and pip commands based on platform
+            python_cmd = sys.executable
+            pip_cmd = "pip" if self.config.platform == "windows" else "pip3"
+            
+            print(f"🔧 Using Python: {python_cmd}")
+            print(f"🔧 Using pip: {pip_cmd}")
+            
+            # Run setup.py to build the Python extension
+            cmd = [python_cmd, "setup.py", "build_ext", "--inplace"]
+            result = subprocess.run(cmd, capture_output=True, text=True)
+            
+            if result.returncode != 0:
+                print(f"❌ Python extension build failed: {result.stderr}")
+                return False
+            
+            print("✅ Python extension built successfully")
+            
+            # Also create a source distribution
+            print("📦 Creating source distribution...")
+            cmd = [python_cmd, "setup.py", "sdist"]
+            result = subprocess.run(cmd, capture_output=True, text=True)
+            
+            if result.returncode != 0:
+                print(f"⚠️  Source distribution creation failed: {result.stderr}")
+                print("⚠️  Continuing without source distribution...")
+            else:
+                print("✅ Source distribution created successfully")
+            
+            # Provide platform-specific installation instructions
+            print(f"📋 Installation instructions for {self.config.platform}:")
+            if self.config.platform == "windows":
+                print(f"   pip install dist/grapapy-0.1.52.tar.gz")
+            else:
+                print(f"   pip3 install dist/grapapy-0.1.52.tar.gz")
+            
+            # Test pip command availability
+            print(f"🧪 Testing {pip_cmd} command availability...")
+            try:
+                result = subprocess.run([pip_cmd, "--version"], capture_output=True, text=True)
+                if result.returncode == 0:
+                    print(f"✅ {pip_cmd} is available: {result.stdout.strip()}")
+                else:
+                    print(f"⚠️  {pip_cmd} command failed: {result.stderr}")
+            except FileNotFoundError:
+                print(f"❌ {pip_cmd} command not found. You may need to install pip or use a different command.")
+            
+            return True
+            
+        except Exception as e:
+            print(f"❌ Python extension build failed with error: {e}")
+            return False
 
 def detect_platform() -> Tuple[str, str]:
     """Detect the current platform and architecture"""
@@ -686,13 +755,9 @@ def main():
     parser = argparse.ArgumentParser(description="Build Grapa for the current platform")
     parser.add_argument("--test", action="store_true", help="Run tests after build")
     parser.add_argument("--clean", action="store_true", help="Clean build artifacts")
-    parser.add_argument("--help", action="store_true", help="Show help")
+    parser.add_argument("--python", action="store_true", help="Build Python extension package")
     
     args = parser.parse_args()
-    
-    if args.help:
-        parser.print_help()
-        return
     
     try:
         platform_name, arch = detect_platform()
@@ -709,6 +774,11 @@ def main():
         
         if builder.build():
             print(f"✅ Build completed successfully for {platform_name} {arch}")
+            
+            # Build Python extension if requested
+            if args.python:
+                if not builder.build_python_extension():
+                    print(f"⚠️  Python extension build failed, but main build succeeded")
             
             if args.test:
                 print("🧪 Running tests...")

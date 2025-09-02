@@ -5,7 +5,8 @@ This directory contains the files needed to install Grapa on Windows.
 ## Files Included
 
 - `grapa.exe` - The Grapa executable
-- `grapa.lib` - The Grapa static library for C++ development
+- `grapa_static.lib` - The Grapa static library for C++ development
+- `grapa.dll` - The Grapa shared library (DLL) for runtime linking
 - `install-grapa.ps1` - PowerShell installation script
 - `README-Windows-Installation.md` - This file
 
@@ -29,13 +30,16 @@ The `install-grapa.ps1` script provides the following features:
 ### Smart Installation
 - **Version detection:** Automatically detects existing installations and shows version information
 - **Confirmation prompts:** Asks for confirmation before replacing existing installations
+- **Clean replacement:** Completely removes old installation before installing new version
 - **PATH management:** Automatically adds/removes Grapa from system PATH
 - **Error handling:** Comprehensive error checking and user feedback
+- **File validation:** Checks that all required files are present before installation
 
 ### Installation Location
 Grapa will be installed to:
 - **Executable:** `C:\Program Files\Grapa\bin\grapa.exe`
-- **Library:** `C:\Program Files\Grapa\lib\grapa.lib`
+- **Static Library:** `C:\Program Files\Grapa\lib\grapa_static.lib`
+- **Shared Library:** `C:\Program Files\Grapa\lib\grapa.dll` (if available)
 - **System PATH:** Automatically configured for command-line access
 
 ## Manual Installation
@@ -51,7 +55,10 @@ If you prefer to install manually instead of using the script:
 2. **Copy files:**
    ```powershell
    Copy-Item -Path "grapa.exe" -Destination "C:\Program Files\Grapa\bin\" -Force
-   Copy-Item -Path "grapa.lib" -Destination "C:\Program Files\Grapa\lib\" -Force
+   Copy-Item -Path "grapa_static.lib" -Destination "C:\Program Files\Grapa\lib\" -Force
+   if (Test-Path "grapa.dll") {
+       Copy-Item -Path "grapa.dll" -Destination "C:\Program Files\Grapa\lib\" -Force
+   }
    ```
 
 3. **Add to system PATH:**
@@ -115,19 +122,25 @@ Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
 
 ### Version Conflicts
 - The script will detect existing installations and prompt for confirmation
+- When replacing, the old installation is completely removed for a clean install
 - Use `-Force` flag to skip confirmation prompts
+
+### Missing Files
+- Ensure all required files (`grapa.exe`, `grapa_static.lib`) are in the same directory as the script
+- The `grapa.dll` file is optional but recommended for shared library support
 
 ## Requirements
 
 - **Windows 10 or later**
 - **PowerShell 5.0 or later**
 - **Administrator privileges** (for system-wide installation)
-- **grapa.exe and grapa.lib** in the same directory as the script
+- **grapa.exe and grapa_static.lib** in the same directory as the script
+- **grapa.dll** (optional, for shared library support)
 
 ## Support
 
 For issues with installation:
 1. Check the troubleshooting section above
-2. Run the script with verbose output: `.\install-grapa.ps1 -Verbose`
+2. Run the script with verbose output: `.\install-grapa.ps1 -Help`
 3. Check the [main installation documentation](https://grapa-dev.github.io/grapa/installation/)
 4. Report issues on [GitHub](https://github.com/grapa-dev/grapa/issues)

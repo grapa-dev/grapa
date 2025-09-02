@@ -102,16 +102,27 @@ class ReleaseManager:
             
             # Create tar.gz archive
             try:
-                subprocess.run([
-                    "tar", "-czf", str(archive_path), "-C", str(self.bin_dir), platform_name
-                ], check=True)
+                # Use Python's built-in compression for cross-platform compatibility
+                import tempfile
+                import shutil
                 
-                # Get file size
-                size_mb = archive_path.stat().st_size / (1024 * 1024)
-                print(f"    ✅ Created: {archive_name} ({size_mb:.1f} MB)")
-                archives.append(archive_path)
+                # Create a temporary directory for the archive
+                with tempfile.TemporaryDirectory() as temp_dir:
+                    # Copy platform directory to temp location
+                    platform_temp_dir = Path(temp_dir) / platform_name
+                    shutil.copytree(platform_dir, platform_temp_dir)
+                    
+                    # Create zip archive (Windows-compatible)
+                    zip_name = f"grapa-{version}-{platform_name}.zip"
+                    zip_path = self.releases_dir / zip_name
+                    shutil.make_archive(str(zip_path.with_suffix('')), 'zip', temp_dir, platform_name)
+                    
+                    # Get file size
+                    size_mb = zip_path.stat().st_size / (1024 * 1024)
+                    print(f"    ✅ Created: {zip_name} ({size_mb:.1f} MB)")
+                    archives.append(zip_path)
                 
-            except subprocess.CalledProcessError as e:
+            except Exception as e:
                 print(f"    ❌ Failed to create archive for {platform_name}: {e}")
                 continue
         

@@ -4,7 +4,10 @@ import platform
 import subprocess
 import re
 
-from distutils.command.build import build
+try:
+    from distutils.command.build import build
+except ImportError:
+    from setuptools.command.build import build
 
 from setuptools import Extension, setup, find_packages, Command
 from setuptools.command.build_ext import build_ext
@@ -34,7 +37,7 @@ PLAT_TO_CMAKE = {
 
 if sys.platform.startswith('win32'):
     so_ext = '.lib'
-    lib_filename = 'grapa' + so_ext
+    lib_filename = 'grapa_static' + so_ext
     lib_pathfile = 'grapa-lib/win-amd64/' + lib_filename
     extra_compile_args = ['/DUTF8PROC_STATIC', '/DPCRE2_STATIC']
     extra_link_args = ['/MANIFEST:NO']
