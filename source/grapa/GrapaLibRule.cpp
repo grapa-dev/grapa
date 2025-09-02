@@ -4243,9 +4243,16 @@ GrapaRuleEvent* GrapaLibraryRuleSleepEvent::Run(GrapaScriptExec* vScriptExec, Gr
 		u32 tm = rInt.GetItem(0);
 		if (tm)
 		{
+#ifdef _WIN32
+			Sleep(tm);
+#else
+			usleep(tm * 1000);
+#endif
+/*
 #ifdef _THREAD_
 			std::this_thread::sleep_for(std::chrono::milliseconds(tm));
 #endif
+*/
 		}
 	}
 	return(result);
