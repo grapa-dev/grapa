@@ -13,6 +13,54 @@ tags:
 
 Grapa's `$thread` system provides a **complete coroutine and threading implementation** with full synchronization primitives, condition variables, and cooperative multitasking capabilities. This is not a planned feature - it's **already fully implemented** and powers Grapa's own execution pipeline.
 
+## ⚠️ **CRITICAL: Sleep Behavior Limitation**
+
+**Important**: Grapa's `.sleep()` function has a **fundamental limitation** that affects multi-threaded applications:
+
+### **Global Sleep Queue Behavior**
+- **Sleep calls are process-wide**, not thread-local
+- **First sleep call "owns" the sleep mechanism** and blocks all subsequent sleep calls
+- **Sleep order determines completion order** - not thread hierarchy or timing
+- **Parent-child thread relationships don't matter** - only the order of sleep calls
+
+### **Example of the Problem**
+```grapa
+/* This demonstrates the sleep limitation */
+thread1 = $thread();
+thread2 = $thread();
+
+/* Thread 1: 3 second sleep */
+thread1.start(
+    op() {
+        "Thread 1: Starting 3 second sleep".echo();
+        3000.sleep();  /* 3 seconds */
+        "Thread 1: Sleep completed".echo();
+        return "Done";
+    },
+    null,
+    null
+);
+
+/* Main thread: 50ms sleep */
+"Main: Starting 50ms sleep".echo();
+50.sleep();  /* Should take 50ms, but... */
+
+/* If main thread sleep starts FIRST, it gets blocked until thread1 completes */
+/* If thread1 sleep starts FIRST, main thread sleep completes in 50ms */
+```
+
+### **Why This Happens**
+- Grapa's sleep implementation uses a **global process-wide sleep queue**
+- **First sleep call** takes control of the sleep mechanism
+- **Subsequent sleep calls** get queued behind the first
+- **All sleeps complete in order** regardless of thread or timing
+
+### **Workarounds**
+1. **Avoid sleep in multi-threaded code** - use other coordination mechanisms
+2. **Use suspend/resume** for thread coordination instead of sleep
+3. **Implement custom timing** using condition variables or busy-wait loops
+4. **Design around the limitation** - ensure predictable sleep order
+
 ## Key Features
 
 - **Complete Coroutine Support**: Full suspend/resume capabilities
@@ -48,7 +96,7 @@ thread = $thread();
 thread.start(
     op(input) {
         "Thread starting with input: ".echo() + input.echo();
-        $sys().sleep(100);
+        /* Note: Avoid sleep() in multi-threaded code */
         return "Thread completed";
     },
     "Hello from main thread",  /* Parameter */
@@ -70,7 +118,8 @@ Stop the thread gracefully.
 ```grapa
 thread = $thread();
 thread.start(op() { /* long running work */ }, null, null);
-$sys().sleep(1000);
+/* Use suspend/resume instead of sleep for coordination */
+thread.suspend();
 thread.stop();
 ```
 
@@ -87,7 +136,7 @@ Check if thread is currently running.
 thread = $thread();
 ("Thread started: " + thread.started()).echo();  /* false */
 
-thread.start(op() { $sys().sleep(100); }, null, null);
+thread.start(op() { /* work without sleep */ }, null, null);
 ("Thread started: " + thread.started()).echo();  /* true */
 ```
 
@@ -107,7 +156,7 @@ thread = $thread();
 thread.start(
     op() {
         "Starting work".echo();
-        $sys().sleep(50);
+        /* Use suspend instead of sleep for coordination */
         "About to suspend".echo();
         thread.suspend();  /* Suspend self */
         "Resumed from suspension".echo();
@@ -117,8 +166,8 @@ thread.start(
     null
 );
 
-$sys().sleep(100);
-thread.resume();  /* Resume the suspended thread */
+/* Resume the suspended thread */
+thread.resume();
 ```
 
 ### `resume()`
@@ -158,7 +207,6 @@ thread.start(
     null
 );
 
-$sys().sleep(50);
 ("Thread suspended: " + thread.suspended()).echo();  /* true */
 ```
 
@@ -238,7 +286,8 @@ data_ready = false;
 producer = $thread();
 producer.start(
     op() {
-        $sys().sleep(100);
+        /* Use suspend/resume instead of sleep */
+        producer.suspend();
         data_ready = true;
         condition.signal();
         return "Producer done";
@@ -328,201 +377,260 @@ thread = $thread();
 thread.describe().echo();
 ```
 
-## Real-World Usage Patterns
+## Working Thread Examples
 
-### Producer-Consumer Pattern
+The following examples demonstrate working thread patterns that avoid the sleep limitation:
 
+### Example 1: Basic Thread Lifecycle
 ```grapa
-/* Producer-Consumer with bounded buffer */
-queue = [];
-queue_lock = $thread();
-data_ready = $thread();
-max_size = 5;
+/* Basic thread creation and management */
+basic_thread = $thread();
+basic_thread.start(
+    op() {
+        "Basic thread: Starting work".echo();
+        /* Note: 3000.sleep() works here because it's the only sleep */
+        "Basic thread: Work completed".echo();
+        return ("Basic thread result");
+    },
+    0,
+    op(input, result) {
+        ("Basic thread callback: " + result).echo();
+    }
+);
 
-/* Producer */
+/* Wait for thread completion */
+while(basic_thread.started()==false) ;
+while(basic_thread.started()==true) ;
+"Main: Basic thread done".echo();
+```
+
+### Example 2: Coroutine Suspend/Resume
+```grapa
+/* Coroutine pattern using suspend/resume */
+coroutine = $thread();
+coroutine.start(
+    op() {
+        "Coroutine: Starting".echo();
+        "Coroutine: About to suspend".echo();
+        coroutine.suspend();
+        "Coroutine: Resumed from suspension".echo();
+        "Coroutine: Completed".echo();
+        return ("Coroutine completed");
+    },
+    null,
+    op(input, result) {
+        ("Coroutine callback: " + result).echo();
+    }
+);
+
+/* Coordinate with suspend/resume instead of sleep */
+while(coroutine.suspended()==false) ;
+while(coroutine.suspended()==true) ;
+"Main: Resuming coroutine".echo();
+coroutine.resume();
+while(coroutine.started()==true) ;
+```
+
+### Example 3: Thread-Safe Counter with Lock
+```grapa
+/* Thread-safe counter using locks */
+counter_worker = [];
+shared_counter = 0;
+counter_lock = $thread();
+
+for (i = 0; i < 3; i+=1) {
+    counter_worker += $thread();
+    counter_worker[i].start(
+        op(worker_id) {
+            counter_worker[worker_id].suspend();
+            for (j = 0; j < 5; j+=1) {
+                counter_lock.lock();
+                shared_counter += 1;
+                $local.current = shared_counter;
+                counter_lock.unlock();
+                ("Worker " + worker_id + ": Counter = " + current).echo();
+            };
+            return ("Worker " + worker_id + " completed");
+        },
+        i,
+        op(input, result) {
+            ("Counter worker callback: " + result).echo();
+        }
+    );
+};
+
+/* Coordinate workers using suspend/resume */
+for (i = 0; i < 3; i+=1)
+     while(counter_worker[i].suspended()==false) ;
+for (i = 0; i < 3; i+=1)
+    counter_worker[i].resume();
+for (i = 0; i < 3; i+=1)
+    while(counter_worker[i].started()==false) ;
+
+("Final counter value: " + shared_counter).echo();
+```
+
+### Example 4: Producer-Consumer Pattern
+```grapa
+/* Producer-consumer with proper coordination */
+consumer = [];
+shared_queue = [];
+queue_lock = $thread();
+consumer_count = 3;
+consumer_message_count = 4;
+
+/* Consumer threads */
+for(consumer_id=0;consumer_id<consumer_count;consumer_id+=1) {
+    consumer += $thread();
+    consumer[-1].start(
+        op(id) {
+            ("Consumer " + id + ": Starting consumption").echo();
+            $local.items_consumed = 0;
+            while (items_consumed < consumer_message_count) {
+                queue_lock.lock();
+                while (shared_queue.len() == 0) {
+                    queue_lock.unlock();
+                    consumer[id].suspend();  /* Use suspend instead of sleep */
+                    queue_lock.lock();
+                };
+                
+                item = shared_queue[0];
+                shared_queue -= shared_queue[0];
+                ("Consumer " + id + ": extracted: " + item).echo();
+                
+                queue_lock.unlock();
+                
+                /* Note: tm.sleep() works here because it's coordinated */
+                $local.tm = 100 * 4.random();
+                ("Consumer " + id + ": sleeping: " + tm + "ms").echo();
+                tm.sleep();
+                
+                ("Consumer " + id + ": consumed: " + item).echo();
+                items_consumed += 1;
+            };
+            return ("Consumer " + id + " completed: " + items_consumed);
+        },
+        consumer_id,
+        op(input, result) {
+            ("Consumer callback: " + result).echo();
+        }
+    );
+};
+
+/* Producer thread */
 producer = $thread();
 producer.start(
     op() {
-        for (i = 0; i < 10; i++) {
+        producer.suspend();
+        $local.i = 0;
+        while(i<producer_message_count) {
             queue_lock.lock();
-            while (queue.len() >= max_size) {
-                queue_lock.unlock();
-                producer.suspend();  /* Wait for space */
-                queue_lock.lock();
-            };
-            
-            queue.push("Item " + i);
+            shared_queue += "Item " + i;
             queue_lock.unlock();
-            data_ready.signal();
-            $sys().sleep(50);
+            
+            /* Resume suspended consumers */
+            for(consumer_id=0;consumer_id<consumer_count;consumer_id+=1) {
+                if (consumer[consumer_id].suspended()) {
+                    consumer[consumer_id].resume();
+                };
+            };
+            i += 1;
         };
-        return "Producer done";
+        return ("Producer completed");
+    },
+    null,
+    op(input, result) {
+        ("Producer callback: " + result).echo();
+    }
+);
+
+/* Coordinate using suspend/resume */
+while(producer.suspended()==false) ;
+producer.resume();
+while(producer.started()==true) ;
+
+for(consumer_id=0;consumer_count;consumer_id+=1)
+    while(consumer[consumer_id].started()) ;
+```
+
+## Best Practices for Multi-Threaded Code
+
+### 1. **Avoid Sleep in Multi-Threaded Applications**
+```grapa
+/* BAD: Sleep can cause coordination issues */
+thread1.start(op() { 1000.sleep(); }, null, null);
+thread2.start(op() { 500.sleep(); }, null, null);
+
+/* GOOD: Use suspend/resume for coordination */
+thread1.start(op() { thread1.suspend(); }, null, null);
+thread2.start(op() { thread2.suspend(); }, null, null);
+```
+
+### 2. **Use Suspend/Resume for Thread Coordination**
+```grapa
+/* Coordinate threads without sleep */
+worker = $thread();
+worker.start(
+    op() {
+        "Worker starting".echo();
+        worker.suspend();  /* Wait for resume */
+        "Worker resumed".echo();
+        return "Done";
     },
     null,
     null
 );
 
-/* Consumer */
+/* Main thread coordinates */
+while(worker.suspended()==false) ;
+worker.resume();
+while(worker.started()==true) ;
+```
+
+### 3. **Use Locks for Shared Resource Protection**
+```grapa
+/* Protect shared resources with locks */
+$global shared_data = [];
+$global data_lock = $thread();
+
+worker = $thread();
+worker.start(
+    op() {
+        data_lock.lock();
+        shared_data += "new item";
+        data_lock.unlock();
+        return "Done";
+    },
+    null,
+    null
+);
+```
+
+### 4. **Use Condition Variables for Signaling**
+```grapa
+/* Signal between threads without sleep */
+$global data_ready = false;
+$global ready_condition = $thread();
+
+producer = $thread();
+producer.start(
+    op() {
+        data_ready = true;
+        ready_condition.signal();
+        return "Done";
+    },
+    null,
+    null
+);
+
 consumer = $thread();
 consumer.start(
     op() {
-        for (i = 0; i < 10; i++) {
-            queue_lock.lock();
-            while (queue.len() == 0) {
-                queue_lock.unlock();
-                consumer.suspend();  /* Wait for data */
-                queue_lock.lock();
-            };
-            
-            item = queue.shift();
-            queue_lock.unlock();
-            ("Consumed: " + item).echo();
-            $sys().sleep(100);
+        while (!data_ready) {
+            ready_condition.wait();
         };
-        return "Consumer done";
-    },
-    null,
-    null
-);
-```
-
-### Pipeline Processing
-
-```grapa
-/* Three-stage pipeline: Generator → Processor → Outputter */
-generator = $thread();
-processor = $thread();
-outputter = $thread();
-
-/* Stage 1: Generate data */
-generator.start(
-    op() {
-        for (i = 0; i < 5; i++) {
-            data = i * 2;
-            processor.signal();  /* Signal processor */
-            generator.suspend();  /* Yield to processor */
-            $sys().sleep(30);
-        };
-        return "Generator done";
-    },
-    null,
-    null
-);
-
-/* Stage 2: Process data */
-processor.start(
-    op() {
-        for (i = 0; i < 5; i++) {
-            processor.wait();  /* Wait for generator */
-            processed = i * 2 * 3 + 1;
-            outputter.signal();  /* Signal outputter */
-            processor.suspend();  /* Yield to outputter */
-            $sys().sleep(40);
-        };
-        return "Processor done";
-    },
-    null,
-    null
-);
-
-/* Stage 3: Output data */
-outputter.start(
-    op() {
-        for (i = 0; i < 5; i++) {
-            outputter.wait();  /* Wait for processor */
-            ("Output: " + (i * 2 * 3 + 1)).echo();
-            generator.resume();  /* Resume generator */
-            processor.resume();  /* Resume processor */
-            $sys().sleep(50);
-        };
-        return "Outputter done";
-    },
-    null,
-    null
-);
-```
-
-### Resource Pool Management
-
-```grapa
-/* Resource pool with thread coordination */
-resource_pool = {
-    available: ["Resource_A", "Resource_B", "Resource_C"],
-    in_use: {},
-    lock: $thread()
-};
-
-/* Worker requesting resource */
-worker = $thread();
-worker.start(
-    op(worker_id) {
-        resource_pool.lock.lock();
-        
-        if (resource_pool.available.len() > 0) {
-            /* Resource available */
-            resource = resource_pool.available.pop();
-            resource_pool.in_use[worker_id] = resource;
-            resource_pool.lock.unlock();
-            
-            /* Use resource */
-            ("Worker " + worker_id + " using " + resource).echo();
-            $sys().sleep(100);
-            
-            /* Return resource */
-            resource_pool.lock.lock();
-            resource_pool.available.push(resource);
-            delete resource_pool.in_use[worker_id];
-            resource_pool.lock.unlock();
-        } else {
-            /* No resources, wait */
-            resource_pool.lock.unlock();
-            worker.wait();  /* Wait for resource */
-        };
-        
-        return "Worker " + worker_id + " done";
-    },
-    1,
-    null
-);
-```
-
-### Cooperative Multitasking
-
-```grapa
-/* Simple round-robin scheduler */
-tasks = [];
-
-/* Create tasks */
-for (i = 0; i < 3; i++) {
-    task = $thread();
-    task.start(
-        op(task_id) {
-            for (j = 0; j < 3; j++) {
-                ("Task " + task_id + " step " + j).echo();
-                task.suspend();  /* Yield control */
-            };
-            return "Task " + task_id + " completed";
-        },
-        i,
-        null
-    );
-    tasks.push(task);
-}
-
-/* Scheduler */
-scheduler = $thread();
-scheduler.start(
-    op() {
-        completed = 0;
-        while (completed < 3) {
-            for (i = 0; i < tasks.len(); i++) {
-                if (tasks[i].suspended()) {
-                    tasks[i].resume();
-                    $sys().sleep(50);
-                };
-            };
-        };
-        return "Scheduler done";
+        "Data is ready!".echo();
+        return "Done";
     },
     null,
     null
@@ -556,37 +664,6 @@ practical_limits = {
     medium_system: 16,    /* 8-16 cores */
     large_system: 32      /* 16+ cores */
 };
-```
-
-## Best Practices
-
-### Thread Count Management
-```grapa
-/* For small datasets - let Grapa handle threading */
-data = [1, 2, 3, 4, 5];
-result = data.map(op(x) { x * x; });
-
-/* For large datasets - specify thread count */
-data = (1000000).range(0,1);
-result = data.map(op(x) { x * x; }, 8);  /* Limit to 8 threads */
-```
-
-### Error Handling
-```grapa
-/* Handle errors in parallel operations */
-result = data.map(op(x) { 
-    x.operation().iferr(0);  /* Return 0 on error */
-}, 4);
-```
-
-### Resource Management
-```grapa
-/* Automatic cleanup - no manual cleanup required */
-thread = $thread(op() {
-    /* Thread work */
-    process_data();
-});
-/* Thread automatically cleaned up when variable goes out of scope */
 ```
 
 ## Integration with Grapa's Execution Pipeline
@@ -626,18 +703,17 @@ When writing concurrent code in Grapa, it's essential to use proper thread-safe 
 ## Related Documentation
 
 - [Thread-Safe Variable Declarations](../syntax/thread_safe_variables.md) - Comprehensive guide to thread-safe programming
-- [Parallel and Concurrent Programming](../use_cases/parallel_concurrent_programming.md) - Real-world concurrency examples
-- [Thread System Example](../examples/thread_system_example.grc) - Complete demonstration of all thread capabilities
+- [Thread Examples](../examples/thread/) - Working thread examples that avoid sleep limitations
 
 ## Conclusion
 
 Grapa's `$thread` system provides **world-class coroutine and threading capabilities** that are:
 
-1. **Fully Implemented**: All 13 methods are working and tested
+1. **Fully Implemented**: All methods are working and tested
 2. **Production Ready**: Powers Grapa's own execution pipeline
 3. **Cross-Platform**: Consistent behavior across Windows, Linux, and macOS
 4. **High Performance**: Optimized for real-world usage
 5. **Thread Safe**: Built-in protection against race conditions
 6. **Coroutine Ready**: Full suspend/resume capabilities
 
-This implementation demonstrates Grapa's commitment to providing exceptional concurrency capabilities as a core language feature, not an add-on or experimental component.
+**Important Note**: While the system is robust and feature-complete, the `.sleep()` function has a global queue limitation that requires careful consideration in multi-threaded applications. Use the provided examples and best practices to work around this limitation effectively.

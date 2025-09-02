@@ -468,6 +468,8 @@ result = some_operation().iferr(0);
 - Grapa supports variable scoping with `$global`, `$local`, and `$root`.
 - Use `$sys().getenv()` for environment variables.
 - Use `$thread()` for threading and `$sys().sleep()` for sleep.
+
+**⚠️ Important**: When using `$sys().sleep()` in multi-threaded code, be aware that Grapa's sleep has a global queue limitation. Sleep calls are process-wide, not thread-local, and the first sleep call blocks all subsequent ones until it completes. Use `suspend()`, `resume()`, and condition variables for thread coordination instead.
 - Use `op(){}` for lambdas and function definitions.
 
 ## See Also
@@ -978,6 +980,8 @@ uppercase = strings.map(op(s) { s.upper(); });
 - Grapa supports variable scoping with `$global`, `$local`, and `$root`.
 - Use `$sys().getenv()` for environment variables.
 - Use `$thread()` for threading and `$sys().sleep()` for sleep.
+
+**⚠️ Important**: When using `$sys().sleep()` in multi-threaded code, be aware that Grapa's sleep has a global queue limitation. Sleep calls are process-wide, not thread-local, and the first sleep call blocks all subsequent ones until it completes. Use `suspend()`, `resume()`, and condition variables for thread coordination instead.
 - Use `op(){}` for lambdas and function definitions.
 
 ### Reflection and Introspection

@@ -13,6 +13,17 @@ tags:
 
 When writing concurrent code in Grapa, it's essential to understand how to properly declare and use variables that will be accessed by multiple threads. This document covers the thread-safe variable declaration patterns and best practices.
 
+## ⚠️ **Important: Sleep Limitation in Multi-Threaded Code**
+
+**Critical**: When writing thread-safe code, be aware that Grapa's `.sleep()` function has a **global sleep queue limitation**:
+
+- **Sleep calls are process-wide**, not thread-local
+- **First sleep call blocks all subsequent sleep calls** until it completes
+- **Sleep order determines completion order**, not thread hierarchy or timing
+- **This can cause unexpected coordination issues** in multi-threaded applications
+
+**Recommendation**: Use `suspend()`, `resume()`, and condition variables for thread coordination instead of sleep. See [Thread System](../sys/thread.md) for detailed information and workarounds.
+
 ## Variable Declaration Patterns
 
 ### 1. **Global Variables (Thread-Safe by Default)**

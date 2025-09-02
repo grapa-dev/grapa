@@ -4243,6 +4243,13 @@ void HighResTimerSleep(u32 milliseconds) {
         std::this_thread::yield();  // Yield instead of busy wait
     }
 }
+void PureOSSleep(u32 milliseconds) {
+#ifdef _WIN32
+    Sleep(milliseconds);  // Direct Windows API
+#else
+    usleep(milliseconds * 1000);  // Direct Unix API
+#endif
+}
 
 GrapaRuleEvent* GrapaLibraryRuleSleepEvent::Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput)
 {
@@ -4258,39 +4265,7 @@ GrapaRuleEvent* GrapaLibraryRuleSleepEvent::Run(GrapaScriptExec* vScriptExec, Gr
 #else
 		if (tm<10) tm = 10;
 #endif
-/*
-#ifdef _THREAD_
-		std::this_thread::sleep_for(std::chrono::milliseconds(tm));
-#else
-#ifdef _WIN32
-		Sleep(tm);
-#else
-		usleep(tm * 1000);
-#endif
-#endif
-*/
-printf("[DEBUG] SLEEP START\n");
-	HighResTimerSleep(tm);
-/*
-#ifdef _WIN32
-    // Windows: Use Sleep which is thread-local
-    Sleep(tm);
-#elif defined(__APPLE__)
-    // macOS: Use nanosleep which is thread-local
-    struct timespec ts;
-    ts.tv_sec = tm / 1000;
-    ts.tv_nsec = (tm % 1000) * 1000000;
-    nanosleep(&ts, NULL);
-#else
-    // Linux: Use nanosleep which is thread-local
-    struct timespec ts;
-    ts.tv_sec = tm / 1000;
-    ts.tv_nsec = (tm % 1000) * 1000000;
-    nanosleep(&ts, NULL);
-#endif
-*/
-printf("[DEBUG] SLEEP END\n");
-
+		PureOSSleep(tm);
 	}
 	return(result);
 }

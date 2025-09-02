@@ -48,7 +48,7 @@ for(consumer_id=0;consumer_id<consumer_count;consumer_id+=1)
                 };
                 ("Consumer " + id + ": unlocking\n").echo();
                 queue_lock.unlock();
-                $local.tm = 10 * 8.random();
+                $local.tm = 100 * 4.random();
                 ("Consumer " + id + ": slepping: " + tm + "ms\n").echo();
                 tm.sleep();
                 ("Consumer " + id + ": consumed: " + item + "\n").echo();
@@ -65,14 +65,9 @@ for(consumer_id=0;consumer_id<consumer_count;consumer_id+=1)
     );
 };
 for(consumer_id=0;consumer_id<consumer_count;consumer_id+=1)
-{
-    while(consumer[consumer_id].started()==false || consumer[consumer_id].suspended()==false)
-        100.sleep();
-};
+    while(consumer[consumer_id].suspended()==false) ;
 for(consumer_id=0;consumer_id<consumer_count;consumer_id+=1)
-{
     ("Consumer " + i + ": suspended " + consumer[consumer_id].suspended().str() + "\n").echo();
-};
 ("Consumer threads started\n").echo();
 
 /* Producer thread */
@@ -115,21 +110,16 @@ producer.start(
     }
 );
 
-while(producer.started()==false || producer.suspended()==false)
-    100.sleep();
+while(producer.suspended()==false) ;
 ("Main: Producer suspended\n").echo();
 producer.resume();
 ("Main: Producer resumed\n").echo();
 
-while(producer.started()==true)
-    100.sleep();
+while(producer.started()==true);
 ("Main: Producer completed\n").echo();
 
 for(consumer_id=0;consumer_id<consumer_count;consumer_id+=1)
-{ 
-    while(consumer[consumer_id].started())
-        100.sleep();
-};
+    while(consumer[consumer_id].started()) ;
 ("Consumer completed\n").echo();
 
 consumer = null;

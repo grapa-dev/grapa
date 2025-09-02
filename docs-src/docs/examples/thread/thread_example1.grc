@@ -21,11 +21,7 @@ basic_thread.start(
     }
 );
 "Main: wait for thread\n".echo();
-while(basic_thread.started())
-{
-    "Main: sleep\n".echo();
-    0.sleep();
-}
+while(basic_thread.started()==false) ;
+while(basic_thread.started()==true) ;
 "Main: Basic thread done\n".echo();
 basic_thread = null;
-

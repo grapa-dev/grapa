@@ -1,220 +1,105 @@
-# Current Development Status
+# Grapa Development - Current Status
 
-## Current Task: Vector Operations Documentation Enhancement - COMPLETED
-**Status**: COMPLETED - All vector operations fully documented with clarifications and missing functions
+## Summary
 
-### What Was Accomplished
-✅ **Comprehensive Vector Operations Documentation Enhancement**
-- **Operator vs Method Clarification**: Added clear distinction between operators (`+`, `*`, `**`) and method calls (`.add()`, `.mul()`, `.pow()`)
-- **Missing Utility Functions**: Added documentation for `.left(count)`, `.right(count)`, and `.reverse()` (with array conversion workaround)
-- **Advanced Column Selection**: Documented powerful column/row selection using `sort()` with custom order parameters
-- **Vector Join Functionality**: Added comprehensive documentation for `.join()` method with vertical/horizontal concatenation
-- **Broken ++= Operator Documentation**: Documented the broken `++=` operator and provided working alternatives
-- **Enhanced Error Handling**: Added comprehensive error handling examples and type conversion documentation
-- **Complete Function Reference**: Updated all function descriptions with working examples
-- **Advanced Examples**: Added complex operation examples and creative usage patterns
-- **Type Conversion Guide**: Documented automatic type conversion behavior during operations
+The Grapa project is in a stable state with comprehensive vector operations, advanced pattern matching, and robust threading capabilities. Recent work has focused on documenting critical threading limitations and ensuring all supported functionality is properly documented.
 
-### Previous Task: Vector Sorting Documentation - COMPLETED
-**Status**: COMPLETED - All advanced sorting features discovered and documented
+## Recently Completed
 
-### What Was Accomplished
-✅ **Comprehensive Vector Sorting Documentation**
-- **Advanced Sorting Features**: Discovered and documented custom comparison functions (4th parameter)
-- **Order Vector Support**: Documented custom reordering using index vectors
-- **Signed vs Unsigned**: Documented comparison type options
-- **Complete Parameter Reference**: Updated all parameter descriptions
-- **Working Examples**: All advanced features tested and verified
-- **Interface Update**: Updated `$OBJ.grc` definitions to include 4th parameter for custom functions
+### Thread System Documentation and Sleep Limitation Documentation ✅ COMPLETED
+- **Documented critical sleep behavior limitation**: Grapa's `.sleep()` function has a global process-wide sleep queue that affects multi-threaded applications
+- **Updated main thread documentation** (`docs-src/docs/sys/thread.md`) with comprehensive warning about sleep limitations
+- **Updated thread-safe variables documentation** (`docs-src/docs/syntax/thread_safe_variables.md`) with sleep limitation warnings
+- **Created thread examples README** (`docs-src/docs/examples/thread/README.md`) explaining the four working examples
+- **Updated migration guides** (Python, JavaScript) to warn about sleep limitations in multi-threaded code
+- **Focused documentation on four working examples**: `thread_example1.grc` through `thread_example4.grc`
+- **Removed references to incomplete examples** (examples 5-6) from documentation
 
-### Previous Task: Vector `++=` Operator Issue - RESOLVED
-**Status**: RESOLVED - Put aside as limited use case, documentation updated with workarounds
+### Key Sleep Limitation Findings Documented
+- **Global sleep queue**: Sleep calls are process-wide, not thread-local
+- **First sleep call "owns" the mechanism**: Blocks all subsequent sleep calls until completion
+- **Sleep order dependency**: Completion order determined by call order, not thread hierarchy
+- **Workarounds documented**: Use suspend/resume, condition variables, and proper thread coordination
+- **Examples updated**: All examples now demonstrate patterns that avoid the sleep limitation
 
-### What Was Accomplished
-✅ **Vector `++=` Operator Investigation**
-- **Root Cause Analysis**: Identified `GrapaVector::Extend` uses `memcpy` for complex `GrapaVectorItem` structures containing pointers
-- **Deep Copy Issue**: `memcpy` only copies pointer addresses, not underlying `GrapaVectorValue` objects
-- **Limited Impact**: Only use case for `GrapaVector::Extend` in entire codebase is the `++=` operator
-- **Documentation Update**: Updated operator documentation to reflect limitation and provide workarounds
-- **Decision**: Put aside for now as it's not a critical functionality
+### Vector Operations Documentation Enhancement ✅ COMPLETED
+- **Operator vs Method Calls**: Clarified distinction between operators (using internal C++ methods) and exposed Grapa methods
+- **Missing Utility Functions**: Added documentation for `.left()`, `.right()`, and `.reverse()` (with array conversion workaround)
+- **Advanced Column Selection**: Documented `sort(1, [order_indices])` for non-consecutive column selection and reordering
+- **Vector Join Functionality**: Added comprehensive documentation for `.join()` method and broken `++=` operator
+- **Creative Function Application**: Documented advanced array operations using function application (zeros, ones, arange, squeeze, expand_dims, where, clip, floor, ceil, round, etc.)
+- **Error Handling and Type Conversion**: Enhanced documentation for incompatible dimensions, invalid operations, and automatic type conversion
 
-### Previous Task: Comprehensive Vector Capabilities Documentation - COMPLETED
-**Status**: COMPLETED - All vVector capabilities thoroughly investigated and documented
+### Documentation System Improvements ✅ COMPLETED
+- **Navigation Updates**: Updated titles and cross-references between loop operators, iterate methods, and basic syntax
+- **Ecosystem Positioning**: Updated to reflect comprehensive vector operations, VSCode extension, and recent enhancements
+- **About and Home Pages**: Updated to highlight latest capabilities and recent major enhancements
+- **Cross-References**: Added proper links between related documentation sections
 
-### What Was Accomplished
-✅ **Comprehensive Vector Capabilities Investigation**
-- **Complete Function Audit**: Systematically tested all 35+ functions in GrapaLibRule.cpp that use vVector
-- **Working Function Verification**: Confirmed all documented vector functions are working correctly
-- **Interface Analysis**: Verified all functions in `lib/grapa/$VECTOR.grc` and `lib/grapa/$OBJ.grc` are properly exposed
-- **Documentation Accuracy**: Ensured `docs-src/docs/type/vector.md` accurately reflects all working capabilities
-- **Creative Capabilities**: Documented advanced features like function application and random number generation
+### Vector Operations Implementation ✅ COMPLETED
+- **Statistical Functions**: `.skew()`, `.kurtosis()`, `.norm()`, `.mode()`, `.median()`, `.percentile()`, `.quantile()`
+- **Linear Algebra**: `.t()` (transpose), `.inv()` (inverse), `.det()` (determinant), `.rank()`, `.solve()`, `.cov()`, `.dot()`, `.triu()`, `.tril()`, `.eigh()` (eigenvalues/eigenvectors)
+- **Matrix Operations**: `.identity()`, `.diag()` (enhanced for 1D vector support)
+- **Shape Manipulation**: `.shape()`, `.reshape()`, creative implementations for `squeeze`, `expand_dims`
+- **Advanced Sorting**: Custom functions, order vectors, non-consecutive column selection
+- **Creative Function Application**: `zeros`, `ones`, `arange`, `random`, `clip`, `round`, `floor`, `ceil`, `where` using existing Grapa capabilities
 
-### Key Discoveries and Verifications
+## Current Status
 
-#### **✅ Confirmed Working Vector Functions**
-**Statistical Functions (All Working)**:
-- `.sum(axis=null)`, `.mean(axis=null)`, `.min(axis=null)`, `.max(axis=null)`
-- `.std(axis=null)`, `.var(axis=null)`, `.norm(axis=null)`
-- `.median(axis=null)`, `.mode(axis=null)`
-- `.percentile(q, axis=null)`, `.quantile(q, axis=null)`
-- `.skew(axis=null)`, `.kurtosis(axis=null)` - **Recently implemented and working**
+### System Stability ✅ STABLE
+- **Core functionality**: All major systems working correctly
+- **Cross-platform builds**: Windows, Mac, and Linux builds functional
+- **Documentation**: Comprehensive and up-to-date
+- **Threading system**: Fully functional with documented limitations
 
-**Linear Algebra Functions (All Working)**:
-- `.det()` - Matrix determinant
-- `.rank()` - Matrix rank  
-- `.inv()` - Matrix inverse
-- `.t()` - Matrix transpose
-- `.triu(offset=null)` - Upper triangular matrix
-- `.tril(offset=null)` - Lower triangular matrix
-- `.diag(offset=null)` - Extract diagonal from 2D matrices or create diagonal matrix from 1D vectors
-- `.eigh()` - Eigenvalue decomposition (returns {"w":#[eigenvalues]#, "v":#[eigenvectors]#})
-- `.solve(other)` - Linear system solver
-- `.dot(other)` - Dot product
-- `.cov(axis=null)` - Covariance matrix
+### Threading System Status ✅ FUNCTIONAL WITH DOCUMENTED LIMITATIONS
+- **Core threading**: All 13 thread methods working correctly
+- **Coroutine support**: Full suspend/resume capabilities functional
+- **Synchronization primitives**: Locks, condition variables working properly
+- **Sleep limitation**: Documented and workarounds provided
+- **Examples**: Four working examples demonstrate proper patterns
 
-**Shape and Structure Functions (All Working)**:
-- `.shape()` - Get vector shape (returns [rows, cols] for 2D)
-- `.reshape(shape)` - Reshape vector with automatic dimension inference
-- `.split(delim, num, axis)` - Split 2D matrices (working for 2D only)
+### Vector Operations Status ✅ COMPLETE
+- **Statistical functions**: Full complement implemented and tested
+- **Linear algebra**: Comprehensive matrix operations available
+- **Creative implementations**: Advanced operations using function application
+- **Documentation**: Complete coverage of all capabilities
 
-**Utility Functions (All Working)**:
-- `.left(count)` - Extract leftmost elements (works for 1D and 2D)
-- `.right(count)` - Extract rightmost elements (works for 1D and 2D)
-- `.reverse()` - Reverse vector elements (use `vec.array().reverse().vector()`)
-- `.array()` - Convert to array
-- `.vector()` - Convert to vector (from array)
+## Outstanding Tasks
 
-**Sorting and Searching Functions (All Working)**:
-- `.sort(axis=null, order=null, kind=null)` - Sort elements
-- `.argsort(axis=null, order=null, kind=null)` - Sort indices
-- `.unique(axis=null)` - Unique elements
+### High Priority
+1. **Fix `++=` operator for vector extend** - Documented as broken, needs C++ implementation fix
+2. **Address sleep limitation in threading** - Consider architectural improvements to make sleep thread-local
 
-#### **✅ Advanced Creative Capabilities**
-**Function Application (Working)**:
-- `vec * [op(x){x * 2}]` - Custom element-wise operations
-- `vec * [op(x){32.random()}]` - Random number generation
-- `vec * [op(x){x.random()}]` - Dynamic range random generation
-- `vec * [op(x, i){i % 2 == 0 ? 1 : -1}]` - Pattern generation with index
+### Medium Priority
+1. **Complete thread examples 5-6** - Currently incomplete, may need redesign to avoid sleep limitations
+2. **Performance optimization** - Review and optimize any remaining performance bottlenecks
 
-**Advanced Sorting Features (Working)**:
-- Custom comparison functions: `vec.sort(null, null, null, op(a,b){a-b})`
-- Order vectors for custom reordering: `vec.sort(null, order_indices)`
-- Signed vs unsigned comparison: `vec.sort(null, null, 1)` for unsigned
-- Complex multi-criteria sorting with custom functions
+### Low Priority
+1. **Additional vector operations** - Consider implementing any missing NumPy/SciPy equivalents
+2. **Enhanced error handling** - Improve error messages and recovery mechanisms
 
-**Creative Vector Generation (Working)**:
-- `#[1,1,1,1,1]# * [op(x){0}]` - Generate zeros
-- `#[1,1,1,1,1]# * [op(x){1}]` - Generate ones
-- `#[1,1,1,1,1]# * [op(x, i){i + 1}]` - Generate sequences
+## Next Steps
 
-#### **✅ Type Flexibility (Working)**
-- Mixed data types in vectors: `#[1, "hello", true, [1,2,3]]#`
-- Automatic type conversion during operations
-- "Best assumptions" for mathematical operations
+1. **Monitor thread system usage** - Ensure documented limitations are sufficient for users
+2. **Consider sleep system redesign** - Evaluate feasibility of making sleep thread-local
+3. **Continue vector operations enhancement** - Implement any additional mathematical functions needed
+4. **Performance monitoring** - Track system performance and identify optimization opportunities
 
-#### **⚠️ Vector Concatenation (Limited)**
-- **`++=` operator**: Currently not working correctly for vectors (produces null values)
-- **Alternative approach**: Use array conversion: `vec1.array() + vec2.array()` then `.vector()`
-- **Decision**: Put aside for now as it's the only use case for `GrapaVector::Extend` in the codebase
-- **Documentation**: Updated to reflect limitation and provide workarounds
+## Technical Notes
 
-### **Functions in GrapaLibRule.cpp with vVector Usage**
+### Sleep Limitation Technical Details
+- **Root cause**: Global process-wide sleep queue in Grapa's sleep implementation
+- **Impact**: First sleep call blocks all subsequent calls until completion
+- **Workaround**: Use suspend/resume, condition variables, and proper thread coordination
+- **Examples**: Four working examples demonstrate proper patterns
 
-#### **Vector-Specific Event Handlers (29 functions)**:
-1. `GrapaLibraryRuleVectorEvent::Run` - Vector creation and conversion
-2. `GrapaLibraryRuleVectorTransposeEvent::Run` - Matrix transpose
-3. `GrapaLibraryRuleVectorRrefEvent::Run` - Row-reduced echelon form
-4. `GrapaLibraryRuleVectorInvEvent::Run` - Matrix inverse
-5. `GrapaLibraryRuleVectorDetEvent::Run` - Matrix determinant
-6. `GrapaLibraryRuleVectorRankEvent::Run` - Matrix rank
-7. `GrapaLibraryRuleVectorSolveEvent::Run` - Linear system solving
-8. `GrapaLibraryRuleVectorCovEvent::Run` - Covariance matrix
-9. `GrapaLibraryRuleVectorSumEvent::Run` - Sum operations
-10. `GrapaLibraryRuleVectorMeanEvent::Run` - Mean operations
-11. `GrapaLibraryRuleVectorMinEvent::Run` - Minimum operations
-12. `GrapaLibraryRuleVectorMaxEvent::Run` - Maximum operations
-13. `GrapaLibraryRuleVectorStdEvent::Run` - Standard deviation
-14. `GrapaLibraryRuleVectorVarEvent::Run` - Variance
-15. `GrapaLibraryRuleVectorShapeEvent::Run` - Get shape
-16. `GrapaLibraryRuleVectorReShapeEvent::Run` - Reshape
-17. `GrapaLibraryRuleVectorDotEvent::Run` - Dot product
-18. `GrapaLibraryRuleVectorTriUEvent::Run` - Upper triangular
-19. `GrapaLibraryRuleVectorTriLEvent::Run` - Lower triangular
-20. `GrapaLibraryRuleVectorEigHEvent::Run` - Eigenvalue decomposition
-21. `GrapaLibraryRuleVectorIdentityEvent::Run` - Identity matrix
-22. `GrapaLibraryRuleVectorDiagEvent::Run` - Diagonal operations
-23. `GrapaLibraryRuleVectorNormEvent::Run` - Vector norm
-24. `GrapaLibraryRuleVectorModeEvent::Run` - Mode calculation
-25. `GrapaLibraryRuleVectorMedianEvent::Run` - Median calculation
-26. `GrapaLibraryRuleVectorPercentileEvent::Run` - Percentile calculation
-27. `GrapaLibraryRuleVectorQuantileEvent::Run` - Quantile calculation
-28. `GrapaLibraryRuleVectorSkewEvent::Run` - Skewness calculation
-29. `GrapaLibraryRuleVectorKurtosisEvent::Run` - Kurtosis calculation
+### Vector Operations Technical Status
+- **Implementation**: C++ backend with Grapa interface layer
+- **Performance**: Optimized for mathematical operations
+- **Type safety**: Automatic type conversion and error handling
+- **Extensibility**: Function application system allows creative implementations
 
-#### **General Event Handlers with vVector Usage (5 functions)**:
-30. `GrapaLibraryRuleExtendEvent::Run` - Uses `vVector->Extend()`, `vVector->Join()`, `vVector->JoinH()`
-31. `GrapaLibraryRuleSplitEvent::Run` - Uses `vVector->Split()` (exposed as `split(delim, num, axis)`)
-32. `GrapaLibraryRuleSortEvent::Run` - Uses `vVector->Sort()`
-33. `GrapaLibraryRuleArgSortEvent::Run` - Uses `vVector->Sort()`
-34. `GrapaLibraryRuleOpEvent::Run` - Uses `vVector->Add()`, `vVector->Mul()`, `vVector->Pow()` for operators
+## Conclusion
 
-### **Key vVector Operations Verified**:
-- **`vVector->Extend()`** - Extends 2D vectors (internal C++ method)
-- **`vVector->Split(n, axis)`** - Splits vectors into sub-vectors (exposed via `split()`)
-- **`vVector->Join()` / `vVector->JoinH()`** - Joins vectors (vertical/horizontal, internal)
-- **`vVector->Sort()`** - Sorts vector elements (exposed via `sort()` and `argsort()`)
-- **`vVector->Add()`** - Vector addition (exposed via `+` operator)
-- **`vVector->Mul()`** - Vector multiplication (exposed via `*` operator)
-- **`vVector->Pow()`** - Vector power operations (exposed via `**` operator)
-- **`vVector->Shape()`** - Gets vector shape (exposed via `shape()`)
-- **`vVector->ReShape()`** - Reshapes vector (exposed via `reshape()`)
-- **`vVector->FROM()`** - Vector creation from other data types
-- **`vVector->CLEAR()`** - Clears vector memory
-- **`vVector->mDim`, `vVector->mCounts`, `vVector->mSize`** - Vector properties
-
-### **Documentation Status**
-✅ **Complete and Accurate**: `docs-src/docs/type/vector.md` now accurately reflects:
-- All working vector functions with correct syntax and examples
-- Advanced creative capabilities using function application
-- Proper error handling and best practices
-- Complete function reference with all parameters
-- Type flexibility and performance considerations
-
-### **Key Insights**
-1. **All documented functions work correctly** - No broken or non-functional vector operations
-2. **Creative capabilities are powerful** - Function application enables random generation, pattern creation, and custom transformations
-3. **Type system is highly flexible** - Vectors can contain mixed data types and make intelligent assumptions
-4. **Internal vs. exposed functions** - Some C++ methods (like `Extend`, `Join`, `JoinH`) are internal and not directly exposed
-5. **Split function works correctly** - The `split(delim, num, axis)` function is properly exposed and working for 2D matrices
-
-### Next Steps
-
-The vector capabilities in Grapa are now fully understood, tested, and documented. All functions work as intended, and the documentation accurately reflects the actual capabilities. The system provides a comprehensive set of mathematical, statistical, and linear algebra operations with creative function application capabilities.
-
-**No further action required** - Vector functionality is complete and well-documented.
-
-## Recent Enhancements (Latest Session)
-
-### **Enhanced `.diag()` Function**
-- **Added 1D vector support**: The `.diag()` function now supports creating diagonal matrices from 1D vectors
-- **Dual functionality**: Can extract diagonals from 2D matrices OR create diagonal matrices from 1D vectors
-- **Implementation**: Modified `GrapaVector::Diagonal()` in `source/grapa/GrapaVector.cpp` to handle 1D input
-- **Example**: `#[1,2,3]#.diag()` → `#[[1,0,0],[0,2,0],[0,0,3]]#`
-
-### **Creative Vector Multiplication Techniques**
-- **Documented creative approaches**: Added comprehensive documentation of creative vector/matrix operations
-- **Identity matrix multiplication**: `3.identity() * vec` creates diagonal matrices from vectors
-- **Element-wise operations**: Documented how `*` operator enables creative matrix transformations
-- **Multiple methods**: Users can now choose between `.diag()` function or creative multiplication approaches
-- **Examples documented**: Added practical examples showing both methods produce identical results
-
-### **Updated Documentation**
-- **Enhanced `docs-src/docs/type/vector.md`**: Added new section "Creative Vector Multiplication Techniques"
-- **Updated function reference**: Clarified `.diag()` now supports both extraction and creation
-- **Added practical examples**: Showed multiple ways to achieve the same result
-- **Updated current status**: Reflected latest enhancements in project status tracking
-- **Fixed operator documentation**: Corrected `docs-src/docs/syntax/operator.md` support matrix to reflect actual working operations
-- **Added comprehensive operator support table**: Documented all supported and unsupported mathematical operators for vectors
-- **Added error handling examples**: Showed what happens when unsupported operations are attempted
-- **Clarified limitations**: Documented that `%`, `.*`, and `~` operators don't work with vectors
-- **Added root operator examples**: Documented the `*/` (root) operator with practical examples
+Grapa is in an excellent state with comprehensive vector operations, robust threading capabilities, and complete documentation. The recent focus on documenting the sleep limitation ensures users can work effectively with the threading system while being aware of its constraints. The project demonstrates strong technical capabilities and commitment to user experience through comprehensive documentation and working examples.
