@@ -132,20 +132,22 @@ producer.start(
 
 
 while(producer.started()==false || producer.suspended()==false)
-    $sys().sleep(pausetime);
+    ;
 ("Main: Producer suspended\n").echo();
 producer.resume();
 ("Main: Producer resumed\n").echo();
 
-while(producer.started())
-    $sys().sleep(pausetime);
+
+while(producer.started()==true)
+   ;
 ("Main: Producer completed\n").echo();
+
 
 i = 0;
 while(i<consumer_count)
 { 
     while(consumer[i].started())
-        $sys().sleep(pausetime);
+        ;
     i += 1;
 };
 ("Consumer completed\n").echo();
