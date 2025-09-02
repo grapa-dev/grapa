@@ -33,8 +33,10 @@ if [ ${#MISSING_FILES[@]} -gt 0 ]; then
     exit 1
 fi
 
+echo "✅ All required files found"
+
 # Check for existing installation
-if [ -d "$INSTALL_PATH/grapa" ] || [ -f "$BIN_PATH/grapa" ]; then
+if [ -f "$BIN_PATH/grapa" ] || [ -f "$LIB_PATH/libgrapa_static.a" ] || [ -f "$LIB_PATH/libgrapa.so" ]; then
     echo "⚠️  Grapa is already installed at: $INSTALL_PATH"
     read -p "Do you want to replace it? (y/N): " -n 1 -r
     echo
@@ -45,11 +47,6 @@ if [ -d "$INSTALL_PATH/grapa" ] || [ -f "$BIN_PATH/grapa" ]; then
     echo "🔄 Replacing existing installation..."
     
     # Remove old installation completely to ensure clean replacement
-    if [ -d "$INSTALL_PATH/grapa" ]; then
-        sudo rm -rf "$INSTALL_PATH/grapa"
-        echo "✅ Removed old installation directory"
-    fi
-    
     if [ -f "$BIN_PATH/grapa" ]; then
         sudo rm -f "$BIN_PATH/grapa"
         echo "✅ Removed old executable"
@@ -84,28 +81,41 @@ echo "✅ Copied static library to $LIB_PATH"
 # Copy shared library if it exists
 if [ -f "$SCRIPT_DIR/libgrapa.so" ]; then
     sudo cp "$SCRIPT_DIR/libgrapa.so" $LIB_PATH/
-    sudo ldconfig
-    echo "✅ Copied shared library to $LIB_PATH and updated library cache"
+    # Note: ldconfig is not needed on macOS
+    echo "✅ Copied shared library to $LIB_PATH"
 else
     echo "ℹ️  Shared library not found (shared library not available)"
 fi
 
 # Add to PATH if not already present
 if ! echo "$PATH" | grep -q "$BIN_PATH"; then
-    # Check if we can modify the system PATH
-    if [ -w /etc/environment ]; then
-        echo "export PATH=\"\$PATH:$BIN_PATH\"" | sudo tee -a /etc/environment > /dev/null
-        echo "✅ Added Grapa to system PATH in /etc/environment"
-    elif [ -w /etc/profile.d ]; then
-        echo "export PATH=\"\$PATH:$BIN_PATH\"" | sudo tee /etc/profile.d/grapa.sh > /dev/null
-        sudo chmod +x /etc/profile.d/grapa.sh
-        echo "✅ Added Grapa to system PATH in /etc/profile.d/grapa.sh"
+    # Try to add to shell profile files
+    SHELL_PROFILE=""
+    if [ -f "$HOME/.zshrc" ]; then
+        SHELL_PROFILE="$HOME/.zshrc"
+    elif [ -f "$HOME/.bash_profile" ]; then
+        SHELL_PROFILE="$HOME/.bash_profile"
+    elif [ -f "$HOME/.bashrc" ]; then
+        SHELL_PROFILE="$HOME/.bashrc"
+    fi
+    
+    if [ -n "$SHELL_PROFILE" ]; then
+        # Check if PATH is already set in the profile
+        if ! grep -q "$BIN_PATH" "$SHELL_PROFILE"; then
+            echo "" >> "$SHELL_PROFILE"
+            echo "# Grapa installation" >> "$SHELL_PROFILE"
+            echo "export PATH=\"\$PATH:$BIN_PATH\"" >> "$SHELL_PROFILE"
+            echo "✅ Added Grapa to PATH in $SHELL_PROFILE"
+        else
+            echo "ℹ️  Grapa already in PATH in $SHELL_PROFILE"
+        fi
     else
-        echo "⚠️  Could not automatically add to system PATH"
-        echo "Please manually add $BIN_PATH to your PATH"
+        echo "⚠️  Could not automatically add to shell profile"
+        echo "Please manually add the following line to your shell profile:"
+        echo "export PATH=\"\$PATH:$BIN_PATH\""
     fi
 else
-    echo "ℹ️  Grapa already in system PATH"
+    echo "ℹ️  Grapa already in current system PATH"
 fi
 
 echo ""
@@ -117,11 +127,15 @@ echo "  Static Library: $LIB_PATH/libgrapa_static.a"
 if [ -f "$LIB_PATH/libgrapa.so" ]; then
     echo "  Shared Library: $LIB_PATH/libgrapa.so"
 fi
-echo "  System PATH: Updated"
+echo "  Shell Profile: Updated"
 echo ""
 echo "Next steps:"
-echo "  1. Restart your terminal for PATH changes to take effect"
+echo "  1. Restart your terminal or run: source $SHELL_PROFILE"
 echo "  2. Verify installation: grapa --version"
 echo "  3. Test functionality: grapa -c '2+2'"
 echo ""
-echo "To uninstall: sudo rm -rf $INSTALL_PATH/grapa && sudo rm -f $BIN_PATH/grapa"
+echo "To uninstall:"
+echo "  sudo rm -f $BIN_PATH/grapa"
+echo "  sudo rm -f $LIB_PATH/libgrapa_static.a"
+echo "  sudo rm -f $LIB_PATH/libgrapa.so"
+echo "  # Remove PATH line from your shell profile manually"
