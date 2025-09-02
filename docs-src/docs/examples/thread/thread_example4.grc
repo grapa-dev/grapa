@@ -12,7 +12,8 @@ consumer = [];
 shared_queue = [];
 queue_lock = $thread();
 consumer_id = 0;
-while(consumer_id<2)
+consumer_count = 1;
+while(consumer_id<consumer_count)
 {
     consumer += $thread();
     consumer[-1].start(
@@ -62,21 +63,21 @@ while(consumer_id<2)
     consumer_id += 1;
 };
 i = 0;
-while(i<2)
+while(i<consumer_count)
 {
     while(consumer[i].started()==false || consumer[i].suspended()==false)
         $sys().sleep(10);
     i += 1;
 };
 i = 0;
-while(i<2)
+while(i<consumer_count)
 {
     ("Consumer " + i + ": suspended " + consumer[i].suspended().str() + "\n").echo();
     i += 1;
 };
 ("Consumer threads started\n").echo();
 
-pausetime = 10;
+pausetime = 0;
 
 /* Producer thread */
 producer = $thread();
@@ -104,7 +105,7 @@ producer.start(
             ("Producer: Added Item " + i + "\n").echo();
             $sys().sleep(pausetime);
             $local.j = 0;
-            while(j<2)
+            while(j<consumer_count)
             {
                 if (consumer[j].suspended())
                 {
@@ -141,7 +142,7 @@ while(producer.started())
 ("Main: Producer completed\n").echo();
 
 i = 0;
-while(i<2)
+while(i<consumer_count)
 { 
     while(consumer[i].started())
         $sys().sleep(pausetime);
