@@ -14,7 +14,7 @@ from pathlib import Path
 extra_link_args = []
 extra_compile_args = []
 runtime_library_dirs = []
-grapapy_version = "0.1.51"
+grapapy_version = "0.1.52"
 is_aws = False
 is_apple = False
 from_os = ''
@@ -333,9 +333,9 @@ def pick_libraries():
         return ['grapa']
     if my_system == 'Darwin':
         #return ['@rpath/grapa']
-        return ['source/grapa-lib/libgrapa.a']
+        return ['source/grapa-lib/libgrapa_static.a']
     if my_system == 'Windows':
-        return ["grapa","Gdi32","Advapi32","User32","Ole32","Shell32","Comdlg32","winspool","crypt32"]
+        return ["grapa_static","Gdi32","Advapi32","User32","Ole32","Shell32","Comdlg32","winspool","crypt32"]
     raise ValueError("Unknown platform: " + my_system)
 
 # Set up include_dirs for Windows SDK paths
