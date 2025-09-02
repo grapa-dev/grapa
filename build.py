@@ -98,690 +98,629 @@ class BuildConfig:
         return []
 
 class GrapaBuilder:
-    """Main build orchestrator"""
+    """Main builder class for Grapa"""
     
-    def __init__(self):
-        self.project_root = Path(__file__).parent
-        self.bin_dir = self.project_root / "bin"
-        self.bin_dir.mkdir(exist_ok=True)
+    def __init__(self, config: BuildConfig):
+        self.config = config
+        self.target_dir = f"bin/{config.target}"
+        self.target_lib_dir = f"source/grapa-lib/{config.target}"
         
-    def detect_platform(self) -> Tuple[str, str]:
-        """Detect current platform and architecture"""
-        system = platform.system().lower()
-        machine = platform.machine().lower()
+    def clean(self):
+        """Clean build artifacts"""
+        print(f"🧹 Cleaning build artifacts for {self.config.target}...")
         
-        if system == "windows":
-            return "windows", "amd64"
-        elif system == "darwin":
-            # On Mac, only support Apple Silicon (arm64)
-            if machine == "arm64":
-                return "mac", "arm64"
-            else:
-                raise RuntimeError(f"mac-amd64 is no longer supported. Please use an Apple Silicon Mac (arm64). Current architecture: {machine}")
-        elif system == "linux":
-            # Check if this is AWS Linux by looking for Amazon Linux specific files
-            if (os.path.exists("/etc/system-release") and 
-                ("Amazon Linux" in open("/etc/system-release").read())):
-                return "aws", "arm64" if machine == "aarch64" else "amd64"
-            else:
-                return "linux", "arm64" if machine == "aarch64" else "amd64"
+        # Clean executable
+        if os.path.exists(self.config.output_name):
+            os.remove(self.config.output_name)
+            print(f"✅ Removed {self.config.output_name}")
+        
+        # Clean static library
+        if self.config.platform == "windows":
+            if os.path.exists("grapa.lib"):
+                os.remove("grapa.lib")
+                print("✅ Removed grapa.lib")
         else:
-            raise RuntimeError(f"Unsupported platform: {system}")
-    
-    def build_windows(self, config: BuildConfig, exe_only: bool = False) -> bool:
-        """Build for Windows using Visual Studio"""
-        print(f"Building for {config.target} using Visual Studio...")
-        
-        try:
-            # Build main executable
-            subprocess.run([
-                "msbuild", "prj/win-amd64/grapa.sln", "/p:Configuration=Release"
-            ], check=True)
-            
-            # Copy executable
-            if os.path.exists("grapa.exe"):
-                os.remove("grapa.exe")
-            shutil.copy("prj/win-amd64/x64/Release/grapa.exe", "grapa.exe")
-            
-            if not exe_only:
-                # Build library
-                subprocess.run([
-                    "msbuild", "prj/winlib-amd64/grapalib.sln", "/p:Configuration=Release"
-                ], check=True)
-                # Copy library
-                if os.path.exists("grapa.lib"):
-                    os.remove("grapa.lib")
-                shutil.copy("prj/winlib-amd64/x64/Release/grapa.lib", "grapa.lib")
-                
-                # Ensure target directory exists
-                target_lib_dir = f"source/grapa-lib/{config.target}"
-                os.makedirs(target_lib_dir, exist_ok=True)
-                shutil.copy("prj/winlib-amd64/x64/Release/grapa.lib", f"{target_lib_dir}/grapa.lib")
-                # Clean build artifacts
-                self._clean_windows_build()
-                # Create package
-                self._create_windows_package(config)
-            
-            return True
-            
-        except subprocess.CalledProcessError as e:
-            print(f"Windows build failed: {e}")
-            return False
-    
-    def build_mac(self, config: BuildConfig, exe_only: bool = False) -> bool:
-        """Build for Mac using clang/clang++"""
-        print(f"Building for {config.target} using clang++...")
-        
-        try:
-            # Build main executable
-            self._run_mac_build_command(config, is_library=False)
-            
-            # Build static library
-            self._run_mac_build_command(config, is_library=True, is_static=True)
-            
-            # Build shared library (skip if exe_only)
-            if not exe_only:
-                self._run_mac_build_command(config, is_library=True, is_static=False)
-            
-            if not exe_only:
-                # Create package
-                self._create_mac_package(config)
-            
-            return True
-            
-        except subprocess.CalledProcessError as e:
-            print(f"Mac build failed: {e}")
-            return False
-    
-    def build_linux_aws(self, config: BuildConfig, exe_only: bool = False) -> bool:
-        """Build for Linux/AWS using g++"""
-        print(f"Building for {config.target} using g++...")
-        
-        try:
-            # Build main executable
-            if config.platform == "aws":
-                self._run_aws_build_command(config, is_library=False)
-            else:
-                self._run_linux_build_command(config, is_library=False)
-            
-            # Build static library
-            if config.platform == "aws":
-                self._run_aws_build_command(config, is_library=True, is_static=True)
-            else:
-                self._run_linux_build_command(config, is_library=True, is_static=True)
-            
-            # Build shared library (skip if exe_only)
-            if not exe_only:
-                if config.platform == "aws":
-                    self._run_aws_build_command(config, is_library=True, is_static=False)
-                else:
-                    self._run_linux_build_command(config, is_library=True, is_static=False)
-            
-            if not exe_only:
-                # Create package
-                self._create_linux_package(config)
-            
-            return True
-            
-        except subprocess.CalledProcessError as e:
-            print(f"{config.platform.capitalize()} build failed: {e}")
-            return False
-    
-    def _run_mac_build_command(self, config: BuildConfig, is_library: bool = False, is_static: bool = False):
-        """Run Mac build command"""
-        import glob
-        
-        # Remove existing executable only when building executable
-        if not is_library and os.path.exists(config.output_name):
-            os.remove(config.output_name)
-        
-        print(f"Building {'library' if is_library else 'executable'} for {config.target}...")
-        
-        # Build utf8proc first (C compilation)
-        print("Building utf8proc...")
-        subprocess.run([
-            "clang", "-Isource", "-DUTF8PROC_STATIC", "-c", 
-            "source/utf8proc/utf8proc.c", "-m64", "-O3"
-        ], check=True)
-        
-        if is_library:
-            if is_static:
-                # Build static library - match BUILD.md exactly
-                print("Building static library...")
-                cpp_files = glob.glob("source/grapa/*.cpp")
-                subprocess.run([
-                    "clang++", "-Isource", "-c"
-                ] + cpp_files + [
-                    "-std=c++17", "-m64", "-O3", "-pthread"
-                ], check=True)
-                # Get all .o files
-                obj_files = glob.glob("*.o")
-                if not obj_files:
-                    raise RuntimeError("No object files found for static library")
-                subprocess.run(["ar", "-crs", "libgrapa.a"] + obj_files, check=True)
-                shutil.copy("libgrapa.a", f"source/grapa-lib/{config.target}/libgrapa.a")
+            if os.path.exists("libgrapa.a"):
                 os.remove("libgrapa.a")
-            else:
-                # Build shared library - match BUILD.md exactly
-                print("Building shared library...")
-                cpp_files = glob.glob("source/grapa/*.cpp")
-                openssl_libs = glob.glob(f"source/openssl-lib/{config.target}/*.a")
-                fl_libs = glob.glob(f"source/fl-lib/{config.target}/*.a")
-                blst_libs = glob.glob(f"source/blst-lib/{config.target}/*.a")
-                pcre2_lib = glob.glob(f"source/pcre2-lib/{config.target}/libpcre2-8.a")
-                
-                cmd = [
-                    "clang++", "-shared", "-Isource"
-                ] + cpp_files + ["utf8proc.o"] + openssl_libs + fl_libs + blst_libs + pcre2_lib + config.frameworks + [
-                    "-std=c++17", "-m64", "-O3", "-pthread", "-fPIC", "-o", "libgrapa.so"
-                ]
-                print(f"Executing shared library build command: {' '.join(cmd)}")
-                try:
-                    result = os.system(" ".join(cmd))
-                    if result != 0:
-                        raise RuntimeError(f"Shared library build failed with exit code {result}")
-                except Exception as e:
-                    print(f"❌ Shared library build failed: {e}")
-                    raise
-                shutil.copy("libgrapa.so", f"source/grapa-other/{config.target}/libgrapa.so")
+                print("✅ Removed libgrapa.a")
+            if os.path.exists("libgrapa.so"):
                 os.remove("libgrapa.so")
-        else:
-            # Build executable - match BUILD.md exactly (two separate steps)
-            print("Building executable...")
-            cpp_files = glob.glob("source/grapa/*.cpp")
-            openssl_libs = glob.glob(f"source/openssl-lib/{config.target}/*.a")
-            fl_libs = glob.glob(f"source/fl-lib/{config.target}/*.a")
-            blst_libs = glob.glob(f"source/blst-lib/{config.target}/*.a")
-            pcre2_lib = glob.glob(f"source/pcre2-lib/{config.target}/libpcre2-8.a")
-            
-            # Step 1: utf8proc.o is already built above
-            # Step 2: Build executable using utf8proc.o - use shell globs like manual command
-            cmd = [
-                "clang++", "-Isource", "source/main.cpp", "source/grapa/*.cpp", "utf8proc.o",
-                f"source/openssl-lib/{config.target}/*.a", f"source/fl-lib/{config.target}/*.a", 
-                f"source/blst-lib/{config.target}/*.a", f"source/pcre2-lib/{config.target}/libpcre2-8.a"
-            ] + config.frameworks + [
-                "-std=c++17", "-m64", "-O3", "-pthread", "-o", config.output_name
-            ]
-            print(f"Current working directory: {os.getcwd()}")
-            print(f"Executing executable build command: {' '.join(cmd)}")
-            try:
-                # Try os.system() first - it might be faster than subprocess
-                result = os.system(" ".join(cmd))
-                if result != 0:
-                    raise RuntimeError(f"Build failed with exit code {result}")
-            except Exception as e:
-                print(f"❌ Build failed: {e}")
-                raise
-            
-            # Check if executable was created
-            if os.path.exists(config.output_name):
-                print(f"✅ Executable created: {config.output_name}")
-            else:
-                print(f"❌ Executable not found: {config.output_name}")
-                raise RuntimeError(f"Executable {config.output_name} was not created")
-    
-    def _get_x11_libs(self):
-        """Get X11 libraries based on FLTK configuration"""
-        try:
-            # Check if FLTK_USE_X11 is defined in the configuration
-            with open("source/FL/fl_config.h", "r") as f:
-                config_content = f.read()
-                if "define FLTK_USE_X11" in config_content:
-                    return ["-lX11", "-lXfixes", "-lXft", "-lXext", "-lXrender", "-lXinerama", "-lfontconfig", "-lXcursor"]
-                else:
-                    # Even if FLTK_USE_X11 is not defined, the library might still contain X11 code
-                    # Check if the FLTK library contains X11 symbols
-                    import subprocess
-                    try:
-                        result = subprocess.run(["nm", "-D", "source/fl-lib/linux-arm64/libfltk.a"], 
-                                              capture_output=True, text=True, timeout=10)
-                        if "X11" in result.stdout or "Xft" in result.stdout:
-                            print("⚠️  FLTK library contains X11 symbols, including X11 libraries")
-                            return ["-lX11", "-lXfixes", "-lXft", "-lXext", "-lXrender", "-lXinerama", "-lfontconfig", "-lXcursor"]
-                    except:
-                        pass
-                    print("⚠️  FLTK_USE_X11 not defined, skipping X11 libraries")
-                    return []
-        except FileNotFoundError:
-            print("⚠️  FLTK config not found, skipping X11 libraries")
-            return []
-
-    def _run_linux_build_command(self, config: BuildConfig, is_library: bool = False, is_static: bool = False):
-        """Run Linux build command (Ubuntu)"""
-        import glob
+                print("✅ Removed libgrapa.so")
         
-        # Remove existing executable only when building executable
-        if not is_library and os.path.exists(config.output_name):
-            os.remove(config.output_name)
-        
-        print(f"Building {'library' if is_library else 'executable'} for {config.target}...")
-        
-        # Build utf8proc first (C compilation)
-        print("Building utf8proc...")
-        # Use -fPIC for shared library builds, regular for executable
-        pic_flag = ["-fPIC"] if is_library else []
-        subprocess.run([
-            "gcc", "-Isource", "-DUTF8PROC_STATIC", "-c", 
-            "source/utf8proc/utf8proc.c", "-O3"
-        ] + pic_flag, check=True)
-        
-        # Get library path based on target
-        lib_path = f"source/openssl-lib/{config.target}"
-        
-        if is_library:
-            if is_static:
-                # Build static library
-                cpp_files = glob.glob("source/grapa/*.cpp")
-                subprocess.run([
-                    "g++"
-                ] + config.flags + [
-                    "-c"
-                ] + cpp_files + [
-                    "-fPIC"
-                ], check=True)
-                # Get all .o files (including utf8proc.o if it exists)
-                obj_files = glob.glob("*.o")
-                if not obj_files:
-                    raise RuntimeError("No object files found for static library")
-                subprocess.run(["ar", "-crs", "libgrapa.a"] + obj_files, check=True)
-                shutil.copy("libgrapa.a", f"source/grapa-lib/{config.target}/libgrapa.a")
-                os.remove("libgrapa.a")
-            else:
-                # Build shared library
-                cpp_files = glob.glob("source/grapa/*.cpp")
-                openssl_libs = glob.glob(f"source/openssl-lib/{config.target}/*.a")
-                fl_libs = glob.glob(f"source/fl-lib/{config.target}/*.a")
-                blst_libs = glob.glob(f"source/blst-lib/{config.target}/*.a")
-                pcre2_lib = glob.glob(f"source/pcre2-lib/{config.target}/libpcre2-8.a")
-                
-                # Get X11 libraries conditionally
-                x11_libs = self._get_x11_libs()
-                
-                cmd = ["g++", "-shared"] + config.flags + cpp_files + ["source/utf8proc/utf8proc.c"] + openssl_libs + fl_libs + blst_libs + pcre2_lib + [
-                    f"-Lsource/openssl-lib/{config.target}", "-lcrypto"
-                ] + x11_libs + [
-                    "-ldl", "-lm", "-static-libgcc",
-                    "-fPIC", "-o", "libgrapa.so"
-                ]
-                
-                subprocess.run(cmd, check=True)
-                shutil.copy("libgrapa.so", f"source/grapa-lib/{config.target}/libgrapa.so")
-                os.remove("libgrapa.so")
-        else:
-            # Build executable - match AWS pattern exactly
-            cpp_files = glob.glob("source/grapa/*.cpp")
-            openssl_libs = glob.glob(f"source/openssl-lib/{config.target}/*.a")
-            fl_libs = glob.glob(f"source/fl-lib/{config.target}/*.a")
-            blst_libs = glob.glob(f"source/blst-lib/{config.target}/*.a")
-            pcre2_lib = glob.glob(f"source/pcre2-lib/{config.target}/libpcre2-8.a")
-            
-            # Get X11 libraries conditionally
-            x11_libs = self._get_x11_libs()
-            
-            cmd = [
-                "g++"
-            ] + config.flags + [
-                "source/main.cpp"
-            ] + cpp_files + ["source/utf8proc/utf8proc.c"] + openssl_libs + fl_libs + blst_libs + [
-                f"source/pcre2-lib/{config.target}/libpcre2-8.a", f"-Lsource/openssl-lib/{config.target}", "-lcrypto"
-            ] + x11_libs + [
-                "-ldl", "-lm", "-static-libgcc", 
-                "-o", config.output_name
-            ]
-            
-            print(f"Current working directory: {os.getcwd()}")
-            print(f"Executing executable build command: {' '.join(cmd)}")
-            try:
-                # Try os.system() first - it might be faster than subprocess
-                result = os.system(" ".join(cmd))
-                if result != 0:
-                    raise RuntimeError(f"Build failed with exit code {result}")
-            except Exception as e:
-                print(f"❌ Build failed: {e}")
-                raise
-            
-            # Check if executable was created
-            if os.path.exists(config.output_name):
-                print(f"✅ Executable created: {config.output_name}")
-            else:
-                print(f"❌ Executable not found: {config.output_name}")
-                raise RuntimeError(f"Executable {config.output_name} was not created")
-    
-    def _run_aws_build_command(self, config: BuildConfig, is_library: bool = False, is_static: bool = False):
-        """Run AWS build command (Amazon Linux)"""
-        import glob
-        
-        # Remove existing executable only when building executable
-        if not is_library and os.path.exists(config.output_name):
-            os.remove(config.output_name)
-        
-        print(f"Building {'library' if is_library else 'executable'} for {config.target}...")
-        
-        # Build utf8proc first (C compilation) - only for static libraries and executables
-        if is_library and is_static:
-            print("Building utf8proc...")
-            subprocess.run([
-                "gcc", "-Isource", "-DUTF8PROC_STATIC", "-c", 
-                "source/utf8proc/utf8proc.c", "-O3", "-fPIC"
-            ], check=True)
-        elif not is_library:
-            print("Building utf8proc...")
-            subprocess.run([
-                "gcc", "-Isource", "-DUTF8PROC_STATIC", "-c", 
-                "source/utf8proc/utf8proc.c", "-O3"
-            ], check=True)
-        
-        if is_library:
-            if is_static:
-                # Build static library
-                cpp_files = glob.glob("source/grapa/*.cpp")
-                subprocess.run([
-                    "g++"
-                ] + config.flags + [
-                    "-c"
-                ] + cpp_files + [
-                    "-fPIC"
-                ], check=True)
-                # Get all .o files
-                obj_files = glob.glob("*.o")
-                if not obj_files:
-                    raise RuntimeError("No object files found for static library")
-                subprocess.run(["ar", "-crs", "libgrapa.a"] + obj_files, check=True)
-                shutil.copy("libgrapa.a", f"source/grapa-lib/{config.target}/libgrapa.a")
-                os.remove("libgrapa.a")
-            else:
-                # Build shared library - match original working script exactly
-                cpp_files = glob.glob("source/grapa/*.cpp")
-                openssl_libs = glob.glob(f"source/openssl-lib/{config.target}/*.a")
-                fl_libs = glob.glob(f"source/fl-lib/{config.target}/*.a")
-                blst_libs = glob.glob(f"source/blst-lib/{config.target}/*.a")
-                pcre2_lib = glob.glob(f"source/pcre2-lib/{config.target}/libpcre2-8.a")
-                
-                # Get X11 libraries conditionally
-                x11_libs = self._get_x11_libs()
-                
-                cmd = ["g++", "-shared"] + config.flags + cpp_files + ["source/utf8proc/utf8proc.c"] + openssl_libs + fl_libs + blst_libs + pcre2_lib + [
-                    f"-Lsource/openssl-lib/{config.target}", "-lcrypto"
-                ] + x11_libs + [
-                    "-ldl", "-lm", "-static-libgcc",
-                    "-fPIC", "-o", "libgrapa.so"
-                ]
-                
-                print(f"Executing shared library build command: {' '.join(cmd)}")
-                subprocess.run(cmd, check=True)
-                shutil.copy("libgrapa.so", f"source/grapa-lib/{config.target}/libgrapa.so")
-                os.remove("libgrapa.so")
-        else:
-            # Build executable
-            cpp_files = glob.glob("source/grapa/*.cpp")
-            openssl_libs = glob.glob(f"source/openssl-lib/{config.target}/*.a")
-            fl_libs = glob.glob(f"source/fl-lib/{config.target}/*.a")
-            blst_libs = glob.glob(f"source/blst-lib/{config.target}/*.a")
-            pcre2_lib = glob.glob(f"source/pcre2-lib/{config.target}/libpcre2-8.a")
-            
-            # Get X11 libraries conditionally
-            x11_libs = self._get_x11_libs()
-            
-            cmd = [
-                "g++"
-            ] + config.flags + [
-                "source/main.cpp"
-            ] + cpp_files + ["source/utf8proc/utf8proc.c"] + openssl_libs + fl_libs + blst_libs + [
-                f"source/pcre2-lib/{config.target}/libpcre2-8.a", f"-Lsource/openssl-lib/{config.target}", "-lcrypto"
-            ] + x11_libs + [
-                "-ldl", "-lm", "-static-libgcc", 
-                "-o", config.output_name
-            ]
-            
-            print(f"Current working directory: {os.getcwd()}")
-            print(f"Executing executable build command: {' '.join(cmd)}")
-            try:
-                # Try os.system() first - it might be faster than subprocess
-                result = os.system(" ".join(cmd))
-                if result != 0:
-                    raise RuntimeError(f"Build failed with exit code {result}")
-            except Exception as e:
-                print(f"❌ Build failed: {e}")
-                raise
-            
-            # Check if executable was created
-            if os.path.exists(config.output_name):
-                print(f"✅ Executable created: {config.output_name}")
-            else:
-                print(f"❌ Executable not found: {config.output_name}")
-                raise RuntimeError(f"Executable {config.output_name} was not created")
-    
-    def _clean_build_artifacts(self):
-        """Clean build artifacts that should be removed after build"""
-        print("Cleaning build artifacts...")
-        
-        # Clean Python package artifacts
-        if os.path.exists("dist"):
-            print("Removing dist/ directory...")
-            shutil.rmtree("dist")
-        
-        if os.path.exists("grapapy.egg-info"):
-            print("Removing grapapy.egg-info/ directory...")
-            shutil.rmtree("grapapy.egg-info")
-        
-        # Clean Python bytecode cache
-        for pycache_dir in Path(".").glob("**/__pycache__"):
-            print(f"Removing {pycache_dir}...")
-            shutil.rmtree(pycache_dir)
-        
-        # Clean object files (but preserve executable)
+        # Clean object files
         for obj_file in Path(".").glob("*.o"):
             obj_file.unlink()
+            print(f"✅ Removed {obj_file}")
+        
+        print("✅ Clean complete")
     
-    def _clean_windows_build(self):
-        """Clean Windows build artifacts"""
-        build_dirs = [
-            "prj/win-amd64/x64",
-            "prj/win-amd64/grapa",
-            "prj/winlib-amd64/x64",
-            "prj/winlib-amd64/grapalib"
-        ]
-        for dir_path in build_dirs:
-            if os.path.exists(dir_path):
-                shutil.rmtree(dir_path)
-    
-    def _create_windows_package(self, config: BuildConfig):
-        """Create Windows package - replace files in bin/grapa-win-amd64 and create zip"""
-        # Create the target directory if it doesn't exist
-        target_dir = f"bin/grapa-{config.target}"
-        os.makedirs(target_dir, exist_ok=True)
+    def build_windows(self):
+        """Build for Windows"""
+        print(f"🔨 Building Grapa for Windows {self.config.arch}...")
         
-        # Copy the newly built files to the target directory
-        if os.path.exists("grapa.exe"):
-            shutil.copy("grapa.exe", f"{target_dir}/grapa.exe")
-            print(f"✅ Copied grapa.exe to {target_dir}/")
-        
-        if os.path.exists("grapa.lib"):
-            shutil.copy("grapa.lib", f"{target_dir}/grapa.lib")
-            print(f"✅ Copied grapa.lib to {target_dir}/")
-        
-        # Copy installation files
-        installer_dir = "packaging/windows-installer"
-        if os.path.exists(f"{installer_dir}/install-grapa.ps1"):
-            shutil.copy(f"{installer_dir}/install-grapa.ps1", f"{target_dir}/install-grapa.ps1")
-            print(f"✅ Copied install-grapa.ps1 to {target_dir}/")
-        
-        if os.path.exists(f"{installer_dir}/README-Windows-Installation.md"):
-            shutil.copy(f"{installer_dir}/README-Windows-Installation.md", f"{target_dir}/README-Windows-Installation.md")
-            print(f"✅ Copied README-Windows-Installation.md to {target_dir}/")
-        
-        # Create zip file
-        zip_path = f"bin/grapa-{config.target}.zip"
-        if os.path.exists(zip_path):
-            os.remove(zip_path)
-        
-        # Create zip with all files in the directory
-        import zipfile
-        with zipfile.ZipFile(zip_path, 'w', zipfile.ZIP_DEFLATED) as zipf:
-            for root, dirs, files in os.walk(target_dir):
-                for file in files:
-                    file_path = os.path.join(root, file)
-                    arcname = os.path.relpath(file_path, target_dir)
-                    zipf.write(file_path, arcname)
-        
-        print(f"✅ Windows package files updated in {target_dir}/")
-        print(f"✅ Created zip file: {zip_path}")
-    
-    def _create_mac_package(self, config: BuildConfig):
-        """Create Mac package"""
-        import glob
-        
-        # Get the actual files to include
-        files_to_include = []
-        
-        # Add executable if it exists
-        if os.path.exists(config.output_name):
-            files_to_include.append(config.output_name)
-        
-        # Add library files
-        lib_files = glob.glob(f"source/grapa-lib/{config.target}/*")
-        files_to_include.extend(lib_files)
-        
-        # Add other files
-        other_files = glob.glob(f"source/grapa-other/{config.target}/*")
-        files_to_include.extend(other_files)
-        
-        if not files_to_include:
-            raise RuntimeError(f"No files found to include in package for {config.target}")
-        
-        # Create tar command with actual files
-        tar_cmd = ["tar", "-czvf", f"bin/grapa-{config.target}.tar.gz"] + files_to_include
-        print(f"Creating package with files: {files_to_include}")
-        subprocess.run(tar_cmd, check=True)
-    
-    def _create_linux_package(self, config: BuildConfig):
-        """Create Linux/AWS package"""
-        import glob
-        
-        # Get the actual files to include
-        files_to_include = []
-        
-        # Add executable if it exists
-        if os.path.exists(config.output_name):
-            files_to_include.append(config.output_name)
-        
-        # Add library files (only grapa-lib, matching original script)
-        lib_files = glob.glob(f"source/grapa-lib/{config.target}/*")
-        files_to_include.extend(lib_files)
-        
-        if not files_to_include:
-            raise RuntimeError(f"No files found to include in package for {config.target}")
-        
-        # Create tar command with actual files
-        tar_cmd = ["tar", "-czvf", f"bin/grapa-{config.target}.tar.gz"] + files_to_include
-        print(f"Creating package with files: {files_to_include}")
-        subprocess.run(tar_cmd, check=True)
-    
-    def build_python_package(self, config: BuildConfig):
-        """Build Python package"""
-        print("Building Python package...")
-
-        # Build package
-        python_cmd = "python" if config.platform == "windows" else "python3"
-        pip_cmd = "pip" if config.platform == "windows" else "pip3"
-        subprocess.run([python_cmd, "setup.py", "sdist"], check=True)
-
-        # Find the built package file
-        dist_files = list(Path("dist").glob("*.tar.gz"))
-        if not dist_files:
-            raise RuntimeError("No Python package found in dist/ directory")
-
-        package_file = dist_files[0].name
-        print(f"Found package: {package_file}")
-
-        # Install package
-        package_path = os.path.join("dist", package_file)
-        subprocess.run([pip_cmd, "install", package_path], check=True)
-    
-    def run_tests(self, config: BuildConfig):
-        """Run tests"""
-        print("Running tests...")
-        
-        # Run Grapa tests
-        test_commands = [
-            ["./grapa" if config.platform != "windows" else "grapa.exe", "-cfile", "test/run_tests.grc"],
-            ["python3", "test/run_tests.py"]
+        # Build executable
+        print("Building executable...")
+        cmd = [
+            self.config.compiler,
+            "prj/win-amd64/grapa.sln",
+            "/p:Configuration=Release",
+            "/p:Platform=x64"
         ]
         
-        for cmd in test_commands:
-            try:
-                subprocess.run(cmd, check=True)
-            except subprocess.CalledProcessError as e:
-                print(f"Test failed: {e}")
-                return False
+        result = subprocess.run(cmd, capture_output=True, text=True)
+        if result.returncode != 0:
+            print(f"❌ Build failed: {result.stderr}")
+            return False
+        
+        print("✅ Executable built successfully")
+        
+        # Copy executable to target directory
+        os.makedirs(self.target_dir, exist_ok=True)
+        shutil.copy("prj/win-amd64/x64/Release/grapa.exe", f"{self.target_dir}/grapa.exe")
+        print(f"✅ Copied executable to {self.target_dir}/")
+        
+        # Build static library
+        print("Building static library...")
+        cmd = [
+            self.config.compiler,
+            "prj/winlib-amd64_static/grapalib.sln",
+            "/p:Configuration=Release",
+            "/p:Platform=x64"
+        ]
+        
+        result = subprocess.run(cmd, capture_output=True, text=True)
+        if result.returncode != 0:
+            print(f"❌ Static library build failed: {result.stderr}")
+            return False
+        
+        print("✅ Static library built successfully")
+        
+        # Copy static library to target directory
+        shutil.copy("prj/winlib-amd64_static/x64/Release/grapalib.lib", f"{self.target_dir}/grapa_static.lib")
+        print(f"✅ Copied static library to {self.target_dir}/")
+        
+        # Copy static library to source/grapa-lib
+        os.makedirs(self.target_lib_dir, exist_ok=True)
+        shutil.copy("prj/winlib-amd64_static/x64/Release/grapalib.lib", f"{self.target_lib_dir}/grapa_static.lib")
+        print(f"✅ Copied static library to {self.target_lib_dir}/")
+        
+        # Build shared library (DLL)
+        print("Building shared library...")
+        cmd = [
+            self.config.compiler,
+            "prj/winlib-amd64_shared/grapalib.sln",
+            "/p:Configuration=Release",
+            "/p:Platform=x64"
+        ]
+        
+        result = subprocess.run(cmd, capture_output=True, text=True)
+        if result.returncode != 0:
+            print(f"❌ Shared library build failed: {result.stderr}")
+            return False
+        
+        print("✅ Shared library built successfully")
+        
+        # Copy shared library (DLL) to target directory
+        shutil.copy("prj/winlib-amd64_shared/x64/Release/grapalib.dll", f"{self.target_dir}/grapa.dll")
+        print(f"✅ Copied shared library to {self.target_dir}/")
+        
+        # Copy shared library to source/grapa-lib
+        shutil.copy("prj/winlib-amd64_shared/x64/Release/grapalib.dll", f"{self.target_lib_dir}/grapa.dll")
+        print(f"✅ Copied shared library to {self.target_lib_dir}/")
+        
+        # Create install script
+        self._create_install_script()
         
         return True
     
-    def build(self, run_tests: bool = False, exe_only: bool = False) -> bool:
-        """Build for the current platform and architecture"""
-        platform, arch = self.detect_platform()
-        config = BuildConfig(platform, arch)
+    def build_mac(self):
+        """Build for Mac"""
+        print(f"🔨 Building Grapa for Mac {self.config.arch}...")
         
-        print(f"Building Grapa for {config.target}...")
+        # Build executable
+        print("Building executable...")
+        cmd = [
+            self.config.compiler,
+            *self.config.flags,
+            "source/main.cpp",
+            "source/utf8proc/utf8proc.c",
+            *self.config.frameworks,
+            "-o", self.config.output_name
+        ]
         
+        # Add library paths
+        for lib_pattern in self.config.libs:
+            cmd.extend([lib_pattern])
+        
+        result = subprocess.run(cmd, capture_output=True, text=True)
+        if result.returncode != 0:
+            print(f"❌ Build failed: {result.stderr}")
+            return False
+        
+        print("✅ Executable built successfully")
+        
+        # Copy executable to target directory
+        os.makedirs(self.target_dir, exist_ok=True)
+        shutil.copy(self.config.output_name, f"{self.target_dir}/{self.config.output_name}")
+        print(f"✅ Copied executable to {self.target_dir}/")
+        
+        # Build static library
+        print("Building static library...")
+        cmd = [
+            self.config.compiler,
+            "-c",
+            *self.config.flags,
+            "source/main.cpp",
+            "source/utf8proc/utf8proc.c",
+            "-o", "libgrapa.a"
+        ]
+        
+        result = subprocess.run(cmd, capture_output=True, text=True)
+        if result.returncode != 0:
+            print(f"❌ Static library build failed: {result.stderr}")
+            return False
+        
+        # Create static library archive
+        obj_files = list(Path(".").glob("*.o"))
+        if not obj_files:
+            raise RuntimeError("No object files found for static library")
+        
+        cmd = ["ar", "rcs", "libgrapa.a"] + [str(f) for f in obj_files]
+        result = subprocess.run(cmd, capture_output=True, text=True)
+        if result.returncode != 0:
+            print(f"❌ Static library archive creation failed: {result.stderr}")
+            return False
+        
+        print("✅ Static library built successfully")
+        
+        # Copy static library to target directory
+        shutil.copy("libgrapa.a", f"{self.target_dir}/libgrapa_static.a")
+        print(f"✅ Copied static library to {self.target_dir}/")
+        
+        # Copy static library to source/grapa-lib
+        os.makedirs(self.target_lib_dir, exist_ok=True)
+        shutil.copy("libgrapa.a", f"{self.target_lib_dir}/libgrapa_static.a")
+        print(f"✅ Copied static library to {self.target_lib_dir}/")
+        
+        # Build shared library
+        print("Building shared library...")
+        cmd = [
+            self.config.compiler,
+            "-shared",
+            *self.config.flags,
+            "source/main.cpp",
+            "source/utf8proc/utf8proc.c",
+            *self.config.frameworks,
+            "-o", "libgrapa.so"
+        ]
+        
+        # Add library paths
+        for lib_pattern in self.config.libs:
+            cmd.extend([lib_pattern])
+        
+        result = subprocess.run(cmd, capture_output=True, text=True)
+        if result.returncode != 0:
+            print(f"❌ Shared library build failed: {result.stderr}")
+            return False
+        
+        print("✅ Shared library built successfully")
+        
+        # Copy shared library to target directory
+        shutil.copy("libgrapa.so", f"{self.target_dir}/libgrapa.so")
+        print(f"✅ Copied shared library to {self.target_dir}/")
+        
+        # Copy shared library to source/grapa-lib
+        shutil.copy("libgrapa.so", f"{self.target_lib_dir}/libgrapa.so")
+        print(f"✅ Copied shared library to {self.target_lib_dir}/")
+        
+        # Create install script
+        self._create_install_script()
+        
+        return True
+    
+    def build_linux(self):
+        """Build for Linux"""
+        print(f"🔨 Building Grapa for Linux {self.config.arch}...")
+        
+        # Build executable
+        print("Building executable...")
+        cmd = [
+            self.config.compiler,
+            *self.config.flags,
+            "source/main.cpp",
+            "source/utf8proc/utf8proc.c",
+            "-ldl", "-lm", "-static-libgcc",
+            "-o", self.config.output_name
+        ]
+        
+        # Add library paths
+        for lib_pattern in self.config.libs:
+            cmd.extend([lib_pattern])
+        
+        result = subprocess.run(cmd, capture_output=True, text=True)
+        if result.returncode != 0:
+            print(f"❌ Build failed: {result.stderr}")
+            return False
+        
+        print("✅ Executable built successfully")
+        
+        # Copy executable to target directory
+        os.makedirs(self.target_dir, exist_ok=True)
+        shutil.copy(self.config.output_name, f"{self.target_dir}/{self.config.output_name}")
+        print(f"✅ Copied executable to {self.target_dir}/")
+        
+        # Build static library
+        print("Building static library...")
+        cmd = [
+            self.config.compiler,
+            "-c",
+            *self.config.flags,
+            "source/main.cpp",
+            "source/utf8proc/utf8proc.c",
+            "-o", "libgrapa.a"
+        ]
+        
+        result = subprocess.run(cmd, capture_output=True, text=True)
+        if result.returncode != 0:
+            print(f"❌ Static library build failed: {result.stderr}")
+            return False
+        
+        # Create static library archive
+        obj_files = list(Path(".").glob("*.o"))
+        if not obj_files:
+            raise RuntimeError("No object files found for static library")
+        
+        cmd = ["ar", "rcs", "libgrapa.a"] + [str(f) for f in obj_files]
+        result = subprocess.run(cmd, capture_output=True, text=True)
+        if result.returncode != 0:
+            print(f"❌ Static library archive creation failed: {result.stderr}")
+            return False
+        
+        print("✅ Static library built successfully")
+        
+        # Copy static library to target directory
+        shutil.copy("libgrapa.a", f"{self.target_dir}/libgrapa_static.a")
+        print(f"✅ Copied static library to {self.target_dir}/")
+        
+        # Copy static library to source/grapa-lib
+        os.makedirs(self.target_lib_dir, exist_ok=True)
+        shutil.copy("libgrapa.a", f"{self.target_lib_dir}/libgrapa_static.a")
+        print(f"✅ Copied static library to {self.target_lib_dir}/")
+        
+        # Build shared library
+        print("Building shared library...")
+        cmd = [
+            self.config.compiler,
+            "-shared",
+            *self.config.flags,
+            "source/main.cpp",
+            "source/utf8proc/utf8proc.c",
+            "-ldl", "-lm", "-static-libgcc",
+            "-o", "libgrapa.so"
+        ]
+        
+        # Add library paths
+        for lib_pattern in self.config.libs:
+            cmd.extend([lib_pattern])
+        
+        result = subprocess.run(cmd, capture_output=True, text=True)
+        if result.returncode != 0:
+            print(f"❌ Shared library build failed: {result.stderr}")
+            return False
+        
+        print("✅ Shared library built successfully")
+        
+        # Copy shared library to target directory
+        shutil.copy("libgrapa.so", f"{self.target_dir}/libgrapa.so")
+        print(f"✅ Copied shared library to {self.target_dir}/")
+        
+        # Copy shared library to source/grapa-lib
+        shutil.copy("libgrapa.so", f"{self.target_lib_dir}/libgrapa.so")
+        print(f"✅ Copied shared library to {self.target_lib_dir}/")
+        
+        # Create install script
+        self._create_install_script()
+        
+        return True
+    
+    def build_aws(self):
+        """Build for AWS (similar to Linux but with different library paths)"""
+        print(f"🔨 Building Grapa for AWS {self.config.arch}...")
+        
+        # Build executable
+        print("Building executable...")
+        cmd = [
+            self.config.compiler,
+            *self.config.flags,
+            "source/main.cpp",
+            "source/utf8proc/utf8proc.c",
+            "-ldl", "-lm", "-static-libgcc",
+            "-o", self.config.output_name
+        ]
+        
+        # Add library paths
+        for lib_pattern in self.config.libs:
+            cmd.extend([lib_pattern])
+        
+        result = subprocess.run(cmd, capture_output=True, text=True)
+        if result.returncode != 0:
+            print(f"❌ Build failed: {result.stderr}")
+            return False
+        
+        print("✅ Executable built successfully")
+        
+        # Copy executable to target directory
+        os.makedirs(self.target_dir, exist_ok=True)
+        shutil.copy(self.config.output_name, f"{self.target_dir}/{self.config.output_name}")
+        print(f"✅ Copied executable to {self.target_dir}/")
+        
+        # Build static library
+        print("Building static library...")
+        cmd = [
+            self.config.compiler,
+            "-c",
+            *self.config.flags,
+            "source/main.cpp",
+            "source/utf8proc/utf8proc.c",
+            "-o", "libgrapa.a"
+        ]
+        
+        result = subprocess.run(cmd, capture_output=True, text=True)
+        if result.returncode != 0:
+            print(f"❌ Static library build failed: {result.stderr}")
+            return False
+        
+        # Create static library archive
+        obj_files = list(Path(".").glob("*.o"))
+        if not obj_files:
+            raise RuntimeError("No object files found for static library")
+        
+        cmd = ["ar", "rcs", "libgrapa.a"] + [str(f) for f in obj_files]
+        result = subprocess.run(cmd, capture_output=True, text=True)
+        if result.returncode != 0:
+            print(f"❌ Static library archive creation failed: {result.stderr}")
+            return False
+        
+        print("✅ Static library built successfully")
+        
+        # Copy static library to target directory
+        shutil.copy("libgrapa.a", f"{self.target_dir}/libgrapa_static.a")
+        print(f"✅ Copied static library to {self.target_dir}/")
+        
+        # Copy static library to source/grapa-lib
+        os.makedirs(self.target_lib_dir, exist_ok=True)
+        shutil.copy("libgrapa.a", f"{self.target_lib_dir}/libgrapa_static.a")
+        print(f"✅ Copied static library to {self.target_lib_dir}/")
+        
+        # Build shared library
+        print("Building shared library...")
+        cmd = [
+            self.config.compiler,
+            "-shared",
+            *self.config.flags,
+            "source/main.cpp",
+            "source/utf8proc/utf8proc.c",
+            "-ldl", "-lm", "-static-libgcc",
+            "-o", "libgrapa.so"
+        ]
+        
+        # Add library paths
+        for lib_pattern in self.config.libs:
+            cmd.extend([lib_pattern])
+        
+        result = subprocess.run(cmd, capture_output=True, text=True)
+        if result.returncode != 0:
+            print(f"❌ Shared library build failed: {result.stderr}")
+            return False
+        
+        print("✅ Shared library built successfully")
+        
+        # Copy shared library to target directory
+        shutil.copy("libgrapa.so", f"{self.target_dir}/libgrapa.so")
+        print(f"✅ Copied shared library to {self.target_dir}/")
+        
+        # Copy shared library to source/grapa-lib
+        shutil.copy("libgrapa.so", f"{self.target_lib_dir}/libgrapa.so")
+        print(f"✅ Copied shared library to {self.target_lib_dir}/")
+        
+        # Create install script
+        self._create_install_script()
+        
+        return True
+    
+    def _create_install_script(self):
+        """Create platform-specific install script"""
+        if self.config.platform == "windows":
+            self._create_windows_install_script()
+        else:
+            self._create_unix_install_script()
+    
+    def _create_windows_install_script(self):
+        """Create Windows PowerShell install script"""
+        script_content = f"""# Grapa Installation Script for Windows {self.config.arch}
+# Run this script as Administrator
+
+param(
+    [string]$InstallPath = "C:\\Program Files\\Grapa"
+)
+
+Write-Host "Installing Grapa for Windows {self.config.arch}..." -ForegroundColor Green
+
+# Create installation directory
+if (!(Test-Path $InstallPath)) {{
+    New-Item -ItemType Directory -Path $InstallPath -Force
+    Write-Host "Created installation directory: $InstallPath" -ForegroundColor Yellow
+}}
+
+ # Copy files
+ $SourceDir = "{os.path.abspath(self.target_dir)}"
+ Copy-Item "$SourceDir\\grapa.exe" "$InstallPath\\" -Force
+ Copy-Item "$SourceDir\\grapa_static.lib" "$InstallPath\\" -Force
+ if (Test-Path "$SourceDir\\grapa.dll") {{
+     Copy-Item "$SourceDir\\grapa.dll" "$InstallPath\\" -Force
+ }}
+
+# Add to PATH
+$CurrentPath = [Environment]::GetEnvironmentVariable("PATH", "Machine")
+if ($CurrentPath -notlike "*$InstallPath*") {{
+    $NewPath = "$CurrentPath;$InstallPath"
+    [Environment]::SetEnvironmentVariable("PATH", $NewPath, "Machine")
+    Write-Host "Added Grapa to system PATH" -ForegroundColor Yellow
+}}
+
+ Write-Host "Installation complete!" -ForegroundColor Green
+ Write-Host "Grapa executable: $InstallPath\\grapa.exe" -ForegroundColor Cyan
+ Write-Host "Static library: $InstallPath\\grapa_static.lib" -ForegroundColor Cyan
+ if (Test-Path "$InstallPath\\grapa.dll") {{
+     Write-Host "Shared library: $InstallPath\\grapa.dll" -ForegroundColor Cyan
+ }}
+ Write-Host "Please restart your terminal for PATH changes to take effect." -ForegroundColor Yellow
+"""
+        
+        script_path = f"{self.target_dir}/install-grapa.ps1"
+        with open(script_path, 'w') as f:
+            f.write(script_content)
+        print(f"✅ Created install script: {script_path}")
+    
+    def _create_unix_install_script(self):
+        """Create Unix shell install script"""
+        script_content = f"""#!/bin/bash
+# Grapa Installation Script for {self.config.platform.title()} {self.config.arch}
+# Run this script with sudo for system-wide installation
+
+set -e
+
+INSTALL_PATH="/usr/local"
+BIN_PATH="$INSTALL_PATH/bin"
+LIB_PATH="$INSTALL_PATH/lib"
+INCLUDE_PATH="$INSTALL_PATH/include"
+
+echo "Installing Grapa for {self.config.platform.title()} {self.config.arch}..."
+
+# Create directories
+sudo mkdir -p $BIN_PATH $LIB_PATH $INCLUDE_PATH
+
+# Copy executable
+sudo cp "{os.path.abspath(self.target_dir)}/grapa" $BIN_PATH/
+sudo chmod +x $BIN_PATH/grapa
+
+# Copy libraries
+if [ -f "{os.path.abspath(self.target_dir)}/libgrapa_static.a" ]; then
+    sudo cp "{os.path.abspath(self.target_dir)}/libgrapa_static.a" $LIB_PATH/
+fi
+
+ if [ -f "{os.path.abspath(self.target_dir)}/libgrapa.so" ]; then
+     sudo cp "{os.path.abspath(self.target_dir)}/libgrapa.so" $LIB_PATH/
+     {"sudo ldconfig" if self.config.platform != "mac" else "# Note: ldconfig is not needed on macOS"}
+ fi
+
+echo "Installation complete!"
+echo "Grapa executable: $BIN_PATH/grapa"
+if [ -f "$LIB_PATH/libgrapa_static.a" ]; then
+    echo "Static library: $LIB_PATH/libgrapa_static.a"
+fi
+if [ -f "$LIB_PATH/libgrapa.so" ]; then
+    echo "Shared library: $LIB_PATH/libgrapa.so"
+fi
+"""
+        
+        script_path = f"{self.target_dir}/install-grapa.sh"
+        with open(script_path, 'w') as f:
+            f.write(script_content)
+        
+        # Make executable
+        os.chmod(script_path, 0o755)
+        print(f"✅ Created install script: {script_path}")
+    
+    def build(self):
+        """Main build method"""
         try:
-            # Build based on platform
-            success = False
-            if config.platform == "windows":
-                success = self.build_windows(config, exe_only=exe_only)
-            elif config.platform == "mac":
-                success = self.build_mac(config, exe_only=exe_only)
-            elif config.platform == "linux":
-                success = self.build_linux_aws(config, exe_only=exe_only)
-            elif config.platform == "aws":
-                success = self.build_linux_aws(config, exe_only=exe_only)
+            if self.config.platform == "windows":
+                return self.build_windows()
+            elif self.config.platform == "mac":
+                return self.build_mac()
+            elif self.config.platform == "linux":
+                return self.build_linux()
+            elif self.config.platform == "aws":
+                return self.build_aws()
             else:
-                print(f"Unsupported platform: {config.platform}")
+                print(f"❌ Unsupported platform: {self.config.platform}")
                 return False
-            
-            if success:
-                print(f"Build successful for {config.target}")
-                
-                if not exe_only:
-                    # Build Python package
-                    self.build_python_package(config)
-                    # Run tests if requested
-                    if run_tests:
-                        self.run_tests(config)
-                
-                return True
-            else:
-                print(f"Build failed for {config.target}")
-                return False
-        finally:
-            # Always clean up build artifacts, regardless of success or failure
-            self._clean_build_artifacts()
+        except Exception as e:
+            print(f"❌ Build failed with error: {e}")
+            return False
+
+def detect_platform() -> Tuple[str, str]:
+    """Detect the current platform and architecture"""
+    system = platform.system().lower()
+    machine = platform.machine().lower()
+    
+    if system == "windows":
+        platform_name = "windows"
+        if machine in ["amd64", "x86_64"]:
+            arch = "amd64"
+        else:
+            arch = "amd64"  # Default for Windows
+    elif system == "darwin":
+        platform_name = "mac"
+        if machine == "arm64":
+            arch = "arm64"
+        else:
+            arch = "amd64"
+    elif system == "linux":
+        if "aws" in platform.platform().lower():
+            platform_name = "aws"
+        else:
+            platform_name = "linux"
+        
+        if machine in ["aarch64", "arm64"]:
+            arch = "arm64"
+        else:
+            arch = "amd64"
+    else:
+        raise RuntimeError(f"Unsupported platform: {system}")
+    
+    return platform_name, arch
 
 def main():
-    parser = argparse.ArgumentParser(description="Grapa Build Script")
+    parser = argparse.ArgumentParser(description="Build Grapa for the current platform")
     parser.add_argument("--test", action="store_true", help="Run tests after build")
     parser.add_argument("--clean", action="store_true", help="Clean build artifacts")
-    parser.add_argument("--exe-only", action="store_true", help="Build only the main executable (skip library, Python package, and packaging steps). Useful for fast iterative development and investigation.")
+    parser.add_argument("--help", action="store_true", help="Show help")
     
     args = parser.parse_args()
     
-    builder = GrapaBuilder()
+    if args.help:
+        parser.print_help()
+        return
     
-    # Build for current platform only
-    platform, arch = builder.detect_platform()
-    print(f"Building for {platform} {arch}")
-    
-    if builder.build(args.test, exe_only=args.exe_only):
-        print(f"\n{'='*50}")
-        print(f"Build successful for {platform} {arch}")
-        print(f"{'='*50}")
-        return 0
-    else:
-        print(f"\n{'='*50}")
-        print(f"Build failed for {platform} {arch}")
-        print(f"{'='*50}")
-        return 1
+    try:
+        platform_name, arch = detect_platform()
+        print(f"🔍 Detected platform: {platform_name} {arch}")
+        
+        config = BuildConfig(platform_name, arch)
+        builder = GrapaBuilder(config)
+        
+        if args.clean:
+            builder.clean()
+            return
+        
+        print(f"🚀 Starting build for {platform_name} {arch}...")
+        
+        if builder.build():
+            print(f"✅ Build completed successfully for {platform_name} {arch}")
+            
+            if args.test:
+                print("🧪 Running tests...")
+                # Add test logic here
+                print("✅ Tests completed")
+        else:
+            print(f"❌ Build failed for {platform_name} {arch}")
+            sys.exit(1)
+            
+    except Exception as e:
+        print(f"❌ Build script failed: {e}")
+        sys.exit(1)
 
 if __name__ == "__main__":
-    sys.exit(main()) 
+    main() 

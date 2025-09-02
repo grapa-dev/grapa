@@ -20,7 +20,7 @@ function Show-Help {
     Write-Host "Requirements:" -ForegroundColor Yellow
     Write-Host "  - Run PowerShell as Administrator"
     Write-Host "  - Windows 10 or later"
-    Write-Host "  - grapa.exe and grapa.lib must be in the same directory as this script"
+    Write-Host "  - grapa.exe and grapa_static.lib must be in the same directory as this script"
     Write-Host ""
 }
 
@@ -51,9 +51,9 @@ function Install-Grapa {
         exit 1
     }
     
-    if (-not (Test-Path "grapa.lib")) {
-        Write-Host "Error: grapa.lib not found in current directory" -ForegroundColor Red
-        Write-Host "Please ensure grapa.lib is in the same directory as this script" -ForegroundColor Yellow
+    if (-not (Test-Path "grapa_static.lib")) {
+        Write-Host "Error: grapa_static.lib not found in current directory" -ForegroundColor Red
+        Write-Host "Please ensure grapa_static.lib is in the same directory as this script" -ForegroundColor Yellow
         exit 1
     }
     
@@ -94,7 +94,10 @@ function Install-Grapa {
         # Copy files
         Write-Host "Copying files..." -ForegroundColor Yellow
         Copy-Item -Path "grapa.exe" -Destination $binDir -Force
-        Copy-Item -Path "grapa.lib" -Destination $libDir -Force
+        Copy-Item -Path "grapa_static.lib" -Destination $libDir -Force
+        if (Test-Path "grapa.dll") {
+            Copy-Item -Path "grapa.dll" -Destination $binDir -Force
+        }
         
         # Add to PATH
         Write-Host "Adding to system PATH..." -ForegroundColor Yellow
@@ -116,7 +119,10 @@ function Install-Grapa {
             Write-Host ""
             Write-Host "Installation location:" -ForegroundColor Cyan
             Write-Host "  Executable: $binDir\grapa.exe" -ForegroundColor White
-            Write-Host "  Library: $libDir\grapa.lib" -ForegroundColor White
+            Write-Host "  Static Library: $libDir\grapa_static.lib" -ForegroundColor White
+            if (Test-Path "$binDir\grapa.dll") {
+                Write-Host "  Shared Library: $binDir\grapa.dll" -ForegroundColor White
+            }
             Write-Host ""
             Write-Host "Note: You may need to restart your terminal for PATH changes to take effect" -ForegroundColor Yellow
         } else {
