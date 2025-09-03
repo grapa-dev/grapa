@@ -272,9 +272,17 @@ class GrapaBuilder:
                 obj_files = glob.glob("*.o")
                 if not obj_files:
                     raise RuntimeError("No object files found for static library")
-                subprocess.run(["ar", "-crs", "libgrapa.a"] + obj_files, check=True)
-                shutil.copy("libgrapa.a", f"bin/{config.target}/libgrapa.a")
-                os.remove("libgrapa.a")
+                subprocess.run(["ar", "-crs", "libgrapa_static.a"] + obj_files, check=True)
+                
+                # Copy to bin directory
+                os.makedirs(f"bin/{config.target}", exist_ok=True)
+                shutil.copy("libgrapa_static.a", f"bin/{config.target}/libgrapa_static.a")
+                
+                # Copy to source/grapa-lib directory
+                os.makedirs(f"source/grapa-lib/{config.target}", exist_ok=True)
+                shutil.copy("libgrapa_static.a", f"source/grapa-lib/{config.target}/libgrapa_static.a")
+                
+                os.remove("libgrapa_static.a")
             else:
                 # Build shared library - match BUILD.md exactly
                 print("Building shared library...")
@@ -297,7 +305,15 @@ class GrapaBuilder:
                 except Exception as e:
                     print(f"❌ Shared library build failed: {e}")
                     raise
+                
+                # Copy to bin directory
+                os.makedirs(f"bin/{config.target}", exist_ok=True)
                 shutil.copy("libgrapa.so", f"bin/{config.target}/libgrapa.so")
+                
+                # Copy to source/grapa-lib directory
+                os.makedirs(f"source/grapa-lib/{config.target}", exist_ok=True)
+                shutil.copy("libgrapa.so", f"source/grapa-lib/{config.target}/libgrapa.so")
+                
                 os.remove("libgrapa.so")
         else:
             # Build executable - match BUILD.md exactly (two separate steps)
@@ -331,6 +347,10 @@ class GrapaBuilder:
             # Check if executable was created
             if os.path.exists(config.output_name):
                 print(f"✅ Executable created: {config.output_name}")
+                
+                # Copy executable to bin directory
+                os.makedirs(f"bin/{config.target}", exist_ok=True)
+                shutil.copy(config.output_name, f"bin/{config.target}/{config.output_name}")
             else:
                 print(f"❌ Executable not found: {config.output_name}")
                 raise RuntimeError(f"Executable {config.output_name} was not created")
@@ -398,9 +418,17 @@ class GrapaBuilder:
                 obj_files = glob.glob("*.o")
                 if not obj_files:
                     raise RuntimeError("No object files found for static library")
-                subprocess.run(["ar", "-crs", "libgrapa.a"] + obj_files, check=True)
-                shutil.copy("libgrapa.a", f"bin/{config.target}/libgrapa.a")
-                os.remove("libgrapa.a")
+                subprocess.run(["ar", "-crs", "libgrapa_static.a"] + obj_files, check=True)
+                
+                # Copy to bin directory
+                os.makedirs(f"bin/{config.target}", exist_ok=True)
+                shutil.copy("libgrapa_static.a", f"bin/{config.target}/libgrapa_static.a")
+                
+                # Copy to source/grapa-lib directory
+                os.makedirs(f"source/grapa-lib/{config.target}", exist_ok=True)
+                shutil.copy("libgrapa_static.a", f"source/grapa-lib/{config.target}/libgrapa_static.a")
+                
+                os.remove("libgrapa_static.a")
             else:
                 # Build shared library
                 cpp_files = glob.glob("source/grapa/*.cpp")
@@ -420,7 +448,15 @@ class GrapaBuilder:
                 ]
                 
                 subprocess.run(cmd, check=True)
+                
+                # Copy to bin directory
+                os.makedirs(f"bin/{config.target}", exist_ok=True)
                 shutil.copy("libgrapa.so", f"bin/{config.target}/libgrapa.so")
+                
+                # Copy to source/grapa-lib directory
+                os.makedirs(f"source/grapa-lib/{config.target}", exist_ok=True)
+                shutil.copy("libgrapa.so", f"source/grapa-lib/{config.target}/libgrapa.so")
+                
                 os.remove("libgrapa.so")
         else:
             # Build executable - match AWS pattern exactly
@@ -458,6 +494,10 @@ class GrapaBuilder:
             # Check if executable was created
             if os.path.exists(config.output_name):
                 print(f"✅ Executable created: {config.output_name}")
+                
+                # Copy executable to bin directory
+                os.makedirs(f"bin/{config.target}", exist_ok=True)
+                shutil.copy(config.output_name, f"bin/{config.target}/{config.output_name}")
             else:
                 print(f"❌ Executable not found: {config.output_name}")
                 raise RuntimeError(f"Executable {config.output_name} was not created")
@@ -501,9 +541,17 @@ class GrapaBuilder:
                 obj_files = glob.glob("*.o")
                 if not obj_files:
                     raise RuntimeError("No object files found for static library")
-                subprocess.run(["ar", "-crs", "libgrapa.a"] + obj_files, check=True)
-                shutil.copy("libgrapa.a", f"bin/{config.target}/libgrapa.a")
-                os.remove("libgrapa.a")
+                subprocess.run(["ar", "-crs", "libgrapa_static.a"] + obj_files, check=True)
+                
+                # Copy to bin directory
+                os.makedirs(f"bin/{config.target}", exist_ok=True)
+                shutil.copy("libgrapa_static.a", f"bin/{config.target}/libgrapa_static.a")
+                
+                # Copy to source/grapa-lib directory
+                os.makedirs(f"source/grapa-lib/{config.target}", exist_ok=True)
+                shutil.copy("libgrapa_static.a", f"source/grapa-lib/{config.target}/libgrapa_static.a")
+                
+                os.remove("libgrapa_static.a")
             else:
                 # Build shared library - match original working script exactly
                 cpp_files = glob.glob("source/grapa/*.cpp")
@@ -524,7 +572,15 @@ class GrapaBuilder:
                 
                 print(f"Executing shared library build command: {' '.join(cmd)}")
                 subprocess.run(cmd, check=True)
+                
+                # Copy to bin directory
+                os.makedirs(f"bin/{config.target}", exist_ok=True)
                 shutil.copy("libgrapa.so", f"bin/{config.target}/libgrapa.so")
+                
+                # Copy to source/grapa-lib directory
+                os.makedirs(f"source/grapa-lib/{config.target}", exist_ok=True)
+                shutil.copy("libgrapa.so", f"source/grapa-lib/{config.target}/libgrapa.so")
+                
                 os.remove("libgrapa.so")
         else:
             # Build executable
@@ -562,16 +618,20 @@ class GrapaBuilder:
             # Check if executable was created
             if os.path.exists(config.output_name):
                 print(f"✅ Executable created: {config.output_name}")
+                
+                # Copy executable to bin directory
+                os.makedirs(f"bin/{config.target}", exist_ok=True)
+                shutil.copy(config.output_name, f"bin/{config.target}/{config.output_name}")
             else:
                 print(f"❌ Executable not found: {config.output_name}")
                 raise RuntimeError(f"Executable {config.output_name} was not created")
     
-    def _clean_build_artifacts(self):
+    def _clean_build_artifacts(self, preserve_dist: bool = False):
         """Clean build artifacts that should be removed after build"""
         print("Cleaning build artifacts...")
         
         # Clean Python package artifacts
-        if os.path.exists("dist"):
+        if os.path.exists("dist") and not preserve_dist:
             print("Removing dist/ directory...")
             shutil.rmtree("dist")
         
@@ -735,7 +795,7 @@ class GrapaBuilder:
         
         return True
     
-    def build(self, run_tests: bool = False, exe_only: bool = False, build_python: bool = False) -> bool:
+    def build(self, run_tests: bool = False, exe_only: bool = False, build_python: bool = False, python_only: bool = False) -> bool:
         """Build for the current platform and architecture"""
         platform, arch = self.detect_platform()
         config = BuildConfig(platform, arch)
@@ -743,6 +803,17 @@ class GrapaBuilder:
         print(f"Building Grapa for {config.target}...")
         
         try:
+            # If python_only is True, skip the main build and just build Python package
+            if python_only:
+                print("Skipping main build, building Python package only...")
+                if self._check_libraries_exist(config):
+                    print("✅ Required libraries found, building Python package...")
+                    self.build_python_package(config)
+                    return True
+                else:
+                    print("❌ Required libraries not found. Please run full build first.")
+                    return False
+            
             # Build based on platform
             success = False
             if config.platform == "windows":
@@ -774,16 +845,44 @@ class GrapaBuilder:
                 return False
         finally:
             # Always clean up build artifacts, regardless of success or failure
-            self._clean_build_artifacts()
+            # But preserve dist/ directory if we built Python packages
+            if not build_python and not python_only:
+                self._clean_build_artifacts()
+            else:
+                # Clean everything except dist/ for Python builds
+                self._clean_build_artifacts(preserve_dist=True)
+    
+    def _check_libraries_exist(self, config: BuildConfig) -> bool:
+        """Check if required libraries exist for Python package build"""
+        required_files = [
+            f"bin/{config.target}/libgrapa_static.a",
+            f"bin/{config.target}/libgrapa.so",
+            f"bin/{config.target}/grapa"
+        ]
+        
+        for file_path in required_files:
+            if not os.path.exists(file_path):
+                print(f"❌ Missing required file: {file_path}")
+                return False
+        
+        print("✅ All required libraries found")
+        return True
 
 def main():
     parser = argparse.ArgumentParser(description="Grapa Build Script")
     parser.add_argument("--test", action="store_true", help="Run tests after build")
     parser.add_argument("--clean", action="store_true", help="Clean build artifacts")
     parser.add_argument("--exe-only", action="store_true", help="Build only the main executable (skip library, Python package, and packaging steps). Useful for fast iterative development and investigation.")
-    parser.add_argument("--python", action="store_true", help="Build Python extension package")
+    parser.add_argument("--python", action="store_true", help="Build Python extension package (after building executable and libraries)")
+    parser.add_argument("--python-only", action="store_true", help="Only build the Python package, skipping main executable and library builds. Requires libraries to already exist.")
     
     args = parser.parse_args()
+    
+    # Validate argument combinations
+    if args.python_only and (args.exe_only or args.test or args.python):
+        print("❌ Error: --python-only cannot be used with other build flags")
+        print("   Use --python-only by itself to build only the Python package")
+        return 1
     
     builder = GrapaBuilder()
     
@@ -791,7 +890,7 @@ def main():
     platform, arch = builder.detect_platform()
     print(f"Building for {platform} {arch}")
     
-    if builder.build(args.test, exe_only=args.exe_only, build_python=args.python):
+    if builder.build(args.test, exe_only=args.exe_only, build_python=args.python, python_only=args.python_only):
         print(f"\n{'='*50}")
         print(f"Build successful for {platform} {arch}")
         print(f"{'='*50}")

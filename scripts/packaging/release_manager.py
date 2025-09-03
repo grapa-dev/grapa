@@ -27,7 +27,7 @@ class ReleaseManager:
     """Manages Grapa releases"""
     
     def __init__(self):
-        self.project_root = Path(__file__).parent.parent
+        self.project_root = Path(__file__).parent.parent.parent
         self.bin_dir = self.project_root / "bin"
         self.releases_dir = self.project_root / "releases"
         

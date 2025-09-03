@@ -4,11 +4,6 @@ import platform
 import subprocess
 import re
 
-try:
-    from distutils.command.build import build
-except ImportError:
-    from setuptools.command.build import build
-
 from setuptools import Extension, setup, find_packages, Command
 from setuptools.command.build_ext import build_ext
 
@@ -118,6 +113,14 @@ elif sys.platform.startswith('darwin'):
     lib_filename = 'libgrapa' + so_ext
     lib_pathfile = 'grapa-lib/' + from_os + '/' + lib_filename
 
+# Set up include_dirs for Windows SDK paths
+if sys.platform.startswith('win32') and 'include_dirs' in locals():
+    # Use custom include_dirs that puts Windows SDK paths first
+    base_include_dirs = ["source","source/utf8proc",'source/pybind11/include']
+    include_dirs = include_dirs + base_include_dirs
+else:
+    include_dirs = ["source","source/utf8proc",'source/pybind11/include']
+
 # A CMakeExtension needs a sourcedir instead of a file list.
 # The name must be the _single_ output extension from the CMake build.
 # If you need multiple extensions, see scikit-build.
@@ -164,7 +167,7 @@ class CMakeBuild(build_ext):
             # Using Ninja-build since it a) is available as a wheel and b)
             # multithreads automatically. MSVC would require all variables be
             # exported for Ninja to pick it up, which is a little tricky to do.
-            # Users can override the generator with CMAKE_GENERATOR in CMake
+            # Users can override the generator with CMAKE_GENERATOR in
             # 3.15+.
             if not cmake_generator or cmake_generator == "Ninja":
                 try:
@@ -234,190 +237,24 @@ class CMakeBuild(build_ext):
         subprocess.check_call(["cmake", ext.sourcedir] + cmake_args, cwd=build_temp)
         subprocess.check_call(["cmake", "--build", "."] + build_args, cwd=build_temp)
 
-
-class CopySharedLibrary(Command):
-    user_options = []
-
-    def initialize_options(self):
-        self.build_lib = None
-        self.inplace = 0
-        self.build_dir = "source"
-        self.filename = lib_filename
-        self.lib_source_path = os.path.join(self.build_dir, lib_pathfile)
-        self.package_name = 'source'
-
-    def finalize_options(self):
-        self.set_undefined_options('build', ('build_lib', 'build_lib'), )
-        self.set_undefined_options('build_ext', ('inplace', 'inplace'), )
-
-    def run(self) -> None:
-        self.inplace = self.get_finalized_command('build_ext').inplace
-        if self.inplace:
-            lib_target_path = self.package_name
-        else:
-            lib_target_path = os.path.join(self.build_lib, "grapapy-"+grapapy_version)
-            self.mkpath(lib_target_path)
-        self.copy_file(self.lib_source_path, os.path.join(lib_target_path, self.filename))
-        if sys.platform.startswith('linux') or sys.platform.startswith('darwin'):
-            for file_name in os.listdir(os.path.join(self.build_dir, 'grapa-lib/'+from_os)):
-                self.copy_file(os.path.join(os.path.join(self.build_dir, 'grapa-lib/'+from_os),file_name), os.path.join(lib_target_path, file_name))
-            for file_name in os.listdir(os.path.join(self.build_dir, 'openssl-lib/'+from_os)):
-                self.copy_file(os.path.join(os.path.join(self.build_dir, 'openssl-lib/'+from_os),file_name), os.path.join(lib_target_path, file_name))
-            for file_name in os.listdir(os.path.join(self.build_dir, 'blst-lib/'+from_os)):
-                self.copy_file(os.path.join(os.path.join(self.build_dir, 'blst-lib/'+from_os),file_name), os.path.join(lib_target_path, file_name))
-            for file_name in os.listdir(os.path.join(self.build_dir, 'fl-lib/'+from_os)):
-                self.copy_file(os.path.join(os.path.join(self.build_dir, 'fl-lib/'+from_os),file_name), os.path.join(lib_target_path, file_name))
-            for file_name in os.listdir(os.path.join(self.build_dir, 'pcre2-lib/'+from_os)):
-                self.copy_file(os.path.join(os.path.join(self.build_dir, 'pcre2-lib/'+from_os),file_name), os.path.join(lib_target_path, file_name))
-           # for file_name in os.listdir(os.path.join(self.build_dir, 'X11-lib/'+from_os)):
-           #    self.copy_file(os.path.join(os.path.join(self.build_dir, 'X11-lib/'+from_os),file_name), os.path.join(lib_target_path, file_name))
-        if sys.platform.startswith('linux'):
-            os.environ["ORIGIN"] = os.path.abspath(lib_target_path)
-
-
-class CustomBuild(build):
-    sub_commands = [
-        ('build_clib', build.has_c_libraries),
-        ('build_ext', build.has_ext_modules),
-        ('build_py', build.has_pure_modules),
-        ('build_scripts', build.has_scripts),
-    ]
-
-
-class CustomBuildExt(build_ext):
-
-    def run(self):
-        self.run_command('copy_grapalib')
-        super().run()
-        
-    def build_extension(self, ext):
-        # Use a local build directory to avoid permission issues
-        if sys.platform.startswith('win32'):
-            self.build_temp = os.path.join(os.getcwd(), 'build_temp')
-            if not os.path.exists(self.build_temp):
-                os.makedirs(self.build_temp)
-        try:
-            super().build_extension(ext)
-        except PermissionError as e:
-            if "cache" in str(e).lower():
-                print("\n" + "="*60)
-                print("PERMISSION ERROR: Pip cannot write to its cache directory.")
-                print("SOLUTION: Use one of these commands:")
-                print("  pip install --no-cache-dir dist/grapapy-0.0.25.tar.gz")
-                print("  pip install --no-cache-dir -e .")
-                print("="*60)
-            raise
-
-def pick_library_dirs():
-    my_system = platform.system()
-    if my_system == 'Linux':
-        if is_aws:
-            if is_arm:
-                return ["source", "source/grapa-lib/aws-arm64", "source/X11-lib/aws-arm64"]
-            else:
-                return ["source", "source/grapa-lib/aws-amd64", "source/X11-lib/aws-amd64"]
-        else:
-            if is_arm:
-                return ["source", "source/grapa-lib/linux-arm64", "source/X11-lib/linux-arm64"]
-            else:
-                return ["source", "source/grapa-lib/linux-amd64", "source/X11-lib/linux-amd64"]
-    if my_system == 'Darwin':
-        if is_arm:
-            return ["source", "source/grapa-lib/mac-arm64"]
-        else:
-            return ["source", "source/grapa-lib/mac-amd64"]
-    if my_system == 'Windows':
-        return ["source", "source/grapa-lib/win-amd64"]
-    raise ValueError("Unknown platform: " + my_system)
-
-def pick_libraries():
-    my_system = platform.system()
-    if my_system == 'Linux':
-        return ['grapa']
-    if my_system == 'Darwin':
-        #return ['@rpath/grapa']
-        return ['source/grapa-lib/libgrapa_static.a']
-    if my_system == 'Windows':
-        return ["grapa_static","Gdi32","Advapi32","User32","Ole32","Shell32","Comdlg32","winspool","crypt32"]
-    raise ValueError("Unknown platform: " + my_system)
-
-# Set up include_dirs for Windows SDK paths
-if sys.platform.startswith('win32') and 'include_dirs' in locals():
-    # Use custom include_dirs that puts Windows SDK paths first
-    base_include_dirs = ["source","source/utf8proc",'source/pybind11/include']
-    include_dirs = include_dirs + base_include_dirs
-else:
-    include_dirs = ["source","source/utf8proc",'source/pybind11/include']
-
-lib_grapa = Extension(
-    'grapapy', 
-    sources = [
-        'source/mainpy.cpp',
-    ],
-    include_dirs=include_dirs,
-    library_dirs=pick_library_dirs(),
-    libraries=pick_libraries(),
-    runtime_library_dirs=runtime_library_dirs,
-    extra_link_args=extra_link_args,
-    extra_compile_args=extra_compile_args,
+# All platforms now use CMake build system
+setup(
+    name="grapapy",
+    version=grapapy_version,
+    author="Chris Matichuk",
+    description="Grammar-based language and parser with unlimited precision, parallelism, and Python integration",
+    long_description=(
+        "Grapa is a modern grammar-based programming language and parser designed for Python users, educators, "
+        "researchers, and data engineers. It features unlimited precision math, runtime-mutable grammars, true parallelism, "
+        "and seamless Python integration via GrapaPy. Rapidly prototype languages, process data, and experiment with advanced grammars—all with a unified, high-performance toolset.\n\n"
+        "For comprehensive documentation, visit: https://grapa-dev.github.io/grapa/\n\n"
+        "See the [Grapa project on GitHub](https://github.com/grapa-dev/grapa) for full documentation, examples, and installation instructions."
+    ),
+    long_description_content_type="text/markdown",
+    url="https://grapa-dev.github.io/grapa/",
+    ext_modules=[CMakeExtension("grapapy")],
+    cmdclass={"build_ext": CMakeBuild},
+    zip_safe=False,
+    python_requires=">=3.6",
 )
-
-# The information here can also be placed in setup.cfg - better separation of
-# logic and declaration, and simpler if you include description/version in a file.
-if sys.platform.startswith('linux') or sys.platform.startswith('win32'):
-    setup(
-        name="grapapy",
-        version=grapapy_version,
-        author="Chris Matichuk",
-        author_email="matichuk@hotmail.com",
-        description="GrapaPy brings robust, production-ready parallel ETL/data processing to Python. By leveraging Grapa's C++ backend, GrapaPy enables true parallelism for high-throughput data workflows—bypassing Python's GIL and making advanced data processing simple and fast.",
-        long_description="""
-GrapaPy is a Python extension for the Grapa language, designed for advanced data processing, ETL, and language experimentation. GrapaPy brings robust, production-ready parallel ETL/data processing to Python. By leveraging Grapa's C++ backend, GrapaPy enables true parallelism for high-throughput data workflows—bypassing Python's GIL and making advanced data processing simple and fast.
-
-Features:
-- True parallel ETL/data processing from Python
-- Hardened, production-ready parallelism
-- High performance for large file processing, data transformation, analytics, and more
-- Simple, functional API
-
-For comprehensive documentation, visit: https://grapa-dev.github.io/grapa/
-""",
-        long_description_content_type="text/markdown",
-        url="https://grapa-dev.github.io/grapa/",
-        ext_modules=[lib_grapa],
-        cmdclass={
-            'copy_grapalib': CopySharedLibrary,
-            'build_ext': CustomBuildExt,
-            'build': CustomBuild,
-        },
-        zip_safe=False,
-        python_requires=">=3.6",
-        packages=find_packages(),
-        # Add build options to help with Windows permission issues
-        options={
-            'build_ext': {
-                'build_temp': os.path.join(os.getcwd(), 'build_temp'),
-            }
-        },
-    )
-else:
-    setup(
-        name="grapapy",
-        version=grapapy_version,
-        author="Chris Matichuk",
-        description="Grammar-based language and parser with unlimited precision, parallelism, and Python integration",
-        long_description=(
-            "Grapa is a modern grammar-based programming language and parser designed for Python users, educators, "
-            "researchers, and data engineers. It features unlimited precision math, runtime-mutable grammars, true parallelism, "
-            "and seamless Python integration via GrapaPy. Rapidly prototype languages, process data, and experiment with advanced grammars—all with a unified, high-performance toolset.\n\n"
-            "For comprehensive documentation, visit: https://grapa-dev.github.io/grapa/\n\n"
-            "See the [Grapa project on GitHub](https://github.com/grapa-dev/grapa) for full documentation, examples, and installation instructions."
-        ),
-        long_description_content_type="text/markdown",
-        url="https://grapa-dev.github.io/grapa/",
-        ext_modules=[CMakeExtension("grapapy")],
-        cmdclass={"build_ext": CMakeBuild},
-        zip_safe=False,
-        python_requires=">=3.6",
-    )
 

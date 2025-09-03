@@ -30,13 +30,21 @@ pybind11_add_module(grapapy
 
 if (MSVC)
 target_link_libraries(grapapy PRIVATE 
-    grapa
+    grapa_static
+    Gdi32
+    Advapi32
+    User32
+    Ole32
+    Shell32
+    Comdlg32
+    winspool
+    crypt32
     )
 endif (MSVC)
 
 if (${GRAPAPY_OS} MATCHES "linux")
 target_link_libraries(grapapy PRIVATE
-    libgrapa.a
+    libgrapa_static.a
     libblst.a
     libfltk_forms.a libfltk_gl.a libfltk_images.a libfltk_jpeg.a libfltk.a
     libcrypto.a libssl.a
@@ -47,7 +55,7 @@ endif (${GRAPAPY_OS} MATCHES "linux")
 
 if (${GRAPAPY_OS} MATCHES "aws")
 target_link_libraries(grapapy PRIVATE
-    libgrapa.a
+    libgrapa_static.a
     libblst.a
     libfltk.a libfltk_forms.a libfltk_images.a libfltk_jpeg.a
     libcrypto.a libssl.a
@@ -61,7 +69,7 @@ endif (${GRAPAPY_OS} MATCHES "aws")
 
 if (APPLE)
 target_link_libraries(grapapy PRIVATE
-    libgrapa.a
+    libgrapa_static.a
     libblst.a
     libfltk.a libfltk_forms.a libfltk_gl.a libfltk_images.a libfltk_jpeg.a libfltk_png.a
     libcrypto.a libssl.a
