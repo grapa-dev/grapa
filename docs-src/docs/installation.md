@@ -237,12 +237,20 @@ After building, install the Python extension:
 
 **Windows:**
 ```powershell
-pip install dist/grapapy-0.1.52.tar.gz
+# Upgrade pip first
+pip install --upgrade pip
+
+# Install GrapaPy
+pip install grapapy==0.1.52
 ```
 
 **Non-Windows:**
 ```bash
-pip3 install dist/grapapy-0.1.52.tar.gz
+# Upgrade pip first
+pip3 install --upgrade pip
+
+# Install GrapaPy
+pip3 install grapapy==0.1.52
 ```
 
 ### **Verify Python Integration**
