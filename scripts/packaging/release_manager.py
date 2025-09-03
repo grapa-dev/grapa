@@ -6,12 +6,12 @@ This script manages the creation and upload of Grapa releases to GitHub.
 It compresses the bin directory contents and creates a new release.
 
 Usage:
-    python3 scripts/release_manager.py --version <version> [--create] [--delete-current]
-    python3 scripts/release_manager.py --help
+    python3 scripts/packaging/release_manager.py --version <version> [--create] [--delete-current]
+    python3 scripts/packaging/release_manager.py --help
 
 Examples:
-    python3 scripts/release_manager.py --version 0.1.52 --create
-    python3 scripts/release_manager.py --delete-current
+    python3 scripts/packaging/release_manager.py --version 0.1.53 --create
+    python3 scripts/packaging/release_manager.py --delete-current
 """
 
 import os
@@ -96,11 +96,11 @@ class ReleaseManager:
             platform_name = platform_dir.name
             print(f"  📁 Processing platform: {platform_name}")
             
-            # Create archive name
-            archive_name = f"grapa-{version}-{platform_name}.tar.gz"
+            # Create archive name - use .zip format to match create_github_release.sh
+            archive_name = f"grapa-{version}-{platform_name}.zip"
             archive_path = self.releases_dir / archive_name
             
-            # Create tar.gz archive
+            # Create zip archive
             try:
                 # Use Python's built-in compression for cross-platform compatibility
                 import tempfile
@@ -112,15 +112,13 @@ class ReleaseManager:
                     platform_temp_dir = Path(temp_dir) / platform_name
                     shutil.copytree(platform_dir, platform_temp_dir)
                     
-                    # Create zip archive (Windows-compatible)
-                    zip_name = f"grapa-{version}-{platform_name}.zip"
-                    zip_path = self.releases_dir / zip_name
-                    shutil.make_archive(str(zip_path.with_suffix('')), 'zip', temp_dir, platform_name)
+                    # Create zip archive
+                    shutil.make_archive(str(archive_path.with_suffix('')), 'zip', temp_dir, platform_name)
                     
                     # Get file size
-                    size_mb = zip_path.stat().st_size / (1024 * 1024)
-                    print(f"    ✅ Created: {zip_name} ({size_mb:.1f} MB)")
-                    archives.append(zip_path)
+                    size_mb = archive_path.stat().st_size / (1024 * 1024)
+                    print(f"    ✅ Created: {archive_name} ({size_mb:.1f} MB)")
+                    archives.append(archive_path)
                 
             except Exception as e:
                 print(f"    ❌ Failed to create archive for {platform_name}: {e}")
@@ -133,37 +131,34 @@ class ReleaseManager:
         print(f"🚀 Creating GitHub release for version {version}...")
         
         try:
-            # Create git tag
-            subprocess.run(["git", "tag", version], check=True)
-            print(f"✅ Created git tag: {version}")
+            # Create git tag with v-prefix to match create_github_release.sh
+            tag_name = f"v{version}"
+            subprocess.run(["git", "tag", tag_name], check=True)
+            print(f"✅ Created git tag: {tag_name}")
             
             # Push tag to remote
-            subprocess.run(["git", "push", "origin", version], check=True)
-            print(f"✅ Pushed tag to remote: {version}")
+            subprocess.run(["git", "push", "origin", tag_name], check=True)
+            print(f"✅ Pushed tag to remote: {tag_name}")
             
-            # Create release notes
+            # Create release notes matching create_github_release.sh format
             release_notes = self._generate_release_notes(version, archives)
             
-            # Create release
-            subprocess.run([
-                "gh", "release", "create", version,
+            # Create release with all assets in single command (like create_github_release.sh)
+            # This creates a published release, not a draft
+            cmd = [
+                "gh", "release", "create", tag_name,
                 "--title", f"Grapa {version}",
-                "--notes", release_notes,
-                "--draft"
-            ], check=True)
+                "--notes", release_notes
+            ]
             
-            print(f"✅ Created draft release: {version}")
-            
-            # Upload assets
+            # Add all archive files as assets
             for archive in archives:
-                print(f"📤 Uploading {archive.name}...")
-                subprocess.run([
-                    "gh", "release", "upload", version, str(archive)
-                ], check=True)
-                print(f"✅ Uploaded: {archive.name}")
+                cmd.append(str(archive))
             
-            print(f"🎉 Release {version} created successfully!")
-            print("📝 Review the draft release and publish when ready")
+            subprocess.run(cmd, check=True)
+            
+            print(f"🎉 Release {tag_name} created successfully!")
+            print(f"📝 Release URL: https://github.com/grapa-dev/grapa/releases/tag/{tag_name}")
             return True
             
         except subprocess.CalledProcessError as e:
@@ -174,49 +169,90 @@ class ReleaseManager:
             return False
     
     def _generate_release_notes(self, version: str, archives: List[Path]) -> str:
-        """Generate release notes"""
-        notes = f"""# Grapa {version}
+        """Generate release notes matching create_github_release.sh format"""
+        notes = f"""## Grapa {version} Release
 
-## Downloads
+### Features
+- Modern, high-performance programming language
+- Unlimited precision arithmetic
+- Comprehensive cryptography with OpenSSL 3.5.2
+- Advanced vector and matrix operations
+- Machine learning capabilities
+- Cross-platform compatibility
+- Python integration via GrapaPy
+- Improved build system with static library support
 
+### Supported Platforms
 """
         
+        # Add platform information
         for archive in archives:
             platform_name = archive.stem.replace(f"grapa-{version}-", "")
             size_mb = archive.stat().st_size / (1024 * 1024)
-            notes += f"- **{platform_name}**: [{archive.name}]({archive.name}) ({size_mb:.1f} MB)\n"
+            
+            # Map platform names to display names
+            display_names = {
+                "mac-arm64": "**macOS ARM64** (Apple Silicon)",
+                "win-amd64": "**Windows AMD64**",
+                "linux-amd64": "**Linux AMD64**",
+                "linux-arm64": "**Linux ARM64**",
+                "aws-amd64": "**AWS AMD64**",
+                "aws-arm64": "**AWS ARM64**"
+            }
+            
+            display_name = display_names.get(platform_name, f"**{platform_name}**")
+            notes += f"- {display_name}: `{archive.name}`\n"
         
         notes += f"""
-
 ## Installation
+Each package contains:
+- Grapa executable and libraries
+- Automated install script for your platform
+- Platform-specific documentation
 
-Each platform archive contains:
-- Grapa executable
-- Static library (with `_static` suffix)
-- Shared library (where applicable)
-- Platform-specific install script
+**Quick Start:**
+1. Download the appropriate `.zip` file for your platform
+2. Extract the archive
+3. Run the included install script
+4. Start using Grapa!
 
-### Windows
-Run `install-grapa.ps1` as Administrator
+**Python users**: Install GrapaPy with `pip install grapapy`
 
-### Unix/Linux/macOS
-Run `sudo ./install-grapa.sh`
+### Documentation
+- [GitHub Repository](https://github.com/grapa-dev/grapa)
+- [Documentation](https://grapa-dev.github.io/grapa/)
+- [Installation Guide](https://grapa-dev.github.io/grapa/installation/)
 
-## What's New
+### Changes in this Release
+- Version bump to {version}
+- Improved build system with static library support
+- Enhanced Python integration
+- AWS platform support (AMD64 and ARM64)
+- Cross-platform compatibility improvements
+- Better error handling and build reliability
+- Automated install scripts for all platforms
 
-- Updated library naming convention: static libraries now use `_static` suffix
-- Improved cross-platform build system
-- Enhanced install scripts for all platforms
-- Better organization of binary distributions
-
-## Build Information
-
-This release was built using the updated build system with:
-- Static libraries: `*_static.*` naming convention
-- Platform-specific directories in `bin/`
-- Automated install script generation
-- Improved library management
+### SHA256 Checksums
+```
 """
+        
+        # Add SHA256 checksums
+        for archive in archives:
+            try:
+                result = subprocess.run(
+                    ["shasum", "-a", "256", str(archive)],
+                    capture_output=True, text=True, check=True
+                )
+                checksum_line = result.stdout.strip()
+                # Extract just the filename part
+                filename = archive.name
+                checksum = checksum_line.split()[0]
+                notes += f"{checksum}  {filename}\n"
+            except subprocess.CalledProcessError:
+                # Fallback for Windows or if shasum not available
+                notes += f"<checksum>  {archive.name}\n"
+        
+        notes += "```"
         
         return notes
     
@@ -237,7 +273,7 @@ This release was built using the updated build system with:
 
 def main():
     parser = argparse.ArgumentParser(description="Grapa Release Manager")
-    parser.add_argument("--version", help="Version number for new release (e.g., 0.1.52)")
+    parser.add_argument("--version", help="Version number for new release (e.g., 0.1.53)")
     parser.add_argument("--create", action="store_true", help="Create a new release")
     parser.add_argument("--delete-current", action="store_true", help="Delete the current release")
     parser.add_argument("--list", action="store_true", help="List all releases")
