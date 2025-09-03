@@ -11,7 +11,7 @@ from setuptools.command.build_ext import build_ext
 
 from pathlib import Path
 
-grapapy_version = "0.1.52"
+grapapy_version = "0.1.53"
 is_aws = False
 is_apple = False
 from_os = ''

@@ -615,6 +615,6 @@ PYBIND11_MODULE(grapapy, m)
     )pbdoc",
 		py::arg("s"), py::arg("a") = "", py::arg("r") = "", py::arg("p") = "", pybind11::call_guard<py::gil_scoped_release>());
 	
-    m.attr("__version__") = "0.1.52";
+    m.attr("__version__") = "0.1.53";
 
 }
