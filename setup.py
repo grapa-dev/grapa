@@ -12,9 +12,14 @@ from setuptools.command.build_ext import build_ext
 from pathlib import Path
 
 grapapy_version = "0.1.52"
+is_aws = False
+is_apple = False
 from_os = ''
 is_arm = platform.machine().lower() in ["aarch64", "arm64"]
 
+include_dirs = []
+extra_link_args = []
+extra_compile_args = []
 runtime_library_dirs = []
 
 # Determine platform for CMake
@@ -68,21 +73,25 @@ elif sys.platform.startswith('linux'):
         # Check for AWS-specific environment variables
         if 'AWS' in os.environ.get('AWS_EXECUTION_ENV', ''):
             from_os = from_os.replace('linux', 'aws')
+            is_aws = True;
         # Check for Amazon Linux in os-release
         elif os.path.exists('/etc/os-release'):
             with open('/etc/os-release', 'r') as f:
                 content = f.read().lower()
                 if any(identifier in content for identifier in ['amazon linux', 'amazon-linux', 'aws', 'amazon']):
                     from_os = from_os.replace('linux', 'aws')
+                    is_aws = True;
         # Check for Amazon Linux in system-release
         elif os.path.exists('/etc/system-release'):
             with open('/etc/system-release', 'r') as f:
                 content = f.read().lower()
                 if any(identifier in content for identifier in ['amazon linux', 'amazon-linux', 'aws', 'amazon']):
                     from_os = from_os.replace('linux', 'aws')
+                    is_aws = True;
     except:
         pass
 elif sys.platform.startswith('darwin'):
+    is_apple = True
     if is_arm:
         from_os = 'mac-arm64'
     else:
@@ -219,12 +228,33 @@ class CustomBuildExt(build_ext):
 
 def pick_library_dirs():
     my_system = platform.system()
+    if my_system == 'Linux':
+        if is_aws:
+            if is_arm:
+                return ["source", "source/grapa-lib/aws-arm64", "source/X11-lib/aws-arm64"]
+            else:
+                return ["source", "source/grapa-lib/aws-amd64", "source/X11-lib/aws-amd64"]
+        else:
+            if is_arm:
+                return ["source", "source/grapa-lib/linux-arm64", "source/X11-lib/linux-arm64"]
+            else:
+                return ["source", "source/grapa-lib/linux-amd64", "source/X11-lib/linux-amd64"]
+    if my_system == 'Darwin':
+        if is_arm:
+            return ["source", "source/grapa-lib/mac-arm64"]
+        else:
+            return ["source", "source/grapa-lib/mac-amd64"]
     if my_system == 'Windows':
         return ["source", "source/grapa-lib/win-amd64"]
     raise ValueError("Unknown platform: " + my_system)
 
 def pick_libraries():
     my_system = platform.system()
+    if my_system == 'Linux':
+        return ['grapa']
+    if my_system == 'Darwin':
+        #return ['@rpath/grapa']
+        return ['source/grapa-lib/libgrapa_static.a']
     if my_system == 'Windows':
         return ["grapa_static","Gdi32","Advapi32","User32","Ole32","Shell32","Comdlg32","winspool","crypt32"]
     raise ValueError("Unknown platform: " + my_system)
@@ -247,7 +277,6 @@ lib_grapa = Extension(
     extra_compile_args=extra_compile_args,
 )
 
-# All platforms now use CMake build system
 if sys.platform.startswith('win32'):
     setup(
         name="grapapy",
