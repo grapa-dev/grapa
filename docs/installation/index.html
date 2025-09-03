@@ -4757,10 +4757,18 @@ python<span class="w"> </span>build.py<span class="w"> </span>--python
 <h3 id="install-python-extension"><strong>Install Python Extension</strong></h3>
 <p>After building, install the Python extension:</p>
 <p><strong>Windows:</strong>
-<div class="highlight"><pre><span></span><code><span class="n">pip</span> <span class="n">install</span> <span class="n">dist</span><span class="p">/</span><span class="n">grapapy</span><span class="p">-</span><span class="n">0</span><span class="p">.</span><span class="n">1</span><span class="p">.</span><span class="n">52</span><span class="p">.</span><span class="n">tar</span><span class="p">.</span><span class="n">gz</span>
+<div class="highlight"><pre><span></span><code><span class="c"># Upgrade pip first</span>
+<span class="n">pip</span> <span class="n">install</span> <span class="p">-</span><span class="n">-upgrade</span> <span class="n">pip</span>
+
+<span class="c"># Install GrapaPy</span>
+<span class="n">pip</span> <span class="n">install</span> <span class="n">grapapy</span><span class="p">==</span><span class="n">0</span><span class="p">.</span><span class="n">1</span><span class="p">.</span><span class="n">52</span>
 </code></pre></div></p>
 <p><strong>Non-Windows:</strong>
-<div class="highlight"><pre><span></span><code>pip3<span class="w"> </span>install<span class="w"> </span>dist/grapapy-0.1.52.tar.gz
+<div class="highlight"><pre><span></span><code><span class="c1"># Upgrade pip first</span>
+pip3<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>pip
+
+<span class="c1"># Install GrapaPy</span>
+pip3<span class="w"> </span>install<span class="w"> </span><span class="nv">grapapy</span><span class="o">==</span><span class="m">0</span>.1.52
 </code></pre></div></p>
 <h3 id="verify-python-integration"><strong>Verify Python Integration</strong></h3>
 <div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">grapapy</span>
