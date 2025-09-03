@@ -5151,19 +5151,22 @@
 <h2 id="installation">Installation</h2>
 <h3 id="step-1-download-and-extract">Step 1: Download and Extract</h3>
 <ol>
-<li>Download the appropriate binary for your system from the <code>bin/</code> directory:</li>
-<li><strong>macOS (Apple Silicon):</strong> <code>grapa-mac-arm64.tar.gz</code></li>
-<li><strong>Linux (Intel):</strong> <code>grapa-linux-amd64.tar.gz</code></li>
-<li><strong>Linux (ARM):</strong> <code>grapa-linux-arm64.tar.gz</code></li>
-<li><strong>Windows:</strong> <code>grapa-win-amd64.zip</code></li>
+<li>Download the appropriate package for your system from <a href="https://github.com/grapa-dev/grapa/releases">GitHub Releases</a>:</li>
+<li><strong>macOS (Apple Silicon):</strong> <code>grapa-0.1.52-mac-arm64.zip</code></li>
+<li><strong>Linux (Intel):</strong> <code>grapa-0.1.52-linux-amd64.zip</code></li>
+<li><strong>Linux (ARM):</strong> <code>grapa-0.1.52-linux-arm64.zip</code></li>
+<li><strong>Windows:</strong> <code>grapa-0.1.52-win-amd64.zip</code></li>
+<li><strong>AWS (Intel):</strong> <code>grapa-0.1.52-aws-amd64.zip</code></li>
+<li><strong>AWS (ARM):</strong> <code>grapa-0.1.52-aws-arm64.zip</code></li>
 </ol>
 <blockquote>
 <p><strong>Note:</strong> Grapa requires macOS 15.0+ (Apple Silicon only). Intel Macs are no longer supported due to Apple's discontinuation of Intel Mac support in macOS 15.0.</p>
 </blockquote>
 <ol>
 <li>Extract the archive to a location of your choice:
-   <div class="highlight"><pre><span></span><code><span class="c1"># macOS/Linux</span>
-tar<span class="w"> </span>-xzf<span class="w"> </span>grapa-mac-arm64.tar.gz
+   <div class="highlight"><pre><span></span><code><span class="c1"># macOS/Linux/AWS</span>
+unzip<span class="w"> </span>grapa-0.1.52-mac-arm64.zip
+<span class="nb">cd</span><span class="w"> </span>grapa-0.1.52-mac-arm64
 
 <span class="c1"># Windows</span>
 <span class="c1"># Extract the .zip file using your preferred tool</span>

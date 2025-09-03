@@ -3996,22 +3996,26 @@
 <h1 id="cli-integration">CLI Integration</h1>
 <p>This guide explains how to get started with the Grapa CLI, either by downloading pre-built binaries or building from source.</p>
 <h2 id="option-1-download-pre-built-binaries">Option 1: Download Pre-Built Binaries</h2>
-<p>The fastest way to use the Grapa CLI is to download a pre-built binary for your platform from the GitHub bin directory:</p>
+<p>The fastest way to use the Grapa CLI is to download a pre-built package for your platform from GitHub releases:</p>
 <ul>
-<li><a href="https://github.com/grapa-dev/grapa/tree/main/bin">Grapa Binaries on GitHub</a></li>
+<li><a href="https://github.com/grapa-dev/grapa/releases">Grapa Releases on GitHub</a></li>
 </ul>
-<p>Available binaries:
-- <strong>macOS (Apple Silicon):</strong> <code>grapa-mac-arm64.tar.gz</code>
-- <strong>Linux (Intel):</strong> <code>grapa-linux-amd64.tar.gz</code>
-- <strong>Linux (ARM):</strong> <code>grapa-linux-arm64.tar.gz</code>
-- <strong>Windows:</strong> <code>grapa-win-amd64.zip</code></p>
+<p>Available packages:
+- <strong>macOS (Apple Silicon):</strong> <code>grapa-0.1.52-mac-arm64.zip</code>
+- <strong>Linux (Intel):</strong> <code>grapa-0.1.52-linux-amd64.zip</code>
+- <strong>Linux (ARM):</strong> <code>grapa-0.1.52-linux-arm64.zip</code>
+- <strong>Windows:</strong> <code>grapa-0.1.52-win-amd64.zip</code>
+- <strong>AWS (Intel):</strong> <code>grapa-0.1.52-aws-amd64.zip</code>
+- <strong>AWS (ARM):</strong> <code>grapa-0.1.52-aws-arm64.zip</code></p>
 <p><strong>Instructions:</strong>
-1. Download the appropriate file for your system.
+1. Download the appropriate package for your system from the latest release.
 2. Extract the archive:
-   - macOS/Linux: <code>tar -xzf grapa-&lt;platform&gt;.tar.gz</code>
-   - Windows: Use your preferred tool to extract the <code>.zip</code> file.
-3. (macOS/Linux) Make the binary executable: <code>chmod +x grapa</code>
-4. Move the binary to a directory in your PATH (e.g., <code>/usr/local/bin</code>) or add its location to your PATH.</p>
+   - All platforms: Use <code>unzip</code> or your preferred tool to extract the <code>.zip</code> file.
+3. Navigate to the extracted directory: <code>cd grapa-0.1.52-&lt;platform&gt;-&lt;arch&gt;</code>
+4. Run the automated install script:
+   - macOS/Linux/AWS: <code>./install-grapa.sh</code>
+   - Windows: <code>.\install-grapa.ps1</code> (run as Administrator)
+5. The installer will automatically add Grapa to your PATH and set up the necessary files.</p>
 <blockquote>
 <p><strong>Note:</strong> Grapa requires macOS 15.0+ (Apple Silicon only). Intel Macs are no longer supported due to Apple's discontinuation of Intel Mac support in macOS 15.0.</p>
 </blockquote>
