@@ -143,6 +143,10 @@ class GrapaBuilder:
                 os.remove("grapa.exe")
             shutil.copy("prj/win-amd64/x64/Release/grapa.exe", "grapa.exe")
             
+            # Copy executable to bin directory
+            os.makedirs(f"bin/{config.target}", exist_ok=True)
+            shutil.copy("grapa.exe", f"bin/{config.target}/grapa.exe")
+            
             if not exe_only:
                 # Build static library
                 subprocess.run([
@@ -167,10 +171,24 @@ class GrapaBuilder:
                     print(f"⚠️  Shared library build failed: {e}")
                     print("Continuing with static library only...")
                 
-                # Ensure target directory exists
+                # Ensure target directories exist
                 target_lib_dir = f"bin/{config.target}"
+                source_lib_dir = f"source/grapa-lib/{config.target}"
                 os.makedirs(target_lib_dir, exist_ok=True)
+                os.makedirs(source_lib_dir, exist_ok=True)
+                
+                # Copy static library to both locations
                 shutil.copy("prj/winlib-amd64_static/x64/Release/grapa.lib", f"{target_lib_dir}/grapa_static.lib")
+                shutil.copy("prj/winlib-amd64_static/x64/Release/grapa.lib", f"{source_lib_dir}/grapa_static.lib")
+                
+                # Copy shared library to both locations if it exists
+                if os.path.exists("grapa.dll"):
+                    shutil.copy("grapa.dll", f"{target_lib_dir}/grapa.dll")
+                    shutil.copy("grapa.dll", f"{source_lib_dir}/grapa.dll")
+                elif os.path.exists("prj/winlib-amd64_shared/x64/Release/grapa.dll"):
+                    # If the DLL exists in the project directory, copy it directly
+                    shutil.copy("prj/winlib-amd64_shared/x64/Release/grapa.dll", f"{target_lib_dir}/grapa.dll")
+                    shutil.copy("prj/winlib-amd64_shared/x64/Release/grapa.dll", f"{source_lib_dir}/grapa.dll")
                 # Clean build artifacts
                 self._clean_windows_build()
                 # Create package
@@ -854,11 +872,20 @@ class GrapaBuilder:
     
     def _check_libraries_exist(self, config: BuildConfig) -> bool:
         """Check if required libraries exist for Python package build"""
-        required_files = [
-            f"bin/{config.target}/libgrapa_static.a",
-            f"bin/{config.target}/libgrapa.so",
-            f"bin/{config.target}/grapa"
-        ]
+        if config.platform == "windows":
+            # Windows uses .lib and .dll files
+            required_files = [
+                f"bin/{config.target}/grapa_static.lib",
+                f"bin/{config.target}/grapa.dll",
+                f"bin/{config.target}/grapa.exe"
+            ]
+        else:
+            # Non-Windows uses .a and .so files
+            required_files = [
+                f"bin/{config.target}/libgrapa_static.a",
+                f"bin/{config.target}/libgrapa.so",
+                f"bin/{config.target}/grapa"
+            ]
         
         for file_path in required_files:
             if not os.path.exists(file_path):
