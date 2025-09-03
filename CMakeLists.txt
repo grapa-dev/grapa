@@ -51,6 +51,9 @@ target_link_libraries(grapapy PRIVATE
     libpcre2-8.a
     X11 Xfixes Xft Xext Xrender Xinerama Xcursor xcb Xau png16 fontconfig freetype
     )
+SET(CMAKE_SKIP_BUILD_RPATH  FALSE)
+SET(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
+SET(CMAKE_INSTALL_RPATH "$\{ORIGIN\}")
 endif (${GRAPAPY_OS} MATCHES "linux")
 
 if (${GRAPAPY_OS} MATCHES "aws")
