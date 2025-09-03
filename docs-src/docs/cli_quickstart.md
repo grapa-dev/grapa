@@ -13,18 +13,21 @@ tags:
 ## Installation
 
 ### Step 1: Download and Extract
-1. Download the appropriate binary for your system from the `bin/` directory:
-   - **macOS (Apple Silicon):** `grapa-mac-arm64.tar.gz`
-   - **Linux (Intel):** `grapa-linux-amd64.tar.gz`
-   - **Linux (ARM):** `grapa-linux-arm64.tar.gz`
-   - **Windows:** `grapa-win-amd64.zip`
+1. Download the appropriate package for your system from [GitHub Releases](https://github.com/grapa-dev/grapa/releases):
+   - **macOS (Apple Silicon):** `grapa-0.1.52-mac-arm64.zip`
+   - **Linux (Intel):** `grapa-0.1.52-linux-amd64.zip`
+   - **Linux (ARM):** `grapa-0.1.52-linux-arm64.zip`
+   - **Windows:** `grapa-0.1.52-win-amd64.zip`
+   - **AWS (Intel):** `grapa-0.1.52-aws-amd64.zip`
+   - **AWS (ARM):** `grapa-0.1.52-aws-arm64.zip`
 
 > **Note:** Grapa requires macOS 15.0+ (Apple Silicon only). Intel Macs are no longer supported due to Apple's discontinuation of Intel Mac support in macOS 15.0.
 
 2. Extract the archive to a location of your choice:
    ```bash
-   # macOS/Linux
-   tar -xzf grapa-mac-arm64.tar.gz
+   # macOS/Linux/AWS
+   unzip grapa-0.1.52-mac-arm64.zip
+   cd grapa-0.1.52-mac-arm64
    
    # Windows
    # Extract the .zip file using your preferred tool

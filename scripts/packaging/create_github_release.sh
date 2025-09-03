@@ -6,7 +6,7 @@
 set -e  # Exit on any error
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
-VERSION="0.1.51"
+VERSION="0.1.52"
 TAG="v$VERSION"
 
 # Colors for output
@@ -44,21 +44,29 @@ check_binaries() {
     
     local missing_binaries=()
     
-    # Check for required binaries
-    if [ ! -f "$REPO_ROOT/bin/grapa" ]; then
+    # Check for required binaries in new directory structure
+    if [ ! -f "$REPO_ROOT/bin/mac-arm64/grapa" ]; then
         missing_binaries+=("grapa (Mac ARM64)")
     fi
     
-    if [ ! -f "$REPO_ROOT/bin/grapa-win-amd64.exe" ]; then
-        missing_binaries+=("grapa-win-amd64.exe")
+    if [ ! -f "$REPO_ROOT/bin/win-amd64/grapa.exe" ]; then
+        missing_binaries+=("grapa.exe (Windows AMD64)")
     fi
     
-    if [ ! -f "$REPO_ROOT/bin/grapa-linux-amd64" ]; then
-        missing_binaries+=("grapa-linux-amd64")
+    if [ ! -f "$REPO_ROOT/bin/linux-amd64/grapa" ]; then
+        missing_binaries+=("grapa (Linux AMD64)")
     fi
     
-    if [ ! -f "$REPO_ROOT/bin/grapa-linux-arm64" ]; then
-        missing_binaries+=("grapa-linux-arm64")
+    if [ ! -f "$REPO_ROOT/bin/linux-arm64/grapa" ]; then
+        missing_binaries+=("grapa (Linux ARM64)")
+    fi
+    
+    if [ ! -f "$REPO_ROOT/bin/aws-amd64/grapa" ]; then
+        missing_binaries+=("grapa (AWS AMD64)")
+    fi
+    
+    if [ ! -f "$REPO_ROOT/bin/aws-arm64/grapa" ]; then
+        missing_binaries+=("grapa (AWS ARM64)")
     fi
     
     if [ ${#missing_binaries[@]} -gt 0 ]; then
@@ -80,16 +88,46 @@ prepare_release_assets() {
     TEMP_DIR="$REPO_ROOT/temp/release-assets"
     mkdir -p "$TEMP_DIR"
     
-    # Copy binaries with correct names
-    cp "$REPO_ROOT/bin/grapa" "$TEMP_DIR/grapa-mac-arm64"
-    cp "$REPO_ROOT/bin/grapa-win-amd64.exe" "$TEMP_DIR/grapa-win-amd64.exe"
-    cp "$REPO_ROOT/bin/grapa-linux-amd64" "$TEMP_DIR/grapa-linux-amd64"
-    cp "$REPO_ROOT/bin/grapa-linux-arm64" "$TEMP_DIR/grapa-linux-arm64"
+    # Create .zip archives for each platform folder
+    cd "$REPO_ROOT/bin"
     
-    # Make binaries executable
-    chmod +x "$TEMP_DIR/grapa-mac-arm64"
-    chmod +x "$TEMP_DIR/grapa-linux-amd64"
-    chmod +x "$TEMP_DIR/grapa-linux-arm64"
+    # macOS ARM64
+    if [ -d "mac-arm64" ]; then
+        log_info "Creating macOS ARM64 package..."
+        zip -r "$TEMP_DIR/grapa-$VERSION-mac-arm64.zip" mac-arm64/
+    fi
+    
+    # Windows AMD64
+    if [ -d "win-amd64" ]; then
+        log_info "Creating Windows AMD64 package..."
+        zip -r "$TEMP_DIR/grapa-$VERSION-win-amd64.zip" win-amd64/
+    fi
+    
+    # Linux AMD64
+    if [ -d "linux-amd64" ]; then
+        log_info "Creating Linux AMD64 package..."
+        zip -r "$TEMP_DIR/grapa-$VERSION-linux-amd64.zip" linux-amd64/
+    fi
+    
+    # Linux ARM64
+    if [ -d "linux-arm64" ]; then
+        log_info "Creating Linux ARM64 package..."
+        zip -r "$TEMP_DIR/grapa-$VERSION-linux-arm64.zip" linux-arm64/
+    fi
+    
+    # AWS AMD64
+    if [ -d "aws-amd64" ]; then
+        log_info "Creating AWS AMD64 package..."
+        zip -r "$TEMP_DIR/grapa-$VERSION-aws-amd64.zip" aws-amd64/
+    fi
+    
+    # AWS ARM64
+    if [ -d "aws-arm64" ]; then
+        log_info "Creating AWS ARM64 package..."
+        zip -r "$TEMP_DIR/grapa-$VERSION-aws-arm64.zip" aws-arm64/
+    fi
+    
+    cd "$REPO_ROOT"
     
     log_success "Release assets prepared in $TEMP_DIR"
 }
@@ -125,40 +163,60 @@ create_github_release() {
 - Advanced vector and matrix operations
 - Machine learning capabilities
 - Cross-platform compatibility
+- Python integration via GrapaPy
+- Improved build system with static library support
 
 ### Supported Platforms
-- **macOS ARM64** (Apple Silicon): \`grapa-mac-arm64\`
-- **Windows AMD64**: \`grapa-win-amd64.exe\`
-- **Linux AMD64**: \`grapa-linux-amd64\`
-- **Linux ARM64**: \`grapa-linux-arm64\`
+- **macOS ARM64** (Apple Silicon): \`grapa-$VERSION-mac-arm64.zip\`
+- **Windows AMD64**: \`grapa-$VERSION-win-amd64.zip\`
+- **Linux AMD64**: \`grapa-$VERSION-linux-amd64.zip\`
+- **Linux ARM64**: \`grapa-$VERSION-linux-arm64.zip\`
+- **AWS AMD64**: \`grapa-$VERSION-aws-amd64.zip\`
+- **AWS ARM64**: \`grapa-$VERSION-aws-arm64.zip\`
 
 ### Installation
-- **macOS**: \`brew install grapa\` (after Homebrew formula is merged)
-- **Other platforms**: Download the appropriate binary and make it executable
+Each package contains:
+- Grapa executable and libraries
+- Automated install script for your platform
+- Platform-specific documentation
+
+**Quick Start:**
+1. Download the appropriate \`.zip\` file for your platform
+2. Extract the archive
+3. Run the included install script
+4. Start using Grapa!
+
+**Python users**: Install GrapaPy with \`pip install grapapy\`
 
 ### Documentation
 - [GitHub Repository](https://github.com/grapa-dev/grapa)
-- [Documentation](https://github.com/grapa-dev/grapa/tree/main/docs-src)
+- [Documentation](https://grapa-dev.github.io/grapa/)
+- [Installation Guide](https://grapa-dev.github.io/grapa/installation/)
 
 ### Changes in this Release
-- Initial public release
-- Comprehensive cryptographic capabilities
-- Cross-platform support
-- Single executable distribution
+- Version bump to $VERSION
+- Improved build system with static library support
+- Enhanced Python integration
+- AWS platform support (AMD64 and ARM64)
+- Cross-platform compatibility improvements
+- Better error handling and build reliability
+- Automated install scripts for all platforms
 
 ### SHA256 Checksums
 \`\`\`
-$(shasum -a 256 "$TEMP_DIR"/* | sed 's|.*/||')
+$(shasum -a 256 "$TEMP_DIR"/*.zip | sed 's|.*/||')
 \`\`\`"
     
     # Create the release
     if gh release create "$TAG" \
         --title "Grapa $VERSION" \
         --notes "$RELEASE_BODY" \
-        "$TEMP_DIR/grapa-mac-arm64" \
-        "$TEMP_DIR/grapa-win-amd64.exe" \
-        "$TEMP_DIR/grapa-linux-amd64" \
-        "$TEMP_DIR/grapa-linux-arm64"; then
+        "$TEMP_DIR/grapa-$VERSION-mac-arm64.zip" \
+        "$TEMP_DIR/grapa-$VERSION-win-amd64.zip" \
+        "$TEMP_DIR/grapa-$VERSION-linux-amd64.zip" \
+        "$TEMP_DIR/grapa-$VERSION-linux-arm64.zip" \
+        "$TEMP_DIR/grapa-$VERSION-aws-amd64.zip" \
+        "$TEMP_DIR/grapa-$VERSION-aws-arm64.zip"; then
         
         log_success "GitHub release created successfully!"
         log_info "Release URL: https://github.com/grapa/grapa/releases/tag/$TAG"
