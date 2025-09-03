@@ -27,11 +27,23 @@ elif sys.platform.startswith('linux'):
     from_os = 'linux-amd64'
     if is_arm:
         from_os = 'linux-arm64'
-    # Check if it's Amazon Linux
+    # Check if it's Amazon Linux or AWS
     try:
-        with open('/etc/os-release', 'r') as f:
-            if 'Amazon Linux' in f.read():
-                from_os = from_os.replace('linux', 'aws')
+        # Check for AWS-specific environment variables
+        if 'AWS' in os.environ.get('AWS_EXECUTION_ENV', ''):
+            from_os = from_os.replace('linux', 'aws')
+        # Check for Amazon Linux in os-release
+        elif os.path.exists('/etc/os-release'):
+            with open('/etc/os-release', 'r') as f:
+                content = f.read().lower()
+                if any(identifier in content for identifier in ['amazon linux', 'amazon-linux', 'aws', 'amazon']):
+                    from_os = from_os.replace('linux', 'aws')
+        # Check for Amazon Linux in system-release
+        elif os.path.exists('/etc/system-release'):
+            with open('/etc/system-release', 'r') as f:
+                content = f.read().lower()
+                if any(identifier in content for identifier in ['amazon linux', 'amazon-linux', 'aws', 'amazon']):
+                    from_os = from_os.replace('linux', 'aws')
     except:
         pass
 elif sys.platform.startswith('darwin'):

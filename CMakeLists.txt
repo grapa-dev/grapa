@@ -60,10 +60,10 @@ if (${GRAPAPY_OS} MATCHES "aws")
 target_link_libraries(grapapy PRIVATE
     libgrapa_static.a
     libblst.a
-    libfltk.a libfltk_forms.a libfltk_images.a libfltk_jpeg.a
+    libfltk_forms.a libfltk_gl.a libfltk_images.a libfltk_jpeg.a libfltk.a
     libcrypto.a libssl.a
     libpcre2-8.a
-    X11 Xfixes Xft Xext Xrender Xinerama Xcursor xcb Xau png15 fontconfig freetype
+    X11 Xfixes Xft Xext Xrender Xinerama Xcursor xcb Xau png16 fontconfig freetype
     )
 SET(CMAKE_SKIP_BUILD_RPATH  FALSE)
 SET(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)

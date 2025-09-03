@@ -352,6 +352,9 @@ docker commit [ID] amazonlinux-apple2
 
 docker start -ai amazonlinux-apple2
 docker start -ai amazonlinux-intel2
+
+python3 test/use_cases/test_python_use_cases.py
+
 ```
 
 Required
