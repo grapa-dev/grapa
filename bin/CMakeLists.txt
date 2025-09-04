@@ -5,90 +5,116 @@ project(grapa_example)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+# Platform detection
+if(WIN32)
+    # Windows detection
+    if(CMAKE_SYSTEM_PROCESSOR MATCHES "AMD64" OR CMAKE_HOST_SYSTEM_PROCESSOR MATCHES "AMD64")
+        set(GRAPA_PLATFORM_DIR "win-amd64")
+    else()
+        set(GRAPA_PLATFORM_DIR "win-amd64")  # Default to AMD64 for now
+    endif()
+    set(GRAPA_STATIC_LIB "grapa_static.lib")
+elseif(APPLE)
+    # macOS detection
+    if(CMAKE_SYSTEM_PROCESSOR MATCHES "arm64" OR CMAKE_HOST_SYSTEM_PROCESSOR MATCHES "arm64")
+        set(GRAPA_PLATFORM_DIR "mac-arm64")
+    else()
+        set(GRAPA_PLATFORM_DIR "mac-amd64")
+    endif()
+    set(GRAPA_STATIC_LIB "libgrapa_static.a")
+else()
+    # Linux/AWS detection
+    if(EXISTS "/etc/system-release")
+        file(READ "/etc/system-release" system_release)
+        if(system_release MATCHES "Amazon Linux")
+            if(CMAKE_SYSTEM_PROCESSOR MATCHES "aarch64" OR CMAKE_HOST_SYSTEM_PROCESSOR MATCHES "aarch64")
+                set(GRAPA_PLATFORM_DIR "aws-arm64")
+            else()
+                set(GRAPA_PLATFORM_DIR "aws-amd64")
+            endif()
+        else()
+            if(CMAKE_SYSTEM_PROCESSOR MATCHES "aarch64" OR CMAKE_HOST_SYSTEM_PROCESSOR MATCHES "aarch64")
+                set(GRAPA_PLATFORM_DIR "linux-arm64")
+            else()
+                set(GRAPA_PLATFORM_DIR "linux-amd64")
+            endif()
+        endif()
+    else()
+        if(CMAKE_SYSTEM_PROCESSOR MATCHES "aarch64" OR CMAKE_HOST_SYSTEM_PROCESSOR MATCHES "aarch64")
+            set(GRAPA_PLATFORM_DIR "linux-arm64")
+        else()
+            set(GRAPA_PLATFORM_DIR "linux-amd64")
+        endif()
+    endif()
+    set(GRAPA_STATIC_LIB "libgrapa_static.a")
+endif()
+
 # Set compiler flags to match build.py exactly
-if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+if(WIN32)
+    # Windows flags
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Isource -DUTF8PROC_STATIC -std=c++17 -O3")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Isource -DUTF8PROC_STATIC -O3")
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+    # Linux flags
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Isource -DUTF8PROC_STATIC -std=c++17 -O3 -pthread -DFLTK_USE_X11 -static-libgcc")
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Isource -DUTF8PROC_STATIC -O3 -pthread -DFLTK_USE_X11")
 endif()
 
-# Detect platform and set appropriate library name - using same logic as build.py
-if(WIN32)
-    set(GRAPA_LIB_NAME "grapa.dll")
-    set(GRAPA_LIB_DIR "win-amd64")
-elseif(APPLE)
-    set(GRAPA_LIB_NAME "libgrapa.dylib")
-    set(GRAPA_LIB_DIR "mac-arm64")
-else()
-    # Linux/AWS detection - same logic as build.py
-    set(GRAPA_LIB_NAME "libgrapa.so")
-    
-    # Debug processor detection
-    message(STATUS "CMAKE_SYSTEM_PROCESSOR: ${CMAKE_SYSTEM_PROCESSOR}")
-    message(STATUS "CMAKE_HOST_SYSTEM_PROCESSOR: ${CMAKE_HOST_SYSTEM_PROCESSOR}")
-    
-    # Check if this is AWS Linux
-    if(EXISTS "/etc/system-release")
-        file(READ "/etc/system-release" system_release)
-        if(system_release MATCHES "Amazon Linux")
-            # AWS Linux - detect architecture
-            if(CMAKE_SYSTEM_PROCESSOR MATCHES "aarch64" OR CMAKE_HOST_SYSTEM_PROCESSOR MATCHES "aarch64")
-                set(GRAPA_LIB_DIR "aws-arm64")
-            else()
-                set(GRAPA_LIB_DIR "aws-amd64")
-            endif()
-        else()
-            # Regular Linux - detect architecture
-            if(CMAKE_SYSTEM_PROCESSOR MATCHES "aarch64" OR CMAKE_HOST_SYSTEM_PROCESSOR MATCHES "aarch64")
-                set(GRAPA_LIB_DIR "linux-arm64")
-            else()
-                set(GRAPA_LIB_DIR "linux-amd64")
-            endif()
-        endif()
-    else()
-        # Regular Linux - detect architecture
-        if(CMAKE_SYSTEM_PROCESSOR MATCHES "aarch64" OR CMAKE_HOST_SYSTEM_PROCESSOR MATCHES "aarch64")
-            set(GRAPA_LIB_DIR "linux-arm64")
-        else()
-            set(GRAPA_LIB_DIR "linux-amd64")
-        endif()
-    endif()
-endif()
-
 # Set output directory
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
 
-# Include directories
-include_directories(include)
+# Print configuration info
+message(STATUS "Platform: ${CMAKE_SYSTEM_NAME}")
+message(STATUS "Processor: ${CMAKE_SYSTEM_PROCESSOR}")
+message(STATUS "Grapa library: platforms/${GRAPA_PLATFORM_DIR}/${GRAPA_STATIC_LIB}")
+message(STATUS "Output directory: ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}")
 
-# Create the executable
+# Create executable
 add_executable(grapa_example main.cpp)
 
-# Link against the Grapa shared library
-target_link_libraries(grapa_example ${CMAKE_CURRENT_SOURCE_DIR}/${GRAPA_LIB_DIR}/${GRAPA_LIB_NAME})
+# Set include directories
+target_include_directories(grapa_example PRIVATE include)
+
+# Link against Grapa static library and all required 3rd party libraries
+target_link_libraries(grapa_example 
+    ${CMAKE_CURRENT_SOURCE_DIR}/platforms/${GRAPA_PLATFORM_DIR}/${GRAPA_STATIC_LIB}
+    ${CMAKE_CURRENT_SOURCE_DIR}/lib/${GRAPA_PLATFORM_DIR}/libfltk.a
+    ${CMAKE_CURRENT_SOURCE_DIR}/lib/${GRAPA_PLATFORM_DIR}/libfltk_gl.a
+    ${CMAKE_CURRENT_SOURCE_DIR}/lib/${GRAPA_PLATFORM_DIR}/libfltk_png.a
+    ${CMAKE_CURRENT_SOURCE_DIR}/lib/${GRAPA_PLATFORM_DIR}/libfltk_z.a
+    ${CMAKE_CURRENT_SOURCE_DIR}/lib/${GRAPA_PLATFORM_DIR}/libfltk_images.a
+    ${CMAKE_CURRENT_SOURCE_DIR}/lib/${GRAPA_PLATFORM_DIR}/libfltk_forms.a
+    ${CMAKE_CURRENT_SOURCE_DIR}/lib/${GRAPA_PLATFORM_DIR}/libfltk_jpeg.a
+    ${CMAKE_CURRENT_SOURCE_DIR}/lib/${GRAPA_PLATFORM_DIR}/libssl.a
+    ${CMAKE_CURRENT_SOURCE_DIR}/lib/${GRAPA_PLATFORM_DIR}/libcrypto.a
+    ${CMAKE_CURRENT_SOURCE_DIR}/lib/${GRAPA_PLATFORM_DIR}/libblst.a
+    ${CMAKE_CURRENT_SOURCE_DIR}/lib/${GRAPA_PLATFORM_DIR}/libpcre2-8.a
+)
 
 # Platform-specific settings
-if(WIN32)
-    # Windows-specific settings
-    set_target_properties(grapa_example PROPERTIES
-        OUTPUT_NAME "grapa_example"
-        SUFFIX ".exe"
-    )
-elseif(APPLE)
-    # macOS-specific settings
-    set_target_properties(grapa_example PROPERTIES
-        OUTPUT_NAME "grapa_example"
-    )
-    # Set RPATH for macOS to find the library in the same directory as executable
+if(APPLE)
+    # macOS settings
     set_target_properties(grapa_example PROPERTIES
         BUILD_WITH_INSTALL_RPATH TRUE
         INSTALL_RPATH "@executable_path"
     )
-else()
-    # Linux-specific settings
-    set_target_properties(grapa_example PROPERTIES
-        OUTPUT_NAME "grapa_example"
+    
+    # Link against macOS system frameworks that FLTK requires
+    target_link_libraries(grapa_example 
+        "-framework CoreGraphics"
+        "-framework CoreFoundation"
+        "-framework AppKit"
+        "-framework IOKit"
+        "-framework ScreenCaptureKit"
+        "-framework CoreText"
+        "-framework QuartzCore"
+        "-framework Carbon"
+        "-framework ApplicationServices"
+        "-framework Security"
+        "-framework SystemConfiguration"
     )
-    # Set RPATH for Linux to find the library in the same directory as executable
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+    # Linux settings
     set_target_properties(grapa_example PROPERTIES
         BUILD_WITH_INSTALL_RPATH TRUE
         INSTALL_RPATH "$ORIGIN"
@@ -102,24 +128,36 @@ else()
     set_target_properties(grapa_example PROPERTIES
         LINK_FLAGS "-Wl,-rpath,\$ORIGIN"
     )
+    
+    # Link against X11 system libraries that FLTK requires on Linux
+    target_link_libraries(grapa_example 
+        "-lX11"
+        "-lXfixes"
+        "-lXft"
+        "-lXext"
+        "-lXrender"
+        "-lXinerama"
+        "-lfontconfig"
+        "-lXcursor"
+        "-ldl"
+        "-lm"
+    )
+elseif(WIN32)
+    # Windows settings
+    set_target_properties(grapa_example PROPERTIES
+        BUILD_WITH_INSTALL_RPATH TRUE
+        INSTALL_RPATH "$ORIGIN"
+    )
+    
+    # Windows doesn't need additional system libraries - everything is statically linked
+    # The FLTK, OpenSSL, BLST, and PCRE2 static libraries contain all necessary symbols
 endif()
 
-# Print configuration info
-message(STATUS "Platform: ${CMAKE_SYSTEM_NAME}")
-message(STATUS "Processor: ${CMAKE_SYSTEM_PROCESSOR}")
-message(STATUS "Grapa library: ${GRAPA_LIB_DIR}/${GRAPA_LIB_NAME}")
-message(STATUS "Output directory: ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}")
-
-# Copy the shared library to the build directory so the executable can find it
+# Copy 3rd party static libraries to build directory
 add_custom_command(TARGET grapa_example POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        ${CMAKE_CURRENT_SOURCE_DIR}/${GRAPA_LIB_DIR}/${GRAPA_LIB_NAME}
-        ${CMAKE_CURRENT_BINARY_DIR}/${GRAPA_LIB_NAME}
-    COMMENT "Copying ${GRAPA_LIB_NAME} to build directory"
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${CMAKE_CURRENT_SOURCE_DIR}/lib/${GRAPA_PLATFORM_DIR}
+        ${CMAKE_CURRENT_BINARY_DIR}/lib
+    COMMENT "Copying 3rd party libraries to build directory"
 )
 
-# Add custom target for easy building
-add_custom_target(build_example
-    COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target grapa_example
-    COMMENT "Building grapa_example for ${CMAKE_SYSTEM_NAME}"
-)

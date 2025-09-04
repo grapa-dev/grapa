@@ -143,9 +143,9 @@ class GrapaBuilder:
                 os.remove("grapa.exe")
             shutil.copy("prj/win-amd64/x64/Release/grapa.exe", "grapa.exe")
             
-            # Copy executable to bin directory
-            os.makedirs(f"bin/{config.target}", exist_ok=True)
-            shutil.copy("grapa.exe", f"bin/{config.target}/grapa.exe")
+            # Copy executable to bin/platforms directory
+            os.makedirs(f"bin/platforms/{config.target}", exist_ok=True)
+            shutil.copy("grapa.exe", f"bin/platforms/{config.target}/grapa.exe")
             
             if not exe_only:
                 # Build static library
@@ -157,37 +157,19 @@ class GrapaBuilder:
                     os.remove("grapa_static.lib")
                 shutil.copy("prj/winlib-amd64_static/x64/Release/grapa.lib", "grapa_static.lib")
                 
-                # Build shared library (DLL)
-                try:
-                    subprocess.run([
-                        "msbuild", "prj/winlib-amd64_shared/grapalib.sln", "/p:Configuration=Release"
-                    ], check=True)
-                    # Copy shared library
-                    if os.path.exists("grapa.dll"):
-                        os.remove("grapa.dll")
-                    shutil.copy("prj/winlib-amd64_shared/x64/Release/grapa.dll", "grapa.dll")
-                    print("✅ Built and copied grapa.dll")
-                except subprocess.CalledProcessError as e:
-                    print(f"⚠️  Shared library build failed: {e}")
-                    print("Continuing with static library only...")
+                # Shared library builds are no longer supported
+                print("ℹ️  Shared library builds are no longer supported. Using static libraries only.")
                 
                 # Ensure target directories exist
-                target_lib_dir = f"bin/{config.target}"
                 source_lib_dir = f"source/grapa-lib/{config.target}"
-                os.makedirs(target_lib_dir, exist_ok=True)
                 os.makedirs(source_lib_dir, exist_ok=True)
                 
                 # Copy static library to source/grapa-lib (for Python extension)
                 shutil.copy("prj/winlib-amd64_static/x64/Release/grapa.lib", f"{source_lib_dir}/grapa_static.lib")
                 
-                # Copy shared library to both locations if it exists
-                if os.path.exists("grapa.dll"):
-                    shutil.copy("grapa.dll", f"{target_lib_dir}/grapa.dll")
-                    shutil.copy("grapa.dll", f"{source_lib_dir}/grapa.dll")
-                elif os.path.exists("prj/winlib-amd64_shared/x64/Release/grapa.dll"):
-                    # If the DLL exists in the project directory, copy it directly
-                    shutil.copy("prj/winlib-amd64_shared/x64/Release/grapa.dll", f"{target_lib_dir}/grapa.dll")
-                    shutil.copy("prj/winlib-amd64_shared/x64/Release/grapa.dll", f"{source_lib_dir}/grapa.dll")
+                # Copy static library to bin/platforms (for development kit)
+                shutil.copy("prj/winlib-amd64_static/x64/Release/grapa.lib", f"bin/platforms/{config.target}/grapa_static.lib")
+                
                 # Clean build artifacts
                 self._clean_windows_build()
                 # Create package
@@ -213,9 +195,9 @@ class GrapaBuilder:
             # Build static library
             self._run_mac_build_command(config, is_library=True, is_static=True)
             
-            # Build shared library (skip if exe_only)
+            # Shared library builds are no longer supported
             if not exe_only:
-                self._run_mac_build_command(config, is_library=True, is_static=False)
+                print("ℹ️  Shared library builds are no longer supported. Using static libraries only.")
             
             if not exe_only:
                 # Create package
@@ -247,12 +229,9 @@ class GrapaBuilder:
             else:
                 self._run_linux_build_command(config, is_library=True, is_static=True)
             
-            # Build shared library (skip if exe_only)
+            # Shared library builds are no longer supported
             if not exe_only:
-                if config.platform == "aws":
-                    self._run_aws_build_command(config, is_library=True, is_static=False)
-                else:
-                    self._run_linux_build_command(config, is_library=True, is_static=False)
+                print("ℹ️  Shared library builds are no longer supported. Using static libraries only.")
             
             if not exe_only:
                 # Create package
@@ -304,41 +283,14 @@ class GrapaBuilder:
                 os.makedirs(f"source/grapa-lib/{config.target}", exist_ok=True)
                 shutil.copy("libgrapa_static.a", f"source/grapa-lib/{config.target}/libgrapa_static.a")
                 
+                # Copy to bin/platforms directory (for development kit)
+                os.makedirs(f"bin/platforms/{config.target}", exist_ok=True)
+                shutil.copy("libgrapa_static.a", f"bin/platforms/{config.target}/libgrapa_static.a")
+                
                 os.remove("libgrapa_static.a")
             else:
-                # Build shared library - match BUILD.md exactly
-                print("Building shared library...")
-                cpp_files = glob.glob("source/grapa/*.cpp")
-                openssl_libs = glob.glob(f"source/openssl-lib/{config.target}/*.a")
-                fl_libs = glob.glob(f"source/fl-lib/{config.target}/*.a")
-                blst_libs = glob.glob(f"source/blst-lib/{config.target}/*.a")
-                pcre2_lib = glob.glob(f"source/pcre2-lib/{config.target}/libpcre2-8.a")
-                
-                # Use correct library extension for platform
-                lib_name = "libgrapa.dylib" if config.platform == "mac" else "libgrapa.so"
-                cmd = [
-                    "clang++", "-shared", "-Isource"
-                ] + cpp_files + ["utf8proc.o"] + openssl_libs + fl_libs + blst_libs + pcre2_lib + config.frameworks + [
-                    "-std=c++17", "-m64", "-O3", "-pthread", "-fPIC", "-o", lib_name
-                ]
-                print(f"Executing shared library build command: {' '.join(cmd)}")
-                try:
-                    result = os.system(" ".join(cmd))
-                    if result != 0:
-                        raise RuntimeError(f"Shared library build failed with exit code {result}")
-                except Exception as e:
-                    print(f"❌ Shared library build failed: {e}")
-                    raise
-                
-                # Copy to bin directory
-                os.makedirs(f"bin/{config.target}", exist_ok=True)
-                shutil.copy(lib_name, f"bin/{config.target}/{lib_name}")
-                
-                # Copy to source/grapa-lib directory
-                os.makedirs(f"source/grapa-lib/{config.target}", exist_ok=True)
-                shutil.copy(lib_name, f"source/grapa-lib/{config.target}/{lib_name}")
-                
-                os.remove(lib_name)
+                # Shared library builds are no longer supported
+                raise RuntimeError("Shared library builds are no longer supported. Use static libraries instead.")
         else:
             # Build executable - match BUILD.md exactly (two separate steps)
             print("Building executable...")
@@ -372,9 +324,9 @@ class GrapaBuilder:
             if os.path.exists(config.output_name):
                 print(f"✅ Executable created: {config.output_name}")
                 
-                # Copy executable to bin directory
-                os.makedirs(f"bin/{config.target}", exist_ok=True)
-                shutil.copy(config.output_name, f"bin/{config.target}/{config.output_name}")
+                # Copy executable to bin/platforms directory
+                os.makedirs(f"bin/platforms/{config.target}", exist_ok=True)
+                shutil.copy(config.output_name, f"bin/platforms/{config.target}/{config.output_name}")
             else:
                 print(f"❌ Executable not found: {config.output_name}")
                 raise RuntimeError(f"Executable {config.output_name} was not created")
@@ -448,38 +400,14 @@ class GrapaBuilder:
                 os.makedirs(f"source/grapa-lib/{config.target}", exist_ok=True)
                 shutil.copy("libgrapa_static.a", f"source/grapa-lib/{config.target}/libgrapa_static.a")
                 
+                # Copy to bin/platforms directory (for development kit)
+                os.makedirs(f"bin/platforms/{config.target}", exist_ok=True)
+                shutil.copy("libgrapa_static.a", f"bin/platforms/{config.target}/libgrapa_static.a")
+                
                 os.remove("libgrapa_static.a")
             else:
-                # Build shared library
-                cpp_files = glob.glob("source/grapa/*.cpp")
-                openssl_libs = glob.glob(f"source/openssl-lib/{config.target}/*.a")
-                fl_libs = glob.glob(f"source/fl-lib/{config.target}/*.a")
-                blst_libs = glob.glob(f"source/blst-lib/{config.target}/*.a")
-                pcre2_lib = glob.glob(f"source/pcre2-lib/{config.target}/libpcre2-8.a")
-                
-                # Get X11 libraries conditionally
-                x11_libs = self._get_x11_libs()
-                
-                # Use correct library extension for platform
-                lib_name = "libgrapa.so"  # Linux always uses .so
-                cmd = ["g++", "-shared"] + config.flags + cpp_files + ["source/utf8proc/utf8proc.c"] + openssl_libs + fl_libs + blst_libs + pcre2_lib + [
-                    f"-Lsource/openssl-lib/{config.target}", "-lcrypto"
-                ] + x11_libs + [
-                    "-ldl", "-lm", "-static-libgcc",
-                    "-fPIC", "-o", lib_name
-                ]
-                
-                subprocess.run(cmd, check=True)
-                
-                # Copy to bin directory
-                os.makedirs(f"bin/{config.target}", exist_ok=True)
-                shutil.copy(lib_name, f"bin/{config.target}/{lib_name}")
-                
-                # Copy to source/grapa-lib directory
-                os.makedirs(f"source/grapa-lib/{config.target}", exist_ok=True)
-                shutil.copy(lib_name, f"source/grapa-lib/{config.target}/{lib_name}")
-                
-                os.remove(lib_name)
+                # Shared library builds are no longer supported
+                raise RuntimeError("Shared library builds are no longer supported. Use static libraries instead.")
         else:
             # Build executable - match AWS pattern exactly
             cpp_files = glob.glob("source/grapa/*.cpp")
@@ -517,9 +445,9 @@ class GrapaBuilder:
             if os.path.exists(config.output_name):
                 print(f"✅ Executable created: {config.output_name}")
                 
-                # Copy executable to bin directory
-                os.makedirs(f"bin/{config.target}", exist_ok=True)
-                shutil.copy(config.output_name, f"bin/{config.target}/{config.output_name}")
+                # Copy executable to bin/platforms directory
+                os.makedirs(f"bin/platforms/{config.target}", exist_ok=True)
+                shutil.copy(config.output_name, f"bin/platforms/{config.target}/{config.output_name}")
             else:
                 print(f"❌ Executable not found: {config.output_name}")
                 raise RuntimeError(f"Executable {config.output_name} was not created")
@@ -571,37 +499,8 @@ class GrapaBuilder:
                 
                 os.remove("libgrapa_static.a")
             else:
-                # Build shared library - match original working script exactly
-                cpp_files = glob.glob("source/grapa/*.cpp")
-                openssl_libs = glob.glob(f"source/openssl-lib/{config.target}/*.a")
-                fl_libs = glob.glob(f"source/fl-lib/{config.target}/*.a")
-                blst_libs = glob.glob(f"source/blst-lib/{config.target}/*.a")
-                pcre2_lib = glob.glob(f"source/pcre2-lib/{config.target}/libpcre2-8.a")
-                
-                # Get X11 libraries conditionally
-                x11_libs = self._get_x11_libs()
-                
-                # Use correct library extension for platform
-                lib_name = "libgrapa.so"  # AWS Linux always uses .so
-                cmd = ["g++", "-shared"] + config.flags + cpp_files + ["source/utf8proc/utf8proc.c"] + openssl_libs + fl_libs + blst_libs + pcre2_lib + [
-                    f"-Lsource/openssl-lib/{config.target}", "-lcrypto"
-                ] + x11_libs + [
-                    "-ldl", "-lm", "-static-libgcc",
-                    "-fPIC", "-o", lib_name
-                ]
-                
-                print(f"Executing shared library build command: {' '.join(cmd)}")
-                subprocess.run(cmd, check=True)
-                
-                # Copy to bin directory
-                os.makedirs(f"bin/{config.target}", exist_ok=True)
-                shutil.copy(lib_name, f"bin/{config.target}/{lib_name}")
-                
-                # Copy to source/grapa-lib directory
-                os.makedirs(f"source/grapa-lib/{config.target}", exist_ok=True)
-                shutil.copy(lib_name, f"source/grapa-lib/{config.target}/{lib_name}")
-                
-                os.remove(lib_name)
+                # Shared library builds are no longer supported
+                raise RuntimeError("Shared library builds are no longer supported. Use static libraries instead.")
         else:
             # Build executable
             cpp_files = glob.glob("source/grapa/*.cpp")
@@ -639,9 +538,9 @@ class GrapaBuilder:
             if os.path.exists(config.output_name):
                 print(f"✅ Executable created: {config.output_name}")
                 
-                # Copy executable to bin directory
-                os.makedirs(f"bin/{config.target}", exist_ok=True)
-                shutil.copy(config.output_name, f"bin/{config.target}/{config.output_name}")
+                # Copy executable to bin/platforms directory
+                os.makedirs(f"bin/platforms/{config.target}", exist_ok=True)
+                shutil.copy(config.output_name, f"bin/platforms/{config.target}/{config.output_name}")
             else:
                 print(f"❌ Executable not found: {config.output_name}")
                 raise RuntimeError(f"Executable {config.output_name} was not created")
@@ -869,18 +768,16 @@ class GrapaBuilder:
     def _check_libraries_exist(self, config: BuildConfig) -> bool:
         """Check if required libraries exist for Python package build"""
         if config.platform == "windows":
-            # Windows uses .lib and .dll files
+            # Windows uses .lib files
             required_files = [
-                f"bin/{config.target}/grapa_static.lib",
-                f"bin/{config.target}/grapa.dll",
-                f"bin/{config.target}/grapa.exe"
+                f"bin/platforms/{config.target}/grapa_static.lib",
+                f"bin/platforms/{config.target}/grapa.exe"
             ]
         else:
-            # Non-Windows uses .a and .so files
+            # Non-Windows uses .a files
             required_files = [
-                f"bin/{config.target}/libgrapa_static.a",
-                f"bin/{config.target}/libgrapa.so",
-                f"bin/{config.target}/grapa"
+                f"bin/platforms/{config.target}/libgrapa_static.a",
+                f"bin/platforms/{config.target}/grapa"
             ]
         
         for file_path in required_files:
@@ -947,6 +844,50 @@ class GrapaBuilder:
                 else:
                     print(f"⚠️  Warning: Universal file {file} not found in bin/")
         
+        # Copy 3rd party static libraries to bin/lib structure
+        lib_dir = f"bin/lib/{config.target}"
+        os.makedirs(lib_dir, exist_ok=True)
+        
+        # Copy OpenSSL libraries
+        openssl_src = f"source/openssl-lib/{config.target}"
+        if os.path.exists(openssl_src):
+            for lib_file in os.listdir(openssl_src):
+                if lib_file.endswith('.a') or lib_file.endswith('.lib'):
+                    src_path = os.path.join(openssl_src, lib_file)
+                    dst_path = os.path.join(lib_dir, lib_file)
+                    shutil.copy2(src_path, dst_path)
+                    print(f"✅ Copied {lib_file} to {lib_dir}/")
+        
+        # Copy FLTK libraries
+        fl_src = f"source/fl-lib/{config.target}"
+        if os.path.exists(fl_src):
+            for lib_file in os.listdir(fl_src):
+                if lib_file.endswith('.a') or lib_file.endswith('.lib'):
+                    src_path = os.path.join(fl_src, lib_file)
+                    dst_path = os.path.join(lib_dir, lib_file)
+                    shutil.copy2(src_path, dst_path)
+                    print(f"✅ Copied {lib_file} to {lib_dir}/")
+        
+        # Copy BLST libraries
+        blst_src = f"source/blst-lib/{config.target}"
+        if os.path.exists(blst_src):
+            for lib_file in os.listdir(blst_src):
+                if lib_file.endswith('.a') or lib_file.endswith('.lib'):
+                    src_path = os.path.join(blst_src, lib_file)
+                    dst_path = os.path.join(lib_dir, lib_file)
+                    shutil.copy2(src_path, dst_path)
+                    print(f"✅ Copied {lib_file} to {lib_dir}/")
+        
+        # Copy PCRE2 libraries
+        pcre2_src = f"source/pcre2-lib/{config.target}"
+        if os.path.exists(pcre2_src):
+            for lib_file in os.listdir(pcre2_src):
+                if lib_file.endswith('.a') or lib_file.endswith('.lib'):
+                    src_path = os.path.join(pcre2_src, lib_file)
+                    dst_path = os.path.join(lib_dir, lib_file)
+                    shutil.copy2(src_path, dst_path)
+                    print(f"✅ Copied {lib_file} to {lib_dir}/")
+        
         # Create platform-specific build files (no longer needed with CMake)
         # The CMakeLists.txt handles all platforms automatically
         print(f"✅ Development kit setup complete for {config.target}")
@@ -954,6 +895,7 @@ class GrapaBuilder:
         print(f"   Example: bin/main.cpp")
         print(f"   Build: bin/CMakeLists.txt")
         print(f"   Documentation: bin/README.md")
+        print(f"   Libraries: {lib_dir}/")
 
 
 

@@ -50,7 +50,7 @@ class GrapaInstaller:
     
     def _get_platform_files(self):
         """Get the files needed for the current platform"""
-        platform_dir = self.script_dir / self.platform
+        platform_dir = self.script_dir / "platforms" / self.platform
         
         if not platform_dir.exists():
             raise FileNotFoundError(f"Platform directory {self.platform} not found")
@@ -71,7 +71,7 @@ class GrapaInstaller:
             if exe_path.exists():
                 files['executable'] = exe_path
         
-        # Find static library (optional)
+        # Find static library (required)
         if platform.system().lower() == "windows":
             static_path = platform_dir / "grapa_static.lib"
         else:
@@ -79,17 +79,11 @@ class GrapaInstaller:
         
         if static_path.exists():
             files['static_lib'] = static_path
-        
-        # Find shared library
-        if platform.system().lower() == "windows":
-            shared_path = platform_dir / "grapa.dll"
-        elif platform.system().lower() == "darwin":
-            shared_path = platform_dir / "libgrapa.dylib"
         else:
-            shared_path = platform_dir / "libgrapa.so"
+            raise FileNotFoundError(f"Static library not found: {static_path}")
         
-        if shared_path.exists():
-            files['shared_lib'] = shared_path
+        # Shared libraries are no longer supported
+        files['shared_lib'] = None
         
         return files
     
@@ -100,8 +94,8 @@ class GrapaInstaller:
         
         if not files['executable']:
             missing.append("executable (grapa.exe/grapa)")
-        if not files['shared_lib']:
-            missing.append("shared library")
+        if not files['static_lib']:
+            missing.append("static library")
         
         if missing:
             raise FileNotFoundError(f"Missing required files: {', '.join(missing)}")
@@ -123,6 +117,7 @@ class GrapaInstaller:
         if files['static_lib']:
             shutil.copy2(files['static_lib'], lib_dir / "grapa_static.lib")
         
+        # Shared libraries are no longer supported
         if files['shared_lib']:
             shutil.copy2(files['shared_lib'], lib_dir / "grapa.dll")
         
@@ -150,6 +145,7 @@ class GrapaInstaller:
         if files['static_lib']:
             shutil.copy2(files['static_lib'], lib_dir / "libgrapa_static.a")
         
+        # Shared libraries are no longer supported
         if files['shared_lib']:
             shutil.copy2(files['shared_lib'], lib_dir / files['shared_lib'].name)
         
