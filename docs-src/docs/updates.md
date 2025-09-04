@@ -4,31 +4,27 @@ Grapa is distributed through GitHub releases, making updates straightforward. Yo
 
 ## Quick Update Commands
 
-### All Platforms (GitHub Releases)
+### All Platforms (Universal Development Kit)
 ```bash
 # Check current version
 grapa --version
 
-# Download and install the latest version from GitHub releases
-# Example for version 0.1.52:
+# Download and install the latest universal development kit from GitHub releases
+# Example for version 0.1.53:
 
-# macOS
-curl -L -o grapa-0.1.52-mac-arm64.zip https://github.com/grapa-dev/grapa/releases/download/v0.1.52/grapa-0.1.52-mac-arm64.zip
-unzip grapa-0.1.52-mac-arm64.zip
-cd grapa-0.1.52-mac-arm64
-./install-grapa.sh
+# All platforms - download universal package
+curl -L -o grapa-0.1.53.zip https://github.com/grapa-dev/grapa/releases/download/v0.1.53/grapa-0.1.53.zip
 
-# Linux
-wget https://github.com/grapa-dev/grapa/releases/download/v0.1.52/grapa-0.1.52-linux-amd64.zip
-unzip grapa-0.1.52-linux-amd64.zip
-cd grapa-0.1.52-linux-amd64
-sudo ./install-grapa.sh
+# Extract and install
+unzip grapa-0.1.53.zip
+cd grapa-0.1.53
+python3 install-grapa.py
 
-# Windows
-Invoke-WebRequest -Uri "https://github.com/grapa-dev/grapa/releases/download/v0.1.52/grapa-0.1.52-win-amd64.zip" -OutFile "grapa-0.1.52-win-amd64.zip"
-Expand-Archive -Path "grapa-0.1.52-win-amd64.zip" -DestinationPath "grapa-0.1.52-win-amd64" -Force
-cd grapa-0.1.52-win-amd64
-.\install-grapa.ps1 -Force
+# On Windows, use:
+# Invoke-WebRequest -Uri "https://github.com/grapa-dev/grapa/releases/download/v0.1.53/grapa-0.1.53.zip" -OutFile "grapa-0.1.53.zip"
+# Expand-Archive -Path "grapa-0.1.53.zip" -DestinationPath "grapa-0.1.53" -Force
+# cd grapa-0.1.53
+# python install-grapa.py
 ```
 
 ## Automatic Update Notifications
@@ -41,7 +37,7 @@ You can stay informed about new releases by:
 2. **Checking the releases page** regularly: [GitHub Releases](https://github.com/grapa-dev/grapa/releases)
 3. **Using the release manager script** to check for updates:
    ```bash
-   python3 scripts/packaging/release_manager.py --list
+   python3 scripts/packaging/universal_release_manager.py --list
    ```
 
 ### Release Announcements
@@ -78,28 +74,24 @@ Updates are typically available within a few days of a new release.
 
 If you need to downgrade to a previous version:
 
-### All Platforms (GitHub Releases)
+### All Platforms (Universal Development Kit)
 ```bash
 # Download and install specific version from GitHub releases
-# Example for version 0.1.50:
+# Example for version 0.1.52:
 
-# macOS
-curl -L -o grapa-0.1.50-mac-arm64.zip https://github.com/grapa-dev/grapa/releases/download/v0.1.50/grapa-0.1.50-mac-arm64.zip
-unzip grapa-0.1.50-mac-arm64.zip
-cd grapa-0.1.50-mac-arm64
-./install-grapa.sh
+# All platforms - download universal package
+curl -L -o grapa-0.1.52.zip https://github.com/grapa-dev/grapa/releases/download/v0.1.52/grapa-0.1.52.zip
 
-# Linux
-wget https://github.com/grapa-dev/grapa/releases/download/v0.1.50/grapa-0.1.50-linux-amd64.zip
-unzip grapa-0.1.50-linux-amd64.zip
-cd grapa-0.1.50-linux-amd64
-sudo ./install-grapa.sh
+# Extract and install
+unzip grapa-0.1.52.zip
+cd grapa-0.1.52
+python3 install-grapa.py
 
-# Windows
-Invoke-WebRequest -Uri "https://github.com/grapa-dev/grapa/releases/download/v0.1.50/grapa-0.1.50-win-amd64.zip" -OutFile "grapa-0.1.50-win-amd64.zip"
-Expand-Archive -Path "grapa-0.1.50-win-amd64.zip" -DestinationPath "grapa-0.1.50-win-amd64" -Force
-cd grapa-0.1.50-win-amd64
-.\install-grapa.ps1 -Force
+# On Windows, use:
+# Invoke-WebRequest -Uri "https://github.com/grapa-dev/grapa/releases/download/v0.1.52/grapa-0.1.52.zip" -OutFile "grapa-0.1.52.zip"
+# Expand-Archive -Path "grapa-0.1.52.zip" -DestinationPath "grapa-0.1.52" -Force
+# cd grapa-0.1.52
+# python install-grapa.py
 ```
 
 ## Troubleshooting Updates
@@ -125,7 +117,7 @@ If you encounter version conflicts:
    sudo rm -f /usr/local/lib/libgrapa.so
    
    # Windows (run PowerShell as Administrator)
-   .\install-grapa.ps1 -Uninstall
+   python install-grapa.py --uninstall
    ```
 
 2. **Install the new version** from GitHub releases (see installation instructions above)

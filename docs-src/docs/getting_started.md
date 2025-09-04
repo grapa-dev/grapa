@@ -309,6 +309,65 @@ Grapa automatically searches for `.grc` and `.grz` files in this order:
 
 ---
 
+## Integration Options
+
+### C++ Integration
+
+Grapa can be embedded in C++ applications using the universal development kit:
+
+```cpp
+#include "grapa/GrapaLink.h"
+
+int main() {
+    // Initialize Grapa runtime
+    GrapaLink grapa;
+    
+    // Execute Grapa code
+    GrapaValue result = grapa.eval("2 + 2");
+    std::cout << "Result: " << result << std::endl;
+    
+    return 0;
+}
+```
+
+**Build with CMake:**
+```bash
+# After extracting grapa-0.1.53.zip
+cd grapa-0.1.53
+mkdir build && cd build
+cmake ..
+cmake --build .
+./grapa_example
+```
+
+The universal development kit includes:
+- Complete C++ API headers
+- Sample application (`main.cpp`)
+- CMake build system
+- All platform libraries
+
+**See also:** [C++ Integration Guide](cpp_integration.md) for comprehensive C++ embedding documentation and [Installation Guide](installation.md) for the complete development workflow.
+
+### Python Integration
+
+Grapa can be used from Python via GrapaPy:
+
+```python
+import grapapy
+
+# Create Grapa instance
+g = grapapy.grapa()
+
+# Execute Grapa code
+result = g.eval('2 + 2')
+print(f'Result: {result}')
+```
+
+**Install GrapaPy:**
+```bash
+pip install grapapy
+```
+
 ## Next Steps
 - Explore [Examples](examples.md) for more complex use cases
 - Learn about [Testing](testing.md) your Grapa code
@@ -333,4 +392,7 @@ Grapa automatically searches for `.grc` and `.grz` files in this order:
 > - [Examples](examples.md)
 
 > **For Python Users:**
-> See the [Python Integration Guide](python_integration.md), [Migration Tips for Python Users](python_use_cases.md#migration-tips-for-python-users), and [GrapaPy Namespace Solution](grapapy_namespace_solution.md) for essential guidance on using Grapa from Python. 
+> See the [Python Integration Guide](python_integration.md), [Migration Tips for Python Users](python_use_cases.md#migration-tips-for-python-users), and [GrapaPy Namespace Solution](grapapy_namespace_solution.md) for essential guidance on using Grapa from Python.
+
+> **For C++ Developers:**
+> See the [C++ Integration Guide](cpp_integration.md) for comprehensive documentation on embedding Grapa in C++ applications, including performance optimization, error handling, and advanced use cases. The [Installation Guide](installation.md) provides the complete development workflow with CMake build system. 

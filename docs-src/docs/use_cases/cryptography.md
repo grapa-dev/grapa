@@ -1687,12 +1687,13 @@ Based on comprehensive code analysis, the following C++ files use OpenSSL APIs:
 
 #### Platform Support
 - **mac-arm64**: Apple Silicon (M1/M2/M3)
-- **mac-amd64**: Intel Mac
 - **linux-arm64**: ARM64 Linux
 - **linux-amd64**: x86_64 Linux
 - **windows-amd64**: Windows x64
 - **aws-arm64**: AWS Graviton
 - **aws-amd64**: AWS x86_64
+
+> **Note:** All platforms are supported through the universal development kit (`grapa-0.1.53.zip`) which contains libraries and headers for all platforms in a single package.
 
 ### Regression Testing Procedures
 

@@ -13,40 +13,32 @@ tags:
 ## Installation
 
 ### Step 1: Download and Extract
-1. Download the appropriate package for your system from [GitHub Releases](https://github.com/grapa-dev/grapa/releases):
-   - **macOS (Apple Silicon):** `grapa-0.1.52-mac-arm64.zip`
-   - **Linux (Intel):** `grapa-0.1.52-linux-amd64.zip`
-   - **Linux (ARM):** `grapa-0.1.52-linux-arm64.zip`
-   - **Windows:** `grapa-0.1.52-win-amd64.zip`
-   - **AWS (Intel):** `grapa-0.1.52-aws-amd64.zip`
-   - **AWS (ARM):** `grapa-0.1.52-aws-arm64.zip`
+1. Download the universal development kit from [GitHub Releases](https://github.com/grapa-dev/grapa/releases):
+   - **All Platforms:** `grapa-0.1.53.zip` - Universal development kit
 
 > **Note:** Grapa requires macOS 15.0+ (Apple Silicon only). Intel Macs are no longer supported due to Apple's discontinuation of Intel Mac support in macOS 15.0.
 
 2. Extract the archive to a location of your choice:
    ```bash
-   # macOS/Linux/AWS
-   unzip grapa-0.1.52-mac-arm64.zip
-   cd grapa-0.1.52-mac-arm64
-   
-   # Windows
-   # Extract the .zip file using your preferred tool
+   # All platforms
+   unzip grapa-0.1.53.zip
+   cd grapa-0.1.53
    ```
 
-### Step 2: Make Executable (macOS/Linux)
+### Step 2: Install Grapa
+Run the universal installer:
 ```bash
-chmod +x grapa
+# All platforms
+python3 install-grapa.py
+
+# On Windows, use:
+python install-grapa.py
 ```
 
-### Step 3: Add to PATH (Optional)
-Move the `grapa` binary to a directory in your PATH, or add its location to your PATH:
-```bash
-# Option 1: Move to /usr/local/bin
-sudo mv grapa /usr/local/bin/
-
-# Option 2: Add to PATH in your shell profile
-export PATH="$PATH:/path/to/grapa/directory"
-```
+The installer will automatically:
+- Install Grapa to the appropriate system location
+- Add Grapa to your PATH
+- Set up all necessary files and libraries
 
 ## Your First Grapa Script
 

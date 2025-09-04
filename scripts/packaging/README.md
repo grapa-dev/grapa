@@ -5,29 +5,30 @@ This directory contains scripts for deploying Grapa packages to various package 
 ## Scripts
 
 ### GitHub Release
-- `create_github_release.sh` - Create GitHub release with all platform binaries (legacy shell script)
-- `release_manager.py` - **NEW**: Python-based release manager with enhanced functionality
+- `universal_release_manager.py` - **CURRENT**: Universal development kit release manager
+- `create_github_release.sh` - Legacy shell script (deprecated)
+- `release_manager.py` - Legacy platform-specific release manager (deprecated)
 
 ## Usage
 
 ### Create GitHub Release
 
-**Option 1: Python Release Manager (Recommended)**
+**Option 1: Universal Release Manager (Current)**
 ```bash
-# Create a new release
-python3 scripts/packaging/release_manager.py --version 0.1.52 --create
+# Create a new universal development kit release
+python3 scripts/packaging/universal_release_manager.py --version 0.1.53 --create
 
 # Delete current release
-python3 scripts/packaging/release_manager.py --delete-current
+python3 scripts/packaging/universal_release_manager.py --delete-current
 
 # List all releases
-python3 scripts/packaging/release_manager.py --list
+python3 scripts/packaging/universal_release_manager.py --list
 
 # Clean up local files
-python3 scripts/packaging/release_manager.py --cleanup
+python3 scripts/packaging/universal_release_manager.py --cleanup
 ```
 
-**Option 2: Legacy Shell Script**
+**Option 2: Legacy Scripts (Deprecated)**
 **Prerequisites:**
 - GitHub CLI (gh) installed and authenticated
 - Git installed
@@ -52,13 +53,13 @@ python3 scripts/packaging/release_manager.py --cleanup
 
 ### GitHub Release Process
 
-**Python Release Manager (Recommended)**
+**Universal Release Manager (Current)**
 1. **Validation**: Checks prerequisites and required binaries
-2. **Package Creation**: Creates compressed archives for each platform
+2. **Package Creation**: Creates single universal archive containing all platforms
 3. **Git Integration**: Creates and pushes version tags automatically
 4. **Release Creation**: Creates GitHub release with comprehensive notes
-5. **Asset Upload**: Uploads all platform archives automatically
-6. **Quality Control**: Creates draft release for review before publishing
+5. **Asset Upload**: Uploads universal development kit automatically
+6. **Quality Control**: Creates published release with universal package
 
 **Legacy Shell Script**
 1. **Validation**: Checks prerequisites and required binaries
@@ -69,12 +70,13 @@ python3 scripts/packaging/release_manager.py --cleanup
 
 ### What the Script Does
 
-**Python Release Manager Advantages:**
+**Universal Release Manager Advantages:**
+- **Universal package**: Single archive containing all platforms and development tools
 - **Cross-platform**: Works on Windows, macOS, and Linux
 - **Better error handling**: Comprehensive error checking and user feedback
 - **Automated notes**: Generates professional release notes automatically
-- **Platform archives**: Creates `.zip` files for Windows compatibility
-- **Draft releases**: Creates draft releases for review before publishing
+- **Development kit**: Includes sample code, CMake build system, and universal installer
+- **Self-contained**: All dependencies included, no external requirements
 - **Cleanup options**: Built-in cleanup and management functions
 
 **Legacy Shell Script:**

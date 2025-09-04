@@ -5,9 +5,9 @@ This directory contains organized scripts for building, packaging, deploying, an
 ## Directory Structure
 
 ### 📦 `packaging/` - Package Management & Deployment
-- **Release Management**: `release_manager.py` - Python-based GitHub release manager
+- **Release Management**: `universal_release_manager.py` - Universal development kit release manager
 - **Package Deployment**: Scripts for Homebrew, Debian, RPM, Chocolatey, and VSCode extension
-- **GitHub Releases**: Both Python and legacy shell script approaches
+- **GitHub Releases**: Universal development kit approach with legacy script support
 
 ### 🔨 `build/` - Build System & Dependencies
 - **Dependency Builds**: FLTK, OpenSSL, and other third-party libraries
@@ -27,10 +27,10 @@ This directory contains organized scripts for building, packaging, deploying, an
 
 ### Create a New Release
 ```bash
-# Using the new Python release manager (recommended)
-python3 scripts/packaging/release_manager.py --version 0.1.52 --create
+# Using the universal release manager (current)
+python3 scripts/packaging/universal_release_manager.py --version 0.1.53 --create
 
-# Using legacy shell script
+# Using legacy shell script (deprecated)
 ./scripts/packaging/create_github_release.sh
 ```
 

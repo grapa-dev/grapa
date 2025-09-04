@@ -85,6 +85,7 @@ nav:
       - VSCode Extension: vscode_extension.md
       - Run Command: run.md
       - Python Integration: python_integration.md
+      - C++ Integration: cpp_integration.md
       - Grapa in the Ecosystem: grapa_ecosystem_positioning.md
   - Quickstart: cli_quickstart.md
   - Reference:
