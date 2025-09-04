@@ -172,8 +172,7 @@ class GrapaBuilder:
                 
                 # Clean build artifacts
                 self._clean_windows_build()
-                # Create package
-                self._create_windows_package(config)
+                # Package creation no longer needed - development kit is self-contained
             else:
                 # Set up development kit even for exe_only builds
                 self._setup_development_kit(config)
@@ -200,8 +199,8 @@ class GrapaBuilder:
                 print("ℹ️  Shared library builds are no longer supported. Using static libraries only.")
             
             if not exe_only:
-                # Create package
-                self._create_mac_package(config)
+                # Package creation no longer needed - development kit is self-contained
+                pass
             else:
                 # Set up development kit even for exe_only builds
                 self._setup_development_kit(config)
@@ -234,8 +233,8 @@ class GrapaBuilder:
                 print("ℹ️  Shared library builds are no longer supported. Using static libraries only.")
             
             if not exe_only:
-                # Create package
-                self._create_linux_package(config)
+                # Package creation no longer needed - development kit is self-contained
+                pass
             else:
                 # Set up development kit even for exe_only builds
                 self._setup_development_kit(config)
@@ -497,6 +496,10 @@ class GrapaBuilder:
                 os.makedirs(f"source/grapa-lib/{config.target}", exist_ok=True)
                 shutil.copy("libgrapa_static.a", f"source/grapa-lib/{config.target}/libgrapa_static.a")
                 
+                # Copy to bin/platforms directory (for development kit)
+                os.makedirs(f"bin/platforms/{config.target}", exist_ok=True)
+                shutil.copy("libgrapa_static.a", f"bin/platforms/{config.target}/libgrapa_static.a")
+                
                 os.remove("libgrapa_static.a")
             else:
                 # Shared library builds are no longer supported
@@ -580,93 +583,6 @@ class GrapaBuilder:
         for dir_path in build_dirs:
             if os.path.exists(dir_path):
                 shutil.rmtree(dir_path)
-    
-    def _create_windows_package(self, config: BuildConfig):
-        """Create Windows package - replace files in bin/win-amd64 and create zip"""
-        # Create the target directory if it doesn't exist
-        target_dir = f"bin/{config.target}"
-        os.makedirs(target_dir, exist_ok=True)
-        
-        # Copy the newly built files to the target directory
-        if os.path.exists("grapa.exe"):
-            shutil.copy("grapa.exe", f"{target_dir}/grapa.exe")
-            print(f"✅ Copied grapa.exe to {target_dir}/")
-        
-        if os.path.exists("grapa_static.lib"):
-            shutil.copy("grapa_static.lib", f"{target_dir}/grapa_static.lib")
-            print(f"✅ Copied grapa_static.lib to {target_dir}/")
-            
-        # Copy DLL if it exists
-        if os.path.exists("grapa.dll"):
-            shutil.copy("grapa.dll", f"{target_dir}/grapa.dll")
-            print(f"✅ Copied grapa.dll to {target_dir}/")
-        
-        # Copy installation files
-        installer_dir = "packaging/windows-installer"
-        if os.path.exists(f"{installer_dir}/install-grapa.ps1"):
-            shutil.copy(f"{installer_dir}/install-grapa.ps1", f"{target_dir}/install-grapa.ps1")
-            print(f"✅ Copied install-grapa.ps1 to {target_dir}/")
-        
-        if os.path.exists(f"{installer_dir}/README-Windows-Installation.md"):
-            shutil.copy(f"{installer_dir}/README-Windows-Installation.md", f"{target_dir}/README-Windows-Installation.md")
-            print(f"✅ Copied README-Windows-Installation.md to {target_dir}/")
-        
-        print(f"✅ Windows package files updated in {target_dir}/")
-        
-        # Set up development kit
-        self._setup_development_kit(config)
-    
-    def _create_mac_package(self, config: BuildConfig):
-        """Create Mac package"""
-        import glob
-        
-        # Get the actual files to include
-        files_to_include = []
-        
-        # Add executable if it exists
-        if os.path.exists(config.output_name):
-            files_to_include.append(config.output_name)
-        
-                # Add library files
-        lib_files = glob.glob(f"bin/{config.target}/*")
-        files_to_include.extend(lib_files)
-        
-        if not files_to_include:
-            raise RuntimeError(f"No files found to include in package for {config.target}")
-        
-        # Create tar command with actual files
-        tar_cmd = ["tar", "-czvf", f"bin/grapa-{config.target}.tar.gz"] + files_to_include
-        print(f"Creating package with files: {files_to_include}")
-        subprocess.run(tar_cmd, check=True)
-        
-        # Set up development kit
-        self._setup_development_kit(config)
-    
-    def _create_linux_package(self, config: BuildConfig):
-        """Create Linux/AWS package"""
-        import glob
-        
-        # Get the actual files to include
-        files_to_include = []
-        
-        # Add executable if it exists
-        if os.path.exists(config.output_name):
-            files_to_include.append(config.output_name)
-        
-        # Add library files (only grapa-lib, matching original script)
-        lib_files = glob.glob(f"bin/{config.target}/*")
-        files_to_include.extend(lib_files)
-        
-        if not files_to_include:
-            raise RuntimeError(f"No files found to include in package for {config.target}")
-        
-        # Create tar command with actual files
-        tar_cmd = ["tar", "-czvf", f"bin/grapa-{config.target}.tar.gz"] + files_to_include
-        print(f"Creating package with files: {files_to_include}")
-        subprocess.run(tar_cmd, check=True)
-        
-        # Set up development kit
-        self._setup_development_kit(config)
     
     def build_python_package(self, config: BuildConfig):
         """Build Python package"""
@@ -887,6 +803,25 @@ class GrapaBuilder:
                     dst_path = os.path.join(lib_dir, lib_file)
                     shutil.copy2(src_path, dst_path)
                     print(f"✅ Copied {lib_file} to {lib_dir}/")
+        
+        # Copy include directories for 3rd party libraries
+        # Copy FLTK headers
+        fl_include_src = "source/FL"
+        fl_include_dst = f"bin/include/FL"
+        if os.path.exists(fl_include_src):
+            if os.path.exists(fl_include_dst):
+                shutil.rmtree(fl_include_dst)
+            shutil.copytree(fl_include_src, fl_include_dst)
+            print(f"✅ Copied FLTK headers to {fl_include_dst}/")
+        
+        # Copy OpenSSL headers
+        openssl_include_src = "source/openssl/include"
+        openssl_include_dst = f"bin/include/openssl"
+        if os.path.exists(openssl_include_src):
+            if os.path.exists(openssl_include_dst):
+                shutil.rmtree(openssl_include_dst)
+            shutil.copytree(openssl_include_src, openssl_include_dst)
+            print(f"✅ Copied OpenSSL headers to {openssl_include_dst}/")
         
         # Create platform-specific build files (no longer needed with CMake)
         # The CMakeLists.txt handles all platforms automatically
