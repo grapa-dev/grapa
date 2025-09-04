@@ -8,8 +8,6 @@
 #endif
 #endif
 
-//#include <string.h>
-//#include <stdio.h>
 #include <iostream>
 #include <stdlib.h>
 #include <sys/types.h>
@@ -21,6 +19,8 @@
 #define _GrapaMem_
 
 #if defined(__MINGW32__) || defined(__GNUC__)
+#include <string.h>
+#include <stdio.h>
 #include <pthread.h>
 #include <unistd.h>
 #else
