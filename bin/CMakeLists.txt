@@ -5,6 +5,17 @@ project(grapa_example)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+# Set default build type to Release if not specified
+if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE Release)
+endif()
+
+# Force Release mode for Windows to match the static library
+if(WIN32)
+    set(CMAKE_BUILD_TYPE Release)
+    set(CMAKE_CONFIGURATION_TYPES Release)
+endif()
+
 # Platform detection
 if(WIN32)
     # Windows detection

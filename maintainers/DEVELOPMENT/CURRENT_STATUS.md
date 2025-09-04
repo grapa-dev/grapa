@@ -72,9 +72,11 @@ The project has completed version 0.1.52 and is now beginning development for ve
   - Added PCRE2_STATIC preprocessor definition
   - Added Windows-specific compiler flags and warning suppressions
   - Added Windows system libraries to linking
-- **Result**: CMake build now works correctly with `cmake -G "Visual Studio 17 2022" -A x64 ..` and `cmake --build . --config RelWithDebInfo`
+  - **Fixed runtime library mismatch**: Forced Release mode to match the static library build
+- **Result**: Standard CMake commands now work on Windows: `cmake ..` and `cmake --build .`
 - **Validation**: grapa_example.exe builds and runs successfully with all functionality
 - **Self-Contained**: Development kit is now completely self-contained within the bin directory with no external dependencies
+- **Cross-Platform Consistency**: Windows now uses the same standard CMake commands as other platforms
 
 ### Windows Library Linking Fix ✅ COMPLETED
 - **Issue**: Removed pragma comments from C++ source to avoid conflicts with static library builds
