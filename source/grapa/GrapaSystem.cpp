@@ -200,7 +200,6 @@ void GrapaDebug::DebugPrint(const char* component, const GrapaCHAR& pValue, int 
 
 GrapaSystem::GrapaSystem()
 {
-	RandSeed();
 #ifdef WIN32
 	mStdinRef = GetStdHandle(STD_INPUT_HANDLE);
 	GetConsoleMode(mStdinRef, &mStdinMode);

@@ -59,6 +59,8 @@ GrapaSystem* GrapaLink::GetGrapaSystem() {return gSystem;}
 
 GrapaCHAR GrapaLink::Start(bool& needExit, bool& showConsole, bool& showWidget, GrapaCHAR& inStr, GrapaCHAR& outStr, GrapaCHAR& runStr)
 {
+	gSystem->RandSeed();
+
 	bool showVersion = false;
 	bool showHelp = false;
 	bool showEnv = false;
