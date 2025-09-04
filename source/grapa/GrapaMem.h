@@ -8,8 +8,8 @@
 #endif
 #endif
 
-#include <string.h>
-#include <stdio.h>
+//#include <string.h>
+//#include <stdio.h>
 #include <iostream>
 #include <stdlib.h>
 #include <sys/types.h>
