@@ -90,7 +90,7 @@ class GrapaInstaller:
         
         print(f"✅ Grapa installed to {self.install_dir}")
         print(f"\nTo use Grapa, add to your PATH:")
-        print(f"export PATH="{self.install_dir}/grapa-0.1.53/platforms/{self.detect_platform()}:$PATH"")
+        print(f"export PATH=\"{self.install_dir}/grapa-0.1.53/platforms/{self.detect_platform()}:$PATH\"")
     
     def install(self):
         """Main installation process"""
