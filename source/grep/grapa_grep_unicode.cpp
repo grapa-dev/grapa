@@ -476,7 +476,7 @@ static std::vector<std::string> extract_grapheme_clusters_excluding_delimiters(c
 #ifdef _WIN32
 #if defined(_M_ARM64)
 #elif defined(_M_X64)
-#pragma comment(lib, "pcre2-lib/win-amd64/pcre2-8-static.lib")
+#pragma comment(lib, "lib/win-amd64/pcre2-8-static.lib")
 #endif
 #endif
 

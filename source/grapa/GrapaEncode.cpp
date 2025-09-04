@@ -33,14 +33,14 @@ limitations under the License.
 #ifdef _WIN32
 #if defined(_M_ARM64)
   // ARM64-specific static libs
-#pragma comment(lib, "openssl-lib/win-arm64/libcrypto.lib")
-#pragma comment(lib, "openssl-lib/win-arm64/libssl.lib")
-#pragma comment(lib, "blst-lib/win-arm64/blst.lib")
+#pragma comment(lib, "lib/win-arm64/libcrypto.lib")
+#pragma comment(lib, "lib/win-arm64/libssl.lib")
+#pragma comment(lib, "lib/win-arm64/blst.lib")
 #elif defined(_M_X64)
   // AMD64 (Intel/AMD) static libs
-#pragma comment(lib, "openssl-lib/win-amd64/libcrypto.lib")
-#pragma comment(lib, "openssl-lib/win-amd64/libssl.lib")
-#pragma comment(lib, "blst-lib/win-amd64/blst.lib")
+#pragma comment(lib, "lib/win-amd64/libcrypto.lib")
+#pragma comment(lib, "lib/win-amd64/libssl.lib")
+#pragma comment(lib, "lib/win-amd64/blst.lib")
 #endif
 #endif
 
