@@ -98,12 +98,14 @@ The universal development kit provides everything needed for C++ development:
 ### 1. **Download and Extract**
 
 ```bash
-# Download universal development kit
-curl -L -o grapa-0.1.53.zip https://github.com/grapa-dev/grapa/releases/download/v0.1.53/grapa-0.1.53.zip
+# Download universal installer (recommended)
+curl -O https://github.com/grapa-dev/grapa/releases/download/v0.1.53/install-grapa-0.1.53.py
+python3 install-grapa-0.1.53.py
 
-# Extract and navigate
-unzip grapa-0.1.53.zip
-cd grapa-0.1.53
+# Or download platform-specific package manually
+# curl -L -o grapa-0.1.53-<platform>.zip https://github.com/grapa-dev/grapa/releases/download/v0.1.53/grapa-0.1.53-<platform>.zip
+# unzip grapa-0.1.53-<platform>.zip
+# cd grapa-0.1.53
 ```
 
 ### 2. **Build the Example**

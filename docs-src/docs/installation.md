@@ -1,40 +1,48 @@
 # Installing Grapa
 
-Grapa is available as a universal development kit that provides everything you need to get started with Grapa development across all platforms.
+Grapa is available as platform-specific packages with a universal installer that automatically detects your platform and downloads the appropriate package.
 
 **Note**: Documentation and downloads are available on [GitHub](https://github.com/grapa-dev/grapa).
 
-## 🚀 **Universal Development Kit Installation**
+## 🚀 **Universal Installer (Recommended)**
 
-Grapa 0.1.53+ introduces a **universal development kit** that contains everything you need in a single package:
+Grapa 0.1.53+ provides a **universal installer** that automatically detects your platform and downloads the correct package:
 
-- **Universal installer** that works on all platforms
-- **Sample C++ application** demonstrating Grapa embedding
-- **CMake build system** with cross-platform support
-- **Complete API headers** and libraries for all platforms
+- **Smart platform detection** - automatically identifies your system
+- **Optimized packages** - each platform gets only what it needs
+- **Under 100MB** - all packages stay well under GitHub's file size limit
+- **Complete development kit** - includes sample code, CMake build system, and all libraries
 - **Self-contained** - no external dependencies required
 
-### **Step 1: Download Universal Package**
-1. Go to [GitHub Releases](https://github.com/grapa-dev/grapa/releases)
-2. Download the single universal package: `grapa-0.1.53.zip`
+### **Quick Installation**
+```bash
+# Download and run the universal installer
+curl -O https://github.com/grapa-dev/grapa/releases/download/v0.1.53/install-grapa-0.1.53.py
+python3 install-grapa-0.1.53.py
+```
 
-### **Step 2: Extract and Install**
-The universal package contains everything for all platforms in one convenient download.
+The installer will:
+1. **Detect your platform** (macOS, Linux, Windows, AWS)
+2. **Download the appropriate package** for your system
+3. **Install Grapa** to `~/.local/grapa/`
+4. **Set up the environment** for immediate use
 
-## Platform-Specific Installation
+## Manual Installation (Alternative)
+
+If you prefer to download and install manually, you can download the specific package for your platform:
 
 ### macOS (ARM64 - Apple Silicon)
 
 **Download and install:**
 ```bash
-# Download the universal package
-curl -L -o grapa-0.1.53.zip https://github.com/grapa-dev/grapa/releases/download/v0.1.53/grapa-0.1.53.zip
+# Download the macOS ARM64 package
+curl -L -o grapa-0.1.53-mac-arm64.zip https://github.com/grapa-dev/grapa/releases/download/v0.1.53/grapa-0.1.53-mac-arm64.zip
 
 # Extract the package
-unzip grapa-0.1.53.zip
+unzip grapa-0.1.53-mac-arm64.zip
 cd grapa-0.1.53
 
-# Run the universal installer
+# Run the installer
 python3 install-grapa.py
 
 # Verify installation
@@ -56,15 +64,31 @@ sudo rm -f /usr/local/lib/libgrapa_static.a
 sudo rm -f /usr/local/lib/libgrapa.so
 ```
 
-### Ubuntu/Debian
+### Linux (AMD64)
 
-**Download and install (works for both ARM64 and AMD64):**
+**Download and install:**
 ```bash
-# Download the universal package
-wget https://github.com/grapa-dev/grapa/releases/download/v0.1.53/grapa-0.1.53.zip
+# Download the Linux AMD64 package
+wget https://github.com/grapa-dev/grapa/releases/download/v0.1.53/grapa-0.1.53-linux-amd64.zip
 
 # Extract and install
-unzip grapa-0.1.53.zip
+unzip grapa-0.1.53-linux-amd64.zip
+cd grapa-0.1.53
+sudo python3 install-grapa.py
+
+# Verify installation
+grapa --version
+```
+
+### Linux (ARM64)
+
+**Download and install:**
+```bash
+# Download the Linux ARM64 package
+wget https://github.com/grapa-dev/grapa/releases/download/v0.1.53/grapa-0.1.53-linux-arm64.zip
+
+# Extract and install
+unzip grapa-0.1.53-linux-arm64.zip
 cd grapa-0.1.53
 sudo python3 install-grapa.py
 
@@ -86,15 +110,31 @@ sudo rm -f /usr/local/lib/libgrapa_static.a
 sudo rm -f /usr/local/lib/libgrapa.so
 ```
 
-### Amazon Linux
+### AWS (AMD64)
 
-**Download and install (works for both ARM64 and AMD64):**
+**Download and install:**
 ```bash
-# Download the universal package
-wget https://github.com/grapa-dev/grapa/releases/download/v0.1.53/grapa-0.1.53.zip
+# Download the AWS AMD64 package
+wget https://github.com/grapa-dev/grapa/releases/download/v0.1.53/grapa-0.1.53-aws-amd64.zip
 
 # Extract and install
-unzip grapa-0.1.53.zip
+unzip grapa-0.1.53-aws-amd64.zip
+cd grapa-0.1.53
+sudo python3 install-grapa.py
+
+# Verify installation
+grapa --version
+```
+
+### AWS (ARM64)
+
+**Download and install:**
+```bash
+# Download the AWS ARM64 package
+wget https://github.com/grapa-dev/grapa/releases/download/v0.1.53/grapa-0.1.53-aws-arm64.zip
+
+# Extract and install
+unzip grapa-0.1.53-aws-arm64.zip
 cd grapa-0.1.53
 sudo python3 install-grapa.py
 
@@ -116,24 +156,24 @@ sudo rm -f /usr/local/lib/libgrapa_static.a
 sudo rm -f /usr/local/lib/libgrapa.so
 ```
 
-### Windows
+### Windows (AMD64)
 
-**Download and install using the universal package:**
+**Download and install:**
 
 #### Automated Installation (Recommended)
 
-1. **Download the universal package:**
+1. **Download the Windows package:**
    ```powershell
-   # Download the latest universal release
-   Invoke-WebRequest -Uri "https://github.com/grapa-dev/grapa/releases/download/v0.1.53/grapa-0.1.53.zip" -OutFile "grapa-0.1.53.zip"
+   # Download the Windows AMD64 release
+   Invoke-WebRequest -Uri "https://github.com/grapa-dev/grapa/releases/download/v0.1.53/grapa-0.1.53-win-amd64.zip" -OutFile "grapa-0.1.53-win-amd64.zip"
    ```
 
 2. **Extract the package:**
    ```powershell
-   Expand-Archive -Path "grapa-0.1.53.zip" -DestinationPath "grapa-0.1.53" -Force
+   Expand-Archive -Path "grapa-0.1.53-win-amd64.zip" -DestinationPath "grapa-0.1.53" -Force
    ```
 
-3. **Run the universal installer** (run PowerShell as Administrator):
+3. **Run the installer** (run PowerShell as Administrator):
    ```powershell
    cd grapa-0.1.53
    python install-grapa.py
@@ -282,15 +322,28 @@ print(f'Grapa result: {result}')
 
 ## Available Packages
 
-The universal development kit provides everything in a single package:
+The platform-specific release provides optimized packages for each platform:
 
-- `grapa-0.1.53.zip` - **Universal Development Kit** (107 MB)
-  - Works on all supported platforms
-  - Includes universal installer (`install-grapa.py`)
-  - Contains sample C++ application (`main.cpp`)
-  - Complete CMake build system
-  - All platform libraries and headers
-  - Self-contained with no external dependencies
+- `install-grapa-0.1.53.py` - **Universal Installer** (4 KB)
+  - Automatically detects your platform
+  - Downloads the appropriate package
+  - Installs Grapa with proper setup
+
+**Platform-Specific Packages:**
+- `grapa-0.1.53-mac-arm64.zip` - **macOS ARM64** (10.1 MB)
+- `grapa-0.1.53-linux-amd64.zip` - **Linux AMD64** (13.0 MB)
+- `grapa-0.1.53-linux-arm64.zip` - **Linux ARM64** (13.8 MB)
+- `grapa-0.1.53-win-amd64.zip` - **Windows AMD64** (41.3 MB)
+- `grapa-0.1.53-aws-amd64.zip` - **AWS AMD64** (12.4 MB)
+- `grapa-0.1.53-aws-arm64.zip` - **AWS ARM64** (12.8 MB)
+
+**Each package includes:**
+- Platform-specific Grapa executable
+- Universal installer (`install-grapa.py`)
+- Sample C++ application (`main.cpp`)
+- Complete CMake build system
+- Platform libraries and headers
+- Self-contained with no external dependencies
 
 ## Troubleshooting
 

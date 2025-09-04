@@ -1693,7 +1693,7 @@ Based on comprehensive code analysis, the following C++ files use OpenSSL APIs:
 - **aws-arm64**: AWS Graviton
 - **aws-amd64**: AWS x86_64
 
-> **Note:** All platforms are supported through the universal development kit (`grapa-0.1.53.zip`) which contains libraries and headers for all platforms in a single package.
+> **Note:** All platforms are supported through platform-specific packages with a universal installer that automatically detects your platform and downloads the appropriate package.
 
 ### Regression Testing Procedures
 

@@ -12,33 +12,42 @@ tags:
 
 ## Installation
 
-### Step 1: Download and Extract
-1. Download the universal development kit from [GitHub Releases](https://github.com/grapa-dev/grapa/releases):
-   - **All Platforms:** `grapa-0.1.53.zip` - Universal development kit
-
-> **Note:** Grapa requires macOS 15.0+ (Apple Silicon only). Intel Macs are no longer supported due to Apple's discontinuation of Intel Mac support in macOS 15.0.
-
-2. Extract the archive to a location of your choice:
+### Option 1: Universal Installer (Recommended)
+1. Download and run the universal installer:
    ```bash
-   # All platforms
-   unzip grapa-0.1.53.zip
-   cd grapa-0.1.53
+   # Download the universal installer
+   curl -O https://github.com/grapa-dev/grapa/releases/download/v0.1.53/install-grapa-0.1.53.py
+   
+   # Run the installer
+   python3 install-grapa-0.1.53.py
    ```
 
-### Step 2: Install Grapa
-Run the universal installer:
-```bash
-# All platforms
-python3 install-grapa.py
-
-# On Windows, use:
-python install-grapa.py
-```
-
 The installer will automatically:
-- Install Grapa to the appropriate system location
-- Add Grapa to your PATH
-- Set up all necessary files and libraries
+- Detect your platform (macOS, Linux, Windows, AWS)
+- Download the appropriate package (10-41 MB)
+- Install Grapa to `~/.local/grapa/`
+- Set up the environment for immediate use
+
+### Option 2: Manual Download
+1. Download the platform-specific package from [GitHub Releases](https://github.com/grapa-dev/grapa/releases):
+   - **macOS ARM64:** `grapa-0.1.53-mac-arm64.zip` (10.1 MB)
+   - **Linux AMD64:** `grapa-0.1.53-linux-amd64.zip` (13.0 MB)
+   - **Linux ARM64:** `grapa-0.1.53-linux-arm64.zip` (13.8 MB)
+   - **Windows AMD64:** `grapa-0.1.53-win-amd64.zip` (41.3 MB)
+   - **AWS AMD64:** `grapa-0.1.53-aws-amd64.zip` (12.4 MB)
+   - **AWS ARM64:** `grapa-0.1.53-aws-arm64.zip` (12.8 MB)
+
+2. Extract and install:
+   ```bash
+   # Extract the package
+   unzip grapa-0.1.53-<platform>.zip
+   cd grapa-0.1.53
+   
+   # Run the installer
+   python3 install-grapa.py
+   ```
+
+> **Note:** Grapa requires macOS 15.0+ (Apple Silicon only). Intel Macs are no longer supported due to Apple's discontinuation of Intel Mac support in macOS 15.0.
 
 ## Your First Grapa Script
 

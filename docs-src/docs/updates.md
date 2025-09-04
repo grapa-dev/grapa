@@ -4,27 +4,41 @@ Grapa is distributed through GitHub releases, making updates straightforward. Yo
 
 ## Quick Update Commands
 
-### All Platforms (Universal Development Kit)
+### Universal Installer (Recommended)
 ```bash
 # Check current version
 grapa --version
 
-# Download and install the latest universal development kit from GitHub releases
+# Download and run the universal installer for the latest version
+# Example for version 0.1.53:
+curl -O https://github.com/grapa-dev/grapa/releases/download/v0.1.53/install-grapa-0.1.53.py
+python3 install-grapa-0.1.53.py
+```
+
+### Manual Platform-Specific Update
+```bash
+# Check current version
+grapa --version
+
+# Download the appropriate package for your platform
 # Example for version 0.1.53:
 
-# All platforms - download universal package
-curl -L -o grapa-0.1.53.zip https://github.com/grapa-dev/grapa/releases/download/v0.1.53/grapa-0.1.53.zip
+# macOS ARM64
+curl -L -o grapa-0.1.53-mac-arm64.zip https://github.com/grapa-dev/grapa/releases/download/v0.1.53/grapa-0.1.53-mac-arm64.zip
+
+# Linux AMD64
+wget https://github.com/grapa-dev/grapa/releases/download/v0.1.53/grapa-0.1.53-linux-amd64.zip
+
+# Linux ARM64
+wget https://github.com/grapa-dev/grapa/releases/download/v0.1.53/grapa-0.1.53-linux-arm64.zip
+
+# Windows AMD64 (PowerShell)
+# Invoke-WebRequest -Uri "https://github.com/grapa-dev/grapa/releases/download/v0.1.53/grapa-0.1.53-win-amd64.zip" -OutFile "grapa-0.1.53-win-amd64.zip"
 
 # Extract and install
-unzip grapa-0.1.53.zip
+unzip grapa-0.1.53-<platform>.zip
 cd grapa-0.1.53
 python3 install-grapa.py
-
-# On Windows, use:
-# Invoke-WebRequest -Uri "https://github.com/grapa-dev/grapa/releases/download/v0.1.53/grapa-0.1.53.zip" -OutFile "grapa-0.1.53.zip"
-# Expand-Archive -Path "grapa-0.1.53.zip" -DestinationPath "grapa-0.1.53" -Force
-# cd grapa-0.1.53
-# python install-grapa.py
 ```
 
 ## Automatic Update Notifications
@@ -37,7 +51,7 @@ You can stay informed about new releases by:
 2. **Checking the releases page** regularly: [GitHub Releases](https://github.com/grapa-dev/grapa/releases)
 3. **Using the release manager script** to check for updates:
    ```bash
-   python3 scripts/packaging/universal_release_manager.py --list
+   python3 scripts/packaging/smart_release_manager.py --list
    ```
 
 ### Release Announcements

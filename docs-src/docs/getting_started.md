@@ -45,11 +45,19 @@ grapa -f "my_script.grc"
 
 ## Installation
 
-1. **Download** the latest release from [GitHub Releases](https://github.com/grapa-dev/grapa/releases)
+### Universal Installer (Recommended)
+```bash
+# Download and run the universal installer
+curl -O https://github.com/grapa-dev/grapa/releases/download/v0.1.53/install-grapa-0.1.53.py
+python3 install-grapa-0.1.53.py
+```
+
+### Manual Installation
+1. **Download** the platform-specific package from [GitHub Releases](https://github.com/grapa-dev/grapa/releases)
 2. **Extract** the archive and run the automated install script
 3. **Verify** installation with `grapa --version`
 
-**For detailed installation instructions, see [Installation Guide](installation.md)**
+For detailed installation instructions, see the [Installation Guide](installation.md).
 
 > **Note:** Grapa requires macOS 15.0+ (Apple Silicon only). Intel Macs are no longer supported due to Apple's discontinuation of Intel Mac support in macOS 15.0.
 
@@ -332,7 +340,7 @@ int main() {
 
 **Build with CMake:**
 ```bash
-# After extracting grapa-0.1.53.zip
+# After extracting the platform-specific package
 cd grapa-0.1.53
 mkdir build && cd build
 cmake ..
