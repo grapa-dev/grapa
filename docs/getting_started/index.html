@@ -581,6 +581,30 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Installation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#universal-installer-recommended" class="md-nav__link">
+    <span class="md-ellipsis">
+      Universal Installer (Recommended)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#manual-installation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Manual Installation
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -4247,6 +4271,30 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Installation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#universal-installer-recommended" class="md-nav__link">
+    <span class="md-ellipsis">
+      Universal Installer (Recommended)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#manual-installation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Manual Installation
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -4529,12 +4577,18 @@ grapa<span class="w"> </span>-f<span class="w"> </span><span class="s2">&quot;my
 </ul>
 <hr />
 <h2 id="installation">Installation</h2>
+<h3 id="universal-installer-recommended">Universal Installer (Recommended)</h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># Download and run the universal installer</span>
+curl<span class="w"> </span>-O<span class="w"> </span>https://github.com/grapa-dev/grapa/releases/download/v0.1.53/install-grapa-0.1.53.py
+python3<span class="w"> </span>install-grapa-0.1.53.py
+</code></pre></div>
+<h3 id="manual-installation">Manual Installation</h3>
 <ol>
-<li><strong>Download</strong> the latest release from <a href="https://github.com/grapa-dev/grapa/releases">GitHub Releases</a></li>
+<li><strong>Download</strong> the platform-specific package from <a href="https://github.com/grapa-dev/grapa/releases">GitHub Releases</a></li>
 <li><strong>Extract</strong> the archive and run the automated install script</li>
 <li><strong>Verify</strong> installation with <code>grapa --version</code></li>
 </ol>
-<p><strong>For detailed installation instructions, see <a href="../installation/">Installation Guide</a></strong></p>
+<p>For detailed installation instructions, see the <a href="../installation/">Installation Guide</a>.</p>
 <blockquote>
 <p><strong>Note:</strong> Grapa requires macOS 15.0+ (Apple Silicon only). Intel Macs are no longer supported due to Apple's discontinuation of Intel Mac support in macOS 15.0.</p>
 </blockquote>
@@ -4754,7 +4808,7 @@ is_valid = utils().validate_email(&quot;user@example.com&quot;);
 <span class="p">}</span>
 </code></pre></div>
 <p><strong>Build with CMake:</strong>
-<div class="highlight"><pre><span></span><code><span class="c1"># After extracting grapa-0.1.53.zip</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># After extracting the platform-specific package</span>
 <span class="nb">cd</span><span class="w"> </span>grapa-0.1.53
 mkdir<span class="w"> </span>build<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">cd</span><span class="w"> </span>build
 cmake<span class="w"> </span>..

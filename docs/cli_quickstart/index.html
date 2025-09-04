@@ -744,18 +744,18 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#step-1-download-and-extract" class="md-nav__link">
+  <a href="#option-1-universal-installer-recommended" class="md-nav__link">
     <span class="md-ellipsis">
-      Step 1: Download and Extract
+      Option 1: Universal Installer (Recommended)
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#step-2-install-grapa" class="md-nav__link">
+  <a href="#option-2-manual-download" class="md-nav__link">
     <span class="md-ellipsis">
-      Step 2: Install Grapa
+      Option 2: Manual Download
     </span>
   </a>
   
@@ -4543,18 +4543,18 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#step-1-download-and-extract" class="md-nav__link">
+  <a href="#option-1-universal-installer-recommended" class="md-nav__link">
     <span class="md-ellipsis">
-      Step 1: Download and Extract
+      Option 1: Universal Installer (Recommended)
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#step-2-install-grapa" class="md-nav__link">
+  <a href="#option-2-manual-download" class="md-nav__link">
     <span class="md-ellipsis">
-      Step 2: Install Grapa
+      Option 2: Manual Download
     </span>
   </a>
   
@@ -5154,33 +5154,46 @@
 <p><strong>For High-Level Grapa Programmers:</strong> This guide is for users who want to write and run Grapa scripts (<code>.grc</code> files) from the command line.</p>
 </blockquote>
 <h2 id="installation">Installation</h2>
-<h3 id="step-1-download-and-extract">Step 1: Download and Extract</h3>
+<h3 id="option-1-universal-installer-recommended">Option 1: Universal Installer (Recommended)</h3>
 <ol>
-<li>Download the universal development kit from <a href="https://github.com/grapa-dev/grapa/releases">GitHub Releases</a>:</li>
-<li><strong>All Platforms:</strong> <code>grapa-0.1.53.zip</code> - Universal development kit</li>
+<li>Download and run the universal installer:
+   <div class="highlight"><pre><span></span><code><span class="c1"># Download the universal installer</span>
+curl<span class="w"> </span>-O<span class="w"> </span>https://github.com/grapa-dev/grapa/releases/download/v0.1.53/install-grapa-0.1.53.py
+
+<span class="c1"># Run the installer</span>
+python3<span class="w"> </span>install-grapa-0.1.53.py
+</code></pre></div></li>
+</ol>
+<p>The installer will automatically:
+- Detect your platform (macOS, Linux, Windows, AWS)
+- Download the appropriate package (10-41 MB)
+- Install Grapa to <code>~/.local/grapa/</code>
+- Set up the environment for immediate use</p>
+<h3 id="option-2-manual-download">Option 2: Manual Download</h3>
+<ol>
+<li>Download the platform-specific package from <a href="https://github.com/grapa-dev/grapa/releases">GitHub Releases</a>:</li>
+<li><strong>macOS ARM64:</strong> <code>grapa-0.1.53-mac-arm64.zip</code> (10.1 MB)</li>
+<li><strong>Linux AMD64:</strong> <code>grapa-0.1.53-linux-amd64.zip</code> (13.0 MB)</li>
+<li><strong>Linux ARM64:</strong> <code>grapa-0.1.53-linux-arm64.zip</code> (13.8 MB)</li>
+<li><strong>Windows AMD64:</strong> <code>grapa-0.1.53-win-amd64.zip</code> (41.3 MB)</li>
+<li><strong>AWS AMD64:</strong> <code>grapa-0.1.53-aws-amd64.zip</code> (12.4 MB)</li>
+<li>
+<p><strong>AWS ARM64:</strong> <code>grapa-0.1.53-aws-arm64.zip</code> (12.8 MB)</p>
+</li>
+<li>
+<p>Extract and install:
+   <div class="highlight"><pre><span></span><code><span class="c1"># Extract the package</span>
+unzip<span class="w"> </span>grapa-0.1.53-&lt;platform&gt;.zip
+<span class="nb">cd</span><span class="w"> </span>grapa-0.1.53
+
+<span class="c1"># Run the installer</span>
+python3<span class="w"> </span>install-grapa.py
+</code></pre></div></p>
+</li>
 </ol>
 <blockquote>
 <p><strong>Note:</strong> Grapa requires macOS 15.0+ (Apple Silicon only). Intel Macs are no longer supported due to Apple's discontinuation of Intel Mac support in macOS 15.0.</p>
 </blockquote>
-<ol>
-<li>Extract the archive to a location of your choice:
-   <div class="highlight"><pre><span></span><code><span class="c1"># All platforms</span>
-unzip<span class="w"> </span>grapa-0.1.53.zip
-<span class="nb">cd</span><span class="w"> </span>grapa-0.1.53
-</code></pre></div></li>
-</ol>
-<h3 id="step-2-install-grapa">Step 2: Install Grapa</h3>
-<p>Run the universal installer:
-<div class="highlight"><pre><span></span><code><span class="c1"># All platforms</span>
-python3<span class="w"> </span>install-grapa.py
-
-<span class="c1"># On Windows, use:</span>
-python<span class="w"> </span>install-grapa.py
-</code></pre></div></p>
-<p>The installer will automatically:
-- Install Grapa to the appropriate system location
-- Add Grapa to your PATH
-- Set up all necessary files and libraries</p>
 <h2 id="your-first-grapa-script">Your First Grapa Script</h2>
 <h3 id="step-1-create-a-script-file">Step 1: Create a Script File</h3>
 <p>Create a file named <code>hello.grc</code>:
