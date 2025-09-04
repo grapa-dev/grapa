@@ -473,13 +473,6 @@ static std::vector<std::string> extract_grapheme_clusters_excluding_delimiters(c
     return clusters;
 }
 
-#ifdef _WIN32
-#if defined(_M_ARM64)
-#elif defined(_M_X64)
-#pragma comment(lib, "lib/win-amd64/pcre2-8-static.lib")
-#endif
-#endif
-
 using namespace GrapaUnicode;
 
 // Forward declaration for grapheme cluster extraction helper

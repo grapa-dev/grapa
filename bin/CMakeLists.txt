@@ -51,13 +51,42 @@ endif()
 
 # Set compiler flags to match build.py exactly
 if(WIN32)
-    # Windows flags
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Isource -DUTF8PROC_STATIC -std=c++17 -O3")
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Isource -DUTF8PROC_STATIC -O3")
+    # Windows flags - add PCRE2_STATIC and proper include paths
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DUTF8PROC_STATIC -DPCRE2_STATIC -std:c++17 /wd4996")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DUTF8PROC_STATIC -DPCRE2_STATIC -O3 /wd4996")
+    
+    # Add Visual Studio and Windows SDK include paths to match VS project
+    include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../source)
+    include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
+    # Don't include FLTK from bin/include - use source directory version instead
+    # include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/FL)
+    include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/openssl)
+    
+    # Set Windows-specific compiler definitions to match Visual Studio project
+    add_definitions(-D_CRT_SECURE_NO_WARNINGS)
+    add_definitions(-DNDEBUG)
+    add_definitions(-D_CONSOLE)
+    add_definitions(-DUTF8PROC_STATIC)
+    add_definitions(-DPCRE2_STATIC)
+    
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
     # Linux flags
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Isource -DUTF8PROC_STATIC -std=c++17 -O3 -pthread -DFLTK_USE_X11 -static-libgcc")
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Isource -DUTF8PROC_STATIC -O3 -pthread -DFLTK_USE_X11")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DUTF8PROC_STATIC -DPCRE2_STATIC -std=c++17 -O3 -pthread -DFLTK_USE_X11 -static-libgcc")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DUTF8PROC_STATIC -DPCRE2_STATIC -O3 -pthread -DFLTK_USE_X11")
+    
+    # Add include directories for Linux
+    include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
+    include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/FL)
+    include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/openssl)
+elseif(APPLE)
+    # macOS flags
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DUTF8PROC_STATIC -DPCRE2_STATIC -std=c++17 -O3 -pthread")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DUTF8PROC_STATIC -DPCRE2_STATIC -O3 -pthread")
+    
+    # Add include directories for macOS
+    include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
+    include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/FL)
+    include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/openssl)
 endif()
 
 # Set output directory
@@ -90,6 +119,10 @@ if(WIN32)
 		${CMAKE_CURRENT_SOURCE_DIR}/lib/${GRAPA_PLATFORM_DIR}/libcrypto.lib
 		${CMAKE_CURRENT_SOURCE_DIR}/lib/${GRAPA_PLATFORM_DIR}/libssl.lib
 		${CMAKE_CURRENT_SOURCE_DIR}/lib/${GRAPA_PLATFORM_DIR}/pcre2-8-static.lib
+		# Windows system libraries
+		gdiplus.lib
+		ComCtl32.lib
+		crypt32.lib
 	)
 else()
 	target_link_libraries(grapa_example 
@@ -165,9 +198,7 @@ elseif(WIN32)
         BUILD_WITH_INSTALL_RPATH TRUE
         INSTALL_RPATH "$ORIGIN"
     )
-    
-    # Windows doesn't need additional system libraries - everything is statically linked
-    # The FLTK, OpenSSL, BLST, and PCRE2 static libraries contain all necessary symbols
+
 endif()
 
 # Copy 3rd party static libraries to build directory

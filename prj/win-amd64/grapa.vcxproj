@@ -153,7 +153,7 @@
       </HeapCommitSize>
       <StackCommitSize>
       </StackCommitSize>
-      <AdditionalDependencies>crypt32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>lib/win-amd64/fltk.lib;lib/win-amd64/fltk_forms.lib;lib/win-amd64/fltk_gl.lib;lib/win-amd64/fltk_images.lib;lib/win-amd64/fltk_jpeg.lib;lib/win-amd64/fltk_png.lib;lib/win-amd64/fltk_z.lib;lib/win-amd64/libcrypto.lib;lib/win-amd64/libssl.lib;lib/win-amd64/blst.lib;lib/win-amd64/pcre2-8-static.lib;gdiplus.lib;ComCtl32.lib;crypt32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -179,7 +179,7 @@
       </HeapCommitSize>
       <StackCommitSize>
       </StackCommitSize>
-      <AdditionalDependencies>crypt32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>lib/win-amd64/fltk.lib;lib/win-amd64/fltk_forms.lib;lib/win-amd64/fltk_gl.lib;lib/win-amd64/fltk_images.lib;lib/win-amd64/fltk_jpeg.lib;lib/win-amd64/fltk_png.lib;lib/win-amd64/fltk_z.lib;lib/win-amd64/libcrypto.lib;lib/win-amd64/libssl.lib;lib/win-amd64/blst.lib;lib/win-amd64/pcre2-8-static.lib;gdiplus.lib;ComCtl32.lib;crypt32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>

@@ -48,8 +48,8 @@ The project has completed version 0.1.52 and is now beginning development for ve
 
 ### High Priority
 1. **Test remaining platforms** - Validate static-only approach on Windows and AWS platforms
-   - **Status**: Mac ARM64 ✅, Linux ARM64 ✅, Windows AMD64 🔄, AWS platforms 🔄
-   - **Next**: Test Windows AMD64 and AWS ARM64/AMD64 platforms
+   - **Status**: Mac ARM64 ✅, Linux ARM64 ✅, Windows AMD64 ✅, AWS platforms 🔄
+   - **Next**: Test AWS ARM64/AMD64 platforms
    - **Validation**: Ensure grapa_example builds and runs on all platforms
 
 2. **Fix `++=` operator for vector extend** - Documented as broken, needs C++ implementation fix
@@ -63,12 +63,29 @@ The project has completed version 0.1.52 and is now beginning development for ve
 
 ## Recent Accomplishments
 
+### Windows Development Kit CMake Build Fix ✅ COMPLETED
+- **Issue**: CMakeLists.txt had incorrect include paths and missing preprocessor definitions for Windows
+- **Solution**: Updated CMakeLists.txt to match Visual Studio project settings:
+  - Added source directory to include paths (matches VS project)
+  - Added PCRE2_STATIC preprocessor definition
+  - Added Windows-specific compiler flags and warning suppressions
+  - Added Windows system libraries to linking
+- **Result**: CMake build now works correctly with RelWithDebInfo configuration
+- **Validation**: grapa_example.exe builds and runs successfully with all functionality
+
+### Windows Library Linking Fix ✅ COMPLETED
+- **Issue**: Removed pragma comments from C++ source to avoid conflicts with static library builds
+- **Solution**: Updated Visual Studio project file to explicitly link all required libraries for application builds
+- **Libraries linked**: FLTK, OpenSSL, BLST, PCRE2, and Windows system libraries
+- **Result**: Windows AMD64 build now works correctly with static-only approach
+- **Validation**: grapa.exe builds and runs successfully with all functionality
+
 ### Static-Only Development Kit ✅ COMPLETED
 - **Architectural shift**: Successfully migrated from shared libraries to static-only approach
 - **Universal bin/ structure**: Single include/, main.cpp, CMakeLists.txt for all platforms
 - **CMake build system**: Cross-platform configuration with proper platform detection
 - **Library organization**: bin/platforms/<platform>/ for Grapa static libs, bin/lib/<platform>/ for 3rd party libs
-- **Cross-platform linking**: Mac (frameworks), Linux (X11 libraries), Windows (TBD)
+- **Cross-platform linking**: Mac (frameworks), Linux (X11 libraries), Windows (static libs + system libs)
 - **Example executable**: grapa_example working correctly on Mac and Linux
 
 ### Development Kit Structure ✅ COMPLETED
@@ -101,8 +118,8 @@ The project has completed version 0.1.52 and is now beginning development for ve
 - **Linking strategy**: 
   - Mac: Static libs + system frameworks
   - Linux: Static libs + X11 system libraries
-  - Windows: Static libs (TBD)
-- **Validation**: Working on Mac ARM64 and Linux ARM64
+  - Windows: Static libs + system libraries (gdiplus.lib, ComCtl32.lib, crypt32.lib)
+- **Validation**: Working on Mac ARM64, Linux ARM64, and Windows AMD64
 
 ### Sleep Limitation Technical Details
 - **Root cause**: Global process-wide sleep queue in Grapa's sleep implementation
