@@ -755,6 +755,39 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#integration-options" class="md-nav__link">
+    <span class="md-ellipsis">
+      Integration Options
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Integration Options">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#c-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      C++ Integration
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#python-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      Python Integration
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#next-steps" class="md-nav__link">
     <span class="md-ellipsis">
       Next Steps
@@ -877,6 +910,29 @@
   
   <span class="md-ellipsis">
     Python Integration
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cpp_integration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    C++ Integration
     
   </span>
   
@@ -4365,6 +4421,39 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#integration-options" class="md-nav__link">
+    <span class="md-ellipsis">
+      Integration Options
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Integration Options">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#c-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      C++ Integration
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#python-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      Python Integration
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#next-steps" class="md-nav__link">
     <span class="md-ellipsis">
       Next Steps
@@ -4648,6 +4737,50 @@ is_valid = utils().validate_email(&quot;user@example.com&quot;);
 <p><strong>Tip:</strong> Place your utility functions in <code>lib/grapa/</code> in your project directory for automatic discovery. No import statements needed!</p>
 </blockquote>
 <hr />
+<h2 id="integration-options">Integration Options</h2>
+<h3 id="c-integration">C++ Integration</h3>
+<p>Grapa can be embedded in C++ applications using the universal development kit:</p>
+<div class="highlight"><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;grapa/GrapaLink.h&quot;</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// Initialize Grapa runtime</span>
+<span class="w">    </span><span class="n">GrapaLink</span><span class="w"> </span><span class="n">grapa</span><span class="p">;</span>
+
+<span class="w">    </span><span class="c1">// Execute Grapa code</span>
+<span class="w">    </span><span class="n">GrapaValue</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">grapa</span><span class="p">.</span><span class="n">eval</span><span class="p">(</span><span class="s">&quot;2 + 2&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Result: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+<p><strong>Build with CMake:</strong>
+<div class="highlight"><pre><span></span><code><span class="c1"># After extracting grapa-0.1.53.zip</span>
+<span class="nb">cd</span><span class="w"> </span>grapa-0.1.53
+mkdir<span class="w"> </span>build<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">cd</span><span class="w"> </span>build
+cmake<span class="w"> </span>..
+cmake<span class="w"> </span>--build<span class="w"> </span>.
+./grapa_example
+</code></pre></div></p>
+<p>The universal development kit includes:
+- Complete C++ API headers
+- Sample application (<code>main.cpp</code>)
+- CMake build system
+- All platform libraries</p>
+<p><strong>See also:</strong> <a href="../cpp_integration/">C++ Integration Guide</a> for comprehensive C++ embedding documentation and <a href="../installation/">Installation Guide</a> for the complete development workflow.</p>
+<h3 id="python-integration">Python Integration</h3>
+<p>Grapa can be used from Python via GrapaPy:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">grapapy</span>
+
+<span class="c1"># Create Grapa instance</span>
+<span class="n">g</span> <span class="o">=</span> <span class="n">grapapy</span><span class="o">.</span><span class="n">grapa</span><span class="p">()</span>
+
+<span class="c1"># Execute Grapa code</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s1">&#39;2 + 2&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Result: </span><span class="si">{</span><span class="n">result</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+</code></pre></div>
+<p><strong>Install GrapaPy:</strong>
+<div class="highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>grapapy
+</code></pre></div></p>
 <h2 id="next-steps">Next Steps</h2>
 <ul>
 <li>Explore <a href="../examples/">Examples</a> for more complex use cases</li>
@@ -4670,7 +4803,9 @@ Grapa's parallel ETL/data processing is a core, production-ready feature. Parall
 - <a href="../function_quick_reference/">Language Reference</a>
 - <a href="../examples/">Examples</a></p>
 <p><strong>For Python Users:</strong>
-See the <a href="../python_integration/">Python Integration Guide</a>, <a href="../python_use_cases/#migration-tips-for-python-users">Migration Tips for Python Users</a>, and <a href="../grapapy_namespace_solution/">GrapaPy Namespace Solution</a> for essential guidance on using Grapa from Python. </p>
+See the <a href="../python_integration/">Python Integration Guide</a>, <a href="../python_use_cases/#migration-tips-for-python-users">Migration Tips for Python Users</a>, and <a href="../grapapy_namespace_solution/">GrapaPy Namespace Solution</a> for essential guidance on using Grapa from Python.</p>
+<p><strong>For C++ Developers:</strong>
+See the <a href="../cpp_integration/">C++ Integration Guide</a> for comprehensive documentation on embedding Grapa in C++ applications, including performance optimization, error handling, and advanced use cases. The <a href="../installation/">Installation Guide</a> provides the complete development workflow with CMake build system. </p>
 </blockquote>
 
 

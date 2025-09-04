@@ -629,6 +629,29 @@
   
   
     <li class="md-nav__item">
+      <a href="../cpp_integration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    C++ Integration
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../grapa_ecosystem_positioning/" class="md-nav__link">
         
   
@@ -3908,9 +3931,9 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#all-platforms-github-releases" class="md-nav__link">
+  <a href="#all-platforms-universal-development-kit" class="md-nav__link">
     <span class="md-ellipsis">
-      All Platforms (GitHub Releases)
+      All Platforms (Universal Development Kit)
     </span>
   </a>
   
@@ -3983,9 +4006,9 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#all-platforms-github-releases_1" class="md-nav__link">
+  <a href="#all-platforms-universal-development-kit_1" class="md-nav__link">
     <span class="md-ellipsis">
-      All Platforms (GitHub Releases)
+      All Platforms (Universal Development Kit)
     </span>
   </a>
   
@@ -4100,9 +4123,9 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#all-platforms-github-releases" class="md-nav__link">
+  <a href="#all-platforms-universal-development-kit" class="md-nav__link">
     <span class="md-ellipsis">
-      All Platforms (GitHub Releases)
+      All Platforms (Universal Development Kit)
     </span>
   </a>
   
@@ -4175,9 +4198,9 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#all-platforms-github-releases_1" class="md-nav__link">
+  <a href="#all-platforms-universal-development-kit_1" class="md-nav__link">
     <span class="md-ellipsis">
-      All Platforms (GitHub Releases)
+      All Platforms (Universal Development Kit)
     </span>
   </a>
   
@@ -4258,30 +4281,26 @@
 <h1 id="updating-grapa">Updating Grapa</h1>
 <p>Grapa is distributed through GitHub releases, making updates straightforward. You can check for updates and download the latest version directly from the releases page.</p>
 <h2 id="quick-update-commands">Quick Update Commands</h2>
-<h3 id="all-platforms-github-releases">All Platforms (GitHub Releases)</h3>
+<h3 id="all-platforms-universal-development-kit">All Platforms (Universal Development Kit)</h3>
 <div class="highlight"><pre><span></span><code><span class="c1"># Check current version</span>
 grapa<span class="w"> </span>--version
 
-<span class="c1"># Download and install the latest version from GitHub releases</span>
-<span class="c1"># Example for version 0.1.52:</span>
+<span class="c1"># Download and install the latest universal development kit from GitHub releases</span>
+<span class="c1"># Example for version 0.1.53:</span>
 
-<span class="c1"># macOS</span>
-curl<span class="w"> </span>-L<span class="w"> </span>-o<span class="w"> </span>grapa-0.1.52-mac-arm64.zip<span class="w"> </span>https://github.com/grapa-dev/grapa/releases/download/v0.1.52/grapa-0.1.52-mac-arm64.zip
-unzip<span class="w"> </span>grapa-0.1.52-mac-arm64.zip
-<span class="nb">cd</span><span class="w"> </span>grapa-0.1.52-mac-arm64
-./install-grapa.sh
+<span class="c1"># All platforms - download universal package</span>
+curl<span class="w"> </span>-L<span class="w"> </span>-o<span class="w"> </span>grapa-0.1.53.zip<span class="w"> </span>https://github.com/grapa-dev/grapa/releases/download/v0.1.53/grapa-0.1.53.zip
 
-<span class="c1"># Linux</span>
-wget<span class="w"> </span>https://github.com/grapa-dev/grapa/releases/download/v0.1.52/grapa-0.1.52-linux-amd64.zip
-unzip<span class="w"> </span>grapa-0.1.52-linux-amd64.zip
-<span class="nb">cd</span><span class="w"> </span>grapa-0.1.52-linux-amd64
-sudo<span class="w"> </span>./install-grapa.sh
+<span class="c1"># Extract and install</span>
+unzip<span class="w"> </span>grapa-0.1.53.zip
+<span class="nb">cd</span><span class="w"> </span>grapa-0.1.53
+python3<span class="w"> </span>install-grapa.py
 
-<span class="c1"># Windows</span>
-Invoke-WebRequest<span class="w"> </span>-Uri<span class="w"> </span><span class="s2">&quot;https://github.com/grapa-dev/grapa/releases/download/v0.1.52/grapa-0.1.52-win-amd64.zip&quot;</span><span class="w"> </span>-OutFile<span class="w"> </span><span class="s2">&quot;grapa-0.1.52-win-amd64.zip&quot;</span>
-Expand-Archive<span class="w"> </span>-Path<span class="w"> </span><span class="s2">&quot;grapa-0.1.52-win-amd64.zip&quot;</span><span class="w"> </span>-DestinationPath<span class="w"> </span><span class="s2">&quot;grapa-0.1.52-win-amd64&quot;</span><span class="w"> </span>-Force
-<span class="nb">cd</span><span class="w"> </span>grapa-0.1.52-win-amd64
-.<span class="se">\i</span>nstall-grapa.ps1<span class="w"> </span>-Force
+<span class="c1"># On Windows, use:</span>
+<span class="c1"># Invoke-WebRequest -Uri &quot;https://github.com/grapa-dev/grapa/releases/download/v0.1.53/grapa-0.1.53.zip&quot; -OutFile &quot;grapa-0.1.53.zip&quot;</span>
+<span class="c1"># Expand-Archive -Path &quot;grapa-0.1.53.zip&quot; -DestinationPath &quot;grapa-0.1.53&quot; -Force</span>
+<span class="c1"># cd grapa-0.1.53</span>
+<span class="c1"># python install-grapa.py</span>
 </code></pre></div>
 <h2 id="automatic-update-notifications">Automatic Update Notifications</h2>
 <h3 id="github-release-notifications">GitHub Release Notifications</h3>
@@ -4290,7 +4309,7 @@ Expand-Archive<span class="w"> </span>-Path<span class="w"> </span><span class="
 <li><strong>Watching the repository</strong> on GitHub to receive notifications</li>
 <li><strong>Checking the releases page</strong> regularly: <a href="https://github.com/grapa-dev/grapa/releases">GitHub Releases</a></li>
 <li><strong>Using the release manager script</strong> to check for updates:
-   <div class="highlight"><pre><span></span><code>python3<span class="w"> </span>scripts/packaging/release_manager.py<span class="w"> </span>--list
+   <div class="highlight"><pre><span></span><code>python3<span class="w"> </span>scripts/packaging/universal_release_manager.py<span class="w"> </span>--list
 </code></pre></div></li>
 </ol>
 <h3 id="release-announcements">Release Announcements</h3>
@@ -4315,27 +4334,23 @@ Expand-Archive<span class="w"> </span>-Path<span class="w"> </span><span class="
 <p>Updates are typically available within a few days of a new release.</p>
 <h2 id="rollback-if-needed">Rollback (If Needed)</h2>
 <p>If you need to downgrade to a previous version:</p>
-<h3 id="all-platforms-github-releases_1">All Platforms (GitHub Releases)</h3>
+<h3 id="all-platforms-universal-development-kit_1">All Platforms (Universal Development Kit)</h3>
 <div class="highlight"><pre><span></span><code><span class="c1"># Download and install specific version from GitHub releases</span>
-<span class="c1"># Example for version 0.1.50:</span>
+<span class="c1"># Example for version 0.1.52:</span>
 
-<span class="c1"># macOS</span>
-curl<span class="w"> </span>-L<span class="w"> </span>-o<span class="w"> </span>grapa-0.1.50-mac-arm64.zip<span class="w"> </span>https://github.com/grapa-dev/grapa/releases/download/v0.1.50/grapa-0.1.50-mac-arm64.zip
-unzip<span class="w"> </span>grapa-0.1.50-mac-arm64.zip
-<span class="nb">cd</span><span class="w"> </span>grapa-0.1.50-mac-arm64
-./install-grapa.sh
+<span class="c1"># All platforms - download universal package</span>
+curl<span class="w"> </span>-L<span class="w"> </span>-o<span class="w"> </span>grapa-0.1.52.zip<span class="w"> </span>https://github.com/grapa-dev/grapa/releases/download/v0.1.52/grapa-0.1.52.zip
 
-<span class="c1"># Linux</span>
-wget<span class="w"> </span>https://github.com/grapa-dev/grapa/releases/download/v0.1.50/grapa-0.1.50-linux-amd64.zip
-unzip<span class="w"> </span>grapa-0.1.50-linux-amd64.zip
-<span class="nb">cd</span><span class="w"> </span>grapa-0.1.50-linux-amd64
-sudo<span class="w"> </span>./install-grapa.sh
+<span class="c1"># Extract and install</span>
+unzip<span class="w"> </span>grapa-0.1.52.zip
+<span class="nb">cd</span><span class="w"> </span>grapa-0.1.52
+python3<span class="w"> </span>install-grapa.py
 
-<span class="c1"># Windows</span>
-Invoke-WebRequest<span class="w"> </span>-Uri<span class="w"> </span><span class="s2">&quot;https://github.com/grapa-dev/grapa/releases/download/v0.1.50/grapa-0.1.50-win-amd64.zip&quot;</span><span class="w"> </span>-OutFile<span class="w"> </span><span class="s2">&quot;grapa-0.1.50-win-amd64.zip&quot;</span>
-Expand-Archive<span class="w"> </span>-Path<span class="w"> </span><span class="s2">&quot;grapa-0.1.50-win-amd64.zip&quot;</span><span class="w"> </span>-DestinationPath<span class="w"> </span><span class="s2">&quot;grapa-0.1.50-win-amd64&quot;</span><span class="w"> </span>-Force
-<span class="nb">cd</span><span class="w"> </span>grapa-0.1.50-win-amd64
-.<span class="se">\i</span>nstall-grapa.ps1<span class="w"> </span>-Force
+<span class="c1"># On Windows, use:</span>
+<span class="c1"># Invoke-WebRequest -Uri &quot;https://github.com/grapa-dev/grapa/releases/download/v0.1.52/grapa-0.1.52.zip&quot; -OutFile &quot;grapa-0.1.52.zip&quot;</span>
+<span class="c1"># Expand-Archive -Path &quot;grapa-0.1.52.zip&quot; -DestinationPath &quot;grapa-0.1.52&quot; -Force</span>
+<span class="c1"># cd grapa-0.1.52</span>
+<span class="c1"># python install-grapa.py</span>
 </code></pre></div>
 <h2 id="troubleshooting-updates">Troubleshooting Updates</h2>
 <h3 id="update-fails">Update Fails</h3>
@@ -4357,7 +4372,7 @@ sudo<span class="w"> </span>rm<span class="w"> </span>-f<span class="w"> </span>
 sudo<span class="w"> </span>rm<span class="w"> </span>-f<span class="w"> </span>/usr/local/lib/libgrapa.so
 
 <span class="c1"># Windows (run PowerShell as Administrator)</span>
-.<span class="se">\i</span>nstall-grapa.ps1<span class="w"> </span>-Uninstall
+python<span class="w"> </span>install-grapa.py<span class="w"> </span>--uninstall
 </code></pre></div></p>
 </li>
 <li>

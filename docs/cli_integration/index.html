@@ -594,9 +594,9 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#option-1-download-pre-built-binaries" class="md-nav__link">
+  <a href="#option-1-download-universal-development-kit" class="md-nav__link">
     <span class="md-ellipsis">
-      Option 1: Download Pre-Built Binaries
+      Option 1: Download Universal Development Kit
     </span>
   </a>
   
@@ -679,6 +679,29 @@
   
   <span class="md-ellipsis">
     Python Integration
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cpp_integration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    C++ Integration
     
   </span>
   
@@ -3960,9 +3983,9 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#option-1-download-pre-built-binaries" class="md-nav__link">
+  <a href="#option-1-download-universal-development-kit" class="md-nav__link">
     <span class="md-ellipsis">
-      Option 1: Download Pre-Built Binaries
+      Option 1: Download Universal Development Kit
     </span>
   </a>
   
@@ -3995,26 +4018,20 @@
 
 <h1 id="cli-integration">CLI Integration</h1>
 <p>This guide explains how to get started with the Grapa CLI, either by downloading pre-built binaries or building from source.</p>
-<h2 id="option-1-download-pre-built-binaries">Option 1: Download Pre-Built Binaries</h2>
-<p>The fastest way to use the Grapa CLI is to download a pre-built package for your platform from GitHub releases:</p>
+<h2 id="option-1-download-universal-development-kit">Option 1: Download Universal Development Kit</h2>
+<p>The fastest way to use the Grapa CLI is to download the universal development kit from GitHub releases:</p>
 <ul>
 <li><a href="https://github.com/grapa-dev/grapa/releases">Grapa Releases on GitHub</a></li>
 </ul>
-<p>Available packages:
-- <strong>macOS (Apple Silicon):</strong> <code>grapa-0.1.52-mac-arm64.zip</code>
-- <strong>Linux (Intel):</strong> <code>grapa-0.1.52-linux-amd64.zip</code>
-- <strong>Linux (ARM):</strong> <code>grapa-0.1.52-linux-arm64.zip</code>
-- <strong>Windows:</strong> <code>grapa-0.1.52-win-amd64.zip</code>
-- <strong>AWS (Intel):</strong> <code>grapa-0.1.52-aws-amd64.zip</code>
-- <strong>AWS (ARM):</strong> <code>grapa-0.1.52-aws-arm64.zip</code></p>
+<p><strong>Universal Package:</strong>
+- <strong>All Platforms:</strong> <code>grapa-0.1.53.zip</code> - Universal development kit containing everything for all platforms</p>
 <p><strong>Instructions:</strong>
-1. Download the appropriate package for your system from the latest release.
+1. Download the universal package from the latest release.
 2. Extract the archive:
    - All platforms: Use <code>unzip</code> or your preferred tool to extract the <code>.zip</code> file.
-3. Navigate to the extracted directory: <code>cd grapa-0.1.52-&lt;platform&gt;-&lt;arch&gt;</code>
-4. Run the automated install script:
-   - macOS/Linux/AWS: <code>./install-grapa.sh</code>
-   - Windows: <code>.\install-grapa.ps1</code> (run as Administrator)
+3. Navigate to the extracted directory: <code>cd grapa-0.1.53</code>
+4. Run the universal installer:
+   - All platforms: <code>python3 install-grapa.py</code> (or <code>python install-grapa.py</code> on Windows)
 5. The installer will automatically add Grapa to your PATH and set up the necessary files.</p>
 <blockquote>
 <p><strong>Note:</strong> Grapa requires macOS 15.0+ (Apple Silicon only). Intel Macs are no longer supported due to Apple's discontinuation of Intel Mac support in macOS 15.0.</p>
