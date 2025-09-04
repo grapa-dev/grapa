@@ -4,7 +4,42 @@ import platform
 import subprocess
 import re
 
-from setuptools.command.build import build
+# Check setuptools version for compatibility
+try:
+    import setuptools
+    setuptools_version = setuptools.__version__
+    print(f"Using setuptools version: {setuptools_version}")
+    
+    # Check if setuptools version is too old for setuptools.command.build
+    try:
+        from packaging import version
+        if version.parse(setuptools_version) < version.parse("40.0.0"):
+            print("Warning: setuptools version is older than 40.0.0, may need fallback to distutils")
+    except ImportError:
+        # packaging module not available, can't do version comparison
+        pass
+        
+except ImportError:
+    setuptools_version = "unknown"
+    print("Warning: Could not determine setuptools version")
+
+# Compatibility check for setuptools.command.build
+try:
+    from setuptools.command.build import build
+    print("Using setuptools.command.build")
+except ImportError:
+    # Fall back to distutils for older setuptools versions
+    try:
+        from distutils.command.build import build
+        print("Using distutils.command.build (fallback for older setuptools)")
+    except ImportError:
+        raise ImportError(
+            "Neither setuptools.command.build nor distutils.command.build is available.\n"
+            "This usually indicates an older pip3 version. Please try:\n"
+            "  pip3 install --upgrade pip\n"
+            "  pip3 install --upgrade setuptools\n"
+            "If the issue persists, you may need to install distutils separately."
+        )
 
 from setuptools import Extension, setup, find_packages, Command
 from setuptools.command.build_ext import build_ext
@@ -245,7 +280,7 @@ def pick_library_dirs():
         else:
             return ["source", "source/grapa-lib/mac-amd64"]
     if my_system == 'Windows':
-        return ["source", "source/grapa-lib/win-amd64"]
+        return ["source", "source/grapa-lib/win-amd64", "source/fl-lib/win-amd64", "source/blst-lib/win-amd64", "source/pcre2-lib/win-amd64", "source/openssl-lib/win-amd64"]
     raise ValueError("Unknown platform: " + my_system)
 
 def pick_libraries():
