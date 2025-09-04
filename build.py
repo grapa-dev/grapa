@@ -174,8 +174,8 @@ class GrapaBuilder:
                 self._clean_windows_build()
                 # Package creation no longer needed - development kit is self-contained
             else:
-                # Set up development kit even for exe_only builds
-                self._setup_development_kit(config)
+                # Development kit setup handled by main build method
+                pass
             
             return True
             
@@ -202,8 +202,8 @@ class GrapaBuilder:
                 # Package creation no longer needed - development kit is self-contained
                 pass
             else:
-                # Set up development kit even for exe_only builds
-                self._setup_development_kit(config)
+                # Development kit setup handled by main build method
+                pass
             
             return True
             
@@ -231,13 +231,6 @@ class GrapaBuilder:
             # Shared library builds are no longer supported
             if not exe_only:
                 print("ℹ️  Shared library builds are no longer supported. Using static libraries only.")
-            
-            if not exe_only:
-                # Package creation no longer needed - development kit is self-contained
-                pass
-            else:
-                # Set up development kit even for exe_only builds
-                self._setup_development_kit(config)
             
             return True
             
@@ -667,6 +660,9 @@ class GrapaBuilder:
                     # Run tests if requested
                     if run_tests:
                         self.run_tests(config)
+
+                # Always set up development kit - needed for both exe_only and full builds
+                self._setup_development_kit(config)
 
                 return True
             else:
