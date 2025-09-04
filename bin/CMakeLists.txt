@@ -56,11 +56,7 @@ if(WIN32)
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DUTF8PROC_STATIC -DPCRE2_STATIC -O3 /wd4996")
     
     # Add Visual Studio and Windows SDK include paths to match VS project
-    include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../source)
     include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
-    # Don't include FLTK from bin/include - use source directory version instead
-    # include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/FL)
-    include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/openssl)
     
     # Set Windows-specific compiler definitions to match Visual Studio project
     add_definitions(-D_CRT_SECURE_NO_WARNINGS)
@@ -76,8 +72,6 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
     
     # Add include directories for Linux
     include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
-    include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/FL)
-    include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/openssl)
 elseif(APPLE)
     # macOS flags
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DUTF8PROC_STATIC -DPCRE2_STATIC -std=c++17 -O3 -pthread")
@@ -85,8 +79,6 @@ elseif(APPLE)
     
     # Add include directories for macOS
     include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
-    include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/FL)
-    include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/openssl)
 endif()
 
 # Set output directory

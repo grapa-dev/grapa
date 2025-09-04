@@ -42,7 +42,7 @@ The project has completed version 0.1.52 and is now beginning development for ve
 - **CMake configuration**: ✅ Updated with proper RPATH and compiler flags
 - **C++ example executable**: ✅ Working on both Mac ARM64 and Linux ARM64
 - **Static-only architecture**: ✅ Successfully implemented and validated
-- **Cross-platform compatibility**: ✅ Mac (frameworks), Linux (X11 libraries)
+- **Cross-platform compatibility**: ✅ Mac (frameworks), Linux (X11 libraries), Windows (static libs + system libs)
 
 ## Outstanding Tasks
 
@@ -51,6 +51,7 @@ The project has completed version 0.1.52 and is now beginning development for ve
    - **Status**: Mac ARM64 ✅, Linux ARM64 ✅, Windows AMD64 ✅, AWS platforms 🔄
    - **Next**: Test AWS ARM64/AMD64 platforms
    - **Validation**: Ensure grapa_example builds and runs on all platforms
+   - **Windows AMD64**: Both Visual Studio project build and CMake build working correctly
 
 2. **Fix `++=` operator for vector extend** - Documented as broken, needs C++ implementation fix
 3. **Address sleep limitation in threading** - Consider architectural improvements to make sleep thread-local
@@ -63,15 +64,17 @@ The project has completed version 0.1.52 and is now beginning development for ve
 
 ## Recent Accomplishments
 
-### Windows Development Kit CMake Build Fix ✅ COMPLETED
-- **Issue**: CMakeLists.txt had incorrect include paths and missing preprocessor definitions for Windows
-- **Solution**: Updated CMakeLists.txt to match Visual Studio project settings:
-  - Added source directory to include paths (matches VS project)
+### Windows Development Kit CMake Build ✅ COMPLETED
+- **Issue**: CMakeLists.txt had missing preprocessor definitions, and the development kit contained Unix/Linux FLTK headers instead of Windows-compatible ones
+- **Root Cause**: The FLTK headers in `bin/include/FL` were Unix versions that tried to include `/usr/include/math.h` (line 20 in math.h), which doesn't exist on Windows
+- **Solution**: Updated CMakeLists.txt to include source directory for FLTK headers and added proper Windows-specific preprocessor definitions:
+  - Added source directory to include paths (provides correct FLTK headers)
   - Added PCRE2_STATIC preprocessor definition
   - Added Windows-specific compiler flags and warning suppressions
   - Added Windows system libraries to linking
-- **Result**: CMake build now works correctly with RelWithDebInfo configuration
+- **Result**: CMake build now works correctly with `cmake -G "Visual Studio 17 2022" -A x64 ..` and `cmake --build . --config RelWithDebInfo`
 - **Validation**: grapa_example.exe builds and runs successfully with all functionality
+- **Note**: While this includes source directory, it's a working solution for the development kit
 
 ### Windows Library Linking Fix ✅ COMPLETED
 - **Issue**: Removed pragma comments from C++ source to avoid conflicts with static library builds
