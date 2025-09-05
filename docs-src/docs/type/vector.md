@@ -586,13 +586,13 @@ vertical_result = [matrix1, matrix2].join(null, 0);  /* #[[1,2],[3,4],[5,6],[7,8
 horizontal_result = [matrix1, matrix2].join(null, 1);  /* #[[1,2,5,6],[3,4,7,8]]# */
 ```
 
-#### **Method 3: ++= Operator (Currently Broken)**
+#### **Method 3: ++= Operator (Now Working)**
 ```grapa
 matrix1 = #[[1, 2], [3, 4]]#;
 matrix2 = #[[5, 6], [7, 8]]#;
 
-/* ⚠️ BROKEN: Produces null values */
-matrix1 ++= matrix2;  /* Results in: #[[1,2],[3,4],[5,null],[null,null]]# */
+/* ✅ WORKING: Extends matrix correctly */
+matrix1 ++= matrix2;  /* Results in: #[[1,2],[3,4],[5,6],[7,8]]# */
 ```
 
 **Join Function Parameters:**
@@ -694,7 +694,7 @@ mixed_vec = #[1, "hello", true, [1, 2, 3]]#;  /* Mixed types supported */
 7. **Know operator limitations**: Use `.dot()` method instead of `.*` operator for dot products
 8. **Avoid unsupported operations**: Modulo (`%`), bitwise operations (`~`, `&`, `|`, `^`), and dot product operator (`.*`) are not supported
 9. **Use operators, not method calls**: Vector operations use operators (`+`, `*`, `**`) rather than method calls (`.add()`, `.mul()`, `.pow()`)
-10. **Avoid broken ++= operator**: Use `.join()` method instead of `++=` for vector concatenation
+10. **Use ++= operator for 2D vectors**: The `++=` operator now works correctly for 2D vector extension
 11. **Leverage function application**: Use `vec * [op(x){...}]` to implement advanced operations like clip, round, where, etc.
 12. **Explore creative solutions**: Many "missing" functions can be implemented using Grapa's flexible function application system
 

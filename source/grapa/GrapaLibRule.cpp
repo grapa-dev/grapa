@@ -3301,8 +3301,12 @@ GrapaLibraryEvent* GrapaLibraryRuleEvent::LoadLib(GrapaScriptExec *vScriptExec, 
 		{ "file_mkfield", &GrapaLibraryRuleEvent::HandleMkField },
 		{ "file_rmfield", &GrapaLibraryRuleEvent::HandleRmField },
 		{ "file_info", &GrapaLibraryRuleEvent::HandleInfo },
-		{ "file_setfield", &GrapaLibraryRuleEvent::HandleFileSet },
 		{ "file_getfield", &GrapaLibraryRuleEvent::HandleFileGet },
+		{ "file_setfield", &GrapaLibraryRuleEvent::HandleFileSet },
+		{ "get", &GrapaLibraryRuleEvent::HandleFileGet },
+		{ "set", &GrapaLibraryRuleEvent::HandleFileSet },
+		{ "getfield", &GrapaLibraryRuleEvent::HandleFileGet },
+		{ "setfield", &GrapaLibraryRuleEvent::HandleFileSet },
 		{ "file_split", &GrapaLibraryRuleEvent::HandleFileSplit },
 		{ "file_dump", &GrapaLibraryRuleEvent::HandleDump },
 		{ "net_mac", &GrapaLibraryRuleEvent::HandleMac },
@@ -4064,6 +4068,7 @@ GrapaRuleEvent* GrapaLibraryRuleEvalEvent::Run(GrapaScriptExec* vScriptExec, Gra
 	{
 		if (GrapaRuleEvent* operation = vScriptExec->vScriptState->AddRuleOperation(pNameSpace->GetNameQueue(), "", ""))
 		{
+			operation->mValue.mToken = GrapaTokenType::OBJ;
 			GrapaRuleEvent* vLocals = new GrapaRuleEvent();
 			vLocals->mValue.mToken = GrapaTokenType::LIST;
 			vLocals->vQueue = new GrapaRuleQueue();
@@ -5420,6 +5425,7 @@ static GrapaRuleEvent* ItemAssignRun(GrapaScriptExec *vScriptExec, GrapaNames* p
 					case GrapaTokenType::CODE:
 					case GrapaTokenType::RULE:
 					case GrapaTokenType::OBJ:
+					case GrapaTokenType::RULEOP:
 						if (parameter->vQueue)
 						{
 							//if (parameter->mValue.mToken == GrapaTokenType::TAG)
@@ -5567,257 +5573,8 @@ static GrapaRuleEvent* ItemAssignRun(GrapaScriptExec *vScriptExec, GrapaNames* p
 					//		parameter = parameter->vQueue->Tail();
 					//	}
 					//}
-					switch (r->mValue.mToken)
-					{
-					//case GrapaTokenType::CLASS:
-					//	parameter->mValue.mToken = GrapaTokenType::OBJ;
-					//	parameter->vClass = r;
-					//	parameter->vQueue = new GrapaRuleQueue();
-					//	vScriptExec->vScriptState->CopyClassVars((GrapaRuleQueue*)parameter->vQueue, r);
-					//	break;
-					case GrapaTokenType::OBJ:
-						parameter->mValue.FROM(r->mValue);
-						parameter->mValue.mToken = GrapaTokenType::OBJ;
-						parameter->mNull = r->mNull;
-						//parameter->mId = r->mId;
-						parameter->vClass = r->vClass;
-						if (r->vValueEvent == r->vClass)
-						{
-							parameter->vValueEvent = r->vValueEvent;
-							r->vValueEvent = NULL;
-						}
-						if (parameter->vQueue) {
-							delete parameter->vQueue;
-							parameter->vQueue = NULL;
-						}
-						if (r->vQueue)
-							parameter->vQueue = vScriptExec->CopyQueue((GrapaRuleQueue*)r->vQueue);
-						else
-							parameter->vQueue = new GrapaRuleQueue();
-						if (parameter->vDatabase) {
-							delete parameter->vDatabase;
-							parameter->vDatabase = NULL;
-						}
-						if (parameter->vVector) {
-							parameter->vVector->CLEAR();
-							delete parameter->vVector;
-							parameter->vVector = NULL;
-						}
-						if (parameter->vWidget) {
-							parameter->vWidget->CLEAR();
-							delete parameter->vWidget;
-							parameter->vWidget = NULL;
-						}
-						if (r->vDatabase)
-						{
-							parameter->vDatabase = new GrapaLocalDatabase(r->vDatabase->vScriptState);
-							parameter->vDatabase->mHomeDir.FROM(r->vDatabase->mHomeDir);
-							//if (r->vDatabase->mDirectoryPath) parameter->vDatabase->mDirectoryPath = vScriptExec->CopyQueue(r->vDatabase->mDirectoryPath);
-							//if (r->vDatabase->mDatabasePath) parameter->vDatabase->mDatabasePath = vScriptExec->CopyQueue(r->vDatabase->mDatabasePath);
-							if (r->vDatabase->mInclude) parameter->vDatabase->mInclude = vScriptExec->CopyQueue(r->vDatabase->mInclude);
-							parameter->vDatabase->mLocation.FROM(r->vDatabase->mLocation);
-							//parameter->vDatabase->mVar = r->vDatabase->mVar;
-							//parameter->vDatabase->mDirId = r->vDatabase->mDirId;
-							//parameter->vDatabase->mDirType = r->vDatabase->mDirType;
 
-							if (r->vDatabase->mVar)
-								parameter->vDatabase->DatabaseSet(parameter->mValue);
-							else
-								parameter->vDatabase->HomeSwitch(r->vDatabase->mHomeDir);
-							GrapaCHAR path;
-							r->vDatabase->DirectoryPWD(path);
-							parameter->vDatabase->DirectorySwitch(path);
-
-							parameter->vDatabase->mSep = r->vDatabase->mSep;
-						}
-						if (r->vVector)
-						{
-							parameter->vVector = new GrapaVector();
-							parameter->vVector->FROM(*r->vVector);
-						}
-						if (r->vWidget)
-						{
-							parameter->vWidget = new GrapaWidget(vScriptExec,pNameSpace);
-							parameter->vWidget->vEvent = parameter;
-							parameter->vWidget->FROM(*r->vWidget);
-						}
-						break;
-					default:
-						parameter->mValue.FROM(r->mValue);
-						parameter->vRuleParent = r->vRuleParent;
-						parameter->mValue.mToken = r->mValue.mToken;
-						parameter->mNull = r->mNull;
-						parameter->mId = r->mId;
-						parameter->vClass = r->vClass;
-						if (parameter->mValue.mToken == GrapaTokenType::ERR)
-						{
-							parameter->vRulePointer = NULL;
-							parameter->vClass = vScriptExec->vScriptState->GetClass(pNameSpace, GrapaCHAR("$ERR"));
-						}
-						parameter->mVar = r->mVar;
-						parameter->mSkip = r->mSkip;
-						parameter->mT = r->mT;
-						parameter->mRun = r->mRun;
-						parameter->mStart = r->mStart;
-						parameter->mEnd = r->mEnd;
-						parameter->mEscape = r->mEscape;
-						parameter->mExit = r->mExit;
-						parameter->mNull = r->mNull;
-						parameter->mConst = r->mConst;
-						if (r->mValue.mToken!= GrapaTokenType::ERR && r->vRulePointer)
-						{
-							GrapaRuleEvent *ev = r->vRulePointer;
-							while (ev->vRulePointer) ev = ev->vRulePointer;
-							if (ev)
-							{
-								parameter->mValue.mToken = ev->mValue.mToken;
-								if (ev->vQueue)
-									parameter->vQueue = vScriptExec->CopyQueue((GrapaRuleQueue*)ev->vQueue);
-								else
-									parameter->mValue.FROM(ev->mValue);
-							}
-							if (parameter->vQueue)
-							{
-								parameter->vQueue->CLEAR();
-								delete parameter->vQueue;
-								parameter->vQueue = NULL;
-							}
-						}
-						else
-						{
-							if (parameter->vQueue)
-							{
-								parameter->vQueue->CLEAR();
-								delete parameter->vQueue;
-								parameter->vQueue = NULL;
-							}
-							if (parameter->vRuleLambda)
-							{
-								parameter->vRuleLambda->CLEAR();
-								delete parameter->vRuleLambda;
-								parameter->vRuleLambda = NULL;
-							}
-							if (parameter->vValueEvent)
-							{
-								parameter->vValueEvent->CLEAR();
-								delete parameter->vValueEvent;
-								parameter->vValueEvent = NULL;
-							}
-							if (parameter->vDatabase)
-							{
-								parameter->vDatabase->CLEAR();
-								delete parameter->vDatabase;
-								parameter->vDatabase = NULL;
-							}
-							if (parameter->vVector)
-							{
-								parameter->vVector->CLEAR();
-								delete parameter->vVector;
-								parameter->vVector = NULL;
-							}
-							if (parameter->vWidget)
-							{
-								parameter->vWidget->CLEAR();
-								delete parameter->vWidget;
-								parameter->vWidget = NULL;
-							}
-							if (r->vQueue)
-							{
-								if (true || rDel == NULL || r->mValue.mToken == GrapaTokenType::PTR)
-								{
-									parameter->vQueue = vScriptExec->CopyQueue((GrapaRuleQueue*)r->vQueue, false, r->mConst);
-								}
-								else
-								{
-									parameter->vQueue = r->vQueue;
-									r->vQueue = NULL;
-								}
-							}
-							if (r->vRuleLambda)
-							{
-								if (true || rDel == NULL || r->mValue.mToken == GrapaTokenType::PTR)
-								{
-									parameter->vRuleLambda = vScriptExec->CopyItem((GrapaRuleEvent*)r->vRuleLambda, false, r->mConst);
-								}
-								else
-								{
-									parameter->vRuleLambda = r->vRuleLambda;
-									r->vRuleLambda = NULL;
-								}
-							}
-							if (r->vValueEvent)
-							{
-								if (true || rDel == NULL || r->mValue.mToken == GrapaTokenType::PTR)
-								{
-									parameter->vValueEvent = vScriptExec->CopyItem((GrapaRuleEvent*)r->vValueEvent, false, r->mConst);
-								}
-								else
-								{
-									parameter->vValueEvent = r->vValueEvent;
-									r->vValueEvent = NULL;
-								}
-							}
-							if (r->vDatabase)
-							{
-								if (rDel==NULL || r->mValue.mToken == GrapaTokenType::PTR)
-								{
-									parameter->vDatabase = new GrapaLocalDatabase(r->vDatabase->vScriptState);
-									parameter->vDatabase->mHomeDir.FROM(r->vDatabase->mHomeDir);
-									//if (r->vDatabase->mDirectoryPath) parameter->vDatabase->mDirectoryPath = vScriptExec->CopyQueue(r->vDatabase->mDirectoryPath);
-									//if (r->vDatabase->mDatabasePath) parameter->vDatabase->mDatabasePath = vScriptExec->CopyQueue(r->vDatabase->mDatabasePath);
-									if (r->vDatabase->mInclude) parameter->vDatabase->mInclude = vScriptExec->CopyQueue(r->vDatabase->mInclude, false, r->mConst);
-									parameter->vDatabase->mLocation.FROM(r->vDatabase->mLocation);
-									//parameter->vDatabase->mVar = r->vDatabase->mVar;
-									//parameter->vDatabase->mDirId = r->vDatabase->mDirId;
-									//parameter->vDatabase->mDirType = r->vDatabase->mDirType;
-
-									if (r->vDatabase->mVar)
-										parameter->vDatabase->DatabaseSet(parameter->mValue);
-									else
-										parameter->vDatabase->HomeSwitch(r->vDatabase->mHomeDir);
-									GrapaCHAR path;
-									r->vDatabase->DirectoryPWD(path);
-									parameter->vDatabase->DirectorySwitch(path);
-
-									parameter->vDatabase->mSep = r->vDatabase->mSep;
-								}
-								else
-								{
-									parameter->vDatabase = r->vDatabase;
-									r->vDatabase = NULL;
-								}
-							}
-							if (r->vVector)
-							{
-								if (true || rDel == NULL || r->mValue.mToken == GrapaTokenType::PTR)
-								{
-									parameter->vVector = new GrapaVector();
-									parameter->vVector->FROM(*r->vVector);
-								}
-								else
-								{
-									parameter->vVector = r->vVector;
-									r->vVector = NULL;
-								}
-							}
-							if (r->vWidget)
-							{
-								if (rDel == NULL || r->mValue.mToken == GrapaTokenType::PTR)
-								{
-									parameter->vWidget = new GrapaWidget(vScriptExec, pNameSpace);
-									parameter->vWidget->vEvent = parameter;
-									parameter->vWidget->FROM(*r->vWidget);
-								}
-								else
-								{
-									parameter->vWidget = r->vWidget;
-									r->vWidget = NULL;
-								}
-								parameter->vWidget->vEvent = parameter;
-							}
-						}
-						break;
-					}
+					vScriptExec->AssignValue(pNameSpace, parameter, r, rDel);
 				}
 			}
 		}
@@ -6639,6 +6396,7 @@ GrapaRuleEvent* GrapaLibraryRuleSearchEvent::Run(GrapaScriptExec *vScriptExec, G
 	GrapaRuleEvent* item = r1;
 	GrapaRuleEvent* r1Del = NULL;
 	GrapaRuleEvent* objitem = NULL;
+
 	if (item)
 	{
 		switch (item->mValue.mToken)
@@ -7045,7 +6803,7 @@ GrapaRuleEvent* GrapaLibraryRuleSearchEvent::Run(GrapaScriptExec *vScriptExec, G
 					}
 					if (e == NULL)
 					{
-						if (attrList->Next() == NULL && root->mValue.mToken != GrapaTokenType::ERR && (root->mValue.mToken == GrapaTokenType::OBJ || root->mValue.mToken == GrapaTokenType::LIST || root->mValue.mToken == GrapaTokenType::TAG || root->mValue.mToken == GrapaTokenType::RULEOP))
+						if (attrList->Next() == NULL && root->mValue.mToken != GrapaTokenType::ERR && (root->mValue.mToken == GrapaTokenType::OBJ || root->mValue.mToken == GrapaTokenType::LIST || root->mValue.mToken == GrapaTokenType::TAG))
 						{
 							// this is a HACK to pass the item back to Assign...look at the Assign that checks for ERR
 							// ended up needing to put code in various places to remove the vRulePointer and vClass if not used
@@ -9396,6 +9154,8 @@ GrapaRuleEvent* GrapaLibraryRuleLocalEvent::Run(GrapaScriptExec *vScriptExec, Gr
 	GrapaRuleEvent *n = pNameSpace->GetNameQueue()->Tail();
 	if (n)
 	{
+		if (n->mValue.mToken== GrapaTokenType::RULEOP)
+			n->mValue.mToken = GrapaTokenType::OBJ;
 		result = new GrapaRuleEvent();
 		result->mValue.mToken = GrapaTokenType::PTR;
 		result->vRulePointer = n;
@@ -9606,6 +9366,7 @@ GrapaRuleEvent* GrapaLibraryRuleScopeEvent::Run(GrapaScriptExec *vScriptExec, Gr
 	// push something onto variable stack to indicate a new scope
 	if (GrapaRuleEvent* operation = vScriptExec->vScriptState->AddRuleOperation(pNameSpace->GetNameQueue(), "", ""))
 	{
+		operation->mValue.mToken = GrapaTokenType::OBJ;
 		if (GrapaRuleEvent* p = pInput->Head(0))
 		{
 			result = vScriptExec->ProcessPlan(pNameSpace, p);
@@ -9969,6 +9730,7 @@ GrapaRuleEvent* GrapaLibraryRuleOpEvent::Run(GrapaScriptExec *vScriptExec, Grapa
 	GrapaRuleEvent* operation = vScriptExec->vScriptState->AddRuleOperation(pNameSpace->GetNameQueue(), "", "");
 	if (operation)
 	{
+		operation->mValue.mToken = GrapaTokenType::OBJ;
 		GrapaRuleEvent *e = pInput ? pInput->Head() : NULL;
 		while (e)
 		{
@@ -10941,20 +10703,22 @@ GrapaRuleEvent* GrapaLibraryRulePwdEvent::Run(GrapaScriptExec* vScriptExec, Grap
 {
 	GrapaError err = -1;
 	GrapaRuleEvent* result = NULL;
-
 	GrapaLibraryParam r1(vScriptExec, pNameSpace, pInput ? pInput->Head(0) : NULL);
 
 	GrapaRuleEvent* objEvent = vScriptExec->vScriptState->SearchTarget(pNameSpace, r1.vVal);
-	if (objEvent && objEvent->vDatabase == NULL)
-		objEvent->vDatabase = new GrapaLocalDatabase(vScriptExec->vScriptState);
+	if (objEvent==NULL)
+		result = Error(vScriptExec, pNameSpace, err);
 
-	if (objEvent)
+	if ((objEvent->mValue.mToken == GrapaTokenType::OBJ && objEvent->vClass->mName.Cmp("$file") == 0) || objEvent->mValue.mToken == GrapaTokenType::TABLE)
 	{
+		if (objEvent->vDatabase == NULL)
+			objEvent->vDatabase = new GrapaLocalDatabase(vScriptExec->vScriptState);
 		GrapaCHAR path;
 		objEvent->vDatabase->DirectoryPWD(path);
 		result = new GrapaRuleEvent(GrapaTokenType::STR, 0, "", (char*)path.mBytes);
 		err = 0;
 	}
+
 	if (err && result == NULL)
 		result = Error(vScriptExec, pNameSpace, err);
 	return(result);
@@ -10969,11 +10733,13 @@ GrapaRuleEvent* GrapaLibraryRuleCdEvent::Run(GrapaScriptExec *vScriptExec, Grapa
 	GrapaLibraryParam r2(vScriptExec, pNameSpace, pInput ? pInput->Head(1) : NULL);
 
 	GrapaRuleEvent* objEvent = vScriptExec->vScriptState->SearchTarget(pNameSpace, r1.vVal);
-	if (objEvent && objEvent->vDatabase == NULL)
-		objEvent->vDatabase = new GrapaLocalDatabase(vScriptExec->vScriptState);
+	if (objEvent == NULL)
+		result = Error(vScriptExec, pNameSpace, err);
 
-	if (objEvent)
+	if ((objEvent->mValue.mToken == GrapaTokenType::OBJ && objEvent->vClass->mName.Cmp("$file") == 0) || objEvent->mValue.mToken == GrapaTokenType::TABLE)
 	{
+		if (objEvent->vDatabase == NULL)
+			objEvent->vDatabase = new GrapaLocalDatabase(vScriptExec->vScriptState);
 		err = 0;
 		if (r2.vVal && r2.vVal->mValue.mBytes)
 		{
@@ -11004,11 +10770,13 @@ GrapaRuleEvent* GrapaLibraryRulePhdEvent::Run(GrapaScriptExec* vScriptExec, Grap
 	GrapaLibraryParam r2(vScriptExec, pNameSpace, pInput ? pInput->Head(1) : NULL);
 
 	GrapaRuleEvent* objEvent = vScriptExec->vScriptState->SearchTarget(pNameSpace, r1.vVal);
-	if (objEvent && objEvent->vDatabase == NULL)
-		objEvent->vDatabase = new GrapaLocalDatabase(vScriptExec->vScriptState);
+	if (objEvent == NULL)
+		result = Error(vScriptExec, pNameSpace, err);
 
-	if (objEvent)
+	if ((objEvent->mValue.mToken == GrapaTokenType::OBJ && objEvent->vClass->mName.Cmp("$file") == 0) || objEvent->mValue.mToken == GrapaTokenType::TABLE)
 	{
+		if (objEvent->vDatabase == NULL)
+			objEvent->vDatabase = new GrapaLocalDatabase(vScriptExec->vScriptState);
 		result = new GrapaRuleEvent(0, GrapaCHAR(), objEvent->vDatabase->mHomeDir);
 		err = 0;
 	}
@@ -11021,14 +10789,16 @@ GrapaRuleEvent* GrapaLibraryRuleChdEvent::Run(GrapaScriptExec* vScriptExec, Grap
 {
 	GrapaRuleEvent* result = NULL;
 	GrapaError err = -1;
-
 	GrapaLibraryParam r1(vScriptExec, pNameSpace, pInput ? pInput->Head(0) : NULL);
-	GrapaRuleEvent* objEvent = vScriptExec->vScriptState->SearchTarget(pNameSpace, r1.vVal);
-	if (objEvent && objEvent->vDatabase == NULL)
-		objEvent->vDatabase = new GrapaLocalDatabase(vScriptExec->vScriptState);
 
-	if (objEvent)
+	GrapaRuleEvent* objEvent = vScriptExec->vScriptState->SearchTarget(pNameSpace, r1.vVal);
+	if (objEvent == NULL)
+		result = Error(vScriptExec, pNameSpace, err);
+
+	if ((objEvent->mValue.mToken == GrapaTokenType::OBJ && objEvent->vClass->mName.Cmp("$file") == 0) || objEvent->mValue.mToken == GrapaTokenType::TABLE)
 	{
+		if (objEvent->vDatabase == NULL)
+			objEvent->vDatabase = new GrapaLocalDatabase(vScriptExec->vScriptState);
 		GrapaLibraryParam r2(vScriptExec, pNameSpace, pInput ? pInput->Head(1) : NULL);
 		if (r2.vVal)
 		{
@@ -11050,11 +10820,13 @@ GrapaRuleEvent* GrapaLibraryRuleLsEvent::Run(GrapaScriptExec *vScriptExec, Grapa
 	GrapaLibraryParam r2(vScriptExec, pNameSpace, pInput ? pInput->Head(1) : NULL);
 
 	GrapaRuleEvent* objEvent = vScriptExec->vScriptState->SearchTarget(pNameSpace, r1.vVal);
-	if (objEvent && objEvent->vDatabase == NULL)
-		objEvent->vDatabase = new GrapaLocalDatabase(vScriptExec->vScriptState);
+	if (objEvent == NULL)
+		result = Error(vScriptExec, pNameSpace, err);
 
-	if (objEvent)
+	if ((objEvent->mValue.mToken == GrapaTokenType::OBJ && objEvent->vClass->mName.Cmp("$file") == 0) || objEvent->mValue.mToken == GrapaTokenType::TABLE)
 	{
+		if (objEvent->vDatabase == NULL)
+			objEvent->vDatabase = new GrapaLocalDatabase(vScriptExec->vScriptState);
 		result = new GrapaRuleEvent();
 		err = objEvent->vDatabase->DirectoryList(r2.vVal->mValue, result);
 		if (err)
@@ -11079,15 +10851,21 @@ GrapaRuleEvent* GrapaLibraryRuleMkEvent::Run(GrapaScriptExec *vScriptExec, Grapa
 	GrapaLibraryParam r2(vScriptExec, pNameSpace, pInput ? pInput->Head(1) : NULL);
 
 	GrapaRuleEvent* objEvent = vScriptExec->vScriptState->SearchTarget(pNameSpace, r1.vVal);
-	if (objEvent && objEvent->vDatabase == NULL)
-		objEvent->vDatabase = new GrapaLocalDatabase(vScriptExec->vScriptState);
+	if (objEvent == NULL)
+		result = Error(vScriptExec, pNameSpace, err);
 
-	if (objEvent && r2.vVal && r2.vVal->mValue.mLength)
+	if ((objEvent->mValue.mToken == GrapaTokenType::OBJ && objEvent->vClass->mName.Cmp("$file") == 0) || objEvent->mValue.mToken == GrapaTokenType::TABLE)
 	{
-		GrapaLibraryParam r3(vScriptExec, pNameSpace, pInput ? pInput->Head(2) : NULL);
-		GrapaCHAR gType;
-		if (r3.vVal) gType.FROM(r3.vVal->mValue);
-		err = objEvent->vDatabase->DirectoryCreate(r2.vVal->mValue, gType);
+		if (objEvent->vDatabase == NULL)
+			objEvent->vDatabase = new GrapaLocalDatabase(vScriptExec->vScriptState);
+
+		if (r2.vVal && r2.vVal->mValue.mLength)
+		{
+			GrapaLibraryParam r3(vScriptExec, pNameSpace, pInput ? pInput->Head(2) : NULL);
+			GrapaCHAR gType;
+			if (r3.vVal) gType.FROM(r3.vVal->mValue);
+			err = objEvent->vDatabase->DirectoryCreate(r2.vVal->mValue, gType);
+		}
 	}
 
 	if (err && result == NULL)
@@ -11104,12 +10882,18 @@ GrapaRuleEvent* GrapaLibraryRuleRmEvent::Run(GrapaScriptExec *vScriptExec, Grapa
 	GrapaLibraryParam r2(vScriptExec, pNameSpace, pInput ? pInput->Head(1) : NULL);
 
 	GrapaRuleEvent* objEvent = vScriptExec->vScriptState->SearchTarget(pNameSpace, r1.vVal);
-	if (objEvent && objEvent->vDatabase == NULL)
-		objEvent->vDatabase = new GrapaLocalDatabase(vScriptExec->vScriptState);
+	if (objEvent == NULL)
+		result = Error(vScriptExec, pNameSpace, err);
 
-	if (objEvent && r2.vVal && r2.vVal->mValue.mLength)
+	if ((objEvent->mValue.mToken == GrapaTokenType::OBJ && objEvent->vClass->mName.Cmp("$file") == 0) || objEvent->mValue.mToken == GrapaTokenType::TABLE)
 	{
-		err = objEvent->vDatabase->DirectoryDelete(r2.vVal->mValue);
+		if (objEvent->vDatabase == NULL)
+			objEvent->vDatabase = new GrapaLocalDatabase(vScriptExec->vScriptState);
+
+		if (r2.vVal && r2.vVal->mValue.mLength)
+		{
+			err = objEvent->vDatabase->DirectoryDelete(r2.vVal->mValue);
+		}
 	}
 
 	if (err && result == NULL)
@@ -11156,27 +10940,33 @@ GrapaRuleEvent* GrapaLibraryRuleMkFieldEvent::Run(GrapaScriptExec* vScriptExec, 
 	GrapaLibraryParam r2(vScriptExec, pNameSpace, pInput ? pInput->Head(1) : NULL);
 
 	GrapaRuleEvent* objEvent = vScriptExec->vScriptState->SearchTarget(pNameSpace, r1.vVal);
-	if (objEvent && objEvent->vDatabase == NULL)
-		objEvent->vDatabase = new GrapaLocalDatabase(vScriptExec->vScriptState);
+	if (objEvent == NULL)
+		result = Error(vScriptExec, pNameSpace, err);
 
-	GrapaLibraryParam r3(vScriptExec, pNameSpace, pInput ? pInput->Head(2) : NULL);
-	GrapaLibraryParam r4(vScriptExec, pNameSpace, pInput ? pInput->Head(3) : NULL);
-	GrapaLibraryParam r5(vScriptExec, pNameSpace, pInput ? pInput->Head(4) : NULL);
-	GrapaLibraryParam r6(vScriptExec, pNameSpace, pInput ? pInput->Head(5) : NULL);
-
-	if (objEvent && r2.vVal && r2.vVal->mValue.mLength)
+	if ((objEvent->mValue.mToken == GrapaTokenType::OBJ && objEvent->vClass->mName.Cmp("$file") == 0) || objEvent->mValue.mToken == GrapaTokenType::TABLE)
 	{
-		GrapaCHAR fieldType;
-		if (r3.vVal) fieldType.FROM(r3.vVal->mValue);
-		GrapaCHAR storeType;
-		if (r4.vVal) storeType.FROM(r4.vVal->mValue);
-		GrapaInt a, b;
-		a = 0;
-		b = 0;
-		if (r5.vVal) a.FromBytes(r5.vVal->mValue);
-		if (r6.vVal) b.FromBytes(r6.vVal->mValue);
-		objEvent->vDatabase->FieldCreate(r2.vVal->mValue, fieldType, storeType, a.LongValue(), b.LongValue());
-		err = 0;
+		if (objEvent->vDatabase == NULL)
+			objEvent->vDatabase = new GrapaLocalDatabase(vScriptExec->vScriptState);
+
+		if (r2.vVal && r2.vVal->mValue.mLength)
+		{
+			GrapaLibraryParam r3(vScriptExec, pNameSpace, pInput ? pInput->Head(2) : NULL);
+			GrapaLibraryParam r4(vScriptExec, pNameSpace, pInput ? pInput->Head(3) : NULL);
+			GrapaLibraryParam r5(vScriptExec, pNameSpace, pInput ? pInput->Head(4) : NULL);
+			GrapaLibraryParam r6(vScriptExec, pNameSpace, pInput ? pInput->Head(5) : NULL);
+
+			GrapaCHAR fieldType;
+			if (r3.vVal) fieldType.FROM(r3.vVal->mValue);
+			GrapaCHAR storeType;
+			if (r4.vVal) storeType.FROM(r4.vVal->mValue);
+			GrapaInt a, b;
+			a = 0;
+			b = 0;
+			if (r5.vVal) a.FromBytes(r5.vVal->mValue);
+			if (r6.vVal) b.FromBytes(r6.vVal->mValue);
+			objEvent->vDatabase->FieldCreate(r2.vVal->mValue, fieldType, storeType, a.LongValue(), b.LongValue());
+			err = 0;
+		}
 	}
 
 	if (err && result == NULL)
@@ -11193,13 +10983,19 @@ GrapaRuleEvent* GrapaLibraryRuleRmFieldEvent::Run(GrapaScriptExec* vScriptExec, 
 	GrapaLibraryParam r2(vScriptExec, pNameSpace, pInput ? pInput->Head(1) : NULL);
 
 	GrapaRuleEvent* objEvent = vScriptExec->vScriptState->SearchTarget(pNameSpace, r1.vVal);
-	if (objEvent && objEvent->vDatabase == NULL)
-		objEvent->vDatabase = new GrapaLocalDatabase(vScriptExec->vScriptState);
+	if (objEvent == NULL)
+		result = Error(vScriptExec, pNameSpace, err);
 
-	if (objEvent && r2.vVal && r2.vVal->mValue.mLength)
+	if ((objEvent->mValue.mToken == GrapaTokenType::OBJ && objEvent->vClass->mName.Cmp("$file") == 0) || objEvent->mValue.mToken == GrapaTokenType::TABLE)
 	{
-		objEvent->vDatabase->FieldDelete(r2.vVal->mValue);
-		err = 0;
+		if (objEvent->vDatabase == NULL)
+			objEvent->vDatabase = new GrapaLocalDatabase(vScriptExec->vScriptState);
+
+		if ( r2.vVal && r2.vVal->mValue.mLength)
+		{
+			objEvent->vDatabase->FieldDelete(r2.vVal->mValue);
+			err = 0;
+		}
 	}
 
 	if (err && result == NULL)
@@ -11283,40 +11079,46 @@ GrapaRuleEvent* GrapaLibraryRuleInfoEvent::Run(GrapaScriptExec* vScriptExec, Gra
 	GrapaLibraryParam r2(vScriptExec, pNameSpace, pInput ? pInput->Head(1) : NULL);
 
 	GrapaRuleEvent* objEvent = vScriptExec->vScriptState->SearchTarget(pNameSpace, r1.vVal);
-	if (objEvent && objEvent->vDatabase == NULL)
-		objEvent->vDatabase = new GrapaLocalDatabase(vScriptExec->vScriptState);
+	if (objEvent == NULL)
+		result = Error(vScriptExec, pNameSpace, err);
 
-	if (objEvent && r2.vVal && r2.vVal->mValue.mBytes)
+	if ((objEvent->mValue.mToken == GrapaTokenType::OBJ && objEvent->vClass->mName.Cmp("$file") == 0) || objEvent->mValue.mToken == GrapaTokenType::TABLE)
 	{
-		err = 0;
+		if (objEvent->vDatabase == NULL)
+			objEvent->vDatabase = new GrapaLocalDatabase(vScriptExec->vScriptState);
 
-		GrapaLibraryParam r3(vScriptExec, pNameSpace, pInput ? pInput->Head(2) : NULL);
-
-		GrapaCHAR setField;
-		if (r3.vVal) setField.FROM(r3.vVal->mValue);
-
-		GrapaCHAR setValue;
-		result = new GrapaRuleEvent(GrapaTokenType::STR, 0, "", "");
-		if (r2.vVal->mValue.mToken == GrapaTokenType::INT || r2.vVal->mValue.mToken == GrapaTokenType::SYSINT)
+		if (r2.vVal && r2.vVal->mValue.mBytes)
 		{
-			GrapaInt a;
-			a.FromBytes(r2.vVal->mValue);
-			err = objEvent->vDatabase->FieldInfo(a.LongValue(), setField, result);
-			if (err)
+			err = 0;
+
+			GrapaLibraryParam r3(vScriptExec, pNameSpace, pInput ? pInput->Head(2) : NULL);
+
+			GrapaCHAR setField;
+			if (r3.vVal) setField.FROM(r3.vVal->mValue);
+
+			GrapaCHAR setValue;
+			result = new GrapaRuleEvent(GrapaTokenType::STR, 0, "", "");
+			if (r2.vVal->mValue.mToken == GrapaTokenType::INT || r2.vVal->mValue.mToken == GrapaTokenType::SYSINT)
 			{
-				result->CLEAR();
-				delete result;
-				result = NULL;
+				GrapaInt a;
+				a.FromBytes(r2.vVal->mValue);
+				err = objEvent->vDatabase->FieldInfo(a.LongValue(), setField, result);
+				if (err)
+				{
+					result->CLEAR();
+					delete result;
+					result = NULL;
+				}
 			}
-		}
-		else
-		{
-			err = objEvent->vDatabase->FieldInfo(r2.vVal->mValue, setField, result);
-			if (err)
+			else
 			{
-				result->CLEAR();
-				delete result;
-				result = NULL;
+				err = objEvent->vDatabase->FieldInfo(r2.vVal->mValue, setField, result);
+				if (err)
+				{
+					result->CLEAR();
+					delete result;
+					result = NULL;
+				}
 			}
 		}
 	}
@@ -11333,62 +11135,91 @@ GrapaRuleEvent* GrapaLibraryRuleFileSetEvent::Run(GrapaScriptExec *vScriptExec, 
 	GrapaLibraryParam r1(vScriptExec, pNameSpace, pInput ? pInput->Head(0) : NULL);
 
 	GrapaRuleEvent* objEvent = vScriptExec->vScriptState->SearchTarget(pNameSpace, r1.vVal);
-	if (objEvent && objEvent->vDatabase == NULL)
-		objEvent->vDatabase = new GrapaLocalDatabase(vScriptExec->vScriptState);
-
-	GrapaLibraryParam fieldValue(vScriptExec, pNameSpace, pInput ? pInput->Head(2) : NULL);
-	GrapaCHAR setValue; setValue.SetSize(0);
-
-	if (fieldValue.vVal)
-	{
-		if (fieldValue.vVal->mValue.mToken == GrapaTokenType::ARRAY || fieldValue.vVal->mValue.mToken == GrapaTokenType::TUPLE || fieldValue.vVal->mValue.mToken == GrapaTokenType::LIST || fieldValue.vVal->mValue.mToken == GrapaTokenType::ERR || fieldValue.vVal->mValue.mToken == GrapaTokenType::XML || fieldValue.vVal->mValue.mToken == GrapaTokenType::EL || fieldValue.vVal->mValue.mToken == GrapaTokenType::TAG || fieldValue.vVal->mValue.mToken == GrapaTokenType::OP || fieldValue.vVal->mValue.mToken == GrapaTokenType::CODE || fieldValue.vVal->mValue.mToken == GrapaTokenType::ERR)
-		{
-			if (fieldValue.vVal->vQueue)
-				((GrapaRuleQueue*)fieldValue.vVal->vQueue)->TO(setValue, fieldValue.vVal->vClass, fieldValue.vVal->mValue.mToken);
-			setValue.mToken = fieldValue.vVal->mValue.mToken;
-			fieldValue.vVal = NULL;
-		}
-	}
+	if (objEvent == NULL)
+		result = Error(vScriptExec, pNameSpace, err);
 
 	GrapaLibraryParam r2(vScriptExec, pNameSpace, pInput ? pInput->Head(1) : NULL);
+	bool isSetField = (mName.Cmp("setfield") == 0);
+	GrapaLibraryParam fieldName(vScriptExec, pNameSpace, pInput ? pInput->Head(isSetField ? 2 : 3) : NULL);
+	GrapaLibraryParam fieldValue(vScriptExec, pNameSpace, pInput ? pInput->Head(isSetField ? 3 : 2) : NULL);
 
-	if (objEvent && r2.vVal && r2.vVal->mValue.mBytes)
+	if (objEvent->mValue.mToken == GrapaTokenType::LIST)
 	{
-		err = 0;
-
-		GrapaLibraryParam fieldName(vScriptExec, pNameSpace, pInput ? pInput->Head(3) : NULL);
-
-		GrapaCHAR setField;
-		if (fieldName.vVal) setField.FROM(fieldName.vVal->mValue);
-
-		if (r2.vVal->mValue.mToken == GrapaTokenType::INT)
+		s64 index;
+		GrapaRuleEvent* r = NULL;
+		if (isSetField)
 		{
-			GrapaInt a;
-			a.FromBytes(r2.vVal->mValue);
-			if (fieldValue.vVal)
-				err = objEvent->vDatabase->FieldSet(a.LongValue(), setField, fieldValue.vVal->mValue);
-			else
-				err = objEvent->vDatabase->FieldSet(a.LongValue(), setField, setValue);
-			if (err && result)
-			{
-				result->CLEAR();
-				delete result;
-				result = NULL;
-			}
+			objEvent = r1.vVal->vQueue->Search(r2.vVal->mValue, index);
+			while (objEvent && objEvent->mValue.mToken == GrapaTokenType::PTR && objEvent->vRulePointer) objEvent = objEvent->vRulePointer;
+			if (objEvent)
+				r = objEvent->vQueue->Search(fieldName.vVal->mValue, index);
 		}
 		else
 		{
-			if (fieldValue.vVal)
-				err = objEvent->vDatabase->FieldSet(r2.vVal->mValue, setField, fieldValue.vVal->mValue);
-			else
-				err = objEvent->vDatabase->FieldSet(r2.vVal->mValue, setField, setValue);
-			if (err && result)
+			r = objEvent->vQueue->Search(r2.vVal->mValue, index);
+		}
+		if (r)
+		{
+			vScriptExec->AssignValue(pNameSpace, r, fieldValue.vVal, NULL);
+			err = 0;
+		}
+		return(result);
+	}
+
+	if ((objEvent->mValue.mToken == GrapaTokenType::OBJ && objEvent->vClass->mName.Cmp("$file") == 0) || objEvent->mValue.mToken == GrapaTokenType::TABLE)
+	{
+		if (objEvent->vDatabase == NULL)
+			objEvent->vDatabase = new GrapaLocalDatabase(vScriptExec->vScriptState);
+
+		GrapaCHAR setField;
+		if (fieldName.vVal) setField.FROM(fieldName.vVal->mValue);
+		GrapaCHAR setValue; setValue.SetSize(0);
+
+		if (fieldValue.vVal)
+		{
+			if (fieldValue.vVal->mValue.mToken == GrapaTokenType::ARRAY || fieldValue.vVal->mValue.mToken == GrapaTokenType::TUPLE || fieldValue.vVal->mValue.mToken == GrapaTokenType::LIST || fieldValue.vVal->mValue.mToken == GrapaTokenType::ERR || fieldValue.vVal->mValue.mToken == GrapaTokenType::XML || fieldValue.vVal->mValue.mToken == GrapaTokenType::EL || fieldValue.vVal->mValue.mToken == GrapaTokenType::TAG || fieldValue.vVal->mValue.mToken == GrapaTokenType::OP || fieldValue.vVal->mValue.mToken == GrapaTokenType::CODE || fieldValue.vVal->mValue.mToken == GrapaTokenType::ERR)
 			{
-				result->CLEAR();
-				delete result;
-				result = NULL;
+				if (fieldValue.vVal->vQueue)
+					((GrapaRuleQueue*)fieldValue.vVal->vQueue)->TO(setValue, fieldValue.vVal->vClass, fieldValue.vVal->mValue.mToken);
+				setValue.mToken = fieldValue.vVal->mValue.mToken;
+				fieldValue.vVal = NULL;
 			}
 		}
+
+		if (objEvent && r2.vVal && r2.vVal->mValue.mBytes)
+		{
+			err = 0;
+
+			if (r2.vVal->mValue.mToken == GrapaTokenType::INT)
+			{
+				GrapaInt a;
+				a.FromBytes(r2.vVal->mValue);
+				if (fieldValue.vVal)
+					err = objEvent->vDatabase->FieldSet(a.LongValue(), setField, fieldValue.vVal->mValue);
+				else
+					err = objEvent->vDatabase->FieldSet(a.LongValue(), setField, setValue);
+				if (err && result)
+				{
+					result->CLEAR();
+					delete result;
+					result = NULL;
+				}
+			}
+			else
+			{
+				if (fieldValue.vVal)
+					err = objEvent->vDatabase->FieldSet(r2.vVal->mValue, setField, fieldValue.vVal->mValue);
+				else
+					err = objEvent->vDatabase->FieldSet(r2.vVal->mValue, setField, setValue);
+				if (err && result)
+				{
+					result->CLEAR();
+					delete result;
+					result = NULL;
+				}
+			}
+		}
+
 	}
 
 	if (err && result == NULL)
@@ -11405,55 +11236,74 @@ GrapaRuleEvent* GrapaLibraryRuleFileGetEvent::Run(GrapaScriptExec *vScriptExec, 
 	GrapaLibraryParam r2(vScriptExec, pNameSpace, pInput ? pInput->Head(1) : NULL);
 
 	GrapaRuleEvent* objEvent = vScriptExec->vScriptState->SearchTarget(pNameSpace, r1.vVal);
-	if (objEvent && objEvent->vDatabase == NULL)
-		objEvent->vDatabase = new GrapaLocalDatabase(vScriptExec->vScriptState);
+	if (objEvent == NULL)
+		result = Error(vScriptExec, pNameSpace, err);
 
-	if (objEvent && r2.vVal && r2.vVal->mValue.mBytes)
+	if (objEvent->mValue.mToken == GrapaTokenType::LIST)
 	{
-		err = 0;
-
-		GrapaLibraryParam r3(vScriptExec, pNameSpace, pInput ? pInput->Head(2) : NULL);
-
-		GrapaCHAR setField;
-		if (r3.vVal) setField.FROM(r3.vVal->mValue);
-
-		GrapaCHAR setValue;
-		result = new GrapaRuleEvent(GrapaTokenType::STR, 0, "", "");
-		if (r2.vVal->mValue.mToken == GrapaTokenType::INT || r2.vVal->mValue.mToken == GrapaTokenType::SYSINT)
+		GrapaRuleEvent* r = NULL;
+		s64 index;
+		r = r1.vVal->vQueue->Search(r2.vVal->mValue,index);
+		if (r)
 		{
-			GrapaInt a;
-			a.FromBytes(r2.vVal->mValue);
-			err = objEvent->vDatabase->FieldGet(a.LongValue(), setField, result->mValue);
-			if (err)
-			{
-				result->CLEAR();
-				delete result;
-				result = NULL;
-			}
+			result = vScriptExec->CopyItem(r);;
+			err = 0;
 		}
-		else
-		{
-			err = objEvent->vDatabase->FieldGet(r2.vVal->mValue, setField, result->mValue);
-			if (err)
-			{
-				result->CLEAR();
-				delete result;
-				result = NULL;
-			}
-		}
-		if (result)
-		{
-			if (result->mValue.mToken == GrapaTokenType::ARRAY || result->mValue.mToken == GrapaTokenType::TUPLE || result->mValue.mToken == GrapaTokenType::LIST || result->mValue.mToken == GrapaTokenType::ERR || result->mValue.mToken == GrapaTokenType::XML || result->mValue.mToken == GrapaTokenType::EL || result->mValue.mToken == GrapaTokenType::TAG || result->mValue.mToken == GrapaTokenType::OP || result->mValue.mToken == GrapaTokenType::CODE || result->mValue.mToken == GrapaTokenType::ERR)
-			{
-				result->vQueue = new GrapaRuleQueue();
-				result->vClass = ((GrapaRuleQueue*)result->vQueue)->FROM(vScriptExec->vScriptState, pNameSpace, result->mValue);
-				if (result->mValue.mLength == 0)
-					result->mNull = true;
-				result->mValue.SetLength(0);
-				result->mValue.SetSize(0);
-			}
-		}
+		return(result);
+	}
 
+	if ((objEvent->mValue.mToken == GrapaTokenType::OBJ && objEvent->vClass->mName.Cmp("$file") == 0) || objEvent->mValue.mToken == GrapaTokenType::TABLE)
+	{
+		if (objEvent->vDatabase == NULL)
+			objEvent->vDatabase = new GrapaLocalDatabase(vScriptExec->vScriptState);
+
+		if (r2.vVal && r2.vVal->mValue.mBytes)
+		{
+			err = 0;
+
+			GrapaLibraryParam r3(vScriptExec, pNameSpace, pInput ? pInput->Head(2) : NULL);
+
+			GrapaCHAR setField;
+			if (r3.vVal) setField.FROM(r3.vVal->mValue);
+
+			GrapaCHAR setValue;
+			result = new GrapaRuleEvent(GrapaTokenType::STR, 0, "", "");
+			if (r2.vVal->mValue.mToken == GrapaTokenType::INT || r2.vVal->mValue.mToken == GrapaTokenType::SYSINT)
+			{
+				GrapaInt a;
+				a.FromBytes(r2.vVal->mValue);
+				err = objEvent->vDatabase->FieldGet(a.LongValue(), setField, result->mValue);
+				if (err)
+				{
+					result->CLEAR();
+					delete result;
+					result = NULL;
+				}
+			}
+			else
+			{
+				err = objEvent->vDatabase->FieldGet(r2.vVal->mValue, setField, result->mValue);
+				if (err)
+				{
+					result->CLEAR();
+					delete result;
+					result = NULL;
+				}
+			}
+			if (result)
+			{
+				if (result->mValue.mToken == GrapaTokenType::ARRAY || result->mValue.mToken == GrapaTokenType::TUPLE || result->mValue.mToken == GrapaTokenType::LIST || result->mValue.mToken == GrapaTokenType::ERR || result->mValue.mToken == GrapaTokenType::XML || result->mValue.mToken == GrapaTokenType::EL || result->mValue.mToken == GrapaTokenType::TAG || result->mValue.mToken == GrapaTokenType::OP || result->mValue.mToken == GrapaTokenType::CODE || result->mValue.mToken == GrapaTokenType::ERR)
+				{
+					result->vQueue = new GrapaRuleQueue();
+					result->vClass = ((GrapaRuleQueue*)result->vQueue)->FROM(vScriptExec->vScriptState, pNameSpace, result->mValue);
+					if (result->mValue.mLength == 0)
+						result->mNull = true;
+					result->mValue.SetLength(0);
+					result->mValue.SetSize(0);
+				}
+			}
+
+		}
 	}
 	if (err && result == NULL)
 		result = Error(vScriptExec, pNameSpace, err);
@@ -11473,32 +11323,37 @@ GrapaRuleEvent* GrapaLibraryRuleFileSplitEvent::Run(GrapaScriptExec* vScriptExec
 	GrapaLibraryParam optionP(vScriptExec, pNameSpace, pInput ? pInput->Head(5) : NULL);
 
 	GrapaRuleEvent* objEvent = vScriptExec->vScriptState->SearchTarget(pNameSpace, r1.vVal);
-	if (objEvent && objEvent->vDatabase == NULL)
-		objEvent->vDatabase = new GrapaLocalDatabase(vScriptExec->vScriptState);
+	if (objEvent == NULL)
+		result = Error(vScriptExec, pNameSpace, err);
 
-
-	if (objEvent && fileP.vVal && fileP.vVal->mValue.mBytes && partsP.vVal && partsP.vVal->mValue.mBytes)
+	if ((objEvent->mValue.mToken == GrapaTokenType::OBJ && objEvent->vClass->mName.Cmp("$file") == 0) || objEvent->mValue.mToken == GrapaTokenType::TABLE)
 	{
-		err = 0;
+		if (objEvent->vDatabase == NULL)
+			objEvent->vDatabase = new GrapaLocalDatabase(vScriptExec->vScriptState);
 
-		GrapaCHAR file, path, delim, option;
-		GrapaInt parts;
-		if (fileP.vVal) file.FROM(fileP.vVal->mValue);
-		if (pathP.vVal) path.FROM(pathP.vVal->mValue);
-		if (partsP.vVal && partsP.vVal->mValue.mToken == GrapaTokenType::INT) parts.FromBytes(partsP.vVal->mValue);
-		if (delimP.vVal) delim.FROM(delimP.vVal->mValue);
-		if (optionP.vVal) option.FROM(optionP.vVal->mValue);
-		s64 partsI = parts.LongValue();
-
-		if (partsI)
+		if (fileP.vVal && fileP.vVal->mValue.mBytes && partsP.vVal && partsP.vVal->mValue.mBytes)
 		{
-			result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaCHAR());
-			err = objEvent->vDatabase->FieldSplit(partsI, file, path, delim, option, result);
-			if (err)
+			err = 0;
+
+			GrapaCHAR file, path, delim, option;
+			GrapaInt parts;
+			if (fileP.vVal) file.FROM(fileP.vVal->mValue);
+			if (pathP.vVal) path.FROM(pathP.vVal->mValue);
+			if (partsP.vVal && partsP.vVal->mValue.mToken == GrapaTokenType::INT) parts.FromBytes(partsP.vVal->mValue);
+			if (delimP.vVal) delim.FROM(delimP.vVal->mValue);
+			if (optionP.vVal) option.FROM(optionP.vVal->mValue);
+			s64 partsI = parts.LongValue();
+
+			if (partsI)
 			{
-				result->CLEAR();
-				delete result;
-				result = NULL;
+				result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaCHAR());
+				err = objEvent->vDatabase->FieldSplit(partsI, file, path, delim, option, result);
+				if (err)
+				{
+					result->CLEAR();
+					delete result;
+					result = NULL;
+				}
 			}
 		}
 	}
@@ -11691,30 +11546,27 @@ GrapaRuleEvent* GrapaLibraryRuleIncludeEvent::Optimize(GrapaScriptExec *vScriptE
 {
 	s64 idx;
 
-	GrapaRuleEvent* objEvent = vScriptExec->vScriptState->SearchTarget(pNameSpace, NULL);
-	if (objEvent && objEvent->vDatabase == NULL)
-		objEvent->vDatabase = new GrapaLocalDatabase(vScriptExec->vScriptState);
 
 	GrapaLibraryParam r1(vScriptExec, pNameSpace, (GrapaRuleEvent*)((pParam&&pParam->vQueue) ? pParam->vQueue->Head(0) : NULL));
 
-	if (r1.vVal && objEvent && objEvent->vDatabase)
+	if (r1.vVal)
 	{
-		GrapaCHAR oldpath,pathfile;
-		objEvent->vDatabase->DirectoryPWD(oldpath);
-		pathfile.FROM(oldpath);
+		GrapaLocalDatabase database(vScriptExec->vScriptState);
+		
+		GrapaCHAR pathfile;
 		pathfile.Append(r1.vVal->mValue);
 
-		GrapaObjectEvent *t = objEvent->vDatabase->mInclude->Search(pathfile,idx);
+		GrapaObjectEvent *t = database.mInclude->Search(pathfile,idx);
 		if (t)
 		{
 			pOperation->CLEAR();
 			delete pOperation;
 			return(NULL);
 		}
-		objEvent->vDatabase->mInclude->PushTail(new GrapaObjectEvent(pathfile));
+		database.mInclude->PushTail(new GrapaObjectEvent(pathfile));
 
 		GrapaCHAR setField, setValue;
-		objEvent->vDatabase->FieldGet(r1.vVal->mValue, setField, setValue);
+		database.FieldGet(r1.vVal->mValue, setField, setValue);
 		if ((setValue.mLength >= 2 && setValue.mBytes[0] == 0 && setValue.mBytes[1] == 0) || (setValue.mLength > 4 && setValue.mBytes[0] == 'G' && setValue.mBytes[1] == 'R' && setValue.mBytes[2] == 'Z' && (setValue.mBytes[3] & 0x80) == 0))
 		{
 			GrapaBYTE expanded;
@@ -11761,18 +11613,14 @@ GrapaRuleEvent* GrapaLibraryRuleIncludeEvent::Optimize(GrapaScriptExec *vScriptE
 			h.SetLength(h.mLength);
 			if (h.mLength)
 			{
-				objEvent->vDatabase->DirectorySwitch(h);
+				database.DirectorySwitch(h);
 			}
 			pOperation->CLEAR();
 			delete pOperation;
 			pOperation = vScriptExec->Plan(pNameSpace, setValue, NULL, 0, GrapaCHAR());
-			if (h.mLength)
-			{
-				objEvent->vDatabase->DirectorySwitch(oldpath);
-			}
 		}
 
-		t = objEvent->vDatabase->mInclude->PopTail();
+		t = database.mInclude->PopTail();
 		if (t)
 		{
 			t->CLEAR();
@@ -11794,16 +11642,18 @@ GrapaRuleEvent* GrapaLibraryRuleDumpEvent::Run(GrapaScriptExec *vScriptExec, Gra
 	GrapaRuleEvent* result = NULL;
 
 	GrapaLibraryParam r1(vScriptExec, pNameSpace, pInput ? pInput->Head(0) : NULL);
-
-	GrapaRuleEvent* objEvent = vScriptExec->vScriptState->SearchTarget(pNameSpace, r1.vVal);
-	if (objEvent && objEvent->vDatabase == NULL)
-		objEvent->vDatabase = new GrapaLocalDatabase(vScriptExec->vScriptState);
-
 	GrapaLibraryParam r2(vScriptExec, pNameSpace, pInput ? pInput->Head(1) : NULL);
 	GrapaLibraryParam r3(vScriptExec, pNameSpace, pInput ? pInput->Head(2) : NULL);
 
-	if (objEvent)
+	GrapaRuleEvent* objEvent = vScriptExec->vScriptState->SearchTarget(pNameSpace, r1.vVal);
+	if (objEvent == NULL)
+		result = Error(vScriptExec, pNameSpace, err);
+
+	if ((objEvent->mValue.mToken == GrapaTokenType::OBJ && objEvent->vClass->mName.Cmp("$file") == 0) || objEvent->mValue.mToken == GrapaTokenType::TABLE)
 	{
+		if (objEvent->vDatabase == NULL)
+			objEvent->vDatabase = new GrapaLocalDatabase(vScriptExec->vScriptState);
+
 		err = 0;
 		GrapaInt a = 0;
 		if (r2.vVal && r2.vVal->mValue.mToken == GrapaTokenType::INT)

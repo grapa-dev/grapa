@@ -437,7 +437,8 @@ bool GrapaVector::FROM(const GrapaVector& pData, u8 pBlock)
 	{
 		mSetBlock = pBlock;
 		if (mSetBlock % 2) mSetBlock++;
-		mSetBlock += _minvectorblock_ - _minvectordatablock_;
+		if (mSetBlock == 0)
+			mSetBlock += _minvectorblock_ - _minvectordatablock_;
 	}
 	mDim = pData.mDim;
 	mBlock = pData.mBlock;
@@ -3539,7 +3540,7 @@ bool GrapaVector::Extend(const GrapaVector& bi)
 					v3.mDim = oDim;
 					v3.mBlock = oBlock;
 					v3.mMaxBlock = oMaxBlock;
-					v3.mMaxBlock = oMaxBlock;
+					v3.mSetBlock = oSetBlock;
 					v3.mSize = oSize;
 				}
 				memcpy(data2, mData, newBlock * mSize);

@@ -23,6 +23,7 @@ Grapa defines three fundamental namespace types that can be accessed using speci
 - **Lifetime**: Block execution
 - **Scope**: Function or block-level
 - **Use Case**: Function parameters, temporary variables, thread-local storage
+- **Important**: `$local` properly isolates variables within function scope, protecting against external variable access and ensuring thread safety in recursive functions and multi-threaded execution
 
 ## Syntax
 
@@ -164,33 +165,60 @@ processData = op(data) {
 };
 ```
 
-### 3. Alternative: Reset `$local` to a List
-You can also declare multiple local variables at once by resetting `$local` to a list:
+### 3. Multiple Ways to Add Variables to `$local`
+You can declare multiple local variables using several different approaches:
 
 ```grapa
 /* Method 1: Individual declarations */
 f1 = op() {
-    $local.a = 1;
-    $local.b = "hi";
-    $local.c = true;
+    $local.x = 3;
+    $local.y = 2;
+    $local.i = 0;
+    $local.t = [1,2,3];
+    $local.v = {'a':22,'b':33};
     return $local;
 };
 
-/* Method 2: Reset $local to a list */
+/* Method 2: Reset $local to a list (replaces all existing variables) */
 f2 = op() {
-    $local = {a: 1, b: "hi", c: true};
+    $local = {x: 3, y: 2, i: 0, t: [1,2,3], v: {'a':22,'b':33}};
     return $local;
 };
 
-/* Method 3: Mixed approach */
+/* Method 3: Object extension with ++= (preserves existing variables) */
 f3 = op() {
+    $local.x = 3;  /* Individual declaration first */
+    $local++={
+        y: 2,
+        i: 0,
+        t: [1,2,3],
+        v: {'a':22,'b':33}
+    };
+    return $local;
+};
+
+/* Method 4: Compact object extension (preserves existing variables) */
+f4 = op() {
+    $local.x = 3;  /* Individual declaration first */
+    $local++={y:2,i:0,t:[1,2,3],v:{'a':22,'b':33}};
+    return $local;
+};
+
+/* Method 5: Mixed approach */
+f5 = op() {
     $local.g = 1;  /* Individual declaration */
-    $local = {a: 1, b: "hi"};  /* Reset to list */
+    $local = {a: 1, b: "hi"};  /* Reset to list (loses 'g') */
     return $local;
 };
 ```
 
-**Note**: When you reset `$local` to a list, it replaces all existing local variables with the new list structure. This is useful for bulk initialization but be careful not to lose previously declared variables.
+**Key Differences:**
+- **Individual declarations** (`$local.x = 3;`): Add one variable at a time
+- **Reset to list** (`$local = {...}`): Replaces ALL existing variables with new structure
+- **Object extension** (`$local++={...}`): Adds new variables while preserving existing ones
+- **Compact extension** (`$local++={y:2,i:0}`): Same as extension but more compact syntax
+
+**Note**: When you reset `$local` to a list, it replaces all existing local variables with the new list structure. Use object extension (`++=`) when you want to add variables while preserving existing ones.
 
 ### 4. Avoid Global Variables in Functions
 Unless absolutely necessary, avoid using global variables within functions:

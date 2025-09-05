@@ -88,6 +88,10 @@
 	range = @<[op,@<range,{@<this>,@<var,{stop}>,@<var,{step}>}>],{stop:null,step:null}>;
 	keys = @<keys,{@<this>}>;
 	sleep = @<sleep,{@<this>}>;
+	get = @<[op,@<"get",{@<this>,@<var,{name}>}>],{name}>; 
+	set = @<[op,@<"set",{@<this>,@<var,{name}>,@<var,{data}>}>],{name,data}>; 
+	getfield = @<[op,@<"getfield",{@<this>,@<var,{name}>,@<var,{field}>}>],{name,field}>; 
+	setfield = @<[op,@<"setfield",{@<this>,@<var,{name}>,@<var,{field}>,@<var,{data}>}>],{name,field,data}>; 
 };
 
 

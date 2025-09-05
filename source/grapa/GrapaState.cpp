@@ -3355,18 +3355,26 @@ GrapaRuleEvent* GrapaScriptState::SearchTarget(GrapaNames* pNameSpace, GrapaRule
 			break;
 		case GrapaTokenType::OBJ:
 		case GrapaTokenType::TABLE:
+		case GrapaTokenType::WIDGET:
+		case GrapaTokenType::LIST:
+		case GrapaTokenType::ARRAY:
 			e2 = e;
 			break;
 		}
 	}
 	if (e2 == NULL)
 		e2 = pNameSpace->This();
-	if (e2->mValue.mToken == GrapaTokenType::OBJ)
-		return(e2);
-	if (e2->mValue.mToken == GrapaTokenType::TABLE)
-		return(e2);
-	if (e2->mValue.mToken == GrapaTokenType::WIDGET)
-		return(e2);
+	if (e2==NULL || e2->vClass == NULL)
+		return(NULL);
+	switch (e2->mValue.mToken)
+	{
+		case GrapaTokenType::OBJ:
+		case GrapaTokenType::TABLE:
+		case GrapaTokenType::WIDGET:
+		case GrapaTokenType::LIST:
+		case GrapaTokenType::ARRAY:
+			return(e2);
+	}
 	return(NULL);
 }
 
@@ -5091,6 +5099,261 @@ GrapaRuleQueue* GrapaScriptExec::CopyQueue(GrapaRuleQueue* pList, bool isTAG, bo
 	}
 	result->mConst = isConst;
 	return(result);
+}
+
+void GrapaScriptExec::AssignValue(GrapaNames* pNameSpace, GrapaRuleEvent* parameter, GrapaRuleEvent* r, GrapaRuleEvent* rDel)
+{
+	switch (r->mValue.mToken)
+	{
+		//case GrapaTokenType::CLASS:
+		//	parameter->mValue.mToken = GrapaTokenType::OBJ;
+		//	parameter->vClass = r;
+		//	parameter->vQueue = new GrapaRuleQueue();
+		//	vScriptExec->vScriptState->CopyClassVars((GrapaRuleQueue*)parameter->vQueue, r);
+		//	break;
+	case GrapaTokenType::OBJ:
+		parameter->mValue.FROM(r->mValue);
+		parameter->mValue.mToken = GrapaTokenType::OBJ;
+		parameter->mNull = r->mNull;
+		//parameter->mId = r->mId;
+		parameter->vClass = r->vClass;
+		if (r->vValueEvent == r->vClass)
+		{
+			parameter->vValueEvent = r->vValueEvent;
+			r->vValueEvent = NULL;
+		}
+		if (parameter->vQueue) {
+			delete parameter->vQueue;
+			parameter->vQueue = NULL;
+		}
+		if (r->vQueue)
+			parameter->vQueue = CopyQueue((GrapaRuleQueue*)r->vQueue);
+		else
+			parameter->vQueue = new GrapaRuleQueue();
+		if (parameter->vDatabase) {
+			delete parameter->vDatabase;
+			parameter->vDatabase = NULL;
+		}
+		if (parameter->vVector) {
+			parameter->vVector->CLEAR();
+			delete parameter->vVector;
+			parameter->vVector = NULL;
+		}
+		if (parameter->vWidget) {
+			parameter->vWidget->CLEAR();
+			delete parameter->vWidget;
+			parameter->vWidget = NULL;
+		}
+		if (r->vDatabase)
+		{
+			parameter->vDatabase = new GrapaLocalDatabase(r->vDatabase->vScriptState);
+			parameter->vDatabase->mHomeDir.FROM(r->vDatabase->mHomeDir);
+			//if (r->vDatabase->mDirectoryPath) parameter->vDatabase->mDirectoryPath = vScriptExec->CopyQueue(r->vDatabase->mDirectoryPath);
+			//if (r->vDatabase->mDatabasePath) parameter->vDatabase->mDatabasePath = vScriptExec->CopyQueue(r->vDatabase->mDatabasePath);
+			if (r->vDatabase->mInclude) parameter->vDatabase->mInclude = CopyQueue(r->vDatabase->mInclude);
+			parameter->vDatabase->mLocation.FROM(r->vDatabase->mLocation);
+			//parameter->vDatabase->mVar = r->vDatabase->mVar;
+			//parameter->vDatabase->mDirId = r->vDatabase->mDirId;
+			//parameter->vDatabase->mDirType = r->vDatabase->mDirType;
+
+			if (r->vDatabase->mVar)
+				parameter->vDatabase->DatabaseSet(parameter->mValue);
+			else
+				parameter->vDatabase->HomeSwitch(r->vDatabase->mHomeDir);
+			GrapaCHAR path;
+			r->vDatabase->DirectoryPWD(path);
+			parameter->vDatabase->DirectorySwitch(path);
+
+			parameter->vDatabase->mSep = r->vDatabase->mSep;
+		}
+		if (r->vVector)
+		{
+			parameter->vVector = new GrapaVector();
+			parameter->vVector->FROM(*r->vVector);
+		}
+		if (r->vWidget)
+		{
+			parameter->vWidget = new GrapaWidget(this, pNameSpace);
+			parameter->vWidget->vEvent = parameter;
+			parameter->vWidget->FROM(*r->vWidget);
+		}
+		break;
+	default:
+		parameter->mValue.FROM(r->mValue);
+		parameter->vRuleParent = r->vRuleParent;
+		parameter->mValue.mToken = r->mValue.mToken;
+		parameter->mNull = r->mNull;
+		parameter->mId = r->mId;
+		parameter->vClass = r->vClass;
+		if (parameter->mValue.mToken == GrapaTokenType::ERR)
+		{
+			parameter->vRulePointer = NULL;
+			parameter->vClass = vScriptState->GetClass(pNameSpace, GrapaCHAR("$ERR"));
+		}
+		parameter->mVar = r->mVar;
+		parameter->mSkip = r->mSkip;
+		parameter->mT = r->mT;
+		parameter->mRun = r->mRun;
+		parameter->mStart = r->mStart;
+		parameter->mEnd = r->mEnd;
+		parameter->mEscape = r->mEscape;
+		parameter->mExit = r->mExit;
+		parameter->mNull = r->mNull;
+		parameter->mConst = r->mConst;
+		if (r->mValue.mToken != GrapaTokenType::ERR && r->vRulePointer)
+		{
+			GrapaRuleEvent* ev = r->vRulePointer;
+			while (ev->vRulePointer) ev = ev->vRulePointer;
+			if (ev)
+			{
+				parameter->mValue.mToken = ev->mValue.mToken;
+				if (ev->vQueue)
+					parameter->vQueue = CopyQueue((GrapaRuleQueue*)ev->vQueue);
+				else
+					parameter->mValue.FROM(ev->mValue);
+			}
+			if (parameter->vQueue)
+			{
+				parameter->vQueue->CLEAR();
+				delete parameter->vQueue;
+				parameter->vQueue = NULL;
+			}
+		}
+		else
+		{
+			if (parameter->vQueue)
+			{
+				parameter->vQueue->CLEAR();
+				delete parameter->vQueue;
+				parameter->vQueue = NULL;
+			}
+			if (parameter->vRuleLambda)
+			{
+				parameter->vRuleLambda->CLEAR();
+				delete parameter->vRuleLambda;
+				parameter->vRuleLambda = NULL;
+			}
+			if (parameter->vValueEvent)
+			{
+				parameter->vValueEvent->CLEAR();
+				delete parameter->vValueEvent;
+				parameter->vValueEvent = NULL;
+			}
+			if (parameter->vDatabase)
+			{
+				parameter->vDatabase->CLEAR();
+				delete parameter->vDatabase;
+				parameter->vDatabase = NULL;
+			}
+			if (parameter->vVector)
+			{
+				parameter->vVector->CLEAR();
+				delete parameter->vVector;
+				parameter->vVector = NULL;
+			}
+			if (parameter->vWidget)
+			{
+				parameter->vWidget->CLEAR();
+				delete parameter->vWidget;
+				parameter->vWidget = NULL;
+			}
+			if (r->vQueue)
+			{
+				if (true || rDel == NULL || r->mValue.mToken == GrapaTokenType::PTR)
+				{
+					parameter->vQueue = CopyQueue((GrapaRuleQueue*)r->vQueue, false, r->mConst);
+				}
+				else
+				{
+					parameter->vQueue = r->vQueue;
+					r->vQueue = NULL;
+				}
+			}
+			if (r->vRuleLambda)
+			{
+				if (true || rDel == NULL || r->mValue.mToken == GrapaTokenType::PTR)
+				{
+					parameter->vRuleLambda = CopyItem((GrapaRuleEvent*)r->vRuleLambda, false, r->mConst);
+				}
+				else
+				{
+					parameter->vRuleLambda = r->vRuleLambda;
+					r->vRuleLambda = NULL;
+				}
+			}
+			if (r->vValueEvent)
+			{
+				if (true || rDel == NULL || r->mValue.mToken == GrapaTokenType::PTR)
+				{
+					parameter->vValueEvent = CopyItem((GrapaRuleEvent*)r->vValueEvent, false, r->mConst);
+				}
+				else
+				{
+					parameter->vValueEvent = r->vValueEvent;
+					r->vValueEvent = NULL;
+				}
+			}
+			if (r->vDatabase)
+			{
+				if (rDel == NULL || r->mValue.mToken == GrapaTokenType::PTR)
+				{
+					parameter->vDatabase = new GrapaLocalDatabase(r->vDatabase->vScriptState);
+					parameter->vDatabase->mHomeDir.FROM(r->vDatabase->mHomeDir);
+					//if (r->vDatabase->mDirectoryPath) parameter->vDatabase->mDirectoryPath = vScriptExec->CopyQueue(r->vDatabase->mDirectoryPath);
+					//if (r->vDatabase->mDatabasePath) parameter->vDatabase->mDatabasePath = vScriptExec->CopyQueue(r->vDatabase->mDatabasePath);
+					if (r->vDatabase->mInclude) parameter->vDatabase->mInclude = CopyQueue(r->vDatabase->mInclude, false, r->mConst);
+					parameter->vDatabase->mLocation.FROM(r->vDatabase->mLocation);
+					//parameter->vDatabase->mVar = r->vDatabase->mVar;
+					//parameter->vDatabase->mDirId = r->vDatabase->mDirId;
+					//parameter->vDatabase->mDirType = r->vDatabase->mDirType;
+
+					if (r->vDatabase->mVar)
+						parameter->vDatabase->DatabaseSet(parameter->mValue);
+					else
+						parameter->vDatabase->HomeSwitch(r->vDatabase->mHomeDir);
+					GrapaCHAR path;
+					r->vDatabase->DirectoryPWD(path);
+					parameter->vDatabase->DirectorySwitch(path);
+
+					parameter->vDatabase->mSep = r->vDatabase->mSep;
+				}
+				else
+				{
+					parameter->vDatabase = r->vDatabase;
+					r->vDatabase = NULL;
+				}
+			}
+			if (r->vVector)
+			{
+				if (true || rDel == NULL || r->mValue.mToken == GrapaTokenType::PTR)
+				{
+					parameter->vVector = new GrapaVector();
+					parameter->vVector->FROM(*r->vVector);
+				}
+				else
+				{
+					parameter->vVector = r->vVector;
+					r->vVector = NULL;
+				}
+			}
+			if (r->vWidget)
+			{
+				if (rDel == NULL || r->mValue.mToken == GrapaTokenType::PTR)
+				{
+					parameter->vWidget = new GrapaWidget(this, pNameSpace);
+					parameter->vWidget->vEvent = parameter;
+					parameter->vWidget->FROM(*r->vWidget);
+				}
+				else
+				{
+					parameter->vWidget = r->vWidget;
+					r->vWidget = NULL;
+				}
+				parameter->vWidget->vEvent = parameter;
+			}
+		}
+		break;
+	}
 }
 
 void GrapaScriptExec::ReplaceLocalQueue(GrapaRuleQueue* pList, GrapaRuleQueue* pLocal)

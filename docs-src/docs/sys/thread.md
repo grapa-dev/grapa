@@ -13,19 +13,19 @@ tags:
 
 Grapa's `$thread` system provides a **complete coroutine and threading implementation** with full synchronization primitives, condition variables, and cooperative multitasking capabilities. This is not a planned feature - it's **already fully implemented** and powers Grapa's own execution pipeline.
 
-## ⚠️ **CRITICAL: Sleep Behavior Limitation**
+## ✅ **Sleep Function in Multi-Threaded Applications**
 
-**Important**: Grapa's `.sleep()` function has a **fundamental limitation** that affects multi-threaded applications:
+**Good News**: Grapa's `.sleep()` function works correctly in multi-threaded applications with proper thread-local behavior.
 
-### **Global Sleep Queue Behavior**
-- **Sleep calls are process-wide**, not thread-local
-- **First sleep call "owns" the sleep mechanism** and blocks all subsequent sleep calls
-- **Sleep order determines completion order** - not thread hierarchy or timing
-- **Parent-child thread relationships don't matter** - only the order of sleep calls
+### **Thread-Safe Sleep Behavior**
+- **Sleep calls are thread-local** - each thread can sleep independently
+- **Concurrent sleep calls work correctly** - multiple threads can sleep simultaneously
+- **Sleep duration is respected per thread** - each thread sleeps for its specified duration
+- **No blocking between threads** - one thread's sleep doesn't block others
 
-### **Example of the Problem**
+### **Example of Proper Sleep Behavior**
 ```grapa
-/* This demonstrates the sleep limitation */
+/* This demonstrates proper multi-threaded sleep behavior */
 thread1 = $thread();
 thread2 = $thread();
 
@@ -43,23 +43,22 @@ thread1.start(
 
 /* Main thread: 50ms sleep */
 "Main: Starting 50ms sleep".echo();
-50.sleep();  /* Should take 50ms, but... */
+50.sleep();  /* Takes exactly 50ms, independent of thread1 */
 
-/* If main thread sleep starts FIRST, it gets blocked until thread1 completes */
-/* If thread1 sleep starts FIRST, main thread sleep completes in 50ms */
+/* Both sleeps run concurrently and complete at their respective times */
 ```
 
-### **Why This Happens**
-- Grapa's sleep implementation uses a **global process-wide sleep queue**
-- **First sleep call** takes control of the sleep mechanism
-- **Subsequent sleep calls** get queued behind the first
-- **All sleeps complete in order** regardless of thread or timing
+### **How It Works**
+- Grapa's sleep implementation provides **proper thread isolation**
+- **Each thread maintains its own sleep state** without interfering with others
+- **Sleep calls complete independently** based on their individual durations
+- **Thread coordination works seamlessly** with sleep, suspend, and resume
 
-### **Workarounds**
-1. **Avoid sleep in multi-threaded code** - use other coordination mechanisms
-2. **Use suspend/resume** for thread coordination instead of sleep
-3. **Implement custom timing** using condition variables or busy-wait loops
-4. **Design around the limitation** - ensure predictable sleep order
+### **Best Practices**
+1. **Use sleep freely in multi-threaded code** - it works correctly
+2. **Combine sleep with suspend/resume** for advanced thread coordination
+3. **Use sleep for timing delays** without worrying about thread interference
+4. **Sleep works well with locks and condition variables** for complex synchronization
 
 ## Key Features
 
@@ -379,7 +378,7 @@ thread.describe().echo();
 
 ## Working Thread Examples
 
-The following examples demonstrate working thread patterns that avoid the sleep limitation:
+The following examples demonstrate working thread patterns with proper sleep behavior:
 
 ### Example 1: Basic Thread Lifecycle
 ```grapa
@@ -703,7 +702,7 @@ When writing concurrent code in Grapa, it's essential to use proper thread-safe 
 ## Related Documentation
 
 - [Thread-Safe Variable Declarations](../syntax/thread_safe_variables.md) - Comprehensive guide to thread-safe programming
-- [Thread Examples](../examples/thread/) - Working thread examples that avoid sleep limitations
+- [Thread Examples](../examples/thread/) - Working thread examples with proper sleep behavior
 
 ## Conclusion
 
@@ -716,4 +715,4 @@ Grapa's `$thread` system provides **world-class coroutine and threading capabili
 5. **Thread Safe**: Built-in protection against race conditions
 6. **Coroutine Ready**: Full suspend/resume capabilities
 
-**Important Note**: While the system is robust and feature-complete, the `.sleep()` function has a global queue limitation that requires careful consideration in multi-threaded applications. Use the provided examples and best practices to work around this limitation effectively.
+**Important Note**: The system is robust and feature-complete, with the `.sleep()` function working correctly in multi-threaded applications. Each thread can sleep independently without blocking others, making it safe to use sleep in concurrent programming scenarios.

@@ -1,17 +1,15 @@
 @global["$file"]
 	= class ($OBJ) {
 	pwd = @<"file_pwd",{@<this>}>; 
-	cd = @<[op,@<"file_cd",{this,@<var,{path}>}>],{path}>; 
+	cd = @<[op,@<"file_cd",{@<this>,@<var,{path}>}>],{path}>; 
 	phd = @<"file_phd",{@<this>}>; 
 	chd = @<[op,@<"file_chd",{@<this>,@<var,{path}>}>],{path}>; 
-	ls  = @<[op,@<"file_ls",{this,@<var,{path}>,@<var,{format}>}>],{path,format}>; 
-	mk = @<[op,@<"file_mk",{this,@<var,{name}>,@<var,{type}>}>],{name,type}>; 
-	rm = @<[op,@<"file_rm",{this,@<var,{name}>}>],{name}>; 
-	setfield = @<[op,@<"file_setfield",{this,@<var,{name}>,@<var,{field}>,@<var,{data}>}>],{name,field,data}>; 
-	getfield = @<[op,@<"file_getfield",{this,@<var,{name}>,@<var,{field}>}>],{name,field}>; 
-	info = @<[op,@<"file_info",{this,@<var,{name}>,@<var,{format}>}>],{name,format}>; 
-	split = @<[op,@<"file_split",{this,@<var,{count}>,@<var,{name}>,@<var,{path}>,@<var,{delim}>,@<var,{option}>}>],{count:2,name:null,path:null,delim:null,option:null}>; 
-	mkfield = @<[op,@<"file_mkfield",{this,@<var,{name}>,@<var,{type}>,@<var,{storage}>,@<var,{size}>,@<var,{growth}>}>],{name,type,storage,size,growth}>; 
-	rmfield = @<[op,@<"file_rmfield",{this,@<var,{name}>}>],{name}>; 
-	dump = @<[op,@<"file_dump",{this,@<var,{level}>,@<var,{format}>}>],{level,format}>;
+	ls  = @<[op,@<"file_ls",{@<this>,@<var,{path}>,@<var,{format}>}>],{path,format}>; 
+	mk = @<[op,@<"file_mk",{@<this>,@<var,{name}>,@<var,{type}>}>],{name,type}>; 
+	rm = @<[op,@<"file_rm",{@<this>,@<var,{name}>}>],{name}>; 
+	info = @<[op,@<"file_info",{@<this>,@<var,{name}>,@<var,{format}>}>],{name,format}>; 
+	split = @<[op,@<"file_split",{@<this>,@<var,{count}>,@<var,{name}>,@<var,{path}>,@<var,{delim}>,@<var,{option}>}>],{count:2,name:null,path:null,delim:null,option:null}>; 
+	mkfield = @<[op,@<"file_mkfield",{@<this>,@<var,{name}>,@<var,{type}>,@<var,{storage}>,@<var,{size}>,@<var,{growth}>}>],{name,type,storage,size,growth}>; 
+	rmfield = @<[op,@<"file_rmfield",{@<this>,@<var,{name}>}>],{name}>; 
+	dump = @<[op,@<"file_dump",{@<this>,@<var,{level}>,@<var,{format}>}>],{level,format}>;
 	};

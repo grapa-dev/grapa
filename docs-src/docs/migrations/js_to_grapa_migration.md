@@ -611,7 +611,7 @@ These are advanced features that most developers won't miss:
 - Use `$sys().getenv()` for environment variables.
 - Use `$thread()` for threading and `$sys().sleep()` for sleep.
 
-**⚠️ Important**: When using `$sys().sleep()` in multi-threaded code, be aware that Grapa's sleep has a global queue limitation. Sleep calls are process-wide, not thread-local, and the first sleep call blocks all subsequent ones until it completes. Use `suspend()`, `resume()`, and condition variables for thread coordination instead.
+**✅ Good News**: Grapa's `$sys().sleep()` works correctly in multi-threaded code with proper thread-local behavior. Each thread can sleep independently without blocking others. You can safely use sleep in combination with `suspend()`, `resume()`, and condition variables for comprehensive thread coordination.
 
 - Use `op(){}` for lambdas and function definitions.
 
