@@ -135,8 +135,8 @@ f.pwd(); /* Returns: /my_database/users/admins/user_data */
 /* Add data to the ROW database */
 f.mkfield("id", "INT", "FIX", 4);
 f.mkfield("name", "STR", "VAR");
-    f.setfield("user1", 1001, "id");
-    f.setfield("user1", "John Doe", "name");
+    f.setfield("user1", "id", 1001);
+    f.setfield("user1", "name", "John Doe");
 ```
 
 ### Direct Path Navigation

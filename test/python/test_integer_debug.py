@@ -18,35 +18,35 @@ def test_integer_debug():
         
         # Method 1: Try without explicit mode
         xy.eval('table.mkfield("age1", "INT");')
-        xy.eval('table.setfield("user1", 30, "age1");')
+        xy.eval('table.setfield("user1", "age1", 30);')
         result1 = xy.eval('table.getfield("user1", "age1");')
         type1 = xy.eval('table.getfield("user1", "age1").type();')
         print(f"Method 1 - Value: {result1}, Type: {type1}")
         
         # Method 2: Try with VAR mode
         xy.eval('table.mkfield("age2", "INT", "VAR");')
-        xy.eval('table.setfield("user1", 30, "age2");')
+        xy.eval('table.setfield("user1", "age2", 30);')
         result2 = xy.eval('table.getfield("user1", "age2");')
         type2 = xy.eval('table.getfield("user1", "age2").type();')
         print(f"Method 2 - Value: {result2}, Type: {type2}")
         
         # Method 3: Try with FIX mode and size
         xy.eval('table.mkfield("age3", "INT", "FIX", 4);')
-        xy.eval('table.setfield("user1", 30, "age3");')
+        xy.eval('table.setfield("user1", "age3", 30);')
         result3 = xy.eval('table.getfield("user1", "age3");')
         type3 = xy.eval('table.getfield("user1", "age3").type();')
         print(f"Method 3 - Value: {result3}, Type: {type3}")
         
         # Method 4: Try setting as string first
         xy.eval('table.mkfield("age4", "INT", "FIX", 4);')
-        xy.eval('table.setfield("user1", "30", "age4");')
+        xy.eval('table.setfield("user1", "age4", "30");')
         result4 = xy.eval('table.getfield("user1", "age4");')
         type4 = xy.eval('table.getfield("user1", "age4").type();')
         print(f"Method 4 - Value: {result4}, Type: {type4}")
         
         # Method 5: Try with explicit integer conversion in Grapa
         xy.eval('table.mkfield("age5", "INT", "FIX", 4);')
-        xy.eval('table.setfield("user1", 30.int(), "age5");')
+        xy.eval('table.setfield("user1", "age5", 30.int());')
         result5 = xy.eval('table.getfield("user1", "age5");')
         type5 = xy.eval('table.getfield("user1", "age5").type();')
         print(f"Method 5 - Value: {result5}, Type: {type5}")

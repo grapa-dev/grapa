@@ -82,9 +82,9 @@ class GrapaTableHelper:
         # Escape quotes in value
         if isinstance(value, str):
             escaped_value = value.replace('"', '\\"')
-            return self.xy.eval(fr'table.setfield("{record_id}", "{escaped_value}", "{field_name}");')
+            return self.xy.eval(fr'table.setfield("{record_id}", "{field_name}", "{escaped_value}");')
         else:
-            return self.xy.eval(fr'table.setfield("{record_id}", {value}, "{field_name}");')
+            return self.xy.eval(fr'table.setfield("{record_id}", "{field_name}", {value});')
     
     def get(self, record_id, field_name):
         """Get a value from the table"""

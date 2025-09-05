@@ -36,8 +36,8 @@ table = fs.table("ROW");
 table.mkfield("name", "STR");
 table.mkfield("age", "INT");
 
-table.setfield("user1", "John", "name");
-table.setfield("user1", 25, "age");
+table.setfield("user1", "name", "John");
+table.setfield("user1", "age", 25);
 
 name = table.getfield("user1", "name");
 age = table.getfield("user1", "age");

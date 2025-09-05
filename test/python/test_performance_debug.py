@@ -24,9 +24,9 @@ def test_performance_debug():
         
         # Add 20 records to column table
         for i in range(1, 21):
-                    xy.eval(f'col_table.setfield("record{i}", {i}, "id");')
-        xy.eval(f'col_table.setfield("record{i}", "User {i}", "name");')
-        xy.eval(f'col_table.setfield("record{i}", {i * 100.5}, "value");')
+                    xy.eval(f'col_table.setfield("record{i}", "id", {i});')
+        xy.eval(f'col_table.setfield("record{i}", "name", "User {i}");')
+        xy.eval(f'col_table.setfield("record{i}", "value", {i * 100.5});')
         
         # Test reading record 15 from column table
         print("Testing COLUMN record 15:")
@@ -47,9 +47,9 @@ def test_performance_debug():
         
         # Add only 10 records to row table
         for i in range(1, 11):
-                    xy.eval(f'row_table.setfield("record{i}", {i}, "id");')
-        xy.eval(f'row_table.setfield("record{i}", "User {i}", "name");')
-        xy.eval(f'row_table.setfield("record{i}", {i * 100.5}, "value");')
+                    xy.eval(f'row_table.setfield("record{i}", "id", {i});')
+        xy.eval(f'row_table.setfield("record{i}", "name", "User {i}");')
+        xy.eval(f'row_table.setfield("record{i}", "value", {i * 100.5});')
         
         # Test reading record 8 from row table
         print("Testing ROW record 8:")

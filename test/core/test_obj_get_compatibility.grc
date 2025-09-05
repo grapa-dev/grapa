@@ -23,7 +23,7 @@ try { (my_fs.getfield(0).str() + "\n").echo(); } catch (e) { "[error]\n".echo();
 "=== $TABLE ===\n".echo();
 my_table = my_fs.table("ROW");
 my_table.mkfield("name", "STR", "VAR");
-my_table.setfield("row1", "Alice", "name");
+my_table.setfield("row1", "name", "Alice");
 ("my_table.getfield(\"row1\", \"name\"): " + my_table.getfield("row1", "name").str() + "\n").echo();
 try { (my_table.getfield(0).str() + "\n").echo(); } catch (e) { "[error]\n".echo(); }
 

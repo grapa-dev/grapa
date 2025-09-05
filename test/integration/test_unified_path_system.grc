@@ -25,8 +25,8 @@ f.mk("users_db", "COL");
 f.cd("users_db");
 f.mkfield("name", "STR", "VAR");
 f.mkfield("age", "INT", "FIX", 4);
-f.setfield("user1", "John Doe", "name");
-f.setfield("user1", 30, "age");
+f.setfield("user1", "name", "John Doe");
+f.setfield("user1", "age", 30);
 
 "Current path: ".echo();
 f.pwd().echo();
@@ -97,7 +97,7 @@ f.cd("data");
 f.mk("nested_db", "ROW");
 f.cd("nested_db");
 f.mkfield("description", "STR", "VAR");
-f.setfield("item1", "Nested database item", "description");
+f.setfield("item1", "description", "Nested database item");
 
 "Current path: ".echo();
 f.pwd().echo();
@@ -165,7 +165,7 @@ f.cd("level3");
 f.mk("deep_db", "COL");
 f.cd("deep_db");
 f.mkfield("depth", "INT", "FIX", 4);
-             f.setfield("record1", 3, "depth");
+             f.setfield("record1", "depth", 3);
 
 "Deep database path: ".echo();
 f.pwd().echo();
@@ -213,8 +213,8 @@ error_result2.echo();
 
 "Setting data in database...\n".echo();
 f.cd("/test_project/data/users_db");
-             f.setfield("user2", "Jane Smith", "name");
-             f.setfield("user2", 25, "age");
+             f.setfield("user2", "name", "Jane Smith");
+             f.setfield("user2", "age", 25);
 
 "Navigating away and back...\n".echo();
 f.cd("/test_project");
@@ -237,7 +237,7 @@ while (i <= 10) {
     f.mk("db" + i, "COL");
     f.cd("db" + i);
     f.mkfield("value", "INT", "FIX", 4);
-                 f.setfield("record1", i, "value");
+                 f.setfield("record1", "value", i);
     f.cd("..");
     i = i + 1;
 }

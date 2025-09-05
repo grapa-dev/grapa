@@ -288,7 +288,7 @@ dynamic_func(7);
 /* Store function in table */
 table = {}.table("ROW");
 table.mkfield("func", "OP");
-table.setfield("my_func", op(x){x * x}, "func");
+table.setfield("my_func", "func", op(x){x * x});
 
 /* Retrieve and execute */
 stored_func = table.get("my_func", "func");

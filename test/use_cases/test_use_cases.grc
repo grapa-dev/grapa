@@ -263,10 +263,10 @@ test_table_operations = op() {
     table.mkfield("age", "INT", "FIX", 4);
     
     /* Add data */
-    table.setfield("user1", "John", "name");
-    table.setfield("user1", 30, "age");
-    table.setfield("user2", "Jane", "name");
-    table.setfield("user2", 25, "age");
+    table.setfield("user1", "name", "John");
+    table.setfield("user1", "age", 30);
+    table.setfield("user2", "name", "Jane");
+    table.setfield("user2", "age", 25);
     
     /* Retrieve data */
     name1 = table.getfield("user1", "name");

@@ -3,17 +3,17 @@
 /* Step 1: Set up database table */
 ("Setting up users table...\n").echo();
 users_table = {}.table("users");
-users_table.setfield("user1", "Alice", "name");
-users_table.setfield("user1", 25, "age");
-users_table.setfield("user1", "New York", "city");
+users_table.setfield("user1", "name", "Alice");
+users_table.setfield("user1", "age", 25);
+users_table.setfield("user1", "city", "New York");
 
-users_table.setfield("user2", "Bob", "name");
-users_table.setfield("user2", 30, "age");
-users_table.setfield("user2", "Los Angeles", "city");
+users_table.setfield("user2", "name", "Bob");
+users_table.setfield("user2", "age", 30);
+users_table.setfield("user2", "city", "Los Angeles");
 
-users_table.setfield("user3", "Charlie", "name");
-users_table.setfield("user3", 35, "age");
-users_table.setfield("user3", "Chicago", "city");
+users_table.setfield("user3", "name", "Charlie");
+users_table.setfield("user3", "age", 35);
+users_table.setfield("user3", "city", "Chicago");
 
 ("Users table created with 3 records.\n").echo();
 
@@ -107,9 +107,9 @@ custom_command ++= rule insert into $STR values $STR ',' $INT ',' $STR {op(table
         existing_records = users_table.ls();
         new_key = "user" + (existing_records.len() + 1).str();
         
-        users_table.setfield(new_key, name, "name");
-        users_table.setfield(new_key, age, "age");
-        users_table.setfield(new_key, city, "city");
+        users_table.setfield(new_key, "name", name);
+        users_table.setfield(new_key, "age", age);
+        users_table.setfield(new_key, "city", city);
         
         ("Successfully inserted: " + name).echo();
     } else {
@@ -135,9 +135,9 @@ custom_command ++= rule update $STR set $STR '=' $STR where $STR '=' $STR {op(ta
             
             if (where_field == "name" && name == where_value) {
                 if (field == "age") {
-                    users_table.setfield(key, value.int(), "age");
+                    users_table.setfield(key, "age", value.int());
                 } else if (field == "city") {
-                    users_table.setfield(key, value, "city");
+                    users_table.setfield(key, "city", value);
                 };
                 updated = updated + 1;
             };

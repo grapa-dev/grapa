@@ -187,10 +187,10 @@ f.mkfield("total_amount", "FLOAT", "FIX", 8);  /* Float field */
 f.mkfield("status", "STR", "VAR");             /* Variable string */
 
 /* Add records */
-f.setfield("order_001", 1001, "customer_id");
-f.setfield("order_001", 1640995200, "order_date");  /* Unix timestamp */
-f.setfield("order_001", 299.99, "total_amount");
-f.setfield("order_001", "pending", "status");
+f.setfield("order_001", "customer_id", 1001);
+f.setfield("order_001", "order_date", 1640995200);  /* Unix timestamp */
+f.setfield("order_001", "total_amount", 299.99);
+f.setfield("order_001", "status", "pending");
 
 /* Retrieve complete record */
 order = f.get("order_001", "customer_id");     /* Returns integer 1001 */
@@ -210,11 +210,11 @@ f.mkfield("sales_amount", "FLOAT", "FIX", 8);  /* Float field */
 f.mkfield("quantity", "INT");                  /* Integer field */
 
 /* Add data (records created automatically) */
-f.setfield("sale_001", 1640995200, "date");
-f.setfield("sale_001", 1001, "product_id");
-f.setfield("sale_001", "North", "region");
-f.setfield("sale_001", 299.99, "sales_amount");
-f.setfield("sale_001", 2, "quantity");
+f.setfield("sale_001", "date", 1640995200);
+f.setfield("sale_001", "product_id", 1001);
+f.setfield("sale_001", "region", "North");
+f.setfield("sale_001", "sales_amount", 299.99);
+f.setfield("sale_001", "quantity", 2);
 
 /* Column-oriented queries are efficient */
 /* (In a real implementation, you'd have aggregation functions) */

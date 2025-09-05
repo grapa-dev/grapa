@@ -1,8 +1,8 @@
 fdata = {}.table("ROW");
 fdata.mkfield("name", "STR", "VAR");
 fdata.mkfield("age", "INT", "FIX", 4);
-fdata.setfield("user1", "Alice", "name");
-fdata.setfield("user1", 31, "age");
+fdata.setfield("user1", "name", "Alice");
+fdata.setfield("user1", "age", 31);
 fdata.getfield("user1", "age").echo();
 "\n".echo();
 fdata.getfield("user1", "age").echo();

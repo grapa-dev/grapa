@@ -59,17 +59,17 @@ f3.mkfield("timestamp", "TIME", "FIX", 8);
 "-----------------------------------\n".echo();
 
 "Setting data in row store...\n".echo();
-f2.setfield("user1", "John Doe", "name");
-f2.setfield("user1", 30, "age");
-f2.setfield("user1", 75000.50, "salary");
-f2.setfield("user1", true, "active");
-f2.setfield("user1", 1640995200, "timestamp");
+f2.setfield("user1", "name", "John Doe");
+f2.setfield("user1", "age", 30);
+f2.setfield("user1", "salary", 75000.50);
+f2.setfield("user1", "active", true);
+f2.setfield("user1", "timestamp", 1640995200);
 
-f2.setfield("user2", "Jane Smith", "name");
-f2.setfield("user2", 25, "age");
-f2.setfield("user2", 65000.75, "salary");
-f2.setfield("user2", true, "active");
-f2.setfield("user2", 1640995200, "timestamp");
+f2.setfield("user2", "name", "Jane Smith");
+f2.setfield("user2", "age", 25);
+f2.setfield("user2", "salary", 65000.75);
+f2.setfield("user2", "active", true);
+f2.setfield("user2", "timestamp", 1640995200);
 
 "Getting data from row store...\n".echo();
 "User1 name: ".echo();
@@ -97,17 +97,17 @@ f2.getfield("user1", "timestamp").echo();
 "-------------------------------------\n".echo();
 
 "Setting data in column store...\n".echo();
-f3.setfield("user1", "John Doe", "name");
-f3.setfield("user1", 30, "age");
-f3.setfield("user1", 75000.50, "salary");
-f3.setfield("user1", true, "active");
-f3.setfield("user1", 1640995200, "timestamp");
+f3.setfield("user1", "name", "John Doe");
+f3.setfield("user1", "age", 30);
+f3.setfield("user1", "salary", 75000.50);
+f3.setfield("user1", "active", true);
+f3.setfield("user1", "timestamp", 1640995200);
 
-f3.setfield("user2", "Jane Smith", "name");
-f3.setfield("user2", 25, "age");
-f3.setfield("user2", 65000.75, "salary");
-f3.setfield("user2", true, "active");
-f3.setfield("user2", 1640995200, "timestamp");
+f3.setfield("user2", "name", "Jane Smith");
+f3.setfield("user2", "age", 25);
+f3.setfield("user2", "salary", 65000.75);
+f3.setfield("user2", "active", true);
+f3.setfield("user2", "timestamp", 1640995200);
 
 "Getting data from column store...\n".echo();
 "User1 name: ".echo();
@@ -194,22 +194,22 @@ f2.getfield("test1", "name").echo();
 "\n".echo();
 
 "Integer data:\n".echo();
-f2.setfield("test2", 42, "age");
+f2.setfield("test2", "age", 42);
 f2.getfield("test2", "age").echo();
 "\n".echo();
 
 "Float data:\n".echo();
-f2.setfield("test3", 3.14159, "salary");
+f2.setfield("test3", "salary", 3.14159);
 f2.getfield("test3", "salary").echo();
 "\n".echo();
 
 "Boolean data:\n".echo();
-f2.setfield("test4", false, "active");
+f2.setfield("test4", "active", false);
 f2.getfield("test4", "active").echo();
 "\n".echo();
 
 "Time data:\n".echo();
-f2.setfield("test5", 1640995200, "timestamp");
+f2.setfield("test5", "timestamp", 1640995200);
 f2.getfield("test5", "timestamp").echo();
 "\n".echo();
 
@@ -221,7 +221,7 @@ f2.getfield("test5", "timestamp").echo();
 
 "Creating temporary field:\n".echo();
 f2.mkfield("temp_field", "STR", "VAR");
-f2.setfield("user1", "temporary value", "temp_field");
+f2.setfield("user1", "temp_field", "temporary value");
 "Temp field value: ".echo();
 f2.getfield("user1", "temp_field").echo();
 "\n".echo();
@@ -240,17 +240,17 @@ f2.getfield("user1", "temp_field").echo();
 
 i = 1;
 while (i <= 100) {
-    f2.setfield("user" + i, "User " + i, "name");
-    f2.setfield("user" + i, 20 + i, "age");
-    f2.setfield("user" + i, 50000 + i * 100, "salary");
-    f2.setfield("user" + i, (i % 2 == 0), "active");
-    f2.setfield("user" + i, 1640995200 + i, "timestamp");
+    f2.setfield("user" + i, "name", "User " + i);
+    f2.setfield("user" + i, "age", 20 + i);
+    f2.setfield("user" + i, "salary", 50000 + i * 100);
+    f2.setfield("user" + i, "active", (i % 2 == 0));
+    f2.setfield("user" + i, "timestamp", 1640995200 + i);
     
-    f3.setfield("user" + i, "User " + i, "name");
-    f3.setfield("user" + i, 20 + i, "age");
-    f3.setfield("user" + i, 50000 + i * 100, "salary");
-    f3.setfield("user" + i, (i % 2 == 0), "active");
-    f3.setfield("user" + i, 1640995200 + i, "timestamp");
+    f3.setfield("user" + i, "name", "User " + i);
+    f3.setfield("user" + i, "age", 20 + i);
+    f3.setfield("user" + i, "salary", 50000 + i * 100);
+    f3.setfield("user" + i, "active", (i % 2 == 0));
+    f3.setfield("user" + i, "timestamp", 1640995200 + i);
     
     i = i + 1;
 }

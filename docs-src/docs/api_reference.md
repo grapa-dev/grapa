@@ -735,6 +735,7 @@ All Grapa objects support a comprehensive set of methods through the `$OBJ` clas
 - **Search & Pattern**: `.grep()`, `.match()`, `.findall()`
 - **Bit Manipulation**: `.setbit()`, `.clearbit()`, `.genbits()`
 - **Cryptography**: `.encode()`, `.decode()`, `.sign()`, `.verify()`, `.secret()`
+- **Universal Access**: `.get()`, `.set()` - works across `$ARRAY`, `$LIST`, `$OBJ`, `$file`, `$TABLE`, `$WIDGET`
 - **Utilities**: `.echo()`, `.debug()`, `.iferr()`, `.exec()`, `.getname()`
 
 ### Quick Examples
@@ -754,6 +755,46 @@ result = data
     .map(op(x) { x * x; })
     .reduce(op(acc, x) { acc + x; }, 0);
 ```
+
+### Universal .get()/.set() Methods
+
+The universal `.get()` and `.set()` methods provide consistent access patterns across multiple data types:
+
+```grapa
+/* $ARRAY examples */
+my_array = [1, 2, 3, 4, 5];
+my_array.set(2, 99);
+value = my_array.get(2);  /* 99 */
+
+/* $LIST examples */
+my_list = {"name": "Alice", "age": 30};
+my_list.set("name", "Bob");
+name = my_list.get("name");  /* "Bob" */
+
+/* $OBJ examples */
+my_obj = {};
+my_obj.set("property", "value");
+value = my_obj.get("property");  /* "value" */
+
+/* $file examples */
+my_file = $file();
+my_file.set("test.txt", "Hello World");
+content = my_file.get("test.txt");  /* "Hello World" */
+
+/* $TABLE examples */
+my_table = {}.table("ROW");
+my_table.mkfield("name", "STR", "VAR");
+my_table.set("user1", "name", "Alice");
+name = my_table.get("user1", "name");  /* "Alice" */
+```
+
+**Supported Types:**
+- **`$ARRAY`**: `array.get(index)`, `array.set(index, value)` - 0-based indexing
+- **`$LIST`**: `list.get(key)`, `list.set(key, value)`
+- **`$OBJ`**: `obj.get(key)`, `obj.set(key, value)`
+- **`$file`**: `file.get(key)`, `file.set(key, value)`
+- **`$TABLE`**: `table.get(key, field)`, `table.set(key, field, value)`
+- **`$WIDGET`**: `widget.get(name, params)`, `widget.set(name, data)`
 
 For complete documentation of all `$OBJ` methods with their parameters and examples, see **[$OBJ Methods Reference](type/obj_methods.md)**.
 

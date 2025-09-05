@@ -24,7 +24,7 @@ class GrapaTableHelper:
             return self.xy.eval(f'table.mkfield("{name}", "{ftype}");')
 
     def set(self, key, value, field):
-        return self.xy.eval(f'table.setfield("{key}", {repr(value)}, "{field}");')
+        return self.xy.eval(f'table.setfield("{key}", "{field}", {repr(value)});')
 
     def get(self, key, field, conv=None):
         if conv:

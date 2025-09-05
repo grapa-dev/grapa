@@ -61,9 +61,9 @@ table.mkfield("city", "STR");
 /* Insert data for one record */
 "Setting record data...".echo();
 "\n".echo();
-table.setfield("user1", "John Doe", "name");
-table.setfield("user1", 30, "age");
-table.setfield("user1", "New York", "city");
+table.setfield("user1", "name", "John Doe");
+table.setfield("user1", "age", 30);
+table.setfield("user1", "city", "New York");
 
 /* Retrieve and verify data */
 "Retrieving record data...".echo();
@@ -93,9 +93,9 @@ if (name == "John Doe" && age == 30 && city == "New York") {
     /* Insert data for one record */
     "Setting record data with virtual table...".echo();
 	"\n".echo();
-    vtable.setfield("user1", "John Doe", "name");
-    vtable.setfield("user1", 30, "age");
-    vtable.setfield("user1", "New York", "city");
+    vtable.setfield("user1", "name", "John Doe");
+    vtable.setfield("user1", "age", 30);
+    vtable.setfield("user1", "city", "New York");
     
     /* Retrieve and verify data */
     "Retrieving record data from virtual table...".echo();

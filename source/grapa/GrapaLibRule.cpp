@@ -11234,16 +11234,47 @@ GrapaRuleEvent* GrapaLibraryRuleFileGetEvent::Run(GrapaScriptExec *vScriptExec, 
 
 	GrapaLibraryParam r1(vScriptExec, pNameSpace, pInput ? pInput->Head(0) : NULL);
 	GrapaLibraryParam r2(vScriptExec, pNameSpace, pInput ? pInput->Head(1) : NULL);
+	GrapaLibraryParam fieldName(vScriptExec, pNameSpace, pInput ? pInput->Head(2) : NULL);
 
 	GrapaRuleEvent* objEvent = vScriptExec->vScriptState->SearchTarget(pNameSpace, r1.vVal);
 	if (objEvent == NULL)
 		result = Error(vScriptExec, pNameSpace, err);
 
-	if (objEvent->mValue.mToken == GrapaTokenType::LIST)
+	if (objEvent->mValue.mToken == GrapaTokenType::LIST || objEvent->mValue.mToken == GrapaTokenType::ARRAY)
 	{
-		GrapaRuleEvent* r = NULL;
 		s64 index;
-		r = r1.vVal->vQueue->Search(r2.vVal->mValue,index);
+		GrapaRuleEvent* r = NULL;
+
+		if (r2.vVal->mValue.mToken == GrapaTokenType::INT)
+		{
+			GrapaInt a;
+			a.FromBytes(r2.vVal->mValue);
+			index = a.LongValue();
+			objEvent = r1.vVal->vQueue->Head(index);
+		}
+		else
+			objEvent = r1.vVal->vQueue->Search(r2.vVal->mValue, index);
+
+		if (fieldName.vVal)
+		{
+			while (objEvent && objEvent->mValue.mToken == GrapaTokenType::PTR && objEvent->vRulePointer) objEvent = objEvent->vRulePointer;
+			if (objEvent)
+			{
+				if (r2.vVal->mValue.mToken == GrapaTokenType::INT)
+				{
+					GrapaInt a;
+					a.FromBytes(fieldName.vVal->mValue);
+					index = a.LongValue();
+					r = objEvent->vQueue->Head(index);
+				}
+				else
+					r = objEvent->vQueue->Search(fieldName.vVal->mValue, index);
+			}
+		}
+		else
+		{
+			r = objEvent;
+		}
 		if (r)
 		{
 			result = vScriptExec->CopyItem(r);;
@@ -11261,10 +11292,8 @@ GrapaRuleEvent* GrapaLibraryRuleFileGetEvent::Run(GrapaScriptExec *vScriptExec, 
 		{
 			err = 0;
 
-			GrapaLibraryParam r3(vScriptExec, pNameSpace, pInput ? pInput->Head(2) : NULL);
-
 			GrapaCHAR setField;
-			if (r3.vVal) setField.FROM(r3.vVal->mValue);
+			if (fieldName.vVal) setField.FROM(fieldName.vVal->mValue);
 
 			GrapaCHAR setValue;
 			result = new GrapaRuleEvent(GrapaTokenType::STR, 0, "", "");

@@ -63,12 +63,12 @@ f.mkfield("data", "FLOAT", "FIX", 8, 16)
 ### Setting Data
 ```grapa
 # Set field value
-f.setfield("record_id", "value", "field_name")
+f.setfield("record_id", "field_name", "value")
 
 # Set multiple fields
-f.setfield("user1", "John Doe", "name")
-f.setfield("user1", 30, "age")
-f.setfield("user1", 75000.50, "salary")
+f.setfield("user1", "name", "John Doe")
+f.setfield("user1", "age", 30)
+f.setfield("user1", "salary", 75000.50)
 ```
 
 ### Getting Data

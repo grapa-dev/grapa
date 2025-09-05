@@ -17,9 +17,9 @@ frow.mkfield("city", "STR", "VAR");
 
 /* Add first record */
 "Adding first record (user1)...\n".echo();
-frow.setfield("user1", "Alice", "name");
-frow.setfield("user1", 25, "age");
-frow.setfield("user1", "New York", "city");
+frow.setfield("user1", "name", "Alice");
+frow.setfield("user1", "age", 25);
+frow.setfield("user1", "city", "New York");
 
 "First record added".echo();
 "---\n".echo();
@@ -43,9 +43,9 @@ city1.echo();
 
 /* Add second record */
 "Adding second record (user2)...\n".echo();
-frow.setfield("user2", "Bob", "name");
-frow.setfield("user2", 30, "age");
-frow.setfield("user2", "Los Angeles", "city");
+frow.setfield("user2", "name", "Bob");
+frow.setfield("user2", "age", 30);
+frow.setfield("user2", "city", "Los Angeles");
 
 "Second record added\n".echo();
 "---\n".echo();
@@ -65,9 +65,9 @@ name2.echo();
 
 /* Add third record */
 "Adding third record (user3)...\n".echo();
-frow.setfield("user3", "Charlie", "name");
-frow.setfield("user3", 35, "age");
-frow.setfield("user3", "Chicago", "city");
+frow.setfield("user3", "name", "Charlie");
+frow.setfield("user3", "age", 35);
+frow.setfield("user3", "city", "Chicago");
 
 "Third record added\n".echo();
 "---\n".echo();
@@ -103,17 +103,17 @@ fcol.mkfield("age", "INT", "FIX", 4);
 fcol.mkfield("city", "STR", "VAR");
 
 /* Add same 3 records to COL table */
-fcol.setfield("user1", "Alice", "name");
-fcol.setfield("user1", 25, "age");
-fcol.setfield("user1", "New York", "city");
+fcol.setfield("user1", "name", "Alice");
+fcol.setfield("user1", "age", 25);
+fcol.setfield("user1", "city", "New York");
 
-fcol.setfield("user2", "Bob", "name");
-fcol.setfield("user2", 30, "age");
-fcol.setfield("user2", "Los Angeles", "city");
+fcol.setfield("user2", "name", "Bob");
+fcol.setfield("user2", "age", 30);
+fcol.setfield("user2", "city", "Los Angeles");
 
-fcol.setfield("user3", "Charlie", "name");
-fcol.setfield("user3", 35, "age");
-fcol.setfield("user3", "Chicago", "city");
+fcol.setfield("user3", "name", "Charlie");
+fcol.setfield("user3", "age", 35);
+fcol.setfield("user3", "city", "Chicago");
 
 /* Test COL table - should work correctly */
 "Testing COL table (should work correctly)...\n".echo();

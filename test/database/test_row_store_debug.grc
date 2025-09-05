@@ -28,20 +28,20 @@ f.dump().echo();
 "-----------------------------------------\n".echo();
 
 "Setting data for employee1...\n".echo();
-f.setfield("employee1", "John Doe", "name");
-f.setfield("employee1", 30, "age");
-f.setfield("employee1", 75000.50, "salary");
-f.setfield("employee1", "Engineering", "department");
+f.setfield("employee1", "name", "John Doe");
+f.setfield("employee1", "age", 30);
+f.setfield("employee1", "salary", 75000.50);
+f.setfield("employee1", "department", "Engineering");
 
 "Database structure after employee1:\n".echo();
 f.dump().echo();
 "\n".echo();
 
 "Setting data for employee2...\n".echo();
-f.setfield("employee2", "Jane Smith", "name");
-f.setfield("employee2", 28, "age");
-f.setfield("employee2", 72000.25, "salary");
-f.setfield("employee2", "Marketing", "department");
+f.setfield("employee2", "name", "Jane Smith");
+f.setfield("employee2", "age", 28);
+f.setfield("employee2", "salary", 72000.25);
+f.setfield("employee2", "department", "Marketing");
 
 "Database structure after employee2:\n".echo();
 f.dump().echo();
@@ -86,7 +86,7 @@ unset_field = f.getfield("employee1", "id");
 "-------------------\n".echo();
 
 "Updating employee1 salary...\n".echo();
-f.setfield("employee1", 80000.75, "salary");
+f.setfield("employee1", "salary", 80000.75);
 updated_salary = f.getfield("employee1", "salary");
 "employee1.salary (updated): ${updated_salary}\n".interpolate().echo();
 

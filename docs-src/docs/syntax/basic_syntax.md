@@ -12,22 +12,22 @@ tags:
 >
 > | Type      | .getfield("key") | .getfield(index) | Bracket Notation | Dot Notation | .len() | .size() | .get()/.set() |
 > |-----------|:---------------:|:----------------:|:----------------:|:------------:|:------:|:-------:|:-------------:|
-> | $ARRAY    |        ❌        |        ❌        |       ✅         |      —       |   ✅   |    ❌   |      ❌       |
-> | $LIST     |        ❌        |        ❌        |       ✅         |     ✅       |   ✅   |    ❌   |      ❌       |
-> | $OBJ      |        ❌        |        ❌        |       ✅         |     ✅       |   ❌   |    ❌   |      ❌       |
-> | $file     |        ✅        |        ❌        |        —         |      —       |   ❌   |    ❌   |      ❌       |
-> | $TABLE    |       ✅*        |        ❌        |        —         |      —       |   ❌   |    ❌   |      ❌       |
+> | $ARRAY    |        ❌        |        ❌        |       ✅         |      —       |   ✅   |    ❌   |      ✅       |
+> | $LIST     |        ❌        |        ❌        |       ✅         |     ✅       |   ✅   |    ❌   |      ✅       |
+> | $OBJ      |        ❌        |        ❌        |       ✅         |     ✅       |   ❌   |    ❌   |      ✅       |
+> | $file     |        ✅        |        ❌        |        —         |      —       |   ❌   |    ❌   |      ✅       |
+> | $TABLE    |       ✅*        |        ❌        |        —         |      —       |   ❌   |    ❌   |      ✅       |
 > | $WIDGET   |        —         |        —         |        —         |      —       |   —   |    —   |      ✅       |
 >
 > *$TABLE .getfield() requires two arguments: key and field.
-> **`.get()/.set()` methods are exclusively for `$WIDGET` types.
+> **`.get()/.set()` methods are now **universal** and work across `$ARRAY`, `$LIST`, `$OBJ`, `$file`, `$TABLE`, and `$WIDGET` types.
 >
 > **Key Findings:**
 > - **Arrays (`[]`)**: Use `array[index]` and `array.len()` for access and length
 > - **Lists (`{}`)**: Use `list[key]` or `list.key` for access, `list.len()` for length
 > - **Objects (class)**: Use `object.property` or `object[key]` for access
 > - **`.getfield()/.setfield()` method**: Use for `$file` and `$TABLE` types
-> - **`.get()/.set()` method**: Exclusively for `$WIDGET` types
+> - **`.get()/.set()` method**: Universal methods for `$ARRAY`, `$LIST`, `$OBJ`, `$file`, `$TABLE`, and `$WIDGET` types
 > - **`.size()` method**: Not supported on any type (use `.len()` instead)
 > - **`.keys()` method**: Not supported on `$LIST` (use iteration instead)
 >
@@ -38,15 +38,19 @@ tags:
 > - For files: `file.getfield(key)` and `file.setfield(key, value)`
 > - For tables: `table.getfield(key, field)` and `table.setfield(key, value, field)`
 > - For widgets: `widget.get(name, params)` and `widget.set(name, data)`
-> - Avoid `.get()`, `.size()`, and `.keys()` on arrays, lists, and objects
+> - For universal access: `object.get(key)` and `object.set(key, value)` (works with `$ARRAY`, `$LIST`, `$OBJ`, `$file`, `$TABLE`, `$WIDGET`)
+> - Avoid `.size()` and `.keys()` on arrays, lists, and objects
 
-> **Clarification on .get()/.set() Usage:**
-> - **`.get()/.set()` for `$file` and `$TABLE`**: Use `.getfield()/.setfield()` instead
-> - **`.get()/.set()` for `$WIDGET`**: These methods are exclusively for widget operations
-> - **`.get()/.set()` for `$ARRAY`, `$LIST`, or `$OBJ`**: Not supported (use bracket/dot notation)
+> **Universal .get()/.set() Methods:**
+> - **`.get()/.set()` for `$ARRAY`**: `array.get(index)` and `array.set(index, value)` - 0-based indexing, supports negative indices
+> - **`.get()/.set()` for `$LIST`**: `list.get(key)` and `list.set(key, value)` - alternative to bracket notation
+> - **`.get()/.set()` for `$OBJ`**: `obj.get(key)` and `obj.set(key, value)` - alternative to dot/bracket notation  
+> - **`.get()/.set()` for `$file`**: `file.get(key)` and `file.set(key, value)` - alternative to `.getfield()/.setfield()`
+> - **`.get()/.set()` for `$TABLE`**: `table.get(key, field)` and `table.set(key, field, value)` - alternative to `.getfield()/.setfield()`
+> - **`.get()/.set()` for `$WIDGET`**: `widget.get(name, params)` and `widget.set(name, data)` - widget-specific operations
 > - **Length**: Use `.len()` for arrays and lists, not `.size()`.
 > - **Keys**: For lists, iterate manually instead of using `.keys()`.
-> - **Design Decision**: `.get()/.set()` methods are now exclusively for `$WIDGET` types to avoid confusion
+> - **Design Decision**: `.get()/.set()` methods are now universal across most types for consistent API access
 
 ---
 
@@ -1828,7 +1832,7 @@ file_info = files.getfield(0);   /* Correct */
 
 table = {}.table("ROW");
 table.mkfield("name", "STR", "VAR");
-table.setfield("user1", "Alice", "name");
+table.setfield("user1", "name", "Alice");
 value = table.getfield("user1", "name");   /* Correct */
 ```
 
@@ -1901,7 +1905,7 @@ content = fs.getfield("file.txt");
 
 /* Table operations */
 table.mkfield("name", "STR", "VAR");
-table.setfield("key", "value", "field");
+table.setfield("key", "field", "value");
 value = table.getfield("key", "field");
 ```
 
@@ -2720,6 +2724,89 @@ table.rm("key1");
 /* List records after deletion */
 ("After delete: " + table.ls().join(",")).echo();
 ```
+
+### Universal .get()/.set() Methods
+
+The universal `.get()` and `.set()` methods provide consistent access patterns across multiple data types:
+
+```grapa
+/* $ARRAY examples */
+$global.my_array = [1, 2, 3, 4, 5];
+
+/* Using universal .get()/.set() methods with 0-based indexing */
+value = my_array.get(2);           /* 3 (0-based index) */
+my_array.set(2, 99);               /* Set index 2 to 99 */
+value = my_array.get(2);           /* 99 */
+
+/* Alternative: bracket notation (still works) */
+value = my_array[2];               /* 99 */
+my_array[2] = 100;                 /* Set index 2 to 100 */
+value = my_array[2];               /* 100 */
+
+/* $LIST examples */
+$global.my_list = {"name": "Alice", "age": 30, "city": "New York"};
+
+/* Using universal .get()/.set() methods */
+my_list.set("name", "Bob");
+my_list.set("age", 25);
+name = my_list.get("name");        /* "Bob" */
+age = my_list.get("age");          /* 25 */
+
+/* Alternative: bracket notation (still works) */
+my_list["name"] = "Charlie";
+my_list["age"] = 35;
+name = my_list["name"];            /* "Charlie" */
+age = my_list["age"];              /* 35 */
+
+/* $OBJ examples */
+$global.my_obj = {};
+
+/* Using universal .get()/.set() methods */
+my_obj.set("property1", "value1");
+my_obj.set("property2", 42);
+value1 = my_obj.get("property1");  /* "value1" */
+value2 = my_obj.get("property2");  /* 42 */
+
+/* Alternative: dot notation (still works) */
+my_obj.property3 = "value3";
+my_obj.property4 = 100;
+value3 = my_obj.property3;         /* "value3" */
+value4 = my_obj.property4;         /* 100 */
+
+/* $file examples */
+$global.my_file = $file();
+
+/* Using universal .get()/.set() methods */
+my_file.set("test.txt", "Hello World");
+content = my_file.get("test.txt"); /* "Hello World" */
+
+/* Alternative: .getfield()/.setfield() (still works) */
+my_file.setfield("test2.txt", "Hello Again");
+content2 = my_file.getfield("test2.txt"); /* "Hello Again" */
+
+/* $TABLE examples */
+$global.my_table = {}.table("ROW");
+my_table.mkfield("name", "STR", "VAR");
+my_table.mkfield("age", "INT");
+
+/* Using universal .get()/.set() methods */
+my_table.set("user1", "name", "Alice");
+my_table.set("user1", "age", 30);
+name = my_table.get("user1", "name");  /* "Alice" */
+age = my_table.get("user1", "age");    /* 30 */
+
+/* Alternative: .getfield()/.setfield() (still works) */
+my_table.setfield("user2", "name", "Bob");
+my_table.setfield("user2", "age", 25);
+name2 = my_table.getfield("user2", "name");  /* "Bob" */
+age2 = my_table.getfield("user2", "age");    /* 25 */
+```
+
+**Key Benefits of Universal .get()/.set() Methods:**
+- **Consistent API**: Same method names across different data types
+- **Flexible Access**: Choose between universal methods or type-specific alternatives
+- **Backward Compatibility**: All existing code continues to work
+- **Type Safety**: Proper parameter validation and error handling
 
 This guide covers the essential syntax patterns for writing correct Grapa code. Follow these patterns to avoid common syntax errors and write maintainable code. 
 

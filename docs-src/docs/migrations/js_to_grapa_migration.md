@@ -35,7 +35,7 @@
 > - **Lists (`{}`)**: Use `list[key]` or `list.key` for access, `list.len()` for length
 > - **Objects (class)**: Use `object.property` or `object[key]` for access
 > - **`.getfield()/.setfield()` method**: Use for `$file` and `$TABLE` types
-> - **`.get()/.set()` method**: Exclusively for `$WIDGET` types
+> - **`.get()/.set()` method**: Universal methods for `$ARRAY`, `$LIST`, `$OBJ`, `$file`, `$TABLE`, and `$WIDGET` types
 > - **`.size()` method**: Not supported on any type (use `.len()` instead)
 > - **`.keys()` method**: Not supported on `$LIST` (use iteration instead)
 
@@ -85,10 +85,11 @@ This guide helps JavaScript users transition to Grapa by mapping common JS idiom
 
 > **Note:** Both `x = x + 1;` and `x += 1;` (and `s = s + "x";` and `s += "x";`) are valid in Grapa. The `+=` form is idiomatic and preferred in most cases.
 
-> **Clarification on .get() Usage:**
-> - `.get()` is **required** for `$file` and `$TABLE` access.
-> - `.get()` is **not supported** for `$ARRAY`, `$LIST`, or `$OBJ` (returns empty string).
-> - Use bracket and dot notation for `$ARRAY`, `$LIST`, and `$OBJ`.
+> **Universal .get()/.set() Methods:**
+> - `.get()/.set()` now work across `$ARRAY`, `$LIST`, `$OBJ`, `$file`, `$TABLE`, and `$WIDGET` types.
+> - `.get()/.set()` provide consistent API access patterns across different data types.
+> - For `$ARRAY`: `array.get(index)` and `array.set(index, value)` with 0-based indexing.
+> - Alternative access methods (bracket notation, dot notation, `.getfield()/.setfield()`) still work.
 > - **Length**: Use `.len()` for arrays and lists, not `.size()`.
 > - **Keys**: For lists, iterate manually instead of using `.keys()`.
 > - If more objects support `.get()` in the future, this guide will be updated.

@@ -182,7 +182,7 @@ for (line in lines) {
 $file().setfield("output.txt", "Hello from Grapa!");
 
 /* Append to file */
-$file().setfield("log.txt", "New entry\n", "a");
+$file().setfield("log.txt", "a", "New entry\n");
 ```
 
 ## Data Processing
