@@ -11127,7 +11127,7 @@ GrapaRuleEvent* GrapaLibraryRuleInfoEvent::Run(GrapaScriptExec* vScriptExec, Gra
 	return(result);
 }
 
-GrapaRuleEvent* GrapaLibraryRuleFileSetEvent::Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput)
+GrapaRuleEvent* GrapaLibraryRuleFileSetEvent::Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput)
 {
 	GrapaError err = -1;
 	GrapaRuleEvent* result = NULL;
@@ -11143,26 +11143,151 @@ GrapaRuleEvent* GrapaLibraryRuleFileSetEvent::Run(GrapaScriptExec *vScriptExec, 
 	GrapaLibraryParam fieldName(vScriptExec, pNameSpace, pInput ? pInput->Head(isSetField ? 2 : 3) : NULL);
 	GrapaLibraryParam fieldValue(vScriptExec, pNameSpace, pInput ? pInput->Head(isSetField ? 3 : 2) : NULL);
 
-	if (objEvent->mValue.mToken == GrapaTokenType::LIST)
+	if (objEvent->mValue.mToken == GrapaTokenType::LIST || objEvent->mValue.mToken == GrapaTokenType::ARRAY)
 	{
 		s64 index;
 		GrapaRuleEvent* r = NULL;
+
 		if (isSetField)
 		{
-			objEvent = r1.vVal->vQueue->Search(r2.vVal->mValue, index);
+			if (r2.vVal->mValue.mToken == GrapaTokenType::INT)
+			{
+				GrapaInt a;
+				a.FromBytes(r2.vVal->mValue);
+				index = a.LongValue();
+
+				// Get the length of the array/list for bounds checking
+				u64 length = r1.vVal->vQueue ? r1.vVal->vQueue->mCount : 0;
+
+				// Check bounds for positive indices and negative indices
+				if ((index >= 0 && (u64)index >= length) || (index < 0 && (u64)(-index - 1) >= length))
+				{
+					if ((u64)(-index - 1) == length)
+					{
+						objEvent = new GrapaRuleEvent(objEvent->mValue.mToken, GrapaInt(r2.vVal->mValue).ToString(), GrapaCHAR());
+						objEvent->vQueue = new GrapaRuleQueue();;
+						r1.vVal->vQueue->PushHead(objEvent);
+					}
+					else if (index==length)
+											{
+						objEvent = new GrapaRuleEvent(objEvent->mValue.mToken, GrapaInt(r2.vVal->mValue).ToString(), GrapaCHAR());
+						objEvent->vQueue = new GrapaRuleQueue();;
+						r1.vVal->vQueue->PushTail(objEvent);
+					}
+				}
+				else
+				{
+					if (index >= 0)
+						objEvent = r1.vVal->vQueue->Head(index);
+					else
+						objEvent = r1.vVal->vQueue->Tail(-index - 1L);
+				}
+			}
+			else
+			{
+				objEvent = r1.vVal->vQueue->Search(r2.vVal->mValue, index);
+				if (objEvent == NULL)
+				{
+					objEvent = new GrapaRuleEvent(r1.vVal->mValue.mToken, r2.vVal->mValue, GrapaCHAR());
+					objEvent->vQueue = new GrapaRuleQueue();;
+					r1.vVal->vQueue->PushTail(objEvent);
+				}
+			}
 			while (objEvent && objEvent->mValue.mToken == GrapaTokenType::PTR && objEvent->vRulePointer) objEvent = objEvent->vRulePointer;
 			if (objEvent)
-				r = objEvent->vQueue->Search(fieldName.vVal->mValue, index);
+			{
+				if (fieldName.vVal->mValue.mToken == GrapaTokenType::INT)
+				{
+					GrapaInt a;
+					a.FromBytes(fieldName.vVal->mValue);
+					index = a.LongValue();
+
+					// Get the length of the array/list for bounds checking
+					u64 length = objEvent->vQueue ? objEvent->vQueue->mCount : 0;
+
+					// Check bounds for positive indices and negative indices
+					if ((index >= 0 && (u64)index >= length) || (index < 0 && (u64)(-index - 1) >= length))
+					{
+						if ((u64)(-index - 1) == length)
+						{
+							r = new GrapaRuleEvent(GrapaTokenType::RAW, GrapaInt(fieldName.vVal->mValue).ToString(), GrapaCHAR());
+							objEvent->vQueue->PushHead(r);
+						}
+						else if (index == length)
+						{
+							r = new GrapaRuleEvent(GrapaTokenType::RAW, GrapaInt(fieldName.vVal->mValue).ToString(), GrapaCHAR());
+							objEvent->vQueue->PushTail(r);
+						}
+					}
+					else
+					{
+						if (index >= 0)
+							r = objEvent->vQueue->Head(index);
+						else
+							r = objEvent->vQueue->Tail(-index - 1L);
+					}
+				}
+				else
+				{
+					r = objEvent->vQueue->Search(fieldName.vVal->mValue, index);
+					if (r == NULL)
+					{
+						r = new GrapaRuleEvent(GrapaTokenType::RAW, fieldName.vVal->mValue, GrapaCHAR());
+						objEvent->vQueue->PushTail(r);
+					}
+				}
+			}
 		}
 		else
 		{
-			r = objEvent->vQueue->Search(r2.vVal->mValue, index);
+			if (r2.vVal->mValue.mToken == GrapaTokenType::INT)
+			{
+				GrapaInt a;
+				a.FromBytes(r2.vVal->mValue);
+				index = a.LongValue();
+
+				// Get the length of the array/list for bounds checking
+				u64 length = r1.vVal->vQueue ? r1.vVal->vQueue->mCount : 0;
+
+				// Check bounds for positive indices or negative indices
+				if ((index >= 0 && (u64)index >= length) || (index < 0 && (u64)(-index - 1) >= length))
+				{
+					if ((u64)(-index - 1) == length)
+					{
+						r = new GrapaRuleEvent(GrapaTokenType::RAW, GrapaInt(r2.vVal->mValue).ToString(), GrapaCHAR());
+						objEvent->vQueue->PushHead(r);
+					}
+					else if (index == length)
+					{
+						r = new GrapaRuleEvent(GrapaTokenType::RAW, GrapaInt(r2.vVal->mValue).ToString(), GrapaCHAR());
+						objEvent->vQueue->PushTail(r);
+					}
+				}
+				else
+				{
+					if (index >= 0)
+						r = objEvent->vQueue->Head(index);
+					else
+						r = objEvent->vQueue->Tail(-index - 1L);
+				}
+			}
+			else
+			{
+				r = objEvent->vQueue->Search(r2.vVal->mValue, index);
+				if (r == NULL)
+				{
+					r = new GrapaRuleEvent(GrapaTokenType::RAW, r2.vVal->mValue, GrapaCHAR());
+					objEvent->vQueue->PushTail(r);
+				}
+			}
 		}
 		if (r)
 		{
-			vScriptExec->AssignValue(pNameSpace, r, fieldValue.vVal, NULL);
 			err = 0;
+			vScriptExec->AssignValue(pNameSpace, r, fieldValue.vVal, NULL);
 		}
+		if (err && result == NULL)
+			result = Error(vScriptExec, pNameSpace, err);
 		return(result);
 	}
 
@@ -11250,7 +11375,28 @@ GrapaRuleEvent* GrapaLibraryRuleFileGetEvent::Run(GrapaScriptExec *vScriptExec, 
 			GrapaInt a;
 			a.FromBytes(r2.vVal->mValue);
 			index = a.LongValue();
-			objEvent = r1.vVal->vQueue->Head(index);
+			
+			// Get the length of the array/list for bounds checking
+			u64 length = r1.vVal->vQueue ? r1.vVal->vQueue->mCount : 0;
+			
+			// Check bounds for positive indices
+			if (index >= 0 && (u64)index >= length)
+			{
+				result = Error(vScriptExec, pNameSpace, -1);
+				return(result);
+			}
+			
+			// Check bounds for negative indices
+			if (index < 0 && (u64)(-index - 1) >= length)
+			{
+				result = Error(vScriptExec, pNameSpace, -1);
+				return(result);
+			}
+			
+			if (index >= 0)
+				objEvent = r1.vVal->vQueue->Head(index);
+			else
+				objEvent = r1.vVal->vQueue->Tail(-index - 1L);
 		}
 		else
 			objEvent = r1.vVal->vQueue->Search(r2.vVal->mValue, index);
@@ -11260,12 +11406,33 @@ GrapaRuleEvent* GrapaLibraryRuleFileGetEvent::Run(GrapaScriptExec *vScriptExec, 
 			while (objEvent && objEvent->mValue.mToken == GrapaTokenType::PTR && objEvent->vRulePointer) objEvent = objEvent->vRulePointer;
 			if (objEvent)
 			{
-				if (r2.vVal->mValue.mToken == GrapaTokenType::INT)
+				if (fieldName.vVal->mValue.mToken == GrapaTokenType::INT)
 				{
 					GrapaInt a;
 					a.FromBytes(fieldName.vVal->mValue);
 					index = a.LongValue();
-					r = objEvent->vQueue->Head(index);
+					
+					// Get the length of the inner array/list for bounds checking
+					u64 length = objEvent->vQueue ? objEvent->vQueue->mCount : 0;
+					
+					// Check bounds for positive indices
+					if (index >= 0 && (u64)index >= length)
+					{
+						result = Error(vScriptExec, pNameSpace, -1);
+						return(result);
+					}
+					
+					// Check bounds for negative indices
+					if (index < 0 && (u64)(-index - 1) >= length)
+					{
+						result = Error(vScriptExec, pNameSpace, -1);
+						return(result);
+					}
+					
+					if (index >= 0)
+						r = objEvent->vQueue->Head(index);
+					else
+						r = objEvent->vQueue->Tail(-index - 1L);
 				}
 				else
 					r = objEvent->vQueue->Search(fieldName.vVal->mValue, index);
