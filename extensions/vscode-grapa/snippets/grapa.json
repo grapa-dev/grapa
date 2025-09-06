@@ -252,5 +252,138 @@
       "${3:value2};"
     ],
     "description": "Multi-line assignment with line feed escaping"
+  },
+  "Function Definition": {
+    "prefix": "op",
+    "body": [
+      "${1:functionName} = op(${2:params}) {",
+      "\t${3:// function body}",
+      "\treturn ${4:value};",
+      "};"
+    ],
+    "description": "Define a function with op keyword"
+  },
+  "Class Definition": {
+    "prefix": "class",
+    "body": [
+      "@global[\"${1:ClassName}\"] = class (${2:ParentClass}) {",
+      "\t${3:// class methods}",
+      "};"
+    ],
+    "description": "Define a class"
+  },
+  "Switch Statement": {
+    "prefix": "switch",
+    "body": [
+      "switch (${1:expression}) {",
+      "\tcase ${2:value}:",
+      "\t\t${3:// code}",
+      "\t\tbreak;",
+      "\tdefault:",
+      "\t\t${4:// default code}",
+      "}"
+    ],
+    "description": "Switch statement"
+  },
+  "Try-Catch Block": {
+    "prefix": "try",
+    "body": [
+      "try {",
+      "\t${1:// code that might throw}",
+      "} catch (${2:error}) {",
+      "\t${3:// error handling}",
+      "} finally {",
+      "\t${4:// cleanup code}",
+      "}"
+    ],
+    "description": "Try-catch-finally block"
+  },
+  "For Each Loop": {
+    "prefix": "foreach",
+    "body": [
+      "foreach ${1:item} in ${2:collection} {",
+      "\t${3:// code}",
+      "}"
+    ],
+    "description": "For-each loop"
+  },
+  "Range Loop": {
+    "prefix": "forrange",
+    "body": [
+      "for ${1:i} from ${2:start} to ${3:end} step ${4:1} {",
+      "\t${5:// code}",
+      "}"
+    ],
+    "description": "Range-based for loop"
+  },
+  "System Variable": {
+    "prefix": "sysvar",
+    "body": [
+      "\\$${1:VAR}"
+    ],
+    "description": "System variable with $ prefix"
+  },
+  "Error Handling": {
+    "prefix": "iferr",
+    "body": [
+      "${1:result}.iferr(${2:fallback})"
+    ],
+    "description": "Handle errors with fallback"
+  },
+  "Null Handling": {
+    "prefix": "ifnull",
+    "body": [
+      "${1:value}.ifnull(${2:default})"
+    ],
+    "description": "Handle null values with default"
+  },
+  "String Interpolation": {
+    "prefix": "interpolate",
+    "body": [
+      "'${1:template}'.interpolate({${2:vars}})"
+    ],
+    "description": "String interpolation with variables"
+  },
+  "Vector Creation": {
+    "prefix": "vector",
+    "body": [
+      "${1:vec} = #[${2:1}, ${3:2}, ${4:3}]#;"
+    ],
+    "description": "Create vector with #[]# syntax"
+  },
+  "Table Creation": {
+    "prefix": "table",
+    "body": [
+      "${1:table} = {}.table();"
+    ],
+    "description": "Create database table"
+  },
+  "Network Connection": {
+    "prefix": "netconnect",
+    "body": [
+      "${1:conn} = $net().connect('${2:url}');"
+    ],
+    "description": "Create network connection"
+  },
+  "Thread Creation": {
+    "prefix": "thread",
+    "body": [
+      "${1:thread} = $thread().start(${2:runCode}, ${3:param});"
+    ],
+    "description": "Create and start thread"
+  },
+  "Time Operations": {
+    "prefix": "time",
+    "body": [
+      "${1:time} = $TIME().utc();"
+    ],
+    "description": "Get current UTC time"
+  },
+  "Math Operations": {
+    "prefix": "math",
+    "body": [
+      "${1:result} = ${2:value}.${3:sin}();"
+    ],
+    "description": "Mathematical function call"
   }
 }

@@ -487,6 +487,30 @@ The following work was completed in version 0.1.52 and is now stable:
     - Modify vector creation/initialization to populate both label queues
   - **Use Cases**: Enhanced spreadsheet functionality, matrix operations with named dimensions
   - **Priority**: Medium (current column-only labels meet most spreadsheet needs)
+
+- [ ] **Extend .replace() to Collections**: Add support for `.replace()` method on `$LIST` and `$ARRAY` types
+  - **Current State**: `.replace()` only supports `$STR` type for string replacement
+  - **Enhancement**: Extend to support element replacement in collections
+  - **Technical Requirements**:
+    - Update `GrapaLibraryRuleReplaceEvent::Run` to handle `GrapaTokenType::LIST` and `GrapaTokenType::ARRAY`
+    - Implement element-by-element replacement logic for collections
+    - Maintain type consistency (replace elements with same type)
+  - **Use Cases**: Data cleaning, element substitution in arrays/lists, batch data processing
+  - **Example**: `[1,2,3,2,4].replace(2, 99)` → `[1,99,3,99,4]`
+  - **Priority**: High (common data processing operation)
+  - **Estimated Effort**: Small Release (1-2 weeks)
+
+- [ ] **Extend .trim() to Collections**: Add support for `.trim()` method on `$LIST` and `$ARRAY` types
+  - **Current State**: `.trim()` only supports `$STR` and `$RAW` types for character trimming
+  - **Enhancement**: Extend to support element trimming in collections
+  - **Technical Requirements**:
+    - Update `GrapaLibraryRuleTrimEvent::Run` to handle `GrapaTokenType::LIST` and `GrapaTokenType::ARRAY`
+    - Implement element removal from start/end based on criteria
+    - Support trimming by value, type, or custom function
+  - **Use Cases**: Data cleaning, removing null/empty elements, array/list sanitization
+  - **Example**: `[null,1,2,3,null].trim(null)` → `[1,2,3]`
+  - **Priority**: Medium (useful for data processing)
+  - **Estimated Effort**: Small Release (1-2 weeks)
   - **Issue**: ~~Vector methods return `[0]` or `[[0,0],[0,0]]` instead of preserving string/mixed-type data~~
   - **Root Cause**: ~~`result.Set()` method not properly handling non-numeric data types in multiple functions~~
   - **Solution Implemented**: 
