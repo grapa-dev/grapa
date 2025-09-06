@@ -23,6 +23,32 @@ References:
 
 Provides the ability to navigate either the file system or a database, querying data and updating data. This class/libraries will be enhanced over time to support navigating data types beyond the file system and the grapa database - such as JSON/XML and unstructured data where a mapping can be defined (maybe with a set of rules). With a few additional enhancements, this class/library will also enable extending the grapa syntax to include SQL with $file for the underlying data.
 
+## When to Use $file() vs Other Data Types
+
+### **Use `$file()` (Persistent Storage) When:**
+- **Data persistence** is required (survives program restarts)
+- **Very large datasets** that don't fit in memory
+- **Disk-based storage** with BTree indexing
+- **Long-term data storage** and retrieval
+- **File system integration** needed
+
+### **Use `{}.table()` (In-Memory BTree) When:**
+- **Large datasets** (> 100-500 items) where memory efficiency matters
+- **Range queries** or ordered data access needed
+- **Complex queries** across multiple fields
+- **Still in-memory** but need better performance for large datasets
+
+### **Use `{}` (Linked List) When:**
+- **Small to medium datasets** (< 100-500 items typically)
+- **Frequent modifications** (insertions, deletions, updates)
+- **Simple key-value storage** without complex queries
+- **Configuration data, user preferences, cache data**
+
+### **Performance Characteristics:**
+- **`{}` (Linked List)**: Very fast for small datasets due to optimized double-linked list implementation
+- **`{}.table()` (BTree)**: Slower than `{}` for small datasets but more memory-efficient for large datasets
+- **`$file()` (Persistent)**: Disk I/O overhead but provides persistence and handles unlimited data size
+
 Each example below assumes the following command has been issued:
 ```grapa
 f = $file();

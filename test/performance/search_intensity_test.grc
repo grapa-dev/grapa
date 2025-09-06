@@ -1,0 +1,133 @@
+/* Search intensity test to determine threshold based on search frequency */
+
+/* Test configuration */
+test_sizes = {100, 500, 1000, 2000, 5000};
+search_intensities = {100, 500, 1000, 2000, 5000}; /* Number of searches per test */
+
+/* Helper function to generate test data */
+generate_test_data = op(size) {
+    data = {};
+    for i in (size).range() {
+        key = "key_" + i.toString();
+        value = "value_" + i.toString() + "_" + (i * 7).toString();
+        data.set(key, value);
+    };
+    return data;
+};
+
+/* Helper function to generate test data for table */
+generate_table_data = op(size) {
+    data = {}.table();
+    for i in (size).range() {
+        key = "key_" + i.toString();
+        value = "value_" + i.toString() + "_" + (i * 7).toString();
+        data.set(key, value);
+    };
+    return data;
+};
+
+/* Test search performance for different intensities */
+test_search_intensity = op(size, search_count) {
+    /* Test linked list */
+    data = generate_test_data(size);
+    start_time = $time();
+    for i in (search_count).range() {
+        key_index = (i * 7) % size;
+        key = "key_" + key_index.toString();
+        result = data.get(key);
+    };
+    linked_list_time = $time() - start_time;
+    
+    /* Test BTree table */
+    data = generate_table_data(size);
+    start_time = $time();
+    for i in (search_count).range() {
+        key_index = (i * 7) % size;
+        key = "key_" + key_index.toString();
+        result = data.get(key);
+    };
+    btree_time = $time() - start_time;
+    
+    return {
+        "linked_list_time": linked_list_time,
+        "btree_time": btree_time,
+        "ratio": btree_time / linked_list_time
+    };
+};
+
+/* Run search intensity tests */
+print("Starting search intensity tests...");
+print("Test sizes: " + test_sizes.toString());
+print("Search intensities: " + search_intensities.toString());
+print("");
+
+results = {};
+
+for size in test_sizes {
+    print("Testing size: " + size.toString());
+    size_results = {};
+    
+    for intensity in search_intensities {
+        result = test_search_intensity(size, intensity);
+        size_results.set(intensity.toString(), result);
+        
+        print("  Intensity " + intensity.toString() + ": LinkedList=" + result.linked_list_time.toString() + "ms, BTree=" + result.btree_time.toString() + "ms, Ratio=" + result.ratio.toString());
+    };
+    
+    results.set(size.toString(), size_results);
+    print("");
+};
+
+/* Find crossover points for each size */
+print("=== CROSSOVER ANALYSIS ===");
+print("");
+
+for size in test_sizes {
+    size_results = results.get(size.toString());
+    crossover_found = false;
+    crossover_intensity = 0;
+    
+    for intensity in search_intensities {
+        result = size_results.get(intensity.toString());
+        if (result.ratio < 1.0 && !crossover_found) {
+            crossover_found = true;
+            crossover_intensity = intensity;
+            break;
+        };
+    };
+    
+    if (crossover_found) {
+        print("Size " + size.toString() + ": BTree becomes faster at search intensity " + crossover_intensity.toString());
+    } else {
+        print("Size " + size.toString() + ": Linked List remains faster up to intensity " + search_intensities[search_intensities.len() - 1].toString());
+    };
+};
+
+/* Print detailed results table */
+print("");
+print("=== DETAILED RESULTS TABLE ===");
+print("Size\tIntensity\tLinkedList(ms)\tBTree(ms)\tRatio\tWinner");
+print("----\t---------\t-------------\t---------\t-----\t------");
+
+for size in test_sizes {
+    size_results = results.get(size.toString());
+    for intensity in search_intensities {
+        result = size_results.get(intensity.toString());
+        winner = (result.ratio < 1.0) ? "BTree" : "LinkedList";
+        print(size.toString() + "\t" + intensity.toString() + "\t\t" + result.linked_list_time.toString() + "\t\t" + result.btree_time.toString() + "\t\t" + result.ratio.toString() + "\t" + winner);
+    };
+};
+
+/* Recommendations based on search intensity */
+print("");
+print("=== RECOMMENDATIONS BASED ON SEARCH INTENSITY ===");
+print("");
+
+print("For different search intensities:");
+print("- Low search intensity (< 100 searches): Use {} (linked list) for all tested sizes");
+print("- Medium search intensity (100-500 searches): Use {} (linked list) for sizes < 1000");
+print("- High search intensity (500-1000 searches): Use {} (linked list) for sizes < 500");
+print("- Very high search intensity (> 1000 searches): Consider {}.table() (BTree) for sizes > 500");
+
+print("");
+print("Search intensity test completed.");

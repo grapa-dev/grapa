@@ -1,0 +1,54 @@
+/* Debug test to see what's in the results data */
+
+"Debug test to check results data...\n".echo();
+
+/* Test basic operations */
+data = {};
+for i in (10).range() {
+    key = "key_" + i.toString();
+    value = "value_" + i.toString();
+    data.set(key, value);
+};
+
+"Data created with ${count} items\n".interpolate({count: data.len()}).echo();
+
+/* Test timing */
+start_time = $TIME().utc();
+for i in (10).range() {
+    key = "key_" + i.toString();
+    result = data.get(key);
+};
+end_time = $TIME().utc();
+search_time = (end_time - start_time) / 1000000;
+
+"Search time: ${time}ms\n".interpolate({time: search_time}).echo();
+
+/* Test storing results */
+results = {};
+results.set("test", {
+    "linked_list": {
+        "insertion_time": 1.5,
+        "access_time": 2.0
+    },
+    "btree": {
+        "insertion_time": 2.0,
+        "access_time": 2.5
+    },
+    "insertion_ratio": 1.33,
+    "access_ratio": 1.25
+});
+
+"Results stored\n".echo();
+
+/* Test retrieving results */
+result = results.get("test");
+"Result retrieved: ${result}\n".interpolate({result: result.toString()}).echo();
+
+/* Test accessing nested properties */
+"Linked list insertion time: ${time}\n".interpolate({time: result.linked_list.insertion_time}).echo();
+"BTree insertion time: ${time}\n".interpolate({time: result.btree.insertion_time}).echo();
+
+/* Test table row */
+"Table row: ${row}\n".interpolate({row: ("test\t" + result.linked_list.insertion_time.toString() + "\t" + result.btree.insertion_time.toString())}).echo();
+
+"Debug test completed.\n".echo();

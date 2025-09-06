@@ -1,0 +1,85 @@
+/* Debug test to understand why insertion appears faster than access */
+
+"Debug test to understand timing issues...\n".echo();
+
+/* Test basic insertion */
+"Testing basic insertion...\n".echo();
+data = {};
+start_time = $TIME().utc();
+for i in (100).range() {
+    key = "key_" + i.toString();
+    value = "value_" + i.toString();
+    data.set(key, value);
+};
+end_time = $TIME().utc();
+insertion_time = (end_time - start_time) / 1000000;
+"Insertion time for 100 items: ${time}ms\n".interpolate({time: insertion_time}).echo();
+
+/* Test basic access */
+"Testing basic access...\n".echo();
+start_time = $TIME().utc();
+for i in (100).range() {
+    key = "key_" + i.toString();
+    result = data.get(key);
+};
+end_time = $TIME().utc();
+access_time = (end_time - start_time) / 1000000;
+"Access time for 100 items: ${time}ms\n".interpolate({time: access_time}).echo();
+
+"Ratio (insertion/access): ${ratio}\n".interpolate({ratio: insertion_time / access_time}).echo();
+
+/* Test with more access operations */
+"Testing with 1000 access operations...\n".echo();
+start_time = $TIME().utc();
+for i in (1000).range() {
+    key_index = (i * 7) % 100;
+    key = "key_" + key_index.toString();
+    result = data.get(key);
+};
+end_time = $TIME().utc();
+access_time_1000 = (end_time - start_time) / 1000000;
+"Access time for 1000 operations: ${time}ms\n".interpolate({time: access_time_1000}).echo();
+
+"Ratio (insertion/access_1000): ${ratio}\n".interpolate({ratio: insertion_time / access_time_1000}).echo();
+
+/* Test BTree insertion */
+"Testing BTree insertion...\n".echo();
+btree_data = {}.table();
+start_time = $TIME().utc();
+for i in (100).range() {
+    key = "key_" + i.toString();
+    value = "value_" + i.toString();
+    btree_data.set(key, value);
+};
+end_time = $TIME().utc();
+btree_insertion_time = (end_time - start_time) / 1000000;
+"BTree insertion time for 100 items: ${time}ms\n".interpolate({time: btree_insertion_time}).echo();
+
+/* Test BTree access */
+"Testing BTree access...\n".echo();
+start_time = $TIME().utc();
+for i in (100).range() {
+    key = "key_" + i.toString();
+    result = btree_data.get(key);
+};
+end_time = $TIME().utc();
+btree_access_time = (end_time - start_time) / 1000000;
+"BTree access time for 100 items: ${time}ms\n".interpolate({time: btree_access_time}).echo();
+
+"BTree ratio (insertion/access): ${ratio}\n".interpolate({ratio: btree_insertion_time / btree_access_time}).echo();
+
+/* Test BTree with more access operations */
+"Testing BTree with 1000 access operations...\n".echo();
+start_time = $TIME().utc();
+for i in (1000).range() {
+    key_index = (i * 7) % 100;
+    key = "key_" + key_index.toString();
+    result = btree_data.get(key);
+};
+end_time = $TIME().utc();
+btree_access_time_1000 = (end_time - start_time) / 1000000;
+"BTree access time for 1000 operations: ${time}ms\n".interpolate({time: btree_access_time_1000}).echo();
+
+"BTree ratio (insertion/access_1000): ${ratio}\n".interpolate({ratio: btree_insertion_time / btree_access_time_1000}).echo();
+
+"Debug test completed.\n".echo();

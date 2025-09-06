@@ -1,0 +1,29 @@
+/* Minimal test to identify the issue */
+
+("Starting minimal test...").echo();
+
+/* Test basic data generation */
+data = {};
+for i in (10).range() {
+    key = "key_" + i.toString();
+    value = "value_" + i.toString();
+    data.set(key, value);
+};
+
+("Generated " + data.len().toString() + " items").echo();
+
+/* Test basic timing */
+start_time = $TIME().utc();
+("Start time: " + start_time.toString()).echo();
+
+/* Simple search test */
+result = data.get("key_5");
+("Found: " + result.toString()).echo();
+
+end_time = $TIME().utc();
+("End time: " + end_time.toString()).echo();
+
+elapsed = (end_time - start_time) / 1000000;
+("Elapsed: " + elapsed.toString() + "ms").echo();
+
+("Minimal test completed.").echo();

@@ -1,0 +1,124 @@
+/* Basic threshold test to verify performance characteristics */
+
+"==========================================\n".echo();
+"GRAPA PERFORMANCE THRESHOLD ANALYSIS\n".echo();
+"==========================================\n".echo();
+
+/* Test basic operations first */
+"Testing basic operations...\n".echo();
+
+/* Test linked list */
+"Creating linked list with 100 items...\n".echo();
+data = {};
+for i in (100).range() {
+    key = "key_" + i.toString();
+    value = "value_" + i.toString();
+    data.set(key, value);
+};
+"Linked list created with ${count} items\n".interpolate({count: data.len()}).echo();
+
+/* Test linked list search */
+"Testing linked list search performance...\n".echo();
+start_time = $TIME().utc();
+for i in (100).range() {
+    key = "key_" + i.toString();
+    result = data.get(key);
+};
+end_time = $TIME().utc();
+ll_search_time = (end_time - start_time) / 1000000;
+"Linked list search time: ${time}ms\n".interpolate({time: ll_search_time}).echo();
+
+/* Test BTree table */
+"Creating BTree table with 100 items...\n".echo();
+btree_data = {}.table();
+for i in (100).range() {
+    key = "key_" + i.toString();
+    value = "value_" + i.toString();
+    btree_data.set(key, value);
+};
+"BTree table created with ${count} items\n".interpolate({count: btree_data.len()}).echo();
+
+/* Test BTree search */
+"Testing BTree search performance...\n".echo();
+start_time = $TIME().utc();
+for i in (100).range() {
+    key = "key_" + i.toString();
+    result = btree_data.get(key);
+};
+end_time = $TIME().utc();
+btree_search_time = (end_time - start_time) / 1000000;
+"BTree search time: ${time}ms\n".interpolate({time: btree_search_time}).echo();
+
+/* Compare results */
+ratio = btree_search_time / ll_search_time;
+"Performance ratio (BTree/LinkedList): ${ratio}\n".interpolate({ratio: ratio}).echo();
+
+if (ratio < 1.0) {
+    "BTree is ${speedup}x faster\n".interpolate({speedup: 1.0 / ratio}).echo();
+} else {
+    "Linked List is ${speedup}x faster\n".interpolate({speedup: ratio}).echo();
+};
+
+/* Test with larger dataset */
+"\nTesting with 500 items...\n".echo();
+
+/* Test linked list with 500 items */
+"Creating linked list with 500 items...\n".echo();
+data500 = {};
+for i in (500).range() {
+    key = "key_" + i.toString();
+    value = "value_" + i.toString();
+    data500.set(key, value);
+};
+
+start_time = $TIME().utc();
+for i in (100).range() {
+    key = "key_" + i.toString();
+    result = data500.get(key);
+};
+end_time = $TIME().utc();
+ll_search_time_500 = (end_time - start_time) / 1000000;
+"Linked list (500 items) search time: ${time}ms\n".interpolate({time: ll_search_time_500}).echo();
+
+/* Test BTree with 500 items */
+"Creating BTree table with 500 items...\n".echo();
+btree_data500 = {}.table();
+for i in (500).range() {
+    key = "key_" + i.toString();
+    value = "value_" + i.toString();
+    btree_data500.set(key, value);
+};
+
+start_time = $TIME().utc();
+for i in (100).range() {
+    key = "key_" + i.toString();
+    result = btree_data500.get(key);
+};
+end_time = $TIME().utc();
+btree_search_time_500 = (end_time - start_time) / 1000000;
+"BTree (500 items) search time: ${time}ms\n".interpolate({time: btree_search_time_500}).echo();
+
+/* Compare results for 500 items */
+ratio_500 = btree_search_time_500 / ll_search_time_500;
+"Performance ratio for 500 items (BTree/LinkedList): ${ratio}\n".interpolate({ratio: ratio_500}).echo();
+
+if (ratio_500 < 1.0) {
+    "BTree is ${speedup}x faster with 500 items\n".interpolate({speedup: 1.0 / ratio_500}).echo();
+} else {
+    "Linked List is ${speedup}x faster with 500 items\n".interpolate({speedup: ratio_500}).echo();
+};
+
+/* Summary */
+"\n=== SUMMARY ===\n".echo();
+"100 items - Linked List: ${ll_time}ms, BTree: ${btree_time}ms, Ratio: ${ratio}\n".interpolate({
+    ll_time: ll_search_time,
+    btree_time: btree_search_time,
+    ratio: ratio
+}).echo();
+"500 items - Linked List: ${ll_time}ms, BTree: ${btree_time}ms, Ratio: ${ratio}\n".interpolate({
+    ll_time: ll_search_time_500,
+    btree_time: btree_search_time_500,
+    ratio: ratio_500
+}).echo();
+
+"\nBasic threshold test completed.\n".echo();

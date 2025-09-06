@@ -1,0 +1,34 @@
+/* Simple test to verify basic functionality */
+
+print("Starting simple performance test...");
+
+/* Test basic operations */
+test_sizes = {100, 500};
+print("Test sizes: " + test_sizes.toString());
+
+/* Test data generation */
+generate_test_data = op(size) {
+    data = {};
+    for i in (size).range() {
+        key = "key_" + i.toString();
+        value = "value_" + i.toString();
+        data.set(key, value);
+    };
+    return data;
+};
+
+/* Test with small dataset */
+print("Testing with size 100...");
+data = generate_test_data(100);
+print("Generated " + data.len().toString() + " items");
+
+/* Test search */
+start_time = $time();
+for i in (10).range() {
+    key = "key_" + i.toString();
+    result = data.get(key);
+};
+search_time = $time() - start_time;
+print("Search time for 10 operations: " + search_time.toString() + "ms");
+
+print("Simple test completed successfully.");

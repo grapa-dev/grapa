@@ -91,6 +91,7 @@ nav:
   - Reference:
       - API Reference: api_reference.md
       - Data Types:
+          - Data Type Selection Guide: data_type_selection_guide.md
           - Array: type/array.md
           - Boolean: type/bool.md
           - Class: type/class.md

@@ -1,0 +1,104 @@
+/* Memory usage test to compare {} vs {}.table() memory consumption */
+
+/* Test configuration */
+test_sizes = {100, 500, 1000, 2000, 5000};
+
+/* Helper function to generate test data */
+generate_test_data = op(size) {
+    data = {};
+    for i in (size).range() {
+        key = "key_" + i.toString();
+        value = "value_" + i.toString() + "_" + (i * 7).toString();
+        data.set(key, value);
+    };
+    return data;
+};
+
+/* Helper function to generate test data for table */
+generate_table_data = op(size) {
+    data = {}.table();
+    for i in (size).range() {
+        key = "key_" + i.toString();
+        value = "value_" + i.toString() + "_" + (i * 7).toString();
+        data.set(key, value);
+    };
+    return data;
+};
+
+/* Test memory usage */
+test_memory_usage = op(size) {
+    print("Testing memory usage for size: " + size.toString());
+    
+    /* Test linked list memory usage */
+    print("  Creating linked list...");
+    start_time = $time();
+    linked_list_data = generate_test_data(size);
+    linked_list_creation_time = $time() - start_time;
+    
+    /* Test BTree table memory usage */
+    print("  Creating BTree table...");
+    start_time = $time();
+    btree_data = generate_table_data(size);
+    btree_creation_time = $time() - start_time;
+    
+    /* Test access patterns */
+    print("  Testing access patterns...");
+    
+    /* Linked list access test */
+    start_time = $time();
+    for i in (100).range() {
+        key_index = (i * 7) % size;
+        key = "key_" + key_index.toString();
+        result = linked_list_data.get(key);
+    };
+    linked_list_access_time = $time() - start_time;
+    
+    /* BTree access test */
+    start_time = $time();
+    for i in (100).range() {
+        key_index = (i * 7) % size;
+        key = "key_" + key_index.toString();
+        result = btree_data.get(key);
+    };
+    btree_access_time = $time() - start_time;
+    
+    return {
+        "linked_list_creation_time": linked_list_creation_time,
+        "btree_creation_time": btree_creation_time,
+        "linked_list_access_time": linked_list_access_time,
+        "btree_access_time": btree_access_time,
+        "creation_ratio": btree_creation_time / linked_list_creation_time,
+        "access_ratio": btree_access_time / linked_list_access_time
+    };
+};
+
+/* Run memory usage tests */
+print("Starting memory usage comparison tests...");
+print("Test sizes: " + test_sizes.toString());
+print("");
+
+results = {};
+
+for size in test_sizes {
+    result = test_memory_usage(size);
+    results.set(size.toString(), result);
+    
+    print("  Results for size " + size.toString() + ":");
+    print("    Linked List - Creation: " + result.linked_list_creation_time.toString() + "ms, Access: " + result.linked_list_access_time.toString() + "ms");
+    print("    BTree Table - Creation: " + result.btree_creation_time.toString() + "ms, Access: " + result.btree_access_time.toString() + "ms");
+    print("    Ratios (BTree/LinkedList) - Creation: " + result.creation_ratio.toString() + ", Access: " + result.access_ratio.toString());
+    print("");
+};
+
+/* Print summary table */
+print("=== MEMORY USAGE SUMMARY ===");
+print("Size\tLL_Creation\tBTree_Creation\tLL_Access\tBTree_Access\tCreation_Ratio\tAccess_Ratio");
+print("----\t-----------\t-------------\t----------\t------------\t--------------\t------------");
+
+for size in test_sizes {
+    result = results.get(size.toString());
+    print(size.toString() + "\t" + result.linked_list_creation_time.toString() + "\t\t" + result.btree_creation_time.toString() + "\t\t" + result.linked_list_access_time.toString() + "\t\t" + result.btree_access_time.toString() + "\t\t" + result.creation_ratio.toString() + "\t\t" + result.access_ratio.toString());
+};
+
+print("");
+print("Memory usage test completed.");

@@ -15,7 +15,37 @@ An associative list that stores key-value pairs. Elements are accessed by their 
 | **Keys** | Named keys | Numeric indices |
 | **Order** | Key-based | Position-based |
 
-**Note:** This differs from some other languages where `[]` is called a "list" and `{}` is called a "dictionary" or "object". Grapa follows traditional C terminology. 
+**Note:** This differs from some other languages where `[]` is called a "list" and `{}` is called a "dictionary" or "object". Grapa follows traditional C terminology.
+
+## When to Use $LIST vs Other Data Types
+
+### **Use `{}` (Linked List) When:**
+- **Small to medium datasets** (< 100-500 items typically)
+- **Frequent modifications** (insertions, deletions, updates)
+- **In-memory operations** only
+- **Simple key-value storage** without complex queries
+- **Configuration data, user preferences, cache data**
+
+### **Use `{}.table()` (In-Memory BTree) When:**
+- **Large datasets** (> 100-500 items) where memory efficiency matters
+- **Range queries** or ordered data access needed
+- **Complex queries** across multiple fields
+- **Memory efficiency at scale** is important
+- **Still in-memory** but need better performance for large datasets
+
+### **Use `$file()` (Persistent Storage) When:**
+- **Data persistence** is required (survives program restarts)
+- **Very large datasets** that don't fit in memory
+- **Disk-based storage** with BTree indexing
+- **Long-term data storage** and retrieval
+- **File system integration** needed
+
+### **Performance Characteristics:**
+- **`{}` (Linked List)**: Very fast for small datasets due to optimized double-linked list implementation
+- **`{}.table()` (BTree)**: Slower than `{}` for small datasets but more memory-efficient for large datasets
+- **`$file()` (Persistent)**: Disk I/O overhead but provides persistence and handles unlimited data size
+
+**Key Insight**: Don't add indexing to `{}` - the overhead would likely make it slower, not faster. The double-linked list implementation is already highly optimized. 
 
 Action | Example | Result
 ------------ | ------------- | -------------

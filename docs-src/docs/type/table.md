@@ -21,6 +21,32 @@ References:
 
 A $TABLE is a hierarchical database with columns, rows, supporting both row store and column store architectures.
 
+## When to Use $TABLE vs Other Data Types
+
+### **Use `{}.table()` (In-Memory BTree) When:**
+- **Large datasets** (> 100-500 items) where memory efficiency matters
+- **Range queries** or ordered data access needed
+- **Complex queries** across multiple fields
+- **Memory efficiency at scale** is important
+- **Still in-memory** but need better performance for large datasets
+
+### **Use `{}` (Linked List) When:**
+- **Small to medium datasets** (< 100-500 items typically)
+- **Frequent modifications** (insertions, deletions, updates)
+- **Simple key-value storage** without complex queries
+- **Configuration data, user preferences, cache data**
+
+### **Use `$file()` (Persistent Storage) When:**
+- **Data persistence** is required (survives program restarts)
+- **Very large datasets** that don't fit in memory
+- **Disk-based storage** with BTree indexing
+- **Long-term data storage** and retrieval
+
+### **Performance Characteristics:**
+- **`{}` (Linked List)**: Very fast for small datasets due to optimized double-linked list implementation
+- **`{}.table()` (BTree)**: Slower than `{}` for small datasets but more memory-efficient for large datasets
+- **`$file()` (Persistent)**: Disk I/O overhead but provides persistence and handles unlimited data size
+
 **Note:**
 - The type `GROUP` is used both for hierarchical/grouped databases and for folders/directories in the file system. When navigating a traditional file system, folders/directories will appear as `GROUP` in listings and type queries.
 

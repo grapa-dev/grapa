@@ -1,0 +1,189 @@
+/* Performance test to determine threshold between {} and {}.table() */
+
+/* Test configuration */
+test_sizes = {100, 500, 1000, 2000, 5000, 10000, 20000};
+search_operations = 1000;
+insert_operations = 100;
+
+/* Results storage */
+results = {};
+
+/* Helper function to generate test data */
+generate_test_data = op(size) {
+    data = {};
+    for i in (size).range() {
+        key = "key_" + i.toString();
+        value = "value_" + i.toString() + "_" + (i * 7).toString();
+        data.set(key, value);
+    };
+    return data;
+};
+
+/* Helper function to generate test data for table */
+generate_table_data = op(size) {
+    data = {}.table();
+    for i in (size).range() {
+        key = "key_" + i.toString();
+        value = "value_" + i.toString() + "_" + (i * 7).toString();
+        data.set(key, value);
+    };
+    return data;
+};
+
+/* Test linked list performance */
+test_linked_list = op(size) {
+    data = generate_test_data(size);
+    
+    /* Test search performance */
+    start_time = $time();
+    for i in (search_operations).range() {
+        key_index = (i * 7) % size;
+        key = "key_" + key_index.toString();
+        result = data.get(key);
+    };
+    search_time = $time() - start_time;
+    
+    /* Test insert performance */
+    start_time = $time();
+    for i in (insert_operations).range() {
+        key = "new_key_" + i.toString();
+        value = "new_value_" + i.toString();
+        data.set(key, value);
+    };
+    insert_time = $time() - start_time;
+    
+    return {
+        "search_time": search_time,
+        "insert_time": insert_time,
+        "total_time": search_time + insert_time
+    };
+};
+
+/* Test BTree table performance */
+test_btree_table = op(size) {
+    data = generate_table_data(size);
+    
+    /* Test search performance */
+    start_time = $time();
+    for i in (search_operations).range() {
+        key_index = (i * 7) % size;
+        key = "key_" + key_index.toString();
+        result = data.get(key);
+    };
+    search_time = $time() - start_time;
+    
+    /* Test insert performance */
+    start_time = $time();
+    for i in (insert_operations).range() {
+        key = "new_key_" + i.toString();
+        value = "new_value_" + i.toString();
+        data.set(key, value);
+    };
+    insert_time = $time() - start_time;
+    
+    return {
+        "search_time": search_time,
+        "insert_time": insert_time,
+        "total_time": search_time + insert_time
+    };
+};
+
+/* Run performance tests */
+("Starting performance comparison tests...").echo();
+("Test sizes: " + test_sizes.toString()).echo();
+("Search operations per test: " + search_operations.toString()).echo();
+("Insert operations per test: " + insert_operations.toString()).echo();
+"".echo();
+
+for size in test_sizes {
+    ("Testing size: " + size.toString()).echo();
+    
+    /* Test linked list */
+    ("  Testing linked list ({})...").echo();
+    linked_list_result = test_linked_list(size);
+    
+    /* Test BTree table */
+    ("  Testing BTree table ({}.table())...").echo();
+    btree_result = test_btree_table(size);
+    
+    /* Calculate performance ratios */
+    search_ratio = btree_result.search_time / linked_list_result.search_time;
+    insert_ratio = btree_result.insert_time / linked_list_result.insert_time;
+    total_ratio = btree_result.total_time / linked_list_result.total_time;
+    
+    /* Store results */
+    results.set(size.toString(), {
+        "linked_list": linked_list_result,
+        "btree": btree_result,
+        "search_ratio": search_ratio,
+        "insert_ratio": insert_ratio,
+        "total_ratio": total_ratio
+    });
+    
+    /* Print results for this size */
+    ("  Results:").echo();
+    ("    Linked List - Search: " + linked_list_result.search_time.toString() + "ms, Insert: " + linked_list_result.insert_time.toString() + "ms, Total: " + linked_list_result.total_time.toString() + "ms").echo();
+    ("    BTree Table - Search: " + btree_result.search_time.toString() + "ms, Insert: " + btree_result.insert_time.toString() + "ms, Total: " + btree_result.total_time.toString() + "ms").echo();
+    ("    Ratios (BTree/LinkedList) - Search: " + search_ratio.toString() + ", Insert: " + insert_ratio.toString() + ", Total: " + total_ratio.toString()).echo();
+    
+    if (total_ratio < 1.0) {
+        ("    *** BTree is " + (1.0 / total_ratio).toString() + "x faster ***").echo();
+    } else {
+        ("    *** Linked List is " + total_ratio.toString() + "x faster ***").echo();
+    };
+    "".echo();
+};
+
+/* Analyze results and determine threshold */
+("=== PERFORMANCE ANALYSIS ===").echo();
+"".echo();
+
+/* Find crossover point */
+crossover_found = false;
+crossover_size = 0;
+
+for size in test_sizes {
+    result = results.get(size.toString());
+    if (result.total_ratio < 1.0 && !crossover_found) {
+        crossover_found = true;
+        crossover_size = size;
+        ("Crossover point found at size: " + size.toString()).echo();
+        ("BTree becomes faster at this point.").echo();
+        break;
+    };
+};
+
+if (!crossover_found) {
+    ("No crossover point found in tested range.").echo();
+    ("Linked List remains faster up to " + test_sizes[test_sizes.len() - 1].toString() + " items.").echo();
+};
+
+/* Print detailed results table */
+print("");
+print("=== DETAILED RESULTS TABLE ===");
+print("Size\tLinkedList(ms)\tBTree(ms)\tRatio\tWinner");
+print("----\t-------------\t---------\t-----\t------");
+
+for size in test_sizes {
+    result = results.get(size.toString());
+    winner = (result.total_ratio < 1.0) ? "BTree" : "LinkedList";
+    print(size.toString() + "\t" + result.linked_list.total_time.toString() + "\t\t" + result.btree.total_time.toString() + "\t\t" + result.total_ratio.toString() + "\t" + winner);
+};
+
+/* Recommendations */
+print("");
+print("=== RECOMMENDATIONS ===");
+print("");
+
+if (crossover_found) {
+    print("Based on test results:");
+    print("- Use {} (linked list) for datasets < " + crossover_size.toString() + " items");
+    print("- Use {}.table() (BTree) for datasets >= " + crossover_size.toString() + " items");
+} else {
+    print("Based on test results:");
+    print("- Use {} (linked list) for datasets up to " + test_sizes[test_sizes.len() - 1].toString() + " items");
+    print("- Consider {}.table() (BTree) for larger datasets or if you need persistence");
+};
+
+print("");
+print("Performance test completed.");

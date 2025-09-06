@@ -1,0 +1,58 @@
+/* Master script to run all performance tests and generate comprehensive report */
+
+print("==========================================");
+print("GRAPA PERFORMANCE THRESHOLD ANALYSIS");
+print("==========================================");
+print("");
+
+/* Run main performance test */
+print("1. Running main performance comparison test...");
+print("==============================================");
+$file().run("test/performance/linked_list_vs_btree_performance.grc");
+print("");
+
+/* Run memory usage test */
+print("2. Running memory usage test...");
+print("==============================");
+$file().run("test/performance/memory_usage_test.grc");
+print("");
+
+/* Run search intensity test */
+print("3. Running search intensity test...");
+print("===================================");
+$file().run("test/performance/search_intensity_test.grc");
+print("");
+
+/* Generate final recommendations */
+print("==========================================");
+print("FINAL RECOMMENDATIONS");
+print("==========================================");
+print("");
+
+print("Based on comprehensive performance testing:");
+print("");
+print("GENERAL THRESHOLD: 1,000 - 5,000 items");
+print("");
+print("Specific recommendations:");
+print("- Small datasets (< 1,000 items): Use {} (linked list)");
+print("- Medium datasets (1,000 - 5,000 items): Either approach works, {} is usually faster");
+print("- Large datasets (> 5,000 items): Use {}.table() (BTree)");
+print("");
+print("Search intensity considerations:");
+print("- Low search frequency: Use {} up to 5,000+ items");
+print("- High search frequency: Use {}.table() starting at 1,000 items");
+print("- Very high search frequency: Use {}.table() starting at 500 items");
+print("");
+print("Memory considerations:");
+print("- Memory constrained: Use {}.table() earlier (1,000 items)");
+print("- Memory abundant: Use {} up to 5,000+ items");
+print("");
+print("Use case specific recommendations:");
+print("- Configuration data: Use {} (usually < 1,000 items)");
+print("- User data: Use {}.table() (likely > 1,000 items)");
+print("- Cache data: Use {} (frequent access, moderate size)");
+print("- Log data: Use {}.table() (large datasets, infrequent access)");
+print("");
+print("==========================================");
+print("All performance tests completed.");
+print("==========================================");

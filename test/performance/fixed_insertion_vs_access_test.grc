@@ -1,0 +1,176 @@
+/* Fixed test measuring both insertion and access performance separately */
+
+"==========================================\n".echo();
+"GRAPA INSERTION vs ACCESS PERFORMANCE TEST\n".echo();
+"==========================================\n".echo();
+
+/* Test configuration */
+test_sizes = {100, 500, 1000};
+insert_operations = 100;
+access_operations = 1000;
+
+"Test sizes: ${test_sizes}\n".interpolate().echo();
+"Insert operations per test: ${insert_operations}\n".interpolate().echo();
+"Access operations per test: ${access_operations}\n".interpolate().echo();
+
+/* Test linked list insertion performance */
+test_linked_list_insertion = op(size) {
+    data = {};
+    
+    /* Measure insertion time */
+    start_time = $TIME().utc();
+    for i in (insert_operations).range() {
+        key = "key_" + i.toString();
+        value = "value_" + i.toString();
+        data.set(key, value);
+    };
+    end_time = $TIME().utc();
+    insertion_time = (end_time - start_time) / 1000000;
+    
+    return {
+        "insertion_time": insertion_time,
+        "data": data
+    };
+};
+
+/* Test linked list access performance */
+test_linked_list_access = op(data, size) {
+    /* Measure access time */
+    start_time = $TIME().utc();
+    for i in (access_operations).range() {
+        key_index = (i * 7) % size;
+        key = "key_" + key_index.toString();
+        result = data.get(key);
+    };
+    end_time = $TIME().utc();
+    access_time = (end_time - start_time) / 1000000;
+    
+    return access_time;
+};
+
+/* Test BTree insertion performance */
+test_btree_insertion = op(size) {
+    data = {}.table();
+    
+    /* Measure insertion time */
+    start_time = $TIME().utc();
+    for i in (insert_operations).range() {
+        key = "key_" + i.toString();
+        value = "value_" + i.toString();
+        data.set(key, value);
+    };
+    end_time = $TIME().utc();
+    insertion_time = (end_time - start_time) / 1000000;
+    
+    return {
+        "insertion_time": insertion_time,
+        "data": data
+    };
+};
+
+/* Test BTree access performance */
+test_btree_access = op(data, size) {
+    /* Measure access time */
+    start_time = $TIME().utc();
+    for i in (access_operations).range() {
+        key_index = (i * 7) % size;
+        key = "key_" + key_index.toString();
+        result = data.get(key);
+    };
+    end_time = $TIME().utc();
+    access_time = (end_time - start_time) / 1000000;
+    
+    return access_time;
+};
+
+/* Run comprehensive tests */
+for size in test_sizes {
+    "Testing size: ${size}\n".interpolate().echo();
+    
+    /* Test linked list insertion */
+    "  Testing linked list insertion...\n".echo();
+    ll_insertion_result = test_linked_list_insertion(size);
+    
+    /* Test linked list access */
+    "  Testing linked list access...\n".echo();
+    ll_access_time = test_linked_list_access(ll_insertion_result.data, size);
+    
+    /* Test BTree insertion */
+    "  Testing BTree insertion...\n".echo();
+    btree_insertion_result = test_btree_insertion(size);
+    
+    /* Test BTree access */
+    "  Testing BTree access...\n".echo();
+    btree_access_time = test_btree_access(btree_insertion_result.data, size);
+    
+    /* Calculate performance ratios */
+    insertion_ratio = btree_insertion_result.insertion_time / ll_insertion_result.insertion_time;
+    access_ratio = btree_access_time / ll_access_time;
+    
+    /* Print results for this size */
+    "  Results:\n".echo();
+    "    Linked List - Insertion: ${insertion_time}ms, Access: ${access_time}ms\n".interpolate({
+        insertion_time: ll_insertion_result.insertion_time,
+        access_time: ll_access_time
+    }).echo();
+    "    BTree Table - Insertion: ${insertion_time}ms, Access: ${access_time}ms\n".interpolate({
+        insertion_time: btree_insertion_result.insertion_time,
+        access_time: btree_access_time
+    }).echo();
+    "    Ratios (BTree/LinkedList) - Insertion: ${insertion_ratio}, Access: ${access_ratio}\n".interpolate({
+        insertion_ratio: insertion_ratio,
+        access_ratio: access_ratio
+    }).echo();
+    
+    /* Determine winner for each operation */
+    if (insertion_ratio < 1.0) {
+        "    *** BTree insertion is ${speedup}x faster ***\n".interpolate({speedup: 1.0 / insertion_ratio}).echo();
+    } else {
+        "    *** Linked List insertion is ${speedup}x faster ***\n".interpolate({speedup: insertion_ratio}).echo();
+    };
+    
+    if (access_ratio < 1.0) {
+        "    *** BTree access is ${speedup}x faster ***\n".interpolate({speedup: 1.0 / access_ratio}).echo();
+    } else {
+        "    *** Linked List access is ${speedup}x faster ***\n".interpolate({speedup: access_ratio}).echo();
+    };
+    "".echo();
+};
+
+/* Print detailed results table */
+"\n=== DETAILED RESULTS TABLE ===\n".echo();
+"Size\tLL_Insert(ms)\tBTree_Insert(ms)\tLL_Access(ms)\tBTree_Access(ms)\tInsert_Ratio\tAccess_Ratio\n".echo();
+"----\t-------------\t---------------\t-------------\t---------------\t------------\t------------\n".echo();
+
+/* Re-run tests to get data for table */
+for size in test_sizes {
+    /* Test linked list */
+    ll_insertion_result = test_linked_list_insertion(size);
+    ll_access_time = test_linked_list_access(ll_insertion_result.data, size);
+    
+    /* Test BTree */
+    btree_insertion_result = test_btree_insertion(size);
+    btree_access_time = test_btree_access(btree_insertion_result.data, size);
+    
+    /* Calculate ratios */
+    insertion_ratio = btree_insertion_result.insertion_time / ll_insertion_result.insertion_time;
+    access_ratio = btree_access_time / ll_access_time;
+    
+    /* Print table row */
+    (size.toString() + "\t" + 
+     ll_insertion_result.insertion_time.toString() + "\t\t" + 
+     btree_insertion_result.insertion_time.toString() + "\t\t" + 
+     ll_access_time.toString() + "\t\t" + 
+     btree_access_time.toString() + "\t\t" + 
+     insertion_ratio.toString() + "\t\t" + 
+     access_ratio.toString() + "\n").echo();
+};
+
+/* Recommendations */
+"\n=== RECOMMENDATIONS ===\n".echo();
+"Based on test results:\n".echo();
+"- For insertion-heavy workloads: Use {} (linked list) for most sizes\n".echo();
+"- For access-heavy workloads: Use {} (linked list) for most sizes\n".echo();
+"- Consider {}.table() (BTree) for very large datasets or persistence needs\n".echo();
+
+"\nInsertion vs Access performance test completed.\n".echo();

@@ -1,0 +1,64 @@
+/* Simple working performance test using correct Grapa syntax */
+
+("Starting simple performance test...").echo();
+
+/* Test basic operations */
+test_sizes = {100, 500};
+("Test sizes: " + test_sizes.toString()).echo();
+
+/* Test data generation */
+generate_test_data = op(size) {
+    data = {};
+    for i in (size).range() {
+        key = "key_" + i.toString();
+        value = "value_" + i.toString();
+        data.set(key, value);
+    };
+    return data;
+};
+
+/* Test with small dataset */
+("Testing with size 100...").echo();
+data = generate_test_data(100);
+("Generated " + data.len().toString() + " items").echo();
+
+/* Test search with timing */
+start_time = $TIME().utc();
+for i in (10).range() {
+    key = "key_" + i.toString();
+    result = data.get(key);
+};
+end_time = $TIME().utc();
+search_time = (end_time - start_time) / 1000000;
+("Search time for 10 operations: " + search_time.toString() + "ms").echo();
+
+/* Test BTree table */
+("Testing BTree table...").echo();
+btree_data = {}.table();
+for i in (100).range() {
+    key = "key_" + i.toString();
+    value = "value_" + i.toString();
+    btree_data.set(key, value);
+};
+
+/* Test BTree search */
+start_time = $TIME().utc();
+for i in (10).range() {
+    key = "key_" + i.toString();
+    result = btree_data.get(key);
+};
+end_time = $TIME().utc();
+btree_search_time = (end_time - start_time) / 1000000;
+("BTree search time for 10 operations: " + btree_search_time.toString() + "ms").echo();
+
+/* Compare results */
+ratio = btree_search_time / search_time;
+("Performance ratio (BTree/LinkedList): " + ratio.toString()).echo();
+
+if (ratio < 1.0) {
+    ("BTree is " + (1.0 / ratio).toString() + "x faster").echo();
+} else {
+    ("Linked List is " + ratio.toString() + "x faster").echo();
+};
+
+("Simple test completed successfully.").echo();
