@@ -379,6 +379,7 @@ parent_function();  // Returns {"data":"input","status":"processing"}
 - **From top-level**: Returns the grammar system (106+ rules)
 - **From within functions**: Returns the calling function's `$local` namespace
 - **Nested calls**: Always refers to the immediate parent, not the root
+- **Block scope calls**: Returns the immediate calling scope's `$local` (even if it's a nested block)
 - **Call stack tracing**: Can be used to trace back to the global namespace
 
 ```grapa
@@ -400,6 +401,29 @@ parent = op() {
 
 parent();  // Returns {"c_data":"child"}
 ```
+
+**Critical: `$parent` Returns Immediate Calling Scope**
+
+`$parent` always returns the **immediate calling scope's `$local`**, even if that scope is a nested block within a function:
+
+```grapa
+/* Example: $parent returns block scope, not function scope */
+f1 = op() {
+    $parent;  // Returns whatever scope called f1()
+};
+
+f2 = op() {
+    $local.a = 1;           // Function scope: {"a":1}
+    if (true) {
+        $local.b = 2;       // Block scope: {"b":2}
+        f1();               // Returns {"b":2} - block scope, not function scope!
+    };
+};
+
+f2();  // Returns {"b":2}
+```
+
+**Key Point**: `$parent` does **NOT** return the function's `$local` - it returns the **immediate calling scope's `$local`**. In the example above, `f1()` returns the `if` block's `$local` (`{"b":2}`), not the function's `$local` (`{"a":1}`).
 
 ### Call Stack Tracing with `$parent`
 
@@ -581,6 +605,33 @@ innerLoop = op() {
     };
 };
 ```
+
+### 4. Misunderstanding `$parent` Behavior
+```grapa
+// CONFUSING: $parent returns immediate calling scope, not function scope
+f1 = op() {
+    $parent;  // Returns calling scope's $local
+};
+
+f2 = op() {
+    $local.a = 1;           // Function scope
+    if (true) {
+        $local.b = 2;       // Block scope
+        f1();               // Returns {"b":2}, not {"a":1}!
+    };
+};
+
+// SOLUTION: Use $parent to access function scope from nested blocks
+f3 = op() {
+    $local.a = 1;           // Function scope
+    if (true) {
+        $local.b = 2;       // Block scope
+        $parent;            // Returns {"a":1} - function scope
+    };
+};
+```
+
+**Key Point**: `$parent` always returns the **immediate calling scope's `$local`**, not necessarily the function's `$local`. This can be confusing when functions are called from nested blocks.
 
 ## Summary
 

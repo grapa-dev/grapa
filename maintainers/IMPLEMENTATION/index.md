@@ -23,6 +23,7 @@ Grapa's implementation is built on several key components:
 
 ### Core Components
 - [Core Implementation](CORE/) - Fundamental system components, type system, execution model, and CLI
+- [Core System](CORE_SYSTEM/) - Namespace stack architecture, rule event system, and core system behaviors
 - [Database Implementation](DATABASE/) - Database systems, BTree data structures, and storage
 - [Language Features](LANGUAGE_FEATURES/) - Language extensibility, syntax enhancements, and operators
 - [System Components](SYSTEM_COMPONENTS/) - Threading, floating-point, and system integration

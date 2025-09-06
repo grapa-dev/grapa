@@ -33,6 +33,10 @@ Project Management includes:
 - **[CONSOLIDATION_PLAN.md](CONSOLIDATION_PLAN.md)** - Documentation consolidation planning
 - **[INDEX_AUDIT_SUMMARY.md](INDEX_AUDIT_SUMMARY.md)** - Audit summary of index file updates
 
+### **📚 Standards & Guidelines**
+- **[DOCUMENTATION_STANDARDS.md](DOCUMENTATION_STANDARDS.md)** - Documentation standards and guidelines for maintainers
+- **[CONTRIBUTOR_ONBOARDING.md](CONTRIBUTOR_ONBOARDING.md)** - Contributor onboarding and development guidelines
+
 ## Key Documents
 
 ### **CURRENT_STATUS.md** - The Authoritative Status Document
