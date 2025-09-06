@@ -44,12 +44,6 @@
 	split = @<[op,@<"split",{@<this>,@<var,{delim}>,@<var,{max}>,@<var,{axis}>}>],{"delim":null,"max":null,"axis":null}>;
 	join = @<[op,@<"join",{@<this>,@<var,{delim}>,@<var,{axis}>}>],{"delim":null,"axis":null}>;
 	identity = @<"vector_identity",{@<this>}>; 
-	upper = @<"upper",{@<this>}>; 
-	lower = @<"lower",{@<this>}>; 
-    casefold = @<"casefold",{@<this>}>;
-    levenshtein = @<[op,@<"levenshtein",{@<this>,@<var,{other}>,@<var,{options}>}>],{other,options}>;
-    jarowinkler = @<[op,@<"jarowinkler",{@<this>,@<var,{other}>,@<var,{options}>}>],{other,options}>;
-    cosinesimilarity = @<[op,@<"cosinesimilarity",{@<this>,@<var,{other}>,@<var,{options}>}>],{other,options}>;
 	setbit = @<[op,@<setbit,{@<this>,@<var,{pos}>}>],{"pos":0}>;
 	clearbit = @<[op,@<clearbit,{@<this>,@<var,{pos}>}>],{"pos":0}>; 
 	genbits = @<genbits,{@<this>}>;
