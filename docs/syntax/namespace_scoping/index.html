@@ -2575,6 +2575,15 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#call-stack-tracing-with-parent" class="md-nav__link">
+    <span class="md-ellipsis">
+      Call Stack Tracing with $parent
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#root-and-self-widget-context" class="md-nav__link">
     <span class="md-ellipsis">
       $root and $self - Widget Context
@@ -4498,6 +4507,15 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#call-stack-tracing-with-parent" class="md-nav__link">
+    <span class="md-ellipsis">
+      Call Stack Tracing with $parent
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#root-and-self-widget-context" class="md-nav__link">
     <span class="md-ellipsis">
       $root and $self - Widget Context
@@ -4921,7 +4939,8 @@ parent_function();  // Returns {&quot;data&quot;:&quot;input&quot;,&quot;status&
 <p><strong>Key Behaviors:</strong>
 - <strong>From top-level</strong>: Returns the grammar system (106+ rules)
 - <strong>From within functions</strong>: Returns the calling function's <code>$local</code> namespace
-- <strong>Nested calls</strong>: Always refers to the immediate parent, not the root</p>
+- <strong>Nested calls</strong>: Always refers to the immediate parent, not the root
+- <strong>Call stack tracing</strong>: Can be used to trace back to the global namespace</p>
 <div class="highlight"><pre><span></span><code>/* Nested function example */
 grandchild = op() {
     $local.gc_data = &quot;grandchild&quot;;
@@ -4940,6 +4959,69 @@ parent = op() {
 
 parent();  // Returns {&quot;c_data&quot;:&quot;child&quot;}
 </code></pre></div>
+<h3 id="call-stack-tracing-with-parent">Call Stack Tracing with <code>$parent</code></h3>
+<p><code>$parent</code> can be used to construct a call stack by leaving breadcrumbs in each function's <code>$local</code> namespace:</p>
+<div class="highlight"><pre><span></span><code>/* Basic call stack tracing */
+f1 = op() {
+    $local.breadcrumb = &quot;f1&quot;;
+    f2();
+};
+
+f2 = op() {
+    $local.breadcrumb = &quot;f2&quot;;
+    f3();
+};
+
+f3 = op() {
+    $local.breadcrumb = &quot;f3&quot;;
+    $parent.breadcrumb;  // Returns &quot;f2&quot; (immediate parent)
+};
+
+f1();  // Returns &quot;f2&quot;
+</code></pre></div>
+<p><strong>Global Namespace Detection:</strong>
+<div class="highlight"><pre><span></span><code>/* Detect if called from top-level */
+f3 = op() {
+    $local.breadcrumb = &quot;f3&quot;;
+    $parent == $global;  // Returns true if called from top-level
+};
+
+f3();  // Returns true (called from top-level)
+</code></pre></div></p>
+<p><strong>Advanced Call Stack Construction:</strong>
+<div class="highlight"><pre><span></span><code>/* Recursive call stack builder */
+buildCallStack = op() {
+    $local.stack = {};
+    $local.current = $local.breadcrumb;
+
+    if ($parent != $global) {
+        $local.stack = $parent.stack;
+        $local.stack += $current;
+    } else {
+        $local.stack = {$current};
+    };
+
+    $local.stack;
+};
+
+/* Usage with breadcrumbs */
+f1 = op() {
+    $local.breadcrumb = &quot;f1&quot;;
+    buildCallStack();
+};
+
+f2 = op() {
+    $local.breadcrumb = &quot;f2&quot;;
+    f1();
+};
+
+f2();  // Returns {&quot;f2&quot;, &quot;f1&quot;}
+</code></pre></div></p>
+<p><strong>Debugging Applications:</strong>
+- <strong>Function call tracing</strong>: Track which functions called which
+- <strong>Error context</strong>: Provide context about where errors occurred
+- <strong>Performance profiling</strong>: Understand call patterns
+- <strong>Dynamic debugging</strong>: Inspect calling context at runtime</p>
 <h3 id="root-and-self-widget-context"><code>$root</code> and <code>$self</code> - Widget Context</h3>
 <p>In GUI applications, <code>$root</code> and <code>$self</code> provide widget references:</p>
 <div class="highlight"><pre><span></span><code>/* GUI widget example (from $editor.grc) */
@@ -5046,8 +5128,10 @@ innerLoop = op() {
 <p><strong>Key Takeaways</strong>: 
 - Always declare function variables as <code>$local</code> to ensure thread safety
 - Use <code>$parent</code> for function communication and callback patterns
+- Use <code>$parent</code> for call stack tracing and debugging with breadcrumbs
 - Use <code>$root</code> and <code>$self</code> for GUI widget manipulation
-- Leverage <code>$local</code>'s automatic parameter list initialization for introspection</p>
+- Leverage <code>$local</code>'s automatic parameter list initialization for introspection
+- Use <code>$parent == $global</code> to detect top-level function calls</p>
 
 
 
