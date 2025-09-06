@@ -291,6 +291,7 @@ public:
 
 	static GrapaRuleEvent* CopyItem(GrapaRuleEvent* pAction, bool isTAG = false, bool isConst = false);
 	static GrapaRuleQueue* CopyQueue(GrapaRuleQueue* pList, bool isTAG = false, bool isConst = false);
+	void AssignValue(GrapaNames* pNameSpace, GrapaRuleEvent* parameter, GrapaRuleEvent* r, GrapaRuleEvent * rDel);
 
 	void ReplaceLocalQueue(GrapaRuleQueue* pList, GrapaRuleQueue* pLocal);
 

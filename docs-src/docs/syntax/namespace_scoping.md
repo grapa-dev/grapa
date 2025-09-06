@@ -23,6 +23,7 @@ Grapa defines three fundamental namespace types that can be accessed using speci
 - **Lifetime**: Block execution
 - **Scope**: Function or block-level
 - **Use Case**: Function parameters, temporary variables, thread-local storage
+- **Special Feature**: `$local` is automatically initialized with all function parameters, providing access to the complete parameter list
 - **Important**: `$local` properly isolates variables within function scope, protecting against external variable access and ensuring thread safety in recursive functions and multi-threaded execution
 
 ## Syntax

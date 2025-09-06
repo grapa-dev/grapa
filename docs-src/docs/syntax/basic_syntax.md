@@ -1945,6 +1945,117 @@ result3 = f();      /* 1 (x defaults to 1, y defaults to 0) */
 - Parameters with defaults can be omitted when calling
 - Parameters without defaults must be provided
 
+### Accessing the Parameter List with `$local`
+
+The `$local` variable is automatically initialized with all function parameters, providing powerful introspection and dynamic parameter handling capabilities.
+
+#### Basic Parameter Access
+
+```grapa
+/* Access all parameters as a list */
+f = op() { $local; };
+
+f(1, 4);                    /* {1, 4} */
+f(a:1, b:4);                /* {"a":1, "b":4} */
+```
+
+#### Named vs Positional Parameters
+
+```grapa
+/* Function with named parameters */
+f = op(a, b) { $local; };
+
+f();                         /* {a, b} - undefined parameters */
+f(1, 2);                     /* {1, 2} - positional parameters */
+f(a:1, b:2);                 /* {"a":1, "b":2} - named parameters */
+```
+
+#### Default Parameters and `$local`
+
+```grapa
+/* Function with default parameters */
+f = op(a:null, b:null) { $local; };
+
+f();                         /* {"a":null, "b":null} */
+f(c:55);                     /* {"a":null, "b":null,"c":55} */
+f(a:44, c:55);               /* {"a":44, "b":null,"c":55} */
+```
+
+#### Modifying Parameters
+
+You can modify the parameter list within the function:
+
+```grapa
+/* Add new parameters to $local */
+f = op(a:null, b:null) { 
+    $local.g = 9; 
+    $local; 
+};
+
+f(a:44, c:55);               /* {"a":44, "b":null,"c":55,"g":9} */
+```
+
+#### Practical Use Cases
+
+**1. Parameter Introspection:**
+```grapa
+debug_function = op() {
+    ("Parameters: " + $local).echo();
+    ("Parameter count: " + $local.len()).echo();
+    // Process parameters...
+};
+```
+
+**2. Dynamic Parameter Handling:**
+```grapa
+flexible_sum = op() {
+    $local.total = 0;
+    $local.range(0, $local.len()).map(op(i) {
+        if ($local[i].type() == $INT || $local[i].type() == $FLOAT) {
+            $local.total += $local[i];
+        };
+    });
+    $local.total;
+};
+
+flexible_sum(1, 2, 3, 4);    /* 10 */
+flexible_sum(1.5, 2.5);      /* 4.0 */
+```
+
+**3. Parameter Validation:**
+```grapa
+validate_params = op() {
+    if ($local.len() == 0) {
+        return $ERR("No parameters provided");
+    };
+    if ($local.len() > 10) {
+        return $ERR("Too many parameters");
+    };
+    "Parameters valid".echo();
+    $local;
+};
+```
+
+**4. Parameter Forwarding:**
+```grapa
+wrapper = op() {
+    // Log parameters
+    ("Calling with: " + $local).echo();
+    // Forward to another function
+    actual_function($local);
+};
+```
+
+#### Key Points
+
+- **`$local` contains all parameters** passed to the function
+- **Positional parameters** appear as array elements: `{1, 2, 3}`
+- **Named parameters** appear as object properties: `{"a":1, "b":2}`
+- **Mixed parameters** combine both: `{"a":1, "b":2, 3, 4}`
+- **Default parameters** are included with their default values
+- **`$local` can be modified** within the function
+- **Useful for introspection**, validation, and dynamic parameter handling
+
 ### System Functions
 
 ```grapa
