@@ -18,7 +18,7 @@
       
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.18">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.15">
     
     
       
@@ -26,7 +26,7 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.7e37652d.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.342714a4.min.css">
       
         
         <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
@@ -2506,6 +2506,15 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#performance-monitoring" class="md-nav__link">
+    <span class="md-ellipsis">
+      Performance Monitoring
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -4693,6 +4702,15 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#performance-monitoring" class="md-nav__link">
+    <span class="md-ellipsis">
+      Performance Monitoring
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -5404,6 +5422,20 @@
 </ul>
 <h3 id="current-status">Current Status</h3>
 <p>The debug system infrastructure is fully implemented and ready for use. While no system components are currently instrumented with debug output, the framework is in place for future component integration. Users can set debug flags and configure the system, and debug output will appear once components are instrumented.</p>
+<h3 id="performance-monitoring">Performance Monitoring</h3>
+<p>For performance debugging and monitoring, Grapa provides the <code>$TIME.ms()</code> method for precise timing measurements:</p>
+<div class="highlight"><pre><span></span><code>/* Performance monitoring example */
+t1 = $TIME().utc();
+/* Your code to measure */
+1000.sleep();
+t2 = $TIME().utc();
+&#39;Execution time: ${time}ms\n&#39;.interpolate(time:t1.ms(t2).float(30)).echo();
+</code></pre></div>
+<p>This is particularly useful for:
+- <strong>Algorithm performance</strong>: Measure execution time of specific operations
+- <strong>Bottleneck identification</strong>: Find slow parts of your code
+- <strong>Optimization validation</strong>: Verify performance improvements
+- <strong>Real-time monitoring</strong>: Track performance in production code</p>
 <h2 id="cli-debug-options">CLI Debug Options</h2>
 <h3 id="basic-debug-mode">Basic Debug Mode</h3>
 <div class="highlight"><pre><span></span><code><span class="c1"># Enable debug mode</span>
@@ -6082,10 +6114,10 @@ op()(&quot;echo(&#39;wrong&#39;)&quot;)();  // Shows incorrect echo syntax
     
     
       
-      <script id="__config" type="application/json">{"base": "..", "features": ["navigation.tabs", "navigation.top", "search.suggest", "content.code.copy", "content.action.edit", "content.action.view", "content.tabs.link"], "search": "../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"base": "..", "features": ["navigation.tabs", "navigation.top", "search.suggest", "content.code.copy", "content.action.edit", "content.action.view", "content.tabs.link"], "search": "../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../assets/javascripts/bundle.92b07e13.min.js"></script>
+      <script src="../assets/javascripts/bundle.56ea9cef.min.js"></script>
       
         <script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.0/dist/mermaid.min.js"></script>
       

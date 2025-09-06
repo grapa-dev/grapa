@@ -18,7 +18,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.18">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.15">
     
     
       
@@ -26,7 +26,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.7e37652d.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.342714a4.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
@@ -3293,6 +3293,75 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#accessing-the-parameter-list-with-local" class="md-nav__link">
+    <span class="md-ellipsis">
+      Accessing the Parameter List with $local
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Accessing the Parameter List with $local">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#basic-parameter-access" class="md-nav__link">
+    <span class="md-ellipsis">
+      Basic Parameter Access
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#named-vs-positional-parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      Named vs Positional Parameters
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#default-parameters-and-local" class="md-nav__link">
+    <span class="md-ellipsis">
+      Default Parameters and $local
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#modifying-parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      Modifying Parameters
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#practical-use-cases" class="md-nav__link">
+    <span class="md-ellipsis">
+      Practical Use Cases
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#key-points" class="md-nav__link">
+    <span class="md-ellipsis">
+      Key Points
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#system-functions" class="md-nav__link">
     <span class="md-ellipsis">
       System Functions
@@ -6436,6 +6505,75 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#accessing-the-parameter-list-with-local" class="md-nav__link">
+    <span class="md-ellipsis">
+      Accessing the Parameter List with $local
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Accessing the Parameter List with $local">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#basic-parameter-access" class="md-nav__link">
+    <span class="md-ellipsis">
+      Basic Parameter Access
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#named-vs-positional-parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      Named vs Positional Parameters
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#default-parameters-and-local" class="md-nav__link">
+    <span class="md-ellipsis">
+      Default Parameters and $local
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#modifying-parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      Modifying Parameters
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#practical-use-cases" class="md-nav__link">
+    <span class="md-ellipsis">
+      Practical Use Cases
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#key-points" class="md-nav__link">
+    <span class="md-ellipsis">
+      Key Points
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#system-functions" class="md-nav__link">
     <span class="md-ellipsis">
       System Functions
@@ -8725,6 +8863,93 @@ result3 = f();      /* 1 (x defaults to 1, y defaults to 0) */
 <li>Parameters with defaults can be omitted when calling</li>
 <li>Parameters without defaults must be provided</li>
 </ul>
+<h3 id="accessing-the-parameter-list-with-local">Accessing the Parameter List with <code>$local</code></h3>
+<p>The <code>$local</code> variable is automatically initialized with all function parameters, providing powerful introspection and dynamic parameter handling capabilities.</p>
+<h4 id="basic-parameter-access">Basic Parameter Access</h4>
+<div class="highlight"><pre><span></span><code>/* Access all parameters as a list */
+f = op() { $local; };
+
+f(1, 4);                    /* {1, 4} */
+f(a:1, b:4);                /* {&quot;a&quot;:1, &quot;b&quot;:4} */
+</code></pre></div>
+<h4 id="named-vs-positional-parameters">Named vs Positional Parameters</h4>
+<div class="highlight"><pre><span></span><code>/* Function with named parameters */
+f = op(a, b) { $local; };
+
+f();                         /* {a, b} - undefined parameters */
+f(1, 2);                     /* {1, 2} - positional parameters */
+f(a:1, b:2);                 /* {&quot;a&quot;:1, &quot;b&quot;:2} - named parameters */
+</code></pre></div>
+<h4 id="default-parameters-and-local">Default Parameters and <code>$local</code></h4>
+<div class="highlight"><pre><span></span><code>/* Function with default parameters */
+f = op(a:null, b:null) { $local; };
+
+f();                         /* {&quot;a&quot;:null, &quot;b&quot;:null} */
+f(c:55);                     /* {&quot;a&quot;:null, &quot;b&quot;:null,&quot;c&quot;:55} */
+f(a:44, c:55);               /* {&quot;a&quot;:44, &quot;b&quot;:null,&quot;c&quot;:55} */
+</code></pre></div>
+<h4 id="modifying-parameters">Modifying Parameters</h4>
+<p>You can modify the parameter list within the function:</p>
+<div class="highlight"><pre><span></span><code>/* Add new parameters to $local */
+f = op(a:null, b:null) { 
+    $local.g = 9; 
+    $local; 
+};
+
+f(a:44, c:55);               /* {&quot;a&quot;:44, &quot;b&quot;:null,&quot;c&quot;:55,&quot;g&quot;:9} */
+</code></pre></div>
+<h4 id="practical-use-cases">Practical Use Cases</h4>
+<p><strong>1. Parameter Introspection:</strong>
+<div class="highlight"><pre><span></span><code>debug_function = op() {
+    (&quot;Parameters: &quot; + $local).echo();
+    (&quot;Parameter count: &quot; + $local.len()).echo();
+    // Process parameters...
+};
+</code></pre></div></p>
+<p><strong>2. Dynamic Parameter Handling:</strong>
+<div class="highlight"><pre><span></span><code>flexible_sum = op() {
+    $local.total = 0;
+    $local.range(0, $local.len()).map(op(i) {
+        if ($local[i].type() == $INT || $local[i].type() == $FLOAT) {
+            $local.total += $local[i];
+        };
+    });
+    $local.total;
+};
+
+flexible_sum(1, 2, 3, 4);    /* 10 */
+flexible_sum(1.5, 2.5);      /* 4.0 */
+</code></pre></div></p>
+<p><strong>3. Parameter Validation:</strong>
+<div class="highlight"><pre><span></span><code>validate_params = op() {
+    if ($local.len() == 0) {
+        return $ERR(&quot;No parameters provided&quot;);
+    };
+    if ($local.len() &gt; 10) {
+        return $ERR(&quot;Too many parameters&quot;);
+    };
+    &quot;Parameters valid&quot;.echo();
+    $local;
+};
+</code></pre></div></p>
+<p><strong>4. Parameter Forwarding:</strong>
+<div class="highlight"><pre><span></span><code>wrapper = op() {
+    // Log parameters
+    (&quot;Calling with: &quot; + $local).echo();
+    // Forward to another function
+    actual_function($local);
+};
+</code></pre></div></p>
+<h4 id="key-points">Key Points</h4>
+<ul>
+<li><strong><code>$local</code> contains all parameters</strong> passed to the function</li>
+<li><strong>Positional parameters</strong> appear as array elements: <code>{1, 2, 3}</code></li>
+<li><strong>Named parameters</strong> appear as object properties: <code>{"a":1, "b":2}</code></li>
+<li><strong>Mixed parameters</strong> combine both: <code>{"a":1, "b":2, 3, 4}</code></li>
+<li><strong>Default parameters</strong> are included with their default values</li>
+<li><strong><code>$local</code> can be modified</strong> within the function</li>
+<li><strong>Useful for introspection</strong>, validation, and dynamic parameter handling</li>
+</ul>
 <h3 id="system-functions">System Functions</h3>
 <div class="highlight"><pre><span></span><code>/* Time functions */
 current_time = $TIME().utc();
@@ -10400,10 +10625,10 @@ x = select 8;    // x = 40
     
     
       
-      <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.top", "search.suggest", "content.code.copy", "content.action.edit", "content.action.view", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.top", "search.suggest", "content.code.copy", "content.action.edit", "content.action.view", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.92b07e13.min.js"></script>
+      <script src="../../assets/javascripts/bundle.56ea9cef.min.js"></script>
       
         <script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.0/dist/mermaid.min.js"></script>
       

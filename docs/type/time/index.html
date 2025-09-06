@@ -18,7 +18,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.18">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.15">
     
     
       
@@ -26,7 +26,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.7e37652d.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.342714a4.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
@@ -1332,11 +1332,26 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#delta" class="md-nav__link">
+  <a href="#ms" class="md-nav__link">
     <span class="md-ellipsis">
-      delta()
+      ms()
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="ms()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#performance-monitoring-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      Performance Monitoring Example
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -4071,11 +4086,26 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#delta" class="md-nav__link">
+  <a href="#ms" class="md-nav__link">
     <span class="md-ellipsis">
-      delta()
+      ms()
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="ms()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#performance-monitoring-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      Performance Monitoring Example
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -4134,12 +4164,34 @@
 &gt; $TIME().utc() + $TIME().tz();
 2020-07-10T12:06:15.9529207
 </code></pre></div>
-<h2 id="delta">delta()</h2>
+<h2 id="ms">ms()</h2>
 <div class="highlight"><pre><span></span><code>&gt; t1 = $TIME().utc();
 
-&gt; t1.delta();
+&gt; t1.ms();
 3.8281652
 </code></pre></div>
+<p>The <code>.ms()</code> method calculates the time difference in milliseconds. It can be used in two ways:</p>
+<ol>
+<li><strong>Time since creation</strong>: <code>t1.ms()</code> - returns milliseconds since the time object was created</li>
+<li><strong>Time difference</strong>: <code>t1.ms(t2)</code> - returns milliseconds between <code>t1</code> and <code>t2</code></li>
+</ol>
+<h3 id="performance-monitoring-example">Performance Monitoring Example</h3>
+<p>The <code>.ms()</code> method is particularly useful for performance monitoring:</p>
+<div class="highlight"><pre><span></span><code>t1 = $TIME().utc();
+1000.sleep();
+t2 = t1.utc();
+&#39;Time1=${from_t1}; Time2=${from_t2}; Delta=${t2_t1}\n&#39;.interpolate(from_t1:t1.ms().float(30),from_t2:t1.ms(t2).float(30),t2_t1:(t2-t1)/1000000).echo();
+1000.sleep();
+&#39;Time1=${from_t1}; Time2=${from_t2}; Delta=${t2_t1}\n&#39;.interpolate(from_t1:t1.ms().float(30),from_t2:t1.ms(t2).float(30),t2_t1:(t2-t1)/1000000).echo();
+</code></pre></div>
+<p><strong>Output:</strong>
+<div class="highlight"><pre><span></span><code>Time1=1249.2387; Time2=80.3584; Delta=1168.8803
+Time1=2509.5192; Time2=1340.6389; Delta=1168.8803
+</code></pre></div></p>
+<p>This example demonstrates:
+- <strong>Time1</strong>: Milliseconds since <code>t1</code> was created
+- <strong>Time2</strong>: Milliseconds between <code>t1</code> and <code>t2</code> 
+- <strong>Delta</strong>: Time difference in seconds (converted from nanoseconds)</p>
 <h2 id="examples">Examples</h2>
 <p>The following illustrate using various date ranges.</p>
 <div class="highlight"><pre><span></span><code>&gt; &quot;1020-04-23T12:33:33.921638&quot;.time();
@@ -4223,10 +4275,10 @@
     
     
       
-      <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.top", "search.suggest", "content.code.copy", "content.action.edit", "content.action.view", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.top", "search.suggest", "content.code.copy", "content.action.edit", "content.action.view", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.92b07e13.min.js"></script>
+      <script src="../../assets/javascripts/bundle.56ea9cef.min.js"></script>
       
         <script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.0/dist/mermaid.min.js"></script>
       
