@@ -26,15 +26,41 @@ Grapa defines three fundamental namespace types that can be accessed using speci
 - **Special Feature**: `$local` is automatically initialized with all function parameters, providing access to the complete parameter list
 - **Important**: `$local` properly isolates variables within function scope, protecting against external variable access and ensuring thread safety in recursive functions and multi-threaded execution
 
+### `$parent` - Parent Function Context
+- **Purpose**: Access to the calling function's local namespace
+- **Lifetime**: Function call execution
+- **Scope**: Parent function's `$local` namespace
+- **Use Case**: Function communication, nested function data access, callback patterns
+- **Behavior**: When called from top-level, returns the grammar system; when called from within a function, returns the calling function's `$local` namespace
+
+### `$root` - Root Widget Context
+- **Purpose**: Reference to the root widget/window in GUI applications
+- **Lifetime**: Widget lifetime
+- **Scope**: Widget hierarchy root
+- **Use Case**: GUI programming, widget manipulation, window management
+- **Implementation**: Variable lookup that resolves to the root widget
+
+### `$self` - Current Widget Context
+- **Purpose**: Reference to the current widget/object being processed
+- **Lifetime**: Widget processing lifetime
+- **Scope**: Current widget context
+- **Use Case**: Widget callbacks, event handling, self-referential operations
+- **Implementation**: Variable lookup that resolves to the current widget
+
 ## Syntax
 
-All three namespaces must be accessed with the `$` prefix:
+All namespace variables must be accessed with the `$` prefix:
 
 ```grapa
-// Only these forms are valid:
-$global.x = 5;
-$this.property = "value";
-$local.temp = 10;
+// Core namespace variables:
+$global.x = 5;           // Global namespace
+$this.property = "value"; // Object context
+$local.temp = 10;        // Local context
+
+// Special context variables:
+$parent.rule_name;       // Grammar system access
+$root.hide();            // Root widget reference
+$self.get("property");   // Current widget reference
 ```
 
 ## Critical Use Cases
@@ -327,6 +353,78 @@ myFunction = op() {
 };
 ```
 
+## Special Context Variables
+
+### `$parent` - Parent Function Access
+
+`$parent` provides access to the calling function's local namespace, enabling powerful function communication patterns:
+
+```grapa
+/* Basic parent access */
+child_function = op() {
+    $local.result = "processed";
+    $parent;  // Returns calling function's $local namespace
+};
+
+parent_function = op() {
+    $local.data = "input";
+    $local.status = "processing";
+    child_function();  // Returns {"data":"input","status":"processing"}
+};
+
+parent_function();  // Returns {"data":"input","status":"processing"}
+```
+
+**Key Behaviors:**
+- **From top-level**: Returns the grammar system (106+ rules)
+- **From within functions**: Returns the calling function's `$local` namespace
+- **Nested calls**: Always refers to the immediate parent, not the root
+
+```grapa
+/* Nested function example */
+grandchild = op() {
+    $local.gc_data = "grandchild";
+    $parent;  // Returns parent's $local, not grandparent's
+};
+
+child = op() {
+    $local.c_data = "child";
+    grandchild();  // Returns {"c_data":"child"}
+};
+
+parent = op() {
+    $local.p_data = "parent";
+    child();  // Returns {"c_data":"child"}
+};
+
+parent();  // Returns {"c_data":"child"}
+```
+
+### `$root` and `$self` - Widget Context
+
+In GUI applications, `$root` and `$self` provide widget references:
+
+```grapa
+/* GUI widget example (from $editor.grc) */
+button_callback = op() {
+    $root.hide();           // Hide the root window
+    $self.get("text");      // Get current widget's text
+    $root.child("menu");    // Access child widgets
+};
+
+/* Widget hierarchy navigation */
+menu_callback = op() {
+    $local.h1 = $root.child("scrollitems").get("h");
+    $local.y1 = $root.child("scrollitems").get("y");
+    $root.redraw();         // Refresh the entire window
+};
+```
+
+**Widget Context Variables:**
+- **`$root`**: Reference to the root widget/window
+- **`$self`**: Reference to the current widget being processed
+- **Use Cases**: GUI programming, widget manipulation, event handling
+
 ## Implementation Details
 
 The namespace system is implemented in `lib/grapa/$grapa.grc`:
@@ -335,12 +433,17 @@ The namespace system is implemented in `lib/grapa/$grapa.grc`:
 | $this {@<this,{}>}
 | $global {@<global,{}>}
 | $local {@<local,{}>}
+| $parent {@<parent,{}>}
+| $root {@<var,{$1}>}
+| $self {@<var,{$1}>}
 ```
 
 These rules map the namespace identifiers to their corresponding C++ implementations in `GrapaLibRule.cpp`:
 - `GrapaLibraryRuleThisEvent::Run`
 - `GrapaLibraryRuleGlobalEvent::Run` 
 - `GrapaLibraryRuleLocalEvent::Run`
+- `GrapaLibraryRuleParentEvent::Run`
+- `$root` and `$self` are implemented as variable lookups in `GrapaWidget.cpp`
 
 ## Common Pitfalls
 
@@ -408,6 +511,22 @@ innerLoop = op() {
 
 ## Summary
 
-Grapa's namespace scoping system provides powerful tools for managing variable visibility and lifetime. By understanding and properly using `$global`, `$this`, and `$local`, you can write robust, thread-safe code that avoids variable conflicts and maintains clear scope boundaries.
+Grapa's namespace scoping system provides powerful tools for managing variable visibility and lifetime. The system includes:
 
-**Key Takeaway**: Always declare function variables as `$local` to ensure thread safety and avoid conflicts with parent scopes.
+**Core Namespace Variables:**
+- `$global` - Global variables accessible from anywhere
+- `$this` - Current object's namespace  
+- `$local` - Local variables within current block scope
+
+**Special Context Variables:**
+- `$parent` - Access to calling function's local namespace
+- `$root` - Reference to root widget in GUI applications
+- `$self` - Reference to current widget being processed
+
+By understanding and properly using these namespace variables, you can write robust, thread-safe code that avoids variable conflicts and maintains clear scope boundaries.
+
+**Key Takeaways**: 
+- Always declare function variables as `$local` to ensure thread safety
+- Use `$parent` for function communication and callback patterns
+- Use `$root` and `$self` for GUI widget manipulation
+- Leverage `$local`'s automatic parameter list initialization for introspection
