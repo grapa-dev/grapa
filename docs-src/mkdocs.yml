@@ -93,6 +93,7 @@ nav:
       - Data Types:
           - Array: type/array.md
           - Boolean: type/bool.md
+          - Class: type/class.md
           - Code: type/code.md
           - Error: type/err.md
           - Float: type/float.md
