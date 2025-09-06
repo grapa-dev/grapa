@@ -11420,29 +11420,114 @@ GrapaRuleEvent* GrapaLibraryRuleFileSetEvent::Run(GrapaScriptExec* vScriptExec, 
 			{
 				GrapaInt a;
 				a.FromBytes(r2.vVal->mValue);
-				u64 index = a.LongValue();
+				s64 index = a.LongValue();
 
 				if (fieldName.vVal && fieldName.vVal->mValue.mToken == GrapaTokenType::INT)
 				{
 					// 2D access: vector.set(row, col, value)
 					GrapaInt b;
 					b.FromBytes(fieldName.vVal->mValue);
-					u64 col = b.LongValue();
+					s64 col = b.LongValue();
+					
 					if (objEvent->vVector->mDim == 2 && objEvent->vVector->mCounts)
+					{
+						// Handle negative indices for 2D vectors
+						if (index < 0) {
+							if ((u64)(-index - 1) >= objEvent->vVector->mCounts[0]) {
+								result = Error(vScriptExec, pNameSpace, -1);
+								return(result);
+							}
+							index = objEvent->vVector->mCounts[0] + index;
+						}
+						if (col < 0) {
+							if ((u64)(-col - 1) >= objEvent->vVector->mCounts[1]) {
+								result = Error(vScriptExec, pNameSpace, -1);
+								return(result);
+							}
+							col = objEvent->vVector->mCounts[1] + col;
+						}
+						
 						objEvent->vVector->Set(index * objEvent->vVector->mCounts[1] + col, fieldValue.vVal);
+					}
 					else
 						result = Error(vScriptExec, pNameSpace, -1);
 				}
 				else
 				{
 					// 1D access: vector.set(index, value)
+					// Handle negative indices for 1D vectors
+					if (index < 0) {
+						if ((u64)(-index - 1) >= objEvent->vVector->mSize) {
+							result = Error(vScriptExec, pNameSpace, -1);
+							return(result);
+						}
+						index = objEvent->vVector->mSize + index;
+					}
+					
 					objEvent->vVector->Set(index, fieldValue.vVal);
 				}
 				result = new GrapaRuleEvent(GrapaTokenType::INT, 0, "", "0");
 			}
+			else if (r2.vVal->mValue.mToken == GrapaTokenType::STR)
+			{
+				// String-based access using labels
+				GrapaCHAR label;
+				label.FROM(r2.vVal->mValue);
+
+				if (fieldName.vVal && fieldName.vVal->mValue.mToken == GrapaTokenType::STR)
+				{
+					// 2D access: vector.set(rowLabel, colLabel, value)
+					GrapaCHAR colLabel;
+					colLabel.FROM(fieldName.vVal->mValue);
+					objEvent->vVector->Set(label, colLabel, fieldValue.vVal);
+				}
+				else if (fieldName.vVal && fieldName.vVal->mValue.mToken == GrapaTokenType::INT)
+				{
+					// 2D access: vector.set(rowLabel, col, value)
+					GrapaInt b;
+					b.FromBytes(fieldName.vVal->mValue);
+					u64 col = b.LongValue();
+					objEvent->vVector->Set(label, col, fieldValue.vVal);
+				}
+				else
+				{
+					// 1D access: vector.set(label, value)
+					objEvent->vVector->Set(label, fieldValue.vVal);
+				}
+				result = new GrapaRuleEvent(GrapaTokenType::INT, 0, "", "0");
+			}
+			else if (r2.vVal->mValue.mToken == GrapaTokenType::INT && fieldName.vVal && fieldName.vVal->mValue.mToken == GrapaTokenType::STR)
+			{
+				// 2D access: vector.set(row, colLabel, value)
+				GrapaInt a;
+				a.FromBytes(r2.vVal->mValue);
+				s64 row = a.LongValue();
+				
+				// Handle negative row index
+				if (row < 0) {
+					if (objEvent->vVector->mDim == 2 && objEvent->vVector->mCounts) {
+						if ((u64)(-row - 1) >= objEvent->vVector->mCounts[0]) {
+							result = Error(vScriptExec, pNameSpace, -1);
+							return(result);
+						}
+						row = objEvent->vVector->mCounts[0] + row;
+					} else {
+						if ((u64)(-row - 1) >= objEvent->vVector->mSize) {
+							result = Error(vScriptExec, pNameSpace, -1);
+							return(result);
+						}
+						row = objEvent->vVector->mSize + row;
+					}
+				}
+				
+				GrapaCHAR colLabel;
+				colLabel.FROM(fieldName.vVal->mValue);
+				objEvent->vVector->Set(row, colLabel, fieldValue.vVal);
+				result = new GrapaRuleEvent(GrapaTokenType::INT, 0, "", "0");
+			}
 			else
 			{
-				// String-based access (if supported)
+				// Unsupported parameter type
 				result = Error(vScriptExec, pNameSpace, -1);
 			}
 		}
@@ -11619,28 +11704,111 @@ GrapaRuleEvent* GrapaLibraryRuleFileGetEvent::Run(GrapaScriptExec *vScriptExec, 
 			{
 				GrapaInt a;
 				a.FromBytes(r2.vVal->mValue);
-				u64 index = a.LongValue();
+				s64 index = a.LongValue();
 
 				if (fieldName.vVal && fieldName.vVal->mValue.mToken == GrapaTokenType::INT)
 				{
 					// 2D access: vector.get(row, col)
 					GrapaInt b;
 					b.FromBytes(fieldName.vVal->mValue);
-					u64 col = b.LongValue();
+					s64 col = b.LongValue();
+					
 					if (objEvent->vVector->mDim == 2 && objEvent->vVector->mCounts)
+					{
+						// Handle negative indices for 2D vectors
+						if (index < 0) {
+							if ((u64)(-index - 1) >= objEvent->vVector->mCounts[0]) {
+								result = Error(vScriptExec, pNameSpace, -1);
+								return(result);
+							}
+							index = objEvent->vVector->mCounts[0] + index;
+						}
+						if (col < 0) {
+							if ((u64)(-col - 1) >= objEvent->vVector->mCounts[1]) {
+								result = Error(vScriptExec, pNameSpace, -1);
+								return(result);
+							}
+							col = objEvent->vVector->mCounts[1] + col;
+						}
+						
 						result = objEvent->vVector->Get(index, col);
+					}
 					else
 						result = Error(vScriptExec, pNameSpace, -1);
 				}
 				else
 				{
 					// 1D access: vector.get(index)
+					// Handle negative indices for 1D vectors
+					if (index < 0) {
+						if ((u64)(-index - 1) >= objEvent->vVector->mSize) {
+							result = Error(vScriptExec, pNameSpace, -1);
+							return(result);
+						}
+						index = objEvent->vVector->mSize + index;
+					}
+					
 					result = objEvent->vVector->Get(index);
 				}
 			}
+			else if (r2.vVal->mValue.mToken == GrapaTokenType::STR)
+			{
+				// String-based access using labels
+				GrapaCHAR label;
+				label.FROM(r2.vVal->mValue);
+
+				if (fieldName.vVal && fieldName.vVal->mValue.mToken == GrapaTokenType::STR)
+				{
+					// 2D access: vector.get(rowLabel, colLabel)
+					GrapaCHAR colLabel;
+					colLabel.FROM(fieldName.vVal->mValue);
+					result = objEvent->vVector->Get(label, colLabel);
+				}
+				else if (fieldName.vVal && fieldName.vVal->mValue.mToken == GrapaTokenType::INT)
+				{
+					// 2D access: vector.get(rowLabel, col)
+					GrapaInt b;
+					b.FromBytes(fieldName.vVal->mValue);
+					u64 col = b.LongValue();
+					result = objEvent->vVector->Get(label, col);
+				}
+				else
+				{
+					// 1D access: vector.get(label)
+					result = objEvent->vVector->Get(label);
+				}
+			}
+			else if (r2.vVal->mValue.mToken == GrapaTokenType::INT && fieldName.vVal && fieldName.vVal->mValue.mToken == GrapaTokenType::STR)
+			{
+				// 2D access: vector.get(row, colLabel)
+				GrapaInt a;
+				a.FromBytes(r2.vVal->mValue);
+				s64 row = a.LongValue();
+				
+				// Handle negative row index
+				if (row < 0) {
+					if (objEvent->vVector->mDim == 2 && objEvent->vVector->mCounts) {
+						if ((u64)(-row - 1) >= objEvent->vVector->mCounts[0]) {
+							result = Error(vScriptExec, pNameSpace, -1);
+							return(result);
+						}
+						row = objEvent->vVector->mCounts[0] + row;
+					} else {
+						if ((u64)(-row - 1) >= objEvent->vVector->mSize) {
+							result = Error(vScriptExec, pNameSpace, -1);
+							return(result);
+						}
+						row = objEvent->vVector->mSize + row;
+					}
+				}
+				
+				GrapaCHAR colLabel;
+				colLabel.FROM(fieldName.vVal->mValue);
+				result = objEvent->vVector->Get(row, colLabel);
+			}
 			else
 			{
-				// String-based access (if supported)
+				// Unsupported parameter type
 				result = Error(vScriptExec, pNameSpace, -1);
 			}
 		}

@@ -1559,6 +1559,108 @@ GrapaRuleEvent* GrapaVector::Get(u64 pRow, u64 pCol)
 	return Get(pos);
 }
 
+GrapaRuleEvent* GrapaVector::Get(const GrapaCHAR& pLabel)
+{
+	if (mLabels.mCount == 0)
+		return NULL;
+	
+	s64 index = 0;
+	GrapaRuleEvent* label = mLabels.Search(pLabel, index);
+	if (label && index >= 0 && index < (s64)mSize)
+		return Get(index);
+	return NULL;
+}
+
+GrapaRuleEvent* GrapaVector::Get(const GrapaCHAR& pRowLabel, const GrapaCHAR& pColLabel)
+{
+	if (mDim != 2 || mLabels.mCount == 0)
+		return NULL;
+	
+	s64 rowIndex = 0, colIndex = 0;
+	GrapaRuleEvent* rowLabel = mLabels.Search(pRowLabel, rowIndex);
+	GrapaRuleEvent* colLabel = mLabels.Search(pColLabel, colIndex);
+	
+	if (rowLabel && colLabel && rowIndex >= 0 && colIndex >= 0 && 
+		rowIndex < (s64)mCounts[0] && colIndex < (s64)mCounts[1])
+		return Get(rowIndex, colIndex);
+	return NULL;
+}
+
+GrapaRuleEvent* GrapaVector::Get(u64 pRow, const GrapaCHAR& pColLabel)
+{
+	if (mDim != 2 || mLabels.mCount == 0)
+		return NULL;
+	
+	s64 colIndex = 0;
+	GrapaRuleEvent* colLabel = mLabels.Search(pColLabel, colIndex);
+	
+	if (colLabel && colIndex >= 0 && colIndex < (s64)mCounts[1] && pRow < mCounts[0])
+		return Get(pRow, colIndex);
+	return NULL;
+}
+
+GrapaRuleEvent* GrapaVector::Get(const GrapaCHAR& pRowLabel, u64 pCol)
+{
+	if (mDim != 2 || mLabels.mCount == 0)
+		return NULL;
+	
+	s64 rowIndex = 0;
+	GrapaRuleEvent* rowLabel = mLabels.Search(pRowLabel, rowIndex);
+	
+	if (rowLabel && rowIndex >= 0 && rowIndex < (s64)mCounts[0] && pCol < mCounts[1])
+		return Get(rowIndex, pCol);
+	return NULL;
+}
+
+void GrapaVector::Set(const GrapaCHAR& pLabel, GrapaRuleEvent* value)
+{
+	if (mLabels.mCount == 0)
+		return;
+	
+	s64 index = 0;
+	GrapaRuleEvent* label = mLabels.Search(pLabel, index);
+	if (label && index >= 0 && index < (s64)mSize)
+		Set(index, value);
+}
+
+void GrapaVector::Set(const GrapaCHAR& pRowLabel, const GrapaCHAR& pColLabel, GrapaRuleEvent* value)
+{
+	if (mDim != 2 || mLabels.mCount == 0)
+		return;
+	
+	s64 rowIndex = 0, colIndex = 0;
+	GrapaRuleEvent* rowLabel = mLabels.Search(pRowLabel, rowIndex);
+	GrapaRuleEvent* colLabel = mLabels.Search(pColLabel, colIndex);
+	
+	if (rowLabel && colLabel && rowIndex >= 0 && colIndex >= 0 && 
+		rowIndex < (s64)mCounts[0] && colIndex < (s64)mCounts[1])
+		Set(rowIndex * mCounts[1] + colIndex, value);
+}
+
+void GrapaVector::Set(u64 pRow, const GrapaCHAR& pColLabel, GrapaRuleEvent* value)
+{
+	if (mDim != 2 || mLabels.mCount == 0)
+		return;
+	
+	s64 colIndex = 0;
+	GrapaRuleEvent* colLabel = mLabels.Search(pColLabel, colIndex);
+	
+	if (colLabel && colIndex >= 0 && colIndex < (s64)mCounts[1] && pRow < mCounts[0])
+		Set(pRow * mCounts[1] + colIndex, value);
+}
+
+void GrapaVector::Set(const GrapaCHAR& pRowLabel, u64 pCol, GrapaRuleEvent* value)
+{
+	if (mDim != 2 || mLabels.mCount == 0)
+		return;
+	
+	s64 rowIndex = 0;
+	GrapaRuleEvent* rowLabel = mLabels.Search(pRowLabel, rowIndex);
+	
+	if (rowLabel && rowIndex >= 0 && rowIndex < (s64)mCounts[0] && pCol < mCounts[1])
+		Set(rowIndex * mCounts[1] + pCol, value);
+}
+
 GrapaError GrapaVector::Dot(GrapaScriptExec* pScriptExec, GrapaNames* pNameSpace, GrapaVector& bi, GrapaVector& result)
 {
 	GrapaInt t;

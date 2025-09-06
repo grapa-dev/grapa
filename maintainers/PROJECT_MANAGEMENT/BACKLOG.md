@@ -478,6 +478,15 @@ The following work was completed in version 0.1.52 and is now stable:
 - [ ] **Consider adding support for custom operators**
 - [ ] **Namespace Chaining Support**: Enable chaining of namespace variables like `$oplocal.$parent.$oplocal`
 - [x] **Vector Data Loss Bug**: ✅ **COMPLETED** - Fixed multiple methods in GrapaVector.cpp that lose non-numeric data
+- [ ] **Dual-Dimension Vector Label Support**: Evaluate supporting labels on both dimensions for 2D vectors
+  - **Current State**: GrapaVector supports column labels only (spreadsheet-like functionality)
+  - **Enhancement**: Add support for both row and column labels in 2D vectors
+  - **Technical Requirements**: 
+    - Add `mRowLabels` and `mColLabels` queues to GrapaVector
+    - Update 2D access methods to support both row and column label resolution
+    - Modify vector creation/initialization to populate both label queues
+  - **Use Cases**: Enhanced spreadsheet functionality, matrix operations with named dimensions
+  - **Priority**: Medium (current column-only labels meet most spreadsheet needs)
   - **Issue**: ~~Vector methods return `[0]` or `[[0,0],[0,0]]` instead of preserving string/mixed-type data~~
   - **Root Cause**: ~~`result.Set()` method not properly handling non-numeric data types in multiple functions~~
   - **Solution Implemented**: 

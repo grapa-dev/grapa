@@ -144,8 +144,16 @@ public:
 	virtual void Set(u64 pPos, const GrapaVectorParam& fl);
 	virtual void Set(u64 pPos, const GrapaFloat& fl);
 	virtual void Set(u64 pPos, GrapaInt& fl);
+	virtual void Set(const GrapaCHAR& pLabel, GrapaRuleEvent* value);
+	virtual void Set(const GrapaCHAR& pRowLabel, const GrapaCHAR& pColLabel, GrapaRuleEvent* value);
+	virtual void Set(u64 pRow, const GrapaCHAR& pColLabel, GrapaRuleEvent* value);
+	virtual void Set(const GrapaCHAR& pRowLabel, u64 pCol, GrapaRuleEvent* value);
 	virtual GrapaRuleEvent* Get(u64 pPos);
 	virtual GrapaRuleEvent* Get(u64 pRow, u64 pCol);
+	virtual GrapaRuleEvent* Get(const GrapaCHAR& pLabel);
+	virtual GrapaRuleEvent* Get(const GrapaCHAR& pRowLabel, const GrapaCHAR& pColLabel);
+	virtual GrapaRuleEvent* Get(u64 pRow, const GrapaCHAR& pColLabel);
+	virtual GrapaRuleEvent* Get(const GrapaCHAR& pRowLabel, u64 pCol);
 	virtual void Identity(GrapaScriptExec* pScriptExec, u64 n);
 	virtual bool Diagonal(GrapaScriptExec* pScriptExec, s64 n, GrapaVector& result);
 	virtual bool TriU(GrapaScriptExec* pScriptExec, s64 n, GrapaVector& result);
