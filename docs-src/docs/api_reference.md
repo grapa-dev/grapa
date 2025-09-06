@@ -736,6 +736,7 @@ All Grapa objects support a comprehensive set of methods through the `$OBJ` clas
 - **Bit Manipulation**: `.setbit()`, `.clearbit()`, `.genbits()`
 - **Cryptography**: `.encode()`, `.decode()`, `.sign()`, `.verify()`, `.secret()`
 - **Universal Access**: `.get()`, `.set()` - works across `$ARRAY`, `$LIST`, `$OBJ`, `$file`, `$TABLE`, `$WIDGET`
+- **Flexible Field Access**: `.getfield()`, `.setfield()` - universal methods (mix/match of names and indices for `$ARRAY`, `$LIST`, and `$OBJ` non-system classes only)
 - **Utilities**: `.echo()`, `.debug()`, `.iferr()`, `.exec()`, `.getname()`
 
 ### Quick Examples

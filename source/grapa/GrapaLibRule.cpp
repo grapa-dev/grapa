@@ -5163,7 +5163,21 @@ static GrapaRuleEvent* ItemAssignRun(GrapaScriptExec *vScriptExec, GrapaNames* p
 	}
 	if (r1.vVal && r1.vVal->mClass && r1.vDel && r1.vDel->vClass)
 	{
-		r1.vVal = vScriptExec->vScriptState->AddRawParameter(r1.vDel->vRuleParent, r1.vVal->mName, GrapaBYTE());
+		s64 index;
+		if (r1.vDel->vRuleParent->vClass->vQueue)
+		{
+			GrapaRuleEvent* rv = r1.vDel->vRuleParent->vClass->vQueue->Head();
+			rv = vScriptExec->vScriptState->FindClassVar(pNameSpace, rv, r1.vVal->mName);
+			if (rv)
+				r1.vVal = rv;
+		}
+		if (r1.vVal)
+			r1.vVal = vScriptExec->CopyItem(r1.vVal);
+		else
+			r1.vVal = vScriptExec->vScriptState->AddRawParameter(r1.vDel->vRuleParent, r1.vVal->mName, GrapaBYTE());
+		GrapaRuleEvent* op = r1.vDel->vRuleParent;
+		while (op->mValue.mToken == GrapaTokenType::PTR && op->vRulePointer) op = op->vRulePointer;
+		op->vQueue->PushTail(r1.vVal);
 	}
 
 	if (r1.vVal)
@@ -11141,12 +11155,15 @@ GrapaRuleEvent* GrapaLibraryRuleFileSetEvent::Run(GrapaScriptExec* vScriptExec, 
 	GrapaLibraryParam r2(vScriptExec, pNameSpace, pInput ? pInput->Head(1) : NULL);
 	bool isSetField = (mName.Cmp("setfield") == 0);
 	GrapaLibraryParam fieldName(vScriptExec, pNameSpace, pInput ? pInput->Head(isSetField ? 2 : 3) : NULL);
-	GrapaLibraryParam fieldValue(vScriptExec, pNameSpace, pInput ? pInput->Head(isSetField ? 3 : 2) : NULL);
+	GrapaLibraryParam fieldValue(vScriptExec, pNameSpace, pInput ? pInput->Head(isSetField ? 3 : 2) : NULL); 
 
-	if (objEvent->mValue.mToken == GrapaTokenType::LIST || objEvent->mValue.mToken == GrapaTokenType::ARRAY)
+	if (objEvent->mValue.mToken == GrapaTokenType::LIST || objEvent->mValue.mToken == GrapaTokenType::ARRAY || (objEvent->mValue.mToken == GrapaTokenType::OBJ && objEvent->vClass->mName.mLength && objEvent->vClass->mName.mBytes[0] != '$'))
 	{
 		s64 index;
 		GrapaRuleEvent* r = NULL;
+
+		if (objEvent->mValue.mToken == GrapaTokenType::OBJ && objEvent->vQueue == NULL)
+			objEvent->vQueue = new GrapaRuleQueue();
 
 		if (isSetField)
 		{
@@ -11185,12 +11202,15 @@ GrapaRuleEvent* GrapaLibraryRuleFileSetEvent::Run(GrapaScriptExec* vScriptExec, 
 			}
 			else
 			{
-				objEvent = r1.vVal->vQueue->Search(r2.vVal->mValue, index);
-				if (objEvent == NULL)
+				if (r2.vVal->mValue.mLength)
 				{
-					objEvent = new GrapaRuleEvent(r1.vVal->mValue.mToken, r2.vVal->mValue, GrapaCHAR());
-					objEvent->vQueue = new GrapaRuleQueue();;
-					r1.vVal->vQueue->PushTail(objEvent);
+					objEvent = r1.vVal->vQueue->Search(r2.vVal->mValue, index);
+					if (objEvent == NULL)
+					{
+						objEvent = new GrapaRuleEvent(r1.vVal->mValue.mToken, r2.vVal->mValue, GrapaCHAR());
+						objEvent->vQueue = new GrapaRuleQueue();;
+						r1.vVal->vQueue->PushTail(objEvent);
+					}
 				}
 			}
 			while (objEvent && objEvent->mValue.mToken == GrapaTokenType::PTR && objEvent->vRulePointer) objEvent = objEvent->vRulePointer;
@@ -11229,12 +11249,16 @@ GrapaRuleEvent* GrapaLibraryRuleFileSetEvent::Run(GrapaScriptExec* vScriptExec, 
 				}
 				else
 				{
-					r = objEvent->vQueue->Search(fieldName.vVal->mValue, index);
-					if (r == NULL)
+					if (fieldName.vVal->mValue.mLength)
 					{
-						r = new GrapaRuleEvent(GrapaTokenType::RAW, fieldName.vVal->mValue, GrapaCHAR());
-						objEvent->vQueue->PushTail(r);
+						r = objEvent->vQueue->Search(fieldName.vVal->mValue, index);
+						if (r == NULL)
+						{
+							r = new GrapaRuleEvent(GrapaTokenType::RAW, fieldName.vVal->mValue, GrapaCHAR());
+							objEvent->vQueue->PushTail(r);
+						}
 					}
+
 				}
 			}
 		}
@@ -11273,11 +11297,14 @@ GrapaRuleEvent* GrapaLibraryRuleFileSetEvent::Run(GrapaScriptExec* vScriptExec, 
 			}
 			else
 			{
-				r = objEvent->vQueue->Search(r2.vVal->mValue, index);
-				if (r == NULL)
-				{
-					r = new GrapaRuleEvent(GrapaTokenType::RAW, r2.vVal->mValue, GrapaCHAR());
-					objEvent->vQueue->PushTail(r);
+				if (r2.vVal->mValue.mLength)
+				{ 
+					r = objEvent->vQueue->Search(r2.vVal->mValue, index);
+					if (r == NULL)
+					{
+						r = new GrapaRuleEvent(GrapaTokenType::RAW, r2.vVal->mValue, GrapaCHAR());
+						objEvent->vQueue->PushTail(r);
+					}
 				}
 			}
 		}
@@ -11365,10 +11392,13 @@ GrapaRuleEvent* GrapaLibraryRuleFileGetEvent::Run(GrapaScriptExec *vScriptExec, 
 	if (objEvent == NULL)
 		result = Error(vScriptExec, pNameSpace, err);
 
-	if (objEvent->mValue.mToken == GrapaTokenType::LIST || objEvent->mValue.mToken == GrapaTokenType::ARRAY)
+	if (objEvent->mValue.mToken == GrapaTokenType::LIST || objEvent->mValue.mToken == GrapaTokenType::ARRAY || (objEvent->mValue.mToken == GrapaTokenType::OBJ && objEvent->vClass->mName.mLength && objEvent->vClass->mName.mBytes[0] != '$'))
 	{
 		s64 index;
 		GrapaRuleEvent* r = NULL;
+
+		if (objEvent->mValue.mToken == GrapaTokenType::OBJ && objEvent->vQueue == NULL)
+			objEvent->vQueue = new GrapaRuleQueue();
 
 		if (r2.vVal->mValue.mToken == GrapaTokenType::INT)
 		{

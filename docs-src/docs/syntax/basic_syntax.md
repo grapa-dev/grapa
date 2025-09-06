@@ -12,21 +12,21 @@ tags:
 >
 > | Type      | .getfield("key") | .getfield(index) | Bracket Notation | Dot Notation | .len() | .size() | .get()/.set() |
 > |-----------|:---------------:|:----------------:|:----------------:|:------------:|:------:|:-------:|:-------------:|
-> | $ARRAY    |        ❌        |        ❌        |       ✅         |      —       |   ✅   |    ❌   |      ✅       |
-> | $LIST     |        ❌        |        ❌        |       ✅         |     ✅       |   ✅   |    ❌   |      ✅       |
-> | $OBJ      |        ❌        |        ❌        |       ✅         |     ✅       |   ❌   |    ❌   |      ✅       |
+> | $ARRAY    |        ✅        |        ✅        |       ✅         |      —       |   ✅   |    ❌   |      ✅       |
+> | $LIST     |        ✅        |        ✅        |       ✅         |     ✅       |   ✅   |    ❌   |      ✅       |
+> | $OBJ      |        ✅        |        ✅        |       ✅         |     ✅       |   ❌   |    ❌   |      ✅       |
 > | $file     |        ✅        |        ❌        |        —         |      —       |   ❌   |    ❌   |      ✅       |
 > | $TABLE    |       ✅*        |        ❌        |        —         |      —       |   ❌   |    ❌   |      ✅       |
 > | $WIDGET   |        —         |        —         |        —         |      —       |   —   |    —   |      ✅       |
 >
-> *$TABLE .getfield() requires two arguments: key and field.
+> *$TABLE .getfield() requires two arguments: key and field. Only $ARRAY, $LIST, and $OBJ (non-system classes) support flexible mix/match of names and indices.
 > **`.get()/.set()` methods are now **universal** and work across `$ARRAY`, `$LIST`, `$OBJ`, `$file`, `$TABLE`, and `$WIDGET` types.
 >
 > **Key Findings:**
 > - **Arrays (`[]`)**: Use `array[index]` and `array.len()` for access and length
 > - **Lists (`{}`)**: Use `list[key]` or `list.key` for access, `list.len()` for length
 > - **Objects (class)**: Use `object.property` or `object[key]` for access
-> - **`.getfield()/.setfield()` method**: Use for `$file` and `$TABLE` types
+> - **`.getfield()/.setfield()` method**: Universal methods for `$ARRAY`, `$LIST`, `$OBJ`, `$file`, and `$TABLE` types. Flexible mix/match of names and indices supported only for `$ARRAY`, `$LIST`, and `$OBJ` (non-system classes)
 > - **`.get()/.set()` method**: Universal methods for `$ARRAY`, `$LIST`, `$OBJ`, `$file`, `$TABLE`, and `$WIDGET` types
 > - **`.size()` method**: Not supported on any type (use `.len()` instead)
 > - **`.keys()` method**: Not supported on `$LIST` (use iteration instead)
@@ -39,6 +39,7 @@ tags:
 > - For tables: `table.getfield(key, field)` and `table.setfield(key, value, field)`
 > - For widgets: `widget.get(name, params)` and `widget.set(name, data)`
 > - For universal access: `object.get(key)` and `object.set(key, value)` (works with `$ARRAY`, `$LIST`, `$OBJ`, `$file`, `$TABLE`, `$WIDGET`)
+> - For flexible field access: `object.getfield(key, field)` and `object.setfield(key, field, value)` (mix/match of names and indices supported for `$ARRAY`, `$LIST`, and `$OBJ` non-system classes only)
 > - Avoid `.size()` and `.keys()` on arrays, lists, and objects
 
 > **Universal .get()/.set() Methods:**
@@ -51,6 +52,13 @@ tags:
 > - **Length**: Use `.len()` for arrays and lists, not `.size()`.
 > - **Keys**: For lists, iterate manually instead of using `.keys()`.
 > - **Design Decision**: `.get()/.set()` methods are now universal across most types for consistent API access
+>
+> **Flexible .getfield()/.setfield() Methods:**
+> - **Universal Support**: `.getfield()/.setfield()` work on `$ARRAY`, `$LIST`, `$OBJ`, `$file`, and `$TABLE` types
+> - **Mix/Match Parameters**: Can combine named keys and numeric indices in any combination (supported for `$ARRAY`, `$LIST`, and `$OBJ` non-system classes only)
+> - **Index-to-Name Conversion**: When inserting at a numeric index, the index becomes a string key for future access
+> - **2D Structures**: Supports arrays of lists, lists of arrays, and mixed data structures
+> - **Boundary Insertion**: Use `length` to append at end, `-length` to prepend at beginning
 
 ---
 
@@ -1824,20 +1832,28 @@ mapped = filtered.map(op(x){x*2});
 
 ### $file and $TABLE Access
 
-For `$file` and `$TABLE` objects, always use `.getfield()` and `.setfield()` methods:
+For `$file` and `$TABLE` objects, use `.getfield()` and `.setfield()` methods with named keys only:
 
 ```grapa
 files = $file().ls();
-file_info = files.getfield(0);   /* Correct */
+file_info = files.getfield("filename.txt"); /* Named key only */
 
 table = {}.table("ROW");
 table.mkfield("name", "STR", "VAR");
-table.setfield("user1", "name", "Alice");
-value = table.getfield("user1", "name");   /* Correct */
+table.setfield("user1", "name", "Alice");   /* Named key, named field */
+value = table.getfield("user1", "name");    /* Named key, named field */
+
+/* $file and $TABLE only support named keys, not numeric indices */
+file = $file();
+file.setfield("file.txt", "content");       /* Set with named key */
+content = file.getfield("file.txt");        /* Get by named key */
 ```
 
-- Always use `.getfield()` and `.setfield()` for `$file` and `$TABLE`.
+- Use `.getfield()` and `.setfield()` for `$file` and `$TABLE` with named keys only.
 - Bracket and dot notation are not valid for `$file` and `$TABLE`.
+- Only `$ARRAY`, `$LIST`, and `$OBJ` (non-system classes) support flexible mix/match of names and indices with `.getfield()/.setfield()`.
+
+**See also:** [Class Inheritance and Variable Scoping](../type/class.md) for detailed information about Grapa's sophisticated class system with copy-on-write semantics.
 
 ### Type System Philosophy
 
@@ -2807,6 +2823,59 @@ age2 = my_table.getfield("user2", "age");    /* 25 */
 - **Flexible Access**: Choose between universal methods or type-specific alternatives
 - **Backward Compatibility**: All existing code continues to work
 - **Type Safety**: Proper parameter validation and error handling
+
+### Flexible .getfield()/.setfield() Methods
+
+The `.getfield()` and `.setfield()` methods provide universal support across all data types. Flexible parameter combinations (mix/match of names and indices) are supported for `$ARRAY`, `$LIST`, and `$OBJ` (non-system classes) types:
+
+```grapa
+/* Mix/Match Examples */
+$global.data = {"a": [1, 2, 3], "b": [4, 5, 6]};
+
+/* Named key + Numeric index */
+value = data.getfield("a", 1);        /* 2 */
+data.setfield("a", 1, 99);            /* Set index 1 to 99 */
+
+/* Numeric index + Named field */
+$global.matrix = [[{"x": 1, "y": 2}], [{"x": 3, "y": 4}]];
+value = matrix.getfield(0, 0);        /* {"x": 1, "y": 2} */
+value = matrix.getfield(0, 0, "x");   /* 1 */
+
+/* Index-to-Name Conversion */
+$global.list = {"a": [1, 2, 3]};
+list.setfield("a", 3, 4);             /* Insert at index 3 */
+value = list.getfield("a", "3");      /* 4 (index becomes string key) */
+value = list.getfield("a", 3);        /* 4 (both work) */
+
+/* 2D Structure Examples */
+$global.mixed = {"row1": [1, 2, 3], "row2": [4, 5, 6]};
+value = mixed.getfield("row1", 1);    /* 2 */
+mixed.setfield("row1", 3, 7);         /* Append to end */
+
+/* Boundary Insertion */
+$global.array = [1, 2, 3];
+array.setfield(array.len(), 4);       /* Append at end */
+array.setfield(-array.len(), 0);      /* Prepend at beginning */
+
+/* $OBJ Examples - Non-System Classes Only */
+$global.MyClass = class ($OBJ) { i = 1; };
+$global.obj = MyClass();
+obj.set("a", 55);                     /* Works - non-system class */
+obj.setfield("b", 66);                /* Works - non-system class */
+
+/* System classes like $file, $TABLE do NOT support flexible mix/match */
+$global.file = $file();
+file.setfield("key", "value");        /* Works - named key only */
+/* file.setfield(0, "value");        /* Would NOT work - no index support */
+```
+
+**Key Features:**
+- **Universal Support**: Works on `$ARRAY`, `$LIST`, `$OBJ`, `$file`, and `$TABLE` types
+- **Mix/Match Parameters**: Combine named keys and numeric indices in any order (for `$ARRAY`, `$LIST`, and `$OBJ` non-system classes only)
+- **Index-to-Name Conversion**: Numeric indices become string keys when inserting
+- **2D Structures**: Supports arrays of lists, lists of arrays, and mixed combinations
+- **Boundary Insertion**: Use `length` to append, `-length` to prepend
+- **Dynamic Field Creation**: New fields are created automatically when setting
 
 This guide covers the essential syntax patterns for writing correct Grapa code. Follow these patterns to avoid common syntax errors and write maintainable code. 
 
