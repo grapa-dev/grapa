@@ -65,7 +65,21 @@ The project has completed version 0.1.53 and is now beginning development for ve
    - **Documentation**: Updated installation docs for new universal system
 
 ### Medium Priority
-1. **Performance optimization** - Review and optimize any remaining performance bottlenecks
+1. **Vector Data Loss Bug Fix** - ✅ **COMPLETED** - Fixed data loss in vector methods (.left(), .right(), .diag(), .triu(), .tril()) for non-numeric data types
+   - **Issue**: Vector methods were losing non-numeric data (strings, booleans, arrays, etc.) and returning `#[0]#` instead
+   - **Root Cause**: `GrapaVectorParam` constructor only handled `INT` and `FLOAT` types, defaulting to `0` for others
+   - **Resolution**: Extended `GrapaVectorParam` constructor to support all data types found in other GrapaVector methods
+   - **Data Types Added**: `BOOL`, `RAW`, `TIME`, `LIST`, `ARRAY`, `TUPLE`, `XML`, `TABLE`, `VECTOR`, `WIDGET`, `OP`, `CODE`, `CLASS`, `OBJ`, `RULE`, `TOKEN`, `SYM`, `SYSSYM`, `SYSID`, `SYSSTR`, `SYSINT`, `REF`, `COMMENT`, `DOC`
+   - **Memory Management**: Added `AopOwned` flag to prevent memory leaks and dangling pointers
+   - **Validation**: Tested with mixed data types: `[1, "hello", true, [1,2]].vector().left(2)` returns `#[1,"hello"]#`
+
+2. **Vector .set() and .get() Support** - **PENDING** - Add support for .set() and .setfield() operations on $VECTOR objects
+   - **Issue**: $VECTOR objects cannot use .set(), .setfield(), .get(), or .getfield() operations
+   - **Root Cause**: `GrapaLibraryRuleFileSetEvent::Run` and `GrapaLibraryRuleFileGetEvent::Run` only support `LIST`, `ARRAY`, `OBJ`, `TABLE`, and `$file` types
+   - **Impact**: No element access or modification capabilities for vectors, inconsistent API compared to other data types
+   - **Required**: Add `GrapaTokenType::VECTOR` support to both methods with vector-specific logic
+
+3. **Performance optimization** - Review and optimize any remaining performance bottlenecks
 
 ### Low Priority
 1. **Enhanced error handling** - Improve error messages and recovery mechanisms

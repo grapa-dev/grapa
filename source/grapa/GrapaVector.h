@@ -62,6 +62,7 @@ public:
 	GrapaVectorValue* a;
 	GrapaFloat* aa;
 	GrapaRuleEvent* Aop;
+	bool AopOwned;  // Track if we own the Aop memory
 	GrapaRuleQueue params;
 	GrapaRuleEvent* ap;
 	GrapaVectorParam(GrapaScriptExec* pScriptExec, GrapaVectorItem* pData, u8 pBlock, u64 pPos);
@@ -143,6 +144,8 @@ public:
 	virtual void Set(u64 pPos, const GrapaVectorParam& fl);
 	virtual void Set(u64 pPos, const GrapaFloat& fl);
 	virtual void Set(u64 pPos, GrapaInt& fl);
+	virtual GrapaRuleEvent* Get(u64 pPos);
+	virtual GrapaRuleEvent* Get(u64 pRow, u64 pCol);
 	virtual void Identity(GrapaScriptExec* pScriptExec, u64 n);
 	virtual bool Diagonal(GrapaScriptExec* pScriptExec, s64 n, GrapaVector& result);
 	virtual bool TriU(GrapaScriptExec* pScriptExec, s64 n, GrapaVector& result);

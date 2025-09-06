@@ -175,7 +175,10 @@ void GrapaVectorValue::Set(GrapaRuleEvent* v)
 		switch (v->mValue.mToken) {
 		case GrapaTokenType::STR:
 		case GrapaTokenType::INT:
-		case GrapaTokenType::FLOAT: 
+		case GrapaTokenType::FLOAT:
+		case GrapaTokenType::BOOL:
+		case GrapaTokenType::RAW:
+		case GrapaTokenType::TIME:
 			b = new GrapaVectorBYTE(v->mValue);
 			isRaw = 1;
 			break;
@@ -1245,6 +1248,7 @@ GrapaVectorParam::GrapaVectorParam(GrapaScriptExec* pScriptExec, GrapaVectorItem
 	d = _datavectorpos(pData, pBlock, (pPos));
 	a = NULL;
 	Aop = NULL;
+	AopOwned = false;  // Initialize ownership flag
 	aa = new GrapaFloat(pScriptExec->vScriptState->mItemState.mFloatFix, pScriptExec->vScriptState->mItemState.mFloatMax, pScriptExec->vScriptState->mItemState.mFloatExtra, 0);
 	if (!d->isNull)
 	{
@@ -1270,6 +1274,31 @@ GrapaVectorParam::GrapaVectorParam(GrapaScriptExec* pScriptExec, GrapaVectorItem
 				case GrapaTokenType::FLOAT:
 					aa->FromBytes(a->b->Get());
 					break;
+				case GrapaTokenType::STR:
+					// For raw STR tokens, we need to create a GrapaRuleEvent
+					// This is a simplified approach - may need refinement
+                                        Aop = new GrapaRuleEvent(GrapaTokenType::STR, 0, "", "");
+                                        Aop->mValue.FROM(a->b->Get());
+					AopOwned = true;  // We own this memory
+					break;
+				case GrapaTokenType::BOOL:
+					// For raw BOOL tokens, we need to create a GrapaRuleEvent
+					Aop = new GrapaRuleEvent(GrapaTokenType::BOOL, 0, "", "");
+					Aop->mValue.FROM(a->b->Get());
+					AopOwned = true;  // We own this memory
+					break;
+				case GrapaTokenType::RAW:
+					// For raw RAW tokens, we need to create a GrapaRuleEvent
+					Aop = new GrapaRuleEvent(GrapaTokenType::RAW, 0, "", "");
+					Aop->mValue.FROM(a->b->Get());
+					AopOwned = true;  // We own this memory
+					break;
+				case GrapaTokenType::TIME:
+					// For raw TIME tokens, we need to create a GrapaRuleEvent
+					Aop = new GrapaRuleEvent(GrapaTokenType::TIME, 0, "", "");
+					Aop->mValue.FROM(a->b->Get());
+					AopOwned = true;  // We own this memory
+					break;
 				}
 			}
 		}
@@ -1288,7 +1317,35 @@ GrapaVectorParam::GrapaVectorParam(GrapaScriptExec* pScriptExec, GrapaVectorItem
 					aa->FromBytes(a->e->mValue);
 					break;
 				case GrapaTokenType::OP:
+				case GrapaTokenType::STR:
+				case GrapaTokenType::LIST:
+				case GrapaTokenType::ERR:
+				case GrapaTokenType::ARRAY:
+				case GrapaTokenType::TUPLE:
+				case GrapaTokenType::XML:
+				case GrapaTokenType::TAG:
+				case GrapaTokenType::EL:
+				case GrapaTokenType::TABLE:
+				case GrapaTokenType::VECTOR:
+				case GrapaTokenType::WIDGET:
+				case GrapaTokenType::CODE:
+				case GrapaTokenType::CLASS:
+				case GrapaTokenType::OBJ:
+				case GrapaTokenType::RULE:
+				case GrapaTokenType::TOKEN:
+				case GrapaTokenType::BOOL:
+				case GrapaTokenType::RAW:
+				case GrapaTokenType::TIME:
+				case GrapaTokenType::SYM:
+				case GrapaTokenType::SYSSYM:
+				case GrapaTokenType::SYSID:
+				case GrapaTokenType::SYSSTR:
+				case GrapaTokenType::SYSINT:
+				case GrapaTokenType::REF:
+				case GrapaTokenType::COMMENT:
+				case GrapaTokenType::DOC:
 					Aop = a->e;
+					AopOwned = false;  // We don't own this memory
 					break;
 				}
 			}
@@ -1304,6 +1361,15 @@ GrapaVectorParam::~GrapaVectorParam()
 	{
 		delete aa;
 		aa = NULL;
+	}
+	// Handle Aop memory management based on ownership
+	if (Aop)
+	{
+		if (AopOwned)
+		{
+			delete Aop;  // We own this memory, so delete it
+			Aop = NULL;
+		}
 	}
 }
 
@@ -1451,6 +1517,44 @@ void GrapaVector::Set(u64 pPos, GrapaInt& fl)
 		GrapaVectorValue* d = new GrapaVectorValue(&v);
 		memcpy(d1->d, &d, sizeof(GrapaVectorValue*));
 	}
+}
+
+GrapaRuleEvent* GrapaVector::Get(u64 pPos)
+{
+	if (mData == NULL || pPos >= mSize)
+		return NULL;
+	
+	GrapaVectorItem* d1 = _datavectorpos(mData, mBlock, pPos);
+	if (d1->isNull)
+		return nullptr;
+	
+	if (d1->isValue)
+	{
+		GrapaVectorValue* d = 0L;
+		memcpy(&d, d1->d, sizeof(GrapaVectorValue*));
+		if (d)
+			return d->Get();
+		return nullptr;
+	}
+	else
+	{
+		GrapaBYTE v;
+		v.mBytes = d1->d;
+		v.mLength = d1->mLen;
+		v.mToken = d1->mToken;
+		GrapaRuleEvent* result = new GrapaRuleEvent(v.mToken, 0, "", "");
+		result->mValue.FROM(v);
+		return result;
+	}
+}
+
+GrapaRuleEvent* GrapaVector::Get(u64 pRow, u64 pCol)
+{
+	if (mData == NULL || mDim != 2 || pRow >= mCounts[0] || pCol >= mCounts[1])
+		return NULL;
+	
+	u64 pos = pRow * mCounts[1] + pCol;
+	return Get(pos);
 }
 
 GrapaError GrapaVector::Dot(GrapaScriptExec* pScriptExec, GrapaNames* pNameSpace, GrapaVector& bi, GrapaVector& result)
@@ -1990,7 +2094,11 @@ GrapaError GrapaVector::Left(GrapaScriptExec* pScriptExec, GrapaNames* pNameSpac
 		for (u64 i = 0; i < result.mCounts[0]; i++)
 		{
 			GrapaVectorParam p1(pScriptExec, mData, mBlock, (i));
-			result.Set((i), *p1.aa);
+			if (p1.Aop) {
+				result.Set((i), p1.Aop);
+			} else {
+				result.Set((i), *p1.aa);
+			}
 		}
 		break;
 	case 2:
@@ -2012,7 +2120,11 @@ GrapaError GrapaVector::Left(GrapaScriptExec* pScriptExec, GrapaNames* pNameSpac
 			for (u64 j = 0; j < result.mCounts[1]; j++)
 			{
 				GrapaVectorParam p1(pScriptExec, mData, mBlock, (i * mCounts[1] + j));
-				result.Set((i * result.mCounts[1] + j), *p1.aa);
+				if (p1.Aop) {
+					result.Set((i * result.mCounts[1] + j), p1.Aop);
+				} else {
+					result.Set((i * result.mCounts[1] + j), *p1.aa);
+				}
 			}
 		}
 		break;
@@ -2045,7 +2157,11 @@ GrapaError GrapaVector::Right(GrapaScriptExec* pScriptExec, GrapaNames* pNameSpa
 		for (u64 i = 0; i < result.mCounts[0]; i++)
 		{
 			GrapaVectorParam p1(pScriptExec, mData, mBlock, (mCounts[0] - i - 1));
-			result.Set((result.mCounts[0] - i - 1), *p1.aa);
+			if (p1.Aop) {
+				result.Set((result.mCounts[0] - i - 1), p1.Aop);
+			} else {
+				result.Set((result.mCounts[0] - i - 1), *p1.aa);
+			}
 		}
 		break;
 	case 2:
@@ -2067,7 +2183,11 @@ GrapaError GrapaVector::Right(GrapaScriptExec* pScriptExec, GrapaNames* pNameSpa
 			for (u64 j = 0; j < result.mCounts[1]; j++)
 			{
 				GrapaVectorParam p1(pScriptExec, mData, mBlock, (i * mCounts[1] + mCounts[1] - j - 1));
-				result.Set((i * result.mCounts[1] + result.mCounts[1] - j - 1), *p1.aa);
+				if (p1.Aop) {
+					result.Set((i * result.mCounts[1] + result.mCounts[1] - j - 1), p1.Aop);
+				} else {
+					result.Set((i * result.mCounts[1] + result.mCounts[1] - j - 1), *p1.aa);
+				}
 			}
 		}
 		break;
@@ -4699,7 +4819,11 @@ bool GrapaVector::Diagonal(GrapaScriptExec* pScriptExec, s64 n, GrapaVector& res
 		for (u64 i = 0; i < mCounts[0]; i++)
 		{
 			GrapaVectorParam p1(pScriptExec, mData, mBlock, i);
-			result.Set(i * result.mCounts[1] + i, *p1.aa);
+			if (p1.Aop) {
+				result.Set(i * result.mCounts[1] + i, p1.Aop);
+			} else {
+				result.Set(i * result.mCounts[1] + i, *p1.aa);
+			}
 		}
 		return true;
 	}
@@ -4779,7 +4903,11 @@ bool GrapaVector::TriU(GrapaScriptExec* pScriptExec, s64 n, GrapaVector& result)
 			else
 			{
 				GrapaVectorParam p1(pScriptExec, mData, mBlock, (i * mCounts[1] + j));
-				result.Set((i * result.mCounts[1] + j), *p1.aa);
+				if (p1.Aop) {
+					result.Set((i * result.mCounts[1] + j), p1.Aop);
+				} else {
+					result.Set((i * result.mCounts[1] + j), *p1.aa);
+				}
 			}
 		}
 	}
@@ -4810,7 +4938,11 @@ bool GrapaVector::TriL(GrapaScriptExec* pScriptExec, s64 n, GrapaVector& result)
 			if ((j - i) < (n + 1))
 			{
 				GrapaVectorParam p1(pScriptExec, mData, mBlock, (i * mCounts[1] + j));
-				result.Set((i * result.mCounts[1] + j), *p1.aa);
+				if (p1.Aop) {
+					result.Set((i * result.mCounts[1] + j), p1.Aop);
+				} else {
+					result.Set((i * result.mCounts[1] + j), *p1.aa);
+				}
 			}
 			else
 				result.Set((i * result.mCounts[1] + j), zero);

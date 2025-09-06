@@ -168,6 +168,7 @@ This backlog tracks all future, long-term, and queued tasks for the Grapa projec
 - [ ] **Enhanced Debugging System**: Step-by-step debugger, variable inspection, call stack analysis
 - [ ] **Extension System**: Extending existing types with new methods
 - [ ] **Enhanced Error Information**: Detailed error context and recovery mechanisms
+- [ ] **Namespace Chaining Support**: Implement member functions in `$OBJ.grc` for `oplocal()`, `local()`, `parent()`, and `this()` to enable chaining like `$oplocal.$parent.$oplocal`
 - **Current State**: Grapa already has extensive reflection and dynamic modification capabilities
   - **Code Inspection**: ✅ `55.random` shows function source code
   - **Dynamic Modification**: ✅ Language syntax modification, mutable rules engine, metaprogramming foundation
@@ -475,6 +476,33 @@ The following work was completed in version 0.1.52 and is now stable:
 - [ ] **Add support for more mathematical functions**
 - [ ] **Implement advanced string manipulation functions**
 - [ ] **Consider adding support for custom operators**
+- [ ] **Namespace Chaining Support**: Enable chaining of namespace variables like `$oplocal.$parent.$oplocal`
+- [x] **Vector Data Loss Bug**: ✅ **COMPLETED** - Fixed multiple methods in GrapaVector.cpp that lose non-numeric data
+  - **Issue**: ~~Vector methods return `[0]` or `[[0,0],[0,0]]` instead of preserving string/mixed-type data~~
+  - **Root Cause**: ~~`result.Set()` method not properly handling non-numeric data types in multiple functions~~
+  - **Solution Implemented**: 
+    - ✅ Fixed `GrapaVectorParam` constructor to handle `GrapaTokenType::STR` properly using `Aop->mValue.FROM(a->b->Get())`
+    - ✅ Updated all affected functions to use `if (p1.Aop) { result.Set(i, p1.Aop); } else { result.Set(i, *p1.aa); }` logic
+    - ✅ Added `Aop = NULL;` to `GrapaVectorParam::~GrapaVectorParam()` to prevent dangling pointers
+  - **Affected Functions (Now Fixed)**: 
+    - **`.left()`**: ✅ `["a","b"].vector().left(1)` now returns `["a"]` correctly
+    - **`.right()`**: ✅ `["a","b"].vector().right(1)` now returns `["b"]` correctly
+    - **`.diag()`**: ✅ `["a","b"].vector().diag()` now returns `[["a",0],[0,"b"]]` correctly
+    - **`.triu()`**: ✅ `[["a","b"],["c","d"]].vector().triu()` now returns `[["a","b"],[0,"d"]]` correctly
+    - **`.tril()`**: ✅ `[["a","b"],["c","d"]].vector().tril()` now returns `[["a",0],["c","d"]]` correctly
+  - **Result**: All vector operations now work correctly with both numeric and non-numeric data types
+- [ ] **Namespace Chaining Support**: Enable chaining of namespace variables like `$oplocal.$parent.$oplocal`
+  - **Current Limitation**: Namespace variables (`$oplocal`, `$local`, `$parent`, `$this`) cannot be chained
+  - **Required Implementation**: Add member functions to `$OBJ.grc`:
+    ```grapa
+    oplocal = op(context) { /* locate context in namespace and return its $oplocal */ };
+    local = op(context) { /* locate context in namespace and return its $local */ };
+    parent = op(context) { /* locate context in namespace and return its $parent */ };
+    this = op(context) { /* locate context in namespace and return its $this */ };
+    ```
+  - **Use Case**: Complex namespace navigation without storing intermediate references
+  - **Priority**: Low - current workaround (storing references) is sufficient
+  - **Status**: Documented limitation, implementation deferred
 
 ### **Database Features**
 - [ ] **GrapaDB File Structure Modernization**: Update index storage/retrieval and dictionary structure for future features

@@ -804,5 +804,45 @@ The `add()`, `mul()`, `pow()` functions in the C++ backend are internal methods 
 - `.right(count)` - Extract rightmost elements
 - `.reverse()` - Reverse vector elements (use `vec.array().reverse().vector()`)
 
+### **✅ Recent Fixes**
+
+#### **Data Loss in Vector Operations - COMPLETELY FIXED**
+Several vector methods previously had a bug that caused data loss when used with non-numeric vectors.
+
+**Previously Affected Functions (Now Fixed):**
+- `.left(n)` - Extract leftmost n elements ✅
+- `.right(n)` - Extract rightmost n elements ✅  
+- `.diag()` - Create diagonal matrix from 1D vector ✅
+- `.triu(n)` - Upper triangular matrix ✅
+- `.tril(n)` - Lower triangular matrix ✅
+
+**Issue:** These functions would return `#[0]#` instead of preserving the original data types when working with strings or other non-numeric data.
+
+**Root Cause:** The `GrapaVectorParam` constructor only handled `INT` and `FLOAT` types, defaulting to `0` for all other data types.
+
+**Resolution:** Extended the constructor to support all data types found in other GrapaVector methods, including `BOOL`, `RAW`, `TIME`, `LIST`, `ARRAY`, `TUPLE`, `XML`, `TABLE`, `VECTOR`, `WIDGET`, `OP`, `CODE`, `CLASS`, `OBJ`, `RULE`, `TOKEN`, `SYM`, `SYSSYM`, `SYSID`, `SYSSTR`, `SYSINT`, `REF`, `COMMENT`, and `DOC`.
+
+**Status:** ✅ **COMPLETELY FIXED** - All vector operations now correctly preserve data types for both numeric and non-numeric data.
+
+**Examples:**
+```grapa
+/* ✅ FIXED: String vectors now work correctly */
+string_vec = ["a", "b", "c"].vector();
+result = string_vec.left(2);     /* Returns #["a","b"]# */
+result = string_vec.right(1);    /* Returns #["c"]# */
+result = string_vec.diag();      /* Returns #[["a",0,0],[0,"b",0],[0,0,"c"]]# */
+
+/* ✅ FIXED: 2D string matrices now work correctly */
+matrix = [["a", "b"], ["c", "d"]].vector();
+result = matrix.triu(0);         /* Returns #[["a","b"],[0,"d"]]# */
+result = matrix.tril(0);         /* Returns #[["a",0],["c","d"]]# */
+
+/* ✅ FIXED: Mixed-type vectors now work correctly */
+mixed_vec = [1, "hello", true].vector();
+result = mixed_vec.right(1);     /* Returns #[true]# */
+```
+
+**Performance:** All vector operations now work efficiently with both numeric and non-numeric data without requiring workarounds.
+
 > **Note:** All vector operations work seamlessly with Grapa's flexible type system, allowing for creative combinations of features to achieve complex data transformations and mathematical operations.
 
