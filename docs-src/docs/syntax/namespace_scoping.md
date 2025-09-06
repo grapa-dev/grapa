@@ -47,6 +47,13 @@ Grapa defines three fundamental namespace types that can be accessed using speci
 - **Use Case**: Widget callbacks, event handling, self-referential operations
 - **Implementation**: Variable lookup that resolves to the current widget
 
+### `$oplocal` - Function's Local Context
+- **Purpose**: Direct access to the function's `$local` namespace, bypassing nested block scopes
+- **Lifetime**: Function execution
+- **Scope**: Function's `$local` namespace (not affected by nested blocks)
+- **Use Case**: Accessing function parameters and variables from deeply nested scopes, debugging, function introspection
+- **Behavior**: Always returns the function's `$local` namespace, regardless of how deeply nested the call is within the function
+
 ## Syntax
 
 All namespace variables must be accessed with the `$` prefix:
@@ -497,6 +504,136 @@ f2();  // Returns {"f2", "f1"}
 - **Performance profiling**: Understand call patterns
 - **Dynamic debugging**: Inspect calling context at runtime
 
+### `$oplocal` - Function's Local Context
+
+`$oplocal` provides direct access to the function's `$local` namespace, bypassing nested block scopes. This is particularly useful when you need to access function parameters or variables from deeply nested scopes.
+
+**Key Difference from `$parent`:**
+- **`$parent`**: Returns the immediate calling scope's `$local` (could be a nested block)
+- **`$oplocal`**: Always returns the function's `$local` namespace, regardless of nesting depth
+
+```grapa
+/* Example showing $parent vs $oplocal behavior */
+f = op() {
+    $local.a = 1;                    // Function parameter/variable
+    if (true) {
+        $local.b = 2;                // Nested block variable
+        if (true) {
+            $parent;                 // Returns {"b":2} - immediate calling scope
+            $oplocal;                // Returns {"a":1} - function's $local
+        };
+    };
+};
+
+f();  // $parent returns {"b":2}, $oplocal returns {"a":1}
+```
+
+**Practical Use Cases:**
+
+**1. Accessing Function Parameters from Nested Scopes:**
+```grapa
+process_data = op(data, options) {
+    $local.result = {};
+    
+    for item in data {
+        if (item.type == "special") {
+            // Need to access function parameters from nested scope
+            $oplocal.options.debug;  // Access function parameter
+            $oplocal.result.set(item.id, process_special(item));
+        };
+    };
+    
+    $oplocal.result;  // Return the result
+};
+```
+
+**2. Debugging and Introspection:**
+```grapa
+debug_function = op(param1, param2) {
+    $local.debug_info = {};
+    
+    if (some_condition) {
+        // Access all function parameters for debugging
+        $oplocal.debug_info.param1 = $oplocal.param1;
+        $oplocal.debug_info.param2 = $oplocal.param2;
+        $oplocal.debug_info.timestamp = $TIME().utc();
+    };
+    
+    $oplocal.debug_info;
+};
+```
+
+**3. Avoiding Multiple `$parent` Levels:**
+```grapa
+/* Without $oplocal - requires multiple $parent calls */
+complex_function = op(config) {
+    $local.setup = {};
+    
+    if (condition1) {
+        if (condition2) {
+            if (condition3) {
+                // Need to access function parameter - requires 3 levels of $parent
+                $parent.$parent.$parent.config;  // Error-prone and fragile
+            };
+        };
+    };
+};
+
+/* With $oplocal - direct access */
+complex_function = op(config) {
+    $local.setup = {};
+    
+    if (condition1) {
+        if (condition2) {
+            if (condition3) {
+                // Direct access to function parameter
+                $oplocal.config;  // Clean and reliable
+            };
+        };
+    };
+};
+```
+
+**When to Use `$oplocal`:**
+- **Deep nesting**: When you need function parameters from deeply nested scopes
+- **Function introspection**: When debugging or logging function state
+- **Parameter access**: When you need reliable access to function parameters
+- **Avoiding `$parent` chains**: When multiple `$parent` calls would be error-prone
+
+**When NOT to Use `$oplocal`:**
+- **Simple cases**: When `$local` or `$parent` are sufficient
+- **Block-level variables**: When you actually want the nested block's variables
+- **Global scope**: `$oplocal` only works within function contexts
+
+**Important Limitation - No Chaining Support:**
+Namespace variables (`$oplocal`, `$local`, `$parent`, `$this`) **cannot be chained**. The following syntax does NOT work:
+```grapa
+// ❌ This does NOT work - chaining is not supported
+$oplocal.$parent.$oplocal
+$parent.$parent.$local
+$this.$parent.$oplocal
+```
+
+**Why Chaining Doesn't Work:**
+- Namespace variables are implemented as special identifiers, not as objects with methods
+- They return the namespace object directly, not a wrapper that supports method chaining
+- The current implementation doesn't provide member functions like `oplocal()`, `local()`, `parent()`, `this()` in `$OBJ.grc`
+
+**Workaround for Complex Navigation:**
+If you need to access multiple levels of namespace context, store references in variables:
+```grapa
+complex_function = op() {
+    $local.function_context = $oplocal;  // Store function's $local
+    $local.parent_context = $parent;     // Store parent's $local
+    
+    if (some_condition) {
+        // Access stored contexts
+        $local.function_context.some_param;
+        $local.parent_context.some_variable;
+    };
+};
+```
+
 ### `$root` and `$self` - Widget Context
 
 In GUI applications, `$root` and `$self` provide widget references:
@@ -531,6 +668,7 @@ The namespace system is implemented in `lib/grapa/$grapa.grc`:
 | $global {@<global,{}>}
 | $local {@<local,{}>}
 | $parent {@<parent,{}>}
+| $oplocal {@<oplocal,{}>}
 | $root {@<var,{$1}>}
 | $self {@<var,{$1}>}
 ```
@@ -540,6 +678,7 @@ These rules map the namespace identifiers to their corresponding C++ implementat
 - `GrapaLibraryRuleGlobalEvent::Run` 
 - `GrapaLibraryRuleLocalEvent::Run`
 - `GrapaLibraryRuleParentEvent::Run`
+- `GrapaLibraryRuleOpLocalEvent::Run`
 - `$root` and `$self` are implemented as variable lookups in `GrapaWidget.cpp`
 
 ## Common Pitfalls

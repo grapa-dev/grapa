@@ -321,11 +321,11 @@ The existing namespace system with `$global`, `$this`, `$local`, `$parent`, `$ro
 
 ## Key Limitations and Workarounds
 
-### 1. No Direct Access to Function's `$local` from Nested Scopes
+### 1. ~~No Direct Access to Function's `$local` from Nested Scopes~~ ✅ **RESOLVED**
 
-**Limitation**: There is no direct way to access a function's `$local` namespace from within a nested scope block.
+**~~Limitation~~**: ~~There is no direct way to access a function's `$local` namespace from within a nested scope block.~~
 
-**Example**:
+**~~Example~~**:
 ```grapa
 f=op(){
     $local.a=1;           // Function scope
@@ -337,7 +337,19 @@ f=op(){
 };
 ```
 
-**Workaround**: Use `$parent` to access the calling function's `$local`:
+**✅ Solution**: Use `$oplocal` to directly access the function's `$local` namespace:
+```grapa
+f=op(){
+    $local.a=1;           // Function scope
+    if(true){
+        $local.b=2;       // Block scope
+        $local;           // Returns {"b":2} - only block variables
+        $oplocal;         // Returns {"a":1} - function's $local
+    }
+};
+```
+
+**Previous Workaround**: Use `$parent` to access the calling function's `$local`:
 ```grapa
 f=op(){
     $local.a=1;           // Function scope
@@ -547,12 +559,40 @@ public:
 - Scope analysis tools for complex applications
 
 ### Potential Language Enhancements
-- **`$function`** - Direct access to function's `$local` from nested scopes
 - **`$scope`** - Access to specific scope level (e.g., `$scope(0)` for current, `$scope(1)` for parent)
 - **Enhanced `$parent`** - Support for `$parent(n)` to access nth level parent
 - **Scope depth query** - `$depth` to get current scope nesting level
 
 **Note**: These would be language enhancements, not new namespace variables, and would require C++ implementation changes.
+
+**✅ Implemented**: `$oplocal` - Direct access to function's `$local` from nested scopes (replaces the need for `$function`)
+
+### Namespace Chaining Limitation
+
+**Current Limitation**: Namespace variables (`$oplocal`, `$local`, `$parent`, `$this`) cannot be chained. Syntax like `$oplocal.$parent.$oplocal` does not work.
+
+**Why It Doesn't Work**:
+- Namespace variables are implemented as special identifiers that return namespace objects directly
+- They don't return wrapper objects with methods that support chaining
+- The current implementation doesn't provide member functions in `$OBJ.grc` for namespace navigation
+
+**What Would Be Needed for Chaining**:
+To implement chaining, the following would need to be added to `$OBJ.grc`:
+```grapa
+oplocal = op(context) { /* locate context in namespace and return its $oplocal */ };
+local = op(context) { /* locate context in namespace and return its $local */ };
+parent = op(context) { /* locate context in namespace and return its $parent */ };
+this = op(context) { /* locate context in namespace and return its $this */ };
+```
+
+**Current Workaround**: Store namespace references in variables for complex navigation:
+```grapa
+complex_function = op() {
+    $local.function_context = $oplocal;  // Store function's $local
+    $local.parent_context = $parent;     // Store parent's $local
+    // Access via stored references
+};
+```
 
 ## Summary
 
@@ -566,7 +606,7 @@ The Grapa namespace stack is a sophisticated and complete system that provides:
 - **Automatic memory management** with scope-based cleanup
 - **Complete feature set** - no additional namespace variables needed
 
-The system with `$global`, `$this`, `$local`, `$parent`, `$root`, and `$self` already provides all necessary capabilities for:
+The system with `$global`, `$this`, `$local`, `$parent`, `$oplocal`, `$root`, and `$self` provides all necessary capabilities for:
 - **Thread-safe programming** through isolated `$local` contexts
 - **GUI programming** through `$root` and `$self` widget access
 - **Network programming** through session-specific `$local` contexts
@@ -575,8 +615,8 @@ The system with `$global`, `$this`, `$local`, `$parent`, `$root`, and `$self` al
 - **Function communication** through `$parent` caller access
 
 **Key Limitations**:
-- **No direct access** to function's `$local` from nested scopes (use `$parent` workaround)
-- **Multiple `$parent` levels** needed for deep nesting (use reference storage workaround)
+- **Multiple `$parent` levels** needed for deep nesting (use `$oplocal` for direct function access)
 - **`$this == $global`** at global level (expected behavior)
+- **No chaining support**: Namespace variables (`$oplocal`, `$local`, `$parent`, `$this`) cannot be chained (e.g., `$oplocal.$parent.$oplocal` does not work)
 
 The current namespace system is comprehensive, well-designed, and complete - no additional namespace variables are needed.
