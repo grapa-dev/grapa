@@ -818,6 +818,29 @@
   
   
     <li class="md-nav__item">
+      <a href="../../data_type_selection_guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Data Type Selection Guide
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../array/" class="md-nav__link">
         
   
@@ -1268,6 +1291,57 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#when-to-use-table-vs-other-data-types" class="md-nav__link">
+    <span class="md-ellipsis">
+      When to Use $TABLE vs Other Data Types
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="When to Use $TABLE vs Other Data Types">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#use-table-in-memory-btree-when" class="md-nav__link">
+    <span class="md-ellipsis">
+      Use {}.table() (In-Memory BTree) When:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#use-linked-list-when" class="md-nav__link">
+    <span class="md-ellipsis">
+      Use {} (Linked List) When:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#use-file-persistent-storage-when" class="md-nav__link">
+    <span class="md-ellipsis">
+      Use $file() (Persistent Storage) When:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#performance-characteristics" class="md-nav__link">
+    <span class="md-ellipsis">
+      Performance Characteristics:
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#database-types" class="md-nav__link">
     <span class="md-ellipsis">
       Database Types
@@ -1328,7 +1402,7 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#performance-characteristics" class="md-nav__link">
+  <a href="#performance-characteristics_1" class="md-nav__link">
     <span class="md-ellipsis">
       Performance Characteristics
     </span>
@@ -4452,6 +4526,57 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#when-to-use-table-vs-other-data-types" class="md-nav__link">
+    <span class="md-ellipsis">
+      When to Use $TABLE vs Other Data Types
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="When to Use $TABLE vs Other Data Types">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#use-table-in-memory-btree-when" class="md-nav__link">
+    <span class="md-ellipsis">
+      Use {}.table() (In-Memory BTree) When:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#use-linked-list-when" class="md-nav__link">
+    <span class="md-ellipsis">
+      Use {} (Linked List) When:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#use-file-persistent-storage-when" class="md-nav__link">
+    <span class="md-ellipsis">
+      Use $file() (Persistent Storage) When:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#performance-characteristics" class="md-nav__link">
+    <span class="md-ellipsis">
+      Performance Characteristics:
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#database-types" class="md-nav__link">
     <span class="md-ellipsis">
       Database Types
@@ -4512,7 +4637,7 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#performance-characteristics" class="md-nav__link">
+  <a href="#performance-characteristics_1" class="md-nav__link">
     <span class="md-ellipsis">
       Performance Characteristics
     </span>
@@ -4924,6 +5049,35 @@ lock_obj.unlock();
 <p>See <a href="../../sys/thread/">Threading and Locking</a> and <a href="../../syntax/operator/">Function Operators: static and const</a> for details and best practices.</p>
 <p>References:</p>
 <p>A $TABLE is a hierarchical database with columns, rows, supporting both row store and column store architectures.</p>
+<h2 id="when-to-use-table-vs-other-data-types">When to Use $TABLE vs Other Data Types</h2>
+<h3 id="use-table-in-memory-btree-when"><strong>Use <code>{}.table()</code> (In-Memory BTree) When:</strong></h3>
+<ul>
+<li><strong>Large datasets</strong> (&gt; 100-500 items) where memory efficiency matters</li>
+<li><strong>Range queries</strong> or ordered data access needed</li>
+<li><strong>Complex queries</strong> across multiple fields</li>
+<li><strong>Memory efficiency at scale</strong> is important</li>
+<li><strong>Still in-memory</strong> but need better performance for large datasets</li>
+</ul>
+<h3 id="use-linked-list-when"><strong>Use <code>{}</code> (Linked List) When:</strong></h3>
+<ul>
+<li><strong>Small to medium datasets</strong> (&lt; 100-500 items typically)</li>
+<li><strong>Frequent modifications</strong> (insertions, deletions, updates)</li>
+<li><strong>Simple key-value storage</strong> without complex queries</li>
+<li><strong>Configuration data, user preferences, cache data</strong></li>
+</ul>
+<h3 id="use-file-persistent-storage-when"><strong>Use <code>$file()</code> (Persistent Storage) When:</strong></h3>
+<ul>
+<li><strong>Data persistence</strong> is required (survives program restarts)</li>
+<li><strong>Very large datasets</strong> that don't fit in memory</li>
+<li><strong>Disk-based storage</strong> with BTree indexing</li>
+<li><strong>Long-term data storage</strong> and retrieval</li>
+</ul>
+<h3 id="performance-characteristics"><strong>Performance Characteristics:</strong></h3>
+<ul>
+<li><strong><code>{}</code> (Linked List)</strong>: Very fast for small datasets due to optimized double-linked list implementation</li>
+<li><strong><code>{}.table()</code> (BTree)</strong>: Slower than <code>{}</code> for small datasets but more memory-efficient for large datasets</li>
+<li><strong><code>$file()</code> (Persistent)</strong>: Disk I/O overhead but provides persistence and handles unlimited data size</li>
+</ul>
 <p><strong>Note:</strong>
 - The type <code>GROUP</code> is used both for hierarchical/grouped databases and for folders/directories in the file system. When navigating a traditional file system, folders/directories will appear as <code>GROUP</code> in listings and type queries.</p>
 <h2 id="database-types">Database Types</h2>
@@ -4979,7 +5133,7 @@ lock_obj.unlock();
 <li><strong>Multiple Storage Types</strong>: Support for fixed, variable, and partitioned field storage</li>
 <li><strong>Efficient Queries</strong>: Optimized for both row-oriented and column-oriented access patterns</li>
 </ul>
-<h2 id="performance-characteristics">Performance Characteristics</h2>
+<h2 id="performance-characteristics_1">Performance Characteristics</h2>
 <h3 id="row-store">Row Store</h3>
 <ul>
 <li>Fast record retrieval and updates</li>

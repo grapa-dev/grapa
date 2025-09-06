@@ -816,6 +816,29 @@
   
   
     <li class="md-nav__item">
+      <a href="../../data_type_selection_guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Data Type Selection Guide
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../type/array/" class="md-nav__link">
         
   
@@ -2421,6 +2444,15 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#oplocal-functions-local-context" class="md-nav__link">
+    <span class="md-ellipsis">
+      $oplocal - Function's Local Context
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -2584,6 +2616,15 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#oplocal-functions-local-context_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      $oplocal - Function's Local Context
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#root-and-self-widget-context" class="md-nav__link">
     <span class="md-ellipsis">
       $root and $self - Widget Context
@@ -2638,6 +2679,15 @@
   <a href="#3-nested-scope-conflicts" class="md-nav__link">
     <span class="md-ellipsis">
       3. Nested Scope Conflicts
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-misunderstanding-parent-behavior" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Misunderstanding $parent Behavior
     </span>
   </a>
   
@@ -4353,6 +4403,15 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#oplocal-functions-local-context" class="md-nav__link">
+    <span class="md-ellipsis">
+      $oplocal - Function's Local Context
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -4516,6 +4575,15 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#oplocal-functions-local-context_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      $oplocal - Function's Local Context
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#root-and-self-widget-context" class="md-nav__link">
     <span class="md-ellipsis">
       $root and $self - Widget Context
@@ -4570,6 +4638,15 @@
   <a href="#3-nested-scope-conflicts" class="md-nav__link">
     <span class="md-ellipsis">
       3. Nested Scope Conflicts
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-misunderstanding-parent-behavior" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Misunderstanding $parent Behavior
     </span>
   </a>
   
@@ -4655,6 +4732,14 @@
 <li><strong>Scope</strong>: Current widget context</li>
 <li><strong>Use Case</strong>: Widget callbacks, event handling, self-referential operations</li>
 <li><strong>Implementation</strong>: Variable lookup that resolves to the current widget</li>
+</ul>
+<h3 id="oplocal-functions-local-context"><code>$oplocal</code> - Function's Local Context</h3>
+<ul>
+<li><strong>Purpose</strong>: Direct access to the function's <code>$local</code> namespace, bypassing nested block scopes</li>
+<li><strong>Lifetime</strong>: Function execution</li>
+<li><strong>Scope</strong>: Function's <code>$local</code> namespace (not affected by nested blocks)</li>
+<li><strong>Use Case</strong>: Accessing function parameters and variables from deeply nested scopes, debugging, function introspection</li>
+<li><strong>Behavior</strong>: Always returns the function's <code>$local</code> namespace, regardless of how deeply nested the call is within the function</li>
 </ul>
 <h2 id="syntax">Syntax</h2>
 <p>All namespace variables must be accessed with the <code>$</code> prefix:</p>
@@ -4940,6 +5025,7 @@ parent_function();  // Returns {&quot;data&quot;:&quot;input&quot;,&quot;status&
 - <strong>From top-level</strong>: Returns the grammar system (106+ rules)
 - <strong>From within functions</strong>: Returns the calling function's <code>$local</code> namespace
 - <strong>Nested calls</strong>: Always refers to the immediate parent, not the root
+- <strong>Block scope calls</strong>: Returns the immediate calling scope's <code>$local</code> (even if it's a nested block)
 - <strong>Call stack tracing</strong>: Can be used to trace back to the global namespace</p>
 <div class="highlight"><pre><span></span><code>/* Nested function example */
 grandchild = op() {
@@ -4959,6 +5045,24 @@ parent = op() {
 
 parent();  // Returns {&quot;c_data&quot;:&quot;child&quot;}
 </code></pre></div>
+<p><strong>Critical: <code>$parent</code> Returns Immediate Calling Scope</strong></p>
+<p><code>$parent</code> always returns the <strong>immediate calling scope's <code>$local</code></strong>, even if that scope is a nested block within a function:</p>
+<div class="highlight"><pre><span></span><code>/* Example: $parent returns block scope, not function scope */
+f1 = op() {
+    $parent;  // Returns whatever scope called f1()
+};
+
+f2 = op() {
+    $local.a = 1;           // Function scope: {&quot;a&quot;:1}
+    if (true) {
+        $local.b = 2;       // Block scope: {&quot;b&quot;:2}
+        f1();               // Returns {&quot;b&quot;:2} - block scope, not function scope!
+    };
+};
+
+f2();  // Returns {&quot;b&quot;:2}
+</code></pre></div>
+<p><strong>Key Point</strong>: <code>$parent</code> does <strong>NOT</strong> return the function's <code>$local</code> - it returns the <strong>immediate calling scope's <code>$local</code></strong>. In the example above, <code>f1()</code> returns the <code>if</code> block's <code>$local</code> (<code>{"b":2}</code>), not the function's <code>$local</code> (<code>{"a":1}</code>).</p>
 <h3 id="call-stack-tracing-with-parent">Call Stack Tracing with <code>$parent</code></h3>
 <p><code>$parent</code> can be used to construct a call stack by leaving breadcrumbs in each function's <code>$local</code> namespace:</p>
 <div class="highlight"><pre><span></span><code>/* Basic call stack tracing */
@@ -5022,6 +5126,93 @@ f2();  // Returns {&quot;f2&quot;, &quot;f1&quot;}
 - <strong>Error context</strong>: Provide context about where errors occurred
 - <strong>Performance profiling</strong>: Understand call patterns
 - <strong>Dynamic debugging</strong>: Inspect calling context at runtime</p>
+<h3 id="oplocal-functions-local-context_1"><code>$oplocal</code> - Function's Local Context</h3>
+<p><code>$oplocal</code> provides direct access to the function's <code>$local</code> namespace, bypassing nested block scopes. This is particularly useful when you need to access function parameters or variables from deeply nested scopes.</p>
+<p><strong>Key Difference from <code>$parent</code>:</strong>
+- <strong><code>$parent</code></strong>: Returns the immediate calling scope's <code>$local</code> (could be a nested block)
+- <strong><code>$oplocal</code></strong>: Always returns the function's <code>$local</code> namespace, regardless of nesting depth</p>
+<div class="highlight"><pre><span></span><code>/* Example showing $parent vs $oplocal behavior */
+f = op() {
+    $local.a = 1;                    // Function parameter/variable
+    if (true) {
+        $local.b = 2;                // Nested block variable
+        if (true) {
+            $parent;                 // Returns {&quot;b&quot;:2} - immediate calling scope
+            $oplocal;                // Returns {&quot;a&quot;:1} - function&#39;s $local
+        };
+    };
+};
+
+f();  // $parent returns {&quot;b&quot;:2}, $oplocal returns {&quot;a&quot;:1}
+</code></pre></div>
+<p><strong>Practical Use Cases:</strong></p>
+<p><strong>1. Accessing Function Parameters from Nested Scopes:</strong>
+<div class="highlight"><pre><span></span><code>process_data = op(data, options) {
+    $local.result = {};
+
+    for item in data {
+        if (item.type == &quot;special&quot;) {
+            // Need to access function parameters from nested scope
+            $oplocal.options.debug;  // Access function parameter
+            $oplocal.result.set(item.id, process_special(item));
+        };
+    };
+
+    $oplocal.result;  // Return the result
+};
+</code></pre></div></p>
+<p><strong>2. Debugging and Introspection:</strong>
+<div class="highlight"><pre><span></span><code>debug_function = op(param1, param2) {
+    $local.debug_info = {};
+
+    if (some_condition) {
+        // Access all function parameters for debugging
+        $oplocal.debug_info.param1 = $oplocal.param1;
+        $oplocal.debug_info.param2 = $oplocal.param2;
+        $oplocal.debug_info.timestamp = $TIME().utc();
+    };
+
+    $oplocal.debug_info;
+};
+</code></pre></div></p>
+<p><strong>3. Avoiding Multiple <code>$parent</code> Levels:</strong>
+<div class="highlight"><pre><span></span><code>/* Without $oplocal - requires multiple $parent calls */
+complex_function = op(config) {
+    $local.setup = {};
+
+    if (condition1) {
+        if (condition2) {
+            if (condition3) {
+                // Need to access function parameter - requires 3 levels of $parent
+                $parent.$parent.$parent.config;  // Error-prone and fragile
+            };
+        };
+    };
+};
+
+/* With $oplocal - direct access */
+complex_function = op(config) {
+    $local.setup = {};
+
+    if (condition1) {
+        if (condition2) {
+            if (condition3) {
+                // Direct access to function parameter
+                $oplocal.config;  // Clean and reliable
+            };
+        };
+    };
+};
+</code></pre></div></p>
+<p><strong>When to Use <code>$oplocal</code>:</strong>
+- <strong>Deep nesting</strong>: When you need function parameters from deeply nested scopes
+- <strong>Function introspection</strong>: When debugging or logging function state
+- <strong>Parameter access</strong>: When you need reliable access to function parameters
+- <strong>Avoiding <code>$parent</code> chains</strong>: When multiple <code>$parent</code> calls would be error-prone</p>
+<p><strong>When NOT to Use <code>$oplocal</code>:</strong>
+- <strong>Simple cases</strong>: When <code>$local</code> or <code>$parent</code> are sufficient
+- <strong>Block-level variables</strong>: When you actually want the nested block's variables
+- <strong>Global scope</strong>: <code>$oplocal</code> only works within function contexts</p>
 <h3 id="root-and-self-widget-context"><code>$root</code> and <code>$self</code> - Widget Context</h3>
 <p>In GUI applications, <code>$root</code> and <code>$self</code> provide widget references:</p>
 <div class="highlight"><pre><span></span><code>/* GUI widget example (from $editor.grc) */
@@ -5048,6 +5239,7 @@ menu_callback = op() {
 | $global {@&lt;global,{}&gt;}
 | $local {@&lt;local,{}&gt;}
 | $parent {@&lt;parent,{}&gt;}
+| $oplocal {@&lt;oplocal,{}&gt;}
 | $root {@&lt;var,{$1}&gt;}
 | $self {@&lt;var,{$1}&gt;}
 </code></pre></div>
@@ -5056,6 +5248,7 @@ menu_callback = op() {
 - <code>GrapaLibraryRuleGlobalEvent::Run</code> 
 - <code>GrapaLibraryRuleLocalEvent::Run</code>
 - <code>GrapaLibraryRuleParentEvent::Run</code>
+- <code>GrapaLibraryRuleOpLocalEvent::Run</code>
 - <code>$root</code> and <code>$self</code> are implemented as variable lookups in <code>GrapaWidget.cpp</code></p>
 <h2 id="common-pitfalls">Common Pitfalls</h2>
 <h3 id="1-forgetting-to-declare-local-variables">1. Forgetting to Declare Local Variables</h3>
@@ -5114,6 +5307,30 @@ innerLoop = op() {
     };
 };
 </code></pre></div>
+<h3 id="4-misunderstanding-parent-behavior">4. Misunderstanding <code>$parent</code> Behavior</h3>
+<div class="highlight"><pre><span></span><code>// CONFUSING: $parent returns immediate calling scope, not function scope
+f1 = op() {
+    $parent;  // Returns calling scope&#39;s $local
+};
+
+f2 = op() {
+    $local.a = 1;           // Function scope
+    if (true) {
+        $local.b = 2;       // Block scope
+        f1();               // Returns {&quot;b&quot;:2}, not {&quot;a&quot;:1}!
+    };
+};
+
+// SOLUTION: Use $parent to access function scope from nested blocks
+f3 = op() {
+    $local.a = 1;           // Function scope
+    if (true) {
+        $local.b = 2;       // Block scope
+        $parent;            // Returns {&quot;a&quot;:1} - function scope
+    };
+};
+</code></pre></div>
+<p><strong>Key Point</strong>: <code>$parent</code> always returns the <strong>immediate calling scope's <code>$local</code></strong>, not necessarily the function's <code>$local</code>. This can be confusing when functions are called from nested blocks.</p>
 <h2 id="summary">Summary</h2>
 <p>Grapa's namespace scoping system provides powerful tools for managing variable visibility and lifetime. The system includes:</p>
 <p><strong>Core Namespace Variables:</strong>

@@ -816,6 +816,29 @@
   
   
     <li class="md-nav__item">
+      <a href="../../data_type_selection_guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Data Type Selection Guide
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../type/array/" class="md-nav__link">
         
   
@@ -1753,6 +1776,57 @@
       Minimal Example
     </span>
   </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#when-to-use-file-vs-other-data-types" class="md-nav__link">
+    <span class="md-ellipsis">
+      When to Use $file() vs Other Data Types
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="When to Use $file() vs Other Data Types">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#use-file-persistent-storage-when" class="md-nav__link">
+    <span class="md-ellipsis">
+      Use $file() (Persistent Storage) When:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#use-table-in-memory-btree-when" class="md-nav__link">
+    <span class="md-ellipsis">
+      Use {}.table() (In-Memory BTree) When:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#use-linked-list-when" class="md-nav__link">
+    <span class="md-ellipsis">
+      Use {} (Linked List) When:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#performance-characteristics" class="md-nav__link">
+    <span class="md-ellipsis">
+      Performance Characteristics:
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -4335,6 +4409,57 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#when-to-use-file-vs-other-data-types" class="md-nav__link">
+    <span class="md-ellipsis">
+      When to Use $file() vs Other Data Types
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="When to Use $file() vs Other Data Types">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#use-file-persistent-storage-when" class="md-nav__link">
+    <span class="md-ellipsis">
+      Use $file() (Persistent Storage) When:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#use-table-in-memory-btree-when" class="md-nav__link">
+    <span class="md-ellipsis">
+      Use {}.table() (In-Memory BTree) When:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#use-linked-list-when" class="md-nav__link">
+    <span class="md-ellipsis">
+      Use {} (Linked List) When:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#performance-characteristics" class="md-nav__link">
+    <span class="md-ellipsis">
+      Performance Characteristics:
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#type" class="md-nav__link">
     <span class="md-ellipsis">
       type()
@@ -4705,6 +4830,35 @@ f.set(&quot;test.txt&quot;, &quot;Hello, World!&quot;);  /* Write a file */
 <hr />
 <p>References:</p>
 <p>Provides the ability to navigate either the file system or a database, querying data and updating data. This class/libraries will be enhanced over time to support navigating data types beyond the file system and the grapa database - such as JSON/XML and unstructured data where a mapping can be defined (maybe with a set of rules). With a few additional enhancements, this class/library will also enable extending the grapa syntax to include SQL with $file for the underlying data.</p>
+<h2 id="when-to-use-file-vs-other-data-types">When to Use $file() vs Other Data Types</h2>
+<h3 id="use-file-persistent-storage-when"><strong>Use <code>$file()</code> (Persistent Storage) When:</strong></h3>
+<ul>
+<li><strong>Data persistence</strong> is required (survives program restarts)</li>
+<li><strong>Very large datasets</strong> that don't fit in memory</li>
+<li><strong>Disk-based storage</strong> with BTree indexing</li>
+<li><strong>Long-term data storage</strong> and retrieval</li>
+<li><strong>File system integration</strong> needed</li>
+</ul>
+<h3 id="use-table-in-memory-btree-when"><strong>Use <code>{}.table()</code> (In-Memory BTree) When:</strong></h3>
+<ul>
+<li><strong>Large datasets</strong> (&gt; 100-500 items) where memory efficiency matters</li>
+<li><strong>Range queries</strong> or ordered data access needed</li>
+<li><strong>Complex queries</strong> across multiple fields</li>
+<li><strong>Still in-memory</strong> but need better performance for large datasets</li>
+</ul>
+<h3 id="use-linked-list-when"><strong>Use <code>{}</code> (Linked List) When:</strong></h3>
+<ul>
+<li><strong>Small to medium datasets</strong> (&lt; 100-500 items typically)</li>
+<li><strong>Frequent modifications</strong> (insertions, deletions, updates)</li>
+<li><strong>Simple key-value storage</strong> without complex queries</li>
+<li><strong>Configuration data, user preferences, cache data</strong></li>
+</ul>
+<h3 id="performance-characteristics"><strong>Performance Characteristics:</strong></h3>
+<ul>
+<li><strong><code>{}</code> (Linked List)</strong>: Very fast for small datasets due to optimized double-linked list implementation</li>
+<li><strong><code>{}.table()</code> (BTree)</strong>: Slower than <code>{}</code> for small datasets but more memory-efficient for large datasets</li>
+<li><strong><code>$file()</code> (Persistent)</strong>: Disk I/O overhead but provides persistence and handles unlimited data size</li>
+</ul>
 <p>Each example below assumes the following command has been issued:
 <div class="highlight"><pre><span></span><code>f = $file();
 </code></pre></div></p>
