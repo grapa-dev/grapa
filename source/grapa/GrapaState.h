@@ -106,7 +106,7 @@ public:
 	GrapaRuleEvent *vRuleLambda;
 	GrapaRuleEvent *vRuleParent;
 	GrapaRuleEvent *vClass;
-	bool mVar, mLocal, mClass, mConst, mCopied;
+	bool mVar, mLocal, mClass, mConst, mCopied, mOpLocal;
 	u8 mControlFlow; // Control flow type: 0 = none, 1 = break, 2 = continue, 3 = return, 4 = throw
 	char mQuote;
 	u8 mT;
@@ -127,7 +127,7 @@ private:
 	void INIT() {
 		vValueEvent = NULL; 
 		vRuleLambda = NULL; vLibraryEvent = NULL;  
-		mVar = mLocal = mClass = mConst = mCopied = false; vRuleParent = NULL;
+		mVar = mLocal = mClass = mConst = mCopied = mOpLocal = false; vRuleParent = NULL;
 		mControlFlow = 0;
 		vClass = NULL;
 		mQuote = 0;
@@ -243,6 +243,23 @@ public:
 		//LeaveCritical();
 		return(NULL);
 	}
+
+	GrapaRuleEvent* OpLocal()
+	{
+		//WaitCritical();
+		GrapaNames* x = this;
+		while (x && x->mSkip) x = x->GetParrent();
+		if (x)
+		{
+			GrapaRuleEvent* n = x->mNames.Tail();
+			while (n && !n->mOpLocal) n = n->Prev();
+			while (n && n->vRulePointer) n = n->vRulePointer;
+			//LeaveCritical();
+			return(n);
+		}
+		//LeaveCritical();
+		return(NULL);
+	}
 	virtual void SetParrent(GrapaNames* pParrent) { UpdateParrent(pParrent); SetResponse(pParrent ? pParrent->vConsoleResponse : NULL); }
 	virtual void UpdateParrent(GrapaNames* pParrent) { vParentNames = pParrent; }
 	virtual GrapaNames* GetParrent() { return vParentNames; }
@@ -250,6 +267,9 @@ public:
 	virtual GrapaNames* GetSkipParrent() { GrapaNames* x = vParentNames; while (x && x->mSkip) x = x->GetParrent(); return(x); }
 	virtual void SetResponse(GrapaConsoleResponse* pResponse) { vConsoleResponse = pResponse; }
 	virtual GrapaConsoleResponse* GetResponse() { return vConsoleResponse; }
+	virtual GrapaRuleQueue* GetLocalQueue() {
+		return &mNames;
+	}
 	virtual GrapaRuleQueue* GetThisQueue() {
 		return &vParentNames->mNames;
 	}
