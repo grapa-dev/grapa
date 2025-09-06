@@ -2394,6 +2394,33 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#parent-parent-function-context" class="md-nav__link">
+    <span class="md-ellipsis">
+      $parent - Parent Function Context
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#root-root-widget-context" class="md-nav__link">
+    <span class="md-ellipsis">
+      $root - Root Widget Context
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#self-current-widget-context" class="md-nav__link">
+    <span class="md-ellipsis">
+      $self - Current Widget Context
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -2525,6 +2552,39 @@
       Namespace Hierarchy
     </span>
   </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#special-context-variables" class="md-nav__link">
+    <span class="md-ellipsis">
+      Special Context Variables
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Special Context Variables">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parent-parent-function-access" class="md-nav__link">
+    <span class="md-ellipsis">
+      $parent - Parent Function Access
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#root-and-self-widget-context" class="md-nav__link">
+    <span class="md-ellipsis">
+      $root and $self - Widget Context
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -4257,6 +4317,33 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#parent-parent-function-context" class="md-nav__link">
+    <span class="md-ellipsis">
+      $parent - Parent Function Context
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#root-root-widget-context" class="md-nav__link">
+    <span class="md-ellipsis">
+      $root - Root Widget Context
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#self-current-widget-context" class="md-nav__link">
+    <span class="md-ellipsis">
+      $self - Current Widget Context
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -4392,6 +4479,39 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#special-context-variables" class="md-nav__link">
+    <span class="md-ellipsis">
+      Special Context Variables
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Special Context Variables">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parent-parent-function-access" class="md-nav__link">
+    <span class="md-ellipsis">
+      $parent - Parent Function Access
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#root-and-self-widget-context" class="md-nav__link">
+    <span class="md-ellipsis">
+      $root and $self - Widget Context
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#implementation-details" class="md-nav__link">
     <span class="md-ellipsis">
       Implementation Details
@@ -4494,12 +4614,41 @@
 <li><strong>Special Feature</strong>: <code>$local</code> is automatically initialized with all function parameters, providing access to the complete parameter list</li>
 <li><strong>Important</strong>: <code>$local</code> properly isolates variables within function scope, protecting against external variable access and ensuring thread safety in recursive functions and multi-threaded execution</li>
 </ul>
+<h3 id="parent-parent-function-context"><code>$parent</code> - Parent Function Context</h3>
+<ul>
+<li><strong>Purpose</strong>: Access to the calling function's local namespace</li>
+<li><strong>Lifetime</strong>: Function call execution</li>
+<li><strong>Scope</strong>: Parent function's <code>$local</code> namespace</li>
+<li><strong>Use Case</strong>: Function communication, nested function data access, callback patterns</li>
+<li><strong>Behavior</strong>: When called from top-level, returns the grammar system; when called from within a function, returns the calling function's <code>$local</code> namespace</li>
+</ul>
+<h3 id="root-root-widget-context"><code>$root</code> - Root Widget Context</h3>
+<ul>
+<li><strong>Purpose</strong>: Reference to the root widget/window in GUI applications</li>
+<li><strong>Lifetime</strong>: Widget lifetime</li>
+<li><strong>Scope</strong>: Widget hierarchy root</li>
+<li><strong>Use Case</strong>: GUI programming, widget manipulation, window management</li>
+<li><strong>Implementation</strong>: Variable lookup that resolves to the root widget</li>
+</ul>
+<h3 id="self-current-widget-context"><code>$self</code> - Current Widget Context</h3>
+<ul>
+<li><strong>Purpose</strong>: Reference to the current widget/object being processed</li>
+<li><strong>Lifetime</strong>: Widget processing lifetime</li>
+<li><strong>Scope</strong>: Current widget context</li>
+<li><strong>Use Case</strong>: Widget callbacks, event handling, self-referential operations</li>
+<li><strong>Implementation</strong>: Variable lookup that resolves to the current widget</li>
+</ul>
 <h2 id="syntax">Syntax</h2>
-<p>All three namespaces must be accessed with the <code>$</code> prefix:</p>
-<div class="highlight"><pre><span></span><code>// Only these forms are valid:
-$global.x = 5;
-$this.property = &quot;value&quot;;
-$local.temp = 10;
+<p>All namespace variables must be accessed with the <code>$</code> prefix:</p>
+<div class="highlight"><pre><span></span><code>// Core namespace variables:
+$global.x = 5;           // Global namespace
+$this.property = &quot;value&quot;; // Object context
+$local.temp = 10;        // Local context
+
+// Special context variables:
+$parent.rule_name;       // Grammar system access
+$root.hide();            // Root widget reference
+$self.get(&quot;property&quot;);   // Current widget reference
 </code></pre></div>
 <h2 id="critical-use-cases">Critical Use Cases</h2>
 <h3 id="1-avoiding-variable-name-conflicts">1. Avoiding Variable Name Conflicts</h3>
@@ -4752,16 +4901,80 @@ myFunction = op() {
     $global.x;  // Returns &quot;global&quot; (global scope)
 };
 </code></pre></div>
+<h2 id="special-context-variables">Special Context Variables</h2>
+<h3 id="parent-parent-function-access"><code>$parent</code> - Parent Function Access</h3>
+<p><code>$parent</code> provides access to the calling function's local namespace, enabling powerful function communication patterns:</p>
+<div class="highlight"><pre><span></span><code>/* Basic parent access */
+child_function = op() {
+    $local.result = &quot;processed&quot;;
+    $parent;  // Returns calling function&#39;s $local namespace
+};
+
+parent_function = op() {
+    $local.data = &quot;input&quot;;
+    $local.status = &quot;processing&quot;;
+    child_function();  // Returns {&quot;data&quot;:&quot;input&quot;,&quot;status&quot;:&quot;processing&quot;}
+};
+
+parent_function();  // Returns {&quot;data&quot;:&quot;input&quot;,&quot;status&quot;:&quot;processing&quot;}
+</code></pre></div>
+<p><strong>Key Behaviors:</strong>
+- <strong>From top-level</strong>: Returns the grammar system (106+ rules)
+- <strong>From within functions</strong>: Returns the calling function's <code>$local</code> namespace
+- <strong>Nested calls</strong>: Always refers to the immediate parent, not the root</p>
+<div class="highlight"><pre><span></span><code>/* Nested function example */
+grandchild = op() {
+    $local.gc_data = &quot;grandchild&quot;;
+    $parent;  // Returns parent&#39;s $local, not grandparent&#39;s
+};
+
+child = op() {
+    $local.c_data = &quot;child&quot;;
+    grandchild();  // Returns {&quot;c_data&quot;:&quot;child&quot;}
+};
+
+parent = op() {
+    $local.p_data = &quot;parent&quot;;
+    child();  // Returns {&quot;c_data&quot;:&quot;child&quot;}
+};
+
+parent();  // Returns {&quot;c_data&quot;:&quot;child&quot;}
+</code></pre></div>
+<h3 id="root-and-self-widget-context"><code>$root</code> and <code>$self</code> - Widget Context</h3>
+<p>In GUI applications, <code>$root</code> and <code>$self</code> provide widget references:</p>
+<div class="highlight"><pre><span></span><code>/* GUI widget example (from $editor.grc) */
+button_callback = op() {
+    $root.hide();           // Hide the root window
+    $self.get(&quot;text&quot;);      // Get current widget&#39;s text
+    $root.child(&quot;menu&quot;);    // Access child widgets
+};
+
+/* Widget hierarchy navigation */
+menu_callback = op() {
+    $local.h1 = $root.child(&quot;scrollitems&quot;).get(&quot;h&quot;);
+    $local.y1 = $root.child(&quot;scrollitems&quot;).get(&quot;y&quot;);
+    $root.redraw();         // Refresh the entire window
+};
+</code></pre></div>
+<p><strong>Widget Context Variables:</strong>
+- <strong><code>$root</code></strong>: Reference to the root widget/window
+- <strong><code>$self</code></strong>: Reference to the current widget being processed
+- <strong>Use Cases</strong>: GUI programming, widget manipulation, event handling</p>
 <h2 id="implementation-details">Implementation Details</h2>
 <p>The namespace system is implemented in <code>lib/grapa/$grapa.grc</code>:</p>
 <div class="highlight"><pre><span></span><code>| $this {@&lt;this,{}&gt;}
 | $global {@&lt;global,{}&gt;}
 | $local {@&lt;local,{}&gt;}
+| $parent {@&lt;parent,{}&gt;}
+| $root {@&lt;var,{$1}&gt;}
+| $self {@&lt;var,{$1}&gt;}
 </code></pre></div>
 <p>These rules map the namespace identifiers to their corresponding C++ implementations in <code>GrapaLibRule.cpp</code>:
 - <code>GrapaLibraryRuleThisEvent::Run</code>
 - <code>GrapaLibraryRuleGlobalEvent::Run</code> 
-- <code>GrapaLibraryRuleLocalEvent::Run</code></p>
+- <code>GrapaLibraryRuleLocalEvent::Run</code>
+- <code>GrapaLibraryRuleParentEvent::Run</code>
+- <code>$root</code> and <code>$self</code> are implemented as variable lookups in <code>GrapaWidget.cpp</code></p>
 <h2 id="common-pitfalls">Common Pitfalls</h2>
 <h3 id="1-forgetting-to-declare-local-variables">1. Forgetting to Declare Local Variables</h3>
 <div class="highlight"><pre><span></span><code>// BAD: Variable might conflict with global scope
@@ -4820,8 +5033,21 @@ innerLoop = op() {
 };
 </code></pre></div>
 <h2 id="summary">Summary</h2>
-<p>Grapa's namespace scoping system provides powerful tools for managing variable visibility and lifetime. By understanding and properly using <code>$global</code>, <code>$this</code>, and <code>$local</code>, you can write robust, thread-safe code that avoids variable conflicts and maintains clear scope boundaries.</p>
-<p><strong>Key Takeaway</strong>: Always declare function variables as <code>$local</code> to ensure thread safety and avoid conflicts with parent scopes.</p>
+<p>Grapa's namespace scoping system provides powerful tools for managing variable visibility and lifetime. The system includes:</p>
+<p><strong>Core Namespace Variables:</strong>
+- <code>$global</code> - Global variables accessible from anywhere
+- <code>$this</code> - Current object's namespace<br />
+- <code>$local</code> - Local variables within current block scope</p>
+<p><strong>Special Context Variables:</strong>
+- <code>$parent</code> - Access to calling function's local namespace
+- <code>$root</code> - Reference to root widget in GUI applications
+- <code>$self</code> - Reference to current widget being processed</p>
+<p>By understanding and properly using these namespace variables, you can write robust, thread-safe code that avoids variable conflicts and maintains clear scope boundaries.</p>
+<p><strong>Key Takeaways</strong>: 
+- Always declare function variables as <code>$local</code> to ensure thread safety
+- Use <code>$parent</code> for function communication and callback patterns
+- Use <code>$root</code> and <code>$self</code> for GUI widget manipulation
+- Leverage <code>$local</code>'s automatic parameter list initialization for introspection</p>
 
 
 
