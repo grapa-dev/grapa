@@ -379,6 +379,7 @@ parent_function();  // Returns {"data":"input","status":"processing"}
 - **From top-level**: Returns the grammar system (106+ rules)
 - **From within functions**: Returns the calling function's `$local` namespace
 - **Nested calls**: Always refers to the immediate parent, not the root
+- **Call stack tracing**: Can be used to trace back to the global namespace
 
 ```grapa
 /* Nested function example */
@@ -399,6 +400,78 @@ parent = op() {
 
 parent();  // Returns {"c_data":"child"}
 ```
+
+### Call Stack Tracing with `$parent`
+
+`$parent` can be used to construct a call stack by leaving breadcrumbs in each function's `$local` namespace:
+
+```grapa
+/* Basic call stack tracing */
+f1 = op() {
+    $local.breadcrumb = "f1";
+    f2();
+};
+
+f2 = op() {
+    $local.breadcrumb = "f2";
+    f3();
+};
+
+f3 = op() {
+    $local.breadcrumb = "f3";
+    $parent.breadcrumb;  // Returns "f2" (immediate parent)
+};
+
+f1();  // Returns "f2"
+```
+
+**Global Namespace Detection:**
+```grapa
+/* Detect if called from top-level */
+f3 = op() {
+    $local.breadcrumb = "f3";
+    $parent == $global;  // Returns true if called from top-level
+};
+
+f3();  // Returns true (called from top-level)
+```
+
+**Advanced Call Stack Construction:**
+```grapa
+/* Recursive call stack builder */
+buildCallStack = op() {
+    $local.stack = {};
+    $local.current = $local.breadcrumb;
+    
+    if ($parent != $global) {
+        $local.stack = $parent.stack;
+        $local.stack += $current;
+    } else {
+        $local.stack = {$current};
+    };
+    
+    $local.stack;
+};
+
+/* Usage with breadcrumbs */
+f1 = op() {
+    $local.breadcrumb = "f1";
+    buildCallStack();
+};
+
+f2 = op() {
+    $local.breadcrumb = "f2";
+    f1();
+};
+
+f2();  // Returns {"f2", "f1"}
+```
+
+**Debugging Applications:**
+- **Function call tracing**: Track which functions called which
+- **Error context**: Provide context about where errors occurred
+- **Performance profiling**: Understand call patterns
+- **Dynamic debugging**: Inspect calling context at runtime
 
 ### `$root` and `$self` - Widget Context
 
@@ -528,5 +601,7 @@ By understanding and properly using these namespace variables, you can write rob
 **Key Takeaways**: 
 - Always declare function variables as `$local` to ensure thread safety
 - Use `$parent` for function communication and callback patterns
+- Use `$parent` for call stack tracing and debugging with breadcrumbs
 - Use `$root` and `$self` for GUI widget manipulation
 - Leverage `$local`'s automatic parameter list initialization for introspection
+- Use `$parent == $global` to detect top-level function calls
