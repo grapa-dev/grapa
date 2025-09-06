@@ -1013,6 +1013,14 @@ public:
 };
 GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleLocal(GrapaCHAR& pName) { return new GrapaLibraryRuleLocalEvent(pName); }
 
+class GrapaLibraryRuleOpLocalEvent : public GrapaLibraryEvent
+{
+public:
+GrapaLibraryRuleOpLocalEvent(GrapaCHAR& pName) { mName.FROM(pName); };
+	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
+};
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleOpLocal(GrapaCHAR& pName) { return new GrapaLibraryRuleOpLocalEvent(pName); }
+
 class GrapaLibraryRuleStaticEvent : public GrapaLibraryEvent
 {
 public:
@@ -3111,6 +3119,7 @@ GrapaLibraryEvent* GrapaLibraryRuleEvent::LoadLib(GrapaScriptExec *vScriptExec, 
 		{ "parent", &GrapaLibraryRuleEvent::HandleParent },
 		{ "this", &GrapaLibraryRuleEvent::HandleThis },
 		{ "local", &GrapaLibraryRuleEvent::HandleLocal },
+		{ "oplocal", &GrapaLibraryRuleEvent::HandleOpLocal },
 		{ "static", &GrapaLibraryRuleEvent::HandleStatic },
 		{ "const", &GrapaLibraryRuleEvent::HandleConst },
 		{ "setconst", &GrapaLibraryRuleEvent::HandleSetConst },
@@ -9169,6 +9178,62 @@ GrapaRuleEvent* GrapaLibraryRuleLocalEvent::Run(GrapaScriptExec *vScriptExec, Gr
 	if (n)
 	{
 		if (n->mValue.mToken== GrapaTokenType::RULEOP)
+			n->mValue.mToken = GrapaTokenType::OBJ;
+		result = new GrapaRuleEvent();
+		result->mValue.mToken = GrapaTokenType::PTR;
+		result->vRulePointer = n;
+		result->mVar = true;
+		result->mLocal = false;
+		err = 0;
+	}
+	if (err && result == NULL)
+		result = Error(vScriptExec, pNameSpace, err);
+	return(result);
+}
+
+GrapaRuleEvent* GrapaLibraryRuleOpLocalEvent::Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput)
+{
+	GrapaError err = -1;
+	GrapaRuleEvent* result = NULL;
+	
+	// Find the function/op's $local namespace by traversing up to find the function scope
+	GrapaNames* ns = pNameSpace;
+	GrapaRuleEvent *n = NULL;
+	
+	// Look for the function's $local by finding the entry after the OP entry
+	// The execution order is: op -> wrap -> function body
+	// So the function's $local should be the entry that comes after the OP entry
+	n = ns->GetNameQueue()->Tail();
+	if (n && n->Prev() && n->Prev()->mValue.mToken == GrapaTokenType::OP)
+	{
+		// Found the OP entry - the current Tail() is the function's $local
+	}
+	else
+	{
+		// If not found in current namespace, traverse up to find function scope
+		ns = ns->GetParrent();
+		while (ns)
+		{
+			n = ns->GetNameQueue()->Tail();
+			if (n && n->Prev() && n->Prev()->mValue.mToken == GrapaTokenType::OP)
+			{
+				// Found the OP entry - the current Tail() is the function's $local
+				break;
+			}
+			ns = ns->GetParrent();
+		}
+	}
+	
+	// If we didn't find a function scope, fall back to current namespace
+	if (n == NULL)
+	{
+		ns = pNameSpace;
+		n = ns->GetNameQueue()->Tail();
+	}
+	
+	if (n)
+	{
+		if (n->mValue.mToken == GrapaTokenType::RULEOP)
 			n->mValue.mToken = GrapaTokenType::OBJ;
 		result = new GrapaRuleEvent();
 		result->mValue.mToken = GrapaTokenType::PTR;

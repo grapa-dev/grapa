@@ -164,6 +164,7 @@
 	| '@' parent {@<parent,{}>}
 	| '@' global {@<global,{}>}
 	| '@' local {@<local,{}>}
+	| '@' oplocal {@<oplocal,{}>}
 	| '@' '<' <$op_list> '>'
 	| '@' '[' <$code_list> ']'
 	| '@' <$litname> {@<var,{$2}>}
@@ -171,6 +172,7 @@
 	| $parent {@<parent,{}>}
 	| $global {@<global,{}>}
 	| $local {@<local,{}>}
+	| $oplocal {@<oplocal,{}>}
 	| $root {@<var,{$1}>}
 	| $self {@<var,{$1}>}
 	| $ID {@<lit,{$1}>}
@@ -188,6 +190,7 @@
 	| '@' parent {@<parent,{}>}
 	| '@' global {@<global,{}>}
 	| '@' local {@<local,{}>}
+	| '@' oplocal {@<oplocal,{}>}
 	| '@' '<' <$op_list> '>'
 	| '@' '[' <$code_list> ']'
 	| '@' <$litname> {@<var,{$2}>}
@@ -195,6 +198,7 @@
 	| $parent {@<parent,{}>}
 	| $global {@<global,{}>}
 	| $local {@<local,{}>}
+	| $oplocal {@<oplocal,{}>}
 	| $root {@<var,{$1}>}
 	| $self {@<var,{$1}>}
 	| $ID {@<var,{$1}>}

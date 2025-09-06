@@ -77,6 +77,7 @@ public:
 	GrapaLibraryEvent* HandleParent(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleThis(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleLocal(GrapaCHAR& pName);
+	GrapaLibraryEvent* HandleOpLocal(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleStatic(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleConst(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleSetConst(GrapaCHAR& pName);
