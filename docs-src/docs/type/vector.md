@@ -520,6 +520,60 @@ masked = vec * [op(x){x % 2 == 0 ? x : null}];  /* #[0,2,0,4,0,6,0,8,0,10]# */
 - **Expressiveness**: Go beyond basic mathematical operations
 - **No Dependencies**: All operations use built-in Grapa capabilities
 
+### **Element Access Operations**
+
+#### **1D Vector Element Access**
+```grapa
+vec = #[1, 2, 3, 4, 5]#;
+
+/* Get elements by index */
+first = vec.get(0);       /* 1 */
+second = vec.get(1);      /* 2 */
+last = vec.get(4);        /* 5 */
+
+/* Set elements by index */
+vec.set(0, 99);           /* vec is now #[99, 2, 3, 4, 5]# */
+vec.set(2, 77);           /* vec is now #[99, 2, 77, 4, 5]# */
+
+/* String vectors */
+str_vec = ["a", "b", "c"].vector();
+char = str_vec.get(1);    /* "b" */
+str_vec.set(1, "hello");  /* str_vec is now #["a", "hello", "c"]# */
+```
+
+#### **2D Vector Element Access**
+```grapa
+matrix = #[[1, 2, 3], [4, 5, 6], [7, 8, 9]]#;
+
+/* Get elements by row, col */
+top_left = matrix.get(0, 0);     /* 1 */
+top_right = matrix.get(0, 2);    /* 3 */
+bottom_left = matrix.get(2, 0);  /* 7 */
+center = matrix.get(1, 1);       /* 5 */
+
+/* Set elements by row, col */
+matrix.set(0, 1, 99);            /* Set element at row 0, col 1 to 99 */
+matrix.set(2, 2, 88);            /* Set element at row 2, col 2 to 88 */
+/* matrix is now #[[1, 99, 3], [4, 5, 6], [7, 8, 88]]# */
+```
+
+#### **Mixed Data Type Access**
+```grapa
+mixed_vec = [1, "hello", true, [1, 2, 3]].vector();
+
+/* Access different data types */
+num = mixed_vec.get(0);          /* 1 */
+str = mixed_vec.get(1);          /* "hello" */
+bool_val = mixed_vec.get(2);     /* true */
+arr = mixed_vec.get(3);          /* [1, 2, 3] */
+
+/* Set different data types */
+mixed_vec.set(0, 42);            /* Set to integer */
+mixed_vec.set(1, "world");       /* Set to string */
+mixed_vec.set(2, false);         /* Set to boolean */
+mixed_vec.set(3, [4, 5, 6]);     /* Set to array */
+```
+
 ### **Vector Utility Operations**
 
 ```grapa
@@ -797,6 +851,12 @@ The `add()`, `mul()`, `pow()` functions in the C++ backend are internal methods 
   - `custom_function`: op(a,b){...} for custom comparison logic
 - `.unique()` - Unique elements (use `vec.array().unique().vector()`)
 
+### **Element Access Functions**
+- `.get(index)` - Get element at index (1D vectors)
+- `.get(row, col)` - Get element at row, col (2D vectors)
+- `.set(index, value)` - Set element at index (1D vectors)
+- `.set(row, col, value)` - Set element at row, col (2D vectors)
+
 ### **Utility Functions**
 - `.array()` - Convert to array
 - `.vector()` - Convert to vector (from array)
@@ -843,6 +903,35 @@ result = mixed_vec.right(1);     /* Returns #[true]# */
 ```
 
 **Performance:** All vector operations now work efficiently with both numeric and non-numeric data without requiring workarounds.
+
+#### **Element Access Support - NEW**
+Added support for direct element access and modification:
+
+**New Functions:**
+- `.get(index)` - Get element at index (1D vectors)
+- `.get(row, col)` - Get element at row, col (2D vectors)  
+- `.set(index, value)` - Set element at index (1D vectors)
+- `.set(row, col, value)` - Set element at row, col (2D vectors)
+
+**Examples:**
+```grapa
+/* 1D vector access */
+vec = [1, 2, 3].vector();
+val = vec.get(1);        /* Returns 2 */
+vec.set(1, 99);          /* vec is now #[1, 99, 3]# */
+
+/* 2D vector access */
+matrix = [[1, 2], [3, 4]].vector();
+val = matrix.get(0, 1);  /* Returns 2 */
+matrix.set(0, 1, 99);    /* Set element at row 0, col 1 to 99 */
+
+/* Mixed data types */
+mixed = [1, "hello", true].vector();
+str_val = mixed.get(1);  /* Returns "hello" */
+mixed.set(1, "world");   /* Set to "world" */
+```
+
+**Status:** ✅ **NEW FEATURE** - Direct element access and modification now supported for both 1D and 2D vectors with full data type support.
 
 > **Note:** All vector operations work seamlessly with Grapa's flexible type system, allowing for creative combinations of features to achieve complex data transformations and mathematical operations.
 
