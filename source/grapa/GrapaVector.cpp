@@ -1521,12 +1521,14 @@ void GrapaVector::Set(u64 pPos, GrapaInt& fl)
 
 GrapaRuleEvent* GrapaVector::Get(u64 pPos)
 {
+	GrapaRuleEvent* result = NULL;
+
 	if (mData == NULL || pPos >= mSize)
 		return NULL;
 	
 	GrapaVectorItem* d1 = _datavectorpos(mData, mBlock, pPos);
 	if (d1->isNull)
-		return nullptr;
+		return result;
 	
 	if (d1->isValue)
 	{
@@ -1534,7 +1536,6 @@ GrapaRuleEvent* GrapaVector::Get(u64 pPos)
 		memcpy(&d, d1->d, sizeof(GrapaVectorValue*));
 		if (d)
 			return d->Get();
-		return nullptr;
 	}
 	else
 	{
@@ -1542,17 +1543,18 @@ GrapaRuleEvent* GrapaVector::Get(u64 pPos)
 		v.mBytes = d1->d;
 		v.mLength = d1->mLen;
 		v.mToken = d1->mToken;
-		GrapaRuleEvent* result = new GrapaRuleEvent(v.mToken, 0, "", "");
+		result = new GrapaRuleEvent(v.mToken, 0, "", "");
 		result->mValue.FROM(v);
-		return result;
+		memset(&v, 0, sizeof(GrapaBYTE));
 	}
+	return result;
+
 }
 
 GrapaRuleEvent* GrapaVector::Get(u64 pRow, u64 pCol)
 {
 	if (mData == NULL || mDim != 2 || pRow >= mCounts[0] || pCol >= mCounts[1])
 		return NULL;
-	
 	u64 pos = pRow * mCounts[1] + pCol;
 	return Get(pos);
 }
