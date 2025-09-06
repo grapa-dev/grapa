@@ -1,17 +1,17 @@
 // GrapaInt.cpp
 /*
-Copyright 2022 Chris Ernest Matichuk
+Copyright 2025 Chris Ernest Matichuk
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
-http ://www.apache.org/licenses/LICENSE-2.0
+http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissionsand
+See the License for the specific language governing permissions and
 limitations under the License.
 */
 /////////////////f///////////////////////////////////////////////////////////////
@@ -399,13 +399,13 @@ GrapaInt GrapaInt::operator--(int)
 
 // uses FFT and Newton's reciprocal convergence algorithms for multiplication and division. 
 
-// See “Numerical Recipes” www.nr.com on how to perform fast multiplication of arbitrary precision numbers
+// See Â“Numerical RecipesÂ” www.nr.com on how to perform fast multiplication of arbitrary precision numbers
 
 // Actually, FFT multiplication doesn't become competitive until you have many thousands of digits.
   
 // A relatively simple method is Karatsuba multiplication.It uses recursion to replace one multiplication of numbers of length N with 3 multiplications of numbers of length N / 2. When N is small(around 10 - 20), you can switch to the classic algorithm.
 
-// FFT Based Schönhage-Strassen algorithm used to be asymptotically fastest algorithm for multiplying large numbers (until slightly faster algorithm was introduced in 2007 (see Fürer algorithm)). Asymptotically slower algorithms such as Karatsuba and Toom–Cook will generally outperform FFT for small numbers. Threshold depends on implementation but it is generally believed that for numbers with more then 10,000 digits using FFT based multiplication is better. 
+// FFT Based SchÃ¶nhage-Strassen algorithm used to be asymptotically fastest algorithm for multiplying large numbers (until slightly faster algorithm was introduced in 2007 (see FÃ¼rer algorithm)). Asymptotically slower algorithms such as Karatsuba and ToomÂ–Cook will generally outperform FFT for small numbers. Threshold depends on implementation but it is generally believed that for numbers with more then 10,000 digits using FFT based multiplication is better. 
 
 #include "GrapaFloat.h"
 

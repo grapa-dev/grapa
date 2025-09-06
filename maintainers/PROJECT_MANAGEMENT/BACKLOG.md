@@ -511,6 +511,26 @@ The following work was completed in version 0.1.52 and is now stable:
   - **Example**: `[null,1,2,3,null].trim(null)` → `[1,2,3]`
   - **Priority**: Medium (useful for data processing)
   - **Estimated Effort**: Small Release (1-2 weeks)
+
+- [ ] **Consider Splitting .get/.set Functions for Extension System**: Architectural consideration for future extension system
+  - **Current State**: `FileGetEvent` and `FileSetEvent` handle `.get()/.set()/.getfield()/.setfield()` for all data types (ARRAY/LIST, FILE/TABLE, VECTOR)
+  - **Proposed Enhancement**: Split into separate functions for each data type category and move methods to respective class objects
+  - **Technical Requirements**:
+    - Create separate event handlers for ARRAY/LIST, FILE/TABLE, and VECTOR
+    - Move `.get()/.set()/.getfield()/.setfield()` methods to each class object (`$ARRAY.grc`, `$file.grc`, `$VECTOR.grc`, etc.)
+    - Maintain backward compatibility during transition
+  - **Motivation**: Future extension system may have different mechanisms for get/set operations (similar to how widgets and vectors are different)
+  - **Benefits**: 
+    - **Extension Flexibility**: Extensions can implement custom get/set mechanisms
+    - **Type-Specific Optimization**: Each data type can optimize its access patterns
+    - **Cleaner Architecture**: Methods live with their respective types
+    - **Future-Proofing**: Enables custom data types with unique access patterns
+  - **Use Cases**: Custom data types, specialized access patterns, extension system integration
+  - **Example**: Extension could implement `$CUSTOM_TYPE` with specialized `.get()/.set()` behavior
+  - **Priority**: Low (architectural consideration for future)
+  - **Estimated Effort**: Major Release (2-3 months) - requires careful API design and migration
+  - **Status**: **CONSIDERATION ONLY** - Not planned for immediate implementation
+  - **Dependencies**: Extension system development (future)
   - **Issue**: ~~Vector methods return `[0]` or `[[0,0],[0,0]]` instead of preserving string/mixed-type data~~
   - **Root Cause**: ~~`result.Set()` method not properly handling non-numeric data types in multiple functions~~
   - **Solution Implemented**: 
