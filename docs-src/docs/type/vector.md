@@ -7,6 +7,58 @@ tags:
 
 Vectors in Grapa are multi-dimensional data structures that support mathematical operations, statistical functions, and linear algebra operations. Vectors can contain mixed data types and automatically handle type conversions during operations.
 
+## **🎯 Key Features**
+
+- **Multi-dimensional**: Support for 1D vectors and 2D matrices
+- **Mixed Data Types**: Can contain integers, floats, strings, booleans, arrays, objects, and more
+- **Mathematical Operations**: Full support for element-wise and scalar operations
+- **Statistical Functions**: Comprehensive statistical analysis capabilities
+- **Linear Algebra**: Matrix operations, dot products, and transformations
+- **Element Access**: Multiple access methods including numeric indices, negative indices, and column labels
+- **Spreadsheet-like**: Column labels for intuitive data access (rows by index, columns by name)
+- **Type Preservation**: All operations maintain original data types
+- **Performance**: Optimized for mathematical and statistical computations
+
+## **📋 Quick Reference**
+
+| Operation | Syntax | Description |
+|-----------|--------|-------------|
+| **Create** | `[1,2,3].vector()` or `#[1,2,3]#` | Create vector from array |
+| **Access** | `vec.get(index)` or `vec.get(row, col)` | Get element by index |
+| **Access (Negative)** | `vec.get(-1)` | Get last element |
+| **Access (Label)** | `vec.get("columnName")` | Get by column label |
+| **Set** | `vec.set(index, value)` | Set element value |
+| **Field Access** | `vec.getfield(index)` | Alternative access method |
+| **Mathematical** | `vec1 + vec2`, `vec * 2` | Element-wise operations |
+| **Statistical** | `vec.sum()`, `vec.mean()` | Statistical functions |
+
+## **🆕 What's New**
+
+### **Recent Major Enhancements**
+
+#### **✅ Element Access & Modification (NEW)**
+- **Direct Access**: `.get(index)` and `.set(index, value)` for 1D vectors
+- **2D Access**: `.get(row, col)` and `.set(row, col, value)` for matrices
+- **Field Access**: `.getfield()` and `.setfield()` methods for alternative access patterns
+- **Full Data Type Support**: Works with integers, floats, strings, booleans, arrays, objects, and more
+
+#### **✅ Negative Index Support (NEW)**
+- **1D Vectors**: `vec.get(-1)` returns last element, `vec.get(-2)` returns second-to-last
+- **2D Vectors**: `matrix.get(-1, -1)` returns bottom-right element
+- **All Methods**: Works with `.get()`, `.set()`, `.getfield()`, `.setfield()`
+- **Consistent**: Same behavior as `$ARRAY` and `$LIST`
+
+#### **✅ Column Label Support (NEW)**
+- **Spreadsheet-like**: Column labels for intuitive data access
+- **Schema Definition**: First object defines column schema for all rows
+- **Access Methods**: `vec.get("columnName")` and `vec.set("columnName", value)`
+- **Mixed Access**: `matrix.getfield(row, "columnName")` for 2D with column labels
+
+#### **✅ Data Loss Bug Fixes (COMPLETELY FIXED)**
+- **Fixed Functions**: `.left()`, `.right()`, `.diag()`, `.triu()`, `.tril()`
+- **Type Preservation**: All operations now maintain original data types
+- **Comprehensive Support**: Extended to handle all Grapa data types
+
 ## Vector Creation
 
 ```grapa
@@ -20,6 +72,13 @@ matrix = #[[1, 2, 3], [4, 5, 6]]#;  /* 2D vector */
 
 /* Mixed data types */
 mixed_vec = #[1, "hello", true, [1, 2, 3]]#;  /* Vectors can contain any Grapa type */
+
+/* Spreadsheet-like vectors with column labels */
+employees = [
+    {"id":1, "name":"Alice", "department":"Engineering", "salary":75000},
+    {"id":2, "name":"Bob", "department":"Marketing", "salary":65000},
+    {"id":3, "name":"Charlie", "department":"Engineering", "salary":80000}
+].vector();
 ```
 
 ## Basic Vector Operations
@@ -42,6 +101,89 @@ rooted = vec1 */ 2;       /* #[1, 1.414..., 1.732..., 2, 2.236...]# */
 /* Scalar operations */
 scaled = vec1 * 2;        /* #[2, 4, 6, 8, 10]# */
 shifted = vec1 + 5;       /* #[6, 7, 8, 9, 10]# */
+```
+
+## **Element Access & Modification**
+
+### **1D Vector Access**
+```grapa
+data = #[10, 20, 30, 40, 50]#;
+
+/* Positive indices */
+first = data.get(0);      /* 10 */
+second = data.get(1);     /* 20 */
+
+/* Negative indices (NEW) */
+last = data.get(-1);      /* 50 */
+second_last = data.get(-2); /* 40 */
+
+/* Set values */
+data.set(0, 99);          /* Set first element to 99 */
+data.set(-1, 88);         /* Set last element to 88 */
+
+/* Field access methods */
+first_field = data.getfield(0);    /* 99 */
+last_field = data.getfield(-1);    /* 88 */
+data.setfield(-1, 77);             /* Set last element to 77 */
+```
+
+### **2D Vector (Matrix) Access**
+```grapa
+matrix = #[[1,2,3],[4,5,6],[7,8,9]]#;
+
+/* Positive indices */
+top_left = matrix.get(0, 0);       /* 1 */
+bottom_right = matrix.get(2, 2);   /* 9 */
+
+/* Negative indices (NEW) */
+bottom_right_neg = matrix.get(-1, -1);  /* 9 */
+top_right_neg = matrix.get(-3, -1);     /* 3 */
+
+/* Mixed positive/negative */
+first_row_last_col = matrix.get(0, -1); /* 3 */
+last_row_first_col = matrix.get(-1, 0); /* 7 */
+
+/* Set values */
+matrix.set(0, 0, 99);              /* Set top-left to 99 */
+matrix.set(-1, -1, 88);            /* Set bottom-right to 88 */
+```
+
+### **Column Label Access (NEW)**
+```grapa
+/* Spreadsheet-like data with column labels */
+employees = [
+    {"id":1, "name":"Alice", "department":"Engineering", "salary":75000},
+    {"id":2, "name":"Bob", "department":"Marketing", "salary":65000},
+    {"id":3, "name":"Charlie", "department":"Engineering", "salary":80000}
+].vector();
+
+/* Access by column labels */
+id = employees.get("id");           /* 1 */
+name = employees.get("name");       /* "Alice" */
+department = employees.get("department"); /* "Engineering" */
+salary = employees.get("salary");   /* 75000 */
+
+/* Set by column labels */
+employees.set("salary", 78000);     /* Update first employee's salary */
+employees.set("department", "Sales"); /* Change first employee's department */
+
+/* Field access with labels */
+id_field = employees.getfield("id");     /* 1 */
+name_field = employees.getfield("name"); /* "Alice" */
+employees.setfield("salary", 79000);     /* Update salary */
+```
+
+### **2D with Column Labels (NEW)**
+```grapa
+/* 2D matrix with column labels */
+matrix_with_labels = [{"col1":1, "col2":2}, {"col1":3, "col2":4}].vector();
+
+/* Access by row index and column label */
+value = matrix_with_labels.getfield(0, "col2"); /* 2 (row 0, column "col2") */
+matrix_with_labels.setfield(0, "col2", 99);     /* Set row 0, column "col2" to 99 */
+
+/* Mixed access patterns */
+first_row_last_col = matrix_with_labels.getfield(0, "col2"); /* 99 */
 ```
 
 ### **Statistical Functions**
@@ -520,6 +662,109 @@ masked = vec * [op(x){x % 2 == 0 ? x : null}];  /* #[0,2,0,4,0,6,0,8,0,10]# */
 - **Expressiveness**: Go beyond basic mathematical operations
 - **No Dependencies**: All operations use built-in Grapa capabilities
 
+### **Element Access Operations**
+
+#### **1D Vector Element Access**
+```grapa
+vec = #[1, 2, 3, 4, 5]#;
+
+/* Get elements by index */
+first = vec.get(0);       /* 1 */
+second = vec.get(1);      /* 2 */
+last = vec.get(4);        /* 5 */
+
+/* Set elements by index */
+vec.set(0, 99);           /* vec is now #[99, 2, 3, 4, 5]# */
+vec.set(2, 77);           /* vec is now #[99, 2, 77, 4, 5]# */
+
+/* String vectors */
+str_vec = ["a", "b", "c"].vector();
+char = str_vec.get(1);    /* "b" */
+str_vec.set(1, "hello");  /* str_vec is now #["a", "hello", "c"]# */
+```
+
+#### **2D Vector Element Access**
+```grapa
+matrix = #[[1, 2, 3], [4, 5, 6], [7, 8, 9]]#;
+
+/* Get elements by row, col */
+top_left = matrix.get(0, 0);     /* 1 */
+top_right = matrix.get(0, 2);    /* 3 */
+bottom_left = matrix.get(2, 0);  /* 7 */
+center = matrix.get(1, 1);       /* 5 */
+
+/* Set elements by row, col */
+matrix.set(0, 1, 99);            /* Set element at row 0, col 1 to 99 */
+matrix.set(2, 2, 88);            /* Set element at row 2, col 2 to 88 */
+/* matrix is now #[[1, 99, 3], [4, 5, 6], [7, 8, 88]]# */
+```
+
+#### **Mixed Data Type Access**
+```grapa
+mixed_vec = [1, "hello", true, [1, 2, 3]].vector();
+
+/* Access different data types */
+num = mixed_vec.get(0);          /* 1 */
+str = mixed_vec.get(1);          /* "hello" */
+bool_val = mixed_vec.get(2);     /* true */
+arr = mixed_vec.get(3);          /* [1, 2, 3] */
+
+/* Set different data types */
+mixed_vec.set(0, 42);            /* Set to integer */
+mixed_vec.set(1, "world");       /* Set to string */
+mixed_vec.set(2, false);         /* Set to boolean */
+mixed_vec.set(3, [4, 5, 6]);     /* Set to array */
+```
+
+#### **Label-Based Access (NEW)**
+Vectors support label-based access designed for spreadsheet-like functionality where **columns have labels but rows don't**:
+
+```grapa
+/* Create vector with column labels from object keys */
+spreadsheet_data = [{"name":"Alice", "age":25, "active":true}, {"name":"Bob", "age":30, "active":false}, {"name":"Charlie", "age":35, "active":true}].vector();
+
+/* Access by column label (uses keys from first object) */
+name = spreadsheet_data.get("name");  /* "Alice" */
+age = spreadsheet_data.get("age");    /* 25 */
+active = spreadsheet_data.get("active"); /* true */
+
+/* Set by column label */
+spreadsheet_data.set("name", "David");  /* Changes first row's name */
+spreadsheet_data.set("age", 28);        /* Changes first row's age */
+```
+
+**Label System Design:**
+- **Purpose**: Designed for spreadsheet-like data where columns have meaningful names
+- **Column Labels**: Labels are derived from the keys of the **first object** in the vector
+- **Row Access**: Rows are accessed by numeric index (0, 1, 2, etc.)
+- **Schema Definition**: The first object defines the column schema for all rows
+- **Data Types**: Works with any data type in the labeled columns
+
+```grapa
+/* Spreadsheet-like example */
+employee_data = [
+    {"id":1, "name":"Alice", "department":"Engineering", "salary":75000, "active":true},
+    {"id":2, "name":"Bob", "department":"Marketing", "salary":65000, "active":false},
+    {"id":3, "name":"Charlie", "department":"Engineering", "salary":80000, "active":true}
+].vector();
+
+/* Access by column labels */
+id = employee_data.get("id");           /* 1 */
+name = employee_data.get("name");       /* "Alice" */
+department = employee_data.get("department"); /* "Engineering" */
+salary = employee_data.get("salary");   /* 75000 */
+active = employee_data.get("active");   /* true */
+
+/* Modify by column labels */
+employee_data.set("salary", 78000);     /* Update first employee's salary */
+employee_data.set("active", false);     /* Set first employee to inactive */
+```
+
+**Current Limitations:**
+- **Single Dimension Labels**: Only column labels are supported (not row labels)
+- **2D Vectors**: For 2D vectors, labels apply to one dimension only
+- **Future Enhancement**: Support for both row and column labels in 2D vectors is planned
+
 ### **Vector Utility Operations**
 
 ```grapa
@@ -797,6 +1042,163 @@ The `add()`, `mul()`, `pow()` functions in the C++ backend are internal methods 
   - `custom_function`: op(a,b){...} for custom comparison logic
 - `.unique()` - Unique elements (use `vec.array().unique().vector()`)
 
+## **Function Reference**
+
+### **Element Access & Modification**
+
+#### **Direct Access Methods**
+- `.get(index)` - Get element at index (1D vectors) - supports negative indices
+- `.get(row, col)` - Get element at row, col (2D vectors) - supports negative indices
+- `.get(columnLabel)` - Get element by column label (vectors with column labels)
+- `.set(index, value)` - Set element at index (1D vectors) - supports negative indices
+- `.set(row, col, value)` - Set element at row, col (2D vectors) - supports negative indices
+- `.set(columnLabel, value)` - Set element by column label (vectors with column labels)
+
+#### **Field Access Methods**
+- `.getfield(index)` - Get element at index (1D vectors) - supports negative indices
+- `.getfield(row, col)` - Get element at row, col (2D vectors) - supports negative indices
+- `.getfield(columnLabel)` - Get element by column label (vectors with column labels)
+- `.getfield(row, columnLabel)` - Get element by row index and column label (2D vectors)
+- `.setfield(index, value)` - Set element at index (1D vectors) - supports negative indices
+- `.setfield(row, col, value)` - Set element at row, col (2D vectors) - supports negative indices
+- `.setfield(columnLabel, value)` - Set element by column label (vectors with column labels)
+- `.setfield(row, columnLabel, value)` - Set element by row index and column label (2D vectors)
+
+#### **Working Combinations**
+
+**1D Vectors:**
+- ✅ `.get(index)` / `.set(index, value)` - Numeric index access
+- ✅ `.get(columnLabel)` / `.set(columnLabel, value)` - Column label access
+- ✅ `.getfield(index)` / `.setfield(index, value)` - Numeric index access
+- ✅ `.getfield(columnLabel)` / `.setfield(columnLabel, value)` - Column label access
+
+**2D Vectors:**
+- ✅ `.get(row, col)` / `.set(row, col, value)` - Both numeric indices
+- ✅ `.getfield(row, col)` / `.setfield(row, col, value)` - Both numeric indices
+- ✅ `.getfield(row, columnLabel)` / `.setfield(row, columnLabel, value)` - Row by index, column by label
+
+**Not Supported:**
+- ❌ `.get(rowLabel, col)` - Row labels not supported (rows are numeric only)
+- ❌ `.get(rowLabel, columnLabel)` - Row labels not supported
+- ❌ `.getfield(rowLabel, col)` - Row labels not supported
+- ❌ `.getfield(rowLabel, columnLabel)` - Row labels not supported
+
+### **Mathematical Operations**
+- `+`, `-`, `*`, `/` - Element-wise arithmetic operations
+- `**`, `*/` - Power and root operations
+- `.dot(other)` - Dot product with another vector
+- `.mul(other)` - Matrix multiplication
+- `.transpose()` - Transpose matrix (2D vectors)
+
+### **Statistical Functions**
+- `.sum()` - Sum of all elements
+- `.mean()` - Arithmetic mean
+- `.min()`, `.max()` - Minimum and maximum values
+- `.std()`, `.variance()` - Standard deviation and variance
+- `.median()`, `.mode()` - Median and mode
+- `.norm()` - Vector norm
+- `.percentile(p)` - Percentile calculation
+- `.quantile(q)` - Quantile calculation
+
+### **Matrix Operations**
+- `.left(n)` - Extract leftmost n elements
+- `.right(n)` - Extract rightmost n elements
+- `.diag()` - Create diagonal matrix from 1D vector
+- `.triu(n)` - Upper triangular matrix
+- `.tril(n)` - Lower triangular matrix
+- `.transpose()` - Transpose matrix
+
+### **Utility Functions**
+- `.array()` - Convert to array
+- `.vector()` - Convert to vector (from array)
+- `.len()` - Get length/size
+- `.sort()` - Sort elements
+- `.unique()` - Get unique elements
+
+#### **Index Support**
+- **Positive Indices**: Fully supported (0, 1, 2, ...)
+- **Negative Indices**: ✅ **FULLY SUPPORTED** (same as `$ARRAY` and `$LIST`)
+  - `-1` refers to the last element, `-2` to the second-to-last, etc.
+  - Works for both 1D and 2D vectors
+  - Works with all access methods: `.get()`, `.set()`, `.getfield()`, `.setfield()`
+- **Boundary Checking**: Vectors perform bounds checking and return errors for out-of-range indices
+
+**Note**: Label-based access is designed for spreadsheet-like functionality where columns have meaningful names but rows are accessed by numeric index only.
+
+## **Best Practices**
+
+### **When to Use Vectors**
+- **Mathematical Operations**: Vectors excel at element-wise operations and statistical calculations
+- **Matrix Operations**: Use 2D vectors for linear algebra and matrix computations
+- **Structured Data**: Use column labels for spreadsheet-like data access
+- **Performance**: Vectors are optimized for mathematical and statistical operations
+
+### **Data Type Considerations**
+- **Mixed Types**: Vectors can contain any Grapa data type, but mathematical operations work best with numeric data
+- **Type Preservation**: All operations maintain original data types - no unexpected conversions
+- **Memory Efficiency**: Vectors are memory-efficient for large datasets
+
+### **Access Pattern Recommendations**
+- **Numeric Indices**: Use for mathematical operations and when you know exact positions
+- **Negative Indices**: Use for accessing elements relative to the end (`-1` for last element)
+- **Column Labels**: Use for structured data where column names are meaningful
+- **Field Access**: Use `.getfield()`/`.setfield()` for consistency with other Grapa data types
+
+### **Performance Tips**
+- **Pre-allocate**: When possible, create vectors with known sizes
+- **Batch Operations**: Use element-wise operations instead of loops when possible
+- **Type Consistency**: Keep data types consistent within a vector for best performance
+
+#### **Practical Examples**
+
+```grapa
+/* Create spreadsheet-like vector */
+employees = [
+    {"id":1, "name":"Alice", "department":"Engineering", "salary":75000},
+    {"id":2, "name":"Bob", "department":"Marketing", "salary":65000},
+    {"id":3, "name":"Charlie", "department":"Engineering", "salary":80000}
+].vector();
+
+/* 1D Access - Column Labels */
+id = employees.get("id");           /* 1 */
+name = employees.get("name");       /* "Alice" */
+department = employees.get("department"); /* "Engineering" */
+
+/* 1D Access - Numeric Index */
+first_employee = employees.get(0);  /* {"id":1, "name":"Alice", ...} */
+second_employee = employees.get(1); /* {"id":2, "name":"Bob", ...} */
+
+/* 1D Field Access - Column Labels */
+id_field = employees.getfield("id");     /* 1 */
+name_field = employees.getfield("name"); /* "Alice" */
+
+/* 1D Field Access - Numeric Index */
+first_field = employees.getfield(0);     /* {"id":1, "name":"Alice", ...} */
+
+/* 2D Access - Numeric Indices */
+matrix = [[1,2,3],[4,5,6],[7,8,9]].vector();
+element = matrix.get(1, 2);         /* 6 (row 1, col 2) */
+matrix.set(1, 2, 99);               /* Set element at row 1, col 2 to 99 */
+
+/* 2D Field Access - Mixed (Row by index, Column by label) */
+/* Note: This requires a 2D vector with column labels */
+matrix_with_labels = [{"col1":1, "col2":2}, {"col1":3, "col2":4}].vector();
+value = matrix_with_labels.getfield(0, "col2"); /* 2 (row 0, column "col2") */
+matrix_with_labels.setfield(0, "col2", 99);     /* Set row 0, column "col2" to 99 */
+
+/* Negative Index Support */
+/* These now work (negative indices fully supported): */
+last_employee = employees.get(-1);        /* ✅ Returns last employee */
+last_field = employees.getfield(-1);      /* ✅ Returns last field */
+last_element = matrix.get(-1, -1);        /* ✅ Returns last element */
+second_last = matrix.get(-2, -2);         /* ✅ Returns second-to-last element */
+
+/* Boundary Checking */
+/* Out-of-bounds indices return empty: */
+/* employees.get(-10);       ❌ Returns empty (out of bounds) */
+/* matrix.get(-5, -5);       ❌ Returns empty (out of bounds) */
+```
+
 ### **Utility Functions**
 - `.array()` - Convert to array
 - `.vector()` - Convert to vector (from array)
@@ -843,6 +1245,115 @@ result = mixed_vec.right(1);     /* Returns #[true]# */
 ```
 
 **Performance:** All vector operations now work efficiently with both numeric and non-numeric data without requiring workarounds.
+
+#### **Element Access Support - NEW**
+Added support for direct element access and modification:
+
+**New Functions:**
+- `.get(index)` - Get element at index (1D vectors)
+- `.get(row, col)` - Get element at row, col (2D vectors)  
+- `.set(index, value)` - Set element at index (1D vectors)
+- `.set(row, col, value)` - Set element at row, col (2D vectors)
+
+**Examples:**
+```grapa
+/* 1D vector access */
+vec = [1, 2, 3].vector();
+val = vec.get(1);        /* Returns 2 */
+vec.set(1, 99);          /* vec is now #[1, 99, 3]# */
+
+/* 2D vector access */
+matrix = [[1, 2], [3, 4]].vector();
+val = matrix.get(0, 1);  /* Returns 2 */
+matrix.set(0, 1, 99);    /* Set element at row 0, col 1 to 99 */
+
+/* Mixed data types */
+mixed = [1, "hello", true].vector();
+str_val = mixed.get(1);  /* Returns "hello" */
+mixed.set(1, "world");   /* Set to "world" */
+```
+
+**Status:** ✅ **NEW FEATURE** - Direct element access and modification now supported for both 1D and 2D vectors with full data type support.
+
+#### **Column Label Support - NEW**
+Added support for accessing vector elements using column labels, designed for spreadsheet-like functionality:
+
+**New Column Label Methods:**
+- `.get(columnLabel)` - Access vector elements by column label
+- `.set(columnLabel, value)` - Modify vector elements by column label
+
+**How Column Labels Work:**
+- **Purpose**: Designed for spreadsheet-like data where columns have meaningful names
+- **Column Labels**: Automatically derived from the keys of the first object in the vector
+- **Row Access**: Rows are accessed by numeric index (0, 1, 2, etc.)
+- **Schema Definition**: The first object defines the column schema for all rows
+
+**Examples:**
+```grapa
+/* Create spreadsheet-like vector */
+employees = [
+    {"id":1, "name":"Alice", "department":"Engineering", "salary":75000},
+    {"id":2, "name":"Bob", "department":"Marketing", "salary":65000}
+].vector();
+
+/* Access by column labels */
+id = employees.get("id");           /* 1 */
+name = employees.get("name");       /* "Alice" */
+department = employees.get("department"); /* "Engineering" */
+salary = employees.get("salary");   /* 75000 */
+
+/* Modify by column labels */
+employees.set("salary", 78000);     /* Update first employee's salary */
+employees.set("department", "Sales"); /* Change first employee's department */
+```
+
+**Current Design:**
+- ✅ **Column Labels**: Fully supported for spreadsheet-like functionality
+- ❌ **Row Labels**: Not currently supported (rows accessed by numeric index)
+- ❌ **2D Labels**: Only one dimension can have labels (columns OR rows, not both)
+
+**Status:** ✅ **NEW FEATURE** - Column label access provides intuitive, spreadsheet-like element access for structured data vectors.
+
+#### **Negative Index Support - NEW**
+Added full negative index support for all vector access methods, matching the behavior of `$ARRAY` and `$LIST`:
+
+**New Negative Index Capabilities:**
+- **1D Vectors**: `vec.get(-1)` returns last element, `vec.get(-2)` returns second-to-last, etc.
+- **2D Vectors**: `matrix.get(-1, -1)` returns bottom-right element, `matrix.get(-2, -1)` returns second-to-last row, last column
+- **All Methods**: Works with `.get()`, `.set()`, `.getfield()`, `.setfield()`
+- **Boundary Checking**: Out-of-bounds negative indices return empty (same as positive indices)
+
+**Examples:**
+```grapa
+/* 1D Negative Indexing */
+data = [10, 20, 30, 40, 50].vector();
+last = data.get(-1);        /* 50 */
+second_last = data.get(-2); /* 40 */
+data.set(-1, 99);           /* Set last element to 99 */
+
+/* 2D Negative Indexing */
+matrix = [[1,2,3],[4,5,6],[7,8,9]].vector();
+bottom_right = matrix.get(-1, -1);    /* 9 */
+top_right = matrix.get(-3, -1);       /* 3 */
+matrix.set(-1, -1, 99);               /* Set bottom-right to 99 */
+
+/* Mixed Positive/Negative */
+mixed = matrix.get(0, -1);            /* 3 (first row, last column) */
+```
+
+**Status:** ✅ **NEW FEATURE** - Negative index support provides consistent, intuitive access patterns across all Grapa data types.
+
+## **Summary**
+
+Grapa vectors are now a comprehensive, feature-rich data type that combines the power of mathematical operations with intuitive data access patterns. The recent enhancements have made vectors:
+
+- **Fully Accessible**: Direct element access with `.get()` and `.set()` methods
+- **Consistently Indexed**: Negative index support matching arrays and lists
+- **Spreadsheet-Ready**: Column label support for structured data
+- **Type-Safe**: Complete data type preservation across all operations
+- **Performance-Optimized**: Efficient mathematical and statistical operations
+
+Whether you're doing mathematical computations, statistical analysis, or working with structured data, Grapa vectors provide the tools you need with an intuitive, consistent interface.
 
 > **Note:** All vector operations work seamlessly with Grapa's flexible type system, allowing for creative combinations of features to achieve complex data transformations and mathematical operations.
 
