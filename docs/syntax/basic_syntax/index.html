@@ -18,7 +18,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.15">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.18">
     
     
       
@@ -26,7 +26,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.342714a4.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.7e37652d.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
@@ -845,6 +845,29 @@
   
   <span class="md-ellipsis">
     Boolean
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../type/class/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Class
     
   </span>
   
@@ -3771,6 +3794,24 @@
   <a href="#table-operations" class="md-nav__link">
     <span class="md-ellipsis">
       Table Operations
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#universal-getset-methods" class="md-nav__link">
+    <span class="md-ellipsis">
+      Universal .get()/.set() Methods
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#flexible-getfieldsetfield-methods" class="md-nav__link">
+    <span class="md-ellipsis">
+      Flexible .getfield()/.setfield() Methods
     </span>
   </a>
   
@@ -6901,6 +6942,24 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#universal-getset-methods" class="md-nav__link">
+    <span class="md-ellipsis">
+      Universal .get()/.set() Methods
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#flexible-getfieldsetfield-methods" class="md-nav__link">
+    <span class="md-ellipsis">
+      Flexible .getfield()/.setfield() Methods
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -6959,33 +7018,33 @@ This file is the canonical, empirically tested reference for Grapa syntax and ac
 <tbody>
 <tr>
 <td>$ARRAY</td>
-<td style="text-align: center;">❌</td>
-<td style="text-align: center;">❌</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
 <td style="text-align: center;">✅</td>
 <td style="text-align: center;">—</td>
 <td style="text-align: center;">✅</td>
 <td style="text-align: center;">❌</td>
-<td style="text-align: center;">❌</td>
+<td style="text-align: center;">✅</td>
 </tr>
 <tr>
 <td>$LIST</td>
-<td style="text-align: center;">❌</td>
-<td style="text-align: center;">❌</td>
 <td style="text-align: center;">✅</td>
 <td style="text-align: center;">✅</td>
 <td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
 <td style="text-align: center;">❌</td>
-<td style="text-align: center;">❌</td>
+<td style="text-align: center;">✅</td>
 </tr>
 <tr>
 <td>$OBJ</td>
-<td style="text-align: center;">❌</td>
-<td style="text-align: center;">❌</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
 <td style="text-align: center;">✅</td>
 <td style="text-align: center;">✅</td>
 <td style="text-align: center;">❌</td>
 <td style="text-align: center;">❌</td>
-<td style="text-align: center;">❌</td>
+<td style="text-align: center;">✅</td>
 </tr>
 <tr>
 <td>$file</td>
@@ -6995,7 +7054,7 @@ This file is the canonical, empirically tested reference for Grapa syntax and ac
 <td style="text-align: center;">—</td>
 <td style="text-align: center;">❌</td>
 <td style="text-align: center;">❌</td>
-<td style="text-align: center;">❌</td>
+<td style="text-align: center;">✅</td>
 </tr>
 <tr>
 <td>$TABLE</td>
@@ -7005,7 +7064,7 @@ This file is the canonical, empirically tested reference for Grapa syntax and ac
 <td style="text-align: center;">—</td>
 <td style="text-align: center;">❌</td>
 <td style="text-align: center;">❌</td>
-<td style="text-align: center;">❌</td>
+<td style="text-align: center;">✅</td>
 </tr>
 <tr>
 <td>$WIDGET</td>
@@ -7019,14 +7078,14 @@ This file is the canonical, empirically tested reference for Grapa syntax and ac
 </tr>
 </tbody>
 </table>
-<p><em>$TABLE .getfield() requires two arguments: key and field.
-</em>*<code>.get()/.set()</code> methods are exclusively for <code>$WIDGET</code> types.</p>
+<p><em>$TABLE .getfield() requires two arguments: key and field. Only $ARRAY, $LIST, and $OBJ (non-system classes) support flexible mix/match of names and indices.
+</em><em><code>.get()/.set()</code> methods are now </em><em>universal</em>* and work across <code>$ARRAY</code>, <code>$LIST</code>, <code>$OBJ</code>, <code>$file</code>, <code>$TABLE</code>, and <code>$WIDGET</code> types.</p>
 <p><strong>Key Findings:</strong>
 - <strong>Arrays (<code>[]</code>)</strong>: Use <code>array[index]</code> and <code>array.len()</code> for access and length
 - <strong>Lists (<code>{}</code>)</strong>: Use <code>list[key]</code> or <code>list.key</code> for access, <code>list.len()</code> for length
 - <strong>Objects (class)</strong>: Use <code>object.property</code> or <code>object[key]</code> for access
-- <strong><code>.getfield()/.setfield()</code> method</strong>: Use for <code>$file</code> and <code>$TABLE</code> types
-- <strong><code>.get()/.set()</code> method</strong>: Exclusively for <code>$WIDGET</code> types
+- <strong><code>.getfield()/.setfield()</code> method</strong>: Universal methods for <code>$ARRAY</code>, <code>$LIST</code>, <code>$OBJ</code>, <code>$file</code>, and <code>$TABLE</code> types. Flexible mix/match of names and indices supported only for <code>$ARRAY</code>, <code>$LIST</code>, and <code>$OBJ</code> (non-system classes)
+- <strong><code>.get()/.set()</code> method</strong>: Universal methods for <code>$ARRAY</code>, <code>$LIST</code>, <code>$OBJ</code>, <code>$file</code>, <code>$TABLE</code>, and <code>$WIDGET</code> types
 - <strong><code>.size()</code> method</strong>: Not supported on any type (use <code>.len()</code> instead)
 - <strong><code>.keys()</code> method</strong>: Not supported on <code>$LIST</code> (use iteration instead)</p>
 <p><strong>Recommended Patterns:</strong>
@@ -7036,14 +7095,25 @@ This file is the canonical, empirically tested reference for Grapa syntax and ac
 - For files: <code>file.getfield(key)</code> and <code>file.setfield(key, value)</code>
 - For tables: <code>table.getfield(key, field)</code> and <code>table.setfield(key, value, field)</code>
 - For widgets: <code>widget.get(name, params)</code> and <code>widget.set(name, data)</code>
-- Avoid <code>.get()</code>, <code>.size()</code>, and <code>.keys()</code> on arrays, lists, and objects</p>
-<p><strong>Clarification on .get()/.set() Usage:</strong>
-- <strong><code>.get()/.set()</code> for <code>$file</code> and <code>$TABLE</code></strong>: Use <code>.getfield()/.setfield()</code> instead
-- <strong><code>.get()/.set()</code> for <code>$WIDGET</code></strong>: These methods are exclusively for widget operations
-- <strong><code>.get()/.set()</code> for <code>$ARRAY</code>, <code>$LIST</code>, or <code>$OBJ</code></strong>: Not supported (use bracket/dot notation)
+- For universal access: <code>object.get(key)</code> and <code>object.set(key, value)</code> (works with <code>$ARRAY</code>, <code>$LIST</code>, <code>$OBJ</code>, <code>$file</code>, <code>$TABLE</code>, <code>$WIDGET</code>)
+- For flexible field access: <code>object.getfield(key, field)</code> and <code>object.setfield(key, field, value)</code> (mix/match of names and indices supported for <code>$ARRAY</code>, <code>$LIST</code>, and <code>$OBJ</code> non-system classes only)
+- Avoid <code>.size()</code> and <code>.keys()</code> on arrays, lists, and objects</p>
+<p><strong>Universal .get()/.set() Methods:</strong>
+- <strong><code>.get()/.set()</code> for <code>$ARRAY</code></strong>: <code>array.get(index)</code> and <code>array.set(index, value)</code> - 0-based indexing, supports negative indices
+- <strong><code>.get()/.set()</code> for <code>$LIST</code></strong>: <code>list.get(key)</code> and <code>list.set(key, value)</code> - alternative to bracket notation
+- <strong><code>.get()/.set()</code> for <code>$OBJ</code></strong>: <code>obj.get(key)</code> and <code>obj.set(key, value)</code> - alternative to dot/bracket notation<br />
+- <strong><code>.get()/.set()</code> for <code>$file</code></strong>: <code>file.get(key)</code> and <code>file.set(key, value)</code> - alternative to <code>.getfield()/.setfield()</code>
+- <strong><code>.get()/.set()</code> for <code>$TABLE</code></strong>: <code>table.get(key, field)</code> and <code>table.set(key, field, value)</code> - alternative to <code>.getfield()/.setfield()</code>
+- <strong><code>.get()/.set()</code> for <code>$WIDGET</code></strong>: <code>widget.get(name, params)</code> and <code>widget.set(name, data)</code> - widget-specific operations
 - <strong>Length</strong>: Use <code>.len()</code> for arrays and lists, not <code>.size()</code>.
 - <strong>Keys</strong>: For lists, iterate manually instead of using <code>.keys()</code>.
-- <strong>Design Decision</strong>: <code>.get()/.set()</code> methods are now exclusively for <code>$WIDGET</code> types to avoid confusion</p>
+- <strong>Design Decision</strong>: <code>.get()/.set()</code> methods are now universal across most types for consistent API access</p>
+<p><strong>Flexible .getfield()/.setfield() Methods:</strong>
+- <strong>Universal Support</strong>: <code>.getfield()/.setfield()</code> work on <code>$ARRAY</code>, <code>$LIST</code>, <code>$OBJ</code>, <code>$file</code>, and <code>$TABLE</code> types
+- <strong>Mix/Match Parameters</strong>: Can combine named keys and numeric indices in any combination (supported for <code>$ARRAY</code>, <code>$LIST</code>, and <code>$OBJ</code> non-system classes only)
+- <strong>Index-to-Name Conversion</strong>: When inserting at a numeric index, the index becomes a string key for future access
+- <strong>2D Structures</strong>: Supports arrays of lists, lists of arrays, and mixed data structures
+- <strong>Boundary Insertion</strong>: Use <code>length</code> to append at end, <code>-length</code> to prepend at beginning</p>
 </blockquote>
 <hr />
 <p>This guide covers the essential syntax patterns for writing Grapa code, based on working examples and best practices.</p>
@@ -8558,19 +8628,26 @@ mapped = filtered.map(op(x){x*2});
 - <strong>Intermediate variables</strong> help break down complex operations
 - <strong><code>.interpolate()</code></strong> supports any valid Grapa expression inside <code>${}</code></p>
 <h3 id="file-and-table-access">$file and $TABLE Access</h3>
-<p>For <code>$file</code> and <code>$TABLE</code> objects, always use <code>.getfield()</code> and <code>.setfield()</code> methods:</p>
+<p>For <code>$file</code> and <code>$TABLE</code> objects, use <code>.getfield()</code> and <code>.setfield()</code> methods with named keys only:</p>
 <div class="highlight"><pre><span></span><code>files = $file().ls();
-file_info = files.getfield(0);   /* Correct */
+file_info = files.getfield(&quot;filename.txt&quot;); /* Named key only */
 
 table = {}.table(&quot;ROW&quot;);
 table.mkfield(&quot;name&quot;, &quot;STR&quot;, &quot;VAR&quot;);
-table.setfield(&quot;user1&quot;, &quot;Alice&quot;, &quot;name&quot;);
-value = table.getfield(&quot;user1&quot;, &quot;name&quot;);   /* Correct */
+table.setfield(&quot;user1&quot;, &quot;name&quot;, &quot;Alice&quot;);   /* Named key, named field */
+value = table.getfield(&quot;user1&quot;, &quot;name&quot;);    /* Named key, named field */
+
+/* $file and $TABLE only support named keys, not numeric indices */
+file = $file();
+file.setfield(&quot;file.txt&quot;, &quot;content&quot;);       /* Set with named key */
+content = file.getfield(&quot;file.txt&quot;);        /* Get by named key */
 </code></pre></div>
 <ul>
-<li>Always use <code>.getfield()</code> and <code>.setfield()</code> for <code>$file</code> and <code>$TABLE</code>.</li>
+<li>Use <code>.getfield()</code> and <code>.setfield()</code> for <code>$file</code> and <code>$TABLE</code> with named keys only.</li>
 <li>Bracket and dot notation are not valid for <code>$file</code> and <code>$TABLE</code>.</li>
+<li>Only <code>$ARRAY</code>, <code>$LIST</code>, and <code>$OBJ</code> (non-system classes) support flexible mix/match of names and indices with <code>.getfield()/.setfield()</code>.</li>
 </ul>
+<p><strong>See also:</strong> <a href="../../type/class/">Class Inheritance and Variable Scoping</a> for detailed information about Grapa's sophisticated class system with copy-on-write semantics.</p>
 <h3 id="type-system-philosophy">Type System Philosophy</h3>
 <p>Grapa uses <strong>dynamic typing</strong> as a fundamental design choice, not a limitation. This enables Grapa's core strengths:</p>
 <h3 id="dynamic-type-system-benefits">Dynamic Type System Benefits</h3>
@@ -8627,7 +8704,7 @@ content = fs.getfield(&quot;file.txt&quot;);
 
 /* Table operations */
 table.mkfield(&quot;name&quot;, &quot;STR&quot;, &quot;VAR&quot;);
-table.setfield(&quot;key&quot;, &quot;value&quot;, &quot;field&quot;);
+table.setfield(&quot;key&quot;, &quot;field&quot;, &quot;value&quot;);
 value = table.getfield(&quot;key&quot;, &quot;field&quot;);
 </code></pre></div>
 <h3 id="function-definitions-with-default-parameters">Function Definitions with Default Parameters</h3>
@@ -9501,6 +9578,132 @@ table.rm(&quot;key1&quot;);
 /* List records after deletion */
 (&quot;After delete: &quot; + table.ls().join(&quot;,&quot;)).echo();
 </code></pre></div>
+<h3 id="universal-getset-methods">Universal .get()/.set() Methods</h3>
+<p>The universal <code>.get()</code> and <code>.set()</code> methods provide consistent access patterns across multiple data types:</p>
+<div class="highlight"><pre><span></span><code>/* $ARRAY examples */
+$global.my_array = [1, 2, 3, 4, 5];
+
+/* Using universal .get()/.set() methods with 0-based indexing */
+value = my_array.get(2);           /* 3 (0-based index) */
+my_array.set(2, 99);               /* Set index 2 to 99 */
+value = my_array.get(2);           /* 99 */
+
+/* Alternative: bracket notation (still works) */
+value = my_array[2];               /* 99 */
+my_array[2] = 100;                 /* Set index 2 to 100 */
+value = my_array[2];               /* 100 */
+
+/* $LIST examples */
+$global.my_list = {&quot;name&quot;: &quot;Alice&quot;, &quot;age&quot;: 30, &quot;city&quot;: &quot;New York&quot;};
+
+/* Using universal .get()/.set() methods */
+my_list.set(&quot;name&quot;, &quot;Bob&quot;);
+my_list.set(&quot;age&quot;, 25);
+name = my_list.get(&quot;name&quot;);        /* &quot;Bob&quot; */
+age = my_list.get(&quot;age&quot;);          /* 25 */
+
+/* Alternative: bracket notation (still works) */
+my_list[&quot;name&quot;] = &quot;Charlie&quot;;
+my_list[&quot;age&quot;] = 35;
+name = my_list[&quot;name&quot;];            /* &quot;Charlie&quot; */
+age = my_list[&quot;age&quot;];              /* 35 */
+
+/* $OBJ examples */
+$global.my_obj = {};
+
+/* Using universal .get()/.set() methods */
+my_obj.set(&quot;property1&quot;, &quot;value1&quot;);
+my_obj.set(&quot;property2&quot;, 42);
+value1 = my_obj.get(&quot;property1&quot;);  /* &quot;value1&quot; */
+value2 = my_obj.get(&quot;property2&quot;);  /* 42 */
+
+/* Alternative: dot notation (still works) */
+my_obj.property3 = &quot;value3&quot;;
+my_obj.property4 = 100;
+value3 = my_obj.property3;         /* &quot;value3&quot; */
+value4 = my_obj.property4;         /* 100 */
+
+/* $file examples */
+$global.my_file = $file();
+
+/* Using universal .get()/.set() methods */
+my_file.set(&quot;test.txt&quot;, &quot;Hello World&quot;);
+content = my_file.get(&quot;test.txt&quot;); /* &quot;Hello World&quot; */
+
+/* Alternative: .getfield()/.setfield() (still works) */
+my_file.setfield(&quot;test2.txt&quot;, &quot;Hello Again&quot;);
+content2 = my_file.getfield(&quot;test2.txt&quot;); /* &quot;Hello Again&quot; */
+
+/* $TABLE examples */
+$global.my_table = {}.table(&quot;ROW&quot;);
+my_table.mkfield(&quot;name&quot;, &quot;STR&quot;, &quot;VAR&quot;);
+my_table.mkfield(&quot;age&quot;, &quot;INT&quot;);
+
+/* Using universal .get()/.set() methods */
+my_table.set(&quot;user1&quot;, &quot;name&quot;, &quot;Alice&quot;);
+my_table.set(&quot;user1&quot;, &quot;age&quot;, 30);
+name = my_table.get(&quot;user1&quot;, &quot;name&quot;);  /* &quot;Alice&quot; */
+age = my_table.get(&quot;user1&quot;, &quot;age&quot;);    /* 30 */
+
+/* Alternative: .getfield()/.setfield() (still works) */
+my_table.setfield(&quot;user2&quot;, &quot;name&quot;, &quot;Bob&quot;);
+my_table.setfield(&quot;user2&quot;, &quot;age&quot;, 25);
+name2 = my_table.getfield(&quot;user2&quot;, &quot;name&quot;);  /* &quot;Bob&quot; */
+age2 = my_table.getfield(&quot;user2&quot;, &quot;age&quot;);    /* 25 */
+</code></pre></div>
+<p><strong>Key Benefits of Universal .get()/.set() Methods:</strong>
+- <strong>Consistent API</strong>: Same method names across different data types
+- <strong>Flexible Access</strong>: Choose between universal methods or type-specific alternatives
+- <strong>Backward Compatibility</strong>: All existing code continues to work
+- <strong>Type Safety</strong>: Proper parameter validation and error handling</p>
+<h3 id="flexible-getfieldsetfield-methods">Flexible .getfield()/.setfield() Methods</h3>
+<p>The <code>.getfield()</code> and <code>.setfield()</code> methods provide universal support across all data types. Flexible parameter combinations (mix/match of names and indices) are supported for <code>$ARRAY</code>, <code>$LIST</code>, and <code>$OBJ</code> (non-system classes) types:</p>
+<div class="highlight"><pre><span></span><code>/* Mix/Match Examples */
+$global.data = {&quot;a&quot;: [1, 2, 3], &quot;b&quot;: [4, 5, 6]};
+
+/* Named key + Numeric index */
+value = data.getfield(&quot;a&quot;, 1);        /* 2 */
+data.setfield(&quot;a&quot;, 1, 99);            /* Set index 1 to 99 */
+
+/* Numeric index + Named field */
+$global.matrix = [[{&quot;x&quot;: 1, &quot;y&quot;: 2}], [{&quot;x&quot;: 3, &quot;y&quot;: 4}]];
+value = matrix.getfield(0, 0);        /* {&quot;x&quot;: 1, &quot;y&quot;: 2} */
+value = matrix.getfield(0, 0, &quot;x&quot;);   /* 1 */
+
+/* Index-to-Name Conversion */
+$global.list = {&quot;a&quot;: [1, 2, 3]};
+list.setfield(&quot;a&quot;, 3, 4);             /* Insert at index 3 */
+value = list.getfield(&quot;a&quot;, &quot;3&quot;);      /* 4 (index becomes string key) */
+value = list.getfield(&quot;a&quot;, 3);        /* 4 (both work) */
+
+/* 2D Structure Examples */
+$global.mixed = {&quot;row1&quot;: [1, 2, 3], &quot;row2&quot;: [4, 5, 6]};
+value = mixed.getfield(&quot;row1&quot;, 1);    /* 2 */
+mixed.setfield(&quot;row1&quot;, 3, 7);         /* Append to end */
+
+/* Boundary Insertion */
+$global.array = [1, 2, 3];
+array.setfield(array.len(), 4);       /* Append at end */
+array.setfield(-array.len(), 0);      /* Prepend at beginning */
+
+/* $OBJ Examples - Non-System Classes Only */
+$global.MyClass = class ($OBJ) { i = 1; };
+$global.obj = MyClass();
+obj.set(&quot;a&quot;, 55);                     /* Works - non-system class */
+obj.setfield(&quot;b&quot;, 66);                /* Works - non-system class */
+
+/* System classes like $file, $TABLE do NOT support flexible mix/match */
+$global.file = $file();
+file.setfield(&quot;key&quot;, &quot;value&quot;);        /* Works - named key only */
+/* file.setfield(0, &quot;value&quot;);        /* Would NOT work - no index support */
+</code></pre></div>
+<p><strong>Key Features:</strong>
+- <strong>Universal Support</strong>: Works on <code>$ARRAY</code>, <code>$LIST</code>, <code>$OBJ</code>, <code>$file</code>, and <code>$TABLE</code> types
+- <strong>Mix/Match Parameters</strong>: Combine named keys and numeric indices in any order (for <code>$ARRAY</code>, <code>$LIST</code>, and <code>$OBJ</code> non-system classes only)
+- <strong>Index-to-Name Conversion</strong>: Numeric indices become string keys when inserting
+- <strong>2D Structures</strong>: Supports arrays of lists, lists of arrays, and mixed combinations
+- <strong>Boundary Insertion</strong>: Use <code>length</code> to append, <code>-length</code> to prepend
+- <strong>Dynamic Field Creation</strong>: New fields are created automatically when setting</p>
 <p>This guide covers the essential syntax patterns for writing correct Grapa code. Follow these patterns to avoid common syntax errors and write maintainable code. </p>
 <p>/*</p>
 <h1 id="grapa-basic-syntax-key-rules">Grapa Basic Syntax: Key Rules</h1>
@@ -10197,10 +10400,10 @@ x = select 8;    // x = 40
     
     
       
-      <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.top", "search.suggest", "content.code.copy", "content.action.edit", "content.action.view", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.top", "search.suggest", "content.code.copy", "content.action.edit", "content.action.view", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.56ea9cef.min.js"></script>
+      <script src="../../assets/javascripts/bundle.92b07e13.min.js"></script>
       
         <script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.0/dist/mermaid.min.js"></script>
       

@@ -18,7 +18,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.15">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.18">
     
     
       
@@ -26,7 +26,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.342714a4.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.7e37652d.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
@@ -845,6 +845,29 @@
   
   <span class="md-ellipsis">
     Boolean
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../type/class/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Class
     
   </span>
   
@@ -2436,9 +2459,9 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#important-sleep-limitation-in-multi-threaded-code" class="md-nav__link">
+  <a href="#sleep-function-in-multi-threaded-code" class="md-nav__link">
     <span class="md-ellipsis">
-      ⚠️ Important: Sleep Limitation in Multi-Threaded Code
+      ✅ Sleep Function in Multi-Threaded Code
     </span>
   </a>
   
@@ -4198,9 +4221,9 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#important-sleep-limitation-in-multi-threaded-code" class="md-nav__link">
+  <a href="#sleep-function-in-multi-threaded-code" class="md-nav__link">
     <span class="md-ellipsis">
-      ⚠️ Important: Sleep Limitation in Multi-Threaded Code
+      ✅ Sleep Function in Multi-Threaded Code
     </span>
   </a>
   
@@ -4463,15 +4486,15 @@
 <h1 id="thread-safe-variable-declarations">Thread-Safe Variable Declarations</h1>
 <h2 id="overview">Overview</h2>
 <p>When writing concurrent code in Grapa, it's essential to understand how to properly declare and use variables that will be accessed by multiple threads. This document covers the thread-safe variable declaration patterns and best practices.</p>
-<h2 id="important-sleep-limitation-in-multi-threaded-code">⚠️ <strong>Important: Sleep Limitation in Multi-Threaded Code</strong></h2>
-<p><strong>Critical</strong>: When writing thread-safe code, be aware that Grapa's <code>.sleep()</code> function has a <strong>global sleep queue limitation</strong>:</p>
+<h2 id="sleep-function-in-multi-threaded-code">✅ <strong>Sleep Function in Multi-Threaded Code</strong></h2>
+<p><strong>Good News</strong>: Grapa's <code>.sleep()</code> function works correctly in multi-threaded applications with proper thread-local behavior:</p>
 <ul>
-<li><strong>Sleep calls are process-wide</strong>, not thread-local</li>
-<li><strong>First sleep call blocks all subsequent sleep calls</strong> until it completes</li>
-<li><strong>Sleep order determines completion order</strong>, not thread hierarchy or timing</li>
-<li><strong>This can cause unexpected coordination issues</strong> in multi-threaded applications</li>
+<li><strong>Sleep calls are thread-local</strong> - each thread can sleep independently</li>
+<li><strong>Concurrent sleep calls work correctly</strong> - multiple threads can sleep simultaneously</li>
+<li><strong>Sleep duration is respected per thread</strong> - each thread sleeps for its specified duration</li>
+<li><strong>No blocking between threads</strong> - one thread's sleep doesn't block others</li>
 </ul>
-<p><strong>Recommendation</strong>: Use <code>suspend()</code>, <code>resume()</code>, and condition variables for thread coordination instead of sleep. See <a href="../../sys/thread/">Thread System</a> for detailed information and workarounds.</p>
+<p><strong>Best Practice</strong>: You can safely use <code>.sleep()</code> in multi-threaded code. It works well with <code>suspend()</code>, <code>resume()</code>, and condition variables for comprehensive thread coordination. See <a href="../../sys/thread/">Thread System</a> for detailed information and examples.</p>
 <h2 id="variable-declaration-patterns">Variable Declaration Patterns</h2>
 <h3 id="1-global-variables-thread-safe-by-default">1. <strong>Global Variables (Thread-Safe by Default)</strong></h3>
 <p>All variables declared at the global scope are automatically thread-safe in Grapa:</p>
@@ -4851,10 +4874,10 @@ for (worker_id = 0; worker_id &lt; 3; worker_id++) {
     
     
       
-      <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.top", "search.suggest", "content.code.copy", "content.action.edit", "content.action.view", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.top", "search.suggest", "content.code.copy", "content.action.edit", "content.action.view", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.56ea9cef.min.js"></script>
+      <script src="../../assets/javascripts/bundle.92b07e13.min.js"></script>
       
         <script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.0/dist/mermaid.min.js"></script>
       

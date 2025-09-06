@@ -18,7 +18,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.15">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.18">
     
     
       
@@ -26,7 +26,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.342714a4.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.7e37652d.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
@@ -864,6 +864,29 @@
   
   
     <li class="md-nav__item">
+      <a href="../class/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Class
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../code/" class="md-nav__link">
         
   
@@ -1671,9 +1694,9 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#method-3-operator-currently-broken" class="md-nav__link">
+  <a href="#method-3-operator-now-working" class="md-nav__link">
     <span class="md-ellipsis">
-      Method 3: ++= Operator (Currently Broken)
+      Method 3: ++= Operator (Now Working)
     </span>
   </a>
   
@@ -4823,9 +4846,9 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#method-3-operator-currently-broken" class="md-nav__link">
+  <a href="#method-3-operator-now-working" class="md-nav__link">
     <span class="md-ellipsis">
-      Method 3: ++= Operator (Currently Broken)
+      Method 3: ++= Operator (Now Working)
     </span>
   </a>
   
@@ -5532,12 +5555,12 @@ vertical_result = [matrix1, matrix2].join(null, 0);  /* #[[1,2],[3,4],[5,6],[7,8
 /* Horizontal join (concatenate side by side) */
 horizontal_result = [matrix1, matrix2].join(null, 1);  /* #[[1,2,5,6],[3,4,7,8]]# */
 </code></pre></div>
-<h4 id="method-3-operator-currently-broken"><strong>Method 3: ++= Operator (Currently Broken)</strong></h4>
+<h4 id="method-3-operator-now-working"><strong>Method 3: ++= Operator (Now Working)</strong></h4>
 <div class="highlight"><pre><span></span><code>matrix1 = #[[1, 2], [3, 4]]#;
 matrix2 = #[[5, 6], [7, 8]]#;
 
-/* ⚠️ BROKEN: Produces null values */
-matrix1 ++= matrix2;  /* Results in: #[[1,2],[3,4],[5,null],[null,null]]# */
+/* ✅ WORKING: Extends matrix correctly */
+matrix1 ++= matrix2;  /* Results in: #[[1,2],[3,4],[5,6],[7,8]]# */
 </code></pre></div>
 <p><strong>Join Function Parameters:</strong>
 - <strong>Input</strong>: Array of 2D vectors (e.g., <code>[vec1, vec2, vec3]</code>)
@@ -5625,7 +5648,7 @@ mixed_vec = #[1, &quot;hello&quot;, true, [1, 2, 3]]#;  /* Mixed types supported
 <li><strong>Know operator limitations</strong>: Use <code>.dot()</code> method instead of <code>.*</code> operator for dot products</li>
 <li><strong>Avoid unsupported operations</strong>: Modulo (<code>%</code>), bitwise operations (<code>~</code>, <code>&amp;</code>, <code>|</code>, <code>^</code>), and dot product operator (<code>.*</code>) are not supported</li>
 <li><strong>Use operators, not method calls</strong>: Vector operations use operators (<code>+</code>, <code>*</code>, <code>**</code>) rather than method calls (<code>.add()</code>, <code>.mul()</code>, <code>.pow()</code>)</li>
-<li><strong>Avoid broken ++= operator</strong>: Use <code>.join()</code> method instead of <code>++=</code> for vector concatenation</li>
+<li><strong>Use ++= operator for 2D vectors</strong>: The <code>++=</code> operator now works correctly for 2D vector extension</li>
 <li><strong>Leverage function application</strong>: Use <code>vec * [op(x){...}]</code> to implement advanced operations like clip, round, where, etc.</li>
 <li><strong>Explore creative solutions</strong>: Many "missing" functions can be implemented using Grapa's flexible function application system</li>
 </ol>
@@ -5875,10 +5898,10 @@ result6 = vec1.pow(2);    /* Returns error */
     
     
       
-      <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.top", "search.suggest", "content.code.copy", "content.action.edit", "content.action.view", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.top", "search.suggest", "content.code.copy", "content.action.edit", "content.action.view", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.56ea9cef.min.js"></script>
+      <script src="../../assets/javascripts/bundle.92b07e13.min.js"></script>
       
         <script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.0/dist/mermaid.min.js"></script>
       

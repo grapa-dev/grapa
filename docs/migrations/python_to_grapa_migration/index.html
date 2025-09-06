@@ -18,7 +18,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.15">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.18">
     
     
       
@@ -26,7 +26,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.342714a4.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.7e37652d.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
@@ -842,6 +842,29 @@
   
   <span class="md-ellipsis">
     Boolean
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../type/class/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Class
     
   </span>
   
@@ -5472,7 +5495,7 @@ evens = (10).range(0,1).filter(op(x) { x % 2 == 0; });
 <li>Use <code>$sys().getenv()</code> for environment variables.</li>
 <li>Use <code>$thread()</code> for threading and <code>$sys().sleep()</code> for sleep.</li>
 </ul>
-<p><strong>⚠️ Important</strong>: When using <code>$sys().sleep()</code> in multi-threaded code, be aware that Grapa's sleep has a global queue limitation. Sleep calls are process-wide, not thread-local, and the first sleep call blocks all subsequent ones until it completes. Use <code>suspend()</code>, <code>resume()</code>, and condition variables for thread coordination instead.
+<p><strong>✅ Good News</strong>: Grapa's <code>$sys().sleep()</code> works correctly in multi-threaded code with proper thread-local behavior. Each thread can sleep independently without blocking others. You can safely use sleep in combination with <code>suspend()</code>, <code>resume()</code>, and condition variables for comprehensive thread coordination.
 - Use <code>op(){}</code> for lambdas and function definitions.</p>
 <h2 id="see-also">See Also</h2>
 <ul>
@@ -5942,7 +5965,7 @@ uppercase = strings.map(op(s) { s.upper(); });
 <li>Use <code>$sys().getenv()</code> for environment variables.</li>
 <li>Use <code>$thread()</code> for threading and <code>$sys().sleep()</code> for sleep.</li>
 </ul>
-<p><strong>⚠️ Important</strong>: When using <code>$sys().sleep()</code> in multi-threaded code, be aware that Grapa's sleep has a global queue limitation. Sleep calls are process-wide, not thread-local, and the first sleep call blocks all subsequent ones until it completes. Use <code>suspend()</code>, <code>resume()</code>, and condition variables for thread coordination instead.
+<p><strong>✅ Good News</strong>: Grapa's <code>$sys().sleep()</code> works correctly in multi-threaded code with proper thread-local behavior. Each thread can sleep independently without blocking others. You can safely use sleep in combination with <code>suspend()</code>, <code>resume()</code>, and condition variables for comprehensive thread coordination.
 - Use <code>op(){}</code> for lambdas and function definitions.</p>
 <h3 id="reflection-and-introspection">Reflection and Introspection</h3>
 <p><strong>Python:</strong> <code>type()</code>, <code>dir()</code>, <code>getattr()</code>, <code>hasattr()</code>, <code>inspect</code> module
@@ -6027,10 +6050,10 @@ user.describe({properties: true});
     
     
       
-      <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.top", "search.suggest", "content.code.copy", "content.action.edit", "content.action.view", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.top", "search.suggest", "content.code.copy", "content.action.edit", "content.action.view", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.56ea9cef.min.js"></script>
+      <script src="../../assets/javascripts/bundle.92b07e13.min.js"></script>
       
         <script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.0/dist/mermaid.min.js"></script>
       

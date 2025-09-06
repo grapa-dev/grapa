@@ -14,7 +14,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.15">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.18">
     
     
       
@@ -22,7 +22,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.342714a4.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.7e37652d.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
@@ -834,6 +834,29 @@
   
   <span class="md-ellipsis">
     Boolean
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../type/class/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Class
     
   </span>
   
@@ -3912,9 +3935,9 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#important-sleep-limitation" class="md-nav__link">
+  <a href="#sleep-function-works-correctly" class="md-nav__link">
     <span class="md-ellipsis">
-      ⚠️ Important: Sleep Limitation
+      ✅ Sleep Function Works Correctly
     </span>
   </a>
   
@@ -4025,14 +4048,14 @@
 
 <h1 id="thread-examples">Thread Examples</h1>
 <p>This directory contains working examples of Grapa's threading system that demonstrate proper patterns for multi-threaded programming.</p>
-<h2 id="important-sleep-limitation">⚠️ <strong>Important: Sleep Limitation</strong></h2>
-<p><strong>Critical</strong>: These examples work because they either avoid using <code>.sleep()</code> or use it in a way that doesn't trigger the global sleep queue limitation. See <a href="../../sys/thread/">Thread System</a> for details about the sleep behavior.</p>
+<h2 id="sleep-function-works-correctly">✅ <strong>Sleep Function Works Correctly</strong></h2>
+<p><strong>Good News</strong>: These examples demonstrate that Grapa's <code>.sleep()</code> function works correctly in multi-threaded applications. Each thread can sleep independently without blocking others. See <a href="../../sys/thread/">Thread System</a> for details about the sleep behavior.</p>
 <h2 id="available-examples">Available Examples</h2>
 <h3 id="1-thread_example1grc-basic-thread-lifecycle">1. <code>thread_example1.grc</code> - Basic Thread Lifecycle</h3>
 <ul>
 <li><strong>Demonstrates</strong>: Basic thread creation, execution, and completion</li>
 <li><strong>Key Pattern</strong>: Simple thread management without complex coordination</li>
-<li><strong>Sleep Usage</strong>: Single sleep call (avoids global queue issues)</li>
+<li><strong>Sleep Usage</strong>: Single sleep call (works correctly in multi-threaded context)</li>
 <li><strong>Use Case</strong>: Basic threading when you need simple background execution</li>
 </ul>
 <h3 id="2-thread_example2grc-coroutine-suspendresume">2. <code>thread_example2.grc</code> - Coroutine Suspend/Resume</h3>
@@ -4053,16 +4076,16 @@
 <ul>
 <li><strong>Demonstrates</strong>: Classic producer-consumer pattern with proper coordination</li>
 <li><strong>Key Pattern</strong>: Thread coordination through suspend/resume and locks</li>
-<li><strong>Sleep Usage</strong>: Coordinated sleep calls (designed around the limitation)</li>
+<li><strong>Sleep Usage</strong>: Multiple concurrent sleep calls (works correctly with proper thread isolation)</li>
 <li><strong>Use Case</strong>: When you need producer-consumer workflows with multiple workers</li>
 </ul>
 <h2 id="best-practices-demonstrated">Best Practices Demonstrated</h2>
 <ol>
-<li><strong>Use suspend/resume for coordination</strong> instead of sleep</li>
+<li><strong>Use suspend/resume for coordination</strong> when needed</li>
 <li><strong>Protect shared resources</strong> with proper locking</li>
 <li><strong>Coordinate thread execution</strong> through state management</li>
-<li><strong>Avoid global sleep coordination</strong> in multi-threaded code</li>
-<li><strong>Design around the sleep limitation</strong> when sleep is necessary</li>
+<li><strong>Use sleep freely in multi-threaded code</strong> - it works correctly</li>
+<li><strong>Combine sleep with other coordination mechanisms</strong> for complex scenarios</li>
 </ol>
 <h2 id="running-the-examples">Running the Examples</h2>
 <div class="highlight"><pre><span></span><code><span class="c1"># Run any example</span>
@@ -4075,18 +4098,18 @@
 <ul>
 <li><a href="../../sys/thread/">Thread System</a> - Complete threading system documentation</li>
 <li><a href="../../syntax/thread_safe_variables/">Thread-Safe Variables</a> - Variable safety in concurrent code</li>
-<li><a href="../../sys/thread/#critical-sleep-behavior-limitation">Sleep Limitation Details</a> - In-depth explanation of sleep behavior</li>
+<li><a href="../../sys/thread/#sleep-function-in-multi-threaded-applications">Sleep Function Details</a> - In-depth explanation of sleep behavior</li>
 </ul>
 <h2 id="why-these-examples-work">Why These Examples Work</h2>
 <p>These examples work because they:</p>
 <ol>
-<li><strong>Avoid the global sleep queue</strong> by using suspend/resume for coordination</li>
+<li><strong>Use proper thread isolation</strong> with sleep working correctly per thread</li>
 <li><strong>Use proper locking patterns</strong> to protect shared resources</li>
-<li><strong>Coordinate threads through state management</strong> rather than timing</li>
-<li><strong>Design around the sleep limitation</strong> when sleep is necessary</li>
+<li><strong>Coordinate threads through state management</strong> and timing</li>
+<li><strong>Use sleep freely</strong> when timing delays are needed</li>
 <li><strong>Follow proven concurrency patterns</strong> that work in any threading system</li>
 </ol>
-<p>Use these examples as templates for your own multi-threaded code, and always consider the sleep limitation when designing thread coordination.</p>
+<p>Use these examples as templates for your own multi-threaded code. Sleep works correctly in multi-threaded applications, so you can use it freely for timing delays.</p>
 
 
 
@@ -4143,10 +4166,10 @@
     
     
       
-      <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.top", "search.suggest", "content.code.copy", "content.action.edit", "content.action.view", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.top", "search.suggest", "content.code.copy", "content.action.edit", "content.action.view", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.56ea9cef.min.js"></script>
+      <script src="../../assets/javascripts/bundle.92b07e13.min.js"></script>
       
         <script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.0/dist/mermaid.min.js"></script>
       

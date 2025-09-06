@@ -65,7 +65,7 @@ for(consumer_id=0;consumer_id<consumer_count;consumer_id+=1)
     );
 };
 for(consumer_id=0;consumer_id<consumer_count;consumer_id+=1)
-    while(consumer[consumer_id].suspended()==false) ;
+    while(consumer[consumer_id].suspended()==false) 0.sleep();
 for(consumer_id=0;consumer_id<consumer_count;consumer_id+=1)
     ("Consumer " + i + ": suspended " + consumer[consumer_id].suspended().str() + "\n").echo();
 ("Consumer threads started\n").echo();
@@ -110,16 +110,16 @@ producer.start(
     }
 );
 
-while(producer.suspended()==false) ;
+while(producer.suspended()==false) {"x1\n".echo();100.sleep();"x2\n".echo();};
 ("Main: Producer suspended\n").echo();
 producer.resume();
 ("Main: Producer resumed\n").echo();
 
-while(producer.started()==true);
+while(producer.started()==true) {"y1\n".echo();100.sleep();"y2\n".echo();};
 ("Main: Producer completed\n").echo();
 
 for(consumer_id=0;consumer_id<consumer_count;consumer_id+=1)
-    while(consumer[consumer_id].started()) ;
+    while(consumer[consumer_id].started()) {"z1\n".echo();100.sleep();"z2\n".echo();};
 ("Consumer completed\n").echo();
 
 consumer = null;

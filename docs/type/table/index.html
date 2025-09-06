@@ -18,7 +18,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.15">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.18">
     
     
       
@@ -26,7 +26,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.342714a4.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.7e37652d.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
@@ -847,6 +847,29 @@
   
   <span class="md-ellipsis">
     Boolean
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../class/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Class
     
   </span>
   
@@ -5130,10 +5153,10 @@ f.mkfield(&quot;total_amount&quot;, &quot;FLOAT&quot;, &quot;FIX&quot;, 8);  /* 
 f.mkfield(&quot;status&quot;, &quot;STR&quot;, &quot;VAR&quot;);             /* Variable string */
 
 /* Add records */
-f.setfield(&quot;order_001&quot;, 1001, &quot;customer_id&quot;);
-f.setfield(&quot;order_001&quot;, 1640995200, &quot;order_date&quot;);  /* Unix timestamp */
-f.setfield(&quot;order_001&quot;, 299.99, &quot;total_amount&quot;);
-f.setfield(&quot;order_001&quot;, &quot;pending&quot;, &quot;status&quot;);
+f.setfield(&quot;order_001&quot;, &quot;customer_id&quot;, 1001);
+f.setfield(&quot;order_001&quot;, &quot;order_date&quot;, 1640995200);  /* Unix timestamp */
+f.setfield(&quot;order_001&quot;, &quot;total_amount&quot;, 299.99);
+f.setfield(&quot;order_001&quot;, &quot;status&quot;, &quot;pending&quot;);
 
 /* Retrieve complete record */
 order = f.get(&quot;order_001&quot;, &quot;customer_id&quot;);     /* Returns integer 1001 */
@@ -5151,11 +5174,11 @@ f.mkfield(&quot;sales_amount&quot;, &quot;FLOAT&quot;, &quot;FIX&quot;, 8);  /* 
 f.mkfield(&quot;quantity&quot;, &quot;INT&quot;);                  /* Integer field */
 
 /* Add data (records created automatically) */
-f.setfield(&quot;sale_001&quot;, 1640995200, &quot;date&quot;);
-f.setfield(&quot;sale_001&quot;, 1001, &quot;product_id&quot;);
-f.setfield(&quot;sale_001&quot;, &quot;North&quot;, &quot;region&quot;);
-f.setfield(&quot;sale_001&quot;, 299.99, &quot;sales_amount&quot;);
-f.setfield(&quot;sale_001&quot;, 2, &quot;quantity&quot;);
+f.setfield(&quot;sale_001&quot;, &quot;date&quot;, 1640995200);
+f.setfield(&quot;sale_001&quot;, &quot;product_id&quot;, 1001);
+f.setfield(&quot;sale_001&quot;, &quot;region&quot;, &quot;North&quot;);
+f.setfield(&quot;sale_001&quot;, &quot;sales_amount&quot;, 299.99);
+f.setfield(&quot;sale_001&quot;, &quot;quantity&quot;, 2);
 
 /* Column-oriented queries are efficient */
 /* (In a real implementation, you&#39;d have aggregation functions) */
@@ -5323,10 +5346,10 @@ f.dump().echo();
     
     
       
-      <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.top", "search.suggest", "content.code.copy", "content.action.edit", "content.action.view", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.top", "search.suggest", "content.code.copy", "content.action.edit", "content.action.view", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.56ea9cef.min.js"></script>
+      <script src="../../assets/javascripts/bundle.92b07e13.min.js"></script>
       
         <script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.0/dist/mermaid.min.js"></script>
       

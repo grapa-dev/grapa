@@ -18,7 +18,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.15">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.18">
     
     
       
@@ -26,7 +26,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.342714a4.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.7e37652d.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
@@ -842,6 +842,29 @@
   
   <span class="md-ellipsis">
     Boolean
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../type/class/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Class
     
   </span>
   
@@ -4920,7 +4943,7 @@
 - <strong>Lists (<code>{}</code>)</strong>: Use <code>list[key]</code> or <code>list.key</code> for access, <code>list.len()</code> for length
 - <strong>Objects (class)</strong>: Use <code>object.property</code> or <code>object[key]</code> for access
 - <strong><code>.getfield()/.setfield()</code> method</strong>: Use for <code>$file</code> and <code>$TABLE</code> types
-- <strong><code>.get()/.set()</code> method</strong>: Exclusively for <code>$WIDGET</code> types
+- <strong><code>.get()/.set()</code> method</strong>: Universal methods for <code>$ARRAY</code>, <code>$LIST</code>, <code>$OBJ</code>, <code>$file</code>, <code>$TABLE</code>, and <code>$WIDGET</code> types
 - <strong><code>.size()</code> method</strong>: Not supported on any type (use <code>.len()</code> instead)
 - <strong><code>.keys()</code> method</strong>: Not supported on <code>$LIST</code> (use iteration instead)</p>
 </blockquote>
@@ -5068,10 +5091,11 @@
 </table>
 <blockquote>
 <p><strong>Note:</strong> Both <code>x = x + 1;</code> and <code>x += 1;</code> (and <code>s = s + "x";</code> and <code>s += "x";</code>) are valid in Grapa. The <code>+=</code> form is idiomatic and preferred in most cases.</p>
-<p><strong>Clarification on .get() Usage:</strong>
-- <code>.get()</code> is <strong>required</strong> for <code>$file</code> and <code>$TABLE</code> access.
-- <code>.get()</code> is <strong>not supported</strong> for <code>$ARRAY</code>, <code>$LIST</code>, or <code>$OBJ</code> (returns empty string).
-- Use bracket and dot notation for <code>$ARRAY</code>, <code>$LIST</code>, and <code>$OBJ</code>.
+<p><strong>Universal .get()/.set() Methods:</strong>
+- <code>.get()/.set()</code> now work across <code>$ARRAY</code>, <code>$LIST</code>, <code>$OBJ</code>, <code>$file</code>, <code>$TABLE</code>, and <code>$WIDGET</code> types.
+- <code>.get()/.set()</code> provide consistent API access patterns across different data types.
+- For <code>$ARRAY</code>: <code>array.get(index)</code> and <code>array.set(index, value)</code> with 0-based indexing.
+- Alternative access methods (bracket notation, dot notation, <code>.getfield()/.setfield()</code>) still work.
 - <strong>Length</strong>: Use <code>.len()</code> for arrays and lists, not <code>.size()</code>.
 - <strong>Keys</strong>: For lists, iterate manually instead of using <code>.keys()</code>.
 - If more objects support <code>.get()</code> in the future, this guide will be updated.</p>
@@ -5526,7 +5550,7 @@ if (value.type() == $INT) {
 <li>Use <code>$sys().getenv()</code> for environment variables.</li>
 <li>Use <code>$thread()</code> for threading and <code>$sys().sleep()</code> for sleep.</li>
 </ul>
-<p><strong>⚠️ Important</strong>: When using <code>$sys().sleep()</code> in multi-threaded code, be aware that Grapa's sleep has a global queue limitation. Sleep calls are process-wide, not thread-local, and the first sleep call blocks all subsequent ones until it completes. Use <code>suspend()</code>, <code>resume()</code>, and condition variables for thread coordination instead.</p>
+<p><strong>✅ Good News</strong>: Grapa's <code>$sys().sleep()</code> works correctly in multi-threaded code with proper thread-local behavior. Each thread can sleep independently without blocking others. You can safely use sleep in combination with <code>suspend()</code>, <code>resume()</code>, and condition variables for comprehensive thread coordination.</p>
 <ul>
 <li>Use <code>op(){}</code> for lambdas and function definitions.</li>
 </ul>
@@ -5862,10 +5886,10 @@ user.describe({properties: true});
     
     
       
-      <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.top", "search.suggest", "content.code.copy", "content.action.edit", "content.action.view", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.top", "search.suggest", "content.code.copy", "content.action.edit", "content.action.view", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.56ea9cef.min.js"></script>
+      <script src="../../assets/javascripts/bundle.92b07e13.min.js"></script>
       
         <script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.0/dist/mermaid.min.js"></script>
       

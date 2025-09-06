@@ -20,23 +20,23 @@ row_db.mkfield("active", "BOOL", "FIX", 1);
 "✓ Fields created for user management\n".echo();
 
 // Insert user records (transactional operations)
-row_db.setfield("user1", 1, "id");
-row_db.setfield("user1", "Alice Johnson", "name");
-row_db.setfield("user1", "alice@example.com", "email");
-row_db.setfield("user1", 28, "age");
-row_db.setfield("user1", 1, "active");
+row_db.setfield("user1", "id", 1);
+row_db.setfield("user1", "name", "Alice Johnson");
+row_db.setfield("user1", "email", "alice@example.com");
+row_db.setfield("user1", "age", 28);
+row_db.setfield("user1", "active", 1);
 
-row_db.setfield("user2", 2, "id");
-row_db.setfield("user2", "Bob Smith", "name");
-row_db.setfield("user2", "bob@example.com", "email");
-row_db.setfield("user2", 32, "age");
-row_db.setfield("user2", 1, "active");
+row_db.setfield("user2", "id", 2);
+row_db.setfield("user2", "name", "Bob Smith");
+row_db.setfield("user2", "email", "bob@example.com");
+row_db.setfield("user2", "age", 32);
+row_db.setfield("user2", "active", 1);
 
-row_db.setfield("user3", 3, "id");
-row_db.setfield("user3", "Carol Davis", "name");
-row_db.setfield("user3", "carol@example.com", "email");
-row_db.setfield("user3", 25, "age");
-row_db.setfield("user3", 0, "active");
+row_db.setfield("user3", "id", 3);
+row_db.setfield("user3", "name", "Carol Davis");
+row_db.setfield("user3", "email", "carol@example.com");
+row_db.setfield("user3", "age", 25);
+row_db.setfield("user3", "active", 0);
 "✓ 3 user records inserted\n".echo();
 
 // Retrieve user data (point queries)
@@ -45,7 +45,7 @@ user1_age = row_db.getfield("user1", "age");
 ("✓ Retrieved user1: " + user1_name + ", age " + user1_age.str() + "\n").echo();
 
 // Update user data (transactional update)
-row_db.setfield("user1", 29, "age");
+row_db.setfield("user1", "age", 29);
 updated_age = row_db.getfield("user1", "age");
 ("✓ Updated user1 age to: " + updated_age.str() + "\n").echo();
 
@@ -71,20 +71,20 @@ col_db.mkfield("category", "STR", "VAR");
 "✓ Fields created for analytics\n".echo();
 
 // Insert analytics data (column-oriented storage)
-col_db.setfield("metric1", "page_views", "metric");
-col_db.setfield("metric1", 1250.5, "value");
-col_db.setfield("metric1", 1640995200, "timestamp");
-col_db.setfield("metric1", "traffic", "category");
+col_db.setfield("metric1", "metric", "page_views");
+col_db.setfield("metric1", "value", 1250.5);
+col_db.setfield("metric1", "timestamp", 1640995200);
+col_db.setfield("metric1", "category", "traffic");
 
-col_db.setfield("metric2", "conversion_rate", "metric");
-col_db.setfield("metric2", 0.0234, "value");
-col_db.setfield("metric2", 1640995200, "timestamp");
-col_db.setfield("metric2", "sales", "category");
+col_db.setfield("metric2", "metric", "conversion_rate");
+col_db.setfield("metric2", "value", 0.0234);
+col_db.setfield("metric2", "timestamp", 1640995200);
+col_db.setfield("metric2", "category", "sales");
 
-col_db.setfield("metric3", "avg_session_duration", "metric");
-col_db.setfield("metric3", 245.7, "value");
-col_db.setfield("metric3", 1640995200, "timestamp");
-col_db.setfield("metric3", "engagement", "category");
+col_db.setfield("metric3", "metric", "avg_session_duration");
+col_db.setfield("metric3", "value", 245.7);
+col_db.setfield("metric3", "timestamp", 1640995200);
+col_db.setfield("metric3", "category", "engagement");
 "✓ 3 analytics records inserted\n".echo();
 
 // Retrieve analytics data
@@ -123,9 +123,9 @@ group_db.mkfield("role", "STR", "VAR");
 "✓ Users fields created\n".echo();
 
 // Insert user data in nested database
-group_db.setfield("admin1", 1, "id");
-group_db.setfield("admin1", "Admin User", "name");
-group_db.setfield("admin1", "administrator", "role");
+group_db.setfield("admin1", "id", 1);
+group_db.setfield("admin1", "name", "Admin User");
+group_db.setfield("admin1", "role", "administrator");
 "✓ Admin user inserted in nested database\n".echo();
 
 // Navigate to analytics database
@@ -138,8 +138,8 @@ group_db.mkfield("value", "FLOAT", "FIX", 8);
 "✓ Analytics fields created\n".echo();
 
 // Insert analytics data in nested database
-group_db.setfield("metric1", "system_uptime", "metric");
-group_db.setfield("metric1", 99.95, "value");
+group_db.setfield("metric1", "metric", "system_uptime");
+group_db.setfield("metric1", "value", 99.95);
 "✓ System metric inserted in nested database\n".echo();
 
 // Navigate back to root and list contents

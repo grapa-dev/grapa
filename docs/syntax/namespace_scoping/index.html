@@ -18,7 +18,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.15">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.18">
     
     
       
@@ -26,7 +26,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.342714a4.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.7e37652d.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
@@ -845,6 +845,29 @@
   
   <span class="md-ellipsis">
     Boolean
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../type/class/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Class
     
   </span>
   
@@ -2456,9 +2479,9 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#3-alternative-reset-local-to-a-list" class="md-nav__link">
+  <a href="#3-multiple-ways-to-add-variables-to-local" class="md-nav__link">
     <span class="md-ellipsis">
-      3. Alternative: Reset $local to a List
+      3. Multiple Ways to Add Variables to $local
     </span>
   </a>
   
@@ -4319,9 +4342,9 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#3-alternative-reset-local-to-a-list" class="md-nav__link">
+  <a href="#3-multiple-ways-to-add-variables-to-local" class="md-nav__link">
     <span class="md-ellipsis">
-      3. Alternative: Reset $local to a List
+      3. Multiple Ways to Add Variables to $local
     </span>
   </a>
   
@@ -4468,6 +4491,7 @@
 <li><strong>Lifetime</strong>: Block execution</li>
 <li><strong>Scope</strong>: Function or block-level</li>
 <li><strong>Use Case</strong>: Function parameters, temporary variables, thread-local storage</li>
+<li><strong>Important</strong>: <code>$local</code> properly isolates variables within function scope, protecting against external variable access and ensuring thread safety in recursive functions and multi-threaded execution</li>
 </ul>
 <h2 id="syntax">Syntax</h2>
 <p>All three namespaces must be accessed with the <code>$</code> prefix:</p>
@@ -4585,30 +4609,56 @@ curl = op(url_str, options) {
     return $local.processed;
 };
 </code></pre></div>
-<h3 id="3-alternative-reset-local-to-a-list">3. Alternative: Reset <code>$local</code> to a List</h3>
-<p>You can also declare multiple local variables at once by resetting <code>$local</code> to a list:</p>
+<h3 id="3-multiple-ways-to-add-variables-to-local">3. Multiple Ways to Add Variables to <code>$local</code></h3>
+<p>You can declare multiple local variables using several different approaches:</p>
 <div class="highlight"><pre><span></span><code>/* Method 1: Individual declarations */
 f1 = op() {
-    $local.a = 1;
-    $local.b = &quot;hi&quot;;
-    $local.c = true;
+    $local.x = 3;
+    $local.y = 2;
+    $local.i = 0;
+    $local.t = [1,2,3];
+    $local.v = {&#39;a&#39;:22,&#39;b&#39;:33};
     return $local;
 };
 
-/* Method 2: Reset $local to a list */
+/* Method 2: Reset $local to a list (replaces all existing variables) */
 f2 = op() {
-    $local = {a: 1, b: &quot;hi&quot;, c: true};
+    $local = {x: 3, y: 2, i: 0, t: [1,2,3], v: {&#39;a&#39;:22,&#39;b&#39;:33}};
     return $local;
 };
 
-/* Method 3: Mixed approach */
+/* Method 3: Object extension with ++= (preserves existing variables) */
 f3 = op() {
+    $local.x = 3;  /* Individual declaration first */
+    $local++={
+        y: 2,
+        i: 0,
+        t: [1,2,3],
+        v: {&#39;a&#39;:22,&#39;b&#39;:33}
+    };
+    return $local;
+};
+
+/* Method 4: Compact object extension (preserves existing variables) */
+f4 = op() {
+    $local.x = 3;  /* Individual declaration first */
+    $local++={y:2,i:0,t:[1,2,3],v:{&#39;a&#39;:22,&#39;b&#39;:33}};
+    return $local;
+};
+
+/* Method 5: Mixed approach */
+f5 = op() {
     $local.g = 1;  /* Individual declaration */
-    $local = {a: 1, b: &quot;hi&quot;};  /* Reset to list */
+    $local = {a: 1, b: &quot;hi&quot;};  /* Reset to list (loses &#39;g&#39;) */
     return $local;
 };
 </code></pre></div>
-<p><strong>Note</strong>: When you reset <code>$local</code> to a list, it replaces all existing local variables with the new list structure. This is useful for bulk initialization but be careful not to lose previously declared variables.</p>
+<p><strong>Key Differences:</strong>
+- <strong>Individual declarations</strong> (<code>$local.x = 3;</code>): Add one variable at a time
+- <strong>Reset to list</strong> (<code>$local = {...}</code>): Replaces ALL existing variables with new structure
+- <strong>Object extension</strong> (<code>$local++={...}</code>): Adds new variables while preserving existing ones
+- <strong>Compact extension</strong> (<code>$local++={y:2,i:0}</code>): Same as extension but more compact syntax</p>
+<p><strong>Note</strong>: When you reset <code>$local</code> to a list, it replaces all existing local variables with the new list structure. Use object extension (<code>++=</code>) when you want to add variables while preserving existing ones.</p>
 <h3 id="4-avoid-global-variables-in-functions">4. Avoid Global Variables in Functions</h3>
 <p>Unless absolutely necessary, avoid using global variables within functions:</p>
 <div class="highlight"><pre><span></span><code>// BAD: Using global variables
@@ -4827,10 +4877,10 @@ innerLoop = op() {
     
     
       
-      <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.top", "search.suggest", "content.code.copy", "content.action.edit", "content.action.view", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.top", "search.suggest", "content.code.copy", "content.action.edit", "content.action.view", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.56ea9cef.min.js"></script>
+      <script src="../../assets/javascripts/bundle.92b07e13.min.js"></script>
       
         <script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.0/dist/mermaid.min.js"></script>
       

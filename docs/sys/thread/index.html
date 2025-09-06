@@ -18,7 +18,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.15">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.18">
     
     
       
@@ -26,7 +26,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.342714a4.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.7e37652d.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
@@ -845,6 +845,29 @@
   
   <span class="md-ellipsis">
     Boolean
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../type/class/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Class
     
   </span>
   
@@ -1849,46 +1872,46 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#critical-sleep-behavior-limitation" class="md-nav__link">
+  <a href="#sleep-function-in-multi-threaded-applications" class="md-nav__link">
     <span class="md-ellipsis">
-      ⚠️ CRITICAL: Sleep Behavior Limitation
+      ✅ Sleep Function in Multi-Threaded Applications
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="⚠️ CRITICAL: Sleep Behavior Limitation">
+    <nav class="md-nav" aria-label="✅ Sleep Function in Multi-Threaded Applications">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#global-sleep-queue-behavior" class="md-nav__link">
+  <a href="#thread-safe-sleep-behavior" class="md-nav__link">
     <span class="md-ellipsis">
-      Global Sleep Queue Behavior
+      Thread-Safe Sleep Behavior
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#example-of-the-problem" class="md-nav__link">
+  <a href="#example-of-proper-sleep-behavior" class="md-nav__link">
     <span class="md-ellipsis">
-      Example of the Problem
+      Example of Proper Sleep Behavior
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#why-this-happens" class="md-nav__link">
+  <a href="#how-it-works" class="md-nav__link">
     <span class="md-ellipsis">
-      Why This Happens
+      How It Works
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#workarounds" class="md-nav__link">
+  <a href="#best-practices" class="md-nav__link">
     <span class="md-ellipsis">
-      Workarounds
+      Best Practices
     </span>
   </a>
   
@@ -4444,46 +4467,46 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#critical-sleep-behavior-limitation" class="md-nav__link">
+  <a href="#sleep-function-in-multi-threaded-applications" class="md-nav__link">
     <span class="md-ellipsis">
-      ⚠️ CRITICAL: Sleep Behavior Limitation
+      ✅ Sleep Function in Multi-Threaded Applications
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="⚠️ CRITICAL: Sleep Behavior Limitation">
+    <nav class="md-nav" aria-label="✅ Sleep Function in Multi-Threaded Applications">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#global-sleep-queue-behavior" class="md-nav__link">
+  <a href="#thread-safe-sleep-behavior" class="md-nav__link">
     <span class="md-ellipsis">
-      Global Sleep Queue Behavior
+      Thread-Safe Sleep Behavior
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#example-of-the-problem" class="md-nav__link">
+  <a href="#example-of-proper-sleep-behavior" class="md-nav__link">
     <span class="md-ellipsis">
-      Example of the Problem
+      Example of Proper Sleep Behavior
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#why-this-happens" class="md-nav__link">
+  <a href="#how-it-works" class="md-nav__link">
     <span class="md-ellipsis">
-      Why This Happens
+      How It Works
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#workarounds" class="md-nav__link">
+  <a href="#best-practices" class="md-nav__link">
     <span class="md-ellipsis">
-      Workarounds
+      Best Practices
     </span>
   </a>
   
@@ -4955,17 +4978,17 @@
 <h1 id="thread-system-thread">Thread System (<code>$thread</code>)</h1>
 <h2 id="overview">Overview</h2>
 <p>Grapa's <code>$thread</code> system provides a <strong>complete coroutine and threading implementation</strong> with full synchronization primitives, condition variables, and cooperative multitasking capabilities. This is not a planned feature - it's <strong>already fully implemented</strong> and powers Grapa's own execution pipeline.</p>
-<h2 id="critical-sleep-behavior-limitation">⚠️ <strong>CRITICAL: Sleep Behavior Limitation</strong></h2>
-<p><strong>Important</strong>: Grapa's <code>.sleep()</code> function has a <strong>fundamental limitation</strong> that affects multi-threaded applications:</p>
-<h3 id="global-sleep-queue-behavior"><strong>Global Sleep Queue Behavior</strong></h3>
+<h2 id="sleep-function-in-multi-threaded-applications">✅ <strong>Sleep Function in Multi-Threaded Applications</strong></h2>
+<p><strong>Good News</strong>: Grapa's <code>.sleep()</code> function works correctly in multi-threaded applications with proper thread-local behavior.</p>
+<h3 id="thread-safe-sleep-behavior"><strong>Thread-Safe Sleep Behavior</strong></h3>
 <ul>
-<li><strong>Sleep calls are process-wide</strong>, not thread-local</li>
-<li><strong>First sleep call "owns" the sleep mechanism</strong> and blocks all subsequent sleep calls</li>
-<li><strong>Sleep order determines completion order</strong> - not thread hierarchy or timing</li>
-<li><strong>Parent-child thread relationships don't matter</strong> - only the order of sleep calls</li>
+<li><strong>Sleep calls are thread-local</strong> - each thread can sleep independently</li>
+<li><strong>Concurrent sleep calls work correctly</strong> - multiple threads can sleep simultaneously</li>
+<li><strong>Sleep duration is respected per thread</strong> - each thread sleeps for its specified duration</li>
+<li><strong>No blocking between threads</strong> - one thread's sleep doesn't block others</li>
 </ul>
-<h3 id="example-of-the-problem"><strong>Example of the Problem</strong></h3>
-<div class="highlight"><pre><span></span><code>/* This demonstrates the sleep limitation */
+<h3 id="example-of-proper-sleep-behavior"><strong>Example of Proper Sleep Behavior</strong></h3>
+<div class="highlight"><pre><span></span><code>/* This demonstrates proper multi-threaded sleep behavior */
 thread1 = $thread();
 thread2 = $thread();
 
@@ -4983,24 +5006,23 @@ thread1.start(
 
 /* Main thread: 50ms sleep */
 &quot;Main: Starting 50ms sleep&quot;.echo();
-50.sleep();  /* Should take 50ms, but... */
+50.sleep();  /* Takes exactly 50ms, independent of thread1 */
 
-/* If main thread sleep starts FIRST, it gets blocked until thread1 completes */
-/* If thread1 sleep starts FIRST, main thread sleep completes in 50ms */
+/* Both sleeps run concurrently and complete at their respective times */
 </code></pre></div>
-<h3 id="why-this-happens"><strong>Why This Happens</strong></h3>
+<h3 id="how-it-works"><strong>How It Works</strong></h3>
 <ul>
-<li>Grapa's sleep implementation uses a <strong>global process-wide sleep queue</strong></li>
-<li><strong>First sleep call</strong> takes control of the sleep mechanism</li>
-<li><strong>Subsequent sleep calls</strong> get queued behind the first</li>
-<li><strong>All sleeps complete in order</strong> regardless of thread or timing</li>
+<li>Grapa's sleep implementation provides <strong>proper thread isolation</strong></li>
+<li><strong>Each thread maintains its own sleep state</strong> without interfering with others</li>
+<li><strong>Sleep calls complete independently</strong> based on their individual durations</li>
+<li><strong>Thread coordination works seamlessly</strong> with sleep, suspend, and resume</li>
 </ul>
-<h3 id="workarounds"><strong>Workarounds</strong></h3>
+<h3 id="best-practices"><strong>Best Practices</strong></h3>
 <ol>
-<li><strong>Avoid sleep in multi-threaded code</strong> - use other coordination mechanisms</li>
-<li><strong>Use suspend/resume</strong> for thread coordination instead of sleep</li>
-<li><strong>Implement custom timing</strong> using condition variables or busy-wait loops</li>
-<li><strong>Design around the limitation</strong> - ensure predictable sleep order</li>
+<li><strong>Use sleep freely in multi-threaded code</strong> - it works correctly</li>
+<li><strong>Combine sleep with suspend/resume</strong> for advanced thread coordination</li>
+<li><strong>Use sleep for timing delays</strong> without worrying about thread interference</li>
+<li><strong>Sleep works well with locks and condition variables</strong> for complex synchronization</li>
 </ol>
 <h2 id="key-features">Key Features</h2>
 <ul>
@@ -5227,7 +5249,7 @@ if (condition.waiting()) {
 thread.describe().echo();
 </code></pre></div></p>
 <h2 id="working-thread-examples">Working Thread Examples</h2>
-<p>The following examples demonstrate working thread patterns that avoid the sleep limitation:</p>
+<p>The following examples demonstrate working thread patterns with proper sleep behavior:</p>
 <h3 id="example-1-basic-thread-lifecycle">Example 1: Basic Thread Lifecycle</h3>
 <div class="highlight"><pre><span></span><code>/* Basic thread creation and management */
 basic_thread = $thread();
@@ -5527,7 +5549,7 @@ practical_limits = {
 <h2 id="related-documentation">Related Documentation</h2>
 <ul>
 <li><a href="../../syntax/thread_safe_variables/">Thread-Safe Variable Declarations</a> - Comprehensive guide to thread-safe programming</li>
-<li><a href="../examples/thread/">Thread Examples</a> - Working thread examples that avoid sleep limitations</li>
+<li><a href="../examples/thread/">Thread Examples</a> - Working thread examples with proper sleep behavior</li>
 </ul>
 <h2 id="conclusion">Conclusion</h2>
 <p>Grapa's <code>$thread</code> system provides <strong>world-class coroutine and threading capabilities</strong> that are:</p>
@@ -5539,7 +5561,7 @@ practical_limits = {
 <li><strong>Thread Safe</strong>: Built-in protection against race conditions</li>
 <li><strong>Coroutine Ready</strong>: Full suspend/resume capabilities</li>
 </ol>
-<p><strong>Important Note</strong>: While the system is robust and feature-complete, the <code>.sleep()</code> function has a global queue limitation that requires careful consideration in multi-threaded applications. Use the provided examples and best practices to work around this limitation effectively.</p>
+<p><strong>Important Note</strong>: The system is robust and feature-complete, with the <code>.sleep()</code> function working correctly in multi-threaded applications. Each thread can sleep independently without blocking others, making it safe to use sleep in concurrent programming scenarios.</p>
 
 
 
@@ -5599,10 +5621,10 @@ practical_limits = {
     
     
       
-      <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.top", "search.suggest", "content.code.copy", "content.action.edit", "content.action.view", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.top", "search.suggest", "content.code.copy", "content.action.edit", "content.action.view", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.56ea9cef.min.js"></script>
+      <script src="../../assets/javascripts/bundle.92b07e13.min.js"></script>
       
         <script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.0/dist/mermaid.min.js"></script>
       
