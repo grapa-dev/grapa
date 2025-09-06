@@ -27,6 +27,24 @@ Grapa's debug system operates at two levels:
 ### Current Status
 The debug system infrastructure is fully implemented and ready for use. While no system components are currently instrumented with debug output, the framework is in place for future component integration. Users can set debug flags and configure the system, and debug output will appear once components are instrumented.
 
+### Performance Monitoring
+For performance debugging and monitoring, Grapa provides the `$TIME.ms()` method for precise timing measurements:
+
+```grapa
+/* Performance monitoring example */
+t1 = $TIME().utc();
+/* Your code to measure */
+1000.sleep();
+t2 = $TIME().utc();
+'Execution time: ${time}ms\n'.interpolate(time:t1.ms(t2).float(30)).echo();
+```
+
+This is particularly useful for:
+- **Algorithm performance**: Measure execution time of specific operations
+- **Bottleneck identification**: Find slow parts of your code
+- **Optimization validation**: Verify performance improvements
+- **Real-time monitoring**: Track performance in production code
+
 ## CLI Debug Options
 
 ### Basic Debug Mode

@@ -1,5 +1,8 @@
 /* Performance Example */
-/* This file demonstrates performance-related operations */
+/* This file demonstrates performance-related operations using $TIME.ms() */
+
+/* Performance monitoring setup */
+t1 = $TIME().utc();
 
 /* Simple loop using while */
 sum = 0;
@@ -12,5 +15,13 @@ while (i < 100) {
 /* Array creation */
 large_array = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
+/* Performance measurement */
+t2 = $TIME().utc();
+execution_time = t1.ms(t2);
+
+/* Display results */
+'Loop completed in ${time}ms\n'.interpolate(time:execution_time.float(30)).echo();
+'Sum: ${sum}, Array length: ${len}\n'.interpolate(sum:sum, len:large_array.len()).echo();
+
 /* Return results for testing */
-[sum, large_array.len()] 
+[sum, large_array.len(), execution_time] 

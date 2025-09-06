@@ -103,16 +103,21 @@ This backlog tracks all future, long-term, and queued tasks for the Grapa projec
 
 ---
 
-## 🚀 **FUTURE RELEASES (0.1.53+)** (6 items)
+## 🚀 **FUTURE RELEASES (0.1.53+)** (5 items)
 
-### **1. Universal .get/.set Implementation** - **LANGUAGE ADOPTION FOUNDATION** 🔥 **HIGH PRIORITY**
-- [ ] **Universal .get/.set Implementation**: Implement consistent .get/.set methods across all data types
+### **1. Universal .get/.set Implementation** - **LANGUAGE ADOPTION FOUNDATION** ✅ **COMPLETED in 0.1.54**
+- [x] **Universal .get/.set Implementation**: Implemented consistent .get/.set methods across all data types
 - **Reference**: [`GRAPA_SYNTAX_IMPROVEMENTS_PLAN.md`](../RESEARCH_AND_ANALYSIS/GRAPA_SYNTAX_IMPROVEMENTS_PLAN.md)
-- **Status**: Core foundational language features completed in 0.1.52, universal .get/.set pending for future release
-- **Priority**: High - completes the Grapa Syntax Improvements major release
-- **Estimated Effort**: Medium Release (2-4 weeks)
-- **Dependencies**: None - can be implemented independently
-- **Scope**: Consistent .get/.set interface across strings, arrays, lists, objects, files, etc.
+- **Status**: ✅ **COMPLETED** - Universal .get/.set methods now work across all major data types
+- **Implementation**: 
+  - **Universal Coverage**: `.get()/.set()` work across `$ARRAY`, `$LIST`, `$OBJ`, `$file`, `$TABLE`, and `$WIDGET`
+  - **Flexible Field Access**: `.getfield()/.setfield()` with mix/match of names and indices for `$ARRAY`, `$LIST`, and `$OBJ` (non-system classes)
+  - **Index Support**: 0-based indexing with negative indexing support for arrays and lists
+  - **Boundary Operations**: Append/prepend functionality using length-based indexing
+  - **System Class Handling**: `$file` and `$TABLE` use specialized C++ implementations for named keys only
+- **Documentation**: Comprehensive coverage in `basic_syntax.md`, `api_reference.md`, and migration guides
+- **Testing**: Extensive validation across 1D/2D structures, named/indexed access, and edge cases
+- **Result**: Consistent API across all data types with flexible access patterns
 
 ### **2. GrapaDB Enhancements** - **DATABASE SYSTEM** 🟡 **MEDIUM PRIORITY**
 - [ ] **Performance Optimization**: Index performance enhancement, memory management optimization, query optimization
@@ -139,18 +144,41 @@ This backlog tracks all future, long-term, and queued tasks for the Grapa projec
 - **Priority**: High - affects vector concatenation functionality
 - **Risk Level**: Low - isolated to single operator, has working alternative
 
+### **4. Sleep Limitation Fix** - **THREADING SYSTEM** ✅ **RESOLVED in 0.1.54**
+- [x] **Fix Global Sleep Queue**: Resolved global process-wide sleep queue limitation in multi-threaded applications
+- [x] **Thread-Local Sleep**: Sleep function now works correctly with proper thread-local behavior
+- [x] **Documentation Updates**: Updated all documentation to reflect that sleep works correctly in multi-threaded applications
+- [x] **Testing**: Validated with `thread_example4.grc` showing multiple threads sleeping concurrently
+- **Issue**: Previously documented limitation where sleep calls were process-wide, not thread-local, causing first sleep call to block all subsequent ones
+- **Impact**: Limited multi-threaded application design and required complex workarounds for timing coordination
+- **Resolution**: Sleep function now works correctly with proper thread-local behavior
+- **Validation**: Tested with multiple threads sleeping concurrently with different durations
+- **Result**: Each thread can sleep independently without blocking others, enabling proper concurrent timing
+- **Documentation**: Updated all documentation to reflect that sleep works correctly in multi-threaded applications
+- **Estimated Effort**: Bug Fix (1-2 weeks) - **COMPLETED**
+- **Dependencies**: None
+- **Priority**: High - affects multi-threaded application design
+- **Risk Level**: Low - isolated to sleep functionality
 
 
 
 
-### **4. Advanced Language Features** - **MODERN LANGUAGE PARITY** 🟡 **MEDIUM PRIORITY**
-- [ ] **Enhanced Reflection**: Runtime code inspection and modification
+
+### **5. Advanced Language Features** - **DEBUGGING & EXTENSIONS** 🟡 **MEDIUM PRIORITY**
+- [ ] **Enhanced Debugging System**: Step-by-step debugger, variable inspection, call stack analysis
 - [ ] **Extension System**: Extending existing types with new methods
+- [ ] **Enhanced Error Information**: Detailed error context and recovery mechanisms
+- **Current State**: Grapa already has extensive reflection and dynamic modification capabilities
+  - **Code Inspection**: ✅ `55.random` shows function source code
+  - **Dynamic Modification**: ✅ Language syntax modification, mutable rules engine, metaprogramming foundation
+  - **Metadata Access**: ✅ Comprehensive type information and object inspection
+- **Gap Identified**: Limited debugging capabilities (step-by-step debugger, variable inspection)
+- **Modern Development**: Focus on debugging tools rather than reflection (already comprehensive)
 - **Estimated Effort**: Major Release (4-6 months)
 - **Dependencies**: Syntax Improvements (for error handling) ✅ **COMPLETED IN 0.1.52**
-- **Priority**: Medium - modern language parity features
+- **Priority**: Medium - debugging and extension capabilities
 
-### **5. Vector Performance Optimization** - **PERFORMANCE** 🟢 **LOWER PRIORITY**
+### **6. Vector Performance Optimization** - **PERFORMANCE** 🟢 **LOWER PRIORITY**
 - [ ] **Type-Specialized Paths**: Implement optimized code paths for homogeneous vectors while maintaining backward compatibility
 - [ ] **Memory Optimization**: Improve memory layout and allocation strategies for better cache performance
 - [ ] **Lazy Evaluation**: Defer expensive operations until results are actually needed
@@ -161,7 +189,7 @@ This backlog tracks all future, long-term, and queued tasks for the Grapa projec
 - **Estimated Effort**: Major Release (4-6 months across 5 phases)
 - **Dependencies**: Core language features completion, Syntax Improvements (for error handling) ✅ **COMPLETED IN 0.1.52**
 
-### **6. General Optimization Implementation** - **PERFORMANCE** 🟢 **LOWER PRIORITY**
+### **7. General Optimization Implementation** - **PERFORMANCE** 🟢 **LOWER PRIORITY**
 - [ ] **Performance improvements** for arithmetic, bitwise, comparison, and assignment operators
 - **Status**: Requires extensive testing and its own release cycle
 - **Reference**: [`GRAPA_OPTIMIZATION_BACKLOG.md`](../RESEARCH_AND_ANALYSIS/GRAPA_OPTIMIZATION_BACKLOG.md)
@@ -257,13 +285,12 @@ The following work was completed in version 0.1.52 and is now stable:
 - **Status**: Investigation completed, findings documented ✅ **COMPLETED IN 0.1.52**
 
 ### **Language Features & Enhancements**
-- [ ] **Universal .get/.set Implementation**: Implement consistent .get/.set methods across all data types
-  - **Current State**: .get/.set methods work on some types but not consistently across all
-  - **Goal**: Unified interface for accessing and modifying data across strings, arrays, lists, objects, files, etc.
-  - **Benefits**: Consistent API, easier learning, better code portability
-  - **Priority**: Medium - completes the Grapa Syntax Improvements major release
-  - **Estimated Effort**: Medium Release (2-4 weeks)
-  - **Dependencies**: None - can be implemented independently
+- [x] **Universal .get/.set Implementation**: ✅ **COMPLETED in 0.1.54** - Implemented consistent .get/.set methods across all data types
+  - **Status**: ✅ **COMPLETED** - Universal .get/.set methods now work across all major data types
+  - **Implementation**: Universal coverage across `$ARRAY`, `$LIST`, `$OBJ`, `$file`, `$TABLE`, and `$WIDGET`
+  - **Features**: Flexible field access, index support, boundary operations, system class handling
+  - **Documentation**: Comprehensive coverage in basic_syntax.md, api_reference.md, and migration guides
+  - **Result**: Consistent API across all data types with flexible access patterns
 - [ ] **Object Constructors and Destructors**: Implement automatic constructor/destructor support for Grapa objects
 - **Current State**: Objects created with `obj Class` are empty and must be manually initialized
 - **Proposed Enhancement**: Add automatic constructor execution on object creation and destructor on cleanup

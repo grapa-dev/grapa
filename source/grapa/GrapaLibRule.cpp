@@ -3260,8 +3260,8 @@ GrapaLibraryEvent* GrapaLibraryRuleEvent::LoadLib(GrapaScriptExec *vScriptExec, 
 		{ "lteq", &GrapaLibraryRuleEvent::HandleLtEq },
 		{ "lt", &GrapaLibraryRuleEvent::HandleLt },
 		{ "cmp", &GrapaLibraryRuleEvent::HandleCmp },
-		{ "utc", &GrapaLibraryRuleEvent::HandleUtc },
-		{ "tz", &GrapaLibraryRuleEvent::HandleTz },
+		{ "time_utc", &GrapaLibraryRuleEvent::HandleUtc },
+		{ "time_tz", &GrapaLibraryRuleEvent::HandleTz },
 		{ "table", &GrapaLibraryRuleEvent::HandleTable },
 		{ "vector_t", &GrapaLibraryRuleEvent::HandleVectorTranspose },
 		{ "vector_rref", &GrapaLibraryRuleEvent::HandleVectorRref },
@@ -18689,7 +18689,6 @@ GrapaRuleEvent* GrapaLibraryRuleInterpolateEvent::Run(GrapaScriptExec* vScriptEx
 						d.FromBytes(codeResult->mValue);
 						strResult = d.ToString(10);
 					}
-					result->mValue.mToken = GrapaTokenType::STR;
 					break;
 					case GrapaTokenType::ARRAY:
 					case GrapaTokenType::TUPLE:
