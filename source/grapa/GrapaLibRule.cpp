@@ -3742,7 +3742,7 @@ GrapaRuleEvent* GrapaLibraryRuleGetEnvEvent::Run(GrapaScriptExec* vScriptExec, G
 	GrapaLibraryParam r1(vScriptExec, pNameSpace, pInput ? pInput->Head(0) : NULL);
 	if (r1.vVal)
 	{
-		if (r1.vVal->mValue.Cmp("$PATH") == 0 || (r1.vVal->mValue.mToken == GrapaTokenType::SYSID && r1.vVal->mValue.Cmp("PATH") == 0))
+		if (r1.vVal->mValue.Cmp("$GRAPA_PATH") == 0 || (r1.vVal->mValue.mToken == GrapaTokenType::SYSID && r1.vVal->mValue.Cmp("GRAPA_PATH") == 0))
 		{
 			err = 0;
 			result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaCHAR());
@@ -3770,12 +3770,12 @@ GrapaRuleEvent* GrapaLibraryRuleGetEnvEvent::Run(GrapaScriptExec* vScriptExec, G
 			result->mValue.mToken = GrapaTokenType::ARRAY;
 			result->vQueue = vScriptExec->CopyQueue(gSystem->mCliArgv);
 		}
-		else if (r1.vVal->mValue.Cmp("$LIB") == 0 || (r1.vVal->mValue.mToken == GrapaTokenType::SYSID && r1.vVal->mValue.Cmp("LIB") == 0))
+		else if (r1.vVal->mValue.Cmp("$GRAPA_LIB") == 0 || (r1.vVal->mValue.mToken == GrapaTokenType::SYSID && r1.vVal->mValue.Cmp("GRAPA_LIB") == 0))
 		{
 			err = 0;
 			result = new GrapaRuleEvent(0, GrapaCHAR(), gSystem->mLibDir);
 		}
-		else if (r1.vVal->mValue.Cmp("$BIN") == 0 || (r1.vVal->mValue.mToken==GrapaTokenType::SYSID && r1.vVal->mValue.Cmp("BIN") == 0))
+		else if (r1.vVal->mValue.Cmp("$GRAPA_BIN") == 0 || (r1.vVal->mValue.mToken==GrapaTokenType::SYSID && r1.vVal->mValue.Cmp("GRAPA_BIN") == 0))
 		{
 			err = 0;
 			result = new GrapaRuleEvent(0, GrapaCHAR(), gSystem->mBinDir);
@@ -3800,7 +3800,7 @@ GrapaRuleEvent* GrapaLibraryRuleGetEnvEvent::Run(GrapaScriptExec* vScriptExec, G
 			err = 0;
 			result = new GrapaRuleEvent(0, GrapaCHAR(), gSystem->mTempDir);
 		}
-		else if (r1.vVal->mValue.Cmp("$VERSION") == 0 || r1.vVal->mValue.Cmp("VERSION") == 0)
+		else if (r1.vVal->mValue.Cmp("$GRAPA_VERSION") == 0 || r1.vVal->mValue.Cmp("GRAPA_VERSION") == 0)
 		{
 			err = 0;
 			result = new GrapaRuleEvent(0, GrapaCHAR("version"), gSystem->mVersion);
@@ -3966,7 +3966,7 @@ GrapaRuleEvent* GrapaLibraryRulePutEnvEvent::Run(GrapaScriptExec* vScriptExec, G
 
 	if (r1.vVal)
 	{
-		if (r1.vVal->mValue.Cmp("$PATH") == 0 || (r1.vVal->mValue.mToken == GrapaTokenType::SYSID && r1.vVal->mValue.Cmp("PATH") == 0))
+		if (r1.vVal->mValue.Cmp("$GRAPA_PATH") == 0 || (r1.vVal->mValue.mToken == GrapaTokenType::SYSID && r1.vVal->mValue.Cmp("GRAPA_PATH") == 0))
 		{
 			if (r2.vVal && (r2.vVal->mValue.mToken == GrapaTokenType::ARRAY || r2.vVal->mValue.mToken == GrapaTokenType::TUPLE || r2.vVal->mValue.mToken == GrapaTokenType::LIST))
 			{
@@ -3980,12 +3980,12 @@ GrapaRuleEvent* GrapaLibraryRulePutEnvEvent::Run(GrapaScriptExec* vScriptExec, G
 				gSystem->mPath = vScriptExec->CopyQueue(r2.vVal->vQueue);
 			}
 		}
-		else if (r1.vVal->mValue.Cmp("$LIB") == 0 || (r1.vVal->mValue.mToken == GrapaTokenType::SYSID && r1.vVal->mValue.Cmp("LIB") == 0))
+		else if (r1.vVal->mValue.Cmp("$GRAPA_LIB") == 0 || (r1.vVal->mValue.mToken == GrapaTokenType::SYSID && r1.vVal->mValue.Cmp("GRAPA_LIB") == 0))
 		{
 			err = 0;
 			gSystem->mLibDir.FROM(r2.vVal? r2.vVal->mValue:GrapaCHAR());
 		}
-		else if (r1.vVal->mValue.Cmp("$BIN") == 0 || (r1.vVal->mValue.mToken == GrapaTokenType::SYSID && r1.vVal->mValue.Cmp("BIN") == 0))
+		else if (r1.vVal->mValue.Cmp("$GRAPA_BIN") == 0 || (r1.vVal->mValue.mToken == GrapaTokenType::SYSID && r1.vVal->mValue.Cmp("GRAPA_BIN") == 0))
 		{
 			err = 0;
 			gSystem->mBinDir.FROM(r2.vVal ? r2.vVal->mValue : GrapaCHAR());
