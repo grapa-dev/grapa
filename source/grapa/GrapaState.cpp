@@ -2388,6 +2388,7 @@ void GrapaScriptState::LoadSystem()
 	{
 		GrapaRuleEvent *e = AddRuleOperation(GetNameSpace()->GetNameQueue(), "", ""); // global variables
 		e->mValue.mToken = GrapaTokenType::OBJ;
+		e->mOpLocal = true;
 	}
 
 	SetTokenParam(GrapaItemEnum::SYM," \t\r\n!@#$%^&*()-+={}|[]:;<>,.?/\\~");
@@ -4454,13 +4455,9 @@ void GrapaScriptExec::LoadLib(GrapaRuleEvent *libName)
 	{
 		s64 idx;
 		GrapaCHAR s;
-		if (libName->mValue.mToken == GrapaTokenType::SYSID)
-		{
+		if (libName->mValue.mToken == GrapaTokenType::SYSID && libName->mValue.mLength && libName->mValue.mBytes && libName->mValue.mBytes[0] != '$')
 			s.FROM("$");
-			s.Append(libName->mValue);
-		}
-		else
-			s.FROM(libName->mValue);
+		s.FROM(libName->mValue);
 		libName->vLibraryEvent = gSystem->mLibraryQueue.Search(s,idx);
 		if (libName->vLibraryEvent == NULL)
 		{

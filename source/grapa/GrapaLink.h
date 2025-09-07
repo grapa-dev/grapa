@@ -2,6 +2,7 @@
 #define _GrapaLink_
 
 #include "GrapaValue.h"
+#include "GrapaConsole.h"
 
 #define grapa_version "0.1.54"
 
@@ -12,9 +13,10 @@ class GrapaLink
 {
 public:
 	static GrapaSystem* GetGrapaSystem();
-    static GrapaCHAR Start(bool& needExit, bool& showConsole, bool& showWidget, GrapaCHAR& inStr, GrapaCHAR& outStr, GrapaCHAR& runStr);
+	static void Start(bool& needExit, bool& showConsole, GrapaCHAR& outStr, GrapaCHAR& runStr);
 	static void Stop();
 	static bool IsStopped();
+	static GrapaCHAR RunFile(GrapaConsoleSend& pConsoleSend, GrapaCHAR& fname);
 	//static void SetStartGrammar(const GrapaCHAR& pGrammar);
 	//static void EnablePrompt(bool pEnable = true);
 	//static int GetChar();

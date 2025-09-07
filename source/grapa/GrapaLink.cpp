@@ -61,17 +61,15 @@ GrapaSystem* gSystem = &mSystem;
 
 GrapaSystem* GrapaLink::GetGrapaSystem() {return gSystem;}
 
-GrapaCHAR GrapaLink::Start(bool& needExit, bool& showConsole, bool& showWidget, GrapaCHAR& inStr, GrapaCHAR& outStr, GrapaCHAR& runStr)
+void GrapaLink::Start(bool& needExit, bool& showConsole, GrapaCHAR& outStr, GrapaCHAR& runStr)
 {
 	gSystem->RandSeed();
 
 	bool showVersion = false;
 	bool showHelp = false;
-	bool showEnv = false;
 	bool suppressHeader = false;
 	bool interactiveMode = false;
 
-	inStr.SetLength(0);
 	outStr.SetLength(0);
 
 	// Check if input is from pipe (for Unix-like systems)
@@ -155,14 +153,17 @@ GrapaCHAR GrapaLink::Start(bool& needExit, bool& showConsole, bool& showWidget, 
 					runStr.Append((char)c);
 			} else {
 				fprintf(stderr, "Error: - option requires pipe input (e.g., echo 'command' | grapa -)\n");
-				return GrapaCHAR("Error: - option requires pipe input");
+				outStr.FROM("Error: - option requires pipe input");
+				needExit = true;
+				return;
 			}
 		} else if (e->mValue.mLength > 0 && e->mValue.mBytes[0] == '-') {
 			/* Unknown flag - show error and exit */
 			fprintf(stderr, "Error: Unknown option '%s'\n", (char*)e->mValue.mBytes);
 			fprintf(stderr, "Use 'grapa -h' for help\n");
+			outStr.FROM("Error: Unknown option");
 			needExit = true;
-			return GrapaCHAR("Error: Unknown option");
+			return;
 		} else {
 			positional_args.push_back(e);
 		}
@@ -242,19 +243,8 @@ GrapaCHAR GrapaLink::Start(bool& needExit, bool& showConsole, bool& showWidget, 
 		}
 	}
 
-	/*
-	// Debug output for $ARGV
-	// printf("[DEBUG] $ARGV: ");
-	GrapaRuleEvent* argEv = argvList->Head();
-	while (argEv) {
-		printf("'%.*s' ", (int)argEv->mValue.mLength, (char*)argEv->mValue.mBytes);
-		argEv = argEv->Next();
-	}
-	printf("\n");
-	*/
-
 	// Auto-detect pipe input if no explicit stdin option and no script file
-	if (isPipeInput && runStr.mLength == 0 && !interactiveMode && !showWidget)
+	if (isPipeInput && runStr.mLength == 0 && !interactiveMode)
 	{
 		gSystem->mDebug.DebugPrint("Auto-detected pipe input");
 		char c;
@@ -272,7 +262,6 @@ GrapaCHAR GrapaLink::Start(bool& needExit, bool& showConsole, bool& showWidget, 
 #endif
 
 	GrapaCHAR grname("$grapa.grz");
-	GrapaCHAR grresult("");
 
 	//gGrapaLinkCallback = pCallback;
     time(&gSystem->mStartTime);
@@ -399,68 +388,13 @@ GrapaCHAR GrapaLink::Start(bool& needExit, bool& showConsole, bool& showWidget, 
 	if (gSystem->mLibDir.mLength)
 		gSystem->mPath->PushTail(new GrapaRuleEvent(0, GrapaCHAR(), gSystem->mLibDir));
 
-	//GrapaCHAR str(__DATE__);
-	//GrapaCHAR dt, mo;
-	//dt.Append((char*)&str.mBytes[7], 4);
-	//dt.Append('-');
-	//mo.Append((char*)str.mBytes, 3);
-	//GrapaCHAR moStr;
-	//if (mo.Cmp("Jan") == 0) moStr.FROM("01");
-	//else if (mo.Cmp("Feb") == 0) moStr.FROM("02");
-	//else if (mo.Cmp("Mar") == 0) moStr.FROM("03");
-	//else if (mo.Cmp("Apr") == 0) moStr.FROM("04");
-	//else if (mo.Cmp("May") == 0) moStr.FROM("05");
-	//else if (mo.Cmp("Jun") == 0) moStr.FROM("06");
-	//else if (mo.Cmp("Jul") == 0) moStr.FROM("07");
-	//else if (mo.Cmp("Aug") == 0) moStr.FROM("08");
-	//else if (mo.Cmp("Sep") == 0) moStr.FROM("09");
-	//else if (mo.Cmp("Oct") == 0) moStr.FROM("10");
-	//else if (mo.Cmp("Nov") == 0) moStr.FROM("11");
-	//else if (mo.Cmp("Dec") == 0) moStr.FROM("12");
-	//else moStr.FROM("00");
-	//dt.Append(moStr);
-	//dt.Append('-');
-	//dt.Append((char*)&str.mBytes[4], 2);
-	//dt.Append("T");
-	//dt.Append(__TIME__);
-	//dt.Append(".000000");
-	//GrapaTime t;
-	//t.FromString(dt);
-	//t.mSec -= t.LocalOffset();
-	//gSystem->mVersion.FROM(grapa_version);
-	//gSystem->mConsoleConnect.mScriptState.mRuleVariables.SetResponse(&gSystem->mConsoleResponse);
-	//GrapaError err = gSystem->mConsoleConnect.Start();
-	//if (err) Stop();
-	//if (gSystem->mGrammar.mLength) grresult = Send(gSystem->mGrammar);
-
 	if (showVersion && !suppressHeader)
 	{
 		outStr.Append("Version: ");
 		outStr.Append(gSystem->mVersion);
 		outStr.Append("\n");
 	}
-	if (showEnv)
-	{
-		outStr.Append("Environment:\n");
-		outStr.Append("\t$NAME\t:");
-		outStr.Append(gSystem->mBinName);
-		outStr.Append("\n");
-		outStr.Append("\t$GRAPA_BIN\t:");
-		outStr.Append(gSystem->mBinDir);
-		outStr.Append("\n");
-		outStr.Append("\t$GRAPA_LIB\t:");
-		outStr.Append(gSystem->mLibDir);
-		outStr.Append("\n");
-		outStr.Append("\t$WORK\t:");
-		outStr.Append(gSystem->mWorkDir);
-		outStr.Append("\n");
-		outStr.Append("\t$HOME\t:");
-		outStr.Append(gSystem->mHomeDir);
-		outStr.Append("\n");
-		outStr.Append("\t$TEMP\t:");
-		outStr.Append(gSystem->mTempDir);
-		outStr.Append("\n");
-	}
+
 	if (showHelp)
 	{
 		outStr.Append("Options:\n");
@@ -482,17 +416,7 @@ GrapaCHAR GrapaLink::Start(bool& needExit, bool& showConsole, bool& showWidget, 
 		outStr.Append("\tscript.grz\t:Execute compiled script directly (e.g., grapa script.grz)\n");
 	}
 
-	if (grresult.mLength)
-	{
-		outStr.Append("Load:\n");
-		outStr.Append(grresult);
-		outStr.Append("\n");
-	}
-
-	inStr.RTrim('\n');
 	outStr.RTrim('\n');
-
-	return grresult;
 }
 
 void GrapaLink::Stop()
@@ -519,6 +443,37 @@ void GrapaLink::Stop()
 bool GrapaLink::IsStopped()
 {
 	return gSystem->mStop;
+}
+
+GrapaCHAR GrapaLink::RunFile(GrapaConsoleSend& pConsoleSend, GrapaCHAR& fname)
+{
+	GrapaCHAR inStr;
+	inStr.FROM(fname);
+	inStr.Append(".grz");
+	GrapaFileIO gf;
+	GrapaError err = gf.Open((char*)inStr.mBytes);
+	if (err)
+	{
+		inStr.FROM(fname);
+		inStr.Append(".grc");
+		err = gf.Open((char*)inStr.mBytes);
+	}
+	GrapaCHAR setValue;
+	GrapaCHAR grresult;
+	if (err == 0)
+	{
+		u64 fsize = 0;
+		err = gf.GetSize(fsize);
+		setValue.SetLength(fsize);
+		err = gf.Read(0, 1, 0, fsize, setValue.mBytes);
+		gf.Close();
+		setValue.SetLength(fsize);
+	}
+
+	if (err == 0 && setValue.mLength)
+		grresult = pConsoleSend.SendSync(setValue, NULL, 0, GrapaCHAR());
+
+	return grresult;
 }
 
 //void GrapaLink::SetStartGrammar(const GrapaCHAR& pGrammar)

@@ -376,7 +376,10 @@ public:
 			GrapaCHAR grresult;
 			if (gSystem->mGrammar.mLength)
 				grresult = mConsoleSend.SendSync(gSystem->mGrammar, NULL, 0, GrapaCHAR());
-			GrapaCHAR runStr("$global[\"$py\"] = class {eval = op(script,locals={},import=\"\",attr=\"\"){@<\"py\",\"eval\",{@<var,{script}>,@<var,{locals}>,@<var,{import}>,@<var,{attr}>}>();};exec = op(script,locals={},import=\"\",attr=\"\"){@<\"py\",\"exec\",{@<var,{script}>,@<var,{locals}>,@<var,{import}>,@<var,{attr}>}>();};};");
+			GrapaCHAR configName(gSystem->mHomeDir);
+			configName.Append("/.grapa/config");
+			GrapaLink::RunFile(mConsoleSend,configName);
+			GrapaCHAR runStr("$global['$py'] = class {eval = op(script,locals={},import='',attr=''){@<'py','eval',{@<var,{script}>,@<var,{locals}>,@<var,{import}>,@<var,{attr}>}>();};exec = op(script,locals={},import='',attr=''){@<'py','exec',{@<var,{script}>,@<var,{locals}>,@<var,{import}>,@<var,{attr}>}>();};};");
 			grresult = mConsoleSend.SendSync(runStr, NULL, 0, GrapaCHAR());
 		}
 		else if (PyUnicode_Check(cmdstr.ptr()))
@@ -448,31 +451,33 @@ public:
 			}
 			profStr.FROM(profilestr.c_str(), profilestr.length());
 		}
-		if (GrapaRuleEvent* operation = mConsoleSend.mScriptState.AddRuleOperation(mConsoleSend.mScriptState.GetNameSpace()->GetNameQueue(), "", ""))
-		{
+		//if (GrapaRuleEvent* operation = mConsoleSend.mScriptState.AddRuleOperation(mConsoleSend.mScriptState.GetNameSpace()->GetNameQueue(), "", ""))
+		//{
+			//operation->mValue.mToken = GrapaTokenType::OBJ;
 			GrapaRuleEvent* grresult = NULL;
+			GrapaRuleEvent* vLocals = NULL;
 			if (length > 0)
 			{
 
 				pybind11::gil_scoped_acquire acquire;
 				GrapaRuleEvent* e = GrapaPyObject::ToGrapa(paramstr.ptr(), GrapaCHAR());
-				GrapaRuleEvent* q = mConsoleSend.mScriptState.GetNameSpace()->GetNameQueue()->Tail();
-				GrapaRuleEvent* op = q;
-				while (op->mValue.mToken == GrapaTokenType::PTR && op->vRulePointer) op = op->vRulePointer;
-				if (e && e->mValue.mToken == GrapaTokenType::LIST && e->vQueue)
+				if (e && e->vQueue)
+				{
+					vLocals = new GrapaRuleEvent();
+					vLocals->mOpLocal = true;
+					vLocals->mValue.mToken = GrapaTokenType::LIST;
+					vLocals->vQueue = new GrapaRuleQueue();
+					mConsoleSend.mScriptState.GetNameSpace()->GetNameQueue()->PushTail(vLocals);
 					while (e->vQueue->Head())
-						op->vQueue->PushTail(e->vQueue->PopHead());
+						vLocals->vQueue->PushTail(e->vQueue->PopHead());
+				}
 				if (e)
 				{
 					e->CLEAR();
 					delete e;
 				}
 			}
-			GrapaRuleEvent* vLocals;
-			vLocals = new GrapaRuleEvent();
-			vLocals->mValue.mToken = GrapaTokenType::LIST;
-			vLocals->vQueue = new GrapaRuleQueue();
-			mConsoleSend.mScriptState.GetNameSpace()->GetNameQueue()->PushTail(vLocals);
+
 			if (length > 0)
 			{
 				grresult = mConsoleSend.SendSyncResult(runStr, rulexx, 0, profStr);
@@ -487,19 +492,19 @@ public:
 				grresult->CLEAR();
 				delete grresult;
 			}
-			mConsoleSend.mScriptState.GetNameSpace()->GetNameQueue()->PopEvent(vLocals);
 			if (vLocals)
 			{
+				mConsoleSend.mScriptState.GetNameSpace()->GetNameQueue()->PopEvent(vLocals);
 				vLocals->CLEAR();
 				delete vLocals;
 			}
-			if (mConsoleSend.mScriptState.GetNameSpace()->GetNameQueue()->PopEvent(operation))
-			{
-				operation->CLEAR();
-				delete operation;
-				operation = NULL;
-			}
-		}
+			//if (mConsoleSend.mScriptState.GetNameSpace()->GetNameQueue()->PopEvent(operation))
+			//{
+			//	operation->CLEAR();
+			//	delete operation;
+			//	operation = NULL;
+			//}
+		//}
 		return o;
 	}
 
@@ -578,8 +583,8 @@ py::object grapa_eval(py::object cmdstr, py::object paramstr, std::string rulest
 PYBIND11_MODULE(grapapy, m)
 {
 	GrapaCHAR inStr, outStr, runStr;
-	bool needExit = false, showConsole = false, showWidget = false;
-	GrapaCHAR s = GrapaLink::Start(needExit, showConsole, showWidget, inStr, outStr, runStr);
+	bool needExit = false, showConsole = false;
+	GrapaLink::Start(needExit, showConsole, outStr, runStr);
 	GrapaLink::GetGrapaSystem()->mLibraryQueue.PushTail(new GrapaPyRuleEvent(GrapaCHAR("py")));
 
 	auto atexit = py::module_::import("atexit");

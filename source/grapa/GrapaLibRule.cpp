@@ -5129,9 +5129,6 @@ GrapaRuleEvent* GrapaLibraryRuleVarEvent::Run(GrapaScriptExec *vScriptExec, Grap
 
 	if (result == NULL)
 	{
-		//result = new GrapaRuleEvent(GrapaTokenType::ERR, 0, "", "");
-		//result->vQueue = new GrapaRuleQueue();
-		//result->mAbort = true;
 		result = Error(vScriptExec, pNameSpace, -1);
 	}
 	return(result);
