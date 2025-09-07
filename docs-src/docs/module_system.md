@@ -203,13 +203,13 @@ result = custom.some_method();
 
 ### Search Path Management
 
-#### $PATH Environment Variable
+#### $GRAPA_PATH Environment Variable
 
-The `$PATH` variable contains a queue of search locations:
+The `$GRAPA_PATH` variable contains a queue of search locations:
 
 ```grapa
 /* Set multiple search paths */
-$sys().putenv($PATH, [
+$sys().putenv($GRAPA_PATH, [
     "lib/custom",           /* Custom libraries */
     "lib/extensions",       /* Extensions */
     "lib/plugins",          /* Plugins */
@@ -217,9 +217,9 @@ $sys().putenv($PATH, [
 ]);
 
 /* Add to existing path */
-current_path = $sys().getenv($PATH);
+current_path = $sys().getenv($GRAPA_PATH);
 new_path = current_path + ["lib/new"];
-$sys().putenv($PATH, new_path);
+$sys().putenv($GRAPA_PATH, new_path);
 ```
 
 #### Search Path Modification Command
@@ -228,29 +228,29 @@ You can modify the search paths using the `$sys().putenv()` command:
 
 ```grapa
 /* Add a new search path */
-$sys().putenv($PATH, $sys().getenv($PATH) + ["lib/new_feature"]);
+$sys().putenv($GRAPA_PATH, $sys().getenv($GRAPA_PATH) + ["lib/new_feature"]);
 
 /* Replace all search paths */
-$sys().putenv($PATH, ["lib/prod", "lib/stable"]);
+$sys().putenv($GRAPA_PATH, ["lib/prod", "lib/stable"]);
 
 /* Remove a specific path */
-current_paths = $sys().getenv($PATH);
+current_paths = $sys().getenv($GRAPA_PATH);
 filtered_paths = current_paths.filter(op(path) { path != "lib/old_feature"; });
-$sys().putenv($PATH, filtered_paths);
+$sys().putenv($GRAPA_PATH, filtered_paths);
 ```
 
 **Note**: The automatic file loading mechanism uses these search paths, but there's no way to specify a custom location for individual file loads. For custom file locations, use manual file loading instead.
 
-#### $LIB Environment Variable
+#### $GRAPA_LIB Environment Variable
 
-The `$LIB` variable points to the main library directory:
+The `$GRAPA_LIB` variable points to the main library directory:
 
 ```grapa
 /* Set the main library directory */
-$sys().putenv($LIB, "/usr/local/lib/grapa");
+$sys().putenv($GRAPA_LIB, "/usr/local/lib/grapa");
 
 /* Get current library directory */
-lib_dir = $sys().getenv($LIB);
+lib_dir = $sys().getenv($GRAPA_LIB);
 ```
 
 ### Search Order
@@ -258,8 +258,8 @@ lib_dir = $sys().getenv($LIB);
 When loading a class, Grapa searches in this order:
 
 1. **Current namespace** - Check if class already exists
-2. **$PATH locations** - Search each path in the queue
-3. **$LIB directory** - Main library directory
+2. **$GRAPA_PATH locations** - Search each path in the queue
+3. **$GRAPA_LIB directory** - Main library directory
 4. **Static library** - Built-in classes
 
 ## Practical Examples
@@ -304,7 +304,7 @@ is_valid = utils().validate_email("user@example.com");
 
 ```grapa
 /* Set up search path */
-$sys().putenv($PATH, ["lib/custom"]);
+$sys().putenv($GRAPA_PATH, ["lib/custom"]);
 
 /* Class will be automatically loaded */
 math = $MATH_UTILS();
@@ -322,7 +322,7 @@ plugin_paths = [
     "plugins/ui"
 ];
 
-$sys().putenv($PATH, plugin_paths);
+$sys().putenv($GRAPA_PATH, plugin_paths);
 
 /* Plugins are loaded on demand */
 network = $NETWORK_PLUGIN();
@@ -335,7 +335,7 @@ ui = $UI_PLUGIN();
 #### Development Environment
 ```grapa
 /* Use .grc files for easy debugging */
-$sys().putenv($PATH, [
+$sys().putenv($GRAPA_PATH, [
     "lib/dev",
     "lib/custom"
 ]);
@@ -344,11 +344,11 @@ $sys().putenv($PATH, [
 #### Production Environment
 ```grapa
 /* Use .grz files for performance */
-$sys().putenv($PATH, [
+$sys().putenv($GRAPA_PATH, [
     "lib/prod/optimized",
     "lib/prod/stable"
 ]);
-$sys().putenv($LIB, "/opt/grapa/lib");
+$sys().putenv($GRAPA_LIB, "/opt/grapa/lib");
 ```
 
 ## Manual File Loading
@@ -431,9 +431,9 @@ result = load_with_params("/path/to/script.grc", {"name": "Alice", "age": 30});
 ```grapa
 /* Add paths dynamically */
 add_search_path = op(new_path) {
-    current = $sys().getenv($PATH);
+    current = $sys().getenv($GRAPA_PATH);
     updated = current + [new_path];
-    $sys().putenv($PATH, updated);
+    $sys().putenv($GRAPA_PATH, updated);
 };
 
 add_search_path("lib/new_feature");
@@ -444,9 +444,9 @@ add_search_path("lib/new_feature");
 ```grapa
 /* Load different libraries based on environment */
 if ($sys().getenv("DEBUG_MODE") == "true") {
-    $sys().putenv($PATH, ["lib/debug", "lib/dev"]);
+    $sys().putenv($GRAPA_PATH, ["lib/debug", "lib/dev"]);
 } else {
-    $sys().putenv($PATH, ["lib/prod"]);
+    $sys().putenv($GRAPA_PATH, ["lib/prod"]);
 }
 ```
 
@@ -454,7 +454,7 @@ if ($sys().getenv("DEBUG_MODE") == "true") {
 
 ```grapa
 /* Organize libraries by category */
-$sys().putenv($PATH, [
+$sys().putenv($GRAPA_PATH, [
     "lib/core",           /* Core functionality */
     "lib/extensions",     /* Extensions */
     "lib/plugins",        /* Plugins */
@@ -513,7 +513,7 @@ uncached_utils();  /* Loads and executes file again - slower */
 
 ```grapa
 /* Optimize search order - most used first */
-$sys().putenv($PATH, [
+$sys().putenv($GRAPA_PATH, [
     "lib/frequently_used",  /* Most common libraries */
     "lib/standard",         /* Standard libraries */
     "lib/rare"              /* Rarely used libraries */
@@ -525,8 +525,8 @@ $sys().putenv($PATH, [
 ### Missing Classes
 
 If a class cannot be found:
-1. Search through all `$PATH` locations
-2. Check `$LIB` directory
+1. Search through all `$GRAPA_PATH` locations
+2. Check `$GRAPA_LIB` directory
 3. Check static library
 4. Return error if not found
 
@@ -545,7 +545,7 @@ The include system and class loading work together:
 include "lib/core/grapa.grc";
 
 /* Class loading - runtime */
-custom = $CUSTOM_CLASS();  /* Searches $PATH automatically */
+custom = $CUSTOM_CLASS();  /* Searches $GRAPA_PATH automatically */
 
 /* Automatic file loading - runtime */
 utils = utils();           /* Automatically loads utils.grc */
@@ -554,8 +554,8 @@ utils = utils();           /* Automatically loads utils.grc */
 ## Best Practices
 
 1. **Use automatic file loading for simple utilities and functions**
-2. **Use $PATH for custom libraries and plugins**
-3. **Use $LIB for system-wide library directory**
+2. **Use $GRAPA_PATH for custom libraries and plugins**
+3. **Use $GRAPA_LIB for system-wide library directory**
 4. **Use .grc files during development**
 5. **Use .grz files in production**
 6. **Organize libraries by category**
@@ -593,7 +593,7 @@ This system is more sophisticated than traditional import/export modules and pro
 
 1. **Filename Matching**: For automatic loading, the filename must match the class name (e.g., `myclass.grc` must define `@global["myclass"]`)
 2. **Class vs Function**: Files can define either classes (for assignment) or functions (for function calls)
-3. **Search Paths**: Automatic loading uses predefined search paths that can be modified with `$sys().putenv($PATH, ...)`
+3. **Search Paths**: Automatic loading uses predefined search paths that can be modified with `$sys().putenv($GRAPA_PATH, ...)`
 4. **Manual Control**: For files outside search paths, use `$file().read()` and manual execution
 5. **Caching Behavior**: Files with `$global["filename"]` are cached; files without it re-load every time
 

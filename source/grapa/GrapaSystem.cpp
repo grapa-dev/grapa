@@ -785,39 +785,108 @@ void My_Console::Start(GrapaCHAR& in, GrapaCHAR& out, GrapaCHAR& run)
     // printf("[DEBUG] run.mLength=%llu: '%.*s'\n", (unsigned long long)run.mLength, (int)run.mLength, (char*)run.mBytes);
     GrapaError err = mConsoleSend.Start();
     GrapaCHAR grresult;
-    if (gSystem->mGrammar.mLength) grresult = mConsoleSend.SendSync(gSystem->mGrammar,NULL,0,GrapaCHAR());
-    //printf("[DEBUG] After grammar, grresult.mLength=%llu: '%.*s'\n", (unsigned long long)grresult.mLength, (int)grresult.mLength, (char*)grresult.mBytes);
-    if (grresult.mLength)
-    {
-        // printf("[DEBUG] About to print grresult.mBytes (grammar)\n");
-        std::cout << (char*)grresult.mBytes;
-        // printf("[DEBUG] About to print newline after grresult (grammar)\n");
-        std::cout << (char*)"\n";
-    }
-    bool printedOut = false;
-    if (out.mLength)
-    {
-        //printf("[DEBUG] About to print out.mBytes\n");
-        std::cout << (char*)out.mBytes;
-        // printf("[DEBUG] About to print newline after out\n");
-        std::cout << (char*)"\n";
-        printedOut = true;
-    }
-    if (run.mLength) grresult = mConsoleSend.SendSync(run,NULL,0,GrapaCHAR());
-    //printf("[DEBUG] After run, grresult.mLength=%llu: '%.*s'\n", (unsigned long long)grresult.mLength, (int)grresult.mLength, (char*)grresult.mBytes);
-	//printedOut = true;
-	/*
-    if (grresult.mLength) {
-        // Only print if grresult.mBytes is not already in out.mBytes
-        if (!printedOut || strstr((char*)out.mBytes, (char*)grresult.mBytes) == NULL) {
-            //printf("[DEBUG] About to print grresult.mBytes (run)\n%s\n%s\n", (char*)out.mBytes,(char*)grresult.mBytes);
-            std::cout << (char*)grresult.mBytes;
-            // printf("[DEBUG] About to print newline after grresult (run)\n");
-            std::cout << (char*)"\n";
-        }
-    }
-	*/
-    // printf("[DEBUG] Exiting My_Console::Start\n");
+    if (gSystem->mGrammar.mLength) 
+		grresult = mConsoleSend.SendSync(gSystem->mGrammar,NULL,0,GrapaCHAR());
+
+    RunConfig();
+
+    if (run.mLength) 
+		grresult = mConsoleSend.SendSync(run,NULL,0,GrapaCHAR());
+
+}
+
+void My_Console::RunConfig()
+{
+	GrapaCHAR inStr;
+	inStr.FROM(gSystem->mHomeDir);
+	inStr.Append("/.grapa/config.grz");
+	GrapaFileIO gf;
+	GrapaError err = gf.Open((char*)inStr.mBytes);
+	if (err)
+	{
+		inStr.FROM(gSystem->mWorkDir);
+		inStr.Append("/.grapa/config.grc");
+		err = gf.Open((char*)inStr.mBytes);
+	}
+	GrapaCHAR setValue;
+	GrapaCHAR grresult;
+	if (err == 0)
+	{
+		u64 fsize = 0;
+		err = gf.GetSize(fsize);
+		setValue.SetLength(fsize);
+		err = gf.Read(0, 1, 0, fsize, setValue.mBytes);
+		gf.Close();
+		setValue.SetLength(fsize);
+	}
+	if (err == 0 && setValue.mLength)
+		grresult = mConsoleSend.SendSync(setValue,NULL,0,GrapaCHAR());
+
+		/*
+		GrapaRuleEvent* plan = NULL;
+
+		if (setValue.mLength > 4 && setValue.mBytes[0] == 'G' && setValue.mBytes[1] == 'R' && setValue.mBytes[2] == 'Z' && (setValue.mBytes[3] & 0x80) == 0)
+		{
+			GrapaBYTE expanded;
+			GrapaCompress::Expand(setValue, expanded);
+			plan = new GrapaRuleEvent();
+			plan->vQueue = new GrapaRuleQueue();
+
+			if (expanded.mToken == GrapaTokenType::LIST || expanded.mToken == GrapaTokenType::ARRAY || expanded.mToken == GrapaTokenType::TUPLE)
+			{
+				GrapaRuleQueue* tq = new GrapaRuleQueue();
+				((GrapaRuleQueue*)tq)->FROM(mScriptExec.vScriptState, &mRuleVariables, expanded);
+				GrapaRuleEvent* tx = NULL;
+				s64 idx = 0;
+				if (tq->mCount > 1 && expanded.mToken == GrapaTokenType::LIST)
+					tx = tq->Search("op", idx);
+				if (tx == NULL)
+					tx = tq->Head();
+				if (tx)
+				{
+					tq->PopEvent(tx);
+					plan->mValue.mToken = tx->mValue.mToken;
+					plan->vQueue = tx->vQueue;
+					tx->vQueue = NULL;
+					plan->vClass = tx->vClass;
+					if (plan->vClass == NULL && tx->mName.mLength)
+					{
+						plan->vClass = mScriptExec.vScriptState->GetClass(&mRuleVariables, tx->mName);
+					}
+					tx->CLEAR();
+					delete tx;
+					tx = NULL;
+				}
+				tq->CLEAR();
+				delete tq;
+				tq = NULL;
+			}
+			else
+			{
+				plan->vClass = ((GrapaRuleQueue*)plan->vQueue)->FROM(mScriptExec.vScriptState, &mRuleVariables, expanded);
+				plan->mValue.mToken = expanded.mToken;
+			}
+
+			plan->mValue.SetLength(0);
+			plan->mValue.SetSize(0);
+		}
+		else if (setValue.mLength)
+		{
+			plan = mScriptExec.Plan(&mRuleVariables, setValue, NULL, 0, GrapaCHAR());
+		}
+		if (plan)
+		{
+			GrapaRuleEvent* r = mScriptExec.ProcessPlan(&mRuleVariables, plan);
+			if (r)
+			{
+				r->CLEAR();
+				delete r;
+			}
+			plan->CLEAR();
+			delete plan;
+			plan = NULL;
+		}
+		*/
 }
 
 void My_Console::Stop()

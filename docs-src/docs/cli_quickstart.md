@@ -358,11 +358,11 @@ temp_dir = $sys().getenv($TEMP);
 ("Temp directory: " + temp_dir).echo();
 
 /* Get Grapa binary directory */
-bin_dir = $sys().getenv($BIN);
+bin_dir = $sys().getenv($GRAPA_BIN);
 ("Binary directory: " + bin_dir).echo();
 
 /* Get Grapa library directory */
-lib_dir = $sys().getenv($LIB);
+lib_dir = $sys().getenv($GRAPA_LIB);
 ("Library directory: " + lib_dir).echo();
 ```
 
@@ -370,7 +370,7 @@ lib_dir = $sys().getenv($LIB);
 
 ```grapa
 /* Get Grapa version for compatibility checks */
-version = $sys().getenv($VERSION);
+version = $sys().getenv($GRAPA_VERSION);
 ("Grapa version: " + version).echo();
 
 /* Get program name for self-referencing */
@@ -404,7 +404,7 @@ output_dir = work + "/output";
 **Version Compatibility Checking:**
 ```grapa
 /* script.grc */
-version = $sys().getenv($VERSION);
+version = $sys().getenv($GRAPA_VERSION);
 platform = $sys().getenv($PLATFORM);
 
 /* Check for minimum version */
@@ -444,7 +444,7 @@ $file(temp_file).rm();
 **Library Discovery:**
 ```grapa
 /* script.grc */
-lib_dir = $sys().getenv($LIB);
+lib_dir = $sys().getenv($GRAPA_LIB);
 work_dir = $sys().getenv($WORK);
 
 /* Check for local library */
@@ -460,7 +460,7 @@ if ($file(local_lib).exists()) {
 ```grapa
 /* script.grc */
 prog_name = $sys().getenv($NAME);
-version = $sys().getenv($VERSION);
+version = $sys().getenv($GRAPA_VERSION);
 
 /* Display script information */
 ("Script: " + prog_name).echo();
@@ -599,7 +599,7 @@ grapa -c "(\$sys().getenv('USERNAME')).echo();"
 grapa -c "\$sys().putenv('DEBUG_MODE', 'true'); ('DEBUG_MODE set to: ' + \$sys().getenv('DEBUG_MODE')).echo();"
 
 # Get system information
-grapa -c "(\$sys().getenv(\$VERSION)).echo();"
+grapa -c "(\$sys().getenv(\$GRAPA_VERSION)).echo();"
 
 # Environment-based configuration
 grapa -c "

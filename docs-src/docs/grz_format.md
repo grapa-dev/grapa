@@ -67,7 +67,7 @@ The GRZ format is implemented in the `$sys().compilef()` function:
 compilef = op(name1,name2){
     $local.r={
         op:op()($file().get(@name1)),
-        version:$sys().getenv($VERSION)
+        version:$sys().getenv($GRAPA_VERSION)
     }; 
     if (r.op.type()!="$ERR") 
         r.encode("ZIP-GRAPA").setfile($file(),@name2); 

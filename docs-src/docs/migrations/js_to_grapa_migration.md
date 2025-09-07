@@ -543,7 +543,7 @@ future = now + 86400000000;  /* Add 1 day in microseconds */
 #### **Direct System Integration**
 ```grapa
 /* Access system information directly */
-version = $sys().getenv($VERSION);
+version = $sys().getenv($GRAPA_VERSION);
 platform = $sys().getenv($PLATFORM);
 ```
 

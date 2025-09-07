@@ -59,18 +59,18 @@ Gets environment variables and system information.
 
 | Type | Description | Example Return |
 |------|-------------|----------------|
-| `$PATH` | System PATH environment variable | `"C:\Windows\System32;C:\Windows"` |
+| `PATH` | System PATH environment variable | `"C:\Windows\System32;C:\Windows"` |
 | `$STATICLIB` | Static library path | `"lib/grapa"` |
 | `$ARGCIN` | Stdin data (when using -S option) | `"data from stdin"` |
 | `$ARGV` | Positional command line arguments only | `["a", "b", "c"]` |
 | `$CLIARGV` | Full command line including flags and script | `["./grapa", "-c", "script", "a", "b", "c"]` |
-| `$LIB` | Library directory path | `"lib"` |
-| `$BIN` | Binary directory path | `"bin"` |
+| `$GRAPA_LIB` | Library directory path | `"lib"` |
+| `$GRAPA_BIN` | Binary directory path | `"bin"` |
 | `$NAME` | Program name | `"grapa"` |
 | `$WORK` | Working directory | `"C:\Users\user\project"` |
 | `$HOME` | Home directory | `"C:\Users\user"` |
 | `$TEMP` | Temporary directory | `"C:\Users\user\AppData\Local\Temp"` |
-| `$VERSION` | Grapa version information | `{"major":0,"minor":0,"micro":2,"releaselevel":"alpha","serial":63,"date":2020-04-24T16:30:37.000000}` |
+| `$GRAPA_VERSION` | Grapa version information | `{"major":0,"minor":0,"micro":2,"releaselevel":"alpha","serial":63,"date":2020-04-24T16:30:37.000000}` |
 | `$LICENCE` | License information | `"Apache License 2.0"` |
 | `$PLATFORM` | Platform compilation flags | See platform values below |
 
@@ -78,7 +78,7 @@ Gets environment variables and system information.
 
 **Example:**
 ```grapa
-$sys().getenv($VERSION);
+$sys().getenv($GRAPA_VERSION);
 /* Returns: {"major":0,"minor":0,"micro":2,"releaselevel":"alpha","serial":63,"date":2020-04-24T16:30:37.000000} */
 
 $sys().getenv($HOME);
@@ -246,12 +246,12 @@ These system environment variables are particularly useful for CLI script develo
 - **`$WORK`**: Current working directory - essential for relative path operations
 - **`$HOME`**: User's home directory - for user-specific configuration files
 - **`$TEMP`**: Temporary directory - for temporary file operations
-- **`$VERSION`**: Grapa version - for compatibility checking
+- **`$GRAPA_VERSION`**: Grapa version - for compatibility checking
 - **`$PLATFORM`**: Platform information - for cross-platform script behavior
 
 #### **Useful for Advanced CLI Scripts**
-- **`$BIN`**: Binary directory - for finding related executables
-- **`$LIB`**: Library directory - for library discovery and loading
+- **`$GRAPA_BIN`**: Binary directory - for finding related executables
+- **`$GRAPA_LIB`**: Library directory - for library discovery and loading
 - **`$NAME`**: Program name - for self-referencing in usage messages
 
 #### **CLI Script Example**
@@ -261,7 +261,7 @@ These system environment variables are particularly useful for CLI script develo
 work_dir = $sys().getenv($WORK);
 home_dir = $sys().getenv($HOME);
 temp_dir = $sys().getenv($TEMP);
-version = $sys().getenv($VERSION);
+version = $sys().getenv($GRAPA_VERSION);
 platform = $sys().getenv($PLATFORM);
 
 /* Create cross-platform paths */
@@ -297,6 +297,48 @@ if (!$file(output_dir).exists()) {
 ("Log: " + log_file).echo();
 ("Output: " + output_dir).echo();
 ```
+
+### Automatic Configuration File Loading
+
+Grapa automatically loads configuration files during startup to set up your environment:
+
+**Configuration File Search Order:**
+1. **`~/.grapa/config.grz`** - Compressed configuration file in user's home directory
+2. **`$WORK/.grapa/config.grc`** - Plain text configuration file in current working directory
+
+**Configuration File Format:**
+Configuration files are standard Grapa scripts that execute during startup:
+
+```grapa
+/* ~/.grapa/config.grc */
+"Loading user configuration...\n".echo();
+
+/* Set custom environment variables */
+$sys().putenv("CUSTOM_PATH", "/usr/local/myapp");
+$sys().putenv("DEBUG_MODE", "true");
+
+/* Define custom functions */
+my_helper = op(x) { x * 2; };
+
+/* Set up global variables */
+$global.user_config = {
+    theme: "dark",
+    timeout: 30,
+    auto_save: true
+};
+
+"Configuration loaded successfully\n".echo();
+```
+
+**Use Cases:**
+- **Environment Setup**: Configure paths, debug settings, and environment variables
+- **Custom Functions**: Define helper functions available in all sessions
+- **Global Variables**: Set up shared configuration objects
+- **User Preferences**: Store and load user-specific settings
+
+**File Types:**
+- **`.grc`**: Plain text Grapa script (recommended for readability)
+- **`.grz`**: Compressed Grapa script (for larger configurations)
 
 ### putenv(name, value) / setenv(name, value)
 Sets environment variables and system information. Both `putenv()` and `setenv()` are aliases for the same functionality.
@@ -521,7 +563,7 @@ Finished!
 ### Environment Variable Management
 ```grapa
 /* Get system information */
-version = $sys().getenv($VERSION);
+version = $sys().getenv($GRAPA_VERSION);
 platform = $sys().getenv($PLATFORM);
 
 /* Set custom environment variables */

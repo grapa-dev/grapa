@@ -395,9 +395,9 @@ GrapaCHAR GrapaLink::Start(bool& needExit, bool& showConsole, bool& showWidget, 
 
 	if (gSystem->mPath) gSystem->mPath->CLEAR();
 	if (!gSystem->mPath) gSystem->mPath = new GrapaRuleQueue();
-	gSystem->mPath->PushTail(new GrapaRuleEvent(0, GrapaCHAR(), GrapaCHAR()));
-	//if (gSystem->mLibDir.mLength)
-	//	gSystem->mPath->PushTail(new GrapaRuleEvent(0, GrapaCHAR(), gSystem->mLibDir));
+	// Initialize $GRAPA_PATH with $WORK/lib (the main library directory)
+	if (gSystem->mLibDir.mLength)
+		gSystem->mPath->PushTail(new GrapaRuleEvent(0, GrapaCHAR(), gSystem->mLibDir));
 
 	//GrapaCHAR str(__DATE__);
 	//GrapaCHAR dt, mo;
@@ -445,10 +445,10 @@ GrapaCHAR GrapaLink::Start(bool& needExit, bool& showConsole, bool& showWidget, 
 		outStr.Append("\t$NAME\t:");
 		outStr.Append(gSystem->mBinName);
 		outStr.Append("\n");
-		outStr.Append("\t$BIN\t:");
+		outStr.Append("\t$GRAPA_BIN\t:");
 		outStr.Append(gSystem->mBinDir);
 		outStr.Append("\n");
-		outStr.Append("\t$LIB\t:");
+		outStr.Append("\t$GRAPA_LIB\t:");
 		outStr.Append(gSystem->mLibDir);
 		outStr.Append("\n");
 		outStr.Append("\t$WORK\t:");

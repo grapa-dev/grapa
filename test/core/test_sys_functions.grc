@@ -40,13 +40,13 @@ test_describe = $sys().describe("test");
 "Test 2: Environment Variables\n".echo();
 
 /* Test getenv() with Grapa system variables */
-version = $sys().getenv($VERSION);
+version = $sys().getenv($GRAPA_VERSION);
 home = $sys().getenv($HOME);
 work = $sys().getenv($WORK);
 name = $sys().getenv($NAME);
 platform = $sys().getenv($PLATFORM);
 
-("$sys().getenv($VERSION): " + version + "\n").echo();
+("$sys().getenv($GRAPA_VERSION): " + version + "\n").echo();
 ("$sys().getenv($HOME): " + home + "\n").echo();
 ("$sys().getenv($WORK): " + work + "\n").echo();
 ("$sys().getenv($NAME): " + name + "\n").echo();

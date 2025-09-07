@@ -685,7 +685,7 @@ Grapa provides **complete vector and matrix operations** that rival specialized 
 
 #### **9. Superior Module System**
 - **Compile-time includes** - `.grc` (source) and `.grz` (pre-compiled) file inclusion
-- **Dynamic class loading** - Automatic class resolution via `$PATH` and `$LIB`
+- **Dynamic class loading** - Automatic class resolution via `$GRAPA_PATH` and `$GRAPA_LIB`
 - **Runtime path configuration** - Flexible search path management via environment variables
 - **Plugin architecture** - Dynamic loading of custom libraries and extensions
 - **Performance optimization** - Pre-compiled `.grz` files for production deployment
