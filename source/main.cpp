@@ -2,13 +2,11 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-//#include <iostream>
-//#include <string>
 
 #include "grapa/GrapaLink.h"
-#include "grapa/GrapaValue.h"
 #include "grapa/GrapaSystem.h"
 #include "grapa/GrapaLibRule.h"
+
 #include <unordered_map>
 #include <functional>
 

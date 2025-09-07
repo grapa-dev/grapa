@@ -811,7 +811,6 @@ GrapaCHAR My_Console::RunFile(GrapaCHAR& fname)
 		err = gf.Open((char*)inStr.mBytes);
 	}
 	GrapaCHAR setValue;
-	GrapaCHAR grresult;
 	if (err == 0)
 	{
 		u64 fsize = 0;
@@ -821,10 +820,9 @@ GrapaCHAR My_Console::RunFile(GrapaCHAR& fname)
 		gf.Close();
 		setValue.SetLength(fsize);
 	}
-	
+	GrapaCHAR grresult;
 	if (err == 0 && setValue.mLength)
 		grresult = mConsoleSend.SendSync(setValue,NULL,0,GrapaCHAR());
-
 	return grresult;
 }
 
