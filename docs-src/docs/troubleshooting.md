@@ -25,12 +25,16 @@ This guide covers common issues encountered when working with Grapa and GrapaPy,
 
 #### Namespace Issues
 ```python
-# ❌ Problem: Object lost between calls
-xy.eval('table = {}.table("ROW")')
+# ❌ Problem: Object lost between calls (when using parameters)
+xy.eval('table = {}.table("ROW")', {'x': 5})
 xy.eval('table.mkfield("name", "STR")')  # Error: table not found
 
-# ✅ Solution: Use global namespace
-xy.eval('$global.table = {}.table("ROW")')
+# ✅ Solution: Use global namespace for parameterized execution
+xy.eval('$global.table = {}.table("ROW")', {'x': 5})
+xy.eval('table.mkfield("name", "STR")')  # Success
+
+# ✅ Alternative: Direct execution (no parameters) - variables persist automatically
+xy.eval('table = {}.table("ROW")')
 xy.eval('table.mkfield("name", "STR")')  # Success
 ```
 
@@ -349,7 +353,43 @@ xy.eval('$global.t = {}.table("ROW")')
 xy.eval('$global.f = $file()')
 ```
 
-### 3. Check Return Values
+### 3. Parameter Side Effects
+
+**Problem**: Function parameters are modified unexpectedly
+
+```python
+# ❌ Problem: Default value persists between calls
+f = op(x=0) {
+    x += 1;
+    x;
+};
+f();  // Returns 1
+f();  // Returns 2 (unexpected!)
+
+# ❌ Problem: Original variables are modified
+data = [1, 2, 3];
+process = op(arr) {
+    arr[0] = 999;
+    arr;
+};
+process(data);  // Returns [999, 2, 3]
+data;          // Now [999, 2, 3] (unexpected!)
+```
+
+**Solution**: Use copy functions when you need to avoid side effects
+
+```grapa
+// ✅ Solution: Copy function to avoid side effects
+copy = op(x) { x; };
+
+data = [1, 2, 3];
+process(copy(data));  // Returns [999, 2, 3]
+data;                // Still [1, 2, 3] (expected!)
+```
+
+**Why This Happens**: Grapa uses pass-by-reference for performance reasons, avoiding the need for a full garbage collection system.
+
+### 4. Check Return Values
 
 ```python
 # Always check what operations return

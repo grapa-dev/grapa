@@ -74,6 +74,71 @@ calculator(x:10, y:2, operation:"power"); /* → 100 */
 calculator(operation="power", y:3, x:2);  /* → 8 */
 ```
 
+### Parameter Behavior and Side Effects
+
+Grapa uses pass-by-reference for all function parameters to maintain performance and avoid implementing a full garbage collection system.
+
+#### Default Value Sharing
+
+Default values are shared across function calls:
+
+```grapa
+counter = op(count=0) {
+    count += 1;
+    count;
+};
+
+counter();  /* 1 */
+counter();  /* 2 - same default value modified */
+```
+
+#### Parameter Modification
+
+Parameters can be modified within functions, affecting the original values:
+
+```grapa
+increment = op(x) {
+    x += 1;
+    x;
+};
+
+value = 5;
+increment(value);  /* Returns 6 */
+value;            /* Now 6 */
+```
+
+#### When This Is Useful
+
+This behavior is intentional and useful for:
+- **Performance optimization** - avoiding unnecessary copying
+- **In-place operations** - modifying data structures efficiently
+- **C++-style programming** - similar to pass-by-reference
+
+#### When to Be Careful
+
+Be cautious when:
+- **Modifying default values** - they persist between calls
+- **Passing shared data** - modifications affect all references
+- **Writing pure functions** - avoid unintended side effects
+
+#### Workaround for Value Copying
+
+Use a copy function when you need to avoid side effects:
+
+```grapa
+/* Copy function to force value copying */
+copy = op(x) { x; };
+
+data = [1, 2, 3];
+process = op(arr) {
+    arr[0] = 999;
+    arr;
+};
+
+process(copy(data));  /* Returns [999, 2, 3] */
+data;                /* Still [1, 2, 3] - original unchanged */
+```
+
 ## class
 Creates a class that can be used to generate an instance of the class. The class definition is shared between all instances using the class. If information in the class is altered, a copy is made and the modified variable is added to the instance. The instance stores the class reference and any variables local to the instance. Classes can inherit 1 or more other classes. 
 

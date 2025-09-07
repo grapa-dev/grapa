@@ -38,7 +38,7 @@ public:
 	My_Console();
 	~My_Console();
 	void Start(GrapaCHAR& in, GrapaCHAR& out, GrapaCHAR& run);
-	void RunConfig();
+	GrapaCHAR RunFile(GrapaCHAR& fname);
 	void Stop();
 	void RunOld(GrapaCB cb, void* data);
 	void Run(GrapaCB cb, void* data);

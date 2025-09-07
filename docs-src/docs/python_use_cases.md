@@ -49,8 +49,12 @@ xy = grapapy.grapa()
 
 files = ["data1.csv", "data2.csv", "data3.csv"]
 total_lines = 0
+
+# Initialize file system once (works in both execution modes)
+xy.eval("$global.fs = $file();")
+
 for file in files:
-    xy.eval("$global.fs = $file();")  # Only needed once, but safe to repeat
+    # Use parameterized execution - fs persists because it's in global namespace
     content = xy.eval("fs.get(filename);", {"filename": file})
     if content:
         total_lines += len(str(content).split("\n"))
@@ -155,7 +159,10 @@ if response.status_code == 200:
 import grapapy
 xy = grapapy.grapa()
 
+# Initialize file system (works in both execution modes)
 xy.eval("$global.fs = $file();")
+
+# Use file system - variables persist automatically in direct execution
 xy.eval("fs.set('test.txt', 'Hello World!');")
 content = xy.eval("fs.get('test.txt');")
 print(content)
@@ -166,7 +173,10 @@ print(content)
 import grapapy
 xy = grapapy.grapa()
 
+# Initialize table (works in both execution modes)
 xy.eval("$global.table = {}.table('ROW');")
+
+# Use table - variables persist automatically in direct execution
 xy.eval("table.mkfield('name', 'STR', 'VAR');")
 xy.eval("table.set('user1', 'Alice', 'name');")
 name = xy.eval("table.get('user1', 'name');")
@@ -182,7 +192,10 @@ print(name)
 import grapapy
 xy = grapapy.grapa()
 
+# Initialize function (works in both execution modes)
 xy.eval("$global.square = op(x=0){x*x;};")
+
+# Call function - variables persist automatically in direct execution
 result = xy.eval("square(7);")
 print(result)  # 49
 ```

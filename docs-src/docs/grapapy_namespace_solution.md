@@ -6,32 +6,63 @@ The original issue was that GrapaPy file and table operations were returning `{"
 
 ## Root Cause
 
-GrapaPy maintains separate local and global namespaces:
-- **Local namespace**: Cleared between calls to `xy.eval()`
-- **Global namespace**: Persists across calls to `xy.eval()`
+GrapaPy has two execution modes that affect variable persistence:
 
-When we created a `$file()` object in the local namespace, it was being deleted before we could use it in subsequent calls.
+### Direct Execution (No Parameters)
+- **Execution level**: Global namespace
+- **Variable persistence**: Variables persist automatically between calls
+- **`$global` usage**: Not needed for variable persistence
+
+### Parameterized Execution (With Parameters)
+- **Execution level**: Local scope on top of global
+- **Variable persistence**: Variables are local and don't persist between calls
+- **`$global` usage**: Required for variable persistence
+
+When we created a `$file()` object without understanding the execution model, it was being created in the wrong scope and deleted before we could use it in subsequent calls.
 
 ## Solution
 
-Use the global namespace for objects that need to persist across calls:
+The solution depends on your execution mode:
 
-### Correct Pattern
-
-1. **First time (initialization)**: Use `$global.variable` to create/initialize the variable
-2. **Subsequent times**: Use just `variable` directly - Grapa will find it in the global namespace
-
-### Example
+### Direct Execution (No Parameters) - Simple Approach
 
 ```python
 import grapapy
 
 xy = grapapy.grapa()
 
-# Initialize file system in global namespace (first time only)
+# Variables persist automatically - no $global needed
+xy.eval("fs = $file();")
+xy.eval("fs.set('test.txt', 'Hello World');")
+content = xy.eval("fs.get('test.txt');")
+print(content)  # Hello World
+```
+
+### Parameterized Execution (With Parameters) - Use $global
+
+```python
+import grapapy
+
+xy = grapapy.grapa()
+
+# When using parameters, use $global for persistence
+xy.eval("$global.fs = $file();", {'x': 5})
+xy.eval("fs.set('test.txt', 'Hello World');")
+content = xy.eval("fs.get('test.txt');")
+print(content)  # Hello World
+```
+
+### Mixed Approach (Recommended)
+
+```python
+import grapapy
+
+xy = grapapy.grapa()
+
+# Initialize persistent objects with $global (works in both modes)
 xy.eval("$global.fs = $file();")
 
-# Use file system (no $global needed)
+# Use objects directly (Grapa finds them in global namespace)
 xy.eval("fs.set('test.txt', 'Hello World');")
 content = xy.eval("fs.get('test.txt');")
 print(content)  # Hello World
@@ -48,10 +79,11 @@ Grapa searches for variables in this order:
 
 ## Key Insights
 
-1. **The `$` character is NOT the problem** - It works correctly in GrapaPy
-2. **Namespace management is the key** - Use global namespace for persistent objects
-3. **Only use `$global` for initialization** - After that, just use the variable name
-4. **All Grapa operations work** - File system, database, grep, etc.
+1. **Execution mode determines persistence** - Direct execution persists variables automatically, parameterized execution requires `$global`
+2. **The `$` character is NOT the problem** - It works correctly in GrapaPy
+3. **Namespace management is the key** - Use global namespace for persistent objects when using parameters
+4. **Mixed approach is recommended** - Use `$global` for initialization to work in both modes
+5. **All Grapa operations work** - File system, database, grep, etc.
 
 ## Test Results
 

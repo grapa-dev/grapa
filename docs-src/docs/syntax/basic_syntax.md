@@ -1091,6 +1091,62 @@ if (condition) {
 }
 ```
 
+### Parameter Passing Behavior
+
+**Important**: Grapa uses pass-by-reference for all function parameters, including default values. This is a deliberate design decision to avoid implementing a full garbage collection system and maintain performance by limiting when copies are required.
+
+#### How Parameters Work
+
+All parameters are passed by reference to avoid unnecessary copying:
+
+```grapa
+/* Function that modifies its parameter */
+f = op(a=0) {
+    a += 1;
+    a;
+};
+
+/* Default value is shared across calls */
+f();  /* Returns 1 */
+f();  /* Returns 2 - default value was modified! */
+```
+
+#### Parameter Side Effects
+
+Modifying parameters within functions affects the original values:
+
+```grapa
+x = 0;
+f(x);  /* Returns 1 */
+x;     /* Now 1 - original variable was modified */
+
+y = [2, 2, 2];
+f(y[1]);  /* Returns 3 */
+y;        /* Now [2, 3, 2] - array element was modified */
+```
+
+#### Workaround for Value Copying
+
+If you need to avoid side effects, use a copy function:
+
+```grapa
+/* Copy function to force value copying */
+c = op(x) { x; };
+
+y = [2, 2, 2];
+f(c(y[1]));  /* Returns 3 */
+y;           /* Still [2, 2, 2] - original unchanged */
+```
+
+#### Best Practices
+
+1. **Avoid modifying parameters** unless that's the intended behavior
+2. **Use copy functions** when you need to avoid side effects
+3. **Document functions** that intentionally modify parameters
+4. **Consider this behavior** when designing function interfaces
+
+This behavior is similar to C++ pass-by-reference, where parameters are often passed by reference for performance reasons.
+
 ### Grapa's Destructuring Assignment
 
 Grapa provides a powerful destructuring system using namespace concatenation with the `++=` operator. This is more flexible and powerful than traditional destructuring syntax.

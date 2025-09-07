@@ -4,6 +4,41 @@
 
 Grapa provides powerful Python integration capabilities, offering a unified interface for file system operations, database management, and data processing. This integration combines Grapa's efficient storage systems with Python's rich ecosystem for data science, web development, and system administration.
 
+## Execution Model
+
+GrapaPy has two execution modes that affect variable persistence:
+
+### Direct Execution (No Parameters)
+When calling `eval()` without parameters, code runs at the global level and variables persist between calls:
+
+```python
+import grapapy
+xy = grapapy.grapa()
+
+# Variables persist automatically - no $global needed
+xy.eval("b = 6;")
+result = xy.eval("b;")  # Returns 6
+```
+
+### Parameterized Execution (With Parameters)
+When calling `eval()` with parameters, code runs in a local scope and variables don't persist:
+
+```python
+# Variables are local and don't persist
+xy.eval("c = 9;", {'x': 5})
+result = xy.eval("c;")  # Returns {"error":-1} - variable not found
+
+# To persist variables with parameters, use $global
+xy.eval("$global.persistent_var = 10;", {'x': 5})
+result = xy.eval("persistent_var;")  # Returns 10
+```
+
+### Key Points
+- **Top-level execution**: Variables persist automatically (no `$global` needed)
+- **Parameterized execution**: Variables are local and don't persist (need `$global` for persistence)
+- **`$file()` objects**: Still need `$global` for persistence when using parameters
+- **Scope behavior**: Parameters create a local scope that shadows global variables
+
 ## Key Benefits
 
 ### 1. **Unified File System and Database Access**
