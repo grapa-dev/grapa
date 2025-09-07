@@ -1,17 +1,17 @@
 // GrapaLibRule.cpp
 /*
-Copyright 2022 Chris Ernest Matichuk
+Copyright 2025 Chris Ernest Matichuk
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
-http ://www.apache.org/licenses/LICENSE-2.0
+http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissionsand
+See the License for the specific language governing permissions and
 limitations under the License.
 */
 ////////////////////////////////////////////////////////////////////////////////
@@ -11447,6 +11447,12 @@ GrapaRuleEvent* GrapaLibraryRuleFileSetEvent::Run(GrapaScriptExec* vScriptExec, 
 							col = objEvent->vVector->mCounts[1] + col;
 						}
 						
+						// Check bounds - vectors have fixed size, no appending allowed
+						if (index >= (s64)objEvent->vVector->mCounts[0] || col >= (s64)objEvent->vVector->mCounts[1]) {
+							result = Error(vScriptExec, pNameSpace, -1);
+							return(result);
+						}
+						
 						objEvent->vVector->Set(index * objEvent->vVector->mCounts[1] + col, fieldValue.vVal);
 					}
 					else
@@ -11462,6 +11468,12 @@ GrapaRuleEvent* GrapaLibraryRuleFileSetEvent::Run(GrapaScriptExec* vScriptExec, 
 							return(result);
 						}
 						index = objEvent->vVector->mSize + index;
+					}
+					
+					// Check bounds - vectors have fixed size, no appending allowed
+					if (index >= (s64)objEvent->vVector->mSize) {
+						result = Error(vScriptExec, pNameSpace, -1);
+						return(result);
 					}
 					
 					objEvent->vVector->Set(index, fieldValue.vVal);
@@ -11517,6 +11529,20 @@ GrapaRuleEvent* GrapaLibraryRuleFileSetEvent::Run(GrapaScriptExec* vScriptExec, 
 							return(result);
 						}
 						row = objEvent->vVector->mSize + row;
+					}
+				}
+				
+				// Additional bounds checking for 2D vectors
+				if (objEvent->vVector->mDim == 2 && objEvent->vVector->mCounts) {
+					if (row >= objEvent->vVector->mCounts[0]) {
+						result = Error(vScriptExec, pNameSpace, -1);
+						return(result);
+					}
+				} else {
+					// 1D vector bounds checking
+					if (row >= objEvent->vVector->mSize) {
+						result = Error(vScriptExec, pNameSpace, -1);
+						return(result);
 					}
 				}
 				
@@ -11731,7 +11757,17 @@ GrapaRuleEvent* GrapaLibraryRuleFileGetEvent::Run(GrapaScriptExec *vScriptExec, 
 							col = objEvent->vVector->mCounts[1] + col;
 						}
 						
+						// Additional bounds checking
+						if (index >= objEvent->vVector->mCounts[0] || col >= objEvent->vVector->mCounts[1]) {
+							result = Error(vScriptExec, pNameSpace, -1);
+							return(result);
+						}
+						
 						result = objEvent->vVector->Get(index, col);
+						if (result == NULL) {
+							result = Error(vScriptExec, pNameSpace, -1);
+							return(result);
+						}
 					}
 					else
 						result = Error(vScriptExec, pNameSpace, -1);
@@ -11748,7 +11784,17 @@ GrapaRuleEvent* GrapaLibraryRuleFileGetEvent::Run(GrapaScriptExec *vScriptExec, 
 						index = objEvent->vVector->mSize + index;
 					}
 					
+					// Additional bounds checking
+					if (index >= objEvent->vVector->mSize) {
+						result = Error(vScriptExec, pNameSpace, -1);
+						return(result);
+					}
+					
 					result = objEvent->vVector->Get(index);
+					if (result == NULL) {
+						result = Error(vScriptExec, pNameSpace, -1);
+						return(result);
+					}
 				}
 			}
 			else if (r2.vVal->mValue.mToken == GrapaTokenType::STR)
@@ -11763,6 +11809,10 @@ GrapaRuleEvent* GrapaLibraryRuleFileGetEvent::Run(GrapaScriptExec *vScriptExec, 
 					GrapaCHAR colLabel;
 					colLabel.FROM(fieldName.vVal->mValue);
 					result = objEvent->vVector->Get(label, colLabel);
+					if (result == NULL) {
+						result = Error(vScriptExec, pNameSpace, -1);
+						return(result);
+					}
 				}
 				else if (fieldName.vVal && fieldName.vVal->mValue.mToken == GrapaTokenType::INT)
 				{
@@ -11771,11 +11821,19 @@ GrapaRuleEvent* GrapaLibraryRuleFileGetEvent::Run(GrapaScriptExec *vScriptExec, 
 					b.FromBytes(fieldName.vVal->mValue);
 					u64 col = b.LongValue();
 					result = objEvent->vVector->Get(label, col);
+					if (result == NULL) {
+						result = Error(vScriptExec, pNameSpace, -1);
+						return(result);
+					}
 				}
 				else
 				{
 					// 1D access: vector.get(label)
 					result = objEvent->vVector->Get(label);
+					if (result == NULL) {
+						result = Error(vScriptExec, pNameSpace, -1);
+						return(result);
+					}
 				}
 			}
 			else if (r2.vVal->mValue.mToken == GrapaTokenType::INT && fieldName.vVal && fieldName.vVal->mValue.mToken == GrapaTokenType::STR)
@@ -11802,9 +11860,27 @@ GrapaRuleEvent* GrapaLibraryRuleFileGetEvent::Run(GrapaScriptExec *vScriptExec, 
 					}
 				}
 				
+				// Additional bounds checking for 2D vectors
+				if (objEvent->vVector->mDim == 2 && objEvent->vVector->mCounts) {
+					if (row >= objEvent->vVector->mCounts[0]) {
+						result = Error(vScriptExec, pNameSpace, -1);
+						return(result);
+					}
+				} else {
+					// 1D vector bounds checking
+					if (row >= objEvent->vVector->mSize) {
+						result = Error(vScriptExec, pNameSpace, -1);
+						return(result);
+					}
+				}
+				
 				GrapaCHAR colLabel;
 				colLabel.FROM(fieldName.vVal->mValue);
 				result = objEvent->vVector->Get(row, colLabel);
+				if (result == NULL) {
+					result = Error(vScriptExec, pNameSpace, -1);
+					return(result);
+				}
 			}
 			else
 			{

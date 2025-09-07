@@ -119,6 +119,43 @@ unicode_text.raw();    /* Returns: 0x68C3A96C6C6F20F09F9A80 (hex bytes) */
 
 > **See Also:** [Object Methods Documentation](obj_methods.md) for comprehensive details on Unicode-aware string functions including `.len()`, `.bytes()`, `.raw()`, `.left()`, `.right()`, `.mid()`, `.reverse()`, `.lpad()`, and `.rpad()`. Note that `.left()`, `.right()`, and `.mid()` also support `$ARRAY` and `$LIST` types.
 
+## String-Specific Methods
+
+The following methods are available specifically on `$STR` objects:
+
+### Case Conversion
+```grapa
+/* Basic case conversion */
+"Hello World".upper();     /* Returns: "HELLO WORLD" */
+"Hello World".lower();     /* Returns: "hello world" */
+"Hello World".casefold();  /* Returns: "hello world" */
+
+/* Unicode case folding for international text */
+"İstanbul".casefold();     /* Returns: "istanbul" */
+"ß".casefold();            /* Returns: "ss" */
+```
+
+### String Similarity Functions
+```grapa
+/* Levenshtein distance - edit distance between strings */
+"hello".levenshtein("hallo");     /* Returns: 1 (one character difference) */
+"kitten".levenshtein("sitting");  /* Returns: 3 (three edit operations) */
+
+/* Jaro-Winkler similarity - string similarity score */
+"hello".jarowinkler("hallo");     /* Returns: 0.933... (high similarity) */
+"hello".jarowinkler("world");     /* Returns: 0.0 (no similarity) */
+
+/* Cosine similarity - vector-based similarity */
+"hello world".cosinesimilarity("world hello");  /* Returns: 1.0 (identical words) */
+"hello world".cosinesimilarity("goodbye world"); /* Returns: 0.5 (partial similarity) */
+```
+
+**Use Cases:**
+- **Case conversion**: Text normalization, user input processing
+- **Levenshtein distance**: Spell checking, fuzzy matching, edit distance calculations
+- **Jaro-Winkler similarity**: Record matching, duplicate detection, name matching
+- **Cosine similarity**: Document similarity, text analysis, recommendation systems
+
 > **Note:** While string content supports full Unicode, **identifiers** (variable names, function names) are limited to ASCII characters only. This is a lexical limitation in the parser. See [$ID Documentation](id.md) for details.
 
 ## Common String Operations

@@ -487,6 +487,50 @@ The following work was completed in version 0.1.52 and is now stable:
     - Modify vector creation/initialization to populate both label queues
   - **Use Cases**: Enhanced spreadsheet functionality, matrix operations with named dimensions
   - **Priority**: Medium (current column-only labels meet most spreadsheet needs)
+
+- [ ] **Extend .replace() to Collections**: Add support for `.replace()` method on `$LIST` and `$ARRAY` types
+  - **Current State**: `.replace()` only supports `$STR` type for string replacement
+  - **Enhancement**: Extend to support element replacement in collections
+  - **Technical Requirements**:
+    - Update `GrapaLibraryRuleReplaceEvent::Run` to handle `GrapaTokenType::LIST` and `GrapaTokenType::ARRAY`
+    - Implement element-by-element replacement logic for collections
+    - Maintain type consistency (replace elements with same type)
+  - **Use Cases**: Data cleaning, element substitution in arrays/lists, batch data processing
+  - **Example**: `[1,2,3,2,4].replace(2, 99)` → `[1,99,3,99,4]`
+  - **Priority**: High (common data processing operation)
+  - **Estimated Effort**: Small Release (1-2 weeks)
+
+- [ ] **Extend .trim() to Collections**: Add support for `.trim()` method on `$LIST` and `$ARRAY` types
+  - **Current State**: `.trim()` only supports `$STR` and `$RAW` types for character trimming
+  - **Enhancement**: Extend to support element trimming in collections
+  - **Technical Requirements**:
+    - Update `GrapaLibraryRuleTrimEvent::Run` to handle `GrapaTokenType::LIST` and `GrapaTokenType::ARRAY`
+    - Implement element removal from start/end based on criteria
+    - Support trimming by value, type, or custom function
+  - **Use Cases**: Data cleaning, removing null/empty elements, array/list sanitization
+  - **Example**: `[null,1,2,3,null].trim(null)` → `[1,2,3]`
+  - **Priority**: Medium (useful for data processing)
+  - **Estimated Effort**: Small Release (1-2 weeks)
+
+- [ ] **Consider Splitting .get/.set Functions for Extension System**: Architectural consideration for future extension system
+  - **Current State**: `FileGetEvent` and `FileSetEvent` handle `.get()/.set()/.getfield()/.setfield()` for all data types (ARRAY/LIST, FILE/TABLE, VECTOR)
+  - **Proposed Enhancement**: Split into separate functions for each data type category and move methods to respective class objects
+  - **Technical Requirements**:
+    - Create separate event handlers for ARRAY/LIST, FILE/TABLE, and VECTOR
+    - Move `.get()/.set()/.getfield()/.setfield()` methods to each class object (`$ARRAY.grc`, `$file.grc`, `$VECTOR.grc`, etc.)
+    - Maintain backward compatibility during transition
+  - **Motivation**: Future extension system may have different mechanisms for get/set operations (similar to how widgets and vectors are different)
+  - **Benefits**: 
+    - **Extension Flexibility**: Extensions can implement custom get/set mechanisms
+    - **Type-Specific Optimization**: Each data type can optimize its access patterns
+    - **Cleaner Architecture**: Methods live with their respective types
+    - **Future-Proofing**: Enables custom data types with unique access patterns
+  - **Use Cases**: Custom data types, specialized access patterns, extension system integration
+  - **Example**: Extension could implement `$CUSTOM_TYPE` with specialized `.get()/.set()` behavior
+  - **Priority**: Low (architectural consideration for future)
+  - **Estimated Effort**: Major Release (2-3 months) - requires careful API design and migration
+  - **Status**: **CONSIDERATION ONLY** - Not planned for immediate implementation
+  - **Dependencies**: Extension system development (future)
   - **Issue**: ~~Vector methods return `[0]` or `[[0,0],[0,0]]` instead of preserving string/mixed-type data~~
   - **Root Cause**: ~~`result.Set()` method not properly handling non-numeric data types in multiple functions~~
   - **Solution Implemented**: 

@@ -59,6 +59,12 @@ Vectors in Grapa are multi-dimensional data structures that support mathematical
 - **Type Preservation**: All operations now maintain original data types
 - **Comprehensive Support**: Extended to handle all Grapa data types
 
+#### **✅ Error Handling & Bounds Checking (NEW)**
+- **Strict Bounds Checking**: Out-of-bounds access returns `$ERR` (no appending like arrays)
+- **Comprehensive Error Handling**: All access methods return `$ERR` for invalid operations
+- **Consistent Error Responses**: Predictable error handling across all vector operations
+- **Safe Access Patterns**: Use `.iferr()` and `result.type() == $ERR` for error handling
+
 ## Vector Creation
 
 ```grapa
@@ -875,6 +881,32 @@ result = #[1, 2, 3]# * 2;  /* #[2, 4, 6]# */
 
 ## Error Handling
 
+### **Bounds Checking and Access Errors**
+
+Vectors now provide comprehensive error handling for all access operations:
+
+```grapa
+/* Out-of-bounds access returns $ERR */
+vec = #[1, 2, 3]#;
+result = vec.get(5);     /* Returns $ERR - index out of bounds */
+result = vec.get(-5);    /* Returns $ERR - negative index out of bounds */
+result = vec.set(5, 99); /* Returns $ERR - cannot set out-of-bounds index */
+
+/* 2D matrix bounds checking */
+matrix = #[[1,2],[3,4]]#;
+result = matrix.get(2, 0);  /* Returns $ERR - row index out of bounds */
+result = matrix.get(0, 2);  /* Returns $ERR - column index out of bounds */
+result = matrix.set(2, 0, 99); /* Returns $ERR - cannot set out-of-bounds */
+
+/* Valid negative indices work correctly */
+vec = #[1, 2, 3]#;
+last = vec.get(-1);      /* Returns 3 - valid negative index */
+matrix = #[[1,2],[3,4]]#;
+bottom_right = matrix.get(-1, -1); /* Returns 4 - valid negative indices */
+```
+
+### **Mathematical and Statistical Errors**
+
 ```grapa
 /* Handle insufficient data */
 vec = #[1, 2]#;
@@ -899,6 +931,37 @@ result = vec1 + vec2;    /* Returns error - dimension mismatch */
 vec = #[1, 2, 3]#;
 result = vec.left(5);    /* Returns error - count exceeds vector length */
 result = vec.right(-1);  /* Returns error - negative count not allowed */
+```
+
+### **Error Handling Design**
+
+**Strict Bounds Checking:**
+- Vectors enforce **strict bounds checking** (unlike arrays which allow appending)
+- Out-of-bounds access returns `$ERR` type
+- This is consistent with vectors being fixed-size mathematical structures
+
+**Error Response Consistency:**
+- All error scenarios return `$ERR` type for predictable error handling
+- Use `.iferr()` method to handle errors gracefully
+- Error checking: `result.type() == $ERR`
+
+**Examples:**
+```grapa
+/* Safe access with error handling */
+vec = #[1, 2, 3]#;
+result = vec.get(5);
+if (result.type() == $ERR) {
+    /* Handle out-of-bounds access */
+    result = "Index out of bounds";
+}
+
+/* Safe setting with error handling */
+vec = #[1, 2, 3]#;
+set_result = vec.set(5, 99);
+if (set_result.type() == $ERR) {
+    /* Handle bounds error */
+    result = "Cannot set out-of-bounds index";
+}
 ```
 
 ## Type Conversion and Compatibility

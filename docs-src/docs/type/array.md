@@ -72,6 +72,26 @@ Arrays automatically convert to vectors for mathematical operations, then conver
 
 ### Array Operations
 
+#### Element Access Methods
+
+Arrays support both bracket notation and method-based access:
+
+```grapa
+arr = [1, 2, 3, 4, 5];
+
+/* Bracket notation (direct access) */
+first = arr[0];           /* 1 */
+last = arr[-1];           /* 5 */
+
+/* Method-based access */
+first = arr.get(0);       /* 1 */
+last = arr.get(-1);       /* 5 */
+
+/* Field access methods */
+first = arr.getfield(0);  /* 1 */
+last = arr.getfield(-1);  /* 5 */
+```
+
 #### Assignment Operations (`=`)
 ```grapa
 /* Direct element assignment */
@@ -80,6 +100,14 @@ arr[1] = "by";            /* [3,"by","hi"] */
 
 /* Assignment by negative index */
 arr[-2] = "good";         /* [3,"good","hi"] */
+
+/* Method-based assignment */
+arr.set(1, "by");         /* [3,"by","hi"] */
+arr.set(-2, "good");      /* [3,"good","hi"] */
+
+/* Field assignment methods */
+arr.setfield(1, "by");    /* [3,"by","hi"] */
+arr.setfield(-2, "good"); /* [3,"good","hi"] */
 
 /* Compound assignment on accessed elements */
 arr[-2] += "dee";         /* [3,"gooddee","hi"] */
@@ -268,5 +296,130 @@ first.user.age                             /* Returns: 30 */
 
 > **Parallelism Note:**
 > Array operations like `.map()` and `.filter()` are parallel by default and hardened for ETL/data processing workloads.
+
+## Error Handling and Boundary Conditions
+
+### **Array Access Behavior**
+
+Arrays have **flexible boundary behavior** that differs from vectors:
+
+```grapa
+arr = [1, 2, 3];
+
+/* Valid access - returns elements */
+arr.get(0);               /* 1 */
+arr.get(-1);              /* 3 */
+arr.get(2);               /* 3 */
+
+/* Boundary behavior - APPENDS instead of error */
+arr.get(3);               /* Returns null (out of bounds) */
+arr.set(3, 99);           /* APPENDS: [1, 2, 3, 99] */
+arr.set(5, 88);           /* APPENDS with gaps: [1, 2, 3, 99, null, 88] */
+
+/* Method-based access follows same rules */
+arr.getfield(3);          /* Returns null (out of bounds) */
+arr.setfield(3, 77);      /* APPENDS: [1, 2, 3, 99, null, 88, 77] */
+
+/* IMPORTANT: .set()/.setfield() only append at the end */
+/* For insertion at specific positions, use += and ++= operators */
+arr = [1, 2, 3];
+arr += 99 arr[1];         /* INSERT at position 1: [1, 99, 2, 3] */
+arr ++= [88, 77] arr[0];  /* INSERT multiple at position 0: [88, 77, 1, 99, 2, 3] */
+```
+
+### **Key Differences from Vectors**
+
+| Behavior | `$ARRAY` | `$VECTOR` |
+|----------|----------|-----------|
+| **Out-of-bounds Get** | Returns `null` | Returns `$ERR` |
+| **Out-of-bounds Set** | **APPENDS** element | Returns `$ERR` |
+| **Boundary Policy** | Flexible (grows) | Strict (fixed size) |
+| **Use Case** | Dynamic collections | Mathematical structures |
+
+### **Append vs. Error Behavior**
+
+```grapa
+arr = [1, 2, 3];
+
+/* These APPEND (arrays grow dynamically) */
+arr.set(3, 99);           /* [1, 2, 3, 99] */
+arr.set(5, 88);           /* [1, 2, 3, 99, null, 88] */
+arr.setfield(6, 77);      /* [1, 2, 3, 99, null, 88, 77] */
+
+/* These return null (out of bounds get) */
+result = arr.get(10);     /* null */
+result = arr.getfield(10); /* null */
+
+/* Check for out-of-bounds access */
+if (arr.get(10) == null) {
+    /* Handle out-of-bounds access */
+}
+```
+
+### **Insertion vs. Appending**
+
+**Important Distinction:**
+- **`.set()/.setfield()`**: Only append at the end (or fill gaps)
+- **`+=` and `++=` operators**: Insert at specific positions
+
+```grapa
+arr = [1, 2, 3];
+
+/* .set() only appends at the end */
+arr.set(3, 99);           /* [1, 2, 3, 99] - appends at end */
+arr.set(5, 88);           /* [1, 2, 3, 99, null, 88] - fills gap */
+
+/* += and ++= insert at specific positions */
+arr = [1, 2, 3];
+arr += 99 arr[1];         /* [1, 99, 2, 3] - inserts at position 1 */
+arr ++= [88, 77] arr[0];  /* [88, 77, 1, 99, 2, 3] - inserts at position 0 */
+```
+
+### **Error Handling Patterns**
+
+```grapa
+arr = [1, 2, 3];
+
+/* Safe access with null checking */
+result = arr.get(5);
+if (result == null) {
+    result = "Index out of bounds";
+}
+
+/* Safe setting (always works - appends if needed) */
+arr.set(5, 99);           /* Always succeeds, appends if needed */
+
+/* Check array length before access */
+if (index < arr.len()) {
+    value = arr.get(index);
+} else {
+    value = "Index too large";
+}
+```
+
+### **Comparison with Other Data Types**
+
+```grapa
+/* Array behavior (flexible) */
+arr = [1, 2, 3];
+arr.set(5, 99);           /* APPENDS: [1, 2, 3, null, null, 99] */
+
+/* Vector behavior (strict) */
+vec = [1, 2, 3].vector();
+result = vec.set(5, 99);  /* Returns $ERR - strict bounds */
+
+/* List behavior (flexible) */
+list = {a:1, b:2, c:3};
+list.set("d", 99);        /* APPENDS: {a:1, b:2, c:3, d:99} */
+```
+
+### **Best Practices**
+
+1. **Use arrays for dynamic collections** where you need flexible sizing
+2. **Use vectors for mathematical operations** where fixed dimensions matter
+3. **Check for null returns** when accessing potentially out-of-bounds indices
+4. **Use `+=` and `++=` for insertion** at specific positions
+5. **Use `.set()/.setfield()` for appending** at the end or filling gaps
+6. **Use `.len()` to check bounds** before accessing if you need strict behavior
 
 

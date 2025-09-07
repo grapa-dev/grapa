@@ -692,26 +692,18 @@ Interpolates variables into a string template.
 **Parameters:**
 - `vars` (default: null) - Variables to interpolate
 
-### `.upper()`
-Converts the string to uppercase.
+### String-Specific Methods
 
-```grapa
-"Hello, World!".upper(); /* Returns: "HELLO, WORLD!" */
-```
+The following string-specific methods are available in the `$STR` class:
 
-### `.lower()`
-Converts the string to lowercase.
+- **`.upper()`** - Converts the string to uppercase
+- **`.lower()`** - Converts the string to lowercase  
+- **`.casefold()`** - Converts the string to Unicode case folded form for case-insensitive comparisons
+- **`.levenshtein()`** - Calculates Levenshtein distance between strings
+- **`.jarowinkler()`** - Calculates Jaro-Winkler similarity between strings
+- **`.cosinesimilarity()`** - Calculates cosine similarity between strings
 
-```grapa
-"Hello, World!".lower(); /* Returns: "hello, world!" */
-```
-
-### `.casefold()`
-Converts the string to Unicode case folded form for case-insensitive comparisons.
-
-```grapa
-"Hello, World!".casefold(); /* Returns: "hello, world!" */
-```
+> **See Also:** [$STR Documentation](str.md) for comprehensive string method documentation and examples.
 
 ---
 

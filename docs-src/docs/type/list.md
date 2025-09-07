@@ -60,6 +60,30 @@ Remove | x = {a:1, b:2, c:3};</br>x -= x[1];</br>x; | </br></br>{"a":1, "c":3}
 
 ### Advanced List Operations
 
+#### Element Access Methods
+
+Lists support both bracket notation and method-based access:
+
+```grapa
+list = {a:1, b:2, c:3};
+
+/* Bracket notation (direct access) */
+value = list["a"];        /* 1 */
+value = list.a;           /* 1 */
+value = list[0];          /* 1 (by index) */
+value = list[-1];         /* 3 (by negative index) */
+
+/* Method-based access */
+value = list.get("a");    /* 1 */
+value = list.get(0);      /* 1 (by index) */
+value = list.get(-1);     /* 3 (by negative index) */
+
+/* Field access methods */
+value = list.getfield("a"); /* 1 */
+value = list.getfield(0);   /* 1 (by index) */
+value = list.getfield(-1);  /* 3 (by negative index) */
+```
+
 #### Assignment Operations (`=`)
 ```grapa
 /* Direct property assignment */
@@ -72,6 +96,16 @@ list[1] = 55;             /* {"a":1,"b":55,"c":3} */
 
 /* Assignment by negative index */
 list[-2] = 1234;          /* {"a":1,"b":1234,"c":3} */
+
+/* Method-based assignment */
+list.set("b", "x");       /* {"a":1,"b":"x","c":3} */
+list.set(1, 55);          /* {"a":1,"b":55,"c":3} */
+list.set(-2, 1234);       /* {"a":1,"b":1234,"c":3} */
+
+/* Field assignment methods */
+list.setfield("b", "x");  /* {"a":1,"b":"x","c":3} */
+list.setfield(1, 55);     /* {"a":1,"b":55,"c":3} */
+list.setfield(-2, 1234);  /* {"a":1,"b":1234,"c":3} */
 
 /* Compound assignment on accessed elements */
 list.b += "dee";          /* {"a":1,"b":"bydee","c":3} */
@@ -258,3 +292,127 @@ first = results[0];                        /* Returns: {"user":{"name":"Alice","
 first.user.name                            /* Returns: "Alice" */
 first.user.age                             /* Returns: 30 */
 ```
+
+## Error Handling and Boundary Conditions
+
+### **List Access Behavior**
+
+Lists have **flexible boundary behavior** similar to arrays:
+
+```grapa
+list = {a:1, b:2, c:3};
+
+/* Valid access - returns elements */
+list.get("a");             /* 1 */
+list.get(0);               /* 1 */
+list.get(-1);              /* 3 */
+
+/* Boundary behavior - APPENDS instead of error */
+list.get("d");             /* Returns null (key doesn't exist) */
+list.set("d", 99);         /* APPENDS: {a:1, b:2, c:3, d:99} */
+list.set("f", 88);         /* APPENDS: {a:1, b:2, c:3, d:99, f:88} */
+
+/* Method-based access follows same rules */
+list.getfield("d");        /* Returns null (key doesn't exist) */
+list.setfield("d", 77);    /* APPENDS: {a:1, b:2, c:3, d:99, f:88, d:77} */
+
+/* IMPORTANT: .set()/.setfield() only append at the end */
+/* For insertion at specific positions, use += and ++= operators */
+list = {a:1, b:2, c:3};
+list += (d:99) list[1];    /* INSERT at position 1: {a:1, d:99, b:2, c:3} */
+list ++= {e:88, f:77} list[0]; /* INSERT multiple at position 0: {e:88, f:77, a:1, d:99, b:2, c:3} */
+```
+
+### **Key Differences from Vectors**
+
+| Behavior | `$LIST` | `$VECTOR` |
+|----------|---------|-----------|
+| **Out-of-bounds Get** | Returns `null` | Returns `$ERR` |
+| **Out-of-bounds Set** | **APPENDS** element | Returns `$ERR` |
+| **Boundary Policy** | Flexible (grows) | Strict (fixed size) |
+| **Use Case** | Dynamic key-value storage | Mathematical structures |
+
+### **Append vs. Error Behavior**
+
+```grapa
+list = {a:1, b:2, c:3};
+
+/* These APPEND (lists grow dynamically) */
+list.set("d", 99);         /* {a:1, b:2, c:3, d:99} */
+list.set("f", 88);         /* {a:1, b:2, c:3, d:99, f:88} */
+list.setfield("g", 77);    /* {a:1, b:2, c:3, d:99, f:88, g:77} */
+
+/* These return null (key doesn't exist) */
+result = list.get("z");    /* null */
+result = list.getfield("z"); /* null */
+
+/* Check for missing keys */
+if (list.get("z") == null) {
+    /* Handle missing key */
+}
+```
+
+### **Insertion vs. Appending**
+
+**Important Distinction:**
+- **`.set()/.setfield()`**: Only append at the end
+- **`+=` and `++=` operators**: Insert at specific positions
+
+```grapa
+list = {a:1, b:2, c:3};
+
+/* .set() only appends at the end */
+list.set("d", 99);         /* {a:1, b:2, c:3, d:99} - appends at end */
+
+/* += and ++= insert at specific positions */
+list = {a:1, b:2, c:3};
+list += (d:99) list[1];    /* {a:1, d:99, b:2, c:3} - inserts at position 1 */
+list ++= {e:88, f:77} list[0]; /* {e:88, f:77, a:1, d:99, b:2, c:3} - inserts at position 0 */
+```
+
+### **Error Handling Patterns**
+
+```grapa
+list = {a:1, b:2, c:3};
+
+/* Safe access with null checking */
+result = list.get("missing_key");
+if (result == null) {
+    result = "Key not found";
+}
+
+/* Safe setting (always works - appends if needed) */
+list.set("new_key", 99);   /* Always succeeds, appends if needed */
+
+/* Check if key exists before access */
+if (list.get("key") != null) {
+    value = list.get("key");
+} else {
+    value = "Key doesn't exist";
+}
+```
+
+### **Comparison with Other Data Types**
+
+```grapa
+/* List behavior (flexible) */
+list = {a:1, b:2, c:3};
+list.set("d", 99);         /* APPENDS: {a:1, b:2, c:3, d:99} */
+
+/* Array behavior (flexible) */
+arr = [1, 2, 3];
+arr.set(3, 99);            /* APPENDS: [1, 2, 3, 99] */
+
+/* Vector behavior (strict) */
+vec = [1, 2, 3].vector();
+result = vec.set(3, 99);   /* Returns $ERR - strict bounds */
+```
+
+### **Best Practices**
+
+1. **Use lists for dynamic key-value storage** where you need flexible sizing
+2. **Use vectors for mathematical operations** where fixed dimensions matter
+3. **Check for null returns** when accessing potentially missing keys
+4. **Use `+=` and `++=` for insertion** at specific positions
+5. **Use `.set()/.setfield()` for appending** at the end
+6. **Use key existence checks** before accessing if you need strict behavior

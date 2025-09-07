@@ -147,15 +147,19 @@
       "patterns": [
         {
           "name": "keyword.control.grapa",
-          "match": "\\b(if|else|while|for|break|continue|return)\\b"
+          "match": "\\b(if|else|elseif|while|for|foreach|do|break|continue|return|throw|exit|switch|case|default|try|catch|finally)\\b"
         },
         {
           "name": "keyword.operator.grapa",
-          "match": "\\b(and|or|not|in)\\b"
+          "match": "\\b(and|or|not|in|from|to|step)\\b"
         },
         {
           "name": "keyword.other.grapa",
-          "match": "\\b(iferr|ifnull)\\b"
+          "match": "\\b(iferr|ifnull|op|class|token|rule|lambda|static|const|obj|include)\\b"
+        },
+        {
+          "name": "keyword.system.grapa",
+          "match": "\\b(this|parent|global|local|oplocal|root|self|sys|net|thread|TIME|math|file|TABLE|VECTOR|WIDGET|XML|TAG|EL|CLASS|OP|RULE|ERR|RAW|BOOL|FLOAT|INT|ID|SYSID|SYSINT|SYSSTR|LIST|ARRAY|TUPLE)\\b"
         }
       ]
     },
@@ -175,7 +179,7 @@
       "patterns": [
         {
           "name": "keyword.operator.assignment.grapa",
-          "match": "="
+          "match": "=|\\+=|\\+\\+=|-=|\\*=|/=|%=|\\*\\*="
         },
         {
           "name": "keyword.operator.arithmetic.grapa",
@@ -183,7 +187,7 @@
         },
         {
           "name": "keyword.operator.comparison.grapa",
-          "match": "==|!=|<|>|<=|>="
+          "match": "==|!=|<|>|<=|>=|<=>"
         },
         {
           "name": "keyword.operator.logical.grapa",
@@ -192,6 +196,14 @@
         {
           "name": "keyword.operator.bitwise.grapa",
           "match": "&|\\||\\^|~|<<|>>"
+        },
+        {
+          "name": "keyword.operator.ternary.grapa",
+          "match": "\\?|:"
+        },
+        {
+          "name": "keyword.operator.extend.grapa",
+          "match": "\\+\\+|-\\-"
         },
         {
           "name": "keyword.operator.access.grapa",
@@ -208,6 +220,10 @@
         {
           "name": "entity.name.function.grapa",
           "match": "\\b[a-zA-Z_][a-zA-Z0-9_]*\\s*\\("
+        },
+        {
+          "name": "support.function.grapa",
+          "match": "\\b(type|describe|raw|uraw|bool|int|uint|float|fix|setfloat|setfix|str|list|array|vector|table|base|hex|uhex|bin|ubin|time|bits|bytes|len|left|right|mid|midtrim|find|rtrim|ltrim|trim|lrot|rrot|lpad|rpad|reverse|replace|interpolate|grep|match|split|join|identity|setbit|clearbit|genbits|genkeys|encode|decode|sign|signadd|verify|verifyrecover|secret|setfield|map|filter|reduce|sort|argsort|unique|group|isint|iferr|ifnull|shell|exec|post|getname|echo|debug|string|const|setconst|json|xml|html|findall|range|keys|sleep|get|set|getfield|upper|lower|casefold|levenshtein|jarowinkler|cosinesimilarity|pwd|cd|phd|chd|ls|mk|rm|info|mkfield|rmfield|dump|compilef|compile|eval|getenv|putenv|setenv|mac|interfaces|connect|bind|listen|onlisten|disconnect|proxy|certificate|private|trusted|verify|chain|host|send|receive|pending|onreceive|httpread|httpsend|httpmessage|trylock|lock|unlock|wait|signal|waiting|start|stop|started|suspend|resume|suspended|e|pi|log|ln|sin|cos|tan|cot|sec|csc|asin|acos|atan|acot|asec|acsc|sinh|cosh|tanh|coth|sech|csch|asinh|acosh|atanh|acoth|asech|acsch|atan2|hypot|random|abs|modpow|modinv|genprime|isprime|gcd|utc|tz|ms)\\b"
         }
       ]
     }

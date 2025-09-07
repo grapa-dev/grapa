@@ -2,7 +2,7 @@
   "name": "vscode-grapa",
   "displayName": "Grapa Programming Language",
   "description": "Language support for Grapa programming language. Provides syntax highlighting, autocomplete, code snippets, and interactive execution for .grc files.",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "engines": {
     "vscode": "^1.85.0"
   },
