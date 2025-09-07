@@ -63,13 +63,17 @@ public:
             }
             
             // Start the system first - this initializes the grammar data
-            bool needExit = false, showConsole = false, showWidget = false;
-            GrapaCHAR inStr, outStr, runStr;
-            GrapaLink::Start(needExit, showConsole, showWidget, inStr, outStr, runStr);
+            bool needExit = false, showConsole = false;
+            GrapaCHAR outStr, runStr;
+            GrapaLink::Start(needExit, showConsole, outStr, runStr);
             
             // Initialize grammar like the source code does (without checking result)
             if (gSystem->mGrammar.mLength) {
                 GrapaCHAR grresult = mConsoleSend.SendSync(gSystem->mGrammar, NULL, 0, GrapaCHAR());
+                // Note: source code doesn't check grresult.mLength, so we don't either
+                GrapaCHAR configName(gSystem->mHomeDir);
+                configName.Append("/.grapa/config");
+                GrapaLink::RunFile(mConsoleSend,configName);
                 // Note: source code doesn't check grresult.mLength, so we don't either
             }
             
