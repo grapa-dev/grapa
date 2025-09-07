@@ -24,7 +24,7 @@ class GrapaInstaller:
     def __init__(self):
         self.version = "0.1.53"
         self.install_dir = Path.home() / ".local" / "grapa"
-        self.repo = "matichuk/grapa"
+        self.repo = "grapa-dev/grapa"
         
     def detect_platform(self):
         """Detect the current platform"""

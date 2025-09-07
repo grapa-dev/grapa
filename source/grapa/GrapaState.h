@@ -73,6 +73,7 @@ public:
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput) { return(pOperation); }
 	virtual GrapaRuleEvent* Optimize(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleEvent* pParam) { return(pOperation); }
 	virtual GrapaRuleEvent* Error(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaError err);
+	virtual bool HasActiveTryBlock(GrapaNames* pNameSpace);
 	virtual GrapaRuleEvent* CreateNull();
 	virtual GrapaRuleEvent* CreatePtr(GrapaRuleEvent* pPtr);
 	virtual void RotateLeft(GrapaRuleEvent* pOperation, GrapaRuleEvent* pParam, const char* v1, const char* v2, const char* v3, const char* v4);
@@ -106,7 +107,7 @@ public:
 	GrapaRuleEvent *vRuleLambda;
 	GrapaRuleEvent *vRuleParent;
 	GrapaRuleEvent *vClass;
-	bool mVar, mLocal, mClass, mConst, mCopied, mOpLocal;
+	bool mVar, mLocal, mClass, mConst, mCopied, mOpLocal, mInTryBlock;
 	u8 mControlFlow; // Control flow type: 0 = none, 1 = break, 2 = continue, 3 = return, 4 = throw
 	char mQuote;
 	u8 mT;
@@ -127,7 +128,7 @@ private:
 	void INIT() {
 		vValueEvent = NULL; 
 		vRuleLambda = NULL; vLibraryEvent = NULL;  
-		mVar = mLocal = mClass = mConst = mCopied = mOpLocal = false; vRuleParent = NULL;
+		mVar = mLocal = mClass = mConst = mCopied = mOpLocal = mInTryBlock = false; vRuleParent = NULL;
 		mControlFlow = 0;
 		vClass = NULL;
 		mQuote = 0;

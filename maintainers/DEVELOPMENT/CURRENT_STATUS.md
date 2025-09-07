@@ -79,7 +79,27 @@ The project has completed version 0.1.53 and is now beginning development for ve
    - **Impact**: No element access or modification capabilities for vectors, inconsistent API compared to other data types
    - **Required**: Add `GrapaTokenType::VECTOR` support to both methods with vector-specific logic
 
-3. **Performance optimization** - Review and optimize any remaining performance bottlenecks
+3. **Environment Variable System Improvements** - **NEW** - Enhance Grapa environment variables and add configuration system
+   - **Current Issues**: 
+     - `$LIB` points to hardcoded GitHub path (`$WORK/lib/grapa`) - not suitable for production
+     - `$PATH` conflicts with system PATH environment variable
+     - `$BIN` points to `/Users` instead of actual Grapa installation directory
+     - No user configuration system for customizing environment
+   - **Required Changes**:
+     - **Rename Variables**: `$PATH` → `$GRAPA_PATH`, `$LIB` → `$GRAPA_LIB`, `$BIN` → `$GRAPA_BIN`, `$VERSION` → `$GRAPA_VERSION`
+     - **Fix Library Path**: Change `$GRAPA_LIB` from `$WORK/lib/grapa` to `$WORK/lib` (cleaner, more flexible)
+     - **Add Installation Detection**: Smart detection of development vs production installation
+     - **Add Config File System**: User configuration via `~/.grapa/config.grc`
+     - **Add New Variables**: `$GRAPA_HOME`, `$GRAPA_CONFIG_FILE`, `$GRAPA_USER_LIB`, `$GRAPA_PROJECT_LIB`
+   - **Implementation Priority**:
+     1. Rename environment variables to avoid conflicts
+     2. Change `$GRAPA_LIB` to `$WORK/lib`
+     3. Add config file loading system (`~/.grapa/config.grc`)
+     4. Add smart installation detection (development vs production)
+     5. Add config management functions to `$sys()`
+     6. Add project-level config support (`$WORK/.grapa/config.grc`)
+
+4. **Performance optimization** - Review and optimize any remaining performance bottlenecks
 
 ### Low Priority
 1. **Enhanced error handling** - Improve error messages and recovery mechanisms

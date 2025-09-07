@@ -224,6 +224,115 @@ This backlog tracks all future, long-term, and queued tasks for the Grapa projec
 - **Goal**: Improve Grapa's discoverability and establish official Wikipedia presence
 - **Next Steps**: Submit article to Wikipedia, monitor feedback, maintain article
 
+### **Release System Improvements** 🔥 **HIGH PRIORITY** - **USER FEEDBACK DRIVEN**
+- **Status**: Critical issues identified from user feedback on v0.1.53 release
+- **Goal**: Address high-impact issues affecting user experience and installer reliability
+- **Source**: User feedback on GitHub release page and installer functionality
+
+#### **Critical Issues (Immediate Fixes Needed)**
+- [x] **Repository Mismatch Fix**: ✅ **COMPLETED** - Fixed installer URLs pointing to `matichuk/grapa` instead of `grapa-dev/grapa`
+  - **Issue**: Installer download URLs caused 404 errors for users
+  - **Resolution**: Updated all repository references in `smart_release_manager.py` and `install-grapa-0.1.53.py`
+  - **Impact**: Users can now successfully download and install Grapa
+
+- [ ] **Dynamic Version Discovery**: Make installer discover latest version instead of hardcoding v0.1.53
+  - **Current State**: Installer hardcodes version in filename and URLs
+  - **Enhancement**: Use GitHub Releases API to fetch latest version or support `--version` flag
+  - **Implementation**: Modify installer to call GitHub API for version discovery
+  - **Benefits**: Users get latest version automatically, easier maintenance
+  - **Example**: `python3 -c "$(curl -fsSL https://grapa.dev/install.py)"`
+  - **Priority**: High (affects user experience)
+  - **Estimated Effort**: Small Release (1-2 weeks)
+
+- [ ] **Release Page Formatting Fix**: Fix bullets showing literal `\n` instead of proper list formatting
+  - **Issue**: Release notes display raw text instead of formatted lists
+  - **Impact**: Poor readability and professional appearance
+  - **Priority**: Medium (cosmetic but affects perception)
+  - **Estimated Effort**: Bug Fix (1-2 days)
+
+#### **Installer Hardening (Security & Reliability)**
+- [ ] **Checksums & Signature Verification**: Add integrity verification to installer
+  - **Current State**: No verification of downloaded archives
+  - **Enhancement**: Publish `SHA256SUMS.txt` and verify checksums before extraction
+  - **Security**: Optional detached signatures for additional verification
+  - **Implementation**: Add checksum verification step in installer
+  - **Priority**: High (security and reliability)
+  - **Estimated Effort**: Small Release (1-2 weeks)
+
+- [ ] **Idempotency & Rollback**: Make installer safe for re-runs and failures
+  - **Current State**: No rollback mechanism if installation fails
+  - **Enhancement**: Revert partial changes if any step fails, make re-runs no-ops
+  - **Features**: 
+    - Check `grapa --version` to detect current installation
+    - Backup existing installation before changes
+    - Restore backup if installation fails
+    - Skip installation if already current version
+  - **Priority**: High (reliability)
+  - **Estimated Effort**: Medium Release (2-3 weeks)
+
+- [ ] **Proper PATH Management**: Fix PATH updates that actually persist
+  - **Current State**: PATH updates may not persist across shell sessions
+  - **Platform-Specific Requirements**:
+    - **macOS**: Update `~/.zprofile` or `~/.zshrc`, system-wide via `/etc/paths.d/grapa`
+    - **Linux**: Update `~/.bashrc` or `~/.profile`, prefer `~/.local/bin` for unprivileged
+    - **Windows**: Registry updates (User scope for non-admin, Machine scope for admin)
+  - **Priority**: High (affects usability)
+  - **Estimated Effort**: Medium Release (2-3 weeks)
+
+- [ ] **Installation Layout Validation**: Enforce expected directory structure
+  - **Current State**: No validation of archive contents
+  - **Enhancement**: Verify required files exist before installation
+  - **Expected Layout**: `bin/grapa`, `include/...`, `lib/...`, `LICENSE`
+  - **Implementation**: Fail fast if required files missing
+  - **Priority**: Medium (reliability)
+  - **Estimated Effort**: Small Release (1 week)
+
+#### **User Experience Improvements**
+- [ ] **Cross-Platform Quick Start**: Single copy-paste command for all platforms
+  - **Current State**: Different commands for different platforms
+  - **Enhancement**: Universal bootstrap script that works on macOS/Linux/Windows
+  - **Implementation**: Host bootstrap at `grapa.dev` with platform detection
+  - **Example**: 
+    ```bash
+    # macOS/Linux
+    /usr/bin/env python3 - <<'PY'
+    # bootstrap code
+    PY
+    
+    # Windows PowerShell
+    Set-ExecutionPolicy Bypass -Scope Process -Force
+    iwr https://grapa.dev/install.ps1 -UseBasicParsing | iex
+    ```
+  - **Priority**: High (user experience)
+  - **Estimated Effort**: Medium Release (2-3 weeks)
+
+- [ ] **Architecture Detection**: Robust platform and architecture detection
+  - **Current State**: Basic platform detection
+  - **Enhancement**: Map `uname -m` values properly (x86_64|amd64 → x64, arm64|aarch64 → arm64)
+  - **macOS**: Prefer universal binary when available
+  - **Priority**: Medium (compatibility)
+  - **Estimated Effort**: Small Release (1 week)
+
+- [ ] **Uninstall Support**: Add `--uninstall` flag to remove installation
+  - **Current State**: No uninstall mechanism
+  - **Enhancement**: Remove files and revert PATH changes
+  - **Implementation**: Track installation changes for clean removal
+  - **Priority**: Medium (completeness)
+  - **Estimated Effort**: Small Release (1-2 weeks)
+
+#### **Distribution Enhancements (Future)**
+- [ ] **Package Manager Integration**: Windows MSI, macOS PKG, Linux packages
+  - **Windows**: Signed MSI or EXE with winget manifest
+  - **macOS**: Signed + notarized .pkg with proper system integration
+  - **Linux**: AppImage for "just run it" installs
+  - **Priority**: Low (nice to have)
+  - **Estimated Effort**: Major Release (1-2 months)
+
+- **Priority**: High - Critical user experience issues
+- **Estimated Effort**: Medium Release (4-6 weeks) for critical issues
+- **Dependencies**: None - can be implemented independently
+- **Status**: **ACTIVE** - Repository mismatch fixed, other issues pending
+
 ## Previous Release Work Summary
 
 The following work was completed in version 0.1.52 and is now stable:
@@ -556,6 +665,156 @@ The following work was completed in version 0.1.52 and is now stable:
   - **Use Case**: Complex namespace navigation without storing intermediate references
   - **Priority**: Low - current workaround (storing references) is sufficient
   - **Status**: Documented limitation, implementation deferred
+
+- [ ] **C++ Event Glue Function Error Handling Audit**: Verify consistent error handling across all C++ Event glue functions
+  - **Current State**: Error handling patterns vary across different Event functions in `GrapaLibRule.cpp`
+  - **Recent Example**: Vector `.get()/.set()` error handling was recently standardized with proper `NULL` checks, bounds checking, and `$ERR` returns
+  - **Scope**: Audit all `GrapaLibraryRule*Event::Run` functions for consistent error handling patterns
+  - **Technical Requirements**:
+    - **NULL Result Handling**: Ensure all function calls that can return `NULL` are properly checked
+    - **Bounds Checking**: Verify consistent bounds checking for array/list/vector access operations
+    - **Error Propagation**: Ensure `$ERR` objects are properly returned instead of generic `{"error":-1}`
+    - **Input Validation**: Standardize parameter validation across all Event functions
+    - **Memory Safety**: Verify proper memory management and pointer validation
+  - **Affected Areas**:
+    - **File Operations**: `FileGetEvent`, `FileSetEvent`, `FileListEvent`, etc.
+    - **Array/List Operations**: `LeftEvent`, `RightEvent`, `MidEvent`, `ReplaceEvent`, `TrimEvent`
+    - **String Operations**: `FindEvent`, `GrepEvent`, `MatchEvent`, `SplitEvent`
+    - **Mathematical Operations**: `MinEvent`, `MaxEvent`, `SumEvent`, `MeanEvent`
+    - **Database Operations**: `TableGetEvent`, `TableSetEvent`, `TableListEvent`
+  - **Benefits**:
+    - **Consistent User Experience**: All functions return meaningful errors instead of generic codes
+    - **Better Debugging**: Specific error messages help developers identify issues
+    - **Memory Safety**: Prevents crashes from invalid pointer access
+    - **API Reliability**: Predictable error handling across all language functions
+  - **Use Cases**: Improved error reporting, better debugging experience, consistent API behavior
+  - **Example**: Standardize error handling like the recent vector implementation:
+    ```cpp
+    if (result == NULL) {
+        result = Error(vScriptExec, pNameSpace, -1);
+        return(result);
+    }
+    if (index >= (s64)objEvent->vVector->mSize) {
+        result = Error(vScriptExec, pNameSpace, -1);
+        return(result);
+    }
+    ```
+  - **Priority**: High (affects all language functions and user experience)
+  - **Estimated Effort**: Medium Release (2-4 weeks) - requires systematic audit and testing
+  - **Dependencies**: None - can be implemented independently
+  - **Status**: **AUDIT NEEDED** - Systematic review of all Event functions required
+
+- [ ] **C++ to Grapa Exception Bridge**: Implement mechanism for C++ code to throw exceptions that can be caught by Grapa scripts
+  - **Current State**: Grapa has `try/catch/throw/finally` for scripts, but C++ code cannot throw exceptions that scripts can catch
+  - **Issue Identified**: C++ code uses `Error()` function to return `$ERR` objects, but these are not thrown as exceptions
+  - **Current C++ Error Handling**: 
+    - `GrapaLibraryEvent::Error()` creates `$ERR` objects with error codes
+    - C++ `throw` statements exist but are not integrated with Grapa exception system
+    - Scripts can only catch exceptions thrown by other Grapa scripts, not C++ code
+  - **Key Insight**: Only throw exceptions when there's an active `try/catch` block to handle them
+  - **Technical Requirements**:
+    - **Exception Bridge**: Create mechanism for C++ code to throw exceptions that propagate to Grapa scripts
+    - **Try Block Detection**: Detect if there's an active `try/catch` block in the current execution context
+    - **Conditional Throwing**: Only set `mControlFlow = GrapaControlFlowType::THROW` when try block is active
+    - **Backward Compatibility**: Maintain existing behavior when no try block is present
+    - **Control Flow Integration**: Integrate with existing `GrapaControlFlowType::THROW` system
+  - **Implementation Approach**:
+    - **Option 1**: Add try block detection to `Error()` function
+      ```cpp
+      GrapaRuleEvent* Error(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaError err, bool forceThrow = false) {
+          GrapaRuleEvent *result = new GrapaRuleEvent();
+          result->mValue.mToken = GrapaTokenType::ERR;
+          result->vQueue = new GrapaRuleQueue();
+          result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("error"), GrapaInt(err).getBytes()));
+          
+          // Only throw if there's an active try block or forceThrow is true
+          if (forceThrow || HasActiveTryBlock(pNameSpace)) {
+              result->mControlFlow = GrapaControlFlowType::THROW;
+          }
+          return result;
+      }
+      ```
+    - **Option 2**: Create new `ThrowError()` function for explicit exception throwing
+    - **Option 3**: Add try block detection to existing Event functions
+  - **Try Block Detection Strategy**:
+    - **Namespace Stack Traversal**: Walk up the `GrapaNames` chain to find active try blocks
+    - **Control Flow Tracking**: Check if current execution context is within a try block
+    - **Switch Event Analysis**: Since try/catch uses switch mechanism, detect switch events with try semantics
+    - **Implementation Approach**:
+      ```cpp
+      bool HasActiveTryBlock(GrapaNames* pNameSpace) {
+          GrapaNames* current = pNameSpace;
+          while (current) {
+              // Check if current namespace has a try block
+              GrapaRuleQueue* nameQueue = current->GetNameQueue();
+              if (nameQueue) {
+                  GrapaRuleEvent* item = (GrapaRuleEvent*)nameQueue->Head();
+                  while (item) {
+                      // Look for switch events with try semantics
+                      if (item->vLibraryEvent && 
+                          item->vLibraryEvent->mName.Cmp("try") == 0) {
+                          return true;
+                      }
+                      item = (GrapaRuleEvent*)item->Next();
+                  }
+              }
+              current = current->GetParrent();
+          }
+          return false;
+      }
+      ```
+  - **Affected Areas**:
+    - **All Event Functions**: Any C++ code that currently calls `Error()` should be able to throw
+    - **Mathematical Operations**: Division by zero, invalid operations
+    - **File Operations**: File not found, permission errors, I/O failures
+    - **Network Operations**: Connection failures, timeout errors
+    - **Database Operations**: Query failures, constraint violations
+  - **Benefits**:
+    - **Unified Error Handling**: Scripts can catch and handle all errors consistently
+    - **Better Error Recovery**: Scripts can implement proper error handling strategies
+    - **Improved Debugging**: Exceptions provide better error context and stack traces
+    - **Language Completeness**: Makes `try/catch/finally` actually useful for real-world scenarios
+    - **Backward Compatibility**: Existing code continues to work without try blocks
+  - **Use Cases**:
+    ```grapa
+    // Without try block - returns error object (current behavior)
+    result = file.get("nonexistent.txt");  // Returns $ERR object
+    if (result.type() == $ERR) {
+        echo("File error: " + result.error);
+    }
+    
+    // With try block - throws exception (new behavior)
+    try {
+        result = file.get("nonexistent.txt");  // C++ throws exception
+        data = result.parse();                 // Never reached if file missing
+    } catch (error) {
+        echo("File error: " + error.error);    // Handle C++ exception
+    }
+    ```
+  - **Example Implementation**:
+    ```cpp
+    // Current approach
+    if (fileNotFound) {
+        result = Error(vScriptExec, pNameSpace, -1);
+        return result;
+    }
+    
+    // Enhanced approach with try block detection
+    if (fileNotFound) {
+        result = Error(vScriptExec, pNameSpace, -1);  // Auto-detects try blocks
+        return result;
+    }
+    
+    // Explicit throwing (for cases where you always want to throw)
+    if (criticalError) {
+        result = Error(vScriptExec, pNameSpace, -1, true);  // Force throw
+        return result;
+    }
+    ```
+  - **Priority**: High (completes the exception handling system)
+  - **Estimated Effort**: Medium Release (2-3 weeks) - requires careful integration testing
+  - **Dependencies**: None - can be implemented independently
+  - **Status**: **DESIGN NEEDED** - Requires analysis of try block detection mechanism
 
 ### **Database Features**
 - [ ] **GrapaDB File Structure Modernization**: Update index storage/retrieval and dictionary structure for future features
@@ -980,7 +1239,58 @@ The following work was completed in version 0.1.52 and is now stable:
    - **Priority**: Medium - useful for data analysis ✅ **DONE**
    - **Estimated Effort**: 1-2 weeks ✅ **COMPLETED**
 
-4. **Operator Overloading**
+4. **C++ Exception Handling Expansion** 🔥 **HIGH PRIORITY** - **USER EXPERIENCE**
+   - **Status**: Foundation complete, expansion needed
+   - **Goal**: Expand C++ to Grapa exception bridge to high-expectation areas where users most expect exceptions
+   - **Foundation**: ✅ **COMPLETED** - Basic exception bridge implemented with `mInTryBlock` flag and `HasActiveTryBlock()` detection
+   - **Current State**: Mathematical errors (division by zero, etc.) properly throw exceptions when try block is active
+   - **Scope**: Add exception throwing to high-impact, high-expectation areas using existing architecture
+   
+   **Priority Implementation Areas** (in order):
+   - [ ] **File Operations** (Highest Priority)
+     - `file.get("nonexistent.txt")` should throw `FILE_NOT_FOUND`
+     - `file.set()` operations should throw on permission/IO errors
+     - **Why**: Most expected by users, classic exception use case
+     - **Implementation**: Use existing `Error()` function in file operation paths
+   
+   - [ ] **Array/List/Vector Bounds Checking** (High Priority)
+     - Out-of-bounds access should throw `INDEX_OUT_OF_BOUNDS`
+     - Applies to `.get()`, `.set()`, bracket notation access
+     - **Why**: Classic bounds checking exception, users expect this
+     - **Implementation**: Add bounds checking to `GrapaLibraryRuleFileGetEvent::Run`
+   
+   - [ ] **Database/Table Operations** (High Priority)
+     - Query failures, record not found, constraint violations
+     - **Why**: Database operations benefit greatly from exception handling
+     - **Implementation**: Add to database query execution paths
+   
+   - [ ] **Type Conversion Errors** (Medium Priority)
+     - `string.toInt()` with invalid input should throw `INVALID_CONVERSION`
+     - JSON parsing failures, invalid format conversions
+     - **Why**: Common error case that users expect to handle
+   
+   - [ ] **Network Operations** (Medium Priority)
+     - Connection failures, timeouts, DNS resolution errors
+     - **Why**: Network operations are inherently error-prone
+   
+   **Implementation Strategy**:
+   - **No Architecture Changes**: Use existing `Error()` function and try block detection
+   - **Incremental Rollout**: Implement one area at a time, starting with file operations
+   - **Backward Compatibility**: Maintains existing behavior when no try block is active
+   - **Testing**: Each area gets comprehensive exception handling tests
+   
+   **Benefits**:
+   - **User Experience**: Exceptions where users most expect them
+   - **Error Handling**: Cleaner error handling in user scripts
+   - **Language Completeness**: Makes try/catch actually useful for real-world scenarios
+   - **Debugging**: Better error context and stack traces
+   
+   - **Priority**: High - significantly improves user experience and language usability
+   - **Estimated Effort**: Medium Release (4-6 weeks) - incremental implementation
+   - **Dependencies**: Exception bridge foundation ✅ **COMPLETED**
+   - **Risk Level**: Low - uses existing architecture, incremental rollout
+
+5. **Operator Overloading**
    - **Status**: Not started
    - **Scope**: Allow objects/classes to implement custom operator behavior
    - **Priority**: Low - nice to have feature

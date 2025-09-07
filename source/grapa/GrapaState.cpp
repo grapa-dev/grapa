@@ -3528,7 +3528,31 @@ GrapaRuleEvent* GrapaLibraryEvent::Error(GrapaScriptExec* vScriptExec, GrapaName
 	result->mValue.mToken = GrapaTokenType::ERR;
 	result->vQueue = new GrapaRuleQueue();
 	result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("error"), GrapaInt(err).getBytes()));
+	
+	// Only throw if there's an active try block
+	if (HasActiveTryBlock(pNameSpace)) {
+		result->mControlFlow = GrapaControlFlowType::THROW;
+	}
+	
 	return result;
+}
+
+bool GrapaLibraryEvent::HasActiveTryBlock(GrapaNames* pNameSpace)
+{
+	if (!pNameSpace) return false;
+	
+	// Start at the current namespace's name queue tail and traverse backwards
+	GrapaRuleQueue* nameQueue = pNameSpace->GetNameQueue();
+	if (nameQueue) {
+		GrapaRuleEvent* item = nameQueue->Tail();
+		while (item) {
+			if (item->mInTryBlock) {
+				return true;  // Found an active try block
+			}
+			item = item->Prev();
+		}
+	}
+	return false;
 }
 
 GrapaRuleEvent* GrapaLibraryEvent::CreateNull()

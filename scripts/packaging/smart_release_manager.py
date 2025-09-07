@@ -217,7 +217,7 @@ class GrapaInstaller:
     def __init__(self):
         self.version = "{version}"
         self.install_dir = Path.home() / ".local" / "grapa"
-        self.repo = "matichuk/grapa"
+        self.repo = "grapa-dev/grapa"
         
     def detect_platform(self):
         """Detect the current platform"""
@@ -354,7 +354,7 @@ if __name__ == "__main__":
                 ], check=True)
             
             print(f"✅ Release {version} created successfully!")
-            print(f"🔗 View at: https://github.com/matichuk/grapa/releases/tag/{tag_name}")
+            print(f"🔗 View at: https://github.com/grapa-dev/grapa/releases/tag/{tag_name}")
             
             return True
             
@@ -373,7 +373,7 @@ This release provides platform-specific packages that are optimized for each pla
 ### Universal Installer (Recommended)
 ```bash
 # Download and run the universal installer
-curl -O https://github.com/matichuk/grapa/releases/download/v{version}/install-grapa-{version}.py
+curl -O https://github.com/grapa-dev/grapa/releases/download/v{version}/install-grapa-{version}.py
 python3 install-grapa-{version}.py
 ```
 
@@ -423,7 +423,7 @@ pip install grapapy=={version}
 
 - **Website**: https://grapa.dev
 - **Documentation**: https://grapa.dev/docs/
-- **GitHub**: https://github.com/matichuk/grapa
+- **GitHub**: https://github.com/grapa-dev/grapa
 """
         
         return notes

@@ -9448,6 +9448,21 @@ GrapaRuleEvent* GrapaLibraryRuleScopeEvent::Run(GrapaScriptExec *vScriptExec, Gr
 GrapaRuleEvent* GrapaLibraryRuleSwitchEvent::Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput)
 {
 	GrapaRuleEvent* result = NULL;
+	
+	// Track try block state for exception handling
+	bool wasInTryBlock = false;
+	GrapaRuleEvent* tryBlockEvent = NULL;
+	
+	// Check if this is a try block and update the namespace queue tail
+	if (mName.Cmp("try") == 0) {
+		GrapaRuleQueue* nameQueue = pNameSpace->GetNameQueue();
+		if (nameQueue && nameQueue->Tail()) {
+			tryBlockEvent = nameQueue->Tail();
+			wasInTryBlock = tryBlockEvent->mInTryBlock;  // Get what is there
+			tryBlockEvent->mInTryBlock = true;           // Set it
+		}
+	}
+	
 	GrapaRuleEvent* rx1 = vScriptExec->ProcessPlan(pNameSpace, pInput->Head(0));
 	GrapaRuleEvent* rx3 = pInput->Head(2);
 	GrapaRuleEvent* r3 = rx3; while (r3 && r3->vRulePointer) r3 = r3->vRulePointer;
@@ -9499,6 +9514,7 @@ GrapaRuleEvent* GrapaLibraryRuleSwitchEvent::Run(GrapaScriptExec *vScriptExec, G
 	GrapaRuleEvent* vLocals = new GrapaRuleEvent();
 	vLocals->mValue.mToken = GrapaTokenType::LIST;
 	vLocals->vQueue = new GrapaRuleQueue();
+	
 	pNameSpace->GetNameQueue()->PushTail(vLocals);
 	vLocals->vQueue->PushTail(CreatePtr(r1));
 
@@ -9579,6 +9595,12 @@ GrapaRuleEvent* GrapaLibraryRuleSwitchEvent::Run(GrapaScriptExec *vScriptExec, G
 
 	if (rx1) { rx1->CLEAR(); delete rx1; }
 	if (rx2) { rx2->CLEAR(); delete rx2; }
+	
+	// Restore try block state
+	if (mName.Cmp("try") == 0 && tryBlockEvent) {
+		tryBlockEvent->mInTryBlock = wasInTryBlock;  // Set it back to what it was
+	}
+	
 	if (result && !result->mControlFlow)
 	{
 		result->CLEAR();

@@ -45,7 +45,22 @@ reshaped = [1,2,3,4].reshape([2,2])  // Returns array, not vector
 
 ## Function Application
 
-One of the most powerful features is function application using operators:
+One of the most powerful features is function application using operators. **⚠️ CRITICAL**: You must use **function references**, not **function calls**.
+
+### Function References vs Function Calls
+
+```grapa
+// Define a function
+f = op(x) { x + 1; };
+
+// ✅ CORRECT: Function reference - stores function for later execution
+[1,2,3,4] * [f]                 // Result: [2,3,4,5]
+[1,2,3,4] * [@f]                // Result: [2,3,4,5] (explicit reference)
+
+// ❌ INCORRECT: Function call - evaluates immediately, returns null
+[1,2,3,4] * [f(x)]              // Result: [0,0,0,0] (x is undefined)
+[1,2,3,4] * [f()]               // Result: [0,0,0,0] (no parameters)
+```
 
 ### Array Function Application
 
@@ -62,6 +77,10 @@ squares = numbers * [op(x){x*x}] // Result: [1,4,9,16,25]
 // Conditional operations
 data = [1,-2,3,-4,5]
 abs_values = data * [op(x){x < 0 ? -x : x}] // Result: [1,2,3,4,5]
+
+// Using named function references
+double = op(x) { x * 2; };
+doubled = [1,2,3,4] * [double]  // Result: [2,4,6,8]
 ```
 
 ### Vector Function Application
@@ -71,6 +90,10 @@ Vectors support the same function application as arrays:
 ```grapa
 vector = #[1,2,3,4]#
 result = vector * [op(x){x*3}]   // Each element multiplied by 3
+
+// Using function references
+triple = op(x) { x * 3; };
+tripled = vector * [triple]      // Result: #[3,6,9,12]#
 ```
 
 ### Advanced Vector Operations

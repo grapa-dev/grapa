@@ -109,6 +109,101 @@ scaled = vec1 * 2;        /* #[2, 4, 6, 8, 10]# */
 shifted = vec1 + 5;       /* #[6, 7, 8, 9, 10]# */
 ```
 
+### **Function Application with Vectors**
+
+Vectors support powerful function application using mathematical operators. This allows you to apply custom functions to each element of a vector.
+
+#### **Function References vs Function Calls**
+
+**⚠️ CRITICAL DISTINCTION**: When using functions with vectors, you must use **function references**, not **function calls**.
+
+```grapa
+/* Define a function */
+f = op(x) { x + 1; };
+
+/* ✅ CORRECT: Function reference - stores the function for later execution */
+result1 = [1, 2, 3].vector() * [f];        /* #[2, 3, 4]# */
+result2 = [1, 2, 3].vector() * [@f];       /* #[2, 3, 4]# (explicit reference) */
+
+/* ❌ INCORRECT: Function call - evaluates immediately, returns null */
+result3 = [1, 2, 3].vector() * [f(x)];     /* #[0, 0, 0]# (x is undefined) */
+result4 = [1, 2, 3].vector() * [f()];      /* #[0, 0, 0]# (no parameters) */
+```
+
+#### **How Function Application Works**
+
+When you use a function reference in vector operations, the function is called **for each element** with that element as the parameter:
+
+```grapa
+/* Function gets called with each element */
+numbers = [1, 2, 3, 4, 5].vector();
+double = op(x) { x * 2; };
+
+/* Each element becomes the parameter 'x' */
+doubled = numbers * [double];  /* #[2, 4, 6, 8, 10]# */
+/* Equivalent to: [double(1), double(2), double(3), double(4), double(5)] */
+```
+
+#### **Inline Function Definitions**
+
+You can also define functions inline for vector operations:
+
+```grapa
+/* Inline function definitions work correctly */
+squares = [1, 2, 3, 4].vector() * [op(x){x*x}];        /* #[1, 4, 9, 16]# */
+cubes = [1, 2, 3].vector() * [op(x){x*x*x}];           /* #[1, 8, 27]# */
+conditional = [1, -2, 3, -4].vector() * [op(x){x < 0 ? -x : x}]; /* #[1, 2, 3, 4]# */
+```
+
+#### **Complex Function Examples**
+
+```grapa
+/* Mathematical transformations */
+data = [1, 2, 3, 4, 5].vector();
+
+/* Square root */
+sqrt_data = data * [op(x){x**0.5}];  /* #[1, 1.414, 1.732, 2, 2.236]# */
+
+/* Logarithmic transformation */
+log_data = data * [op(x){x.log()}] if x > 0 else 0;  /* Custom log function */
+
+/* Conditional operations */
+positive_only = data * [op(x){x > 0 ? x : 0}];  /* Keep only positive values */
+
+/* String operations on string vectors */
+names = ["alice", "bob", "charlie"].vector();
+capitalized = names * [op(x){x.upper()}];  /* ["ALICE", "BOB", "CHARLIE"] */
+```
+
+#### **Why Function References Are Required**
+
+The distinction between function references and function calls is crucial:
+
+1. **Function Reference (`f`)**: Stores the function object to be called later
+2. **Function Call (`f(x)`)**: Executes the function immediately with the current value of `x`
+
+In vector operations, you want the function to be called **for each vector element**, not just once with a potentially undefined variable.
+
+```grapa
+/* This demonstrates the difference */
+f = op(x) { x + 1; };
+x = 5;  /* Define x */
+
+/* Function reference - works correctly */
+vec1 = [1, 2, 3].vector() * [f];     /* #[2, 3, 4]# */
+
+/* Function call - uses current value of x */
+vec2 = [1, 2, 3].vector() * [f(x)];  /* #[6, 6, 6]# (all elements become 6) */
+```
+
+#### **Best Practices**
+
+1. **Always use function references** (`f` or `@f`) in vector operations
+2. **Use inline definitions** for simple, one-time functions
+3. **Define named functions** for complex logic or reuse
+4. **Test with simple examples** to verify function behavior
+5. **Use `.iferr()`** to handle potential errors in function applications
+
 ## **Element Access & Modification**
 
 ### **1D Vector Access**

@@ -18,6 +18,10 @@ limitations under the License.
 
 #include "GrapaLink.h"
 #include "GrapaSystem.h"
+#ifdef __APPLE__
+#include <mach-o/dyld.h>
+#endif
+#include <limits.h>
 #include "GrapaCompress.h"
 #include "GrapaTime.h"
 #include <iostream>
@@ -311,68 +315,49 @@ GrapaCHAR GrapaLink::Start(bool& needExit, bool& showConsole, bool& showWidget, 
 			gSystem->mBinName.SetLength(gSystem->mBinName.mLength - 4);
 	}
 #else
-	gSystem->mBinDir.FROM(gSystem->mHomeDir);
-	char* pathDel = gSystem->mBinDir.mBytes?strrchr((char*)gSystem->mBinDir.mBytes, '/'):NULL;
-	u64 pathLen = pathDel? (pathDel - (char*)gSystem->mBinDir.mBytes):0;
-	gSystem->mBinName.FROM((char*)&gSystem->mBinDir.mBytes[pathLen ? (pathLen + 1): 0], gSystem->mBinDir.mLength - (pathLen?(pathLen + 1): pathLen));
-	gSystem->mBinDir.SetLength(pathLen);
-	if (gSystem->mBinDir.mLength&&gSystem->mBinDir.mBytes[0]=='.')
-	{
-		GrapaCHAR temp(gSystem->mWorkDir);
-		temp.Append((char*)&gSystem->mBinDir.mBytes[1],gSystem->mBinDir.mLength-1);
-		gSystem->mBinDir.FROM(temp);
-	}
-	else if (gSystem->mBinName.StrCmp(gSystem->mHomeDir)==0)
-	{
-		gSystem->mBinDir.FROM("/usr/bin");
-	}
-    gSystem->mLibDir.FROM(gSystem->mWorkDir); gSystem->mLibDir.Append("/lib");
-    if (!(stat((char*)gSystem->mLibDir.mBytes,&sb)==0 && S_ISDIR(sb.st_mode)))
-        gSystem->mLibDir.SetLength(0);
-	if (gSystem->mLibDir.mLength==0)
-    {
-        gSystem->mLibDir.FROM("/usr/lib/grapa");
-        if (!(stat((char*)gSystem->mLibDir.mBytes,&sb)==0 && S_ISDIR(sb.st_mode)))
-            gSystem->mLibDir.SetLength(0);
-    }
-	if (gSystem->mLibDir.mLength==0)
-    {
-        gSystem->mLibDir.FROM("/usr/local/lib/grapa");
-        if (!(stat((char*)gSystem->mLibDir.mBytes,&sb)==0 && S_ISDIR(sb.st_mode)))
-            gSystem->mLibDir.SetLength(0);
-    }
-	if (gSystem->mLibDir.mLength==0)
-    {
-        gSystem->mLibDir.FROM(gSystem->mBinDir); gSystem->mLibDir.Append("/lib");
-         if (!(stat((char*)gSystem->mLibDir.mBytes,&sb)==0 && S_ISDIR(sb.st_mode)))
-            gSystem->mLibDir.SetLength(0);
-    }
-#endif
-	GrapaLocalDatabase dir;
-	gSystem->mLibDir.FROM(gSystem->mWorkDir); gSystem->mLibDir.Append("/lib/grapa");
-	dir.mHomeDir = gSystem->mLibDir;
-	dir.FieldGet(GrapaCHAR("$grapa.grz"), GrapaCHAR(), gSystem->mGrammar);
-	//if (gSystem->mGrammar.mLength == 0)
-	//	gSystem->mLibDir.SetLength(0);
-#ifdef WIN32
+	// Detect actual executable path on Unix-like systems
+	char exePath[PATH_MAX];
+	ssize_t len = readlink("/proc/self/exe", exePath, sizeof(exePath) - 1);
+	if (len == -1) {
+		// Fallback for systems without /proc/self/exe (like macOS)
+#ifdef __APPLE__
+		uint32_t size = sizeof(exePath);
+		if (_NSGetExecutablePath(exePath, &size) == 0) {
+			len = strlen(exePath);
+		} else {
+			// Final fallback - use current working directory
+			gSystem->mBinDir.FROM(gSystem->mWorkDir);
+			len = 0;
+		}
 #else
-	if (gSystem->mLibDir.mLength == 0)
-	{
-		gSystem->mLibDir.Append("/usr/local/lib/grapa");
-		dir.mHomeDir = gSystem->mLibDir;
-		dir.FieldGet(GrapaCHAR("$grapa.grz"), GrapaCHAR(), gSystem->mGrammar);
-		if (gSystem->mGrammar.mLength == 0)
-			gSystem->mLibDir.SetLength(0);
-	}
-	if (gSystem->mLibDir.mLength == 0)
-	{
-		gSystem->mLibDir.Append("/usr/lib/grapa");
-		dir.mHomeDir = gSystem->mLibDir;
-		dir.FieldGet(GrapaCHAR("$grapa.grz"), GrapaCHAR(), gSystem->mGrammar);
-		if (gSystem->mGrammar.mLength == 0)
-			gSystem->mLibDir.SetLength(0);
-	}
+		// For other Unix-like systems, use current working directory as fallback
+		gSystem->mBinDir.FROM(gSystem->mWorkDir);
+		len = 0;
 #endif
+	}
+	
+	if (len > 0) {
+		exePath[len] = '\0';
+		gSystem->mBinDir.FROM(exePath);
+		char* pathDel = strrchr((char*)gSystem->mBinDir.mBytes, '/');
+		u64 pathLen = pathDel ? (pathDel - (char*)gSystem->mBinDir.mBytes) : 0;
+		gSystem->mBinName.FROM((char*)&gSystem->mBinDir.mBytes[pathLen ? (pathLen + 1) : 0], gSystem->mBinDir.mLength - (pathLen ? (pathLen + 1) : pathLen));
+		gSystem->mBinDir.SetLength(pathLen);
+	} else {
+		// Fallback to current working directory
+		gSystem->mBinDir.FROM(gSystem->mWorkDir);
+		gSystem->mBinName.FROM("grapa");
+	}
+    // Set library directory to $WORK/lib (simplified approach)
+    gSystem->mLibDir.FROM(gSystem->mWorkDir); 
+    gSystem->mLibDir.Append("/lib");
+#endif
+	// Load grammar from $WORK/lib/grapa
+	GrapaLocalDatabase dir;
+	GrapaCHAR grammarPath(gSystem->mWorkDir);
+	grammarPath.Append("/lib/grapa");
+	dir.mHomeDir = grammarPath;
+	dir.FieldGet(GrapaCHAR("$grapa.grz"), GrapaCHAR(), gSystem->mGrammar);
 	GrapaCHAR stlib;
 	u32 sti = 0;
 	while (GrapaStaticLib::staticlist[sti] != NULL && GrapaStaticLib::staticlist[sti][0])
@@ -384,6 +369,7 @@ GrapaCHAR GrapaLink::Start(bool& needExit, bool& showConsole, bool& showWidget, 
 	if (!gSystem->mStaticLib) gSystem->mStaticLib = new GrapaRuleQueue();
 	gSystem->mStaticLib->FROM(NULL, NULL, stl2);
 
+	// If grammar not found in $WORK/lib/grapa, try $GRAPA_BIN/lib/grapa as fallback
 	if (gSystem->mGrammar.mLength == 0)
 	{
 		GrapaCHAR binlib(gSystem->mBinDir);
@@ -392,7 +378,8 @@ GrapaCHAR GrapaLink::Start(bool& needExit, bool& showConsole, bool& showWidget, 
 		dir.FieldGet(GrapaCHAR("$grapa.grz"), GrapaCHAR(), gSystem->mGrammar);
 		if (gSystem->mGrammar.mLength)
 		{
-			gSystem->mLibDir.FROM(gSystem->mBinDir); gSystem->mLibDir.Append("/lib/grapa");
+			gSystem->mLibDir.FROM(gSystem->mBinDir); 
+			gSystem->mLibDir.Append("/lib");
 		}
 	}
 
