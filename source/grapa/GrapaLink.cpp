@@ -326,7 +326,7 @@ GrapaCHAR GrapaLink::Start(bool& needExit, bool& showConsole, bool& showWidget, 
 	{
 		gSystem->mBinDir.FROM("/usr/bin");
 	}
-    gSystem->mLibDir.FROM(gSystem->mWorkDir); gSystem->mLibDir.Append("/lib/grapa");
+    gSystem->mLibDir.FROM(gSystem->mWorkDir); gSystem->mLibDir.Append("/lib");
     if (!(stat((char*)gSystem->mLibDir.mBytes,&sb)==0 && S_ISDIR(sb.st_mode)))
         gSystem->mLibDir.SetLength(0);
 	if (gSystem->mLibDir.mLength==0)
@@ -343,7 +343,7 @@ GrapaCHAR GrapaLink::Start(bool& needExit, bool& showConsole, bool& showWidget, 
     }
 	if (gSystem->mLibDir.mLength==0)
     {
-        gSystem->mLibDir.FROM(gSystem->mBinDir); gSystem->mLibDir.Append("/lib/grapa");
+        gSystem->mLibDir.FROM(gSystem->mBinDir); gSystem->mLibDir.Append("/lib");
          if (!(stat((char*)gSystem->mLibDir.mBytes,&sb)==0 && S_ISDIR(sb.st_mode)))
             gSystem->mLibDir.SetLength(0);
     }
