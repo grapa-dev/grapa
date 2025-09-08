@@ -75,7 +75,7 @@ This guide helps JavaScript users transition to Grapa by mapping common JS idiom
 | `function f(x = 1) { ... }` | `f = op("x"=1) { ... };` |
 | `function f(...args) { ... }` | `f = op(args) { ... };` |
 | `obj?.prop` | `if (obj && obj.prop) { obj.prop; }` |
-| `const {a, b} = obj` | `@local ++= obj; a.echo(); b.echo();` |
+| `const {a, b} = obj` | `$local ++= obj; a.echo(); b.echo();` |
 | `x ?? y` | `if (x == null) { x = y; }` |
 | `[...arr1, ...arr2]` | `arr1 += arr2` |
 | `x ||= y` | `if (!x) { x = y; }` (no `||=` operator) |
@@ -566,7 +566,7 @@ These would improve developer experience but aren't essential:
 
 - **Template literals**: `` `Hello ${name}` `` - Use `"Hello ${name}".interpolate()` (preferred) or string concatenation: `"Hello " + name` or see [String Templates and Dynamic Construction](../type/str.md#string-templates-and-dynamic-construction) for advanced patterns
 - **Method chaining**: `"hello".toUpperCase() + " world".toLowerCase()` - Use string interpolation: `"${'hello'.upper()} ${'world'.lower()}".interpolate()`
-- **Destructuring**: `const {a, b} = obj` - Use Grapa's namespace destructuring: `@local ++= obj; a.echo(); b.echo();`
+- **Destructuring**: `const {a, b} = obj` - Use Grapa's namespace destructuring: `$local ++= obj; a.echo(); b.echo();`
 - **Spread operator**: `[...arr1, ...arr2]` - Use `+=` operator: `arr1 += arr2`
 - **Optional chaining**: `obj?.prop?.sub` - Use `.iferr()` for superior safe property access with custom fallback values: `obj.prop.iferr(null).sub.iferr("default")`
 - **Nullish coalescing**: `x ?? y` - Use `.ifnull()` for superior nullish coalescing: `x.ifnull(y)`

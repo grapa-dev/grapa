@@ -432,13 +432,13 @@ loop_with_break = op() {
 
 ```grapa
 /* Grapa's destructuring via namespace concatenation */
-@local ++= {name:"Alice", age:30};  /* Destructure into local namespace */
+$local ++= {name:"Alice", age:30};  /* Destructure into local namespace */
 name.echo();  /* Direct access: "Alice" */
 age.echo();   /* Direct access: 30 */
 
 /* Array destructuring */
 arr = [1, 2, 3, 4, 5];
-@local ++= {first:arr[0], second:arr[1], rest:arr.range(2, arr.len())};
+$local ++= {first:arr[0], second:arr[1], rest:arr.range(2, arr.len())};
 first.echo();   /* 1 */
 second.echo();  /* 2 */
 rest.echo();    /* [3, 4, 5] */
@@ -454,7 +454,7 @@ rest.echo();    /* [3, 4, 5] */
 **Namespace Options:**
 ```grapa
 /* Local namespace (function scope) */
-@local ++= {debug:true, timeout:5000};
+$local ++= {debug:true, timeout:5000};
 
 /* Global namespace (persistent) */
 $global ++= {config:true, version:"1.0"};
@@ -469,8 +469,8 @@ $global ++= {config:true, version:"1.0"};
 **Duplicate Handling:**
 ```grapa
 /* References access the last added in case of duplicates */
-@local ++= {a:1, b:2};
-@local ++= {a:10, c:3};  /* 'a' now refers to 10, not 1 */
+$local ++= {a:1, b:2};
+$local ++= {a:10, c:3};  /* 'a' now refers to 10, not 1 */
 
 /* Remove duplicates if needed */
 @$local.unique();  /* Removes duplicate entries */

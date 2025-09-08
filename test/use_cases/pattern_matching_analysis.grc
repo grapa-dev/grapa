@@ -25,12 +25,12 @@ rest = arr.slice(2);
 ("Direct assignment: first=" + first + ", second=" + second + ", rest=" + rest).echo();
 
 // Method 2: Namespace destructuring (Grapa's approach)
-@local ++= {first: arr[0], second: arr[1], rest: arr.slice(2)};
+$local ++= {first: arr[0], second: arr[1], rest: arr.slice(2)};
 ("Namespace destructuring: first=" + first + ", second=" + second + ", rest=" + rest).echo();
 
 // Method 3: Function parameter destructuring
 destructure_array = op(params) {
-    @local ++= {first: params[0], second: params[1], rest: params.slice(2)};
+    $local ++= {first: params[0], second: params[1], rest: params.slice(2)};
     ("Function destructuring: first=" + first + ", second=" + second + ", rest=" + rest).echo();
 };
 destructure_array([10, 20, 30, 40, 50]);
@@ -47,11 +47,11 @@ age = obj.age;
 ("Direct access: name=" + name + ", age=" + age).echo();
 
 // Method 2: Namespace destructuring (Grapa's approach)
-@local ++= obj;
+$local ++= obj;
 ("Namespace destructuring: name=" + name + ", age=" + age + ", city=" + city + ", role=" + role).echo();
 
 // Method 3: Selective destructuring
-@local ++= {name: obj.name, age: obj.age};
+$local ++= {name: obj.name, age: obj.age};
 ("Selective destructuring: name=" + name + ", age=" + age).echo();
 
 /* Test 3: Match Expressions (Switch/Case) */
@@ -167,11 +167,11 @@ nested_obj = {
 };
 
 // Nested destructuring
-@local ++= nested_obj;
+$local ++= nested_obj;
 ("Nested destructuring: user.name=" + user.name + ", settings.theme=" + settings.theme).echo();
 
 // Deep nested destructuring
-@local ++= {user_name: nested_obj.user.name, theme: nested_obj.settings.theme};
+$local ++= {user_name: nested_obj.user.name, theme: nested_obj.settings.theme};
 ("Deep nested destructuring: user_name=" + user_name + ", theme=" + theme).echo();
 
 /* Test 9: Pattern Matching with Arrays */
@@ -220,8 +220,8 @@ valid_items = advanced_data.filter(op(item) {
 /* Summary of Findings:
  * 
  * Grapa already has:
- * 1. ✅ Array destructuring via namespace concatenation (@local ++= {first: arr[0], second: arr[1]})
- * 2. ✅ Object destructuring via namespace concatenation (@local ++= obj)
+ * 1. ✅ Array destructuring via namespace concatenation ($local ++= {first: arr[0], second: arr[1]})
+ * 2. ✅ Object destructuring via namespace concatenation ($local ++= obj)
  * 3. ✅ Match expressions via switch/case statements
  * 4. ✅ Guard clauses via conditional cases (case (condition):)
  * 5. ✅ Pattern matching via .grep() and .match() methods

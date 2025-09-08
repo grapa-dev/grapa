@@ -49,7 +49,7 @@ Optionally pass in a compare routine.'''
 > ["b","a","B","c","b","A"].sort(0,0,op(a,b){a.casefold()<=>b.casefold();})
 ["a","A","B","b","b","c"]
 
-> ["b","a","B","c","b","A"].sort(0,0,op(a,b){@local.c=@a.upper()<=>@b.upper();if(@c==0)c=@a<=>@b;@c;})
+> ["b","a","B","c","b","A"].sort(0,0,op(a,b){$local.c=@a.upper()<=>@b.upper();if(@c==0)c=@a<=>@b;@c;})
 [A,a,B,b,b,c]
 
 > ["b","a","B","c","b","A"].sort(0,[1,2])

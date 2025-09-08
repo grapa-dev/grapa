@@ -38,7 +38,7 @@
 | `method(:foo)`              | `obj.getname()` (partial reflection)              |
 | `send(:foo)`                | WIP                                               |
 | `respond_to?(:foo)`         | WIP                                               |
-| `a, b = obj.values_at(:a, :b)` | `@local ++= obj; a.echo(); b.echo();`             |
+| `a, b = obj.values_at(:a, :b)` | `$local ++= obj; a.echo(); b.echo();`             |
 | `Object.new`                | `obj {}`                                          |
 | `self`                      | `self`                                            |
 | `super`                     | `super`                                           |

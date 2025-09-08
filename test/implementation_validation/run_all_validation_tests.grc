@@ -79,7 +79,7 @@ result = null_value.ifnull(default_value);
 /* Test scope-based cleanup */
 test_scope = op() {
     local_data = [1, 2, 3, 4, 5];
-    ref_data = @local_data;
+    ref_data = $local_data;
     ref_data += 6;
     "Scope test: ${local_data.str()}".interpolate().echo();
     local_data;  /* Return reference to test scope cleanup */

@@ -102,7 +102,7 @@ This guide helps Python users transition to Grapa by mapping common Python idiom
 | `0x12` | `0x12` (same syntax, enhanced with underscore support) |
 | `0b101` | `0b101` (same syntax, enhanced with underscore support) |
 | `arr1 + arr2` | `arr1 += arr2` |
-| `{a, b} = obj` | `@local ++= obj; a.echo(); b.echo();` |
+| `{a, b} = obj` | `$local ++= obj; a.echo(); b.echo();` |
 
 > **Note:** Both `x = x + 1;` and `x += 1;` (and `s = s + "x";` and `s += "x";`) are valid in Grapa. The `+=` form is idiomatic and preferred in most cases.
 >

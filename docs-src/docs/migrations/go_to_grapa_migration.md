@@ -51,7 +51,7 @@ This guide helps Go users transition to Grapa by mapping common Go idioms, patte
 | `range arr` | `arr.map(op(x) { ... })` |
 | `range m` | `obj.map(op(k, v) { ... })` |
 | `err != nil` | `result.type() == $ERR` |
-| `a, b := obj["a"], obj["b"]` | `@local ++= obj; a.echo(); b.echo();` |
+| `a, b := obj["a"], obj["b"]` | `$local ++= obj; a.echo(); b.echo();` |
 | `defer` | `// not directly supported` |
 
 > **Note:** Both `x = x + 1;` and `x += 1;` (and `s = s + "x";` and `s += "x";`) are valid in Grapa. The `+=` form is idiomatic and preferred in most cases.

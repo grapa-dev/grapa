@@ -176,7 +176,7 @@ $global["$for_rule"] = rule for $ID in <$comp> '{' <$command> '}' {
     op(var_name:$2, collection:$4, body:$7){
         collection.map(op(item){
             // Set the variable in local scope
-            @local ++= {temp_var: item};
+            $local ++= {temp_var: item};
             // Execute body with the variable available
             body();
         });

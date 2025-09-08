@@ -68,7 +68,7 @@ result = ref_func(5);
 /* Test 8: Reference scope testing */
 create_scope_data = op() {
     local_data = [10, 20, 30];
-    @local_data;  /* Return reference to local data */
+    $local_data;  /* Return reference to local data */
 };
 
 scope_ref = create_scope_data();
