@@ -303,7 +303,7 @@ transform_data = op(p){p.upper()};
 filter_data = op(p){p.len() > 10 ? p : null};
 
 /* Use wrapper functions in rule tokens */
-@global["$etl_pipeline"] = rule 
+$global["$etl_pipeline"] = rule 
     <$raw_data,op(b:$1){validate_data(b)}>
     <$validated,op(b:$1){transform_data(b)}>
     <$transformed,op(b:$1){filter_data(b)}>
@@ -324,7 +324,7 @@ validate_email = op(p){p.grep("^[^@]+@[^@]+\\.[^@]+$")?p:null};
 format_output = op(p){p.upper() + " - PROCESSED"};
 
 /* ETL grammar */
-@global["$data_pipeline"] = rule 
+$global["$data_pipeline"] = rule 
     'process' $STR {
         op(input:$2) {
             /* Apply ETL pipeline */
@@ -336,9 +336,9 @@ format_output = op(p){p.upper() + " - PROCESSED"};
     }
 ;
 
-@global["$clean_step"] = rule <$raw_data,op(b:$1){clean_data(b)}> {@<var,{$1}>};
-@global["$validate_step"] = rule <$cleaned_data,op(b:$1){validate_email(b)}> {@<var,{$1}>};
-@global["$format_step"] = rule <$validated_data,op(b:$1){format_output(b)}> {@<var,{$1}>};
+$global["$clean_step"] = rule <$raw_data,op(b:$1){clean_data(b)}> {@<var,{$1}>};
+$global["$validate_step"] = rule <$cleaned_data,op(b:$1){validate_email(b)}> {@<var,{$1}>};
+$global["$format_step"] = rule <$validated_data,op(b:$1){format_output(b)}> {@<var,{$1}>};
 ```
 
 ## Best Practices

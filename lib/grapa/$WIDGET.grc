@@ -1,4 +1,4 @@
-@global["$WIDGET"]
+$global["$WIDGET"]
 	= class {
 	type = @<"type",{@<this>}>; 
 	$new = @<[op,@<"widget_new",{@<this>,@<var,{widget}>,@<var,{x}>,@<var,{y}>,@<var,{w}>,@<var,{h}>,@<var,{label}>,@<var,{attr}>}>],{widget:null,x:null,y:null,w:null,h:null,label:null,attr:null}>; 

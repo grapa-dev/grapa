@@ -25,17 +25,17 @@ parallel_results = [
 ("--- Test 2: Concurrent Variable Access ---").echo();
 
 // Test concurrent access to shared variables
-@global["shared_counter"] = 0;
+$global["shared_counter"] = 0;
 
 // Create functions that modify shared state
 increment_counter = op() {
-    @global["shared_counter"] = @global["shared_counter"] + 1;
-    @global["shared_counter"];
+    $global["shared_counter"] = $global["shared_counter"] + 1;
+    $global["shared_counter"];
 };
 
 decrement_counter = op() {
-    @global["shared_counter"] = @global["shared_counter"] - 1;
-    @global["shared_counter"];
+    $global["shared_counter"] = $global["shared_counter"] - 1;
+    $global["shared_counter"];
 };
 
 // Test concurrent modifications
@@ -46,7 +46,7 @@ parallel_modifications = [
     increment_counter()
 ];
 
-("Concurrent variable access completed. Final counter: " + @global["shared_counter"]).echo();
+("Concurrent variable access completed. Final counter: " + $global["shared_counter"]).echo();
 
 /* Test 3: Thread Lock Testing */
 ("--- Test 3: Thread Lock Testing ---").echo();
@@ -112,29 +112,29 @@ parallel_string_ops = [
 ("--- Test 6: Race Condition Simulation ---").echo();
 
 // Simulate potential race conditions
-@global["race_counter"] = 0;
+$global["race_counter"] = 0;
 
 // Create functions that might race
 race_function1 = op() {
-    current = @global["race_counter"];
+    current = $global["race_counter"];
     // Simulate some processing time
     i = 0;
     while (i < 100) {
         i += 1;
     }
-    @global["race_counter"] = current + 1;
-    @global["race_counter"];
+    $global["race_counter"] = current + 1;
+    $global["race_counter"];
 };
 
 race_function2 = op() {
-    current = @global["race_counter"];
+    current = $global["race_counter"];
     // Simulate some processing time
     i = 0;
     while (i < 100) {
         i += 1;
     }
-    @global["race_counter"] = current + 2;
-    @global["race_counter"];
+    $global["race_counter"] = current + 2;
+    $global["race_counter"];
 };
 
 // Test potential race conditions
@@ -144,7 +144,7 @@ race_results = [
     race_function1()
 ];
 
-("Race condition simulation completed. Final counter: " + @global["race_counter"]).echo();
+("Race condition simulation completed. Final counter: " + $global["race_counter"]).echo();
 
 /* Test 7: Parallel Function Execution */
 ("--- Test 7: Parallel Function Execution ---").echo();
@@ -227,15 +227,15 @@ complex_results = [
 
 // Final stress test with multiple concurrent operations
 stress_test = op() {
-    @global["stress_counter"] = 0;
+    $global["stress_counter"] = 0;
     
     // Create multiple parallel operations
     operations = [];
     i = 0;
     while (i < 50) {
         operations += [op() {
-            @global["stress_counter"] += 1;
-            @global["stress_counter"];
+            $global["stress_counter"] += 1;
+            $global["stress_counter"];
         }];
         i += 1;
     }

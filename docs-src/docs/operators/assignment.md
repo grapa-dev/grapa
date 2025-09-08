@@ -43,7 +43,7 @@ Grapa supports special system variables with optimized handling:
 ```grapa
 @this = value;      /* Current context */
 @parent = value;    /* Parent context */
-@global = value;    /* Global namespace */
+$global = value;    /* Global namespace */
 @local = value;     /* Local namespace */
 $this = value;      /* Current object */
 $parent = value;    /* Parent object */

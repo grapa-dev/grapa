@@ -264,7 +264,7 @@ custom_command ++= rule $STR('third') {op(){'matched third'}};
 The grammar system uses this pattern for defining rules:
 
 ```grapa
-@global["$option_list"]
+$global["$option_list"]
 	= rule <$option> '|' <$option_list> {@<prepend,{$3,$1}>}
 	| <$option> {@<createrule,{$1}>}
 	;
@@ -282,7 +282,7 @@ This shows:
 
 **Correct Ordering Pattern:**
 ```grapa
-@global["$list2"]
+$global["$list2"]
 	= rule ',' ',' <$list2> {@<prepend,{$3,null,null}>}    /* 3 tokens */
 	| ',' <$list2> {@<prepend,{$2,null}>}                  /* 2 tokens */
 	| <$param2> ',' <$list2> {@<prepend,{$3,$1}>}          /* 3 tokens */
@@ -490,7 +490,7 @@ function_with_custom_syntax() {
 ```grapa
 function_with_permanent_syntax() {
     // Promote to global namespace - available everywhere
-    @global["custom_function"] = rule global_cmd $INT {op(n:$2){n*3}};
+    $global["custom_function"] = rule global_cmd $INT {op(n:$2){n*3}};
     
     result = global_cmd 5;  // Works here
     // Function exits, but global_cmd is still available globally
@@ -510,7 +510,7 @@ function_with_conditional_syntax() {
     // Test it locally
     if (temp_cmd 5 == 20) {
         // If it works well, promote to global
-        @global["custom_function"] = rule temp_cmd $INT {op(n:$2){n*4}};
+        $global["custom_function"] = rule temp_cmd $INT {op(n:$2){n*4}};
         echo "Syntax promoted to global";
     }
     

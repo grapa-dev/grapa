@@ -1,4 +1,4 @@
-@global["$ERR"]
+$global["$ERR"]
 	= class ($OBJ) {
 	$new = op(lst){if(lst.type()==$LIST) $this++=lst};
 	};

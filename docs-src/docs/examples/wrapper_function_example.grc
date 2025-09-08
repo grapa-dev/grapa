@@ -7,7 +7,7 @@ format_output = op(p){p.upper() + " - PROCESSED"};
 filter_length = op(p){p.len() > 5 ? p : null};
 
 /* Define ETL pipeline rules using wrapper functions */
-@global["$etl_pipeline"] = {
+$global["$etl_pipeline"] = {
     /* Clean step */
     clean_step: rule <$raw_data,op(b:$1){clean_data(b)}> {@<var,{$1}>},
     

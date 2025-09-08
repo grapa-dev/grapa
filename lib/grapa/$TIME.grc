@@ -1,4 +1,4 @@
-@global["$TIME"]
+$global["$TIME"]
 	= class ($OBJ) {
 	utc = @<time_utc,{@<this>}>;
 	tz = @<time_tz,{@<this>}>;

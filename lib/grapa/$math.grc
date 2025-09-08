@@ -1,4 +1,4 @@
-@global["$math"]
+$global["$math"]
 	= class ($OBJ) {
 	e = @<"e",{@<this>}>;
 	pi = @<"pi",{@<this>}>;

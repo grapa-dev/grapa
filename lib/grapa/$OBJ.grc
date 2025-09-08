@@ -1,4 +1,4 @@
-@global["$OBJ"] = class {
+$global["$OBJ"] = class {
 	type = @<"type",{@<this>}>; 
 	describe = @<[op,@<describe,{@<this>,@<var,{options}>}>],{options}>;
 	raw = @<"raw",{@<this>}>; 

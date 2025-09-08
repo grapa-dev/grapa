@@ -282,7 +282,7 @@ Grapa includes a powerful automatic file loading mechanism that makes it easy to
 
 ```grapa
 /* File: lib/grapa/utils.grc */
-@global["utils"] = class {
+$global["utils"] = class {
     format_date = op(date) {
         return date.format("YYYY-MM-DD");
     };

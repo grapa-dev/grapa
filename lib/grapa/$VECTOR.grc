@@ -1,4 +1,4 @@
-@global["$VECTOR"]
+$global["$VECTOR"]
 	= class ($OBJ) {
 	t = @<"vector_t",{@<this>}>; 
 	rref = @<"vector_rref",{@<this>}>; 

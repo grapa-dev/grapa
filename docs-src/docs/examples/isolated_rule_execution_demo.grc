@@ -62,7 +62,7 @@ result3 = op()("server_name=myapp", config_rule)();
 ("2. Using $sys().eval() with srule parameter").echo();
 
 /* Define rules in a namespace */
-@global["etl_rules"] = {
+$global["etl_rules"] = {
     csv_parser: rule $STR ',' $STR ',' $STR {op(name:$1,age:$3,city:$5){
         return {name: name, age: age.int(), city: city};
     }},
@@ -97,11 +97,11 @@ config_result = $sys().eval("server_name=myapp", {}, "etl_rules.config_parser");
 /* Create a rule factory function */
 create_parser = op(rule_name, rule_definition) {
     /* Define the rule dynamically */
-    @global[rule_name] = rule_definition;
+    $global[rule_name] = rule_definition;
     
     /* Return a function that executes against this rule */
     return op(input) {
-        return op()(input, @global[rule_name])();
+        return op()(input, $global[rule_name])();
     };
 };
 
@@ -134,7 +134,7 @@ xml_result = xml_parser('<user>John Doe</user>');
 ("4. ETL Pipeline with isolated rules").echo();
 
 /* Define ETL-specific rules */
-@global["etl_pipeline_rules"] = {
+$global["etl_pipeline_rules"] = {
     /* Extract rules */
     extract_csv: rule $STR ',' $STR ',' $STR {op(name:$1,age:$3,city:$5){
         return {name: name, age: age.int(), city: city, source: "csv"};
@@ -163,9 +163,9 @@ xml_result = xml_parser('<user>John Doe</user>');
 etl_pipeline = op(input_data, input_type, transformations, output_type) {
     /* Extract */
     if (input_type == "csv") {
-        extracted = op()(input_data, @global["etl_pipeline_rules"].extract_csv)();
+        extracted = op()(input_data, $global["etl_pipeline_rules"].extract_csv)();
     } else if (input_type == "json") {
-        extracted = op()(input_data, @global["etl_pipeline_rules"].extract_json)();
+        extracted = op()(input_data, $global["etl_pipeline_rules"].extract_json)();
     } else {
         return $err("Unsupported input type");
     };
@@ -176,16 +176,16 @@ etl_pipeline = op(input_data, input_type, transformations, output_type) {
     while (i < transformations.len()) {
         transform = transformations[i];
         if (transform == "uppercase") {
-            transformed.name = op()(transformed.name, @global["etl_pipeline_rules"].transform_uppercase)();
+            transformed.name = op()(transformed.name, $global["etl_pipeline_rules"].transform_uppercase)();
         } else if (transform == "add_prefix") {
-            transformed.name = op()("USER", transformed.name, @global["etl_pipeline_rules"].transform_add_prefix)();
+            transformed.name = op()("USER", transformed.name, $global["etl_pipeline_rules"].transform_add_prefix)();
         };
         i += 1;
     };
     
     /* Load */
     if (output_type == "database") {
-        result = op()(transformed, @global["etl_pipeline_rules"].load_database)();
+        result = op()(transformed, $global["etl_pipeline_rules"].load_database)();
     } else {
         result = transformed;
     };
@@ -206,7 +206,7 @@ etl_result = etl_pipeline("John,25,NY", "csv", ["uppercase", "add_prefix"], "dat
 ("5. Protocol parsing with isolated rules").echo();
 
 /* Define protocol-specific rules */
-@global["protocol_rules"] = {
+$global["protocol_rules"] = {
     /* HTTP Request parsing */
     http_request: rule $STR ' ' $STR ' ' $STR {op(method:$1,path:$3,version:$5){
         return {method: method, path: path, version: version, protocol: "HTTP"};
@@ -226,11 +226,11 @@ etl_result = etl_pipeline("John,25,NY", "csv", ["uppercase", "add_prefix"], "dat
 /* Protocol parser function */
 parse_protocol = op(input, protocol_type) {
     if (protocol_type == "http") {
-        return op()(input, @global["protocol_rules"].http_request)();
+        return op()(input, $global["protocol_rules"].http_request)();
     } else if (protocol_type == "smtp") {
-        return op()(input, @global["protocol_rules"].smtp_command)();
+        return op()(input, $global["protocol_rules"].smtp_command)();
     } else if (protocol_type == "binary") {
-        return op()(input, @global["protocol_rules"].binary_protocol)();
+        return op()(input, $global["protocol_rules"].binary_protocol)();
     } else {
         return $err("Unknown protocol");
     };
@@ -252,7 +252,7 @@ smtp_result = parse_protocol("MAIL FROM: user@example.com", "smtp");
 ("6. Validation rules with isolation").echo();
 
 /* Define validation rules */
-@global["validation_rules"] = {
+$global["validation_rules"] = {
     /* Email validation */
     email_validation: rule $STR '@' $STR '.' $STR {op(local:$1,domain:$3,tld:$5){
         if ($local.len() > 0 && domain.len() > 0 && tld.len() > 0) {
@@ -285,11 +285,11 @@ smtp_result = parse_protocol("MAIL FROM: user@example.com", "smtp");
 /* Validation function */
 validate_data = op(input, validation_type) {
     if (validation_type == "email") {
-        return op()(input, @global["validation_rules"].email_validation)();
+        return op()(input, $global["validation_rules"].email_validation)();
     } else if (validation_type == "phone") {
-        return op()(input, @global["validation_rules"].phone_validation)();
+        return op()(input, $global["validation_rules"].phone_validation)();
     } else if (validation_type == "credit_card") {
-        return op()(input, @global["validation_rules"].credit_card_validation)();
+        return op()(input, $global["validation_rules"].credit_card_validation)();
     } else {
         return $err("Unknown validation type");
     };
@@ -352,7 +352,7 @@ global_time = end_time2 - start_time2;
 ("8. Error handling and recovery").echo();
 
 /* Define robust parsing rules with error handling */
-@global["robust_rules"] = {
+$global["robust_rules"] = {
     /* Primary rule with fallback */
     robust_csv: rule $STR ',' $STR ',' $STR {op(name:$1,age:$3,city:$5){
         return {name: name, age: age.int(), city: city, status: "parsed"};
@@ -373,7 +373,7 @@ global_time = end_time2 - start_time2;
 /* Robust parsing function */
 robust_parse = op(input, rule_name) {
     try {
-        result = op()(input, @global["robust_rules"][rule_name])();
+        result = op()(input, $global["robust_rules"][rule_name])();
         return result;
     } catch (error) {
         return {error: "Parsing failed", details: error, input: input};

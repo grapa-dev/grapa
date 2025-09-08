@@ -89,14 +89,14 @@ obj_desc = test_obj.describe();
 ("--- Test 4: Dynamic Grammar Modification ---").echo();
 
 // Define a new grammar rule at runtime
-@global["$dynamic_rule"] = rule hello $STR {op(name:$2){"Hello, " + name + "!"}};
+$global["$dynamic_rule"] = rule hello $STR {op(name:$2){"Hello, " + name + "!"}};
 
 // Use the dynamically created rule
 dynamic_result = hello "World";
 ("Dynamic rule result: " + dynamic_result).echo();
 
 // Define another dynamic rule
-@global["$math_rule"] = rule calculate $INT '+' $INT {op(a:$2,b:$4){a + b}};
+$global["$math_rule"] = rule calculate $INT '+' $INT {op(a:$2,b:$4){a + b}};
 
 // Use the math rule
 calc_result = calculate 5 '+' 3;
@@ -172,7 +172,7 @@ result = transformed(10);
 ("--- Test 8: Dynamic Language Extension ---").echo();
 
 // Extend the language with a new control structure
-@global["$for_rule"] = rule for $ID in <$comp> '{' <$command> '}' {
+$global["$for_rule"] = rule for $ID in <$comp> '{' <$command> '}' {
     op(var_name:$2, collection:$4, body:$7){
         collection.map(op(item){
             // Set the variable in local scope
@@ -230,7 +230,7 @@ analysis = analyze_function(sample_func);
  * 1. ✅ Macro system via custom_command/custom_function
  * 2. ✅ AST manipulation via execution trees (.plan())
  * 3. ✅ Code reflection via .describe() and .type()
- * 4. ✅ Dynamic grammar modification via @global rules
+ * 4. ✅ Dynamic grammar modification via $global rules
  * 5. ✅ Code generation and execution via op()()
  * 6. ✅ Execution tree transformation
  * 7. ✅ Dynamic language extension

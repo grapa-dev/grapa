@@ -285,7 +285,7 @@ validation_result = op(parse)('validate user_data {
 
 ```grapa
 /* CSV Parser with Recursive Grammar */
-@global["$csv_parser"] = rule <$csv_row> ('\n' <$csv_parser> | '\n' | ) {
+$global["$csv_parser"] = rule <$csv_row> ('\n' <$csv_parser> | '\n' | ) {
     op(row:$1, rest:$3) {
         if (rest) {
             return [row] + rest;
@@ -295,7 +295,7 @@ validation_result = op(parse)('validate user_data {
     }
 };
 
-@global["$csv_row"] = rule <$csv_field> (',' <$csv_row> | );
+$global["$csv_row"] = rule <$csv_field> (',' <$csv_row> | );
 
 /* Parse complex nested structures */
 csv_data = "name,age,city\nJohn,25,NY\nJane,30,LA";
@@ -306,13 +306,13 @@ parsed = op(parse)(csv_data)();
 
 ```grapa
 /* Context-Aware Parser */
-@global["$context_parser"] = rule <$context_state> <$context_rule> {
+$global["$context_parser"] = rule <$context_state> <$context_rule> {
     op(state:$1, rule:$2) {
         return parse_with_context(state, rule);
     }
 };
 
-@global["$context_state"] = rule 'in' $STR '{' | 'out' $STR '}';
+$global["$context_state"] = rule 'in' $STR '{' | 'out' $STR '}';
 
 /* Use context for different parsing modes */
 sql_result = op(parse)('in "sql" { SELECT * FROM users }')();
@@ -323,10 +323,10 @@ json_result = op(parse)('in "json" { {"name": "John"} }')();
 
 ```grapa
 /* Custom Token Types */
-@global["$custom_token"] = rule $SYM("SQL_KEYWORD") | $SYM("JSON_PATH") | $SYM("XPATH_EXPR");
+$global["$custom_token"] = rule $SYM("SQL_KEYWORD") | $SYM("JSON_PATH") | $SYM("XPATH_EXPR");
 
 /* Use custom tokens in grammar */
-@global["$sql_statement"] = rule $SYM("SQL_KEYWORD") <$sql_expression> {
+$global["$sql_statement"] = rule $SYM("SQL_KEYWORD") <$sql_expression> {
     op(keyword:$1, expr:$2) {
         return execute_sql_statement(keyword, expr);
     }
@@ -360,7 +360,7 @@ json_grammar = compile_grammar("json", "custom_function = rule $STR->$STR...");
 
 ```grapa
 /* Lazy evaluation for expensive operations */
-@global["$lazy_expression"] = rule 'lazy' '{' <$expression> '}' {
+$global["$lazy_expression"] = rule 'lazy' '{' <$expression> '}' {
     op(expr:$3) {
         return op() {
             return expr();

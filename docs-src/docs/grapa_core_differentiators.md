@@ -130,7 +130,7 @@ my_rules = $RULE("dynamic_rule", "$INT + $INT", op(a, b) {
 });
 
 /* Modify rules at runtime */
-@global["$expression"] ++= rule 'custom' $STR { op(text:$2) { "Custom: " + text; } };
+$global["$expression"] ++= rule 'custom' $STR { op(text:$2) { "Custom: " + text; } };
 ```
 
 ### **Token-to-Code Transformation**
@@ -181,7 +181,7 @@ op()("parent(john,mary)")();            /* PROLOG syntax */
 **Grapa's Approach:**
 ```grapa
 /* Grapa uses executable BNF with direct code generation */
-@global["$function"] = rule 'defun' $ID '(' $params ')' $body {
+$global["$function"] = rule 'defun' $ID '(' $params ')' $body {
     op(name:$2, params:$4, body:$6) {
         /* Directly creates executable $OP structure */
         return $OP(name, op(params) { body; });

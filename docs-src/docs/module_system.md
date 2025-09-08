@@ -21,7 +21,7 @@ When you call a function that doesn't exist in the current namespace, Grapa auto
 
 ```grapa
 /* File: lib/grapa/mycode.grc */
-@global["mycode"] = class {
+$global["mycode"] = class {
     test = op() {
         "Hello from mycode.grc!".echo();
         return "Success from mycode.grc";
@@ -39,7 +39,7 @@ When you assign a class that doesn't exist, Grapa searches for a `.grc` file wit
 
 ```grapa
 /* File: myclass.grc */
-@global["myclass"] = class {
+$global["myclass"] = class {
     message = "Hello from myclass!";
     
     greet = op() {
@@ -269,7 +269,7 @@ When loading a class, Grapa searches in this order:
 ```grapa
 /* Create a utility function */
 /* File: lib/grapa/utils.grc */
-@global["utils"] = class {
+$global["utils"] = class {
     format_date = op(date) {
         /* Date formatting logic */
         return date.format("YYYY-MM-DD");
@@ -291,7 +291,7 @@ is_valid = utils().validate_email("user@example.com");
 ```grapa
 /* Create custom class */
 /* File: lib/custom/math_utils.grc */
-@global["$MATH_UTILS"] = class {
+$global["$MATH_UTILS"] = class {
     add = op(x, y) { x + y; };
     multiply = op(x, y) { x * y; };
     factorial = op(n) { 
@@ -591,7 +591,7 @@ This system is more sophisticated than traditional import/export modules and pro
 
 ### Key Behaviors
 
-1. **Filename Matching**: For automatic loading, the filename must match the class name (e.g., `myclass.grc` must define `@global["myclass"]`)
+1. **Filename Matching**: For automatic loading, the filename must match the class name (e.g., `myclass.grc` must define `$global["myclass"]`)
 2. **Class vs Function**: Files can define either classes (for assignment) or functions (for function calls)
 3. **Search Paths**: Automatic loading uses predefined search paths that can be modified with `$sys().putenv($GRAPA_PATH, ...)`
 4. **Manual Control**: For files outside search paths, use `$file().read()` and manual execution

@@ -11,7 +11,7 @@ Grapa was originally designed as a **language for creating languages**. The curr
 **Important**: The `$1`, `$2`, `$3` parameters get reset as the code runs. For complex action codes, assign them to local variables first:
 
 ```grapa
-@global["$complex_rule"]
+$global["$complex_rule"]
     = rule <$value1> '+' <$value2> {
         @$local.p1 = $1;  // Save $1 before it gets reset
 @$local.p2 = $3;  // Save $3 before it gets reset
@@ -34,7 +34,7 @@ Traditional parsers can't handle left recursion, but Grapa automatically detects
 
 ```grapa
 // ✅ GOOD: Natural left-associative expressions
-@global["$additive"]
+$global["$additive"]
     = rule <$additive> '+' <$multiplicative> {$1 + $3}
     | <$additive> '-' <$multiplicative> {$1 - $3}
     | <$multiplicative>
@@ -49,17 +49,17 @@ Precedence emerges from grammar hierarchy - it's not hardcoded:
 
 ```grapa
 // ✅ CORRECT: Precedence through grammar levels
-@global["$expr_or"]      // Lowest precedence
+$global["$expr_or"]      // Lowest precedence
     = rule <$expr_or> '||' <$expr_and> {$1 || $3}
     | <$expr_and>
     ;
 
-@global["$expr_and"]     // Higher precedence
+$global["$expr_and"]     // Higher precedence
     = rule <$expr_and> '&&' <$expr_equality> {$1 && $3}
     | <$expr_equality>
     ;
 
-@global["$expr_equality"] // Even higher precedence
+$global["$expr_equality"] // Even higher precedence
     = rule <$expr_equality> '==' <$expr_comparison> {$1 == $3}
     | <$expr_equality> '!=' <$expr_comparison> {$1 != $3}
     | <$expr_comparison>
@@ -77,7 +77,7 @@ When a rule matches, Grapa creates execution tree nodes:
 
 ```grapa
 // Action code format: {grapa_expression}
-@global["$addition"]
+$global["$addition"]
     = rule <$term> '+' <$addition> {$1 + $3}
     | <$term>
     ;
@@ -88,7 +88,7 @@ When a rule matches, Grapa creates execution tree nodes:
 Action codes can access matched parameters using `$` followed by a number:
 
 ```grapa
-@global["$example_rule"]
+$global["$example_rule"]
     = rule <$term> '+' <$expression> {$1 + $3}
     | <$term>
     ;
@@ -113,25 +113,25 @@ Action codes can access matched parameters using `$` followed by a number:
 **Action Code Best Practices:**
 ```grapa
 // ✅ GOOD: Clear operation names
-@global["$string_concat"]
+$global["$string_concat"]
     = rule <$string> '+' <$string_concat> {$1 + $3}
     | <$string>
     ;
 
 // ✅ GOOD: Multiple parameters
-@global["$function_call"]
+$global["$function_call"]
     = rule <$identifier> '(' <$argument_list> ')' {$1($3)}
     | <$identifier> '(' ')' {$1()}
     ;
 
 // ✅ GOOD: Conditional operations
-@global["$conditional"]
+$global["$conditional"]
     = rule <$condition> '?' <$true_expr> ':' <$false_expr> {$1 ? $3 : $5}
     | <$condition>
     ;
 
 // ✅ GOOD: Complex parameter access
-@global["$complex_operation"]
+$global["$complex_operation"]
     = rule <$value1> '+' <$value2> {
         if ($1.type() == $STR && $3.type() == $STR) {
             $1 + $3  // String concatenation
@@ -151,7 +151,7 @@ Parameters in action codes can be various types:
 
 ```grapa
 // Different parameter types
-@global["$mixed_parameters"]
+$global["$mixed_parameters"]
     = rule <$identifier> '=' <$expression> ';' {
         // $1 = identifier (string)
         // $2 = '=' (literal)
@@ -165,7 +165,7 @@ Parameters in action codes can be various types:
 **Parameter Type Handling:**
 ```grapa
 // ✅ GOOD: Type-aware parameter processing
-@global["$smart_concat"]
+$global["$smart_concat"]
     = rule <$value1> '+' <$value2> {
         if ($1.type() == $STR) {
             $1 + $3.str()  // String concatenation
@@ -184,7 +184,7 @@ Parameters in action codes can be various types:
 **Skipping Parameters:**
 ```grapa
 // ✅ GOOD: Skip literal tokens, focus on meaningful parameters
-@global["$function_call"]
+$global["$function_call"]
     = rule <$identifier> '(' <$arguments> ')' {$1($3)}
     | <$identifier> '(' ')' {$1()}
     ;
@@ -194,7 +194,7 @@ Parameters in action codes can be various types:
 **Conditional Parameter Access:**
 ```grapa
 // ✅ GOOD: Handle optional parameters
-@global["$optional_param"]
+$global["$optional_param"]
     = rule <$required> ',' <$optional> {$1 + $3}
     | <$required> {$1}
     ;
@@ -206,23 +206,23 @@ Grapa uses a sophisticated token type system:
 
 ```grapa
 // Built-in token types
-@global["$identifier"]
+$global["$identifier"]
     = rule <$litname>  // Matches literal names
 
-@global["$number"]
+$global["$number"]
     = rule <$lit>      // Matches literals (INT, FLOAT, STR)
 
-@global["$operator"]
+$global["$operator"]
     = rule '+' | '-' | '*' | '/'  // Direct character matching
 ```
 
 **Custom Token Types:**
 ```grapa
 // ✅ GOOD: Define custom tokens for clarity
-@global["$custom_operator"]
+$global["$custom_operator"]
     = rule '++' | '--' | '**' | '*/'  // Multi-character operators
 
-@global["$keyword"]
+$global["$keyword"]
     = rule 'if' | 'while' | 'for' | 'return'  // Reserved words
 ```
 
@@ -232,7 +232,7 @@ Grapa's parser is designed for graceful error recovery:
 
 ```grapa
 // ✅ GOOD: Provide fallback alternatives
-@global["$statement"]
+$global["$statement"]
     = rule <$if_statement>
     | <$while_statement>
     | <$assignment>
@@ -246,11 +246,11 @@ Grapa's parser is designed for graceful error recovery:
 ### **Problem 1: Parameter Access Issues**
 ```grapa
 // ❌ BAD: Using $0 (doesn't exist)
-@global["$bad_rule"]
+$global["$bad_rule"]
     = rule <$term> '+' <$term> {$0 + $2}  // $0 is invalid!
 
 // ✅ GOOD: Start with $1
-@global["$good_rule"]
+$global["$good_rule"]
     = rule <$term> '+' <$term> {$1 + $3}  // $1 and $3 are valid
     ;
 ```
@@ -263,12 +263,12 @@ Grapa's parser is designed for graceful error recovery:
 ### **Problem 2: Infinite Recursion**
 ```grapa
 // ❌ BAD: Direct left recursion without base case
-@global["$bad_rule"]
+$global["$bad_rule"]
     = rule <$bad_rule> '+' <$term> {$1 + $3}
     ;
 
 // ✅ GOOD: Include base case
-@global["$good_rule"]
+$global["$good_rule"]
     = rule <$good_rule> '+' <$term> {$1 + $3}
     | <$term>  // Base case
     ;
@@ -277,13 +277,13 @@ Grapa's parser is designed for graceful error recovery:
 ### **Problem 2: Ambiguous Grammar**
 ```grapa
 // ❌ BAD: Ambiguous - both rules can match same input
-@global["$ambiguous"]
+$global["$ambiguous"]
     = rule <$expr> '+' <$expr> {$1 + $3}
     | <$expr> '*' <$expr> {$1 * $3}
     ;
 
 // ✅ GOOD: Clear precedence hierarchy
-@global["$unambiguous"]
+$global["$unambiguous"]
     = rule <$additive> '+' <$multiplicative> {$1 + $3}
     | <$multiplicative>
     ;
@@ -292,11 +292,11 @@ Grapa's parser is designed for graceful error recovery:
 ### **Problem 3: Missing Error Recovery**
 ```grapa
 // ❌ BAD: No error recovery
-@global["$fragile"]
+$global["$fragile"]
     = rule <$perfect_match>  // Fails on any error
 
 // ✅ GOOD: Graceful error handling
-@global["$robust"]
+$global["$robust"]
     = rule <$perfect_match>
     | <$error_recovery>  // Handle errors gracefully
     ;
@@ -307,13 +307,13 @@ Grapa's parser is designed for graceful error recovery:
 ### **Grammar Optimization**
 ```grapa
 // ✅ GOOD: Minimize backtracking
-@global["$efficient_parsing"]
+$global["$efficient_parsing"]
     = rule <$unique_prefix> <$rest>  // Unique first token
     | <$another_unique> <$rest2>
     ;
 
 // ❌ AVOID: Ambiguous prefixes
-@global["$inefficient_parsing"]
+$global["$inefficient_parsing"]
     = rule <$ambiguous> <$rest>  // Multiple rules start same way
     | <$ambiguous> <$rest2>
     ;
@@ -351,24 +351,24 @@ Here's a complete example of a simple calculator grammar:
 
 ```grapa
 // calculator.grc
-@global["$expression"]
+$global["$expression"]
     = rule <$expression> '+' <$term> {$1 + $3}
     | <$expression> '-' <$term> {$1 - $3}
     | <$term>
     ;
 
-@global["$term"]
+$global["$term"]
     = rule <$term> '*' <$factor> {$1 * $3}
     | <$term> '/' <$factor> {$1 / $3}
     | <$factor>
     ;
 
-@global["$factor"]
+$global["$factor"]
     = rule '(' <$expression> ')' {$2}
     | <$number>
     ;
 
-@global["$number"]
+$global["$number"]
     = rule <$lit>
     ;
 ```
@@ -387,7 +387,7 @@ result = parse_my_language("input text")
 ### **Extending Existing Grammar**
 ```grapa
 // Extend existing rules
-@global["$extended_expression"]
+$global["$extended_expression"]
     = rule <$existing_expression>
     | <$my_new_operator> <$extended_expression>
     ;
@@ -399,7 +399,7 @@ result = parse_my_language("input text")
 Since action codes can contain any valid Grapa code, you can do complex operations:
 
 ```grapa
-@global["$complex_operation"]
+$global["$complex_operation"]
     = rule <$value> '+' <$value> {
         // Complex Grapa code here
         if ($1.type() == $STR && $3.type() == $STR) {
@@ -414,7 +414,7 @@ Since action codes can contain any valid Grapa code, you can do complex operatio
 
 ### **Conditional Parsing**
 ```grapa
-@global["$conditional_parse"]
+$global["$conditional_parse"]
     = rule <$condition> '?' <$true_expr> ':' <$false_expr> {
         $1 ? $3 : $5
     }

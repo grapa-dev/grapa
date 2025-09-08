@@ -1161,7 +1161,7 @@ age.echo();     /* 30 */
 city.echo();    /* "New York" */
 
 /* Destructure into global namespace */
-@global ++= {debug:true, timeout:5000};
+$global ++= {debug:true, timeout:5000};
 debug.echo();   /* true */
 timeout.echo(); /* 5000 */
 ```
@@ -1191,7 +1191,7 @@ func({name:"Bob", age:25});
 @local ++= {debug:true, timeout:5000};
 
 /* Global namespace (persistent) */
-@global ++= {config:true, version:"1.0"};
+$global ++= {config:true, version:"1.0"};
 
 /* Object namespace (current object) */
 @this ++= {name:"John", age:25};
@@ -1225,7 +1225,7 @@ sum.echo();     /* 30 */
 product.echo(); /* 200 */
 
 /* Configuration destructuring */
-@global ++= {debug:true, timeout:5000, retries:3};
+$global ++= {debug:true, timeout:5000, retries:3};
 debug.echo();   /* true */
 timeout.echo(); /* 5000 */
 retries.echo(); /* 3 */
@@ -1233,7 +1233,7 @@ retries.echo(); /* 3 */
 
 **Advantages of Grapa's Destructuring:**
 - **Namespace Control**: Explicit control over where variables go
-- **Flexible**: Can destructure into any namespace (`@local`, `@global`, `@this`)
+- **Flexible**: Can destructure into any namespace (`@local`, `$global`, `@this`)
 - **Powerful**: Can destructure multiple objects into the same namespace
 - **Consistent**: Uses existing `++=` operator and namespace system
 - **Duplicate Resolution**: Clear behavior for handling duplicates

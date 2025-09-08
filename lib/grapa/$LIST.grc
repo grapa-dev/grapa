@@ -1,4 +1,4 @@
-@global["$LIST"]
+$global["$LIST"]
 	= class ($OBJ) {
  	message = @<message,{@<this>}>;
  	err = @<err,{@<this>}>;

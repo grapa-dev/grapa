@@ -1,3 +1,3 @@
-@global["$ARRAY"]
+$global["$ARRAY"]
 	= class ($LIST,$VECTOR) {
 	};

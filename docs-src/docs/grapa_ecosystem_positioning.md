@@ -298,7 +298,7 @@ This table ranks programming languages across key capabilities, showing where Gr
 #### **1. Dynamic Language Creation**
 ```grapa
 /* Define custom syntax at runtime */
-@global["$custom_command"] = rule for '(' <$comp> ')' <$command> {
+$global["$custom_command"] = rule for '(' <$comp> ')' <$command> {
     op(init:$3, body:$6){ /* Implementation */ }
 };
 

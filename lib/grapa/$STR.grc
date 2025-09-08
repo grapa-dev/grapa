@@ -1,4 +1,4 @@
-@global["$STR"]
+$global["$STR"]
 	= class ($OBJ) {
 	upper = @<"upper",{@<this>}>; 
 	lower = @<"lower",{@<this>}>; 

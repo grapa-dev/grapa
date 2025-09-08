@@ -1,4 +1,4 @@
-@global["$file"]
+$global["$file"]
 	= class ($OBJ) {
 	pwd = @<"file_pwd",{@<this>}>; 
 	cd = @<[op,@<"file_cd",{@<this>,@<var,{path}>}>],{path}>; 

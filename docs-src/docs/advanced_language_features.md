@@ -25,7 +25,7 @@ Grapa's core innovation is its executable BNF system that enables dynamic langua
 
 ```grapa
 /* Define custom syntax at runtime */
-@global["$custom_syntax"] = rule <$expression> '+' <$expression> {@<add,{$1,$3}>};
+$global["$custom_syntax"] = rule <$expression> '+' <$expression> {@<add,{$1,$3}>};
 
 /* Use custom syntax immediately */
 result = 5 + 3;  /* Uses custom rule */
@@ -91,7 +91,7 @@ my_rules = $RULE("dynamic_rule", "$INT + $INT", op(a, b) {
 });
 
 /* Modify rules at runtime */
-@global["$expression"] ++= rule 'custom' $STR { op(text:$2) { "Custom: " + text; } };
+$global["$expression"] ++= rule 'custom' $STR { op(text:$2) { "Custom: " + text; } };
 ```
 
 #### **Token-to-Code Transformation**
@@ -120,7 +120,7 @@ custom_expression = "custom 'hello world'";
 **Grapa's Approach:**
 ```grapa
 /* Grapa uses executable BNF with direct code generation */
-@global["$function"] = rule 'defun' $ID '(' $params ')' $body {
+$global["$function"] = rule 'defun' $ID '(' $params ')' $body {
     op(name:$2, params:$4, body:$6) {
         /* Directly creates executable $OP structure */
         return $OP(name, op(params) { body; });
@@ -457,7 +457,7 @@ rest.echo();    /* [3, 4, 5] */
 @local ++= {debug:true, timeout:5000};
 
 /* Global namespace (persistent) */
-@global ++= {config:true, version:"1.0"};
+$global ++= {config:true, version:"1.0"};
 
 /* Object namespace (current object) */
 @this ++= {name:"John", age:25};
@@ -709,11 +709,11 @@ new_float = components.encode("FLOAT");
 ### **7. System Class Redefinition** ✅ **IMPLEMENTED**
 
 **Status**: Fully implemented but advanced feature
-**Current**: `@global` syntax for redefining system classes
+**Current**: `$global` syntax for redefining system classes
 
 ```grapa
 /* Redefine $ARRAY with custom methods */
-@global["$ARRAY"] = class ($LIST, $VECTOR) {
+$global["$ARRAY"] = class ($LIST, $VECTOR) {
     custom_method = op() { 
         "Custom array method called".echo();
         $this.len();  /* Access the array's length */

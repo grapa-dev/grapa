@@ -67,7 +67,7 @@ Execute input against a custom rule set using the system evaluation function.
 
 ```grapa
 /* Define rules in a namespace */
-@global["etl_rules"] = {
+$global["etl_rules"] = {
     csv_parser: rule $STR ',' $STR ',' $STR {op(name:$1,age:$3,city:$5){
         return {name: name, age: age.int(), city: city};
     }},
@@ -101,11 +101,11 @@ Create rules dynamically and execute them immediately.
 /* Rule factory function */
 create_parser = op(rule_name, rule_definition) {
     /* Define the rule dynamically */
-    @global[rule_name] = rule_definition;
+    $global[rule_name] = rule_definition;
     
     /* Return a function that executes against this rule */
     return op(input) {
-        return op()(input, @global[rule_name])();
+        return op()(input, $global[rule_name])();
     };
 };
 
@@ -141,7 +141,7 @@ Isolated rules are perfect for ETL workflows where you need to parse various dat
 
 ```grapa
 /* ETL Pipeline with isolated rules */
-@global["etl_pipeline_rules"] = {
+$global["etl_pipeline_rules"] = {
     /* Extract rules */
     extract_csv: rule $STR ',' $STR ',' $STR {op(name:$1,age:$3,city:$5){
         return {name: name, age: age.int(), city: city, source: "csv"};
@@ -170,9 +170,9 @@ Isolated rules are perfect for ETL workflows where you need to parse various dat
 etl_pipeline = op(input_data, input_type, transformations, output_type) {
     /* Extract */
     if (input_type == "csv") {
-        extracted = op()(input_data, @global["etl_pipeline_rules"].extract_csv)();
+        extracted = op()(input_data, $global["etl_pipeline_rules"].extract_csv)();
     } else if (input_type == "json") {
-        extracted = op()(input_data, @global["etl_pipeline_rules"].extract_json)();
+        extracted = op()(input_data, $global["etl_pipeline_rules"].extract_json)();
     } else {
         return $err("Unsupported input type");
     };
@@ -183,16 +183,16 @@ etl_pipeline = op(input_data, input_type, transformations, output_type) {
     while (i < transformations.len()) {
         transform = transformations[i];
         if (transform == "uppercase") {
-            transformed.name = op()(transformed.name, @global["etl_pipeline_rules"].transform_uppercase)();
+            transformed.name = op()(transformed.name, $global["etl_pipeline_rules"].transform_uppercase)();
         } else if (transform == "add_prefix") {
-            transformed.name = op()("USER", transformed.name, @global["etl_pipeline_rules"].transform_add_prefix)();
+            transformed.name = op()("USER", transformed.name, $global["etl_pipeline_rules"].transform_add_prefix)();
         };
         i += 1;
     };
     
     /* Load */
     if (output_type == "database") {
-        result = op()(transformed, @global["etl_pipeline_rules"].load_database)();
+        result = op()(transformed, $global["etl_pipeline_rules"].load_database)();
     } else {
         result = transformed;
     };
@@ -216,7 +216,7 @@ parse_headers = op(p){p.split("\n").filter(op(line){line.grep("^[A-Za-z-]+: ")})
 extract_body = op(p){p.split("\r\n\r\n")[1] || ""};
 
 /* Use wrapper functions in isolated rules */
-@global["http_parser_rules"] = {
+$global["http_parser_rules"] = {
     http_request: rule 
         <$raw_request,op(b:$1){validate_http(b)}>
         <$validated,op(b:$1){parse_headers(b)}>
@@ -229,7 +229,7 @@ extract_body = op(p){p.split("\r\n\r\n")[1] || ""};
 
 ```grapa
 /* Protocol-specific rules */
-@global["protocol_rules"] = {
+$global["protocol_rules"] = {
     /* HTTP Request parsing */
     http_request: rule $STR ' ' $STR ' ' $STR {op(method:$1,path:$3,version:$5){
         return {method: method, path: path, version: version, protocol: "HTTP"};
@@ -249,11 +249,11 @@ extract_body = op(p){p.split("\r\n\r\n")[1] || ""};
 /* Protocol parser function */
 parse_protocol = op(input, protocol_type) {
     if (protocol_type == "http") {
-        return op()(input, @global["protocol_rules"].http_request)();
+        return op()(input, $global["protocol_rules"].http_request)();
     } else if (protocol_type == "smtp") {
-        return op()(input, @global["protocol_rules"].smtp_command)();
+        return op()(input, $global["protocol_rules"].smtp_command)();
     } else if (protocol_type == "binary") {
-        return op()(input, @global["protocol_rules"].binary_protocol)();
+        return op()(input, $global["protocol_rules"].binary_protocol)();
     } else {
         return $err("Unknown protocol");
     };
@@ -270,7 +270,7 @@ Create isolated validation rules for business logic and data integrity.
 
 ```grapa
 /* Validation rules */
-@global["validation_rules"] = {
+$global["validation_rules"] = {
     /* Email validation */
     email_validation: rule $STR '@' $STR '.' $STR {op(local:$1,domain:$3,tld:$5){
         if ($local.len() > 0 && domain.len() > 0 && tld.len() > 0) {
@@ -304,11 +304,11 @@ Create isolated validation rules for business logic and data integrity.
 /* Validation function */
 validate_data = op(input, validation_type) {
     if (validation_type == "email") {
-        return op()(input, @global["validation_rules"].email_validation)();
+        return op()(input, $global["validation_rules"].email_validation)();
     } else if (validation_type == "phone") {
-        return op()(input, @global["validation_rules"].phone_validation)();
+        return op()(input, $global["validation_rules"].phone_validation)();
     } else if (validation_type == "credit_card") {
-        return op()(input, @global["validation_rules"].credit_card_validation)();
+        return op()(input, $global["validation_rules"].credit_card_validation)();
     } else {
         return $err("Unknown validation type");
     };
@@ -326,7 +326,7 @@ Parse configuration files and settings safely.
 
 ```grapa
 /* Configuration parsing rules */
-@global["config_rules"] = {
+$global["config_rules"] = {
     /* Key-value pairs */
     key_value: rule $STR '=' $STR {op(key:$1,value:$3){
         return {key: key, value: value, type: "setting"};
@@ -351,22 +351,22 @@ Parse configuration files and settings safely.
 /* Configuration parser */
 parse_config = op(input) {
     /* Try each rule until one matches */
-    result = op()(input, @global["config_rules"].key_value)();
+    result = op()(input, $global["config_rules"].key_value)();
     if (result.type() != $ERR) {
         return result;
     };
     
-    result = op()(input, @global["config_rules"].include)();
+    result = op()(input, $global["config_rules"].include)();
     if (result.type() != $ERR) {
         return result;
     };
     
-    result = op()(input, @global["config_rules"].section)();
+    result = op()(input, $global["config_rules"].section)();
     if (result.type() != $ERR) {
         return result;
     };
     
-    result = op()(input, @global["config_rules"].comment)();
+    result = op()(input, $global["config_rules"].comment)();
     if (result.type() != $ERR) {
         return result;
     };
@@ -389,7 +389,7 @@ Create robust parsing rules with fallback mechanisms.
 
 ```grapa
 /* Robust parsing rules with error handling */
-@global["robust_rules"] = {
+$global["robust_rules"] = {
     /* Primary rule with fallback */
     robust_csv: rule $STR ',' $STR ',' $STR {op(name:$1,age:$3,city:$5){
         return {name: name, age: age.int(), city: city, status: "parsed"};
@@ -410,7 +410,7 @@ Create robust parsing rules with fallback mechanisms.
 /* Robust parsing function */
 robust_parse = op(input, rule_name) {
     try {
-        result = op()(input, @global["robust_rules"][rule_name])();
+        result = op()(input, $global["robust_rules"][rule_name])();
         return result;
     } catch (error) {
         return {error: "Parsing failed", details: error, input: input};
@@ -437,10 +437,10 @@ compile_rule = op(rule_name, rule_definition) {
     };
     
     /* Create the rule */
-    @global[rule_name] = rule_definition;
+    $global[rule_name] = rule_definition;
     
     /* Cache the compiled rule */
-    rule_cache[rule_name] = @global[rule_name];
+    rule_cache[rule_name] = $global[rule_name];
     
     return rule_cache[rule_name];
 };
@@ -460,7 +460,7 @@ Combine multiple rules for complex parsing scenarios.
 
 ```grapa
 /* Composite rule system */
-@global["composite_rules"] = {
+$global["composite_rules"] = {
     /* Base rules */
     field: rule $STR {op(value:$1){return value}},
     separator: rule ',' {op(){return ","}},
@@ -485,8 +485,8 @@ Combine multiple rules for complex parsing scenarios.
 };
 
 /* Execute composite parsing */
-simple_result = op()("a,b,c", @global["composite_rules"].csv_row)();
-complex_result = op()("a,b,c|d,e,f", @global["composite_rules"].structured_data)();
+simple_result = op()("a,b,c", $global["composite_rules"].csv_row)();
+complex_result = op()("a,b,c|d,e,f", $global["composite_rules"].structured_data)();
 ```
 
 ## Best Practices

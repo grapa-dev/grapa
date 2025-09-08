@@ -4,16 +4,16 @@
 	Must be located in "lib/[appname]" directory where "lib" is easily findable.
 */
 
-@global["$SPACE"] = token $SYM(" ",{$SKIP});
-@global["$TAB"] = token $SYM("\t",{$SKIP});
-@global["$CR"] = token $SYM("\r",{$SKIP});
-@global["$LF"] = token $SYM("\n",{$SKIP});
-@global["$UNKNOWN"] = token $OTHER("",{$SKIP});
-@global["$BACKSLASH"] = token $SYSSYM("\\",{$SKIP,$ESC});
-@global["$SLF"] = token $SYSSYM("\n",{$SKIP,$RUN});
-@global["$BS"] = token $SYSSYM("[",{$START});
-@global["$BE"] = token $SYSSYM("]",{$RUN,$END});
-@global["$param_token"]
+$global["$SPACE"] = token $SYM(" ",{$SKIP});
+$global["$TAB"] = token $SYM("\t",{$SKIP});
+$global["$CR"] = token $SYM("\r",{$SKIP});
+$global["$LF"] = token $SYM("\n",{$SKIP});
+$global["$UNKNOWN"] = token $OTHER("",{$SKIP});
+$global["$BACKSLASH"] = token $SYSSYM("\\",{$SKIP,$ESC});
+$global["$SLF"] = token $SYSSYM("\n",{$SKIP,$RUN});
+$global["$BS"] = token $SYSSYM("[",{$START});
+$global["$BE"] = token $SYSSYM("]",{$RUN,$END});
+$global["$param_token"]
 	= rule $SYSID("SYM") {@<lit,{$1}>}
 	| $SYSID("INT") {@<lit,{$1}>}
 	| $SYSID("RAW") {@<lit,{$1}>}
@@ -27,7 +27,7 @@
 	| $SYSID("SYSSTR") {@<lit,{$1}>}
 	| $SYSID("OTHER") {@<lit,{$1}>}
 	;
-@global["$param_value"]
+$global["$param_value"]
 	= rule '@' $ID {@<var,{$2}>}
 	| <$op>
 	| null {@<setnull,{}>}
@@ -41,25 +41,25 @@
 	| $FLOAT {@<lit,{$1}>}
 	| $BOOL {@<lit,{$1}>}
 	;
-@global["$lib_start"]
+$global["$lib_start"]
 	= rule <$command_list> ';' {@<lit,{$1}>}
 	| <$command_list> {@<lit,{$1}>}
 	;
-@global["$list_value2"]
+$global["$list_value2"]
 	= rule <$param_value>
 	| '[' <$array_list> ']'
 	| '{' <$lib_list> '}'
 	;
-@global["$list_value"]
+$global["$list_value"]
 	= rule $ID ':' <$list_value2> {@<name,{$1,$3}>}
 	| $STR ':' <$list_value2> {@<name,{$1,$3}>}
 	| <$list_value2>
 	;
-@global["$list_eqvalue"]
+$global["$list_eqvalue"]
 	= rule <$litname> '=' <$comp> {@<name,{$1,$3}>}
 	| <$litname>
 	;
-@global["$attr"]
+$global["$attr"]
 	= rule $SYSID("SKIP") {@<lit,{$1}>}
 	| $SYSID("ESC") {@<lit,{$1}>}
 	| $SYSID("RUN") {@<lit,{$1}>}
@@ -68,34 +68,34 @@
 	| $SYSID("END") {@<lit,{$1}>}
 	| $SYSID("EMPTY") {@<lit,{$1}>}
 	;
-@global["$attr_list"]
+$global["$attr_list"]
 	= rule <$attr> ',' <$attr_list> {@<prepend,{$3,$1}>}
 	| <$attr> <$attr_list> {@<prepend,{$2,$1}>}
 	| <$attr> {@<createlist,{$1}>}
 	|
 	;
-@global["$lib_list"]
+$global["$lib_list"]
 	= rule <$param_value> ',' <$lib_list> {@<prepend,{$3,$1}>}
 	| <$param_value> '.' <$lib_list> {@<prepend,{$3,$1}>}
 	| <$param_value> <$lib_list> {@<prepend,{$2,$1}>}
 	| <$param_value> {@<createlist,{$1}>}
 	|
 	;
-@global["$op"]
+$global["$op"]
 	= rule '@' '<' <$op_list> '>'
 	| '@' '[' <$code_list> ']'
 	| op '(' <$list_list> ')' '(' <$list_list> ')' {@<plan,{$6,$3}>}
 	| op '(' <$list_list> ')' '{' <$lib_start> '}' {@<wrap,{$6,$3}>}
 	| op '{' <$lib_start> '}' {@<wrap,{$3}>}
 	;
-@global["$op_list"]
+$global["$op_list"]
 	= rule <$list_value> ',' '[' <$array_list> ']' ',' '{' <$list_list> '}' {@<createop,{$1,$4,$8}>}
 	| <$list_value> ',' '{' <$list_list> '}' {@<createop,{$1,$4}>}
 	| <$list_value> ',' <$list_value> ',' '{' <$list_list> '}' {@<createop,{$1,$3,$6}>}
 	| <$list_value> ',' <$list_value> {@<createop,{$1,$3}>}
 	| <$list_value> {@<createop,{$1}>}
 	;
-@global["$code_list"]
+$global["$code_list"]
 	= rule ',' ',' <$code_list> {@<prepend,{$3,null,null}>}
 	| ',' <$code_list> {@<prepend,{$2,null}>}
 	| <$comp> ',' <$code_list> {@<prepend,{$3,$1}>}
@@ -103,27 +103,27 @@
 	| <$comp> {@<createcode,{$1}>}
 	| ',' {@<createcode,{null,null}>}
 	;
-@global["$array_list"]
+$global["$array_list"]
 	= rule <$list_value> ',' <$array_list> {@<prepend,{$3,$1}>}
 	| <$list_value> {@<createarray,{$1}>}
 	| {@<createarray,{}>}
 	;
-@global["$tuple_list"]
+$global["$tuple_list"]
 	= rule <$list_value> ',' <$tuple_list> {@<prepend,{$3,$1}>}
 	| <$list_value> {@<createtuple,{$1}>}
 	| {@<createtuple,{}>}
 	;
-@global["$list_list"]
+$global["$list_list"]
 	= rule <$list_value> ',' <$list_list> {@<prepend,{$3,$1}>}
 	| <$list_value> {@<createlist,{$1}>}
 	| {@<createlist,{}>}
 	;
-@global["$list_eqlist"]
+$global["$list_eqlist"]
 	= rule <$list_eqvalue> ',' <$list_eqlist> {@<prepend,{$3,$1}>}
 	| <$list_eqvalue> {@<createlist,{$1}>}
 	| {@<createlist,{}>}
 	;
-@global["$token"]
+$global["$token"]
 	= rule '@' '@' $ID {@<var,{$3}>}
 	| '@' '@' $SYSID {@<var,{$3}>}
 	| '@' $ID {@<ref,{$2}>}
@@ -143,11 +143,11 @@
 	| $FLOAT {@<lit,{$1}>}
 	| $BOOL {@<lit,{$1}>}
 	;
-@global["$token_list"]
+$global["$token_list"]
 	= rule <$token> <$token_list> {@<prepend,{$2,$1}>}
 	| <$token> {@<createlist,{$1}>}
 	;
-@global["$option"]
+$global["$option"]
 	= rule <$token_list> '{' '}' {@<createlist,{$1}>}
 	| <$token_list> '{' <$op> '}' {@<createlist,{$1,$3}>}
 	| <$token_list> {@<createlist,{$1}>}
@@ -155,11 +155,11 @@
 	| '{' <$op> '}' {@<createlist,{null,$2}>}
 	| {@<createlist>}
 	;
-@global["$option_list"]
+$global["$option_list"]
 	= rule <$option> '|' <$option_list> {@<prepend,{$3,$1}>}
 	| <$option> {@<createrule,{$1}>}
 	;
-@global["$litname"]
+$global["$litname"]
 	= rule '@' this {@<this,{}>}
 	| '@' parent {@<parent,{}>}
 	| '@' global {@<global,{}>}
@@ -185,7 +185,7 @@
 	| $FLOAT {@<lit,{$1}>}
 	| $BOOL {@<lit,{$1}>}
 	;
-@global["$lit"]
+$global["$lit"]
 	= rule '@' this {@<this,{}>}
 	| '@' parent {@<parent,{}>}
 	| '@' global {@<global,{}>}
@@ -211,12 +211,12 @@
 	| $FLOAT {@<lit,{$1}>}
 	| $BOOL {@<lit,{$1}>}
 	;
-@global["$param2"]
+$global["$param2"]
 	= rule <$litname> ':' <$comp> {@<name,{$1,$3}>}
 	| <$litname> '=' <$comp> {@<name,{$1,$3}>}
 	| <$litname>
 	;
-@global["$list2"]
+$global["$list2"]
 	= rule ',' ',' <$list2> {@<prepend,{$3,null,null}>}
 	| ',' <$list2> {@<prepend,{$2,null}>}
 	| <$param2> ',' <$list2> {@<prepend,{$3,$1}>}
@@ -224,36 +224,36 @@
 	| <$param2> {@<createlist,{$1}>}
 	| ',' {@<createlist,{null,null}>}
 	;
-@global["$param"]
+$global["$param"]
 	= rule <$litname> ':' <$comp> {@<name,{$1,$3}>}
 	| <$litname> '=' <$comp> {@<name,{$1,$3}>}
 	| <$comp>
 	;
-@global["$param_list"]
+$global["$param_list"]
 	= rule <$param> ',' <$param_list> {@<prepend,{$3,$1}>}
 	| <$param> {@<createlist,{$1}>}
 	|
 	;
-@global["$case"]
+$global["$case"]
 	= rule <$function> ':' <$command> ';' {@<case,{$1,$3}>}
 	| <$function> ':' <$command> {@<case,{$1,$3}>}
 	;
-@global["$case_default"]
+$global["$case_default"]
 	= rule ':' <$command> ';' {@<case,{null,$2}>}
 	| ':' <$command> {@<case,{null,$2}>}
 	;
-@global["$case_rep"]
+$global["$case_rep"]
 	= rule case <$case> <$case_rep> {@<prepend,{$3,$2}>}
 	| case <$case> {@<createlist,{$2}>}
 	| catch <$case> <$case_rep> {@<prepend,{$3,$2}>}
 	| catch <$case> {@<createlist,{$2}>}
 	| {@<createlist,{null}>}
 	;
-@global["$case_list"]
+$global["$case_list"]
 	= rule <$case_rep> default <$case_default> {@<prepend,{$1,$3}>}
 	| <$case_rep> {@<prepend,{$1,null}>}
 	;
-@global["$array"]
+$global["$array"]
 	= rule ',' ',' <$array> {@<prepend,{$3,null,null}>}
 	| ',' <$array> {@<prepend,{$2,null}>}
 	| <$comp> ',' <$array> {@<prepend,{$3,$1}>}
@@ -261,7 +261,7 @@
 	| <$comp> {@<createarray,{$1}>}
 	| ',' {@<createarray,{null,null}>}
 	;
-@global["$tuple"]
+$global["$tuple"]
 	= rule ',' ',' <$tuple> {@<prepend,{$3,null,null}>}
 	| ',' <$tuple> {@<prepend,{$2,null}>}
 	| <$comp> ',' <$tuple> {@<prepend,{$3,$1}>}
@@ -269,7 +269,7 @@
 	| <$comp> {@<createtuple,{$1}>}
 	| ',' {@<createtuple,{null,null}>}
 	;
-@global["$list"]
+$global["$list"]
 	= rule ',' ',' <$list> {@<prepend,{$3,null,null}>}
 	| ',' <$list> {@<prepend,{$2,null}>}
 	| <$param> ',' <$list> {@<prepend,{$3,$1}>}
@@ -277,13 +277,13 @@
 	| <$param> {@<createlist,{$1}>}
 	| ',' {@<createlist,{null,null}>}
 	;
-@global["$classlist"]
+$global["$classlist"]
 	= rule <$param> ';' <$classlist> {@<prepend,{$3,$1}>}
 	| <$param> ';' {@<createlist,{$1}>}
 	| <$param> {@<createlist,{$1}>}
 	|
 	;
-@global["$elSelfClosingID"]
+$global["$elSelfClosingID"]
 	= rule area {@<lit,{$1}>}
 	| AREA {@<lit,{$1}>}
 	| base {@<lit,{$1}>}
@@ -317,102 +317,102 @@
 	| wbr {@<lit,{$1}>}
 	| WBR {@<lit,{$1}>}
 	;
-@global["$elIDItem"]
+$global["$elIDItem"]
 	= rule $ID {@<lit,{$1}>}
 	| $STR {@<lit,{$1}>}
 	;
-@global["$elID"]
+$global["$elID"]
 	= rule <$elIDItem> ':' <$elIDItem> {@<add,{$1,":",$3}>}
 	| <$elIDItem>
 	;
-@global["$elAttr"]
+$global["$elAttr"]
 	= rule <$elID> '=' <$compL2> {@<name,{$1,$3}>}
 	| <$elID>
 	;
-@global["$elAttrList"]
+$global["$elAttrList"]
 	= rule <$elAttr> <$elAttrList> {@<prepend,{$2,$1}>}
 	| {@<createlist,{}>}
 	;
 
-@global["$elHtmlAttrBodyX"]
+$global["$elHtmlAttrBodyX"]
 	= rule '>' <$htmlterm>
 	| '>' <@<join,{$1}>> <$htmlterm> {@<prepend,{$3,$2}>}
 	;
-@global["$elHtmlValue"]
+$global["$elHtmlValue"]
 	= rule '/' '>' {@<createel,{}>}
 	| <$elAttrList> '/' '>' {@<createel,{$1}>}
 	| <$elAttrList> <$elHtmlAttrBodyX>  {@<createel,{$1,$2}>}
 	;
-@global["$elAttrBodyX"]
+$global["$elAttrBodyX"]
 	= rule '>' <$xmlterm>
 	| '>' <@<join,{$1}>> <$xmlterm> {@<prepend,{$3,$2}>}
 	;
-@global["$elValue"]
+$global["$elValue"]
 	= rule '/' '>' {@<createel,{}>}
 	| <$elAttrList> '/' '>' {@<createel,{$1}>}
 	| <$elAttrList> <$elAttrBodyX>  {@<createel,{$1,$2}>}
 	;
 
-@global["$elQname"]
+$global["$elQname"]
 	= rule '?' <$elID> {@<add,{"?",$2}>}
 	;
-@global["$elQvalue"]
+$global["$elQvalue"]
 	= rule <$elAttrList> {@<createel,{$1}>}
 	;
 	
-@global["$elSkipValueY"]
+$global["$elSkipValueY"]
 	= rule '-' <@<join,{$1}>> ('-' '-' '>') {@<lit,{$2}>}
 	;
-@global["$elSkipValueX"]
+$global["$elSkipValueX"]
 	= rule <$elSkipValueY> {@<createxml,{$1}>}
 	;
-@global["$elSkipValue"]
+$global["$elSkipValue"]
 	= rule <$elSkipValueX> {@<createel,{{},$1}>}
 	;
 	
-@global["$tagDataValueY"]
+$global["$tagDataValueY"]
 	= rule '[' <@<join,{$1}>> (']' ']' '>') {@<lit,{$2}>}
 	;
-@global["$tagDataValueX"]
+$global["$tagDataValueX"]
 	= rule <$tagDataValueY> {@<createxml,{$1}>}
 	;
-@global["$tagDataValue"]
+$global["$tagDataValue"]
 	= rule <$tagDataValueX> {@<createel,{{},$1}>}
 	;
 
-@global["$tagScriptValueY"]
+$global["$tagScriptValueY"]
 	= rule '>' <@<join,{$1}>> ('<' '/' script '>') {@<name,{null,$2}>}
 	;
-@global["$tagScriptValueX"]
+$global["$tagScriptValueX"]
 	= rule <$tagScriptValueY> {@<createxml,{$1}>}
 	;
-@global["$tagScriptValue"]
+$global["$tagScriptValue"]
 	= rule <$elAttrList> <$tagScriptValueX> {@<createel,{$1,$2}>}
 	| <$elAttrList> '/' '>' {@<createel,{$1}>}
 	;
 
-@global["$tagDocHtmlValueY"]
+$global["$tagDocHtmlValueY"]
 	= rule <$litname> <$tagDocHtmlValueY> {@<prepend,{$2,$1}>}
 	| <$litname> {@<createarray,{$1}>}
 	;
-@global["$tagDocHtmlValueX"]
+$global["$tagDocHtmlValueX"]
 	= rule html <$tagDocHtmlValueY> {@<prepend,{$2,$1}>}
 	| html {@<createarray,{$1}>}
 	| HTML <$tagDocHtmlValueY> {@<prepend,{$2,$1}>}
 	| HTML {@<createarray,{$1}>}
 	;
-@global["$tagDocHtmlValue"]
+$global["$tagDocHtmlValue"]
 	= rule <$tagDocHtmlValueX> {@<createel,{$1}>}
 	;
-@global["$tagDocValueX"]
+$global["$tagDocValueX"]
 	= rule <$litname> <$tagDocValueX> {@<prepend,{$2,$1}>}
 	| <$litname> {@<createarray,{$1}>}
 	;
-@global["$tagDocValue"]
+$global["$tagDocValue"]
 	= rule <$tagDocValueX> {@<createel,{$1}>}
 	;
 
-@global["$tagHtmlValue"]
+$global["$tagHtmlValue"]
 	= rule '<' '!' '-' <$elSkipValue> {@<name,{"!--",$4}>}
 	| '<' '!' '[' CDATA <$tagDataValue> {@<name,{"![CDATA[",$5}>}
 	| '<' '!' DOCTYPE <$tagDocValue> '>' {@<name,{"!DOCTYPE",$4}>}
@@ -423,14 +423,14 @@
 	| '<' <$elQname> <$elQvalue> '?' '>' {@<name,{$2,$3}>}
 	| '<' <$elID> <$elHtmlValue> {@<name,{$2,$3}>}
 	;
-@global["$tagHtmlcreate"]
+$global["$tagHtmlcreate"]
 	= rule <$tagHtmlValue> {@<createtag,{$1}>}
 	;
-@global["$tagHtmlHead"]
+$global["$tagHtmlHead"]
 	= rule '<' '!' DOCTYPE <$tagDocHtmlValue> '>' {@<name,{"!DOCTYPE",$4}>}
 	| '<' '!' doctype <$tagDocHtmlValue> '>' {@<name,{"!DOCTYPE",$4}>}
 	;
-@global["$tagValue"]
+$global["$tagValue"]
 	= rule '<' '!' '-' <$elSkipValue> {@<name,{"!--",$4}>}
 	| '<' '!' '[' CDATA <$tagDataValue> {@<name,{"![CDATA[",$5}>}
 	| '<' '!' DOCTYPE <$tagDocValue> '>' {@<name,{"!DOCTYPE",$4}>}
@@ -440,25 +440,25 @@
 	| '<' <$elQname> <$elQvalue> '?' '>' {@<name,{$2,$3}>}
 	| '<' <$elID> <$elValue> {@<name,{$2,$3}>}
 	;
-@global["$tagcreate"]
+$global["$tagcreate"]
 	= rule <$tagValue> {@<createtag,{$1}>}
 	;
 
-@global["$htmlterm"]
+$global["$htmlterm"]
 	= rule '<' '/' <$elID> '>' {@<createxml,{}>}
 	| '<' '/' '>' {@<createxml,{}>}
 	| '<' '>' {@<createxml,{}>}
 	| <$tagHtmlcreate> <$htmlterm> {@<prepend,{$2,$1}>}
 	| <$tagHtmlcreate> <@<join,{$1}>> <$htmlterm> {@<prepend,{$3,$2,$1}>}
 	;
-@global["$xmlterm"]
+$global["$xmlterm"]
 	= rule '<' '/' <$elID> '>' {@<createxml,{}>}
 	| '<' '/' '>' {@<createxml,{}>}
 	| '<' '>' {@<createxml,{}>}
 	| <$tagcreate> <$xmlterm> {@<prepend,{$2,$1}>}
 	| <$tagcreate> <@<join,{$1}>> <$xmlterm> {@<prepend,{$3,$2,$1}>}
 	;
-@global["$htmlcreate"]
+$global["$htmlcreate"]
 	= rule '<' '/' '>' {@<createxml,{}>}
 	| '<' '>' {@<createxml,{}>}
 	| <$tagHtmlHead> <$htmlcreate> {@<prepend,{$2,$1}>}
@@ -467,7 +467,7 @@
 	| <$tagHtmlcreate> <@<join,{$1}>> <$htmlcreate> {@<prepend,{$3,$2,$1}>}
 	| <$tagHtmlcreate> {@<createxml,{$1}>}
 	;
-@global["$xmlcreate"]
+$global["$xmlcreate"]
 	= rule '<' '/' '>' {@<createxml,{}>}
 	| '<' '>' {@<createxml,{}>}
 	| <$tagHtmlHead> <$htmlcreate> {@<prepend,{$2,$1}>}
@@ -476,17 +476,17 @@
 	| <$tagcreate> <@<join,{$1}>> <$xmlcreate> {@<prepend,{$3,$2,$1}>}
 	| <$tagcreate> {@<createxml,{$1}>}
 	;
-@global["$opcreate"]
+$global["$opcreate"]
 	= rule '(' ')' '(' <$list> ')' {@<plan,{$4,@<createlist,{}>}>}
 	| '(' ')' '{' <$lib_start> '}' {@<wrap,{$4,@<createlist,{}>}>}
 	| '(' <$list2> ')' '(' <$list> ')' {@<plan,{$5,$2}>}
 	| '(' <$list2> ')' '{' <$lib_start> '}' {@<wrap,{$5,$2}>}
 	| '{' <$lib_start> '}' {@<wrap,{$2}>}
 	;
-@global["$lambdacreate"]
+$global["$lambdacreate"]
 	= rule <$list_eqlist> ':' '{' <$lib_start> '}' {@<plan,{$4,$1}>}
 	;
-@global["$function"]
+$global["$function"]
 	= rule '[' ']' {@<createarray,{}>}
 	| '[' <$array> ']'
 	| '#' '[' ']' '#'  {@<vector,{}>}
@@ -522,25 +522,25 @@
 	| <$litname> '(' <$list> ')' {@<call,{$1,$3}>}
 	| <$lit>
 	;
-@global["$compName"]
+$global["$compName"]
 	= rule <$opcreate> {@<name,{"$",$1}>}
 	| <$litname> '(' ')' {@<name,{$1,null}>}
 	| <$litname> '(' <$list> ')' {@<name,{$1,$3}>}
 	| <$litname>
 	;
-@global["$pathpart"]
+$global["$pathpart"]
 	= rule '~' {@<lit,{"~"}>}
 	| '.' '.' {@<lit,{".."}>}
 	| '.' {@<lit,{"."}>}
 	| <$litname>
 	;
-@global["$path"]
+$global["$path"]
 	= rule <$pathpart> '/' <$path> {@<add,{$1,"/",$3}>}
 	| <$pathpart> '/'
 	| <$pathpart>
 	| '/'
 	;
-@global["$comppart"]
+$global["$comppart"]
 	= rule '[' <$comp> ']' <$comppart> {@<prepend,{$4,$2}>}
 	| '[' <$comp> ']' {@<createlist,{$2}>}
 	| '[' ']' <$comppart> {@<prepend,{$3,null}>}
@@ -548,100 +548,100 @@
 	| '.' <$compName> <$comppart> {@<prepend,{$3,$2}>}
 	| '.' <$compName> {@<createlist,{$2}>}
 	;
-@global["$compL3"]
+$global["$compL3"]
 	= rule <$lit> <$comppart> {@<search,{$1,$2}>}
 	| <$function> <$comppart> {@<search,{$1,$2}>}
 	| <$function>
 	;
-@global["$compL2"]
+$global["$compL2"]
 	= rule <$compL3> '(' ')' {@<call,{$1}>}
 	| <$compL3> '(' <$list> ')' {@<call,{$1,$3}>}
 	| <$compL3>
 	;
-@global["$compExtend"]
+$global["$compExtend"]
 	= rule <$compExtend> '+' '+' <$compL2> {@<extend,{$1,$4}>}
 	| <$compExtend> '-' '-' <$compL2> {@<remove,{$1,$4}>}
 	| <$compL2>
 	;
 
 /* https://en.cppreference.com/w/cpp/language/operator_precedence */
-@global["$compPow"]
+$global["$compPow"]
 	= rule <$compPow> '*' '*' <$compExtend> {@<pow,{$1,$4}>}
 	| <$compPow> '*' '/' <$compExtend> {@<root,{$1,$4}>}
 	| <$compExtend>
 	;
-@global["$compMul"]
+$global["$compMul"]
 	= rule <$compMul> '*' <$compPow> {@<mul,{$1,$3}>}
 	| <$compMul> '/' <$compPow> {@<div,{$1,$3}>}
 	| <$compMul> '%' <$compPow> {@<mod,{$1,$3}>}
 	| <$compMul> '.' '*' <$compPow> {@<dot,{$1,$4}>}
 	| <$compPow>
 	;
-@global["$compAdd"]
+$global["$compAdd"]
 	= rule <$compAdd> '+' <$compMul> {@<add,{$1,$3}>}
 	| <$compAdd> '-' <$compMul> {@<sub,{$1,$3}>}
 	| <$compMul>
 	;
-@global["$compsetBitShift"]
+$global["$compsetBitShift"]
 	= rule <$compsetBitShift> '<' '<' <$compAdd> {@<bsl,{$1,$4}>}
 	| <$compsetBitShift> '>' '>' <$compAdd> {@<bsr,{$1,$4}>}
 	| <$compAdd>
 	;
-@global["$compsetTW"]
+$global["$compsetTW"]
 	= rule <$compsetTW> '<' '=' '>' <$compsetBitShift> {@<cmp,{$1,$5}>}
 	| <$compsetBitShift>
 	;
-@global["$compsetGtLt"]
+$global["$compsetGtLt"]
 	= rule <$compsetGtLt> '<' '=' <$compsetTW> {@<lteq,{$1,$4}>}
 	| <$compsetGtLt> '<' <$compsetTW> {@<lt,{$1,$3}>}
 	| <$compsetGtLt> '>' '=' <$compsetTW> {@<gteq,{$1,$4}>}
 	| <$compsetGtLt> '>' <$compsetTW> {@<gt,{$1,$3}>}
 	| <$compsetTW>
 	;
-@global["$compsetEqNEq"]
+$global["$compsetEqNEq"]
 	= rule <$compsetEqNEq> '=' '=' <$compsetGtLt> {@<eq,{$1,$4}>}
 	| <$compsetEqNEq> '!' '=' <$compsetGtLt> {@<neq,{$1,$4}>}
 	| <$compsetGtLt>
 	;
-@global["$compsetBitAnd"]
+$global["$compsetBitAnd"]
 	= rule <$compsetEqNEq> '&' <$compsetBitAnd> {@<band,{$1,$3}>}
 	| <$compsetEqNEq>
 	;
-@global["$compsetBitXOr"]
+$global["$compsetBitXOr"]
 	= rule <$compsetBitAnd> '^' <$compsetBitXOr> {@<xor,{$1,$3}>}
 	| <$compsetBitAnd>
 	;
-@global["$compsetBitOr"]
+$global["$compsetBitOr"]
 	= rule <$compsetBitXOr> '|' <$compsetBitOr> {@<bor,{$1,$3}>}
 	| <$compsetBitXOr>
 	;
-@global["$compsetAnd"]
+$global["$compsetAnd"]
 	= rule <$compsetBitOr> '&' '&' <$compsetAnd> {@<and,{$1,$4}>}
 	| <$compsetBitOr>
 	;
-@global["$compsetOr"]
+$global["$compsetOr"]
 	= rule <$compsetAnd> '|' '|' <$compsetOr> {@<or,{$1,$4}>}
 	| <$compsetAnd>
 	;
-@global["$compT"]
+$global["$compT"]
 	= rule <$compsetOr> '?' ':' <$comp> {@<if,{$1,null,$4}>}
 	| <$compsetOr> '?' <$compsetOr> ':' <$compsetOr> ':' <$comp> {@<if,{$1,$3,$5,$7}>}
 	| <$compsetOr> '?' <$compsetOr> ':' <$comp> {@<if,{$1,$3,$5}>}
 	| <$compsetOr>
 	;
-@global["$comp"]
+$global["$comp"]
 	= rule <$litname> ':' <$comp> {@<name,{$1,$3}>}
 	| <$compT> ':' <$comp> {@<name,{$1,$3}>}
 	| <$compT>
 	;
-@global["$else"]
+$global["$else"]
 	= rule elseif '(' <$comp> ')' <$command> ';' <$else> {@<if,{$3,$5,$7}>}
 	| elseif '(' <$comp> ')' <$command> <$else> {@<if,{$3,$5,$6}>}
 	| elseif '(' <$comp> ')' <$command> ';' {@<if,{$3,$5}>}
 	| elseif '(' <$comp> ')' <$command> {@<if,{$3,$5}>}
 	| else <$command>
 	;
-@global["$command"]
+$global["$command"]
 	= rule '{' <$command_list> ';' '}' {@<scope,{$2}>}
 	| include <$comp> {@<include,{$2}>}
 	| $SYSID("RESET") {@<reset,{}>}
@@ -695,13 +695,13 @@
     | <$comp> '*' '*' '=' <$comp> {@<assignpow,{$1,$5}>}
 	| <$comp>
 	;
-@global["$command_list"]
+$global["$command_list"]
 	= rule <$command> ';' <$command_list>
 	| <$command> <$command_list>
 	| <$command>
 	| ';' <$command_list>
 	;
-@global["$start"]
+$global["$start"]
 	= rule <$command_list> $SYSID("BE")
 	| <$command_list> ';'
 	| <$command_list>
