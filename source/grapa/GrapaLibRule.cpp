@@ -6191,7 +6191,10 @@ static GrapaRuleEvent* ItemSearchCall(GrapaScriptExec *vScriptExec, GrapaNames* 
 				if (pParam && pParam->vQueue)
 					result = vScriptExec->ProcessPlan(pNameSpace, o, (GrapaRuleEvent*)pParam->vQueue->Head(), pParam->vQueue->mCount);
 				else
-					result = vScriptExec->ProcessPlan(pNameSpace, o);
+				{
+					GrapaRuleEvent e;
+					result = vScriptExec->ProcessPlan(pNameSpace, o, &e, 0);
+				}
 				if (pClass)
 				{
 					pNameSpace->GetNameQueue()->PopTail();

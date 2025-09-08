@@ -4603,8 +4603,8 @@ GrapaRuleEvent* GrapaScriptExec::ProcessPlan(GrapaNames* pNameSpace, GrapaRuleEv
 			
 			if (libName)
 			{
-				GrapaRuleQueue *input = inputItem ? (GrapaRuleQueue*)inputItem->vQueue : NULL;
-				GrapaRuleQueue *inputDel = NULL;
+				GrapaRuleQueue* input = inputItem ? (GrapaRuleQueue*)inputItem->vQueue : NULL;
+				GrapaRuleQueue* inputDel = NULL;
 				if (pParam)
 				{
 					// ADD DEBUG: Parameter binding (Level 4)
@@ -4629,13 +4629,14 @@ GrapaRuleEvent* GrapaScriptExec::ProcessPlan(GrapaNames* pNameSpace, GrapaRuleEv
 						}
 						else
 						{
-							v->vRulePointer = eH;
+							AssignValue(pNameSpace, v, eH, NULL);
+							//v->vRulePointer = eH;
 						}
 						paramQueue->PushTail(v);
 						e = e->Next();
 					}
 					e = (GrapaRuleEvent*)paramQueue->Head();
-					while (pParam)
+					while (pParam && pCount)
 					{
 						if (pParam->mName.mLength)
 						{
