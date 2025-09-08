@@ -294,15 +294,6 @@ void GrapaLink::Start(bool& needExit, bool& showConsole, GrapaCHAR& outStr, Grap
 		std::wcstombs((char*)gSystem->mBinDir.mBytes, (wchar_t*)ss.mBytes, MAX_PATH);
 		gSystem->mBinDir.SetLength(strlen((char*)gSystem->mBinDir.mBytes));
 	}
-	if (gSystem->mBinDir.mLength)
-	{
-		char* pathDel = strrchr((char*)gSystem->mBinDir.mBytes, '\\');
-		u64 pathLen = pathDel ? (pathDel - (char*)gSystem->mBinDir.mBytes) : 0;
-		gSystem->mBinName.FROM((char*)&gSystem->mBinDir.mBytes[pathLen ? (pathLen + 1) : 0], gSystem->mBinDir.mLength - (pathLen ? (pathLen + 1) : pathLen));
-		gSystem->mBinDir.SetLength(pathLen);
-		if (gSystem->mBinName.mLength > 4 && gSystem->mBinName.mBytes[gSystem->mBinName.mLength - 4] == '.')
-			gSystem->mBinName.SetLength(gSystem->mBinName.mLength - 4);
-	}
 #else
 	// Detect actual executable path on Unix-like systems
 	char exePath[PATH_MAX];
@@ -337,10 +328,11 @@ void GrapaLink::Start(bool& needExit, bool& showConsole, GrapaCHAR& outStr, Grap
 		gSystem->mBinDir.FROM(gSystem->mWorkDir);
 		gSystem->mBinName.FROM("grapa");
 	}
-    // Set library directory to $WORK/lib (simplified approach)
-    gSystem->mLibDir.FROM(gSystem->mWorkDir); 
-    gSystem->mLibDir.Append("/lib");
+
 #endif
+	// Set library directory to $WORK/lib (simplified approach)
+	gSystem->mLibDir.FROM(gSystem->mWorkDir);
+	gSystem->mLibDir.Append("/lib");
 	// Load grammar from $WORK/lib/grapa
 	GrapaLocalDatabase dir;
 	GrapaCHAR grammarPath(gSystem->mWorkDir);

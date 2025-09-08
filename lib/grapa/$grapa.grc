@@ -160,12 +160,7 @@ $global["$option_list"]
 	| <$option> {@<createrule,{$1}>}
 	;
 $global["$litname"]
-	= rule '@' this {@<this,{}>}
-	| '@' parent {@<parent,{}>}
-	| '@' global {@<global,{}>}
-	| '@' local {@<local,{}>}
-	| '@' oplocal {@<oplocal,{}>}
-	| '@' '<' <$op_list> '>'
+	= rule '@' '<' <$op_list> '>'
 	| '@' '[' <$code_list> ']'
 	| '@' <$litname> {@<var,{$2}>}
 	| $this {@<this,{}>}
@@ -186,12 +181,7 @@ $global["$litname"]
 	| $BOOL {@<lit,{$1}>}
 	;
 $global["$lit"]
-	= rule '@' this {@<this,{}>}
-	| '@' parent {@<parent,{}>}
-	| '@' global {@<global,{}>}
-	| '@' local {@<local,{}>}
-	| '@' oplocal {@<oplocal,{}>}
-	| '@' '<' <$op_list> '>'
+	= rule '@' '<' <$op_list> '>'
 	| '@' '[' <$code_list> ']'
 	| '@' <$litname> {@<var,{$2}>}
 	| $this {@<this,{}>}

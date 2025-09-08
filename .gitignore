@@ -111,6 +111,7 @@ prj/winlib-amd64_shared/grapa
 prj/winlib-amd64_shared/x64
 prj/winlib-amd64_static/.vs
 prj/winlib-amd64_static/grapa
+prj/winlib-amd64_static/grapalib
 prj/winlib-amd64_static/x64
 
 # Build artifacts (top-level only)
