@@ -2712,6 +2712,15 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#function-references-vs-function-calls" class="md-nav__link">
+    <span class="md-ellipsis">
+      Function References vs Function Calls
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#array-function-application" class="md-nav__link">
     <span class="md-ellipsis">
       Array Function Application
@@ -4275,6 +4284,15 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#function-references-vs-function-calls" class="md-nav__link">
+    <span class="md-ellipsis">
+      Function References vs Function Calls
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#array-function-application" class="md-nav__link">
     <span class="md-ellipsis">
       Array Function Application
@@ -4483,7 +4501,19 @@ array = vector.array()          // Explicit conversion
 reshaped = [1,2,3,4].reshape([2,2])  // Returns array, not vector
 </code></pre></div>
 <h2 id="function-application">Function Application</h2>
-<p>One of the most powerful features is function application using operators:</p>
+<p>One of the most powerful features is function application using operators. <strong>⚠️ CRITICAL</strong>: You must use <strong>function references</strong>, not <strong>function calls</strong>.</p>
+<h3 id="function-references-vs-function-calls">Function References vs Function Calls</h3>
+<div class="highlight"><pre><span></span><code>// Define a function
+f = op(x) { x + 1; };
+
+// ✅ CORRECT: Function reference - stores function for later execution
+[1,2,3,4] * [f]                 // Result: [2,3,4,5]
+[1,2,3,4] * [@f]                // Result: [2,3,4,5] (explicit reference)
+
+// ❌ INCORRECT: Function call - evaluates immediately, returns null
+[1,2,3,4] * [f(x)]              // Result: [0,0,0,0] (x is undefined)
+[1,2,3,4] * [f()]               // Result: [0,0,0,0] (no parameters)
+</code></pre></div>
 <h3 id="array-function-application">Array Function Application</h3>
 <div class="highlight"><pre><span></span><code>// Apply function to each element
 [1,2,3,4] * [op(x){x*2}]        // Result: [2,4,6,8]
@@ -4497,11 +4527,19 @@ squares = numbers * [op(x){x*x}] // Result: [1,4,9,16,25]
 // Conditional operations
 data = [1,-2,3,-4,5]
 abs_values = data * [op(x){x &lt; 0 ? -x : x}] // Result: [1,2,3,4,5]
+
+// Using named function references
+double = op(x) { x * 2; };
+doubled = [1,2,3,4] * [double]  // Result: [2,4,6,8]
 </code></pre></div>
 <h3 id="vector-function-application">Vector Function Application</h3>
 <p>Vectors support the same function application as arrays:</p>
 <div class="highlight"><pre><span></span><code>vector = #[1,2,3,4]#
 result = vector * [op(x){x*3}]   // Each element multiplied by 3
+
+// Using function references
+triple = op(x) { x * 3; };
+tripled = vector * [triple]      // Result: #[3,6,9,12]#
 </code></pre></div>
 <h3 id="advanced-vector-operations">Advanced Vector Operations</h3>
 <p>Vectors support additional advanced operations that work seamlessly with functions:</p>

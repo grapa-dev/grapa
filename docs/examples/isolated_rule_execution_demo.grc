@@ -10,29 +10,31 @@
  * 3. Dynamic rule definition and execution
  */
 
-("=== Isolated Rule Execution Demo ===").echo();
+("=== Isolated Rule Execution Demo ===\n").echo();
 
 /* ======================================== */
 /* Pattern 1: op()("input", rule)() */
 /* ======================================== */
 
-("1. Using op()(\"input\", rule)() pattern").echo();
+("1. Using op()(\"input\", rule)() pattern\n").echo();
 
 /* Define a custom rule for CSV parsing */
-csv_rule = rule $STR ',' $STR ',' $STR {op(name:$1,age:$3,city:$5){
+csv_rule = rule $ID ',' $INT ',' $ID {op(name:$1,age:$3,city:$5){
     return {
         name: name,
-        age: age.int(),
+        age: age,
         city: city
     };
 }};
 
 /* Execute against the custom rule without affecting main language */
 result1 = op()("John,25,NY", csv_rule)();
-("CSV parse result: " + result1).echo();
+"CSV parse result: ${result1}\n".interpolate().echo();
 
 /* Define a custom rule for log parsing */
-log_rule = rule '[' $STR ']' $STR {op(timestamp:$2,message:$4){
+catch_sq_bracket_rule = rule ('[') <> (']') {@<lit,{$2}>};
+id_list_rule = rule $ID <id_list_rule> {@<prepend,{$2,$1}>} | $ID {@<createarray,{$1}>};
+log_rule = rule <catch_sq_bracket_rule> <id_list_rule> {op(timestamp:$1,message:$2){
     return {
         timestamp: timestamp,
         message: message,
@@ -42,49 +44,95 @@ log_rule = rule '[' $STR ']' $STR {op(timestamp:$2,message:$4){
 
 /* Execute log parsing */
 result2 = op()("[2024-01-15 10:30:00] User login successful", log_rule)();
-("Log parse result: " + result2).echo();
+"Log parse result: ${result2}\n".interpolate().echo();
 
 /* Define a custom rule for configuration parsing */
-config_rule = rule $STR '=' $STR {op(key:$1,value:$3){
+config_rule = rule $ID '=' $ID {op(key:$1,value:$3){
     return {key: key, value: value};
 }};
 
 /* Execute config parsing */
 result3 = op()("server_name=myapp", config_rule)();
-("Config parse result: " + result3).echo();
+"Config parse result: ${result3}\n".interpolate().echo();
 
 ("\n").echo();
 
 /* ======================================== */
-/* Pattern 2: $sys().eval() with srule parameter */
+/* Pattern 2: Using objects with srule parameter */
 /* ======================================== */
 
-("2. Using $sys().eval() with srule parameter").echo();
+("2. Using objects with srule parameter\n").echo();
 
-/* Define rules in a namespace */
-@global["etl_rules"] = {
-    csv_parser: rule $STR ',' $STR ',' $STR {op(name:$1,age:$3,city:$5){
-        return {name: name, age: age.int(), city: city};
+("2a. $LIST\n").echo();
+
+etl_rules = {
+
+    parse = op(parse_data, parse_rule){op()(parse_data, parse_rule)()},
+
+    csv_parser = rule $ID ',' $INT ',' $ID {op(name:$1,age:$3,city:$5){
+        {name: name, age: age, city: city};
+    }},
+
+    catch_sq_bracket_rule = rule ('[') <@<join,{$1}>>  (']') {@<lit,{$2}>},
+
+    id_list_rule = rule $ID <id_list_rule> {@<prepend,{$2,$1}>} | $ID {@<createarray,{$1}>},
+
+    log_parser = rule <catch_sq_bracket_rule> <id_list_rule> {op(timestamp:$1,message:$2){
+        {timestamp: timestamp, message: message, level: "INFO"};
     }},
     
-    log_parser: rule '[' $STR ']' $STR {op(timestamp:$2,message:$4){
-        return {timestamp: timestamp, message: message, level: "INFO"};
-    }},
-    
-    config_parser: rule $STR '=' $STR {op(key:$1,value:$3){
-        return {key: key, value: value};
+    config_parser = rule $ID '=' $ID {op(key:$1,value:$3){
+        {key: key, value: value};
     }}
 };
 
-/* Execute using $sys().eval() with custom rule set */
-csv_result = $sys().eval("John,25,NY", {}, "etl_rules.csv_parser");
-("CSV eval result: " + csv_result).echo();
+/* Execute with custom rule set */
+csv_result = etl_rules.parse("John,25,NY", etl_rules.csv_parser);
+"CSV eval result: ${csv_result}\n".interpolate().echo();
 
-log_result = $sys().eval("[2024-01-15 10:30:00] User login successful", {}, "etl_rules.log_parser");
-("Log eval result: " + log_result).echo();
+log_result = etl_rules.parse("[2024-01-15 10:30:00] User login successful", etl_rules.log_parser);
+"Log eval result: ${log_result}\n".interpolate().echo();
 
-config_result = $sys().eval("server_name=myapp", {}, "etl_rules.config_parser");
-("Config eval result: " + config_result).echo();
+config_result = etl_rules.parse("server_name=myapp", etl_rules.config_parser);
+"Config eval result: ${config_result}\n".interpolate().echo();
+
+("\n").echo();
+
+("2b. $CLASS\n").echo();
+
+/* Define rules in a namespace */
+etl_rules_class = class {
+
+    parse = op(parse_data, parse_rule){op()(parse_data, parse_rule)()};
+
+    csv_parser = rule $ID ',' $INT ',' $ID {op(name:$1,age:$3,city:$5){
+        {name: name, age: age, city: city};
+    }};
+
+    catch_sq_bracket_rule = rule ('[') <> (']') {@<lit,{$2}>};
+
+    id_list_rule = rule $ID <id_list_rule> {@<prepend,{$2,$1}>} | $ID {@<createarray,{$1}>};
+
+    log_parser = rule <catch_sq_bracket_rule> <id_list_rule> {op(timestamp:$1,message:$2){
+        {timestamp: timestamp, message: message, level: "INFO"};
+    }};
+    
+    config_parser = rule $ID '=' $ID {op(key:$1,value:$3){
+        {key: key, value: value};
+    }};
+};
+
+etl_rules = etl_rules_class();
+
+/* Execute with custom rule set */
+csv_result = etl_rules.parse("John,25,NY", etl_rules.csv_parser);
+"CSV eval result: ${csv_result}\n".interpolate().echo();
+
+log_result = etl_rules.parse("[2024-01-15 10:30:00] User login successful", etl_rules.log_parser);
+"Log eval result: ${log_result}\n".interpolate().echo();
+
+config_result = etl_rules.parse("server_name=myapp", etl_rules.config_parser);
+"Config eval result: ${config_result}\n".interpolate().echo();
 
 ("\n").echo();
 
@@ -92,331 +140,27 @@ config_result = $sys().eval("server_name=myapp", {}, "etl_rules.config_parser");
 /* Pattern 3: Dynamic Rule Definition and Execution */
 /* ======================================== */
 
-("3. Dynamic rule definition and execution").echo();
+("3. Dynamic rule definition and execution\n").echo();
 
-/* Create a rule factory function */
-create_parser = op(rule_name, rule_definition) {
-    /* Define the rule dynamically */
-    @global[rule_name] = rule_definition;
-    
-    /* Return a function that executes against this rule */
-    return op(input) {
-        return op()(input, @global[rule_name])();
-    };
+("3a. $LIST\n").echo();
+
+etl_rules = {
+    parse = op(parse_data, parse_rule){op()(parse_data, parse_rule)()},
 };
-
-/* Create different parsers */
-json_parser = create_parser("json_rule", rule '{' $STR ':' $STR '}' {op(key:$2,value:$4){
-    return {key: key, value: value};
-}});
-
-xml_parser = create_parser("xml_rule", rule '<' $STR '>' $STR '</' $STR '>' {op(tag:$2,content:$4,end_tag:$6){
-    if (tag == end_tag) {
-        return {tag: tag, content: content};
-    } else {
-        return $err("Mismatched tags");
-    };
-}});
-
-/* Execute the dynamically created parsers */
-json_result = json_parser('{"name":"John"}');
-("JSON parse result: " + json_result).echo();
-
-xml_result = xml_parser('<user>John Doe</user>');
-("XML parse result: " + xml_result).echo();
-
+etl_rules += (csv_parser : rule $ID ',' $INT ',' $ID {op(name:$1,age:$3,city:$5){{name: name, age: age, city: city};}});
+csv_result = etl_rules.parse("John,25,NY", etl_rules.csv_parser);
+"CSV eval result: ${csv_result}\n".interpolate().echo();
 ("\n").echo();
 
-/* ======================================== */
-/* Pattern 4: ETL Pipeline with Isolated Rules */
-/* ======================================== */
+("3a. $CLASS\n").echo();
 
-("4. ETL Pipeline with isolated rules").echo();
-
-/* Define ETL-specific rules */
-@global["etl_pipeline_rules"] = {
-    /* Extract rules */
-    extract_csv: rule $STR ',' $STR ',' $STR {op(name:$1,age:$3,city:$5){
-        return {name: name, age: age.int(), city: city, source: "csv"};
-    }},
-    
-    extract_json: rule '{' $STR ':' $STR '}' {op(key:$2,value:$4){
-        return {key: key, value: value, source: "json"};
-    }},
-    
-    /* Transform rules */
-    transform_uppercase: rule $STR {op(text:$1){
-        return text.upper();
-    }},
-    
-    transform_add_prefix: rule $STR $STR {op(prefix:$1,text:$2){
-        return prefix + ": " + text;
-    }},
-    
-    /* Load rules */
-    load_database: rule $STR {op(data:$1){
-        return {action: "insert", table: "users", data: data};
-    }}
+etl_rules_class = class {
+    parse = op(parse_data, parse_rule){op()(parse_data, parse_rule)()};
+    add_rule = op(pName,pRule) {$this.@pName=pRule;};
 };
-
-/* ETL Pipeline function using isolated rules */
-etl_pipeline = op(input_data, input_type, transformations, output_type) {
-    /* Extract */
-    if (input_type == "csv") {
-        extracted = op()(input_data, @global["etl_pipeline_rules"].extract_csv)();
-    } else if (input_type == "json") {
-        extracted = op()(input_data, @global["etl_pipeline_rules"].extract_json)();
-    } else {
-        return $err("Unsupported input type");
-    };
-    
-    /* Transform */
-    transformed = extracted;
-    i = 0;
-    while (i < transformations.len()) {
-        transform = transformations[i];
-        if (transform == "uppercase") {
-            transformed.name = op()(transformed.name, @global["etl_pipeline_rules"].transform_uppercase)();
-        } else if (transform == "add_prefix") {
-            transformed.name = op()("USER", transformed.name, @global["etl_pipeline_rules"].transform_add_prefix)();
-        };
-        i += 1;
-    };
-    
-    /* Load */
-    if (output_type == "database") {
-        result = op()(transformed, @global["etl_pipeline_rules"].load_database)();
-    } else {
-        result = transformed;
-    };
-    
-    return result;
-};
-
-/* Execute ETL pipeline */
-etl_result = etl_pipeline("John,25,NY", "csv", ["uppercase", "add_prefix"], "database");
-("ETL pipeline result: " + etl_result).echo();
-
+etl_rules = etl_rules_class();
+etl_rules.add_rule("csv_parser", rule $ID ',' $INT ',' $ID {op(name:$1,age:$3,city:$5){{name: name, age: age, city: city};}});
+csv_result = etl_rules.parse("John,25,NY", etl_rules.csv_parser);
+"CSV eval result: ${csv_result}\n".interpolate().echo();
 ("\n").echo();
 
-/* ======================================== */
-/* Pattern 5: Protocol Parsing with Isolated Rules */
-/* ======================================== */
-
-("5. Protocol parsing with isolated rules").echo();
-
-/* Define protocol-specific rules */
-@global["protocol_rules"] = {
-    /* HTTP Request parsing */
-    http_request: rule $STR ' ' $STR ' ' $STR {op(method:$1,path:$3,version:$5){
-        return {method: method, path: path, version: version, protocol: "HTTP"};
-    }},
-    
-    /* SMTP command parsing */
-    smtp_command: rule $STR ' ' $STR {op(command:$1,parameter:$3){
-        return {command: command, parameter: parameter, protocol: "SMTP"};
-    }},
-    
-    /* Custom binary protocol */
-    binary_protocol: rule $INT $INT $STR {op(type:$1,length:$3,data:$5){
-        return {type: type, length: length, data: data, protocol: "BINARY"};
-    }}
-};
-
-/* Protocol parser function */
-parse_protocol = op(input, protocol_type) {
-    if (protocol_type == "http") {
-        return op()(input, @global["protocol_rules"].http_request)();
-    } else if (protocol_type == "smtp") {
-        return op()(input, @global["protocol_rules"].smtp_command)();
-    } else if (protocol_type == "binary") {
-        return op()(input, @global["protocol_rules"].binary_protocol)();
-    } else {
-        return $err("Unknown protocol");
-    };
-};
-
-/* Execute protocol parsing */
-http_result = parse_protocol("GET /api/users HTTP/1.1", "http");
-("HTTP parse result: " + http_result).echo();
-
-smtp_result = parse_protocol("MAIL FROM: user@example.com", "smtp");
-("SMTP parse result: " + smtp_result).echo();
-
-("\n").echo();
-
-/* ======================================== */
-/* Pattern 6: Validation Rules with Isolation */
-/* ======================================== */
-
-("6. Validation rules with isolation").echo();
-
-/* Define validation rules */
-@global["validation_rules"] = {
-    /* Email validation */
-    email_validation: rule $STR '@' $STR '.' $STR {op(local:$1,domain:$3,tld:$5){
-        if ($local.len() > 0 && domain.len() > 0 && tld.len() > 0) {
-            return {valid: true, email: local + "@" + domain + "." + tld};
-        } else {
-            return {valid: false, error: "Invalid email format"};
-        };
-    }},
-    
-    /* Phone number validation */
-    phone_validation: rule '(' $INT ')' ' ' $INT '-' $INT {op(area:$2,prefix:$5,number:$7){
-        if (area >= 100 && area <= 999 && prefix >= 100 && prefix <= 999 && number >= 1000 && number <= 9999) {
-            return {valid: true, phone: "(" + area + ") " + prefix + "-" + number};
-        } else {
-            return {valid: false, error: "Invalid phone format"};
-        };
-    }},
-    
-    /* Credit card validation */
-    credit_card_validation: rule $INT $INT $INT $INT {op(part1:$1,part2:$3,part3:$5,part4:$7){
-        if (part1 >= 1000 && part1 <= 9999 && part2 >= 1000 && part2 <= 9999 && 
-            part3 >= 1000 && part3 <= 9999 && part4 >= 1000 && part4 <= 9999) {
-            return {valid: true, card: part1 + "-" + part2 + "-" + part3 + "-" + part4};
-        } else {
-            return {valid: false, error: "Invalid card format"};
-        };
-    }}
-};
-
-/* Validation function */
-validate_data = op(input, validation_type) {
-    if (validation_type == "email") {
-        return op()(input, @global["validation_rules"].email_validation)();
-    } else if (validation_type == "phone") {
-        return op()(input, @global["validation_rules"].phone_validation)();
-    } else if (validation_type == "credit_card") {
-        return op()(input, @global["validation_rules"].credit_card_validation)();
-    } else {
-        return $err("Unknown validation type");
-    };
-};
-
-/* Execute validation */
-email_validation = validate_data("user@example.com", "email");
-("Email validation: " + email_validation).echo();
-
-phone_validation = validate_data("(555) 123-4567", "phone");
-("Phone validation: " + phone_validation).echo();
-
-card_validation = validate_data("1234 5678 9012 3456", "credit_card");
-("Card validation: " + card_validation).echo();
-
-("\n").echo();
-
-/* ======================================== */
-/* Pattern 7: Performance Comparison */
-/* ======================================== */
-
-("7. Performance comparison").echo();
-
-/* Test isolated rule execution vs global rule modification */
-test_data = "John,25,NY";
-
-/* Method 1: Isolated rule execution */
-start_time1 = $TIME().utc();
-i = 0;
-while (i < 100) {
-    result = op()(test_data, csv_rule)();
-    i += 1;
-};
-end_time1 = $TIME().utc();
-isolated_time = end_time1 - start_time1;
-
-/* Method 2: Global rule modification (simulated) */
-start_time2 = $TIME().utc();
-i = 0;
-while (i < 100) {
-    /* Simulate the overhead of global rule modification */
-    temp_rule = csv_rule;
-    result = op()(test_data, temp_rule)();
-    i += 1;
-};
-end_time2 = $TIME().utc();
-global_time = end_time2 - start_time2;
-
-("Performance comparison (100 iterations):").echo();
-("Isolated rule execution: " + isolated_time + " ms").echo();
-("Global rule modification: " + global_time + " ms").echo();
-("Isolated execution is " + (global_time / isolated_time) + "x faster").echo();
-
-("\n").echo();
-
-/* ======================================== */
-/* Pattern 8: Error Handling and Recovery */
-/* ======================================== */
-
-("8. Error handling and recovery").echo();
-
-/* Define robust parsing rules with error handling */
-@global["robust_rules"] = {
-    /* Primary rule with fallback */
-    robust_csv: rule $STR ',' $STR ',' $STR {op(name:$1,age:$3,city:$5){
-        return {name: name, age: age.int(), city: city, status: "parsed"};
-    }} | $STR {op(data:$1){
-        return {raw_data: data, status: "fallback", error: "Invalid CSV format"};
-    }},
-    
-    /* Rule with validation */
-    validated_json: rule '{' $STR ':' $STR '}' {op(key:$2,value:$4){
-        if (key.len() > 0 && value.len() > 0) {
-            return {key: key, value: value, valid: true};
-        } else {
-            return {valid: false, error: "Empty key or value"};
-        };
-    }}
-};
-
-/* Robust parsing function */
-robust_parse = op(input, rule_name) {
-    try {
-        result = op()(input, @global["robust_rules"][rule_name])();
-        return result;
-    } catch (error) {
-        return {error: "Parsing failed", details: error, input: input};
-    };
-};
-
-/* Test robust parsing */
-valid_csv = robust_parse("John,25,NY", "robust_csv");
-("Valid CSV: " + valid_csv).echo();
-
-invalid_csv = robust_parse("Invalid data", "robust_csv");
-("Invalid CSV: " + invalid_csv).echo();
-
-valid_json = robust_parse('{"name":"John"}', "validated_json");
-("Valid JSON: " + valid_json).echo();
-
-("\n").echo();
-
-/* ======================================== */
-/* Conclusion and Best Practices */
-/* ======================================== */
-
-("=== Isolated Rule Execution - Best Practices ===").echo();
-
-("Key Benefits:").echo();
-("1. No side effects on main language").echo();
-("2. Better performance (no global rule modification)").echo();
-("3. Safer for ETL and domain-specific processing").echo();
-("4. Easier testing and debugging").echo();
-("5. Better encapsulation and modularity").echo();
-
-("Usage Patterns:").echo();
-("1. op()(\"input\", custom_rule)() - For single rule execution").echo();
-("2. $sys().eval(\"input\", {}, \"rule_name\") - For rule set execution").echo();
-("3. Dynamic rule creation and execution").echo();
-("4. Namespace-based rule organization").echo();
-
-("ETL Applications:").echo();
-("1. Data format parsing (CSV, JSON, XML)").echo();
-("2. Protocol parsing (HTTP, SMTP, custom protocols)").echo();
-("3. Data validation and transformation").echo();
-("4. Configuration parsing").echo();
-("5. Log file processing").echo();
-
-("This approach provides the power of Grapa's executable BNF").echo();
-("without the risks of modifying the main language grammar!").echo(); 

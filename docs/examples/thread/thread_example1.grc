@@ -24,4 +24,5 @@ basic_thread.start(
 while(basic_thread.started()==false) 0.sleep();
 while(basic_thread.started()==true) 0.sleep();
 "Main: Basic thread done\n".echo();
+basic_thread.stop();
 basic_thread = null;

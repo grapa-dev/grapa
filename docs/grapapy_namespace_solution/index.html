@@ -3499,6 +3499,30 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Root Cause">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#direct-execution-no-parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      Direct Execution (No Parameters)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#parameterized-execution-with-parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      Parameterized Execution (With Parameters)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -3512,18 +3536,27 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#correct-pattern" class="md-nav__link">
+  <a href="#direct-execution-no-parameters-simple-approach" class="md-nav__link">
     <span class="md-ellipsis">
-      Correct Pattern
+      Direct Execution (No Parameters) - Simple Approach
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#example" class="md-nav__link">
+  <a href="#parameterized-execution-with-parameters-use-global" class="md-nav__link">
     <span class="md-ellipsis">
-      Example
+      Parameterized Execution (With Parameters) - Use $global
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mixed-approach-recommended" class="md-nav__link">
+    <span class="md-ellipsis">
+      Mixed Approach (Recommended)
     </span>
   </a>
   
@@ -4124,6 +4157,30 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Root Cause">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#direct-execution-no-parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      Direct Execution (No Parameters)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#parameterized-execution-with-parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      Parameterized Execution (With Parameters)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -4137,18 +4194,27 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#correct-pattern" class="md-nav__link">
+  <a href="#direct-execution-no-parameters-simple-approach" class="md-nav__link">
     <span class="md-ellipsis">
-      Correct Pattern
+      Direct Execution (No Parameters) - Simple Approach
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#example" class="md-nav__link">
+  <a href="#parameterized-execution-with-parameters-use-global" class="md-nav__link">
     <span class="md-ellipsis">
-      Example
+      Parameterized Execution (With Parameters) - Use $global
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mixed-approach-recommended" class="md-nav__link">
+    <span class="md-ellipsis">
+      Mixed Approach (Recommended)
     </span>
   </a>
   
@@ -4224,26 +4290,53 @@
 <h2 id="problem-solved">Problem Solved</h2>
 <p>The original issue was that GrapaPy file and table operations were returning <code>{"error":-1}</code> when using the <code>$file()</code> object. This was caused by a fundamental misunderstanding of how GrapaPy handles namespaces.</p>
 <h2 id="root-cause">Root Cause</h2>
-<p>GrapaPy maintains separate local and global namespaces:
-- <strong>Local namespace</strong>: Cleared between calls to <code>xy.eval()</code>
-- <strong>Global namespace</strong>: Persists across calls to <code>xy.eval()</code></p>
-<p>When we created a <code>$file()</code> object in the local namespace, it was being deleted before we could use it in subsequent calls.</p>
+<p>GrapaPy has two execution modes that affect variable persistence:</p>
+<h3 id="direct-execution-no-parameters">Direct Execution (No Parameters)</h3>
+<ul>
+<li><strong>Execution level</strong>: Global namespace</li>
+<li><strong>Variable persistence</strong>: Variables persist automatically between calls</li>
+<li><strong><code>$global</code> usage</strong>: Not needed for variable persistence</li>
+</ul>
+<h3 id="parameterized-execution-with-parameters">Parameterized Execution (With Parameters)</h3>
+<ul>
+<li><strong>Execution level</strong>: Local scope on top of global</li>
+<li><strong>Variable persistence</strong>: Variables are local and don't persist between calls</li>
+<li><strong><code>$global</code> usage</strong>: Required for variable persistence</li>
+</ul>
+<p>When we created a <code>$file()</code> object without understanding the execution model, it was being created in the wrong scope and deleted before we could use it in subsequent calls.</p>
 <h2 id="solution">Solution</h2>
-<p>Use the global namespace for objects that need to persist across calls:</p>
-<h3 id="correct-pattern">Correct Pattern</h3>
-<ol>
-<li><strong>First time (initialization)</strong>: Use <code>$global.variable</code> to create/initialize the variable</li>
-<li><strong>Subsequent times</strong>: Use just <code>variable</code> directly - Grapa will find it in the global namespace</li>
-</ol>
-<h3 id="example">Example</h3>
+<p>The solution depends on your execution mode:</p>
+<h3 id="direct-execution-no-parameters-simple-approach">Direct Execution (No Parameters) - Simple Approach</h3>
 <div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">grapapy</span>
 
 <span class="n">xy</span> <span class="o">=</span> <span class="n">grapapy</span><span class="o">.</span><span class="n">grapa</span><span class="p">()</span>
 
-<span class="c1"># Initialize file system in global namespace (first time only)</span>
+<span class="c1"># Variables persist automatically - no $global needed</span>
+<span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s2">&quot;fs = $file();&quot;</span><span class="p">)</span>
+<span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s2">&quot;fs.set(&#39;test.txt&#39;, &#39;Hello World&#39;);&quot;</span><span class="p">)</span>
+<span class="n">content</span> <span class="o">=</span> <span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s2">&quot;fs.get(&#39;test.txt&#39;);&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>  <span class="c1"># Hello World</span>
+</code></pre></div>
+<h3 id="parameterized-execution-with-parameters-use-global">Parameterized Execution (With Parameters) - Use $global</h3>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">grapapy</span>
+
+<span class="n">xy</span> <span class="o">=</span> <span class="n">grapapy</span><span class="o">.</span><span class="n">grapa</span><span class="p">()</span>
+
+<span class="c1"># When using parameters, use $global for persistence</span>
+<span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s2">&quot;$global.fs = $file();&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;x&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">})</span>
+<span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s2">&quot;fs.set(&#39;test.txt&#39;, &#39;Hello World&#39;);&quot;</span><span class="p">)</span>
+<span class="n">content</span> <span class="o">=</span> <span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s2">&quot;fs.get(&#39;test.txt&#39;);&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>  <span class="c1"># Hello World</span>
+</code></pre></div>
+<h3 id="mixed-approach-recommended">Mixed Approach (Recommended)</h3>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">grapapy</span>
+
+<span class="n">xy</span> <span class="o">=</span> <span class="n">grapapy</span><span class="o">.</span><span class="n">grapa</span><span class="p">()</span>
+
+<span class="c1"># Initialize persistent objects with $global (works in both modes)</span>
 <span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s2">&quot;$global.fs = $file();&quot;</span><span class="p">)</span>
 
-<span class="c1"># Use file system (no $global needed)</span>
+<span class="c1"># Use objects directly (Grapa finds them in global namespace)</span>
 <span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s2">&quot;fs.set(&#39;test.txt&#39;, &#39;Hello World&#39;);&quot;</span><span class="p">)</span>
 <span class="n">content</span> <span class="o">=</span> <span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s2">&quot;fs.get(&#39;test.txt&#39;);&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>  <span class="c1"># Hello World</span>
@@ -4257,9 +4350,10 @@
 5. Global namespace</p>
 <h2 id="key-insights">Key Insights</h2>
 <ol>
+<li><strong>Execution mode determines persistence</strong> - Direct execution persists variables automatically, parameterized execution requires <code>$global</code></li>
 <li><strong>The <code>$</code> character is NOT the problem</strong> - It works correctly in GrapaPy</li>
-<li><strong>Namespace management is the key</strong> - Use global namespace for persistent objects</li>
-<li><strong>Only use <code>$global</code> for initialization</strong> - After that, just use the variable name</li>
+<li><strong>Namespace management is the key</strong> - Use global namespace for persistent objects when using parameters</li>
+<li><strong>Mixed approach is recommended</strong> - Use <code>$global</code> for initialization to work in both modes</li>
 <li><strong>All Grapa operations work</strong> - File system, database, grep, etc.</li>
 </ol>
 <h2 id="test-results">Test Results</h2>

@@ -1140,6 +1140,15 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#element-access-methods" class="md-nav__link">
+    <span class="md-ellipsis">
+      Element Access Methods
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#assignment-operations" class="md-nav__link">
     <span class="md-ellipsis">
       Assignment Operations (=)
@@ -1321,6 +1330,84 @@
         
       </ul>
     </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#error-handling-and-boundary-conditions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Error Handling and Boundary Conditions
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Error Handling and Boundary Conditions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#list-access-behavior" class="md-nav__link">
+    <span class="md-ellipsis">
+      List Access Behavior
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#key-differences-from-vectors" class="md-nav__link">
+    <span class="md-ellipsis">
+      Key Differences from Vectors
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#append-vs-error-behavior" class="md-nav__link">
+    <span class="md-ellipsis">
+      Append vs. Error Behavior
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#insertion-vs-appending" class="md-nav__link">
+    <span class="md-ellipsis">
+      Insertion vs. Appending
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#error-handling-patterns" class="md-nav__link">
+    <span class="md-ellipsis">
+      Error Handling Patterns
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#comparison-with-other-data-types" class="md-nav__link">
+    <span class="md-ellipsis">
+      Comparison with Other Data Types
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#best-practices" class="md-nav__link">
+    <span class="md-ellipsis">
+      Best Practices
+    </span>
+  </a>
   
 </li>
         
@@ -4333,6 +4420,15 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#element-access-methods" class="md-nav__link">
+    <span class="md-ellipsis">
+      Element Access Methods
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#assignment-operations" class="md-nav__link">
     <span class="md-ellipsis">
       Assignment Operations (=)
@@ -4522,6 +4618,84 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#error-handling-and-boundary-conditions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Error Handling and Boundary Conditions
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Error Handling and Boundary Conditions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#list-access-behavior" class="md-nav__link">
+    <span class="md-ellipsis">
+      List Access Behavior
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#key-differences-from-vectors" class="md-nav__link">
+    <span class="md-ellipsis">
+      Key Differences from Vectors
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#append-vs-error-behavior" class="md-nav__link">
+    <span class="md-ellipsis">
+      Append vs. Error Behavior
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#insertion-vs-appending" class="md-nav__link">
+    <span class="md-ellipsis">
+      Insertion vs. Appending
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#error-handling-patterns" class="md-nav__link">
+    <span class="md-ellipsis">
+      Error Handling Patterns
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#comparison-with-other-data-types" class="md-nav__link">
+    <span class="md-ellipsis">
+      Comparison with Other Data Types
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#best-practices" class="md-nav__link">
+    <span class="md-ellipsis">
+      Best Practices
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -4664,6 +4838,26 @@
 </tbody>
 </table>
 <h3 id="advanced-list-operations">Advanced List Operations</h3>
+<h4 id="element-access-methods">Element Access Methods</h4>
+<p>Lists support both bracket notation and method-based access:</p>
+<div class="highlight"><pre><span></span><code>list = {a:1, b:2, c:3};
+
+/* Bracket notation (direct access) */
+value = list[&quot;a&quot;];        /* 1 */
+value = list.a;           /* 1 */
+value = list[0];          /* 1 (by index) */
+value = list[-1];         /* 3 (by negative index) */
+
+/* Method-based access */
+value = list.get(&quot;a&quot;);    /* 1 */
+value = list.get(0);      /* 1 (by index) */
+value = list.get(-1);     /* 3 (by negative index) */
+
+/* Field access methods */
+value = list.getfield(&quot;a&quot;); /* 1 */
+value = list.getfield(0);   /* 1 (by index) */
+value = list.getfield(-1);  /* 3 (by negative index) */
+</code></pre></div>
 <h4 id="assignment-operations">Assignment Operations (<code>=</code>)</h4>
 <div class="highlight"><pre><span></span><code>/* Direct property assignment */
 list = {a:1, b:2, c:3};
@@ -4675,6 +4869,16 @@ list[1] = 55;             /* {&quot;a&quot;:1,&quot;b&quot;:55,&quot;c&quot;:3} 
 
 /* Assignment by negative index */
 list[-2] = 1234;          /* {&quot;a&quot;:1,&quot;b&quot;:1234,&quot;c&quot;:3} */
+
+/* Method-based assignment */
+list.set(&quot;b&quot;, &quot;x&quot;);       /* {&quot;a&quot;:1,&quot;b&quot;:&quot;x&quot;,&quot;c&quot;:3} */
+list.set(1, 55);          /* {&quot;a&quot;:1,&quot;b&quot;:55,&quot;c&quot;:3} */
+list.set(-2, 1234);       /* {&quot;a&quot;:1,&quot;b&quot;:1234,&quot;c&quot;:3} */
+
+/* Field assignment methods */
+list.setfield(&quot;b&quot;, &quot;x&quot;);  /* {&quot;a&quot;:1,&quot;b&quot;:&quot;x&quot;,&quot;c&quot;:3} */
+list.setfield(1, 55);     /* {&quot;a&quot;:1,&quot;b&quot;:55,&quot;c&quot;:3} */
+list.setfield(-2, 1234);  /* {&quot;a&quot;:1,&quot;b&quot;:1234,&quot;c&quot;:3} */
 
 /* Compound assignment on accessed elements */
 list.b += &quot;dee&quot;;          /* {&quot;a&quot;:1,&quot;b&quot;:&quot;bydee&quot;,&quot;c&quot;:3} */
@@ -4829,6 +5033,135 @@ first = results[0];                        /* Returns: {&quot;user&quot;:{&quot;
 first.user.name                            /* Returns: &quot;Alice&quot; */
 first.user.age                             /* Returns: 30 */
 </code></pre></div>
+<h2 id="error-handling-and-boundary-conditions">Error Handling and Boundary Conditions</h2>
+<h3 id="list-access-behavior"><strong>List Access Behavior</strong></h3>
+<p>Lists have <strong>flexible boundary behavior</strong> similar to arrays:</p>
+<div class="highlight"><pre><span></span><code>list = {a:1, b:2, c:3};
+
+/* Valid access - returns elements */
+list.get(&quot;a&quot;);             /* 1 */
+list.get(0);               /* 1 */
+list.get(-1);              /* 3 */
+
+/* Boundary behavior - APPENDS instead of error */
+list.get(&quot;d&quot;);             /* Returns null (key doesn&#39;t exist) */
+list.set(&quot;d&quot;, 99);         /* APPENDS: {a:1, b:2, c:3, d:99} */
+list.set(&quot;f&quot;, 88);         /* APPENDS: {a:1, b:2, c:3, d:99, f:88} */
+
+/* Method-based access follows same rules */
+list.getfield(&quot;d&quot;);        /* Returns null (key doesn&#39;t exist) */
+list.setfield(&quot;d&quot;, 77);    /* APPENDS: {a:1, b:2, c:3, d:99, f:88, d:77} */
+
+/* IMPORTANT: .set()/.setfield() only append at the end */
+/* For insertion at specific positions, use += and ++= operators */
+list = {a:1, b:2, c:3};
+list += (d:99) list[1];    /* INSERT at position 1: {a:1, d:99, b:2, c:3} */
+list ++= {e:88, f:77} list[0]; /* INSERT multiple at position 0: {e:88, f:77, a:1, d:99, b:2, c:3} */
+</code></pre></div>
+<h3 id="key-differences-from-vectors"><strong>Key Differences from Vectors</strong></h3>
+<table>
+<thead>
+<tr>
+<th>Behavior</th>
+<th><code>$LIST</code></th>
+<th><code>$VECTOR</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Out-of-bounds Get</strong></td>
+<td>Returns <code>null</code></td>
+<td>Returns <code>$ERR</code></td>
+</tr>
+<tr>
+<td><strong>Out-of-bounds Set</strong></td>
+<td><strong>APPENDS</strong> element</td>
+<td>Returns <code>$ERR</code></td>
+</tr>
+<tr>
+<td><strong>Boundary Policy</strong></td>
+<td>Flexible (grows)</td>
+<td>Strict (fixed size)</td>
+</tr>
+<tr>
+<td><strong>Use Case</strong></td>
+<td>Dynamic key-value storage</td>
+<td>Mathematical structures</td>
+</tr>
+</tbody>
+</table>
+<h3 id="append-vs-error-behavior"><strong>Append vs. Error Behavior</strong></h3>
+<div class="highlight"><pre><span></span><code>list = {a:1, b:2, c:3};
+
+/* These APPEND (lists grow dynamically) */
+list.set(&quot;d&quot;, 99);         /* {a:1, b:2, c:3, d:99} */
+list.set(&quot;f&quot;, 88);         /* {a:1, b:2, c:3, d:99, f:88} */
+list.setfield(&quot;g&quot;, 77);    /* {a:1, b:2, c:3, d:99, f:88, g:77} */
+
+/* These return null (key doesn&#39;t exist) */
+result = list.get(&quot;z&quot;);    /* null */
+result = list.getfield(&quot;z&quot;); /* null */
+
+/* Check for missing keys */
+if (list.get(&quot;z&quot;) == null) {
+    /* Handle missing key */
+}
+</code></pre></div>
+<h3 id="insertion-vs-appending"><strong>Insertion vs. Appending</strong></h3>
+<p><strong>Important Distinction:</strong>
+- <strong><code>.set()/.setfield()</code></strong>: Only append at the end
+- <strong><code>+=</code> and <code>++=</code> operators</strong>: Insert at specific positions</p>
+<div class="highlight"><pre><span></span><code>list = {a:1, b:2, c:3};
+
+/* .set() only appends at the end */
+list.set(&quot;d&quot;, 99);         /* {a:1, b:2, c:3, d:99} - appends at end */
+
+/* += and ++= insert at specific positions */
+list = {a:1, b:2, c:3};
+list += (d:99) list[1];    /* {a:1, d:99, b:2, c:3} - inserts at position 1 */
+list ++= {e:88, f:77} list[0]; /* {e:88, f:77, a:1, d:99, b:2, c:3} - inserts at position 0 */
+</code></pre></div>
+<h3 id="error-handling-patterns"><strong>Error Handling Patterns</strong></h3>
+<div class="highlight"><pre><span></span><code>list = {a:1, b:2, c:3};
+
+/* Safe access with null checking */
+result = list.get(&quot;missing_key&quot;);
+if (result == null) {
+    result = &quot;Key not found&quot;;
+}
+
+/* Safe setting (always works - appends if needed) */
+list.set(&quot;new_key&quot;, 99);   /* Always succeeds, appends if needed */
+
+/* Check if key exists before access */
+if (list.get(&quot;key&quot;) != null) {
+    value = list.get(&quot;key&quot;);
+} else {
+    value = &quot;Key doesn&#39;t exist&quot;;
+}
+</code></pre></div>
+<h3 id="comparison-with-other-data-types"><strong>Comparison with Other Data Types</strong></h3>
+<div class="highlight"><pre><span></span><code>/* List behavior (flexible) */
+list = {a:1, b:2, c:3};
+list.set(&quot;d&quot;, 99);         /* APPENDS: {a:1, b:2, c:3, d:99} */
+
+/* Array behavior (flexible) */
+arr = [1, 2, 3];
+arr.set(3, 99);            /* APPENDS: [1, 2, 3, 99] */
+
+/* Vector behavior (strict) */
+vec = [1, 2, 3].vector();
+result = vec.set(3, 99);   /* Returns $ERR - strict bounds */
+</code></pre></div>
+<h3 id="best-practices"><strong>Best Practices</strong></h3>
+<ol>
+<li><strong>Use lists for dynamic key-value storage</strong> where you need flexible sizing</li>
+<li><strong>Use vectors for mathematical operations</strong> where fixed dimensions matter</li>
+<li><strong>Check for null returns</strong> when accessing potentially missing keys</li>
+<li><strong>Use <code>+=</code> and <code>++=</code> for insertion</strong> at specific positions</li>
+<li><strong>Use <code>.set()/.setfield()</code> for appending</strong> at the end</li>
+<li><strong>Use key existence checks</strong> before accessing if you need strict behavior</li>
+</ol>
 
 
 

@@ -4030,8 +4030,12 @@ lock_obj.unlock();
 
 <span class="n">files</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;data1.csv&quot;</span><span class="p">,</span> <span class="s2">&quot;data2.csv&quot;</span><span class="p">,</span> <span class="s2">&quot;data3.csv&quot;</span><span class="p">]</span>
 <span class="n">total_lines</span> <span class="o">=</span> <span class="mi">0</span>
+
+<span class="c1"># Initialize file system once (works in both execution modes)</span>
+<span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s2">&quot;$global.fs = $file();&quot;</span><span class="p">)</span>
+
 <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
-    <span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s2">&quot;$global.fs = $file();&quot;</span><span class="p">)</span>  <span class="c1"># Only needed once, but safe to repeat</span>
+    <span class="c1"># Use parameterized execution - fs persists because it&#39;s in global namespace</span>
     <span class="n">content</span> <span class="o">=</span> <span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s2">&quot;fs.get(filename);&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;filename&quot;</span><span class="p">:</span> <span class="n">file</span><span class="p">})</span>
     <span class="k">if</span> <span class="n">content</span><span class="p">:</span>
         <span class="n">total_lines</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">content</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">))</span>
@@ -4110,7 +4114,10 @@ lock_obj.unlock();
 <div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">grapapy</span>
 <span class="n">xy</span> <span class="o">=</span> <span class="n">grapapy</span><span class="o">.</span><span class="n">grapa</span><span class="p">()</span>
 
+<span class="c1"># Initialize file system (works in both execution modes)</span>
 <span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s2">&quot;$global.fs = $file();&quot;</span><span class="p">)</span>
+
+<span class="c1"># Use file system - variables persist automatically in direct execution</span>
 <span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s2">&quot;fs.set(&#39;test.txt&#39;, &#39;Hello World!&#39;);&quot;</span><span class="p">)</span>
 <span class="n">content</span> <span class="o">=</span> <span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s2">&quot;fs.get(&#39;test.txt&#39;);&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
@@ -4119,7 +4126,10 @@ lock_obj.unlock();
 <div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">grapapy</span>
 <span class="n">xy</span> <span class="o">=</span> <span class="n">grapapy</span><span class="o">.</span><span class="n">grapa</span><span class="p">()</span>
 
+<span class="c1"># Initialize table (works in both execution modes)</span>
 <span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s2">&quot;$global.table = </span><span class="si">{}</span><span class="s2">.table(&#39;ROW&#39;);&quot;</span><span class="p">)</span>
+
+<span class="c1"># Use table - variables persist automatically in direct execution</span>
 <span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s2">&quot;table.mkfield(&#39;name&#39;, &#39;STR&#39;, &#39;VAR&#39;);&quot;</span><span class="p">)</span>
 <span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s2">&quot;table.set(&#39;user1&#39;, &#39;Alice&#39;, &#39;name&#39;);&quot;</span><span class="p">)</span>
 <span class="n">name</span> <span class="o">=</span> <span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s2">&quot;table.get(&#39;user1&#39;, &#39;name&#39;);&quot;</span><span class="p">)</span>
@@ -4131,7 +4141,10 @@ lock_obj.unlock();
 <div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">grapapy</span>
 <span class="n">xy</span> <span class="o">=</span> <span class="n">grapapy</span><span class="o">.</span><span class="n">grapa</span><span class="p">()</span>
 
+<span class="c1"># Initialize function (works in both execution modes)</span>
 <span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s2">&quot;$global.square = op(x=0){x*x;};&quot;</span><span class="p">)</span>
+
+<span class="c1"># Call function - variables persist automatically in direct execution</span>
 <span class="n">result</span> <span class="o">=</span> <span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s2">&quot;square(7);&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>  <span class="c1"># 49</span>
 </code></pre></div></p>

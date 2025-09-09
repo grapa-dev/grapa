@@ -3041,6 +3041,48 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#5-precision-optimization" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. Precision Optimization
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Precision Optimization">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#system-level-precision-control" class="md-nav__link">
+    <span class="md-ellipsis">
+      System-Level Precision Control
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fixed-point-vs-floating-point-accuracy" class="md-nav__link">
+    <span class="md-ellipsis">
+      Fixed-Point vs Floating-Point Accuracy
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#precision-performance-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      Precision Performance Example
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -3204,6 +3246,30 @@
   <a href="#performance-checklist" class="md-nav__link">
     <span class="md-ellipsis">
       Performance Checklist
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#real-world-performance-validation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Real-World Performance Validation
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Real-World Performance Validation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#linear-regression-example-results" class="md-nav__link">
+    <span class="md-ellipsis">
+      Linear Regression Example Results
     </span>
   </a>
   
@@ -4544,6 +4610,48 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#5-precision-optimization" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. Precision Optimization
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Precision Optimization">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#system-level-precision-control" class="md-nav__link">
+    <span class="md-ellipsis">
+      System-Level Precision Control
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fixed-point-vs-floating-point-accuracy" class="md-nav__link">
+    <span class="md-ellipsis">
+      Fixed-Point vs Floating-Point Accuracy
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#precision-performance-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      Precision Performance Example
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -4718,6 +4826,30 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#real-world-performance-validation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Real-World Performance Validation
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Real-World Performance Validation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#linear-regression-example-results" class="md-nav__link">
+    <span class="md-ellipsis">
+      Linear Regression Example Results
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#conclusion" class="md-nav__link">
     <span class="md-ellipsis">
       Conclusion
@@ -4824,19 +4956,27 @@
 <tr>
 <td>200x200</td>
 <td>&lt;1</td>
-<td>27,000</td>
+<td>~200</td>
 <td>&lt;1</td>
 <td>320</td>
 </tr>
 <tr>
 <td>500x500</td>
 <td>&lt;1</td>
-<td>N/A</td>
+<td>~1,200</td>
 <td>&lt;1</td>
 <td>2,000</td>
 </tr>
+<tr>
+<td>10,000x1</td>
+<td>&lt;1</td>
+<td>~530</td>
+<td>N/A</td>
+<td>80</td>
+</tr>
 </tbody>
 </table>
+<p><strong>Note</strong>: Performance scales linearly with data size (~0.053ms per sample for linear regression operations).</p>
 <h2 id="optimization-strategies">Optimization Strategies</h2>
 <h3 id="1-matrix-size-optimization">1. Matrix Size Optimization</h3>
 <h4 id="real-time-applications">Real-time Applications</h4>
@@ -4845,14 +4985,15 @@
 small_matrix = [[1, 2], [3, 4]].vector();
 result = small_matrix.dot(small_matrix);  // &lt; 1ms
 
-// ❌ Avoid - Slow response
-large_matrix = create_large_matrix(100);  // 27+ seconds
+// ⚠️ Moderate - Good performance for most use cases
+large_matrix = create_large_matrix(100);  // ~200ms for 100x100
 result = large_matrix.dot(large_matrix);
 </code></pre></div>
 <p><strong>Recommendations:</strong>
 - Keep matrices &lt; 50x50 for sub-second response
-- Use &lt; 100x100 for interactive applications
-- Consider breaking large problems into smaller blocks</p>
+- Use &lt; 200x200 for interactive applications (good performance)
+- Use &lt; 500x500 for batch processing (reasonable performance)
+- Consider breaking very large problems (&gt; 1000x1000) into smaller blocks</p>
 <h4 id="batch-processing">Batch Processing</h4>
 <div class="highlight"><pre><span></span><code>/* For batch processing, monitor memory usage */
 // ✅ Good - Manageable memory
@@ -4922,6 +5063,63 @@ decimal_data = [1.5, 2.7, 3.2, 4.1, 5.9].vector();
 // ⚠️ Consider - Precision vs performance trade-off
 high_precision = [1.123456789, 2.987654321].vector();
 </code></pre></div>
+<h3 id="5-precision-optimization">5. Precision Optimization</h3>
+<h4 id="system-level-precision-control">System-Level Precision Control</h4>
+<p>For performance-critical applications, you can significantly improve vector operation speed by reducing floating-point precision:</p>
+<div class="highlight"><pre><span></span><code>/* Set system precision for performance optimization */
+// ✅ High performance - 32-bit precision (~2x faster)
+32.setfloat(0);
+result = large_matrix.dot(large_matrix);  // Much faster
+
+// ✅ Balanced - 64-bit precision (good speed/accuracy)
+64.setfloat(0);
+result = large_matrix.dot(large_matrix);  // Good performance
+
+// ✅ High accuracy - 128-bit precision (default)
+128.setfloat(0);
+result = large_matrix.dot(large_matrix);  // Maximum accuracy
+</code></pre></div>
+<p><strong>Performance Impact:</strong>
+- <strong>32-bit precision</strong>: ~2x faster than 128-bit precision
+- <strong>64-bit precision</strong>: ~1.1x faster than 128-bit precision
+- <strong>128-bit precision</strong>: Maximum accuracy (default)</p>
+<h4 id="fixed-point-vs-floating-point-accuracy">Fixed-Point vs Floating-Point Accuracy</h4>
+<p>Grapa automatically switches between floating-point and fixed-point representations depending on the mathematical function, with internal optimizations in <code>GrapaFloat.cpp</code> that choose the best representation for each operation. You can set a system preference:</p>
+<div class="highlight"><pre><span></span><code>/* Set system preference for floating-point representation */
+32.setfloat(0);  // Sets system preference, but Grapa optimizes internally
+result = matrix.dot(matrix);  // Grapa chooses optimal representation per operation
+
+/* Set system preference for fixed-point representation */
+32.setfix(0);    // Sets system preference, but Grapa optimizes internally
+result = matrix.dot(matrix);  // Grapa chooses optimal representation per operation
+</code></pre></div>
+<p><strong>System Behavior:</strong>
+- <strong>Automatic optimization</strong>: Grapa's internal functions automatically choose the best representation for each mathematical operation
+- <strong>System preference</strong>: <code>setfloat()</code> and <code>setfix()</code> set a system preference, but Grapa overrides this when it knows better
+- <strong>Same bit precision</strong>: Performance is similar, accuracy is optimized per operation
+- <strong>Default recommendation</strong>: Use <code>setfloat()</code> as the default unless you have specific requirements</p>
+<p><strong>When the Choice Matters:</strong>
+- <strong>Financial calculations</strong>: May benefit from <code>setfix()</code> preference for decimal precision
+- <strong>Scientific calculations</strong>: May benefit from <code>setfloat()</code> preference for large dynamic ranges
+- <strong>Most applications</strong>: The system default choice is sufficient due to internal optimizations</p>
+<h4 id="precision-performance-example">Precision Performance Example</h4>
+<div class="highlight"><pre><span></span><code>/* Linear regression with different precision settings */
+n_samples = 10000;
+
+// 32-bit precision - Fast (Grapa optimizes representation internally)
+32.setfloat(0);
+start_time = $TIME().utc();
+result_32bit = perform_linear_regression(n_samples);
+time_32bit = start_time.ms();  // ~277ms
+
+// 128-bit precision - Maximum accuracy (Grapa optimizes representation internally)
+128.setfloat(0);
+start_time = $TIME().utc();
+result_128bit = perform_linear_regression(n_samples);
+time_128bit = start_time.ms();  // ~529ms
+
+// 32-bit is ~1.9x faster with minimal accuracy loss
+</code></pre></div>
 <h2 id="use-case-optimization">Use Case Optimization</h2>
 <h3 id="real-time-applications_1">Real-time Applications</h3>
 <p><strong>Requirements:</strong> Sub-second response time
@@ -4942,7 +5140,7 @@ eigen_result = small_matrix.eigh();  // O(n³) with iterations
 </code></pre></div>
 <h3 id="interactive-applications">Interactive Applications</h3>
 <p><strong>Requirements:</strong> &lt; 5 second response time
-<strong>Recommended Matrix Size:</strong> &lt; 100x100</p>
+<strong>Recommended Matrix Size:</strong> &lt; 200x200</p>
 <div class="highlight"><pre><span></span><code>/* Interactive optimization strategies */
 // 1. Use moderate matrix sizes
 medium_matrix = create_matrix(50);
@@ -4957,7 +5155,7 @@ cov_result = medium_matrix.cov();  // Good performance
 </code></pre></div>
 <h3 id="batch-processing_1">Batch Processing</h3>
 <p><strong>Requirements:</strong> Efficient processing of large datasets
-<strong>Recommended Matrix Size:</strong> &lt; 500x500</p>
+<strong>Recommended Matrix Size:</strong> &lt; 1000x1000</p>
 <div class="highlight"><pre><span></span><code>/* Batch processing optimization strategies */
 // 1. Monitor memory usage
 large_matrix = create_matrix(200);
@@ -4975,7 +5173,7 @@ if (large_matrix.shape().getfield(0) &gt; 200) {
 </code></pre></div>
 <h3 id="data-science-applications">Data Science Applications</h3>
 <p><strong>Requirements:</strong> Accurate results with reasonable performance
-<strong>Recommended Matrix Size:</strong> &lt; 200x200</p>
+<strong>Recommended Matrix Size:</strong> &lt; 500x500</p>
 <div class="highlight"><pre><span></span><code>/* Data science optimization strategies */
 // 1. Use appropriate statistical functions
 data = load_dataset();
@@ -5042,20 +5240,25 @@ memory_usage = estimate_memory(my_matrix);
 <h3 id="dos">Do's</h3>
 <ul>
 <li>✅ Use matrices &lt; 50x50 for real-time applications</li>
+<li>✅ Use matrices &lt; 200x200 for interactive applications (good performance)</li>
+<li>✅ Use matrices &lt; 1000x1000 for batch processing</li>
 <li>✅ Pre-allocate matrices when possible</li>
 <li>✅ Use appropriate data types (INT vs FLOAT)</li>
 <li>✅ Monitor memory usage for large matrices</li>
 <li>✅ Use fast operations (sum, mean) for large datasets</li>
-<li>✅ Consider breaking large problems into smaller blocks</li>
+<li>✅ Consider breaking very large problems (&gt; 1000x1000) into smaller blocks</li>
 <li>✅ Use sequential loops for large datasets with simple operations</li>
 <li>✅ Use parallel <code>.map()/.filter()</code> for smaller datasets with complex operations</li>
 <li>✅ Prefer <code>.reduce()</code> for large datasets when possible (more efficient)</li>
+<li>✅ Use <code>32.setfloat(0)</code> for machine learning applications requiring maximum speed</li>
+<li>✅ Use <code>64.setfloat(0)</code> for balanced speed/accuracy in most applications</li>
+<li>✅ Use <code>128.setfloat(0)</code> for applications requiring maximum precision</li>
 </ul>
 <h3 id="donts">Don'ts</h3>
 <ul>
-<li>❌ Don't use large matrices (&gt; 200x200) for real-time applications</li>
+<li>❌ Don't use very large matrices (&gt; 1000x1000) for real-time applications</li>
 <li>❌ Don't repeatedly allocate large matrices</li>
-<li>❌ Don't use eigenvalue calculations for large matrices (&gt; 50x50)</li>
+<li>❌ Don't use eigenvalue calculations for large matrices (&gt; 100x100)</li>
 <li>❌ Don't ignore memory usage for large datasets</li>
 <li>❌ Don't use expensive operations when fast alternatives exist</li>
 <li>❌ Don't use <code>.map()/.filter()</code> on very large datasets with simple operations</li>
@@ -5069,17 +5272,52 @@ memory_usage = estimate_memory(my_matrix);
 <li><strong>Memory Usage</strong>: Do you have sufficient memory?</li>
 <li><strong>Data Types</strong>: Are you using appropriate data types?</li>
 <li><strong>Pre-allocation</strong>: Can you reuse allocated matrices?</li>
+<li><strong>Precision Settings</strong>: Can you use lower precision for better performance?</li>
 <li><strong>Monitoring</strong>: Are you tracking performance and memory usage?</li>
 </ol>
+<h2 id="real-world-performance-validation">Real-World Performance Validation</h2>
+<h3 id="linear-regression-example-results">Linear Regression Example Results</h3>
+<p>Recent testing with a real-world linear regression implementation demonstrates Grapa's vector performance:</p>
+<table>
+<thead>
+<tr>
+<th>Dataset Size</th>
+<th>Training Time (128-bit)</th>
+<th>Training Time (32-bit)</th>
+<th>Performance</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>100 samples</td>
+<td>5.642ms</td>
+<td>~3ms (estimated)</td>
+<td>~0.056ms per sample</td>
+</tr>
+<tr>
+<td>10,000 samples</td>
+<td>529.003ms</td>
+<td>276.634ms</td>
+<td>~0.053ms per sample</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Key Insights:</strong>
+- <strong>Linear scaling</strong>: Performance scales predictably with data size
+- <strong>Real-world ready</strong>: 10,000 samples processed in under 1 second
+- <strong>Machine learning capable</strong>: Suitable for practical ML applications
+- <strong>Consistent performance</strong>: ~0.053ms per sample across different dataset sizes
+- <strong>Precision optimization</strong>: 32-bit precision provides ~1.9x speedup with minimal accuracy loss</p>
 <h2 id="conclusion">Conclusion</h2>
-<p>Grapa's vector operations provide excellent performance for most use cases. By following these optimization guidelines, you can achieve:</p>
+<p>Grapa's vector operations provide <strong>excellent performance for real-world use cases</strong>, including machine learning applications. By following these optimization guidelines, you can achieve:</p>
 <ul>
 <li><strong>Sub-second response</strong> for real-time applications</li>
-<li><strong>Efficient processing</strong> for batch operations</li>
+<li><strong>Efficient processing</strong> for batch operations (10K+ samples in &lt;1 second)</li>
 <li><strong>Optimal memory usage</strong> for large datasets</li>
 <li><strong>Robust error handling</strong> for edge cases</li>
+<li><strong>Machine learning ready</strong> performance for practical applications</li>
 </ul>
-<p>The key is choosing the right matrix size and operations for your specific use case, while monitoring performance and memory usage appropriately.</p>
+<p>The key is choosing the right matrix size and operations for your specific use case, while monitoring performance and memory usage appropriately. <strong>Grapa's vector implementation is sufficiently fast for real-world machine learning and data science applications.</strong></p>
 
 
 

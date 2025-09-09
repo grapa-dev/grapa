@@ -5084,7 +5084,7 @@
 </tr>
 <tr>
 <td><code>const {a, b} = obj</code></td>
-<td><code>@local ++= obj; a.echo(); b.echo();</code></td>
+<td><code>$local ++= obj; a.echo(); b.echo();</code></td>
 </tr>
 <tr>
 <td><code>x ?? y</code></td>
@@ -5507,7 +5507,7 @@ future = now + 86400000000;  /* Add 1 day in microseconds */
 <p><strong>JavaScript equivalent requires:</strong> <code>Date</code> with millisecond precision limits</p>
 <h4 id="direct-system-integration"><strong>Direct System Integration</strong></h4>
 <div class="highlight"><pre><span></span><code>/* Access system information directly */
-version = $sys().getenv($VERSION);
+version = $sys().getenv($GRAPA_VERSION);
 platform = $sys().getenv($PLATFORM);
 </code></pre></div>
 <p><strong>JavaScript equivalent requires:</strong> Node.js <code>process</code> and <code>os</code> modules (not available in browsers)</p>
@@ -5525,7 +5525,7 @@ if (value.type() == $INT) {
 <ul>
 <li><strong>Template literals</strong>: <code>`Hello ${name}`</code> - Use <code>"Hello ${name}".interpolate()</code> (preferred) or string concatenation: <code>"Hello " + name</code> or see <a href="../../type/str/#string-templates-and-dynamic-construction">String Templates and Dynamic Construction</a> for advanced patterns</li>
 <li><strong>Method chaining</strong>: <code>"hello".toUpperCase() + " world".toLowerCase()</code> - Use string interpolation: <code>"${'hello'.upper()} ${'world'.lower()}".interpolate()</code></li>
-<li><strong>Destructuring</strong>: <code>const {a, b} = obj</code> - Use Grapa's namespace destructuring: <code>@local ++= obj; a.echo(); b.echo();</code></li>
+<li><strong>Destructuring</strong>: <code>const {a, b} = obj</code> - Use Grapa's namespace destructuring: <code>$local ++= obj; a.echo(); b.echo();</code></li>
 <li><strong>Spread operator</strong>: <code>[...arr1, ...arr2]</code> - Use <code>+=</code> operator: <code>arr1 += arr2</code></li>
 <li><strong>Optional chaining</strong>: <code>obj?.prop?.sub</code> - Use <code>.iferr()</code> for superior safe property access with custom fallback values: <code>obj.prop.iferr(null).sub.iferr("default")</code></li>
 <li><strong>Nullish coalescing</strong>: <code>x ?? y</code> - Use <code>.ifnull()</code> for superior nullish coalescing: <code>x.ifnull(y)</code></li>

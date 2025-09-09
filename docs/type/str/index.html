@@ -1265,6 +1265,39 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#string-specific-methods" class="md-nav__link">
+    <span class="md-ellipsis">
+      String-Specific Methods
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="String-Specific Methods">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#case-conversion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Case Conversion
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#string-similarity-functions" class="md-nav__link">
+    <span class="md-ellipsis">
+      String Similarity Functions
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#common-string-operations" class="md-nav__link">
     <span class="md-ellipsis">
       Common String Operations
@@ -4334,6 +4367,39 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#string-specific-methods" class="md-nav__link">
+    <span class="md-ellipsis">
+      String-Specific Methods
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="String-Specific Methods">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#case-conversion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Case Conversion
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#string-similarity-functions" class="md-nav__link">
+    <span class="md-ellipsis">
+      String Similarity Functions
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#common-string-operations" class="md-nav__link">
     <span class="md-ellipsis">
       Common String Operations
@@ -4614,6 +4680,38 @@ unicode_text.raw();    /* Returns: 0x68C3A96C6C6F20F09F9A80 (hex bytes) */
 </code></pre></div>
 <blockquote>
 <p><strong>See Also:</strong> <a href="../obj_methods/">Object Methods Documentation</a> for comprehensive details on Unicode-aware string functions including <code>.len()</code>, <code>.bytes()</code>, <code>.raw()</code>, <code>.left()</code>, <code>.right()</code>, <code>.mid()</code>, <code>.reverse()</code>, <code>.lpad()</code>, and <code>.rpad()</code>. Note that <code>.left()</code>, <code>.right()</code>, and <code>.mid()</code> also support <code>$ARRAY</code> and <code>$LIST</code> types.</p>
+</blockquote>
+<h2 id="string-specific-methods">String-Specific Methods</h2>
+<p>The following methods are available specifically on <code>$STR</code> objects:</p>
+<h3 id="case-conversion">Case Conversion</h3>
+<div class="highlight"><pre><span></span><code>/* Basic case conversion */
+&quot;Hello World&quot;.upper();     /* Returns: &quot;HELLO WORLD&quot; */
+&quot;Hello World&quot;.lower();     /* Returns: &quot;hello world&quot; */
+&quot;Hello World&quot;.casefold();  /* Returns: &quot;hello world&quot; */
+
+/* Unicode case folding for international text */
+&quot;İstanbul&quot;.casefold();     /* Returns: &quot;istanbul&quot; */
+&quot;ß&quot;.casefold();            /* Returns: &quot;ss&quot; */
+</code></pre></div>
+<h3 id="string-similarity-functions">String Similarity Functions</h3>
+<div class="highlight"><pre><span></span><code>/* Levenshtein distance - edit distance between strings */
+&quot;hello&quot;.levenshtein(&quot;hallo&quot;);     /* Returns: 1 (one character difference) */
+&quot;kitten&quot;.levenshtein(&quot;sitting&quot;);  /* Returns: 3 (three edit operations) */
+
+/* Jaro-Winkler similarity - string similarity score */
+&quot;hello&quot;.jarowinkler(&quot;hallo&quot;);     /* Returns: 0.933... (high similarity) */
+&quot;hello&quot;.jarowinkler(&quot;world&quot;);     /* Returns: 0.0 (no similarity) */
+
+/* Cosine similarity - vector-based similarity */
+&quot;hello world&quot;.cosinesimilarity(&quot;world hello&quot;);  /* Returns: 1.0 (identical words) */
+&quot;hello world&quot;.cosinesimilarity(&quot;goodbye world&quot;); /* Returns: 0.5 (partial similarity) */
+</code></pre></div>
+<p><strong>Use Cases:</strong>
+- <strong>Case conversion</strong>: Text normalization, user input processing
+- <strong>Levenshtein distance</strong>: Spell checking, fuzzy matching, edit distance calculations
+- <strong>Jaro-Winkler similarity</strong>: Record matching, duplicate detection, name matching
+- <strong>Cosine similarity</strong>: Document similarity, text analysis, recommendation systems</p>
+<blockquote>
 <p><strong>Note:</strong> While string content supports full Unicode, <strong>identifiers</strong> (variable names, function names) are limited to ASCII characters only. This is a lexical limitation in the parser. See <a href="../id/">$ID Documentation</a> for details.</p>
 </blockquote>
 <h2 id="common-string-operations">Common String Operations</h2>

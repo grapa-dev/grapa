@@ -5985,7 +5985,7 @@ xml = xml + &lt;root&gt;&lt;item&gt;1&lt;/item&gt;&lt;/root&gt;;  /* Concatenate
 <h3 id="choose-grapa-when-you-need">✅ <strong>Choose Grapa When You Need:</strong></h3>
 <h4 id="1-dynamic-language-creation"><strong>1. Dynamic Language Creation</strong></h4>
 <div class="highlight"><pre><span></span><code>/* Define custom syntax at runtime */
-@global[&quot;$custom_command&quot;] = rule for &#39;(&#39; &lt;$comp&gt; &#39;)&#39; &lt;$command&gt; {
+$global[&quot;$custom_command&quot;] = rule for &#39;(&#39; &lt;$comp&gt; &#39;)&#39; &lt;$command&gt; {
     op(init:$3, body:$6){ /* Implementation */ }
 };
 
@@ -6456,7 +6456,7 @@ encrypted_data = data.encode(aes_keys);
 <h4 id="9-superior-module-system"><strong>9. Superior Module System</strong></h4>
 <ul>
 <li><strong>Compile-time includes</strong> - <code>.grc</code> (source) and <code>.grz</code> (pre-compiled) file inclusion</li>
-<li><strong>Dynamic class loading</strong> - Automatic class resolution via <code>$PATH</code> and <code>$LIB</code></li>
+<li><strong>Dynamic class loading</strong> - Automatic class resolution via <code>$GRAPA_PATH</code> and <code>$GRAPA_LIB</code></li>
 <li><strong>Runtime path configuration</strong> - Flexible search path management via environment variables</li>
 <li><strong>Plugin architecture</strong> - Dynamic loading of custom libraries and extensions</li>
 <li><strong>Performance optimization</strong> - Pre-compiled <code>.grz</code> files for production deployment</li>

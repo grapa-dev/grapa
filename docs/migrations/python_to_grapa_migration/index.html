@@ -5218,7 +5218,7 @@
 </tr>
 <tr>
 <td><code>{a, b} = obj</code></td>
-<td><code>@local ++= obj; a.echo(); b.echo();</code></td>
+<td><code>$local ++= obj; a.echo(); b.echo();</code></td>
 </tr>
 </tbody>
 </table>
@@ -5793,7 +5793,7 @@ future = now + 86400000000;  /* Add 1 day in microseconds */
 <p><strong>Python equivalent requires:</strong> <code>datetime</code> with precision limits</p>
 <h4 id="direct-system-integration"><strong>Direct System Integration</strong></h4>
 <div class="highlight"><pre><span></span><code>/* Access system information directly */
-version = $sys().getenv($VERSION);
+version = $sys().getenv($GRAPA_VERSION);
 platform = $sys().getenv($PLATFORM);
 </code></pre></div>
 <p><strong>Python equivalent requires:</strong> <code>sys</code>, <code>platform</code>, and <code>os</code> modules</p>

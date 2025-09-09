@@ -34,45 +34,33 @@ def basic_grapa_usage():
         print(f"Error executing Grapa code: {e}")
 
 def file_operations():
-    """Demonstrate file operations"""
+    """Demonstrate file operations with new execution model"""
     print("\nFile operations:")
     
     try:
         import grapapy
         g = grapapy.grapa()
         
-        # Create and write to a file using correct API
-        code = '''
-        f = $file();
-        f.setfield("python_test.txt", "Hello from Python integration!\\nThis is a test file created by Python.\\n");
-        "File created successfully"
-        '''
-        result = g.eval(code)
-        print(f"File operation: {result}")
+        # Method 1: Direct execution - variables persist automatically
+        print("Method 1: Direct execution (variables persist automatically)")
+        g.eval("fs = $file();")
+        g.eval('fs.set("python_test.txt", "Hello from Python integration!");')
+        content = g.eval('fs.get("python_test.txt");')
+        print(f"File content: {content}")
         
-        # Read the file back using correct API
-        code = '''
-        f = $file();
-        content = f.getfield("python_test.txt");
-        content
-        '''
-        result = g.eval(code)
-        print(f"File content (hex): {result}")
+        # Method 2: Parameterized execution - use $global for persistence
+        print("\nMethod 2: Parameterized execution (use $global for persistence)")
+        g.eval("$global.fs2 = $file();", {'x': 5})
+        g.eval('fs2.set("python_test2.txt", "Hello from parameterized execution!");')
+        content2 = g.eval('fs2.get("python_test2.txt");')
+        print(f"File content: {content2}")
         
-        # Get file info
-        code = '''
-        f = $file();
-        info = f.info("python_test.txt");
-        info
-        '''
-        result = g.eval(code)
-        print(f"File info: {result}")
-        
-        # Note about file operations
-        if isinstance(result, dict) and result.get("error") == -1:
-            print("Note: File operations return error -1 in Python context.")
-            print("This is expected behavior for the grapapy module.")
-            print("File operations work correctly in the standalone grapa executable.")
+        # Method 3: Mixed approach (recommended)
+        print("\nMethod 3: Mixed approach (recommended)")
+        g.eval("$global.fs3 = $file();")  # Initialize with $global
+        g.eval('fs3.set("python_test3.txt", "Hello from mixed approach!");')  # Use directly
+        content3 = g.eval('fs3.get("python_test3.txt");')
+        print(f"File content: {content3}")
         
     except ImportError as e:
         print(f"Error importing grapa module: {e}")

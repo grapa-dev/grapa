@@ -5005,23 +5005,23 @@
 <p>The rule token <code>&lt; &gt;</code> provides sophisticated reference and lookup capabilities:</p>
 <h4 id="rule-references"><strong>Rule References</strong></h4>
 <div class="highlight"><pre><span></span><code>/* Reference another rule */
-@global[&quot;$expression&quot;] = rule &lt;$term&gt; &#39;+&#39; &lt;$expression&gt; {@&lt;add,{$1,$3}&gt;}
+$global[&quot;$expression&quot;] = rule &lt;$term&gt; &#39;+&#39; &lt;$expression&gt; {@&lt;add,{$1,$3}&gt;}
 </code></pre></div>
 <h4 id="variable-references-with-complex-lookups"><strong>Variable References with Complex Lookups</strong></h4>
 <div class="highlight"><pre><span></span><code>/* Simple variable reference */
-@global[&quot;$lookup&quot;] = rule @variable {@&lt;var,{$1}&gt;}
+$global[&quot;$lookup&quot;] = rule @variable {@&lt;var,{$1}&gt;}
 
 /* Array/List indexing */
-@global[&quot;$array_lookup&quot;] = rule @tb[&quot;d&quot;] {@&lt;var,{$1}&gt;}
-@global[&quot;$list_lookup&quot;] = rule @tb.d {@&lt;var,{$1}&gt;}
-@global[&quot;$index_lookup&quot;] = rule @tb[8] {@&lt;var,{$1}&gt;}
+$global[&quot;$array_lookup&quot;] = rule @tb[&quot;d&quot;] {@&lt;var,{$1}&gt;}
+$global[&quot;$list_lookup&quot;] = rule @tb.d {@&lt;var,{$1}&gt;}
+$global[&quot;$index_lookup&quot;] = rule @tb[8] {@&lt;var,{$1}&gt;}
 
 /* Database/File object references */
-@global[&quot;$db_lookup&quot;] = rule @{}.table(&quot;ROW&quot;) {@&lt;var,{$1}&gt;}
+$global[&quot;$db_lookup&quot;] = rule @{}.table(&quot;ROW&quot;) {@&lt;var,{$1}&gt;}
 </code></pre></div>
 <h4 id="post-processing-with-optional-op"><strong>Post-Processing with Optional $OP</strong></h4>
 <div class="highlight"><pre><span></span><code>/* Rule with compile-time data transformation */
-@global[&quot;$filtered_data&quot;] = rule &lt;$raw_data,op(a:$1){a.grep(&quot;pattern&quot;)}&gt; {@&lt;var,{$1}&gt;}
+$global[&quot;$filtered_data&quot;] = rule &lt;$raw_data,op(a:$1){a.grep(&quot;pattern&quot;)}&gt; {@&lt;var,{$1}&gt;}
 </code></pre></div>
 <h4 id="predefined-functions-in-rule-tokens"><strong>Predefined Functions in Rule Tokens</strong></h4>
 <p><strong>Working Solution - Wrapper Function Pattern:</strong>
@@ -5029,7 +5029,7 @@
 my_func = op(p){p.len()};
 
 /* Use wrapper function in rule token */
-@global[&quot;$processed_data&quot;] = rule &lt;$raw_data,op(b:$1){my_func(b)}&gt; {@&lt;var,{$1}&gt;}
+$global[&quot;$processed_data&quot;] = rule &lt;$raw_data,op(b:$1){my_func(b)}&gt; {@&lt;var,{$1}&gt;}
 </code></pre></div></p>
 <p><strong>Key Benefits:</strong>
 - <strong>Explicit Parameter Passing</strong>: <code>op(b:$1){my_func(b)}</code> clearly shows parameter flow
@@ -5044,7 +5044,7 @@ transform_data = op(p){p.upper()};
 filter_data = op(p){p.len() &gt; 10 ? p : null};
 
 /* Use in ETL pipeline rules */
-@global[&quot;$etl_pipeline&quot;] = rule 
+$global[&quot;$etl_pipeline&quot;] = rule 
     &lt;$raw_data,op(b:$1){validate_data(b)}&gt;
     &lt;$validated,op(b:$1){transform_data(b)}&gt;
     &lt;$transformed,op(b:$1){filter_data(b)}&gt;
@@ -5055,7 +5055,7 @@ filter_data = op(p){p.len() &gt; 10 ? p : null};
 filter_function = @&lt;grep,{@&lt;this&gt;,@&lt;lit,{&quot;pattern&quot;}&gt;}&gt;;
 
 /* Use predefined function in rule token */
-@global[&quot;$filtered_data&quot;] = rule &lt;$raw_data,filter_function&gt; {@&lt;var,{$1}&gt;}
+$global[&quot;$filtered_data&quot;] = rule &lt;$raw_data,filter_function&gt; {@&lt;var,{$1}&gt;}
 </code></pre></div></p>
 <p><strong>Key Features:</strong>
 - <strong>Execution Tree Return</strong>: Always returns execution trees that must be evaluated
@@ -5108,7 +5108,7 @@ x = 10; x *= 3; (&quot;x = &quot; + x).echo();
 </code></pre></div>
 <h3 id="2-dynamic-grammar-modification"><strong>2. Dynamic Grammar Modification</strong></h3>
 <div class="highlight"><pre><span></span><code>/* Add new language constructs at runtime */
-@global[&quot;$custom_loop&quot;] = rule &#39;repeat&#39; $INT &#39;times&#39; &#39;{&#39; &lt;$command_list&gt; &#39;}&#39; {
+$global[&quot;$custom_loop&quot;] = rule &#39;repeat&#39; $INT &#39;times&#39; &#39;{&#39; &lt;$command_list&gt; &#39;}&#39; {
     op(count:$2, body:$5) {
         i = 0;
         while (i &lt; count) {
@@ -5123,7 +5123,7 @@ op(parse)(&#39;repeat 5 times { &quot;Hello&quot;.echo(); }&#39;)();
 </code></pre></div>
 <h3 id="3-protocol-parsing"><strong>3. Protocol Parsing</strong></h3>
 <div class="highlight"><pre><span></span><code>/* Define HTTP request grammar */
-@global[&quot;$http_request&quot;] = rule &lt;$http_method&gt; &#39; &#39; &lt;$http_path&gt; &#39; &#39; &lt;$http_version&gt; &#39;\r\n&#39; &lt;$http_headers&gt; {
+$global[&quot;$http_request&quot;] = rule &lt;$http_method&gt; &#39; &#39; &lt;$http_path&gt; &#39; &#39; &lt;$http_version&gt; &#39;\r\n&#39; &lt;$http_headers&gt; {
     op(method:$1, path:$3, version:$5, headers:$7) {
         return create_request(method, path, version, headers);
     }
@@ -5135,13 +5135,13 @@ request = op(parse)(&#39;GET /api/users HTTP/1.1\r\nHost: example.com\r\n&#39;)(
 <h2 id="domain-specific-language-dsl-creation">Domain-Specific Language (DSL) Creation</h2>
 <h3 id="1-configuration-dsl"><strong>1. Configuration DSL</strong></h3>
 <div class="highlight"><pre><span></span><code>/* Configuration language grammar */
-@global[&quot;$config_entry&quot;] = rule $ID &#39;=&#39; &lt;$config_value&gt; &#39;;&#39; {
+$global[&quot;$config_entry&quot;] = rule $ID &#39;=&#39; &lt;$config_value&gt; &#39;;&#39; {
     op(key:$1, value:$3) {
         set_config(key, value);
     }
 };
 
-@global[&quot;$config_value&quot;] = rule $STR | $INT | $BOOL | &#39;[&#39; &lt;$config_list&gt; &#39;]&#39; | &#39;{&#39; &lt;$config_object&gt; &#39;}&#39;;
+$global[&quot;$config_value&quot;] = rule $STR | $INT | $BOOL | &#39;[&#39; &lt;$config_list&gt; &#39;]&#39; | &#39;{&#39; &lt;$config_object&gt; &#39;}&#39;;
 
 /* Use the configuration DSL */
 op(parse)(&#39;server_name = &quot;myapp&quot;;&#39;)();
@@ -5151,7 +5151,7 @@ op(parse)(&#39;allowed_hosts = [&quot;localhost&quot;, &quot;127.0.0.1&quot;];&#
 </code></pre></div>
 <h3 id="2-data-processing-dsl"><strong>2. Data Processing DSL</strong></h3>
 <div class="highlight"><pre><span></span><code>/* Pipeline processing language */
-@global[&quot;$pipeline&quot;] = rule &#39;pipeline&#39; &#39;{&#39; &lt;$pipeline_steps&gt; &#39;}&#39; {
+$global[&quot;$pipeline&quot;] = rule &#39;pipeline&#39; &#39;{&#39; &lt;$pipeline_steps&gt; &#39;}&#39; {
     op(steps:$3) {
         result = null;
         i = 0;
@@ -5164,7 +5164,7 @@ op(parse)(&#39;allowed_hosts = [&quot;localhost&quot;, &quot;127.0.0.1&quot;];&#
     }
 };
 
-@global[&quot;$pipeline_steps&quot;] = rule &lt;$pipeline_step&gt; (&#39;|&#39; &lt;$pipeline_steps&gt; | );
+$global[&quot;$pipeline_steps&quot;] = rule &lt;$pipeline_step&gt; (&#39;|&#39; &lt;$pipeline_steps&gt; | );
 
 /* Execute data processing pipeline */
 result = op(parse)(&#39;pipeline { 
@@ -5176,7 +5176,7 @@ result = op(parse)(&#39;pipeline {
 </code></pre></div>
 <h3 id="3-validation-dsl"><strong>3. Validation DSL</strong></h3>
 <div class="highlight"><pre><span></span><code>/* Data validation language */
-@global[&quot;$validation&quot;] = rule &#39;validate&#39; $STR &#39;{&#39; &lt;$validation_rules&gt; &#39;}&#39; {
+$global[&quot;$validation&quot;] = rule &#39;validate&#39; $STR &#39;{&#39; &lt;$validation_rules&gt; &#39;}&#39; {
     op(data:$2, rules:$4) {
         validation_result = true;
         i = 0;
@@ -5191,9 +5191,9 @@ result = op(parse)(&#39;pipeline {
     }
 };
 
-@global[&quot;$validation_rules&quot;] = rule &lt;$validation_rule&gt; (&#39;|&#39; &lt;$validation_rules&gt; | );
+$global[&quot;$validation_rules&quot;] = rule &lt;$validation_rule&gt; (&#39;|&#39; &lt;$validation_rules&gt; | );
 
-@global[&quot;$validation_rule&quot;] = rule &#39;field&#39; $STR &#39;required&#39; | &#39;field&#39; $STR &#39;type&#39; $STR;
+$global[&quot;$validation_rule&quot;] = rule &#39;field&#39; $STR &#39;required&#39; | &#39;field&#39; $STR &#39;type&#39; $STR;
 
 /* Execute validation */
 is_valid = op(parse)(&#39;validate user_data { 
@@ -5205,7 +5205,7 @@ is_valid = op(parse)(&#39;validate user_data {
 <h2 id="advanced-language-design-patterns">Advanced Language Design Patterns</h2>
 <h3 id="1-recursive-grammar-rules"><strong>1. Recursive Grammar Rules</strong></h3>
 <div class="highlight"><pre><span></span><code>/* CSV parser with recursive grammar */
-@global[&quot;$csv_parser&quot;] = rule &lt;$csv_row&gt; (&#39;\n&#39; &lt;$csv_parser&gt; | &#39;\n&#39; | ) {
+$global[&quot;$csv_parser&quot;] = rule &lt;$csv_row&gt; (&#39;\n&#39; &lt;$csv_parser&gt; | &#39;\n&#39; | ) {
     op(row:$1, rest:$3) {
         if (rest) {
             return [row] + rest;
@@ -5215,7 +5215,7 @@ is_valid = op(parse)(&#39;validate user_data {
     }
 };
 
-@global[&quot;$csv_row&quot;] = rule &lt;$csv_field&gt; (&#39;,&#39; &lt;$csv_row&gt; | );
+$global[&quot;$csv_row&quot;] = rule &lt;$csv_field&gt; (&#39;,&#39; &lt;$csv_row&gt; | );
 
 /* Parse CSV data */
 csv_data = &quot;name,age,city\nJohn,25,NY\nJane,30,LA&quot;;
@@ -5223,24 +5223,24 @@ parsed = op(parse)(csv_data)();
 </code></pre></div>
 <h3 id="2-context-sensitive-parsing"><strong>2. Context-Sensitive Parsing</strong></h3>
 <div class="highlight"><pre><span></span><code>/* Context-aware parsing with state */
-@global[&quot;$context_parser&quot;] = rule &lt;$context_state&gt; &lt;$context_rule&gt; {
+$global[&quot;$context_parser&quot;] = rule &lt;$context_state&gt; &lt;$context_rule&gt; {
     op(state:$1, rule:$2) {
         /* Apply context-specific parsing rules */
         return parse_with_context(state, rule);
     }
 };
 
-@global[&quot;$context_state&quot;] = rule &#39;in&#39; $STR &#39;{&#39; | &#39;out&#39; $STR &#39;}&#39;;
+$global[&quot;$context_state&quot;] = rule &#39;in&#39; $STR &#39;{&#39; | &#39;out&#39; $STR &#39;}&#39;;
 
 /* Use context-sensitive parsing */
 result = op(parse)(&#39;in &quot;sql&quot; { SELECT * FROM users }&#39;)();
 </code></pre></div>
 <h3 id="3-dynamic-token-types"><strong>3. Dynamic Token Types</strong></h3>
 <div class="highlight"><pre><span></span><code>/* Define custom token types */
-@global[&quot;$custom_token&quot;] = rule $SYM(&quot;SQL_KEYWORD&quot;) | $SYM(&quot;JSON_PATH&quot;) | $SYM(&quot;XPATH_EXPR&quot;);
+$global[&quot;$custom_token&quot;] = rule $SYM(&quot;SQL_KEYWORD&quot;) | $SYM(&quot;JSON_PATH&quot;) | $SYM(&quot;XPATH_EXPR&quot;);
 
 /* Use custom tokens in grammar */
-@global[&quot;$sql_statement&quot;] = rule $SYM(&quot;SQL_KEYWORD&quot;) &lt;$sql_expression&gt; {
+$global[&quot;$sql_statement&quot;] = rule $SYM(&quot;SQL_KEYWORD&quot;) &lt;$sql_expression&gt; {
     op(keyword:$1, expr:$2) {
         return execute_sql_statement(keyword, expr);
     }
@@ -5267,7 +5267,7 @@ json_grammar = compile_grammar(&quot;json&quot;, &quot;custom_function = rule $S
 </code></pre></div>
 <h3 id="2-lazy-evaluation"><strong>2. Lazy Evaluation</strong></h3>
 <div class="highlight"><pre><span></span><code>/* Lazy evaluation of complex expressions */
-@global[&quot;$lazy_expression&quot;] = rule &#39;lazy&#39; &#39;{&#39; &lt;$expression&gt; &#39;}&#39; {
+$global[&quot;$lazy_expression&quot;] = rule &#39;lazy&#39; &#39;{&#39; &lt;$expression&gt; &#39;}&#39; {
     op(expr:$3) {
         /* Create lazy evaluation wrapper */
         return op() {
@@ -5368,7 +5368,7 @@ $name = &quot;hello&quot;;          /* System string */
 <h2 id="error-handling-and-debugging">Error Handling and Debugging</h2>
 <h3 id="1-grammar-error-recovery"><strong>1. Grammar Error Recovery</strong></h3>
 <div class="highlight"><pre><span></span><code>/* Robust grammar with error recovery */
-@global[&quot;$robust_rule&quot;] = rule &lt;$primary_rule&gt; | &lt;$fallback_rule&gt; {
+$global[&quot;$robust_rule&quot;] = rule &lt;$primary_rule&gt; | &lt;$fallback_rule&gt; {
     op(primary:$1, fallback:$2) {
         if (primary.type() != $ERR) {
             return primary;
@@ -5381,7 +5381,7 @@ $name = &quot;hello&quot;;          /* System string */
 </code></pre></div>
 <h3 id="2-debug-grammar-execution"><strong>2. Debug Grammar Execution</strong></h3>
 <div class="highlight"><pre><span></span><code>/* Debug grammar execution */
-@global[&quot;$debug_rule&quot;] = rule &#39;debug&#39; &lt;$rule&gt; {
+$global[&quot;$debug_rule&quot;] = rule &#39;debug&#39; &lt;$rule&gt; {
     op(rule:$2) {
         (&quot;Debug: Executing rule&quot;).echo();
         result = rule();
@@ -5396,7 +5396,7 @@ debug_result = op(parse)(&#39;debug { custom_rule() }&#39;)();
 <h2 id="real-world-applications">Real-World Applications</h2>
 <h3 id="1-configuration-management-system"><strong>1. Configuration Management System</strong></h3>
 <div class="highlight"><pre><span></span><code>/* Complete configuration DSL */
-@global[&quot;$config_system&quot;] = rule &#39;config&#39; &#39;{&#39; &lt;$config_entries&gt; &#39;}&#39; {
+$global[&quot;$config_system&quot;] = rule &#39;config&#39; &#39;{&#39; &lt;$config_entries&gt; &#39;}&#39; {
     op(entries:$3) {
         (&quot;Loading configuration...&quot;).echo();
         i = 0;
@@ -5409,9 +5409,9 @@ debug_result = op(parse)(&#39;debug { custom_rule() }&#39;)();
     }
 };
 
-@global[&quot;$config_entries&quot;] = rule &lt;$config_entry&gt; (&#39;;&#39; &lt;$config_entries&gt; | );
+$global[&quot;$config_entries&quot;] = rule &lt;$config_entry&gt; (&#39;;&#39; &lt;$config_entries&gt; | );
 
-@global[&quot;$config_entry&quot;] = rule $ID &#39;=&#39; &lt;$config_value&gt; | &#39;include&#39; $STR;
+$global[&quot;$config_entry&quot;] = rule $ID &#39;=&#39; &lt;$config_value&gt; | &#39;include&#39; $STR;
 
 /* Load configuration */
 op(parse)(&#39;config { 
@@ -5423,7 +5423,7 @@ op(parse)(&#39;config {
 </code></pre></div>
 <h3 id="2-data-transformation-pipeline"><strong>2. Data Transformation Pipeline</strong></h3>
 <div class="highlight"><pre><span></span><code>/* ETL pipeline DSL */
-@global[&quot;$etl_pipeline&quot;] = rule &#39;etl&#39; &#39;{&#39; &lt;$etl_steps&gt; &#39;}&#39; {
+$global[&quot;$etl_pipeline&quot;] = rule &#39;etl&#39; &#39;{&#39; &lt;$etl_steps&gt; &#39;}&#39; {
     op(steps:$3) {
         (&quot;Starting ETL pipeline...&quot;).echo();
         result = null;
@@ -5439,9 +5439,9 @@ op(parse)(&#39;config {
     }
 };
 
-@global[&quot;$etl_steps&quot;] = rule &lt;$etl_step&gt; (&#39;|&#39; &lt;$etl_steps&gt; | );
+$global[&quot;$etl_steps&quot;] = rule &lt;$etl_step&gt; (&#39;|&#39; &lt;$etl_steps&gt; | );
 
-@global[&quot;$etl_step&quot;] = rule &#39;extract&#39; $STR | &#39;transform&#39; $STR | &#39;load&#39; $STR;
+$global[&quot;$etl_step&quot;] = rule &#39;extract&#39; $STR | &#39;transform&#39; $STR | &#39;load&#39; $STR;
 
 /* Execute ETL pipeline */
 result = op(parse)(&#39;etl { 
@@ -5452,16 +5452,16 @@ result = op(parse)(&#39;etl {
 </code></pre></div>
 <h3 id="3-api-definition-language"><strong>3. API Definition Language</strong></h3>
 <div class="highlight"><pre><span></span><code>/* API definition DSL */
-@global[&quot;$api_definition&quot;] = rule &#39;api&#39; $STR &#39;{&#39; &lt;$api_endpoints&gt; &#39;}&#39; {
+$global[&quot;$api_definition&quot;] = rule &#39;api&#39; $STR &#39;{&#39; &lt;$api_endpoints&gt; &#39;}&#39; {
     op(name:$2, endpoints:$4) {
         (&quot;Defining API: &quot; + name).echo();
         return create_api(name, endpoints);
     }
 };
 
-@global[&quot;$api_endpoints&quot;] = rule &lt;$api_endpoint&gt; (&#39;;&#39; &lt;$api_endpoints&gt; | );
+$global[&quot;$api_endpoints&quot;] = rule &lt;$api_endpoint&gt; (&#39;;&#39; &lt;$api_endpoints&gt; | );
 
-@global[&quot;$api_endpoint&quot;] = rule $STR $STR &#39;{&#39; &lt;$endpoint_body&gt; &#39;}&#39; {
+$global[&quot;$api_endpoint&quot;] = rule $STR $STR &#39;{&#39; &lt;$endpoint_body&gt; &#39;}&#39; {
     op(method:$1, path:$2, body:$4) {
         return define_endpoint(method, path, body);
     }

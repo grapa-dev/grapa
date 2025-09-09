@@ -4907,7 +4907,7 @@ validation_result = op(parse)(&#39;validate user_data {
 <h2 id="advanced-patterns">Advanced Patterns</h2>
 <h3 id="1-recursive-grammar-rules"><strong>1. Recursive Grammar Rules</strong></h3>
 <div class="highlight"><pre><span></span><code>/* CSV Parser with Recursive Grammar */
-@global[&quot;$csv_parser&quot;] = rule &lt;$csv_row&gt; (&#39;\n&#39; &lt;$csv_parser&gt; | &#39;\n&#39; | ) {
+$global[&quot;$csv_parser&quot;] = rule &lt;$csv_row&gt; (&#39;\n&#39; &lt;$csv_parser&gt; | &#39;\n&#39; | ) {
     op(row:$1, rest:$3) {
         if (rest) {
             return [row] + rest;
@@ -4917,7 +4917,7 @@ validation_result = op(parse)(&#39;validate user_data {
     }
 };
 
-@global[&quot;$csv_row&quot;] = rule &lt;$csv_field&gt; (&#39;,&#39; &lt;$csv_row&gt; | );
+$global[&quot;$csv_row&quot;] = rule &lt;$csv_field&gt; (&#39;,&#39; &lt;$csv_row&gt; | );
 
 /* Parse complex nested structures */
 csv_data = &quot;name,age,city\nJohn,25,NY\nJane,30,LA&quot;;
@@ -4925,13 +4925,13 @@ parsed = op(parse)(csv_data)();
 </code></pre></div>
 <h3 id="2-context-sensitive-parsing"><strong>2. Context-Sensitive Parsing</strong></h3>
 <div class="highlight"><pre><span></span><code>/* Context-Aware Parser */
-@global[&quot;$context_parser&quot;] = rule &lt;$context_state&gt; &lt;$context_rule&gt; {
+$global[&quot;$context_parser&quot;] = rule &lt;$context_state&gt; &lt;$context_rule&gt; {
     op(state:$1, rule:$2) {
         return parse_with_context(state, rule);
     }
 };
 
-@global[&quot;$context_state&quot;] = rule &#39;in&#39; $STR &#39;{&#39; | &#39;out&#39; $STR &#39;}&#39;;
+$global[&quot;$context_state&quot;] = rule &#39;in&#39; $STR &#39;{&#39; | &#39;out&#39; $STR &#39;}&#39;;
 
 /* Use context for different parsing modes */
 sql_result = op(parse)(&#39;in &quot;sql&quot; { SELECT * FROM users }&#39;)();
@@ -4939,10 +4939,10 @@ json_result = op(parse)(&#39;in &quot;json&quot; { {&quot;name&quot;: &quot;John
 </code></pre></div>
 <h3 id="3-dynamic-token-types"><strong>3. Dynamic Token Types</strong></h3>
 <div class="highlight"><pre><span></span><code>/* Custom Token Types */
-@global[&quot;$custom_token&quot;] = rule $SYM(&quot;SQL_KEYWORD&quot;) | $SYM(&quot;JSON_PATH&quot;) | $SYM(&quot;XPATH_EXPR&quot;);
+$global[&quot;$custom_token&quot;] = rule $SYM(&quot;SQL_KEYWORD&quot;) | $SYM(&quot;JSON_PATH&quot;) | $SYM(&quot;XPATH_EXPR&quot;);
 
 /* Use custom tokens in grammar */
-@global[&quot;$sql_statement&quot;] = rule $SYM(&quot;SQL_KEYWORD&quot;) &lt;$sql_expression&gt; {
+$global[&quot;$sql_statement&quot;] = rule $SYM(&quot;SQL_KEYWORD&quot;) &lt;$sql_expression&gt; {
     op(keyword:$1, expr:$2) {
         return execute_sql_statement(keyword, expr);
     }
@@ -4969,7 +4969,7 @@ json_grammar = compile_grammar(&quot;json&quot;, &quot;custom_function = rule $S
 </code></pre></div>
 <h3 id="2-lazy-evaluation"><strong>2. Lazy Evaluation</strong></h3>
 <div class="highlight"><pre><span></span><code>/* Lazy evaluation for expensive operations */
-@global[&quot;$lazy_expression&quot;] = rule &#39;lazy&#39; &#39;{&#39; &lt;$expression&gt; &#39;}&#39; {
+$global[&quot;$lazy_expression&quot;] = rule &#39;lazy&#39; &#39;{&#39; &lt;$expression&gt; &#39;}&#39; {
     op(expr:$3) {
         return op() {
             return expr();

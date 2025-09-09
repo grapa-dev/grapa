@@ -1993,6 +1993,15 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#automatic-configuration-file-loading" class="md-nav__link">
+    <span class="md-ellipsis">
+      Automatic Configuration File Loading
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#putenvname-value-setenvname-value" class="md-nav__link">
     <span class="md-ellipsis">
       putenv(name, value) / setenv(name, value)
@@ -4452,6 +4461,15 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#automatic-configuration-file-loading" class="md-nav__link">
+    <span class="md-ellipsis">
+      Automatic Configuration File Loading
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#putenvname-value-setenvname-value" class="md-nav__link">
     <span class="md-ellipsis">
       putenv(name, value) / setenv(name, value)
@@ -4697,7 +4715,7 @@ $ARRAY
 </thead>
 <tbody>
 <tr>
-<td><code>$PATH</code></td>
+<td><code>PATH</code></td>
 <td>System PATH environment variable</td>
 <td><code>"C:\Windows\System32;C:\Windows"</code></td>
 </tr>
@@ -4722,12 +4740,12 @@ $ARRAY
 <td><code>["./grapa", "-c", "script", "a", "b", "c"]</code></td>
 </tr>
 <tr>
-<td><code>$LIB</code></td>
+<td><code>$GRAPA_LIB</code></td>
 <td>Library directory path</td>
 <td><code>"lib"</code></td>
 </tr>
 <tr>
-<td><code>$BIN</code></td>
+<td><code>$GRAPA_BIN</code></td>
 <td>Binary directory path</td>
 <td><code>"bin"</code></td>
 </tr>
@@ -4752,7 +4770,7 @@ $ARRAY
 <td><code>"C:\Users\user\AppData\Local\Temp"</code></td>
 </tr>
 <tr>
-<td><code>$VERSION</code></td>
+<td><code>$GRAPA_VERSION</code></td>
 <td>Grapa version information</td>
 <td><code>{"major":0,"minor":0,"micro":2,"releaselevel":"alpha","serial":63,"date":2020-04-24T16:30:37.000000}</code></td>
 </tr>
@@ -4770,7 +4788,7 @@ $ARRAY
 </table>
 <p><strong>Note:</strong> Any value not starting with <code>$</code> will be directed to the native OS <code>getenv()</code> function.</p>
 <p><strong>Example:</strong>
-<div class="highlight"><pre><span></span><code>$sys().getenv($VERSION);
+<div class="highlight"><pre><span></span><code>$sys().getenv($GRAPA_VERSION);
 /* Returns: {&quot;major&quot;:0,&quot;minor&quot;:0,&quot;micro&quot;:2,&quot;releaselevel&quot;:&quot;alpha&quot;,&quot;serial&quot;:63,&quot;date&quot;:2020-04-24T16:30:37.000000} */
 
 $sys().getenv($HOME);
@@ -4914,13 +4932,13 @@ debug = $sys().getenv(&quot;DEBUG_MODE&quot;);
 <li><strong><code>$WORK</code></strong>: Current working directory - essential for relative path operations</li>
 <li><strong><code>$HOME</code></strong>: User's home directory - for user-specific configuration files</li>
 <li><strong><code>$TEMP</code></strong>: Temporary directory - for temporary file operations</li>
-<li><strong><code>$VERSION</code></strong>: Grapa version - for compatibility checking</li>
+<li><strong><code>$GRAPA_VERSION</code></strong>: Grapa version - for compatibility checking</li>
 <li><strong><code>$PLATFORM</code></strong>: Platform information - for cross-platform script behavior</li>
 </ul>
 <h4 id="useful-for-advanced-cli-scripts"><strong>Useful for Advanced CLI Scripts</strong></h4>
 <ul>
-<li><strong><code>$BIN</code></strong>: Binary directory - for finding related executables</li>
-<li><strong><code>$LIB</code></strong>: Library directory - for library discovery and loading</li>
+<li><strong><code>$GRAPA_BIN</code></strong>: Binary directory - for finding related executables</li>
+<li><strong><code>$GRAPA_LIB</code></strong>: Library directory - for library discovery and loading</li>
 <li><strong><code>$NAME</code></strong>: Program name - for self-referencing in usage messages</li>
 </ul>
 <h4 id="cli-script-example"><strong>CLI Script Example</strong></h4>
@@ -4929,7 +4947,7 @@ debug = $sys().getenv(&quot;DEBUG_MODE&quot;);
 work_dir = $sys().getenv($WORK);
 home_dir = $sys().getenv($HOME);
 temp_dir = $sys().getenv($TEMP);
-version = $sys().getenv($VERSION);
+version = $sys().getenv($GRAPA_VERSION);
 platform = $sys().getenv($PLATFORM);
 
 /* Create cross-platform paths */
@@ -4965,6 +4983,40 @@ if (!$file(output_dir).exists()) {
 (&quot;Log: &quot; + log_file).echo();
 (&quot;Output: &quot; + output_dir).echo();
 </code></pre></div>
+<h3 id="automatic-configuration-file-loading">Automatic Configuration File Loading</h3>
+<p>Grapa automatically loads configuration files during startup to set up your environment:</p>
+<p><strong>Configuration File Search Order:</strong>
+1. <strong><code>~/.grapa/config.grz</code></strong> - Compressed configuration file in user's home directory
+2. <strong><code>$WORK/.grapa/config.grc</code></strong> - Plain text configuration file in current working directory</p>
+<p><strong>Configuration File Format:</strong>
+Configuration files are standard Grapa scripts that execute during startup:</p>
+<div class="highlight"><pre><span></span><code>/* ~/.grapa/config.grc */
+&quot;Loading user configuration...\n&quot;.echo();
+
+/* Set custom environment variables */
+$sys().putenv(&quot;CUSTOM_PATH&quot;, &quot;/usr/local/myapp&quot;);
+$sys().putenv(&quot;DEBUG_MODE&quot;, &quot;true&quot;);
+
+/* Define custom functions */
+my_helper = op(x) { x * 2; };
+
+/* Set up global variables */
+$global.user_config = {
+    theme: &quot;dark&quot;,
+    timeout: 30,
+    auto_save: true
+};
+
+&quot;Configuration loaded successfully\n&quot;.echo();
+</code></pre></div>
+<p><strong>Use Cases:</strong>
+- <strong>Environment Setup</strong>: Configure paths, debug settings, and environment variables
+- <strong>Custom Functions</strong>: Define helper functions available in all sessions
+- <strong>Global Variables</strong>: Set up shared configuration objects
+- <strong>User Preferences</strong>: Store and load user-specific settings</p>
+<p><strong>File Types:</strong>
+- <strong><code>.grc</code></strong>: Plain text Grapa script (recommended for readability)
+- <strong><code>.grz</code></strong>: Compressed Grapa script (for larger configurations)</p>
 <h3 id="putenvname-value-setenvname-value">putenv(name, value) / setenv(name, value)</h3>
 <p>Sets environment variables and system information. Both <code>putenv()</code> and <code>setenv()</code> are aliases for the same functionality.</p>
 <h3 id="constobject">const(object)</h3>
@@ -5133,7 +5185,7 @@ Finished!
 <h2 id="usage-patterns">Usage Patterns</h2>
 <h3 id="environment-variable-management">Environment Variable Management</h3>
 <div class="highlight"><pre><span></span><code>/* Get system information */
-version = $sys().getenv($VERSION);
+version = $sys().getenv($GRAPA_VERSION);
 platform = $sys().getenv($PLATFORM);
 
 /* Set custom environment variables */

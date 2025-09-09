@@ -2848,6 +2848,57 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#parameter-passing-behavior" class="md-nav__link">
+    <span class="md-ellipsis">
+      Parameter Passing Behavior
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Parameter Passing Behavior">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#how-parameters-work" class="md-nav__link">
+    <span class="md-ellipsis">
+      How Parameters Work
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#parameter-side-effects" class="md-nav__link">
+    <span class="md-ellipsis">
+      Parameter Side Effects
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#workaround-for-value-copying" class="md-nav__link">
+    <span class="md-ellipsis">
+      Workaround for Value Copying
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#best-practices" class="md-nav__link">
+    <span class="md-ellipsis">
+      Best Practices
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#grapas-destructuring-assignment" class="md-nav__link">
     <span class="md-ellipsis">
       Grapa's Destructuring Assignment
@@ -6060,6 +6111,57 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#parameter-passing-behavior" class="md-nav__link">
+    <span class="md-ellipsis">
+      Parameter Passing Behavior
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Parameter Passing Behavior">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#how-parameters-work" class="md-nav__link">
+    <span class="md-ellipsis">
+      How Parameters Work
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#parameter-side-effects" class="md-nav__link">
+    <span class="md-ellipsis">
+      Parameter Side Effects
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#workaround-for-value-copying" class="md-nav__link">
+    <span class="md-ellipsis">
+      Workaround for Value Copying
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#best-practices" class="md-nav__link">
+    <span class="md-ellipsis">
+      Best Practices
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#grapas-destructuring-assignment" class="md-nav__link">
     <span class="md-ellipsis">
       Grapa's Destructuring Assignment
@@ -8176,32 +8278,79 @@ if (condition) {
     block_var = &quot;other&quot;;  /* Different block namespace */
 }
 </code></pre></div>
+<h3 id="parameter-passing-behavior">Parameter Passing Behavior</h3>
+<p><strong>Important</strong>: Grapa uses pass-by-reference for all function parameters. Default parameter values are immutable (each call gets a fresh copy), while passed parameters remain mutable. This is a deliberate design decision to avoid implementing a full garbage collection system and maintain performance by limiting when copies are required.</p>
+<h4 id="how-parameters-work">How Parameters Work</h4>
+<p>All parameters are passed by reference to avoid unnecessary copying:</p>
+<div class="highlight"><pre><span></span><code>/* Function that modifies its parameter */
+f = op(a=0) {
+    a += 1;
+    a;
+};
+
+/* Default values are now immutable - each call gets a fresh copy */
+f();  /* Returns 1 */
+f();  /* Returns 1 - default value is not modified! */
+</code></pre></div>
+<h4 id="parameter-side-effects">Parameter Side Effects</h4>
+<p>Modifying parameters within functions affects the original values:</p>
+<div class="highlight"><pre><span></span><code>x = 0;
+f(x);  /* Returns 1 */
+x;     /* Now 1 - original variable was modified */
+
+y = [2, 2, 2];
+f(y[1]);  /* Returns 3 */
+y;        /* Now [2, 3, 2] - array element was modified */
+</code></pre></div>
+<h4 id="workaround-for-value-copying">Workaround for Value Copying</h4>
+<p>If you need to avoid side effects, use the <code>.copy()</code> method or a copy function:</p>
+<div class="highlight"><pre><span></span><code>/* Method 1: Use .copy() method (recommended) */
+y = [2, 2, 2];
+f(y[1].copy());  /* Returns 3 */
+y;               /* Still [2, 2, 2] - original unchanged */
+
+/* Method 2: Copy function to force value copying */
+c = op(x) { x; };
+
+y = [2, 2, 2];
+f(c(y[1]));  /* Returns 3 */
+y;           /* Still [2, 2, 2] - original unchanged */
+</code></pre></div>
+<h4 id="best-practices">Best Practices</h4>
+<ol>
+<li><strong>Avoid modifying parameters</strong> unless that's the intended behavior</li>
+<li><strong>Use <code>.copy()</code> method</strong> when you need to avoid side effects (recommended)</li>
+<li><strong>Use copy functions</strong> as an alternative to <code>.copy()</code></li>
+<li><strong>Document functions</strong> that intentionally modify parameters</li>
+<li><strong>Consider this behavior</strong> when designing function interfaces</li>
+</ol>
+<p>This behavior is similar to C++ pass-by-reference, where parameters are often passed by reference for performance reasons.</p>
 <h3 id="grapas-destructuring-assignment">Grapa's Destructuring Assignment</h3>
 <p>Grapa provides a powerful destructuring system using namespace concatenation with the <code>++=</code> operator. This is more flexible and powerful than traditional destructuring syntax.</p>
 <h4 id="object-destructuring">Object Destructuring</h4>
 <div class="highlight"><pre><span></span><code>/* Destructure object properties into local namespace */
 person = {name:&quot;Alice&quot;, age:30, city:&quot;New York&quot;};
-@local ++= person;
+$local ++= person;
 name.echo();    /* &quot;Alice&quot; */
 age.echo();     /* 30 */
 city.echo();    /* &quot;New York&quot; */
 
 /* Destructure into global namespace */
-@global ++= {debug:true, timeout:5000};
+$global ++= {debug:true, timeout:5000};
 debug.echo();   /* true */
 timeout.echo(); /* 5000 */
 </code></pre></div>
 <h4 id="array-destructuring">Array Destructuring</h4>
 <div class="highlight"><pre><span></span><code>/* Destructure array elements with custom variable names */
 arr = [1, 2, 3, 4, 5];
-@local ++= {first:arr[0], second:arr[1], rest:arr.range(2, arr.len())};
+$local ++= {first:arr[0], second:arr[1], rest:arr.range(2, arr.len())};
 first.echo();   /* 1 */
 second.echo();  /* 2 */
 rest.echo();    /* [3, 4, 5] */
 
 /* Function parameter destructuring */
 func = op(params) {
-    @local ++= params;  /* Destructure all parameters */
+    $local ++= params;  /* Destructure all parameters */
     name.echo();
     age.echo();
 };
@@ -8210,10 +8359,10 @@ func({name:&quot;Bob&quot;, age:25});
 </code></pre></div>
 <h4 id="namespace-options">Namespace Options</h4>
 <div class="highlight"><pre><span></span><code>/* Local namespace (function scope) */
-@local ++= {debug:true, timeout:5000};
+$local ++= {debug:true, timeout:5000};
 
 /* Global namespace (persistent) */
-@global ++= {config:true, version:&quot;1.0&quot;};
+$global ++= {config:true, version:&quot;1.0&quot;};
 
 /* Object namespace (current object) */
 @this ++= {name:&quot;John&quot;, age:25};
@@ -8223,8 +8372,8 @@ func({name:&quot;Bob&quot;, age:25});
 </code></pre></div>
 <h4 id="duplicate-handling">Duplicate Handling</h4>
 <div class="highlight"><pre><span></span><code>/* References access the last added in case of duplicates */
-@local ++= {a:1, b:2};
-@local ++= {a:10, c:3};  /* &#39;a&#39; now refers to 10, not 1 */
+$local ++= {a:1, b:2};
+$local ++= {a:10, c:3};  /* &#39;a&#39; now refers to 10, not 1 */
 
 /* Remove duplicates if needed */
 @$local.unique();  /* Removes duplicate entries */
@@ -8232,25 +8381,25 @@ func({name:&quot;Bob&quot;, age:25});
 <h4 id="advanced-patterns">Advanced Patterns</h4>
 <div class="highlight"><pre><span></span><code>/* Destructure nested objects */
 nested = {user:{name:&quot;Alice&quot;, profile:{age:30, role:&quot;admin&quot;}}};
-@local ++= nested.user.profile;
+$local ++= nested.user.profile;
 age.echo();   /* 30 */
 role.echo();  /* &quot;admin&quot; */
 
 /* Destructure with transformations */
 data = {x:10, y:20};
-@local ++= {sum:data.x + data.y, product:data.x * data.y};
+$local ++= {sum:data.x + data.y, product:data.x * data.y};
 sum.echo();     /* 30 */
 product.echo(); /* 200 */
 
 /* Configuration destructuring */
-@global ++= {debug:true, timeout:5000, retries:3};
+$global ++= {debug:true, timeout:5000, retries:3};
 debug.echo();   /* true */
 timeout.echo(); /* 5000 */
 retries.echo(); /* 3 */
 </code></pre></div>
 <p><strong>Advantages of Grapa's Destructuring:</strong>
 - <strong>Namespace Control</strong>: Explicit control over where variables go
-- <strong>Flexible</strong>: Can destructure into any namespace (<code>@local</code>, <code>@global</code>, <code>@this</code>)
+- <strong>Flexible</strong>: Can destructure into any namespace (<code>$local</code>, <code>$global</code>, <code>@this</code>)
 - <strong>Powerful</strong>: Can destructure multiple objects into the same namespace
 - <strong>Consistent</strong>: Uses existing <code>++=</code> operator and namespace system
 - <strong>Duplicate Resolution</strong>: Clear behavior for handling duplicates

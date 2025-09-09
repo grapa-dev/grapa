@@ -8,21 +8,23 @@
  * - Performance metrics calculation
  */
 
-("=== Linear Regression Example ===").echo();
+("=== Linear Regression Example ===\n").echo();
 
 /* ======================================== */
 /* 1. Data Generation and Preprocessing */
 /* ======================================== */
 
-("--- Data Generation ---").echo();
+32.setfloat(0);
+
+("--- Data Generation ---\n").echo();
 
 /* Generate sample data: y = 2*x1 + 3*x2 + 5 + noise */
 n_samples = 100;
 X_data = [];
 y_data = [];
 
-i = 0;
-while (i < n_samples) {
+i = 1;
+while (i <= n_samples) {
     x1 = (i / 10).float();  /* Feature 1 */
     x2 = (i % 10).float();  /* Feature 2 */
     noise = ((i % 3) - 1) * 0.1;  /* Small noise */
@@ -30,53 +32,53 @@ while (i < n_samples) {
     
     X_data += [x1, x2];
     y_data += y;
-    i = i + 1;
+    i += 1;
 }
 
 /* Convert to vectors */
 X = X_data.vector();
 y = y_data.vector();
 
-("Generated " + n_samples + " samples").echo();
-("X shape: " + X.shape()).echo();
-("y shape: " + y.shape()).echo();
+("Generated " + n_samples.str() + " samples\n").echo();
+("X shape: " + X.shape().str() + "\n").echo();
+("y shape: " + y.shape().str() + "\n").echo();
 
 /* ======================================== */
 /* 2. Feature Scaling */
 /* ======================================== */
 
-("--- Feature Scaling ---").echo();
+("--- Feature Scaling ---" + "\n").echo();
 
 /* Standardize features (Z-score normalization) */
 feature_means = X.mean(0);
 feature_stds = X.std(0);
 
-("Feature means: " + feature_means).echo();
-("Feature standard deviations: " + feature_stds).echo();
+("Feature means: " + feature_means.str() + "\n").echo();
+("Feature standard deviations: " + feature_stds.str()  + "\n").echo();
 
 /* Scale the features */
 X_scaled = [];
 i = 0;
-while (i < X.shape().getfield(0)) {
+while (i < X.shape().get(0)) {
     row = [];
     j = 0;
-    while (j < X.shape().getfield(1)) {
-        standardized_val = (X.getfield(i).getfield(j) - feature_means.getfield(j)) / feature_stds.getfield(j);
+    while (j < X.shape().get(1)) {
+        standardized_val = (X.getfield(i,j) - feature_means.getfield(j,0)) / feature_stds.getfield(j,0);
         row += standardized_val;
-        j = j + 1;
+        j += 1;
     }
     X_scaled += row;
-    i = i + 1;
+    i += 1;
 }
 
 X_scaled = X_scaled.vector();
-("Features scaled successfully").echo();
+("Features scaled successfully" + "\n").echo();
 
 /* ======================================== */
 /* 3. Linear Regression Implementation */
 /* ======================================== */
 
-("--- Linear Regression Training ---").echo();
+("--- Linear Regression Training ---" + "\n").echo();
 
 /* Add bias term (intercept) to design matrix */
 add_bias_column = op(X) {
@@ -87,22 +89,22 @@ add_bias_column = op(X) {
     
     X_with_bias = [];
     i = 0;
-    while (i < X.shape().getfield(0)) {
-    row = [1];  /* Bias term */
-    j = 0;
-    while (j < X.shape().getfield(1)) {
-        row += X.getfield(i).getfield(j);
-        j = j + 1;
-    }
-    X_with_bias += row;
-    i = i + 1;
-}
+    while (i < X.shape().get(0)) {
+		row = [1];  /* Bias term */
+		j = 0;
+		while (j < X.shape().get(1)) {
+			row += X.getfield(i,j);
+			j += 1;
+		}
+		X_with_bias += row;
+		i += 1;
+	}
     X_with_bias.vector();
 };
 
 /* Normal equation: β = (X^T * X)^-1 * X^T * y */
 X_with_bias = add_bias_column(X_scaled);
-("Design matrix shape: " + X_with_bias.shape()).echo();
+("Design matrix shape: " + X_with_bias.shape().str() + "\n").echo();
 
 /* Calculate coefficients using normal equation */
 start_time = $TIME().utc();
@@ -110,63 +112,49 @@ XT = X_with_bias.t();
 XTX = XT.dot(X_with_bias);
 XTy = XT.dot(y);
 coefficients = XTX.inv().dot(XTy);
-end_time = $TIME().utc();
-training_time = (($TIME().utc() - start_time) / 1000000).int();
+training_time = start_time.ms();
 
-("Training completed in " + training_time + "ms").echo();
-("Coefficients: " + coefficients).echo();
+("Training completed in " + training_time.str() + "ms\n").echo();
+("Coefficients: " + coefficients.str() + "\n").echo();
 
 /* ======================================== */
 /* 4. Predictions */
 /* ======================================== */
 
-("--- Making Predictions ---").echo();
+("--- Making Predictions ---" + "\n").echo();
 
 /* Make predictions on training data */
 predictions = X_with_bias.dot(coefficients);
 
 /* Show first few predictions */
-("First 5 predictions:").echo();
+("First 5 predictions:" + "\n").echo();
 i = 0;
 while (i < 5) {
-    ("  Sample " + i + ": True=" + y.getfield(i) + ", Predicted=" + predictions.getfield(i)).echo();
-    i = i + 1;
+    ("  Sample " + i + ": True=" + y.get(i).str() + ", Predicted=" + predictions.get(i).str() + "\n").echo();
+    i += 1;
 }
 
 /* ======================================== */
 /* 5. Model Evaluation */
 /* ======================================== */
 
-("--- Model Evaluation ---").echo();
+("--- Model Evaluation ---" + "\n").echo();
 
 /* Calculate performance metrics */
 calculate_r_squared = op(y_true, y_pred) {
-    $local.y_mean = null;
-    $local.ss_total = null;
-    $local.ss_residual = null;
-    $local.r_squared = null;
-    
-    y_mean = y_true.mean();
-    ss_total = (y_true - y_mean).pow(2).sum();
-    ss_residual = (y_true - y_pred).pow(2).sum();
-    r_squared = 1 - (ss_residual / ss_total);
-    r_squared;
+    $local.y_mean = y_true.mean();
+    $local.ss_total = ((y_true - y_mean) * #[op(x){x**2}]#).sum();
+    $local.ss_residual = ((y_true - y_pred) * #[op(x){x**2}]#).sum();
+    1.0 - (ss_residual.get(0) / ss_total.get(0));
 };
 
 calculate_mse = op(y_true, y_pred) {
-    $local.mse = null;
-    
-    mse = (y_true - y_pred).pow(2).mean();
-    mse;
+    ((y_true - y_pred) * #[op(x){x**2}]#).mean().get(0);
 };
 
 calculate_rmse = op(y_true, y_pred) {
-    $local.mse = null;
-    $local.rmse = null;
-    
     mse = calculate_mse(y_true, y_pred);
-    rmse = mse.sqrt();
-    rmse;
+    mse ** 0.5;
 };
 
 /* Calculate metrics */
@@ -174,16 +162,16 @@ r_squared = calculate_r_squared(y, predictions);
 mse = calculate_mse(y, predictions);
 rmse = calculate_rmse(y, predictions);
 
-("Performance Metrics:").echo();
-("  R-squared: " + r_squared).echo();
-("  Mean Squared Error: " + mse).echo();
-("  Root Mean Squared Error: " + rmse).echo();
+("Performance Metrics:" + "\n").echo();
+("  R-squared: " + r_squared.str() + "\n").echo();
+("  Mean Squared Error: " + mse.str() + "\n").echo();
+("  Root Mean Squared Error: " + rmse.str() + "\n").echo();
 
 /* ======================================== */
 /* 6. Ridge Regression Example */
 /* ======================================== */
 
-("--- Ridge Regression Example ---").echo();
+("--- Ridge Regression Example ---" + "\n").echo();
 
 /* Ridge regression with L2 regularization */
 ridge_regression = op(X, y, lambda) {
@@ -199,9 +187,9 @@ ridge_regression = op(X, y, lambda) {
     $local.coefficients = null;
     
     /* Add regularization term */
-    n_features = X.shape().getfield(1);
-    regularization_matrix = [];
-    i = 0;
+    $local.n_features = X.shape().get(1);
+    $local.regularization_matrix = [];
+    $local.i = 0;
     while (i < n_features) {
         row = [];
         j = 0;
@@ -211,59 +199,60 @@ ridge_regression = op(X, y, lambda) {
             } else {
                 row += 0.0;
             }
-            j = j + 1;
+            j += 1;
         }
         regularization_matrix += row;
-        i = i + 1;
+        i += 1;
     }
-    regularization_matrix = regularization_matrix.vector();
+    $local.regularization_matrix = regularization_matrix.vector();
     
     /* Calculate coefficients with regularization */
-    XT = X.t();
-    XTX = XT.dot(X);
-    XTX_reg = XTX + regularization_matrix;
-    XTy = XT.dot(y);
+    $local.XT = X.t();
+    $local.XTX = XT.dot(X);
+    $local.XTX_reg = XTX + regularization_matrix;
+    $local.XTy = XT.dot(y);
     
-    coefficients = XTX_reg.inv().dot(XTy);
-    coefficients;
+    XTX_reg.inv().dot(XTy);
 };
 
 /* Try different regularization strengths */
 lambda_values = [0.0, 0.1, 1.0, 10.0];
-("Ridge regression with different lambda values:").echo();
+("Ridge regression with different lambda values:" + "\n").echo();
 
-lambda_values.each(op(lambda) {
-    ridge_coefficients = ridge_regression(X_with_bias, y, lambda);
-    ridge_predictions = X_with_bias.dot(ridge_coefficients);
-    ridge_r_squared = calculate_r_squared(y, ridge_predictions);
-    ridge_rmse = calculate_rmse(y, ridge_predictions);
-    
-    ("  Lambda=" + lambda + ": R²=" + ridge_r_squared + ", RMSE=" + ridge_rmse).echo();
-});
+for(i=0;i<lambda_values.len();i+=1) {
+    $local.lambda = lambda_values[i];
+    $local.X_with_bias_copy = X_with_bias.copy();
+    $local.y_copy = y.copy();
+    $local.ridge_coefficients = ridge_regression(X_with_bias_copy,y_copy,lambda);
+    $local.ridge_predictions = X_with_bias.dot(ridge_coefficients);
+    $local.ridge_r_squared = calculate_r_squared(y_copy, ridge_predictions).float(32);
+    $local.ridge_rmse = calculate_rmse(y_copy, ridge_predictions).float(32);
+    "  Lambda=${lambda.float(10)}: R²=${ridge_r_squared}, RMSE=${ridge_rmse}\n".interpolate().echo();
+};
 
 /* ======================================== */
 /* 7. New Data Prediction */
 /* ======================================== */
 
-("--- New Data Prediction ---").echo();
+("--- New Data Prediction ---" + "\n").echo();
 
 /* Create new data points */
-new_data = [[1.5, 2.5], [3.0, 4.0], [5.5, 6.5]].vector();
-("New data points: " + new_data).echo();
+new_data = #[[1.5, 2.5], [3.0, 4.0], [5.5, 6.5]]#;
+("New data points: " + new_data.str() + "\n").echo();
 
 /* Scale new data using same parameters */
 new_data_scaled = [];
 i = 0;
-while (i < new_data.shape().getfield(0)) {
+while (i < new_data.shape().get(0)) {
     row = [];
     j = 0;
-    while (j < new_data.shape().getfield(1)) {
-        standardized_val = (new_data.getfield(i).getfield(j) - feature_means.getfield(j)) / feature_stds.getfield(j);
+    while (j < new_data.shape().get(1)) {
+        standardized_val = (new_data.getfield(i,j) - feature_means.getfield(j,0)) / feature_stds.getfield(j,0);
         row += standardized_val;
-        j = j + 1;
+        j += 1;
     }
     new_data_scaled += row;
-    i = i + 1;
+    i += 1;
 }
 
 new_data_scaled = new_data_scaled.vector();
@@ -272,28 +261,28 @@ new_data_with_bias = add_bias_column(new_data_scaled);
 /* Make predictions */
 new_predictions = new_data_with_bias.dot(coefficients);
 
-("Predictions for new data:").echo();
+("Predictions for new data:" + "\n").echo();
 i = 0;
-while (i < new_data.shape().getfield(0)) {
-    ("  Input: " + new_data.getfield(i) + " -> Prediction: " + new_predictions.getfield(i)).echo();
-    i = i + 1;
+while (i < new_data.shape().get(0)) {
+    ("  Input: " + new_data.array()[i].str() + " -> Prediction: " + new_predictions.array()[i].str() + "\n").echo();
+    i += 1;
 }
 
 /* ======================================== */
 /* 8. Summary */
 /* ======================================== */
 
-("\n--- Summary ---").echo();
+("\n--- Summary ---" + "\n").echo();
 
-("Linear regression implementation completed successfully!").echo();
-("Key results:").echo();
-("  - Model trained on " + n_samples + " samples").echo();
-("  - Training time: " + training_time + "ms").echo();
-("  - R-squared: " + r_squared).echo();
-("  - RMSE: " + rmse).echo();
-("  - Coefficients: " + coefficients).echo();
+("Linear regression implementation completed successfully!" + "\n").echo();
+("Key results:" + "\n").echo();
+("  - Model trained on " + n_samples.str() + " samples" + "\n").echo();
+("  - Training time: " + training_time.str() + "ms" + "\n").echo();
+("  - R-squared: " + r_squared.str() + "\n").echo();
+("  - RMSE: " + rmse.str() + "\n").echo();
+("  - Coefficients: " + coefficients.str() + "\n").echo();
 
-("The model successfully learned the relationship: y = 2*x1 + 3*x2 + 5").echo();
-("Grapa's vector operations provide all necessary capabilities for linear regression!").echo();
+("The model successfully learned the relationship: y = 2*x1 + 3*x2 + 5" + "\n").echo();
+("Grapa's vector operations provide all necessary capabilities for linear regression!" + "\n").echo();
 
-("=== Linear Regression Example Complete ===").echo();
+("=== Linear Regression Example Complete ===" + "\n").echo();

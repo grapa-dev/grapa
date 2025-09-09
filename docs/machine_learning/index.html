@@ -3136,6 +3136,30 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#precision-optimization" class="md-nav__link">
+    <span class="md-ellipsis">
+      Precision Optimization
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Precision Optimization">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#fixed-point-vs-floating-point-for-machine-learning" class="md-nav__link">
+    <span class="md-ellipsis">
+      Fixed-Point vs Floating-Point for Machine Learning
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#best-practices" class="md-nav__link">
     <span class="md-ellipsis">
       Best Practices
@@ -4671,6 +4695,30 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#precision-optimization" class="md-nav__link">
+    <span class="md-ellipsis">
+      Precision Optimization
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Precision Optimization">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#fixed-point-vs-floating-point-for-machine-learning" class="md-nav__link">
+    <span class="md-ellipsis">
+      Fixed-Point vs Floating-Point for Machine Learning
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#best-practices" class="md-nav__link">
     <span class="md-ellipsis">
       Best Practices
@@ -4963,28 +5011,28 @@ normalize_features = op(X) {
 <div class="highlight"><pre><span></span><code>/* Calculate R-squared (coefficient of determination) */
 calculate_r_squared = op(y_true, y_pred) {
     y_mean = y_true.mean();
-    ss_total = (y_true - y_mean).pow(2).sum();
-    ss_residual = (y_true - y_pred).pow(2).sum();
-    r_squared = 1 - (ss_residual / ss_total);
+    ss_total = ((y_true - y_mean) * #[op(x){x**2}]#).sum();
+    ss_residual = ((y_true - y_pred) * #[op(x){x**2}]#).sum();
+    r_squared = 1.0 - (ss_residual.get(0) / ss_total.get(0));
     r_squared;
 };
 
 /* Calculate Mean Squared Error */
 calculate_mse = op(y_true, y_pred) {
-    mse = (y_true - y_pred).pow(2).mean();
+    mse = ((y_true - y_pred) * #[op(x){x**2}]#).mean().get(0);
     mse;
 };
 
 /* Calculate Root Mean Squared Error */
 calculate_rmse = op(y_true, y_pred) {
     mse = calculate_mse(y_true, y_pred);
-    rmse = mse.sqrt();
+    rmse = mse ** 0.5;
     rmse;
 };
 
 /* Calculate Mean Absolute Error */
 calculate_mae = op(y_true, y_pred) {
-    mae = (y_true - y_pred).abs().mean();
+    mae = ((y_true - y_pred) * #[op(x){x &lt; 0 ? -x : x}]#).mean().get(0);
     mae;
 };
 </code></pre></div>
@@ -5210,6 +5258,69 @@ model.fit(X, y, &quot;gradient&quot;, 0.001, 2000);
 </tr>
 </tbody>
 </table>
+<h3 id="precision-optimization">Precision Optimization</h3>
+<p>For performance-critical machine learning applications, you can significantly improve training speed by reducing floating-point precision:</p>
+<div class="highlight"><pre><span></span><code>/* Set system precision for machine learning optimization */
+// ✅ High performance - 32-bit precision (~2x faster)
+32.setfloat(0);
+model.fit(X, y, &quot;normal&quot;);  // Much faster training
+
+// ✅ Balanced - 64-bit precision (good speed/accuracy)
+64.setfloat(0);
+model.fit(X, y, &quot;normal&quot;);  // Good performance
+
+// ✅ High accuracy - 128-bit precision (default)
+128.setfloat(0);
+model.fit(X, y, &quot;normal&quot;);  // Maximum accuracy
+</code></pre></div>
+<p><strong>Performance Impact:</strong>
+- <strong>32-bit precision</strong>: ~2x faster than 128-bit precision
+- <strong>64-bit precision</strong>: ~1.1x faster than 128-bit precision
+- <strong>128-bit precision</strong>: Maximum accuracy (default)</p>
+<h4 id="fixed-point-vs-floating-point-for-machine-learning">Fixed-Point vs Floating-Point for Machine Learning</h4>
+<p>Grapa automatically switches between floating-point and fixed-point representations depending on the mathematical function, with internal optimizations in <code>GrapaFloat.cpp</code> that choose the best representation for each operation. For most machine learning applications, the system default choice is sufficient:</p>
+<div class="highlight"><pre><span></span><code>/* System automatically chooses optimal representation per operation */
+32.setfloat(0);  // Sets system preference, but Grapa optimizes internally
+model.fit(X, y, &quot;normal&quot;);
+
+/* Alternative system preference */
+32.setfix(0);    // Sets system preference, but Grapa optimizes internally  
+model.fit(X, y, &quot;normal&quot;);
+</code></pre></div>
+<p><strong>For Machine Learning:</strong>
+- <strong>System optimization</strong>: Grapa's internal functions automatically choose the best representation for each mathematical operation
+- <strong>Minimal impact</strong>: For most ML applications, the choice between <code>setfloat()</code> and <code>setfix()</code> has minimal impact on results
+- <strong>Focus on precision</strong>: The bit precision (32, 64, 128) has much more impact than the float/fix choice
+- <strong>Default recommendation</strong>: Use <code>setfloat()</code> as the default unless you have specific requirements</p>
+<p><strong>When to Use Lower Precision:</strong>
+- ✅ Machine learning applications (32-bit often sufficient)
+- ✅ Real-time inference requiring maximum speed
+- ✅ Batch processing of large datasets
+- ✅ When accuracy requirements allow for lower precision
+- ✅ Prototyping and experimentation</p>
+<p><strong>When to Use Higher Precision:</strong>
+- ✅ Financial modeling requiring exact precision
+- ✅ Scientific computing with strict accuracy requirements
+- ✅ Final model deployment where accuracy is critical
+- ✅ When precision is more important than speed</p>
+<p><strong>Precision Performance Example:</strong>
+<div class="highlight"><pre><span></span><code>/* Linear regression with different precision settings */
+n_samples = 10000;
+
+// 32-bit precision - Fast training (Grapa optimizes representation internally)
+32.setfloat(0);
+start_time = $TIME().utc();
+model.fit(X, y, &quot;normal&quot;);
+training_time_32bit = start_time.ms();  // ~277ms
+
+// 128-bit precision - Accurate training (Grapa optimizes representation internally)
+128.setfloat(0);
+start_time = $TIME().utc();
+model.fit(X, y, &quot;normal&quot;);
+training_time_128bit = start_time.ms();  // ~529ms
+
+// 32-bit is ~1.9x faster with minimal accuracy loss
+</code></pre></div></p>
 <h3 id="best-practices">Best Practices</h3>
 <ol>
 <li><strong>Always scale features</strong> before training</li>
@@ -5217,6 +5328,11 @@ model.fit(X, y, &quot;gradient&quot;, 0.001, 2000);
 <li><strong>Monitor performance</strong> for large datasets</li>
 <li><strong>Validate results</strong> with multiple metrics</li>
 <li><strong>Handle edge cases</strong> (singular matrices, etc.)</li>
+<li><strong>Consider precision optimization</strong> for performance-critical applications</li>
+<li><strong>Use 32-bit precision</strong> for machine learning when speed is important</li>
+<li><strong>Use 128-bit precision</strong> for final models when accuracy is critical</li>
+<li><strong>Use <code>setfloat()</code> as default</strong> - Grapa optimizes representation internally</li>
+<li><strong>Focus on bit precision</strong> rather than float/fix choice for ML applications</li>
 </ol>
 <h2 id="advanced-topics">Advanced Topics</h2>
 <h3 id="principal-component-analysis-pca">Principal Component Analysis (PCA)</h3>

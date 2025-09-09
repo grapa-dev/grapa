@@ -4319,7 +4319,7 @@ $file().set(&quot;my_script.grz&quot;, compiled);
 <div class="highlight"><pre><span></span><code>compilef = op(name1,name2){
     $local.r={
         op:op()($file().get(@name1)),
-        version:$sys().getenv($VERSION)
+        version:$sys().getenv($GRAPA_VERSION)
     }; 
     if (r.op.type()!=&quot;$ERR&quot;) 
         r.encode(&quot;ZIP-GRAPA&quot;).setfile($file(),@name2); 

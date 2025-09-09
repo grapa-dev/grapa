@@ -4446,7 +4446,7 @@ my_rules = $RULE(&quot;dynamic_rule&quot;, &quot;$INT + $INT&quot;, op(a, b) {
 });
 
 /* Modify rules at runtime */
-@global[&quot;$expression&quot;] ++= rule &#39;custom&#39; $STR { op(text:$2) { &quot;Custom: &quot; + text; } };
+$global[&quot;$expression&quot;] ++= rule &#39;custom&#39; $STR { op(text:$2) { &quot;Custom: &quot; + text; } };
 </code></pre></div>
 <h3 id="token-to-code-transformation"><strong>Token-to-Code Transformation</strong></h3>
 <p>The rules engine converts tokens directly into executable <code>$OP</code> and <code>$CODE</code> structures:</p>
@@ -4484,7 +4484,7 @@ op()(&quot;parent(john,mary)&quot;)();            /* PROLOG syntax */
 </code></pre></div></p>
 <p><strong>Grapa's Approach:</strong>
 <div class="highlight"><pre><span></span><code>/* Grapa uses executable BNF with direct code generation */
-@global[&quot;$function&quot;] = rule &#39;defun&#39; $ID &#39;(&#39; $params &#39;)&#39; $body {
+$global[&quot;$function&quot;] = rule &#39;defun&#39; $ID &#39;(&#39; $params &#39;)&#39; $body {
     op(name:$2, params:$4, body:$6) {
         /* Directly creates executable $OP structure */
         return $OP(name, op(params) { body; });

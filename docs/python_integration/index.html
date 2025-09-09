@@ -672,6 +672,48 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#execution-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      Execution Model
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Execution Model">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#direct-execution-no-parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      Direct Execution (No Parameters)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#parameterized-execution-with-parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      Parameterized Execution (With Parameters)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#key-points" class="md-nav__link">
+    <span class="md-ellipsis">
+      Key Points
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#key-benefits" class="md-nav__link">
     <span class="md-ellipsis">
       Key Benefits
@@ -4077,6 +4119,48 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#execution-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      Execution Model
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Execution Model">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#direct-execution-no-parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      Direct Execution (No Parameters)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#parameterized-execution-with-parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      Parameterized Execution (With Parameters)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#key-points" class="md-nav__link">
+    <span class="md-ellipsis">
+      Key Points
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#key-benefits" class="md-nav__link">
     <span class="md-ellipsis">
       Key Benefits
@@ -4143,6 +4227,34 @@
 <h1 id="python-integration-with-grapa">Python Integration with Grapa</h1>
 <h2 id="overview">Overview</h2>
 <p>Grapa provides powerful Python integration capabilities, offering a unified interface for file system operations, database management, and data processing. This integration combines Grapa's efficient storage systems with Python's rich ecosystem for data science, web development, and system administration.</p>
+<h2 id="execution-model">Execution Model</h2>
+<p>GrapaPy has two execution modes that affect variable persistence:</p>
+<h3 id="direct-execution-no-parameters">Direct Execution (No Parameters)</h3>
+<p>When calling <code>eval()</code> without parameters, code runs at the global level and variables persist between calls:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">grapapy</span>
+<span class="n">xy</span> <span class="o">=</span> <span class="n">grapapy</span><span class="o">.</span><span class="n">grapa</span><span class="p">()</span>
+
+<span class="c1"># Variables persist automatically - no $global needed</span>
+<span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s2">&quot;b = 6;&quot;</span><span class="p">)</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s2">&quot;b;&quot;</span><span class="p">)</span>  <span class="c1"># Returns 6</span>
+</code></pre></div>
+<h3 id="parameterized-execution-with-parameters">Parameterized Execution (With Parameters)</h3>
+<p>When calling <code>eval()</code> with parameters, code runs in a local scope and variables don't persist:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Variables are local and don&#39;t persist</span>
+<span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s2">&quot;c = 9;&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;x&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">})</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s2">&quot;c;&quot;</span><span class="p">)</span>  <span class="c1"># Returns {&quot;error&quot;:-1} - variable not found</span>
+
+<span class="c1"># To persist variables with parameters, use $global</span>
+<span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s2">&quot;$global.persistent_var = 10;&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;x&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">})</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s2">&quot;persistent_var;&quot;</span><span class="p">)</span>  <span class="c1"># Returns 10</span>
+</code></pre></div>
+<h3 id="key-points">Key Points</h3>
+<ul>
+<li><strong>Top-level execution</strong>: Variables persist automatically (no <code>$global</code> needed)</li>
+<li><strong>Parameterized execution</strong>: Variables are local and don't persist (need <code>$global</code> for persistence)</li>
+<li><strong><code>$file()</code> objects</strong>: Still need <code>$global</code> for persistence when using parameters</li>
+<li><strong>Scope behavior</strong>: Parameters create a local scope that shadows global variables</li>
+</ul>
 <h2 id="key-benefits">Key Benefits</h2>
 <h3 id="1-unified-file-system-and-database-access">1. <strong>Unified File System and Database Access</strong></h3>
 <p>Grapa provides a single API that seamlessly navigates between file systems and databases:</p>

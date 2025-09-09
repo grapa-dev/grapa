@@ -4807,7 +4807,7 @@ matches.echo();  /* [&quot;world&quot;, &quot;world&quot;] */
 <p>Grapa includes a powerful automatic file loading mechanism that makes it easy to organize and reuse code:</p>
 <h3 id="creating-reusable-functions">Creating Reusable Functions</h3>
 <div class="highlight"><pre><span></span><code>/* File: lib/grapa/utils.grc */
-@global[&quot;utils&quot;] = class {
+$global[&quot;utils&quot;] = class {
     format_date = op(date) {
         return date.format(&quot;YYYY-MM-DD&quot;);
     };

@@ -5055,7 +5055,7 @@
 <h3 id="1-executable-bnf-system"><strong>1. Executable BNF System</strong></h3>
 <p>Grapa's core innovation is its executable BNF system that enables dynamic language creation:</p>
 <div class="highlight"><pre><span></span><code>/* Define custom syntax at runtime */
-@global[&quot;$custom_syntax&quot;] = rule &lt;$expression&gt; &#39;+&#39; &lt;$expression&gt; {@&lt;add,{$1,$3}&gt;};
+$global[&quot;$custom_syntax&quot;] = rule &lt;$expression&gt; &#39;+&#39; &lt;$expression&gt; {@&lt;add,{$1,$3}&gt;};
 
 /* Use custom syntax immediately */
 result = 5 + 3;  /* Uses custom rule */
@@ -5105,7 +5105,7 @@ my_rules = $RULE(&quot;dynamic_rule&quot;, &quot;$INT + $INT&quot;, op(a, b) {
 });
 
 /* Modify rules at runtime */
-@global[&quot;$expression&quot;] ++= rule &#39;custom&#39; $STR { op(text:$2) { &quot;Custom: &quot; + text; } };
+$global[&quot;$expression&quot;] ++= rule &#39;custom&#39; $STR { op(text:$2) { &quot;Custom: &quot; + text; } };
 </code></pre></div>
 <h4 id="token-to-code-transformation"><strong>Token-to-Code Transformation</strong></h4>
 <p>The rules engine converts tokens directly into executable <code>$OP</code> and <code>$CODE</code> structures:</p>
@@ -5125,7 +5125,7 @@ custom_expression = &quot;custom &#39;hello world&#39;&quot;;
 </code></pre></div></p>
 <p><strong>Grapa's Approach:</strong>
 <div class="highlight"><pre><span></span><code>/* Grapa uses executable BNF with direct code generation */
-@global[&quot;$function&quot;] = rule &#39;defun&#39; $ID &#39;(&#39; $params &#39;)&#39; $body {
+$global[&quot;$function&quot;] = rule &#39;defun&#39; $ID &#39;(&#39; $params &#39;)&#39; $body {
     op(name:$2, params:$4, body:$6) {
         /* Directly creates executable $OP structure */
         return $OP(name, op(params) { body; });
@@ -5379,13 +5379,13 @@ loop_with_break = op() {
 <p><strong>Status</strong>: Fully implemented with superior approach
 <strong>Grapa's Syntax</strong>: Namespace-based destructuring assignment</p>
 <div class="highlight"><pre><span></span><code>/* Grapa&#39;s destructuring via namespace concatenation */
-@local ++= {name:&quot;Alice&quot;, age:30};  /* Destructure into local namespace */
+$local ++= {name:&quot;Alice&quot;, age:30};  /* Destructure into local namespace */
 name.echo();  /* Direct access: &quot;Alice&quot; */
 age.echo();   /* Direct access: 30 */
 
 /* Array destructuring */
 arr = [1, 2, 3, 4, 5];
-@local ++= {first:arr[0], second:arr[1], rest:arr.range(2, arr.len())};
+$local ++= {first:arr[0], second:arr[1], rest:arr.range(2, arr.len())};
 first.echo();   /* 1 */
 second.echo();  /* 2 */
 rest.echo();    /* [3, 4, 5] */
@@ -5398,10 +5398,10 @@ rest.echo();    /* [3, 4, 5] */
 - <strong>Configuration</strong> - Load config objects into global namespace</p>
 <p><strong>Namespace Options:</strong>
 <div class="highlight"><pre><span></span><code>/* Local namespace (function scope) */
-@local ++= {debug:true, timeout:5000};
+$local ++= {debug:true, timeout:5000};
 
 /* Global namespace (persistent) */
-@global ++= {config:true, version:&quot;1.0&quot;};
+$global ++= {config:true, version:&quot;1.0&quot;};
 
 /* Object namespace (current object) */
 @this ++= {name:&quot;John&quot;, age:25};
@@ -5411,8 +5411,8 @@ rest.echo();    /* [3, 4, 5] */
 </code></pre></div></p>
 <p><strong>Duplicate Handling:</strong>
 <div class="highlight"><pre><span></span><code>/* References access the last added in case of duplicates */
-@local ++= {a:1, b:2};
-@local ++= {a:10, c:3};  /* &#39;a&#39; now refers to 10, not 1 */
+$local ++= {a:1, b:2};
+$local ++= {a:10, c:3};  /* &#39;a&#39; now refers to 10, not 1 */
 
 /* Remove duplicates if needed */
 @$local.unique();  /* Removes duplicate entries */
@@ -5599,9 +5599,9 @@ new_float = components.encode(&quot;FLOAT&quot;);
 - <strong>Performance</strong>: Efficient implementation with minimal overhead</p>
 <h3 id="7-system-class-redefinition-implemented"><strong>7. System Class Redefinition</strong> ✅ <strong>IMPLEMENTED</strong></h3>
 <p><strong>Status</strong>: Fully implemented but advanced feature
-<strong>Current</strong>: <code>@global</code> syntax for redefining system classes</p>
+<strong>Current</strong>: <code>$global</code> syntax for redefining system classes</p>
 <div class="highlight"><pre><span></span><code>/* Redefine $ARRAY with custom methods */
-@global[&quot;$ARRAY&quot;] = class ($LIST, $VECTOR) {
+$global[&quot;$ARRAY&quot;] = class ($LIST, $VECTOR) {
     custom_method = op() { 
         &quot;Custom array method called&quot;.echo();
         $this.len();  /* Access the array&#39;s length */

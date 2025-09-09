@@ -5213,6 +5213,30 @@ complex_function = op(config) {
 - <strong>Simple cases</strong>: When <code>$local</code> or <code>$parent</code> are sufficient
 - <strong>Block-level variables</strong>: When you actually want the nested block's variables
 - <strong>Global scope</strong>: <code>$oplocal</code> only works within function contexts</p>
+<p><strong>Important Limitation - No Chaining Support:</strong>
+Namespace variables (<code>$oplocal</code>, <code>$local</code>, <code>$parent</code>, <code>$this</code>) <strong>cannot be chained</strong>. The following syntax does NOT work:
+<div class="highlight"><pre><span></span><code>// ❌ This does NOT work - chaining is not supported
+$oplocal.$parent.$oplocal
+$parent.$parent.$local
+$this.$parent.$oplocal
+</code></pre></div></p>
+<p><strong>Why Chaining Doesn't Work:</strong>
+- Namespace variables are implemented as special identifiers, not as objects with methods
+- They return the namespace object directly, not a wrapper that supports method chaining
+- The current implementation doesn't provide member functions like <code>oplocal()</code>, <code>local()</code>, <code>parent()</code>, <code>this()</code> in <code>$OBJ.grc</code></p>
+<p><strong>Workaround for Complex Navigation:</strong>
+If you need to access multiple levels of namespace context, store references in variables:
+<div class="highlight"><pre><span></span><code>complex_function = op() {
+    $local.function_context = $oplocal;  // Store function&#39;s $local
+    $local.parent_context = $parent;     // Store parent&#39;s $local
+
+    if (some_condition) {
+        // Access stored contexts
+        $local.function_context.some_param;
+        $local.parent_context.some_variable;
+    };
+};
+</code></pre></div></p>
 <h3 id="root-and-self-widget-context"><code>$root</code> and <code>$self</code> - Widget Context</h3>
 <p>In GUI applications, <code>$root</code> and <code>$self</code> provide widget references:</p>
 <div class="highlight"><pre><span></span><code>/* GUI widget example (from $editor.grc) */

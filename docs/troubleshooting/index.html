@@ -4245,9 +4245,18 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#3-check-return-values" class="md-nav__link">
+  <a href="#3-parameter-side-effects" class="md-nav__link">
     <span class="md-ellipsis">
-      3. Check Return Values
+      3. Parameter Side Effects
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-check-return-values" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Check Return Values
     </span>
   </a>
   
@@ -4711,9 +4720,18 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#3-check-return-values" class="md-nav__link">
+  <a href="#3-parameter-side-effects" class="md-nav__link">
     <span class="md-ellipsis">
-      3. Check Return Values
+      3. Parameter Side Effects
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-check-return-values" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Check Return Values
     </span>
   </a>
   
@@ -4801,12 +4819,16 @@
 3. <strong>Type Conversion Issues</strong>: Binary data not converted to appropriate types</p>
 <p><strong>Solutions</strong>:</p>
 <h4 id="namespace-issues">Namespace Issues</h4>
-<div class="highlight"><pre><span></span><code><span class="c1"># ❌ Problem: Object lost between calls</span>
-<span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s1">&#39;table = </span><span class="si">{}</span><span class="s1">.table(&quot;ROW&quot;)&#39;</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># ❌ Problem: Object lost between calls (when using parameters)</span>
+<span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s1">&#39;table = </span><span class="si">{}</span><span class="s1">.table(&quot;ROW&quot;)&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;x&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">})</span>
 <span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s1">&#39;table.mkfield(&quot;name&quot;, &quot;STR&quot;)&#39;</span><span class="p">)</span>  <span class="c1"># Error: table not found</span>
 
-<span class="c1"># ✅ Solution: Use global namespace</span>
-<span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s1">&#39;$global.table = </span><span class="si">{}</span><span class="s1">.table(&quot;ROW&quot;)&#39;</span><span class="p">)</span>
+<span class="c1"># ✅ Solution: Use global namespace for parameterized execution</span>
+<span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s1">&#39;$global.table = </span><span class="si">{}</span><span class="s1">.table(&quot;ROW&quot;)&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;x&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">})</span>
+<span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s1">&#39;table.mkfield(&quot;name&quot;, &quot;STR&quot;)&#39;</span><span class="p">)</span>  <span class="c1"># Success</span>
+
+<span class="c1"># ✅ Alternative: Direct execution (no parameters) - variables persist automatically</span>
+<span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s1">&#39;table = </span><span class="si">{}</span><span class="s1">.table(&quot;ROW&quot;)&#39;</span><span class="p">)</span>
 <span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s1">&#39;table.mkfield(&quot;name&quot;, &quot;STR&quot;)&#39;</span><span class="p">)</span>  <span class="c1"># Success</span>
 </code></pre></div>
 <h4 id="type-conversion-issues">Type Conversion Issues</h4>
@@ -5038,7 +5060,40 @@ config.&quot;a-b&quot;();  /* 44 */
 <span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s1">&#39;$global.t = </span><span class="si">{}</span><span class="s1">.table(&quot;ROW&quot;)&#39;</span><span class="p">)</span>
 <span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s1">&#39;$global.f = $file()&#39;</span><span class="p">)</span>
 </code></pre></div>
-<h3 id="3-check-return-values">3. Check Return Values</h3>
+<h3 id="3-parameter-side-effects">3. Parameter Side Effects</h3>
+<p><strong>Problem</strong>: Function parameters are modified unexpectedly</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># ✅ Fixed: Default values are now immutable</span>
+<span class="n">f</span> <span class="o">=</span> <span class="n">op</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">x</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="n">x</span><span class="p">;</span>
+<span class="p">};</span>
+<span class="n">f</span><span class="p">();</span>  <span class="o">//</span> <span class="n">Returns</span> <span class="mi">1</span>
+<span class="n">f</span><span class="p">();</span>  <span class="o">//</span> <span class="n">Returns</span> <span class="mi">1</span> <span class="p">(</span><span class="n">expected</span> <span class="o">-</span> <span class="n">default</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">modified</span><span class="p">)</span>
+
+<span class="c1"># ❌ Problem: Original variables are modified</span>
+<span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">];</span>
+<span class="n">process</span> <span class="o">=</span> <span class="n">op</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">arr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">999</span><span class="p">;</span>
+    <span class="n">arr</span><span class="p">;</span>
+<span class="p">};</span>
+<span class="n">process</span><span class="p">(</span><span class="n">data</span><span class="p">);</span>  <span class="o">//</span> <span class="n">Returns</span> <span class="p">[</span><span class="mi">999</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+<span class="n">data</span><span class="p">;</span>          <span class="o">//</span> <span class="n">Now</span> <span class="p">[</span><span class="mi">999</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span> <span class="p">(</span><span class="n">unexpected</span><span class="err">!</span><span class="p">)</span>
+</code></pre></div>
+<p><strong>Solution</strong>: Use the <code>.copy()</code> method or copy functions when you need to avoid side effects</p>
+<div class="highlight"><pre><span></span><code>// ✅ Solution 1: Use .copy() method (recommended)
+data = [1, 2, 3];
+process(data.copy());  // Returns [999, 2, 3]
+data;                  // Still [1, 2, 3] (expected!)
+
+// ✅ Solution 2: Copy function to avoid side effects
+copy = op(x) { x; };
+
+data = [1, 2, 3];
+process(copy(data));  // Returns [999, 2, 3]
+data;                // Still [1, 2, 3] (expected!)
+</code></pre></div>
+<p><strong>Why This Happens</strong>: Grapa uses pass-by-reference for performance reasons, avoiding the need for a full garbage collection system.</p>
+<h3 id="4-check-return-values">4. Check Return Values</h3>
 <div class="highlight"><pre><span></span><code><span class="c1"># Always check what operations return</span>
 <span class="n">result</span> <span class="o">=</span> <span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s1">&#39;some_operation()&#39;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Operation returned: </span><span class="si">{</span><span class="n">result</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>

@@ -374,6 +374,23 @@ debug_component = op(component, level) {
     }
 };
 
+/* Wait for all threads to complete before cleanup */
+while(t.started() == true) 0.sleep();
+while(t1.started() == true) 0.sleep();
+while(t2.started() == true) 0.sleep();
+while(t3.started() == true) 0.sleep();
+t.stop();
+t1.stop();
+t2.stop();
+t3.stop();
+
+/* Clean up thread variables */
+t = null;
+lock_obj = null;
+t1 = null;
+t2 = null;
+t3 = null;
+
 debug_component("database", "verbose");
 debug_component("parser", "info");
 

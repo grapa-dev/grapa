@@ -1525,27 +1525,9 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#upper" class="md-nav__link">
+  <a href="#string-specific-methods" class="md-nav__link">
     <span class="md-ellipsis">
-      .upper()
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#lower" class="md-nav__link">
-    <span class="md-ellipsis">
-      .lower()
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#casefold" class="md-nav__link">
-    <span class="md-ellipsis">
-      .casefold()
+      String-Specific Methods
     </span>
   </a>
   
@@ -5442,27 +5424,9 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#upper" class="md-nav__link">
+  <a href="#string-specific-methods" class="md-nav__link">
     <span class="md-ellipsis">
-      .upper()
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#lower" class="md-nav__link">
-    <span class="md-ellipsis">
-      .lower()
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#casefold" class="md-nav__link">
-    <span class="md-ellipsis">
-      .casefold()
+      String-Specific Methods
     </span>
   </a>
   
@@ -6583,18 +6547,19 @@ obj.setconst(&quot;new value&quot;); /* Sets object to constant string */
 </code></pre></div>
 <p><strong>Parameters:</strong>
 - <code>vars</code> (default: null) - Variables to interpolate</p>
-<h3 id="upper"><code>.upper()</code></h3>
-<p>Converts the string to uppercase.</p>
-<div class="highlight"><pre><span></span><code>&quot;Hello, World!&quot;.upper(); /* Returns: &quot;HELLO, WORLD!&quot; */
-</code></pre></div>
-<h3 id="lower"><code>.lower()</code></h3>
-<p>Converts the string to lowercase.</p>
-<div class="highlight"><pre><span></span><code>&quot;Hello, World!&quot;.lower(); /* Returns: &quot;hello, world!&quot; */
-</code></pre></div>
-<h3 id="casefold"><code>.casefold()</code></h3>
-<p>Converts the string to Unicode case folded form for case-insensitive comparisons.</p>
-<div class="highlight"><pre><span></span><code>&quot;Hello, World!&quot;.casefold(); /* Returns: &quot;hello, world!&quot; */
-</code></pre></div>
+<h3 id="string-specific-methods">String-Specific Methods</h3>
+<p>The following string-specific methods are available in the <code>$STR</code> class:</p>
+<ul>
+<li><strong><code>.upper()</code></strong> - Converts the string to uppercase</li>
+<li><strong><code>.lower()</code></strong> - Converts the string to lowercase  </li>
+<li><strong><code>.casefold()</code></strong> - Converts the string to Unicode case folded form for case-insensitive comparisons</li>
+<li><strong><code>.levenshtein()</code></strong> - Calculates Levenshtein distance between strings</li>
+<li><strong><code>.jarowinkler()</code></strong> - Calculates Jaro-Winkler similarity between strings</li>
+<li><strong><code>.cosinesimilarity()</code></strong> - Calculates cosine similarity between strings</li>
+</ul>
+<blockquote>
+<p><strong>See Also:</strong> <a href="../str/">$STR Documentation</a> for comprehensive string method documentation and examples.</p>
+</blockquote>
 <hr />
 <h2 id="array-and-list-methods">Array and List Methods</h2>
 <h3 id="splitdelim-max-axis"><code>.split(delim, max, axis)</code></h3>

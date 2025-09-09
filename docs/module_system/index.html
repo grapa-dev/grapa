@@ -3036,9 +3036,9 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#path-environment-variable" class="md-nav__link">
+  <a href="#grapa_path-environment-variable" class="md-nav__link">
     <span class="md-ellipsis">
-      $PATH Environment Variable
+      $GRAPA_PATH Environment Variable
     </span>
   </a>
   
@@ -3054,9 +3054,9 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#lib-environment-variable" class="md-nav__link">
+  <a href="#grapa_lib-environment-variable" class="md-nav__link">
     <span class="md-ellipsis">
-      $LIB Environment Variable
+      $GRAPA_LIB Environment Variable
     </span>
   </a>
   
@@ -4819,9 +4819,9 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#path-environment-variable" class="md-nav__link">
+  <a href="#grapa_path-environment-variable" class="md-nav__link">
     <span class="md-ellipsis">
-      $PATH Environment Variable
+      $GRAPA_PATH Environment Variable
     </span>
   </a>
   
@@ -4837,9 +4837,9 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#lib-environment-variable" class="md-nav__link">
+  <a href="#grapa_lib-environment-variable" class="md-nav__link">
     <span class="md-ellipsis">
-      $LIB Environment Variable
+      $GRAPA_LIB Environment Variable
     </span>
   </a>
   
@@ -5225,7 +5225,7 @@
 <h3 id="function-call-auto-loading">Function Call Auto-Loading</h3>
 <p>When you call a function that doesn't exist in the current namespace, Grapa automatically searches for and loads the corresponding <code>.grc</code> file:</p>
 <div class="highlight"><pre><span></span><code>/* File: lib/grapa/mycode.grc */
-@global[&quot;mycode&quot;] = class {
+$global[&quot;mycode&quot;] = class {
     test = op() {
         &quot;Hello from mycode.grc!&quot;.echo();
         return &quot;Success from mycode.grc&quot;;
@@ -5239,7 +5239,7 @@ x.test();      /* Calls the test method */
 <h3 id="class-assignment-auto-loading">Class Assignment Auto-Loading</h3>
 <p>When you assign a class that doesn't exist, Grapa searches for a <code>.grc</code> file with the same name and looks for a class definition:</p>
 <div class="highlight"><pre><span></span><code>/* File: myclass.grc */
-@global[&quot;myclass&quot;] = class {
+$global[&quot;myclass&quot;] = class {
     message = &quot;Hello from myclass!&quot;;
 
     greet = op() {
@@ -5370,10 +5370,10 @@ custom = $CUSTOM_CLASS();
 result = custom.some_method();
 </code></pre></div>
 <h3 id="search-path-management">Search Path Management</h3>
-<h4 id="path-environment-variable">$PATH Environment Variable</h4>
-<p>The <code>$PATH</code> variable contains a queue of search locations:</p>
+<h4 id="grapa_path-environment-variable">$GRAPA_PATH Environment Variable</h4>
+<p>The <code>$GRAPA_PATH</code> variable contains a queue of search locations:</p>
 <div class="highlight"><pre><span></span><code>/* Set multiple search paths */
-$sys().putenv($PATH, [
+$sys().putenv($GRAPA_PATH, [
     &quot;lib/custom&quot;,           /* Custom libraries */
     &quot;lib/extensions&quot;,       /* Extensions */
     &quot;lib/plugins&quot;,          /* Plugins */
@@ -5381,45 +5381,45 @@ $sys().putenv($PATH, [
 ]);
 
 /* Add to existing path */
-current_path = $sys().getenv($PATH);
+current_path = $sys().getenv($GRAPA_PATH);
 new_path = current_path + [&quot;lib/new&quot;];
-$sys().putenv($PATH, new_path);
+$sys().putenv($GRAPA_PATH, new_path);
 </code></pre></div>
 <h4 id="search-path-modification-command">Search Path Modification Command</h4>
 <p>You can modify the search paths using the <code>$sys().putenv()</code> command:</p>
 <div class="highlight"><pre><span></span><code>/* Add a new search path */
-$sys().putenv($PATH, $sys().getenv($PATH) + [&quot;lib/new_feature&quot;]);
+$sys().putenv($GRAPA_PATH, $sys().getenv($GRAPA_PATH) + [&quot;lib/new_feature&quot;]);
 
 /* Replace all search paths */
-$sys().putenv($PATH, [&quot;lib/prod&quot;, &quot;lib/stable&quot;]);
+$sys().putenv($GRAPA_PATH, [&quot;lib/prod&quot;, &quot;lib/stable&quot;]);
 
 /* Remove a specific path */
-current_paths = $sys().getenv($PATH);
+current_paths = $sys().getenv($GRAPA_PATH);
 filtered_paths = current_paths.filter(op(path) { path != &quot;lib/old_feature&quot;; });
-$sys().putenv($PATH, filtered_paths);
+$sys().putenv($GRAPA_PATH, filtered_paths);
 </code></pre></div>
 <p><strong>Note</strong>: The automatic file loading mechanism uses these search paths, but there's no way to specify a custom location for individual file loads. For custom file locations, use manual file loading instead.</p>
-<h4 id="lib-environment-variable">$LIB Environment Variable</h4>
-<p>The <code>$LIB</code> variable points to the main library directory:</p>
+<h4 id="grapa_lib-environment-variable">$GRAPA_LIB Environment Variable</h4>
+<p>The <code>$GRAPA_LIB</code> variable points to the main library directory:</p>
 <div class="highlight"><pre><span></span><code>/* Set the main library directory */
-$sys().putenv($LIB, &quot;/usr/local/lib/grapa&quot;);
+$sys().putenv($GRAPA_LIB, &quot;/usr/local/lib/grapa&quot;);
 
 /* Get current library directory */
-lib_dir = $sys().getenv($LIB);
+lib_dir = $sys().getenv($GRAPA_LIB);
 </code></pre></div>
 <h3 id="search-order">Search Order</h3>
 <p>When loading a class, Grapa searches in this order:</p>
 <ol>
 <li><strong>Current namespace</strong> - Check if class already exists</li>
-<li><strong>$PATH locations</strong> - Search each path in the queue</li>
-<li><strong>$LIB directory</strong> - Main library directory</li>
+<li><strong>$GRAPA_PATH locations</strong> - Search each path in the queue</li>
+<li><strong>$GRAPA_LIB directory</strong> - Main library directory</li>
 <li><strong>Static library</strong> - Built-in classes</li>
 </ol>
 <h2 id="practical-examples">Practical Examples</h2>
 <h3 id="automatic-function-loading">Automatic Function Loading</h3>
 <div class="highlight"><pre><span></span><code>/* Create a utility function */
 /* File: lib/grapa/utils.grc */
-@global[&quot;utils&quot;] = class {
+$global[&quot;utils&quot;] = class {
     format_date = op(date) {
         /* Date formatting logic */
         return date.format(&quot;YYYY-MM-DD&quot;);
@@ -5438,7 +5438,7 @@ is_valid = utils().validate_email(&quot;user@example.com&quot;);
 <h3 id="custom-class-library">Custom Class Library</h3>
 <div class="highlight"><pre><span></span><code>/* Create custom class */
 /* File: lib/custom/math_utils.grc */
-@global[&quot;$MATH_UTILS&quot;] = class {
+$global[&quot;$MATH_UTILS&quot;] = class {
     add = op(x, y) { x + y; };
     multiply = op(x, y) { x * y; };
     factorial = op(n) { 
@@ -5448,7 +5448,7 @@ is_valid = utils().validate_email(&quot;user@example.com&quot;);
 </code></pre></div>
 <h3 id="using-custom-classes">Using Custom Classes</h3>
 <div class="highlight"><pre><span></span><code>/* Set up search path */
-$sys().putenv($PATH, [&quot;lib/custom&quot;]);
+$sys().putenv($GRAPA_PATH, [&quot;lib/custom&quot;]);
 
 /* Class will be automatically loaded */
 math = $MATH_UTILS();
@@ -5463,7 +5463,7 @@ plugin_paths = [
     &quot;plugins/ui&quot;
 ];
 
-$sys().putenv($PATH, plugin_paths);
+$sys().putenv($GRAPA_PATH, plugin_paths);
 
 /* Plugins are loaded on demand */
 network = $NETWORK_PLUGIN();
@@ -5473,18 +5473,18 @@ ui = $UI_PLUGIN();
 <h3 id="development-vs-production-setup">Development vs Production Setup</h3>
 <h4 id="development-environment">Development Environment</h4>
 <div class="highlight"><pre><span></span><code>/* Use .grc files for easy debugging */
-$sys().putenv($PATH, [
+$sys().putenv($GRAPA_PATH, [
     &quot;lib/dev&quot;,
     &quot;lib/custom&quot;
 ]);
 </code></pre></div>
 <h4 id="production-environment">Production Environment</h4>
 <div class="highlight"><pre><span></span><code>/* Use .grz files for performance */
-$sys().putenv($PATH, [
+$sys().putenv($GRAPA_PATH, [
     &quot;lib/prod/optimized&quot;,
     &quot;lib/prod/stable&quot;
 ]);
-$sys().putenv($LIB, &quot;/opt/grapa/lib&quot;);
+$sys().putenv($GRAPA_LIB, &quot;/opt/grapa/lib&quot;);
 </code></pre></div>
 <h2 id="manual-file-loading">Manual File Loading</h2>
 <p>For cases where you need to load files from specific locations or implement custom loading logic, you can use manual file loading with <code>$file()</code> commands.</p>
@@ -5575,9 +5575,9 @@ result = load_with_params(&quot;/path/to/script.grc&quot;, {&quot;name&quot;: &q
 <h3 id="dynamic-path-management">Dynamic Path Management</h3>
 <div class="highlight"><pre><span></span><code>/* Add paths dynamically */
 add_search_path = op(new_path) {
-    current = $sys().getenv($PATH);
+    current = $sys().getenv($GRAPA_PATH);
     updated = current + [new_path];
-    $sys().putenv($PATH, updated);
+    $sys().putenv($GRAPA_PATH, updated);
 };
 
 add_search_path(&quot;lib/new_feature&quot;);
@@ -5585,14 +5585,14 @@ add_search_path(&quot;lib/new_feature&quot;);
 <h3 id="conditional-loading">Conditional Loading</h3>
 <div class="highlight"><pre><span></span><code>/* Load different libraries based on environment */
 if ($sys().getenv(&quot;DEBUG_MODE&quot;) == &quot;true&quot;) {
-    $sys().putenv($PATH, [&quot;lib/debug&quot;, &quot;lib/dev&quot;]);
+    $sys().putenv($GRAPA_PATH, [&quot;lib/debug&quot;, &quot;lib/dev&quot;]);
 } else {
-    $sys().putenv($PATH, [&quot;lib/prod&quot;]);
+    $sys().putenv($GRAPA_PATH, [&quot;lib/prod&quot;]);
 }
 </code></pre></div>
 <h3 id="library-organization">Library Organization</h3>
 <div class="highlight"><pre><span></span><code>/* Organize libraries by category */
-$sys().putenv($PATH, [
+$sys().putenv($GRAPA_PATH, [
     &quot;lib/core&quot;,           /* Core functionality */
     &quot;lib/extensions&quot;,     /* Extensions */
     &quot;lib/plugins&quot;,        /* Plugins */
@@ -5641,7 +5641,7 @@ uncached_utils();  /* Loads and executes file again - slower */
 </ul>
 <h3 id="search-path-optimization">Search Path Optimization</h3>
 <div class="highlight"><pre><span></span><code>/* Optimize search order - most used first */
-$sys().putenv($PATH, [
+$sys().putenv($GRAPA_PATH, [
     &quot;lib/frequently_used&quot;,  /* Most common libraries */
     &quot;lib/standard&quot;,         /* Standard libraries */
     &quot;lib/rare&quot;              /* Rarely used libraries */
@@ -5650,8 +5650,8 @@ $sys().putenv($PATH, [
 <h2 id="error-handling">Error Handling</h2>
 <h3 id="missing-classes">Missing Classes</h3>
 <p>If a class cannot be found:
-1. Search through all <code>$PATH</code> locations
-2. Check <code>$LIB</code> directory
+1. Search through all <code>$GRAPA_PATH</code> locations
+2. Check <code>$GRAPA_LIB</code> directory
 3. Check static library
 4. Return error if not found</p>
 <h3 id="file-loading-errors">File Loading Errors</h3>
@@ -5666,7 +5666,7 @@ $sys().putenv($PATH, [
 include &quot;lib/core/grapa.grc&quot;;
 
 /* Class loading - runtime */
-custom = $CUSTOM_CLASS();  /* Searches $PATH automatically */
+custom = $CUSTOM_CLASS();  /* Searches $GRAPA_PATH automatically */
 
 /* Automatic file loading - runtime */
 utils = utils();           /* Automatically loads utils.grc */
@@ -5674,8 +5674,8 @@ utils = utils();           /* Automatically loads utils.grc */
 <h2 id="best-practices">Best Practices</h2>
 <ol>
 <li><strong>Use automatic file loading for simple utilities and functions</strong></li>
-<li><strong>Use $PATH for custom libraries and plugins</strong></li>
-<li><strong>Use $LIB for system-wide library directory</strong></li>
+<li><strong>Use $GRAPA_PATH for custom libraries and plugins</strong></li>
+<li><strong>Use $GRAPA_LIB for system-wide library directory</strong></li>
 <li><strong>Use .grc files during development</strong></li>
 <li><strong>Use .grz files in production</strong></li>
 <li><strong>Organize libraries by category</strong></li>
@@ -5732,9 +5732,9 @@ utils = utils();           /* Automatically loads utils.grc */
 <p>This system is more sophisticated than traditional import/export modules and provides greater flexibility for dynamic loading and configuration.</p>
 <h3 id="key-behaviors">Key Behaviors</h3>
 <ol>
-<li><strong>Filename Matching</strong>: For automatic loading, the filename must match the class name (e.g., <code>myclass.grc</code> must define <code>@global["myclass"]</code>)</li>
+<li><strong>Filename Matching</strong>: For automatic loading, the filename must match the class name (e.g., <code>myclass.grc</code> must define <code>$global["myclass"]</code>)</li>
 <li><strong>Class vs Function</strong>: Files can define either classes (for assignment) or functions (for function calls)</li>
-<li><strong>Search Paths</strong>: Automatic loading uses predefined search paths that can be modified with <code>$sys().putenv($PATH, ...)</code></li>
+<li><strong>Search Paths</strong>: Automatic loading uses predefined search paths that can be modified with <code>$sys().putenv($GRAPA_PATH, ...)</code></li>
 <li><strong>Manual Control</strong>: For files outside search paths, use <code>$file().read()</code> and manual execution</li>
 <li><strong>Caching Behavior</strong>: Files with <code>$global["filename"]</code> are cached; files without it re-load every time</li>
 </ol>

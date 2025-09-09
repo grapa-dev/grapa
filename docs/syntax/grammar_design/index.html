@@ -4690,7 +4690,7 @@
 </blockquote>
 <h2 id="parameter-persistence-best-practice">Parameter Persistence Best Practice</h2>
 <p><strong>Important</strong>: The <code>$1</code>, <code>$2</code>, <code>$3</code> parameters get reset as the code runs. For complex action codes, assign them to local variables first:</p>
-<div class="highlight"><pre><span></span><code>@global[&quot;$complex_rule&quot;]
+<div class="highlight"><pre><span></span><code>$global[&quot;$complex_rule&quot;]
     = rule &lt;$value1&gt; &#39;+&#39; &lt;$value2&gt; {
         @$local.p1 = $1;  // Save $1 before it gets reset
 @$local.p2 = $3;  // Save $3 before it gets reset
@@ -4708,7 +4708,7 @@
 <h3 id="1-left-recursion-is-your-friend">1. <strong>Left Recursion is Your Friend</strong></h3>
 <p>Traditional parsers can't handle left recursion, but Grapa automatically detects and handles it using a sophisticated two-phase approach:</p>
 <div class="highlight"><pre><span></span><code>// ✅ GOOD: Natural left-associative expressions
-@global[&quot;$additive&quot;]
+$global[&quot;$additive&quot;]
     = rule &lt;$additive&gt; &#39;+&#39; &lt;$multiplicative&gt; {$1 + $3}
     | &lt;$additive&gt; &#39;-&#39; &lt;$multiplicative&gt; {$1 - $3}
     | &lt;$multiplicative&gt;
@@ -4718,17 +4718,17 @@
 <h3 id="2-operator-precedence-through-grammar-structure">2. <strong>Operator Precedence Through Grammar Structure</strong></h3>
 <p>Precedence emerges from grammar hierarchy - it's not hardcoded:</p>
 <div class="highlight"><pre><span></span><code>// ✅ CORRECT: Precedence through grammar levels
-@global[&quot;$expr_or&quot;]      // Lowest precedence
+$global[&quot;$expr_or&quot;]      // Lowest precedence
     = rule &lt;$expr_or&gt; &#39;||&#39; &lt;$expr_and&gt; {$1 || $3}
     | &lt;$expr_and&gt;
     ;
 
-@global[&quot;$expr_and&quot;]     // Higher precedence
+$global[&quot;$expr_and&quot;]     // Higher precedence
     = rule &lt;$expr_and&gt; &#39;&amp;&amp;&#39; &lt;$expr_equality&gt; {$1 &amp;&amp; $3}
     | &lt;$expr_equality&gt;
     ;
 
-@global[&quot;$expr_equality&quot;] // Even higher precedence
+$global[&quot;$expr_equality&quot;] // Even higher precedence
     = rule &lt;$expr_equality&gt; &#39;==&#39; &lt;$expr_comparison&gt; {$1 == $3}
     | &lt;$expr_equality&gt; &#39;!=&#39; &lt;$expr_comparison&gt; {$1 != $3}
     | &lt;$expr_comparison&gt;
@@ -4741,14 +4741,14 @@
 <h3 id="3-action-codes-build-execution-trees">3. <strong>Action Codes Build Execution Trees</strong></h3>
 <p>When a rule matches, Grapa creates execution tree nodes:</p>
 <div class="highlight"><pre><span></span><code>// Action code format: {grapa_expression}
-@global[&quot;$addition&quot;]
+$global[&quot;$addition&quot;]
     = rule &lt;$term&gt; &#39;+&#39; &lt;$addition&gt; {$1 + $3}
     | &lt;$term&gt;
     ;
 </code></pre></div>
 <h4 id="parameter-access-with-1-2-3-etc"><strong>Parameter Access with <code>$1</code>, <code>$2</code>, <code>$3</code>, etc.</strong></h4>
 <p>Action codes can access matched parameters using <code>$</code> followed by a number:</p>
-<div class="highlight"><pre><span></span><code>@global[&quot;$example_rule&quot;]
+<div class="highlight"><pre><span></span><code>$global[&quot;$example_rule&quot;]
     = rule &lt;$term&gt; &#39;+&#39; &lt;$expression&gt; {$1 + $3}
     | &lt;$term&gt;
     ;
@@ -4768,25 +4768,25 @@
 3. Parameters are wrapped in <code>GrapaLibraryParam</code> for safe access and evaluation</p>
 <p><strong>Action Code Best Practices:</strong>
 <div class="highlight"><pre><span></span><code>// ✅ GOOD: Clear operation names
-@global[&quot;$string_concat&quot;]
+$global[&quot;$string_concat&quot;]
     = rule &lt;$string&gt; &#39;+&#39; &lt;$string_concat&gt; {$1 + $3}
     | &lt;$string&gt;
     ;
 
 // ✅ GOOD: Multiple parameters
-@global[&quot;$function_call&quot;]
+$global[&quot;$function_call&quot;]
     = rule &lt;$identifier&gt; &#39;(&#39; &lt;$argument_list&gt; &#39;)&#39; {$1($3)}
     | &lt;$identifier&gt; &#39;(&#39; &#39;)&#39; {$1()}
     ;
 
 // ✅ GOOD: Conditional operations
-@global[&quot;$conditional&quot;]
+$global[&quot;$conditional&quot;]
     = rule &lt;$condition&gt; &#39;?&#39; &lt;$true_expr&gt; &#39;:&#39; &lt;$false_expr&gt; {$1 ? $3 : $5}
     | &lt;$condition&gt;
     ;
 
 // ✅ GOOD: Complex parameter access
-@global[&quot;$complex_operation&quot;]
+$global[&quot;$complex_operation&quot;]
     = rule &lt;$value1&gt; &#39;+&#39; &lt;$value2&gt; {
         if ($1.type() == $STR &amp;&amp; $3.type() == $STR) {
             $1 + $3  // String concatenation
@@ -4801,7 +4801,7 @@
 <h4 id="parameter-types"><strong>Parameter Types</strong></h4>
 <p>Parameters in action codes can be various types:</p>
 <div class="highlight"><pre><span></span><code>// Different parameter types
-@global[&quot;$mixed_parameters&quot;]
+$global[&quot;$mixed_parameters&quot;]
     = rule &lt;$identifier&gt; &#39;=&#39; &lt;$expression&gt; &#39;;&#39; {
         // $1 = identifier (string)
         // $2 = &#39;=&#39; (literal)
@@ -4813,7 +4813,7 @@
 </code></pre></div>
 <p><strong>Parameter Type Handling:</strong>
 <div class="highlight"><pre><span></span><code>// ✅ GOOD: Type-aware parameter processing
-@global[&quot;$smart_concat&quot;]
+$global[&quot;$smart_concat&quot;]
     = rule &lt;$value1&gt; &#39;+&#39; &lt;$value2&gt; {
         if ($1.type() == $STR) {
             $1 + $3.str()  // String concatenation
@@ -4829,7 +4829,7 @@
 <h4 id="advanced-parameter-access"><strong>Advanced Parameter Access</strong></h4>
 <p><strong>Skipping Parameters:</strong>
 <div class="highlight"><pre><span></span><code>// ✅ GOOD: Skip literal tokens, focus on meaningful parameters
-@global[&quot;$function_call&quot;]
+$global[&quot;$function_call&quot;]
     = rule &lt;$identifier&gt; &#39;(&#39; &lt;$arguments&gt; &#39;)&#39; {$1($3)}
     | &lt;$identifier&gt; &#39;(&#39; &#39;)&#39; {$1()}
     ;
@@ -4837,7 +4837,7 @@
 </code></pre></div></p>
 <p><strong>Conditional Parameter Access:</strong>
 <div class="highlight"><pre><span></span><code>// ✅ GOOD: Handle optional parameters
-@global[&quot;$optional_param&quot;]
+$global[&quot;$optional_param&quot;]
     = rule &lt;$required&gt; &#39;,&#39; &lt;$optional&gt; {$1 + $3}
     | &lt;$required&gt; {$1}
     ;
@@ -4845,27 +4845,27 @@
 <h3 id="5-token-types-and-matching">5. <strong>Token Types and Matching</strong></h3>
 <p>Grapa uses a sophisticated token type system:</p>
 <div class="highlight"><pre><span></span><code>// Built-in token types
-@global[&quot;$identifier&quot;]
+$global[&quot;$identifier&quot;]
     = rule &lt;$litname&gt;  // Matches literal names
 
-@global[&quot;$number&quot;]
+$global[&quot;$number&quot;]
     = rule &lt;$lit&gt;      // Matches literals (INT, FLOAT, STR)
 
-@global[&quot;$operator&quot;]
+$global[&quot;$operator&quot;]
     = rule &#39;+&#39; | &#39;-&#39; | &#39;*&#39; | &#39;/&#39;  // Direct character matching
 </code></pre></div>
 <p><strong>Custom Token Types:</strong>
 <div class="highlight"><pre><span></span><code>// ✅ GOOD: Define custom tokens for clarity
-@global[&quot;$custom_operator&quot;]
+$global[&quot;$custom_operator&quot;]
     = rule &#39;++&#39; | &#39;--&#39; | &#39;**&#39; | &#39;*/&#39;  // Multi-character operators
 
-@global[&quot;$keyword&quot;]
+$global[&quot;$keyword&quot;]
     = rule &#39;if&#39; | &#39;while&#39; | &#39;for&#39; | &#39;return&#39;  // Reserved words
 </code></pre></div></p>
 <h3 id="6-error-handling-and-recovery">6. <strong>Error Handling and Recovery</strong></h3>
 <p>Grapa's parser is designed for graceful error recovery:</p>
 <div class="highlight"><pre><span></span><code>// ✅ GOOD: Provide fallback alternatives
-@global[&quot;$statement&quot;]
+$global[&quot;$statement&quot;]
     = rule &lt;$if_statement&gt;
     | &lt;$while_statement&gt;
     | &lt;$assignment&gt;
@@ -4876,11 +4876,11 @@
 <h2 id="common-problems-and-solutions">Common Problems and Solutions</h2>
 <h3 id="problem-1-parameter-access-issues"><strong>Problem 1: Parameter Access Issues</strong></h3>
 <div class="highlight"><pre><span></span><code>// ❌ BAD: Using $0 (doesn&#39;t exist)
-@global[&quot;$bad_rule&quot;]
+$global[&quot;$bad_rule&quot;]
     = rule &lt;$term&gt; &#39;+&#39; &lt;$term&gt; {$0 + $2}  // $0 is invalid!
 
 // ✅ GOOD: Start with $1
-@global[&quot;$good_rule&quot;]
+$global[&quot;$good_rule&quot;]
     = rule &lt;$term&gt; &#39;+&#39; &lt;$term&gt; {$1 + $3}  // $1 and $3 are valid
     ;
 </code></pre></div>
@@ -4890,36 +4890,36 @@
 - <strong>Type errors</strong> - use <code>.str()</code>, <code>.int()</code>, <code>.type()</code> for type conversion</p>
 <h3 id="problem-2-infinite-recursion"><strong>Problem 2: Infinite Recursion</strong></h3>
 <div class="highlight"><pre><span></span><code>// ❌ BAD: Direct left recursion without base case
-@global[&quot;$bad_rule&quot;]
+$global[&quot;$bad_rule&quot;]
     = rule &lt;$bad_rule&gt; &#39;+&#39; &lt;$term&gt; {$1 + $3}
     ;
 
 // ✅ GOOD: Include base case
-@global[&quot;$good_rule&quot;]
+$global[&quot;$good_rule&quot;]
     = rule &lt;$good_rule&gt; &#39;+&#39; &lt;$term&gt; {$1 + $3}
     | &lt;$term&gt;  // Base case
     ;
 </code></pre></div>
 <h3 id="problem-2-ambiguous-grammar"><strong>Problem 2: Ambiguous Grammar</strong></h3>
 <div class="highlight"><pre><span></span><code>// ❌ BAD: Ambiguous - both rules can match same input
-@global[&quot;$ambiguous&quot;]
+$global[&quot;$ambiguous&quot;]
     = rule &lt;$expr&gt; &#39;+&#39; &lt;$expr&gt; {$1 + $3}
     | &lt;$expr&gt; &#39;*&#39; &lt;$expr&gt; {$1 * $3}
     ;
 
 // ✅ GOOD: Clear precedence hierarchy
-@global[&quot;$unambiguous&quot;]
+$global[&quot;$unambiguous&quot;]
     = rule &lt;$additive&gt; &#39;+&#39; &lt;$multiplicative&gt; {$1 + $3}
     | &lt;$multiplicative&gt;
     ;
 </code></pre></div>
 <h3 id="problem-3-missing-error-recovery"><strong>Problem 3: Missing Error Recovery</strong></h3>
 <div class="highlight"><pre><span></span><code>// ❌ BAD: No error recovery
-@global[&quot;$fragile&quot;]
+$global[&quot;$fragile&quot;]
     = rule &lt;$perfect_match&gt;  // Fails on any error
 
 // ✅ GOOD: Graceful error handling
-@global[&quot;$robust&quot;]
+$global[&quot;$robust&quot;]
     = rule &lt;$perfect_match&gt;
     | &lt;$error_recovery&gt;  // Handle errors gracefully
     ;
@@ -4927,13 +4927,13 @@
 <h2 id="performance-considerations">Performance Considerations</h2>
 <h3 id="grammar-optimization"><strong>Grammar Optimization</strong></h3>
 <div class="highlight"><pre><span></span><code>// ✅ GOOD: Minimize backtracking
-@global[&quot;$efficient_parsing&quot;]
+$global[&quot;$efficient_parsing&quot;]
     = rule &lt;$unique_prefix&gt; &lt;$rest&gt;  // Unique first token
     | &lt;$another_unique&gt; &lt;$rest2&gt;
     ;
 
 // ❌ AVOID: Ambiguous prefixes
-@global[&quot;$inefficient_parsing&quot;]
+$global[&quot;$inefficient_parsing&quot;]
     = rule &lt;$ambiguous&gt; &lt;$rest&gt;  // Multiple rules start same way
     | &lt;$ambiguous&gt; &lt;$rest2&gt;
     ;
@@ -4965,24 +4965,24 @@
 <h2 id="practical-example-calculator-grammar">Practical Example: Calculator Grammar</h2>
 <p>Here's a complete example of a simple calculator grammar:</p>
 <div class="highlight"><pre><span></span><code>// calculator.grc
-@global[&quot;$expression&quot;]
+$global[&quot;$expression&quot;]
     = rule &lt;$expression&gt; &#39;+&#39; &lt;$term&gt; {$1 + $3}
     | &lt;$expression&gt; &#39;-&#39; &lt;$term&gt; {$1 - $3}
     | &lt;$term&gt;
     ;
 
-@global[&quot;$term&quot;]
+$global[&quot;$term&quot;]
     = rule &lt;$term&gt; &#39;*&#39; &lt;$factor&gt; {$1 * $3}
     | &lt;$term&gt; &#39;/&#39; &lt;$factor&gt; {$1 / $3}
     | &lt;$factor&gt;
     ;
 
-@global[&quot;$factor&quot;]
+$global[&quot;$factor&quot;]
     = rule &#39;(&#39; &lt;$expression&gt; &#39;)&#39; {$2}
     | &lt;$number&gt;
     ;
 
-@global[&quot;$number&quot;]
+$global[&quot;$number&quot;]
     = rule &lt;$lit&gt;
     ;
 </code></pre></div>
@@ -4996,7 +4996,7 @@ result = parse_my_language(&quot;input text&quot;)
 </code></pre></div>
 <h3 id="extending-existing-grammar"><strong>Extending Existing Grammar</strong></h3>
 <div class="highlight"><pre><span></span><code>// Extend existing rules
-@global[&quot;$extended_expression&quot;]
+$global[&quot;$extended_expression&quot;]
     = rule &lt;$existing_expression&gt;
     | &lt;$my_new_operator&gt; &lt;$extended_expression&gt;
     ;
@@ -5004,7 +5004,7 @@ result = parse_my_language(&quot;input text&quot;)
 <h2 id="advanced-features">Advanced Features</h2>
 <h3 id="complex-action-codes"><strong>Complex Action Codes</strong></h3>
 <p>Since action codes can contain any valid Grapa code, you can do complex operations:</p>
-<div class="highlight"><pre><span></span><code>@global[&quot;$complex_operation&quot;]
+<div class="highlight"><pre><span></span><code>$global[&quot;$complex_operation&quot;]
     = rule &lt;$value&gt; &#39;+&#39; &lt;$value&gt; {
         // Complex Grapa code here
         if ($1.type() == $STR &amp;&amp; $3.type() == $STR) {
@@ -5017,7 +5017,7 @@ result = parse_my_language(&quot;input text&quot;)
     ;
 </code></pre></div>
 <h3 id="conditional-parsing"><strong>Conditional Parsing</strong></h3>
-<div class="highlight"><pre><span></span><code>@global[&quot;$conditional_parse&quot;]
+<div class="highlight"><pre><span></span><code>$global[&quot;$conditional_parse&quot;]
     = rule &lt;$condition&gt; &#39;?&#39; &lt;$true_expr&gt; &#39;:&#39; &lt;$false_expr&gt; {
         $1 ? $3 : $5
     }

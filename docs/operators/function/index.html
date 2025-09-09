@@ -1575,6 +1575,66 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#parameter-behavior-and-side-effects" class="md-nav__link">
+    <span class="md-ellipsis">
+      Parameter Behavior and Side Effects
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Parameter Behavior and Side Effects">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#default-value-immutability" class="md-nav__link">
+    <span class="md-ellipsis">
+      Default Value Immutability
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#parameter-modification" class="md-nav__link">
+    <span class="md-ellipsis">
+      Parameter Modification
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#when-this-is-useful" class="md-nav__link">
+    <span class="md-ellipsis">
+      When This Is Useful
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#when-to-be-careful" class="md-nav__link">
+    <span class="md-ellipsis">
+      When to Be Careful
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#workaround-for-value-copying" class="md-nav__link">
+    <span class="md-ellipsis">
+      Workaround for Value Copying
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -4220,6 +4280,66 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#parameter-behavior-and-side-effects" class="md-nav__link">
+    <span class="md-ellipsis">
+      Parameter Behavior and Side Effects
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Parameter Behavior and Side Effects">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#default-value-immutability" class="md-nav__link">
+    <span class="md-ellipsis">
+      Default Value Immutability
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#parameter-modification" class="md-nav__link">
+    <span class="md-ellipsis">
+      Parameter Modification
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#when-this-is-useful" class="md-nav__link">
+    <span class="md-ellipsis">
+      When This Is Useful
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#when-to-be-careful" class="md-nav__link">
+    <span class="md-ellipsis">
+      When to Be Careful
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#workaround-for-value-copying" class="md-nav__link">
+    <span class="md-ellipsis">
+      Workaround for Value Copying
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -4380,6 +4500,58 @@ calculator(5, 3);                    /* → 8 (add) */
 calculator(operation:&quot;multiply&quot;, 5, 3); /* → 15 */
 calculator(x:10, y:2, operation:&quot;power&quot;); /* → 100 */
 calculator(operation=&quot;power&quot;, y:3, x:2);  /* → 8 */
+</code></pre></div>
+<h3 id="parameter-behavior-and-side-effects">Parameter Behavior and Side Effects</h3>
+<p>Grapa uses pass-by-reference for all function parameters to maintain performance and avoid implementing a full garbage collection system. Default parameter values are immutable (each call gets a fresh copy), while passed parameters remain mutable.</p>
+<h4 id="default-value-immutability">Default Value Immutability</h4>
+<p>Default values are now immutable - each function call gets a fresh copy:</p>
+<div class="highlight"><pre><span></span><code>counter = op(count=0) {
+    count += 1;
+    count;
+};
+
+counter();  /* 1 */
+counter();  /* 1 - default value is not modified */
+</code></pre></div>
+<h4 id="parameter-modification">Parameter Modification</h4>
+<p>Parameters can be modified within functions, affecting the original values:</p>
+<div class="highlight"><pre><span></span><code>increment = op(x) {
+    x += 1;
+    x;
+};
+
+value = 5;
+increment(value);  /* Returns 6 */
+value;            /* Now 6 */
+</code></pre></div>
+<h4 id="when-this-is-useful">When This Is Useful</h4>
+<p>This behavior is intentional and useful for:
+- <strong>Performance optimization</strong> - avoiding unnecessary copying
+- <strong>In-place operations</strong> - modifying data structures efficiently
+- <strong>C++-style programming</strong> - similar to pass-by-reference</p>
+<h4 id="when-to-be-careful">When to Be Careful</h4>
+<p>Be cautious when:
+- <strong>Default values are immutable</strong> - each call gets a fresh copy
+- <strong>Passing shared data</strong> - modifications affect all references
+- <strong>Writing pure functions</strong> - avoid unintended side effects</p>
+<h4 id="workaround-for-value-copying">Workaround for Value Copying</h4>
+<p>Use the <code>.copy()</code> method or a copy function when you need to avoid side effects:</p>
+<div class="highlight"><pre><span></span><code>/* Method 1: Use .copy() method (recommended) */
+data = [1, 2, 3];
+process = op(arr) {
+    arr[0] = 999;
+    arr;
+};
+
+process(data.copy());  /* Returns [999, 2, 3] */
+data;                  /* Still [1, 2, 3] - original unchanged */
+
+/* Method 2: Copy function to force value copying */
+copy = op(x) { x; };
+
+data = [1, 2, 3];
+process(copy(data));  /* Returns [999, 2, 3] */
+data;                /* Still [1, 2, 3] - original unchanged */
 </code></pre></div>
 <h2 id="class">class</h2>
 <p>Creates a class that can be used to generate an instance of the class. The class definition is shared between all instances using the class. If information in the class is altered, a copy is made and the modified variable is added to the instance. The instance stores the class reference and any variables local to the instance. Classes can inherit 1 or more other classes. </p>

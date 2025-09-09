@@ -5496,16 +5496,16 @@ temp_dir = $sys().getenv($TEMP);
 (&quot;Temp directory: &quot; + temp_dir).echo();
 
 /* Get Grapa binary directory */
-bin_dir = $sys().getenv($BIN);
+bin_dir = $sys().getenv($GRAPA_BIN);
 (&quot;Binary directory: &quot; + bin_dir).echo();
 
 /* Get Grapa library directory */
-lib_dir = $sys().getenv($LIB);
+lib_dir = $sys().getenv($GRAPA_LIB);
 (&quot;Library directory: &quot; + lib_dir).echo();
 </code></pre></div>
 <h4 id="system-information-variables"><strong>System Information Variables</strong></h4>
 <div class="highlight"><pre><span></span><code>/* Get Grapa version for compatibility checks */
-version = $sys().getenv($VERSION);
+version = $sys().getenv($GRAPA_VERSION);
 (&quot;Grapa version: &quot; + version).echo();
 
 /* Get program name for self-referencing */
@@ -5534,7 +5534,7 @@ output_dir = work + &quot;/output&quot;;
 </code></pre></div></p>
 <p><strong>Version Compatibility Checking:</strong>
 <div class="highlight"><pre><span></span><code>/* script.grc */
-version = $sys().getenv($VERSION);
+version = $sys().getenv($GRAPA_VERSION);
 platform = $sys().getenv($PLATFORM);
 
 /* Check for minimum version */
@@ -5570,7 +5570,7 @@ $file(temp_file).rm();
 </code></pre></div></p>
 <p><strong>Library Discovery:</strong>
 <div class="highlight"><pre><span></span><code>/* script.grc */
-lib_dir = $sys().getenv($LIB);
+lib_dir = $sys().getenv($GRAPA_LIB);
 work_dir = $sys().getenv($WORK);
 
 /* Check for local library */
@@ -5584,7 +5584,7 @@ if ($file(local_lib).exists()) {
 <p><strong>Self-Referencing Scripts:</strong>
 <div class="highlight"><pre><span></span><code>/* script.grc */
 prog_name = $sys().getenv($NAME);
-version = $sys().getenv($VERSION);
+version = $sys().getenv($GRAPA_VERSION);
 
 /* Display script information */
 (&quot;Script: &quot; + prog_name).echo();
@@ -5705,7 +5705,7 @@ grapa<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;(\
 grapa<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;\$sys().putenv(&#39;DEBUG_MODE&#39;, &#39;true&#39;); (&#39;DEBUG_MODE set to: &#39; + \$sys().getenv(&#39;DEBUG_MODE&#39;)).echo();&quot;</span>
 
 <span class="c1"># Get system information</span>
-grapa<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;(\$sys().getenv(\$VERSION)).echo();&quot;</span>
+grapa<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;(\$sys().getenv(\$GRAPA_VERSION)).echo();&quot;</span>
 
 <span class="c1"># Environment-based configuration</span>
 grapa<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;</span>

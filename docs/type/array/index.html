@@ -919,6 +919,15 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#element-access-methods" class="md-nav__link">
+    <span class="md-ellipsis">
+      Element Access Methods
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#assignment-operations" class="md-nav__link">
     <span class="md-ellipsis">
       Assignment Operations (=)
@@ -1093,6 +1102,84 @@
   <a href="#working-with-results" class="md-nav__link">
     <span class="md-ellipsis">
       Working with Results
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#error-handling-and-boundary-conditions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Error Handling and Boundary Conditions
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Error Handling and Boundary Conditions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#array-access-behavior" class="md-nav__link">
+    <span class="md-ellipsis">
+      Array Access Behavior
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#key-differences-from-vectors" class="md-nav__link">
+    <span class="md-ellipsis">
+      Key Differences from Vectors
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#append-vs-error-behavior" class="md-nav__link">
+    <span class="md-ellipsis">
+      Append vs. Error Behavior
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#insertion-vs-appending" class="md-nav__link">
+    <span class="md-ellipsis">
+      Insertion vs. Appending
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#error-handling-patterns" class="md-nav__link">
+    <span class="md-ellipsis">
+      Error Handling Patterns
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#comparison-with-other-data-types" class="md-nav__link">
+    <span class="md-ellipsis">
+      Comparison with Other Data Types
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#best-practices" class="md-nav__link">
+    <span class="md-ellipsis">
+      Best Practices
     </span>
   </a>
   
@@ -4254,6 +4341,15 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#element-access-methods" class="md-nav__link">
+    <span class="md-ellipsis">
+      Element Access Methods
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#assignment-operations" class="md-nav__link">
     <span class="md-ellipsis">
       Assignment Operations (=)
@@ -4438,6 +4534,84 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#error-handling-and-boundary-conditions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Error Handling and Boundary Conditions
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Error Handling and Boundary Conditions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#array-access-behavior" class="md-nav__link">
+    <span class="md-ellipsis">
+      Array Access Behavior
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#key-differences-from-vectors" class="md-nav__link">
+    <span class="md-ellipsis">
+      Key Differences from Vectors
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#append-vs-error-behavior" class="md-nav__link">
+    <span class="md-ellipsis">
+      Append vs. Error Behavior
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#insertion-vs-appending" class="md-nav__link">
+    <span class="md-ellipsis">
+      Insertion vs. Appending
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#error-handling-patterns" class="md-nav__link">
+    <span class="md-ellipsis">
+      Error Handling Patterns
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#comparison-with-other-data-types" class="md-nav__link">
+    <span class="md-ellipsis">
+      Comparison with Other Data Types
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#best-practices" class="md-nav__link">
+    <span class="md-ellipsis">
+      Best Practices
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -4553,6 +4727,22 @@
 <p><strong>Note:</strong> See <a href="../../advanced/array_vector_interoperability/">Array-Vector Interoperability</a> for detailed information about automatic conversions.</p>
 </blockquote>
 <h3 id="array-operations">Array Operations</h3>
+<h4 id="element-access-methods">Element Access Methods</h4>
+<p>Arrays support both bracket notation and method-based access:</p>
+<div class="highlight"><pre><span></span><code>arr = [1, 2, 3, 4, 5];
+
+/* Bracket notation (direct access) */
+first = arr[0];           /* 1 */
+last = arr[-1];           /* 5 */
+
+/* Method-based access */
+first = arr.get(0);       /* 1 */
+last = arr.get(-1);       /* 5 */
+
+/* Field access methods */
+first = arr.getfield(0);  /* 1 */
+last = arr.getfield(-1);  /* 5 */
+</code></pre></div>
 <h4 id="assignment-operations">Assignment Operations (<code>=</code>)</h4>
 <div class="highlight"><pre><span></span><code>/* Direct element assignment */
 arr = [3, 6, &quot;hi&quot;];
@@ -4560,6 +4750,14 @@ arr[1] = &quot;by&quot;;            /* [3,&quot;by&quot;,&quot;hi&quot;] */
 
 /* Assignment by negative index */
 arr[-2] = &quot;good&quot;;         /* [3,&quot;good&quot;,&quot;hi&quot;] */
+
+/* Method-based assignment */
+arr.set(1, &quot;by&quot;);         /* [3,&quot;by&quot;,&quot;hi&quot;] */
+arr.set(-2, &quot;good&quot;);      /* [3,&quot;good&quot;,&quot;hi&quot;] */
+
+/* Field assignment methods */
+arr.setfield(1, &quot;by&quot;);    /* [3,&quot;by&quot;,&quot;hi&quot;] */
+arr.setfield(-2, &quot;good&quot;); /* [3,&quot;good&quot;,&quot;hi&quot;] */
 
 /* Compound assignment on accessed elements */
 arr[-2] += &quot;dee&quot;;         /* [3,&quot;gooddee&quot;,&quot;hi&quot;] */
@@ -4717,6 +4915,136 @@ first.user.age                             /* Returns: 30 */
 <p><strong>Parallelism Note:</strong>
 Array operations like <code>.map()</code> and <code>.filter()</code> are parallel by default and hardened for ETL/data processing workloads.</p>
 </blockquote>
+<h2 id="error-handling-and-boundary-conditions">Error Handling and Boundary Conditions</h2>
+<h3 id="array-access-behavior"><strong>Array Access Behavior</strong></h3>
+<p>Arrays have <strong>flexible boundary behavior</strong> that differs from vectors:</p>
+<div class="highlight"><pre><span></span><code>arr = [1, 2, 3];
+
+/* Valid access - returns elements */
+arr.get(0);               /* 1 */
+arr.get(-1);              /* 3 */
+arr.get(2);               /* 3 */
+
+/* Boundary behavior - APPENDS instead of error */
+arr.get(3);               /* Returns null (out of bounds) */
+arr.set(3, 99);           /* APPENDS: [1, 2, 3, 99] */
+arr.set(5, 88);           /* APPENDS with gaps: [1, 2, 3, 99, null, 88] */
+
+/* Method-based access follows same rules */
+arr.getfield(3);          /* Returns null (out of bounds) */
+arr.setfield(3, 77);      /* APPENDS: [1, 2, 3, 99, null, 88, 77] */
+
+/* IMPORTANT: .set()/.setfield() only append at the end */
+/* For insertion at specific positions, use += and ++= operators */
+arr = [1, 2, 3];
+arr += 99 arr[1];         /* INSERT at position 1: [1, 99, 2, 3] */
+arr ++= [88, 77] arr[0];  /* INSERT multiple at position 0: [88, 77, 1, 99, 2, 3] */
+</code></pre></div>
+<h3 id="key-differences-from-vectors"><strong>Key Differences from Vectors</strong></h3>
+<table>
+<thead>
+<tr>
+<th>Behavior</th>
+<th><code>$ARRAY</code></th>
+<th><code>$VECTOR</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Out-of-bounds Get</strong></td>
+<td>Returns <code>null</code></td>
+<td>Returns <code>$ERR</code></td>
+</tr>
+<tr>
+<td><strong>Out-of-bounds Set</strong></td>
+<td><strong>APPENDS</strong> element</td>
+<td>Returns <code>$ERR</code></td>
+</tr>
+<tr>
+<td><strong>Boundary Policy</strong></td>
+<td>Flexible (grows)</td>
+<td>Strict (fixed size)</td>
+</tr>
+<tr>
+<td><strong>Use Case</strong></td>
+<td>Dynamic collections</td>
+<td>Mathematical structures</td>
+</tr>
+</tbody>
+</table>
+<h3 id="append-vs-error-behavior"><strong>Append vs. Error Behavior</strong></h3>
+<div class="highlight"><pre><span></span><code>arr = [1, 2, 3];
+
+/* These APPEND (arrays grow dynamically) */
+arr.set(3, 99);           /* [1, 2, 3, 99] */
+arr.set(5, 88);           /* [1, 2, 3, 99, null, 88] */
+arr.setfield(6, 77);      /* [1, 2, 3, 99, null, 88, 77] */
+
+/* These return null (out of bounds get) */
+result = arr.get(10);     /* null */
+result = arr.getfield(10); /* null */
+
+/* Check for out-of-bounds access */
+if (arr.get(10) == null) {
+    /* Handle out-of-bounds access */
+}
+</code></pre></div>
+<h3 id="insertion-vs-appending"><strong>Insertion vs. Appending</strong></h3>
+<p><strong>Important Distinction:</strong>
+- <strong><code>.set()/.setfield()</code></strong>: Only append at the end (or fill gaps)
+- <strong><code>+=</code> and <code>++=</code> operators</strong>: Insert at specific positions</p>
+<div class="highlight"><pre><span></span><code>arr = [1, 2, 3];
+
+/* .set() only appends at the end */
+arr.set(3, 99);           /* [1, 2, 3, 99] - appends at end */
+arr.set(5, 88);           /* [1, 2, 3, 99, null, 88] - fills gap */
+
+/* += and ++= insert at specific positions */
+arr = [1, 2, 3];
+arr += 99 arr[1];         /* [1, 99, 2, 3] - inserts at position 1 */
+arr ++= [88, 77] arr[0];  /* [88, 77, 1, 99, 2, 3] - inserts at position 0 */
+</code></pre></div>
+<h3 id="error-handling-patterns"><strong>Error Handling Patterns</strong></h3>
+<div class="highlight"><pre><span></span><code>arr = [1, 2, 3];
+
+/* Safe access with null checking */
+result = arr.get(5);
+if (result == null) {
+    result = &quot;Index out of bounds&quot;;
+}
+
+/* Safe setting (always works - appends if needed) */
+arr.set(5, 99);           /* Always succeeds, appends if needed */
+
+/* Check array length before access */
+if (index &lt; arr.len()) {
+    value = arr.get(index);
+} else {
+    value = &quot;Index too large&quot;;
+}
+</code></pre></div>
+<h3 id="comparison-with-other-data-types"><strong>Comparison with Other Data Types</strong></h3>
+<div class="highlight"><pre><span></span><code>/* Array behavior (flexible) */
+arr = [1, 2, 3];
+arr.set(5, 99);           /* APPENDS: [1, 2, 3, null, null, 99] */
+
+/* Vector behavior (strict) */
+vec = [1, 2, 3].vector();
+result = vec.set(5, 99);  /* Returns $ERR - strict bounds */
+
+/* List behavior (flexible) */
+list = {a:1, b:2, c:3};
+list.set(&quot;d&quot;, 99);        /* APPENDS: {a:1, b:2, c:3, d:99} */
+</code></pre></div>
+<h3 id="best-practices"><strong>Best Practices</strong></h3>
+<ol>
+<li><strong>Use arrays for dynamic collections</strong> where you need flexible sizing</li>
+<li><strong>Use vectors for mathematical operations</strong> where fixed dimensions matter</li>
+<li><strong>Check for null returns</strong> when accessing potentially out-of-bounds indices</li>
+<li><strong>Use <code>+=</code> and <code>++=</code> for insertion</strong> at specific positions</li>
+<li><strong>Use <code>.set()/.setfield()</code> for appending</strong> at the end or filling gaps</li>
+<li><strong>Use <code>.len()</code> to check bounds</strong> before accessing if you need strict behavior</li>
+</ol>
 
 
 
