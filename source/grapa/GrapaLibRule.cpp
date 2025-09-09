@@ -733,9 +733,17 @@ class GrapaLibraryRuleVarEvent : public GrapaLibraryEvent
 {
 public:
 	GrapaLibraryRuleVarEvent(GrapaCHAR& pName) { mName.FROM(pName); };
-	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
+	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
 GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleVar(GrapaCHAR& pName) { return new GrapaLibraryRuleVarEvent(pName); }
+
+class GrapaLibraryRuleCopyEvent : public GrapaLibraryEvent
+{
+public:
+	GrapaLibraryRuleCopyEvent(GrapaCHAR& pName) { mName.FROM(pName); };
+	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
+};
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleCopy(GrapaCHAR& pName) { return new GrapaLibraryRuleCopyEvent(pName); }
 
 class GrapaLibraryRuleAssignEvent : public GrapaLibraryEvent
 {
@@ -3085,6 +3093,7 @@ GrapaLibraryEvent* GrapaLibraryRuleEvent::LoadLib(GrapaScriptExec *vScriptExec, 
 		{ "ref", &GrapaLibraryRuleEvent::HandleRef },
 		{ "setnull", &GrapaLibraryRuleEvent::HandleNull },
 		{ "var", &GrapaLibraryRuleEvent::HandleVar },
+		{ "copy", &GrapaLibraryRuleEvent::HandleCopy },
 		{ "assign", &GrapaLibraryRuleEvent::HandleAssign },
 		{ "assignappend", &GrapaLibraryRuleEvent::HandleAssignAppend },
         { "assignextend", &GrapaLibraryRuleEvent::HandleAssignExtend },
@@ -5134,6 +5143,15 @@ GrapaRuleEvent* GrapaLibraryRuleVarEvent::Run(GrapaScriptExec *vScriptExec, Grap
 	return(result);
 }
 
+GrapaRuleEvent* GrapaLibraryRuleCopyEvent::Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput)
+{
+	GrapaRuleEvent* result = NULL;
+	GrapaLibraryParam i1(vScriptExec, pNameSpace, pInput ? pInput->Head(0) : NULL);
+	result = vScriptExec->CopyItem(i1.vVal);
+	result->mName.SetLength(0);
+	return(result);
+}
+
 static bool ItemAssignCheck(GrapaRuleEvent* parameter, GrapaRuleEvent* r)
 {
 	if (!r) return(false);
@@ -6164,7 +6182,11 @@ static GrapaRuleEvent* ItemSearchCall(GrapaScriptExec *vScriptExec, GrapaNames* 
 			if (pParam && pParam->vQueue)
 				result = vScriptExec->ProcessPlan(pNameSpace, pCmd, (GrapaRuleEvent*)pParam->vQueue->Head(), pParam->vQueue->mCount);
 			else
+			{
+				//GrapaRuleEvent e;
+				//result = vScriptExec->ProcessPlan(pNameSpace, pCmd, &e, 0);
 				result = vScriptExec->ProcessPlan(pNameSpace, pCmd);
+			}
 			if (pClass)
 			{
 				pNameSpace->GetNameQueue()->PopTail();
@@ -6194,6 +6216,7 @@ static GrapaRuleEvent* ItemSearchCall(GrapaScriptExec *vScriptExec, GrapaNames* 
 				{
 					GrapaRuleEvent e;
 					result = vScriptExec->ProcessPlan(pNameSpace, o, &e, 0);
+					//result = vScriptExec->ProcessPlan(pNameSpace, o);
 				}
 				if (pClass)
 				{
@@ -6214,7 +6237,11 @@ static GrapaRuleEvent* ItemSearchCall(GrapaScriptExec *vScriptExec, GrapaNames* 
 					if (pParam && pParam->vQueue)
 						result = vScriptExec->ProcessPlan(pNameSpace, o, (GrapaRuleEvent*)pParam->vQueue->Head(), pParam->vQueue->mCount);
 					else
+					{
+						//GrapaRuleEvent e;
+						//result = vScriptExec->ProcessPlan(pNameSpace, o, &e, 0);
 						result = vScriptExec->ProcessPlan(pNameSpace, o);
+					}
 					break;
 				}
 			}
@@ -6348,7 +6375,11 @@ static GrapaRuleEvent* ItemSearchCall(GrapaScriptExec *vScriptExec, GrapaNames* 
 					if (pParam && pParam->vQueue)
 						r = vScriptExec->ProcessPlan(pNameSpace, p, (GrapaRuleEvent*)pParam->vQueue->Head(), pParam->vQueue->mCount);
 					else
-						r = vScriptExec->ProcessPlan(pNameSpace, p);
+					{
+						//GrapaRuleEvent e;
+						//result = vScriptExec->ProcessPlan(pNameSpace, p, &e, 0);
+						result = vScriptExec->ProcessPlan(pNameSpace, p);
+					}
 					pNameSpace->GetNameQueue()->PopTail();
 					if (r)
 					{

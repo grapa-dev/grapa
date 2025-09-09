@@ -41,6 +41,7 @@ public:
 	GrapaLibraryEvent* HandleRef(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleNull(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleVar(GrapaCHAR& pName);
+	GrapaLibraryEvent* HandleCopy(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleAssign(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleAssignAppend(GrapaCHAR& pName);
     GrapaLibraryEvent* HandleAssignExtend(GrapaCHAR& pName);
