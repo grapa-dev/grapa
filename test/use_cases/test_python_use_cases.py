@@ -168,8 +168,8 @@ def test_database_file_system_integration():
     # Test file system operations
     test_content = "Hello World!"
     xy.eval("$global.fs = $file();")
-    xy.eval("fs.setfield('test.txt', content);", {"content": test_content})
-    content = xy.eval("fs.getfield('test.txt');")
+    xy.eval("fs.set('test.txt', content);", {"content": test_content})
+    content = xy.eval("fs.get('test.txt');")
     print(f"File content: {content}")
     
     # Handle bytes content
@@ -181,7 +181,7 @@ def test_database_file_system_integration():
     # Test table operations
     xy.eval("$global.table = {}.table('ROW');")
     xy.eval("table.mkfield('name', 'STR', 'VAR');")
-    xy.eval("table.setfield('user1', 'Alice', 'name');")
+    xy.eval("table.setfield('user1', 'name', 'Alice');")
     name = xy.eval("table.getfield('user1', 'name');")
     print(f"Table name: {name}")
     
