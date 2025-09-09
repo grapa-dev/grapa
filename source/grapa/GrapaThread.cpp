@@ -6,12 +6,12 @@ Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
-http://www.apache.org/licenses/LICENSE-2.0
+http ://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
+See the License for the specific language governing permissionsand
 limitations under the License.
 */
 ////////////////////////////////////////////////////////////////////////////////
@@ -209,27 +209,16 @@ void GrapaCritical::WaitCondition(bool noAdd)
 		return;
 	}
 #if defined(__MINGW32__) || defined(__GNUC__)
-	// Use predicate-based approach to prevent race conditions
 	pthread_mutex_lock(&((GrapaCriticalPrivate*)vInstanceC)->mWaitCritical);
+	//pthread_spin_lock(&mWaitCritical);
 	if (!noAdd) mWaitCount++;
 	mWaiting = true;
-	
-	// Store current state for predicate check
-	u32 currentWaitCount = mWaitCount;
-	bool currentWaiting = mWaiting;
-	
-	// Unlock main critical section BEFORE waiting
 	LeaveCritical();
-	
-	// Wait with predicate to prevent missed signals
-	while (currentWaiting && mWaiting == currentWaiting && mWaitCount >= currentWaitCount) {
-		pthread_cond_wait(&((GrapaCriticalPrivate*)vInstanceC)->mCond, 
-		                  &((GrapaCriticalPrivate*)vInstanceC)->mWaitCritical);
-	}
-	
+	pthread_cond_wait(&((GrapaCriticalPrivate*)vInstanceC)->mCond, &((GrapaCriticalPrivate*)vInstanceC)->mWaitCritical);
 	mWaiting = false;
 	mWaitCount = 0;
 	pthread_mutex_unlock(&((GrapaCriticalPrivate*)vInstanceC)->mWaitCritical);
+	//pthread_spin_unlock(&mWaitCritical);
 #else
 #ifdef _WIN32
 	((GrapaCriticalPrivate*)vInstanceC)->mCond = 0;
@@ -277,17 +266,17 @@ void GrapaCritical::SendCondition(bool force)
 	}
 #if defined(__MINGW32__) || defined(__GNUC__)
 	pthread_mutex_lock(&((GrapaCriticalPrivate*)vInstanceC)->mWaitCritical);
-	if (mWaitCount > 0) 	// Signal any waiting threads
+	//pthread_spin_lock(&mWaitCritical);
+	if (mWaitCount == 1 && mWaiting) 	// start with a higher mWaitCount if SendCondition needs to be called multipe times
 	{
+		mWaiting = false;
+		mWaitCount = 0;
 		pthread_cond_signal(&((GrapaCriticalPrivate*)vInstanceC)->mCond);
-		if (mWaitCount == 1 && mWaiting) {
-			mWaiting = false;
-			mWaitCount = 0;
-		} else if (mWaitCount > 0) {
-			mWaitCount--;
-		}
 	}
+	else if (mWaitCount)
+		mWaitCount--;
 	pthread_mutex_unlock(&((GrapaCriticalPrivate*)vInstanceC)->mWaitCritical);
+	//pthread_spin_unlock(&mWaitCritical);
 #else
 #ifdef _WIN32
 	//printf("%d:%s:%d:%d\n", this, "send condition start", mWaiting, mWaitCount);
@@ -417,7 +406,7 @@ void GrapaThread::Stop()
 
 bool GrapaThread::Started()
 {
-	if (vInstanceT && ((GrapaThreadPrivate*)vInstanceT)->mThread) return(true);
+	if (((GrapaThreadPrivate*)vInstanceT)->mThread) return(true);
 	return(false);
 }
 
