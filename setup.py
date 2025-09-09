@@ -46,6 +46,115 @@ from setuptools.command.build_ext import build_ext
 
 from pathlib import Path
 
+def check_system_dependencies():
+    """Check if required system dependencies are available for compilation"""
+    missing_deps = []
+    
+    if sys.platform.startswith('linux'):
+        # Check for required development packages
+        try:
+            import ctypes
+            # Check for development headers - try multiple common library names
+            # Support both OpenSSL 1.1 and OpenSSL 3
+            ssl_libs = ['libssl.so.1.1', 'libssl.so.3', 'libssl.so', 'libssl3.so']
+            crypto_libs = ['libcrypto.so.1.1', 'libcrypto.so.3', 'libcrypto.so']
+            x11_libs = ['libX11.so.6', 'libX11.so']
+            xext_libs = ['libXext.so.6', 'libXext.so']
+            
+            found_ssl = False
+            found_crypto = False
+            found_x11 = False
+            found_xext = False
+            
+            # Check SSL libraries
+            for lib in ssl_libs:
+                try:
+                    ctypes.CDLL(lib)
+                    found_ssl = True
+                    break
+                except OSError:
+                    continue
+            
+            # Check Crypto libraries
+            for lib in crypto_libs:
+                try:
+                    ctypes.CDLL(lib)
+                    found_crypto = True
+                    break
+                except OSError:
+                    continue
+            
+            # Check X11 libraries
+            for lib in x11_libs:
+                try:
+                    ctypes.CDLL(lib)
+                    found_x11 = True
+                    break
+                except OSError:
+                    continue
+            
+            # Check Xext libraries
+            for lib in xext_libs:
+                try:
+                    ctypes.CDLL(lib)
+                    found_xext = True
+                    break
+                except OSError:
+                    continue
+            
+            if not found_ssl or not found_crypto:
+                missing_deps.append('OpenSSL development libraries')
+            if not found_x11 or not found_xext:
+                missing_deps.append('X11 development libraries')
+                
+        except ImportError:
+            pass
+            
+        # Check for g++ compiler
+        try:
+            subprocess.run(['g++', '--version'], capture_output=True, check=True)
+        except (subprocess.CalledProcessError, FileNotFoundError):
+            missing_deps.append('g++ compiler with C++17 support')
+            
+    elif sys.platform.startswith('darwin'):
+        # Check for Xcode command line tools
+        try:
+            result = subprocess.run(['xcode-select', '--print-path'], 
+                                  capture_output=True, text=True, check=True)
+            if not result.stdout.strip():
+                missing_deps.append('Xcode Command Line Tools')
+        except (subprocess.CalledProcessError, FileNotFoundError):
+            missing_deps.append('Xcode Command Line Tools')
+            
+    elif sys.platform.startswith('win32'):
+        # Check for Visual Studio build tools
+        try:
+            # Try to find MSBuild
+            subprocess.run(['msbuild', '/version'], capture_output=True, check=True)
+        except (subprocess.CalledProcessError, FileNotFoundError):
+            missing_deps.append('Visual Studio 2022 or Build Tools for Visual Studio 2022')
+    
+    if missing_deps:
+        print("\n" + "="*60)
+        print("❌ MISSING SYSTEM DEPENDENCIES")
+        print("="*60)
+        print("The following system dependencies are required but not found:")
+        for dep in set(missing_deps):
+            print(f"   • {dep}")
+        print("\nPlease install the missing dependencies before installing grapapy.")
+        print("\nInstallation instructions:")
+        if sys.platform.startswith('linux'):
+            print("   Ubuntu/Debian: sudo apt-get install build-essential libssl-dev libx11-dev libxext-dev")
+            print("   CentOS/RHEL:   sudo yum install gcc-c++ openssl-devel libX11-devel libXext-devel")
+        elif sys.platform.startswith('darwin'):
+            print("   macOS:         xcode-select --install")
+        elif sys.platform.startswith('win32'):
+            print("   Windows:       Install Visual Studio 2022 or Build Tools for Visual Studio 2022")
+            print("                 Download from: https://visualstudio.microsoft.com/downloads/")
+        print("\nFor detailed instructions, visit: https://grapa-dev.github.io/grapa/")
+        print("="*60)
+        raise RuntimeError("Missing required system dependencies")
+
 grapapy_version = "0.1.54"
 is_aws = False
 is_apple = False
@@ -335,6 +444,9 @@ lib_grapa = Extension(
     extra_compile_args=extra_compile_args,
 )
 
+# Check system dependencies before attempting to build
+check_system_dependencies()
+
 if sys.platform.startswith('win32'):
     setup(
         name="grapapy",
@@ -364,6 +476,9 @@ For comprehensive documentation, visit: https://grapa-dev.github.io/grapa/
         zip_safe=False,
         python_requires=">=3.6",
         packages=find_packages(),
+        install_requires=[
+            "pybind11>=2.6.0",
+        ],
         # Add build options to help with Windows permission issues
         options={
             'build_ext': {
@@ -390,5 +505,8 @@ else:
         cmdclass={"build_ext": CMakeBuild},
         zip_safe=False,
         python_requires=">=3.6",
+        install_requires=[
+            "pybind11>=2.6.0",
+        ],
     )
 

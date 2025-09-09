@@ -87,8 +87,218 @@ class GrapaInstaller:
         
         return files
     
-    def _check_requirements(self):
-        """Check if all required files exist"""
+    def _check_system_dependencies(self, auto_install=False):
+        """Check if required system dependencies are available"""
+        missing_deps = []
+        
+        if platform.system().lower() == "linux":
+            # Check for required libraries
+            try:
+                import ctypes
+                # Check for common system libraries that Grapa depends on
+                libs_to_check = [
+                    'libssl.so.1.1', 'libssl.so.3', 'libssl.so',  # OpenSSL
+                    'libcrypto.so.1.1', 'libcrypto.so.3', 'libcrypto.so',  # OpenSSL crypto
+                    'libX11.so.6', 'libX11.so',  # X11
+                    'libXext.so.6', 'libXext.so',  # X11 extensions
+                ]
+                
+                for lib in libs_to_check:
+                    try:
+                        ctypes.CDLL(lib)
+                    except OSError:
+                        # Try alternative names
+                        if 'libssl' in lib:
+                            try:
+                                ctypes.CDLL('libssl.so.1.0.0')
+                            except OSError:
+                                missing_deps.append('OpenSSL (libssl)')
+                        elif 'libcrypto' in lib:
+                            try:
+                                ctypes.CDLL('libcrypto.so.1.0.0')
+                            except OSError:
+                                missing_deps.append('OpenSSL (libcrypto)')
+                        elif 'libX11' in lib:
+                            missing_deps.append('X11 development libraries')
+                        elif 'libXext' in lib:
+                            missing_deps.append('X11 extensions')
+                        
+            except ImportError:
+                # ctypes not available, skip library checking
+                pass
+                
+        elif platform.system().lower() == "darwin":
+            # macOS - check for Xcode command line tools
+            try:
+                result = subprocess.run(['xcode-select', '--print-path'], 
+                                      capture_output=True, text=True, check=True)
+                if not result.stdout.strip():
+                    missing_deps.append('Xcode Command Line Tools')
+            except (subprocess.CalledProcessError, FileNotFoundError):
+                missing_deps.append('Xcode Command Line Tools')
+                
+        elif platform.system().lower() == "windows":
+            # Windows - check for Visual C++ Redistributable
+            try:
+                import winreg
+                # Check for Visual C++ Redistributable
+                vcredist_keys = [
+                    r"SOFTWARE\Microsoft\VisualStudio\14.0\VC\Runtimes\x64",
+                    r"SOFTWARE\Microsoft\VisualStudio\15.0\VC\Runtimes\x64", 
+                    r"SOFTWARE\Microsoft\VisualStudio\16.0\VC\Runtimes\x64",
+                    r"SOFTWARE\Microsoft\VisualStudio\17.0\VC\Runtimes\x64",
+                ]
+                
+                found_vcredist = False
+                for key_path in vcredist_keys:
+                    try:
+                        winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, key_path)
+                        found_vcredist = True
+                        break
+                    except FileNotFoundError:
+                        continue
+                        
+                if not found_vcredist:
+                    missing_deps.append('Microsoft Visual C++ Redistributable')
+                    
+            except ImportError:
+                # winreg not available, skip checking
+                pass
+        
+        if missing_deps:
+            print("⚠️  Missing system dependencies detected:")
+            for dep in set(missing_deps):  # Remove duplicates
+                print(f"   - {dep}")
+            
+            if auto_install:
+                print("\n🔧 Attempting to install dependencies automatically...")
+                try:
+                    self._install_system_dependencies()
+                    print("✅ Dependencies installed successfully, continuing with installation...")
+                    return  # Dependencies installed, continue
+                except Exception as e:
+                    print(f"❌ Automatic dependency installation failed: {e}")
+                    print("Please install dependencies manually or use --force to continue anyway.")
+                    raise RuntimeError("Dependency installation failed")
+            else:
+                print("\nPlease install the missing dependencies before continuing.")
+                print("You can:")
+                print("  1. Install manually (see instructions below)")
+                print("  2. Use --install-dependencies to install automatically")
+                print("  3. Use --force to continue anyway (not recommended)")
+                print("\nManual installation instructions:")
+                self._print_manual_install_instructions()
+                
+                response = input("\nContinue installation anyway? (y/N): ").strip().lower()
+                if response not in ['y', 'yes']:
+                    raise RuntimeError("Installation cancelled due to missing dependencies")
+                else:
+                    print("⚠️  Continuing installation - Grapa may not work properly without these dependencies")
+    
+    def _install_system_dependencies(self):
+        """Install system dependencies automatically"""
+        print("🔧 Installing system dependencies...")
+        
+        if platform.system().lower() == "linux":
+            # Detect package manager and install dependencies
+            if shutil.which("apt"):
+                # Ubuntu/Debian
+                packages = ["build-essential", "python3-dev", "libssl-dev", "libx11-dev", "libxext-dev", "cmake", 
+                           "libxfixes-dev", "libxft-dev", "libxrender-dev", "libxinerama-dev", 
+                           "libxcursor-dev", "libpng-dev", "libfontconfig1-dev", "libfreetype6-dev"]
+                # Check if we're running as root (e.g., in Docker)
+                if os.geteuid() == 0:
+                    cmd = ["apt-get", "update", "&&", "apt-get", "install", "-y"] + packages
+                else:
+                    cmd = ["sudo", "apt-get", "update", "&&", "sudo", "apt-get", "install", "-y"] + packages
+                print(f"Installing packages: {' '.join(packages)}")
+                result = subprocess.run(" ".join(cmd), shell=True, capture_output=True, text=True)
+                
+            elif shutil.which("yum"):
+                # Amazon Linux/RHEL/CentOS
+                if os.geteuid() == 0:
+                    cmd1 = ["yum", "groupinstall", "-y", "'Development Tools'"]
+                    cmd2 = ["yum", "install", "-y", "gcc-c++", "python3-devel", "openssl-devel", "libX11-devel", "libXext-devel", "cmake",
+                           "libXfixes-devel", "libXft-devel", "libXrender-devel", "libXinerama-devel",
+                           "libXcursor-devel", "libpng-devel", "fontconfig-devel", "freetype-devel"]
+                else:
+                    cmd1 = ["sudo", "yum", "groupinstall", "-y", "'Development Tools'"]
+                    cmd2 = ["sudo", "yum", "install", "-y", "gcc-c++", "python3-devel", "openssl-devel", "libX11-devel", "libXext-devel", "cmake",
+                           "libXfixes-devel", "libXft-devel", "libXrender-devel", "libXinerama-devel",
+                           "libXcursor-devel", "libpng-devel", "fontconfig-devel", "freetype-devel"]
+                print("Installing Development Tools group and development libraries...")
+                result1 = subprocess.run(cmd1, capture_output=True, text=True)
+                result2 = subprocess.run(cmd2, capture_output=True, text=True)
+                result = result2  # Use the second result for error checking
+                
+            elif shutil.which("dnf"):
+                # Fedora/newer RHEL
+                if os.geteuid() == 0:
+                    cmd1 = ["dnf", "groupinstall", "-y", "'Development Tools'"]
+                    cmd2 = ["dnf", "install", "-y", "gcc-c++", "python3-devel", "openssl-devel", "libX11-devel", "libXext-devel", "cmake",
+                           "libXfixes-devel", "libXft-devel", "libXrender-devel", "libXinerama-devel",
+                           "libXcursor-devel", "libpng-devel", "fontconfig-devel", "freetype-devel"]
+                else:
+                    cmd1 = ["sudo", "dnf", "groupinstall", "-y", "'Development Tools'"]
+                    cmd2 = ["sudo", "dnf", "install", "-y", "gcc-c++", "python3-devel", "openssl-devel", "libX11-devel", "libXext-devel", "cmake",
+                           "libXfixes-devel", "libXft-devel", "libXrender-devel", "libXinerama-devel",
+                           "libXcursor-devel", "libpng-devel", "fontconfig-devel", "freetype-devel"]
+                print("Installing Development Tools group and development libraries...")
+                result1 = subprocess.run(cmd1, capture_output=True, text=True)
+                result2 = subprocess.run(cmd2, capture_output=True, text=True)
+                result = result2  # Use the second result for error checking
+                
+            else:
+                raise RuntimeError("No supported package manager found (apt, yum, dnf)")
+            
+            if result.returncode != 0:
+                print(f"❌ Failed to install dependencies: {result.stderr}")
+                raise RuntimeError("Dependency installation failed")
+            else:
+                print("✅ System dependencies installed successfully")
+                
+        elif platform.system().lower() == "darwin":
+            # macOS - install Xcode Command Line Tools
+            print("Installing Xcode Command Line Tools...")
+            result = subprocess.run(["xcode-select", "--install"], capture_output=True, text=True)
+            
+            if result.returncode != 0:
+                print(f"❌ Failed to install Xcode Command Line Tools: {result.stderr}")
+                raise RuntimeError("Xcode Command Line Tools installation failed")
+            else:
+                print("✅ Xcode Command Line Tools installation initiated")
+                print("Please complete the installation in the popup window, then run the installer again.")
+                
+        elif platform.system().lower() == "windows":
+            # Windows - provide instructions for Visual Studio Build Tools
+            print("❌ Automatic dependency installation not supported on Windows")
+            print("Please install Visual Studio 2022 or Build Tools for Visual Studio 2022 manually:")
+            print("Download from: https://visualstudio.microsoft.com/downloads/")
+            raise RuntimeError("Manual installation required on Windows")
+    
+    def _print_manual_install_instructions(self):
+        """Print manual installation instructions for the current platform"""
+        if platform.system().lower() == "linux":
+            if shutil.which("apt"):
+                print("  Ubuntu/Debian: sudo apt-get install build-essential libssl-dev libx11-dev libxext-dev")
+            elif shutil.which("yum"):
+                print("  Amazon Linux/RHEL/CentOS: sudo yum groupinstall 'Development Tools' && sudo yum install openssl-devel libX11-devel libXext-devel")
+            elif shutil.which("dnf"):
+                print("  Fedora: sudo dnf groupinstall 'Development Tools' && sudo dnf install openssl-devel libX11-devel libXext-devel")
+            else:
+                print("  Install build tools, OpenSSL development libraries, and X11 development libraries")
+        elif platform.system().lower() == "darwin":
+            print("  macOS: xcode-select --install")
+        elif platform.system().lower() == "windows":
+            print("  Windows: Install Visual Studio 2022 or Build Tools for Visual Studio 2022")
+            print("  Download from: https://visualstudio.microsoft.com/downloads/")
+    
+    def _check_requirements(self, auto_install=False):
+        """Check if all required files exist and system dependencies are available"""
+        # Check system dependencies first
+        self._check_system_dependencies(auto_install)
+        
+        # Check required files
         files = self._get_platform_files()
         missing = []
         
@@ -200,12 +410,12 @@ class GrapaInstaller:
         print(f"Please manually add the following line to your shell profile:")
         print(f"export PATH=\"$PATH:{bin_path}\"")
     
-    def install(self, force=False):
+    def install(self, force=False, auto_install=False):
         """Install Grapa"""
         print(f"🚀 Installing Grapa for {self.platform}...")
         
         try:
-            files = self._check_requirements()
+            files = self._check_requirements(auto_install)
             print("✅ All required files found")
             
             if platform.system().lower() == "windows":
@@ -298,6 +508,8 @@ def main():
     parser.add_argument('--force', action='store_true', help='Force installation without prompts')
     parser.add_argument('--uninstall', action='store_true', help='Uninstall Grapa')
     parser.add_argument('--install-path', help='Custom installation path')
+    parser.add_argument('--install-dependencies', action='store_true', 
+                       help='Automatically install system dependencies (requires sudo/admin privileges)')
     
     args = parser.parse_args()
     
@@ -309,7 +521,7 @@ def main():
     if args.uninstall:
         installer.uninstall()
     else:
-        installer.install(force=args.force)
+        installer.install(force=args.force, auto_install=args.install_dependencies)
 
 if __name__ == "__main__":
     main()

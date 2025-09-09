@@ -1,0 +1,14 @@
+# Python dependencies for GrapaPy
+# Note: System dependencies (compilers, development libraries) are also required
+# See installation instructions at: https://grapa-dev.github.io/grapa/
+
+# Core dependencies
+pybind11>=2.6.0
+
+# Build dependencies (automatically handled by pip)
+setuptools>=40.0.0
+wheel
+
+# Optional: For development and testing
+# pytest>=6.0.0
+# pytest-cov>=2.0.0

@@ -1,0 +1,52 @@
+# Ignore large directories and build artifacts
+bin/
+build/
+build_temp/
+*.o
+*.so
+*.a
+*.lib
+*.dll
+*.exe
+
+# Ignore git and other version control
+.git/
+.gitignore
+
+# Ignore documentation and examples (not needed for testing)
+docs/
+docs-src/
+maintainers/
+examples/
+test/
+
+# Ignore Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv/
+
+# Ignore IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Ignore OS files
+.DS_Store
+Thumbs.db
+
+# Keep only essential files for testing
+!setup.py
+!bin/install-grapa.py
+!requirements.txt
+!source/mainpy.cpp
+!source/grapa/
+!source/grep/
+!source/pybind11/
+!CMakeLists.txt
+!MANIFEST.in
