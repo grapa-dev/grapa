@@ -376,10 +376,15 @@ process(data);  // Returns [999, 2, 3]
 data;          // Now [999, 2, 3] (unexpected!)
 ```
 
-**Solution**: Use copy functions when you need to avoid side effects
+**Solution**: Use the `.copy()` method or copy functions when you need to avoid side effects
 
 ```grapa
-// ✅ Solution: Copy function to avoid side effects
+// ✅ Solution 1: Use .copy() method (recommended)
+data = [1, 2, 3];
+process(data.copy());  // Returns [999, 2, 3]
+data;                  // Still [1, 2, 3] (expected!)
+
+// ✅ Solution 2: Copy function to avoid side effects
 copy = op(x) { x; };
 
 data = [1, 2, 3];

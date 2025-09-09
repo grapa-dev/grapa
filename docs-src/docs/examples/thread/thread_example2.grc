@@ -30,4 +30,5 @@ while(coroutine.suspended()==true) ;
 coroutine.resume();
 while(coroutine.started()==true) ;
 "Coroutine done\n".echo();
+coroutine.stop();
 coroutine = null;

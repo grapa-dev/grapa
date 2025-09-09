@@ -1127,10 +1127,15 @@ y;        /* Now [2, 3, 2] - array element was modified */
 
 #### Workaround for Value Copying
 
-If you need to avoid side effects, use a copy function:
+If you need to avoid side effects, use the `.copy()` method or a copy function:
 
 ```grapa
-/* Copy function to force value copying */
+/* Method 1: Use .copy() method (recommended) */
+y = [2, 2, 2];
+f(y[1].copy());  /* Returns 3 */
+y;               /* Still [2, 2, 2] - original unchanged */
+
+/* Method 2: Copy function to force value copying */
 c = op(x) { x; };
 
 y = [2, 2, 2];
@@ -1141,9 +1146,10 @@ y;           /* Still [2, 2, 2] - original unchanged */
 #### Best Practices
 
 1. **Avoid modifying parameters** unless that's the intended behavior
-2. **Use copy functions** when you need to avoid side effects
-3. **Document functions** that intentionally modify parameters
-4. **Consider this behavior** when designing function interfaces
+2. **Use `.copy()` method** when you need to avoid side effects (recommended)
+3. **Use copy functions** as an alternative to `.copy()`
+4. **Document functions** that intentionally modify parameters
+5. **Consider this behavior** when designing function interfaces
 
 This behavior is similar to C++ pass-by-reference, where parameters are often passed by reference for performance reasons.
 

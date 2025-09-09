@@ -123,18 +123,23 @@ Be cautious when:
 
 #### Workaround for Value Copying
 
-Use a copy function when you need to avoid side effects:
+Use the `.copy()` method or a copy function when you need to avoid side effects:
 
 ```grapa
-/* Copy function to force value copying */
-copy = op(x) { x; };
-
+/* Method 1: Use .copy() method (recommended) */
 data = [1, 2, 3];
 process = op(arr) {
     arr[0] = 999;
     arr;
 };
 
+process(data.copy());  /* Returns [999, 2, 3] */
+data;                  /* Still [1, 2, 3] - original unchanged */
+
+/* Method 2: Copy function to force value copying */
+copy = op(x) { x; };
+
+data = [1, 2, 3];
 process(copy(data));  /* Returns [999, 2, 3] */
 data;                /* Still [1, 2, 3] - original unchanged */
 ```

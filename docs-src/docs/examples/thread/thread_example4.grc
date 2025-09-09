@@ -122,6 +122,9 @@ for(consumer_id=0;consumer_id<consumer_count;consumer_id+=1)
     while(consumer[consumer_id].started()) {"z1\n".echo();100.sleep();"z2\n".echo();};
 ("Consumer completed\n").echo();
 
+consumer.stop();
+data_ready.stop();
+
 consumer = null;
 queue_lock = null;
 data_ready = null;
