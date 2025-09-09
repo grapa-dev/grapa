@@ -1093,7 +1093,7 @@ if (condition) {
 
 ### Parameter Passing Behavior
 
-**Important**: Grapa uses pass-by-reference for all function parameters, including default values. This is a deliberate design decision to avoid implementing a full garbage collection system and maintain performance by limiting when copies are required.
+**Important**: Grapa uses pass-by-reference for all function parameters. Default parameter values are immutable (each call gets a fresh copy), while passed parameters remain mutable. This is a deliberate design decision to avoid implementing a full garbage collection system and maintain performance by limiting when copies are required.
 
 #### How Parameters Work
 
@@ -1106,9 +1106,9 @@ f = op(a=0) {
     a;
 };
 
-/* Default value is shared across calls */
+/* Default values are now immutable - each call gets a fresh copy */
 f();  /* Returns 1 */
-f();  /* Returns 2 - default value was modified! */
+f();  /* Returns 1 - default value is not modified! */
 ```
 
 #### Parameter Side Effects

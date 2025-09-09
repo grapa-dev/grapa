@@ -358,13 +358,13 @@ xy.eval('$global.f = $file()')
 **Problem**: Function parameters are modified unexpectedly
 
 ```python
-# ❌ Problem: Default value persists between calls
+# ✅ Fixed: Default values are now immutable
 f = op(x=0) {
     x += 1;
     x;
 };
 f();  // Returns 1
-f();  // Returns 2 (unexpected!)
+f();  // Returns 1 (expected - default value is not modified)
 
 # ❌ Problem: Original variables are modified
 data = [1, 2, 3];

@@ -76,11 +76,11 @@ calculator(operation="power", y:3, x:2);  /* → 8 */
 
 ### Parameter Behavior and Side Effects
 
-Grapa uses pass-by-reference for all function parameters to maintain performance and avoid implementing a full garbage collection system.
+Grapa uses pass-by-reference for all function parameters to maintain performance and avoid implementing a full garbage collection system. Default parameter values are immutable (each call gets a fresh copy), while passed parameters remain mutable.
 
-#### Default Value Sharing
+#### Default Value Immutability
 
-Default values are shared across function calls:
+Default values are now immutable - each function call gets a fresh copy:
 
 ```grapa
 counter = op(count=0) {
@@ -89,7 +89,7 @@ counter = op(count=0) {
 };
 
 counter();  /* 1 */
-counter();  /* 2 - same default value modified */
+counter();  /* 1 - default value is not modified */
 ```
 
 #### Parameter Modification
@@ -117,7 +117,7 @@ This behavior is intentional and useful for:
 #### When to Be Careful
 
 Be cautious when:
-- **Modifying default values** - they persist between calls
+- **Default values are immutable** - each call gets a fresh copy
 - **Passing shared data** - modifications affect all references
 - **Writing pure functions** - avoid unintended side effects
 
