@@ -25,6 +25,7 @@ tags:
 - [Array/Matrix Operations](#arraymatrix-operations)
 - [File System](#file-system)
 - [Time & Date](#time-date)
+- [Python Integration](#python-integration)
 - [Universal Object Methods](#universal-object-methods)
 
 ---
@@ -717,6 +718,192 @@ now = $time();
 formatted = now.format("%Y-%m-%d %H:%M:%S");
 tomorrow = now.add(86400);  /* Add 24 hours */
 ```
+
+[Back to Top](#grapa-api-reference)
+
+---
+
+## Python Integration
+
+GrapaPy provides a Python extension that exposes Grapa's core functionality directly to Python applications.
+
+### Installation
+```bash
+pip install grapapy
+```
+
+### Core Functions
+
+#### **grapapy.eval(script, params, rule, profile)**
+Evaluate Grapa code from Python with optional parameters.
+
+```python
+import grapapy
+
+# Basic evaluation
+result = grapapy.eval("'Hello, World!'.echo();")
+print(result)  # "Hello, World!"
+
+# With parameters
+result = grapapy.eval("x + y", {"x": 5, "y": 3})
+print(result)  # 8
+```
+
+#### **grapapy.compile(script, rule, profile)**
+Pre-compile Grapa code for performance.
+
+```python
+# Compile for reuse
+compiled = grapapy.compile("input * 2 + offset")
+result = grapapy.eval(compiled, {"input": 10, "offset": 5})
+print(result)  # 25
+```
+
+#### **grapapy.grep(input, pattern, options, delim, normstr, procstr, num_workers)**
+Direct access to Grapa's Unicode-aware grep functionality.
+
+**Parameters:**
+- `input` - Text to search in
+- `pattern` - Regex pattern to search for
+- `options` - Grep options (e.g., "o" for match-only, "i" for case-insensitive)
+- `delim` - Line delimiter (default: "\n")
+- `normstr` - Unicode normalization ("NONE", "NFC", "NFD", "NFKC", "NFKD")
+- `procstr` - Processing mode ("UNICODE", "BINARY")
+- `num_workers` - Number of worker threads (0 for auto)
+
+```python
+import grapapy
+
+text = "Hello world\nGoodbye world\nPython programming"
+
+# Basic search
+matches = grapapy.grep(text, "world")
+print(matches)  # ['Hello world', 'Goodbye world']
+
+# Match-only option
+matches = grapapy.grep(text, "world", "o")
+print(matches)  # ['world', 'world']
+
+# Case-insensitive search
+matches = grapapy.grep(text, "python", "i")
+print(matches)  # ['Python programming']
+
+# Advanced options
+matches = grapapy.grep(text, "\\b\\w{6}\\b", "o")  # 6-letter words
+print(matches)  # ['Goodbye', 'Python']
+```
+
+### Class-Based Interface
+
+#### **grapapy.grapa()**
+Create a Grapa instance for stateful operations.
+
+```python
+import grapapy
+
+# Create instance
+g = grapapy.grapa()
+
+# Variables persist between calls
+g.eval("x = 42;")
+result = g.eval("x * 2;")
+print(result)  # 84
+
+# Use grep with instance
+matches = g.grep("hello world", "hello")
+print(matches)  # ['hello world']
+```
+
+### Execution Models
+
+#### **Direct Execution (No Parameters)**
+Variables persist between calls:
+```python
+g = grapapy.grapa()
+g.eval("b = 6;")
+result = g.eval("b;")  # Returns 6
+```
+
+#### **Parameterized Execution (With Parameters)**
+Variables are local and don't persist:
+```python
+g.eval("c = 9;", {'x': 5})
+result = g.eval("c;")  # Returns {"error":-1} - variable not found
+
+# Use $global for persistence with parameters
+g.eval("$global.persistent_var = 10;", {'x': 5})
+result = g.eval("persistent_var;")  # Returns 10
+```
+
+### Advanced Features
+
+#### **Unicode-Aware Text Processing**
+```python
+# Unicode normalization
+text = "café naïve résumé"
+matches = grapapy.grep(text, "cafe", "i", "", "NFD")  # Normalized search
+
+# Diacritic-insensitive search
+matches = grapapy.grep(text, "cafe", "d")  # Matches "café"
+```
+
+#### **Performance Optimization**
+```python
+# Parallel processing
+large_text = "..." * 10000
+matches = grapapy.grep(large_text, "pattern", "", "", "", "", 4)  # 4 workers
+```
+
+#### **Error Handling**
+```python
+try:
+    result = grapapy.grep("text", "[invalid regex")
+    if isinstance(result, dict) and "error" in result:
+        print(f"Grep error: {result['error']}")
+except Exception as e:
+    print(f"Python error: {e}")
+```
+
+### Integration Examples
+
+#### **Data Science Workflow**
+```python
+import grapapy
+import pandas as pd
+
+# Extract data with grep
+log_data = grapapy.grep(log_file_content, "ERROR|WARNING", "o")
+df = pd.DataFrame({"messages": log_data})
+
+# Process with Grapa
+g = grapapy.grapa()
+g.eval("processed_data = [];")
+for message in log_data:
+    g.eval("processed_data += message.upper();", {"message": message})
+```
+
+#### **Web Application**
+```python
+from flask import Flask
+import grapapy
+
+app = Flask(__name__)
+
+@app.route('/search')
+def search():
+    query = request.args.get('q')
+    content = get_content()
+    matches = grapapy.grep(content, query, "i")
+    return jsonify({"matches": matches})
+```
+
+### Best Practices
+
+1. **Use class-based interface** for stateful operations
+2. **Pre-compile frequently used code** for better performance
+3. **Handle errors gracefully** - grep can return error dictionaries
+4. **Use appropriate Unicode normalization** for international text
+5. **Leverage parallel processing** for large text operations
 
 [Back to Top](#grapa-api-reference)
 

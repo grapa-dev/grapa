@@ -278,6 +278,38 @@ for file in files:
 
 ## Integration with Python Ecosystem
 
+### **Text Processing and Search**
+GrapaPy provides direct access to Grapa's powerful Unicode-aware grep functionality:
+
+```python
+import grapapy
+
+# Basic text search
+text = "Hello world\nGoodbye world\nPython programming"
+matches = grapapy.grep(text, "world")
+print(matches)  # ['Hello world', 'Goodbye world']
+
+# Match-only option (extract just the matched text)
+matches = grapapy.grep(text, "world", "o")
+print(matches)  # ['world', 'world']
+
+# Case-insensitive search
+matches = grapapy.grep(text, "python", "i")
+print(matches)  # ['Python programming']
+
+# Class-based interface for stateful operations
+g = grapapy.grapa()
+matches = g.grep(text, "world", "o")
+print(matches)  # ['world', 'world']
+```
+
+**Advanced Grep Features:**
+- **Unicode-aware**: Full Unicode normalization and case folding support
+- **Regex support**: Complete PCRE2 regex engine with advanced features
+- **Multiple output formats**: Line-based, match-only, JSON output
+- **Performance optimized**: Direct C++ implementation for maximum speed
+- **Thread-safe**: Can be used safely in multi-threaded Python applications
+
 ### **Data Science Libraries**
 ```python
 import pandas as pd

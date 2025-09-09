@@ -38,6 +38,90 @@ lock_obj.unlock();
 
 See [Threading and Locking](sys/thread.md) and [Function Operators: static and const](operators/function.md) for details and best practices.
 
+## Text Processing and Search
+GrapaPy provides direct access to Grapa's powerful Unicode-aware grep functionality, making it ideal for text processing tasks that require advanced pattern matching and Unicode handling.
+
+**Example: Log file analysis**
+```python
+import grapapy
+
+# Analyze log files for errors and warnings
+log_content = """
+2024-01-15 10:30:15 INFO: Application started
+2024-01-15 10:31:22 ERROR: Database connection failed
+2024-01-15 10:32:45 WARNING: High memory usage detected
+2024-01-15 10:33:12 INFO: User login successful
+2024-01-15 10:34:01 ERROR: File not found: config.xml
+"""
+
+# Extract all error messages
+errors = grapapy.grep(log_content, "ERROR:.*", "o")
+print("Errors:", errors)
+# Output: ['ERROR: Database connection failed', 'ERROR: File not found: config.xml']
+
+# Extract timestamps for warnings
+warnings = grapapy.grep(log_content, "\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2} WARNING:.*")
+print("Warnings:", warnings)
+# Output: ['2024-01-15 10:32:45 WARNING: High memory usage detected']
+
+# Case-insensitive search for specific patterns
+info_messages = grapapy.grep(log_content, "application|user", "i")
+print("Info messages:", info_messages)
+# Output: ['2024-01-15 10:30:15 INFO: Application started', '2024-01-15 10:33:12 INFO: User login successful']
+```
+
+**Example: Unicode text processing**
+```python
+import grapapy
+
+# Process international text with Unicode normalization
+text = "café naïve résumé naïve café"
+
+# Normalized search (matches accented characters)
+matches = grapapy.grep(text, "cafe", "i", "", "NFD")
+print("Normalized matches:", matches)
+# Output: ['café', 'café']
+
+# Extract all words with diacritics
+accented_words = grapapy.grep(text, "\\w*[àáâãäåæçèéêëìíîïðñòóôõöøùúûüýþÿ]\\w*", "o")
+print("Accented words:", accented_words)
+# Output: ['café', 'naïve', 'résumé', 'naïve', 'café']
+```
+
+**Example: Data extraction from structured text**
+```python
+import grapapy
+
+# Extract structured data from text
+data_text = """
+Name: John Doe, Age: 30, City: New York
+Name: Jane Smith, Age: 25, City: Los Angeles
+Name: Bob Johnson, Age: 35, City: Chicago
+"""
+
+# Extract all names
+names = grapapy.grep(data_text, "Name: ([^,]+)", "o")
+print("Names:", names)
+# Output: ['John Doe', 'Jane Smith', 'Bob Johnson']
+
+# Extract all ages
+ages = grapapy.grep(data_text, "Age: (\\d+)", "o")
+print("Ages:", ages)
+# Output: ['30', '25', '35']
+
+# Extract all cities
+cities = grapapy.grep(data_text, "City: ([^\\n]+)", "o")
+print("Cities:", cities)
+# Output: ['New York', 'Los Angeles', 'Chicago']
+```
+
+**Advanced Features:**
+- **Unicode normalization**: Support for NFC, NFD, NFKC, NFKD normalization forms
+- **Case-insensitive matching**: Built-in support for Unicode case folding
+- **Regex engine**: Full PCRE2 regex support with advanced features
+- **Performance**: Direct C++ implementation for maximum speed
+- **Thread safety**: Safe for use in multi-threaded Python applications
+
 ---
 
 ## 1. ETL / Data Engineering (Verified)

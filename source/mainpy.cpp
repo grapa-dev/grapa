@@ -24,6 +24,7 @@ using namespace py::literals;
 #include "grapa/GrapaCompress.h"
 #include "grapa/GrapaLibRule.h"
 #include "grapa/GrapaFloat.h"
+#include "grep/grapa_grep_unicode.hpp"
 
 #define gGrapaUseWidget false
 
@@ -570,12 +571,107 @@ public:
 		return o;
 	}
 
+	py::object grep(py::object inputstr, py::object patternstr, std::string optionsstr, std::string delimstr, std::string normstr, std::string procstr, int num_workers)
+	{
+		py::object o;
+		{
+			pybind11::gil_scoped_acquire acquire;
+			o = py::none();
+		}
+
+		// Convert Python strings to C++ strings
+		std::string input, pattern;
+		{
+			pybind11::gil_scoped_acquire acquire;
+			Py_ssize_t size = 0;
+			const char* buffer = (char*)PyUnicode_AsUTF8AndSize(inputstr.ptr(), &size);
+			if (size > 0) {
+				input = std::string(buffer, size);
+			}
+			buffer = (char*)PyUnicode_AsUTF8AndSize(patternstr.ptr(), &size);
+			if (size > 0) {
+				pattern = std::string(buffer, size);
+			}
+		}
+
+		if (input.empty() || pattern.empty()) {
+			return o; // Return None for empty input
+		}
+
+		try {
+			// Convert normalization string to enum
+			GrapaUnicode::NormalizationForm normalization = GrapaUnicode::NormalizationForm::NONE;
+			std::string normstr_upper = normstr;
+			std::transform(normstr_upper.begin(), normstr_upper.end(), normstr_upper.begin(), ::toupper);
+
+			if (normstr_upper.empty() || normstr_upper == "NONE") {
+				normalization = GrapaUnicode::NormalizationForm::NONE;
+			}
+			else if (normstr_upper == "NFC") {
+				normalization = GrapaUnicode::NormalizationForm::NFC;
+			}
+			else if (normstr_upper == "NFD") {
+				normalization = GrapaUnicode::NormalizationForm::NFD;
+			}
+			else if (normstr_upper == "NFKC") {
+				normalization = GrapaUnicode::NormalizationForm::NFKC;
+			}
+			else if (normstr_upper == "NFKD") {
+				normalization = GrapaUnicode::NormalizationForm::NFKD;
+			}
+
+			// Convert processing mode string to enum
+			GrapaUnicode::ProcessingMode mode = GrapaUnicode::ProcessingMode::UNICODE_MODE;
+			std::string procstr_upper = procstr;
+			std::transform(procstr_upper.begin(), procstr_upper.end(), procstr_upper.begin(), ::toupper);
+
+			if (procstr_upper.empty() || procstr_upper == "UNICODE") {
+				mode = GrapaUnicode::ProcessingMode::UNICODE_MODE;
+			}
+			else if (procstr_upper == "BINARY") {
+				mode = GrapaUnicode::ProcessingMode::BINARY_MODE;
+			}
+
+			// Call the direct C++ grep function
+			auto matches = grep_extract_matches_unicode(input, pattern, optionsstr, delimstr, normalization, mode, static_cast<size_t>(num_workers));
+
+			// Convert C++ vector<string> to Python list
+			{
+				pybind11::gil_scoped_acquire acquire;
+				py::list result;
+				for (const auto& match : matches) {
+					result.append(py::str(match));
+				}
+				o = result;
+			}
+		}
+		catch (const std::exception& e) {
+			// Handle any exceptions and return error
+			{
+				pybind11::gil_scoped_acquire acquire;
+				py::dict error_dict;
+				error_dict["error"] = py::str(e.what());
+				o = error_dict;
+			}
+		}
+
+		return o;
+	}
+
 };
 
 py::object grapa_eval(py::object cmdstr, py::object paramstr, std::string rulestr, std::string profilestr)
 {
 	GrapaStruct* gs = new GrapaStruct(py::none());
 	py::object o = gs->eval(cmdstr, paramstr, rulestr, profilestr);
+	delete gs;
+	return o;
+}
+
+py::object grapa_grep(py::object inputstr, py::object patternstr, std::string optionsstr, std::string delimstr, std::string normstr, std::string procstr, int num_workers)
+{
+	GrapaStruct* gs = new GrapaStruct(py::none());
+	py::object o = gs->grep(inputstr, patternstr, optionsstr, delimstr, normstr, procstr, num_workers);
 	delete gs;
 	return o;
 }
@@ -604,6 +700,8 @@ PYBIND11_MODULE(grapapy, m)
 
            new - create an instance (state maintained between calls)
 		   eval - eval a string, return a string
+		   compile - compile a string into a Grapa operation object
+		   grep - search for patterns in text using Grapa's grep functionality
 
 		   Pass in 2'nd parameter as string or bytes, available using @$ARG in the script. 
 		   
@@ -613,12 +711,18 @@ PYBIND11_MODULE(grapapy, m)
 		.def(py::init<py::object>(), py::arg("s") = py::none())
 		.def("eval", static_cast<py::object(GrapaStruct::*)(py::object, py::object, std::string, std::string)>(&GrapaStruct::eval), "", py::arg("s"), py::arg("a") = "", py::arg("r") = "", py::arg("p") = "", pybind11::call_guard<py::gil_scoped_release>())
 		.def("compile", static_cast<py::object(GrapaStruct::*)(py::object, std::string, std::string)>(&GrapaStruct::compile), "", py::arg("s"), py::arg("r") = "", py::arg("p") = "", pybind11::call_guard<py::gil_scoped_release>())
+		.def("grep", static_cast<py::object(GrapaStruct::*)(py::object, py::object, std::string, std::string, std::string, std::string, int)>(&GrapaStruct::grep), "", py::arg("input"), py::arg("pattern"), py::arg("options") = "", py::arg("delim") = "", py::arg("normstr") = "", py::arg("procstr") = "", py::arg("num_workers") = 0, pybind11::call_guard<py::gil_scoped_release>())
 		;
 	
 	m.def("eval", &grapa_eval, R"pbdoc(
         Evaluate a Grapa script
     )pbdoc",
 		py::arg("s"), py::arg("a") = "", py::arg("r") = "", py::arg("p") = "", pybind11::call_guard<py::gil_scoped_release>());
+	
+	m.def("grep", &grapa_grep, R"pbdoc(
+        Search for patterns in text using Grapa's grep functionality
+    )pbdoc",
+		py::arg("input"), py::arg("pattern"), py::arg("options") = "", py::arg("delim") = "", py::arg("normstr") = "", py::arg("procstr") = "", py::arg("num_workers") = 0, pybind11::call_guard<py::gil_scoped_release>());
 	
     m.attr("__version__") = "0.1.54";
 
