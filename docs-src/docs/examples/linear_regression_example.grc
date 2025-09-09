@@ -19,7 +19,7 @@
 ("--- Data Generation ---\n").echo();
 
 /* Generate sample data: y = 2*x1 + 3*x2 + 5 + noise */
-n_samples = 100000;
+n_samples = 1000;
 X_data = [];
 y_data = [];
 
@@ -219,16 +219,24 @@ ridge_regression = op(X, y, lambda) {
 lambda_values = [0.0, 0.1, 1.0, 10.0];
 ("Ridge regression with different lambda values:" + "\n").echo();
 
-for(i=0;i<lambda_values.len();i+=1) {
-    $local.lambda = lambda_values[i];
+//for(i=0;i<lambda_values.len();i+=1) {
+//    $local.lambda = lambda_values[i];
+results = lambda_values.map(op(lambda){
     $local.X_with_bias_copy = X_with_bias.copy();
     $local.y_copy = y.copy();
     $local.ridge_coefficients = ridge_regression(X_with_bias_copy,y_copy,lambda);
     $local.ridge_predictions = X_with_bias.dot(ridge_coefficients);
     $local.ridge_r_squared = calculate_r_squared(y_copy, ridge_predictions).float(32);
     $local.ridge_rmse = calculate_rmse(y_copy, ridge_predictions).float(32);
-    "  Lambda=${lambda.float(10)}: R²=${ridge_r_squared}, RMSE=${ridge_rmse}\n".interpolate().echo();
+	{"lambda":lambda,"ridge_r_squared":ridge_r_squared,"ridge_rmse":ridge_rmse};
+//    "  Lambda=${lambda.float(10)}: R²=${ridge_r_squared}, RMSE=${ridge_rmse}\n".interpolate().echo();
+//};
+});
+for(i=0;i<results.len();i+=1) {
+    "  Lambda=${results[i].lambda.float(10)}: R²=${results[i].ridge_r_squared}, RMSE=${results[i].ridge_rmse}\n".interpolate().echo();
 };
+
+
 
 /* ======================================== */
 /* 7. New Data Prediction */
