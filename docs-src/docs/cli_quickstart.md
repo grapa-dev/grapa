@@ -392,7 +392,7 @@ work = $sys().getenv($WORK);
 temp = $sys().getenv($TEMP);
 
 /* Create paths that work on any platform */
-config_file = home + "/.grapa/config.json";
+config_file = home + "/.grapa/config.grc";
 log_file = temp + "/grapa_script.log";
 output_dir = work + "/output";
 

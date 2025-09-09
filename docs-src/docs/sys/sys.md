@@ -65,7 +65,7 @@ Gets environment variables and system information.
 | `$ARGV` | Positional command line arguments only | `["a", "b", "c"]` |
 | `$CLIARGV` | Full command line including flags and script | `["./grapa", "-c", "script", "a", "b", "c"]` |
 | `$GRAPA_LIB` | Library directory path | `"lib"` |
-| `$GRAPA_BIN` | Binary directory path | `"bin"` |
+| `$GRAPA_BIN` | Binary directory path (base installation directory) | `"/Users/matichuk/GitHub/grapa"` |
 | `$NAME` | Program name | `"grapa"` |
 | `$WORK` | Working directory | `"C:\Users\user\project"` |
 | `$HOME` | Home directory | `"C:\Users\user"` |
@@ -250,9 +250,33 @@ These system environment variables are particularly useful for CLI script develo
 - **`$PLATFORM`**: Platform information - for cross-platform script behavior
 
 #### **Useful for Advanced CLI Scripts**
-- **`$GRAPA_BIN`**: Binary directory - for finding related executables
+- **`$GRAPA_BIN`**: Base installation directory - for finding related executables and detecting installation type
 - **`$GRAPA_LIB`**: Library directory - for library discovery and loading
 - **`$NAME`**: Program name - for self-referencing in usage messages
+
+#### **Installation Detection with $GRAPA_BIN**
+Use `$GRAPA_BIN` to detect whether Grapa is running from a development or production installation:
+
+```grapa
+/* Detect installation type */
+grapa_bin = $sys().getenv($GRAPA_BIN);
+is_development = grapa_bin.grep("GitHub").len() > 0;
+is_production = !is_development;
+
+/* Set paths based on installation type */
+if (is_development) {
+    /* Development installation - running from source */
+    user_lib = $sys().getenv($HOME) + "/.grapa/lib";
+    config_dir = $sys().getenv($HOME) + "/.grapa";
+} else {
+    /* Production installation - installed via installer */
+    user_lib = "/usr/local/lib";
+    config_dir = "/etc/grapa";
+}
+
+("Installation type: " + (is_development ? "development" : "production")).echo();
+("Base directory: " + grapa_bin).echo();
+```
 
 #### **CLI Script Example**
 ```grapa
@@ -303,8 +327,9 @@ if (!$file(output_dir).exists()) {
 Grapa automatically loads configuration files during startup to set up your environment:
 
 **Configuration File Search Order:**
-1. **`~/.grapa/config.grz`** - Compressed configuration file in user's home directory
-2. **`$WORK/.grapa/config.grc`** - Plain text configuration file in current working directory
+1. **`~/.grapa/config.grc`** - Plain text configuration file in user's home directory (recommended)
+2. **`~/.grapa/config.grz`** - Compressed configuration file in user's home directory (for large configs)
+3. **`$WORK/.grapa/config.grc`** - Plain text configuration file in current working directory (project-specific)
 
 **Configuration File Format:**
 Configuration files are standard Grapa scripts that execute during startup:
@@ -337,8 +362,38 @@ $global.user_config = {
 - **User Preferences**: Store and load user-specific settings
 
 **File Types:**
-- **`.grc`**: Plain text Grapa script (recommended for readability)
-- **`.grz`**: Compressed Grapa script (for larger configurations)
+- **`.grc`**: Plain text Grapa script (recommended for readability and small configs)
+- **`.grz`**: Compressed Grapa script (for larger configurations or faster startup)
+
+**Compiling Configuration Files for Performance:**
+For large configuration files that slow down startup, compile them to `.grz` format:
+
+```grapa
+/* Compile config.grc to config.grz for faster loading */
+$sys().compilef("~/.grapa/config.grc", "~/.grapa/config.grz");
+```
+
+**When to Use Each Format:**
+- **Use `.grc`** for: Small configs, development, easy editing
+- **Use `.grz`** for: Large configs, production, faster startup times
+
+**Example: Setting Up Custom Environment Variables:**
+```grapa
+/* ~/.grapa/config.grc */
+/* Set up custom environment variables */
+$GRAPA_HOME = $sys().getenv($WORK);
+$GRAPA_USER_LIB = $sys().getenv($HOME) + "/.grapa/lib";
+$GRAPA_PROJECT_LIB = $sys().getenv($WORK) + "/lib";
+
+/* Add user library to search path if it exists */
+if ($file().exists($GRAPA_USER_LIB)) {
+    current_path = $sys().getenv($GRAPA_PATH);
+    $sys().putenv($GRAPA_PATH, current_path + [$GRAPA_USER_LIB]);
+}
+
+/* Set up custom functions */
+my_helper = op(x) { x * 2; };
+```
 
 ### putenv(name, value) / setenv(name, value)
 Sets environment variables and system information. Both `putenv()` and `setenv()` are aliases for the same functionality.
@@ -533,11 +588,83 @@ result = $sys().eval(compiled, {"a": 10, "b": 20});
 /* Result: 30 */
 ```
 
+**⚠️ Parameter Mutability:** Grapa provides two evaluation methods with different parameter handling:
+
+- **`$sys().eval()`** - Parameters are **mutable** (pass-by-reference), like traditional function calls
+- **`$sys().eval2()`** - Parameters are **immutable** (pass-by-value), using `$local++=pParams`
+
+```grapa
+/* $sys().eval() - parameters are mutable (pass-by-reference) */
+x = 0;
+result = $sys().eval("a = 10; a", {"a": x});
+/* Result: 10 */
+x;  /* 10 - parameter was mutated */
+
+/* $sys().eval2() - parameters are immutable (pass-by-value) */
+x = 0;
+result = $sys().eval2("a = 10; a", {"a": x});
+/* Result: 10 */
+x;  /* Still 0 - parameter was not mutated */
+
+/* op() - parameters are mutable (pass-by-reference) */
+f = op(a:0)("a = 10; a");
+x = 0;
+result = f(x);  /* x is now 10 - parameter was mutated */
+x;  /* 10 - original value was modified */
+
+/* To prevent mutation with op(), use .copy() */
+x = 0;
+result = f(x.copy());  /* x remains 0 */
+x;  /* Still 0 */
+```
+
 **⚠️ Important Note:** `$sys().eval()` does NOT work with `.grz` files. To execute `.grz` files, use:
 ```grapa
 /* Correct method for .grz files */
 $file().get("file.grz").decode("ZIP-GRAPA")["op"]();
 ```
+
+### eval2(script, sparams={}, srule="")
+Evaluates a script with **immutable parameters** (pass-by-value). This is the safe version of `eval()` that prevents accidental modification of passed parameters.
+
+**Parameters:**
+- `script` - Script string to evaluate
+- `sparams` - Parameter object (default: `{}`) - **These parameters cannot be modified**
+- `srule` - Custom rule set (default: `""`)
+
+**Returns:** Result of script execution
+
+**Key Differences from `eval()`:**
+- **Immutable Parameters**: Parameters are copied using `$local++=pParams`, preventing modification
+- **Safer for User Input**: Ideal for evaluating user-provided scripts or dynamic code
+- **No Compiled Object Support**: Only works with script strings, not compiled `$OP` objects
+
+**Examples:**
+```grapa
+/* Safe evaluation with immutable parameters */
+x = 0;
+result = $sys().eval2("a = 10; a", {"a": x});
+/* Result: 10 */
+x;  /* Still 0 - parameter was not mutated */
+
+/* User input processing (safe) */
+user_script = "input * 2 + offset";
+result = $sys().eval2(user_script, {"input": 5, "offset": 3});
+/* Result: 13 */
+/* Original parameters remain unchanged */
+
+/* Template processing */
+template = "result = base * multiplier";
+result = $sys().eval2(template, {"base": 10, "multiplier": 2});
+/* Result: 20 */
+/* Template cannot modify the base or multiplier values */
+```
+
+**When to Use `eval2()`:**
+- Processing user input or untrusted scripts
+- Template evaluation where parameters should remain unchanged
+- Any scenario where parameter immutability is important
+- Debugging or testing where you want to ensure no side effects
 
 ### sleep(milliseconds)
 Pauses execution for the specified number of milliseconds.

@@ -1,9 +1,9 @@
 $global["$sys"]
 	= class ($OBJ) {
-      compilef = op(name1,name2){$local.r={op:op()($file().getfield(@name1)),version:$sys().getenv($GRAPA_VERSION)}; if (r.op.type()!="$ERR") r.encode("ZIP-GRAPA").setfield($file(),@name2); else r.op;};
+    compilef = op(name1,name2){$local.r={op:op()($file().getfield(@name1)),version:$sys().getenv($GRAPA_VERSION)}; if (r.op.type()!="$ERR") r.encode("ZIP-GRAPA").setfield($file(),@name2); else r.op;};
 	compile = op(script,srule="",sprofile=""){{op:op()(script,srule,sprofile),version:$sys().getenv($GRAPA_VERSION)}.encode("ZIP-GRAPA")};
-	eval = op(script,sparams={},srule="",sprofile=""){@<eval,{@script,@sparams,@srule,@sprofile}>()};
-	type = @<[op,@<type,{@<var,{object}>}>],{object}>;
+	eval = @<[op,@<call,{@<plan,{@<prepend,{@<createlist,{@<var,{pRule}>}>,@<var,{pData}>}>,@<createlist,{}>}>,@<var,{pParams}>}>],{"pData":"","pParams":{},"pRule":""}>;
+	eval2 = op(pData='', pParams={}, pRule=''){$local++=pParams;op()(pData, pRule)()};
 	describe = @<[op,@<describe,{@<var,{object}>}>],{object}>;
 	getenv = @<[op,@<getenv,{@<var,{name}>}>],{name}>;
     putenv = @<[op,@<putenv,{@<var,{name}>,@<var,{value}>}>],{name,value}>;

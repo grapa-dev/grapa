@@ -3556,24 +3556,42 @@ generated_code = template.interpolate({
 
 Grapa's most powerful feature is its ability to compile and execute code at runtime. Unlike most languages, Grapa provides **superior** dynamic code execution capabilities through execution trees that are both human-readable and directly executable.
 
-## Using `$sys().eval()` for Immediate Evaluation
+## Using `$sys().eval()` and `$sys().eval2()` for Immediate Evaluation
+Grapa provides two evaluation methods with different parameter handling:
+
+### `$sys().eval()` - Mutable Parameters (Pass-by-Reference)
 - Evaluates a string as Grapa code immediately
-- Optionally accepts a parameter map for dynamic execution
-- Perfect for one-off evaluations and user input processing
+- Parameters are **mutable** - can modify passed values
+- Perfect for function-like behavior and traditional programming patterns
+
+### `$sys().eval2()` - Immutable Parameters (Pass-by-Value)
+- Evaluates a string as Grapa code immediately
+- Parameters are **immutable** - cannot modify passed values
+- Perfect for safe evaluation of user input and templates
 
 ```grapa
 /* Simple evaluation */
 result = $sys().eval("5*3"); // result: 15
+result = $sys().eval2("5*3"); // result: 15
 
-/* Evaluation with parameters */
+/* Evaluation with parameters - mutable */
 result = $sys().eval("x + y", {"x": 2, "y": 4}); // result: 6
 
-/* Complex expressions */
-result = $sys().eval("(a + b) * c", {"a": 2, "b": 3, "c": 4}); // result: 20
+/* Evaluation with parameters - immutable */
+result = $sys().eval2("x + y", {"x": 2, "y": 4}); // result: 6
 
-/* User input processing */
+/* Parameter mutability comparison */
+x = 0;
+result = $sys().eval("a = 10; a", {"a": x}); // result: 10
+x; // 10 - parameter was mutated
+
+x = 0;
+result = $sys().eval2("a = 10; a", {"a": x}); // result: 10
+x; // Still 0 - parameter was not mutated
+
+/* User input processing (safe) */
 user_input = "2 * (3 + 4)";
-result = $sys().eval(user_input); // result: 14
+result = $sys().eval2(user_input); // result: 14
 ```
 
 ## Using `op()` for Compiled Operations
@@ -3581,6 +3599,7 @@ result = $sys().eval(user_input); // result: 14
 - Creates reusable, optimized functions that can be executed multiple times
 - Supports both positional and named parameters
 - Enables advanced meta-programming patterns
+- **Parameters are mutable** - uses pass-by-reference, can modify original values
 
 ```grapa
 /* Basic compilation */
@@ -3608,6 +3627,17 @@ while (i < operations.len()) {
 /* Execute generated functions */
 funcs["add"](5, 3).echo();  // 8
 funcs["mul"](5, 3).echo();  // 15
+
+/* Parameter mutability example */
+f = op(a:0)("a = 10; a");
+x = 0;
+result = f(x);  // x is now 10 - parameter was mutated
+x.echo();  // 10 - original value was modified
+
+/* To prevent mutation, use .copy() */
+x = 0;
+result = f(x.copy());  // x remains 0
+x.echo();  // Still 0
 ```
 
 ## Object and Class Extension
