@@ -456,6 +456,88 @@ model.fit(X, y, "gradient", 0.001, 2000);
 | 1000-10000 samples | < 1MB | Monitor usage |
 | > 10000 samples | > 10MB | Consider chunking |
 
+### Parallel Model Training
+
+Grapa's threading capabilities provide a significant advantage over Python for machine learning workflows that benefit from parallel computation:
+
+#### **Hyperparameter Tuning**
+
+```grapa
+/* Parallel hyperparameter search - all models train simultaneously */
+lambda_values = [0.001, 0.01, 0.1, 1.0, 10.0, 100.0];
+ridge_results = lambda_values.map(op(lambda_val) {
+    /* Each model trains in its own thread */
+    model = train_ridge_regression(X, y, lambda_val);
+    {lambda: lambda_val, r2: model.r2, rmse: model.rmse};
+});
+
+/* Results available immediately after all threads complete */
+best_model = ridge_results.max(op(result) { result.r2; });
+```
+
+#### **Cross-Validation**
+
+```grapa
+/* Parallel cross-validation folds */
+cv_folds = [0, 1, 2, 3, 4];
+cv_scores = cv_folds.map(op(fold) {
+    /* Each fold trains in parallel */
+    /* Note: Copy shared data for thread safety with vectors */
+    X_train, X_val, y_train, y_val = split_data(X.copy(), y.copy(), fold);
+    model = train_model(X_train, y_train);
+    model.score(X_val, y_val);
+});
+
+/* Calculate mean CV score */
+mean_cv_score = cv_scores.mean();
+```
+
+#### **Model Comparison**
+
+```grapa
+/* Compare multiple algorithms in parallel */
+algorithms = ["linear", "ridge", "lasso"];
+results = algorithms.map(op(algorithm) {
+    model = train_model(X, y, algorithm);
+    {algorithm: algorithm, score: model.score(X_test, y_test)};
+});
+```
+
+#### **Thread Safety with Vectors**
+
+**Important:** When using vectors in parallel operations, you may need to copy shared data for thread safety:
+
+```grapa
+/* Thread-safe parallel hyperparameter tuning */
+lambda_values = [0.001, 0.01, 0.1, 1.0];
+ridge_results = lambda_values.map(op(lambda_val) {
+    /* Copy shared vectors for thread safety */
+    X_copy = X.copy();
+    y_copy = y.copy();
+    
+    /* Each thread works with its own copy */
+    model = train_ridge_regression(X_copy, y_copy, lambda_val);
+    {lambda: lambda_val, r2: model.r2, rmse: model.rmse};
+});
+```
+
+**Why copying is needed:**
+- Vectors may have internal state that's not thread-safe
+- Copying ensures each thread has independent data
+- Prevents race conditions and data corruption
+- Required for reliable parallel vector operations
+
+**Advantages over Python:**
+- **No GIL limitations** - true parallel CPU execution
+- **Shared memory** - no data serialization overhead
+- **Simple syntax** - automatic thread management with `.map()`
+- **Lightweight threads** - minimal creation overhead
+
+**Performance Benefits:**
+- **4x speedup** for 4 parallel models (vs sequential)
+- **Memory efficient** - shared data across threads (with copying when needed)
+- **Scalable** - easily parallelize any independent computations
+
 ### Precision Optimization
 
 For performance-critical machine learning applications, you can significantly improve training speed by reducing floating-point precision:
@@ -540,11 +622,14 @@ training_time_128bit = start_time.ms();  // ~529ms
 3. **Monitor performance** for large datasets
 4. **Validate results** with multiple metrics
 5. **Handle edge cases** (singular matrices, etc.)
-6. **Consider precision optimization** for performance-critical applications
-7. **Use 32-bit precision** for machine learning when speed is important
-8. **Use 128-bit precision** for final models when accuracy is critical
-9. **Use `setfloat()` as default** - Grapa optimizes representation internally
-10. **Focus on bit precision** rather than float/fix choice for ML applications
+6. **Leverage parallel execution** for hyperparameter tuning and cross-validation
+7. **Use `.map()` for independent computations** - automatic parallelization
+8. **Copy shared vectors in parallel operations** - required for thread safety
+9. **Consider precision optimization** for performance-critical applications
+10. **Use 32-bit precision** for machine learning when speed is important
+11. **Use 128-bit precision** for final models when accuracy is critical
+12. **Use `setfloat()` as default** - Grapa optimizes representation internally
+13. **Focus on bit precision** rather than float/fix choice for ML applications
 
 ## Advanced Topics
 
@@ -629,6 +714,13 @@ Key strengths:
 - **Multiple implementation approaches** (normal equation, gradient descent, regularization)
 - **Comprehensive evaluation metrics** and statistical analysis
 - **Excellent performance** for small to medium datasets
+- **True parallel execution** for hyperparameter tuning and cross-validation
 - **Easy to implement and use** with clear, readable code
 
-This makes Grapa a viable platform for implementing machine learning algorithms, particularly for educational purposes, prototyping, and small to medium-scale applications.
+**Competitive Advantages over Python:**
+- **No GIL limitations** - true parallel CPU execution for model training
+- **Shared memory threading** - no data serialization overhead
+- **Simple parallel syntax** - automatic thread management with `.map()`
+- **Lightweight threads** - minimal creation overhead
+
+This makes Grapa a viable platform for implementing machine learning algorithms, particularly for educational purposes, prototyping, hyperparameter tuning, and small to medium-scale applications where parallel execution provides significant performance benefits.

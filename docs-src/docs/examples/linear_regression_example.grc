@@ -19,7 +19,7 @@
 ("--- Data Generation ---\n").echo();
 
 /* Generate sample data: y = 2*x1 + 3*x2 + 5 + noise */
-n_samples = 1000;
+n_samples = 100000;
 X_data = [];
 y_data = [];
 
@@ -109,9 +109,13 @@ X_with_bias = add_bias_column(X_scaled);
 /* Calculate coefficients using normal equation */
 start_time = $TIME().utc();
 XT = X_with_bias.t();
+XT.setconst(true);
 XTX = XT.dot(X_with_bias);
+XTX.setconst(true);
 XTy = XT.dot(y);
+XTy.setconst(true);
 coefficients = XTX.inv().dot(XTy);
+coefficients.setconst(true);
 training_time = start_time.ms();
 
 ("Training completed in " + training_time.str() + "ms\n").echo();
@@ -218,25 +222,23 @@ ridge_regression = op(X, y, lambda) {
 /* Try different regularization strengths */
 lambda_values = [0.0, 0.1, 1.0, 10.0];
 ("Ridge regression with different lambda values:" + "\n").echo();
-
-//for(i=0;i<lambda_values.len();i+=1) {
-//    $local.lambda = lambda_values[i];
+start_time2 = $TIME().utc();
 results = lambda_values.map(op(lambda){
-    $local.X_with_bias_copy = X_with_bias.copy();
-    $local.y_copy = y.copy();
+    $local.X_with_bias_copy = X_with_bias;
+    $local.y_copy = y;
     $local.ridge_coefficients = ridge_regression(X_with_bias_copy,y_copy,lambda);
     $local.ridge_predictions = X_with_bias.dot(ridge_coefficients);
+    ridge_coefficients = null;
     $local.ridge_r_squared = calculate_r_squared(y_copy, ridge_predictions).float(32);
     $local.ridge_rmse = calculate_rmse(y_copy, ridge_predictions).float(32);
+    ridge_predictions = null;
 	{"lambda":lambda,"ridge_r_squared":ridge_r_squared,"ridge_rmse":ridge_rmse};
-//    "  Lambda=${lambda.float(10)}: R²=${ridge_r_squared}, RMSE=${ridge_rmse}\n".interpolate().echo();
-//};
 });
+training_time2 = start_time2.ms();
+"Training completed in ${training_time2}ms\n".interpolate().echo();
 for(i=0;i<results.len();i+=1) {
     "  Lambda=${results[i].lambda.float(10)}: R²=${results[i].ridge_r_squared}, RMSE=${results[i].ridge_rmse}\n".interpolate().echo();
 };
-
-
 
 /* ======================================== */
 /* 7. New Data Prediction */
