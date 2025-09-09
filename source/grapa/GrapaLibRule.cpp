@@ -4075,8 +4075,14 @@ GrapaRuleEvent* GrapaLibraryRuleShellEvent::Run(GrapaScriptExec* vScriptExec, Gr
 	return(result);
 }
 
+// returning $ERR
+// this is a candidate for removal
+// if it is actually used, we can revive it. 
+// but there was a crash detected from using it, and rather than debug, using a different method for $sys().eval().
 GrapaRuleEvent* GrapaLibraryRuleEvalEvent::Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput)
 {
+	return Error(vScriptExec, pNameSpace, -1);
+
 	GrapaRuleEvent* result = NULL;
 	GrapaLibraryParam cmdstr(vScriptExec, pNameSpace, pInput ? pInput->Head(0) : NULL);
 	GrapaLibraryParam paramstr(vScriptExec, pNameSpace, pInput ? pInput->Head(1) : NULL);
