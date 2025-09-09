@@ -10807,7 +10807,7 @@ GrapaRuleEvent* GrapaLibraryRulePwdEvent::Run(GrapaScriptExec* vScriptExec, Grap
 
 	GrapaRuleEvent* objEvent = vScriptExec->vScriptState->SearchTarget(pNameSpace, r1.vVal);
 	if (objEvent==NULL)
-		result = Error(vScriptExec, pNameSpace, err);
+		return Error(vScriptExec, pNameSpace, err);
 
 	if ((objEvent->mValue.mToken == GrapaTokenType::OBJ && objEvent->vClass->mName.Cmp("$file") == 0) || objEvent->mValue.mToken == GrapaTokenType::TABLE)
 	{
@@ -10834,7 +10834,7 @@ GrapaRuleEvent* GrapaLibraryRuleCdEvent::Run(GrapaScriptExec *vScriptExec, Grapa
 
 	GrapaRuleEvent* objEvent = vScriptExec->vScriptState->SearchTarget(pNameSpace, r1.vVal);
 	if (objEvent == NULL)
-		result = Error(vScriptExec, pNameSpace, err);
+		return Error(vScriptExec, pNameSpace, err);
 
 	if ((objEvent->mValue.mToken == GrapaTokenType::OBJ && objEvent->vClass->mName.Cmp("$file") == 0) || objEvent->mValue.mToken == GrapaTokenType::TABLE)
 	{
@@ -10871,7 +10871,7 @@ GrapaRuleEvent* GrapaLibraryRulePhdEvent::Run(GrapaScriptExec* vScriptExec, Grap
 
 	GrapaRuleEvent* objEvent = vScriptExec->vScriptState->SearchTarget(pNameSpace, r1.vVal);
 	if (objEvent == NULL)
-		result = Error(vScriptExec, pNameSpace, err);
+		return Error(vScriptExec, pNameSpace, err);
 
 	if ((objEvent->mValue.mToken == GrapaTokenType::OBJ && objEvent->vClass->mName.Cmp("$file") == 0) || objEvent->mValue.mToken == GrapaTokenType::TABLE)
 	{
@@ -10893,7 +10893,7 @@ GrapaRuleEvent* GrapaLibraryRuleChdEvent::Run(GrapaScriptExec* vScriptExec, Grap
 
 	GrapaRuleEvent* objEvent = vScriptExec->vScriptState->SearchTarget(pNameSpace, r1.vVal);
 	if (objEvent == NULL)
-		result = Error(vScriptExec, pNameSpace, err);
+		return Error(vScriptExec, pNameSpace, err);
 
 	if ((objEvent->mValue.mToken == GrapaTokenType::OBJ && objEvent->vClass->mName.Cmp("$file") == 0) || objEvent->mValue.mToken == GrapaTokenType::TABLE)
 	{
@@ -10921,7 +10921,7 @@ GrapaRuleEvent* GrapaLibraryRuleLsEvent::Run(GrapaScriptExec *vScriptExec, Grapa
 
 	GrapaRuleEvent* objEvent = vScriptExec->vScriptState->SearchTarget(pNameSpace, r1.vVal);
 	if (objEvent == NULL)
-		result = Error(vScriptExec, pNameSpace, err);
+		return Error(vScriptExec, pNameSpace, err);
 
 	if ((objEvent->mValue.mToken == GrapaTokenType::OBJ && objEvent->vClass->mName.Cmp("$file") == 0) || objEvent->mValue.mToken == GrapaTokenType::TABLE)
 	{
@@ -10952,7 +10952,7 @@ GrapaRuleEvent* GrapaLibraryRuleMkEvent::Run(GrapaScriptExec *vScriptExec, Grapa
 
 	GrapaRuleEvent* objEvent = vScriptExec->vScriptState->SearchTarget(pNameSpace, r1.vVal);
 	if (objEvent == NULL)
-		result = Error(vScriptExec, pNameSpace, err);
+		return Error(vScriptExec, pNameSpace, err);
 
 	if ((objEvent->mValue.mToken == GrapaTokenType::OBJ && objEvent->vClass->mName.Cmp("$file") == 0) || objEvent->mValue.mToken == GrapaTokenType::TABLE)
 	{
@@ -10983,7 +10983,7 @@ GrapaRuleEvent* GrapaLibraryRuleRmEvent::Run(GrapaScriptExec *vScriptExec, Grapa
 
 	GrapaRuleEvent* objEvent = vScriptExec->vScriptState->SearchTarget(pNameSpace, r1.vVal);
 	if (objEvent == NULL)
-		result = Error(vScriptExec, pNameSpace, err);
+		return Error(vScriptExec, pNameSpace, err);
 
 	if ((objEvent->mValue.mToken == GrapaTokenType::OBJ && objEvent->vClass->mName.Cmp("$file") == 0) || objEvent->mValue.mToken == GrapaTokenType::TABLE)
 	{
@@ -11041,7 +11041,7 @@ GrapaRuleEvent* GrapaLibraryRuleMkFieldEvent::Run(GrapaScriptExec* vScriptExec, 
 
 	GrapaRuleEvent* objEvent = vScriptExec->vScriptState->SearchTarget(pNameSpace, r1.vVal);
 	if (objEvent == NULL)
-		result = Error(vScriptExec, pNameSpace, err);
+		return Error(vScriptExec, pNameSpace, err);
 
 	if ((objEvent->mValue.mToken == GrapaTokenType::OBJ && objEvent->vClass->mName.Cmp("$file") == 0) || objEvent->mValue.mToken == GrapaTokenType::TABLE)
 	{
@@ -11084,7 +11084,7 @@ GrapaRuleEvent* GrapaLibraryRuleRmFieldEvent::Run(GrapaScriptExec* vScriptExec, 
 
 	GrapaRuleEvent* objEvent = vScriptExec->vScriptState->SearchTarget(pNameSpace, r1.vVal);
 	if (objEvent == NULL)
-		result = Error(vScriptExec, pNameSpace, err);
+		return Error(vScriptExec, pNameSpace, err);
 
 	if ((objEvent->mValue.mToken == GrapaTokenType::OBJ && objEvent->vClass->mName.Cmp("$file") == 0) || objEvent->mValue.mToken == GrapaTokenType::TABLE)
 	{
@@ -11180,7 +11180,7 @@ GrapaRuleEvent* GrapaLibraryRuleInfoEvent::Run(GrapaScriptExec* vScriptExec, Gra
 
 	GrapaRuleEvent* objEvent = vScriptExec->vScriptState->SearchTarget(pNameSpace, r1.vVal);
 	if (objEvent == NULL)
-		result = Error(vScriptExec, pNameSpace, err);
+		return Error(vScriptExec, pNameSpace, err);
 
 	if ((objEvent->mValue.mToken == GrapaTokenType::OBJ && objEvent->vClass->mName.Cmp("$file") == 0) || objEvent->mValue.mToken == GrapaTokenType::TABLE)
 	{
@@ -11236,7 +11236,7 @@ GrapaRuleEvent* GrapaLibraryRuleFileSetEvent::Run(GrapaScriptExec* vScriptExec, 
 
 	GrapaRuleEvent* objEvent = vScriptExec->vScriptState->SearchTarget(pNameSpace, r1.vVal);
 	if (objEvent == NULL)
-		result = Error(vScriptExec, pNameSpace, err);
+		return Error(vScriptExec, pNameSpace, err);
 
 	GrapaLibraryParam r2(vScriptExec, pNameSpace, pInput ? pInput->Head(1) : NULL);
 	bool isSetField = (mName.Cmp("setfield") == 0);
@@ -11628,7 +11628,7 @@ GrapaRuleEvent* GrapaLibraryRuleFileGetEvent::Run(GrapaScriptExec *vScriptExec, 
 
 	GrapaRuleEvent* objEvent = vScriptExec->vScriptState->SearchTarget(pNameSpace, r1.vVal);
 	if (objEvent == NULL)
-		result = Error(vScriptExec, pNameSpace, err);
+		return Error(vScriptExec, pNameSpace, err);
 
 	if (objEvent->mValue.mToken == GrapaTokenType::LIST || objEvent->mValue.mToken == GrapaTokenType::ARRAY || (objEvent->mValue.mToken == GrapaTokenType::OBJ && objEvent->vClass->mName.mLength && objEvent->vClass->mName.mBytes[0] != '$'))
 	{
@@ -11666,13 +11666,13 @@ GrapaRuleEvent* GrapaLibraryRuleFileGetEvent::Run(GrapaScriptExec *vScriptExec, 
 			else
 				objEvent = r1.vVal->vQueue->Tail(-index - 1L);
 		}
-		else
+		else if (fieldName.vVal->mValue.mToken == GrapaTokenType::STR)
 			objEvent = r1.vVal->vQueue->Search(r2.vVal->mValue, index);
 
-		if (fieldName.vVal)
+		if (fieldName.vVal && (fieldName.vVal->mValue.mToken== GrapaTokenType::INT || fieldName.vVal->mValue.mToken == GrapaTokenType::STR))
 		{
 			while (objEvent && objEvent->mValue.mToken == GrapaTokenType::PTR && objEvent->vRulePointer) objEvent = objEvent->vRulePointer;
-			if (objEvent)
+			if (objEvent && objEvent->vQueue)
 			{
 				if (fieldName.vVal->mValue.mToken == GrapaTokenType::INT)
 				{
@@ -11702,7 +11702,7 @@ GrapaRuleEvent* GrapaLibraryRuleFileGetEvent::Run(GrapaScriptExec *vScriptExec, 
 					else
 						r = objEvent->vQueue->Tail(-index - 1L);
 				}
-				else
+				else if (fieldName.vVal->mValue.mToken == GrapaTokenType::STR)
 					r = objEvent->vQueue->Search(fieldName.vVal->mValue, index);
 			}
 		}
@@ -11962,7 +11962,7 @@ GrapaRuleEvent* GrapaLibraryRuleFileSplitEvent::Run(GrapaScriptExec* vScriptExec
 
 	GrapaRuleEvent* objEvent = vScriptExec->vScriptState->SearchTarget(pNameSpace, r1.vVal);
 	if (objEvent == NULL)
-		result = Error(vScriptExec, pNameSpace, err);
+		return Error(vScriptExec, pNameSpace, err);
 
 	if ((objEvent->mValue.mToken == GrapaTokenType::OBJ && objEvent->vClass->mName.Cmp("$file") == 0) || objEvent->mValue.mToken == GrapaTokenType::TABLE)
 	{
