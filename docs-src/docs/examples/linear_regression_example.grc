@@ -14,6 +14,8 @@
 /* 1. Data Generation and Preprocessing */
 /* ======================================== */
 
+32.setfloat(0);
+
 ("--- Data Generation ---\n").echo();
 
 /* Generate sample data: y = 2*x1 + 3*x2 + 5 + noise */
@@ -151,7 +153,8 @@ calculate_mse = op(y_true, y_pred) {
 };
 
 calculate_rmse = op(y_true, y_pred) {
-    calculate_mse(y_true, y_pred) */ 2.0;
+    mse = calculate_mse(y_true, y_pred);
+    mse ** 0.5;
 };
 
 /* Calculate metrics */
@@ -216,14 +219,16 @@ ridge_regression = op(X, y, lambda) {
 lambda_values = [0.0, 0.1, 1.0, 10.0];
 ("Ridge regression with different lambda values:" + "\n").echo();
 
-for (i=0;i<lambda_values.len();i+=1) {
-    $local.ridge_coefficients = ridge_regression(X_with_bias, y, lambda_values[i]);
+for(i=0;i<lambda_values.len();i+=1) {
+    $local.lambda = lambda_values[i];
+    $local.X_with_bias_copy = X_with_bias.copy();
+    $local.y_copy = y.copy();
+    $local.ridge_coefficients = ridge_regression(X_with_bias_copy,y_copy,lambda);
     $local.ridge_predictions = X_with_bias.dot(ridge_coefficients);
-    $local.ridge_r_squared = calculate_r_squared(y, ridge_predictions).float(32);
-    $local.ridge_rmse = calculate_rmse(y, ridge_predictions).float(32);
-    ("  Lambda=" + lambda_values[i].float(10) + ": R²=" + ridge_r_squared.str() + ", RMSE=" + ridge_rmse.str() + "\n").echo();
+    $local.ridge_r_squared = calculate_r_squared(y_copy, ridge_predictions).float(32);
+    $local.ridge_rmse = calculate_rmse(y_copy, ridge_predictions).float(32);
+    "  Lambda=${lambda.float(10)}: R²=${ridge_r_squared}, RMSE=${ridge_rmse}\n".interpolate().echo();
 };
-
 
 /* ======================================== */
 /* 7. New Data Prediction */
@@ -232,7 +237,7 @@ for (i=0;i<lambda_values.len();i+=1) {
 ("--- New Data Prediction ---" + "\n").echo();
 
 /* Create new data points */
-new_data = [[1.5, 2.5], [3.0, 4.0], [5.5, 6.5]].vector();
+new_data = #[[1.5, 2.5], [3.0, 4.0], [5.5, 6.5]]#;
 ("New data points: " + new_data.str() + "\n").echo();
 
 /* Scale new data using same parameters */

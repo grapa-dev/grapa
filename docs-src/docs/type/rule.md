@@ -126,6 +126,50 @@ hi
 hi
 ```
 
+### **Start/Stop Token Sequences with Parentheses**
+
+When you need a sequence of tokens as the start or stop markers, use parentheses to define embedded rules. This allows you to specify multi-token sequences without defining separate rules.
+
+**Simple single tokens:**
+```grapa
+/* Single token start/stop */
+catch_sq_bracket_rule = rule '[' <> ']' {@<lit,{$2}>};
+```
+
+**Multi-token sequences with parentheses:**
+```grapa
+/* Multi-token sequence start/stop */
+catch_sq_bracket_rule = rule ('[') <> (']') {@<lit,{$2}>};
+/* This is equivalent to: rule '[' <> ']' {@<lit,{$2}>} */
+
+/* More complex multi-token sequences */
+xml_comment_rule = rule ('<' '!' '-' '-') <> ('-' '-' '>') {@<lit,{$2}>};
+/* Captures everything between <!-- and --> */
+```
+
+**Advanced XML parsing example from Grapa's grammar:**
+```grapa
+/* Sophisticated XML comment parsing with token joining */
+$global["$elSkipValueY"]
+    = rule '-' <@<join,{$1}>> ('-' '-' '>') {@<lit,{$2}>}
+    ;
+$global["$elSkipValueX"]
+    = rule <$elSkipValueY> {@<createxml,{$1}>}
+    ;
+$global["$elSkipValue"]
+    = rule <$elSkipValueX> {@<createel,{{},$1}>}
+    ;
+$global["$tagHtmlValue"]
+    = rule '<' '!' '-' <$elSkipValue> {@<name,{"!--",$4}>}
+    ;
+```
+
+**Key Points:**
+- **Parentheses `()`**: Define embedded rules for multi-token sequences
+- **Single tokens**: Can be used directly without parentheses
+- **Token joining**: Use `<@<join,{$1}>>` to concatenate collected tokens
+- **Complex sequences**: Parentheses allow complex start/stop patterns
+
 A operation can also be associated with the empty rule above, which can process the tokens and either pass through the list, or pass through some transformed version. The following is an example f transforming.
 
 ```
@@ -622,3 +666,377 @@ function thread_with_custom_syntax() {
 - **Debugging**: Custom syntax errors can be harder to debug than regular code errors
 
 This syntax extension capability makes Grapa uniquely powerful for creating domain-specific languages, implementing custom DSLs, and adapting the language to specific use cases without modifying the core implementation.
+
+## Rule Organization Patterns
+
+For complex parsing scenarios, organizing rules in data structures provides better maintainability and reusability.
+
+### Object-Based Rule Organization
+
+Organize related rules in `$LIST` objects with a common parsing interface:
+
+```grapa
+/* Define ETL rules in a $LIST object */
+etl_rules = {
+    /* Common parsing interface */
+    parse = op(parse_data, parse_rule){op()(parse_data, parse_rule)()},
+
+    /* CSV parsing rule */
+    csv_parser = rule $ID ',' $INT ',' $ID {op(name:$1,age:$3,city:$5){
+        {name: name, age: age, city: city};
+    }},
+
+    /* Log parsing rules */
+    catch_sq_bracket_rule = rule '[' <> ']' {@<lit,{$2}>},
+    id_list_rule = rule $ID <id_list_rule> {@<prepend,{$2,$1}>} | $ID {@<createarray,{$1}>},
+    log_parser = rule <catch_sq_bracket_rule> <id_list_rule> {op(timestamp:$1,message:$2){
+        {timestamp: timestamp, message: message, level: "INFO"};
+    }},
+    
+    /* Config parsing rule */
+    config_parser = rule $ID '=' $ID {op(key:$1,value:$3){
+        {key: key, value: value};
+    }}
+};
+
+/* Execute with custom rule set */
+csv_result = etl_rules.parse("John,25,NY", etl_rules.csv_parser);
+log_result = etl_rules.parse("[2024-01-15 10:30:00] User login successful", etl_rules.log_parser);
+config_result = etl_rules.parse("server_name=myapp", etl_rules.config_parser);
+```
+
+**Key Benefits:**
+- **Organized Structure**: Rules grouped logically in objects
+- **Common Interface**: Shared parsing method across all rules
+- **Easy Extension**: Add new rules to the object
+- **Clean Syntax**: Simple method calls for rule execution
+
+### Class-Based Rule Organization
+
+Use classes for more structured rule organization with methods:
+
+```grapa
+/* Define rules in a class */
+etl_rules_class = class {
+    /* Common parsing interface */
+    parse = op(parse_data, parse_rule){op()(parse_data, parse_rule)()};
+
+    /* CSV parsing rule */
+    csv_parser = rule $ID ',' $INT ',' $ID {op(name:$1,age:$3,city:$5){
+        {name: name, age: age, city: city};
+    }};
+
+    /* Log parsing rules */
+    catch_sq_bracket_rule = rule '[' <> ']' {@<lit,{$2}>};
+    id_list_rule = rule $ID <id_list_rule> {@<prepend,{$2,$1}>} | $ID {@<createarray,{$1}>};
+    log_parser = rule <catch_sq_bracket_rule> <id_list_rule> {op(timestamp:$1,message:$2){
+        {timestamp: timestamp, message: message, level: "INFO"};
+    }};
+    
+    /* Config parsing rule */
+    config_parser = rule $ID '=' $ID {op(key:$1,value:$3){
+        {key: key, value: value};
+    }};
+};
+
+/* Create instance and execute */
+etl_rules = etl_rules_class();
+csv_result = etl_rules.parse("John,25,NY", etl_rules.csv_parser);
+log_result = etl_rules.parse("[2024-01-15 10:30:00] User login successful", etl_rules.log_parser);
+config_result = etl_rules.parse("server_name=myapp", etl_rules.config_parser);
+```
+
+**Key Benefits:**
+- **Object-Oriented**: Use classes for better organization
+- **Instance Methods**: Each instance has its own rule set
+- **Encapsulation**: Rules are contained within the class
+- **Reusability**: Create multiple instances for different contexts
+
+## Helper Rule Design Patterns
+
+For complex parsing scenarios, break down parsing into modular helper rules that work together.
+
+### Modular Rule Composition
+
+Design helper rules that can be reused across multiple main rules:
+
+```grapa
+/* Helper rules for complex parsing */
+catch_sq_bracket_rule = rule '[' <> ']' {@<lit,{$2}>};
+id_list_rule = rule $ID <id_list_rule> {@<prepend,{$2,$1}>} | $ID {@<createarray,{$1}>};
+
+/* Main rule using helper rules */
+log_rule = rule <catch_sq_bracket_rule> <id_list_rule> {op(timestamp:$1,message:$2){
+    return {
+        timestamp: timestamp,
+        message: message,
+        level: "INFO"
+    };
+}};
+
+/* Another rule using the same helper */
+config_rule = rule $ID '=' $ID {op(key:$1,value:$3){
+    return {key: key, value: value};
+}};
+
+/* Execute with helper rules */
+log_result = op()("[2024-01-15 10:30:00] User login successful", log_rule)();
+config_result = op()("server_name=myapp", config_rule)();
+```
+
+**Design Principles:**
+- **Single Responsibility**: Each helper rule handles one parsing concern
+- **Reusability**: Helper rules can be used by multiple main rules
+- **Composability**: Main rules combine helper rules for complex parsing
+- **Maintainability**: Changes to helper rules affect all dependent rules
+
+### Rule Dependency Management
+
+Structure rules to show clear dependencies and relationships:
+
+```grapa
+/* Base parsing rules */
+field_rule = rule $ID {op(value:$1){value}};
+separator_rule = rule ',' {op(){","}};
+
+/* Composite rules using base rules */
+csv_row_rule = rule <field_rule> (<separator_rule> <csv_row_rule> | ) {op(first:$1,rest:$3){
+    if (rest) {
+        return [first] + rest;
+    } else {
+        return [first];
+    };
+}};
+
+/* Complex rule using composite rules */
+structured_data_rule = rule <csv_row_rule> '|' <csv_row_rule> {op(row1:$1,row2:$3){
+    return {
+        primary: row1,
+        secondary: row2,
+        combined: row1 + row2
+    };
+}};
+```
+
+## Dynamic Rule Management
+
+Add rules to existing rule collections dynamically using different patterns.
+
+### Object Extension with `+=` Operator
+
+Add new rules to existing `$LIST` objects:
+
+```grapa
+/* Start with base ETL rules object */
+etl_rules = {
+    parse = op(parse_data, parse_rule){op()(parse_data, parse_rule)()},
+};
+
+/* Dynamically add new rules using += operator */
+etl_rules += (csv_parser : rule $ID ',' $INT ',' $ID {op(name:$1,age:$3,city:$5){{name: name, age: age, city: city};}});
+
+/* Execute with dynamically added rule */
+csv_result = etl_rules.parse("John,25,NY", etl_rules.csv_parser);
+/* Result: {name: "John", age: 25, city: "NY"} */
+```
+
+**Key Features:**
+- **Object Extension**: Add rules to existing `$LIST` objects using `+=` operator
+- **Immediate Availability**: New rules are immediately available for use
+- **Flexible Addition**: Add rules based on runtime conditions
+
+### Class-Based Dynamic Rule Addition
+
+Use class methods to add rules dynamically to `$CLASS` instances:
+
+```grapa
+/* Define base ETL rules class with add_rule method */
+etl_rules_class = class {
+    parse = op(parse_data, parse_rule){op()(parse_data, parse_rule)()};
+    add_rule = op(pName,pRule) {$this.@pName=pRule;};
+};
+
+/* Create instance and add rules dynamically */
+etl_rules = etl_rules_class();
+etl_rules.add_rule("csv_parser", rule $ID ',' $INT ',' $ID {op(name:$1,age:$3,city:$5){{name: name, age: age, city: city};}});
+
+/* Execute with dynamically added rule */
+csv_result = etl_rules.parse("John,25,NY", etl_rules.csv_parser);
+/* Result: {name: "John", age: 25, city: "NY"} */
+```
+
+**Key Features:**
+- **Class Methods**: Use class methods to add rules dynamically to `$CLASS` instances
+- **Encapsulated Management**: Rule addition is controlled by class methods
+- **Instance Isolation**: Each class instance has its own rule set
+
+### Comparison: `+=` vs `++=` vs `add_rule()`
+
+| Method | Use Case | Target | Syntax |
+|--------|----------|---------|---------|
+| `++=` | Rule concatenation | Rule variables | `rule_var ++= rule ...` |
+| `+=` | Object extension | `$LIST` objects | `obj += (key : rule ...)` |
+| `add_rule()` | Class method | `$CLASS` instances | `instance.add_rule("name", rule ...)` |
+
+## Return Value Patterns
+
+Rules can use different patterns for returning values, each with specific use cases.
+
+### Explicit Return Pattern
+
+Use explicit `return` statements for clarity and control:
+
+```grapa
+/* Explicit return pattern */
+csv_rule = rule $ID ',' $INT ',' $ID {op(name:$1,age:$3,city:$5){
+    return {
+        name: name,
+        age: age,
+        city: city
+    };
+}};
+```
+
+**When to Use:**
+- **Complex Logic**: When the rule body has multiple statements
+- **Conditional Returns**: When different conditions return different values
+- **Debugging**: When you need to add logging or validation before returning
+
+### Implicit Return Pattern
+
+Use implicit return (last expression) for simple, single-expression rules:
+
+```grapa
+/* Implicit return pattern */
+csv_parser = rule $ID ',' $INT ',' $ID {op(name:$1,age:$3,city:$5){
+    {name: name, age: age, city: city};
+}};
+```
+
+**When to Use:**
+- **Simple Rules**: When the rule body is a single expression
+- **Functional Style**: When following functional programming patterns
+- **Conciseness**: When you want more concise rule definitions
+
+### Mixed Return Patterns
+
+Combine both patterns based on complexity:
+
+```grapa
+/* Simple rules use implicit return */
+field_rule = rule $ID {op(value:$1){value}};
+
+/* Complex rules use explicit return */
+complex_rule = rule $ID ',' $INT ',' $ID {op(name:$1,age:$3,city:$5){
+    /* Validation logic */
+    if (age < 0 || age > 150) {
+        return $err("Invalid age: " + age);
+    };
+    
+    /* Return structured data */
+    return {
+        name: name,
+        age: age,
+        city: city,
+        valid: true
+    };
+}};
+```
+
+## Rule Testing and Debugging
+
+Systematic testing and debugging techniques for rule definitions.
+
+### Testing Rule Definitions
+
+Test rules systematically to ensure they work correctly:
+
+```grapa
+/* Define test rules */
+test_rules = {
+    parse = op(parse_data, parse_rule){op()(parse_data, parse_rule)()},
+    
+    csv_parser = rule $ID ',' $INT ',' $ID {op(name:$1,age:$3,city:$5){
+        {name: name, age: age, city: city};
+    }},
+    
+    log_parser = rule ('[') <> (']') $ID {op(timestamp:$1,message:$3){
+        {timestamp: timestamp, message: message, level: "INFO"};
+    }}
+};
+
+/* Test cases */
+test_cases = [
+    ("John,25,NY", test_rules.csv_parser, {name: "John", age: 25, city: "NY"}),
+    ("[2024-01-15] User login", test_rules.log_parser, {timestamp: "2024-01-15", message: "User login", level: "INFO"})
+];
+
+/* Run tests */
+i = 0;
+while (i < test_cases.len()) {
+    test_case = test_cases[i];
+    input = test_case[0];
+    rule = test_case[1];
+    expected = test_case[2];
+    
+    result = test_rules.parse(input, rule);
+    if (result == expected) {
+        ("✓ Test " + (i + 1) + " passed").echo();
+    } else {
+        ("✗ Test " + (i + 1) + " failed: expected " + expected + ", got " + result).echo();
+    };
+    i += 1;
+};
+```
+
+### Debugging Rule Execution
+
+Use debugging techniques to understand rule behavior:
+
+```grapa
+/* Debug rule execution */
+debug_rule = rule $ID ',' $INT ',' $ID {op(name:$1,age:$3,city:$5){
+    ("Debug: name=" + name + ", age=" + age + ", city=" + city).echo();
+    return {name: name, age: age, city: city};
+}};
+
+/* Test with debugging */
+result = op()("John,25,NY", debug_rule)();
+/* Output: Debug: name=John, age=25, city=NY */
+```
+
+### Rule Validation Patterns
+
+Validate rule definitions before use:
+
+```grapa
+/* Rule validation function */
+validate_rule = op(rule_name, rule_definition, test_input, expected_output) {
+    try {
+        result = op()(test_input, rule_definition)();
+        if (result == expected_output) {
+            return {valid: true, rule: rule_name, message: "Rule works correctly"};
+        } else {
+            return {valid: false, rule: rule_name, message: "Rule returned unexpected result", expected: expected_output, actual: result};
+        };
+    } catch (error) {
+        return {valid: false, rule: rule_name, message: "Rule execution failed", error: error};
+    };
+};
+
+/* Validate rules */
+csv_rule = rule $ID ',' $INT ',' $ID {op(name:$1,age:$3,city:$5){
+    {name: name, age: age, city: city};
+}};
+
+validation_result = validate_rule("csv_parser", csv_rule, "John,25,NY", {name: "John", age: 25, city: "NY"});
+validation_result.echo();
+```
+
+### Best Practices for Rule Testing
+
+1. **Test Edge Cases**: Test with empty input, malformed input, and boundary conditions
+2. **Validate Output**: Ensure rules return expected data structures
+3. **Test Rule Combinations**: Test how rules work together in complex scenarios
+4. **Performance Testing**: Measure execution time for performance-critical rules
+5. **Error Handling**: Test how rules handle invalid input gracefully
