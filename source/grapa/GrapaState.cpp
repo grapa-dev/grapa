@@ -4636,7 +4636,7 @@ GrapaRuleEvent* GrapaScriptExec::ProcessPlan(GrapaNames* pNameSpace, GrapaRuleEv
 						e = e->Next();
 					}
 					e = (GrapaRuleEvent*)paramQueue->Head();
-					while (pParam && pCount)
+					while (pParam)
 					{
 						if (pParam->mName.mLength)
 						{
