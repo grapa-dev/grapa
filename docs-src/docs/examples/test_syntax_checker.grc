@@ -1,0 +1,21 @@
+/*
+Test the syntax checker functionality
+*/
+
+// Load the syntax checker
+checker = $SimpleSyntaxChecker();
+
+// Test with a simple file
+"Testing syntax checker...";
+
+// Test with basic example
+result1 = checker.check("docs-src/docs/examples/basic_example.grc");
+"Result 1:";
+result1.echo();
+
+// Test with bad syntax file
+result2 = checker.check("docs-src/docs/examples/bad_syntax/missing_semicolons.grc");
+"Result 2:";
+result2.echo();
+
+"Test complete!";

@@ -1,0 +1,41 @@
+/*
+Bad Syntax Example: Unterminated Strings
+
+This file demonstrates unterminated string literal errors that the syntax checker should detect:
+- Missing closing quotes
+- Mismatched quote types
+- Strings spanning multiple lines without proper escaping
+*/
+
+// Example 1: Missing closing double quote
+message = "Hello World
+// This string is not properly closed
+
+// Example 2: Missing closing single quote
+name = 'John Doe
+// This string is not properly closed
+
+// Example 3: Mismatched quotes
+text = "This is a string with single quote inside'
+// Mixed quote types
+
+// Example 4: String with newline without escaping
+multiline = "This is line 1
+This is line 2"
+// Should be escaped or use different approach
+
+// Example 5: Complex string with missing quote
+complex = "The value is: " + variable + " and the result is: " + result
+// Missing closing quote
+
+// Example 6: String in function call
+print("Error: Invalid input
+// Missing closing quote and parenthesis
+
+// Example 7: String in array
+items = ["apple", "banana", "cherry
+// Missing closing quote and bracket
+
+// Example 8: String with escaped characters but missing quote
+path = "C:\\Users\\Documents\\file.txt
+// Missing closing quote

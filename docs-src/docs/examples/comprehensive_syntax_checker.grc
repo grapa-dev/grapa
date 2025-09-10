@@ -332,7 +332,7 @@ if (args.len() >= 3) {
         result = checkFile(args[2]);
         result.echo();
     } else if (command == "help") {
-        "Grapa Comprehensive Syntax Checker".echo();
+        "Grapa Comprehensive Syntax Checker - ".echo();
         "Usage: grapa comprehensive_syntax_checker.grc check <file.grc>".echo();
         "Usage: grapa comprehensive_syntax_checker.grc help".echo();
         "".echo();

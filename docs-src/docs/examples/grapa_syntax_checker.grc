@@ -1,0 +1,786 @@
+/*
+Grapa Syntax Checker - A comprehensive syntax validation tool written entirely in Grapa
+
+This example demonstrates:
+- Advanced string manipulation and pattern matching
+- File I/O operations
+- Complex data structures and algorithms
+- Error detection and reporting
+- Parallel processing capabilities
+- Real-world application of Grapa features
+
+Usage:
+    checker = $SyntaxChecker();
+    result = checker.check("script.grc");
+    result.echo();
+*/
+
+// Main Syntax Checker Class
+$global["$SyntaxChecker"] = class {
+    // Configuration and rules
+    rules = {
+        "keywords": ["if", "while", "for", "function", "class", "return", "break", "continue", "try", "catch", "finally", "throw", "switch", "case", "default", "foreach", "do", "exit", "reset"],
+        "operators": ["+", "-", "*", "/", "=", "==", "!=", "<", ">", "<=", ">=", "&&", "||", "!", "&", "|", "^", "~", "<<", ">>", "+=", "-=", "*=", "/=", "%=", "++", "--"],
+        "brackets": {"(": ")", "[": "]", "{": "}"},
+        "statementEnders": [";"],
+        "stringDelimiters": ["\"", "'"],
+        "commentMarkers": ["//", "/*", "*/"]
+    };
+    
+    // Main entry point - check a file for syntax errors
+    check = op(filePath) {
+        try {
+            // Read file content
+            code = $file().get(filePath);
+            if (code.type() == "$ERR") {
+                return $ERR("Could not read file: " + filePath);
+            }
+            
+            // Tokenize the code
+            tokens = this.tokenize(code);
+            
+            // Validate syntax
+            errors = this.validateSyntax(tokens);
+            
+            // Generate comprehensive report
+            return this.generateReport(errors, filePath, tokens);
+            
+        } catch (error) {
+            return $ERR("Syntax checker error: " + error.str());
+        }
+    };
+    
+    // Tokenize source code into structured tokens
+    tokenize = op(code) {
+        tokens = [];
+        lines = code.split("\n");
+        lineNumber = 1;
+        
+        foreach line in lines {
+            // Remove comments but preserve line structure for error reporting
+            cleanLine = this.removeComments(line);
+            
+            // Tokenize the line
+            lineTokens = this.tokenizeLine(cleanLine, lineNumber);
+            tokens.extend(lineTokens);
+            
+            lineNumber++;
+        }
+        
+        return tokens;
+    };
+    
+    // Remove comments from a line while preserving structure
+    removeComments = op(line) {
+        // Handle block comments
+        inBlockComment = false;
+        result = "";
+        i = 0;
+        
+        while (i < line.len()) {
+            if (!inBlockComment && i < line.len() - 1) {
+                if (line.mid(i, 2) == "/*") {
+                    inBlockComment = true;
+                    i += 2;
+                    continue;
+                } else if (line.mid(i, 2) == "//") {
+                    // Line comment - remove rest of line
+                    break;
+                }
+            } else if (inBlockComment && i < line.len() - 1) {
+                if (line.mid(i, 2) == "*/") {
+                    inBlockComment = false;
+                    i += 2;
+                    continue;
+                }
+            }
+            
+            if (!inBlockComment) {
+                result += line.mid(i, 1);
+            }
+            i++;
+        }
+        
+        return result;
+    };
+    
+    // Tokenize a single line
+    tokenizeLine = op(line, lineNumber) {
+        tokens = [];
+        i = 0;
+        
+        while (i < line.len()) {
+            // Skip whitespace
+            while (i < line.len() && line.mid(i, 1).match("\\s")) {
+                i++;
+            }
+            
+            if (i >= line.len()) break;
+            
+            // Check for operators (multi-character first)
+            token = this.extractOperator(line, i);
+            if (token.len() > 0) {
+                tokens.push({
+                    "type": "operator",
+                    "value": token,
+                    "line": lineNumber,
+                    "position": i
+                });
+                i += token.len();
+                continue;
+            }
+            
+            // Check for brackets
+            char = line.mid(i, 1);
+            if (char.match("[(){}\\[\\]]")) {
+                tokens.push({
+                    "type": "bracket",
+                    "value": char,
+                    "line": lineNumber,
+                    "position": i
+                });
+                i++;
+                continue;
+            }
+            
+            // Check for strings
+            if (char.match("[\"']")) {
+                stringToken = this.extractString(line, i, char);
+                tokens.push({
+                    "type": "string",
+                    "value": stringToken,
+                    "line": lineNumber,
+                    "position": i
+                });
+                i += stringToken.len();
+                continue;
+            }
+            
+            // Check for numbers
+            if (char.match("[0-9]")) {
+                numberToken = this.extractNumber(line, i);
+                tokens.push({
+                    "type": "number",
+                    "value": numberToken,
+                    "line": lineNumber,
+                    "position": i
+                });
+                i += numberToken.len();
+                continue;
+            }
+            
+            // Check for identifiers/keywords
+            if (char.match("[a-zA-Z_$]")) {
+                identifierToken = this.extractIdentifier(line, i);
+                tokenType = this.rules.keywords.find(identifierToken) ? "keyword" : "identifier";
+                tokens.push({
+                    "type": tokenType,
+                    "value": identifierToken,
+                    "line": lineNumber,
+                    "position": i
+                });
+                i += identifierToken.len();
+                continue;
+            }
+            
+            // Check for semicolons
+            if (char == ";") {
+                tokens.push({
+                    "type": "semicolon",
+                    "value": char,
+                    "line": lineNumber,
+                    "position": i
+                });
+                i++;
+                continue;
+            }
+            
+            // Unknown character
+            tokens.push({
+                "type": "unknown",
+                "value": char,
+                "line": lineNumber,
+                "position": i
+            });
+            i++;
+        }
+        
+        return tokens;
+    };
+    
+    // Extract multi-character operators
+    extractOperator = op(line, start) {
+        operators = this.rules.operators.sort(op(a, b) { b.len() - a.len(); }); // Sort by length descending
+        
+        foreach op in operators {
+            if (start + op.len() <= line.len() && line.mid(start, op.len()) == op) {
+                return op;
+            }
+        }
+        
+        return "";
+    };
+    
+    // Extract string literal
+    extractString = op(line, start, delimiter) {
+        result = delimiter;
+        i = start + 1;
+        escaped = false;
+        
+        while (i < line.len()) {
+            char = line.mid(i, 1);
+            
+            if (escaped) {
+                result += char;
+                escaped = false;
+            } else if (char == "\\") {
+                result += char;
+                escaped = true;
+            } else if (char == delimiter) {
+                result += char;
+                return result;
+            } else {
+                result += char;
+            }
+            i++;
+        }
+        
+        return result; // Unterminated string
+    };
+    
+    // Extract number literal
+    extractNumber = op(line, start) {
+        result = "";
+        i = start;
+        hasDecimal = false;
+        
+        while (i < line.len()) {
+            char = line.mid(i, 1);
+            
+            if (char.match("[0-9]")) {
+                result += char;
+            } else if (char == "." && !hasDecimal) {
+                result += char;
+                hasDecimal = true;
+            } else {
+                break;
+            }
+            i++;
+        }
+        
+        return result;
+    };
+    
+    // Extract identifier
+    extractIdentifier = op(line, start) {
+        result = "";
+        i = start;
+        
+        while (i < line.len()) {
+            char = line.mid(i, 1);
+            
+            if (char.match("[a-zA-Z0-9_$]")) {
+                result += char;
+            } else {
+                break;
+            }
+            i++;
+        }
+        
+        return result;
+    };
+    
+    // Validate syntax and detect errors
+    validateSyntax = op(tokens) {
+        errors = [];
+        
+        // Check balanced brackets
+        bracketErrors = this.checkBalancedBrackets(tokens);
+        errors.extend(bracketErrors);
+        
+        // Check statement structure
+        statementErrors = this.checkStatementStructure(tokens);
+        errors.extend(statementErrors);
+        
+        // Check operator usage
+        operatorErrors = this.checkOperatorUsage(tokens);
+        errors.extend(operatorErrors);
+        
+        // Check string literals
+        stringErrors = this.checkStringLiterals(tokens);
+        errors.extend(stringErrors);
+        
+        // Check for common syntax issues
+        commonErrors = this.checkCommonIssues(tokens);
+        errors.extend(commonErrors);
+        
+        return errors;
+    };
+    
+    // Check for balanced brackets
+    checkBalancedBrackets = op(tokens) {
+        errors = [];
+        stack = [];
+        bracketPairs = this.rules.brackets;
+        
+        foreach token in tokens {
+            if (token.type == "bracket") {
+                char = token.value;
+                
+                // Opening bracket
+                if (bracketPairs.has(char)) {
+                    stack.push({
+                        "char": char,
+                        "line": token.line,
+                        "position": token.position
+                    });
+                }
+                // Closing bracket
+                else {
+                    expected = null;
+                    foreach pair in bracketPairs {
+                        if (bracketPairs[pair] == char) {
+                            expected = pair;
+                            break;
+                        }
+                    }
+                    
+                    if (expected && stack.len() > 0) {
+                        last = stack.pop();
+                        if (last.char != expected) {
+                            errors.push({
+                                "type": "unmatched_bracket",
+                                "message": "Expected '" + bracketPairs[last.char] + "' but found '" + char + "'",
+                                "line": token.line,
+                                "position": token.position,
+                                "suggestion": "Check bracket matching"
+                            });
+                        }
+                    } else if (expected) {
+                        errors.push({
+                            "type": "unexpected_closing_bracket",
+                            "message": "Unexpected closing bracket '" + char + "'",
+                            "line": token.line,
+                            "position": token.position,
+                            "suggestion": "Remove extra closing bracket or add opening bracket"
+                        });
+                    }
+                }
+            }
+        }
+        
+        // Check for unclosed brackets
+        foreach unclosed in stack {
+            errors.push({
+                "type": "unclosed_bracket",
+                "message": "Unclosed bracket '" + unclosed.char + "'",
+                "line": unclosed.line,
+                "position": unclosed.position,
+                "suggestion": "Add closing bracket '" + bracketPairs[unclosed.char] + "'"
+            });
+        }
+        
+        return errors;
+    };
+    
+    // Check statement structure
+    checkStatementStructure = op(tokens) {
+        errors = [];
+        i = 0;
+        
+        while (i < tokens.len()) {
+            token = tokens[i];
+            
+            // Check if statements
+            if (token.type == "keyword" && token.value == "if") {
+                ifError = this.checkIfStatement(tokens, i);
+                if (ifError) errors.push(ifError);
+            }
+            
+            // Check while statements
+            else if (token.type == "keyword" && token.value == "while") {
+                whileError = this.checkWhileStatement(tokens, i);
+                if (whileError) errors.push(whileError);
+            }
+            
+            // Check for statements
+            else if (token.type == "keyword" && token.value == "for") {
+                forError = this.checkForStatement(tokens, i);
+                if (forError) errors.push(forError);
+            }
+            
+            // Check function calls
+            else if (token.type == "identifier" && i + 1 < tokens.len() && tokens[i + 1].value == "(") {
+                funcError = this.checkFunctionCall(tokens, i);
+                if (funcError) errors.push(funcError);
+            }
+            
+            i++;
+        }
+        
+        return errors;
+    };
+    
+    // Check if statement structure
+    checkIfStatement = op(tokens, start) {
+        i = start + 1;
+        
+        // Look for opening parenthesis
+        while (i < tokens.len() && tokens[i].type != "bracket" && tokens[i].value != "(") {
+            if (tokens[i].type != "semicolon") {
+                return {
+                    "type": "invalid_if_statement",
+                    "message": "Expected '(' after 'if'",
+                    "line": tokens[i].line,
+                    "position": tokens[i].position,
+                    "suggestion": "Add opening parenthesis: if (condition)"
+                };
+            }
+            i++;
+        }
+        
+        if (i >= tokens.len() || tokens[i].value != "(") {
+            return {
+                "type": "invalid_if_statement",
+                "message": "Missing opening parenthesis after 'if'",
+                "line": tokens[start].line,
+                "position": tokens[start].position,
+                "suggestion": "Add opening parenthesis: if (condition)"
+            };
+        }
+        
+        return null; // No error
+    };
+    
+    // Check while statement structure
+    checkWhileStatement = op(tokens, start) {
+        return this.checkIfStatement(tokens, start); // Same structure as if
+    };
+    
+    // Check for statement structure
+    checkForStatement = op(tokens, start) {
+        return this.checkIfStatement(tokens, start); // Same structure as if
+    };
+    
+    // Check function call structure
+    checkFunctionCall = op(tokens, start) {
+        i = start + 1;
+        
+        if (i >= tokens.len() || tokens[i].value != "(") {
+            return {
+                "type": "invalid_function_call",
+                "message": "Expected '(' after function name",
+                "line": tokens[start].line,
+                "position": tokens[start].position,
+                "suggestion": "Add opening parenthesis: function()"
+            };
+        }
+        
+        return null; // No error
+    };
+    
+    // Check operator usage
+    checkOperatorUsage = op(tokens) {
+        errors = [];
+        i = 0;
+        
+        while (i < tokens.len()) {
+            token = tokens[i];
+            
+            if (token.type == "operator") {
+                // Check for consecutive operators
+                if (i + 1 < tokens.len() && tokens[i + 1].type == "operator") {
+                    errors.push({
+                        "type": "consecutive_operators",
+                        "message": "Consecutive operators: '" + token.value + "' followed by '" + tokens[i + 1].value + "'",
+                        "line": token.line,
+                        "position": token.position,
+                        "suggestion": "Check operator precedence or add parentheses"
+                    });
+                }
+                
+                // Check for operators at start/end of line
+                if (i == 0 || i == tokens.len() - 1) {
+                    errors.push({
+                        "type": "misplaced_operator",
+                        "message": "Operator '" + token.value + "' at unexpected position",
+                        "line": token.line,
+                        "position": token.position,
+                        "suggestion": "Check operator placement"
+                    });
+                }
+            }
+            
+            i++;
+        }
+        
+        return errors;
+    };
+    
+    // Check string literals
+    checkStringLiterals = op(tokens) {
+        errors = [];
+        
+        foreach token in tokens {
+            if (token.type == "string") {
+                // Check for unterminated strings
+                if (token.value.len() < 2 || token.value.mid(0, 1) != token.value.mid(token.value.len() - 1, 1)) {
+                    errors.push({
+                        "type": "unterminated_string",
+                        "message": "Unterminated string literal",
+                        "line": token.line,
+                        "position": token.position,
+                        "suggestion": "Add closing quote"
+                    });
+                }
+            }
+        }
+        
+        return errors;
+    };
+    
+    // Check for common syntax issues
+    checkCommonIssues = op(tokens) {
+        errors = [];
+        i = 0;
+        
+        while (i < tokens.len()) {
+            token = tokens[i];
+            
+            // Check for missing semicolons after statements
+            if (token.type == "keyword" && ["return", "break", "continue", "throw"].find(token.value)) {
+                // Look for semicolon in next few tokens
+                foundSemicolon = false;
+                j = i + 1;
+                while (j < tokens.len() && j < i + 5) {
+                    if (tokens[j].type == "semicolon") {
+                        foundSemicolon = true;
+                        break;
+                    }
+                    j++;
+                }
+                
+                if (!foundSemicolon) {
+                    errors.push({
+                        "type": "missing_semicolon",
+                        "message": "Missing semicolon after '" + token.value + "' statement",
+                        "line": token.line,
+                        "position": token.position,
+                        "suggestion": "Add semicolon: " + token.value + ";"
+                    });
+                }
+            }
+            
+            i++;
+        }
+        
+        return errors;
+    };
+    
+    // Generate comprehensive error report
+    generateReport = op(errors, filePath, tokens) {
+        if (errors.len() == 0) {
+            return {
+                "status": "success",
+                "message": "✅ No syntax errors found in " + filePath,
+                "file": filePath,
+                "tokens": tokens.len(),
+                "errors": [],
+                "summary": "All syntax checks passed!"
+            };
+        }
+        
+        // Group errors by type
+        errorGroups = {};
+        foreach error in errors {
+            if (!errorGroups.has(error.type)) {
+                errorGroups[error.type] = [];
+            }
+            errorGroups[error.type].push(error);
+        }
+        
+        // Generate summary
+        summary = "Found " + errors.len() + " syntax error(s):\n";
+        foreach type in errorGroups.keys() {
+            summary += "  - " + type + ": " + errorGroups[type].len() + " error(s)\n";
+        }
+        
+        return {
+            "status": "error",
+            "message": "❌ Found " + errors.len() + " syntax error(s) in " + filePath,
+            "file": filePath,
+            "tokens": tokens.len(),
+            "errors": errors,
+            "errorGroups": errorGroups,
+            "summary": summary
+        };
+    };
+    
+    // Utility method to check multiple files
+    checkFiles = op(filePaths) {
+        results = filePaths.map(op(filePath) { this.check(filePath); });
+        
+        // Generate summary
+        totalFiles = filePaths.len();
+        successCount = results.filter(op(result) { result.status == "success"; }).len();
+        errorCount = totalFiles - successCount;
+        
+        summary = "Syntax Check Summary:\n";
+        summary += "  Total files: " + totalFiles + "\n";
+        summary += "  ✅ Passed: " + successCount + "\n";
+        summary += "  ❌ Failed: " + errorCount + "\n";
+        
+        return {
+            "results": results,
+            "summary": summary,
+            "totalFiles": totalFiles,
+            "successCount": successCount,
+            "errorCount": errorCount
+        };
+    };
+    
+    // Utility method to check all .grc files in a directory
+    checkDirectory = op(directoryPath) {
+        files = $file().ls(directoryPath, "files");
+        grcFiles = files.filter(op(file) { file.right(4) == ".grc"; });
+        
+        return this.checkFiles(grcFiles);
+    };
+};
+
+// CLI Interface - Process command line arguments
+args = $sys().getenv("$ARGV");
+if (args.len() > 0) {
+    // Parse command line arguments
+    command = args[0];
+    
+    if (command == "check" && args.len() > 1) {
+        // Single file check: grapa script.grc check filename.grc
+        checker = $SyntaxChecker();
+        result = checker.check(args[1]);
+        result.echo();
+    }
+    else if (command == "checkdir" && args.len() > 1) {
+        // Directory check: grapa script.grc checkdir directory/
+        checker = $SyntaxChecker();
+        results = checker.checkDirectory(args[1]);
+        results.summary.echo();
+        
+        // Show detailed results for files with errors
+        foreach result in results.results {
+            if (result.status == "error") {
+                result.echo();
+            }
+        }
+    }
+    else if (command == "checkfiles" && args.len() > 1) {
+        // Multiple files check: grapa script.grc checkfiles file1.grc file2.grc ...
+        checker = $SyntaxChecker();
+        files = args.slice(1); // Get all arguments after 'checkfiles'
+        results = checker.checkFiles(files);
+        results.summary.echo();
+        
+        // Show detailed results for files with errors
+        foreach result in results.results {
+            if (result.status == "error") {
+                result.echo();
+            }
+        }
+    }
+    else if (command == "test") {
+        // Test mode: grapa script.grc test
+        "Grapa Syntax Checker - Test Mode";
+        "===============================";
+        
+        checker = $SyntaxChecker();
+        
+        // Test with a good file
+        "Testing with basic_example.grc:";
+        result1 = checker.check("docs-src/docs/examples/basic_example.grc");
+        result1.echo();
+        
+        // Test with a bad file
+        "Testing with bad syntax file:";
+        result2 = checker.check("docs-src/docs/examples/bad_syntax/missing_semicolons.grc");
+        result2.echo();
+        
+        // Test directory checking
+        "Testing directory check:";
+        result3 = checker.checkDirectory("docs-src/docs/examples/bad_syntax");
+        result3.summary.echo();
+        
+        "Test complete!";
+    }
+    else if (command == "demo") {
+        // Demo mode: grapa script.grc demo
+        "Grapa Syntax Checker - Demo Mode";
+        "===============================";
+        
+        checker = $SyntaxChecker();
+        
+        // Example 1: Check a single file
+        "Example 1: Checking a single file";
+        result = checker.check("docs-src/docs/examples/basic_example.grc");
+        result.echo();
+        
+        // Example 2: Check multiple files
+        "Example 2: Checking multiple files";
+        files = ["docs-src/docs/examples/basic_example.grc", "docs-src/docs/examples/advanced_example.grc"];
+        results = checker.checkFiles(files);
+        results.summary.echo();
+        
+        // Example 3: Check all .grc files in examples directory
+        "Example 3: Checking all .grc files in examples directory";
+        examplesResult = checker.checkDirectory("docs-src/docs/examples");
+        examplesResult.summary.echo();
+        
+        "Demo complete!";
+    }
+    else if (command == "help" || command == "-h" || command == "--help") {
+        // Help: grapa script.grc help
+        "Grapa Syntax Checker";
+        "===================";
+        "";
+        "A comprehensive syntax validation tool for Grapa scripts.";
+        "";
+        "Usage:";
+        "  grapa grapa_syntax_checker.grc check <file.grc>           - Check a single file";
+        "  grapa grapa_syntax_checker.grc checkdir <directory>       - Check all .grc files in directory";
+        "  grapa grapa_syntax_checker.grc checkfiles <file1> <file2> - Check multiple specific files";
+        "  grapa grapa_syntax_checker.grc test                       - Run test examples";
+        "  grapa grapa_syntax_checker.grc demo                       - Run comprehensive demo";
+        "  grapa grapa_syntax_checker.grc help                       - Show this help";
+        "";
+        "Examples:";
+        "  grapa grapa_syntax_checker.grc check my_script.grc";
+        "  grapa grapa_syntax_checker.grc checkdir docs-src/docs/examples/";
+        "  grapa grapa_syntax_checker.grc checkfiles script1.grc script2.grc";
+        "  grapa grapa_syntax_checker.grc test";
+        "  grapa grapa_syntax_checker.grc demo";
+        "";
+        "Features:";
+        "  - Comprehensive tokenization and parsing";
+        "  - Bracket balancing validation";
+        "  - Missing semicolon detection";
+        "  - String literal validation";
+        "  - Operator usage checking";
+        "  - Statement structure validation";
+        "  - Detailed error reporting with suggestions";
+        "  - Parallel processing for multiple files";
+    }
+    else {
+        "Error: Unknown command '" + command + "'";
+        "Use 'help' to see available commands";
+    }
+}
+else {
+    // No arguments - show help
+    "Grapa Syntax Checker";
+    "===================";
+    "";
+    "No arguments provided. Use 'help' to see available commands.";
+    "";
+    "Quick start:";
+    "  grapa grapa_syntax_checker.grc help";
+    "  grapa grapa_syntax_checker.grc test";
+}

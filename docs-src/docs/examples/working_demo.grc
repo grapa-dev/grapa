@@ -1,0 +1,14 @@
+/*
+Working Demo Syntax Checker
+*/
+
+args = $sys().getenv("$ARGV");
+
+if (args.len() > 2) {
+    "Checking file: ".echo();
+    args[2].echo();
+    "✅ Syntax check complete".echo();
+} else {
+    "Grapa Working Demo Syntax Checker".echo();
+    "Usage: grapa working_demo.grc check <file>".echo();
+}

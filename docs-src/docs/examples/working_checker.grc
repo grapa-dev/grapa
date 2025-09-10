@@ -1,0 +1,44 @@
+/*
+Working Grapa Syntax Checker - Simple approach
+*/
+
+// Simple syntax check function
+checkSyntax = op(filePath) {
+    code = $file().get(filePath);
+    if (code.type() == "$ERR") {
+        return "Error: Could not read file";
+    }
+    
+    // Check for missing semicolons
+    lines = code.split("\n");
+    errors = [];
+    
+    foreach line in lines {
+        if (line.grep("return|break|continue", "x").len() > 0 && line.right(1) != ";") {
+            errors.push("Missing semicolon: " + line);
+        }
+    }
+    
+    if (errors.len() == 0) {
+        return "✅ No syntax errors found";
+    } else {
+        return "❌ Found " + errors.len() + " error(s)";
+    }
+};
+
+// Get arguments
+args = $sys().getenv("$ARGV");
+
+// Process command
+if (args.len() > 2) {
+    command = args[1];
+    if (command == "check") {
+        result = checkSyntax(args[2]);
+        result.echo();
+    } else {
+        "Usage: grapa working_checker.grc check <file.grc>".echo();
+    }
+} else {
+    "Grapa Working Syntax Checker".echo();
+    "Usage: grapa working_checker.grc check <file.grc>".echo();
+}

@@ -1,0 +1,38 @@
+/*
+Fixed Working Syntax Checker
+*/
+
+// Simple function
+checkFile = op(filePath) {
+    code = $file().get(filePath);
+    if (code.type() == $ERR) {
+        return "Error: Could not read file\n";
+    }
+    
+    // Check for missing semicolons
+    lines = code.split("\n");
+    errors = "";
+    
+    foreach line in lines {
+        if (line.grep("return|break|continue", "x").len() > 0 && line.right(1) != ";") {
+            errors += "Missing semicolon: ${line}\n".interpolate();
+        }
+    }
+    
+    if (errors.len() == 0) {
+        return "✅ No syntax errors found";
+    } else {
+        return "❌ Found errors:\n${errors}".interpolate();
+    }
+};
+
+// Get arguments
+args = $sys().getenv("$ARGV");
+
+// Simple test
+if (args.len() > 2) {
+    result = checkFile(args[2]);
+    result.echo();
+} else {
+    "Usage: grapa fixed_checker.grc check <file>\n".echo();
+}

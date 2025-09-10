@@ -72,16 +72,50 @@ Grapa provides sophisticated namespace scoping with `$global`, `$this`, and `$lo
 
 **Important**: All namespace accessors must use the `$` prefix. The old syntax without `$` (e.g., `global.x`, `this.x`, `local.x`) is no longer supported.
 
+## Critical Scoping Rule: `$local` Constrains Variable Scope
+
+**The `$local` prefix constrains the variable to the local scope where it's used.** This means:
+
+- **Declaration**: Use `$local.variable = value` to declare a new local variable
+- **Access**: Use `variable` (without `$local.`) to access the already-declared variable
+- **Block Scope**: Using `$local.variable` inside `{}` blocks creates a new local variable in that block scope, not the function scope
+
 ```grapa
-/* ✅ RECOMMENDED - Declare local variables upfront */
+/* ✅ CORRECT - Declare with $local, access without $local */
 myFunction = op() {
-    $local.result = null;
-    $local.temp = {};
-    $local.i = 0;
+    $local.result = null;    // Declaration: creates function-scope variable
+    $local.temp = {};        // Declaration: creates function-scope variable
+    $local.i = 0;            // Declaration: creates function-scope variable
     
-    // Now safe to use variables without conflicts
-    result = process();
+    // Access: use variables without $local prefix
+    result = process();      // ✅ Accesses function-scope 'result'
+    temp.data = "value";     // ✅ Accesses function-scope 'temp'
+    i += 1;                  // ✅ Accesses function-scope 'i'
     return result;
+};
+
+/* ❌ WRONG - Using $local for access creates new block-scope variables */
+badFunction = op() {
+    $local.errors = [];      // Declaration: creates function-scope variable
+    
+    foreach item in items {
+        $local.errors += "Error";  // ❌ Creates NEW local variable in block scope!
+        // This does NOT append to the function-scope 'errors' variable
+    };
+    
+    return errors;           // ❌ 'errors' is empty - block-scope variables are gone
+};
+
+/* ✅ CORRECT - Declare with $local, access without $local */
+goodFunction = op() {
+    $local.errors = [];      // Declaration: creates function-scope variable
+    
+    foreach item in items {
+        errors += "Error";   // ✅ Accesses function-scope 'errors'
+        // This correctly appends to the function-scope variable
+    };
+    
+    return errors;           // ✅ 'errors' contains all accumulated errors
 };
 
 /* ✅ ALTERNATIVE - Reset $local to a list */

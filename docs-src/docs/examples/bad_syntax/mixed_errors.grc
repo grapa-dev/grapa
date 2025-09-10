@@ -1,0 +1,71 @@
+/*
+Bad Syntax Example: Mixed Errors
+
+This file demonstrates multiple types of syntax errors in a single file:
+- Combination of bracket, semicolon, string, and operator errors
+- Real-world scenarios where multiple issues exist
+*/
+
+// Example 1: Multiple bracket issues
+function calculate(a, b) {
+    if (a > 0) {
+        result = a + b;
+    // Missing closing brace for if
+// Missing closing brace for function
+
+// Example 2: Missing semicolons and bracket issues
+x = 10
+y = 20
+z = x + y  // Missing semicolon
+
+if (z > 30) {
+    "Large sum: " + z  // Missing semicolon
+// Missing closing brace
+
+// Example 3: String and operator issues
+message = "The result is: " + result  // Missing closing quote
+value = 5 + + 10;  // Double plus operator
+
+// Example 4: Function call with multiple issues
+result = calculate(10, 20, 30;  // Missing closing parenthesis and semicolon
+print("Result: " + result  // Missing closing quote and parenthesis
+
+// Example 5: Loop with multiple issues
+for (i = 0; i < 10; i++ {  // Missing closing parenthesis
+    if (i % 2 == 0) {
+        "Even: " + i  // Missing semicolon
+    // Missing closing brace for if
+// Missing closing brace for for
+
+// Example 6: Array with multiple issues
+items = ["apple", "banana", "cherry  // Missing closing quote and bracket
+count = items.len()  // Missing semicolon
+
+// Example 7: Complex expression with multiple issues
+result = (a + b) * (c - d) / (e + f  // Missing closing parenthesis
+final = result + 100  // Missing semicolon
+
+// Example 8: String interpolation issues
+name = "John"
+age = 25
+info = "Name: " + name + ", Age: " + age  // Missing semicolon
+print(info  // Missing closing parenthesis
+
+// Example 9: Nested structures with multiple issues
+function processData(data) {
+    if (data != null) {
+        for (i = 0; i < data.len(); i++ {  // Missing closing parenthesis
+            item = data[i];
+            if (item > 0) {
+                "Processing: " + item  // Missing semicolon
+            // Missing closing brace for inner if
+        // Missing closing brace for for
+    // Missing closing brace for outer if
+// Missing closing brace for function
+
+// Example 10: Mixed quote types and operator issues
+text1 = "Hello 'World'";  // Valid
+text2 = 'Hello "World"';  // Valid  
+text3 = "Hello 'World'  // Missing closing quote
+text4 = 'Hello "World'  // Missing closing quote
+result = text1 + + text2;  // Double plus operator

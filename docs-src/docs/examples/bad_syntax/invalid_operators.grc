@@ -1,0 +1,53 @@
+/*
+Bad Syntax Example: Invalid Operators
+
+This file demonstrates invalid operator usage that the syntax checker should detect:
+- Consecutive operators
+- Misplaced operators
+- Invalid operator combinations
+*/
+
+// Example 1: Consecutive operators
+result = a + + b;  // Double plus
+result = x - - y;  // Double minus
+result = p * * q;  // Double multiply
+
+// Example 2: Operators at line start
++ 5;  // Operator at start of line
+* 10; // Operator at start of line
+
+// Example 3: Operators at line end
+value = 10 +;  // Operator at end of line
+count = 5 *;   // Operator at end of line
+
+// Example 4: Invalid assignment operators
+x =+ 5;   // Should be +=
+y =- 10;  // Should be -=
+z =* 2;   // Should be *=
+w =/ 3;   // Should be /=
+
+// Example 5: Misplaced comparison operators
+if (x = = 5) {  // Space in == operator
+    "Equal";
+}
+
+// Example 6: Invalid logical operators
+if (a & & b) {  // Space in && operator
+    "Both true";
+}
+
+// Example 7: Consecutive comparison operators
+if (x < < 10) {  // Double <
+    "Less than";
+}
+
+// Example 8: Invalid bitwise operators
+result = a & & b;  // Space in & operator
+value = x | | y;   // Space in | operator
+
+// Example 9: Misplaced increment/decrement
+x ++;  // Space in ++ operator
+y --;  // Space in -- operator
+
+// Example 10: Invalid ternary-like syntax
+result = condition ? value1 : value2;  // Grapa doesn't have ternary operator

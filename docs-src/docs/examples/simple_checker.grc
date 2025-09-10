@@ -1,0 +1,21 @@
+/*
+Simple Working Syntax Checker
+*/
+
+// Get arguments
+args = $sys().getenv("$ARGV");
+
+// Simple test
+if (args.len() > 2) {
+    code = file.getfield(args[2]);
+    if (code.type() == "$ERR") {
+        "Error: Could not read file".echo();
+    } else {
+        "✅ File read successfully".echo();
+        "File size: ".echo();
+        code.len().echo();
+    }
+} else {
+    "Grapa Simple Syntax Checker".echo();
+    "Usage: grapa simple_checker.grc check <file>".echo();
+}

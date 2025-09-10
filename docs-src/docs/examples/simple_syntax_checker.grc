@@ -1,0 +1,277 @@
+/*
+Simple Grapa Syntax Checker - A working demonstration of syntax validation
+
+This is a simplified version that focuses on core functionality and demonstrates
+the concept of building a syntax checker entirely in Grapa.
+*/
+
+// Simple Syntax Checker Class
+$global["$SimpleSyntaxChecker"] = class {
+    // Basic configuration
+    keywords = ["if", "while", "for", "function", "class", "return", "break", "continue"];
+    operators = ["+", "-", "*", "/", "=", "==", "!=", "<", ">", "&&", "||"];
+    
+    // Main check method
+    check = op(filePath) {
+        try {
+            // Read file
+            code = $file().get(filePath);
+            if (code.type() == "$ERR") {
+                return $ERR(("Could not read file: " + filePath));
+            }
+            
+            // Simple checks
+            errors = [];
+            
+            // Check for balanced brackets
+            bracketErrors = this.checkBrackets(code);
+            errors.extend(bracketErrors);
+            
+            // Check for missing semicolons
+            semicolonErrors = this.checkSemicolons(code);
+            errors.extend(semicolonErrors);
+            
+            // Check for unterminated strings
+            stringErrors = this.checkStrings(code);
+            errors.extend(stringErrors);
+            
+            // Generate report
+            return this.generateReport(errors, filePath);
+            
+        } catch (error) {
+            return $ERR(("Syntax checker error: " + error.str()));
+        }
+    };
+    
+    // Check for balanced brackets
+    checkBrackets = op(code) {
+        errors = [];
+        lines = code.split("\n");
+        lineNumber = 1;
+        
+        foreach line in lines {
+            // Count brackets
+            openParen = line.grep("\\(", "x").len();
+            closeParen = line.grep("\\)", "x").len();
+            openBrace = line.grep("\\{", "x").len();
+            closeBrace = line.grep("\\}", "x").len();
+            openBracket = line.grep("\\[", "x").len();
+            closeBracket = line.grep("\\]", "x").len();
+            
+            // Simple bracket balance check
+            if (openParen != closeParen) {
+                errors.push({
+                    "type": "unbalanced_parens",
+                    "message": "Unbalanced parentheses on line ${lineNumber}".interpolate(),
+                    "line": lineNumber,
+                    "suggestion": "Check parentheses matching"
+                });
+            }
+            
+            if (openBrace != closeBrace) {
+                errors.push({
+                    "type": "unbalanced_braces", 
+                    "message": "Unbalanced braces on line ${lineNumber}".interpolate(),
+                    "line": lineNumber,
+                    "suggestion": "Check braces matching"
+                });
+            }
+            
+            if (openBracket != closeBracket) {
+                errors.push({
+                    "type": "unbalanced_brackets",
+                    "message": "Unbalanced brackets on line ${lineNumber}".interpolate(),
+                    "line": lineNumber,
+                    "suggestion": "Check brackets matching"
+                });
+            }
+            
+            lineNumber++;
+        }
+        
+        return errors;
+    };
+    
+    // Check for missing semicolons
+    checkSemicolons = op(code) {
+        errors = [];
+        lines = code.split("\n");
+        lineNumber = 1;
+        
+        foreach line in lines {
+            // Skip empty lines and comments
+            if (line.len() == 0 || line.left(2) == "//") {
+                lineNumber++;
+                continue;
+            }
+            
+            // Check for statements that should end with semicolon
+            if (line.grep("(return|break|continue|throw)", "x").len() > 0) {
+                if (line.right(1) != ";") {
+                    errors.push({
+                        "type": "missing_semicolon",
+                        "message": "Missing semicolon on line ${lineNumber}".interpolate(),
+                        "line": lineNumber,
+                        "suggestion": "Add semicolon at end of line"
+                    });
+                }
+            }
+            
+            lineNumber++;
+        }
+        
+        return errors;
+    };
+    
+    // Check for unterminated strings
+    checkStrings = op(code) {
+        errors = [];
+        lines = code.split("\n");
+        lineNumber = 1;
+        
+        foreach line in lines {
+            // Count quotes
+            doubleQuotes = line.grep("\"", "x").len();
+            singleQuotes = line.grep("'", "x").len();
+            
+            // Check for odd number of quotes (unterminated)
+            if (doubleQuotes % 2 != 0) {
+                errors.push({
+                    "type": "unterminated_string",
+                    "message": "Unterminated double-quoted string on line ${lineNumber}".interpolate(),
+                    "line": lineNumber,
+                    "suggestion": "Add closing double quote"
+                });
+            }
+            
+            if (singleQuotes % 2 != 0) {
+                errors.push({
+                    "type": "unterminated_string",
+                    "message": "Unterminated single-quoted string on line ${lineNumber}".interpolate(),
+                    "line": lineNumber,
+                    "suggestion": "Add closing single quote"
+                });
+            }
+            
+            lineNumber++;
+        }
+        
+        return errors;
+    };
+    
+    // Generate simple report
+    generateReport = op(errors, filePath) {
+        if (errors.len() == 0) {
+            return {
+                "status": "success",
+                "message": "✅ No syntax errors found in ${filePath}".interpolate(),
+                "file": filePath,
+                "errors": []
+            };
+        }
+        
+        return {
+            "status": "error",
+            "message": "❌ Found ${errors.len()} syntax error(s) in ${filePath}".interpolate(),
+            "file": filePath,
+            "errors": errors
+        };
+    };
+    
+    // Check multiple files
+    checkFiles = op(filePaths) {
+        results = [];
+        
+        foreach filePath in filePaths {
+            result = this.check(filePath);
+            results.push(result);
+        }
+        
+        successCount = results.filter(op(result) { result.status == "success"; }).len();
+        errorCount = results.len() - successCount;
+        
+        return {
+            "results": results,
+            "summary": "Checked ${results.len()} files: ${successCount} passed, ${errorCount} failed".interpolate(),
+            "successCount": successCount,
+            "errorCount": errorCount
+        };
+    };
+};
+
+// CLI Interface - Process command line arguments
+args = $sys().getenv("$ARGV");
+if (args.len() > 1) {
+    // Parse command line arguments (skip script name)
+    command = args[1];
+    
+    if (command == "check" && args.len() > 2) {
+        // Single file check: grapa script.grc check filename.grc
+        checker = $SimpleSyntaxChecker();
+        result = checker.check(args[2]);
+        result.echo();
+    }
+    else if (command == "checkdir" && args.len() > 2) {
+        // Directory check: grapa script.grc checkdir directory/
+        checker = $SimpleSyntaxChecker();
+        files = $file().ls(args[2], "files").filter(op(file) { file.right(4) == ".grc"; });
+        results = checker.checkFiles(files);
+        results.summary.echo();
+        
+        // Show detailed results for files with errors
+        foreach result in results.results {
+            if (result.status == "error") {
+                result.echo();
+            }
+        }
+    }
+    else if (command == "test") {
+        // Test mode: grapa script.grc test
+        "Simple Grapa Syntax Checker - Test Mode";
+        "======================================";
+        
+        checker = $SimpleSyntaxChecker();
+        
+        // Test with a good file
+        "Testing with basic_example.grc:";
+        result1 = checker.check("docs-src/docs/examples/basic_example.grc");
+        result1.echo();
+        
+        // Test with a bad file
+        "Testing with bad syntax file:";
+        result2 = checker.check("docs-src/docs/examples/bad_syntax/missing_semicolons.grc");
+        result2.echo();
+        
+        "Test complete!";
+    }
+    else if (command == "help" || command == "-h" || command == "--help") {
+        // Help: grapa script.grc help
+        "Grapa Simple Syntax Checker";
+        "==========================";
+        "";
+        "Usage:";
+        "  grapa simple_syntax_checker.grc check <file.grc>     - Check a single file";
+        "  grapa simple_syntax_checker.grc checkdir <directory> - Check all .grc files in directory";
+        "  grapa simple_syntax_checker.grc test                 - Run test examples";
+        "  grapa simple_syntax_checker.grc help                 - Show this help";
+        "";
+        "Examples:";
+        "  grapa simple_syntax_checker.grc check my_script.grc";
+        "  grapa simple_syntax_checker.grc checkdir docs-src/docs/examples/";
+        "  grapa simple_syntax_checker.grc test";
+    }
+    else {
+        "Error: Unknown command '${command}'".interpolate();
+        "Use 'help' to see available commands";
+    }
+}
+else {
+    // No arguments - show help
+    "Grapa Simple Syntax Checker";
+    "==========================";
+    "";
+    "No arguments provided. Use 'help' to see available commands.";
+    "";
+    "Quick start:";
+    "  grapa simple_syntax_checker.grc help";
+}
