@@ -1,4 +1,0 @@
-"Hello World".echo();
-args = $sys().getenv("$ARGV");
-"Arguments: ".echo();
-args.echo();

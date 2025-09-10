@@ -5,18 +5,17 @@ Comprehensive Grapa Syntax Checker
 // Comprehensive syntax checking function
 checkFile = op(filePath) {
     $local.code = $file().get(filePath);
-    if (code.type() == $ERR) {
+    if ($local.code.type() == $ERR) {
         return "Error: Could not read file\n";
     };
-    
     code = code.str();
 
     // Comprehensive syntax checking
-    $local.lines = code.split("\n");
+    $local.lines = $local.code.split("\n");
     $local.errors = [];
     $local.lineNumber = 1;
     
-    foreach line in lines {
+    foreach line in $local.lines {
         // Skip empty lines and whitespace-only lines for performance
         $local.trimmedLine = line.trim();
         if (trimmedLine.len() == 0) {
@@ -25,10 +24,10 @@ checkFile = op(filePath) {
         };
         
         // Remove comments for analysis (only if needed)
-        $local.cleanLine = trimmedLine;
+        $local.cleanLine = $local.trimmedLine;
         $local.commentPos = cleanLine.find("//");
         if (commentPos >= 0) {
-            cleanLine = cleanLine.left(commentPos);
+            cleanLine = cleanLine.left(commentPos).trim();
         };
         
         // Skip if line is empty after comment removal
@@ -39,7 +38,7 @@ checkFile = op(filePath) {
         
         // Check for missing semicolons after statements
         if ((cleanLine.grep("return", "w").len() > 0 || cleanLine.grep("break", "w").len() > 0 || cleanLine.grep("continue", "w").len() > 0 || cleanLine.grep("throw", "w").len() > 0) && cleanLine.right(1) != ";") {
-            errors += "Line ${lineNumber}: Missing semicolon after statement".interpolate();
+            errors += "Line ${lineNumber}: Missing semicolon after statement\n".interpolate();
         };
         
         // Check for unbalanced brackets (only if line contains bracket characters)
@@ -52,13 +51,13 @@ checkFile = op(filePath) {
             $local.closeBracket = cleanLine.grep("\\]", "o").len();
             
             if (openParen != closeParen) {
-                errors += "Line ${lineNumber}: Unbalanced parentheses".interpolate();
+                errors += "Line ${lineNumber}: Unbalanced parentheses\n".interpolate();
             };
             if (openBrace != closeBrace) {
-                errors += "Line ${lineNumber}: Unbalanced braces".interpolate();
+                errors += "Line ${lineNumber}: Unbalanced braces\n".interpolate();
             };
             if (openBracket != closeBracket) {
-                errors += "Line ${lineNumber}: Unbalanced brackets".interpolate();
+                errors += "Line ${lineNumber}: Unbalanced brackets\n".interpolate();
             };
         };
         
@@ -67,23 +66,27 @@ checkFile = op(filePath) {
             $local.quoteCount = cleanLine.grep("\"", "o").len();
             $local.singleQuoteCount = cleanLine.grep("'", "o").len();
             
-            if (quoteCount % 2 != 0) {
+            if ($local.quoteCount % 2 != 0) {
                 errors += "Line ${lineNumber}: Unterminated double-quoted string\n".interpolate();
             };
-            if (singleQuoteCount % 2 != 0) {
+            if ($local.singleQuoteCount % 2 != 0) {
                 errors += "Line ${lineNumber}: Unterminated single-quoted string\n".interpolate();
             };
         };
         
         // Check for consecutive operators (only if line contains operators)
         if (cleanLine.find("+") >= 0 || cleanLine.find("-") >= 0 || cleanLine.find("*") >= 0) {
-            if (cleanLine.grep("\\+\\+", "o").len() > 0 || cleanLine.grep("\\-\\-", "o").len() > 0 || cleanLine.grep("\\*\\*", "o").len() > 0) {
-                errors += "Line ${lineNumber}: Consecutive operators detected (++, --, **)\n".interpolate();
+            if (cleanLine.grep("\\+\\+", "o").len() > 0 || cleanLine.grep("\\-\\-", "o").len() > 0) {
+                errors += "Line ${lineNumber}: Consecutive operators detected (++, --)\n".interpolate();
             };
         };
         
         // Check for variable scoping issues (missing $ prefix)
         if (cleanLine.find("=") >= 0 && cleanLine.find("//") == -1 && cleanLine.find("/*") == -1) {
+            // Debug: Check if we're processing assignment lines
+            if (cleanLine.find("x =") >= 0 || cleanLine.find("y =") >= 0) {
+                errors += "DEBUG: Processing assignment line ${lineNumber}: ${cleanLine}\n".interpolate();
+            };
             // Check for old namespace syntax (local., global., this.)
             if (cleanLine.find("local.") >= 0 || cleanLine.find("global.") >= 0 || cleanLine.find("this.") >= 0) {
                 if (cleanLine.find("cleanLine.find") == -1 && cleanLine.find("Old namespace syntax detected") == -1 && cleanLine.find("errors += ") == -1) {
@@ -95,13 +98,15 @@ checkFile = op(filePath) {
                 };
             };
             
-            // Check for simple variable assignments without namespace prefix
-            if (cleanLine.grep("^\\s*[a-zA-Z_][a-zA-Z0-9_]*\\s*=", "o").len() > 0 && 
+            // Enhanced $local validation for different contexts
+            // Check for simple variable assignments (variable = value)
+            if (cleanLine.find("=") >= 0 && 
                 cleanLine.find("$local.") == -1 && cleanLine.find("$global.") == -1 && cleanLine.find("$this.") == -1 &&
                 cleanLine.find("//") == -1 && cleanLine.find("/*") == -1) {
+                
                 // Skip if it's a method call or complex expression
                 if (cleanLine.find("(") == -1 && cleanLine.find(".") == -1 && cleanLine.find("[") == -1) {
-                    errors += "Line ${lineNumber}: Consider using $local for thread safety\n".interpolate();
+                    errors += "Line ${lineNumber}: Consider using $local for thread safety (${cleanLine})\n".interpolate();
                 };
             };
         };
@@ -320,7 +325,7 @@ checkFile = op(filePath) {
     if (errors.len() == 0) {
         return "✅ No syntax errors found\n";
     } else {
-        return "❌ Syntax errors found:\n${errors.join('\n')}\n".interpolate();
+        return "❌ Syntax errors found:\n${errors.join('\n')}".interpolate();
     };
 };
 
@@ -332,7 +337,7 @@ if (args.len() >= 3) {
         result = checkFile(args[2]);
         result.echo();
     } else if (command == "help") {
-        "Grapa Comprehensive Syntax Checker - ".echo();
+        "Grapa Comprehensive Syntax Checker".echo();
         "Usage: grapa comprehensive_syntax_checker.grc check <file.grc>".echo();
         "Usage: grapa comprehensive_syntax_checker.grc help".echo();
         "".echo();

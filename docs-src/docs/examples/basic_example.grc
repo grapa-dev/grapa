@@ -14,4 +14,4 @@ str = "Grapa is awesome!";
 result = 10 + 5 * 2;
 
 /* Return the result for testing */
-result 
+result;
