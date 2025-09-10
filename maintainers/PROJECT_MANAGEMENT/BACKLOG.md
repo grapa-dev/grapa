@@ -103,7 +103,7 @@ This backlog tracks all future, long-term, and queued tasks for the Grapa projec
 
 ---
 
-## 🚀 **FUTURE RELEASES (0.1.53+)** (5 items)
+## 🚀 **FUTURE RELEASES (0.1.53+)** (6 items)
 
 ### **1. Universal .get/.set Implementation** - **LANGUAGE ADOPTION FOUNDATION** ✅ **COMPLETED in 0.1.54**
 - [x] **Universal .get/.set Implementation**: Implemented consistent .get/.set methods across all data types
@@ -179,7 +179,36 @@ This backlog tracks all future, long-term, and queued tasks for the Grapa projec
 - **Dependencies**: Syntax Improvements (for error handling) ✅ **COMPLETED IN 0.1.52**
 - **Priority**: Medium - debugging and extension capabilities
 
-### **6. Vector Performance Optimization** - **PERFORMANCE** 🟢 **LOWER PRIORITY**
+### **6. Stderr/Stdout File Support** - **SYSTEM INTEGRATION** 🟡 **MEDIUM PRIORITY**
+- [ ] **System Stream Support**: Enable `$file().set($stderr, "data")` and `$file().set($stdout, "data")` for direct system stream writing
+- [ ] **Windows Stderr Redirection Fix**: Resolve stderr redirection issues on Windows when redirected to files
+- [ ] **GrapaFileIO Enhancement**: Update `Open()` method to accept `GrapaCHAR` and handle system stream constants
+- [ ] **Cross-Platform Compatibility**: Ensure system stream support works on Windows, Linux, and macOS
+- [ ] **Backward Compatibility**: Maintain existing file operations while adding system stream support
+- **Reference**: [Stack Overflow Issue](https://stackoverflow.com/questions/73512538/software-written-in-grapa-can-write-to-stderr-when-redirected-to-a-file-but-not/79712508#79712508)
+- **Implementation Guide**: [STDERR_STDOUT_FILE_SUPPORT.md](DEVELOPMENT/STDERR_STDOUT_FILE_SUPPORT.md)
+- **Estimated Effort**: Low-Medium (2-3 hours)
+- **Priority**: Medium - addresses community-reported issue
+
+### **7. Certificate Management Enhancements** - **NETWORKING & SECURITY** 🟡 **MEDIUM PRIORITY**
+- [ ] **Certificate Generation & Management**: CSR creation, self-signed certificate generation, certificate renewal workflows
+- [ ] **Certificate Lifecycle Management**: Expiration monitoring, certificate rotation, backup/restore
+- [ ] **Certificate Operations**: Format conversion (PEM ↔ DER), fingerprint generation, detailed certificate field extraction
+- [ ] **Advanced SSL/TLS Configuration**: Cipher suite selection, TLS version specification, SNI support
+- [ ] **Certificate Security**: Revocation checking (CRL/OCSP), certificate pinning, hostname validation
+- [ ] **Certificate Storage**: Certificate store management, import/export functionality
+- **Current State**: `$net` class supports basic SSL/TLS operations but lacks comprehensive certificate management
+  - **Basic SSL/TLS**: ✅ Client/server certificate configuration, certificate verification, certificate chains
+  - **CA Trust**: ✅ Custom CA certificate and path support, private key support
+  - **Missing**: Certificate generation, lifecycle management, advanced SSL/TLS configuration
+- **Reference**: [`CERTIFICATE_MANAGEMENT_ENHANCEMENTS.md`](../DEVELOPMENT/CERTIFICATE_MANAGEMENT_ENHANCEMENTS.md)
+- **Implementation**: Extend `$net` class with new methods for comprehensive certificate management
+- **Benefits**: Enterprise-grade certificate management, improved security capabilities, better SSL/TLS control
+- **Estimated Effort**: Major Release (3-4 months)
+- **Dependencies**: OpenSSL 3.5.2 integration (already complete)
+- **Priority**: Medium - important for enterprise applications and advanced security use cases
+
+### **8. Vector Performance Optimization** - **PERFORMANCE** 🟢 **LOWER PRIORITY**
 - [ ] **Type-Specialized Paths**: Implement optimized code paths for homogeneous vectors while maintaining backward compatibility
 - [ ] **Memory Optimization**: Improve memory layout and allocation strategies for better cache performance
 - [ ] **Lazy Evaluation**: Defer expensive operations until results are actually needed
@@ -190,7 +219,7 @@ This backlog tracks all future, long-term, and queued tasks for the Grapa projec
 - **Estimated Effort**: Major Release (4-6 months across 5 phases)
 - **Dependencies**: Core language features completion, Syntax Improvements (for error handling) ✅ **COMPLETED IN 0.1.52**
 
-### **7. General Optimization Implementation** - **PERFORMANCE** 🟢 **LOWER PRIORITY**
+### **9. General Optimization Implementation** - **PERFORMANCE** 🟢 **LOWER PRIORITY**
 - [ ] **Performance improvements** for arithmetic, bitwise, comparison, and assignment operators
 - **Status**: Requires extensive testing and its own release cycle
 - **Reference**: [`GRAPA_OPTIMIZATION_BACKLOG.md`](../RESEARCH_AND_ANALYSIS/GRAPA_OPTIMIZATION_BACKLOG.md)
