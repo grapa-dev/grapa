@@ -4,6 +4,83 @@
 
 This guide covers common issues encountered when working with Grapa and GrapaPy, along with their solutions and debugging techniques.
 
+## Installation and Dependency Issues
+
+### Python Extension Installation Failures
+
+#### **"Missing system dependencies" Error**
+**Problem**: `pip install grapapy` fails with dependency errors.
+
+**Solutions**:
+
+**Linux/macOS - Automatic:**
+```bash
+# Install Grapa with automatic dependency installation
+python3 install-grapa-0.1.54.py --install-dependencies
+```
+
+**Linux/macOS - Manual:**
+```bash
+# Ubuntu/Debian
+sudo apt-get update
+sudo apt-get install build-essential python3-dev libssl-dev libx11-dev libxext-dev cmake
+
+# CentOS/RHEL/Amazon Linux
+sudo yum groupinstall 'Development Tools'
+sudo yum install gcc-c++ python3-devel openssl-devel libX11-devel libXext-devel cmake
+
+# macOS
+xcode-select --install
+```
+
+**Windows:**
+- Install [Visual Studio 2022](https://visualstudio.microsoft.com/downloads/) or Build Tools for Visual Studio 2022
+- Ensure "Desktop development with C++" workload is selected
+
+#### **Ubuntu 24.04+ "externally-managed-environment" Error**
+**Problem**: `pip install grapapy` fails with externally-managed-environment error.
+
+**Solution**:
+```bash
+# Use --break-system-packages flag
+pip3 install grapapy --break-system-packages
+```
+
+#### **"undefined symbol" Error on Linux**
+**Problem**: `ImportError: undefined symbol: _ZN17GrapaLibraryEvent17HasActiveTryBlockEP10GrapaNames`
+
+**Solution**: This indicates an outdated distribution package. The issue is resolved in Grapa 0.1.54+ with updated static libraries.
+
+### CMake Build Failures
+
+#### **Windows: "Visual Studio Compiler Required"**
+**Problem**: CMake fails with compiler detection errors.
+
+**Solution**:
+1. Install Visual Studio 2022 or Build Tools for Visual Studio 2022
+2. Ensure MSVC compiler is selected in CMake
+3. Verify Windows SDK is installed
+
+#### **Linux: "OpenSSL Library Not Found"**
+**Problem**: CMake fails to find OpenSSL libraries.
+
+**Solution**:
+```bash
+# Ubuntu/Debian
+sudo apt-get install libssl-dev
+
+# CentOS/RHEL/Amazon Linux
+sudo yum install openssl-devel
+```
+
+#### **macOS: "Xcode Command Line Tools Required"**
+**Problem**: CMake fails on macOS.
+
+**Solution**:
+```bash
+xcode-select --install
+```
+
 > **See Also:**
 > - [Getting Started](getting_started.md)
 > - [Debugging](debugging.md) - Comprehensive debugging system for troubleshooting

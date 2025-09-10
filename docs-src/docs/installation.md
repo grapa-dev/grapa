@@ -6,9 +6,11 @@ Grapa is available as platform-specific packages with a universal installer that
 
 ## 🚀 **Universal Installer (Recommended)**
 
-Grapa 0.1.53+ provides a **universal installer** that automatically detects your platform and downloads the correct package:
+Grapa 0.1.54+ provides a **universal installer** that automatically detects your platform and downloads the correct package:
 
 - **Smart platform detection** - automatically identifies your system
+- **Automatic dependency installation** - installs system dependencies on Linux/macOS
+- **Ubuntu version detection** - provides version-specific installation instructions
 - **Optimized packages** - each platform gets only what it needs
 - **Under 100MB** - all packages stay well under GitHub's file size limit
 - **Complete development kit** - includes sample code, CMake build system, and all libraries
@@ -17,15 +19,23 @@ Grapa 0.1.53+ provides a **universal installer** that automatically detects your
 ### **Quick Installation**
 ```bash
 # Download and run the universal installer
-curl -O https://github.com/grapa-dev/grapa/releases/download/v0.1.53/install-grapa-0.1.53.py
-python3 install-grapa-0.1.53.py
+curl -O https://github.com/grapa-dev/grapa/releases/download/v0.1.54/install-grapa-0.1.54.py
+python3 install-grapa-0.1.54.py
+```
+
+### **Installation with Automatic Dependencies**
+```bash
+# Install Grapa and automatically install system dependencies (Linux/macOS)
+python3 install-grapa-0.1.54.py --install-dependencies
 ```
 
 The installer will:
 1. **Detect your platform** (macOS, Linux, Windows, AWS)
-2. **Download the appropriate package** for your system
-3. **Install Grapa** to `~/.local/grapa/`
-4. **Set up the environment** for immediate use
+2. **Install system dependencies** (Linux/macOS only, with `--install-dependencies`)
+3. **Download the appropriate package** for your system
+4. **Install Grapa** to `/usr/local/` (or `~/.local/grapa/` on some systems)
+5. **Set up the environment** for immediate use
+6. **Provide platform-specific instructions** for Python extension installation
 
 ## Manual Installation (Alternative)
 
@@ -278,9 +288,73 @@ You should see:
 Hello World
 ```
 
-## 🐍 **Python Extension Build**
+## 🐍 **Python Extension Installation**
 
-Grapa 0.1.53 includes support for building Python extensions. If you need to build from source with Python support:
+GrapaPy provides Python integration with Grapa's powerful data processing capabilities. Installation requirements vary by platform:
+
+### **Platform Requirements**
+
+#### **Linux/macOS**
+- **System dependencies**: Automatically installed with `--install-dependencies` flag
+- **Python packages**: Standard `pip` installation
+
+#### **Windows**
+- **Visual Studio Build Tools**: Required for compilation during installation
+- **Python packages**: Standard `pip` installation
+
+### **Installation Methods**
+
+#### **Method 1: From PyPI (Recommended)**
+```bash
+# Linux/macOS
+pip3 install grapapy
+
+# Windows
+pip install grapapy
+```
+
+#### **Method 2: From Distribution Package**
+```bash
+# After installing Grapa CLI
+pip3 install dist/grapapy-0.1.54.tar.gz
+
+# Ubuntu 24.04+ may require:
+pip3 install dist/grapapy-0.1.54.tar.gz --break-system-packages
+```
+
+### **Dependency Installation**
+
+#### **Automatic (Linux/macOS)**
+```bash
+# Install Grapa with all dependencies
+python3 install-grapa-0.1.54.py --install-dependencies
+```
+
+#### **Manual (All Platforms)**
+**Linux (Ubuntu/Debian):**
+```bash
+sudo apt-get update
+sudo apt-get install build-essential python3-dev libssl-dev libx11-dev libxext-dev cmake
+```
+
+**Linux (CentOS/RHEL/Amazon Linux):**
+```bash
+sudo yum groupinstall 'Development Tools'
+sudo yum install gcc-c++ python3-devel openssl-devel libX11-devel libXext-devel cmake
+```
+
+**macOS:**
+```bash
+xcode-select --install
+```
+
+**Windows:**
+- Install [Visual Studio 2022](https://visualstudio.microsoft.com/downloads/) or Build Tools for Visual Studio 2022
+- Ensure "Desktop development with C++" workload is selected
+
+## 🛠️ **Building from Source**
+
+Grapa 0.1.54 includes support for building Python extensions from source:
 
 ### **Build with Python Extension**
 ```bash

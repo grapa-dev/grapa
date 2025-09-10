@@ -297,6 +297,10 @@ print(matches)  # ['world', 'world']
 matches = grapapy.grep(text, "python", "i")
 print(matches)  # ['Python programming']
 
+# Advanced regex with Unicode support
+matches = grapapy.grep("café naïve résumé", r"\w+é\w+", "o")
+print(matches)  # ['café', 'naïve', 'résumé']
+
 # Class-based interface for stateful operations
 g = grapapy.grapa()
 matches = g.grep(text, "world", "o")
@@ -309,6 +313,7 @@ print(matches)  # ['world', 'world']
 - **Multiple output formats**: Line-based, match-only, JSON output
 - **Performance optimized**: Direct C++ implementation for maximum speed
 - **Thread-safe**: Can be used safely in multi-threaded Python applications
+- **Direct integration**: Bypasses Python's GIL for maximum performance
 
 ### **Data Science Libraries**
 ```python

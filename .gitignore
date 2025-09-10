@@ -121,6 +121,7 @@ prj/winlib-amd64_static/x64
 /grapa
 /*.exe
 /*.dll
+/build
 
 # Dependency directories
 dep/fltk-1.4.4/

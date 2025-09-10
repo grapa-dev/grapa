@@ -87,6 +87,22 @@ class GrapaInstaller:
         
         return files
     
+    def _detect_ubuntu_version(self):
+        """Detect Ubuntu version and return as tuple (major, minor) or None"""
+        try:
+            with open("/etc/os-release", "r") as f:
+                content = f.read()
+                for line in content.split('\n'):
+                    if line.startswith("VERSION_ID="):
+                        version_str = line.split('=')[1].strip('"')
+                        # Parse version like "22.04" or "24.04"
+                        parts = version_str.split('.')
+                        if len(parts) >= 2:
+                            return (int(parts[0]), int(parts[1]))
+        except (FileNotFoundError, ValueError, IndexError):
+            pass
+        return None
+
     def _check_system_dependencies(self, auto_install=False):
         """Check if required system dependencies are available"""
         missing_deps = []
@@ -202,10 +218,18 @@ class GrapaInstaller:
         if platform.system().lower() == "linux":
             # Detect package manager and install dependencies
             if shutil.which("apt"):
-                # Ubuntu/Debian
+                # Ubuntu/Debian - detect version for appropriate dependencies
+                ubuntu_version = self._detect_ubuntu_version()
+                print(f"Detected Ubuntu version: {ubuntu_version}")
+                
                 packages = ["build-essential", "python3-dev", "libssl-dev", "libx11-dev", "libxext-dev", "cmake", 
                            "libxfixes-dev", "libxft-dev", "libxrender-dev", "libxinerama-dev", 
-                           "libxcursor-dev", "libpng-dev", "libfontconfig1-dev", "libfreetype6-dev"]
+                           "libxcursor-dev", "libpng-dev", "libfontconfig1-dev", "libfreetype6-dev",
+                           "x11-apps", "gdebi-core"]
+                
+                # Ubuntu 24.04+ requires --break-system-packages for pip installs
+                if ubuntu_version and ubuntu_version >= (24, 4):
+                    print("⚠️  Ubuntu 24.04+ detected: pip installs may require --break-system-packages flag")
                 # Check if we're running as root (e.g., in Docker)
                 if os.geteuid() == 0:
                     cmd = ["apt-get", "update", "&&", "apt-get", "install", "-y"] + packages
@@ -442,6 +466,18 @@ class GrapaInstaller:
                 print("  1. Restart your terminal or run: source ~/.zshrc (or ~/.bashrc)")
                 print("  2. Verify installation: grapa --version")
                 print("  3. Test functionality: grapa -c '2+2'")
+                
+                # Provide Ubuntu version-specific pip installation instructions
+                if platform.system().lower() == "linux" and shutil.which("apt"):
+                    ubuntu_version = self._detect_ubuntu_version()
+                    if ubuntu_version and ubuntu_version >= (24, 4):
+                        print(f"\n📦 For Python package installation (grapapy):")
+                        print(f"  Ubuntu 24.04+ detected - use: pip3 install grapapy --break-system-packages")
+                        print(f"  Or: python3 -m pip install grapapy --break-system-packages")
+                    else:
+                        print(f"\n📦 For Python package installation (grapapy):")
+                        print(f"  Use: pip3 install grapapy")
+                        print(f"  Or: python3 -m pip install grapapy")
             
             return True
             

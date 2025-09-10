@@ -101,6 +101,119 @@ message(STATUS "Processor: ${CMAKE_SYSTEM_PROCESSOR}")
 message(STATUS "Grapa library: platforms/${GRAPA_PLATFORM_DIR}/${GRAPA_STATIC_LIB}")
 message(STATUS "Output directory: ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}")
 
+# Platform-specific dependency checks
+if(WIN32)
+    # Check for Visual Studio (MSVC) compiler
+    if(NOT CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+        message(FATAL_ERROR 
+            "❌ VISUAL STUDIO COMPILER REQUIRED\n"
+            "This project requires Visual Studio (MSVC) compiler for Windows builds.\n"
+            "Please install Visual Studio 2022 or Build Tools for Visual Studio 2022.\n"
+            "Download from: https://visualstudio.microsoft.com/downloads/\n"
+            "Current compiler: ${CMAKE_CXX_COMPILER_ID}")
+    endif()
+    
+    # Check for Grapa static library
+    if(NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/platforms/${GRAPA_PLATFORM_DIR}/${GRAPA_STATIC_LIB}")
+        message(FATAL_ERROR 
+            "❌ GRAPA STATIC LIBRARY NOT FOUND\n"
+            "Required file: platforms/${GRAPA_PLATFORM_DIR}/${GRAPA_STATIC_LIB}\n"
+            "Please ensure you have the complete Grapa distribution with pre-built libraries.")
+    endif()
+    
+    # Check for Windows SDK
+    if(NOT EXISTS "C:/Program Files (x86)/Windows Kits/10/Include")
+        message(WARNING 
+            "⚠️  WINDOWS SDK NOT FOUND\n"
+            "Windows SDK not detected at: C:/Program Files (x86)/Windows Kits/10/Include\n"
+            "Compilation may fail. Please install Windows 10/11 SDK with Visual Studio.")
+    endif()
+    
+    # Check for required third-party libraries
+    set(REQUIRED_LIBS 
+        "lib/${GRAPA_PLATFORM_DIR}/fltk.lib"
+        "lib/${GRAPA_PLATFORM_DIR}/libssl.lib"
+        "lib/${GRAPA_PLATFORM_DIR}/libcrypto.lib"
+        "lib/${GRAPA_PLATFORM_DIR}/pcre2-8-static.lib"
+    )
+    
+    foreach(LIB ${REQUIRED_LIBS})
+        if(NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/${LIB}")
+            message(FATAL_ERROR 
+                "❌ REQUIRED LIBRARY NOT FOUND\n"
+                "Missing: ${LIB}\n"
+                "Please ensure you have the complete Grapa distribution with all third-party libraries.")
+        endif()
+    endforeach()
+    
+    message(STATUS "✅ Windows dependencies validated successfully")
+    
+elseif(APPLE)
+    # Check for Xcode Command Line Tools on macOS
+    execute_process(
+        COMMAND xcode-select -p
+        OUTPUT_VARIABLE XCODE_PATH
+        ERROR_QUIET
+    )
+    
+    if(NOT XCODE_PATH)
+        message(FATAL_ERROR 
+            "❌ XCODE COMMAND LINE TOOLS REQUIRED\n"
+            "Please install Xcode Command Line Tools:\n"
+            "  xcode-select --install")
+    endif()
+    
+    # Check for Grapa static library
+    if(NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/platforms/${GRAPA_PLATFORM_DIR}/${GRAPA_STATIC_LIB}")
+        message(FATAL_ERROR 
+            "❌ GRAPA STATIC LIBRARY NOT FOUND\n"
+            "Required file: platforms/${GRAPA_PLATFORM_DIR}/${GRAPA_STATIC_LIB}\n"
+            "Please ensure you have the complete Grapa distribution with pre-built libraries.")
+    endif()
+    
+    message(STATUS "✅ macOS dependencies validated successfully")
+    
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+    # Check for required development packages on Linux
+    find_library(SSL_LIB ssl)
+    find_library(CRYPTO_LIB crypto)
+    find_library(X11_LIB X11)
+    
+    if(NOT SSL_LIB)
+        message(FATAL_ERROR 
+            "❌ OPENSSL LIBRARY NOT FOUND\n"
+            "Please install OpenSSL development package:\n"
+            "  Ubuntu/Debian: sudo apt-get install libssl-dev\n"
+            "  CentOS/RHEL:   sudo yum install openssl-devel")
+    endif()
+    
+    if(NOT CRYPTO_LIB)
+        message(FATAL_ERROR 
+            "❌ OPENSSL CRYPTO LIBRARY NOT FOUND\n"
+            "Please install OpenSSL development package:\n"
+            "  Ubuntu/Debian: sudo apt-get install libssl-dev\n"
+            "  CentOS/RHEL:   sudo yum install openssl-devel")
+    endif()
+    
+    if(NOT X11_LIB)
+        message(FATAL_ERROR 
+            "❌ X11 LIBRARY NOT FOUND\n"
+            "Please install X11 development package:\n"
+            "  Ubuntu/Debian: sudo apt-get install libx11-dev\n"
+            "  CentOS/RHEL:   sudo yum install libX11-devel")
+    endif()
+    
+    # Check for Grapa static library
+    if(NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/platforms/${GRAPA_PLATFORM_DIR}/${GRAPA_STATIC_LIB}")
+        message(FATAL_ERROR 
+            "❌ GRAPA STATIC LIBRARY NOT FOUND\n"
+            "Required file: platforms/${GRAPA_PLATFORM_DIR}/${GRAPA_STATIC_LIB}\n"
+            "Please ensure you have the complete Grapa distribution with pre-built libraries.")
+    endif()
+    
+    message(STATUS "✅ Linux dependencies validated successfully")
+endif()
+
 # Create executable
 add_executable(grapa_example main.cpp)
 
