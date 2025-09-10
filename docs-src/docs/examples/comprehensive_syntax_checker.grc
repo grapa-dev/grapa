@@ -323,6 +323,78 @@ checkFile = op(filePath) {
         lineNumber += 1;
     };
     
+    // Advanced syntax checks for common compilation errors
+    $local.allCode = code;
+    
+    // Check for Python-style list comprehensions [expr for var in iterable]
+    if (allCode.grep("\\[.*for.*in.*\\]", "o").len() > 0) {
+        errors += "Line ${lineNumber}: Python-style list comprehension detected - use Grapa array syntax instead\n".interpolate();
+    };
+    
+    // Check for C-style for loops for (init; condition; increment)
+    if (allCode.grep("for\\s*\\([^)]*;[^)]*;[^)]*\\)", "o").len() > 0) {
+        errors += "Line ${lineNumber}: C-style for loop detected - use Grapa for loop syntax instead\n".interpolate();
+    };
+    
+    // Check for Python-style for loops for var in number (not range)
+    if (allCode.grep("for\\s+\\w+\\s+in\\s+\\d+", "o").len() > 0) {
+        errors += "Line ${lineNumber}: Python-style for loop detected - use 'for var in range(number)' instead\n".interpolate();
+    };
+    
+    // Check for invalid method calls
+    if (allCode.grep("\\.append\\(", "o").len() > 0) {
+        errors += "Line ${lineNumber}: .append() method detected - use Grapa array methods instead\n".interpolate();
+    };
+    
+    if (allCode.grep("\\.json\\(", "o").len() > 0) {
+        errors += "Line ${lineNumber}: .json() method detected - use Grapa JSON methods instead\n".interpolate();
+    };
+    
+    if (allCode.grep("\\.Comp\\(", "o").len() > 0) {
+        errors += "Line ${lineNumber}: .Comp() method detected - use Grapa comparison operators instead\n".interpolate();
+    };
+    
+    if (allCode.grep("\\.mNaN", "o").len() > 0) {
+        errors += "Line ${lineNumber}: .mNaN property detected - use Grapa NaN checking methods instead\n".interpolate();
+    };
+    
+    // Check for invalid range syntax for var from start to end
+    if (allCode.grep("for\\s+\\w+\\s+from\\s+\\d+\\s+to\\s+\\d+", "o").len() > 0) {
+        errors += "Line ${lineNumber}: Invalid range syntax detected - use 'for var in range(start, end)' instead\n".interpolate();
+    };
+    
+    // Check for invalid ternary operator condition ? value1 : value2
+    if (allCode.grep("\\?.*:", "o").len() > 0) {
+        errors += "Line ${lineNumber}: Ternary operator detected - use Grapa conditional expressions instead\n".interpolate();
+    };
+    
+    // Check for enhanced assignment operators that don't exist in Grapa
+    if (allCode.grep("\\*=", "o").len() > 0) {
+        errors += "Line ${lineNumber}: Enhanced assignment operator '*=' detected - use standard assignment instead\n".interpolate();
+    };
+    
+    if (allCode.grep("/=", "o").len() > 0) {
+        errors += "Line ${lineNumber}: Enhanced assignment operator '/=' detected - use standard assignment instead\n".interpolate();
+    };
+    
+    if (allCode.grep("%=", "o").len() > 0) {
+        errors += "Line ${lineNumber}: Enhanced assignment operator '%=' detected - use standard assignment instead\n".interpolate();
+    };
+    
+    if (allCode.grep("\\*\\*=", "o").len() > 0) {
+        errors += "Line ${lineNumber}: Enhanced assignment operator '**=' detected - use standard assignment instead\n".interpolate();
+    };
+    
+    // Check for do-while loops that don't exist in Grapa
+    if (allCode.grep("do\\s*\\{", "o").len() > 0) {
+        errors += "Line ${lineNumber}: Do-while loop detected - use Grapa while loop syntax instead\n".interpolate();
+    };
+    
+    // Check for unnecessary .str() calls on type() results
+    if (allCode.grep("\\.type\\(\\)\\.str\\(\\)", "o").len() > 0) {
+        errors += "Line ${lineNumber}: Unnecessary .str() call on .type() result - .type() already returns a string\n".interpolate();
+    };
+    
     // Additional check: Try to compile the code to catch compilation errors
     $local.compileResult = $sys().compile(code).decode('ZIP-GRAPA')[0];
     if (compileResult.type() == $ERR) {
