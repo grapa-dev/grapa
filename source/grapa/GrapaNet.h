@@ -48,9 +48,9 @@ public:
 	static GrapaRuleEvent* GetInterfaces();
 	
 	virtual GrapaError Proxy(GrapaCHAR& ptype, GrapaCHAR& pid, GrapaCHAR& ph);
-	virtual GrapaError Certificate(GrapaCHAR& certFile);
-	virtual GrapaError Private(GrapaCHAR& keyFile, void* passOp, void* passParam);
-	virtual GrapaError Trusted(GrapaCHAR& caFile, GrapaCHAR& caPath);
+	virtual GrapaError Certificate(GrapaCHAR& certData);
+	virtual GrapaError Private(GrapaCHAR& keyData, void* passOp, void* passParam);
+	virtual GrapaError Trusted(GrapaCHAR& caData, GrapaCHAR& caPath);
 	virtual GrapaError Verify(GrapaCHAR& cert);
 	virtual GrapaRuleQueue* Chain();
 	static GrapaRuleQueue* Decode(const GrapaCHAR& cert);

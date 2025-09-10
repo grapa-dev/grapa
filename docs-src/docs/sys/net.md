@@ -381,8 +381,10 @@ server.disconnect();
 httpsServer = $net();
 
 /* Configure SSL server certificate */
-httpsServer.certificate("keys/server.crt");
-httpsServer.private("keys/server.key");
+serverCert = $file().get("keys/server.crt");
+serverKey = $file().get("keys/server.key");
+httpsServer.certificate(serverCert);
+httpsServer.private(serverKey);
 
 /* Handle HTTPS connections */
 httpsMessageHandler = op(netSession, message, hasmore) {
@@ -435,8 +437,10 @@ httpServer.onlisten(':8080', universalHandler);
 
 /* HTTPS Server */
 httpsServer = $net();
-httpsServer.certificate("keys/server.crt");
-httpsServer.private("keys/server.key");
+serverCert = $file().get("keys/server.crt");
+serverKey = $file().get("keys/server.key");
+httpsServer.certificate(serverCert);
+httpsServer.private(serverKey);
 httpsServer.onlisten(':8443', universalHandler);
 
 ("Dual server started:").echo();
@@ -513,17 +517,21 @@ apiServer.onlisten(':3000', apiMessageHandler);
 sslServer = $net();
 
 /* Set server certificate (PEM format) */
-sslServer.certificate("keys/server.crt");
+serverCert = $file().get("keys/server.crt");
+sslServer.certificate(serverCert);
 
 /* Set private key (PEM format) */
-sslServer.private("keys/server.key");
+serverKey = $file().get("keys/server.key");
+sslServer.private(serverKey);
 
 /* Optional: Set password callback for encrypted private key */
 passwordCallback = op() { return "server_key_password"; };
-sslServer.private("keys/server_encrypted.key", passwordCallback);
+encryptedKey = $file().get("keys/server_encrypted.key");
+sslServer.private(encryptedKey, passwordCallback);
 
 /* Optional: Set trusted CA certificates for client verification */
-sslServer.trusted("keys/ca.crt", "keys/ca/");
+caCert = $file().get("keys/ca.crt");
+sslServer.trusted(caCert, "keys/ca/");
 
 /* Start HTTPS server */
 sslServer.onlisten(':8443', messageHandler);
@@ -583,16 +591,17 @@ n2.proxy("HTTP", "proxy.example.com:8080", "proxy.example.com:8080");
 n2.connect("target.com:80", null, null);
 ```
 
-## certificate(certFile)
-Sets the SSL certificate file for HTTPS connections. This configures the client certificate to present to the server.
+## certificate(certData)
+Sets the SSL certificate data for HTTPS connections. This configures the client certificate to present to the server.
 
 **Parameters:**
-- `certFile`: Path to the certificate file (PEM format)
+- `certData`: Certificate data (PEM or DER format)
 
 **Example:**
 ```grapa
 n2 = $net();
-n2.certificate("keys/client.crt");
+certData = $file().get("keys/client.crt");
+n2.certificate(certData);
 n2.connect("example.com:443", null, null);
 ```
 
@@ -601,11 +610,11 @@ n2.connect("example.com:443", null, null);
 - **Mutual TLS**: Enable two-way SSL authentication
 - **Server Setup**: Configure server certificates for HTTPS servers
 
-## private(keyFile, passOp, passParam)
-Sets the private key file with optional password callback for HTTPS connections.
+## private(keyData, passOp, passParam)
+Sets the private key data with optional password callback for HTTPS connections.
 
 **Parameters:**
-- `keyFile`: Path to the private key file (PEM format)
+- `keyData`: Private key data (PEM or DER format)
 - `passOp`: Lambda function for password callback (optional)
 - `passParam`: Parameter passed to password callback (optional)
 
@@ -613,7 +622,8 @@ Sets the private key file with optional password callback for HTTPS connections.
 ```grapa
 /* Simple private key without password */
 n2 = $net();
-n2.private("keys/private.key", null, null);
+keyData = $file().get("keys/private.key");
+n2.private(keyData, null, null);
 n2.connect("example.com:443", null, null);
 ```
 
@@ -622,7 +632,8 @@ n2.connect("example.com:443", null, null);
 /* Private key with password callback */
 passwordCallback = op() { return "mypassword"; };
 n2 = $net();
-n2.private("keys/private.key", passwordCallback, null);
+keyData = $file().get("keys/private.key");
+n2.private(keyData, passwordCallback, null);
 n2.connect("example.com:443", null, null);
 ```
 
@@ -631,17 +642,18 @@ n2.connect("example.com:443", null, null);
 - **Server Setup**: Configure server private key for HTTPS servers
 - **Password Protection**: Handle encrypted private keys
 
-## trusted(caFile, caPath)
-Sets trusted CA certificate file and path for SSL verification. This configures which certificate authorities are trusted for verifying server certificates.
+## trusted(caData, caPath)
+Sets trusted CA certificate data and path for SSL verification. This configures which certificate authorities are trusted for verifying server certificates.
 
 **Parameters:**
-- `caFile`: Path to CA certificate file (PEM format)
-- `caPath`: Path to CA certificate directory
+- `caData`: CA certificate data (PEM or DER format, optional)
+- `caPath`: Path to CA certificate directory (optional)
 
 **Example:**
 ```grapa
 n2 = $net();
-n2.trusted("keys/ca.crt", "keys/ca/");
+caData = $file().get("keys/ca.crt");
+n2.trusted(caData, "keys/ca/");
 n2.connect("example.com:443", null, null);
 ```
 
@@ -664,11 +676,14 @@ n2.connect("example.com:443", null, null);
 n2 = $net();
 
 /* Set up trusted CA certificates */
-n2.trusted("keys/ca.crt", "keys/ca/");
+caData = $file().get("keys/ca.crt");
+n2.trusted(caData, "keys/ca/");
 
 /* Configure client certificate and private key */
-n2.certificate("keys/client.crt");
-n2.private("keys/client.key", null, null);
+certData = $file().get("keys/client.crt");
+keyData = $file().get("keys/client.key");
+n2.certificate(certData);
+n2.private(keyData, null, null);
 
 /* Connect to HTTPS server */
 n2.connect("example.com:443", null, null);
@@ -1143,3 +1158,30 @@ n2.disconnect();
 - **Connection Pooling**: No connection reuse/pooling
 - **Keep-Alive Management**: Basic support only
 - **HTTP Caching**: No cache control or ETag support
+
+### ❌ Certificate Management Limitations
+- **Certificate Generation**: No CSR (Certificate Signing Request) creation
+- **Self-Signed Certificates**: No self-signed certificate generation
+- **Certificate Renewal**: No certificate renewal workflows
+- **Certificate Lifecycle**: No expiration monitoring or rotation
+- **Certificate Format Conversion**: No PEM ↔ DER conversion
+- **Certificate Revocation**: No CRL (Certificate Revocation List) or OCSP checking
+- **Certificate Fingerprints**: No fingerprint generation
+- **Certificate Storage**: No certificate store management
+- **Advanced SSL/TLS**: No cipher suite selection or TLS version specification
+
+### ✅ Certificate Data Support
+- **Memory-Based Loading**: All certificate methods now accept certificate data directly instead of file paths
+- **PEM Format Support**: Automatic detection and parsing of PEM format certificates
+- **DER Format Support**: Support for binary DER format certificates
+- **Certificate Chains**: Full certificate chain support in PEM format
+- **Private Key Support**: Memory-based private key loading with password callback support
+- **CA Certificate Support**: Memory-based CA certificate loading for custom trust stores
+- **Certificate Pinning**: No certificate pinning support
+- **SNI Support**: No Server Name Indication configuration
+
+**Developer Responsibility:**
+For certificate management tasks not covered by Grapa's `$net` class, developers should use external tools such as:
+- **OpenSSL CLI**: For certificate generation, conversion, and validation
+- **Certificate Management Tools**: For enterprise certificate lifecycle management
+- **Custom Scripts**: For automated certificate monitoring and renewal workflows

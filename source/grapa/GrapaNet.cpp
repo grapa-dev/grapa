@@ -229,16 +229,125 @@ GrapaError GrapaNet::Connect(const GrapaCHAR& pURL)
 		vXCTX = vDelCTX = SSL_CTX_new(TLS_client_method());
 		vCriticalError = false;
 		if (vCertFile.mLength)
-			iResult = SSL_CTX_use_certificate_chain_file(vXCTX, (char*)vCertFile.mBytes);
+		{
+			// Check if vCertFile contains PEM format (starts with -----BEGIN)
+			if (vCertFile.mLength > 11 && memcmp(vCertFile.mBytes, "-----BEGIN", 10) == 0)
+			{
+				// Use memory-based PEM certificate loading
+				BIO* bio = BIO_new_mem_buf(vCertFile.mBytes, vCertFile.mLength);
+				if (bio)
+				{
+					STACK_OF(X509)* certs = sk_X509_new_null();
+					X509* cert = NULL;
+					
+					// Load certificate chain from PEM data
+					while ((cert = PEM_read_bio_X509(bio, NULL, NULL, NULL)) != NULL)
+					{
+						sk_X509_push(certs, cert);
+					}
+					
+					if (sk_X509_num(certs) > 0)
+					{
+						// Use the first certificate
+						X509* first_cert = sk_X509_value(certs, 0);
+						iResult = SSL_CTX_use_certificate(vXCTX, first_cert);
+						
+						// Add remaining certificates to the chain
+						for (int i = 1; i < sk_X509_num(certs); i++)
+						{
+							SSL_CTX_add_extra_chain_cert(vXCTX, sk_X509_value(certs, i));
+						}
+					}
+					
+					// Clean up
+					sk_X509_pop_free(certs, X509_free);
+					BIO_free(bio);
+				}
+			}
+			else
+			{
+				// Assume DER format - use ASN.1 loading
+				iResult = SSL_CTX_use_certificate_ASN1(vXCTX, vCertFile.mLength, (unsigned char*)vCertFile.mBytes);
+			}
+		}
 		if (vKeyFile.mLength)
-			iResult = SSL_CTX_use_PrivateKey_file(vXCTX, (char*)vKeyFile.mBytes, SSL_FILETYPE_PEM);
+		{
+			// Check if vKeyFile contains PEM format (starts with -----BEGIN)
+			if (vKeyFile.mLength > 11 && memcmp(vKeyFile.mBytes, "-----BEGIN", 10) == 0)
+			{
+				// Use memory-based PEM private key loading
+				BIO* bio = BIO_new_mem_buf(vKeyFile.mBytes, vKeyFile.mLength);
+				if (bio)
+				{
+					EVP_PKEY* pkey = PEM_read_bio_PrivateKey(bio, NULL, (pem_password_cb*)vPassOp, vPassParam);
+					if (pkey)
+					{
+						iResult = SSL_CTX_use_PrivateKey(vXCTX, pkey);
+						EVP_PKEY_free(pkey);
+					}
+					BIO_free(bio);
+				}
+			}
+			else
+			{
+				// Assume DER format - use ASN.1 loading
+				iResult = SSL_CTX_use_PrivateKey_ASN1(EVP_PKEY_RSA, vXCTX, (unsigned char*)vKeyFile.mBytes, vKeyFile.mLength);
+			}
+		}
 		if (vPassOp)
 		{
 			SSL_CTX_set_default_passwd_cb(vXCTX, (pem_password_cb*)vPassOp);
 			SSL_CTX_set_default_passwd_cb_userdata(vXCTX, vPassParam);
 		}
 		if (vcaFile.mLength || vcaPath.mLength)
-			iResult = SSL_CTX_load_verify_locations(vXCTX, (char*)vcaFile.mBytes, (char*)vcaPath.mBytes);
+		{
+			// If vcaFile is provided, use memory-based CA loading
+			if (vcaFile.mLength)
+			{
+				// Check if vcaFile contains PEM format (starts with -----BEGIN)
+				if (vcaFile.mLength > 11 && memcmp(vcaFile.mBytes, "-----BEGIN", 10) == 0)
+				{
+					// Use memory-based PEM CA loading
+					BIO* bio = BIO_new_mem_buf(vcaFile.mBytes, vcaFile.mLength);
+					if (bio)
+					{
+						X509* ca_cert = NULL;
+						
+						// Load CA certificate from PEM data
+						ca_cert = PEM_read_bio_X509(bio, NULL, NULL, NULL);
+						if (ca_cert)
+						{
+							X509_STORE* store = SSL_CTX_get_cert_store(vXCTX);
+							if (store)
+							{
+								iResult = X509_STORE_add_cert(store, ca_cert);
+							}
+							X509_free(ca_cert);
+						}
+						BIO_free(bio);
+					}
+				}
+				else
+				{
+					// Assume DER format - use ASN.1 loading
+					X509* ca_cert = d2i_X509(NULL, (const unsigned char**)&vcaFile.mBytes, vcaFile.mLength);
+					if (ca_cert)
+					{
+						X509_STORE* store = SSL_CTX_get_cert_store(vXCTX);
+						if (store)
+						{
+							iResult = X509_STORE_add_cert(store, ca_cert);
+						}
+						X509_free(ca_cert);
+					}
+				}
+			}
+			else if (vcaPath.mLength)
+			{
+				// Use file-based CA path loading (for backward compatibility)
+				iResult = SSL_CTX_load_verify_locations(vXCTX, NULL, (char*)vcaPath.mBytes);
+			}
+		}
 
 		SSL_CTX_set_ciphersuites(vXCTX,"TLS_AES_128_GCM_SHA256:TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256:TLS_AES_128_CCM_SHA256:TLS_AES_128_CCM_8_SHA256");
 
@@ -505,16 +614,125 @@ GrapaError GrapaNet::Bind(const GrapaCHAR& pURL)
 		vXCTX = vDelCTX = SSL_CTX_new(TLS_server_method());
         vCriticalError = false;
 		if (vCertFile.mLength)
-			iResult = SSL_CTX_use_certificate_chain_file(vXCTX, (char*)vCertFile.mBytes);
+		{
+			// Check if vCertFile contains PEM format (starts with -----BEGIN)
+			if (vCertFile.mLength > 11 && memcmp(vCertFile.mBytes, "-----BEGIN", 10) == 0)
+			{
+				// Use memory-based PEM certificate loading
+				BIO* bio = BIO_new_mem_buf(vCertFile.mBytes, vCertFile.mLength);
+				if (bio)
+				{
+					STACK_OF(X509)* certs = sk_X509_new_null();
+					X509* cert = NULL;
+					
+					// Load certificate chain from PEM data
+					while ((cert = PEM_read_bio_X509(bio, NULL, NULL, NULL)) != NULL)
+					{
+						sk_X509_push(certs, cert);
+					}
+					
+					if (sk_X509_num(certs) > 0)
+					{
+						// Use the first certificate
+						X509* first_cert = sk_X509_value(certs, 0);
+						iResult = SSL_CTX_use_certificate(vXCTX, first_cert);
+						
+						// Add remaining certificates to the chain
+						for (int i = 1; i < sk_X509_num(certs); i++)
+						{
+							SSL_CTX_add_extra_chain_cert(vXCTX, sk_X509_value(certs, i));
+						}
+					}
+					
+					// Clean up
+					sk_X509_pop_free(certs, X509_free);
+					BIO_free(bio);
+				}
+			}
+			else
+			{
+				// Assume DER format - use ASN.1 loading
+				iResult = SSL_CTX_use_certificate_ASN1(vXCTX, vCertFile.mLength, (unsigned char*)vCertFile.mBytes);
+			}
+		}
 		if (vKeyFile.mLength)
-			iResult = SSL_CTX_use_PrivateKey_file(vXCTX, (char*)vKeyFile.mBytes, SSL_FILETYPE_PEM);
+		{
+			// Check if vKeyFile contains PEM format (starts with -----BEGIN)
+			if (vKeyFile.mLength > 11 && memcmp(vKeyFile.mBytes, "-----BEGIN", 10) == 0)
+			{
+				// Use memory-based PEM private key loading
+				BIO* bio = BIO_new_mem_buf(vKeyFile.mBytes, vKeyFile.mLength);
+				if (bio)
+				{
+					EVP_PKEY* pkey = PEM_read_bio_PrivateKey(bio, NULL, (pem_password_cb*)vPassOp, vPassParam);
+					if (pkey)
+					{
+						iResult = SSL_CTX_use_PrivateKey(vXCTX, pkey);
+						EVP_PKEY_free(pkey);
+					}
+					BIO_free(bio);
+				}
+			}
+			else
+			{
+				// Assume DER format - use ASN.1 loading
+				iResult = SSL_CTX_use_PrivateKey_ASN1(EVP_PKEY_RSA, vXCTX, (unsigned char*)vKeyFile.mBytes, vKeyFile.mLength);
+			}
+		}
 		if (vPassOp)
 		{
 			SSL_CTX_set_default_passwd_cb(vXCTX, (pem_password_cb*)vPassOp);
 			SSL_CTX_set_default_passwd_cb_userdata(vXCTX, vPassParam);
 		}
 		if (vcaFile.mLength || vcaPath.mLength)
-			iResult = SSL_CTX_load_verify_locations(vXCTX, (char*)vcaFile.mBytes, (char*)vcaPath.mBytes);
+		{
+			// If vcaFile is provided, use memory-based CA loading
+			if (vcaFile.mLength)
+			{
+				// Check if vcaFile contains PEM format (starts with -----BEGIN)
+				if (vcaFile.mLength > 11 && memcmp(vcaFile.mBytes, "-----BEGIN", 10) == 0)
+				{
+					// Use memory-based PEM CA loading
+					BIO* bio = BIO_new_mem_buf(vcaFile.mBytes, vcaFile.mLength);
+					if (bio)
+					{
+						X509* ca_cert = NULL;
+						
+						// Load CA certificate from PEM data
+						ca_cert = PEM_read_bio_X509(bio, NULL, NULL, NULL);
+						if (ca_cert)
+						{
+							X509_STORE* store = SSL_CTX_get_cert_store(vXCTX);
+							if (store)
+							{
+								iResult = X509_STORE_add_cert(store, ca_cert);
+							}
+							X509_free(ca_cert);
+						}
+						BIO_free(bio);
+					}
+				}
+				else
+				{
+					// Assume DER format - use ASN.1 loading
+					X509* ca_cert = d2i_X509(NULL, (const unsigned char**)&vcaFile.mBytes, vcaFile.mLength);
+					if (ca_cert)
+					{
+						X509_STORE* store = SSL_CTX_get_cert_store(vXCTX);
+						if (store)
+						{
+							iResult = X509_STORE_add_cert(store, ca_cert);
+						}
+						X509_free(ca_cert);
+					}
+				}
+			}
+			else if (vcaPath.mLength)
+			{
+				// Use file-based CA path loading (for backward compatibility)
+				iResult = SSL_CTX_load_verify_locations(vXCTX, NULL, (char*)vcaPath.mBytes);
+			}
+		}
 
 		vBIO = BIO_new_ssl(vXCTX,0);
 		if (vBIO == NULL)
@@ -1495,12 +1713,12 @@ GrapaError GrapaNet::Proxy(GrapaCHAR& ptype, GrapaCHAR& pid, GrapaCHAR& ph)
 	return(err);
 }
 
-GrapaError GrapaNet::Certificate(GrapaCHAR& certFile)
+GrapaError GrapaNet::Certificate(GrapaCHAR& certData)
 {
 	GrapaError err = 0;
 	Disconnect();
-	vIsSSL = certFile.mLength!=0;
-	vCertFile.FROM(certFile);
+	vIsSSL = certData.mLength!=0;
+	vCertFile.FROM(certData);
 
 	if (!gSystem->mLinkInitialized)
 	{
@@ -1511,15 +1729,58 @@ GrapaError GrapaNet::Certificate(GrapaCHAR& certFile)
 		gSystem->mLinkInitialized = true;
 	}
 
-	if (gSystem->mLinkInitialized && certFile.mLength)
+	if (gSystem->mLinkInitialized && certData.mLength)
 	{
 		SSL_CTX* tSSL = SSL_CTX_new(TLS_server_method()); 
-		//int SSL_CTX_use_certificate_ASN1(tSSL, int len, unsigned char* d);
-		//int SSL_CTX_use_PrivateKey_ASN1(EVP_PKEY_RSA, tSSL, unsigned char* d, long len);
-		//int SSL_CTX_use_PrivateKey(tSSL, EVP_PKEY * pkey);
-		//int SSL_CTX_use_certificate(tSSL, X509 * x);;
-		//long SSL_CTX_add_extra_chain_cert(tSSL, X509 * x509);
-		err = SSL_CTX_use_certificate_chain_file(tSSL, (char*)vCertFile.mBytes);
+		
+		// Check if certData contains PEM format (starts with -----BEGIN)
+		if (certData.mLength > 11 && memcmp(certData.mBytes, "-----BEGIN", 10) == 0)
+		{
+			// Use memory-based PEM certificate loading
+			BIO* bio = BIO_new_mem_buf(certData.mBytes, certData.mLength);
+			if (bio)
+			{
+				STACK_OF(X509)* certs = sk_X509_new_null();
+				X509* cert = NULL;
+				
+				// Load certificate chain from PEM data
+				while ((cert = PEM_read_bio_X509(bio, NULL, NULL, NULL)) != NULL)
+				{
+					sk_X509_push(certs, cert);
+				}
+				
+				if (sk_X509_num(certs) > 0)
+				{
+					// Use the first certificate
+					X509* first_cert = sk_X509_value(certs, 0);
+					err = SSL_CTX_use_certificate(tSSL, first_cert);
+					
+					// Add remaining certificates to the chain
+					for (int i = 1; i < sk_X509_num(certs); i++)
+					{
+						SSL_CTX_add_extra_chain_cert(tSSL, sk_X509_value(certs, i));
+					}
+				}
+				else
+				{
+					err = -1;
+				}
+				
+				// Clean up
+				sk_X509_pop_free(certs, X509_free);
+				BIO_free(bio);
+			}
+			else
+			{
+				err = -1;
+			}
+		}
+		else
+		{
+			// Assume DER format - use ASN.1 loading
+			err = SSL_CTX_use_certificate_ASN1(tSSL, certData.mLength, (unsigned char*)certData.mBytes);
+		}
+		
 		err = (err == 1) ? 0 : -1;
 		if (err)
 		{
@@ -1531,31 +1792,128 @@ GrapaError GrapaNet::Certificate(GrapaCHAR& certFile)
 	return(err);
 }
 
-GrapaError GrapaNet::Private(GrapaCHAR& keyFile, void* passOp, void* passParam)
+GrapaError GrapaNet::Private(GrapaCHAR& keyData, void* passOp, void* passParam)
 {
 	GrapaError err = 0;
-	vKeyFile.FROM(keyFile);
+	vKeyFile.FROM(keyData);
 	vPassOp = passOp;
 	vPassParam = passParam;
-	if (gSystem->mLinkInitialized && vKeyFile.mLength)
+	if (gSystem->mLinkInitialized && keyData.mLength)
 	{
 		SSL_CTX* tSSL = SSL_CTX_new(TLS_server_method());
-		err = SSL_CTX_use_PrivateKey_file(tSSL, (char*)vKeyFile.mBytes, SSL_FILETYPE_PEM);
+		
+		// Check if keyData contains PEM format (starts with -----BEGIN)
+		if (keyData.mLength > 11 && memcmp(keyData.mBytes, "-----BEGIN", 10) == 0)
+		{
+			// Use memory-based PEM private key loading
+			BIO* bio = BIO_new_mem_buf(keyData.mBytes, keyData.mLength);
+			if (bio)
+			{
+				EVP_PKEY* pkey = PEM_read_bio_PrivateKey(bio, NULL, (pem_password_cb*)passOp, passParam);
+				if (pkey)
+				{
+					err = SSL_CTX_use_PrivateKey(tSSL, pkey);
+					EVP_PKEY_free(pkey);
+				}
+				else
+				{
+					err = -1;
+				}
+				BIO_free(bio);
+			}
+			else
+			{
+				err = -1;
+			}
+		}
+		else
+		{
+			// Assume DER format - use ASN.1 loading
+			err = SSL_CTX_use_PrivateKey_ASN1(EVP_PKEY_RSA, tSSL, (unsigned char*)keyData.mBytes, keyData.mLength);
+		}
+		
 		err = (err == 1) ? 0 : -1;
 		SSL_CTX_free(tSSL);
 	}
 	return(err);
 }
 
-GrapaError GrapaNet::Trusted(GrapaCHAR& caFile, GrapaCHAR& caPath)
+GrapaError GrapaNet::Trusted(GrapaCHAR& caData, GrapaCHAR& caPath)
 {
 	GrapaError err = 0;
-	vcaFile.FROM(caFile);
+	vcaFile.FROM(caData);
 	vcaPath.FROM(caPath);
-	if (gSystem->mLinkInitialized && (vcaFile.mLength || vcaPath.mLength))
+	if (gSystem->mLinkInitialized && (caData.mLength || caPath.mLength))
 	{
 		SSL_CTX* tSSL = SSL_CTX_new(TLS_server_method());
-		err = SSL_CTX_load_verify_locations(vXCTX, (char*)vcaFile.mBytes, (char*)vcaPath.mBytes);
+		
+		// If caData is provided, use memory-based CA loading
+		if (caData.mLength)
+		{
+			// Check if caData contains PEM format (starts with -----BEGIN)
+			if (caData.mLength > 11 && memcmp(caData.mBytes, "-----BEGIN", 10) == 0)
+			{
+				// Use memory-based PEM CA loading
+				BIO* bio = BIO_new_mem_buf(caData.mBytes, caData.mLength);
+				if (bio)
+				{
+					X509* ca_cert = NULL;
+					
+					// Load CA certificate from PEM data
+					ca_cert = PEM_read_bio_X509(bio, NULL, NULL, NULL);
+					if (ca_cert)
+					{
+						X509_STORE* store = SSL_CTX_get_cert_store(tSSL);
+						if (store)
+						{
+							err = X509_STORE_add_cert(store, ca_cert);
+						}
+						else
+						{
+							err = -1;
+						}
+						X509_free(ca_cert);
+					}
+					else
+					{
+						err = -1;
+					}
+					BIO_free(bio);
+				}
+				else
+				{
+					err = -1;
+				}
+			}
+			else
+			{
+				// Assume DER format - use ASN.1 loading
+				X509* ca_cert = d2i_X509(NULL, (const unsigned char**)&caData.mBytes, caData.mLength);
+				if (ca_cert)
+				{
+					X509_STORE* store = SSL_CTX_get_cert_store(tSSL);
+					if (store)
+					{
+						err = X509_STORE_add_cert(store, ca_cert);
+					}
+					else
+					{
+						err = -1;
+					}
+					X509_free(ca_cert);
+				}
+				else
+				{
+					err = -1;
+				}
+			}
+		}
+		else if (caPath.mLength)
+		{
+			// Use file-based CA path loading (for backward compatibility)
+			err = SSL_CTX_load_verify_locations(tSSL, NULL, (char*)caPath.mBytes);
+		}
+		
 		err = (err == 1) ? 0 : -1;
 		SSL_CTX_free(tSSL);
 	}

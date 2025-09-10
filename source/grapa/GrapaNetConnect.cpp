@@ -122,9 +122,9 @@ GrapaError GrapaNetConnect::Proxy(GrapaRuleEvent* ptype, GrapaRuleEvent* pid, Gr
 	return mNet.Proxy(ptype?ptype->mValue: blank, pid?pid->mValue: blank, ph?ph->mValue: blank);
 }
 
-GrapaError GrapaNetConnect::Certificate(GrapaRuleEvent* certFile)
+GrapaError GrapaNetConnect::Certificate(GrapaRuleEvent* certData)
 {
-	return mNet.Certificate(certFile->mValue);
+	return mNet.Certificate(certData->mValue);
 }
 
 static int static_pem_passwd_cb(char* buf, int size, int rwflag, void* u)
@@ -154,7 +154,7 @@ static int static_pem_passwd_cb(char* buf, int size, int rwflag, void* u)
 	return rlen;
 }
 
-GrapaError GrapaNetConnect::Private(GrapaScriptExec* pScriptExec, GrapaRuleEvent* keyFile, GrapaRuleEvent* passOp, GrapaRuleEvent* passParam)
+GrapaError GrapaNetConnect::Private(GrapaScriptExec* pScriptExec, GrapaRuleEvent* keyData, GrapaRuleEvent* passOp, GrapaRuleEvent* passParam)
 {
 	vScriptState = pScriptExec->vScriptState;
 	if (dPassLambda)
@@ -173,12 +173,12 @@ GrapaError GrapaNetConnect::Private(GrapaScriptExec* pScriptExec, GrapaRuleEvent
 	}
 	if (passParam)
 		dPassParam = vScriptState->vScriptExec->CopyItem(passParam);
-	return mNet.Private(keyFile->mValue, (void*)static_pem_passwd_cb, (void*)this);
+	return mNet.Private(keyData->mValue, (void*)static_pem_passwd_cb, (void*)this);
 }
 
-GrapaError GrapaNetConnect::Trusted(GrapaRuleEvent* caFile, GrapaRuleEvent* caPath)
+GrapaError GrapaNetConnect::Trusted(GrapaRuleEvent* caData, GrapaRuleEvent* caPath)
 {
-	return mNet.Trusted(caFile->mValue, caPath->mValue);
+	return mNet.Trusted(caData->mValue, caPath->mValue);
 }
 
 GrapaError GrapaNetConnect::Verify(GrapaCHAR& cert)

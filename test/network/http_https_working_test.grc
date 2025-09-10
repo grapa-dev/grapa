@@ -18,7 +18,8 @@ if(err.type() != $ERR) {
 
 "Testing HTTPS GET...\n".echo();
 $local.clientb = $net();
-$local.err2 = clientb.connect('https://httpbin.org', "keys/client.crt", null);
+certData = $file().get("keys/client.crt");
+$local.err2 = clientb.connect('https://httpbin.org', certData, null);
 if(err2.type() != $ERR) {
     "HTTPS connection successful\n".echo();
     clientb.send('GET / HTTP/1.1\r\nHost: httpbin.org\r\nConnection: close\r\n\r\n');

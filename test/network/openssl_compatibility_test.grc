@@ -16,7 +16,8 @@ test_certificate_loading = op() {
     
     /* Test client certificate loading - skip if file doesn't exist */
     if ($file().exists("keys/client.crt")) {
-        result = n.certificate("keys/client.crt");
+        certData = $file().get("keys/client.crt");
+        result = n.certificate(certData);
         ("Certificate loading result: " + result).echo();
     } else {
         "Certificate file not found, skipping certificate test".echo();
@@ -24,7 +25,8 @@ test_certificate_loading = op() {
     
     /* Test private key loading - skip if file doesn't exist */
     if ($file().exists("keys/client.key")) {
-        result = n.private("keys/client.key", null, null);
+        keyData = $file().get("keys/client.key");
+        result = n.private(keyData, null, null);
         ("Private key loading result: " + result).echo();
     } else {
         "Private key file not found, skipping private key test".echo();
@@ -32,7 +34,8 @@ test_certificate_loading = op() {
     
     /* Test trusted CA loading - skip if file doesn't exist */
     if ($file().exists("keys/ca.crt")) {
-        result = n.trusted("keys/ca.crt", "");
+        caData = $file().get("keys/ca.crt");
+        result = n.trusted(caData, "");
         ("Trusted CA loading result: " + result).echo();
     } else {
         "CA certificate file not found, skipping CA test".echo();
@@ -113,8 +116,10 @@ test_client_cert_auth = op() {
     
     /* Load client certificate and private key - skip if files don't exist */
     if ($file().exists("keys/client.crt") && $file().exists("keys/client.key")) {
-        n.certificate("keys/client.crt");
-        n.private("keys/client.key", null, null);
+        certData = $file().get("keys/client.crt");
+        keyData = $file().get("keys/client.key");
+        n.certificate(certData);
+        n.private(keyData, null, null);
         
         /* Test connection with client certificate */
         err = n.connect("httpbin.org:443", null, null);
@@ -195,7 +200,8 @@ test_certificate_chain = op() {
     
     /* Load trusted CA certificates - skip if file doesn't exist */
     if ($file().exists("keys/ca.crt")) {
-        n.trusted("keys/ca.crt", "");
+        caData = $file().get("keys/ca.crt");
+        n.trusted(caData, "");
         
         /* Test connection with full chain validation */
         err = n.connect("httpbin.org:443", null, null);
@@ -238,7 +244,10 @@ test_ssl_error_handling = op() {
     ("Invalid cert connection result: " + err).echo();
     
     /* Test connection with invalid private key */
-    n.certificate("keys/client.crt");
+    if ($file().exists("keys/client.crt")) {
+        certData = $file().get("keys/client.crt");
+        n.certificate(certData);
+    };
     err = n.private("invalid-key.key", null, null);
     ("Invalid key loading result: " + err).echo();
     

@@ -42,7 +42,8 @@ if(err.type() != $ERR) {
 /* Test 3: HTTPS GET Request (with certificate) */
 "Test 3: HTTPS GET Request (with certificate)\n".echo();
 clienta = $net();
-err = clienta.connect('https://httpbin.org/get', "keys/client.crt", null);
+certData = $file().get("keys/client.crt");
+err = clienta.connect('https://httpbin.org/get', certData, null);
 if(err.type() != $ERR) {
     "HTTPS connection successful (with cert)\n".echo();
     clienta.send('GET / HTTP/1.1\r\nHost: httpbin.org\r\nConnection: close\r\n\r\n');

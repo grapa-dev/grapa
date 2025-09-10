@@ -1,0 +1,13 @@
+/*
+Simple CLI test to verify $sys().getenv("$ARGV") works
+*/
+
+args = $sys().getenv("$ARGV");
+"CLI Test - Arguments received:".echo();
+args.str().echo();
+
+if (args.len() > 0) {
+    "First argument: ${args[0]}".interpolate().echo();
+} else {
+    "No arguments provided".echo();
+}

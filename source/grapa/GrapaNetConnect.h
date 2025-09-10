@@ -35,9 +35,9 @@ public:
 	virtual GrapaError Disconnect();
 
 	virtual GrapaError Proxy(GrapaRuleEvent* ptype, GrapaRuleEvent* pid, GrapaRuleEvent* ph);
-	virtual GrapaError Certificate(GrapaRuleEvent* certFile);
-	virtual GrapaError Private(GrapaScriptExec* pScriptExec, GrapaRuleEvent* keyFile, GrapaRuleEvent* passOp, GrapaRuleEvent* passParam);
-	virtual GrapaError Trusted(GrapaRuleEvent* caFile, GrapaRuleEvent* caPath);
+	virtual GrapaError Certificate(GrapaRuleEvent* certData);
+	virtual GrapaError Private(GrapaScriptExec* pScriptExec, GrapaRuleEvent* keyData, GrapaRuleEvent* passOp, GrapaRuleEvent* passParam);
+	virtual GrapaError Trusted(GrapaRuleEvent* caData, GrapaRuleEvent* caPath);
 	virtual GrapaError Verify(GrapaCHAR& cert);
 	virtual GrapaRuleQueue* Chain();
 	static GrapaRuleQueue* Decode(const GrapaCHAR& cert);
