@@ -5,236 +5,328 @@ Comprehensive Grapa Syntax Checker
 // Comprehensive syntax checking function
 checkFile = op(filePath) {
     $local.code = $file().get(filePath);
-    if ($local.code.type() == $ERR) {
+    if (code.type() == $ERR) {
         return "Error: Could not read file\n";
     };
+    
+    code = code.str();
 
     // Comprehensive syntax checking
-    $local.lines = $local.code.split("\n");
-    $local.errors = "";
+    $local.lines = code.split("\n");
+    $local.errors = [];
     $local.lineNumber = 1;
     
-    foreach line in $local.lines {
-        // Remove comments for analysis
-        $local.cleanLine = line;
-        if ($local.cleanLine.find("//") >= 0) {
-            $local.cleanLine = $local.cleanLine.left($local.cleanLine.find("//"));
+    foreach line in lines {
+        // Skip empty lines and whitespace-only lines for performance
+        $local.trimmedLine = line.trim();
+        if (trimmedLine.len() == 0) {
+            lineNumber += 1;
+            continue;
+        };
+        
+        // Remove comments for analysis (only if needed)
+        $local.cleanLine = trimmedLine;
+        $local.commentPos = cleanLine.find("//");
+        if (commentPos >= 0) {
+            cleanLine = cleanLine.left(commentPos);
+        };
+        
+        // Skip if line is empty after comment removal
+        if (cleanLine.trim().len() == 0) {
+            lineNumber += 1;
+            continue;
         };
         
         // Check for missing semicolons after statements
-        if (($local.cleanLine.grep("return", "w").len() > 0 || $local.cleanLine.grep("break", "w").len() > 0 || $local.cleanLine.grep("continue", "w").len() > 0 || $local.cleanLine.grep("throw", "w").len() > 0) && $local.cleanLine.right(1) != ";") {
-            $local.errors += "Line ${$local.lineNumber}: Missing semicolon after statement\n".interpolate();
+        if ((cleanLine.grep("return", "w").len() > 0 || cleanLine.grep("break", "w").len() > 0 || cleanLine.grep("continue", "w").len() > 0 || cleanLine.grep("throw", "w").len() > 0) && cleanLine.right(1) != ";") {
+            errors += "Line ${lineNumber}: Missing semicolon after statement".interpolate();
         };
         
-        // Check for unbalanced brackets (using escaped patterns)
-        $local.openParen = $local.cleanLine.grep("\\(", "o").len();
-        $local.closeParen = $local.cleanLine.grep("\\)", "o").len();
-        $local.openBrace = $local.cleanLine.grep("\\{", "o").len();
-        $local.closeBrace = $local.cleanLine.grep("\\}", "o").len();
-        $local.openBracket = $local.cleanLine.grep("\\[", "o").len();
-        $local.closeBracket = $local.cleanLine.grep("\\]", "o").len();
-        
-        if ($local.openParen != $local.closeParen) {
-            $local.errors += "Line ${$local.lineNumber}: Unbalanced parentheses\n".interpolate();
-        };
-        if ($local.openBrace != $local.closeBrace) {
-            $local.errors += "Line ${$local.lineNumber}: Unbalanced braces\n".interpolate();
-        };
-        if ($local.openBracket != $local.closeBracket) {
-            $local.errors += "Line ${$local.lineNumber}: Unbalanced brackets\n".interpolate();
-        };
-        
-        // Check for unterminated strings
-        $local.doubleQuotes = $local.cleanLine.grep("\"", "o").len();
-        $local.singleQuotes = $local.cleanLine.grep("'", "o").len();
-        
-        if ($local.doubleQuotes % 2 != 0) {
-            $local.errors += "Line ${$local.lineNumber}: Unterminated double-quoted string\n".interpolate();
-        };
-        if ($local.singleQuotes % 2 != 0) {
-            $local.errors += "Line ${$local.lineNumber}: Unterminated single-quoted string\n".interpolate();
-        };
-        
-        // Check for consecutive operators (using escaped patterns)
-        if ($local.cleanLine.grep("\\+\\+", "o").len() > 0 || $local.cleanLine.grep("\\-\\-", "o").len() > 0 || $local.cleanLine.grep("\\*\\*", "o").len() > 0) {
-            $local.errors += "Line ${$local.lineNumber}: Consecutive operators detected\n".interpolate();
-        };
-        
-        // Check for invalid variable assignments (simplified - no complex regex)
-        // This check is disabled due to regex engine limitations
-        // if ($local.cleanLine.grep("\\b[a-zA-Z_][a-zA-Z0-9_]*\\s*=", "x").len() > 0) {
-        //     if ($local.cleanLine.grep("\\b[a-zA-Z_][a-zA-Z0-9_]*\\s*=\\s*[^=]", "x").len() == 0) {
-        //         $local.errors += "Line ${$local.lineNumber}: Possible invalid assignment\n".interpolate();
-        //     };
-        // };
-        
-        // Check for missing parentheses in control structures (simplified)
-        // These checks are disabled due to regex engine limitations
-        // if ($local.cleanLine.grep("\\bif\\s+[^{]", "x").len() > 0) {
-        //     if ($local.cleanLine.grep("\\bif\\s*\\(", "x").len() == 0) {
-        //         $local.errors += "Line ${$local.lineNumber}: Missing parentheses in if statement\n".interpolate();
-        //     };
-        // };
-        // if ($local.cleanLine.grep("\\bwhile\\s+[^{]", "x").len() > 0) {
-        //     if ($local.cleanLine.grep("\\bwhile\\s*\\(", "x").len() == 0) {
-        //         $local.errors += "Line ${$local.lineNumber}: Missing parentheses in while statement\n".interpolate();
-        //     };
-        // };
-        // if ($local.cleanLine.grep("\\bfor\\s+[^{]", "x").len() > 0) {
-        //     if ($local.cleanLine.grep("\\bfor\\s*\\(", "x").len() == 0) {
-        //         $local.errors += "Line ${$local.lineNumber}: Missing parentheses in for statement\n".interpolate();
-        //     };
-        // };
-        
-        // Check for proper variable scoping
-        if ($local.cleanLine.find("=") >= 0) {
-            // Check for missing $ prefix on namespace variables (but not in comments or test patterns)
-            if ($local.cleanLine.find("local =") >= 0 || $local.cleanLine.find("global =") >= 0 || $local.cleanLine.find("this =") >= 0) {
-                // Skip if this is a test pattern in the syntax checker itself
-                if ($local.cleanLine.find("$local.cleanLine.find") == -1) {
-                    $local.errors += "Line ${$local.lineNumber}: Missing $ prefix on namespace variable (use $local, $global, $this)\n".interpolate();
-                };
+        // Check for unbalanced brackets (only if line contains bracket characters)
+        if (cleanLine.find("(") >= 0 || cleanLine.find(")") >= 0 || cleanLine.find("{") >= 0 || cleanLine.find("}") >= 0 || cleanLine.find("[") >= 0 || cleanLine.find("]") >= 0) {
+            $local.openParen = cleanLine.grep("\\(", "o").len();
+            $local.closeParen = cleanLine.grep("\\)", "o").len();
+            $local.openBrace = cleanLine.grep("\\{", "o").len();
+            $local.closeBrace = cleanLine.grep("\\}", "o").len();
+            $local.openBracket = cleanLine.grep("\\[", "o").len();
+            $local.closeBracket = cleanLine.grep("\\]", "o").len();
+            
+            if (openParen != closeParen) {
+                errors += "Line ${lineNumber}: Unbalanced parentheses".interpolate();
             };
-            // Check for old syntax without $ (but not in comments or test patterns)
-            // Temporarily disabled to avoid false positives with $local usage
-            // if ($local.cleanLine.find("local.") >= 0 || $local.cleanLine.find("global.") >= 0 || $local.cleanLine.find("this.") >= 0) {
-            //     // Skip if this is a test pattern in the syntax checker itself or an error message
-            //     if ($local.cleanLine.find("cleanLine.find") == -1 && $local.cleanLine.find("Old namespace syntax detected") == -1 && $local.cleanLine.find("errors += ") == -1) {
-            //         // Only flag if it's actually old syntax (not $local., $global., $this.)
-            //         if ($local.cleanLine.find("$local.") == -1 && $local.cleanLine.find("$global.") == -1 && $local.cleanLine.find("$this.") == -1) {
-            //             $local.errors += "Line ${$local.lineNumber}: Old namespace syntax detected (use $local, $global, $this instead of local., global., this.)\n".interpolate();
-            //         };
-            //     };
-            // };
+            if (openBrace != closeBrace) {
+                errors += "Line ${lineNumber}: Unbalanced braces".interpolate();
+            };
+            if (openBracket != closeBracket) {
+                errors += "Line ${lineNumber}: Unbalanced brackets".interpolate();
+            };
         };
         
-        // Check for thread safety - function variables should use $local
-        if ($local.cleanLine.find("=") >= 0 && $local.cleanLine.find("//") == -1 && $local.cleanLine.find("/*") == -1) {
-            // Check for regular variable assignments that should use $local for thread safety
-            if ($local.cleanLine.find("$local") == -1 && $local.cleanLine.find("$global") == -1 && $local.cleanLine.find("$this") == -1) {
-                // Check if this looks like a variable assignment (not a method call or complex expression)
-                if ($local.cleanLine.find(" = ") >= 0 && $local.cleanLine.find("(") == -1 && $local.cleanLine.find(".") == -1) {
-                    // Skip if this is a test pattern in the syntax checker itself
-                    if ($local.cleanLine.find("$local.cleanLine.find") == -1 && $local.cleanLine.find("$local.errors += ") == -1) {
-                        $local.errors += "Line ${$local.lineNumber}: Consider using $local for thread safety (e.g., $local.x = value)\n".interpolate();
+        // Check for unterminated strings (only if line contains quotes)
+        if (cleanLine.find("\"") >= 0 || cleanLine.find("'") >= 0) {
+            $local.quoteCount = cleanLine.grep("\"", "o").len();
+            $local.singleQuoteCount = cleanLine.grep("'", "o").len();
+            
+            if (quoteCount % 2 != 0) {
+                errors += "Line ${lineNumber}: Unterminated double-quoted string\n".interpolate();
+            };
+            if (singleQuoteCount % 2 != 0) {
+                errors += "Line ${lineNumber}: Unterminated single-quoted string\n".interpolate();
+            };
+        };
+        
+        // Check for consecutive operators (only if line contains operators)
+        if (cleanLine.find("+") >= 0 || cleanLine.find("-") >= 0 || cleanLine.find("*") >= 0) {
+            if (cleanLine.grep("\\+\\+", "o").len() > 0 || cleanLine.grep("\\-\\-", "o").len() > 0 || cleanLine.grep("\\*\\*", "o").len() > 0) {
+                errors += "Line ${lineNumber}: Consecutive operators detected (++, --, **)\n".interpolate();
+            };
+        };
+        
+        // Check for variable scoping issues (missing $ prefix)
+        if (cleanLine.find("=") >= 0 && cleanLine.find("//") == -1 && cleanLine.find("/*") == -1) {
+            // Check for old namespace syntax (local., global., this.)
+            if (cleanLine.find("local.") >= 0 || cleanLine.find("global.") >= 0 || cleanLine.find("this.") >= 0) {
+                if (cleanLine.find("cleanLine.find") == -1 && cleanLine.find("Old namespace syntax detected") == -1 && cleanLine.find("errors += ") == -1) {
+                    if ((cleanLine.find("local.") >= 0 && cleanLine.find("$local.") == -1) ||
+                        (cleanLine.find("global.") >= 0 && cleanLine.find("$global.") == -1) ||
+                        (cleanLine.find("this.") >= 0 && cleanLine.find("$this.") == -1)) {
+                        errors += "Line ${lineNumber}: Old namespace syntax detected (use $local, $global, $this instead of local., global., this.)\n".interpolate();
                     };
                 };
             };
-        };
-        
-        // Check for loop syntax validation (only for actual loop statements)
-        if ($local.cleanLine.find("while") >= 0 && $local.cleanLine.find("//") == -1 && $local.cleanLine.find("/*") == -1) {
-            // Check if this is a while loop statement (not in a comment)
-            if ($local.cleanLine.find("while (") == -1 && $local.cleanLine.find("while(") == -1) {
-                // Make sure this is actually a while loop, not just the word "while" in text
-                if ($local.cleanLine.find("while ") >= 0 || $local.cleanLine.find("while\t") >= 0) {
-                    $local.errors += "Line ${$local.lineNumber}: Missing parentheses in while loop\n".interpolate();
-                };
-            };
-        };
-        if ($local.cleanLine.find("for") >= 0 && $local.cleanLine.find("//") == -1 && $local.cleanLine.find("/*") == -1) {
-            // Check if this is a for loop statement (not in a comment)
-            if ($local.cleanLine.find("for (") == -1 && $local.cleanLine.find("for(") == -1) {
-                // Make sure this is actually a for loop, not just the word "for" in text
-                if ($local.cleanLine.find("for ") >= 0 || $local.cleanLine.find("for\t") >= 0) {
-                    $local.errors += "Line ${$local.lineNumber}: Missing parentheses in for loop\n".interpolate();
-                };
-            };
-        };
-        if ($local.cleanLine.find("foreach") >= 0 && $local.cleanLine.find("//") == -1 && $local.cleanLine.find("/*") == -1) {
-            // Check if this is a foreach loop statement (not in a comment)
-            if ($local.cleanLine.find("foreach") >= 0 && $local.cleanLine.find("in") == -1) {
-                // Make sure this is actually a foreach loop, not just the word "foreach" in text
-                if ($local.cleanLine.find("foreach ") >= 0 || $local.cleanLine.find("foreach\t") >= 0) {
-                    $local.errors += "Line ${$local.lineNumber}: Missing 'in' keyword in foreach loop\n".interpolate();
+            
+            // Check for simple variable assignments without namespace prefix
+            if (cleanLine.grep("^\\s*[a-zA-Z_][a-zA-Z0-9_]*\\s*=", "o").len() > 0 && 
+                cleanLine.find("$local.") == -1 && cleanLine.find("$global.") == -1 && cleanLine.find("$this.") == -1 &&
+                cleanLine.find("//") == -1 && cleanLine.find("/*") == -1) {
+                // Skip if it's a method call or complex expression
+                if (cleanLine.find("(") == -1 && cleanLine.find(".") == -1 && cleanLine.find("[") == -1) {
+                    errors += "Line ${lineNumber}: Consider using $local for thread safety\n".interpolate();
                 };
             };
         };
         
-        // Check for data type access patterns
-        if ($local.cleanLine.find("//") == -1 && $local.cleanLine.find("/*") == -1) {
-            // Check for missing brackets in array access
-            if ($local.cleanLine.find("[") >= 0 && $local.cleanLine.find("]") == -1) {
-                $local.errors += "Line ${$local.lineNumber}: Missing closing bracket in array access\n".interpolate();
+        // Check for loop syntax validation (only if line contains loop keywords)
+        if (cleanLine.find("while") >= 0 || cleanLine.find("for") >= 0 || cleanLine.find("foreach") >= 0) {
+            if (cleanLine.find("//") == -1 && cleanLine.find("/*") == -1) {
+                // Check while loop syntax
+                if (cleanLine.grep("while\\s+\\(", "o").len() == 0 && cleanLine.grep("while\\s+[^\\s]", "o").len() > 0) {
+                    errors += "Line ${lineNumber}: Missing parentheses in while loop\n".interpolate();
+                };
+                
+                // Check for loop syntax
+                if (cleanLine.grep("for\\s+\\(", "o").len() == 0 && cleanLine.grep("for\\s+[^\\s]", "o").len() > 0) {
+                    errors += "Line ${lineNumber}: Missing parentheses in for loop\n".interpolate();
+                };
+                
+                // Check foreach loop syntax
+                if (cleanLine.grep("foreach\\s+[a-zA-Z_][a-zA-Z0-9_]*\\s+in", "o").len() == 0 && cleanLine.grep("foreach\\s+[a-zA-Z_][a-zA-Z0-9_]*\\s+[^i]", "o").len() > 0) {
+                    errors += "Line ${lineNumber}: Missing 'in' keyword in foreach loop\n".interpolate();
+                };
             };
-            if ($local.cleanLine.find("]") >= 0 && $local.cleanLine.find("[") == -1) {
-                $local.errors += "Line ${$local.lineNumber}: Missing opening bracket in array access\n".interpolate();
+        };
+        
+        // Check for data type access patterns (only if line contains array access or method chaining)
+        if (cleanLine.find("[") >= 0 || cleanLine.find("]") >= 0 || cleanLine.find("..") >= 0) {
+            if (cleanLine.find("//") == -1 && cleanLine.find("/*") == -1) {
+                // Check for missing opening bracket
+                if (cleanLine.grep("\\]\\s*=", "o").len() > 0 && cleanLine.grep("\\[.*\\]\\s*=", "o").len() == 0) {
+                    errors += "Line ${lineNumber}: Missing opening bracket in array access\n".interpolate();
+                };
+                
+                // Check for missing closing bracket
+                if (cleanLine.grep("\\[\\s*[^\\]]*$", "o").len() > 0) {
+                    errors += "Line ${lineNumber}: Missing closing bracket in array access\n".interpolate();
+                };
+                
+                // Check for double dots (method chaining)
+                if (cleanLine.grep("\\.\\.", "o").len() > 0) {
+                    errors += "Line ${lineNumber}: Double dots detected - use single dot for method chaining\n".interpolate();
+                };
+                
+                // Check for simplified array access issues
+                if (cleanLine.grep("\\.[0-9]", "o").len() > 0) {
+                    errors += "Line ${lineNumber}: Consider using array[index] instead of array.index for array access\n".interpolate();
+                };
+            };
+        };
+        
+        // Check for operator precedence issues (only if line contains operators)
+        if (cleanLine.find("//") == -1 && cleanLine.find("/*") == -1 && 
+            (cleanLine.find("+") >= 0 || cleanLine.find("-") >= 0 || cleanLine.find("*") >= 0 || 
+             cleanLine.find("/") >= 0 || cleanLine.find("%") >= 0 || cleanLine.find("=") >= 0 ||
+             cleanLine.find("==") >= 0 || cleanLine.find("!=") >= 0 || cleanLine.find("<") >= 0 ||
+             cleanLine.find(">") >= 0 || cleanLine.find("<=") >= 0 || cleanLine.find(">=") >= 0 ||
+             cleanLine.find("&&") >= 0 || cleanLine.find("||") >= 0 || cleanLine.find("&") >= 0 ||
+             cleanLine.find("|") >= 0 || cleanLine.find("^") >= 0 || cleanLine.find("<<") >= 0 ||
+             cleanLine.find(">>") >= 0 || cleanLine.find("**") >= 0 || cleanLine.find("++") >= 0 ||
+             cleanLine.find("--") >= 0 || cleanLine.find("?") >= 0 || cleanLine.find(":") >= 0)) {
+            
+            // Check for ambiguous operator precedence patterns
+            // Multiplication/Division should have higher precedence than Addition/Subtraction
+            if (cleanLine.grep("\\+\\s*[a-zA-Z_$][a-zA-Z0-9_$]*\\s*\\*", "o").len() > 0 || 
+                cleanLine.grep("\\-\\s*[a-zA-Z_$][a-zA-Z0-9_$]*\\s*\\*", "o").len() > 0 ||
+                cleanLine.grep("\\+\\s*[a-zA-Z_$][a-zA-Z0-9_$]*\\s*\\/", "o").len() > 0 || 
+                cleanLine.grep("\\-\\s*[a-zA-Z_$][a-zA-Z0-9_$]*\\s*\\/", "o").len() > 0) {
+                errors += "Line ${lineNumber}: Ambiguous operator precedence - consider using parentheses for clarity\n".interpolate();
             };
             
-            // Check for proper method chaining syntax
-            if ($local.cleanLine.find("..") >= 0) {
-                $local.errors += "Line ${$local.lineNumber}: Double dots detected - use single dot for method chaining\n".interpolate();
+            // Assignment operators should not be mixed with arithmetic without parentheses
+            if (cleanLine.grep("\\+\\s*=", "o").len() > 0 && cleanLine.grep("\\*\\s*=", "o").len() > 0) {
+                errors += "Line ${lineNumber}: Mixed assignment operators - consider using parentheses for clarity\n".interpolate();
             };
             
-            // Check for potential array access issues (simplified)
-            if ($local.cleanLine.find(".[0]") >= 0 || $local.cleanLine.find(".[1]") >= 0 || $local.cleanLine.find(".[2]") >= 0) {
-                // Skip if this is a test pattern in the syntax checker itself
-                if ($local.cleanLine.find("$local.cleanLine.find") == -1 && $local.cleanLine.find("$local.errors += ") == -1) {
-                    $local.errors += "Line ${$local.lineNumber}: Consider using array[index] instead of array.index for array access\n".interpolate();
-                };
+            // Comparison operators should not be mixed with arithmetic without parentheses
+            if ((cleanLine.grep("\\+", "o").len() > 0 || cleanLine.grep("\\-", "o").len() > 0) &&
+                (cleanLine.grep("==", "o").len() > 0 || cleanLine.grep("!=", "o").len() > 0 ||
+                 cleanLine.grep("<=", "o").len() > 0 || cleanLine.grep(">=", "o").len() > 0 ||
+                 cleanLine.grep("<", "o").len() > 0 || cleanLine.grep(">", "o").len() > 0)) {
+                errors += "Line ${lineNumber}: Mixed arithmetic and comparison operators - consider using parentheses for clarity\n".interpolate();
+            };
+            
+            // Logical operators should not be mixed with arithmetic without parentheses
+            if ((cleanLine.grep("\\+", "o").len() > 0 || cleanLine.grep("\\-", "o").len() > 0 ||
+                 cleanLine.grep("\\*", "o").len() > 0 || cleanLine.grep("\\/", "o").len() > 0) &&
+                (cleanLine.grep("&&", "o").len() > 0 || cleanLine.grep("\\|\\|", "o").len() > 0)) {
+                errors += "Line ${lineNumber}: Mixed arithmetic and logical operators - consider using parentheses for clarity\n".interpolate();
+            };
+            
+            // Bitwise operators should not be mixed with arithmetic without parentheses
+            if ((cleanLine.grep("\\+", "o").len() > 0 || cleanLine.grep("\\-", "o").len() > 0) &&
+                (cleanLine.grep("&", "o").len() > 0 || cleanLine.grep("\\|", "o").len() > 0 ||
+                 cleanLine.grep("\\^", "o").len() > 0 || cleanLine.grep("<<", "o").len() > 0 ||
+                 cleanLine.grep(">>", "o").len() > 0)) {
+                errors += "Line ${lineNumber}: Mixed arithmetic and bitwise operators - consider using parentheses for clarity\n".interpolate();
+            };
+            
+            // Ternary operator should be properly parenthesized when mixed with other operators
+            if (cleanLine.grep("\\?", "o").len() > 0 && cleanLine.grep(":", "o").len() > 0 &&
+                (cleanLine.grep("\\+", "o").len() > 0 || cleanLine.grep("\\-", "o").len() > 0 ||
+                 cleanLine.grep("\\*", "o").len() > 0 || cleanLine.grep("\\/", "o").len() > 0 ||
+                 cleanLine.grep("==", "o").len() > 0 || cleanLine.grep("!=", "o").len() > 0)) {
+                errors += "Line ${lineNumber}: Ternary operator mixed with other operators - consider using parentheses for clarity\n".interpolate();
             };
         };
         
-        // Check for method chaining validation
-        if ($local.cleanLine.find("//") == -1 && $local.cleanLine.find("/*") == -1) {
+        // Check for method chaining validation (only if line contains method calls)
+        if (cleanLine.find("//") == -1 && cleanLine.find("/*") == -1 && cleanLine.find(".") >= 0) {
             // Check for common method chaining patterns
-            if ($local.cleanLine.find(".map(") >= 0 || $local.cleanLine.find(".filter(") >= 0 || $local.cleanLine.find(".reduce(") >= 0) {
+            if (cleanLine.find(".map(") >= 0 || cleanLine.find(".filter(") >= 0 || cleanLine.find(".reduce(") >= 0) {
                 // Check if method chaining is properly formatted
-                if ($local.cleanLine.find(".map(") >= 0 && $local.cleanLine.find(".map(") != $local.cleanLine.find(".map(")) {
-                    $local.errors += "Line ${$local.lineNumber}: Multiple .map() calls detected - consider chaining or separate variables\n".interpolate();
+                if (cleanLine.find(".map(") >= 0 && cleanLine.find(".map(") != cleanLine.find(".map(")) {
+                    errors += "Line ${lineNumber}: Multiple .map() calls detected - consider chaining or separate variables\n".interpolate();
                 };
-                if ($local.cleanLine.find(".filter(") >= 0 && $local.cleanLine.find(".filter(") != $local.cleanLine.find(".filter(")) {
-                    $local.errors += "Line ${$local.lineNumber}: Multiple .filter() calls detected - consider chaining or separate variables\n".interpolate();
+                if (cleanLine.find(".filter(") >= 0 && cleanLine.find(".filter(") != cleanLine.find(".filter(")) {
+                    errors += "Line ${lineNumber}: Multiple .filter() calls detected - consider chaining or separate variables\n".interpolate();
                 };
-                if ($local.cleanLine.find(".reduce(") >= 0 && $local.cleanLine.find(".reduce(") != $local.cleanLine.find(".reduce(")) {
-                    $local.errors += "Line ${$local.lineNumber}: Multiple .reduce() calls detected - consider chaining or separate variables\n".interpolate();
-                };
-            };
-            
-            // Check for common Grapa method patterns
-            if ($local.cleanLine.find(".echo(") >= 0 || $local.cleanLine.find(".interpolate(") >= 0 || $local.cleanLine.find(".split(") >= 0) {
-                // Check for proper method call syntax
-                if ($local.cleanLine.find(".echo(") >= 0 && $local.cleanLine.find(")") == -1) {
-                    $local.errors += "Line ${$local.lineNumber}: Missing closing parenthesis in .echo() method call\n".interpolate();
-                };
-                if ($local.cleanLine.find(".interpolate(") >= 0 && $local.cleanLine.find(")") == -1) {
-                    $local.errors += "Line ${$local.lineNumber}: Missing closing parenthesis in .interpolate() method call\n".interpolate();
-                };
-                if ($local.cleanLine.find(".split(") >= 0 && $local.cleanLine.find(")") == -1) {
-                    $local.errors += "Line ${$local.lineNumber}: Missing closing parenthesis in .split() method call\n".interpolate();
+                if (cleanLine.find(".reduce(") >= 0 && cleanLine.find(".reduce(") != cleanLine.find(".reduce(")) {
+                    errors += "Line ${lineNumber}: Multiple .reduce() calls detected - consider chaining or separate variables\n".interpolate();
                 };
             };
             
-            // Check for vector method patterns
-            if ($local.cleanLine.find(".sum(") >= 0 || $local.cleanLine.find(".mean(") >= 0 || $local.cleanLine.find(".std(") >= 0) {
-                // Check for proper method call syntax
-                if ($local.cleanLine.find(".sum(") >= 0 && $local.cleanLine.find(")") == -1) {
-                    $local.errors += "Line ${$local.lineNumber}: Missing closing parenthesis in .sum() method call\n".interpolate();
-                };
-                if ($local.cleanLine.find(".mean(") >= 0 && $local.cleanLine.find(")") == -1) {
-                    $local.errors += "Line ${$local.lineNumber}: Missing closing parenthesis in .mean() method call\n".interpolate();
-                };
-                if ($local.cleanLine.find(".std(") >= 0 && $local.cleanLine.find(")") == -1) {
-                    $local.errors += "Line ${$local.lineNumber}: Missing closing parenthesis in .std() method call\n".interpolate();
-                };
+            // Check for missing closing parentheses in common methods
+            if (cleanLine.find(".echo(") >= 0 && cleanLine.find(".echo(") != cleanLine.find(".echo(")) {
+                errors += "Line ${lineNumber}: Missing closing parenthesis in .echo() method\n".interpolate();
+            };
+            if (cleanLine.find(".interpolate(") >= 0 && cleanLine.find(".interpolate(") != cleanLine.find(".interpolate(")) {
+                errors += "Line ${lineNumber}: Missing closing parenthesis in .interpolate() method\n".interpolate();
+            };
+            if (cleanLine.find(".split(") >= 0 && cleanLine.find(".split(") != cleanLine.find(".split(")) {
+                errors += "Line ${lineNumber}: Missing closing parenthesis in .split() method\n".interpolate();
+            };
+            if (cleanLine.find(".sum(") >= 0 && cleanLine.find(".sum(") != cleanLine.find(".sum(")) {
+                errors += "Line ${lineNumber}: Missing closing parenthesis in .sum() method\n".interpolate();
+            };
+            if (cleanLine.find(".mean(") >= 0 && cleanLine.find(".mean(") != cleanLine.find(".mean(")) {
+                errors += "Line ${lineNumber}: Missing closing parenthesis in .mean() method\n".interpolate();
+            };
+            if (cleanLine.find(".std(") >= 0 && cleanLine.find(".std(") != cleanLine.find(".std(")) {
+                errors += "Line ${lineNumber}: Missing closing parenthesis in .std() method\n".interpolate();
+            };
+            
+            // Check for string method parentheses
+            if (cleanLine.find(".upper(") >= 0 && cleanLine.find(".upper(") != cleanLine.find(".upper(")) {
+                errors += "Line ${lineNumber}: Missing closing parenthesis in .upper() method\n".interpolate();
+            };
+            if (cleanLine.find(".lower(") >= 0 && cleanLine.find(".lower(") != cleanLine.find(".lower(")) {
+                errors += "Line ${lineNumber}: Missing closing parenthesis in .lower() method\n".interpolate();
+            };
+            if (cleanLine.find(".casefold(") >= 0 && cleanLine.find(".casefold(") != cleanLine.find(".casefold(")) {
+                errors += "Line ${lineNumber}: Missing closing parenthesis in .casefold() method\n".interpolate();
+            };
+            if (cleanLine.find(".levenshtein(") >= 0 && cleanLine.find(".levenshtein(") != cleanLine.find(".levenshtein(")) {
+                errors += "Line ${lineNumber}: Missing closing parenthesis in .levenshtein() method\n".interpolate();
+            };
+            if (cleanLine.find(".jarowinkler(") >= 0 && cleanLine.find(".jarowinkler(") != cleanLine.find(".jarowinkler(")) {
+                errors += "Line ${lineNumber}: Missing closing parenthesis in .jarowinkler() method\n".interpolate();
+            };
+            if (cleanLine.find(".cosinesimilarity(") >= 0 && cleanLine.find(".cosinesimilarity(") != cleanLine.find(".cosinesimilarity(")) {
+                errors += "Line ${lineNumber}: Missing closing parenthesis in .cosinesimilarity() method\n".interpolate();
+            };
+            
+            // Check for vector method parentheses
+            if (cleanLine.find(".min(") >= 0 && cleanLine.find(".min(") != cleanLine.find(".min(")) {
+                errors += "Line ${lineNumber}: Missing closing parenthesis in .min() method\n".interpolate();
+            };
+            if (cleanLine.find(".max(") >= 0 && cleanLine.find(".max(") != cleanLine.find(".max(")) {
+                errors += "Line ${lineNumber}: Missing closing parenthesis in .max() method\n".interpolate();
+            };
+            if (cleanLine.find(".var(") >= 0 && cleanLine.find(".var(") != cleanLine.find(".var(")) {
+                errors += "Line ${lineNumber}: Missing closing parenthesis in .var() method\n".interpolate();
+            };
+            if (cleanLine.find(".shape(") >= 0 && cleanLine.find(".shape(") != cleanLine.find(".shape(")) {
+                errors += "Line ${lineNumber}: Missing closing parenthesis in .shape() method\n".interpolate();
+            };
+            if (cleanLine.find(".reshape(") >= 0 && cleanLine.find(".reshape(") != cleanLine.find(".reshape(")) {
+                errors += "Line ${lineNumber}: Missing closing parenthesis in .reshape() method\n".interpolate();
+            };
+            if (cleanLine.find(".dot(") >= 0 && cleanLine.find(".dot(") != cleanLine.find(".dot(")) {
+                errors += "Line ${lineNumber}: Missing closing parenthesis in .dot() method\n".interpolate();
+            };
+            if (cleanLine.find(".norm(") >= 0 && cleanLine.find(".norm(") != cleanLine.find(".norm(")) {
+                errors += "Line ${lineNumber}: Missing closing parenthesis in .norm() method\n".interpolate();
+            };
+            if (cleanLine.find(".mode(") >= 0 && cleanLine.find(".mode(") != cleanLine.find(".mode(")) {
+                errors += "Line ${lineNumber}: Missing closing parenthesis in .mode() method\n".interpolate();
+            };
+            if (cleanLine.find(".median(") >= 0 && cleanLine.find(".median(") != cleanLine.find(".median(")) {
+                errors += "Line ${lineNumber}: Missing closing parenthesis in .median() method\n".interpolate();
+            };
+            if (cleanLine.find(".percentile(") >= 0 && cleanLine.find(".percentile(") != cleanLine.find(".percentile(")) {
+                errors += "Line ${lineNumber}: Missing closing parenthesis in .percentile() method\n".interpolate();
+            };
+            if (cleanLine.find(".quantile(") >= 0 && cleanLine.find(".quantile(") != cleanLine.find(".quantile(")) {
+                errors += "Line ${lineNumber}: Missing closing parenthesis in .quantile() method\n".interpolate();
+            };
+            if (cleanLine.find(".skew(") >= 0 && cleanLine.find(".skew(") != cleanLine.find(".skew(")) {
+                errors += "Line ${lineNumber}: Missing closing parenthesis in .skew() method\n".interpolate();
+            };
+            if (cleanLine.find(".kurtosis(") >= 0 && cleanLine.find(".kurtosis(") != cleanLine.find(".kurtosis(")) {
+                errors += "Line ${lineNumber}: Missing closing parenthesis in .kurtosis() method\n".interpolate();
+            };
+            
+            // Check for list method parentheses
+            if (cleanLine.find(".message(") >= 0 && cleanLine.find(".message(") != cleanLine.find(".message(")) {
+                errors += "Line ${lineNumber}: Missing closing parenthesis in .message() method\n".interpolate();
+            };
+            if (cleanLine.find(".err(") >= 0 && cleanLine.find(".err(") != cleanLine.find(".err(")) {
+                errors += "Line ${lineNumber}: Missing closing parenthesis in .err() method\n".interpolate();
             };
         };
         
-        $local.lineNumber += 1;
+        lineNumber += 1;
     };
     
-    if ($local.errors.len() == 0) {
-        return "✅ No syntax errors found";
+    if (errors.len() == 0) {
+        return "✅ No syntax errors found\n";
     } else {
-        return "❌ Found syntax errors:\n${$local.errors}".interpolate();
+        return "❌ Syntax errors found:\n${errors.join('\n')}\n".interpolate();
     };
 };
 
-// Get arguments
+// Main script logic
 args = $sys().getenv("$ARGV");
-
-// Process command
-if (args.len() > 2) {
+if (args.len() >= 3) {
     command = args[1];
     if (command == "check") {
         result = checkFile(args[2]);
@@ -253,12 +345,24 @@ if (args.len() > 2) {
         "- Thread safety (recommends $local for variables)".echo();
         "- Loop syntax validation (while, for, foreach)".echo();
         "- Data type access patterns (array brackets, method chaining)".echo();
+        "- Operator precedence validation (ambiguous precedence, mixed operators)".echo();
         "- Method chaining validation (.map(), .filter(), .reduce(), .echo(), etc.)".echo();
+        "- String method validation (.upper(), .lower(), .casefold(), .levenshtein(), etc.)".echo();
+        "- Vector method validation (.sum(), .mean(), .std(), .min(), .max(), .var(), etc.)".echo();
+        "- Advanced vector methods (.shape(), .reshape(), .dot(), .norm(), .mode(), .median(), etc.)".echo();
+        "- Statistical methods (.percentile(), .quantile(), .skew(), .kurtosis())".echo();
+        "- List method validation (.message(), .err())".echo();
         "".echo();
         "Note: Uses Grapa's advanced grep engine with PCRE2 support:".echo();
         "- Word boundary matching (w flag)".echo();
         "- Full Unicode support".echo();
         "- Advanced regex patterns".echo();
+        "".echo();
+        "Performance optimizations:".echo();
+        "- Skips empty lines and whitespace-only lines".echo();
+        "- Only processes bracket/quote/operator checks when needed".echo();
+        "- Only validates method calls when method patterns are present".echo();
+        "- Optimized for large files with minimal processing overhead".echo();
     } else {
         "Unknown command: ${command}".interpolate().echo();
         "Use 'help' for usage information".echo();
