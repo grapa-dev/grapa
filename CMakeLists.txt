@@ -2,6 +2,10 @@ cmake_minimum_required(VERSION 3.5...3.18)
 
 project(grapapy)
 
+# Set C++ standard
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
 # Handle static compilation flags
 if(UTF8PROC_STATIC)
     add_definitions(-DUtf8proc_STATIC)

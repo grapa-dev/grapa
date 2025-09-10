@@ -172,7 +172,7 @@ if sys.platform.startswith('win32'):
     so_ext = '.lib'
     lib_filename = 'grapa_static' + so_ext
     lib_pathfile = 'grapa-lib/win-amd64/' + lib_filename
-    extra_compile_args = ['/DUTF8PROC_STATIC', '/DPCRE2_STATIC']
+    extra_compile_args = ['/DUTF8PROC_STATIC', '/DPCRE2_STATIC', '/std:c++17']
     extra_link_args = ['/MANIFEST:NO']
     
     # Add UCRT include path for io.h and other Windows SDK headers
