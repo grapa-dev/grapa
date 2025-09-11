@@ -101,72 +101,90 @@ void GrapaLink::Start(bool& needExit, bool& showConsole, GrapaCHAR& outStr, Grap
 	std::vector<GrapaRuleEvent*> argv_args;
 	// First pass: collect flags and their arguments
 	while (e) {
-		if (found_c || found_f) continue;
-		if ((e->mValue.Cmp("-h") == 0) || (e->mValue.Cmp("--help") == 0)) {
-			showHelp = true;
-			needExit = true;
-		} else if ((e->mValue.Cmp("-v") == 0) || (e->mValue.Cmp("--version") == 0)) {
-			showVersion = true;
-			needExit = true;
-		} else if ((e->mValue.Cmp("-q") == 0) || (e->mValue.Cmp("--quiet") == 0)) {
-			suppressHeader = true;
-		} else if ((e->mValue.Cmp("-d") == 0) || (e->mValue.Cmp("--debug") == 0)) {
-					gSystem->mDebug.mDebugMode = true;
-		gSystem->mDebug.DebugPrint("Debug mode enabled");
-		} else if (e->mValue.Cmp("--verbose") == 0) {
-			showVersion = true;
-			gSystem->mDebug.DebugPrint("Verbose mode enabled (showing version header)");
-		/* Removed non-standard options: -o, -a */
-		} else if ((e->mValue.Cmp("-i") == 0) || (e->mValue.Cmp("--interactive") == 0)) {
-			interactiveMode = true;
-			showConsole = true;
-		} else if ((e->mValue.Cmp("--no-prompt") == 0) || (e->mValue.Cmp("--quiet-interactive") == 0)) {
-			gSystem->mSuppressPrompt = true;
-		} else if (e->mValue.Cmp("-c") == 0) {
-			found_c = true;
-			// Find the next non-flag argument as the command
-			GrapaRuleEvent* next = e->Next();
-			while (next && next->mValue.mLength > 0 && next->mValue.mBytes[0] == '-') {
-				// skip flags after -c
-				next = next->Next();
+		if (found_c || found_f)
+		{
+			positional_args.push_back(e);
+		}
+		else
+		{
+			if ((e->mValue.Cmp("-h") == 0) || (e->mValue.Cmp("--help") == 0)) {
+				showHelp = true;
+				needExit = true;
 			}
-			if (next) c_arg.FROM(next->mValue);
-			needExit = true;
-		} else if (e->mValue.Cmp("-f") == 0) {
-			found_f = true;
-			// Find the next non-flag argument as the file
-			GrapaRuleEvent* next = e->Next();
-			while (next && next->mValue.mLength > 0 && next->mValue.mBytes[0] == '-') {
-				// skip flags after -f
-				next = next->Next();
+			else if ((e->mValue.Cmp("-v") == 0) || (e->mValue.Cmp("--version") == 0)) {
+				showVersion = true;
+				needExit = true;
 			}
-			if (next) f_arg.FROM(next->mValue);
-			needExit = true;
-		/* Removed non-standard options: -s, -S (replaced with standard - option) */
-		} else if (e->mValue.Cmp("-") == 0) {
-			/* Standard stdin option (like Python/Node.js) */
-			gSystem->mDebug.DebugPrint("Executing from stdin (- option)");
-			needExit = true;
-			if (isPipeInput) {
-				char c;
-				runStr.SetLength(0);
-				while (std::cin >> c && !std::cin.eof())
-					runStr.Append((char)c);
-			} else {
-				fprintf(stderr, "Error: - option requires pipe input (e.g., echo 'command' | grapa -)\n");
-				outStr.FROM("Error: - option requires pipe input");
+			else if ((e->mValue.Cmp("-q") == 0) || (e->mValue.Cmp("--quiet") == 0)) {
+				suppressHeader = true;
+			}
+			else if ((e->mValue.Cmp("-d") == 0) || (e->mValue.Cmp("--debug") == 0)) {
+				gSystem->mDebug.mDebugMode = true;
+				gSystem->mDebug.DebugPrint("Debug mode enabled");
+			}
+			else if (e->mValue.Cmp("--verbose") == 0) {
+				showVersion = true;
+				gSystem->mDebug.DebugPrint("Verbose mode enabled (showing version header)");
+				/* Removed non-standard options: -o, -a */
+			}
+			else if ((e->mValue.Cmp("-i") == 0) || (e->mValue.Cmp("--interactive") == 0)) {
+				interactiveMode = true;
+				showConsole = true;
+			}
+			else if ((e->mValue.Cmp("--no-prompt") == 0) || (e->mValue.Cmp("--quiet-interactive") == 0)) {
+				gSystem->mSuppressPrompt = true;
+			}
+			else if (e->mValue.Cmp("-c") == 0) {
+				found_c = true;
+				// Find the next non-flag argument as the command
+				GrapaRuleEvent* next = e->Next();
+				while (next && next->mValue.mLength > 0 && next->mValue.mBytes[0] == '-') {
+					// skip flags after -c
+					next = next->Next();
+				}
+				if (next) c_arg.FROM(next->mValue);
+				needExit = true;
+			}
+			else if (e->mValue.Cmp("-f") == 0) {
+				found_f = true;
+				// Find the next non-flag argument as the file
+				GrapaRuleEvent* next = e->Next();
+				while (next && next->mValue.mLength > 0 && next->mValue.mBytes[0] == '-') {
+					// skip flags after -f
+					next = next->Next();
+				}
+				if (next) f_arg.FROM(next->mValue);
+				needExit = true;
+				/* Removed non-standard options: -s, -S (replaced with standard - option) */
+			}
+			else if (e->mValue.Cmp("-") == 0) {
+				/* Standard stdin option (like Python/Node.js) */
+				gSystem->mDebug.DebugPrint("Executing from stdin (- option)");
+				needExit = true;
+				if (isPipeInput) {
+					char c;
+					runStr.SetLength(0);
+					while (std::cin >> c && !std::cin.eof())
+						runStr.Append((char)c);
+				}
+				else {
+					fprintf(stderr, "Error: - option requires pipe input (e.g., echo 'command' | grapa -)\n");
+					outStr.FROM("Error: - option requires pipe input");
+					needExit = true;
+					return;
+				}
+			}
+			else if (e->mValue.mLength > 0 && e->mValue.mBytes[0] == '-') {
+				/* Unknown flag - show error and exit */
+				fprintf(stderr, "Error: Unknown option '%s'\n", (char*)e->mValue.mBytes);
+				fprintf(stderr, "Use 'grapa -h' for help\n");
+				outStr.FROM("Error: Unknown option");
 				needExit = true;
 				return;
 			}
-		} else if (e->mValue.mLength > 0 && e->mValue.mBytes[0] == '-') {
-			/* Unknown flag - show error and exit */
-			fprintf(stderr, "Error: Unknown option '%s'\n", (char*)e->mValue.mBytes);
-			fprintf(stderr, "Use 'grapa -h' for help\n");
-			outStr.FROM("Error: Unknown option");
-			needExit = true;
-			return;
-		} else {
-			positional_args.push_back(e);
+			else {
+				positional_args.push_back(e);
+			}
 		}
 		e = e ? e->Next() : nullptr;
 	}
