@@ -163,11 +163,8 @@ class GrapaInstaller:
             except (subprocess.CalledProcessError, FileNotFoundError):
                 missing_deps.append('Visual Studio 2022 or Build Tools for Visual Studio 2022')
             
-            # Check for 7-Zip (required for packaging)
-            try:
-                subprocess.run(['7z'], capture_output=True, check=True)
-            except (subprocess.CalledProcessError, FileNotFoundError):
-                missing_deps.append('7-Zip (required for packaging)')
+            # Note: 7-Zip is not required for installing pre-built Grapa
+            # It's only needed for building/developing Grapa from source
             
             # Check for Python 3
             if sys.version_info < (3, 6):
@@ -313,10 +310,7 @@ class GrapaInstaller:
             print("Please install the following dependencies manually:")
             print("1. Visual Studio 2022 or Build Tools for Visual Studio 2022")
             print("   Download from: https://visualstudio.microsoft.com/downloads/")
-            print("2. 7-Zip (for packaging)")
-            print("   Download from: https://www.7-zip.org/")
-            print("   Add to PATH: C:\\Program Files\\7-Zip")
-            print("3. Run from 'x64 Native Tools Command Prompt for VS 2022'")
+            print("2. Run from 'x64 Native Tools Command Prompt for VS 2022'")
             print("   (This sets up the proper build environment)")
             raise RuntimeError("Manual installation required on Windows")
     
@@ -336,8 +330,6 @@ class GrapaInstaller:
         elif platform.system().lower() == "windows":
             print("  Windows: Install Visual Studio 2022 or Build Tools for Visual Studio 2022")
             print("  Download from: https://visualstudio.microsoft.com/downloads/")
-            print("  Also install 7-Zip from: https://www.7-zip.org/")
-            print("  Add 7-Zip to PATH: C:\\Program Files\\7-Zip")
             print("  Run from 'x64 Native Tools Command Prompt for VS 2022'")
     
     def _check_requirements(self, auto_install=False):

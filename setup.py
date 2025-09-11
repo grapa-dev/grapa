@@ -137,11 +137,8 @@ def check_system_dependencies():
         except (subprocess.CalledProcessError, FileNotFoundError):
             missing_deps.append('Visual Studio 2022 or Build Tools for Visual Studio 2022')
         
-        # Check for 7-Zip (required for packaging)
-        try:
-            subprocess.run(['7z'], capture_output=True, check=True)
-        except (subprocess.CalledProcessError, FileNotFoundError):
-            missing_deps.append('7-Zip (required for packaging)')
+        # Note: 7-Zip is not required for Python package installation
+        # It's only needed for building/developing Grapa from source
         
         # Check for Python 3
         if sys.version_info < (3, 6):
@@ -187,8 +184,6 @@ def check_system_dependencies():
         elif sys.platform.startswith('win32'):
             print("   Windows:       Install Visual Studio 2022 or Build Tools for Visual Studio 2022")
             print("                 Download from: https://visualstudio.microsoft.com/downloads/")
-            print("                 Also install 7-Zip from: https://www.7-zip.org/")
-            print("                 Add 7-Zip to PATH: C:\\Program Files\\7-Zip")
             print("                 Run from 'x64 Native Tools Command Prompt for VS 2022'")
         print("\nFor detailed instructions, visit: https://grapa-dev.github.io/grapa/")
         print("="*60)

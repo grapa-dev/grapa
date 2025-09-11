@@ -12,10 +12,11 @@ This document outlines the complete dependency requirements for building and run
   - Windows 10/11 SDK (latest version)
   - CMake tools for Visual Studio (optional but recommended)
 
-### 2. 7-Zip
-- **Purpose**: Required for packaging and creating distribution archives
+### 2. 7-Zip (Development Only)
+- **Purpose**: Required for building/developing Grapa from source (packaging and creating distribution archives)
 - **Download**: https://www.7-zip.org/
 - **Installation**: Add to PATH: `C:\Program Files\7-Zip`
+- **Note**: Not required for installing the Python package (`pip install grapapy`)
 
 ### 3. Python 3.6+
 - **Purpose**: Required for build system and Python integration
