@@ -129,10 +129,46 @@ def check_system_dependencies():
     elif sys.platform.startswith('win32'):
         # Check for Visual Studio build tools
         try:
-            # Try to find MSBuild
-            subprocess.run(['msbuild', '/version'], capture_output=True, check=True)
+            # Try to find MSBuild and verify it's from Visual Studio 2022
+            result = subprocess.run(['msbuild', '/version'], capture_output=True, text=True, check=True)
+            # Check if it's Visual Studio 2022 (version 17.x)
+            if '17.' not in result.stdout:
+                missing_deps.append('Visual Studio 2022 or Build Tools for Visual Studio 2022 (version 17.x required)')
         except (subprocess.CalledProcessError, FileNotFoundError):
             missing_deps.append('Visual Studio 2022 or Build Tools for Visual Studio 2022')
+        
+        # Check for 7-Zip (required for packaging)
+        try:
+            subprocess.run(['7z'], capture_output=True, check=True)
+        except (subprocess.CalledProcessError, FileNotFoundError):
+            missing_deps.append('7-Zip (required for packaging)')
+        
+        # Check for Python 3
+        if sys.version_info < (3, 6):
+            missing_deps.append('Python 3.6 or higher')
+        
+        # Check for Windows SDK
+        try:
+            import winreg
+            # Check for Windows 10/11 SDK
+            sdk_keys = [
+                r"SOFTWARE\Microsoft\Windows Kits\Installed Roots",
+                r"SOFTWARE\WOW6432Node\Microsoft\Windows Kits\Installed Roots"
+            ]
+            found_sdk = False
+            for key_path in sdk_keys:
+                try:
+                    key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, key_path)
+                    winreg.CloseKey(key)
+                    found_sdk = True
+                    break
+                except FileNotFoundError:
+                    continue
+            if not found_sdk:
+                missing_deps.append('Windows 10/11 SDK (usually included with Visual Studio 2022)')
+        except ImportError:
+            # winreg not available, skip SDK check
+            pass
     
     if missing_deps:
         print("\n" + "="*60)
@@ -151,6 +187,9 @@ def check_system_dependencies():
         elif sys.platform.startswith('win32'):
             print("   Windows:       Install Visual Studio 2022 or Build Tools for Visual Studio 2022")
             print("                 Download from: https://visualstudio.microsoft.com/downloads/")
+            print("                 Also install 7-Zip from: https://www.7-zip.org/")
+            print("                 Add 7-Zip to PATH: C:\\Program Files\\7-Zip")
+            print("                 Run from 'x64 Native Tools Command Prompt for VS 2022'")
         print("\nFor detailed instructions, visit: https://grapa-dev.github.io/grapa/")
         print("="*60)
         raise RuntimeError("Missing required system dependencies")

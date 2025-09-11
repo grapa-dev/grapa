@@ -154,31 +154,45 @@ class GrapaInstaller:
                 missing_deps.append('Xcode Command Line Tools')
                 
         elif platform.system().lower() == "windows":
-            # Windows - check for Visual C++ Redistributable
+            # Windows - check for Visual Studio build tools and dependencies
+            try:
+                # Check for MSBuild (Visual Studio 2022)
+                result = subprocess.run(['msbuild', '/version'], capture_output=True, text=True, check=True)
+                if '17.' not in result.stdout:
+                    missing_deps.append('Visual Studio 2022 or Build Tools for Visual Studio 2022 (version 17.x required)')
+            except (subprocess.CalledProcessError, FileNotFoundError):
+                missing_deps.append('Visual Studio 2022 or Build Tools for Visual Studio 2022')
+            
+            # Check for 7-Zip (required for packaging)
+            try:
+                subprocess.run(['7z'], capture_output=True, check=True)
+            except (subprocess.CalledProcessError, FileNotFoundError):
+                missing_deps.append('7-Zip (required for packaging)')
+            
+            # Check for Python 3
+            if sys.version_info < (3, 6):
+                missing_deps.append('Python 3.6 or higher')
+            
+            # Check for Windows SDK
             try:
                 import winreg
-                # Check for Visual C++ Redistributable
-                vcredist_keys = [
-                    r"SOFTWARE\Microsoft\VisualStudio\14.0\VC\Runtimes\x64",
-                    r"SOFTWARE\Microsoft\VisualStudio\15.0\VC\Runtimes\x64", 
-                    r"SOFTWARE\Microsoft\VisualStudio\16.0\VC\Runtimes\x64",
-                    r"SOFTWARE\Microsoft\VisualStudio\17.0\VC\Runtimes\x64",
+                sdk_keys = [
+                    r"SOFTWARE\Microsoft\Windows Kits\Installed Roots",
+                    r"SOFTWARE\WOW6432Node\Microsoft\Windows Kits\Installed Roots"
                 ]
-                
-                found_vcredist = False
-                for key_path in vcredist_keys:
+                found_sdk = False
+                for key_path in sdk_keys:
                     try:
-                        winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, key_path)
-                        found_vcredist = True
+                        key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, key_path)
+                        winreg.CloseKey(key)
+                        found_sdk = True
                         break
                     except FileNotFoundError:
                         continue
-                        
-                if not found_vcredist:
-                    missing_deps.append('Microsoft Visual C++ Redistributable')
-                    
+                if not found_sdk:
+                    missing_deps.append('Windows 10/11 SDK (usually included with Visual Studio 2022)')
             except ImportError:
-                # winreg not available, skip checking
+                # winreg not available, skip SDK check
                 pass
         
         if missing_deps:
@@ -294,10 +308,16 @@ class GrapaInstaller:
                 print("Please complete the installation in the popup window, then run the installer again.")
                 
         elif platform.system().lower() == "windows":
-            # Windows - provide instructions for Visual Studio Build Tools
+            # Windows - provide comprehensive instructions
             print("❌ Automatic dependency installation not supported on Windows")
-            print("Please install Visual Studio 2022 or Build Tools for Visual Studio 2022 manually:")
-            print("Download from: https://visualstudio.microsoft.com/downloads/")
+            print("Please install the following dependencies manually:")
+            print("1. Visual Studio 2022 or Build Tools for Visual Studio 2022")
+            print("   Download from: https://visualstudio.microsoft.com/downloads/")
+            print("2. 7-Zip (for packaging)")
+            print("   Download from: https://www.7-zip.org/")
+            print("   Add to PATH: C:\\Program Files\\7-Zip")
+            print("3. Run from 'x64 Native Tools Command Prompt for VS 2022'")
+            print("   (This sets up the proper build environment)")
             raise RuntimeError("Manual installation required on Windows")
     
     def _print_manual_install_instructions(self):
@@ -316,6 +336,9 @@ class GrapaInstaller:
         elif platform.system().lower() == "windows":
             print("  Windows: Install Visual Studio 2022 or Build Tools for Visual Studio 2022")
             print("  Download from: https://visualstudio.microsoft.com/downloads/")
+            print("  Also install 7-Zip from: https://www.7-zip.org/")
+            print("  Add 7-Zip to PATH: C:\\Program Files\\7-Zip")
+            print("  Run from 'x64 Native Tools Command Prompt for VS 2022'")
     
     def _check_requirements(self, auto_install=False):
         """Check if all required files exist and system dependencies are available"""
@@ -398,17 +421,42 @@ class GrapaInstaller:
     def _add_to_windows_path(self, bin_path):
         """Add Grapa to Windows PATH"""
         try:
-            # Use PowerShell to modify PATH
-            cmd = [
-                'powershell', '-Command',
-                f'$currentPath = [Environment]::GetEnvironmentVariable("PATH", "Machine"); '
-                f'if ($currentPath -notlike "*{bin_path}*") {{ '
-                f'[Environment]::SetEnvironmentVariable("PATH", "$currentPath;{bin_path}", "Machine") }}'
+            # Try different PowerShell paths
+            powershell_paths = [
+                'powershell',
+                'C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe',
+                'C:\\Windows\\SysWOW64\\WindowsPowerShell\\v1.0\\powershell.exe'
             ]
-            subprocess.run(cmd, check=True, capture_output=True)
-            print(f"✅ Added Grapa to system PATH")
-        except subprocess.CalledProcessError:
-            print("⚠️  Could not automatically update PATH")
+            
+            success = False
+            for ps_path in powershell_paths:
+                try:
+                    # Use PowerShell to modify PATH
+                    cmd = [
+                        ps_path, '-Command',
+                        f'$currentPath = [Environment]::GetEnvironmentVariable("PATH", "Machine"); '
+                        f'if ($currentPath -notlike "*{bin_path}*") {{ '
+                        f'[Environment]::SetEnvironmentVariable("PATH", "$currentPath;{bin_path}", "Machine") }}'
+                    ]
+                    result = subprocess.run(cmd, check=True, capture_output=True, text=True)
+                    print(f"✅ Added Grapa to system PATH")
+                    success = True
+                    break
+                except (subprocess.CalledProcessError, FileNotFoundError):
+                    continue
+            
+            if not success:
+                # Fallback: try using setx command
+                try:
+                    cmd = ['setx', 'PATH', f'%PATH%;{bin_path}', '/M']
+                    subprocess.run(cmd, check=True, capture_output=True, text=True)
+                    print(f"✅ Added Grapa to system PATH (using setx)")
+                except (subprocess.CalledProcessError, FileNotFoundError):
+                    print(f"⚠️  Could not automatically update PATH")
+                    print(f"Please manually add {bin_path} to your system PATH")
+                    
+        except Exception as e:
+            print(f"⚠️  Could not automatically update PATH: {e}")
             print(f"Please manually add {bin_path} to your system PATH")
     
     def _add_to_unix_path(self, bin_path):
@@ -483,6 +531,8 @@ class GrapaInstaller:
             
         except Exception as e:
             print(f"❌ Installation failed: {e}")
+            import traceback
+            print(f"Error details: {traceback.format_exc()}")
             return False
     
     def uninstall(self):
