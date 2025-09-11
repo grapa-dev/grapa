@@ -608,6 +608,22 @@ casefolded = names.map(op(name) { name.casefold(); });  /* ["john", "jane", "bob
 /* Parallel processing with thread count */
 large_data = (1000000).range(0,1);
 squares = large_data.map(op(x) { x * x; }, 8);  /* Limit to 8 threads */
+
+/* WARNING: Context object mutations cause race conditions */
+x = {a: 0, b: 0};
+y = 20.range().map(op(x, y) {
+    y.a += 1;        /* Race condition: multiple threads may read same value */
+    y.b += x;        /* Race condition: multiple threads may read same value */
+    y.a * y.b;       /* Return computed value */
+}, x, 4);            /* 4 threads processing */
+
+/* Better approach: Use .map() for computation, .reduce() for aggregation */
+x = {a: 1, b: 2};
+y = 20.range().map(op(x, y) {
+    x + y.a * y.b;   /* Pure computation - no mutations */
+}, x, 4).reduce(op(a, b) {
+    a += b;          /* Sequential aggregation */
+});
 ```
 
 ### .filter() - Select Elements
@@ -624,6 +640,25 @@ non_empty = lines.filter(op(line) { line.len() > 0; });  /* ["hello", "world", "
 /* Parallel filtering */
 large_data = (1000000).range(0,1);
 filtered = large_data.filter(op(x) { x % 2 == 0; }, 8);  /* Limit to 8 threads */
+
+/* WARNING: Context object mutations cause race conditions */
+x = {count: 0, sum: 0};
+y = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].filter(op(x, y) {
+    y.count += 1;        /* Race condition: multiple threads may read same value */
+    if (x % 2 == 0) {    /* Filter even numbers */
+        y.sum += x;      /* Race condition: multiple threads may read same value */
+        true;            /* Include in result */
+    } else {
+        false;           /* Exclude from result */
+    };
+}, x, 4);                /* 4 threads processing */
+
+/* Better approach: Separate filtering and aggregation */
+x = {threshold: 2};
+y = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].filter(op(x, y) {
+    x > y.threshold;     /* Pure filtering - no mutations */
+}, x, 4);
+sum = y.reduce(op(a, b) { a += b; });  /* Separate aggregation */
 ```
 
 ### .reduce() - Accumulate Values

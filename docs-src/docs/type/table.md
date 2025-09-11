@@ -106,7 +106,7 @@ $TABLE
 # Basic operations
 f.setfield("test", "value")
 f.ls()
-[{"$KEY":"test","$TYPE":"ROW","$BYTES":5}]
+[{"$PATH":"","$KEY":"test","$TYPE":"ROW","$BYTES":5}]
 
 f.get("test")
 value

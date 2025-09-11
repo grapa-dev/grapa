@@ -197,22 +197,46 @@ Retrieves a list of files/directories in the current working directory.
 - `$KEY`: File or directory name
 - `$TYPE`: Type ("FILE", "GROUP", etc.)
 - `$BYTES`: File size in bytes (0 for directories)
+- `$PATH`: Path parameter passed to `.ls()` (relative to `$sys().getenv($WORK)`)
 
 **Note:**
 - When navigating a traditional file system, folders/directories will be listed as `$TYPE: "GROUP"`.
 - In a database context, `GROUP` also refers to hierarchical/grouped database structures.
+- The `$PATH` field contains the parameter passed to `.ls()`, making it easy to construct full paths.
 
 ```grapa
+/* List current directory */
 f.ls();
 [
-  {"$KEY":"docs","$TYPE":"GROUP","$BYTES":0},
-  {"$KEY":"README.md","$TYPE":"FILE","$BYTES":4302}
+  {"$PATH":"","$KEY":"docs","$TYPE":"GROUP","$BYTES":0},
+  {"$PATH":"","$KEY":"README.md","$TYPE":"FILE","$BYTES":4302}
 ]
 
-/* Check type of a directory */
-f.cd("docs");
-f.type();
-/* Returns: GROUP */
+/* List specific directory */
+f.ls("test");
+[
+  {"$PATH":"test","$KEY":"database","$TYPE":"GROUP","$BYTES":896},
+  {"$PATH":"test","$KEY":"README.md","$TYPE":"FILE","$BYTES":10174}
+]
+
+/* Navigate to directory and list */
+f.cd("test/database");
+f.ls();
+[
+  {"$PATH":"","$KEY":"minimal_btree_test.grc","$TYPE":"FILE","$BYTES":710},
+  {"$PATH":"","$KEY":"test_table_basic.grc","$TYPE":"FILE","$BYTES":7731}
+]
+
+/* Construct full paths using $PATH and $KEY */
+files = f.ls("test/database");
+foreach file in files {
+    full_path = file["$PATH"] + "/" + file["$KEY"];
+    (file["$TYPE"] + ":" + full_path + "\n").echo();
+}
+/* Output:
+FILE:test/database/minimal_btree_test.grc
+FILE:test/database/test_table_basic.grc
+*/
 ```
 
 ## mk(name [,type]) 
@@ -276,13 +300,26 @@ f.rm("test");
 Creates or updates a file with the specified content.
 
 **Parameters**:
-- `name`: File name
-- `value`: Content to write to the file
+- `name`: File name or special stream (`$stdout`, `$stderr`)
+- `value`: Content to write to the file or stream
 - `field` (optional): Field name (defaults to `$VALUE`)
 
+**Special Streams**:
+- `$stdout`: Writes to standard output stream
+- `$stderr`: Writes to standard error stream
+
 ```grapa
+/* Regular file operations */
 f.set("test.txt", "Hello, World!");
 f.set("config.json", '{"name": "test", "value": 123}');
+
+/* Write to standard streams */
+f.set($stdout, "Output message\n");
+f.set($stderr, "Error message\n");
+
+/* Database field operations */
+f.set("user1", "John Doe", "name");
+f.set("user1", 30, "age");
 ```
 
 ## get(name [, field])

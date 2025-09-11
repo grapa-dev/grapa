@@ -382,6 +382,24 @@ Grapa's debug system properly separates normal program output from debug output:
 
 This separation allows for proper stream redirection and filtering.
 
+### Writing to Standard Streams
+You can write directly to stdout and stderr using the `$file().set()` method:
+
+```grapa
+/* Write to standard output */
+$file().set($stdout, "Normal program output\n");
+
+/* Write to standard error */
+$file().set($stderr, "Error or debug message\n");
+
+/* Example: Conditional output */
+if (debug_mode) {
+    $file().set($stderr, "Debug: Processing item " + item_id + "\n");
+} else {
+    $file().set($stdout, "Processing item " + item_id + "\n");
+}
+```
+
 ### System-Level Debug Output
 System-level debug output appears on stderr with the format:
 ```

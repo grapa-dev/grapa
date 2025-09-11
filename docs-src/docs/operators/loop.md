@@ -45,6 +45,7 @@ Syntax:
 
 - Calls the operation for each item in the array, in parallel.
 - Returns a new array with the results.
+- **Context objects are passed by reference** for performance (not copied).
 
 Example:
 ```
@@ -54,12 +55,50 @@ doubled.echo();
 /* Output: [2,4,6] */
 ```
 
+### Context Object Reference Passing
+When using context objects (optional parameters), they are passed by reference for enhanced performance:
+
+```grapa
+/* WARNING: This demonstrates race conditions */
+x = {a: 0, b: 0};
+y = 20.range().map(op(x, y) {
+    y.a += 1;        /* Race condition: multiple threads may read same value */
+    y.b += x;        /* Race condition: multiple threads may read same value */
+    y.a * y.b;       /* Return computed value */
+}, x, 4);            /* 4 threads processing */
+
+/* Result: Race conditions cause incorrect values */
+/* Expected: x: {"a": 20, "b": 190} */
+/* Actual: x: {"a": 19, "b": 180} - showing lost updates */
+```
+
+**Better Approach - Map/Reduce Pattern:**
+```grapa
+/* Recommended: Use .map() for computation, .reduce() for aggregation */
+x = {a: 1, b: 2};
+y = 20.range().map(op(x, y) {
+    x + y.a * y.b;   /* Pure computation - no mutations */
+}, x, 4).reduce(op(a, b) {
+    a += b;          /* Sequential aggregation */
+});
+
+/* Result: Correct and fast */
+/* x: {"a": 1, "b": 2} - unchanged */
+/* y: 230 - correct sum */
+```
+
+**Performance Benefits:**
+- **Reference passing**: Context objects are passed by reference (not copied) for better performance
+- **Read-only usage**: Use context objects for configuration, not for state mutations
+- **Parallel efficiency**: Each thread can read shared context without synchronization overhead
+
 ## filter
 Syntax:
 * arr.filter(op(x) { ... }, [params...]);
 
 - Calls the operation for each item in the array, in parallel.
 - Returns a new array containing only items for which the op returns a non-null, non-zero, non-empty value.
+- **Context objects are passed by reference** for performance (not copied).
 
 Minimal Example:
 ```
@@ -68,6 +107,49 @@ filtered = arr.filter(op(x) { x > 2; });
 filtered.echo();
 /* Output: [3,4] */
 ```
+
+### Context Object Reference Passing
+When using context objects (optional parameters), they are passed by reference for enhanced performance:
+
+```grapa
+/* WARNING: This demonstrates race conditions */
+x = {count: 0, sum: 0};
+y = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].filter(op(x, y) {
+    y.count += 1;        /* Race condition: multiple threads may read same value */
+    if (x % 2 == 0) {    /* Filter even numbers */
+        y.sum += x;      /* Race condition: multiple threads may read same value */
+        true;            /* Include in result */
+    } else {
+        false;           /* Exclude from result */
+    };
+}, x, 4);                /* 4 threads processing */
+
+/* Result: Race conditions cause incorrect values */
+/* Expected: x: {"count": 10, "sum": 30} */
+/* Actual: x: {"count": 9, "sum": 28} - showing lost updates */
+```
+
+**Better Approach - Separate Filtering and Aggregation:**
+```grapa
+/* Recommended: Use .filter() for selection, separate aggregation */
+x = {threshold: 2};
+y = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].filter(op(x, y) {
+    x > y.threshold;     /* Pure filtering - no mutations */
+}, x, 4);
+
+/* Separate aggregation if needed */
+sum = y.reduce(op(a, b) { a += b; });
+count = y.len();
+
+/* Result: Correct and fast */
+/* y: [3, 4, 5, 6, 7, 8, 9, 10] */
+/* sum: 52, count: 8 */
+```
+
+**Performance Benefits:**
+- **Reference passing**: Context objects are passed by reference (not copied) for better performance
+- **Read-only usage**: Use context objects for configuration, not for state mutations
+- **Parallel efficiency**: Each thread can read shared context without synchronization overhead
 
 Edge Cases:
 ```

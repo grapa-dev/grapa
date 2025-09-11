@@ -400,7 +400,7 @@ class GrapaTableHelper:
 .\grapa.exe -d -f "script.grc" > $null 2> debug_output.txt
 ```
 
-**Note**: Grapa properly separates normal program output (stdout) from debug output (stderr), allowing for flexible stream redirection and logging.
+**Note**: Grapa properly separates normal program output (stdout) from debug output (stderr), allowing for flexible stream redirection and logging. You can also write directly to these streams using `$file().set($stdout, content)` and `$file().set($stderr, content)`.
 
 ## Best Practices for Debugging
 

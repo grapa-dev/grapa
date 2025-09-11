@@ -506,23 +506,24 @@ Functional methods support **any data structure as initializers**, enabling soph
     x.st = x.o(x.st, y);  /* Apply current operation */
 }, {st: 10, o: op(a, b) { a + b; }});  /* Initial state object */
 
-/* Map with context tracking */
+/* WARNING: Context object mutations cause race conditions */
 [1, 2, 3].map(op(x, y) {
-    y.count += 1;
-    y.sum += x;
+    y.count += 1;        /* Race condition: multiple threads may read same value */
+    y.sum += x;          /* Race condition: multiple threads may read same value */
     x * y.multiplier;
 }, {count: 0, sum: 0, multiplier: 2});
 
-/* Filter with state management */
+/* Better approach: Use .map() for computation, .reduce() for aggregation */
+[1, 2, 3].map(op(x, y) {
+    x * y.multiplier;    /* Pure computation - no mutations */
+}, {multiplier: 2}).reduce(op(a, b) {
+    a += b;              /* Sequential aggregation */
+});
+
+/* Filter with read-only context (passed by reference) */
 [1, 2, 3, 4, 5].filter(op(x, y) {
-    y.seen += 1;
-    if (y.seen <= 3) {
-        y.sum += x;
-        true;
-    } else {
-        false;
-    };
-}, {seen: 0, sum: 0});
+    x > y.threshold;     /* Pure filtering - no mutations */
+}, {threshold: 2});
 ```
 
 **Key Capabilities:**
@@ -682,6 +683,8 @@ File and directory operations.
 ### File Operations
 - `$file().getfield(path)` - Read file content
 - `$file().setfield(path, content)` - Write to file
+- `$file().set($stdout, content)` - Write to standard output
+- `$file().set($stderr, content)` - Write to standard error
 - `$file().ls(path)` - List directory contents
 - `$file().info(path)` - Get file information
 
@@ -693,10 +696,15 @@ content = $file().getfield("data.txt");
 /* Write file */
 $file().setfield("output.txt", "Hello from Grapa!");
 
+/* Write to standard streams */
+$file().set($stdout, "Output message\n");
+$file().set($stderr, "Error message\n");
+
 /* List files */
 files = $file().ls(".");
 for (file in files) {
-    ("File: " + file.name).echo();
+    full_path = file["$PATH"] + "/" + file["$KEY"];
+    (file["$TYPE"] + ": " + full_path).echo();
 }
 ```
 

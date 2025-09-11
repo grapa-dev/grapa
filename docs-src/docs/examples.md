@@ -89,6 +89,23 @@ result = 123456789012345678901234567890 * 987654321098765432109876543210;
 result.echo();
 ```
 
+### Output Streams
+```grapa
+/* Write to standard output */
+$file().set($stdout, "Normal program output\n");
+
+/* Write to standard error */
+$file().set($stderr, "Error or debug message\n");
+
+/* Conditional output based on debug mode */
+debug_mode = true;
+if (debug_mode) {
+    $file().set($stderr, "Debug: Processing started\n");
+} else {
+    $file().set($stdout, "Processing started\n");
+}
+```
+
 ### Working with Lists
 ```grapa
 numbers = [1, 2, 3, 4, 5];
@@ -1085,5 +1102,84 @@ lock_obj.lock();
 // ... perform thread-safe operations on shared data ...
 lock_obj.unlock();
 ```
+
+### Parallel Processing with Mutable Context Objects
+
+Grapa's `.map()` and `.filter()` methods now support **mutable context objects** passed by reference for enhanced performance in parallel processing. This allows each thread to modify shared state while maintaining thread safety through internal locking.
+
+**Performance Enhancement:**
+- **Reference passing**: Context objects are passed by reference (not copied) for better performance
+- **Thread-safe mutations**: Internal locking on data types (except vectors) ensures safe concurrent access
+- **Parallel efficiency**: Each thread can read and modify the shared context object
+
+**Example - Race Conditions in Parallel Mutations:**
+```grapa
+/* WARNING: This demonstrates race conditions */
+x = {a: 0, b: 0};
+y = 20.range().map(op(x, y) {
+    y.a += 1;        /* Race condition: multiple threads may read same value */
+    y.b += x;        /* Race condition: multiple threads may read same value */
+    y.c += 1;        /* Race condition: multiple threads may add "c" */
+    y.a * y.b;
+}, x, 4);            /* 4 threads processing */
+
+/* Possible outcomes due to race conditions: */
+/* x: {"a": 20, "b": 190, "c": 20}     - Expected if no race conditions */
+/* x: {"a": 19, "b": 180, "c": 20}     - Actual result showing race conditions */
+/* x: {"a": 20, "b": 190, "c": 1, "c": 9} - Duplicate keys from race condition */
+```
+
+**Example - Using Locks (NOT RECOMMENDED):**
+```grapa
+/* Using locks defeats the purpose of parallel processing */
+x = {a: 0, b: 0, t: $thread()};
+y = 20.range().map(op(x, y) {
+    y.t.lock();      /* Serializes access - defeats parallelism */
+    y.a += 1;        /* Now thread-safe but slow */
+    y.t.unlock();
+    y.b += x;        /* Still has race condition */
+    y.c += 1;        /* Still has race condition */
+    y.a * y.b;
+}, x, 4);
+
+/* Result: Correct but slow due to serialization */
+/* x: {"a": 20, "b": 175, "t": null, "c": 20} */
+```
+
+**Example - Better Approach: Map/Reduce Pattern:**
+```grapa
+/* Recommended: Use .map() for computation, .reduce() for aggregation */
+x = {a: 1, b: 2};
+y = 20.range().map(op(x, y) {
+    x + y.a * y.b;   /* Pure computation - no mutations */
+}, x, 4).reduce(op(a, b) {
+    a += b;          /* Sequential aggregation */
+});
+
+/* Result: Correct and fast */
+/* x: {"a": 1, "b": 2} - unchanged */
+/* y: 230 - correct sum */
+```
+
+**Best Practices:**
+1. **AVOID mutating context objects**: Race conditions will occur with parallel mutations
+2. **Use Map/Reduce pattern**: Use `.map()` for pure computation, `.reduce()` for aggregation
+3. **Read-only context objects**: Use context objects for reading configuration, not for state
+4. **Prefer immutable operations**: Return computed values instead of mutating shared state
+5. **Performance benefit**: Reference passing is significantly faster than copying large objects
+
+**Thread Safety Notes:**
+- **Data types with locking**: All types except vectors have internal locking
+- **Vector limitations**: Vectors do not yet have locking - avoid mutating vector context objects
+- **Race conditions**: Multiple threads may read the same value before incrementing, causing lost updates
+- **Logical consistency**: Thread safety prevents crashes, but logical race conditions will occur
+- **Lock performance impact**: Using `$thread().lock()` defeats the purpose of parallel processing
+
+**When to Use Context Objects:**
+- ✅ **Configuration data**: Read-only parameters for computation
+- ✅ **Large data structures**: Avoid copying expensive objects
+- ✅ **Shared resources**: Database connections, file handles
+- ❌ **Counters/accumulators**: Use `.reduce()` instead
+- ❌ **State mutations**: Use immutable patterns instead
 
 See [Threading and Locking](sys/thread.md) and [Function Operators: static and const](operators/function.md) for details and best practices.
