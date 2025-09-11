@@ -21643,7 +21643,10 @@ GrapaRuleEvent* GrapaLibraryRuleForEvent::HandleForIn(GrapaScriptExec *vScriptEx
             if (elementEvent)
             {
                 // Update the loop variable value in place 
-                actualVar->mValue.FROM(elementEvent->mValue);
+				GrapaRuleEvent* ae = elementEvent;
+				while(ae && ae->mValue.mToken == GrapaTokenType::PTR && ae->vRulePointer) ae = ae->vRulePointer;
+				actualVar->mValue.mToken = GrapaTokenType::PTR;
+				actualVar->vRulePointer = ae;
                 
                 // Execute the loop body
                 if (GrapaRuleEvent* bodyResult = vScriptExec->ProcessPlan(pNameSpace, bodyEvent))

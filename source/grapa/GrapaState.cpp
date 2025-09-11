@@ -7654,11 +7654,24 @@ public:
 				GrapaCompress::Expand((*pValue), expanded);
 				pInput = &expanded;
 			}
+			else
+			{
+				GrapaRuleEvent* plan = e->Plan(pNameSpace, (*pValue), pRule, pRuleId, *pProfile);
+				vResult = e->ProcessPlan(pNameSpace, plan);
+				if (plan)
+				{
+					plan->CLEAR();
+					delete plan;
+				}
+				mStop = true;
+				LeaveCritical();
+				return;
+			}
 		}
 
-		if ((*pValue).mToken == GrapaTokenType::STR || (*pValue).mToken == GrapaTokenType::SYSSTR)
+		if (pInput->mToken == GrapaTokenType::STR || pInput->mToken == GrapaTokenType::SYSSTR)
 		{
-			GrapaRuleEvent* plan = e->Plan(pNameSpace, (*pValue), pRule, pRuleId, *pProfile);
+			GrapaRuleEvent* plan = e->Plan(pNameSpace, (*pInput), pRule, pRuleId, *pProfile);
 			vResult = e->ProcessPlan(pNameSpace, plan);
 			if (plan)
 			{
