@@ -189,6 +189,7 @@ GrapaError GrapaLocalDatabase::DirectoryList(GrapaCHAR& pName, GrapaRuleEvent* p
 				b = filestat.st_size;
 				if (statErr)
 				{
+					item->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("$PATH"), GrapaCHAR((char*)pName.mBytes, pName.mLength)));
 					item->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("$KEY"), GrapaCHAR(fileName)));
 					item->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("$TYPE"), GrapaCHAR("ERR")));
 					item->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("$BYTES"), b.getBytes()));
@@ -196,12 +197,14 @@ GrapaError GrapaLocalDatabase::DirectoryList(GrapaCHAR& pName, GrapaRuleEvent* p
 				}
 				if (S_ISDIR(filestat.st_mode))
 				{
+					item->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("$PATH"), GrapaCHAR((char*)pName.mBytes, pName.mLength)));
 					item->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("$KEY"), GrapaCHAR(localFileName)));
 					item->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("$TYPE"), GrapaCHAR("DIR")));
 					item->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("$BYTES"), b.getBytes()));
 				}
 				else
 				{
+					item->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("$PATH"), GrapaCHAR((char*)pName.mBytes, pName.mLength)));
 					item->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("$KEY"), GrapaCHAR(localFileName)));
 					item->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("$TYPE"), GrapaCHAR("FILE")));
 					item->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("$BYTES"), b.getBytes()));
@@ -241,12 +244,14 @@ GrapaError GrapaLocalDatabase::DirectoryList(GrapaCHAR& pName, GrapaRuleEvent* p
 
 				if (ffd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
 				{
+					item->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("$PATH"), GrapaCHAR((char*)pName.mBytes, pName.mLength)));
 					item->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("$KEY"), GrapaCHAR(localFileName)));
 					item->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("$TYPE"), GrapaCHAR("DIR")));
 					item->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("$BYTES"), b.getBytes()));
 				}
 				else
 				{
+					item->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("$PATH"), GrapaCHAR((char*)pName.mBytes, pName.mLength)));
 					item->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("$KEY"), GrapaCHAR(localFileName)));
 					item->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("$TYPE"), GrapaCHAR("FILE")));
 					item->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("$BYTES"), b.getBytes()));
@@ -314,6 +319,7 @@ GrapaError GrapaLocalDatabase::DirectoryList(GrapaCHAR& pName, GrapaRuleEvent* p
 					if (err) return(err);
 					err = mDb->mValue.GetRecordField(cursor, fieldRec, fieldValue);
 					if (err) return(err);
+					item->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("$PATH"), GrapaCHAR((char*)pName.mBytes, pName.mLength)));
 					item->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("$KEY"), fieldValue));
 
 					u64 treeSize = 0;

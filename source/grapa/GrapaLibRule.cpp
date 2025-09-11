@@ -10135,8 +10135,10 @@ GrapaRuleEvent* GrapaLibraryRuleMapEvent::Run(GrapaScriptExec *vScriptExec, Grap
 		while (eH && eH->mValue.mToken == GrapaTokenType::PTR) eH = eH->vRulePointer;
 		if (eH)
 		{
-			nextItem = vScriptExec->CopyItem(eH);
-			nextItem->mName.SetLength(0);
+			//nextItem = vScriptExec->CopyItem(eH);
+			//nextItem->mName.SetLength(0);
+			nextItem = new GrapaRuleEvent(GrapaTokenType::PTR, 0, "");
+			nextItem->vRulePointer = eH;
 		}
 		else
 		{
@@ -10342,8 +10344,10 @@ GrapaRuleEvent* GrapaLibraryRuleFilterEvent::Run(GrapaScriptExec *vScriptExec, G
 		while (eH && eH->mValue.mToken == GrapaTokenType::PTR) eH = eH->vRulePointer;
 		if (eH)
 		{
-			nextItem = vScriptExec->CopyItem(eH);
-			nextItem->mName.SetLength(0);
+			//nextItem = vScriptExec->CopyItem(eH);
+			//nextItem->mName.SetLength(0);
+			nextItem = new GrapaRuleEvent(GrapaTokenType::PTR, 0, "");
+			nextItem->vRulePointer = eH;
 		}
 		else
 		{
