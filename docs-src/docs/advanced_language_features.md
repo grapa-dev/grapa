@@ -208,7 +208,7 @@ double_and_add = compose(double, add_one);
 
 **Features:**
 - **First-Class Functions** - Functions as values
-- **Lambda Expressions** - `op(x) { x * 2; }` syntax
+- **Function Expressions** - `op { ... }`, `op() { ... }`, or `op(x) { ... }` syntax (parameters optional)
 - **Functional Methods** - `.map()`, `.filter()`, `.reduce()`
 - **Parallel Processing** - Built-in parallel execution
 - **Complex Context Objects** - Any data structure as initializers with state evolution

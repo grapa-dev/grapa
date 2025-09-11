@@ -73,6 +73,11 @@ Grapa's `op` function supports flexible parameter definition and calling with bo
 
 #### Parameter Definition
 ```grapa
+/* No parameters - three equivalent ways */
+op { 5 * 2; };           /* No parentheses */
+op() { 5 * 2; };         /* Empty parentheses */
+op()("5 * 2;");          /* String compilation */
+
 /* Basic parameter definition */
 op(a,b){a*b}; | @<[op,@<mul,{@<var,{a}>,@<var,{b}>}>],{a,b}>
 

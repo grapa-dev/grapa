@@ -256,8 +256,8 @@ Sets up a multi-threaded server that can handle multiple concurrent connections.
 
 **Parameters:**
 - `url`: Server URL to bind to (e.g., ":8080", "localhost:12345", "https://:8443")
-- `messageHandler`: Lambda function called for each received message
-- `connectHandler`: Lambda function called when a new connection is established (optional)
+- `messageHandler`: Function called for each received message
+- `connectHandler`: Function called when a new connection is established (optional)
 - `count`: Number of concurrent listeners (currently fixed to 1, but the system handles multiple connections per listener)
 
 **Handler Parameters:**
@@ -615,7 +615,7 @@ Sets the private key data with optional password callback for HTTPS connections.
 
 **Parameters:**
 - `keyData`: Private key data (PEM or DER format)
-- `passOp`: Lambda function for password callback (optional)
+- `passOp`: Function for password callback (optional)
 - `passParam`: Parameter passed to password callback (optional)
 
 **Example:**
@@ -933,7 +933,7 @@ Sets up an asynchronous receive handler that will be called when data is receive
 **🚀 Key Advantage:** Automatically handles incoming data without blocking, perfect for buffering and processing data as it arrives.
 
 **Parameters:**
-- `handler`: Lambda function to handle received data
+- `handler`: Function to handle received data
 
 **Handler Parameters:**
 - `netSession`: Network session object

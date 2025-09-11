@@ -3560,7 +3560,16 @@ All control flow statements properly propagate through all execution contexts:
 Grapa provides elegant functional programming syntax:
 
 ```grapa
-/* Lambda expressions */
+/* Function expressions - parameters are optional */
+/* No parameters */
+simple = op { 5 * 2; };
+simple();  /* Returns: 10 */
+
+/* Empty parameter list */
+empty = op() { 5 * 2; };
+empty();  /* Returns: 10 */
+
+/* With parameters */
 double = op(x) { x * 2; };
 square = op(x) { x * x; };
 
