@@ -1168,26 +1168,38 @@ GrapaError GrapaLocalDatabase::FieldSet(const GrapaCHAR& pName, const GrapaCHAR&
 	GrapaError err = 0;
 	if (mDb == NULL)
 	{
-		GrapaCHAR path;
-		DirectoryFullPath(path);
-		if (path.mLength && path.StrNCmp((char*)pName.mBytes) == 0)
+		if (pName.mToken == GrapaTokenType::SYSID || pName.mToken == GrapaTokenType::SYSSTR)
 		{
-			GrapaCHAR name2;
-			name2.FROM((char*)&pName.mBytes[path.mLength], pName.mLength - path.mLength);
-			path.Append(name2);
+			mFile.SetFileNameToken(pName.mToken);
+			err = mFile.Open((char*)pName.mBytes, GrapaReadWriteCreate);
+			if (err) return(err);
+			u64 size = pValue.mLength;
+			err = mFile.Append(size, pValue.mBytes);
+			err = mFile.Close();
 		}
 		else
 		{
-			path.Append("/");
-			path.Append(pName);
+			GrapaCHAR path;
+			DirectoryFullPath(path);
+			if (path.mLength && path.StrNCmp((char*)pName.mBytes) == 0)
+			{
+				GrapaCHAR name2;
+				name2.FROM((char*)&pName.mBytes[path.mLength], pName.mLength - path.mLength);
+				path.Append(name2);
+			}
+			else
+			{
+				path.Append("/");
+				path.Append(pName);
+			}
+			err = mFile.Open((char*)path.mBytes, GrapaReadWriteCreate);
+			if (err) return(err);
+			u64 size = pValue.mLength;
+			err = mFile.SetSize(size);
+			err = mFile.Write(0, 0, 0, size, pValue.mBytes);
+			mFile.Purge(size, 1);
+			err = mFile.Close();
 		}
-		err = mFile.Open((char*)path.mBytes, GrapaReadWriteCreate);
-		if (err) return(err);
-		u64 size = pValue.mLength;
-		err = mFile.SetSize(size);
-		err = mFile.Write(0, 0, 0, size, pValue.mBytes);
-		mFile.Purge(size, 1);
-		err = mFile.Close();
 	}
 	else
 	{

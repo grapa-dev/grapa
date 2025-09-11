@@ -46,6 +46,7 @@ limitations under the License.
 #endif
 
 #include "GrapaFileIO.h"
+#include "GrapaValue.h"
 
 //#include <share.h>
 #include <fcntl.h>
@@ -67,65 +68,116 @@ limitations under the License.
 
 GrapaError GrapaFileIO::Open(const char *fileName, char mode)
 {
-	if (mode == GrapaReadWriteCreate) return Create(fileName);
-	int oflag = oflaginit;
-	int pmode = 0;
-	int fRef = -1;
-#ifdef _WIN32
-	int shr = _SH_SECURE;
-	if (mode == GrapaReadOnly)
-		shr = _SH_DENYWR;
-#endif
-	if (mode == GrapaReadWrite)
+	if (mFileNameToken == GrapaTokenType::SYSID || mFileNameToken == GrapaTokenType::SYSSTR)
 	{
-		oflag |= O_RDWR;
-		pmode = S_IREAD | S_IWRITE;
-	}
-	else if (mode == GrapaReadWriteCreate)
-	{
-		oflag |= O_RDWR;
-		pmode = S_IREAD | S_IWRITE;
-	}
-	else if (mode == GrapaWriteOnly)
-	{
-		oflag |= O_WRONLY;
-		pmode = S_IWRITE;
+		if (strcmp((char*)fileName, "stderr") == 0 || strcmp((char*)fileName, "$stderr") == 0)
+		{
+			mStdInOut = 3;
+			mOpened = true;
+			mMode = mode;
+		}
+		else if (strcmp((char*)fileName, "stdin") == 0 || strcmp((char*)fileName, "$stdin") == 0)
+		{
+			mStdInOut = 1;
+			mOpened = true;
+			mMode = mode;
+		}
+		else if (strcmp((char*)fileName, "stdout") == 0 || strcmp((char*)fileName, "$stdout") == 0)
+		{
+			mStdInOut = 2;
+			mOpened = true;
+			mMode = mode;
+		}
+		else
+			return((GrapaError)-1);
 	}
 	else
 	{
-		oflag |= O_RDONLY;
-		pmode = S_IREAD;	
-	}
-	
-	Close();
+		if (mode == GrapaReadWriteCreate) return Create(fileName);
+		int oflag = oflaginit;
+		int pmode = 0;
+		int fRef = -1;
+#ifdef _WIN32
+		int shr = _SH_SECURE;
+		if (mode == GrapaReadOnly)
+			shr = _SH_DENYWR;
+#endif
+		if (mode == GrapaReadWrite)
+		{
+			oflag |= O_RDWR;
+			pmode = S_IREAD | S_IWRITE;
+		}
+		else if (mode == GrapaReadWriteCreate)
+		{
+			oflag |= O_RDWR;
+			pmode = S_IREAD | S_IWRITE;
+		}
+		else if (mode == GrapaWriteOnly)
+		{
+			oflag |= O_WRONLY;
+			pmode = S_IWRITE;
+		}
+		else
+		{
+			oflag |= O_RDONLY;
+			pmode = S_IREAD;
+		}
+
+		Close();
 
 #if defined(__MINGW32__) || defined(__GNUC__)
-	fRef = open(fileName, oflag, pmode);
+		fRef = open(fileName, oflag, pmode);
 #else
 #ifdef _WIN32
-	GrapaError err = _sopen_s(&fRef, fileName, oflag, shr, pmode);
-	if (err != 0) return((GrapaError)-1);
+		GrapaError err = _sopen_s(&fRef, fileName, oflag, shr, pmode);
+		if (err != 0) return((GrapaError)-1);
 #endif
 #endif
-	if (fRef == -1) return((GrapaError)-1);
-	mFp = fRef;
-	mOpened = true;
-	mMode = mode;
+		if (fRef == -1) return((GrapaError)-1);
+		mFp = fRef;
+		mOpened = true;
+		mMode = mode;
+	}
 	return(0);
 }
 
 GrapaError GrapaFileIO::Close()
 {
-	if (!Opened()) return(0);
-	close(mFp);
-	mFp = -1;
-	mOpened = false;
-	mMode = GrapaReadOnly;
+
+	switch (mStdInOut)
+	{
+	case 0: // file
+	{
+		if (!Opened()) return(0);
+		close(mFp);
+		mFp = -1;
+		mOpened = false;
+		mMode = GrapaReadOnly;
+		break;
+	}
+	case 2: // stdout
+	{
+		Flush();
+		mFp = -1;
+		mOpened = false;
+		mMode = GrapaReadOnly;		break;
+	}
+	case 3: // stderr
+	{
+		Flush();
+		mFp = -1;
+		mOpened = false;
+		mMode = GrapaReadOnly;		break;
+	}
+	}
+	mStdInOut = 0;
+	mFileNameToken = 0;
 	return(0);
 }
 
 GrapaError GrapaFileIO::GetSize(u64& pSize)
 {
+	if (mStdInOut) return(-1);
 	if (!Opened()) return(-1);
 	pSize = lseek(mFp, 0LL, SEEK_END);
 #if defined(__MINGW32__) || defined(__GNUC__)
@@ -142,6 +194,7 @@ GrapaError GrapaFileIO::GetSize(u64& pSize)
 
 GrapaError GrapaFileIO::SetSize(u64 pSize)
 {
+	if (mStdInOut) return(-1);
 	GrapaError err;
 	u64 fileSize;
 	if (!Opened()) return((GrapaError)-1);
@@ -157,6 +210,7 @@ GrapaError GrapaFileIO::SetSize(u64 pSize)
 
 GrapaError GrapaFileIO::Create(const char *fileName)
 {
+	if (mStdInOut) return(-1);
 	//mFp = fopen(fileName, "wb+");
 	//if (mFp == NULL) return(-1);
 	int oflag = oflaginit | O_RDWR | O_TRUNC | O_CREAT;
@@ -181,6 +235,7 @@ GrapaError GrapaFileIO::Create(const char *fileName)
 
 GrapaError GrapaFileIO::Delete(const char *fileName)
 {
+	if (mStdInOut) return(-1);
 	GrapaError err;
 	err = remove(fileName);
 	if (err != 0)
@@ -190,16 +245,36 @@ GrapaError GrapaFileIO::Delete(const char *fileName)
 
 GrapaError GrapaFileIO::Flush()
 {
-	//errno_t err;
-	if (!Opened()) return(0);
-	if (mMode == GrapaReadOnly) return(0);
-	//err = _commit(mFp);
-	//if (err) return((GrapaError)-1);
-	return(0);
+	GrapaError err = 0;
+	switch (mStdInOut)
+	{
+	case 0: // file
+	{
+		//errno_t err;
+		if (!Opened()) return(0);
+		if (mMode == GrapaReadOnly) return(0);
+		//err = _commit(mFp);
+		//if (err) return((GrapaError)-1);
+		break;
+	}
+	case 2: // stdout
+	{
+		err = fflush(stdout);
+		break;
+	}
+	case 3: // stderr
+	{
+		err = fflush(stderr);
+		break;
+	}
+	}
+
+	return(err);
 }
 
 GrapaError GrapaFileIO::Purge(u64 blockCount, u16 blockSize)
 {
+	if (mStdInOut) return(-1);
 	GrapaError err;
 	if (!Opened()) return((GrapaError)-1);
 	err = SetSize(((u64)blockCount)*blockSize);
@@ -210,6 +285,8 @@ GrapaError GrapaFileIO::Purge(u64 blockCount, u16 blockSize)
 
 GrapaError GrapaFileIO::Write(u64 blockPos, u16 blockSize, u64 offset, u64 length, const void *b)
 {
+	if (mStdInOut) return(-1);
+
 	GrapaError err;
 	u64 len = 0, len2 = 0;
 	u64 endPos = 0, total = 0;
@@ -250,6 +327,8 @@ GrapaError GrapaFileIO::Write(u64 blockPos, u16 blockSize, u64 offset, u64 lengt
 
 GrapaError GrapaFileIO::Read(u64 blockPos, u16 blockSize, u64 offset, u64 length, void *b)
 {
+	if (mStdInOut) return(-1);
+
 	u64 len=0,len2=0;
 	u64 endPos = 0, total = 0;
 	if (!Opened()) return((GrapaError)-1);
@@ -276,16 +355,33 @@ GrapaError GrapaFileIO::Read(u64 blockPos, u16 blockSize, u64 offset, u64 length
 
 GrapaError GrapaFileIO::Append(u64 length, const void *b)
 {
-	u64 endPos;
-	GrapaError err;
-	if (!Opened()) return((GrapaError)-1);
-	err = GetSize(endPos);
-	if (err) return(err);
-	err = SetSize(endPos + length);
-	if (err) return(err);
-	err = Write(0, 0, endPos, length, b);
-	if (err) return(err);
-	return 0;
+	GrapaError err=0;
+
+	switch (mStdInOut)
+	{
+	case 0: // file
+	{
+		u64 endPos;
+		if (!Opened()) return((GrapaError)-1);
+		err = GetSize(endPos);
+		if (err) return(err);
+		err = SetSize(endPos + length);
+		if (err) return(err);
+		err = Write(0, 0, endPos, length, b);
+		break;
+	}
+	case 2: // stdout
+	{
+		err = fprintf(stdout, (char*)b);
+		break;
+	}
+	case 3: // stderr
+	{
+		err = fprintf(stderr, (char*)b);
+		break;
+	}
+	}
+	return err;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

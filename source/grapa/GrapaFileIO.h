@@ -11,8 +11,9 @@ class GrapaFileIO : public GrapaFile
 {
 public:
 	int mFp;
+	int mStdInOut; // 1=stdin, 2=stdout, 3=stderr
 public:
-	GrapaFileIO() : mFp(-1) {}
+	GrapaFileIO() : mFp(-1), mStdInOut(0) {}
 	virtual ~GrapaFileIO() { Close(); }
 	virtual GrapaError Open(const char *fileName, char mode = GrapaReadOnly);
 	virtual GrapaError Close();

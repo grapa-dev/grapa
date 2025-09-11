@@ -15,8 +15,9 @@
 class GrapaFile
 {
 public:
-	GrapaFile() : mOpened(false), mMode(GrapaReadOnly) {}
-	virtual bool    Opened() { return mOpened; }
+	GrapaFile() : mOpened(false), mMode(GrapaReadOnly), mFileNameToken(0) {};
+	virtual bool    Opened() { return mOpened; };
+	virtual void SetFileNameToken(u8 pFileNameToken) { mFileNameToken = pFileNameToken; };
 	virtual GrapaError Open(const char *fileName, char mode = GrapaReadOnly ) = 0;
 	virtual GrapaError Close() = 0;
 	virtual GrapaError GetSize(u64& pSize) = 0;
@@ -31,6 +32,7 @@ public:
 protected:
 	bool mOpened;
 	char mMode;
+	u8 mFileNameToken;
 };
 
 
