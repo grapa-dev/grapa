@@ -101,6 +101,7 @@ void GrapaLink::Start(bool& needExit, bool& showConsole, GrapaCHAR& outStr, Grap
 	std::vector<GrapaRuleEvent*> argv_args;
 	// First pass: collect flags and their arguments
 	while (e) {
+		if (found_c || found_f) continue;
 		if ((e->mValue.Cmp("-h") == 0) || (e->mValue.Cmp("--help") == 0)) {
 			showHelp = true;
 			needExit = true;
