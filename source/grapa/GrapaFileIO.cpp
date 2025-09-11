@@ -372,12 +372,12 @@ GrapaError GrapaFileIO::Append(u64 length, const void *b)
 	}
 	case 2: // stdout
 	{
-		err = fprintf(stdout, (char*)b);
+		err = fprintf(stdout, "%.*s", (int)length, (char*)b);
 		break;
 	}
 	case 3: // stderr
 	{
-		err = fprintf(stderr, (char*)b);
+		err = fprintf(stderr, "%.*s", (int)length, (char*)b);
 		break;
 	}
 	}
