@@ -46,26 +46,6 @@ The project has completed version 0.1.53 and is now beginning development for ve
 
 ## Outstanding Tasks
 
-### Grapa Regex/Grep Issues 🐛 **NEEDS ATTENTION**
-1. **Word Boundary Issues in Regex Engine** - **HIGH PRIORITY**
-   - **Issue**: Word boundary `\b` in Grapa's regex engine not working as expected
-   - **Context**: Syntax checker development - patterns like `\b(local|global|this)\s*=` not matching
-   - **Impact**: Complex regex patterns fail, requiring fallback to simpler string matching
-   - **Workaround**: Using `cleanLine.find()` instead of `cleanLine.grep()` with complex patterns
-   - **Example**: `cleanLine.grep("\\b(local|global|this)\\s*=", "x")` fails, but `cleanLine.find("local =")` works
-
-2. **Regex Pattern Matching Failures** - **MEDIUM PRIORITY**
-   - **Issue**: Complex regex patterns not working correctly in Grapa's grep engine
-   - **Context**: Data type access pattern validation in syntax checker
-   - **Impact**: Advanced pattern matching requires simplification or alternative approaches
-   - **Workaround**: Breaking complex patterns into multiple simple `find()` operations
-   - **Example**: `cleanLine.grep("[a-zA-Z_][a-zA-Z0-9_]*\\s*=", "x")` fails, requiring manual parsing
-
-3. **Regex Engine Documentation Gap** - **LOW PRIORITY**
-   - **Issue**: Limited documentation on Grapa's regex engine capabilities and limitations
-   - **Context**: Developers need to understand what regex features are supported
-   - **Impact**: Time wasted trying unsupported regex features
-   - **Need**: Comprehensive documentation of supported regex syntax and examples
 
 ### High Priority
 1. ~~**Test remaining platforms**~~ - ✅ **COMPLETED in 0.1.53** - All platforms validated

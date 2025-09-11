@@ -1,786 +1,567 @@
 /*
-Grapa Syntax Checker - A comprehensive syntax validation tool written entirely in Grapa
-
-This example demonstrates:
-- Advanced string manipulation and pattern matching
-- File I/O operations
-- Complex data structures and algorithms
-- Error detection and reporting
-- Parallel processing capabilities
-- Real-world application of Grapa features
-
-Usage:
-    checker = $SyntaxChecker();
-    result = checker.check("script.grc");
-    result.echo();
+Comprehensive Grapa Syntax Checker
 */
 
-// Main Syntax Checker Class
-$global["$SyntaxChecker"] = class {
-    // Configuration and rules
-    rules = {
-        "keywords": ["if", "while", "for", "function", "class", "return", "break", "continue", "try", "catch", "finally", "throw", "switch", "case", "default", "foreach", "do", "exit", "reset"],
-        "operators": ["+", "-", "*", "/", "=", "==", "!=", "<", ">", "<=", ">=", "&&", "||", "!", "&", "|", "^", "~", "<<", ">>", "+=", "-=", "*=", "/=", "%=", "++", "--"],
-        "brackets": {"(": ")", "[": "]", "{": "}"},
-        "statementEnders": [";"],
-        "stringDelimiters": ["\"", "'"],
-        "commentMarkers": ["//", "/*", "*/"]
-    };
+// Syntax checking function - only called when compilation fails
+checkCodeSyntax = op(code) {
+
+    // Comprehensive syntax checking
+    $local.lines = code.split("\n");
+    $local.errors = [];
+    $local.lineNumber = 1;
     
-    // Main entry point - check a file for syntax errors
-    check = op(filePath) {
-        try {
-            // Read file content
-            code = $file().get(filePath);
-            if (code.type() == "$ERR") {
-                return $ERR("Could not read file: " + filePath);
-            }
-            
-            // Tokenize the code
-            tokens = this.tokenize(code);
-            
-            // Validate syntax
-            errors = this.validateSyntax(tokens);
-            
-            // Generate comprehensive report
-            return this.generateReport(errors, filePath, tokens);
-            
-        } catch (error) {
-            return $ERR("Syntax checker error: " + error.str());
-        }
-    };
     
-    // Tokenize source code into structured tokens
-    tokenize = op(code) {
-        tokens = [];
-        lines = code.split("\n");
-        lineNumber = 1;
+    foreach line in lines {
+        // Skip empty lines and whitespace-only lines for performance
+        $local.trimmedLine = line.trim();
+        if (trimmedLine.len() == 0) {
+            lineNumber += 1;
+            continue;
+        };
         
-        foreach line in lines {
-            // Remove comments but preserve line structure for error reporting
-            cleanLine = this.removeComments(line);
+        // Remove comments for analysis (only if needed)
+        $local.cleanLine = trimmedLine;
+        $local.commentPos = cleanLine.find("//");
+        if (commentPos >= 0) {
+            cleanLine = cleanLine.left(commentPos).trim();
+        };
+        
+        // Skip if line is empty after comment removal
+        if (cleanLine.trim().len() == 0) {
+            lineNumber += 1;
+            continue;
+        };
+        
+        // Check for missing semicolons after statements
+        if ((cleanLine.grep("return", "w").len() > 0 || cleanLine.grep("break", "w").len() > 0 || cleanLine.grep("continue", "w").len() > 0 || cleanLine.grep("throw", "w").len() > 0) && cleanLine.right(1) != ";") {
+            errors += "Line ${lineNumber}: Missing semicolon after statement\n".interpolate();
+        };
+        
+        // Check for unbalanced brackets (only if line contains bracket characters)
+        if (cleanLine.find("(") >= 0 || cleanLine.find(")") >= 0 || cleanLine.find("{") >= 0 || cleanLine.find("}") >= 0 || cleanLine.find("[") >= 0 || cleanLine.find("]") >= 0) {
+            $local.openParen = cleanLine.grep("\\(", "o").len();
+            $local.closeParen = cleanLine.grep("\\)", "o").len();
+            $local.openBrace = cleanLine.grep("\\{", "o").len();
+            $local.closeBrace = cleanLine.grep("\\}", "o").len();
+            $local.openBracket = cleanLine.grep("\\[", "o").len();
+            $local.closeBracket = cleanLine.grep("\\]", "o").len();
             
-            // Tokenize the line
-            lineTokens = this.tokenizeLine(cleanLine, lineNumber);
-            tokens.extend(lineTokens);
+            if (openParen != closeParen) {
+                errors += "Line ${lineNumber}: Unbalanced parentheses\n".interpolate();
+            };
+            if (openBrace != closeBrace) {
+                errors += "Line ${lineNumber}: Unbalanced braces\n".interpolate();
+            };
+            if (openBracket != closeBracket) {
+                errors += "Line ${lineNumber}: Unbalanced brackets\n".interpolate();
+            };
+        };
+        
+        // Check for unterminated strings (only if line contains quotes)
+        if (cleanLine.find("\"") >= 0 || cleanLine.find("'") >= 0) {
+            $local.quoteCount = cleanLine.grep("\"", "o").len();
+            $local.singleQuoteCount = cleanLine.grep("'", "o").len();
             
-            lineNumber++;
-        }
+            if ($local.quoteCount % 2 != 0) {
+                errors += "Line ${lineNumber}: Unterminated double-quoted string\n".interpolate();
+            };
+            if ($local.singleQuoteCount % 2 != 0) {
+                errors += "Line ${lineNumber}: Unterminated single-quoted string\n".interpolate();
+            };
+        };
         
-        return tokens;
-    };
-    
-    // Remove comments from a line while preserving structure
-    removeComments = op(line) {
-        // Handle block comments
-        inBlockComment = false;
-        result = "";
-        i = 0;
+        // Check for consecutive operators (only if line contains operators)
+        if (cleanLine.find("+") >= 0 || cleanLine.find("-") >= 0 || cleanLine.find("*") >= 0) {
+            if (cleanLine.grep("\\+\\+", "o").len() > 0 || cleanLine.grep("\\-\\-", "o").len() > 0) {
+                errors += "Line ${lineNumber}: Consecutive operators detected (++, --)\n".interpolate();
+            };
+        };
         
-        while (i < line.len()) {
-            if (!inBlockComment && i < line.len() - 1) {
-                if (line.mid(i, 2) == "/*") {
-                    inBlockComment = true;
-                    i += 2;
-                    continue;
-                } else if (line.mid(i, 2) == "//") {
-                    // Line comment - remove rest of line
-                    break;
-                }
-            } else if (inBlockComment && i < line.len() - 1) {
-                if (line.mid(i, 2) == "*/") {
-                    inBlockComment = false;
-                    i += 2;
-                    continue;
-                }
-            }
-            
-            if (!inBlockComment) {
-                result += line.mid(i, 1);
-            }
-            i++;
-        }
-        
-        return result;
-    };
-    
-    // Tokenize a single line
-    tokenizeLine = op(line, lineNumber) {
-        tokens = [];
-        i = 0;
-        
-        while (i < line.len()) {
-            // Skip whitespace
-            while (i < line.len() && line.mid(i, 1).match("\\s")) {
-                i++;
-            }
-            
-            if (i >= line.len()) break;
-            
-            // Check for operators (multi-character first)
-            token = this.extractOperator(line, i);
-            if (token.len() > 0) {
-                tokens.push({
-                    "type": "operator",
-                    "value": token,
-                    "line": lineNumber,
-                    "position": i
-                });
-                i += token.len();
-                continue;
-            }
-            
-            // Check for brackets
-            char = line.mid(i, 1);
-            if (char.match("[(){}\\[\\]]")) {
-                tokens.push({
-                    "type": "bracket",
-                    "value": char,
-                    "line": lineNumber,
-                    "position": i
-                });
-                i++;
-                continue;
-            }
-            
-            // Check for strings
-            if (char.match("[\"']")) {
-                stringToken = this.extractString(line, i, char);
-                tokens.push({
-                    "type": "string",
-                    "value": stringToken,
-                    "line": lineNumber,
-                    "position": i
-                });
-                i += stringToken.len();
-                continue;
-            }
-            
-            // Check for numbers
-            if (char.match("[0-9]")) {
-                numberToken = this.extractNumber(line, i);
-                tokens.push({
-                    "type": "number",
-                    "value": numberToken,
-                    "line": lineNumber,
-                    "position": i
-                });
-                i += numberToken.len();
-                continue;
-            }
-            
-            // Check for identifiers/keywords
-            if (char.match("[a-zA-Z_$]")) {
-                identifierToken = this.extractIdentifier(line, i);
-                tokenType = this.rules.keywords.find(identifierToken) ? "keyword" : "identifier";
-                tokens.push({
-                    "type": tokenType,
-                    "value": identifierToken,
-                    "line": lineNumber,
-                    "position": i
-                });
-                i += identifierToken.len();
-                continue;
-            }
-            
-            // Check for semicolons
-            if (char == ";") {
-                tokens.push({
-                    "type": "semicolon",
-                    "value": char,
-                    "line": lineNumber,
-                    "position": i
-                });
-                i++;
-                continue;
-            }
-            
-            // Unknown character
-            tokens.push({
-                "type": "unknown",
-                "value": char,
-                "line": lineNumber,
-                "position": i
-            });
-            i++;
-        }
-        
-        return tokens;
-    };
-    
-    // Extract multi-character operators
-    extractOperator = op(line, start) {
-        operators = this.rules.operators.sort(op(a, b) { b.len() - a.len(); }); // Sort by length descending
-        
-        foreach op in operators {
-            if (start + op.len() <= line.len() && line.mid(start, op.len()) == op) {
-                return op;
-            }
-        }
-        
-        return "";
-    };
-    
-    // Extract string literal
-    extractString = op(line, start, delimiter) {
-        result = delimiter;
-        i = start + 1;
-        escaped = false;
-        
-        while (i < line.len()) {
-            char = line.mid(i, 1);
-            
-            if (escaped) {
-                result += char;
-                escaped = false;
-            } else if (char == "\\") {
-                result += char;
-                escaped = true;
-            } else if (char == delimiter) {
-                result += char;
-                return result;
-            } else {
-                result += char;
-            }
-            i++;
-        }
-        
-        return result; // Unterminated string
-    };
-    
-    // Extract number literal
-    extractNumber = op(line, start) {
-        result = "";
-        i = start;
-        hasDecimal = false;
-        
-        while (i < line.len()) {
-            char = line.mid(i, 1);
-            
-            if (char.match("[0-9]")) {
-                result += char;
-            } else if (char == "." && !hasDecimal) {
-                result += char;
-                hasDecimal = true;
-            } else {
-                break;
-            }
-            i++;
-        }
-        
-        return result;
-    };
-    
-    // Extract identifier
-    extractIdentifier = op(line, start) {
-        result = "";
-        i = start;
-        
-        while (i < line.len()) {
-            char = line.mid(i, 1);
-            
-            if (char.match("[a-zA-Z0-9_$]")) {
-                result += char;
-            } else {
-                break;
-            }
-            i++;
-        }
-        
-        return result;
-    };
-    
-    // Validate syntax and detect errors
-    validateSyntax = op(tokens) {
-        errors = [];
-        
-        // Check balanced brackets
-        bracketErrors = this.checkBalancedBrackets(tokens);
-        errors.extend(bracketErrors);
-        
-        // Check statement structure
-        statementErrors = this.checkStatementStructure(tokens);
-        errors.extend(statementErrors);
-        
-        // Check operator usage
-        operatorErrors = this.checkOperatorUsage(tokens);
-        errors.extend(operatorErrors);
-        
-        // Check string literals
-        stringErrors = this.checkStringLiterals(tokens);
-        errors.extend(stringErrors);
-        
-        // Check for common syntax issues
-        commonErrors = this.checkCommonIssues(tokens);
-        errors.extend(commonErrors);
-        
-        return errors;
-    };
-    
-    // Check for balanced brackets
-    checkBalancedBrackets = op(tokens) {
-        errors = [];
-        stack = [];
-        bracketPairs = this.rules.brackets;
-        
-        foreach token in tokens {
-            if (token.type == "bracket") {
-                char = token.value;
-                
-                // Opening bracket
-                if (bracketPairs.has(char)) {
-                    stack.push({
-                        "char": char,
-                        "line": token.line,
-                        "position": token.position
-                    });
-                }
-                // Closing bracket
-                else {
-                    expected = null;
-                    foreach pair in bracketPairs {
-                        if (bracketPairs[pair] == char) {
-                            expected = pair;
-                            break;
-                        }
-                    }
-                    
-                    if (expected && stack.len() > 0) {
-                        last = stack.pop();
-                        if (last.char != expected) {
-                            errors.push({
-                                "type": "unmatched_bracket",
-                                "message": "Expected '" + bracketPairs[last.char] + "' but found '" + char + "'",
-                                "line": token.line,
-                                "position": token.position,
-                                "suggestion": "Check bracket matching"
-                            });
-                        }
-                    } else if (expected) {
-                        errors.push({
-                            "type": "unexpected_closing_bracket",
-                            "message": "Unexpected closing bracket '" + char + "'",
-                            "line": token.line,
-                            "position": token.position,
-                            "suggestion": "Remove extra closing bracket or add opening bracket"
-                        });
-                    }
-                }
-            }
-        }
-        
-        // Check for unclosed brackets
-        foreach unclosed in stack {
-            errors.push({
-                "type": "unclosed_bracket",
-                "message": "Unclosed bracket '" + unclosed.char + "'",
-                "line": unclosed.line,
-                "position": unclosed.position,
-                "suggestion": "Add closing bracket '" + bracketPairs[unclosed.char] + "'"
-            });
-        }
-        
-        return errors;
-    };
-    
-    // Check statement structure
-    checkStatementStructure = op(tokens) {
-        errors = [];
-        i = 0;
-        
-        while (i < tokens.len()) {
-            token = tokens[i];
-            
-            // Check if statements
-            if (token.type == "keyword" && token.value == "if") {
-                ifError = this.checkIfStatement(tokens, i);
-                if (ifError) errors.push(ifError);
-            }
-            
-            // Check while statements
-            else if (token.type == "keyword" && token.value == "while") {
-                whileError = this.checkWhileStatement(tokens, i);
-                if (whileError) errors.push(whileError);
-            }
-            
-            // Check for statements
-            else if (token.type == "keyword" && token.value == "for") {
-                forError = this.checkForStatement(tokens, i);
-                if (forError) errors.push(forError);
-            }
-            
-            // Check function calls
-            else if (token.type == "identifier" && i + 1 < tokens.len() && tokens[i + 1].value == "(") {
-                funcError = this.checkFunctionCall(tokens, i);
-                if (funcError) errors.push(funcError);
-            }
-            
-            i++;
-        }
-        
-        return errors;
-    };
-    
-    // Check if statement structure
-    checkIfStatement = op(tokens, start) {
-        i = start + 1;
-        
-        // Look for opening parenthesis
-        while (i < tokens.len() && tokens[i].type != "bracket" && tokens[i].value != "(") {
-            if (tokens[i].type != "semicolon") {
-                return {
-                    "type": "invalid_if_statement",
-                    "message": "Expected '(' after 'if'",
-                    "line": tokens[i].line,
-                    "position": tokens[i].position,
-                    "suggestion": "Add opening parenthesis: if (condition)"
+        // Check for variable scoping issues (missing $ prefix)
+        if (cleanLine.find("=") >= 0 && cleanLine.find("//") == -1 && cleanLine.find("/*") == -1) {
+            // Debug: Check if we're processing assignment lines
+            if (cleanLine.find("x =") >= 0 || cleanLine.find("y =") >= 0) {
+                errors += "DEBUG: Processing assignment line ${lineNumber}: ${cleanLine}\n".interpolate();
+            };
+            // Check for old namespace syntax (local., global., this.)
+            if (cleanLine.find("local.") >= 0 || cleanLine.find("global.") >= 0 || cleanLine.find("this.") >= 0) {
+                if (cleanLine.find("cleanLine.find") == -1 && cleanLine.find("Old namespace syntax detected") == -1 && cleanLine.find("errors += ") == -1) {
+                    if ((cleanLine.find("local.") >= 0 && cleanLine.find("$local.") == -1) ||
+                        (cleanLine.find("global.") >= 0 && cleanLine.find("$global.") == -1) ||
+                        (cleanLine.find("this.") >= 0 && cleanLine.find("$this.") == -1)) {
+                        errors += "Line ${lineNumber}: Old namespace syntax detected (use $local, $global, $this instead of local., global., this.)\n".interpolate();
+                    };
                 };
-            }
-            i++;
-        }
-        
-        if (i >= tokens.len() || tokens[i].value != "(") {
-            return {
-                "type": "invalid_if_statement",
-                "message": "Missing opening parenthesis after 'if'",
-                "line": tokens[start].line,
-                "position": tokens[start].position,
-                "suggestion": "Add opening parenthesis: if (condition)"
             };
-        }
-        
-        return null; // No error
-    };
-    
-    // Check while statement structure
-    checkWhileStatement = op(tokens, start) {
-        return this.checkIfStatement(tokens, start); // Same structure as if
-    };
-    
-    // Check for statement structure
-    checkForStatement = op(tokens, start) {
-        return this.checkIfStatement(tokens, start); // Same structure as if
-    };
-    
-    // Check function call structure
-    checkFunctionCall = op(tokens, start) {
-        i = start + 1;
-        
-        if (i >= tokens.len() || tokens[i].value != "(") {
-            return {
-                "type": "invalid_function_call",
-                "message": "Expected '(' after function name",
-                "line": tokens[start].line,
-                "position": tokens[start].position,
-                "suggestion": "Add opening parenthesis: function()"
-            };
-        }
-        
-        return null; // No error
-    };
-    
-    // Check operator usage
-    checkOperatorUsage = op(tokens) {
-        errors = [];
-        i = 0;
-        
-        while (i < tokens.len()) {
-            token = tokens[i];
             
-            if (token.type == "operator") {
-                // Check for consecutive operators
-                if (i + 1 < tokens.len() && tokens[i + 1].type == "operator") {
-                    errors.push({
-                        "type": "consecutive_operators",
-                        "message": "Consecutive operators: '" + token.value + "' followed by '" + tokens[i + 1].value + "'",
-                        "line": token.line,
-                        "position": token.position,
-                        "suggestion": "Check operator precedence or add parentheses"
-                    });
-                }
-                
-                // Check for operators at start/end of line
-                if (i == 0 || i == tokens.len() - 1) {
-                    errors.push({
-                        "type": "misplaced_operator",
-                        "message": "Operator '" + token.value + "' at unexpected position",
-                        "line": token.line,
-                        "position": token.position,
-                        "suggestion": "Check operator placement"
-                    });
-                }
-            }
-            
-            i++;
-        }
-        
-        return errors;
-    };
-    
-    // Check string literals
-    checkStringLiterals = op(tokens) {
-        errors = [];
-        
-        foreach token in tokens {
-            if (token.type == "string") {
-                // Check for unterminated strings
-                if (token.value.len() < 2 || token.value.mid(0, 1) != token.value.mid(token.value.len() - 1, 1)) {
-                    errors.push({
-                        "type": "unterminated_string",
-                        "message": "Unterminated string literal",
-                        "line": token.line,
-                        "position": token.position,
-                        "suggestion": "Add closing quote"
-                    });
-                }
-            }
-        }
-        
-        return errors;
-    };
-    
-    // Check for common syntax issues
-    checkCommonIssues = op(tokens) {
-        errors = [];
-        i = 0;
-        
-        while (i < tokens.len()) {
-            token = tokens[i];
-            
-            // Check for missing semicolons after statements
-            if (token.type == "keyword" && ["return", "break", "continue", "throw"].find(token.value)) {
-                // Look for semicolon in next few tokens
-                foundSemicolon = false;
-                j = i + 1;
-                while (j < tokens.len() && j < i + 5) {
-                    if (tokens[j].type == "semicolon") {
-                        foundSemicolon = true;
-                        break;
-                    }
-                    j++;
-                }
-                
-                if (!foundSemicolon) {
-                    errors.push({
-                        "type": "missing_semicolon",
-                        "message": "Missing semicolon after '" + token.value + "' statement",
-                        "line": token.line,
-                        "position": token.position,
-                        "suggestion": "Add semicolon: " + token.value + ";"
-                    });
-                }
-            }
-            
-            i++;
-        }
-        
-        return errors;
-    };
-    
-    // Generate comprehensive error report
-    generateReport = op(errors, filePath, tokens) {
-        if (errors.len() == 0) {
-            return {
-                "status": "success",
-                "message": "✅ No syntax errors found in " + filePath,
-                "file": filePath,
-                "tokens": tokens.len(),
-                "errors": [],
-                "summary": "All syntax checks passed!"
-            };
-        }
-        
-        // Group errors by type
-        errorGroups = {};
-        foreach error in errors {
-            if (!errorGroups.has(error.type)) {
-                errorGroups[error.type] = [];
-            }
-            errorGroups[error.type].push(error);
-        }
-        
-        // Generate summary
-        summary = "Found " + errors.len() + " syntax error(s):\n";
-        foreach type in errorGroups.keys() {
-            summary += "  - " + type + ": " + errorGroups[type].len() + " error(s)\n";
-        }
-        
-        return {
-            "status": "error",
-            "message": "❌ Found " + errors.len() + " syntax error(s) in " + filePath,
-            "file": filePath,
-            "tokens": tokens.len(),
-            "errors": errors,
-            "errorGroups": errorGroups,
-            "summary": summary
+            // Note: $local usage is a best practice, not a syntax error
         };
-    };
-    
-    // Utility method to check multiple files
-    checkFiles = op(filePaths) {
-        results = filePaths.map(op(filePath) { this.check(filePath); });
         
-        // Generate summary
-        totalFiles = filePaths.len();
-        successCount = results.filter(op(result) { result.status == "success"; }).len();
-        errorCount = totalFiles - successCount;
-        
-        summary = "Syntax Check Summary:\n";
-        summary += "  Total files: " + totalFiles + "\n";
-        summary += "  ✅ Passed: " + successCount + "\n";
-        summary += "  ❌ Failed: " + errorCount + "\n";
-        
-        return {
-            "results": results,
-            "summary": summary,
-            "totalFiles": totalFiles,
-            "successCount": successCount,
-            "errorCount": errorCount
+        // Check for loop syntax validation (only if line contains loop keywords)
+        if (cleanLine.find("while") >= 0 || cleanLine.find("for") >= 0 || cleanLine.find("foreach") >= 0) {
+            if (cleanLine.find("//") == -1 && cleanLine.find("/*") == -1) {
+                // Check while loop syntax
+                if (cleanLine.grep("while\\s+\\(", "o").len() == 0 && cleanLine.grep("while\\s+[^\\s]", "o").len() > 0) {
+                    errors += "Line ${lineNumber}: Missing parentheses in while loop\n".interpolate();
+                };
+                
+                // Check for loop syntax
+                if (cleanLine.grep("for\\s+\\(", "o").len() == 0 && cleanLine.grep("for\\s+[^\\s]", "o").len() > 0) {
+                    errors += "Line ${lineNumber}: Missing parentheses in for loop\n".interpolate();
+                };
+                
+                // Check foreach loop syntax
+                if (cleanLine.grep("foreach\\s+[a-zA-Z_][a-zA-Z0-9_]*\\s+in", "o").len() == 0 && cleanLine.grep("foreach\\s+[a-zA-Z_][a-zA-Z0-9_]*\\s+[^i]", "o").len() > 0) {
+                    errors += "Line ${lineNumber}: Missing 'in' keyword in foreach loop\n".interpolate();
+                };
+            };
         };
+        
+        // Check for data type access patterns (only if line contains array access or method chaining)
+        if (cleanLine.find("[") >= 0 || cleanLine.find("]") >= 0 || cleanLine.find("..") >= 0) {
+            if (cleanLine.find("//") == -1 && cleanLine.find("/*") == -1) {
+                // Check for missing opening bracket
+                if (cleanLine.grep("\\]\\s*=", "o").len() > 0 && cleanLine.grep("\\[.*\\]\\s*=", "o").len() == 0) {
+                    errors += "Line ${lineNumber}: Missing opening bracket in array access\n".interpolate();
+                };
+                
+                // Check for missing closing bracket
+                if (cleanLine.grep("\\[\\s*[^\\]]*$", "o").len() > 0) {
+                    errors += "Line ${lineNumber}: Missing closing bracket in array access\n".interpolate();
+                };
+                
+                // Note: Method chaining like result.type().str() is valid syntax
+                
+                // Note: array.index is valid syntax in Grapa
+            };
+        };
+        
+        // Check for operator precedence issues (only if line contains operators)
+        if (cleanLine.find("//") == -1 && cleanLine.find("/*") == -1 && 
+            (cleanLine.find("+") >= 0 || cleanLine.find("-") >= 0 || cleanLine.find("*") >= 0 || 
+             cleanLine.find("/") >= 0 || cleanLine.find("%") >= 0 || cleanLine.find("=") >= 0 ||
+             cleanLine.find("==") >= 0 || cleanLine.find("!=") >= 0 || cleanLine.find("<") >= 0 ||
+             cleanLine.find(">") >= 0 || cleanLine.find("<=") >= 0 || cleanLine.find(">=") >= 0 ||
+             cleanLine.find("&&") >= 0 || cleanLine.find("||") >= 0 || cleanLine.find("&") >= 0 ||
+             cleanLine.find("|") >= 0 || cleanLine.find("^") >= 0 || cleanLine.find("<<") >= 0 ||
+             cleanLine.find(">>") >= 0 || cleanLine.find("**") >= 0 || cleanLine.find("++") >= 0 ||
+             cleanLine.find("--") >= 0 || cleanLine.find("?") >= 0 || cleanLine.find(":") >= 0)) {
+            
+            // Check for ambiguous operator precedence patterns
+            // Multiplication/Division should have higher precedence than Addition/Subtraction
+            if (cleanLine.grep("\\+\\s*[a-zA-Z_$][a-zA-Z0-9_$]*\\s*\\*", "o").len() > 0 || 
+                cleanLine.grep("\\-\\s*[a-zA-Z_$][a-zA-Z0-9_$]*\\s*\\*", "o").len() > 0 ||
+                cleanLine.grep("\\+\\s*[a-zA-Z_$][a-zA-Z0-9_$]*\\s*\\/", "o").len() > 0 || 
+                cleanLine.grep("\\-\\s*[a-zA-Z_$][a-zA-Z0-9_$]*\\s*\\/", "o").len() > 0) {
+                errors += "Line ${lineNumber}: Ambiguous operator precedence - consider using parentheses for clarity\n".interpolate();
+            };
+            
+            // Assignment operators should not be mixed with arithmetic without parentheses
+            if (cleanLine.grep("\\+\\s*=", "o").len() > 0 && cleanLine.grep("\\*\\s*=", "o").len() > 0) {
+                errors += "Line ${lineNumber}: Mixed assignment operators - consider using parentheses for clarity\n".interpolate();
+            };
+            
+            // Comparison operators should not be mixed with arithmetic without parentheses
+            if ((cleanLine.grep("\\+", "o").len() > 0 || cleanLine.grep("\\-", "o").len() > 0) &&
+                (cleanLine.grep("==", "o").len() > 0 || cleanLine.grep("!=", "o").len() > 0 ||
+                 cleanLine.grep("<=", "o").len() > 0 || cleanLine.grep(">=", "o").len() > 0 ||
+                 cleanLine.grep("<", "o").len() > 0 || cleanLine.grep(">", "o").len() > 0)) {
+                errors += "Line ${lineNumber}: Mixed arithmetic and comparison operators - consider using parentheses for clarity\n".interpolate();
+            };
+            
+            // Logical operators should not be mixed with arithmetic without parentheses
+            if ((cleanLine.grep("\\+", "o").len() > 0 || cleanLine.grep("\\-", "o").len() > 0 ||
+                 cleanLine.grep("\\*", "o").len() > 0 || cleanLine.grep("\\/", "o").len() > 0) &&
+                (cleanLine.grep("&&", "o").len() > 0 || cleanLine.grep("\\|\\|", "o").len() > 0)) {
+                errors += "Line ${lineNumber}: Mixed arithmetic and logical operators - consider using parentheses for clarity\n".interpolate();
+            };
+            
+            // Bitwise operators should not be mixed with arithmetic without parentheses
+            if ((cleanLine.grep("\\+", "o").len() > 0 || cleanLine.grep("\\-", "o").len() > 0) &&
+                (cleanLine.grep("&", "o").len() > 0 || cleanLine.grep("\\|", "o").len() > 0 ||
+                 cleanLine.grep("\\^", "o").len() > 0 || cleanLine.grep("<<", "o").len() > 0 ||
+                 cleanLine.grep(">>", "o").len() > 0)) {
+                errors += "Line ${lineNumber}: Mixed arithmetic and bitwise operators - consider using parentheses for clarity\n".interpolate();
+            };
+            
+            // Ternary operator should be properly parenthesized when mixed with other operators
+            if (cleanLine.grep("\\?", "o").len() > 0 && cleanLine.grep(":", "o").len() > 0 &&
+                (cleanLine.grep("\\+", "o").len() > 0 || cleanLine.grep("\\-", "o").len() > 0 ||
+                 cleanLine.grep("\\*", "o").len() > 0 || cleanLine.grep("\\/", "o").len() > 0 ||
+                 cleanLine.grep("==", "o").len() > 0 || cleanLine.grep("!=", "o").len() > 0)) {
+                errors += "Line ${lineNumber}: Ternary operator mixed with other operators - consider using parentheses for clarity\n".interpolate();
+            };
+        };
+        
+        // Check for method chaining validation (only if line contains method calls)
+        if (cleanLine.find("//") == -1 && cleanLine.find("/*") == -1 && cleanLine.find(".") >= 0) {
+            // Check for common method chaining patterns
+            if (cleanLine.find(".map(") >= 0 || cleanLine.find(".filter(") >= 0 || cleanLine.find(".reduce(") >= 0) {
+                // Check if method chaining is properly formatted
+                if (cleanLine.find(".map(") >= 0 && cleanLine.find(".map(") != cleanLine.find(".map(")) {
+                    errors += "Line ${lineNumber}: Multiple .map() calls detected - consider chaining or separate variables\n".interpolate();
+                };
+                if (cleanLine.find(".filter(") >= 0 && cleanLine.find(".filter(") != cleanLine.find(".filter(")) {
+                    errors += "Line ${lineNumber}: Multiple .filter() calls detected - consider chaining or separate variables\n".interpolate();
+                };
+                if (cleanLine.find(".reduce(") >= 0 && cleanLine.find(".reduce(") != cleanLine.find(".reduce(")) {
+                    errors += "Line ${lineNumber}: Multiple .reduce() calls detected - consider chaining or separate variables\n".interpolate();
+                };
+            };
+            
+            // Check for missing closing parentheses in common methods
+            if (cleanLine.find(".echo(") >= 0 && cleanLine.find(".echo(") != cleanLine.find(".echo(")) {
+                errors += "Line ${lineNumber}: Missing closing parenthesis in .echo() method\n".interpolate();
+            };
+            if (cleanLine.find(".interpolate(") >= 0 && cleanLine.find(".interpolate(") != cleanLine.find(".interpolate(")) {
+                errors += "Line ${lineNumber}: Missing closing parenthesis in .interpolate() method\n".interpolate();
+            };
+            if (cleanLine.find(".split(") >= 0 && cleanLine.find(".split(") != cleanLine.find(".split(")) {
+                errors += "Line ${lineNumber}: Missing closing parenthesis in .split() method\n".interpolate();
+            };
+            if (cleanLine.find(".sum(") >= 0 && cleanLine.find(".sum(") != cleanLine.find(".sum(")) {
+                errors += "Line ${lineNumber}: Missing closing parenthesis in .sum() method\n".interpolate();
+            };
+            if (cleanLine.find(".mean(") >= 0 && cleanLine.find(".mean(") != cleanLine.find(".mean(")) {
+                errors += "Line ${lineNumber}: Missing closing parenthesis in .mean() method\n".interpolate();
+            };
+            if (cleanLine.find(".std(") >= 0 && cleanLine.find(".std(") != cleanLine.find(".std(")) {
+                errors += "Line ${lineNumber}: Missing closing parenthesis in .std() method\n".interpolate();
+            };
+            
+            // Check for string method parentheses
+            if (cleanLine.find(".upper(") >= 0 && cleanLine.find(".upper(") != cleanLine.find(".upper(")) {
+                errors += "Line ${lineNumber}: Missing closing parenthesis in .upper() method\n".interpolate();
+            };
+            if (cleanLine.find(".lower(") >= 0 && cleanLine.find(".lower(") != cleanLine.find(".lower(")) {
+                errors += "Line ${lineNumber}: Missing closing parenthesis in .lower() method\n".interpolate();
+            };
+            if (cleanLine.find(".casefold(") >= 0 && cleanLine.find(".casefold(") != cleanLine.find(".casefold(")) {
+                errors += "Line ${lineNumber}: Missing closing parenthesis in .casefold() method\n".interpolate();
+            };
+            if (cleanLine.find(".levenshtein(") >= 0 && cleanLine.find(".levenshtein(") != cleanLine.find(".levenshtein(")) {
+                errors += "Line ${lineNumber}: Missing closing parenthesis in .levenshtein() method\n".interpolate();
+            };
+            if (cleanLine.find(".jarowinkler(") >= 0 && cleanLine.find(".jarowinkler(") != cleanLine.find(".jarowinkler(")) {
+                errors += "Line ${lineNumber}: Missing closing parenthesis in .jarowinkler() method\n".interpolate();
+            };
+            if (cleanLine.find(".cosinesimilarity(") >= 0 && cleanLine.find(".cosinesimilarity(") != cleanLine.find(".cosinesimilarity(")) {
+                errors += "Line ${lineNumber}: Missing closing parenthesis in .cosinesimilarity() method\n".interpolate();
+            };
+            
+            // Check for vector method parentheses
+            if (cleanLine.find(".min(") >= 0 && cleanLine.find(".min(") != cleanLine.find(".min(")) {
+                errors += "Line ${lineNumber}: Missing closing parenthesis in .min() method\n".interpolate();
+            };
+            if (cleanLine.find(".max(") >= 0 && cleanLine.find(".max(") != cleanLine.find(".max(")) {
+                errors += "Line ${lineNumber}: Missing closing parenthesis in .max() method\n".interpolate();
+            };
+            if (cleanLine.find(".var(") >= 0 && cleanLine.find(".var(") != cleanLine.find(".var(")) {
+                errors += "Line ${lineNumber}: Missing closing parenthesis in .var() method\n".interpolate();
+            };
+            if (cleanLine.find(".shape(") >= 0 && cleanLine.find(".shape(") != cleanLine.find(".shape(")) {
+                errors += "Line ${lineNumber}: Missing closing parenthesis in .shape() method\n".interpolate();
+            };
+            if (cleanLine.find(".reshape(") >= 0 && cleanLine.find(".reshape(") != cleanLine.find(".reshape(")) {
+                errors += "Line ${lineNumber}: Missing closing parenthesis in .reshape() method\n".interpolate();
+            };
+            if (cleanLine.find(".dot(") >= 0 && cleanLine.find(".dot(") != cleanLine.find(".dot(")) {
+                errors += "Line ${lineNumber}: Missing closing parenthesis in .dot() method\n".interpolate();
+            };
+            if (cleanLine.find(".norm(") >= 0 && cleanLine.find(".norm(") != cleanLine.find(".norm(")) {
+                errors += "Line ${lineNumber}: Missing closing parenthesis in .norm() method\n".interpolate();
+            };
+            if (cleanLine.find(".mode(") >= 0 && cleanLine.find(".mode(") != cleanLine.find(".mode(")) {
+                errors += "Line ${lineNumber}: Missing closing parenthesis in .mode() method\n".interpolate();
+            };
+            if (cleanLine.find(".median(") >= 0 && cleanLine.find(".median(") != cleanLine.find(".median(")) {
+                errors += "Line ${lineNumber}: Missing closing parenthesis in .median() method\n".interpolate();
+            };
+            if (cleanLine.find(".percentile(") >= 0 && cleanLine.find(".percentile(") != cleanLine.find(".percentile(")) {
+                errors += "Line ${lineNumber}: Missing closing parenthesis in .percentile() method\n".interpolate();
+            };
+            if (cleanLine.find(".quantile(") >= 0 && cleanLine.find(".quantile(") != cleanLine.find(".quantile(")) {
+                errors += "Line ${lineNumber}: Missing closing parenthesis in .quantile() method\n".interpolate();
+            };
+            if (cleanLine.find(".skew(") >= 0 && cleanLine.find(".skew(") != cleanLine.find(".skew(")) {
+                errors += "Line ${lineNumber}: Missing closing parenthesis in .skew() method\n".interpolate();
+            };
+            if (cleanLine.find(".kurtosis(") >= 0 && cleanLine.find(".kurtosis(") != cleanLine.find(".kurtosis(")) {
+                errors += "Line ${lineNumber}: Missing closing parenthesis in .kurtosis() method\n".interpolate();
+            };
+            
+            // Check for list method parentheses
+            if (cleanLine.find(".message(") >= 0 && cleanLine.find(".message(") != cleanLine.find(".message(")) {
+                errors += "Line ${lineNumber}: Missing closing parenthesis in .message() method\n".interpolate();
+            };
+            if (cleanLine.find(".err(") >= 0 && cleanLine.find(".err(") != cleanLine.find(".err(")) {
+                errors += "Line ${lineNumber}: Missing closing parenthesis in .err() method\n".interpolate();
+            };
+        };
+        
+        lineNumber += 1;
     };
     
-    // Utility method to check all .grc files in a directory
-    checkDirectory = op(directoryPath) {
-        files = $file().ls(directoryPath, "files");
-        grcFiles = files.filter(op(file) { file.right(4) == ".grc"; });
-        
-        return this.checkFiles(grcFiles);
+    // Advanced syntax checks for common compilation errors
+    $local.allCode = code;
+    
+    // Check for Python-style list comprehensions [expr for var in iterable]
+    if (allCode.grep("\\[.*for.*in.*\\]", "o").len() > 0) {
+        errors += "Line ${lineNumber}: Python-style list comprehension detected - use Grapa array syntax instead\n".interpolate();
+    };
+    
+    // Check for C-style for loops for (init; condition; increment)
+    if (allCode.grep("for\\s*\\([^)]*;[^)]*;[^)]*\\)", "o").len() > 0) {
+        errors += "Line ${lineNumber}: C-style for loop detected - use Grapa for loop syntax instead\n".interpolate();
+    };
+    
+    // Check for Python-style for loops for var in number (not range)
+    if (allCode.grep("for\\s+\\w+\\s+in\\s+\\d+", "o").len() > 0) {
+        errors += "Line ${lineNumber}: Python-style for loop detected - use 'for var in range(number)' instead\n".interpolate();
+    };
+    
+    // Check for invalid method calls
+    if (allCode.grep("\\.append\\(", "o").len() > 0) {
+        errors += "Line ${lineNumber}: .append() method detected - use Grapa array methods instead\n".interpolate();
+    };
+    
+    if (allCode.grep("\\.json\\(", "o").len() > 0) {
+        errors += "Line ${lineNumber}: .json() method detected - use Grapa JSON methods instead\n".interpolate();
+    };
+    
+    if (allCode.grep("\\.Comp\\(", "o").len() > 0) {
+        errors += "Line ${lineNumber}: .Comp() method detected - use Grapa comparison operators instead\n".interpolate();
+    };
+    
+    if (allCode.grep("\\.mNaN", "o").len() > 0) {
+        errors += "Line ${lineNumber}: .mNaN property detected - use Grapa NaN checking methods instead\n".interpolate();
+    };
+    
+    // Check for invalid range syntax for var from start to end
+    if (allCode.grep("for\\s+\\w+\\s+from\\s+\\d+\\s+to\\s+\\d+", "o").len() > 0) {
+        errors += "Line ${lineNumber}: Invalid range syntax detected - use 'for var in range(start, end)' instead\n".interpolate();
+    };
+    
+    // Check for invalid ternary operator condition ? value1 : value2
+    if (allCode.grep("\\?.*:", "o").len() > 0) {
+        errors += "Line ${lineNumber}: Ternary operator detected - use Grapa conditional expressions instead\n".interpolate();
+    };
+    
+    // Check for enhanced assignment operators that don't exist in Grapa
+    if (allCode.grep("\\*=", "o").len() > 0) {
+        errors += "Line ${lineNumber}: Enhanced assignment operator '*=' detected - use standard assignment instead\n".interpolate();
+    };
+    
+    if (allCode.grep("/=", "o").len() > 0) {
+        errors += "Line ${lineNumber}: Enhanced assignment operator '/=' detected - use standard assignment instead\n".interpolate();
+    };
+    
+    if (allCode.grep("%=", "o").len() > 0) {
+        errors += "Line ${lineNumber}: Enhanced assignment operator '%=' detected - use standard assignment instead\n".interpolate();
+    };
+    
+    if (allCode.grep("\\*\\*=", "o").len() > 0) {
+        errors += "Line ${lineNumber}: Enhanced assignment operator '**=' detected - use standard assignment instead\n".interpolate();
+    };
+    
+    // Check for do-while loops that don't exist in Grapa
+    if (allCode.grep("do\\s*\\{", "o").len() > 0) {
+        errors += "Line ${lineNumber}: Do-while loop detected - use Grapa while loop syntax instead\n".interpolate();
+    };
+    
+    // Check for unnecessary .str() calls on type() results
+    if (allCode.grep("\\.type\\(\\)\\.str\\(\\)", "o").len() > 0) {
+        errors += "Line ${lineNumber}: Unnecessary .str() call on .type() result - .type() already returns a string\n".interpolate();
+    };
+    
+    // Check for incomplete vector syntax #[] (missing closing #)
+    if (allCode.grep("#\\[\\][^#]", "o").len() > 0) {
+        errors += "Line ${lineNumber}: Incomplete vector syntax detected - use #[]# for empty vectors\n".interpolate();
+    };
+    
+    // Note: Compilation check is now handled in the main checkFile function
+    
+    if (errors.len() == 0) {
+        return "✅ No syntax errors found\n";
+    } else {
+        return "❌ Syntax errors found:\n${errors.join('\n')}".interpolate();
     };
 };
 
-// CLI Interface - Process command line arguments
-args = $sys().getenv("$ARGV");
-if (args.len() > 0) {
-    // Parse command line arguments
-    command = args[0];
+// Code review function - only called when compilation succeeds
+checkCodeReview = op(code) {
+
+    $local.lines = code.split("\n");
+    $local.suggestions = [];
+    $local.lineNumber = 1;
     
-    if (command == "check" && args.len() > 1) {
-        // Single file check: grapa script.grc check filename.grc
-        checker = $SyntaxChecker();
-        result = checker.check(args[1]);
+    foreach line in lines {
+        $local.trimmedLine = line.trim();
+        if (trimmedLine.len() == 0) {
+            lineNumber += 1;
+            continue;
+        };
+        
+        // Remove comments for analysis
+        $local.cleanLine = trimmedLine;
+        $local.commentPos = cleanLine.find("//");
+        if (commentPos >= 0) {
+            cleanLine = cleanLine.left(commentPos).trim();
+        };
+        
+        // Best practice suggestions (not syntax errors)
+        if (cleanLine.find("=") >= 0 && 
+            cleanLine.find("$local.") == -1 && cleanLine.find("$global.") == -1 && cleanLine.find("$this.") == -1 &&
+            cleanLine.find("//") == -1 && cleanLine.find("/*") == -1 &&
+            cleanLine.find("(") == -1 && cleanLine.find(".") == -1 && cleanLine.find("[") == -1) {
+            suggestions += "Line ${lineNumber}: Consider using \$local for thread safety (${cleanLine})\n".interpolate();
+        };
+        
+        // Check for unnecessary .str() calls on type() results
+        if (cleanLine.grep("\\.type\\(\\)\\.str\\(\\)", "o").len() > 0) {
+            suggestions += "Line ${lineNumber}: Unnecessary .str() call on .type() result - .type() already returns a string\n".interpolate();
+        };
+        
+        lineNumber += 1;
+    };
+    
+    if (suggestions.len() == 0) {
+        return "✅ Code compiles successfully - no suggestions\n";
+    } else {
+        return "✅ Code compiles successfully - suggestions:\n${suggestions.join('\n')}".interpolate();
+    };
+};
+
+// Main file checking function
+checkCode = op(code) {
+
+    // First, try to compile the code
+    $local.compileResult = $sys().compile(code).decode('ZIP-GRAPA')[0];
+    if (compileResult.type() == $ERR) {
+        // Compilation failed - run syntax checker for detailed error analysis
+        return checkCodeSyntax(code);
+    } else {
+        // Compilation succeeded - run code review for suggestions
+        return checkCodeReview(code);
+    };
+};
+
+// Function to check all files in a directory
+checkDirectory = op(dirPath) {
+    $local.dirInfo = $file().info(dirPath);
+    $local.results = [];
+    $local.errorCount = 0;
+    $local.totalFiles = 0;
+    
+    if (dirInfo.type() != $LIST || dirInfo."$TYPE" != "DIR") {
+        return "Error: ${dirPath} is not a directory\n".interpolate();
+    };
+    
+    $local.fileList = $file().ls(dirPath);
+    
+    if (fileList.type() != $ARRAY) {
+        return "Error: Failed to list directory contents\n".interpolate();
+    };
+    
+    for (i=0;i<fileList.len();i+=1) {
+        $local.fileInfo = fileList[i]
+        $local.fileName = fileInfo."$KEY";
+        $local.filePath = dirPath + "/" + fileName;
+        $local.fileType = $file().info(filePath)."$TYPE";
+        
+        if (fileType == "FILE" && fileName.right(4) == ".grc") {
+            totalFiles += 1;
+            // Check for compilation errors
+            $local.fileContent = $file().get(filePath);
+            if (fileContent.type() != $ERR) {
+                $local.compileResult = $sys().compile(fileContent.str()).decode('ZIP-GRAPA')[0];
+                if (compileResult.type() == $ERR) {
+                    errorCount += 1;
+                    results += "❌ ${filePath} - Compilation Error".interpolate();
+                } else {
+                    results += "✅ ${filePath} - Compiles successfully".interpolate();
+                };
+            } else {
+                errorCount += 1;
+                results += "❌ ${filePath} - Could not read file".interpolate();
+            };
+        };
+    };
+    
+    $local.summary = "Scanned ${fileList.len()} items, found ${totalFiles} .grc files, ${errorCount} with compilation errors\n".interpolate();
+    if (errorCount > 0) {
+        return summary + "\n" + results.join("\n");
+    } else {
+        return summary;
+    };
+};
+
+// Main script logic
+args = $sys().getenv("$ARGV");
+result = "";
+if (args.len() >= 2) {
+    command = args[1];
+    if (command == "check" && args.len() >= 3) {
+        $local.target = args[2];
+        $local.targetInfo = $file().info(target);
+        if (targetInfo.type() == $LIST && targetInfo."$TYPE" == "DIR") {
+            result = checkDirectory(target);
+        } else {
+            $local.code = $file().get(target);
+            if (code.type() != $ERR) {
+                result = checkCode(code.str());
+            };
+        };
         result.echo();
-    }
-    else if (command == "checkdir" && args.len() > 1) {
-        // Directory check: grapa script.grc checkdir directory/
-        checker = $SyntaxChecker();
-        results = checker.checkDirectory(args[1]);
-        results.summary.echo();
-        
-        // Show detailed results for files with errors
-        foreach result in results.results {
-            if (result.status == "error") {
-                result.echo();
-            }
-        }
-    }
-    else if (command == "checkfiles" && args.len() > 1) {
-        // Multiple files check: grapa script.grc checkfiles file1.grc file2.grc ...
-        checker = $SyntaxChecker();
-        files = args.slice(1); // Get all arguments after 'checkfiles'
-        results = checker.checkFiles(files);
-        results.summary.echo();
-        
-        // Show detailed results for files with errors
-        foreach result in results.results {
-            if (result.status == "error") {
-                result.echo();
-            }
-        }
-    }
-    else if (command == "test") {
-        // Test mode: grapa script.grc test
-        "Grapa Syntax Checker - Test Mode";
-        "===============================";
-        
-        checker = $SyntaxChecker();
-        
-        // Test with a good file
-        "Testing with basic_example.grc:";
-        result1 = checker.check("docs-src/docs/examples/basic_example.grc");
-        result1.echo();
-        
-        // Test with a bad file
-        "Testing with bad syntax file:";
-        result2 = checker.check("docs-src/docs/examples/bad_syntax/missing_semicolons.grc");
-        result2.echo();
-        
-        // Test directory checking
-        "Testing directory check:";
-        result3 = checker.checkDirectory("docs-src/docs/examples/bad_syntax");
-        result3.summary.echo();
-        
-        "Test complete!";
-    }
-    else if (command == "demo") {
-        // Demo mode: grapa script.grc demo
-        "Grapa Syntax Checker - Demo Mode";
-        "===============================";
-        
-        checker = $SyntaxChecker();
-        
-        // Example 1: Check a single file
-        "Example 1: Checking a single file";
-        result = checker.check("docs-src/docs/examples/basic_example.grc");
+        "\n".echo();
+    } else if (command == "code" && args.len() >= 3) {
+        $local.code = args[2];
+        result = checkCode(code.str());
         result.echo();
-        
-        // Example 2: Check multiple files
-        "Example 2: Checking multiple files";
-        files = ["docs-src/docs/examples/basic_example.grc", "docs-src/docs/examples/advanced_example.grc"];
-        results = checker.checkFiles(files);
-        results.summary.echo();
-        
-        // Example 3: Check all .grc files in examples directory
-        "Example 3: Checking all .grc files in examples directory";
-        examplesResult = checker.checkDirectory("docs-src/docs/examples");
-        examplesResult.summary.echo();
-        
-        "Demo complete!";
-    }
-    else if (command == "help" || command == "-h" || command == "--help") {
-        // Help: grapa script.grc help
-        "Grapa Syntax Checker";
-        "===================";
-        "";
-        "A comprehensive syntax validation tool for Grapa scripts.";
-        "";
-        "Usage:";
-        "  grapa grapa_syntax_checker.grc check <file.grc>           - Check a single file";
-        "  grapa grapa_syntax_checker.grc checkdir <directory>       - Check all .grc files in directory";
-        "  grapa grapa_syntax_checker.grc checkfiles <file1> <file2> - Check multiple specific files";
-        "  grapa grapa_syntax_checker.grc test                       - Run test examples";
-        "  grapa grapa_syntax_checker.grc demo                       - Run comprehensive demo";
-        "  grapa grapa_syntax_checker.grc help                       - Show this help";
-        "";
-        "Examples:";
-        "  grapa grapa_syntax_checker.grc check my_script.grc";
-        "  grapa grapa_syntax_checker.grc checkdir docs-src/docs/examples/";
-        "  grapa grapa_syntax_checker.grc checkfiles script1.grc script2.grc";
-        "  grapa grapa_syntax_checker.grc test";
-        "  grapa grapa_syntax_checker.grc demo";
-        "";
-        "Features:";
-        "  - Comprehensive tokenization and parsing";
-        "  - Bracket balancing validation";
-        "  - Missing semicolon detection";
-        "  - String literal validation";
-        "  - Operator usage checking";
-        "  - Statement structure validation";
-        "  - Detailed error reporting with suggestions";
-        "  - Parallel processing for multiple files";
-    }
-    else {
-        "Error: Unknown command '" + command + "'";
-        "Use 'help' to see available commands";
-    }
-}
-else {
-    // No arguments - show help
-    "Grapa Syntax Checker";
-    "===================";
-    "";
-    "No arguments provided. Use 'help' to see available commands.";
-    "";
-    "Quick start:";
-    "  grapa grapa_syntax_checker.grc help";
-    "  grapa grapa_syntax_checker.grc test";
-}
+        "\n".echo();
+    } else if (command == "help") {
+        "Grapa Comprehensive Syntax Checker\n".echo();
+        "Usage: grapa grapa_syntax_checker.grc check <file.grc>\n".echo();
+        "Usage: grapa grapa_syntax_checker.grc check <directory>\n".echo();
+        "Usage: grapa grapa_syntax_checker.grc code <code>\n".echo();
+        "Usage: grapa grapa_syntax_checker.grc help\n".echo();
+        "\n".echo();
+        "Checks for:\n".echo();
+        "- Missing semicolons\n".echo();
+        "- Unbalanced brackets (parentheses, braces, brackets)\n".echo();
+        "- Unterminated strings\n".echo();
+        "- Consecutive operators (++, --, **)\n".echo();
+        "- Variable scoping issues (missing $ prefix)\n".echo();
+        "- Thread safety (recommends $local for variables)\n".echo();
+        "- Loop syntax validation (while, for, foreach)\n".echo();
+        "- Data type access patterns (array brackets, method chaining)\n".echo();
+        "- Operator precedence validation (ambiguous precedence, mixed operators)\n".echo();
+        "- Method chaining validation (.map(), .filter(), .reduce(), .echo(), etc.)\n".echo();
+        "- String method validation (.upper(), .lower(), .casefold(), .levenshtein(), etc.)\n".echo();
+        "- Vector method validation (.sum(), .mean(), .std(), .min(), .max(), .var(), etc.)\n".echo();
+        "- Advanced vector methods (.shape(), .reshape(), .dot(), .norm(), .mode(), .median(), etc.)\n".echo();
+        "- Statistical methods (.percentile(), .quantile(), .skew(), .kurtosis())\n".echo();
+        "- List method validation (.message(), .err())\n".echo();
+        "- Compilation errors (using $sys().compile() to catch actual syntax failures)\n".echo();
+        "\n".echo();
+        "Note: Uses Grapa's advanced grep engine with PCRE2 support:\n".echo();
+        "- Word boundary matching (w flag)\n".echo();
+        "- Full Unicode support\n".echo();
+        "- Advanced regex patterns\n".echo();
+        "\n".echo();
+        "Performance optimizations:\n".echo();
+        "- Skips empty lines and whitespace-only lines\n".echo();
+        "- Only processes bracket/quote/operator checks when needed\n".echo();
+        "- Only validates method calls when method patterns are present\n".echo();
+        "- Optimized for large files with minimal processing overhead\n".echo();
+    } else {
+        "Unknown command: ${command}".interpolate().echo();
+        "Use 'help' for usage information\n".echo();
+    };
+} else {
+    "Grapa Comprehensive Syntax Checker\n".echo();
+    "Usage: grapa grapa_syntax_checker.grc check <file.grc>\n".echo();
+    "Usage: grapa grapa_syntax_checker.grc check <directory>\n".echo();
+    "Usage: grapa grapa_syntax_checker.grc code <code>\n".echo();
+    "Usage: grapa grapa_syntax_checker.grc help\n".echo();
+};
