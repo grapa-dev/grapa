@@ -3293,6 +3293,77 @@ GrapaLibraryEvent* GrapaLibraryRuleEvent::LoadLib(GrapaScriptExec *vScriptExec, 
 			return (this->*(it->second))(pName);
 		return NULL;
 	}
+	else if (mName.Cmp("$system") == 0)
+	{
+		static const std::unordered_map<std::string, Handler> handlerMap = {
+			// System Functions
+			{ "reset", &GrapaLibraryRuleEvent::HandleReset },
+			{ "shell", &GrapaLibraryRuleEvent::HandleShell },
+			{ "eval", &GrapaLibraryRuleEvent::HandleEval },
+			{ "exec", &GrapaLibraryRuleEvent::HandleExec },
+			{ "post", &GrapaLibraryRuleEvent::HandlePost },
+			{ "sleep", &GrapaLibraryRuleEvent::HandleSleep },
+			{ "exit", &GrapaLibraryRuleEvent::HandleExit },
+			{ "getenv", &GrapaLibraryRuleEvent::HandleGetEnv },
+			{ "putenv", &GrapaLibraryRuleEvent::HandlePutEnv },
+			{ "include", &GrapaLibraryRuleEvent::HandleInclude },
+			{ "setnull", &GrapaLibraryRuleEvent::HandleNull },
+			{ "class", &GrapaLibraryRuleEvent::HandleClass },
+			{ "obj", &GrapaLibraryRuleEvent::HandleObj },
+			{ "global", &GrapaLibraryRuleEvent::HandleGlobal },
+			{ "parent", &GrapaLibraryRuleEvent::HandleParent },
+			{ "this", &GrapaLibraryRuleEvent::HandleThis },
+			{ "local", &GrapaLibraryRuleEvent::HandleLocal },
+			{ "oplocal", &GrapaLibraryRuleEvent::HandleOpLocal },
+			{ "static", &GrapaLibraryRuleEvent::HandleStatic },
+			{ "const", &GrapaLibraryRuleEvent::HandleConst },
+			{ "setconst", &GrapaLibraryRuleEvent::HandleSetConst },
+			{ "type", &GrapaLibraryRuleEvent::HandleType },
+			{ "describe", &GrapaLibraryRuleEvent::HandleDescribe },
+			{ "setfloat", &GrapaLibraryRuleEvent::HandleSetFloat },
+			{ "setfix", &GrapaLibraryRuleEvent::HandleSetFix },
+		};
+		auto it = handlerMap.find((char*)pName.mBytes);
+		if (it != handlerMap.end())
+			return (this->*(it->second))(pName);
+		return NULL;
+	}
+	else if (mName.Cmp("$grammar") == 0)
+	{
+		static const std::unordered_map<std::string, Handler> handlerMap = {
+			// Grammar Processing Functions
+			{ "rule", &GrapaLibraryRuleEvent::HandleRule },
+			{ "ruleval", &GrapaLibraryRuleEvent::HandleRuleVal },
+			{ "ruleref", &GrapaLibraryRuleEvent::HandleRuleRef },
+			{ "token", &GrapaLibraryRuleEvent::HandleToken },
+			{ "grammar", &GrapaLibraryRuleEvent::HandleGrammar },
+			{ "name", &GrapaLibraryRuleEvent::HandleName },
+			{ "getname", &GrapaLibraryRuleEvent::HandleGetName },
+			{ "lit", &GrapaLibraryRuleEvent::HandleLit },
+			{ "ref", &GrapaLibraryRuleEvent::HandleRef },
+			{ "var", &GrapaLibraryRuleEvent::HandleVar },
+			{ "createarray", &GrapaLibraryRuleEvent::HandleCreateArray },
+			{ "createtuple", &GrapaLibraryRuleEvent::HandleCreateTuple },
+			{ "createlist", &GrapaLibraryRuleEvent::HandleCreateList },
+			{ "createxml", &GrapaLibraryRuleEvent::HandleCreateXml },
+			{ "createel", &GrapaLibraryRuleEvent::HandleCreateEl },
+			{ "createtag", &GrapaLibraryRuleEvent::HandleCreateTag },
+			{ "createop", &GrapaLibraryRuleEvent::HandleCreateOp },
+			{ "createcode", &GrapaLibraryRuleEvent::HandleCreateCode },
+			{ "createrule", &GrapaLibraryRuleEvent::HandleCreateRule },
+			{ "extend", &GrapaLibraryRuleEvent::HandleExtend },
+			{ "remove", &GrapaLibraryRuleEvent::HandleRemove },
+			{ "prepend", &GrapaLibraryRuleEvent::HandlePrepend },
+			{ "call", &GrapaLibraryRuleEvent::HandleCall },
+			{ "plan", &GrapaLibraryRuleEvent::HandlePlan },
+			{ "wrap", &GrapaLibraryRuleEvent::HandleWrap },
+			{ "op", &GrapaLibraryRuleEvent::HandleOp },
+		};
+		auto it = handlerMap.find((char*)pName.mBytes);
+		if (it != handlerMap.end())
+			return (this->*(it->second))(pName);
+		return NULL;
+	}
 	else if (mName.Cmp("$file") == 0)
 	{
 		static const std::unordered_map<std::string, Handler> handlerMap = {
@@ -3340,34 +3411,34 @@ GrapaLibraryEvent* GrapaLibraryRuleEvent::LoadLib(GrapaScriptExec *vScriptExec, 
 	else if (mName.Cmp("$VECTOR") == 0)
 	{
 		static const std::unordered_map<std::string, Handler> handlerMap = {
-		{ "t", &GrapaLibraryRuleEvent::HandleVectorTranspose },
-		{ "rref", &GrapaLibraryRuleEvent::HandleVectorRref },
-		{ "inv", &GrapaLibraryRuleEvent::HandleVectorInv },
-		{ "det", &GrapaLibraryRuleEvent::HandleVectorDet },
-		{ "rank", &GrapaLibraryRuleEvent::HandleVectorRank },
-		{ "solve", &GrapaLibraryRuleEvent::HandleVectorSolve },
-		{ "cov", &GrapaLibraryRuleEvent::HandleVectorCov },
-		{ "sum", &GrapaLibraryRuleEvent::HandleVectorSum },
-		{ "mean", &GrapaLibraryRuleEvent::HandleVectorMean },
-		{ "min", &GrapaLibraryRuleEvent::HandleVectorMin },
-		{ "max", &GrapaLibraryRuleEvent::HandleVectorMax },
-		{ "std", &GrapaLibraryRuleEvent::HandleVectorStd },
-		{ "var", &GrapaLibraryRuleEvent::HandleVectorVar },
-		{ "shape", &GrapaLibraryRuleEvent::HandleVectorShape },
-		{ "reshape", &GrapaLibraryRuleEvent::HandleVectorReShape },
-		{ "dot", &GrapaLibraryRuleEvent::HandleVectorDot },
-		{ "triu", &GrapaLibraryRuleEvent::HandleVectorTriU },
-		{ "tril", &GrapaLibraryRuleEvent::HandleVectorTriL },
-		{ "eigh", &GrapaLibraryRuleEvent::HandleVectorEigH },
-		{ "identity", &GrapaLibraryRuleEvent::HandleVectorIdentity },
-		{ "diag", &GrapaLibraryRuleEvent::HandleVectorDiag },
-		{ "norm",&GrapaLibraryRuleEvent::HandleVectorNorm },
-		{ "mode", &GrapaLibraryRuleEvent::HandleVectorMode },
-		{ "median", &GrapaLibraryRuleEvent::HandleVectorMedian },
-		{ "percentile", &GrapaLibraryRuleEvent::HandleVectorPercentile },
-		{ "quantile", &GrapaLibraryRuleEvent::HandleVectorQuantile },
-		{ "skew", &GrapaLibraryRuleEvent::HandleVectorSkew },
-		{ "kurtosis", &GrapaLibraryRuleEvent::HandleVectorKurtosis },
+			{ "t", &GrapaLibraryRuleEvent::HandleVectorTranspose },
+			{ "rref", &GrapaLibraryRuleEvent::HandleVectorRref },
+			{ "inv", &GrapaLibraryRuleEvent::HandleVectorInv },
+			{ "det", &GrapaLibraryRuleEvent::HandleVectorDet },
+			{ "rank", &GrapaLibraryRuleEvent::HandleVectorRank },
+			{ "solve", &GrapaLibraryRuleEvent::HandleVectorSolve },
+			{ "cov", &GrapaLibraryRuleEvent::HandleVectorCov },
+			{ "sum", &GrapaLibraryRuleEvent::HandleVectorSum },
+			{ "mean", &GrapaLibraryRuleEvent::HandleVectorMean },
+			{ "min", &GrapaLibraryRuleEvent::HandleVectorMin },
+			{ "max", &GrapaLibraryRuleEvent::HandleVectorMax },
+			{ "std", &GrapaLibraryRuleEvent::HandleVectorStd },
+			{ "var", &GrapaLibraryRuleEvent::HandleVectorVar },
+			{ "shape", &GrapaLibraryRuleEvent::HandleVectorShape },
+			{ "reshape", &GrapaLibraryRuleEvent::HandleVectorReShape },
+			{ "dot", &GrapaLibraryRuleEvent::HandleVectorDot },
+			{ "triu", &GrapaLibraryRuleEvent::HandleVectorTriU },
+			{ "tril", &GrapaLibraryRuleEvent::HandleVectorTriL },
+			{ "eigh", &GrapaLibraryRuleEvent::HandleVectorEigH },
+			{ "identity", &GrapaLibraryRuleEvent::HandleVectorIdentity },
+			{ "diag", &GrapaLibraryRuleEvent::HandleVectorDiag },
+			{ "norm",&GrapaLibraryRuleEvent::HandleVectorNorm },
+			{ "mode", &GrapaLibraryRuleEvent::HandleVectorMode },
+			{ "median", &GrapaLibraryRuleEvent::HandleVectorMedian },
+			{ "percentile", &GrapaLibraryRuleEvent::HandleVectorPercentile },
+			{ "quantile", &GrapaLibraryRuleEvent::HandleVectorQuantile },
+			{ "skew", &GrapaLibraryRuleEvent::HandleVectorSkew },
+			{ "kurtosis", &GrapaLibraryRuleEvent::HandleVectorKurtosis },
 		};
 		auto it = handlerMap.find((char*)pName.mBytes);
 		if (it != handlerMap.end())
@@ -3434,6 +3505,255 @@ GrapaLibraryEvent* GrapaLibraryRuleEvent::LoadLib(GrapaScriptExec *vScriptExec, 
 			{ "append", &GrapaLibraryRuleEvent::HandleWidgetAppend },
 			{ "post", &GrapaLibraryRuleEvent::HandleWidgetPost },
 			{ "clear", &GrapaLibraryRuleEvent::HandleWidgetClear },
+		};
+		auto it = handlerMap.find((char*)pName.mBytes);
+		if (it != handlerMap.end())
+			return (this->*(it->second))(pName);
+		return NULL;
+	}
+	else if (mName.Cmp("$math") == 0)
+	{
+		static const std::unordered_map<std::string, Handler> handlerMap = {
+			// Basic arithmetic
+			{ "add", &GrapaLibraryRuleEvent::HandleAdd },
+			{ "sub", &GrapaLibraryRuleEvent::HandleSub },
+			{ "mul", &GrapaLibraryRuleEvent::HandleMul },
+			{ "div", &GrapaLibraryRuleEvent::HandleDiv },
+			{ "mod", &GrapaLibraryRuleEvent::HandleMod },
+			{ "pow", &GrapaLibraryRuleEvent::HandlePow },
+			{ "modpow", &GrapaLibraryRuleEvent::HandleModPow },
+			{ "modinv", &GrapaLibraryRuleEvent::HandleModInv },
+			{ "abs", &GrapaLibraryRuleEvent::HandleAbs },
+			{ "gcd", &GrapaLibraryRuleEvent::HandleGcd },
+			{ "root", &GrapaLibraryRuleEvent::HandleRoot },
+			// Mathematical constants
+			{ "e", &GrapaLibraryRuleEvent::HandleE },
+			{ "pi", &GrapaLibraryRuleEvent::HandlePi },
+			// Logarithms
+			{ "ln", &GrapaLibraryRuleEvent::HandleLn },
+			{ "log", &GrapaLibraryRuleEvent::HandleLog },
+			// Trigonometric functions
+			{ "sin", &GrapaLibraryRuleEvent::HandleSin },
+			{ "cos", &GrapaLibraryRuleEvent::HandleCos },
+			{ "tan", &GrapaLibraryRuleEvent::HandleTan },
+			{ "cot", &GrapaLibraryRuleEvent::HandleCot },
+			{ "sec", &GrapaLibraryRuleEvent::HandleSec },
+			{ "csc", &GrapaLibraryRuleEvent::HandleCsc },
+			{ "asin", &GrapaLibraryRuleEvent::HandleASin },
+			{ "acos", &GrapaLibraryRuleEvent::HandleACos },
+			{ "atan", &GrapaLibraryRuleEvent::HandleATan },
+			{ "acot", &GrapaLibraryRuleEvent::HandleACot },
+			{ "asec", &GrapaLibraryRuleEvent::HandleASec },
+			{ "acsc", &GrapaLibraryRuleEvent::HandleACsc },
+			{ "sinh", &GrapaLibraryRuleEvent::HandleSinH },
+			{ "cosh", &GrapaLibraryRuleEvent::HandleCosH },
+			{ "tanh", &GrapaLibraryRuleEvent::HandleTanH },
+			{ "coth", &GrapaLibraryRuleEvent::HandleCotH },
+			{ "sech", &GrapaLibraryRuleEvent::HandleSecH },
+			{ "csch", &GrapaLibraryRuleEvent::HandleCscH },
+			{ "asinh", &GrapaLibraryRuleEvent::HandleASinH },
+			{ "acosh", &GrapaLibraryRuleEvent::HandleACosH },
+			{ "atanh", &GrapaLibraryRuleEvent::HandleATanH },
+			{ "acoth", &GrapaLibraryRuleEvent::HandleACotH },
+			{ "asech", &GrapaLibraryRuleEvent::HandleASecH },
+			{ "acsch", &GrapaLibraryRuleEvent::HandleACscH },
+			{ "atan2", &GrapaLibraryRuleEvent::HandleATan2 },
+			{ "hypot", &GrapaLibraryRuleEvent::HandleHypot },
+			// Bit operations
+			{ "bsl", &GrapaLibraryRuleEvent::HandleBsl },
+			{ "bsr", &GrapaLibraryRuleEvent::HandleBsr },
+			{ "bor", &GrapaLibraryRuleEvent::HandleBor },
+			{ "band", &GrapaLibraryRuleEvent::HandleBand },
+			{ "or", &GrapaLibraryRuleEvent::HandleOr },
+			{ "and", &GrapaLibraryRuleEvent::HandleAnd },
+			{ "xor", &GrapaLibraryRuleEvent::HandleXOr },
+			{ "neg", &GrapaLibraryRuleEvent::HandleNeg },
+		};
+		auto it = handlerMap.find((char*)pName.mBytes);
+		if (it != handlerMap.end())
+			return (this->*(it->second))(pName);
+		return NULL;
+	}
+	else if (mName.Cmp("$crypto") == 0)
+	{
+		static const std::unordered_map<std::string, Handler> handlerMap = {
+			// Encoding/Decoding
+			{ "encode", &GrapaLibraryRuleEvent::HandleEncode },
+			{ "encoderaw", &GrapaLibraryRuleEvent::HandleEncode },
+			{ "decode", &GrapaLibraryRuleEvent::HandleDecode },
+			// Digital signatures
+			{ "sign", &GrapaLibraryRuleEvent::HandleSign },
+			{ "signadd", &GrapaLibraryRuleEvent::HandleSignAdd },
+			{ "verify", &GrapaLibraryRuleEvent::HandleVerify },
+			{ "verifyrecover", &GrapaLibraryRuleEvent::HandleVerifyRecover },
+			{ "secret", &GrapaLibraryRuleEvent::HandleSecret },
+			// Key generation
+			{ "genkeys", &GrapaLibraryRuleEvent::HandleGenKeys },
+			// Random and prime functions
+			{ "random", &GrapaLibraryRuleEvent::HandleRandom },
+			{ "genprime", &GrapaLibraryRuleEvent::HandleGenPrime },
+			{ "staticprime", &GrapaLibraryRuleEvent::HandleStaticPrime },
+			{ "isprime", &GrapaLibraryRuleEvent::HandleIsPrime },
+			{ "isaks", &GrapaLibraryRuleEvent::HandleIsAks },
+			// Bit manipulation
+			{ "setbit", &GrapaLibraryRuleEvent::HandleSetBit },
+			{ "clearbit", &GrapaLibraryRuleEvent::HandleClearBit },
+			{ "genbits", &GrapaLibraryRuleEvent::HandleGenBits },
+		};
+		auto it = handlerMap.find((char*)pName.mBytes);
+		if (it != handlerMap.end())
+			return (this->*(it->second))(pName);
+		return NULL;
+	}
+	else if (mName.Cmp("$data") == 0)
+	{
+		static const std::unordered_map<std::string, Handler> handlerMap = {
+			// Data manipulation
+			{ "copy", &GrapaLibraryRuleEvent::HandleCopy },
+			{ "assign", &GrapaLibraryRuleEvent::HandleAssign },
+			{ "assignappend", &GrapaLibraryRuleEvent::HandleAssignAppend },
+			{ "assignextend", &GrapaLibraryRuleEvent::HandleAssignExtend },
+			{ "assignmul", &GrapaLibraryRuleEvent::HandleAssignMul },
+			{ "assigndiv", &GrapaLibraryRuleEvent::HandleAssignDiv },
+			{ "assignmod", &GrapaLibraryRuleEvent::HandleAssignMod },
+			{ "assignpow", &GrapaLibraryRuleEvent::HandleAssignPow },
+			{ "pop", &GrapaLibraryRuleEvent::HandlePop },
+			// Search and filtering
+			{ "search", &GrapaLibraryRuleEvent::HandleSearch },
+			{ "findall", &GrapaLibraryRuleEvent::HandleFindAll },
+			{ "find", &GrapaLibraryRuleEvent::HandleFind },
+			{ "sort", &GrapaLibraryRuleEvent::HandleSort },
+			{ "argsort", &GrapaLibraryRuleEvent::HandleArgSort },
+			{ "unique", &GrapaLibraryRuleEvent::HandleUnique },
+			{ "group", &GrapaLibraryRuleEvent::HandleGroup },
+			// Data storage and retrieval
+			{ "get", &GrapaLibraryRuleEvent::HandleFileGet },
+			{ "set", &GrapaLibraryRuleEvent::HandleFileSet },
+			{ "getfield", &GrapaLibraryRuleEvent::HandleFileGet },
+			{ "setfield", &GrapaLibraryRuleEvent::HandleFileSet },
+			// Type casting
+			{ "int", &GrapaLibraryRuleEvent::HandleInt },
+			{ "raw", &GrapaLibraryRuleEvent::HandleRaw },
+			{ "base", &GrapaLibraryRuleEvent::HandleBase },
+			{ "str", &GrapaLibraryRuleEvent::HandleStr },
+			{ "list", &GrapaLibraryRuleEvent::HandleList },
+			{ "err", &GrapaLibraryRuleEvent::HandleErr },
+			{ "array", &GrapaLibraryRuleEvent::HandleArray },
+			{ "vector", &GrapaLibraryRuleEvent::HandleVector },
+			{ "xml", &GrapaLibraryRuleEvent::HandleXml },
+			{ "float", &GrapaLibraryRuleEvent::HandleFloat },
+			{ "fix", &GrapaLibraryRuleEvent::HandleFloat },
+			{ "time", &GrapaLibraryRuleEvent::HandleTime },
+			{ "bool", &GrapaLibraryRuleEvent::HandleBool },
+			{ "table", &GrapaLibraryRuleEvent::HandleTable },
+			// Data information
+			{ "bits", &GrapaLibraryRuleEvent::HandleBits },
+			{ "bytes", &GrapaLibraryRuleEvent::HandleBytes },
+			{ "keys", &GrapaLibraryRuleEvent::HandleKeys },
+		};
+		auto it = handlerMap.find((char*)pName.mBytes);
+		if (it != handlerMap.end())
+			return (this->*(it->second))(pName);
+		return NULL;
+	}
+	else if (mName.Cmp("$io") == 0)
+	{
+		static const std::unordered_map<std::string, Handler> handlerMap = {
+			// I/O operations
+			{ "echo", &GrapaLibraryRuleEvent::HandleEcho },
+			{ "debug", &GrapaLibraryRuleEvent::HandleDebug },
+			{ "console", &GrapaLibraryRuleEvent::HandleConsole },
+			{ "prompt", &GrapaLibraryRuleEvent::HandlePrompt },
+			{ "message", &GrapaLibraryRuleEvent::HandleMessage },
+			{ "string", &GrapaLibraryRuleEvent::HandleString },
+		};
+		auto it = handlerMap.find((char*)pName.mBytes);
+		if (it != handlerMap.end())
+			return (this->*(it->second))(pName);
+		return NULL;
+	}
+	else if (mName.Cmp("$flow") == 0)
+	{
+		static const std::unordered_map<std::string, Handler> handlerMap = {
+			// Pure Control Flow
+			{ "if", &GrapaLibraryRuleEvent::HandleIf },
+			{ "while", &GrapaLibraryRuleEvent::HandleWhile },
+			{ "switch", &GrapaLibraryRuleEvent::HandleSwitch },
+			{ "try", &GrapaLibraryRuleEvent::HandleSwitch },
+			{ "case", &GrapaLibraryRuleEvent::HandleCase },
+			{ "break", &GrapaLibraryRuleEvent::HandleBreak },
+			{ "continue", &GrapaLibraryRuleEvent::HandleContinue },
+			{ "return", &GrapaLibraryRuleEvent::HandleReturn },
+			{ "throw", &GrapaLibraryRuleEvent::HandleThrow },
+			// Collection Processing
+			{ "for", &GrapaLibraryRuleEvent::HandleFor },
+			{ "map", &GrapaLibraryRuleEvent::HandleMap },
+			{ "reduce", &GrapaLibraryRuleEvent::HandleReduce },
+			{ "filter", &GrapaLibraryRuleEvent::HandleFilter },
+			{ "range", &GrapaLibraryRuleEvent::HandleRange },
+			// Comparison Operations
+			{ "eq", &GrapaLibraryRuleEvent::HandleEq },
+			{ "neq", &GrapaLibraryRuleEvent::HandleNEq },
+			{ "gteq", &GrapaLibraryRuleEvent::HandleGtEq },
+			{ "gt", &GrapaLibraryRuleEvent::HandleGt },
+			{ "lteq", &GrapaLibraryRuleEvent::HandleLtEq },
+			{ "lt", &GrapaLibraryRuleEvent::HandleLt },
+			{ "cmp", &GrapaLibraryRuleEvent::HandleCmp },
+			{ "not", &GrapaLibraryRuleEvent::HandleNot },
+			// Conditional Operations
+			{ "isint", &GrapaLibraryRuleEvent::HandleIsInt },
+			{ "iferr", &GrapaLibraryRuleEvent::HandleIfErr },
+			{ "ifnull", &GrapaLibraryRuleEvent::HandleIfNull },
+		};
+		auto it = handlerMap.find((char*)pName.mBytes);
+		if (it != handlerMap.end())
+			return (this->*(it->second))(pName);
+		return NULL;
+	}
+	else if (mName.Cmp("$transform") == 0)
+	{
+		static const std::unordered_map<std::string, Handler> handlerMap = {
+			// String manipulation
+			{ "left", &GrapaLibraryRuleEvent::HandleLeft },
+			{ "right", &GrapaLibraryRuleEvent::HandleRight },
+			{ "mid", &GrapaLibraryRuleEvent::HandleMid },
+			{ "midtrim", &GrapaLibraryRuleEvent::HandleMidTrim },
+			{ "rtrim", &GrapaLibraryRuleEvent::HandleRTrim },
+			{ "ltrim", &GrapaLibraryRuleEvent::HandleLTrim },
+			{ "trim", &GrapaLibraryRuleEvent::HandleTrim },
+			{ "rrot", &GrapaLibraryRuleEvent::HandleRRotate },
+			{ "lrot", &GrapaLibraryRuleEvent::HandleLRotate },
+			{ "rpad", &GrapaLibraryRuleEvent::HandleRPad },
+			{ "lpad", &GrapaLibraryRuleEvent::HandleLPad },
+			{ "reverse", &GrapaLibraryRuleEvent::HandleReverse },
+			{ "replace", &GrapaLibraryRuleEvent::HandleReplace },
+			{ "interpolate", &GrapaLibraryRuleEvent::HandleInterpolate },
+			// String search
+			{ "grep", &GrapaLibraryRuleEvent::HandleGrep },
+			{ "match", &GrapaLibraryRuleEvent::HandleMatch },
+			// String operations
+			{ "split", &GrapaLibraryRuleEvent::HandleSplit },
+			{ "join", &GrapaLibraryRuleEvent::HandleJoin },
+			{ "lower", &GrapaLibraryRuleEvent::HandleLower },
+			{ "upper", &GrapaLibraryRuleEvent::HandleUpper },
+			{ "casefold", &GrapaLibraryRuleEvent::HandleCaseFold },
+			{ "levenshtein", &GrapaLibraryRuleEvent::HandleLevenshtein },
+			{ "jarowinkler", &GrapaLibraryRuleEvent::HandleJaroWinkler },
+			{ "cosinesimilarity", &GrapaLibraryRuleEvent::HandleCosineSimilarity },
+			// Data transformation
+			{ "len", &GrapaLibraryRuleEvent::HandleLen },
+		};
+		auto it = handlerMap.find((char*)pName.mBytes);
+		if (it != handlerMap.end())
+			return (this->*(it->second))(pName);
+		return NULL;
+	}
+	else if (mName.Cmp("$time") == 0)
+	{
+		static const std::unordered_map<std::string, Handler> handlerMap = {
+			// Time operations
+			{ "utc", &GrapaLibraryRuleEvent::HandleUtc },
+			{ "tz", &GrapaLibraryRuleEvent::HandleTz },
 		};
 		auto it = handlerMap.find((char*)pName.mBytes);
 		if (it != handlerMap.end())

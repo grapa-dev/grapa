@@ -4449,7 +4449,7 @@ GrapaRuleEvent* GrapaScriptExec::PlanRule(GrapaNames* pNameSpace, GrapaRuleEvent
 	return(pTokenEvent);
 }
 
-void GrapaScriptExec::LoadLib(GrapaRuleEvent *libName)
+void GrapaScriptExec::LoadLib(GrapaRuleEvent* libName)
 {
 	if (libName && libName->vLibraryEvent == NULL)
 	{
@@ -4458,16 +4458,25 @@ void GrapaScriptExec::LoadLib(GrapaRuleEvent *libName)
 		if (libName->mValue.mToken == GrapaTokenType::SYSID && libName->mValue.mLength && libName->mValue.mBytes && libName->mValue.mBytes[0] != '$')
 			s.FROM("$");
 		s.FROM(libName->mValue);
-		libName->vLibraryEvent = gSystem->mLibraryQueue.Search(s,idx);
+		libName->vLibraryEvent = gSystem->mLibraryQueue.Search(s, idx);
 		if (libName->vLibraryEvent == NULL)
 		{
 			if (s.StrCmp("$SYS") == 0) libName->vLibraryEvent = new GrapaLibraryRuleEvent(s);
+			else if (s.StrCmp("$system") == 0) libName->vLibraryEvent = new GrapaLibraryRuleEvent(s);
+			else if (s.StrCmp("$grammar") == 0) libName->vLibraryEvent = new GrapaLibraryRuleEvent(s);
 			else if (s.StrCmp("$file") == 0) libName->vLibraryEvent = new GrapaLibraryRuleEvent(s);
 			else if (s.StrCmp("$thread") == 0) libName->vLibraryEvent = new GrapaLibraryRuleEvent(s);
 			else if (s.StrCmp("$VECTOR") == 0) libName->vLibraryEvent = new GrapaLibraryRuleEvent(s);
 			else if (s.StrCmp("$net") == 0) libName->vLibraryEvent = new GrapaLibraryRuleEvent(s);
 			else if (s.StrCmp("$http") == 0) libName->vLibraryEvent = new GrapaLibraryRuleEvent(s);
 			else if (s.StrCmp("$WIDGET") == 0) libName->vLibraryEvent = new GrapaLibraryRuleEvent(s);
+			else if (s.StrCmp("$math") == 0) libName->vLibraryEvent = new GrapaLibraryRuleEvent(s);
+			else if (s.StrCmp("$crypto") == 0) libName->vLibraryEvent = new GrapaLibraryRuleEvent(s);
+			else if (s.StrCmp("$data") == 0) libName->vLibraryEvent = new GrapaLibraryRuleEvent(s);
+			else if (s.StrCmp("$flow") == 0) libName->vLibraryEvent = new GrapaLibraryRuleEvent(s);
+			else if (s.StrCmp("$transform") == 0) libName->vLibraryEvent = new GrapaLibraryRuleEvent(s);
+			else if (s.StrCmp("$io") == 0) libName->vLibraryEvent = new GrapaLibraryRuleEvent(s);
+			else if (s.StrCmp("$time") == 0) libName->vLibraryEvent = new GrapaLibraryRuleEvent(s);
 			if (libName->vLibraryEvent)
 				gSystem->mLibraryQueue.PushTail(libName->vLibraryEvent);
 		}
