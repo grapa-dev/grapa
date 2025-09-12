@@ -20,7 +20,7 @@ $global["$net"]
 	receive = @<[op,@<"$net",receive,{this}>]>; 
 	pending = @<[op,@<"$net",pending,{this}>]>; 
 	onreceive = @<[op,@<"$net",onreceive,{this,@<var,{handler}>}>],{handler}>;
-	httpread = @<[op,@<"$http",read,{this}>]>; 
-	httpsend = @<[op,@<"$http",send,{this,@<var,{method}>,@<var,{entity}>,@<var,{header}>,@<var,{body}>}>],{method,entity,header,body}>;
-	httpmessage = @<[op,@<"$http",message,{this,@<var,{raw}>}>],{raw:null}>; 
+	httpread = @<[op,@<"$net",httpread,{this}>]>; 
+	httpsend = @<[op,@<"$net",httpsend,{this,@<var,{method}>,@<var,{entity}>,@<var,{header}>,@<var,{body}>}>],{method,entity,header,body}>;
+	httpmessage = @<[op,@<"$net",httpmessage,{this,@<var,{raw}>}>],{raw:null}>; 
 	};

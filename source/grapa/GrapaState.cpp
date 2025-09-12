@@ -4462,21 +4462,11 @@ void GrapaScriptExec::LoadLib(GrapaRuleEvent* libName)
 		if (libName->vLibraryEvent == NULL)
 		{
 			if (s.StrCmp("$SYS") == 0) libName->vLibraryEvent = new GrapaLibraryRuleEvent(s);
-			else if (s.StrCmp("$system") == 0) libName->vLibraryEvent = new GrapaLibraryRuleEvent(s);
-			else if (s.StrCmp("$grammar") == 0) libName->vLibraryEvent = new GrapaLibraryRuleEvent(s);
+			else if (s.StrCmp("$VECTOR") == 0) libName->vLibraryEvent = new GrapaLibraryRuleEvent(s);
+			else if (s.StrCmp("$WIDGET") == 0) libName->vLibraryEvent = new GrapaLibraryRuleEvent(s);
 			else if (s.StrCmp("$file") == 0) libName->vLibraryEvent = new GrapaLibraryRuleEvent(s);
 			else if (s.StrCmp("$thread") == 0) libName->vLibraryEvent = new GrapaLibraryRuleEvent(s);
-			else if (s.StrCmp("$VECTOR") == 0) libName->vLibraryEvent = new GrapaLibraryRuleEvent(s);
 			else if (s.StrCmp("$net") == 0) libName->vLibraryEvent = new GrapaLibraryRuleEvent(s);
-			else if (s.StrCmp("$http") == 0) libName->vLibraryEvent = new GrapaLibraryRuleEvent(s);
-			else if (s.StrCmp("$WIDGET") == 0) libName->vLibraryEvent = new GrapaLibraryRuleEvent(s);
-			else if (s.StrCmp("$math") == 0) libName->vLibraryEvent = new GrapaLibraryRuleEvent(s);
-			else if (s.StrCmp("$crypto") == 0) libName->vLibraryEvent = new GrapaLibraryRuleEvent(s);
-			else if (s.StrCmp("$data") == 0) libName->vLibraryEvent = new GrapaLibraryRuleEvent(s);
-			else if (s.StrCmp("$flow") == 0) libName->vLibraryEvent = new GrapaLibraryRuleEvent(s);
-			else if (s.StrCmp("$transform") == 0) libName->vLibraryEvent = new GrapaLibraryRuleEvent(s);
-			else if (s.StrCmp("$io") == 0) libName->vLibraryEvent = new GrapaLibraryRuleEvent(s);
-			else if (s.StrCmp("$time") == 0) libName->vLibraryEvent = new GrapaLibraryRuleEvent(s);
 			if (libName->vLibraryEvent)
 				gSystem->mLibraryQueue.PushTail(libName->vLibraryEvent);
 		}

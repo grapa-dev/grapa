@@ -54,6 +54,7 @@ $global.newEditor = op(label) {
 						callback: op(o,cbdata,item) {
 							$local.h1 = $root.child("scrollitems").get("h");
 							$local.y1 = $root.child("scrollitems").get("y");
+							o.focus().append("h:${h1};y:${y1}\n".interpolate());
 							if ($root.child("prompt").get("visible"))
 							{
 								$root.child("prompt").hide();
@@ -61,8 +62,8 @@ $global.newEditor = op(label) {
 							}
 							else
 							{
-								$root.child("prompt").resize(null,y1+h1-140,null,140);
 								$root.child("scrollitems").resize(null,null,null,(h1-140));
+								$root.child("prompt").resize(null,y1+h1-140,null,140);
 								$root.child("prompt").show();
 							};
 							$root.redraw();
@@ -72,17 +73,17 @@ $global.newEditor = op(label) {
 						path: "Script/Version",
 						callback: op(o,cbdata,item) {
 							$local.name = o.focus().get("name");
-							$local.data = $sys().getenv('VERSION').str();
+							$local.data = $sys().getenv('$GRAPA_VERSION').str();
 							if (name=="prompt")
 							{
 								if (o.focus().get("text").split("\n")[-1] != "grapa> ")
 									o.focus().append("\ngrapa> ");
-								o.focus().append("$sys().getenv('VERSION');\n"+data+"\ngrapa> ");
+								o.focus().append("$sys().getenv('$GRAPA_VERSION');\n"+data+"\ngrapa> ");
 								o.focus().set({"key":"end"});
 							}
 							else if (name=="edit")
 							{
-								o.focus().set({"text":"$sys().getenv('VERSION');"});
+								o.focus().set({"text":"$sys().getenv('$GRAPA_VERSION');"});
 								o.focus().set({"key":"home"});
 								o.focus().next().set({"text":data});
 							};
@@ -92,17 +93,17 @@ $global.newEditor = op(label) {
 						path: "Script/License",
 						callback: op(o,cbdata,item) {
 							$local.name = o.focus().get("name");
-							$local.data = $sys().getenv('LICENCE').str();
+							$local.data = $sys().getenv('$LICENSE').str();
 							if (name=="prompt")
 							{
 								if (o.focus().get("text").split("\n")[-1] != "grapa> ")
 									o.focus().append("\ngrapa> ");
-								o.focus().append("$sys().getenv('LICENCE');\n"+data+"\ngrapa> ");
+								o.focus().append("$sys().getenv('$LICENSE');\n"+data+"\ngrapa> ");
 								o.focus().set({"key":"end"});
 							}
 							else if (name=="edit")
 							{
-								o.focus().set({"text":"$sys().getenv('LICENCE');"});
+								o.focus().set({"text":"$sys().getenv('$LICENSE');"});
 								o.focus().set({"key":"home"});
 								o.focus().next().set({"text":data});
 							};
@@ -207,11 +208,11 @@ $global.newScrollItem = op(X,Y,W,H) {
 						on_resize: op(o,X,Y,W,H)
 						{
 							o.resize(X,Y,W,H);
-							$local.mNBufferLines = o.get("mNBufferLines");
-							$local.mMaxsize = o.get("mMaxsize");
-							if (H != ((mNBufferLines ? mNBufferLines : 1) + 2) * mMaxsize)
+							$local.lines = o.get("lines");
+							$local.height = o.get("height");
+							if (H != ((lines ? lines : 1) + 2) * height)
 							{
-								o.resize(null, null, null, ((mNBufferLines ? mNBufferLines : 1) + 2) * mMaxsize);
+								o.resize(null, null, null, ((lines ? lines : 1) + 2) * height);
 								o.parent().parent().parent().parent().redraw();
 							};
 						},
@@ -258,13 +259,20 @@ $global.newScrollItem = op(X,Y,W,H) {
 						"textfont":"COURIER",
 						on_resize: op(o,X,Y,W,H)
 						{
-							$local.mNBufferLines = o.get("mNBufferLines");
-							$local.mMaxsize = o.get("mMaxsize");
-							o.resize(X, Y, W, ((mNBufferLines ? mNBufferLines : 1) + 2) * mMaxsize);
+							$local.lines = o.get("lines");
+							$local.height = o.get("height");
+							o.resize(X, Y, W, ((lines ? lines : 1) + 2) * height);
 							o.parent().parent().parent().parent().redraw();
 						},
 						on_mousewheel: op(o,event)
 						{
+							if (o.focus()==o)
+							{
+								$local.lines = o.get("lines");
+								$local.height = o.get("height");
+								o.resize(X, Y, W, ((lines ? lines : 1) + 2) * height);
+								o.parent().parent().parent().parent().redraw();
+							};
 							0;
 						}
 					})

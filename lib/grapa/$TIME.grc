@@ -1,6 +1,6 @@
 $global["$TIME"]
 	= class ($OBJ) {
-	utc = @<time_utc,{@<this>}>;
-	tz = @<time_tz,{@<this>}>;
+	utc = @<"utc",{@<this>}>;
+	tz = @<"tz",{@<this>}>;
 	ms = op(p){(@utc().int()-(p?p.int():$this.int()))/1000000.0};
 	};

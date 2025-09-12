@@ -414,7 +414,7 @@ public:
 	Grapa_Resizable_Scroll(GrapaWidget* pWidget, int X, int Y, int W, int H, const char* l = 0) : Grapa_Scroll(pWidget, X, Y, W, H, l) { };
 	virtual void resize(int X, int Y, int W, int H) {
 		Fl::lock();
-		Fl_Group::resize(X, Y, W, H);
+		Grapa_Scroll::resize(X, Y, W, H);
 		Fl::unlock();
 	};
 };
@@ -486,10 +486,11 @@ public:
 	void calc_last_char() { Fl_Text_Display::calc_last_char(); };
 	GrapaError Get(GrapaCHAR& pName, GrapaCHAR& pValue)
 	{
-		if (pName.StrLowerCmp("mNBufferLines") == 0)
-			pValue.FROM(GrapaInt(mNBufferLines).getBytes());
-		else if (pName.StrLowerCmp("mMaxsize") == 0)
-			pValue.FROM(GrapaInt(mMaxsize).getBytes());
+		if (pName.StrLowerCmp("lines") == 0)
+			//pValue.FROM(GrapaInt(mNBufferLines).getBytes());
+			pValue.FROM(GrapaInt(buffer()->count_lines(0, buffer()->length())).getBytes());
+		else if (pName.StrLowerCmp("height") == 0)
+			pValue.FROM(GrapaInt(fl_height()).getBytes());
 		else if (pName.StrLowerCmp("text") == 0)
 		{
 			char* s = buffer()->text();
@@ -765,10 +766,11 @@ public:
 	void calc_last_char() { Fl_Text_Display::calc_last_char(); };
 	GrapaError Get(GrapaCHAR& pName, GrapaCHAR& pValue)
 	{
-		if (pName.StrLowerCmp("mNBufferLines") == 0)
-			pValue.FROM(GrapaInt(mNBufferLines).getBytes());
-		else if (pName.StrLowerCmp("mMaxsize") == 0)
-			pValue.FROM(GrapaInt(mMaxsize).getBytes());
+		if (pName.StrLowerCmp("lines") == 0)
+			//pValue.FROM(GrapaInt(mNBufferLines).getBytes());
+			pValue.FROM(GrapaInt(buffer()->count_lines(0, buffer()->length())).getBytes());
+		else if (pName.StrLowerCmp("height") == 0)
+			pValue.FROM(GrapaInt(fl_height()).getBytes());
 		else if (pName.StrLowerCmp("text") == 0)
 		{
 			char* s = buffer()->text();

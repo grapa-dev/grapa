@@ -906,15 +906,22 @@ void My_Console::Run(GrapaCB cb, void* data)
 			}
 			if (sendBuffer.mLength == 1 && sendBuffer.StrNCmp(">") == 0)
 			{
-				Fl::lock();
 				sendBuffer.FROM("$editor();");
 				sendBuffer.Append("$\n");
+				Fl::lock();
 				mConsoleSend.Send(mConsoleSend.mScriptState.vScriptExec, &mRuleVariables, (char*)sendBuffer.mBytes, sendBuffer.mLength);
+				Fl::unlock();
 				sendBuffer.SetLength(0);
 				while (!gSystem->mStop)
+				{
+					Fl::lock();
 					Fl::wait(1);
-				Fl::unlock();
+					Fl::unlock();
+				}
 			}
+			Fl::lock();
+			Fl::wait(1);
+			Fl::unlock();
 			if ((ch.empty() || ch == "\n") && !gSystem->mStop)
 			{
 				sendBuffer.Append("$\n");
