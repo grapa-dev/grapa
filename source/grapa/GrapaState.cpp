@@ -4462,6 +4462,12 @@ void GrapaScriptExec::LoadLib(GrapaRuleEvent *libName)
 		if (libName->vLibraryEvent == NULL)
 		{
 			if (s.StrCmp("$SYS") == 0) libName->vLibraryEvent = new GrapaLibraryRuleEvent(s);
+			else if (s.StrCmp("$file") == 0) libName->vLibraryEvent = new GrapaLibraryRuleEvent(s);
+			else if (s.StrCmp("$thread") == 0) libName->vLibraryEvent = new GrapaLibraryRuleEvent(s);
+			else if (s.StrCmp("$VECTOR") == 0) libName->vLibraryEvent = new GrapaLibraryRuleEvent(s);
+			else if (s.StrCmp("$net") == 0) libName->vLibraryEvent = new GrapaLibraryRuleEvent(s);
+			else if (s.StrCmp("$http") == 0) libName->vLibraryEvent = new GrapaLibraryRuleEvent(s);
+			else if (s.StrCmp("$WIDGET") == 0) libName->vLibraryEvent = new GrapaLibraryRuleEvent(s);
 			if (libName->vLibraryEvent)
 				gSystem->mLibraryQueue.PushTail(libName->vLibraryEvent);
 		}
