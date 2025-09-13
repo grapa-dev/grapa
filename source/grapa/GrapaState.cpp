@@ -3906,6 +3906,39 @@ GrapaRuleEvent* GrapaScriptExec::PlanRule(GrapaNames* pNameSpace, GrapaRuleEvent
 					if (rulexx == NULL)
 					{
 						rulexx = vScriptState->SearchVariable(pNameSpace, parameter->mName);
+
+						// the following should be temporary until the separation between $id and "$id" has been complated for RULE
+						// going forward, need system rules to use $id
+						if (rulexx == NULL && parameter->mName.mToken == GrapaTokenType::STR && parameter->mName.mLength)
+						{
+							GrapaCHAR rstr;
+							int startpos = 0;
+							u8 token = GrapaTokenType::ID;
+							if (parameter->mName.mBytes[0] == '$')
+							{
+								startpos = 1;
+								token = GrapaTokenType::SYSID;
+							}
+							rstr.FROM((char*)parameter->mName.mBytes + startpos, parameter->mName.mLength - startpos);
+							rstr.mToken = token;
+							rulexx = vScriptState->SearchVariable(pNameSpace, rstr);
+						}
+						if (rulexx == NULL && (parameter->mName.mToken == GrapaTokenType::ID|| parameter->mName.mToken == GrapaTokenType::SYSID) && parameter->mName.mLength)
+						{
+							GrapaCHAR rstr;
+							if (parameter->mName.mToken == GrapaTokenType::SYSID)
+								rstr.Append('$');
+							rstr.Append(parameter->mName);
+							rstr.mToken = GrapaTokenType::STR;
+							rulexx = vScriptState->SearchVariable(pNameSpace, rstr);
+						}
+						if (rulexx == NULL && parameter->mName.mToken == GrapaTokenType::SYSID && parameter->mName.mLength)
+						{
+							GrapaCHAR rstr(parameter->mName);
+							rstr.mToken = GrapaTokenType::SYSSTR;
+							rulexx = vScriptState->SearchVariable(pNameSpace, rstr);
+						}
+
 						if (rulexx == NULL || rulexx->mValue.mToken != GrapaTokenType::RULE)
 							rulexx = vScriptState->mRuleStartQueue.Search(parameter->mName, idx);
 						if (rulexx) pCache.Set(rulexx);
@@ -5691,7 +5724,7 @@ void GrapaScriptExec::EchoValue(GrapaSystemSend* pSend, GrapaRuleEvent* pTokenEv
 		pSend->Send(this, vScriptState->vRuleVariables, n.ToString(10));
 		break;
 	case GrapaTokenType::SYSID:
-		pSend->Send(this, vScriptState->vRuleVariables, "$");
+		//pSend->Send(this, vScriptState->vRuleVariables, "$");
 	case GrapaTokenType::ID:
 		if (elMode || !strquote)
 		{
@@ -5704,10 +5737,12 @@ void GrapaScriptExec::EchoValue(GrapaSystemSend* pSend, GrapaRuleEvent* pTokenEv
 		}
 		break;
 	case GrapaTokenType::SYSSTR:
-		pSend->Send(this, vScriptState->vRuleVariables, "$");
+		//pSend->Send(this, vScriptState->vRuleVariables, "$");
 	case GrapaTokenType::STR:
 		if (elMode || !strquote)
 		{
+			if (pTokenEvent->mValue.mToken == GrapaTokenType::SYSSTR)
+				pSend->Send(this, vScriptState->vRuleVariables, "$");
 			pSend->Send(this, vScriptState->vRuleVariables, pTokenEvent->mValue);
 		}
 		else
@@ -5725,8 +5760,8 @@ void GrapaScriptExec::EchoValue(GrapaSystemSend* pSend, GrapaRuleEvent* pTokenEv
 	case GrapaTokenType::SYSSYM:
 		pSend->Send(this, vScriptState->vRuleVariables, "$");
 	case GrapaTokenType::SYM:
-		s.AppendQuoted(pTokenEvent->mValue, false);
-		pSend->Send(this, vScriptState->vRuleVariables, s);
+		//s.AppendQuoted(pTokenEvent->mValue, false);
+		pSend->Send(this, vScriptState->vRuleVariables, pTokenEvent->mValue);
 		break;
 	case GrapaTokenType::CLASS:
 		EchoClassValue(pSend, pTokenEvent, elMode, false);

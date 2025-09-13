@@ -147,12 +147,23 @@ GrapaError GrapaLocalDatabase::DirectoryList(GrapaCHAR& pName, GrapaRuleEvent* p
 		if (pTable->vQueue) pTable->vQueue->CLEAR();
 		else pTable->vQueue = new GrapaRuleQueue();
 
+		GrapaCHAR name(pName);
 		GrapaCHAR path; // , dir;
 		DirectoryFullPath(path);
-		if (pName.mLength)
+		if (name.mLength)
 		{
-			path.Append("/");
-			path.Append(pName);
+			path.Replace(GrapaCHAR("\\"), GrapaCHAR("/"));
+			name.Replace(GrapaCHAR("\\"), GrapaCHAR("/"));
+			if (path.StrNCmp((char*)name.mBytes) == 0)
+			{
+				memcpy(name.mBytes, name.mBytes + path.mLength, name.mLength - path.mLength);
+				name.SetLength(name.mLength - path.mLength);
+			}
+			else
+			{
+				path.Append("/");
+			}
+			path.Append(name);
 		}
 
 #if defined(__MINGW32__) || defined(__GNUC__)
@@ -598,15 +609,15 @@ void GrapaLocalDatabase::DirectoryDeleteContents(const GrapaCHAR& pName)
 #endif
 }
 
-GrapaError GrapaLocalDatabase::HomeSwitch(GrapaCHAR& pName)
+GrapaError GrapaLocalDatabase::HomeSwitch(GrapaCHAR& pName2)
 {
-	if (pName.mLength == 0)
+	if (pName2.mLength == 0)
 	{
 		return(-1);
 	}
 
 	GrapaRuleQueue names;
-	names.AppendNames((char*)pName.mBytes, "\\/");
+	names.AppendNames((char*)pName2.mBytes, "\\/");
 
 	if (mVar)
 	{
@@ -633,6 +644,22 @@ GrapaError GrapaLocalDatabase::HomeSwitch(GrapaCHAR& pName)
 		mHomeDir.Replace(GrapaBYTE("\\"), GrapaBYTE("/"));
 		if (mHomeDir.mLength && mHomeDir.mBytes[mHomeDir.mLength - 1] == '/')
 			mHomeDir.SetLength(mHomeDir.mLength - 1);
+
+		/*
+		GrapaCHAR name(pName2);
+		GrapaCHAR path; // , dir;
+		DirectoryFullPath(path);
+		if (name.mLength)
+		{
+			path.Replace(GrapaCHAR("\\"), GrapaCHAR("/"));
+			name.Replace(GrapaCHAR("\\"), GrapaCHAR("/"));
+			if (path.StrNCmp((char*)name.mBytes) == 0)
+			{
+				memcpy(name.mBytes, name.mBytes + path.mLength, name.mLength - path.mLength);
+				name.SetLength(name.mLength - path.mLength);
+			}
+		}
+		*/
 	}
 
 	// now navigate through the path

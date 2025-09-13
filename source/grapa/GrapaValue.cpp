@@ -607,8 +607,19 @@ void GrapaCHAR::AppendQuoted(GrapaCHAR& pStr, bool pIsOptional)
 	{
 		Append(GrapaInt(pStr).ToString());
 	}
+	else if (pStr.mToken == GrapaTokenType::ID)
+	{
+		Append(pStr);
+	}
+	else if (pStr.mToken == GrapaTokenType::SYSID)
+	{
+		Append("$");
+		Append(pStr);
+	}
 	else
 	{
+		if (pStr.mToken == GrapaTokenType::SYSSTR)
+			Append("$");
 		if (pStr.mLength == 0 || pStr.mBytes == NULL)
 		{
 			if (pStr.mToken == GrapaTokenType::STR) Append("\"\"");

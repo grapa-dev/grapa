@@ -4976,12 +4976,12 @@ GrapaRuleEvent* GrapaLibraryRuleNameEvent::Run(GrapaScriptExec *vScriptExec, Gra
 		}
 		if (i1.vVal)
 		{
-			if (i1.vVal->mValue.mToken == GrapaTokenType::SYSID && (i1.vVal->mValue.mLength && i1.vVal->mValue.mBytes[0] != '$'))
-			{
-				result->mName.FROM("$");
-				result->mName.Append(i1.vVal->mValue);
-			}
-			else
+			//if (i1.vVal->mValue.mToken == GrapaTokenType::SYSID && (i1.vVal->mValue.mLength && i1.vVal->mValue.mBytes[0] != '$'))
+			//{
+			//	result->mName.FROM("$");
+			//	result->mName.Append(i1.vVal->mValue);
+			//}
+			//else
 				result->mName.FROM(i1.vVal->mValue);
 
 		}
@@ -5263,11 +5263,11 @@ static GrapaRuleEvent* ItemAssignRun(GrapaScriptExec *vScriptExec, GrapaNames* p
 	if (r1.vVal)
 	{
 		GrapaRuleEvent* parameter = NULL;
-		GrapaCHAR valueName;
+		//GrapaCHAR valueName;
 		s64 idx;
-		if (r1.vVal->mValue.mToken == GrapaTokenType::SYSID || r1.vVal->mValue.mToken == GrapaTokenType::SYSSTR)
-			valueName.FROM("$");
-		valueName.Append(r1.vVal->mValue);
+		//if (r1.vVal->mValue.mToken == GrapaTokenType::SYSID || r1.vVal->mValue.mToken == GrapaTokenType::SYSSTR)
+		//	valueName.FROM("$");
+		//valueName.Append(r1.vVal->mValue);
 		if (r1.vDel && r1.vDel->mVar)
 		{
 			parameter = r1.vVal;
@@ -5284,10 +5284,27 @@ static GrapaRuleEvent* ItemAssignRun(GrapaScriptExec *vScriptExec, GrapaNames* p
 				{
 					GrapaRuleEvent* op = operation;
 					while (op->mValue.mToken == GrapaTokenType::PTR && op->vRulePointer) op = op->vRulePointer;
-					parameter = (GrapaRuleEvent*)(op->vQueue?op->vQueue->Search(valueName,idx):NULL);
+					parameter = (GrapaRuleEvent*)(op->vQueue?op->vQueue->Search(r1.vVal->mValue,idx):NULL);
 					if (parameter == NULL && op->mValue.mToken == GrapaTokenType::OBJ && op->vClass)
 					{
-						parameter = vScriptExec->vScriptState->FindClassVar(pNameSpace, op->vClass, valueName);
+						parameter = vScriptExec->vScriptState->FindClassVar(pNameSpace, op->vClass, r1.vVal->mValue);
+
+						//the following is temporary while separating $id and $sysstr
+						if (parameter == NULL) 
+						{
+							GrapaCHAR pstr;
+							if (r1.vVal->mValue.mToken == GrapaTokenType::SYSSTR)
+							{
+								pstr.FROM("$");
+								pstr.Append(r1.vVal->mValue);
+							}
+							else
+							{
+								pstr.FROM(r1.vVal->mValue);
+							}
+							parameter = vScriptExec->vScriptState->FindClassVar(pNameSpace, op->vClass, pstr);
+						}
+
 						if (parameter)
 						{
 							parameter = vScriptExec->CopyItem(parameter);
@@ -5302,7 +5319,7 @@ static GrapaRuleEvent* ItemAssignRun(GrapaScriptExec *vScriptExec, GrapaNames* p
 			}
 			if (pNameSpace && parameter == NULL)
 			{
-				parameter = vScriptExec->vScriptState->AddRawParameter(pNameSpace->GetNameQueue()->Tail(), valueName, GrapaBYTE(""));
+				parameter = vScriptExec->vScriptState->AddRawParameter(pNameSpace->GetNameQueue()->Tail(), r1.vVal->mValue, GrapaBYTE(""));
 			}
 		}
 		while (parameter && parameter->vRulePointer) parameter = parameter->vRulePointer;
@@ -6497,7 +6514,7 @@ GrapaRuleEvent* GrapaLibraryRuleSearchEvent::Run(GrapaScriptExec *vScriptExec, G
 	GrapaRuleEvent* root = NULL;
 	GrapaRuleQueue delQueue;
 	GrapaRuleQueue emptyQueue;
-	GrapaCHAR varname;
+	//GrapaCHAR varname;
 	s64 idx;
 	bool isVar = false;
 	GrapaError err = 0;
@@ -6786,7 +6803,7 @@ GrapaRuleEvent* GrapaLibraryRuleSearchEvent::Run(GrapaScriptExec *vScriptExec, G
 				}
 				else if (!attrList->mVar && attr->mName.mLength)
 				{
-					varname.FROM(attr->mName);
+					//varname.FROM(attr->mName);
 					if (root && root->mValue.mToken == GrapaTokenType::TABLE)
 					{
 						if (root->vDatabase == NULL)
@@ -6797,7 +6814,7 @@ GrapaRuleEvent* GrapaLibraryRuleSearchEvent::Run(GrapaScriptExec *vScriptExec, G
 					}
 					idx = -1;
 					if (e == NULL && q)
-						e = q->Search(varname,idx);
+						e = q->Search(attr->mName,idx);
 					if (e == NULL && c == NULL && root)
 					{
 						if (item->mValue.mToken == GrapaTokenType::OBJ)
@@ -6820,11 +6837,11 @@ GrapaRuleEvent* GrapaLibraryRuleSearchEvent::Run(GrapaScriptExec *vScriptExec, G
 					}
 					if (e == NULL && c && c->vQueue && attr->mValue.mToken != GrapaTokenType::STR)
 					{
-						e = vScriptExec->vScriptState->FindClassVar(pNameSpace, c, varname);
+						e = vScriptExec->vScriptState->FindClassVar(pNameSpace, c, attr->mName);
 						if (e && objitem == NULL) objitem = item;
 					}
 					if (e == NULL)
-						e = vScriptExec->vScriptState->SearchVariable(pNameSpace, varname);  // NEED TO VERIFY - can this be merged with the prior search?
+						e = vScriptExec->vScriptState->SearchVariable(pNameSpace, attr->mName);  // NEED TO VERIFY - can this be merged with the prior search?
 					if (e == NULL)
 					{
 						e = Error(vScriptExec, pNameSpace, -1);
@@ -6876,10 +6893,12 @@ GrapaRuleEvent* GrapaLibraryRuleSearchEvent::Run(GrapaScriptExec *vScriptExec, G
 				}
 				else if (attr->mValue.mToken == GrapaTokenType::STR || attr->mValue.mToken == GrapaTokenType::ID || attr->mValue.mToken == GrapaTokenType::SYSSTR || attr->mValue.mToken == GrapaTokenType::SYSID)
 				{
+					/*
 					varname.SetLength(0);
 					if (attr->mValue.mToken == GrapaTokenType::SYSSTR || attr->mValue.mToken == GrapaTokenType::SYSID)
 						varname.FROM("$");
 					varname.Append(attr->mValue);
+					*/
 					if (root && root->mValue.mToken == GrapaTokenType::TABLE)
 					{
 						if (root->vDatabase == NULL)
@@ -6890,7 +6909,7 @@ GrapaRuleEvent* GrapaLibraryRuleSearchEvent::Run(GrapaScriptExec *vScriptExec, G
 					}
 					idx = -1;
 					if (e == NULL && q)
-						e = q->Search(varname,idx);
+						e = q->Search(attr->mValue,idx);
 					//if (e == NULL && c == NULL && root && root->vClass == NULL && item->mValue.mToken == GrapaTokenType::OBJ)
 					//{
 					//	root->vClass = vScriptExec->vScriptState->GetClass(pNameSpace, GrapaCHAR("$OBJ"));
@@ -6898,7 +6917,7 @@ GrapaRuleEvent* GrapaLibraryRuleSearchEvent::Run(GrapaScriptExec *vScriptExec, G
 					//}
 					if (e == NULL && c && c->vQueue && attr->mValue.mToken != GrapaTokenType::STR)
 					{
-						e = vScriptExec->vScriptState->FindClassVar(pNameSpace, c, varname);
+						e = vScriptExec->vScriptState->FindClassVar(pNameSpace, c, attr->mValue);
 						if (e && objitem == NULL) objitem = item;
 					}
 					if (e && delQueue.Tail() == item)

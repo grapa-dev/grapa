@@ -163,7 +163,8 @@ GrapaObjectEvent* GrapaObjectQueue::SearchCase(const GrapaCHAR& pName, s64& pInd
 	pIndex = mCount - 1;
 	while (item)
 	{
-		if (item->mName.mLength && item->mValue.mToken != GrapaTokenType::EL)
+		// this is temporary to include PTR in this condition - will need to create a mIsPtr flag to track for this instead of overloading mToken
+		if (item->mName.mLength && item->mValue.mToken != GrapaTokenType::EL && (item->mName.mToken==pName.mToken || item->mValue.mToken == GrapaTokenType::PTR))
 		{
 			if (pLower && item->mName.StrLowerCmp(pName) == 0)
 				return(item);
@@ -256,6 +257,7 @@ GrapaObjectEvent* GrapaObjectQueue::SearchCase(const GrapaCHAR& pName, s64& pInd
 				}
 				break;
 			default:
+				break;
 				if (pLower && item->mValue.StrLowerCmp(pName) == 0)
 					return(item);
 				else if (!pLower && item->mValue.StrCmp(pName) == 0)
