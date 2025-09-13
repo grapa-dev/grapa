@@ -919,9 +919,6 @@ void My_Console::Run(GrapaCB cb, void* data)
 					Fl::unlock();
 				}
 			}
-			Fl::lock();
-			Fl::wait(1);
-			Fl::unlock();
 			if ((ch.empty() || ch == "\n") && !gSystem->mStop)
 			{
 				sendBuffer.Append("$\n");
