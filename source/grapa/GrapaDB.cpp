@@ -545,7 +545,7 @@ GrapaError GrapaDB::CreateTableField(GrapaDBTable& pTable, GrapaDBField& pField,
 		case GrapaTokenType::VECTOR:
 		case GrapaTokenType::WIDGET:
 		case GrapaTokenType::XML:
-		case GrapaTokenType::LIST:
+		case GrapaTokenType::GOBJ:
 		case GrapaTokenType::EL:
 		case GrapaTokenType::TAG:
 		case GrapaTokenType::OP:
@@ -664,7 +664,7 @@ GrapaError GrapaDB::CreateTableField(GrapaDBTable& pTable, GrapaDBField& pField,
 				case GrapaTokenType::VECTOR:
 				case GrapaTokenType::WIDGET:
 				case GrapaTokenType::XML:
-				case GrapaTokenType::LIST:
+				case GrapaTokenType::GOBJ:
 				case GrapaTokenType::EL:
 				case GrapaTokenType::TAG:
 				case GrapaTokenType::OP:
@@ -913,7 +913,7 @@ GrapaError GrapaDB::DeleteTableField(GrapaDBTable& pTable, u64 pFieldId)
 				case GrapaTokenType::VECTOR:
 				case GrapaTokenType::WIDGET:
 				case GrapaTokenType::XML:
-				case GrapaTokenType::LIST:
+				case GrapaTokenType::GOBJ:
 				case GrapaTokenType::EL:
 				case GrapaTokenType::TAG:
 				case GrapaTokenType::OP:
@@ -3174,7 +3174,7 @@ GrapaError GrapaDB::DumpTheDT(GrapaCHAR& dbWrite, char *leader, GrapaCursor& cur
 		case GrapaTokenType::TUPLE: fieldTypeStr = (char*)"TUPLE"; break;
 		case GrapaTokenType::VECTOR: fieldTypeStr = (char*)"VECTOR"; break;
 		case GrapaTokenType::WIDGET: fieldTypeStr = (char*)"WIDGET"; break;
-		case GrapaTokenType::LIST: fieldTypeStr = (char*)"LIST"; break;
+		case GrapaTokenType::GOBJ: fieldTypeStr = (char*)"GOBJ"; break;
 		case GrapaTokenType::XML: fieldTypeStr = (char*)"XML"; break;
 		case GrapaTokenType::EL: fieldTypeStr = (char*)"EL"; break;
 		case GrapaTokenType::TAG: fieldTypeStr = (char*)"TAG"; break;

@@ -211,7 +211,7 @@ GrapaObjectEvent* GrapaObjectQueue::SearchCase(const GrapaCHAR& pName, s64& pInd
 					s64 idx;
 					GrapaObjectEvent* xitem = NULL;
 					if (((GrapaCHAR*)&pName)->StrCmp("attr") == 0) xitem = item->vQueue->Head();
-					else if (((GrapaCHAR*)&pName)->StrCmp("$LIST") == 0) xitem = item->vQueue->Head();
+					else if (((GrapaCHAR*)&pName)->StrCmp("$GOBJ") == 0) xitem = item->vQueue->Head();
 					else if (((GrapaCHAR*)&pName)->StrCmp("xml") == 0) xitem = item->vQueue->Head(1);
 					else if (((GrapaCHAR*)&pName)->StrCmp("$XML") == 0) xitem = item->vQueue->Head(1);
 					else
@@ -231,7 +231,7 @@ GrapaObjectEvent* GrapaObjectQueue::SearchCase(const GrapaCHAR& pName, s64& pInd
 				break;
 			case GrapaTokenType::ARRAY:
 			case GrapaTokenType::TUPLE:
-			case GrapaTokenType::LIST:
+			case GrapaTokenType::GOBJ:
 			case GrapaTokenType::ERR:
 				if (item->vQueue && item->vQueue->mCount)
 				{

@@ -1740,7 +1740,7 @@ GrapaRuleEvent* GrapaEncode::GenKeys(const GrapaCHAR& pMethod, GrapaRuleEvent* p
 		BN_free(n);
 
 		result = new GrapaRuleEvent();
-		result->mValue.mToken = GrapaTokenType::LIST;
+		result->mValue.mToken = GrapaTokenType::GOBJ;
 		result->vQueue = new GrapaRuleQueue();
 
 		result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("method"), GrapaCHAR("rsa")));
@@ -1913,7 +1913,7 @@ GrapaRuleEvent* GrapaEncode::GenKeys(const GrapaCHAR& pMethod, GrapaRuleEvent* p
 		if (err >= 1)
 		{
 			result = new GrapaRuleEvent();
-			result->mValue.mToken = GrapaTokenType::LIST;
+			result->mValue.mToken = GrapaTokenType::GOBJ;
 			result->vQueue = new GrapaRuleQueue();
 
 			result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("method"), GrapaCHAR("dh")));
@@ -2031,7 +2031,7 @@ GrapaRuleEvent* GrapaEncode::GenKeys(const GrapaCHAR& pMethod, GrapaRuleEvent* p
 						mEC = (void*)ekey1;
 
 		result = new GrapaRuleEvent();
-		result->mValue.mToken = GrapaTokenType::LIST;
+		result->mValue.mToken = GrapaTokenType::GOBJ;
 		result->vQueue = new GrapaRuleQueue();
 
 		result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("method"), GrapaCHAR("ec")));
@@ -2132,7 +2132,7 @@ GrapaRuleEvent* GrapaEncode::GenKeys(const GrapaCHAR& pMethod, GrapaRuleEvent* p
 		}
 
 		result = new GrapaRuleEvent();
-		result->mValue.mToken = GrapaTokenType::LIST;
+		result->mValue.mToken = GrapaTokenType::GOBJ;
 		result->vQueue = new GrapaRuleQueue();
 
 		result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("method"), GrapaCHAR("bc")));
@@ -2167,7 +2167,7 @@ GrapaRuleEvent* GrapaEncode::GenKeys(const GrapaCHAR& pMethod, GrapaRuleEvent* p
 		}
 
 		result = new GrapaRuleEvent();
-		result->mValue.mToken = GrapaTokenType::LIST;
+		result->mValue.mToken = GrapaTokenType::GOBJ;
 		result->vQueue = new GrapaRuleQueue();
 
 		result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("method"), GrapaCHAR("md")));
@@ -2280,7 +2280,7 @@ GrapaRuleEvent* GrapaEncode::GenKeys(const GrapaCHAR& pMethod, GrapaRuleEvent* p
 		}
 
 		result = new GrapaRuleEvent();
-		result->mValue.mToken = GrapaTokenType::LIST;
+		result->mValue.mToken = GrapaTokenType::GOBJ;
 		result->vQueue = new GrapaRuleQueue();
 
 		result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("method"), GrapaCHAR("rpk")));
@@ -2332,7 +2332,7 @@ GrapaRuleEvent* GrapaEncode::GenKeys(const GrapaCHAR& pMethod, GrapaRuleEvent* p
 			if (err >= 1)
 			{
 				result = new GrapaRuleEvent();
-				result->mValue.mToken = GrapaTokenType::LIST;
+				result->mValue.mToken = GrapaTokenType::GOBJ;
 				result->vQueue = new GrapaRuleQueue();
 				result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("method"), GrapaCHAR("kdf")));
 				result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("alg"), algorithmname));
@@ -2364,7 +2364,7 @@ GrapaRuleEvent* GrapaEncode::GenKeys(const GrapaCHAR& pMethod, GrapaRuleEvent* p
 				{
 					key.SetLength(outlen);
 					result = new GrapaRuleEvent();
-					result->mValue.mToken = GrapaTokenType::LIST;
+					result->mValue.mToken = GrapaTokenType::GOBJ;
 					result->vQueue = new GrapaRuleQueue();
 					result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("method"), GrapaCHAR("kdf")));
 					result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("alg"), algorithmname));
@@ -2417,7 +2417,7 @@ GrapaRuleEvent* GrapaEncode::GenKeys(const GrapaCHAR& pMethod, GrapaRuleEvent* p
 			if (prv.mLength)
 				bls->SetPrv(prv, pub);
 			result = new GrapaRuleEvent();
-			result->mValue.mToken = GrapaTokenType::LIST;
+			result->mValue.mToken = GrapaTokenType::GOBJ;
 			result->vQueue = new GrapaRuleQueue();
 			result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("method"), GrapaCHAR("pfc")));
 			result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("alg"), algorithmname));

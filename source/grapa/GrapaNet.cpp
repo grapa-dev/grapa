@@ -1129,7 +1129,7 @@ GrapaRuleEvent* GrapaNet::GetInterfaces()
 	GrapaError err = 0;
 
 	GrapaRuleEvent* result = new GrapaRuleEvent();
-	result->mValue.mToken = GrapaTokenType::LIST;
+	result->mValue.mToken = GrapaTokenType::GOBJ;
 	result->vQueue = new GrapaRuleQueue();
 
 	u64 pMAC = 0;
@@ -1241,7 +1241,7 @@ GrapaRuleEvent* GrapaNet::GetInterfaces()
 				//err = g.SetField(g.mRootTable, GrapaDB::RTABLE_TREE, id, "$FAMILY", GrapaCHAR(pFam));
 				//err = g.SetField(g.mRootTable, GrapaDB::RTABLE_TREE, id, "$VALUE", GrapaCHAR(pIp));
 				GrapaRuleEvent* item = new GrapaRuleEvent(0, GrapaCHAR(), GrapaCHAR());
-				item->mValue.mToken = GrapaTokenType::LIST;
+				item->mValue.mToken = GrapaTokenType::GOBJ;
 				item->vQueue = new GrapaRuleQueue();
 				result->vQueue->PushTail(item);
 				item->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("name"), GrapaCHAR(pName)));
@@ -1323,7 +1323,7 @@ GrapaRuleEvent* GrapaNet::GetInterfaces()
 						GrapaBYTE x;
 						GrapaInt(pMAC).getBytes().ToHex(x);
 						GrapaRuleEvent* item = new GrapaRuleEvent(0, GrapaCHAR(), GrapaCHAR());
-						item->mValue.mToken = GrapaTokenType::LIST;
+						item->mValue.mToken = GrapaTokenType::GOBJ;
 						item->vQueue = new GrapaRuleQueue();
 						result->vQueue->PushTail(item);
 						item->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("name"), GrapaCHAR(pName)));

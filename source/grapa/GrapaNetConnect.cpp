@@ -594,7 +594,7 @@ GrapaRuleEvent* GrapaNetConnect::HttpMessage(GrapaScriptExec* vScriptExec, Grapa
 	if (pl <= 2)
 		return result;
 
-	result = new GrapaRuleEvent(GrapaTokenType::LIST, 0, "", "");
+	result = new GrapaRuleEvent(GrapaTokenType::GOBJ, 0, "", "");
 	result->vQueue = new GrapaRuleQueue();
 
 	char* cr = NULL;
@@ -611,7 +611,7 @@ GrapaRuleEvent* GrapaNetConnect::HttpMessage(GrapaScriptExec* vScriptExec, Grapa
 	GrapaRuleEvent* v2 = NULL;
 
 	cr = NULL;
-	v = new GrapaRuleEvent(GrapaTokenType::LIST, 0, "status", "");
+	v = new GrapaRuleEvent(GrapaTokenType::GOBJ, 0, "status", "");
 	v->vQueue = new GrapaRuleQueue();
 		cr = (statusC && statusL) ? (char*)GrapaMem::MemFind(statusC, statusL, (void*)" ", 1) : NULL;
 		if (cr)
@@ -653,7 +653,7 @@ GrapaRuleEvent* GrapaNetConnect::HttpMessage(GrapaScriptExec* vScriptExec, Grapa
 		u64 headerL = (u64)(cr - pc);
 		pl -= (headerL + 4);
 		pc += (headerL + 4);
-		v = new GrapaRuleEvent(GrapaTokenType::LIST, 0, "headers", "");
+		v = new GrapaRuleEvent(GrapaTokenType::GOBJ, 0, "headers", "");
 		v->vQueue = new GrapaRuleQueue();
 		while (headerC && headerL)
 		{
@@ -728,7 +728,7 @@ GrapaRuleEvent* GrapaNetConnect::HttpMessage(GrapaScriptExec* vScriptExec, Grapa
 					{
 						if (v2->vQueue == NULL)
 						{
-							v2->mValue.mToken = GrapaTokenType::LIST;
+							v2->mValue.mToken = GrapaTokenType::GOBJ;
 							v2->vQueue = new GrapaRuleQueue();
 						}
 						char* hc = cr2 + 2;

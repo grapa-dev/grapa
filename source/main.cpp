@@ -19,12 +19,12 @@ public:
     {
         GrapaRuleEvent* result = NULL;
         GrapaLibraryParam r1(vScriptExec, pNameSpace, pInput ? pInput->Head(0) : NULL);
-        result = new GrapaRuleEvent(GrapaTokenType::LIST, 0, "", "");
+        result = new GrapaRuleEvent(GrapaTokenType::GOBJ, 0, "", "");
         result->vQueue = new GrapaRuleQueue();
         if (r1.vVal)
         {
             GrapaRuleEvent* p = NULL;
-            p = new GrapaRuleEvent(GrapaTokenType::LIST, 0, "params", "");
+            p = new GrapaRuleEvent(GrapaTokenType::GOBJ, 0, "params", "");
             p->vQueue = vScriptExec->CopyQueue(pInput);
             result->vQueue->PushTail(p);
         }

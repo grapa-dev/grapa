@@ -1263,7 +1263,7 @@ GrapaWidget::GrapaWidget(GrapaScriptExec* pScriptExec, GrapaNames* pNameSpace)
 	vOpHide = NULL;
 	mThread.widget = this;
 	mHasChildren = false;
-	mNameQueue.mValue.mToken = GrapaTokenType::LIST;
+	mNameQueue.mValue.mToken = GrapaTokenType::GOBJ;
 	mNameQueue.vQueue = new GrapaRuleQueue();
 	mNameSpace.GetNameQueue()->PushTail(&mNameQueue);
 	GrapaRuleEvent* e2 = new GrapaRuleEvent();
@@ -2289,7 +2289,7 @@ GrapaRuleEvent* GrapaWidget::Child(s64 pIndex)
 GrapaRuleEvent* GrapaWidget::Set(GrapaRuleEvent* attr)
 {
 	GrapaRuleEvent* result = NULL;
-	if (attr->mValue.mToken == GrapaTokenType::LIST)
+	if (attr->mValue.mToken == GrapaTokenType::GOBJ)
 	{
 		if (attr->vQueue)
 		{
@@ -2412,7 +2412,7 @@ GrapaRuleEvent* GrapaWidget::Set(GrapaRuleEvent* attr)
 							GrapaRuleEvent* g = data->vQueue->Head();
 							while (g)
 							{
-								if ((g->mValue.mToken == GrapaTokenType::LIST || g->mValue.mToken == GrapaTokenType::ARRAY || g->mValue.mToken == GrapaTokenType::TUPLE) && g->vQueue)
+								if ((g->mValue.mToken == GrapaTokenType::GOBJ || g->mValue.mToken == GrapaTokenType::ARRAY || g->mValue.mToken == GrapaTokenType::TUPLE) && g->vQueue)
 								{
 									Add(g);
 								}
@@ -2572,7 +2572,7 @@ GrapaRuleEvent* GrapaWidget::Set(GrapaRuleEvent* attr)
 							Resize(x, y, w, h);
 						}
 					}
-					else if(data->mValue.mToken == GrapaTokenType::LIST)
+					else if(data->mValue.mToken == GrapaTokenType::GOBJ)
 					{
 						int x = vWidget->x();
 						int y = vWidget->y();
@@ -2605,7 +2605,7 @@ GrapaRuleEvent* GrapaWidget::Set(GrapaRuleEvent* attr)
 								g->rows(c);
 							}
 						}
-						else if (data->mValue.mToken == GrapaTokenType::LIST)
+						else if (data->mValue.mToken == GrapaTokenType::GOBJ)
 						{
 							int r = g->rows();
 							int c = g->cols();
@@ -2632,7 +2632,7 @@ GrapaRuleEvent* GrapaWidget::Set(GrapaRuleEvent* attr)
 						g->vVector = NULL;
 						g->mDeleteVector = false;
 						while (data->mValue.mToken == GrapaTokenType::PTR) data = data->vRulePointer;
-						if (data && (data->mValue.mToken == GrapaTokenType::ARRAY || data->mValue.mToken == GrapaTokenType::TUPLE || data->mValue.mToken == GrapaTokenType::LIST))
+						if (data && (data->mValue.mToken == GrapaTokenType::ARRAY || data->mValue.mToken == GrapaTokenType::TUPLE || data->mValue.mToken == GrapaTokenType::GOBJ))
 						{
 							if (data->vQueue->mCount > 0)
 							{
@@ -3115,7 +3115,7 @@ GrapaRuleEvent* GrapaWidget::Get(GrapaRuleEvent* data)
 	result->mValue.mToken = GrapaTokenType::STR;
 	if (data->mValue.mToken == GrapaTokenType::ARRAY || data->mValue.mToken == GrapaTokenType::TUPLE)
 	{
-		result->mValue.mToken = GrapaTokenType::LIST;
+		result->mValue.mToken = GrapaTokenType::GOBJ;
 		result->vQueue = new GrapaRuleQueue();
 	}
 	if (data->mValue.mToken == GrapaTokenType::ARRAY || data->mValue.mToken == GrapaTokenType::TUPLE || data->mValue.mToken == GrapaTokenType::STR)
@@ -3152,7 +3152,7 @@ GrapaRuleEvent* GrapaWidget::Get(GrapaRuleEvent* data)
 			}
 			else if (value->mValue.StrLowerCmp("size") == 0)
 			{
-				result2->mValue.mToken = GrapaTokenType::LIST;
+				result2->mValue.mToken = GrapaTokenType::GOBJ;
 				result2->vQueue = new GrapaRuleQueue();
 				result2->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("x"), GrapaInt(vWidget->x()).getBytes()));
 				result2->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("y"), GrapaInt(vWidget->y()).getBytes()));
@@ -3173,7 +3173,7 @@ GrapaRuleEvent* GrapaWidget::Get(GrapaRuleEvent* data)
 			{
 				if (mWidgetName.Cmp("table_row") == 0)
 				{
-					result2->mValue.mToken = GrapaTokenType::LIST;
+					result2->mValue.mToken = GrapaTokenType::GOBJ;
 					result2->vQueue = new GrapaRuleQueue();
 					result2->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("rows"), GrapaInt(((Grapa_Table_Row*)vWidget)->rows()).getBytes()));
 					result2->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("cols"), GrapaInt(((Grapa_Table_Row*)vWidget)->cols()).getBytes()));
@@ -3211,9 +3211,9 @@ GrapaRuleEvent* GrapaWidget::Get(GrapaRuleEvent* data)
 			}
 			else if (mWidgetName.Cmp("menu_bar") == 0)
 			{
-				if (value->mValue.mToken == GrapaTokenType::LIST && value->vQueue)
+				if (value->mValue.mToken == GrapaTokenType::GOBJ && value->vQueue)
 				{
-					result2->mValue.mToken = GrapaTokenType::LIST;
+					result2->mValue.mToken = GrapaTokenType::GOBJ;
 					result2->vQueue = new GrapaRuleQueue();
 					result2->mName.FROM("child");
 					result2->mName.mToken = GrapaTokenType::STR;
@@ -3230,7 +3230,7 @@ GrapaRuleEvent* GrapaWidget::Get(GrapaRuleEvent* data)
 						{
 							GrapaRuleEvent* result3 = new GrapaRuleEvent();
 							result2->vQueue->PushTail(result3);
-							result3->mValue.mToken = GrapaTokenType::LIST;
+							result3->mValue.mToken = GrapaTokenType::GOBJ;
 							result3->vQueue = new GrapaRuleQueue();
 							result3->mName.FROM(me->mName);
 							result3->mName.mToken = GrapaTokenType::STR;

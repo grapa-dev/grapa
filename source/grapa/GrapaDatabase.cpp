@@ -185,7 +185,7 @@ GrapaError GrapaLocalDatabase::DirectoryList(GrapaCHAR& pName, GrapaRuleEvent* p
 					continue;
 
 				GrapaRuleEvent* item = new GrapaRuleEvent(0, GrapaCHAR(localFileName), GrapaCHAR());
-				item->mValue.mToken = GrapaTokenType::LIST;
+				item->mValue.mToken = GrapaTokenType::GOBJ;
 				item->vQueue = new GrapaRuleQueue();
 				pTable->vQueue->PushTail(item);
 
@@ -244,7 +244,7 @@ GrapaError GrapaLocalDatabase::DirectoryList(GrapaCHAR& pName, GrapaRuleEvent* p
 					continue;
 
 				GrapaRuleEvent* item = new GrapaRuleEvent(0, GrapaCHAR(localFileName), GrapaCHAR());
-				item->mValue.mToken = GrapaTokenType::LIST;
+				item->mValue.mToken = GrapaTokenType::GOBJ;
 				item->vQueue = new GrapaRuleQueue();
 				pTable->vQueue->PushTail(item);
 
@@ -319,7 +319,7 @@ GrapaError GrapaLocalDatabase::DirectoryList(GrapaCHAR& pName, GrapaRuleEvent* p
 					err = mDb->mValue.GetRecordField(cursor, keyId, fieldKey);
 					if (err) return(err);
 					GrapaRuleEvent* item = new GrapaRuleEvent(0, GrapaCHAR(fieldKey), GrapaCHAR());
-					item->mValue.mToken = GrapaTokenType::LIST;
+					item->mValue.mToken = GrapaTokenType::GOBJ;
 					item->vQueue = new GrapaRuleQueue();
 					pTable->vQueue->PushTail(item);
 
@@ -1114,7 +1114,7 @@ GrapaError GrapaLocalDatabase::FieldInfo(const GrapaCHAR& pName, const GrapaCHAR
 	if (pTable == NULL)
 		return(-1);
 
-	pTable->mValue.mToken = GrapaTokenType::LIST;
+	pTable->mValue.mToken = GrapaTokenType::GOBJ;
 	pTable->mValue.SetLength(0);
 	if (pTable->vQueue) pTable->vQueue->CLEAR();
 	else pTable->vQueue = new GrapaRuleQueue();

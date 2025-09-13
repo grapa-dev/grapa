@@ -375,7 +375,7 @@ u8 GrapaBYTE::ToDbType()
 	case GrapaTokenType::TUPLE:
 	case GrapaTokenType::VECTOR:
 	case GrapaTokenType::WIDGET:
-	case GrapaTokenType::LIST:
+	case GrapaTokenType::GOBJ:
 	case GrapaTokenType::XML:
 	case GrapaTokenType::EL:
 	case GrapaTokenType::TAG:
@@ -407,7 +407,7 @@ void GrapaBYTE::FromDbType(u8 pType)
 	case GrapaTokenType::TUPLE:
 	case GrapaTokenType::VECTOR:
 	case GrapaTokenType::WIDGET:
-	case GrapaTokenType::LIST:
+	case GrapaTokenType::GOBJ:
 	case GrapaTokenType::XML:
 	case GrapaTokenType::EL:
 	case GrapaTokenType::TAG:

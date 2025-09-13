@@ -1,0 +1,5 @@
+$global["$GOBJ"]
+	= class ($OBJ) {
+ 	message = @<message,{@<this>}>;
+ 	err = @<err,{@<this>}>;
+	};
