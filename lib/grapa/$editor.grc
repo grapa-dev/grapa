@@ -1,6 +1,6 @@
 $global.createEditor = op(label)
 {
-	if ($global.editors.type()!="$LIST")
+	if ($global.editors.type()!="$GOBJ")
 		$global.editors = {};
 	$global.editors.@label = newEditor(label);
 	$global.editors.@label.show();
