@@ -381,15 +381,12 @@ GrapaError GrapaThread::StartSync()
 	return(0);
 }
 
-extern void PureOSSleep(u32 milliseconds);
-
 void GrapaThread::Stop()
 {
 	mStop = true;
 	if (mSync) return;
 	if (!Started()) return;
 	Resume();
-	while (Started()) PureOSSleep(10);
 	mRunning.WaitCritical();
 	if (((GrapaThreadPrivate*)vInstanceT)->mThread)
 	{

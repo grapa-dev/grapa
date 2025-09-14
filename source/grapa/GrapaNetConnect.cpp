@@ -43,6 +43,7 @@ GrapaNetConnect::GrapaNetConnect()
 GrapaNetConnect::~GrapaNetConnect()
 {
 	Disconnect();
+	Stop();
 	if (dReceiveLambda)
 	{
 		dReceiveLambda->CLEAR();
@@ -112,7 +113,8 @@ GrapaError GrapaNetConnect::Disconnect()
 		}
 	}
 	mNet.Disconnect();
-	Stop();
+	//Stop();
+	mStop = true;
 	return(0);
 }
 
