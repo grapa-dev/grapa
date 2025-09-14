@@ -673,10 +673,10 @@ For complex parsing scenarios, organizing rules in data structures provides bett
 
 ### Object-Based Rule Organization
 
-Organize related rules in `$LIST` objects with a common parsing interface:
+Organize related rules in `$GOBJ` objects with a common parsing interface:
 
 ```grapa
-/* Define ETL rules in a $LIST object */
+/* Define ETL rules in a $GOBJ object */
 etl_rules = {
     /* Common parsing interface */
     parse = op(parse_data, parse_rule){op()(parse_data, parse_rule)()},
@@ -824,7 +824,7 @@ Add rules to existing rule collections dynamically using different patterns.
 
 ### Object Extension with `+=` Operator
 
-Add new rules to existing `$LIST` objects:
+Add new rules to existing `$GOBJ` objects:
 
 ```grapa
 /* Start with base ETL rules object */
@@ -841,7 +841,7 @@ csv_result = etl_rules.parse("John,25,NY", etl_rules.csv_parser);
 ```
 
 **Key Features:**
-- **Object Extension**: Add rules to existing `$LIST` objects using `+=` operator
+- **Object Extension**: Add rules to existing `$GOBJ` objects using `+=` operator
 - **Immediate Availability**: New rules are immediately available for use
 - **Flexible Addition**: Add rules based on runtime conditions
 
@@ -875,7 +875,7 @@ csv_result = etl_rules.parse("John,25,NY", etl_rules.csv_parser);
 | Method | Use Case | Target | Syntax |
 |--------|----------|---------|---------|
 | `++=` | Rule concatenation | Rule variables | `rule_var ++= rule ...` |
-| `+=` | Object extension | `$LIST` objects | `obj += (key : rule ...)` |
+| `+=` | Object extension | `$GOBJ` objects | `obj += (key : rule ...)` |
 | `add_rule()` | Class method | `$CLASS` instances | `instance.add_rule("name", rule ...)` |
 
 ## Return Value Patterns

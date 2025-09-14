@@ -1,13 +1,13 @@
-# $LIST
+# $GOBJ
 References:
 
-**`$LIST`** = `{}` syntax (associative, with names/keys)
+**`$GOBJ`** = `{}` syntax (associative, with names/keys)
 
-An associative list that stores key-value pairs. Elements are accessed by their names (keys) rather than by position. This follows traditional terminology where lists are associative collections with named entries.
+An associative object that stores key-value pairs. Elements are accessed by their names (keys) rather than by position. This follows Grapa Object Notation (GOBJ) terminology for key-value collections.
 
-### $LIST vs $ARRAY Comparison
+### $GOBJ vs $ARRAY Comparison
 
-| Feature | $LIST (`{}`) | $ARRAY (`[]`) |
+| Feature | $GOBJ (`{}`) | $ARRAY (`[]`) |
 |---------|--------------|---------------|
 | **Syntax** | `{a:1, b:2, c:3}` | `[1, 2, 3]` |
 | **Access** | `list.a` or `list["a"]` | `array[0]` |
@@ -17,9 +17,9 @@ An associative list that stores key-value pairs. Elements are accessed by their 
 
 **Note:** This differs from some other languages where `[]` is called a "list" and `{}` is called a "dictionary" or "object". Grapa follows traditional C terminology.
 
-## When to Use $LIST vs Other Data Types
+## When to Use $GOBJ vs Other Data Types
 
-### **Use `{}` (Linked List) When:**
+### **Use `{}` (Grapa Object) When:**
 - **Small to medium datasets** (< 100-500 items typically)
 - **Frequent modifications** (insertions, deletions, updates)
 - **In-memory operations** only
@@ -325,7 +325,7 @@ list ++= {e:88, f:77} list[0]; /* INSERT multiple at position 0: {e:88, f:77, a:
 
 ### **Key Differences from Vectors**
 
-| Behavior | `$LIST` | `$VECTOR` |
+| Behavior | `$GOBJ` | `$VECTOR` |
 |----------|---------|-----------|
 | **Out-of-bounds Get** | Returns `null` | Returns `$ERR` |
 | **Out-of-bounds Set** | **APPENDS** element | Returns `$ERR` |

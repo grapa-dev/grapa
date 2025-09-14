@@ -5,13 +5,13 @@
 > | Type      | .get("key") | .get(index) | Bracket Notation | Dot Notation |
 > |-----------|:-----------:|:-----------:|:----------------:|:------------:|
 > | $ARRAY    |      ✗      |     ✗      |       ✓         |      —       |
-> | $LIST     |      ✗      |     ✗      |       ✓         |     ✓       |
+> | $GOBJ     |      ✗      |     ✗      |       ✓         |     ✓       |
 > | $file     |      ✓      |     ✗      |        —         |      —       |
 > | $TABLE    |     ✓*      |     ✗      |        —         |      —       |
 > | $OBJ      |      ✗      |     ✗      |       ✗         |     ✓       |
 > *$TABLE .get() requires two arguments: key and field.
 >
-> - For $LIST and $OBJ, use bracket or dot notation (e.g., obj["key"], obj.key, obj[2]).
+> - For $GOBJ and $OBJ, use bracket or dot notation (e.g., obj["key"], obj.key, obj[2]).
 > - For $ARRAY, use bracket notation (e.g., arr[1]).
 > - Only $file and $TABLE support .get().
 > - This is based on direct testing in Grapa v0.0.39.
@@ -53,13 +53,13 @@ This guide helps TypeScript users transition to Grapa by mapping common TypeScri
 >
 > **String Interpolation:** For combining strings and values, use `"Hello ${name}".interpolate()` instead of `"Hello " + name`. String interpolation is more powerful and less error-prone than concatenation. It also provides elegant solutions for complex method chaining: `"${'hello'.upper()} ${'world'.lower()}".interpolate()`.
 
-> **Note:** `.getfield("key")` is for `$file` and `$TABLE`. `.get()/.set()` is for `$WIDGET`. For `$LIST`/`$OBJ`, use `obj["key"]`, `obj.key`, or `obj."key"`. For `$ARRAY`, use `arr[index]` (bracket notation only).
+> **Note:** `.getfield("key")` is for `$file` and `$TABLE`. `.get()/.set()` is for `$WIDGET`. For `$GOBJ`/`$OBJ`, use `obj["key"]`, `obj.key`, or `obj."key"`. For `$ARRAY`, use `arr[index]` (bracket notation only).
 
 ## Access Patterns: Objects, Lists, Arrays, Files, and Tables
 
 Below are all valid ways to access elements in Grapa data structures. See the canonical [Basic Syntax Guide](../syntax/basic_syntax.md) for the latest tested rules.
 
-### $LIST and $OBJ
+### $GOBJ and $OBJ
 
 ```grapa
 obj = {"a": 1, "b": 2, "c": 3};
@@ -68,13 +68,13 @@ value = obj["b"];      /* Returns 2 */
 value = obj.key;        /* Returns value for key 'key' if present */
 value = obj."b";       /* Returns 2 */
 
-/* $LIST only: */
+/* $GOBJ only: */
 value = obj[1];         /* Returns 2 (by index) */
 name = obj.getname(1);  /* Returns "b" (key name at index 1) */
 ```
 
-- Dot notation (`obj.key`) and bracket notation (`obj["key"]`) are both valid for $LIST/$OBJ.
-- `.get()` is NOT valid for $LIST/$OBJ.
+- Dot notation (`obj.key`) and bracket notation (`obj["key"]`) are both valid for $GOBJ/$OBJ.
+- `.get()` is NOT valid for $GOBJ/$OBJ.
 
 ### $ARRAY
 
@@ -115,7 +115,7 @@ value = table.get("user1", "name");   /* Correct */
 > | Type      | .get("key") | .get(index) | Bracket Notation | Dot Notation |
 > |-----------|:-----------:|:-----------:|:----------------:|:------------:|
 > | $ARRAY    |      ✗      |     ✗      |       ✓         |      —       |
-> | $LIST     |      ✗      |     ✗      |       ✓         |     ✓       |
+> | $GOBJ     |      ✗      |     ✗      |       ✓         |     ✓       |
 > | $file     |      ✓      |     ✗      |        —         |      —       |
 > | $TABLE    |     ✓*      |     ✗      |        —         |      —       |
 > | $OBJ      |      ✗      |     ✗      |       ✗         |     ✓       |
@@ -130,7 +130,7 @@ value = table.get("user1", "name");   /* Correct */
 > - **`.getfield()/.setfield()` method**: Use for `$file` and `$TABLE` types
 > - **`.get()/.set()` method**: Exclusively for `$WIDGET` types
 > - **`.size()` method**: Not supported on any type (use `.len()` instead)
-> - **`.keys()` method**: Not supported on `$LIST` (use iteration instead)
+> - **`.keys()` method**: Not supported on `$GOBJ` (use iteration instead)
 
 See [Basic Syntax Guide](../syntax/basic_syntax.md) for empirical test results and future updates.
 
@@ -346,8 +346,8 @@ if (result.type() == $ERR) {
 
 > **Clarification on .get() Usage:**
 > - `.get()` is **required** for `$file` and `$TABLE` access.
-> - `.get()` is **not supported** for `$ARRAY`, `$LIST`, or `$OBJ` as of this writing.
-> - Use bracket and dot notation for `$ARRAY`, `$LIST`, and `$OBJ`.
+> - `.get()` is **not supported** for `$ARRAY`, `$GOBJ`, or `$OBJ` as of this writing.
+> - Use bracket and dot notation for `$ARRAY`, `$GOBJ`, and `$OBJ`.
 > - If more objects support `.get()` in the future, this guide will be updated. 
 
 > **Comment Style:**
@@ -484,7 +484,7 @@ keys.map(op(key) {
 Grapa's unified data structure approach is superior to specialized collections:
 
 - **Sets**: Use `.unique()` method on arrays: `[1, 2, 1, 3, 2].unique()` → `[1, 2, 3]`
-- **Maps**: Use `$LIST` objects: `{key1: "value1", key2: "value2"}`
+- **Maps**: Use `$GOBJ` objects: `{key1: "value1", key2: "value2"}`
 - **Priority Queues**: Use `.sort()` with custom comparators
 - **Deques**: Use array operations with `+=` and `++=`
 - **Iterators**: Use functional methods (`.map()`, `.filter()`, `.reduce()`) which are thread-safe and parallel
@@ -515,7 +515,7 @@ sum = numbers.reduce(op(a, b) { a + b }, 0);      /* Sequential reduction */
 **Advantages of Grapa's Approach:**
 - **Unified syntax** across all data types
 - **Parallel processing** built into functional methods
-- **Cross-format compatibility** (works on `$ARRAY`, `$LIST`, `$OBJ`, `$XML`, etc.)
+- **Cross-format compatibility** (works on `$ARRAY`, `$GOBJ`, `$OBJ`, `$XML`, etc.)
 - **Simpler learning curve** - fewer specialized types to learn
 - **Better performance** - optimized for Grapa's execution model
 

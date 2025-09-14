@@ -214,5 +214,8 @@ $sys().sleep(1000);
 /* Disconnect servers */
 httpServer.disconnect();
 
+/* Give a moment for cleanup */
+$sys().sleep(100);
+
 ("Network test completed successfully!\n").echo();
 ("All Grapa networking capabilities validated.\n").echo();

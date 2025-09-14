@@ -2,17 +2,17 @@
 
 "Testing JSON, XML, HTML parsing...\n".echo();
 
-/* Test JSON parsing - should return $LIST type */
+/* Test JSON parsing - should return $GOBJ type */
 json_string = '{"test": "value", "number": 42}';
 ("JSON input: " + json_string + "\n").echo();
 
 json_result = json_string.encode("JSON");
 ("JSON result type: " + json_result.type() + "\n").echo();
-if (json_result.type() == "$LIST") {
-    ("JSON parsing successful - returned $LIST type\n").echo();
+if (json_result.type() == "$GOBJ") {
+    ("JSON parsing successful - returned $GOBJ type\n").echo();
     ("JSON result: " + json_result.str() + "\n").echo();
 } else {
-    ("JSON parsing failed - expected $LIST type, got " + json_result.type() + "\n").echo();
+    ("JSON parsing failed - expected $GOBJ type, got " + json_result.type() + "\n").echo();
 }
 
 /* Test XML parsing - should return $XML type */

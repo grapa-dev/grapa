@@ -23,7 +23,7 @@ curl = op(url_str, options) {
 	$local.status_text = null;
 	        
     /* Handle null or invalid options */
-    if (options == null || options.type() != $LIST) {
+    if (options == null || options.type() != $GOBJ) {
         options = {};
     };
     

@@ -116,7 +116,7 @@ public:
 		{
 			result = new GrapaRuleEvent(0, pname, GrapaCHAR());
 			result->vQueue = new GrapaRuleQueue();
-			result->mValue.mToken = GrapaTokenType::LIST;
+			result->mValue.mToken = GrapaTokenType::GOBJ;
 			PyObject* key, * item;
 			Py_ssize_t pos = 0;
 			while (PyDict_Next(o, &pos, &key, &item))
@@ -209,7 +209,7 @@ public:
 				e = e->Next();
 			}
 			break;
-		case GrapaTokenType::LIST:
+		case GrapaTokenType::GOBJ:
 			*o = py::dict();
 			e = e->vQueue->Head();
 			while (e)
@@ -466,7 +466,7 @@ public:
 				{
 					vLocals = new GrapaRuleEvent();
 					vLocals->mOpLocal = true;
-					vLocals->mValue.mToken = GrapaTokenType::LIST;
+					vLocals->mValue.mToken = GrapaTokenType::GOBJ;
 					vLocals->vQueue = new GrapaRuleQueue();
 					mConsoleSend.mScriptState.GetNameSpace()->GetNameQueue()->PushTail(vLocals);
 					while (e->vQueue->Head())
@@ -543,7 +543,7 @@ public:
 			GrapaRuleEvent* verEvent = new GrapaRuleEvent(0, GrapaCHAR("version"), GrapaLink::GetGrapaSystem()->mVersion);
 
 			GrapaRuleEvent* e = new GrapaRuleEvent();
-			e->mValue.mToken = GrapaTokenType::LIST;
+			e->mValue.mToken = GrapaTokenType::GOBJ;
 			e->vQueue = new GrapaRuleQueue();
 			e->vQueue->PushTail(opEvent);
 			e->vQueue->PushTail(verEvent);

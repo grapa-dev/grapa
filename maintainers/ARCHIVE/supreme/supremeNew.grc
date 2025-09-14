@@ -22,7 +22,7 @@ supremeNew = op(threads=4)
 	local.links1 = data
 		.reduce(op(a,b){
 			if (b.div.type()==$ERR)
-				a+=b.$LIST.href;
+				a+=b.$GOBJ.href;
 		},[]);
 	local.links2 = links1
 		.reduce(op(a,b){
@@ -61,7 +61,7 @@ supremeNew = op(threads=4)
 				local.data = r2.body.html.body.findall({name:"div",attr:{id="details"}});
 				
 				local.data2 = data.findall({attr:{"itemprop":"name"}});
-				local.catagory = data2.h2.$LIST.data-category;
+				local.catagory = data2.h2.$GOBJ.data-category;
 				local.name = data2.h2[0].trim();
 				
 				local.desc = data.findall({attr:{"itemprop":"description"}}).p[0];
@@ -69,7 +69,7 @@ supremeNew = op(threads=4)
 				data2 = data.findall({name:"figure"});
 				local.img = "";
 				if (data2.len())
-					img = data2.figure.img.$LIST.src;
+					img = data2.figure.img.$GOBJ.src;
 					
 				local.price = 
 					data.findall({attr:{"itemprop":"offers"}})
@@ -82,7 +82,7 @@ supremeNew = op(threads=4)
 					data.findall({name:"ul",has:{name:"li"}})
 					.findall({name:"li"})
 					.reduce(op(a,b){
-						local.c = b.button.$LIST;
+						local.c = b.button.$GOBJ;
 						if (c.data-sold-out=="false")
 							a += (
 								c.data-style-name:
@@ -91,7 +91,7 @@ supremeNew = op(threads=4)
 									model:c.data-style-name,
 									id:c.data-style-id,
 									sold-out:c.data-sold-out,
-									img:b.button.img.$LIST.src
+									img:b.button.img.$GOBJ.src
 								}
 							);
 						},{});
@@ -108,19 +108,19 @@ supremeNew = op(threads=4)
 							.findall({name:"form",attr:{"id":"cart-addf"}});
 						
 						local.action = 
-							data.form.$LIST.action;
+							data.form.$GOBJ.action;
 						local.inputs = 
 							data
 							.findall({name:"input"})
 							.reduce(op(a,b){
-								a+=(b.$LIST.name:b.$LIST.value);
+								a+=(b.$GOBJ.name:b.$GOBJ.value);
 							},{});
 						
 						inputs ++= 
 							data
 							.findall({name:"fieldset",has:{name:"option"}})
 							.reduce(op(a,b){
-								a += (b.select.$LIST.name:b.select.reduce(op(a,b){a+=(b[0]:b.$LIST.value);},{}));
+								a += (b.select.$GOBJ.name:b.select.reduce(op(a,b){a+=(b[0]:b.$GOBJ.value);},{}));
 							},{});
 							
 						inputs -= inputs["utf8"];

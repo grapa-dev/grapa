@@ -15,7 +15,7 @@ tags:
 Grapa uses C-style terminology for data structures:
 
 - **`$ARRAY`** = `[]` syntax (positional, no names, indexed by position)
-- **`$LIST`** = `{}` syntax (associative, with names/keys)
+- **`$GOBJ`** = `{}` syntax (associative, with names/keys)
 - **`$XML`** = `<tag>content</tag>` syntax (structured markup)
 
 **Note:** This differs from some other languages where `[]` is called a "list" and `{}` is called a "dictionary" or "object". Grapa follows traditional C terminology where arrays are positional and lists are associative.
@@ -464,7 +464,7 @@ obj.setconst("new value"); /* Sets object to constant string */
 ## String Manipulation Methods
 
 ### `.left(count)`
-Returns the leftmost characters of a string or elements of an array/list. **Unicode-aware**: Counts Unicode characters (grapheme clusters), not bytes. Also works with `$ARRAY` and `$LIST` types.
+Returns the leftmost characters of a string or elements of an array/list. **Unicode-aware**: Counts Unicode characters (grapheme clusters), not bytes. Also works with `$ARRAY` and `$GOBJ` types.
 
 ```grapa
 /* String examples */
@@ -485,12 +485,12 @@ Returns the leftmost characters of a string or elements of an array/list. **Unic
 **Parameters:**
 - `count` (default: 0) - Number of Unicode characters to return (for strings) or elements to return (for arrays/lists) (negative counts from right)
 
-**Data Types:** `$STR`, `$ARRAY`, `$LIST`
+**Data Types:** `$STR`, `$ARRAY`, `$GOBJ`
 
 **Unicode Support:** This function now properly handles Unicode characters, emoji, and complex grapheme clusters by counting characters rather than bytes.
 
 ### `.right(count)`
-Returns the rightmost characters of a string or elements of an array/list. **Unicode-aware**: Counts Unicode characters (grapheme clusters), not bytes. Also works with `$ARRAY` and `$LIST` types.
+Returns the rightmost characters of a string or elements of an array/list. **Unicode-aware**: Counts Unicode characters (grapheme clusters), not bytes. Also works with `$ARRAY` and `$GOBJ` types.
 
 ```grapa
 /* String examples */
@@ -511,12 +511,12 @@ Returns the rightmost characters of a string or elements of an array/list. **Uni
 **Parameters:**
 - `count` (default: 0) - Number of Unicode characters to return (for strings) or elements to return (for arrays/lists) (negative counts from left)
 
-**Data Types:** `$STR`, `$ARRAY`, `$LIST`
+**Data Types:** `$STR`, `$ARRAY`, `$GOBJ`
 
 **Unicode Support:** This function now properly handles Unicode characters, emoji, and complex grapheme clusters by counting characters rather than bytes.
 
 ### `.mid(start, count)`
-Returns a substring starting at the specified position. **Unicode-aware**: Counts Unicode characters (grapheme clusters), not bytes. Also works with `$ARRAY` and `$LIST` types.
+Returns a substring starting at the specified position. **Unicode-aware**: Counts Unicode characters (grapheme clusters), not bytes. Also works with `$ARRAY` and `$GOBJ` types.
 
 ```grapa
 /* String examples */
@@ -538,7 +538,7 @@ Returns a substring starting at the specified position. **Unicode-aware**: Count
 - `start` (default: 0) - Starting position (Unicode character position for strings, element position for arrays/lists)
 - `count` (default: 0) - Number of Unicode characters to return (for strings) or elements to return (for arrays/lists)
 
-**Data Types:** `$STR`, `$ARRAY`, `$LIST`
+**Data Types:** `$STR`, `$ARRAY`, `$GOBJ`
 
 **Unicode Support:** This function now properly handles Unicode characters, emoji, and complex grapheme clusters by counting characters rather than bytes.
 
@@ -589,10 +589,10 @@ Removes characters from both ends of a string.
 - `chars` (default: null) - Characters to remove (default: whitespace)
 
 ### `.lrot(count)`
-Rotates elements left by the specified number of positions. Works with `$ARRAY`, `$LIST`, `$TUPLE`, and `$XML` data types.
+Rotates elements left by the specified number of positions. Works with `$ARRAY`, `$GOBJ`, `$TUPLE`, and `$XML` data types.
 
 ```grapa
-/* ✅ CORRECT: Use with $ARRAY and $LIST */
+/* ✅ CORRECT: Use with $ARRAY and $GOBJ */
 [1,2,3,4,5].lrot(2);     /* Returns: [3,4,5,1,2] - positional array */
 {a:1,b:2,c:3}.lrot(2);   /* Returns: {"c":3,"a":1,"b":2} - associative list */
 
@@ -603,13 +603,13 @@ Rotates elements left by the specified number of positions. Works with `$ARRAY`,
 **Parameters:**
 - `count` - Number of positions to rotate (default: 1)
 
-**Data Types:** `$ARRAY`, `$LIST`, `$TUPLE`, `$XML`
+**Data Types:** `$ARRAY`, `$GOBJ`, `$TUPLE`, `$XML`
 
 ### `.rrot(count)`
-Rotates elements right by the specified number of positions. Works with `$ARRAY`, `$LIST`, `$TUPLE`, and `$XML` data types.
+Rotates elements right by the specified number of positions. Works with `$ARRAY`, `$GOBJ`, `$TUPLE`, and `$XML` data types.
 
 ```grapa
-/* ✅ CORRECT: Use with $ARRAY and $LIST */
+/* ✅ CORRECT: Use with $ARRAY and $GOBJ */
 [1,2,3,4,5].rrot(2);     /* Returns: [4,5,1,2,3] - positional array */
 {a:1,b:2,c:3}.rrot(2);   /* Returns: {"b":2,"c":3,"a":1} - associative list */
 
@@ -620,7 +620,7 @@ Rotates elements right by the specified number of positions. Works with `$ARRAY`
 **Parameters:**
 - `count` - Number of positions to rotate (default: 1)
 
-**Data Types:** `$ARRAY`, `$LIST`, `$TUPLE`, `$XML`
+**Data Types:** `$ARRAY`, `$GOBJ`, `$TUPLE`, `$XML`
 
 ### `.lpad(width, char)`
 Pads the string on the left to the specified width. **Unicode-aware**: Counts Unicode characters (grapheme clusters), not bytes.
@@ -759,7 +759,7 @@ obj.identity();            /* Returns identity matrix */
 ```
 
 ### `.sort(axis, order, kind)`
-Sorts elements across multiple data types: `$ARRAY`, `$TUPLE`, `$LIST`, `$OBJ`, `$XML`, `$TAG`, `$EL`, `$OP`, `$CODE`.
+Sorts elements across multiple data types: `$ARRAY`, `$TUPLE`, `$GOBJ`, `$OBJ`, `$XML`, `$TAG`, `$EL`, `$OP`, `$CODE`.
 
 ```grapa
 /* Arrays and Tuples - sort by value */
@@ -790,7 +790,7 @@ Returns the indices that would sort the array.
 - `kind` (default: null) - Sort algorithm
 
 ### `.unique(axis)`
-Returns unique elements across multiple data types: `$ARRAY`, `$TUPLE`, `$LIST`, `$OBJ`, `$XML`, `$TAG`, `$EL`, `$OP`, `$CODE`.
+Returns unique elements across multiple data types: `$ARRAY`, `$TUPLE`, `$GOBJ`, `$OBJ`, `$XML`, `$TAG`, `$EL`, `$OP`, `$CODE`.
 
 ```grapa
 /* Arrays and Tuples - remove duplicate values */
@@ -945,7 +945,7 @@ $RAW("hello\0world").find("\0".raw());           /* Returns: 5 */
 - **$STR**: Searches for Unicode substrings
 - **$RAW**: Performs binary search (handles null bytes and binary data)
 - **$ARRAY**: Searches for subarrays using comprehensive comparison
-- **$LIST**: Searches for sublists using comprehensive comparison
+- **$GOBJ**: Searches for sublists using comprehensive comparison
 
 **Return Value:**
 - Returns the 0-based index of the first occurrence
@@ -956,13 +956,13 @@ $RAW("hello\0world").find("\0".raw());           /* Returns: 5 */
 
 **Array and List Search:** The `.find()` method supports searching for subarrays and sublists using the same comprehensive comparison logic as `switch` statements, ensuring consistent behavior across the language.
 
-**Array-in-List Search:** When searching a `$LIST` with an `$ARRAY` term, the method searches for the array values within the list values and returns the position where the match is found. Use `.mid()` to extract the subset. For example: `{a:1,b:2,c:3}.find([2,3])` returns `1`, and `{a:1,b:2,c:3}.mid(1, 2)` returns `{b:2,c:3}`.
+**Array-in-List Search:** When searching a `$GOBJ` with an `$ARRAY` term, the method searches for the array values within the list values and returns the position where the match is found. Use `.mid()` to extract the subset. For example: `{a:1,b:2,c:3}.find([2,3])` returns `1`, and `{a:1,b:2,c:3}.mid(1, 2)` returns `{b:2,c:3}`.
 
 ### `.findall(pattern)`
-Finds all occurrences of a pattern in complex data structures. Works with `$XML`, `$LIST`, and `$ARRAY` data types using specific query patterns.
+Finds all occurrences of a pattern in complex data structures. Works with `$XML`, `$GOBJ`, and `$ARRAY` data types using specific query patterns.
 
 ```grapa
-/* ✅ CORRECT: Use with $XML, $LIST, and $ARRAY */
+/* ✅ CORRECT: Use with $XML, $GOBJ, and $ARRAY */
 xml_data = <root><item>Hello</item><item>World</item></root>;
 xml_data.findall({name:"item"});                  /* Returns: <item>Hello</item><item>World</item> */
 
@@ -979,7 +979,7 @@ array_data.findall({has:{name:"name"}});          /* Returns: [{"name":"Alice","
 **Parameters:**
 - `pattern` - Query pattern object (varies by data type)
 
-**Data Types:** `$XML`, `$LIST`, `$ARRAY`
+**Data Types:** `$XML`, `$GOBJ`, `$ARRAY`
 
 **Query Patterns:**
 - **XML**: `{name:"tag"}` - Find elements by tag name
@@ -1286,7 +1286,7 @@ obj.getname(1);      /* Returns: property name at index 1 */
 **Advanced Usage - Recursive Keys Function:**
 ```grapa
 /* Create a recursive .keys() function using .getname() */
-keys = op(lst){lst.reduce(op(acc,x){if(x.type()==$LIST){acc += keys(x);}else{acc += 'x'.getname();}},[]);};
+keys = op(lst){lst.reduce(op(acc,x){if(x.type()==$GOBJ){acc += keys(x);}else{acc += 'x'.getname();}},[]);};
 
 /* Usage examples */
 obj = {name:"Alice", age:30, test:{a:1,b:2}, city:"NYC"};

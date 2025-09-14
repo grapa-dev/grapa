@@ -12,11 +12,11 @@
 ("=== Vector Unicode Header Support - Comprehensive Regression Test ===").echo();
 
 /* Define the keys function for header extraction */
-keys = op(lst){lst.reduce(op(acc,x){if(x.type()==$LIST){acc += keys(x);}else{acc += 'x'.getname();}},[]);};
+keys = op(lst){lst.reduce(op(acc,x){if(x.type()==$GOBJ){acc += keys(x);}else{acc += 'x'.getname();}},[]);};
 
 /* Header extraction function */
 extract_headers = op(csv_string) {
-    keys = op(lst){lst.reduce(op(acc,x){if(x.type()==$LIST){acc += keys(x);}else{acc += 'x'.getname();}},[]);};
+    keys = op(lst){lst.reduce(op(acc,x){if(x.type()==$GOBJ){acc += keys(x);}else{acc += 'x'.getname();}},[]);};
     vec = csv_string.vector();
     arr = vec.array();
     first = arr[0];

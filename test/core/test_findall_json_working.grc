@@ -1,4 +1,4 @@
-/* Test .findall() with JSON - working with actual $LIST structure */
+/* Test .findall() with JSON - working with actual $GOBJ structure */
 
 "=== FINDALL JSON WORKING TEST ===\n".echo();
 

@@ -54,7 +54,7 @@ class GrapaSyntaxValidator:
                 r'\.print\s*\([^)]*\)',  # .print("string") -> "string".print()
                 r'\.len\s*\([^)]*\)',    # .len(array) -> array.len()
                 r'\.size\s*\([^)]*\)',   # .size() is not supported, use .len()
-                r'\.keys\s*\([^)]*\)',   # .keys() is not supported on $LIST
+                r'\.keys\s*\([^)]*\)',   # .keys() is not supported on $GOBJ
             ],
             
             # Line comments (not allowed in Grapa)

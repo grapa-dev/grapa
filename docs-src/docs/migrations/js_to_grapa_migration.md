@@ -23,7 +23,7 @@
 > | Type      | .get("key") | .get(index) | Bracket Notation | Dot Notation | .len() | .size() |
 > |-----------|:-----------:|:-----------:|:----------------:|:------------:|:------:|:-------:|
 > | $ARRAY    |      ❌      |     ❌      |       ✅         |      —       |   ✅   |    ❌   |
-> | $LIST     |      ❌      |     ❌      |       ✅         |     ✅       |   ✅   |    ❌   |
+> | $GOBJ     |      ❌      |     ❌      |       ✅         |     ✅       |   ✅   |    ❌   |
 > | $OBJ      |      ❌      |     ❌      |       ✅         |     ✅       |   ❌   |    ❌   |
 > | $file     |      ✅      |     ❌      |        —         |      —       |   ❌   |    ❌   |
 > | $TABLE    |     ✅*      |     ❌      |        —         |      —       |   ❌   |    ❌   |
@@ -35,9 +35,9 @@
 > - **Lists (`{}`)**: Use `list[key]` or `list.key` for access, `list.len()` for length
 > - **Objects (class)**: Use `object.property` or `object[key]` for access
 > - **`.getfield()/.setfield()` method**: Use for `$file` and `$TABLE` types
-> - **`.get()/.set()` method**: Universal methods for `$ARRAY`, `$LIST`, `$OBJ`, `$file`, `$TABLE`, and `$WIDGET` types
+> - **`.get()/.set()` method**: Universal methods for `$ARRAY`, `$GOBJ`, `$OBJ`, `$file`, `$TABLE`, and `$WIDGET` types
 > - **`.size()` method**: Not supported on any type (use `.len()` instead)
-> - **`.keys()` method**: Not supported on `$LIST` (use iteration instead)
+> - **`.keys()` method**: Not supported on `$GOBJ` (use iteration instead)
 
 ---
 
@@ -86,7 +86,7 @@ This guide helps JavaScript users transition to Grapa by mapping common JS idiom
 > **Note:** Both `x = x + 1;` and `x += 1;` (and `s = s + "x";` and `s += "x";`) are valid in Grapa. The `+=` form is idiomatic and preferred in most cases.
 
 > **Universal .get()/.set() Methods:**
-> - `.get()/.set()` now work across `$ARRAY`, `$LIST`, `$OBJ`, `$file`, `$TABLE`, and `$WIDGET` types.
+> - `.get()/.set()` now work across `$ARRAY`, `$GOBJ`, `$OBJ`, `$file`, `$TABLE`, and `$WIDGET` types.
 > - `.get()/.set()` provide consistent API access patterns across different data types.
 > - For `$ARRAY`: `array.get(index)` and `array.set(index, value)` with 0-based indexing.
 > - Alternative access methods (bracket notation, dot notation, `.getfield()/.setfield()`) still work.
@@ -94,13 +94,13 @@ This guide helps JavaScript users transition to Grapa by mapping common JS idiom
 > - **Keys**: For lists, iterate manually instead of using `.keys()`.
 > - If more objects support `.get()` in the future, this guide will be updated.
 
-> **Note:** `.getfield("key")` is for `$file` and `$TABLE`. `.get()/.set()` is for `$WIDGET`. For `$LIST`/`$OBJ`, use `obj["key"]`, `obj.key`, or `obj."key"`. For `$ARRAY`, use `arr[index]` (bracket notation only).
+> **Note:** `.getfield("key")` is for `$file` and `$TABLE`. `.get()/.set()` is for `$WIDGET`. For `$GOBJ`/`$OBJ`, use `obj["key"]`, `obj.key`, or `obj."key"`. For `$ARRAY`, use `arr[index]` (bracket notation only).
 
 ## Access Patterns: Objects, Lists, Arrays, Files, and Tables
 
 Below are all valid ways to access elements in Grapa data structures. See the canonical [Basic Syntax Guide](../syntax/basic_syntax.md) for the latest tested rules.
 
-### $LIST and $OBJ
+### $GOBJ and $OBJ
 
 ```grapa
 obj = {"a": 1, "b": 2, "c": 3};
@@ -109,13 +109,13 @@ value = obj["b"];      /* Returns 2 */
 value = obj.key;        /* Returns value for key 'key' if present */
 value = obj."b";       /* Returns 2 */
 
-/* $LIST only: */
+/* $GOBJ only: */
 value = obj[1];         /* Returns 2 (by index) */
 name = obj.getname(1);  /* Returns "b" (key name at index 1) */
 ```
 
-- Dot notation (`obj.key`) and bracket notation (`obj["key"]`) are both valid for $LIST/$OBJ.
-- `.get()` is NOT valid for $LIST/$OBJ.
+- Dot notation (`obj.key`) and bracket notation (`obj["key"]`) are both valid for $GOBJ/$OBJ.
+- `.get()` is NOT valid for $GOBJ/$OBJ.
 
 ### $ARRAY
 
@@ -156,7 +156,7 @@ value = table.get("user1", "name");   /* Correct */
 > | Type      | .get("key") | .get(index) | Bracket Notation | Dot Notation | .len() | .size() |
 > |-----------|:-----------:|:-----------:|:----------------:|:------------:|:------:|:-------:|
 > | $ARRAY    |      ✗      |     ✗      |       ✓         |      —       |   ✓   |    ✗   |
-> | $LIST     |      ✗      |     ✗      |       ✓         |     ✓       |   ✓   |    ✗   |
+> | $GOBJ     |      ✗      |     ✗      |       ✓         |     ✓       |   ✓   |    ✗   |
 > | $OBJ      |      ✗      |     ✗      |       ✓         |     ✓       |   ✗   |    ✗   |
 > | $file     |      ✓      |     ✗      |        —         |      —       |   ✗   |    ✗   |
 > | $TABLE    |     ✓*      |     ✗      |        —         |      —       |   ✗   |    ✗   |
@@ -169,7 +169,7 @@ See [Basic Syntax Guide](../syntax/basic_syntax.md) for empirical test results a
 - No `try/catch`—use `.iferr()` for fallback or check for `$ERR`
 - No `.push()`/`.pop()`—use `+=` and manual index for pop
 - ✅ **Line comments now supported** - Use `// comment` or `/// doc comment` in addition to block comments
-- No attribute-style access for object keys—use `[]`, or dot notation for `$LIST`/`$OBJ`
+- No attribute-style access for object keys—use `[]`, or dot notation for `$GOBJ`/`$OBJ`
 - No implicit truthy/falsy—use explicit boolean checks
 - All statements and blocks must end with a semicolon (`;`)
 - Use `.map()`, `.reduce()`, `.filter()` as methods, not global functions
@@ -409,7 +409,7 @@ These represent fundamental language features that genuinely cannot be accomplis
 - **Strict mode**: - Grapa is strict by default
 - **Hoisting**: - Grapa has different scoping rules
 - **Closure scope**: - Grapa has different scoping rules
-- **Prototype chain**: - Use `+=` for single item, `++=` for multiple items ($LIST)
+- **Prototype chain**: - Use `+=` for single item, `++=` for multiple items ($GOBJ)
 - **Function constructors**: - No function constructor support
 
 ### Advanced Meta-Programming (Available in Grapa)
@@ -601,7 +601,7 @@ These are advanced features that most developers won't miss:
 - **Strict mode**: - Grapa is strict by default
 - **Hoisting**: - Grapa has different scoping rules
 - **Closure scope**: - Grapa has different scoping rules
-- **Prototype chain**: - Use `+=` for single item, `++=` for multiple items ($LIST)
+- **Prototype chain**: - Use `+=` for single item, `++=` for multiple items ($GOBJ)
 - **Function constructors**: - Use regular functions
 
 > **Note:** Many "missing" features are actually available in Grapa through different mechanisms. For example, async/await patterns are replaced by Grapa's built-in parallel processing with `.map()` and `.filter()`.

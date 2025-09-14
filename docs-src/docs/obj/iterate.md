@@ -11,18 +11,18 @@ Grapa is fully thread safe in all supported environments (command line, Grapa sh
 
 ## map($OP [,params])
 See [map in the Looping section](../operators/loop.md#map) for full documentation, canonical examples, and troubleshooting.
-Iterates through a $LIST/$ARRAY calling an $OP. Processes each item in parallel. Result of $OP placed in a $LIST/$ARRAY which is returned at the completion.
+Iterates through a $GOBJ/$ARRAY calling an $OP. Processes each item in parallel. Result of $OP placed in a $GOBJ/$ARRAY which is returned at the completion.
 
 ## filter($OP [,params])
 See [filter in the Looping section](../operators/loop.md#filter) for full documentation, canonical examples, and troubleshooting.
-Iterates through a $LIST/$ARRAY calling an $OP. Processes each item in parallel. If $OP of op is true, item is placed in a $LIST/$ARRAY which is returned at the completion. 
+Iterates through a $GOBJ/$ARRAY calling an $OP. Processes each item in parallel. If $OP of op is true, item is placed in a $GOBJ/$ARRAY which is returned at the completion. 
 
 ## reduce($OP [,start [,params]])
 See [reduce in the Looping section](../operators/loop.md#reduce) for full documentation, canonical examples, and troubleshooting.
-Iterates through a $LIST/$ARRAY calling an $OP. Processes each item in sequence as the intent is to combine results of each $OP. If "start" not provided, the first item of the list is used as the start. 
+Iterates through a $GOBJ/$ARRAY calling an $OP. Processes each item in sequence as the intent is to combine results of each $OP. If "start" not provided, the first item of the list is used as the start. 
 
 ## sort([axis],[order],[op])
-Sorts data structures across multiple types: `$ARRAY`, `$TUPLE`, `$LIST`, `$OBJ`, `$XML`, `$TAG`, `$EL`, `$OP`, `$CODE`.
+Sorts data structures across multiple types: `$ARRAY`, `$TUPLE`, `$GOBJ`, `$OBJ`, `$XML`, `$TAG`, `$EL`, `$OP`, `$CODE`.
 
 - axis -> 0 = row, 1 = col
 - order -> 0 = ascend, 1 = decend, or does selection if array if indexes passed in
@@ -57,7 +57,7 @@ Optionally pass in a compare routine.'''
 ```
 
 ## unique([op])
-Remove duplicates across multiple types: `$ARRAY`, `$TUPLE`, `$LIST`, `$OBJ`, `$XML`, `$TAG`, `$EL`, `$OP`, `$CODE`.
+Remove duplicates across multiple types: `$ARRAY`, `$TUPLE`, `$GOBJ`, `$OBJ`, `$XML`, `$TAG`, `$EL`, `$OP`, `$CODE`.
 
 **For Lists and Objects:** Removes duplicate keys, keeping the last value for each key.
 **For Arrays and Tuples:** Removes duplicate values, keeping the last occurrence of each value.
@@ -84,7 +84,7 @@ Optionally pass in a compare routine.'''
 ```
 
 ## getname([index])
-Used in a map/reduce/filter to identify the name of the passed in item from the original list (if processing a $LIST). 
+Used in a map/reduce/filter to identify the name of the passed in item from the original list (if processing a $GOBJ). 
 
 To use, do not de-reference the identify. The getname function will then see that it is an $ID and will attempt to locate it in the namespace. Since what is passed in is a pointer, the function is able to discover the item in the original list and discover the name.
 
@@ -93,7 +93,7 @@ To use, do not de-reference the identify. The getname function will then see tha
 {"a":a,"b":b}
 ```
 
-Or used to get the name of an item in a $LIST, using the index parameter.
+Or used to get the name of an item in a $GOBJ, using the index parameter.
 
 ```
 > {a:1,b:2}.getname(0)

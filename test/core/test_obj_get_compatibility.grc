@@ -5,7 +5,7 @@ my_arr = ["a", "b", "c"];
 ("my_arr.getfield(1): " + my_arr.getfield(1).str() + "\n").echo();
 ("my_arr[1]: " + my_arr[1].str() + "\n").echo();
 
-"=== $LIST ===\n".echo();
+"=== $GOBJ ===\n".echo();
 my_list = {foo: 42, bar: 99};
 ("my_list.getfield(0): " + my_list.getfield(0).str() + "\n").echo();
 ("my_list.getfield(\"foo\"): ").echo();

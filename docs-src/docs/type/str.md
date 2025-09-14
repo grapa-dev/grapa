@@ -92,7 +92,7 @@ All string manipulation functions in Grapa are Unicode-aware:
 "héllo".left(3);    /* Returns: "hél" (3 Unicode characters) */
 "🚀héllo".right(3); /* Returns: "llo" (3 Unicode characters) */
 "héllo".mid(1, 3);  /* Returns: "éll" (3 Unicode characters from position 1) */
-/* Note: .left(), .right(), and .mid() also work with $ARRAY and $LIST types */
+/* Note: .left(), .right(), and .mid() also work with $ARRAY and $GOBJ types */
 
 /* Unicode-aware reversal */
 "héllo".reverse();  /* Returns: "olléh" (Unicode characters reversed) */
@@ -117,7 +117,7 @@ unicode_text.bytes();  /* Returns: 11 (byte count) */
 unicode_text.raw();    /* Returns: 0x68C3A96C6C6F20F09F9A80 (hex bytes) */
 ```
 
-> **See Also:** [Object Methods Documentation](obj_methods.md) for comprehensive details on Unicode-aware string functions including `.len()`, `.bytes()`, `.raw()`, `.left()`, `.right()`, `.mid()`, `.reverse()`, `.lpad()`, and `.rpad()`. Note that `.left()`, `.right()`, and `.mid()` also support `$ARRAY` and `$LIST` types.
+> **See Also:** [Object Methods Documentation](obj_methods.md) for comprehensive details on Unicode-aware string functions including `.len()`, `.bytes()`, `.raw()`, `.left()`, `.right()`, `.mid()`, `.reverse()`, `.lpad()`, and `.rpad()`. Note that `.left()`, `.right()`, and `.mid()` also support `$ARRAY` and `$GOBJ` types.
 
 ## String-Specific Methods
 
@@ -205,7 +205,7 @@ $RAW("hello\0world").find("\0".raw());      /* Returns: 5 */
 - **$STR**: Searches for Unicode substrings
 - **$RAW**: Performs binary search (handles null bytes and binary data)
 - **$ARRAY**: Searches for subarrays using comprehensive comparison
-- **$LIST**: Searches for sublists using comprehensive comparison
+- **$GOBJ**: Searches for sublists using comprehensive comparison
 
 **Return Value:**
 - Returns the 0-based index of the first occurrence
@@ -216,7 +216,7 @@ $RAW("hello\0world").find("\0".raw());      /* Returns: 5 */
 > 
 > **Array and List Search:** The `.find()` method supports searching for subarrays and sublists using the same comprehensive comparison logic as `switch` statements, ensuring consistent behavior across the language.
 > 
-> **Array-in-List Search:** When searching a `$LIST` with an `$ARRAY` term, the method searches for the array values within the list values and returns the position where the match is found. Use `.mid()` to extract the subset. For example: `{a:1,b:2,c:3}.find([2,3])` returns `1`, and `{a:1,b:2,c:3}.mid(1, 2)` returns `{b:2,c:3}`.
+> **Array-in-List Search:** When searching a `$GOBJ` with an `$ARRAY` term, the method searches for the array values within the list values and returns the position where the match is found. Use `.mid()` to extract the subset. For example: `{a:1,b:2,c:3}.find([2,3])` returns `1`, and `{a:1,b:2,c:3}.mid(1, 2)` returns `{b:2,c:3}`.
 
 ### Pattern Matching
 ```grapa

@@ -226,7 +226,7 @@ generic_process = op(data) {
         case $INT: result = data * 2;
         case $STR: result = data.upper();
         case $ARRAY: result = data.map(op(x) { x * 2; });
-        case $LIST: result = data.map(op(key, value) { key + ": " + value; });
+        case $GOBJ: result = data.map(op(key, value) { key + ": " + value; });
         default: result = "Unsupported type: " + data_type.str();
     }
 	result;
@@ -260,7 +260,7 @@ set_intersection = set1.filter(op(item) {
 });
 ("Set operations: union=${set_union}, intersection=${set_intersection}\n").interpolate().echo();
 
-/* Map-like functionality via objects ($LIST) */
+/* Map-like functionality via objects ($GOBJ) */
 create_map = op(key_value_pairs) {
     map_obj = {};
     key_value_pairs.map(op(pair) {

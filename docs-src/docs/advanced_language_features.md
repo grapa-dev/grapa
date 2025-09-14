@@ -244,7 +244,7 @@ test1.inc();      /* n becomes 1 */
 test1.inc(2);     /* n becomes 3 */
 
 /* Pattern 2: Creating custom classes */
-myclass = class ($LIST) {
+myclass = class ($GOBJ) {
     n = 0; 
     inc = op(inc:1){n+=inc;};
 };
@@ -349,7 +349,7 @@ cached_process = validate(process_data);
 generic_function = op(x) {
     /* Dynamic type checking */
     if (x.type() == $ARRAY) process_array(x);
-    else if (x.type() == $LIST) process_list(x);
+    else if (x.type() == $GOBJ) process_list(x);
     else process_other(x);
 };
 ```
@@ -495,7 +495,7 @@ switch (true) {
     case (data.type() == $STR): "String data".echo();
     case (data.type() == $INT): "Integer data".echo();
     case (data.type() == $ARRAY): "Array data".echo();
-    case (data.type() == $LIST): "List data".echo();
+    case (data.type() == $GOBJ): "List data".echo();
     default: "Other data type".echo();
 };
 
@@ -713,7 +713,7 @@ new_float = components.encode("FLOAT");
 
 ```grapa
 /* Redefine $ARRAY with custom methods */
-$global["$ARRAY"] = class ($LIST, $VECTOR) {
+$global["$ARRAY"] = class ($GOBJ, $VECTOR) {
     custom_method = op() { 
         "Custom array method called".echo();
         $this.len();  /* Access the array's length */
@@ -728,7 +728,7 @@ result = arr.custom_method();
 ```
 
 **Capabilities:**
-- **System Class Extension** - Add methods to `$ARRAY`, `$LIST`, `$CLASS`, `$OBJ`, etc.
+- **System Class Extension** - Add methods to `$ARRAY`, `$GOBJ`, `$CLASS`, `$OBJ`, etc.
 - **Global Variable Redefinition** - Redefine any global variable or function
 - **Runtime Modification** - Change system behavior at runtime
 - **Method Preservation** - Keep existing methods while adding new ones

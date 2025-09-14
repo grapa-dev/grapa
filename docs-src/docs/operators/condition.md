@@ -139,7 +139,7 @@ switch (true) {
     case (data.type() == $STR): "String data".echo();
     case (data.type() == $INT): "Integer data".echo();
     case (data.type() == $ARRAY): "Array data".echo();
-    case (data.type() == $LIST): "List data".echo();
+    case (data.type() == $GOBJ): "List data".echo();
     default: "Other data type".echo();
 };
 ```

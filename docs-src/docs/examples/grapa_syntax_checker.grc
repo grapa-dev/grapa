@@ -453,7 +453,7 @@ checkDirectory = op(dirPath) {
     $local.errorCount = 0;
     $local.totalFiles = 0;
     
-    if (dirInfo.type() != $LIST || dirInfo."$TYPE" != "DIR") {
+    if (dirInfo.type() != $GOBJ || dirInfo."$TYPE" != "DIR") {
         return "Error: ${dirPath} is not a directory\n".interpolate();
     };
     
@@ -504,7 +504,7 @@ if (args.len() >= 2) {
     if (command == "check" && args.len() >= 3) {
         $local.target = args[2];
         $local.targetInfo = $file().info(target);
-        if (targetInfo.type() == $LIST && targetInfo."$TYPE" == "DIR") {
+        if (targetInfo.type() == $GOBJ && targetInfo."$TYPE" == "DIR") {
             result = checkDirectory(target);
         } else {
             $local.code = $file().get(target);

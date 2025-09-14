@@ -85,10 +85,10 @@ result = op()("[2024-01-15 10:30:00] User login successful", log_rule)();
 
 Organize rules in objects with a common parsing interface for better code organization.
 
-#### **2a. $LIST Object Organization**
+#### **2a. $GOBJ Object Organization**
 
 ```grapa
-/* Define ETL rules in a $LIST object */
+/* Define ETL rules in a $GOBJ object */
 etl_rules = {
     /* Common parsing interface */
     parse = op(parse_data, parse_rule){op()(parse_data, parse_rule)()},
@@ -161,7 +161,7 @@ config_result = etl_rules.parse("server_name=myapp", etl_rules.config_parser);
 
 Create rules dynamically and execute them immediately.
 
-#### **3a. Dynamic Rule Addition to $LIST Objects**
+#### **3a. Dynamic Rule Addition to $GOBJ Objects**
 
 ```grapa
 /* Start with base ETL rules object */
@@ -197,7 +197,7 @@ csv_result = etl_rules.parse("John,25,NY", etl_rules.csv_parser);
 
 **Key Features:**
 - **Dynamic Creation**: Create rules based on runtime conditions
-- **Object Extension**: Add rules to existing `$LIST` objects using `+=` operator
+- **Object Extension**: Add rules to existing `$GOBJ` objects using `+=` operator
 - **Class Methods**: Use class methods to add rules dynamically to `$CLASS` instances
 - **Immediate Execution**: Execute rules as soon as they're created
 - **Flexible Definitions**: Support complex rule definitions
@@ -229,7 +229,7 @@ The patterns demonstrated in the isolated rule execution demo are perfect for:
 Isolated rule execution provides the power of Grapa's executable BNF system without the risks of modifying the main language grammar. The three key patterns demonstrated are:
 
 - **Pattern 1**: `op()("input", rule)()` - Direct rule execution for simple parsing tasks
-- **Pattern 2**: Object-based organization with `$LIST` and `$CLASS` for structured rule management
+- **Pattern 2**: Object-based organization with `$GOBJ` and `$CLASS` for structured rule management
 - **Pattern 3**: Dynamic rule creation and execution for extensible parsing systems
 
 These patterns are essential for ETL workflows, domain-specific processing, protocol parsing, and any scenario where you need isolated, safe rule execution without affecting the main Grapa language.

@@ -5,7 +5,7 @@ tags:
 ---
 # $ARRAY
 References:
-- [$LIST object](list.md)
+- [$GOBJ object](list.md)
 - [$VECTOR object](vector.md)
 - [Array-Vector Interoperability](../advanced/array_vector_interoperability.md)
 
@@ -13,9 +13,9 @@ References:
 
 A positional array that stores values without named keys. Elements are accessed by their position (index) rather than by name. This follows traditional C-style array terminology where arrays are indexed collections.
 
-### $ARRAY vs $LIST Comparison
+### $ARRAY vs $GOBJ Comparison
 
-| Feature | $ARRAY (`[]`) | $LIST (`{}`) |
+| Feature | $ARRAY (`[]`) | $GOBJ (`{}`) |
 |---------|---------------|--------------|
 | **Syntax** | `[1, 2, 3]` | `{a:1, b:2, c:3}` |
 | **Access** | `array[0]` | `list.a` or `list["a"]` |
@@ -47,7 +47,7 @@ If the elements are $ARRAY type, the first item of the array is used for the mat
 {"err":-1}
 ```
 
-There isn't currently built in support for searching for an $ARRAY or $LIST item within an $ARRAY. Currently, this would require an itterator to scan and compare, or the use of a hash of the contents as a key.
+There isn't currently built in support for searching for an $ARRAY or $GOBJ item within an $ARRAY. Currently, this would require an itterator to scan and compare, or the use of a hash of the contents as a key.
 
 ### Mathematical Operations
 

@@ -63,7 +63,7 @@ result3 = op()("server_name=myapp", config_rule)();
 
 ("2. Using objects with srule parameter\n").echo();
 
-("2a. $LIST\n").echo();
+("2a. $GOBJ\n").echo();
 
 etl_rules = {
 
@@ -142,7 +142,7 @@ config_result = etl_rules.parse("server_name=myapp", etl_rules.config_parser);
 
 ("3. Dynamic rule definition and execution\n").echo();
 
-("3a. $LIST\n").echo();
+("3a. $GOBJ\n").echo();
 
 etl_rules = {
     parse = op(parse_data, parse_rule){op()(parse_data, parse_rule)()},

@@ -5,7 +5,7 @@ References:
 
 If an operation results in an error, the $ERR data type is returned. Check using the type function: `if (result.type() == $ERR) something;`
 
-Under the hood, the $ERR type is a $LIST, and the same commands can be used to get more details on the error.
+Under the hood, the $ERR type is a $GOBJ, and the same commands can be used to get more details on the error.
 
 ## Creating $ERR Types
 
@@ -27,7 +27,7 @@ x;           /* {"error":-1} */
 
 ### 3. **Type Conversion with .err()**
 ```grapa
-z = {"error": 43, "info": [3, 4]}.err();  /* Convert $LIST to $ERR */
+z = {"error": 43, "info": [3, 4]}.err();  /* Convert $GOBJ to $ERR */
 z.type();    /* $ERR */
 z;           /* {"error": 43, "info": [3, 4]} */
 ```

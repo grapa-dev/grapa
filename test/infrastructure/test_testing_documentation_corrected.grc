@@ -148,7 +148,7 @@ if (read_content == test_content) {
     "✗ File content test failed\n".echo();
 };
 
-/* Test file listing - CORRECTED: fs.ls() returns $ARRAY of $LIST objects */
+/* Test file listing - CORRECTED: fs.ls() returns $ARRAY of $GOBJ objects */
 files = fs.ls();
 if (files.len() > 0) {
     "✓ File listing test passed\n".echo();

@@ -5,7 +5,7 @@
 > | Type      | .get("key") | .get(index) | Bracket Notation | Dot Notation |
 > |-----------|:-----------:|:-----------:|:----------------:|:------------:|
 > | $ARRAY    |      ✗      |     ✗      |       ✓         |      —       |
-> | $LIST     |      ✗      |     ✗      |       ✓         |     ✓       |
+> | $GOBJ     |      ✗      |     ✗      |       ✓         |     ✓       |
 > | $file     |      ✓      |     ✗      |        —         |      —       |
 > | $TABLE    |      ✓      |     ✗      |        —         |      —       |
 > | $OBJ      |      ✗      |     ✗      |       ✓         |     ✓       |
@@ -39,7 +39,7 @@
 | `tailrec fun`               | —                | Advanced meta-programming |
 | `operator fun`              | —                | Advanced meta-programming |
 | `infix fun`                 | —                | Advanced meta-programming |
-| `extension fun`             | `+=` (single item) or `++=` ($LIST of items) | Grapa supports object and class extension |
+| `extension fun`             | `+=` (single item) or `++=` ($GOBJ of items) | Grapa supports object and class extension |
 | `@Annotation`               | —                | Annotation, rarely needed |
 | `inheritance`               | `class (ParentClass)` | Grapa supports inheritance |
 | `method overriding`         | —                | Use regular method definitions |
@@ -76,7 +76,7 @@ These represent fundamental language features that genuinely cannot be accomplis
 - **Tail recursion**: `tailrec fun` - No tail recursion optimization
 - **Operator functions**: `operator fun` - No operator function system
 - **Infix functions**: `infix fun` - No infix function system
-- **Extension functions**: `extension fun` - Use `+=` for single item, `++=` for multiple items ($LIST)
+- **Extension functions**: `extension fun` - Use `+=` for single item, `++=` for multiple items ($GOBJ)
 - **Data classes**: `data class` - No data class system
 - **Companion objects**: `companion object` - No companion object system
 
@@ -247,7 +247,7 @@ switch (value.type()) {
     case $INT: "Integer value".echo();
     case $FLOAT: "Float value".echo();
     case $ARRAY: "Array value".echo();
-    case $LIST: "List value".echo();
+    case $GOBJ: "List value".echo();
     default: "Unknown type".echo();
 }
 
@@ -257,7 +257,7 @@ if (value.type() == $STR || value.type() == $INT) {
 }
 ```
 
-Common type constants: `$STR`, `$INT`, `$FLOAT`, `$BOOL`, `$ARRAY`, `$LIST`, `$TABLE`, `$TIME`, `$ERR`
+Common type constants: `$STR`, `$INT`, `$FLOAT`, `$BOOL`, `$ARRAY`, `$GOBJ`, `$TABLE`, `$TIME`, `$ERR`
 
 ## Notes
 - See [Operators](../syntax/operator.md) and [System](../sys/sys.md) docs for more details.

@@ -53,8 +53,8 @@ anchors_with_images = html.body.findall({name:"a", has:{name:"img"}});
 
 /* Extract hrefs, filtering out any <a> without an href attribute */
 hrefs = anchors_with_images.reduce(op(acc, a) {
-    if (a.$LIST.href.type() != $ERR) {
-        acc += a.$LIST.href;
+    if (a.$GOBJ.href.type() != $ERR) {
+        acc += a.$GOBJ.href;
     }
 }, []);
 ```

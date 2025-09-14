@@ -38,7 +38,6 @@ for (i = 0; i < 3; i+=1)
     counter_worker[i].resume();
 for (i = 0; i < 3; i+=1)
     while(counter_worker[i].started()==false) 0.sleep();
-counter_worker.stop();
 counter_worker = null;
 counter_lock = null;
 ("Final counter value: " + shared_counter + "\n").echo();

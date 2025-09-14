@@ -143,7 +143,7 @@ process_data = op(data) {
 
 /* Type checking with fallbacks */
 safe_get = op(obj, key) {
-    if (obj.type() != $LIST) {
+    if (obj.type() != $GOBJ) {
         return null;
     }
     
@@ -930,8 +930,8 @@ All Grapa objects support a comprehensive set of methods through the `$OBJ` clas
 - **Search & Pattern**: `.grep()`, `.match()`, `.findall()`
 - **Bit Manipulation**: `.setbit()`, `.clearbit()`, `.genbits()`
 - **Cryptography**: `.encode()`, `.decode()`, `.sign()`, `.verify()`, `.secret()`
-- **Universal Access**: `.get()`, `.set()` - works across `$ARRAY`, `$LIST`, `$OBJ`, `$file`, `$TABLE`, `$WIDGET`
-- **Flexible Field Access**: `.getfield()`, `.setfield()` - universal methods (mix/match of names and indices for `$ARRAY`, `$LIST`, and `$OBJ` non-system classes only)
+- **Universal Access**: `.get()`, `.set()` - works across `$ARRAY`, `$GOBJ`, `$OBJ`, `$file`, `$TABLE`, `$WIDGET`
+- **Flexible Field Access**: `.getfield()`, `.setfield()` - universal methods (mix/match of names and indices for `$ARRAY`, `$GOBJ`, and `$OBJ` non-system classes only)
 - **Utilities**: `.echo()`, `.debug()`, `.iferr()`, `.exec()`, `.getname()`
 
 ### Quick Examples
@@ -962,7 +962,7 @@ my_array = [1, 2, 3, 4, 5];
 my_array.set(2, 99);
 value = my_array.get(2);  /* 99 */
 
-/* $LIST examples */
+/* $GOBJ examples */
 my_list = {"name": "Alice", "age": 30};
 my_list.set("name", "Bob");
 name = my_list.get("name");  /* "Bob" */
@@ -986,7 +986,7 @@ name = my_table.get("user1", "name");  /* "Alice" */
 
 **Supported Types:**
 - **`$ARRAY`**: `array.get(index)`, `array.set(index, value)` - 0-based indexing
-- **`$LIST`**: `list.get(key)`, `list.set(key, value)`
+- **`$GOBJ`**: `list.get(key)`, `list.set(key, value)`
 - **`$OBJ`**: `obj.get(key)`, `obj.set(key, value)`
 - **`$file`**: `file.get(key)`, `file.set(key, value)`
 - **`$TABLE`**: `table.get(key, field)`, `table.set(key, field, value)`

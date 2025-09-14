@@ -13,23 +13,23 @@ tags:
 > | Type      | .getfield("key") | .getfield(index) | Bracket Notation | Dot Notation | .len() | .size() | .get()/.set() |
 > |-----------|:---------------:|:----------------:|:----------------:|:------------:|:------:|:-------:|:-------------:|
 > | $ARRAY    |        ✅        |        ✅        |       ✅         |      —       |   ✅   |    ❌   |      ✅       |
-> | $LIST     |        ✅        |        ✅        |       ✅         |     ✅       |   ✅   |    ❌   |      ✅       |
+> | $GOBJ     |        ✅        |        ✅        |       ✅         |     ✅       |   ✅   |    ❌   |      ✅       |
 > | $OBJ      |        ✅        |        ✅        |       ✅         |     ✅       |   ❌   |    ❌   |      ✅       |
 > | $file     |        ✅        |        ❌        |        —         |      —       |   ❌   |    ❌   |      ✅       |
 > | $TABLE    |       ✅*        |        ❌        |        —         |      —       |   ❌   |    ❌   |      ✅       |
 > | $WIDGET   |        —         |        —         |        —         |      —       |   —   |    —   |      ✅       |
 >
-> *$TABLE .getfield() requires two arguments: key and field. Only $ARRAY, $LIST, and $OBJ (non-system classes) support flexible mix/match of names and indices.
-> **`.get()/.set()` methods are now **universal** and work across `$ARRAY`, `$LIST`, `$OBJ`, `$file`, `$TABLE`, and `$WIDGET` types.
+> *$TABLE .getfield() requires two arguments: key and field. Only $ARRAY, $GOBJ, and $OBJ (non-system classes) support flexible mix/match of names and indices.
+> **`.get()/.set()` methods are now **universal** and work across `$ARRAY`, `$GOBJ`, `$OBJ`, `$file`, `$TABLE`, and `$WIDGET` types.
 >
 > **Key Findings:**
 > - **Arrays (`[]`)**: Use `array[index]` and `array.len()` for access and length
 > - **Lists (`{}`)**: Use `list[key]` or `list.key` for access, `list.len()` for length
 > - **Objects (class)**: Use `object.property` or `object[key]` for access
-> - **`.getfield()/.setfield()` method**: Universal methods for `$ARRAY`, `$LIST`, `$OBJ`, `$file`, and `$TABLE` types. Flexible mix/match of names and indices supported only for `$ARRAY`, `$LIST`, and `$OBJ` (non-system classes)
-> - **`.get()/.set()` method**: Universal methods for `$ARRAY`, `$LIST`, `$OBJ`, `$file`, `$TABLE`, and `$WIDGET` types
+> - **`.getfield()/.setfield()` method**: Universal methods for `$ARRAY`, `$GOBJ`, `$OBJ`, `$file`, and `$TABLE` types. Flexible mix/match of names and indices supported only for `$ARRAY`, `$GOBJ`, and `$OBJ` (non-system classes)
+> - **`.get()/.set()` method**: Universal methods for `$ARRAY`, `$GOBJ`, `$OBJ`, `$file`, `$TABLE`, and `$WIDGET` types
 > - **`.size()` method**: Not supported on any type (use `.len()` instead)
-> - **`.keys()` method**: Not supported on `$LIST` (use iteration instead)
+> - **`.keys()` method**: Not supported on `$GOBJ` (use iteration instead)
 >
 > **Recommended Patterns:**
 > - For arrays: `array[index]` and `array.len()`
@@ -38,13 +38,13 @@ tags:
 > - For files: `file.getfield(key)` and `file.setfield(key, value)`
 > - For tables: `table.getfield(key, field)` and `table.setfield(key, value, field)`
 > - For widgets: `widget.get(name, params)` and `widget.set(name, data)`
-> - For universal access: `object.get(key)` and `object.set(key, value)` (works with `$ARRAY`, `$LIST`, `$OBJ`, `$file`, `$TABLE`, `$WIDGET`)
-> - For flexible field access: `object.getfield(key, field)` and `object.setfield(key, field, value)` (mix/match of names and indices supported for `$ARRAY`, `$LIST`, and `$OBJ` non-system classes only)
+> - For universal access: `object.get(key)` and `object.set(key, value)` (works with `$ARRAY`, `$GOBJ`, `$OBJ`, `$file`, `$TABLE`, `$WIDGET`)
+> - For flexible field access: `object.getfield(key, field)` and `object.setfield(key, field, value)` (mix/match of names and indices supported for `$ARRAY`, `$GOBJ`, and `$OBJ` non-system classes only)
 > - Avoid `.size()` and `.keys()` on arrays, lists, and objects
 
 > **Universal .get()/.set() Methods:**
 > - **`.get()/.set()` for `$ARRAY`**: `array.get(index)` and `array.set(index, value)` - 0-based indexing, supports negative indices
-> - **`.get()/.set()` for `$LIST`**: `list.get(key)` and `list.set(key, value)` - alternative to bracket notation
+> - **`.get()/.set()` for `$GOBJ`**: `gobj.get(key)` and `gobj.set(key, value)` - alternative to bracket notation
 > - **`.get()/.set()` for `$OBJ`**: `obj.get(key)` and `obj.set(key, value)` - alternative to dot/bracket notation  
 > - **`.get()/.set()` for `$file`**: `file.get(key)` and `file.set(key, value)` - alternative to `.getfield()/.setfield()`
 > - **`.get()/.set()` for `$TABLE`**: `table.get(key, field)` and `table.set(key, field, value)` - alternative to `.getfield()/.setfield()`
@@ -54,8 +54,8 @@ tags:
 > - **Design Decision**: `.get()/.set()` methods are now universal across most types for consistent API access
 >
 > **Flexible .getfield()/.setfield() Methods:**
-> - **Universal Support**: `.getfield()/.setfield()` work on `$ARRAY`, `$LIST`, `$OBJ`, `$file`, and `$TABLE` types
-> - **Mix/Match Parameters**: Can combine named keys and numeric indices in any combination (supported for `$ARRAY`, `$LIST`, and `$OBJ` non-system classes only)
+> - **Universal Support**: `.getfield()/.setfield()` work on `$ARRAY`, `$GOBJ`, `$OBJ`, `$file`, and `$TABLE` types
+> - **Mix/Match Parameters**: Can combine named keys and numeric indices in any combination (supported for `$ARRAY`, `$GOBJ`, and `$OBJ` non-system classes only)
 > - **Index-to-Name Conversion**: When inserting at a numeric index, the index becomes a string key for future access
 > - **2D Structures**: Supports arrays of lists, lists of arrays, and mixed data structures
 > - **Boundary Insertion**: Use `length` to append at end, `-length` to prepend at beginning
@@ -982,12 +982,12 @@ while (i < numbers.len()) {
 - `array.size()` - **Not supported** (use `.len()` instead)
 - `array.get(index)` - **Not supported** (use bracket notation)
 
-### List Type (`$LIST`)
+### Grapa Object Type (`$GOBJ`)
 
-Lists are created with curly braces and support key-based access:
+Grapa Objects are created with curly braces and support key-based access:
 
 ```grapa
-/* Create lists */
+/* Create Grapa Objects */
 config = {"debug": true, "port": 3000, "host": "localhost"};
 user = {"name": "John", "age": 30, "city": "NYC"};
 nested = {"level1": {"level2": "value"}};
@@ -1073,11 +1073,11 @@ person1.getInfo();               /* Call method */
 
 ### Type Comparison Summary
 
-| Feature | $ARRAY | $LIST | $OBJ |
+| Feature | $ARRAY | $GOBJ | $OBJ |
 |---------|--------|-------|------|
 | Creation | `[1,2,3]` | `{"key":"value"}` | `obj Class` |
-| Access | `array[index]` | `list[key]` or `list.key` | `object.property` |
-| Length | `array.len()` | `list.len()` | Not available |
+| Access | `array[index]` | `gobj[key]` or `gobj.key` | `object.property` |
+| Length | `array.len()` | `gobj.len()` | Not available |
 | Iteration | Index-based | Key-based | Property-based |
 | Comparison | Element-by-element | Element-by-element | Property-by-property |
 | Order Matters | ✅ Yes | ✅ Yes | ✅ Yes |
@@ -1751,7 +1751,7 @@ range3 = arr.range(1, 1);  /* [1, 2] - generates sequence, not array slice */
 - This replaces slice notation like `arr[1:]`, `arr[:3]`, `arr[1:3]`
 - The count parameter in `.mid()` specifies how many elements to return
 - Note: `.range()` generates new sequences, while `.mid()`, `.left()`, and `.right()` extract from existing arrays
-- Note: `.left()`, `.right()`, and `.mid()` also work with `$LIST` types
+- Note: `.left()`, `.right()`, and `.mid()` also work with `$GOBJ` types
 
 ### Array Methods
 
@@ -1809,7 +1809,7 @@ parts = text.split(",");  /* ["hello", "world", "test"] */
 
 ### List/Object Access
 
-Lists (`$LIST`) and objects (`$OBJ`) support bracket and dot notation:
+Grapa Objects (`$GOBJ`) and objects (`$OBJ`) support bracket and dot notation:
 
 ```grapa
 obj = {"a": 11, "b": 22, "c": 33};
@@ -1817,7 +1817,7 @@ value = obj["b"];          /* Returns 22 (key access) */
 value = obj.key;            /* Returns value for key 'key' if present */
 value = obj."b";           /* Returns 22 (key access) */
 
-/* $LIST supports both key and index access: */
+/* $GOBJ supports both key and index access: */
 value = obj[1];             /* Returns 22 (index access) */
 value = obj["a"];           /* Returns 11 (key access) */
 value = obj.a;              /* Returns 11 (dot notation key access) */
@@ -1832,9 +1832,9 @@ config."a-b";  /* 4 (also correct) */
 /* config.a-b;  ❌ This would be interpreted as config.a - b (subtraction) */
 ```
 
-- Use bracket and dot notation for `$LIST` and `$OBJ`.
-- $LIST supports both key access (obj["key"], obj.key) and index access (obj[2]).
-- `.get()` is not supported for `$LIST` or `$OBJ`.
+- Use bracket and dot notation for `$GOBJ` and `$OBJ`.
+- $GOBJ supports both key access (obj["key"], obj.key) and index access (obj[2]).
+- `.get()` is not supported for `$GOBJ` or `$OBJ`.
 
 ### Duplicate Key Resolution
 
@@ -1878,7 +1878,7 @@ Both `.sort()` and `.unique()` support a comprehensive set of data types:
 **Supported Data Types:**
 - `$ARRAY` - Arrays: `[1, 2, 3]`
 - `$TUPLE` - Tuples: `(1, 2, 3)`
-- `$LIST` - Lists: `{a:1, b:2, c:3}`
+- `$GOBJ` - Grapa Objects: `{a:1, b:2, c:3}`
 - `$OBJ` - Objects: `{a:1, b:2, c:3}`
 - `$XML` - XML structures: `<root><item>value</item></root>`
 - `$TAG` - HTML/TAG structures: `<div><p>text</p></div>`
@@ -1912,7 +1912,7 @@ Sorts elements in ascending order by default:
 
 Removes duplicates while preserving the "last value wins" principle:
 
-**For Objects (`$OBJ`) and Lists (`$LIST`):**
+**For Objects (`$OBJ`) and Grapa Objects (`$GOBJ`):**
 ```grapa
 {a: 1, b: 2, a: 3, c: 4, b: 5}.unique();  /* Returns {"a": 3, "b": 5, "c": 4} */
 ```
@@ -1982,7 +1982,7 @@ content = file.getfield("file.txt");        /* Get by named key */
 
 - Use `.getfield()` and `.setfield()` for `$file` and `$TABLE` with named keys only.
 - Bracket and dot notation are not valid for `$file` and `$TABLE`.
-- Only `$ARRAY`, `$LIST`, and `$OBJ` (non-system classes) support flexible mix/match of names and indices with `.getfield()/.setfield()`.
+- Only `$ARRAY`, `$GOBJ`, and `$OBJ` (non-system classes) support flexible mix/match of names and indices with `.getfield()/.setfield()`.
 
 **See also:** [Class Inheritance and Variable Scoping](../type/class.md) for detailed information about Grapa's sophisticated class system with copy-on-write semantics.
 
@@ -2007,7 +2007,7 @@ element = ["a", "b", "c"];
 element.type();        /* Returns $ARRAY */
 
 obj = {"a": 11, "b": 22, "c": 33};
-obj.type();            /* Returns $LIST */
+obj.type();            /* Returns $GOBJ */
 
 table = {}.table("ROW");
 table.type();          /* Returns $TABLE */
@@ -2535,7 +2535,7 @@ switch (value.type()) {
     case $STR: "String value".echo();
     case $INT: "Integer value".echo();
     case $ARRAY: "Array value".echo();
-    case $LIST: "List value".echo();
+    case $GOBJ: "Grapa Object value".echo();
     default: "Unknown type".echo();
 };
 ```
@@ -2942,7 +2942,7 @@ name = table.get("key1", "name");      /* $STR */
 age = table.get("key1", "age");        /* $INT, no .int() needed */
 value = table.get("key1", "value");    /* $FLOAT, no .float() needed */
 
-/* RAW field type: can store any Grapa object (e.g., JSON, XML, $LIST, $ARRAY) */
+/* RAW field type: can store any Grapa object (e.g., JSON, XML, $GOBJ, $ARRAY) */
 table.mkfield("meta", "RAW");
 table.set("key1", {"foo": 123, "bar": [1,2,3]}, "meta");
 meta = table.get("key1", "meta");      /* Returns Grapa object automatically */
@@ -3001,7 +3001,7 @@ value = my_array[2];               /* 99 */
 my_array[2] = 100;                 /* Set index 2 to 100 */
 value = my_array[2];               /* 100 */
 
-/* $LIST examples */
+/* $GOBJ examples */
 $global.my_list = {"name": "Alice", "age": 30, "city": "New York"};
 
 /* Using universal .get()/.set() methods */
@@ -3068,7 +3068,7 @@ age2 = my_table.getfield("user2", "age");    /* 25 */
 
 ### Flexible .getfield()/.setfield() Methods
 
-The `.getfield()` and `.setfield()` methods provide universal support across all data types. Flexible parameter combinations (mix/match of names and indices) are supported for `$ARRAY`, `$LIST`, and `$OBJ` (non-system classes) types:
+The `.getfield()` and `.setfield()` methods provide universal support across all data types. Flexible parameter combinations (mix/match of names and indices) are supported for `$ARRAY`, `$GOBJ`, and `$OBJ` (non-system classes) types:
 
 ```grapa
 /* Mix/Match Examples */
@@ -3112,8 +3112,8 @@ file.setfield("key", "value");        /* Works - named key only */
 ```
 
 **Key Features:**
-- **Universal Support**: Works on `$ARRAY`, `$LIST`, `$OBJ`, `$file`, and `$TABLE` types
-- **Mix/Match Parameters**: Combine named keys and numeric indices in any order (for `$ARRAY`, `$LIST`, and `$OBJ` non-system classes only)
+- **Universal Support**: Works on `$ARRAY`, `$GOBJ`, `$OBJ`, `$file`, and `$TABLE` types
+- **Mix/Match Parameters**: Combine named keys and numeric indices in any order (for `$ARRAY`, `$GOBJ`, and `$OBJ` non-system classes only)
 - **Index-to-Name Conversion**: Numeric indices become string keys when inserting
 - **2D Structures**: Supports arrays of lists, lists of arrays, and mixed combinations
 - **Boundary Insertion**: Use `length` to append, `-length` to prepend
@@ -3725,9 +3725,9 @@ Grapa provides operators for extending objects and classes with new methods and 
 ### Extension Operators
 
 - **`+=`** - Adds a **single item** to an object or class
-- **`++=`** - Adds a **$LIST of items** to an object or class
+- **`++=`** - Adds a **$GOBJ of items** to an object or class
 
-**Note:** The `+=` operator is context-aware. When used on numeric types (`$INT`, `$FLOAT`), it performs addition. When used on collection types (`$ARRAY`, `$LIST`) or objects, it performs extension (adding methods/properties).
+**Note:** The `+=` operator is context-aware. When used on numeric types (`$INT`, `$FLOAT`), it performs addition. When used on collection types (`$ARRAY`, `$GOBJ`) or objects, it performs extension (adding methods/properties).
 
 ### Extending Individual Objects
 
@@ -3745,7 +3745,7 @@ obj.increment(5);     /* count becomes 6 */
 
 ```grapa
 /* Define a custom class */
-MyClass = class ($LIST) {
+MyClass = class ($GOBJ) {
     value: 0;
     add: op(x) { value += x; };
 };

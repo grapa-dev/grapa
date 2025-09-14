@@ -134,7 +134,7 @@ Returns the type of an object.
 'hello'.type();    /* $STR */
 123.type();        /* $INT */
 [1,2,3].type();    /* $ARRAY */
-{name:'Alice'}.type(); /* $LIST */
+{name:'Alice'}.type(); /* $GOBJ */
 ```
 
 **Total: 200+ system functions available** 

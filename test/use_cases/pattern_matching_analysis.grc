@@ -211,7 +211,7 @@ young_users = advanced_data.filter(op(item) {
 
 // Pattern matching with type checking
 valid_items = advanced_data.filter(op(item) {
-    item.type() == $LIST && item.data && item.data.name;
+    item.type() == $GOBJ && item.data && item.data.name;
 });
 ("Valid items: " + valid_items.len()).echo();
 

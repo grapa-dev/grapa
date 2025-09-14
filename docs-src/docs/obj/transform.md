@@ -148,7 +148,7 @@ Will right truncate input if length of input is less than n.
 ```
 
 ## lrot([n])
-For $LIST, $ARRAY, $XML.
+For $GOBJ, $ARRAY, $XML.
 
 Moves n (defaul=1) items from the start of the list to the end of the list, 1 at a time.
 
@@ -157,7 +157,7 @@ Moves n (defaul=1) items from the start of the list to the end of the list, 1 at
 ```
 
 ## rrot([n])
-For $LIST, $ARRAY, $XML.
+For $GOBJ, $ARRAY, $XML.
 
 Moves n (defaul=1) items from the end of the list to the start of the list, 1 at a time.
 
@@ -184,7 +184,7 @@ Replaces iteems.
 Performs string interpolation with embedded expressions and script execution. Supports variable substitution, expression evaluation, and dynamic script execution using the powerful `op()` function infrastructure.
 
 ### Parameters:
-- `params` (optional) - `$LIST` type providing additional variables for interpolation context
+- `params` (optional) - `$GOBJ` type providing additional variables for interpolation context
 
 ### Template Syntax:
 - `${code}` - Direct code execution within current scope

@@ -83,7 +83,7 @@ custom_command = custom_command | rule '(if' $STR $STR $STR ')' {op(condition:$2
 custom_command = custom_command | rule '(car' $STR ')' {op(list_expr:$2){
     /* Get first element - NO MANUAL PARSING */
     list_val = evaluate_sexp(list_expr);
-    if (list_val.type() == $LIST) {
+    if (list_val.type() == $GOBJ) {
         result = list_val[0];
         ("LISP Car: " + result).echo();
         return result;
@@ -96,7 +96,7 @@ custom_command = custom_command | rule '(car' $STR ')' {op(list_expr:$2){
 custom_command = custom_command | rule '(cdr' $STR ')' {op(list_expr:$2){
     /* Get rest of list - NO MANUAL PARSING */
     list_val = evaluate_sexp(list_expr);
-    if (list_val.type() == $LIST) {
+    if (list_val.type() == $GOBJ) {
         result = list_val.mid(1);
         ("LISP Cdr: " + result).echo();
         return result;
@@ -110,7 +110,7 @@ custom_command = custom_command | rule '(cons' $STR $STR ')' {op(element:$2,list
     /* Construct list - NO MANUAL PARSING */
     element_val = evaluate_sexp(element);
     list_val = evaluate_sexp(list_expr);
-    if (list_val.type() == $LIST) {
+    if (list_val.type() == $GOBJ) {
         result = [element_val].concat(list_val);
         ("LISP Cons: " + result).echo();
         return result;

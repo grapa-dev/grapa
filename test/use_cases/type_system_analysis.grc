@@ -19,7 +19,7 @@
 x = 5;                    // $INT
 y = "hello";              // $STR
 z = [1, 2, 3];            // $ARRAY
-w = {name: "Alice"};      // $LIST
+w = {name: "Alice"};      // $GOBJ
 
 ("Dynamic types: x=" + x.type() + ", y=" + y.type() + ", z=" + z.type() + ", w=" + w.type()).echo();
 
@@ -45,7 +45,7 @@ type_tests = [
     {value: 42, expected: $INT},
     {value: "hello", expected: $STR},
     {value: [1, 2, 3], expected: $ARRAY},
-    {value: {a: 1}, expected: $LIST},
+    {value: {a: 1}, expected: $GOBJ},
     {value: 3.14, expected: $FLOAT}
 ];
 
@@ -119,9 +119,9 @@ validate_type = op(value, valid_types) {
 validation_tests = [
     {value: 42, valid_types: [$INT, $FLOAT]},
     {value: "hello", valid_types: [$STR]},
-    {value: [1, 2, 3], valid_types: [$ARRAY, $LIST]},
+    {value: [1, 2, 3], valid_types: [$ARRAY, $GOBJ]},
     {value: 3.14, valid_types: [$INT, $FLOAT]},
-    {value: {a: 1}, valid_types: [$LIST]}
+    {value: {a: 1}, valid_types: [$GOBJ]}
 ];
 
 validation_tests.map(op(test) {
@@ -141,7 +141,7 @@ generic_process = op(data) {
         case $INT: data * 2;
         case $STR: data.upper();
         case $ARRAY: data.map(op(x) { x * 2; });
-        case $LIST: data.map(op(key, value) { key + ": " + value; });
+        case $GOBJ: data.map(op(key, value) { key + ": " + value; });
         default: "Unsupported type: " + data_type;
     }
 };
@@ -265,7 +265,7 @@ type_pattern_match = op(value) {
             if (value.len() == 0) "Empty array";
             else if (value.len() == 1) "Single element array";
             else "Multi-element array";
-        case $LIST:
+        case $GOBJ:
             if (value.len() == 0) "Empty object";
             else "Object with " + value.len() + " properties";
         default: "Other type: " + value_type;

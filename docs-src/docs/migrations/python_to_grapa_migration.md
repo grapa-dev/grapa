@@ -32,7 +32,7 @@
 > | Type      | .get("key") | .get(index) | Bracket Notation | Dot Notation | .len() | .size() |
 > |-----------|:-----------:|:-----------:|:----------------:|:------------:|:------:|:-------:|
 > | $ARRAY    |      ❌      |     ❌      |       ✅         |      —       |   ✅   |    ❌   |
-> | $LIST     |      ❌      |     ❌      |       ✅         |     ✅       |   ✅   |    ❌   |
+> | $GOBJ     |      ❌      |     ❌      |       ✅         |     ✅       |   ✅   |    ❌   |
 > | $OBJ      |      ❌      |     ❌      |       ✅         |     ✅       |   ❌   |    ❌   |
 > | $file     |      ✅      |     ❌      |        —         |      —       |   ❌   |    ❌   |
 > | $TABLE    |     ✅*      |     ❌      |        —         |      —       |   ❌   |    ❌   |
@@ -46,7 +46,7 @@
 > - **`.getfield()/.setfield()` method**: Use for `$file` and `$TABLE` types
 > - **`.get()/.set()` method**: Exclusively for `$WIDGET` types
 > - **`.size()` method**: Not supported on any type (use `.len()` instead)
-> - **`.keys()` method**: Not supported on `$LIST` (use iteration instead)
+> - **`.keys()` method**: Not supported on `$GOBJ` (use iteration instead)
 
 ---
 
@@ -110,13 +110,13 @@ This guide helps Python users transition to Grapa by mapping common Python idiom
 >
 > **Nullish Coalescing:** For providing default values, use `value.ifnull("default")` instead of `value or "default"`. The `.ifnull()` method treats a broader range of values as nullish (including zeros, empty collections, and errors).
 
-> **Note:** `.getfield("key")` is for `$file` and `$TABLE`. `.get()/.set()` is for `$WIDGET`. For `$LIST`/`$OBJ`, use `obj["key"]`, `obj.key`, or `obj."key"`. For `$ARRAY`, use `arr[index]` (bracket notation only).
+> **Note:** `.getfield("key")` is for `$file` and `$TABLE`. `.get()/.set()` is for `$WIDGET`. For `$GOBJ`/`$OBJ`, use `obj["key"]`, `obj.key`, or `obj."key"`. For `$ARRAY`, use `arr[index]` (bracket notation only).
 
 ## Access Patterns: Objects, Lists, Arrays, Files, and Tables
 
 Below are all valid ways to access elements in Grapa data structures. See the canonical [Basic Syntax Guide](../syntax/basic_syntax.md) for the latest tested rules.
 
-### $LIST and $OBJ
+### $GOBJ and $OBJ
 
 ```grapa
 obj = {"a": 1, "b": 2, "c": 3};
@@ -125,13 +125,13 @@ value = obj["b"];      /* Returns 2 */
 value = obj.key;        /* Returns value for key 'key' if present */
 value = obj."b";       /* Returns 2 */
 
-/* $LIST only: */
+/* $GOBJ only: */
 value = obj[1];         /* Returns 2 (by index) */
 name = obj.getname(1);  /* Returns "b" (key name at index 1) */
 ```
 
-- Dot notation (`obj.key`) and bracket notation (`obj["key"]`) are both valid for $LIST/$OBJ.
-- `.get()` is NOT valid for $LIST/$OBJ.
+- Dot notation (`obj.key`) and bracket notation (`obj["key"]`) are both valid for $GOBJ/$OBJ.
+- `.get()` is NOT valid for $GOBJ/$OBJ.
 
 ### $ARRAY
 
@@ -302,7 +302,7 @@ value = table.get("user1", "name");   /* Correct */
 > | Type      | .get("key") | .get(index) | Bracket Notation | Dot Notation | .len() | .size() |
 > |-----------|:-----------:|:-----------:|:----------------:|:------------:|:------:|:-------:|
 > | $ARRAY    |      ✗      |     ✗      |       ✓         |      —       |   ✓   |    ✗   |
-> | $LIST     |      ✗      |     ✗      |       ✓         |     ✓       |   ✓   |    ✗   |
+> | $GOBJ     |      ✗      |     ✗      |       ✓         |     ✓       |   ✓   |    ✗   |
 > | $OBJ      |      ✗      |     ✗      |       ✓         |     ✓       |   ✗   |    ✗   |
 > | $file     |      ✓      |     ✗      |        —         |      —       |   ✗   |    ✗   |
 > | $TABLE    |     ✓*      |     ✗      |        —         |      —       |   ✗   |    ✗   |
@@ -315,7 +315,7 @@ See [Basic Syntax Guide](../syntax/basic_syntax.md) for empirical test results a
 - No `try/catch`—use `.iferr()` for fallback or check for `$ERR`
 - No `.get()`/`.set()` on lists/arrays—use `[]` for access (except for `$file`/$TABLE)
 - ✅ **Line comments now supported** - Use `// comment` or `/// doc comment` in addition to block comments
-- No attribute-style access for dict/list keys—use `[]`, or dot notation for `$LIST`/`$OBJ`
+- No attribute-style access for dict/list keys—use `[]`, or dot notation for `$GOBJ`/`$OBJ`
 - No implicit truthy/falsy—use explicit boolean checks
 - All statements and blocks must end with a semicolon (`;`)
 - Use `.map()`, `.reduce()`, `.filter()` as methods, not global functions
@@ -482,8 +482,8 @@ result = some_operation().iferr(0);
 
 > **Clarification on .get() Usage:**
 > - `.get()` is **required** for `$file` and `$TABLE` access.
-> - `.get()` is **not supported** for `$ARRAY`, `$LIST`, or `$OBJ` as of this writing.
-> - Use bracket and dot notation for `$ARRAY`, `$LIST`, and `$OBJ`.
+> - `.get()` is **not supported** for `$ARRAY`, `$GOBJ`, or `$OBJ` as of this writing.
+> - Use bracket and dot notation for `$ARRAY`, `$GOBJ`, and `$OBJ`.
 > - If more objects support `.get()` in the future, this guide will be updated. 
 
 > **Comment Style:**

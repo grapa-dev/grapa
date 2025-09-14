@@ -87,7 +87,7 @@ arr += 10 arr[0];         /* Insert at position: [10,1,2,3,4,5,6,7,8] */
 arr += 20 arr[2];         /* Insert at position 2: [10,1,20,2,3,4,5,6,7,8] */
 ```
 
-**Lists (`$LIST`):**
+**Lists (`$GOBJ`):**
 ```grapa
 list = {a:1, b:2, c:3};
 list += (d:4);            /* Add single key-value pair: {"a":1,"b":2,"c":3,"d":4} */
@@ -136,7 +136,7 @@ arr1 ++= arr2;   /* Concatenate arrays: [1,2,3,4,5,6] */
 arr1 ++= arr2 arr1[0];  /* Insert at beginning: [4,5,6,1,2,3,4,5,6] */
 ```
 
-**Lists (`$LIST`):**
+**Lists (`$GOBJ`):**
 ```grapa
 list1 = {a:1, b:2};
 list2 = {c:3, d:4};
@@ -192,7 +192,7 @@ arr -= arr[2];   /* Remove by index: [1,2,4,5] */
 arr -= arr[-1];  /* Remove last element: [1,2,4] */
 ```
 
-**Lists (`$LIST`):**
+**Lists (`$GOBJ`):**
 ```grapa
 list = {a:1, b:2, c:3, d:4};
 list -= list.c;          /* Remove by key reference: {"a":1,"b":2,"d":4} */

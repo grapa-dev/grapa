@@ -1,7 +1,7 @@
 # $TUPLE
 References:
 - [$ARRAY object](array.md)
-- [$LIST object](list.md)
+- [$GOBJ object](list.md)
 
 A $TUPLE is an immutable sequence that extends $ARRAY functionality. Unlike arrays, tuples cannot be modified after creation, making them ideal for representing fixed collections of data.
 
@@ -127,7 +127,7 @@ updated_user = (user_data[0], 31, user_data[2]);
 
 ## Comparison with Other Types
 
-| Feature | $TUPLE | $ARRAY | $LIST |
+| Feature | $TUPLE | $ARRAY | $GOBJ |
 |---------|--------|--------|-------|
 | **Mutability** | ❌ Immutable | ✅ Mutable | ✅ Mutable |
 | **Index Access** | ✅ Yes | ✅ Yes | ✅ Yes |

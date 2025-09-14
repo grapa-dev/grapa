@@ -1596,7 +1596,7 @@ log_content.grep("error", "A2B1io")  /* 2 lines after, 1 before, match-only, cas
   - This suppresses the version header (`-q`) and runs the specified .grc file (`-f`).
 
 - **Array and List Access:**
-  - Arrays (type $ARRAY) and lists (type $LIST) are accessed with `[index]` syntax, not `.get(index)`.
+  - Arrays (type $ARRAY) and lists (type $GOBJ) are accessed with `[index]` syntax, not `.get(index)`.
   - Example:
     /*
     ar = [1,2,3];

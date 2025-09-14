@@ -7,7 +7,7 @@ arr.test_method();
 
 /* Test 2: List instance */
 "=== Testing List Instance ===".echo();
-lst = $LIST();
+lst = $GOBJ();
 lst.test_method();
 
 /* Test 3: Class instance */

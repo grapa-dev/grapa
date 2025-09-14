@@ -46,7 +46,7 @@ Vectors in Grapa are multi-dimensional data structures that support mathematical
 - **1D Vectors**: `vec.get(-1)` returns last element, `vec.get(-2)` returns second-to-last
 - **2D Vectors**: `matrix.get(-1, -1)` returns bottom-right element
 - **All Methods**: Works with `.get()`, `.set()`, `.getfield()`, `.setfield()`
-- **Consistent**: Same behavior as `$ARRAY` and `$LIST`
+- **Consistent**: Same behavior as `$ARRAY` and `$GOBJ`
 
 #### **✅ Column Label Support (NEW)**
 - **Spreadsheet-like**: Column labels for intuitive data access
@@ -1275,7 +1275,7 @@ The `add()`, `mul()`, `pow()` functions in the C++ backend are internal methods 
 
 #### **Index Support**
 - **Positive Indices**: Fully supported (0, 1, 2, ...)
-- **Negative Indices**: ✅ **FULLY SUPPORTED** (same as `$ARRAY` and `$LIST`)
+- **Negative Indices**: ✅ **FULLY SUPPORTED** (same as `$ARRAY` and `$GOBJ`)
   - `-1` refers to the last element, `-2` to the second-to-last, etc.
   - Works for both 1D and 2D vectors
   - Works with all access methods: `.get()`, `.set()`, `.getfield()`, `.setfield()`
@@ -1473,7 +1473,7 @@ employees.set("department", "Sales"); /* Change first employee's department */
 **Status:** ✅ **NEW FEATURE** - Column label access provides intuitive, spreadsheet-like element access for structured data vectors.
 
 #### **Negative Index Support - NEW**
-Added full negative index support for all vector access methods, matching the behavior of `$ARRAY` and `$LIST`:
+Added full negative index support for all vector access methods, matching the behavior of `$ARRAY` and `$GOBJ`:
 
 **New Negative Index Capabilities:**
 - **1D Vectors**: `vec.get(-1)` returns last element, `vec.get(-2)` returns second-to-last, etc.

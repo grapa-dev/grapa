@@ -1,4 +1,4 @@
-/* Test $LIST uniqueness scenarios */
+/* Test $GOBJ uniqueness scenarios */
 
 /* Test 1: Basic list creation */
 "Test 1: Basic list creation".echo();

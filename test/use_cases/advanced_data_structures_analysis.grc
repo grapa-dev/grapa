@@ -44,7 +44,7 @@ set_difference = set1.filter(op(item) { set2.grep(item).len() == 0; });
 /* Test 2: Map-like Functionality */
 ("--- Test 2: Map-like Functionality ---").echo();
 
-// Grapa can implement Map-like behavior using objects ($LIST)
+// Grapa can implement Map-like behavior using objects ($GOBJ)
 create_map = op(key_value_pairs) {
     map_obj = {};
     key_value_pairs.map(op(pair) {
@@ -402,7 +402,7 @@ found = root.find("Grandchild 1");
  * 
  * Grapa already has:
  * 1. ✅ Set-like functionality via arrays with .unique()
- * 2. ✅ Map-like functionality via objects ($LIST)
+ * 2. ✅ Map-like functionality via objects ($GOBJ)
  * 3. ✅ Weak reference patterns via function closures
  * 4. ✅ Iterator protocols via custom functions
  * 5. ✅ Custom iteration patterns

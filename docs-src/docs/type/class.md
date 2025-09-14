@@ -409,45 +409,45 @@ processor.process("");              /* Returns: "Failed to process: " */
 
 ## Dynamic Class Creation with `obj`
 
-Grapa provides the `obj` function for creating objects with custom class inheritance dynamically. This is particularly useful when you want to create objects that inherit from system classes like `$LIST` while adding your own methods and properties.
+Grapa provides the `obj` function for creating objects with custom class inheritance dynamically. This is particularly useful when you want to create objects that inherit from system classes like `$GOBJ` while adding your own methods and properties.
 
 ### Automatic vs Explicit Class Assignment
 
-When you create an object with `{}`, Grapa automatically assigns the `$LIST` class:
+When you create an object with `{}`, Grapa automatically assigns the `$GOBJ` class:
 
 ```grapa
 /* Automatic class assignment */
 x2 = {x: 1, timesx: op(y){x*y}, setx: op(pX){x = pX;}};
-x2.type();  /* Returns: $LIST */
+x2.type();  /* Returns: $GOBJ */
 ```
 
-However, if you want to create an object that inherits from `$LIST` but has your own class definition, you can use the `obj` function:
+However, if you want to create an object that inherits from `$GOBJ` but has your own class definition, you can use the `obj` function:
 
 ```grapa
 /* Explicit class inheritance */
-x1 = obj class($LIST) {
+x1 = obj class($GOBJ) {
     x = 1;
     timesx = op(y) { x * y; };
     setx = op(pX) { x = pX; };
 };
-x1.type();  /* Returns: $OBJ (with $LIST inheritance) */
+x1.type();  /* Returns: $OBJ (with $GOBJ inheritance) */
 ```
 
 ### Key Differences
 
-| Aspect | `{}` (Automatic) | `obj class($LIST){...}` (Explicit) |
+| Aspect | `{}` (Automatic) | `obj class($GOBJ){...}` (Explicit) |
 |--------|------------------|-------------------------------------|
-| **Type** | `$LIST` | `$OBJ` |
-| **Inheritance** | Built-in `$LIST` methods only | `$LIST` methods + your custom methods |
-| **Extensibility** | Limited to `$LIST` functionality | Can add more classes to inheritance chain |
-| **Method Resolution** | `$LIST` methods | Your methods + `$LIST` methods |
+| **Type** | `$GOBJ` | `$OBJ` |
+| **Inheritance** | Built-in `$GOBJ` methods only | `$GOBJ` methods + your custom methods |
+| **Extensibility** | Limited to `$GOBJ` functionality | Can add more classes to inheritance chain |
+| **Method Resolution** | `$GOBJ` methods | Your methods + `$GOBJ` methods |
 | **Use Case** | Simple data structures | Complex objects with custom behavior |
 
 ### Practical Example
 
 ```grapa
 /* Both approaches work similarly for basic operations */
-x1 = obj class($LIST) {
+x1 = obj class($GOBJ) {
     x = 1;
     timesx = op(y) { x * y; };
     setx = op(pX) { x = pX; };
@@ -471,12 +471,12 @@ x2.timesx(5);   /* 10 */
 
 **Use `{}` (Automatic) when:**
 - Creating simple data structures
-- You only need basic `$LIST` functionality
+- You only need basic `$GOBJ` functionality
 - Quick prototyping or simple objects
 - You don't need custom inheritance chains
 
-**Use `obj class($LIST){...}` (Explicit) when:**
-- You need custom methods beyond `$LIST` functionality
+**Use `obj class($GOBJ){...}` (Explicit) when:**
+- You need custom methods beyond `$GOBJ` functionality
 - You want to create reusable class definitions
 - You need to add multiple classes to the inheritance chain
 - You want to create objects that behave like lists but with additional capabilities
@@ -485,7 +485,7 @@ x2.timesx(5);   /* 10 */
 
 ```grapa
 /* Create a class that inherits from multiple system classes */
-AdvancedObject = obj class($LIST, $OBJ) {
+AdvancedObject = obj class($GOBJ, $OBJ) {
     /* Custom properties */
     name = "default";
     data = [];
@@ -509,7 +509,7 @@ obj.setName("MyObject");
 obj.addData("item1").addData("item2");
 obj.getName();  /* "MyObject" */
 obj.len();      /* 2 */
-obj.type();     /* $OBJ (with $LIST and $OBJ inheritance) */
+obj.type();     /* $OBJ (with $GOBJ and $OBJ inheritance) */
 ```
 
 ---

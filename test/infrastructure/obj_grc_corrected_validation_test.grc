@@ -6,23 +6,23 @@
 /* Test data setup */
 test_str = "Hello, World!";
 test_array = [1, 2, 3, 4, 5];  /* $ARRAY - positional array */
-test_list = {a:1, b:2, c:3, d:4, e:5};  /* $LIST - associative list */
+test_list = {a:1, b:2, c:3, d:4, e:5};  /* $GOBJ - associative list */
 test_xml = <root><item>Hello</item><item>World</item></root>;  /* $XML */
 test_matrix = [[1,2,3],[4,5,6],[7,8,9]];  /* $ARRAY of $ARRAY */
 
 ("=== Testing String Rotation Methods ===").echo();
 
-/* Test lrot() and rrot() with $ARRAY and $LIST */
+/* Test lrot() and rrot() with $ARRAY and $GOBJ */
 ("Testing lrot() with $ARRAY:").echo();
 (test_array.lrot(2)).echo();  /* Should rotate positional array left by 2 */
 
 ("Testing rrot() with $ARRAY:").echo();
 (test_array.rrot(2)).echo();  /* Should rotate positional array right by 2 */
 
-("Testing lrot() with $LIST:").echo();
+("Testing lrot() with $GOBJ:").echo();
 (test_list.lrot(2)).echo();   /* Should rotate associative list left by 2 */
 
-("Testing rrot() with $LIST:").echo();
+("Testing rrot() with $GOBJ:").echo();
 (test_list.rrot(2)).echo();   /* Should rotate associative list right by 2 */
 
 ("=== Testing FindAll Method ===").echo();
@@ -31,8 +31,8 @@ test_matrix = [[1,2,3],[4,5,6],[7,8,9]];  /* $ARRAY of $ARRAY */
 ("Testing findall() with $XML:").echo();
 (test_xml.findall({name:"item"})).echo();  /* Should find all item elements */
 
-/* Test findall() with $LIST data */
-("Testing findall() with $LIST:").echo();
+/* Test findall() with $GOBJ data */
+("Testing findall() with $GOBJ:").echo();
 (test_list.findall({has:{name:"a"}})).echo();     /* Should find elements with key "a" */
 
 /* Test findall() with $ARRAY data */

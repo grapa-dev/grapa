@@ -182,7 +182,7 @@ json_result = json_string.encode("JSON");
 xml_result = xml_string.encode("XML");
 html_result = html_string.encode("HTML");
 
-("JSON parsing: " + json_result.str() + " (type: " + json_result.type() + " - should be $LIST)\n").echo();
+("JSON parsing: " + json_result.str() + " (type: " + json_result.type() + " - should be $GOBJ)\n").echo();
 ("XML parsing: " + xml_result.str() + " (type: " + xml_result.type() + " - should be $XML)\n").echo();
 ("HTML parsing: " + html_result.str() + " (type: " + html_result.type() + " - should be $XML)\n").echo();
 

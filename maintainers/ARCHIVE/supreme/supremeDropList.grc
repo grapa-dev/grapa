@@ -23,7 +23,7 @@ supremeDroplist = op(week=1,threads=4)
 	local.r = n2.httpmessage();
 	
 	local.data = r.body.findall({name:"a",attr:{"class":"block"},has:{name:"h2",attr:{"class":"droplist-overview-title"}}});
-	local.data2 = data.reduce(op(a,b){a += b.$LIST.href;},[]);
+	local.data2 = data.reduce(op(a,b){a += b.$GOBJ.href;},[]);
 	local.z = data2[weekN];
 	
 	local.res = n2.httpsend("GET", z, header, "");
@@ -52,8 +52,8 @@ supremeDroplist = op(week=1,threads=4)
 		{
 			local.prec = b[i];
 			
-			local.itemname = prec.div.$LIST."data-itemname".trim();
-			local.itemid = prec.div.$LIST."data-itemid";
+			local.itemname = prec.div.$GOBJ."data-itemname".trim();
+			local.itemid = prec.div.$GOBJ."data-itemid";
 			local.upvotesratio = prec.findall({name:"p",attr:{"class":"upvotesratio hidden"}}).p[0];
 
 			local.pricedata = prec.findall({name:"span",attr:{"class":"label-price"}}).span[0];
@@ -64,8 +64,8 @@ supremeDroplist = op(week=1,threads=4)
 			local.imgData = prec.findall({name:"img"});
 			if (imgData.len())
 			{
-				desc = imgData[0].$LIST.alt;
-				img = imgData[0].$LIST.src;
+				desc = imgData[0].$GOBJ.alt;
+				img = imgData[0].$GOBJ.src;
 			};
 
 			local.res = n2.httpsend("GET", "/season/itemdetails/"+itemid+"/", header, "");
