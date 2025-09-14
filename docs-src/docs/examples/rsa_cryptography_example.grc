@@ -180,8 +180,8 @@ rpk_bob_secret = rpk_bob.secret({
 "9. AES Encryption:\n".echo();
 
 /* Generate AES key and IV */
-aes_key = "AES256".genkeys();
-aes_iv = "AES256".genkeys();
+aes_key = "11111111111222222222222333333333";  /* 32 bytes for AES-256 */
+aes_iv = "1111111111112222";                   /* 16 bytes for IV */
 
 /* Encrypt with AES-256 */
 aes_encrypted = message.encode("AES256", {
@@ -189,7 +189,7 @@ aes_encrypted = message.encode("AES256", {
     'key': aes_key,
     'iv': aes_iv
 });
-("AES encrypted: " + aes_encrypted.str() + "\n").echo();
+("AES encrypted: " + aes_encrypted.uhex() + "\n").echo();
 
 /* Decrypt with AES-256 */
 aes_decrypted = aes_encrypted.decode("AES256", {
@@ -198,6 +198,9 @@ aes_decrypted = aes_encrypted.decode("AES256", {
     'iv': aes_iv
 });
 ("AES decrypted: " + aes_decrypted.str() + "\n").echo();
+
+("AES match: " + (message == aes_decrypted).str() + "\n").echo();
+
 
 /* ======================================== */
 /* 10. CRYPTOGRAPHIC UTILITIES */

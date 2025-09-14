@@ -33,7 +33,7 @@ tags:
 >
 > **Recommended Patterns:**
 > - For arrays: `array[index]` and `array.len()`
-> - For lists: `list[key]` (preferred) or `list.key`, and `list.len()`
+> - For Grapa Objects: `gobj[key]` (preferred) or `gobj."key"` for data access, and `gobj.len()`
 > - For objects: `object.property` (preferred) or `object[key]`
 > - For files: `file.getfield(key)` and `file.setfield(key, value)`
 > - For tables: `table.getfield(key, field)` and `table.setfield(key, value, field)`
@@ -120,7 +120,7 @@ goodFunction = op() {
 
 /* ✅ ALTERNATIVE - Reset $local to a list */
 myFunction2 = op() {
-    $local = {result: null, temp: {}, i: 0};
+    $local = {'result': null, 'temp': {}, 'i': 0};
     
     // Now safe to use variables without conflicts
     result = process();
@@ -181,7 +181,7 @@ String interpolation is the preferred approach for combining strings and values:
 "File size: ${size} bytes".interpolate().echo();
 
 /* ✅ With parameters */
-"Name: ${name}, Age: ${age.str()}".interpolate({name:"Bob",age:23}).echo();
+"Name: ${name}, Age: ${age.str()}".interpolate({'name':"Bob",'age':23}).echo();
 
 /* ✅ Complex expressions */
 "Sum: ${x + y}, Product: ${x * y}".interpolate().echo();
@@ -296,7 +296,7 @@ for char in text {
 }
 
 /* List iteration */
-data = {a:1, b:2, c:3};
+data = {'a':1, 'b':2, 'c':3};
 for value in data {
     ("Value: " + value).echo();
 }
@@ -610,7 +610,7 @@ large_data = (1000000).range(0,1);
 squares = large_data.map(op(x) { x * x; }, 8);  /* Limit to 8 threads */
 
 /* WARNING: Context object mutations cause race conditions */
-x = {a: 0, b: 0};
+x = {'a': 0, 'b': 0};
 y = 20.range().map(op(x, y) {
     y.a += 1;        /* Race condition: multiple threads may read same value */
     y.b += x;        /* Race condition: multiple threads may read same value */
@@ -618,7 +618,7 @@ y = 20.range().map(op(x, y) {
 }, x, 4);            /* 4 threads processing */
 
 /* Better approach: Use .map() for computation, .reduce() for aggregation */
-x = {a: 1, b: 2};
+x = {'a': 1, 'b': 2};
 y = 20.range().map(op(x, y) {
     x + y.a * y.b;   /* Pure computation - no mutations */
 }, x, 4).reduce(op(a, b) {
@@ -642,7 +642,7 @@ large_data = (1000000).range(0,1);
 filtered = large_data.filter(op(x) { x % 2 == 0; }, 8);  /* Limit to 8 threads */
 
 /* WARNING: Context object mutations cause race conditions */
-x = {count: 0, sum: 0};
+x = {'count': 0, 'sum': 0};
 y = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].filter(op(x, y) {
     y.count += 1;        /* Race condition: multiple threads may read same value */
     if (x % 2 == 0) {    /* Filter even numbers */
@@ -654,7 +654,7 @@ y = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].filter(op(x, y) {
 }, x, 4);                /* 4 threads processing */
 
 /* Better approach: Separate filtering and aggregation */
-x = {threshold: 2};
+x = {'threshold': 2};
 y = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].filter(op(x, y) {
     x > y.threshold;     /* Pure filtering - no mutations */
 }, x, 4);
@@ -820,7 +820,7 @@ Grapa's functional methods support **any data structure as initializers**, enabl
 [1, 2, 3].reduce(op(x, y) {
     if (y == 2) x.o = op(a, b) { a * b; };  /* Switch to multiplication */
     x.st = x.o(x.st, y);  /* Apply current operation */
-}, {st: 10, o: op(a, b) { a + b; }});  /* Initial state: {st: 10, o: add} */
+}, {'st': 10, 'o': op(a, b) { a + b; }});  /* Initial state: {'st': 10, 'o': add} */
 
 /* Process: 10+1=11, 11*2=22, 22*3=66 */
 /* Result: {"st": 66, "o": @<mul function>} */
@@ -834,7 +834,7 @@ Grapa's functional methods support **any data structure as initializers**, enabl
     y.count += 1;
     y.sum += x;
     x * y.multiplier;
-}, {count: 0, sum: 0, multiplier: 2});
+}, {'count': 0, 'sum': 0, 'multiplier': 2});
 
 /* Filter with state tracking */
 [1, 2, 3, 4, 5].filter(op(x, y) {
@@ -992,11 +992,22 @@ config = {"debug": true, "port": 3000, "host": "localhost"};
 user = {"name": "John", "age": 30, "city": "NYC"};
 nested = {"level1": {"level2": "value"}};
 
+/* ⚠️ IMPORTANT: Data item labels must be quoted strings */
+crypto_keys = {
+    'pub': "public_key_data",     /* ✅ Quoted - data item */
+    'priv': "private_key_data",   /* ✅ Quoted - data item */
+    'method': 'rsa'              /* ✅ Quoted - data item */
+};
+
 /* Access elements */
 debug_mode = config["debug"];    /* true */
-user_name = user.name;           /* "John" */
+user_name = user."name";         /* "John" - quoted for data access */
 deep_value = nested["level1"]["level2"];  /* "value" */
-length = config.len();           /* 3 */
+length = config.len();           /* 3 - method call, no quotes needed */
+
+/* Access crypto data */
+pub_key = crypto_keys.'pub';     /* "public_key_data" - quoted for data access */
+method = crypto_keys.'method';   /* "rsa" - quoted for data access */
 
 /* Iterate over lists */
 keys = ["debug", "port", "host"];
@@ -1076,7 +1087,7 @@ person1.getInfo();               /* Call method */
 | Feature | $ARRAY | $GOBJ | $OBJ |
 |---------|--------|-------|------|
 | Creation | `[1,2,3]` | `{"key":"value"}` | `obj Class` |
-| Access | `array[index]` | `gobj[key]` or `gobj.key` | `object.property` |
+| Access | `array[index]` | `gobj[key]` or `gobj."key"` | `object.property` |
 | Length | `array.len()` | `gobj.len()` | Not available |
 | Iteration | Index-based | Key-based | Property-based |
 | Comparison | Element-by-element | Element-by-element | Property-by-property |
@@ -1822,6 +1833,29 @@ value = obj[1];             /* Returns 22 (index access) */
 value = obj["a"];           /* Returns 11 (key access) */
 value = obj.a;              /* Returns 11 (dot notation key access) */
 name = obj.getname(1);      /* Returns "b" (key name) */
+```
+
+### **⚠️ IMPORTANT: Data vs Method Access**
+
+In Grapa Objects (`$GOBJ`), there's a crucial distinction between data access and method access:
+
+- **Unquoted labels** (`obj.key`): Searches for `$ID` or `$OP` in the object's class hierarchy (methods, properties)
+- **Quoted labels** (`obj."key"`): Accesses data items stored in the object
+
+```grapa
+/* Example: Cryptographic key object */
+rpk_alice = {
+    'pub': "public_key_data",    /* Data item - must be quoted */
+    'priv': "private_key_data"   /* Data item - must be quoted */
+};
+
+/* Correct data access */
+pub_key = rpk_alice.'pub';      /* ✅ Returns "public_key_data" */
+priv_key = rpk_alice.'priv';    /* ✅ Returns "private_key_data" */
+
+/* Incorrect - would search for $ID/$OP named 'pub' */
+/* pub_key = rpk_alice.pub;    ❌ Would look for method/property 'pub' */
+```
 
 /* ⚠️ IMPORTANT: Hyphens in property names require quotes */
 /* The hyphen (-) is interpreted as a subtraction operator */

@@ -9,13 +9,36 @@ An associative object that stores key-value pairs. Elements are accessed by thei
 
 | Feature | $GOBJ (`{}`) | $ARRAY (`[]`) |
 |---------|--------------|---------------|
-| **Syntax** | `{a:1, b:2, c:3}` | `[1, 2, 3]` |
-| **Access** | `list.a` or `list["a"]` | `array[0]` |
+| **Syntax** | `{'a':1, 'b':2, 'c':3}` | `[1, 2, 3]` |
+| **Access** | `gobj."a"` or `gobj["a"]` | `array[0]` |
 | **Type** | Associative | Positional |
 | **Keys** | Named keys | Numeric indices |
 | **Order** | Key-based | Position-based |
 
 **Note:** This differs from some other languages where `[]` is called a "list" and `{}` is called a "dictionary" or "object". Grapa follows traditional C terminology.
+
+## **⚠️ IMPORTANT: Data Item Labels Must Be Quoted**
+
+In Grapa Objects (`$GOBJ`), there's a crucial distinction between data access and method access:
+
+- **Unquoted labels** (`gobj.key`): Searches for `$ID` or `$OP` in the object's class hierarchy (methods, properties)
+- **Quoted labels** (`gobj."key"`): Accesses data items stored in the object
+
+```grapa
+/* Example: Cryptographic key object */
+crypto_keys = {
+    'pub': "public_key_data",     /* Data item - must be quoted */
+    'priv': "private_key_data",   /* Data item - must be quoted */
+    'method': 'rsa'              /* Data item - must be quoted */
+};
+
+/* Correct data access */
+pub_key = crypto_keys.'pub';      /* ✅ Returns "public_key_data" */
+priv_key = crypto_keys.'priv';    /* ✅ Returns "private_key_data" */
+
+/* Incorrect - would search for $ID/$OP named 'pub' */
+/* pub_key = crypto_keys.pub;    ❌ Would look for method/property 'pub' */
+```
 
 ## When to Use $GOBJ vs Other Data Types
 
@@ -49,14 +72,14 @@ An associative object that stores key-value pairs. Elements are accessed by thei
 
 Action | Example | Result
 ------------ | ------------- | -------------
-Create | {a:1, b:2, c:3} | {"a":1,"b":2,"c":3}
-Access | {a:1, b:2, c:3}.a</br>{a:1, b:2, c:3}[1]</br>{a:1, b:2, c:3}[-1] | 1</br>1</br>3
-Assign | x = {a:1, b:2, c:3};</br>x.b = "x";</br>x["b"] = "by";</br>x[-2] = 1234; | </br></br>{"a":1,"b":"x","c":3}</br>{"a":1,"b":"by","c":3}</br>{"a":1,"b":1234,"c":3}
-Append | x = {a:1, b:2};</br>x += (c:3);</br>x; | </br></br>{"a":1, "b":2, "c":3}
-Append | x = {a:1, b:2};</br>x ++= {c:3,d:4};</br>x; | </br></br>{"a":1, "b":2, "c":3, "d":4}
-Insert | x = {a:1, b:2};</br>x += (c:3) x[0];</br>x; | </br></br>{"c":3,"a":1,"b":2}
-Count | {a:1, b:2, c:3}.len() | 3
-Remove | x = {a:1, b:2, c:3};</br>x -= x[1];</br>x; | </br></br>{"a":1, "c":3}
+Create | {'a':1, 'b':2, 'c':3} | {"a":1,"b":2,"c":3}
+Access | {'a':1, 'b':2, 'c':3}."a"</br>{'a':1, 'b':2, 'c':3}[1]</br>{'a':1, 'b':2, 'c':3}[-1] | 1</br>1</br>3
+Assign | x = {'a':1, 'b':2, 'c':3};</br>x."b" = "x";</br>x["b"] = "by";</br>x[-2] = 1234; | </br></br>{"a":1,"b":"x","c":3}</br>{"a":1,"b":"by","c":3}</br>{"a":1,"b":1234,"c":3}
+Append | x = {'a':1, 'b':2};</br>x += ('c':3);</br>x; | </br></br>{"a":1, "b":2, "c":3}
+Append | x = {'a':1, 'b':2};</br>x ++= {'c':3,'d':4};</br>x; | </br></br>{"a":1, "b":2, "c":3, "d":4}
+Insert | x = {'a':1, 'b':2};</br>x += ('c':3) x[0];</br>x; | </br></br>{"c":3,"a":1,"b":2}
+Count | {'a':1, 'b':2, 'c':3}.len() | 3
+Remove | x = {'a':1, 'b':2, 'c':3};</br>x -= x[1];</br>x; | </br></br>{"a":1, "c":3}
 
 ### Advanced List Operations
 
@@ -65,11 +88,11 @@ Remove | x = {a:1, b:2, c:3};</br>x -= x[1];</br>x; | </br></br>{"a":1, "c":3}
 Lists support both bracket notation and method-based access:
 
 ```grapa
-list = {a:1, b:2, c:3};
+list = {'a':1, 'b':2, 'c':3};
 
 /* Bracket notation (direct access) */
 value = list["a"];        /* 1 */
-value = list.a;           /* 1 */
+value = list."a";         /* 1 - quoted for data access */
 value = list[0];          /* 1 (by index) */
 value = list[-1];         /* 3 (by negative index) */
 
@@ -87,8 +110,8 @@ value = list.getfield(-1);  /* 3 (by negative index) */
 #### Assignment Operations (`=`)
 ```grapa
 /* Direct property assignment */
-list = {a:1, b:2, c:3};
-list.b = "x";             /* {"a":1,"b":"x","c":3} */
+list = {'a':1, 'b':2, 'c':3};
+list."b" = "x";           /* {"a":1,"b":"x","c":3} - quoted for data access */
 list["b"] = "by";         /* {"a":1,"b":"by","c":3} */
 
 /* Assignment by index */
@@ -108,7 +131,7 @@ list.setfield(1, 55);     /* {"a":1,"b":55,"c":3} */
 list.setfield(-2, 1234);  /* {"a":1,"b":1234,"c":3} */
 
 /* Compound assignment on accessed elements */
-list.b += "dee";          /* {"a":1,"b":"bydee","c":3} */
+list."b" += "dee";        /* {"a":1,"b":"bydee","c":3} - quoted for data access */
 list[0] += 8;             /* {"a":9,"b":"bydee","c":3} */
 ```
 
@@ -152,7 +175,7 @@ list -= list[-1];        /* {} */
 
 #### Unsupported Operations
 ```grapa
-list = {a:1, b:2, c:3};
+list = {'a':1, 'b':2, 'c':3};
 
 /* These do NOT work: */
 list -= 2;               /* No effect - value-based removal not supported */
@@ -162,7 +185,7 @@ list -= list.b;          /* Error - trying to remove value, not key */
 
 ### Concatenation and Extension
 ```grapa
-list = {a:1, b:2, c:3};
+list = {'a':1, 'b':2, 'c':3};
 
 /* Add elements */
 list += {d:4};                            /* {a:1, b:2, c:3, d:4} */
@@ -300,7 +323,7 @@ first.user.age                             /* Returns: 30 */
 Lists have **flexible boundary behavior** similar to arrays:
 
 ```grapa
-list = {a:1, b:2, c:3};
+list = {'a':1, 'b':2, 'c':3};
 
 /* Valid access - returns elements */
 list.get("a");             /* 1 */
@@ -318,7 +341,7 @@ list.setfield("d", 77);    /* APPENDS: {a:1, b:2, c:3, d:99, f:88, d:77} */
 
 /* IMPORTANT: .set()/.setfield() only append at the end */
 /* For insertion at specific positions, use += and ++= operators */
-list = {a:1, b:2, c:3};
+list = {'a':1, 'b':2, 'c':3};
 list += (d:99) list[1];    /* INSERT at position 1: {a:1, d:99, b:2, c:3} */
 list ++= {e:88, f:77} list[0]; /* INSERT multiple at position 0: {e:88, f:77, a:1, d:99, b:2, c:3} */
 ```
@@ -335,7 +358,7 @@ list ++= {e:88, f:77} list[0]; /* INSERT multiple at position 0: {e:88, f:77, a:
 ### **Append vs. Error Behavior**
 
 ```grapa
-list = {a:1, b:2, c:3};
+list = {'a':1, 'b':2, 'c':3};
 
 /* These APPEND (lists grow dynamically) */
 list.set("d", 99);         /* {a:1, b:2, c:3, d:99} */
@@ -359,13 +382,13 @@ if (list.get("z") == null) {
 - **`+=` and `++=` operators**: Insert at specific positions
 
 ```grapa
-list = {a:1, b:2, c:3};
+list = {'a':1, 'b':2, 'c':3};
 
 /* .set() only appends at the end */
 list.set("d", 99);         /* {a:1, b:2, c:3, d:99} - appends at end */
 
 /* += and ++= insert at specific positions */
-list = {a:1, b:2, c:3};
+list = {'a':1, 'b':2, 'c':3};
 list += (d:99) list[1];    /* {a:1, d:99, b:2, c:3} - inserts at position 1 */
 list ++= {e:88, f:77} list[0]; /* {e:88, f:77, a:1, d:99, b:2, c:3} - inserts at position 0 */
 ```
@@ -373,7 +396,7 @@ list ++= {e:88, f:77} list[0]; /* {e:88, f:77, a:1, d:99, b:2, c:3} - inserts at
 ### **Error Handling Patterns**
 
 ```grapa
-list = {a:1, b:2, c:3};
+list = {'a':1, 'b':2, 'c':3};
 
 /* Safe access with null checking */
 result = list.get("missing_key");
@@ -396,7 +419,7 @@ if (list.get("key") != null) {
 
 ```grapa
 /* List behavior (flexible) */
-list = {a:1, b:2, c:3};
+list = {'a':1, 'b':2, 'c':3};
 list.set("d", 99);         /* APPENDS: {a:1, b:2, c:3, d:99} */
 
 /* Array behavior (flexible) */
