@@ -4022,6 +4022,82 @@ lock_obj.lock();
 lock_obj.unlock();
 </code></pre></div></p>
 <p>See <a href="../sys/thread/">Threading and Locking</a> and <a href="../operators/function/">Function Operators: static and const</a> for details and best practices.</p>
+<h2 id="text-processing-and-search">Text Processing and Search</h2>
+<p>GrapaPy provides direct access to Grapa's powerful Unicode-aware grep functionality, making it ideal for text processing tasks that require advanced pattern matching and Unicode handling.</p>
+<p><strong>Example: Log file analysis</strong>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">grapapy</span>
+
+<span class="c1"># Analyze log files for errors and warnings</span>
+<span class="n">log_content</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">2024-01-15 10:30:15 INFO: Application started</span>
+<span class="s2">2024-01-15 10:31:22 ERROR: Database connection failed</span>
+<span class="s2">2024-01-15 10:32:45 WARNING: High memory usage detected</span>
+<span class="s2">2024-01-15 10:33:12 INFO: User login successful</span>
+<span class="s2">2024-01-15 10:34:01 ERROR: File not found: config.xml</span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+<span class="c1"># Extract all error messages</span>
+<span class="n">errors</span> <span class="o">=</span> <span class="n">grapapy</span><span class="o">.</span><span class="n">grep</span><span class="p">(</span><span class="n">log_content</span><span class="p">,</span> <span class="s2">&quot;ERROR:.*&quot;</span><span class="p">,</span> <span class="s2">&quot;o&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Errors:&quot;</span><span class="p">,</span> <span class="n">errors</span><span class="p">)</span>
+<span class="c1"># Output: [&#39;ERROR: Database connection failed&#39;, &#39;ERROR: File not found: config.xml&#39;]</span>
+
+<span class="c1"># Extract timestamps for warnings</span>
+<span class="n">warnings</span> <span class="o">=</span> <span class="n">grapapy</span><span class="o">.</span><span class="n">grep</span><span class="p">(</span><span class="n">log_content</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">d</span><span class="si">{4}</span><span class="s2">-</span><span class="se">\\</span><span class="s2">d</span><span class="si">{2}</span><span class="s2">-</span><span class="se">\\</span><span class="s2">d</span><span class="si">{2}</span><span class="s2"> </span><span class="se">\\</span><span class="s2">d</span><span class="si">{2}</span><span class="s2">:</span><span class="se">\\</span><span class="s2">d</span><span class="si">{2}</span><span class="s2">:</span><span class="se">\\</span><span class="s2">d</span><span class="si">{2}</span><span class="s2"> WARNING:.*&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Warnings:&quot;</span><span class="p">,</span> <span class="n">warnings</span><span class="p">)</span>
+<span class="c1"># Output: [&#39;2024-01-15 10:32:45 WARNING: High memory usage detected&#39;]</span>
+
+<span class="c1"># Case-insensitive search for specific patterns</span>
+<span class="n">info_messages</span> <span class="o">=</span> <span class="n">grapapy</span><span class="o">.</span><span class="n">grep</span><span class="p">(</span><span class="n">log_content</span><span class="p">,</span> <span class="s2">&quot;application|user&quot;</span><span class="p">,</span> <span class="s2">&quot;i&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Info messages:&quot;</span><span class="p">,</span> <span class="n">info_messages</span><span class="p">)</span>
+<span class="c1"># Output: [&#39;2024-01-15 10:30:15 INFO: Application started&#39;, &#39;2024-01-15 10:33:12 INFO: User login successful&#39;]</span>
+</code></pre></div></p>
+<p><strong>Example: Unicode text processing</strong>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">grapapy</span>
+
+<span class="c1"># Process international text with Unicode normalization</span>
+<span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;café naïve résumé naïve café&quot;</span>
+
+<span class="c1"># Normalized search (matches accented characters)</span>
+<span class="n">matches</span> <span class="o">=</span> <span class="n">grapapy</span><span class="o">.</span><span class="n">grep</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="s2">&quot;cafe&quot;</span><span class="p">,</span> <span class="s2">&quot;i&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;NFD&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Normalized matches:&quot;</span><span class="p">,</span> <span class="n">matches</span><span class="p">)</span>
+<span class="c1"># Output: [&#39;café&#39;, &#39;café&#39;]</span>
+
+<span class="c1"># Extract all words with diacritics</span>
+<span class="n">accented_words</span> <span class="o">=</span> <span class="n">grapapy</span><span class="o">.</span><span class="n">grep</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">w*[àáâãäåæçèéêëìíîïðñòóôõöøùúûüýþÿ]</span><span class="se">\\</span><span class="s2">w*&quot;</span><span class="p">,</span> <span class="s2">&quot;o&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Accented words:&quot;</span><span class="p">,</span> <span class="n">accented_words</span><span class="p">)</span>
+<span class="c1"># Output: [&#39;café&#39;, &#39;naïve&#39;, &#39;résumé&#39;, &#39;naïve&#39;, &#39;café&#39;]</span>
+</code></pre></div></p>
+<p><strong>Example: Data extraction from structured text</strong>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">grapapy</span>
+
+<span class="c1"># Extract structured data from text</span>
+<span class="n">data_text</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">Name: John Doe, Age: 30, City: New York</span>
+<span class="s2">Name: Jane Smith, Age: 25, City: Los Angeles</span>
+<span class="s2">Name: Bob Johnson, Age: 35, City: Chicago</span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+<span class="c1"># Extract all names</span>
+<span class="n">names</span> <span class="o">=</span> <span class="n">grapapy</span><span class="o">.</span><span class="n">grep</span><span class="p">(</span><span class="n">data_text</span><span class="p">,</span> <span class="s2">&quot;Name: ([^,]+)&quot;</span><span class="p">,</span> <span class="s2">&quot;o&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Names:&quot;</span><span class="p">,</span> <span class="n">names</span><span class="p">)</span>
+<span class="c1"># Output: [&#39;John Doe&#39;, &#39;Jane Smith&#39;, &#39;Bob Johnson&#39;]</span>
+
+<span class="c1"># Extract all ages</span>
+<span class="n">ages</span> <span class="o">=</span> <span class="n">grapapy</span><span class="o">.</span><span class="n">grep</span><span class="p">(</span><span class="n">data_text</span><span class="p">,</span> <span class="s2">&quot;Age: (</span><span class="se">\\</span><span class="s2">d+)&quot;</span><span class="p">,</span> <span class="s2">&quot;o&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Ages:&quot;</span><span class="p">,</span> <span class="n">ages</span><span class="p">)</span>
+<span class="c1"># Output: [&#39;30&#39;, &#39;25&#39;, &#39;35&#39;]</span>
+
+<span class="c1"># Extract all cities</span>
+<span class="n">cities</span> <span class="o">=</span> <span class="n">grapapy</span><span class="o">.</span><span class="n">grep</span><span class="p">(</span><span class="n">data_text</span><span class="p">,</span> <span class="s2">&quot;City: ([^</span><span class="se">\\</span><span class="s2">n]+)&quot;</span><span class="p">,</span> <span class="s2">&quot;o&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Cities:&quot;</span><span class="p">,</span> <span class="n">cities</span><span class="p">)</span>
+<span class="c1"># Output: [&#39;New York&#39;, &#39;Los Angeles&#39;, &#39;Chicago&#39;]</span>
+</code></pre></div></p>
+<p><strong>Advanced Features:</strong>
+- <strong>Unicode normalization</strong>: Support for NFC, NFD, NFKC, NFKD normalization forms
+- <strong>Case-insensitive matching</strong>: Built-in support for Unicode case folding
+- <strong>Regex engine</strong>: Full PCRE2 regex support with advanced features
+- <strong>Performance</strong>: Direct C++ implementation for maximum speed
+- <strong>Thread safety</strong>: Safe for use in multi-threaded Python applications</p>
 <hr />
 <h2 id="1-etl-data-engineering-verified">1. ETL / Data Engineering (Verified)</h2>
 <p><strong>Example: Count lines in multiple CSV files</strong>

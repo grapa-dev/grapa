@@ -5627,8 +5627,8 @@ function thread_with_custom_syntax() {
 <h2 id="rule-organization-patterns">Rule Organization Patterns</h2>
 <p>For complex parsing scenarios, organizing rules in data structures provides better maintainability and reusability.</p>
 <h3 id="object-based-rule-organization">Object-Based Rule Organization</h3>
-<p>Organize related rules in <code>$LIST</code> objects with a common parsing interface:</p>
-<div class="highlight"><pre><span></span><code>/* Define ETL rules in a $LIST object */
+<p>Organize related rules in <code>$GOBJ</code> objects with a common parsing interface:</p>
+<div class="highlight"><pre><span></span><code>/* Define ETL rules in a $GOBJ object */
 etl_rules = {
     /* Common parsing interface */
     parse = op(parse_data, parse_rule){op()(parse_data, parse_rule)()},
@@ -5755,7 +5755,7 @@ structured_data_rule = rule &lt;csv_row_rule&gt; &#39;|&#39; &lt;csv_row_rule&gt
 <h2 id="dynamic-rule-management">Dynamic Rule Management</h2>
 <p>Add rules to existing rule collections dynamically using different patterns.</p>
 <h3 id="object-extension-with-operator">Object Extension with <code>+=</code> Operator</h3>
-<p>Add new rules to existing <code>$LIST</code> objects:</p>
+<p>Add new rules to existing <code>$GOBJ</code> objects:</p>
 <div class="highlight"><pre><span></span><code>/* Start with base ETL rules object */
 etl_rules = {
     parse = op(parse_data, parse_rule){op()(parse_data, parse_rule)()},
@@ -5769,7 +5769,7 @@ csv_result = etl_rules.parse(&quot;John,25,NY&quot;, etl_rules.csv_parser);
 /* Result: {name: &quot;John&quot;, age: 25, city: &quot;NY&quot;} */
 </code></pre></div>
 <p><strong>Key Features:</strong>
-- <strong>Object Extension</strong>: Add rules to existing <code>$LIST</code> objects using <code>+=</code> operator
+- <strong>Object Extension</strong>: Add rules to existing <code>$GOBJ</code> objects using <code>+=</code> operator
 - <strong>Immediate Availability</strong>: New rules are immediately available for use
 - <strong>Flexible Addition</strong>: Add rules based on runtime conditions</p>
 <h3 id="class-based-dynamic-rule-addition">Class-Based Dynamic Rule Addition</h3>
@@ -5812,7 +5812,7 @@ csv_result = etl_rules.parse(&quot;John,25,NY&quot;, etl_rules.csv_parser);
 <tr>
 <td><code>+=</code></td>
 <td>Object extension</td>
-<td><code>$LIST</code> objects</td>
+<td><code>$GOBJ</code> objects</td>
 <td><code>obj += (key : rule ...)</code></td>
 </tr>
 <tr>

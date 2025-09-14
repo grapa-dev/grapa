@@ -1,0 +1,39 @@
+/*
+Bad Syntax Example: Unmatched Brackets
+
+This file demonstrates various bracket matching errors that the syntax checker should detect:
+- Unclosed opening brackets
+- Unexpected closing brackets  
+- Mismatched bracket types
+*/
+
+// Example 1: Unclosed opening parenthesis
+if (true) {
+    "This should work";
+    // Missing closing brace
+
+// Example 2: Unexpected closing bracket
+"Some code";
+} // This closing brace has no matching opening brace
+
+// Example 3: Mismatched brackets
+function test() {
+    if (condition) {
+        "Nested code";
+    ] // Wrong bracket type - should be }
+}
+
+// Example 4: Multiple bracket issues
+for (i = 0; i < 10; i++) {
+    if (i % 2 == 0) {
+        "Even number: " + i;
+    // Missing closing brace for if
+// Missing closing brace for for
+
+// Example 5: Array bracket mismatch
+array = [1, 2, 3, 4, 5;
+// Missing closing bracket
+
+// Example 6: Function call bracket issues
+result = calculate(10, 20, 30;
+// Missing closing parenthesis

@@ -4674,7 +4674,12 @@ Commands | Results | Description
 <h3 id="parameter-definition-and-matching">Parameter Definition and Matching</h3>
 <p>Grapa's <code>op</code> function supports flexible parameter definition and calling with both traditional programming syntax and JSON-style syntax.</p>
 <h4 id="parameter-definition">Parameter Definition</h4>
-<div class="highlight"><pre><span></span><code>/* Basic parameter definition */
+<div class="highlight"><pre><span></span><code>/* No parameters - three equivalent ways */
+op { 5 * 2; };           /* No parentheses */
+op() { 5 * 2; };         /* Empty parentheses */
+op()(&quot;5 * 2;&quot;);          /* String compilation */
+
+/* Basic parameter definition */
 op(a,b){a*b}; | @&lt;[op,@&lt;mul,{@&lt;var,{a}&gt;,@&lt;var,{b}&gt;}&gt;],{a,b}&gt;
 
 /* Parameters with default values */

@@ -891,9 +891,9 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#array-vs-list-comparison" class="md-nav__link">
+  <a href="#array-vs-gobj-comparison" class="md-nav__link">
     <span class="md-ellipsis">
-      $ARRAY vs $LIST Comparison
+      $ARRAY vs $GOBJ Comparison
     </span>
   </a>
   
@@ -4313,9 +4313,9 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#array-vs-list-comparison" class="md-nav__link">
+  <a href="#array-vs-gobj-comparison" class="md-nav__link">
     <span class="md-ellipsis">
-      $ARRAY vs $LIST Comparison
+      $ARRAY vs $GOBJ Comparison
     </span>
   </a>
   
@@ -4646,18 +4646,18 @@
 
 <h1 id="array">$ARRAY</h1>
 <p>References:
-- <a href="../list/">$LIST object</a>
+- <a href="../list/">$GOBJ object</a>
 - <a href="../vector/">$VECTOR object</a>
 - <a href="../../advanced/array_vector_interoperability/">Array-Vector Interoperability</a></p>
 <p><strong><code>$ARRAY</code></strong> = <code>[]</code> syntax (positional, no names, indexed by position)</p>
 <p>A positional array that stores values without named keys. Elements are accessed by their position (index) rather than by name. This follows traditional C-style array terminology where arrays are indexed collections.</p>
-<h3 id="array-vs-list-comparison">$ARRAY vs $LIST Comparison</h3>
+<h3 id="array-vs-gobj-comparison">$ARRAY vs $GOBJ Comparison</h3>
 <table>
 <thead>
 <tr>
 <th>Feature</th>
 <th>$ARRAY (<code>[]</code>)</th>
-<th>$LIST (<code>{}</code>)</th>
+<th>$GOBJ (<code>{}</code>)</th>
 </tr>
 </thead>
 <tbody>
@@ -4707,7 +4707,7 @@
 &gt; x.g
 {&quot;err&quot;:-1}
 </code></pre></div></p>
-<p>There isn't currently built in support for searching for an $ARRAY or $LIST item within an $ARRAY. Currently, this would require an itterator to scan and compare, or the use of a hash of the contents as a key.</p>
+<p>There isn't currently built in support for searching for an $ARRAY or $GOBJ item within an $ARRAY. Currently, this would require an itterator to scan and compare, or the use of a hash of the contents as a key.</p>
 <h3 id="mathematical-operations">Mathematical Operations</h3>
 <p>Arrays automatically convert to vectors for mathematical operations, then convert back to arrays:</p>
 <div class="highlight"><pre><span></span><code>/* Arithmetic operations (uses vector math internally) */
@@ -4913,7 +4913,7 @@ first.user.age                             /* Returns: 30 */
 </code></pre></div>
 <blockquote>
 <p><strong>Parallelism Note:</strong>
-Array operations like <code>.map()</code> and <code>.filter()</code> are parallel by default and hardened for ETL/data processing workloads.</p>
+Array operations like <code>.map()</code> and <code>.filter()</code> are parallel by default and hardened for ETL/data processing workloads. Context objects are passed by reference for enhanced performance, but <strong>avoid mutating context objects</strong> as this causes race conditions. Use <code>.map()</code> for pure computation and <code>.reduce()</code> for aggregation instead.</p>
 </blockquote>
 <h2 id="error-handling-and-boundary-conditions">Error Handling and Boundary Conditions</h2>
 <h3 id="array-access-behavior"><strong>Array Access Behavior</strong></h3>

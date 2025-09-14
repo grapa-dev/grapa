@@ -2367,6 +2367,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#critical-scoping-rule-local-constrains-variable-scope" class="md-nav__link">
+    <span class="md-ellipsis">
+      Critical Scoping Rule: $local Constrains Variable Scope
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#output-and-echo" class="md-nav__link">
     <span class="md-ellipsis">
       Output and Echo
@@ -2746,9 +2755,9 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#list-type-list" class="md-nav__link">
+  <a href="#grapa-object-type-gobj" class="md-nav__link">
     <span class="md-ellipsis">
-      List Type ($LIST)
+      Grapa Object Type ($GOBJ)
     </span>
   </a>
   
@@ -3229,9 +3238,9 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#duplicate-key-resolution" class="md-nav__link">
+  <a href="#important-data-vs-method-access" class="md-nav__link">
     <span class="md-ellipsis">
-      Duplicate Key Resolution
+      ⚠️ IMPORTANT: Data vs Method Access
     </span>
   </a>
   
@@ -5630,6 +5639,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#critical-scoping-rule-local-constrains-variable-scope" class="md-nav__link">
+    <span class="md-ellipsis">
+      Critical Scoping Rule: $local Constrains Variable Scope
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#output-and-echo" class="md-nav__link">
     <span class="md-ellipsis">
       Output and Echo
@@ -6009,9 +6027,9 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#list-type-list" class="md-nav__link">
+  <a href="#grapa-object-type-gobj" class="md-nav__link">
     <span class="md-ellipsis">
-      List Type ($LIST)
+      Grapa Object Type ($GOBJ)
     </span>
   </a>
   
@@ -6492,9 +6510,9 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#duplicate-key-resolution" class="md-nav__link">
+  <a href="#important-data-vs-method-access" class="md-nav__link">
     <span class="md-ellipsis">
-      Duplicate Key Resolution
+      ⚠️ IMPORTANT: Data vs Method Access
     </span>
   </a>
   
@@ -7290,7 +7308,7 @@ This file is the canonical, empirically tested reference for Grapa syntax and ac
 <td style="text-align: center;">✅</td>
 </tr>
 <tr>
-<td>$LIST</td>
+<td>$GOBJ</td>
 <td style="text-align: center;">✅</td>
 <td style="text-align: center;">✅</td>
 <td style="text-align: center;">✅</td>
@@ -7341,29 +7359,29 @@ This file is the canonical, empirically tested reference for Grapa syntax and ac
 </tr>
 </tbody>
 </table>
-<p><em>$TABLE .getfield() requires two arguments: key and field. Only $ARRAY, $LIST, and $OBJ (non-system classes) support flexible mix/match of names and indices.
-</em><em><code>.get()/.set()</code> methods are now </em><em>universal</em>* and work across <code>$ARRAY</code>, <code>$LIST</code>, <code>$OBJ</code>, <code>$file</code>, <code>$TABLE</code>, and <code>$WIDGET</code> types.</p>
+<p><em>$TABLE .getfield() requires two arguments: key and field. Only $ARRAY, $GOBJ, and $OBJ (non-system classes) support flexible mix/match of names and indices.
+</em><em><code>.get()/.set()</code> methods are now </em><em>universal</em>* and work across <code>$ARRAY</code>, <code>$GOBJ</code>, <code>$OBJ</code>, <code>$file</code>, <code>$TABLE</code>, and <code>$WIDGET</code> types.</p>
 <p><strong>Key Findings:</strong>
 - <strong>Arrays (<code>[]</code>)</strong>: Use <code>array[index]</code> and <code>array.len()</code> for access and length
 - <strong>Lists (<code>{}</code>)</strong>: Use <code>list[key]</code> or <code>list.key</code> for access, <code>list.len()</code> for length
 - <strong>Objects (class)</strong>: Use <code>object.property</code> or <code>object[key]</code> for access
-- <strong><code>.getfield()/.setfield()</code> method</strong>: Universal methods for <code>$ARRAY</code>, <code>$LIST</code>, <code>$OBJ</code>, <code>$file</code>, and <code>$TABLE</code> types. Flexible mix/match of names and indices supported only for <code>$ARRAY</code>, <code>$LIST</code>, and <code>$OBJ</code> (non-system classes)
-- <strong><code>.get()/.set()</code> method</strong>: Universal methods for <code>$ARRAY</code>, <code>$LIST</code>, <code>$OBJ</code>, <code>$file</code>, <code>$TABLE</code>, and <code>$WIDGET</code> types
+- <strong><code>.getfield()/.setfield()</code> method</strong>: Universal methods for <code>$ARRAY</code>, <code>$GOBJ</code>, <code>$OBJ</code>, <code>$file</code>, and <code>$TABLE</code> types. Flexible mix/match of names and indices supported only for <code>$ARRAY</code>, <code>$GOBJ</code>, and <code>$OBJ</code> (non-system classes)
+- <strong><code>.get()/.set()</code> method</strong>: Universal methods for <code>$ARRAY</code>, <code>$GOBJ</code>, <code>$OBJ</code>, <code>$file</code>, <code>$TABLE</code>, and <code>$WIDGET</code> types
 - <strong><code>.size()</code> method</strong>: Not supported on any type (use <code>.len()</code> instead)
-- <strong><code>.keys()</code> method</strong>: Not supported on <code>$LIST</code> (use iteration instead)</p>
+- <strong><code>.keys()</code> method</strong>: Not supported on <code>$GOBJ</code> (use iteration instead)</p>
 <p><strong>Recommended Patterns:</strong>
 - For arrays: <code>array[index]</code> and <code>array.len()</code>
-- For lists: <code>list[key]</code> (preferred) or <code>list.key</code>, and <code>list.len()</code>
+- For Grapa Objects: <code>gobj[key]</code> (preferred) or <code>gobj."key"</code> for data access, and <code>gobj.len()</code>
 - For objects: <code>object.property</code> (preferred) or <code>object[key]</code>
 - For files: <code>file.getfield(key)</code> and <code>file.setfield(key, value)</code>
 - For tables: <code>table.getfield(key, field)</code> and <code>table.setfield(key, value, field)</code>
 - For widgets: <code>widget.get(name, params)</code> and <code>widget.set(name, data)</code>
-- For universal access: <code>object.get(key)</code> and <code>object.set(key, value)</code> (works with <code>$ARRAY</code>, <code>$LIST</code>, <code>$OBJ</code>, <code>$file</code>, <code>$TABLE</code>, <code>$WIDGET</code>)
-- For flexible field access: <code>object.getfield(key, field)</code> and <code>object.setfield(key, field, value)</code> (mix/match of names and indices supported for <code>$ARRAY</code>, <code>$LIST</code>, and <code>$OBJ</code> non-system classes only)
+- For universal access: <code>object.get(key)</code> and <code>object.set(key, value)</code> (works with <code>$ARRAY</code>, <code>$GOBJ</code>, <code>$OBJ</code>, <code>$file</code>, <code>$TABLE</code>, <code>$WIDGET</code>)
+- For flexible field access: <code>object.getfield(key, field)</code> and <code>object.setfield(key, field, value)</code> (mix/match of names and indices supported for <code>$ARRAY</code>, <code>$GOBJ</code>, and <code>$OBJ</code> non-system classes only)
 - Avoid <code>.size()</code> and <code>.keys()</code> on arrays, lists, and objects</p>
 <p><strong>Universal .get()/.set() Methods:</strong>
 - <strong><code>.get()/.set()</code> for <code>$ARRAY</code></strong>: <code>array.get(index)</code> and <code>array.set(index, value)</code> - 0-based indexing, supports negative indices
-- <strong><code>.get()/.set()</code> for <code>$LIST</code></strong>: <code>list.get(key)</code> and <code>list.set(key, value)</code> - alternative to bracket notation
+- <strong><code>.get()/.set()</code> for <code>$GOBJ</code></strong>: <code>gobj.get(key)</code> and <code>gobj.set(key, value)</code> - alternative to bracket notation
 - <strong><code>.get()/.set()</code> for <code>$OBJ</code></strong>: <code>obj.get(key)</code> and <code>obj.set(key, value)</code> - alternative to dot/bracket notation<br />
 - <strong><code>.get()/.set()</code> for <code>$file</code></strong>: <code>file.get(key)</code> and <code>file.set(key, value)</code> - alternative to <code>.getfield()/.setfield()</code>
 - <strong><code>.get()/.set()</code> for <code>$TABLE</code></strong>: <code>table.get(key, field)</code> and <code>table.set(key, field, value)</code> - alternative to <code>.getfield()/.setfield()</code>
@@ -7372,8 +7390,8 @@ This file is the canonical, empirically tested reference for Grapa syntax and ac
 - <strong>Keys</strong>: For lists, iterate manually instead of using <code>.keys()</code>.
 - <strong>Design Decision</strong>: <code>.get()/.set()</code> methods are now universal across most types for consistent API access</p>
 <p><strong>Flexible .getfield()/.setfield() Methods:</strong>
-- <strong>Universal Support</strong>: <code>.getfield()/.setfield()</code> work on <code>$ARRAY</code>, <code>$LIST</code>, <code>$OBJ</code>, <code>$file</code>, and <code>$TABLE</code> types
-- <strong>Mix/Match Parameters</strong>: Can combine named keys and numeric indices in any combination (supported for <code>$ARRAY</code>, <code>$LIST</code>, and <code>$OBJ</code> non-system classes only)
+- <strong>Universal Support</strong>: <code>.getfield()/.setfield()</code> work on <code>$ARRAY</code>, <code>$GOBJ</code>, <code>$OBJ</code>, <code>$file</code>, and <code>$TABLE</code> types
+- <strong>Mix/Match Parameters</strong>: Can combine named keys and numeric indices in any combination (supported for <code>$ARRAY</code>, <code>$GOBJ</code>, and <code>$OBJ</code> non-system classes only)
 - <strong>Index-to-Name Conversion</strong>: When inserting at a numeric index, the index becomes a string key for future access
 - <strong>2D Structures</strong>: Supports arrays of lists, lists of arrays, and mixed data structures
 - <strong>Boundary Insertion</strong>: Use <code>length</code> to append at end, <code>-length</code> to prepend at beginning</p>
@@ -7384,20 +7402,53 @@ This file is the canonical, empirically tested reference for Grapa syntax and ac
 <h2 id="variable-scoping">Variable Scoping</h2>
 <p>Grapa provides sophisticated namespace scoping with <code>$global</code>, <code>$this</code>, and <code>$local</code> identifiers. Proper use of local variables is crucial for thread safety and avoiding variable conflicts.</p>
 <p><strong>Important</strong>: All namespace accessors must use the <code>$</code> prefix. The old syntax without <code>$</code> (e.g., <code>global.x</code>, <code>this.x</code>, <code>local.x</code>) is no longer supported.</p>
-<div class="highlight"><pre><span></span><code>/* ✅ RECOMMENDED - Declare local variables upfront */
+<h2 id="critical-scoping-rule-local-constrains-variable-scope">Critical Scoping Rule: <code>$local</code> Constrains Variable Scope</h2>
+<p><strong>The <code>$local</code> prefix constrains the variable to the local scope where it's used.</strong> This means:</p>
+<ul>
+<li><strong>Declaration</strong>: Use <code>$local.variable = value</code> to declare a new local variable</li>
+<li><strong>Access</strong>: Use <code>variable</code> (without <code>$local.</code>) to access the already-declared variable</li>
+<li><strong>Block Scope</strong>: Using <code>$local.variable</code> inside <code>{}</code> blocks creates a new local variable in that block scope, not the function scope</li>
+</ul>
+<div class="highlight"><pre><span></span><code>/* ✅ CORRECT - Declare with $local, access without $local */
 myFunction = op() {
-    $local.result = null;
-    $local.temp = {};
-    $local.i = 0;
+    $local.result = null;    // Declaration: creates function-scope variable
+    $local.temp = {};        // Declaration: creates function-scope variable
+    $local.i = 0;            // Declaration: creates function-scope variable
 
-    // Now safe to use variables without conflicts
-    result = process();
+    // Access: use variables without $local prefix
+    result = process();      // ✅ Accesses function-scope &#39;result&#39;
+    temp.data = &quot;value&quot;;     // ✅ Accesses function-scope &#39;temp&#39;
+    i += 1;                  // ✅ Accesses function-scope &#39;i&#39;
     return result;
+};
+
+/* ❌ WRONG - Using $local for access creates new block-scope variables */
+badFunction = op() {
+    $local.errors = [];      // Declaration: creates function-scope variable
+
+    foreach item in items {
+        $local.errors += &quot;Error&quot;;  // ❌ Creates NEW local variable in block scope!
+        // This does NOT append to the function-scope &#39;errors&#39; variable
+    };
+
+    return errors;           // ❌ &#39;errors&#39; is empty - block-scope variables are gone
+};
+
+/* ✅ CORRECT - Declare with $local, access without $local */
+goodFunction = op() {
+    $local.errors = [];      // Declaration: creates function-scope variable
+
+    foreach item in items {
+        errors += &quot;Error&quot;;   // ✅ Accesses function-scope &#39;errors&#39;
+        // This correctly appends to the function-scope variable
+    };
+
+    return errors;           // ✅ &#39;errors&#39; contains all accumulated errors
 };
 
 /* ✅ ALTERNATIVE - Reset $local to a list */
 myFunction2 = op() {
-    $local = {result: null, temp: {}, i: 0};
+    $local = {&#39;result&#39;: null, &#39;temp&#39;: {}, &#39;i&#39;: 0};
 
     // Now safe to use variables without conflicts
     result = process();
@@ -7442,7 +7493,7 @@ debug(&quot;Database query&quot;, 1);
 &quot;File size: ${size} bytes&quot;.interpolate().echo();
 
 /* ✅ With parameters */
-&quot;Name: ${name}, Age: ${age.str()}&quot;.interpolate({name:&quot;Bob&quot;,age:23}).echo();
+&quot;Name: ${name}, Age: ${age.str()}&quot;.interpolate({&#39;name&#39;:&quot;Bob&quot;,&#39;age&#39;:23}).echo();
 
 /* ✅ Complex expressions */
 &quot;Sum: ${x + y}, Product: ${x * y}&quot;.interpolate().echo();
@@ -7542,7 +7593,7 @@ for char in text {
 }
 
 /* List iteration */
-data = {a:1, b:2, c:3};
+data = {&#39;a&#39;:1, &#39;b&#39;:2, &#39;c&#39;:3};
 for value in data {
     (&quot;Value: &quot; + value).echo();
 }
@@ -7798,6 +7849,22 @@ casefolded = names.map(op(name) { name.casefold(); });  /* [&quot;john&quot;, &q
 /* Parallel processing with thread count */
 large_data = (1000000).range(0,1);
 squares = large_data.map(op(x) { x * x; }, 8);  /* Limit to 8 threads */
+
+/* WARNING: Context object mutations cause race conditions */
+x = {&#39;a&#39;: 0, &#39;b&#39;: 0};
+y = 20.range().map(op(x, y) {
+    y.a += 1;        /* Race condition: multiple threads may read same value */
+    y.b += x;        /* Race condition: multiple threads may read same value */
+    y.a * y.b;       /* Return computed value */
+}, x, 4);            /* 4 threads processing */
+
+/* Better approach: Use .map() for computation, .reduce() for aggregation */
+x = {&#39;a&#39;: 1, &#39;b&#39;: 2};
+y = 20.range().map(op(x, y) {
+    x + y.a * y.b;   /* Pure computation - no mutations */
+}, x, 4).reduce(op(a, b) {
+    a += b;          /* Sequential aggregation */
+});
 </code></pre></div>
 <h3 id="filter-select-elements">.filter() - Select Elements</h3>
 <div class="highlight"><pre><span></span><code>/* Filter even numbers */
@@ -7811,6 +7878,25 @@ non_empty = lines.filter(op(line) { line.len() &gt; 0; });  /* [&quot;hello&quot
 /* Parallel filtering */
 large_data = (1000000).range(0,1);
 filtered = large_data.filter(op(x) { x % 2 == 0; }, 8);  /* Limit to 8 threads */
+
+/* WARNING: Context object mutations cause race conditions */
+x = {&#39;count&#39;: 0, &#39;sum&#39;: 0};
+y = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].filter(op(x, y) {
+    y.count += 1;        /* Race condition: multiple threads may read same value */
+    if (x % 2 == 0) {    /* Filter even numbers */
+        y.sum += x;      /* Race condition: multiple threads may read same value */
+        true;            /* Include in result */
+    } else {
+        false;           /* Exclude from result */
+    };
+}, x, 4);                /* 4 threads processing */
+
+/* Better approach: Separate filtering and aggregation */
+x = {&#39;threshold&#39;: 2};
+y = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].filter(op(x, y) {
+    x &gt; y.threshold;     /* Pure filtering - no mutations */
+}, x, 4);
+sum = y.reduce(op(a, b) { a += b; });  /* Separate aggregation */
 </code></pre></div>
 <h3 id="reduce-accumulate-values">.reduce() - Accumulate Values</h3>
 <p><code>.reduce()</code> accumulates values by applying a function to each element. The function takes two parameters: the accumulator (<code>acc</code>) and the current element (<code>x</code>).</p>
@@ -7945,7 +8031,7 @@ sum = data.reduce(op(acc, x) { acc + x; }, 0, 4);
 [1, 2, 3].reduce(op(x, y) {
     if (y == 2) x.o = op(a, b) { a * b; };  /* Switch to multiplication */
     x.st = x.o(x.st, y);  /* Apply current operation */
-}, {st: 10, o: op(a, b) { a + b; }});  /* Initial state: {st: 10, o: add} */
+}, {&#39;st&#39;: 10, &#39;o&#39;: op(a, b) { a + b; }});  /* Initial state: {&#39;st&#39;: 10, &#39;o&#39;: add} */
 
 /* Process: 10+1=11, 11*2=22, 22*3=66 */
 /* Result: {&quot;st&quot;: 66, &quot;o&quot;: @&lt;mul function&gt;} */
@@ -7956,7 +8042,7 @@ sum = data.reduce(op(acc, x) { acc + x; }, 0, 4);
     y.count += 1;
     y.sum += x;
     x * y.multiplier;
-}, {count: 0, sum: 0, multiplier: 2});
+}, {&#39;count&#39;: 0, &#39;sum&#39;: 0, &#39;multiplier&#39;: 2});
 
 /* Filter with state tracking */
 [1, 2, 3, 4, 5].filter(op(x, y) {
@@ -8085,18 +8171,29 @@ while (i &lt; numbers.len()) {
 - <code>array.len()</code> - Get array length
 - <code>array.size()</code> - <strong>Not supported</strong> (use <code>.len()</code> instead)
 - <code>array.get(index)</code> - <strong>Not supported</strong> (use bracket notation)</p>
-<h3 id="list-type-list">List Type (<code>$LIST</code>)</h3>
-<p>Lists are created with curly braces and support key-based access:</p>
-<div class="highlight"><pre><span></span><code>/* Create lists */
+<h3 id="grapa-object-type-gobj">Grapa Object Type (<code>$GOBJ</code>)</h3>
+<p>Grapa Objects are created with curly braces and support key-based access:</p>
+<div class="highlight"><pre><span></span><code>/* Create Grapa Objects */
 config = {&quot;debug&quot;: true, &quot;port&quot;: 3000, &quot;host&quot;: &quot;localhost&quot;};
 user = {&quot;name&quot;: &quot;John&quot;, &quot;age&quot;: 30, &quot;city&quot;: &quot;NYC&quot;};
 nested = {&quot;level1&quot;: {&quot;level2&quot;: &quot;value&quot;}};
 
+/* ⚠️ IMPORTANT: Data item labels must be quoted strings */
+crypto_keys = {
+    &#39;pub&#39;: &quot;public_key_data&quot;,     /* ✅ Quoted - data item */
+    &#39;priv&#39;: &quot;private_key_data&quot;,   /* ✅ Quoted - data item */
+    &#39;method&#39;: &#39;rsa&#39;              /* ✅ Quoted - data item */
+};
+
 /* Access elements */
 debug_mode = config[&quot;debug&quot;];    /* true */
-user_name = user.name;           /* &quot;John&quot; */
+user_name = user.&quot;name&quot;;         /* &quot;John&quot; - quoted for data access */
 deep_value = nested[&quot;level1&quot;][&quot;level2&quot;];  /* &quot;value&quot; */
-length = config.len();           /* 3 */
+length = config.len();           /* 3 - method call, no quotes needed */
+
+/* Access crypto data */
+pub_key = crypto_keys.&#39;pub&#39;;     /* &quot;public_key_data&quot; - quoted for data access */
+method = crypto_keys.&#39;method&#39;;   /* &quot;rsa&quot; - quoted for data access */
 
 /* Iterate over lists */
 keys = [&quot;debug&quot;, &quot;port&quot;, &quot;host&quot;];
@@ -8170,7 +8267,7 @@ person1.getInfo();               /* Call method */
 <tr>
 <th>Feature</th>
 <th>$ARRAY</th>
-<th>$LIST</th>
+<th>$GOBJ</th>
 <th>$OBJ</th>
 </tr>
 </thead>
@@ -8184,13 +8281,13 @@ person1.getInfo();               /* Call method */
 <tr>
 <td>Access</td>
 <td><code>array[index]</code></td>
-<td><code>list[key]</code> or <code>list.key</code></td>
+<td><code>gobj[key]</code> or <code>gobj."key"</code></td>
 <td><code>object.property</code></td>
 </tr>
 <tr>
 <td>Length</td>
 <td><code>array.len()</code></td>
-<td><code>list.len()</code></td>
+<td><code>gobj.len()</code></td>
 <td>Not available</td>
 </tr>
 <tr>
@@ -8769,7 +8866,7 @@ range3 = arr.range(1, 1);  /* [1, 2] - generates sequence, not array slice */
 <li>This replaces slice notation like <code>arr[1:]</code>, <code>arr[:3]</code>, <code>arr[1:3]</code></li>
 <li>The count parameter in <code>.mid()</code> specifies how many elements to return</li>
 <li>Note: <code>.range()</code> generates new sequences, while <code>.mid()</code>, <code>.left()</code>, and <code>.right()</code> extract from existing arrays</li>
-<li>Note: <code>.left()</code>, <code>.right()</code>, and <code>.mid()</code> also work with <code>$LIST</code> types</li>
+<li>Note: <code>.left()</code>, <code>.right()</code>, and <code>.mid()</code> also work with <code>$GOBJ</code> types</li>
 </ul>
 <h3 id="array-methods">Array Methods</h3>
 <p>Grapa provides several useful array methods:</p>
@@ -8815,41 +8912,61 @@ parts = text.split(&quot;,&quot;);  /* [&quot;hello&quot;, &quot;world&quot;, &q
 - <code>.join(delimiter)</code> combines array elements with the specified delimiter
 - <code>.split(delimiter)</code> splits a string into an array using the delimiter</p>
 <h3 id="listobject-access">List/Object Access</h3>
-<p>Lists (<code>$LIST</code>) and objects (<code>$OBJ</code>) support bracket and dot notation:</p>
+<p>Grapa Objects (<code>$GOBJ</code>) and objects (<code>$OBJ</code>) support bracket and dot notation:</p>
 <div class="highlight"><pre><span></span><code>obj = {&quot;a&quot;: 11, &quot;b&quot;: 22, &quot;c&quot;: 33};
 value = obj[&quot;b&quot;];          /* Returns 22 (key access) */
 value = obj.key;            /* Returns value for key &#39;key&#39; if present */
 value = obj.&quot;b&quot;;           /* Returns 22 (key access) */
 
-/* $LIST supports both key and index access: */
+/* $GOBJ supports both key and index access: */
 value = obj[1];             /* Returns 22 (index access) */
 value = obj[&quot;a&quot;];           /* Returns 11 (key access) */
 value = obj.a;              /* Returns 11 (dot notation key access) */
 name = obj.getname(1);      /* Returns &quot;b&quot; (key name) */
-
-/* ⚠️ IMPORTANT: Hyphens in property names require quotes */
-/* The hyphen (-) is interpreted as a subtraction operator */
-config = {ab:3, &quot;a-b&quot;:4, a-b:5};  /* a-b becomes 5 (math operation) */
-config.ab;     /* 3 */
-config[&quot;a-b&quot;]; /* 4 (correct) */
-config.&quot;a-b&quot;;  /* 4 (also correct) */
-/* config.a-b;  ❌ This would be interpreted as config.a - b (subtraction) */
 </code></pre></div>
+<h3 id="important-data-vs-method-access"><strong>⚠️ IMPORTANT: Data vs Method Access</strong></h3>
+<p>In Grapa Objects (<code>$GOBJ</code>), there's a crucial distinction between data access and method access:</p>
 <ul>
-<li>Use bracket and dot notation for <code>$LIST</code> and <code>$OBJ</code>.</li>
-<li>$LIST supports both key access (obj["key"], obj.key) and index access (obj[2]).</li>
-<li><code>.get()</code> is not supported for <code>$LIST</code> or <code>$OBJ</code>.</li>
+<li><strong>Unquoted labels</strong> (<code>obj.key</code>): Searches for <code>$ID</code> or <code>$OP</code> in the object's class hierarchy (methods, properties)</li>
+<li><strong>Quoted labels</strong> (<code>obj."key"</code>): Accesses data items stored in the object</li>
 </ul>
-<h3 id="duplicate-key-resolution">Duplicate Key Resolution</h3>
-<p>When objects have duplicate keys, Grapa follows "last value wins" behavior:</p>
-<div class="highlight"><pre><span></span><code>obj = {name: &quot;Alice&quot;, age: 30, name: &quot;Bob&quot;};
+<div class="highlight"><pre><span></span><code>/* Example: Cryptographic key object */
+rpk_alice = {
+    &#39;pub&#39;: &quot;public_key_data&quot;,    /* Data item - must be quoted */
+    &#39;priv&#39;: &quot;private_key_data&quot;   /* Data item - must be quoted */
+};
+
+/* Correct data access */
+pub_key = rpk_alice.&#39;pub&#39;;      /* ✅ Returns &quot;public_key_data&quot; */
+priv_key = rpk_alice.&#39;priv&#39;;    /* ✅ Returns &quot;private_key_data&quot; */
+
+/* Incorrect - would search for $ID/$OP named &#39;pub&#39; */
+/* pub_key = rpk_alice.pub;    ❌ Would look for method/property &#39;pub&#39; */
+</code></pre></div>
+<p>/<em> ⚠️ IMPORTANT: Hyphens in property names require quotes </em>/
+/<em> The hyphen (-) is interpreted as a subtraction operator </em>/
+config = {ab:3, "a-b":4, a-b:5};  /<em> a-b becomes 5 (math operation) </em>/
+config.ab;     /<em> 3 </em>/
+config["a-b"]; /<em> 4 (correct) </em>/
+config."a-b";  /<em> 4 (also correct) </em>/
+/<em> config.a-b;  ❌ This would be interpreted as config.a - b (subtraction) </em>/
+<div class="highlight"><pre><span></span><code>- Use bracket and dot notation for `$GOBJ` and `$OBJ`.
+- $GOBJ supports both key access (obj[&quot;key&quot;], obj.key) and index access (obj[2]).
+- `.get()` is not supported for `$GOBJ` or `$OBJ`.
+
+### Duplicate Key Resolution
+
+When objects have duplicate keys, Grapa follows &quot;last value wins&quot; behavior:
+
+```grapa
+obj = {name: &quot;Alice&quot;, age: 30, name: &quot;Bob&quot;};
 obj.name;                  /* Returns &quot;Bob&quot; (last value) */
 
 obj2 = {a: 1, b: 2, a: 3, c: 4, b: 5};
 obj2.a;                    /* Returns 3 (last value) */
 obj2.b;                    /* Returns 5 (last value) */
 obj2.c;                    /* Returns 4 (only value) */
-</code></pre></div>
+</code></pre></div></p>
 <ul>
 <li><strong>Search Order</strong>: Property resolution searches from the end of the object (tail) to the beginning (head)</li>
 <li><strong>Last Value Wins</strong>: When duplicate keys exist, the last occurrence takes precedence</li>
@@ -8874,7 +8991,7 @@ lst.a;                     /* Returns 6 (updated last value) */
 <p><strong>Supported Data Types:</strong>
 - <code>$ARRAY</code> - Arrays: <code>[1, 2, 3]</code>
 - <code>$TUPLE</code> - Tuples: <code>(1, 2, 3)</code>
-- <code>$LIST</code> - Lists: <code>{a:1, b:2, c:3}</code>
+- <code>$GOBJ</code> - Grapa Objects: <code>{a:1, b:2, c:3}</code>
 - <code>$OBJ</code> - Objects: <code>{a:1, b:2, c:3}</code>
 - <code>$XML</code> - XML structures: <code>&lt;root&gt;&lt;item&gt;value&lt;/item&gt;&lt;/root&gt;</code>
 - <code>$TAG</code> - HTML/TAG structures: <code>&lt;div&gt;&lt;p&gt;text&lt;/p&gt;&lt;/div&gt;</code>
@@ -8899,7 +9016,7 @@ lst.a;                     /* Returns 6 (updated last value) */
 </code></pre></div></p>
 <h4 id="unique-function">.unique() Function</h4>
 <p>Removes duplicates while preserving the "last value wins" principle:</p>
-<p><strong>For Objects (<code>$OBJ</code>) and Lists (<code>$LIST</code>):</strong>
+<p><strong>For Objects (<code>$OBJ</code>) and Grapa Objects (<code>$GOBJ</code>):</strong>
 <div class="highlight"><pre><span></span><code>{a: 1, b: 2, a: 3, c: 4, b: 5}.unique();  /* Returns {&quot;a&quot;: 3, &quot;b&quot;: 5, &quot;c&quot;: 4} */
 </code></pre></div></p>
 <ul>
@@ -8955,7 +9072,7 @@ content = file.getfield(&quot;file.txt&quot;);        /* Get by named key */
 <ul>
 <li>Use <code>.getfield()</code> and <code>.setfield()</code> for <code>$file</code> and <code>$TABLE</code> with named keys only.</li>
 <li>Bracket and dot notation are not valid for <code>$file</code> and <code>$TABLE</code>.</li>
-<li>Only <code>$ARRAY</code>, <code>$LIST</code>, and <code>$OBJ</code> (non-system classes) support flexible mix/match of names and indices with <code>.getfield()/.setfield()</code>.</li>
+<li>Only <code>$ARRAY</code>, <code>$GOBJ</code>, and <code>$OBJ</code> (non-system classes) support flexible mix/match of names and indices with <code>.getfield()/.setfield()</code>.</li>
 </ul>
 <p><strong>See also:</strong> <a href="../../type/class/">Class Inheritance and Variable Scoping</a> for detailed information about Grapa's sophisticated class system with copy-on-write semantics.</p>
 <h3 id="type-system-philosophy">Type System Philosophy</h3>
@@ -8976,7 +9093,7 @@ element = [&quot;a&quot;, &quot;b&quot;, &quot;c&quot;];
 element.type();        /* Returns $ARRAY */
 
 obj = {&quot;a&quot;: 11, &quot;b&quot;: 22, &quot;c&quot;: 33};
-obj.type();            /* Returns $LIST */
+obj.type();            /* Returns $GOBJ */
 
 table = {}.table(&quot;ROW&quot;);
 table.type();          /* Returns $TABLE */
@@ -9603,7 +9720,7 @@ switch (value.type()) {
     case $STR: &quot;String value&quot;.echo();
     case $INT: &quot;Integer value&quot;.echo();
     case $ARRAY: &quot;Array value&quot;.echo();
-    case $LIST: &quot;List value&quot;.echo();
+    case $GOBJ: &quot;Grapa Object value&quot;.echo();
     default: &quot;Unknown type&quot;.echo();
 };
 </code></pre></div>
@@ -9935,7 +10052,7 @@ name = table.get(&quot;key1&quot;, &quot;name&quot;);      /* $STR */
 age = table.get(&quot;key1&quot;, &quot;age&quot;);        /* $INT, no .int() needed */
 value = table.get(&quot;key1&quot;, &quot;value&quot;);    /* $FLOAT, no .float() needed */
 
-/* RAW field type: can store any Grapa object (e.g., JSON, XML, $LIST, $ARRAY) */
+/* RAW field type: can store any Grapa object (e.g., JSON, XML, $GOBJ, $ARRAY) */
 table.mkfield(&quot;meta&quot;, &quot;RAW&quot;);
 table.set(&quot;key1&quot;, {&quot;foo&quot;: 123, &quot;bar&quot;: [1,2,3]}, &quot;meta&quot;);
 meta = table.get(&quot;key1&quot;, &quot;meta&quot;);      /* Returns Grapa object automatically */
@@ -9990,7 +10107,7 @@ value = my_array[2];               /* 99 */
 my_array[2] = 100;                 /* Set index 2 to 100 */
 value = my_array[2];               /* 100 */
 
-/* $LIST examples */
+/* $GOBJ examples */
 $global.my_list = {&quot;name&quot;: &quot;Alice&quot;, &quot;age&quot;: 30, &quot;city&quot;: &quot;New York&quot;};
 
 /* Using universal .get()/.set() methods */
@@ -10054,7 +10171,7 @@ age2 = my_table.getfield(&quot;user2&quot;, &quot;age&quot;);    /* 25 */
 - <strong>Backward Compatibility</strong>: All existing code continues to work
 - <strong>Type Safety</strong>: Proper parameter validation and error handling</p>
 <h3 id="flexible-getfieldsetfield-methods">Flexible .getfield()/.setfield() Methods</h3>
-<p>The <code>.getfield()</code> and <code>.setfield()</code> methods provide universal support across all data types. Flexible parameter combinations (mix/match of names and indices) are supported for <code>$ARRAY</code>, <code>$LIST</code>, and <code>$OBJ</code> (non-system classes) types:</p>
+<p>The <code>.getfield()</code> and <code>.setfield()</code> methods provide universal support across all data types. Flexible parameter combinations (mix/match of names and indices) are supported for <code>$ARRAY</code>, <code>$GOBJ</code>, and <code>$OBJ</code> (non-system classes) types:</p>
 <div class="highlight"><pre><span></span><code>/* Mix/Match Examples */
 $global.data = {&quot;a&quot;: [1, 2, 3], &quot;b&quot;: [4, 5, 6]};
 
@@ -10095,8 +10212,8 @@ file.setfield(&quot;key&quot;, &quot;value&quot;);        /* Works - named key o
 /* file.setfield(0, &quot;value&quot;);        /* Would NOT work - no index support */
 </code></pre></div>
 <p><strong>Key Features:</strong>
-- <strong>Universal Support</strong>: Works on <code>$ARRAY</code>, <code>$LIST</code>, <code>$OBJ</code>, <code>$file</code>, and <code>$TABLE</code> types
-- <strong>Mix/Match Parameters</strong>: Combine named keys and numeric indices in any order (for <code>$ARRAY</code>, <code>$LIST</code>, and <code>$OBJ</code> non-system classes only)
+- <strong>Universal Support</strong>: Works on <code>$ARRAY</code>, <code>$GOBJ</code>, <code>$OBJ</code>, <code>$file</code>, and <code>$TABLE</code> types
+- <strong>Mix/Match Parameters</strong>: Combine named keys and numeric indices in any order (for <code>$ARRAY</code>, <code>$GOBJ</code>, and <code>$OBJ</code> non-system classes only)
 - <strong>Index-to-Name Conversion</strong>: Numeric indices become string keys when inserting
 - <strong>2D Structures</strong>: Supports arrays of lists, lists of arrays, and mixed combinations
 - <strong>Boundary Insertion</strong>: Use <code>length</code> to append, <code>-length</code> to prepend
@@ -10540,7 +10657,16 @@ switch (1) {
 - <strong>Nested Contexts</strong>: Control flow propagates through all nested execution contexts</p>
 <h3 id="functional-programming-syntax"><strong>Functional Programming Syntax</strong></h3>
 <p>Grapa provides elegant functional programming syntax:</p>
-<div class="highlight"><pre><span></span><code>/* Lambda expressions */
+<div class="highlight"><pre><span></span><code>/* Function expressions - parameters are optional */
+/* No parameters */
+simple = op { 5 * 2; };
+simple();  /* Returns: 10 */
+
+/* Empty parameter list */
+empty = op() { 5 * 2; };
+empty();  /* Returns: 10 */
+
+/* With parameters */
 double = op(x) { x * 2; };
 square = op(x) { x * x; };
 
@@ -10594,24 +10720,42 @@ generated_code = template.interpolate({
 <p>/*</p>
 <h1 id="dynamic-code-execution-grapas-core-meta-programming-capability">Dynamic Code Execution (Grapa's Core Meta-Programming Capability)</h1>
 <p>Grapa's most powerful feature is its ability to compile and execute code at runtime. Unlike most languages, Grapa provides <strong>superior</strong> dynamic code execution capabilities through execution trees that are both human-readable and directly executable.</p>
-<h2 id="using-syseval-for-immediate-evaluation">Using <code>$sys().eval()</code> for Immediate Evaluation</h2>
+<h2 id="using-syseval-and-syseval2-for-immediate-evaluation">Using <code>$sys().eval()</code> and <code>$sys().eval2()</code> for Immediate Evaluation</h2>
+<p>Grapa provides two evaluation methods with different parameter handling:</p>
+<h3 id="syseval-mutable-parameters-pass-by-reference"><code>$sys().eval()</code> - Mutable Parameters (Pass-by-Reference)</h3>
 <ul>
 <li>Evaluates a string as Grapa code immediately</li>
-<li>Optionally accepts a parameter map for dynamic execution</li>
-<li>Perfect for one-off evaluations and user input processing</li>
+<li>Parameters are <strong>mutable</strong> - can modify passed values</li>
+<li>Perfect for function-like behavior and traditional programming patterns</li>
+</ul>
+<h3 id="syseval2-immutable-parameters-pass-by-value"><code>$sys().eval2()</code> - Immutable Parameters (Pass-by-Value)</h3>
+<ul>
+<li>Evaluates a string as Grapa code immediately</li>
+<li>Parameters are <strong>immutable</strong> - cannot modify passed values</li>
+<li>Perfect for safe evaluation of user input and templates</li>
 </ul>
 <div class="highlight"><pre><span></span><code>/* Simple evaluation */
 result = $sys().eval(&quot;5*3&quot;); // result: 15
+result = $sys().eval2(&quot;5*3&quot;); // result: 15
 
-/* Evaluation with parameters */
+/* Evaluation with parameters - mutable */
 result = $sys().eval(&quot;x + y&quot;, {&quot;x&quot;: 2, &quot;y&quot;: 4}); // result: 6
 
-/* Complex expressions */
-result = $sys().eval(&quot;(a + b) * c&quot;, {&quot;a&quot;: 2, &quot;b&quot;: 3, &quot;c&quot;: 4}); // result: 20
+/* Evaluation with parameters - immutable */
+result = $sys().eval2(&quot;x + y&quot;, {&quot;x&quot;: 2, &quot;y&quot;: 4}); // result: 6
 
-/* User input processing */
+/* Parameter mutability comparison */
+x = 0;
+result = $sys().eval(&quot;a = 10; a&quot;, {&quot;a&quot;: x}); // result: 10
+x; // 10 - parameter was mutated
+
+x = 0;
+result = $sys().eval2(&quot;a = 10; a&quot;, {&quot;a&quot;: x}); // result: 10
+x; // Still 0 - parameter was not mutated
+
+/* User input processing (safe) */
 user_input = &quot;2 * (3 + 4)&quot;;
-result = $sys().eval(user_input); // result: 14
+result = $sys().eval2(user_input); // result: 14
 </code></pre></div>
 <h2 id="using-op-for-compiled-operations">Using <code>op()</code> for Compiled Operations</h2>
 <ul>
@@ -10619,6 +10763,7 @@ result = $sys().eval(user_input); // result: 14
 <li>Creates reusable, optimized functions that can be executed multiple times</li>
 <li>Supports both positional and named parameters</li>
 <li>Enables advanced meta-programming patterns</li>
+<li><strong>Parameters are mutable</strong> - uses pass-by-reference, can modify original values</li>
 </ul>
 <div class="highlight"><pre><span></span><code>/* Basic compilation */
 op_obj = op()(&quot;a + b&quot;);
@@ -10645,15 +10790,26 @@ while (i &lt; operations.len()) {
 /* Execute generated functions */
 funcs[&quot;add&quot;](5, 3).echo();  // 8
 funcs[&quot;mul&quot;](5, 3).echo();  // 15
+
+/* Parameter mutability example */
+f = op(a:0)(&quot;a = 10; a&quot;);
+x = 0;
+result = f(x);  // x is now 10 - parameter was mutated
+x.echo();  // 10 - original value was modified
+
+/* To prevent mutation, use .copy() */
+x = 0;
+result = f(x.copy());  // x remains 0
+x.echo();  // Still 0
 </code></pre></div>
 <h2 id="object-and-class-extension">Object and Class Extension</h2>
 <p>Grapa provides operators for extending objects and classes with new methods and properties:</p>
 <h3 id="extension-operators">Extension Operators</h3>
 <ul>
 <li><strong><code>+=</code></strong> - Adds a <strong>single item</strong> to an object or class</li>
-<li><strong><code>++=</code></strong> - Adds a <strong>$LIST of items</strong> to an object or class</li>
+<li><strong><code>++=</code></strong> - Adds a <strong>$GOBJ of items</strong> to an object or class</li>
 </ul>
-<p><strong>Note:</strong> The <code>+=</code> operator is context-aware. When used on numeric types (<code>$INT</code>, <code>$FLOAT</code>), it performs addition. When used on collection types (<code>$ARRAY</code>, <code>$LIST</code>) or objects, it performs extension (adding methods/properties).</p>
+<p><strong>Note:</strong> The <code>+=</code> operator is context-aware. When used on numeric types (<code>$INT</code>, <code>$FLOAT</code>), it performs addition. When used on collection types (<code>$ARRAY</code>, <code>$GOBJ</code>) or objects, it performs extension (adding methods/properties).</p>
 <h3 id="extending-individual-objects">Extending Individual Objects</h3>
 <div class="highlight"><pre><span></span><code>/* Create an object and add a method */
 obj = {count: 0};
@@ -10665,7 +10821,7 @@ obj.increment(5);     /* count becomes 6 */
 </code></pre></div>
 <h3 id="extending-classes">Extending Classes</h3>
 <div class="highlight"><pre><span></span><code>/* Define a custom class */
-MyClass = class ($LIST) {
+MyClass = class ($GOBJ) {
     value: 0;
     add: op(x) { value += x; };
 };

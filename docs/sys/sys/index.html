@@ -1979,6 +1979,15 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#installation-detection-with-grapa_bin" class="md-nav__link">
+    <span class="md-ellipsis">
+      Installation Detection with $GRAPA_BIN
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#cli-script-example" class="md-nav__link">
     <span class="md-ellipsis">
       CLI Script Example
@@ -2074,6 +2083,15 @@
   <a href="#evalscript-sparams-srule-sprofile" class="md-nav__link">
     <span class="md-ellipsis">
       eval(script, sparams={}, srule="", sprofile="")
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#eval2script-sparams-srule" class="md-nav__link">
+    <span class="md-ellipsis">
+      eval2(script, sparams={}, srule="")
     </span>
   </a>
   
@@ -4447,6 +4465,15 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#installation-detection-with-grapa_bin" class="md-nav__link">
+    <span class="md-ellipsis">
+      Installation Detection with $GRAPA_BIN
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#cli-script-example" class="md-nav__link">
     <span class="md-ellipsis">
       CLI Script Example
@@ -4542,6 +4569,15 @@
   <a href="#evalscript-sparams-srule-sprofile" class="md-nav__link">
     <span class="md-ellipsis">
       eval(script, sparams={}, srule="", sprofile="")
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#eval2script-sparams-srule" class="md-nav__link">
+    <span class="md-ellipsis">
+      eval2(script, sparams={}, srule="")
     </span>
   </a>
   
@@ -4746,8 +4782,8 @@ $ARRAY
 </tr>
 <tr>
 <td><code>$GRAPA_BIN</code></td>
-<td>Binary directory path</td>
-<td><code>"bin"</code></td>
+<td>Binary directory path (base installation directory)</td>
+<td><code>"/Users/matichuk/GitHub/grapa"</code></td>
 </tr>
 <tr>
 <td><code>$NAME</code></td>
@@ -4937,10 +4973,31 @@ debug = $sys().getenv(&quot;DEBUG_MODE&quot;);
 </ul>
 <h4 id="useful-for-advanced-cli-scripts"><strong>Useful for Advanced CLI Scripts</strong></h4>
 <ul>
-<li><strong><code>$GRAPA_BIN</code></strong>: Binary directory - for finding related executables</li>
+<li><strong><code>$GRAPA_BIN</code></strong>: Base installation directory - for finding related executables and detecting installation type</li>
 <li><strong><code>$GRAPA_LIB</code></strong>: Library directory - for library discovery and loading</li>
 <li><strong><code>$NAME</code></strong>: Program name - for self-referencing in usage messages</li>
 </ul>
+<h4 id="installation-detection-with-grapa_bin"><strong>Installation Detection with $GRAPA_BIN</strong></h4>
+<p>Use <code>$GRAPA_BIN</code> to detect whether Grapa is running from a development or production installation:</p>
+<div class="highlight"><pre><span></span><code>/* Detect installation type */
+grapa_bin = $sys().getenv($GRAPA_BIN);
+is_development = grapa_bin.grep(&quot;GitHub&quot;).len() &gt; 0;
+is_production = !is_development;
+
+/* Set paths based on installation type */
+if (is_development) {
+    /* Development installation - running from source */
+    user_lib = $sys().getenv($HOME) + &quot;/.grapa/lib&quot;;
+    config_dir = $sys().getenv($HOME) + &quot;/.grapa&quot;;
+} else {
+    /* Production installation - installed via installer */
+    user_lib = &quot;/usr/local/lib&quot;;
+    config_dir = &quot;/etc/grapa&quot;;
+}
+
+(&quot;Installation type: &quot; + (is_development ? &quot;development&quot; : &quot;production&quot;)).echo();
+(&quot;Base directory: &quot; + grapa_bin).echo();
+</code></pre></div>
 <h4 id="cli-script-example"><strong>CLI Script Example</strong></h4>
 <div class="highlight"><pre><span></span><code>/* cli_script.grc */
 /* Get essential system information */
@@ -4986,8 +5043,9 @@ if (!$file(output_dir).exists()) {
 <h3 id="automatic-configuration-file-loading">Automatic Configuration File Loading</h3>
 <p>Grapa automatically loads configuration files during startup to set up your environment:</p>
 <p><strong>Configuration File Search Order:</strong>
-1. <strong><code>~/.grapa/config.grz</code></strong> - Compressed configuration file in user's home directory
-2. <strong><code>$WORK/.grapa/config.grc</code></strong> - Plain text configuration file in current working directory</p>
+1. <strong><code>~/.grapa/config.grc</code></strong> - Plain text configuration file in user's home directory (recommended)
+2. <strong><code>~/.grapa/config.grz</code></strong> - Compressed configuration file in user's home directory (for large configs)
+3. <strong><code>$WORK/.grapa/config.grc</code></strong> - Plain text configuration file in current working directory (project-specific)</p>
 <p><strong>Configuration File Format:</strong>
 Configuration files are standard Grapa scripts that execute during startup:</p>
 <div class="highlight"><pre><span></span><code>/* ~/.grapa/config.grc */
@@ -5015,8 +5073,32 @@ $global.user_config = {
 - <strong>Global Variables</strong>: Set up shared configuration objects
 - <strong>User Preferences</strong>: Store and load user-specific settings</p>
 <p><strong>File Types:</strong>
-- <strong><code>.grc</code></strong>: Plain text Grapa script (recommended for readability)
-- <strong><code>.grz</code></strong>: Compressed Grapa script (for larger configurations)</p>
+- <strong><code>.grc</code></strong>: Plain text Grapa script (recommended for readability and small configs)
+- <strong><code>.grz</code></strong>: Compressed Grapa script (for larger configurations or faster startup)</p>
+<p><strong>Compiling Configuration Files for Performance:</strong>
+For large configuration files that slow down startup, compile them to <code>.grz</code> format:</p>
+<div class="highlight"><pre><span></span><code>/* Compile config.grc to config.grz for faster loading */
+$sys().compilef(&quot;~/.grapa/config.grc&quot;, &quot;~/.grapa/config.grz&quot;);
+</code></pre></div>
+<p><strong>When to Use Each Format:</strong>
+- <strong>Use <code>.grc</code></strong> for: Small configs, development, easy editing
+- <strong>Use <code>.grz</code></strong> for: Large configs, production, faster startup times</p>
+<p><strong>Example: Setting Up Custom Environment Variables:</strong>
+<div class="highlight"><pre><span></span><code>/* ~/.grapa/config.grc */
+/* Set up custom environment variables */
+$GRAPA_HOME = $sys().getenv($WORK);
+$GRAPA_USER_LIB = $sys().getenv($HOME) + &quot;/.grapa/lib&quot;;
+$GRAPA_PROJECT_LIB = $sys().getenv($WORK) + &quot;/lib&quot;;
+
+/* Add user library to search path if it exists */
+if ($file().exists($GRAPA_USER_LIB)) {
+    current_path = $sys().getenv($GRAPA_PATH);
+    $sys().putenv($GRAPA_PATH, current_path + [$GRAPA_USER_LIB]);
+}
+
+/* Set up custom functions */
+my_helper = op(x) { x * 2; };
+</code></pre></div></p>
 <h3 id="putenvname-value-setenvname-value">putenv(name, value) / setenv(name, value)</h3>
 <p>Sets environment variables and system information. Both <code>putenv()</code> and <code>setenv()</code> are aliases for the same functionality.</p>
 <h3 id="constobject">const(object)</h3>
@@ -5165,10 +5247,73 @@ compiled = $sys().compile(&quot;a + b&quot;);
 result = $sys().eval(compiled, {&quot;a&quot;: 10, &quot;b&quot;: 20});
 /* Result: 30 */
 </code></pre></div></p>
+<p><strong>⚠️ Parameter Mutability:</strong> Grapa provides two evaluation methods with different parameter handling:</p>
+<ul>
+<li><strong><code>$sys().eval()</code></strong> - Parameters are <strong>mutable</strong> (pass-by-reference), like traditional function calls</li>
+<li><strong><code>$sys().eval2()</code></strong> - Parameters are <strong>immutable</strong> (pass-by-value), using <code>$local++=pParams</code></li>
+</ul>
+<div class="highlight"><pre><span></span><code>/* $sys().eval() - parameters are mutable (pass-by-reference) */
+x = 0;
+result = $sys().eval(&quot;a = 10; a&quot;, {&quot;a&quot;: x});
+/* Result: 10 */
+x;  /* 10 - parameter was mutated */
+
+/* $sys().eval2() - parameters are immutable (pass-by-value) */
+x = 0;
+result = $sys().eval2(&quot;a = 10; a&quot;, {&quot;a&quot;: x});
+/* Result: 10 */
+x;  /* Still 0 - parameter was not mutated */
+
+/* op() - parameters are mutable (pass-by-reference) */
+f = op(a:0)(&quot;a = 10; a&quot;);
+x = 0;
+result = f(x);  /* x is now 10 - parameter was mutated */
+x;  /* 10 - original value was modified */
+
+/* To prevent mutation with op(), use .copy() */
+x = 0;
+result = f(x.copy());  /* x remains 0 */
+x;  /* Still 0 */
+</code></pre></div>
 <p><strong>⚠️ Important Note:</strong> <code>$sys().eval()</code> does NOT work with <code>.grz</code> files. To execute <code>.grz</code> files, use:
 <div class="highlight"><pre><span></span><code>/* Correct method for .grz files */
 $file().get(&quot;file.grz&quot;).decode(&quot;ZIP-GRAPA&quot;)[&quot;op&quot;]();
 </code></pre></div></p>
+<h3 id="eval2script-sparams-srule">eval2(script, sparams={}, srule="")</h3>
+<p>Evaluates a script with <strong>immutable parameters</strong> (pass-by-value). This is the safe version of <code>eval()</code> that prevents accidental modification of passed parameters.</p>
+<p><strong>Parameters:</strong>
+- <code>script</code> - Script string to evaluate
+- <code>sparams</code> - Parameter object (default: <code>{}</code>) - <strong>These parameters cannot be modified</strong>
+- <code>srule</code> - Custom rule set (default: <code>""</code>)</p>
+<p><strong>Returns:</strong> Result of script execution</p>
+<p><strong>Key Differences from <code>eval()</code>:</strong>
+- <strong>Immutable Parameters</strong>: Parameters are copied using <code>$local++=pParams</code>, preventing modification
+- <strong>Safer for User Input</strong>: Ideal for evaluating user-provided scripts or dynamic code
+- <strong>No Compiled Object Support</strong>: Only works with script strings, not compiled <code>$OP</code> objects</p>
+<p><strong>Examples:</strong>
+<div class="highlight"><pre><span></span><code>/* Safe evaluation with immutable parameters */
+x = 0;
+result = $sys().eval2(&quot;a = 10; a&quot;, {&quot;a&quot;: x});
+/* Result: 10 */
+x;  /* Still 0 - parameter was not mutated */
+
+/* User input processing (safe) */
+user_script = &quot;input * 2 + offset&quot;;
+result = $sys().eval2(user_script, {&quot;input&quot;: 5, &quot;offset&quot;: 3});
+/* Result: 13 */
+/* Original parameters remain unchanged */
+
+/* Template processing */
+template = &quot;result = base * multiplier&quot;;
+result = $sys().eval2(template, {&quot;base&quot;: 10, &quot;multiplier&quot;: 2});
+/* Result: 20 */
+/* Template cannot modify the base or multiplier values */
+</code></pre></div></p>
+<p><strong>When to Use <code>eval2()</code>:</strong>
+- Processing user input or untrusted scripts
+- Template evaluation where parameters should remain unchanged
+- Any scenario where parameter immutability is important
+- Debugging or testing where you want to ensure no side effects</p>
 <h3 id="sleepmilliseconds">sleep(milliseconds)</h3>
 <p>Pauses execution for the specified number of milliseconds.</p>
 <p><strong>Parameters:</strong>

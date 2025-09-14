@@ -3253,9 +3253,9 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#list-and-obj" class="md-nav__link">
+  <a href="#gobj-and-obj" class="md-nav__link">
     <span class="md-ellipsis">
-      $LIST and $OBJ
+      $GOBJ and $OBJ
     </span>
   </a>
   
@@ -4469,9 +4469,9 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#list-and-obj" class="md-nav__link">
+  <a href="#gobj-and-obj" class="md-nav__link">
     <span class="md-ellipsis">
-      $LIST and $OBJ
+      $GOBJ and $OBJ
     </span>
   </a>
   
@@ -4923,7 +4923,7 @@
 <td style="text-align: center;">❌</td>
 </tr>
 <tr>
-<td>$LIST</td>
+<td>$GOBJ</td>
 <td style="text-align: center;">❌</td>
 <td style="text-align: center;">❌</td>
 <td style="text-align: center;">✅</td>
@@ -4966,9 +4966,9 @@
 - <strong>Lists (<code>{}</code>)</strong>: Use <code>list[key]</code> or <code>list.key</code> for access, <code>list.len()</code> for length
 - <strong>Objects (class)</strong>: Use <code>object.property</code> or <code>object[key]</code> for access
 - <strong><code>.getfield()/.setfield()</code> method</strong>: Use for <code>$file</code> and <code>$TABLE</code> types
-- <strong><code>.get()/.set()</code> method</strong>: Universal methods for <code>$ARRAY</code>, <code>$LIST</code>, <code>$OBJ</code>, <code>$file</code>, <code>$TABLE</code>, and <code>$WIDGET</code> types
+- <strong><code>.get()/.set()</code> method</strong>: Universal methods for <code>$ARRAY</code>, <code>$GOBJ</code>, <code>$OBJ</code>, <code>$file</code>, <code>$TABLE</code>, and <code>$WIDGET</code> types
 - <strong><code>.size()</code> method</strong>: Not supported on any type (use <code>.len()</code> instead)
-- <strong><code>.keys()</code> method</strong>: Not supported on <code>$LIST</code> (use iteration instead)</p>
+- <strong><code>.keys()</code> method</strong>: Not supported on <code>$GOBJ</code> (use iteration instead)</p>
 </blockquote>
 <hr />
 <p>This guide helps JavaScript users transition to Grapa by mapping common JS idioms, patterns, and code to their Grapa equivalents.</p>
@@ -5115,31 +5115,31 @@
 <blockquote>
 <p><strong>Note:</strong> Both <code>x = x + 1;</code> and <code>x += 1;</code> (and <code>s = s + "x";</code> and <code>s += "x";</code>) are valid in Grapa. The <code>+=</code> form is idiomatic and preferred in most cases.</p>
 <p><strong>Universal .get()/.set() Methods:</strong>
-- <code>.get()/.set()</code> now work across <code>$ARRAY</code>, <code>$LIST</code>, <code>$OBJ</code>, <code>$file</code>, <code>$TABLE</code>, and <code>$WIDGET</code> types.
+- <code>.get()/.set()</code> now work across <code>$ARRAY</code>, <code>$GOBJ</code>, <code>$OBJ</code>, <code>$file</code>, <code>$TABLE</code>, and <code>$WIDGET</code> types.
 - <code>.get()/.set()</code> provide consistent API access patterns across different data types.
 - For <code>$ARRAY</code>: <code>array.get(index)</code> and <code>array.set(index, value)</code> with 0-based indexing.
 - Alternative access methods (bracket notation, dot notation, <code>.getfield()/.setfield()</code>) still work.
 - <strong>Length</strong>: Use <code>.len()</code> for arrays and lists, not <code>.size()</code>.
 - <strong>Keys</strong>: For lists, iterate manually instead of using <code>.keys()</code>.
 - If more objects support <code>.get()</code> in the future, this guide will be updated.</p>
-<p><strong>Note:</strong> <code>.getfield("key")</code> is for <code>$file</code> and <code>$TABLE</code>. <code>.get()/.set()</code> is for <code>$WIDGET</code>. For <code>$LIST</code>/<code>$OBJ</code>, use <code>obj["key"]</code>, <code>obj.key</code>, or <code>obj."key"</code>. For <code>$ARRAY</code>, use <code>arr[index]</code> (bracket notation only).</p>
+<p><strong>Note:</strong> <code>.getfield("key")</code> is for <code>$file</code> and <code>$TABLE</code>. <code>.get()/.set()</code> is for <code>$WIDGET</code>. For <code>$GOBJ</code>/<code>$OBJ</code>, use <code>obj["key"]</code>, <code>obj.key</code>, or <code>obj."key"</code>. For <code>$ARRAY</code>, use <code>arr[index]</code> (bracket notation only).</p>
 </blockquote>
 <h2 id="access-patterns-objects-lists-arrays-files-and-tables">Access Patterns: Objects, Lists, Arrays, Files, and Tables</h2>
 <p>Below are all valid ways to access elements in Grapa data structures. See the canonical <a href="../../syntax/basic_syntax/">Basic Syntax Guide</a> for the latest tested rules.</p>
-<h3 id="list-and-obj">$LIST and $OBJ</h3>
+<h3 id="gobj-and-obj">$GOBJ and $OBJ</h3>
 <div class="highlight"><pre><span></span><code>obj = {&quot;a&quot;: 1, &quot;b&quot;: 2, &quot;c&quot;: 3};
 
 value = obj[&quot;b&quot;];      /* Returns 2 */
 value = obj.key;        /* Returns value for key &#39;key&#39; if present */
 value = obj.&quot;b&quot;;       /* Returns 2 */
 
-/* $LIST only: */
+/* $GOBJ only: */
 value = obj[1];         /* Returns 2 (by index) */
 name = obj.getname(1);  /* Returns &quot;b&quot; (key name at index 1) */
 </code></pre></div>
 <ul>
-<li>Dot notation (<code>obj.key</code>) and bracket notation (<code>obj["key"]</code>) are both valid for $LIST/$OBJ.</li>
-<li><code>.get()</code> is NOT valid for $LIST/$OBJ.</li>
+<li>Dot notation (<code>obj.key</code>) and bracket notation (<code>obj["key"]</code>) are both valid for $GOBJ/$OBJ.</li>
+<li><code>.get()</code> is NOT valid for $GOBJ/$OBJ.</li>
 </ul>
 <h3 id="array">$ARRAY</h3>
 <div class="highlight"><pre><span></span><code>arr = [10, 20, 30];
@@ -5175,7 +5175,7 @@ value = table.get(&quot;user1&quot;, &quot;name&quot;);   /* Correct */
 | Type      | .get("key") | .get(index) | Bracket Notation | Dot Notation | .len() | .size() |
 |-----------|:-----------:|:-----------:|:----------------:|:------------:|:------:|:-------:|
 | $ARRAY    |      ✗      |     ✗      |       ✓         |      —       |   ✓   |    ✗   |
-| $LIST     |      ✗      |     ✗      |       ✓         |     ✓       |   ✓   |    ✗   |
+| $GOBJ     |      ✗      |     ✗      |       ✓         |     ✓       |   ✓   |    ✗   |
 | $OBJ      |      ✗      |     ✗      |       ✓         |     ✓       |   ✗   |    ✗   |
 | $file     |      ✓      |     ✗      |        —         |      —       |   ✗   |    ✗   |
 | $TABLE    |     ✓<em>      |     ✗      |        —         |      —       |   ✗   |    ✗   |
@@ -5188,7 +5188,7 @@ value = table.get(&quot;user1&quot;, &quot;name&quot;);   /* Correct */
 <li>No <code>try/catch</code>—use <code>.iferr()</code> for fallback or check for <code>$ERR</code></li>
 <li>No <code>.push()</code>/<code>.pop()</code>—use <code>+=</code> and manual index for pop</li>
 <li>✅ <strong>Line comments now supported</strong> - Use <code>// comment</code> or <code>/// doc comment</code> in addition to block comments</li>
-<li>No attribute-style access for object keys—use <code>[]</code>, or dot notation for <code>$LIST</code>/<code>$OBJ</code></li>
+<li>No attribute-style access for object keys—use <code>[]</code>, or dot notation for <code>$GOBJ</code>/<code>$OBJ</code></li>
 <li>No implicit truthy/falsy—use explicit boolean checks</li>
 <li>All statements and blocks must end with a semicolon (<code>;</code>)</li>
 <li>Use <code>.map()</code>, <code>.reduce()</code>, <code>.filter()</code> as methods, not global functions</li>
@@ -5406,7 +5406,7 @@ if (result.type() == $ERR) {
 <li><strong>Strict mode</strong>: - Grapa is strict by default</li>
 <li><strong>Hoisting</strong>: - Grapa has different scoping rules</li>
 <li><strong>Closure scope</strong>: - Grapa has different scoping rules</li>
-<li><strong>Prototype chain</strong>: - Use <code>+=</code> for single item, <code>++=</code> for multiple items ($LIST)</li>
+<li><strong>Prototype chain</strong>: - Use <code>+=</code> for single item, <code>++=</code> for multiple items ($GOBJ)</li>
 <li><strong>Function constructors</strong>: - No function constructor support</li>
 </ul>
 <h3 id="advanced-meta-programming-available-in-grapa">Advanced Meta-Programming (Available in Grapa)</h3>
@@ -5560,7 +5560,7 @@ if (value.type() == $INT) {
 <li><strong>Strict mode</strong>: - Grapa is strict by default</li>
 <li><strong>Hoisting</strong>: - Grapa has different scoping rules</li>
 <li><strong>Closure scope</strong>: - Grapa has different scoping rules</li>
-<li><strong>Prototype chain</strong>: - Use <code>+=</code> for single item, <code>++=</code> for multiple items ($LIST)</li>
+<li><strong>Prototype chain</strong>: - Use <code>+=</code> for single item, <code>++=</code> for multiple items ($GOBJ)</li>
 <li><strong>Function constructors</strong>: - Use regular functions</li>
 </ul>
 <blockquote>

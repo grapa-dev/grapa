@@ -6032,7 +6032,7 @@
 <p>Grapa uses C-style terminology for data structures:</p>
 <ul>
 <li><strong><code>$ARRAY</code></strong> = <code>[]</code> syntax (positional, no names, indexed by position)</li>
-<li><strong><code>$LIST</code></strong> = <code>{}</code> syntax (associative, with names/keys)</li>
+<li><strong><code>$GOBJ</code></strong> = <code>{}</code> syntax (associative, with names/keys)</li>
 <li><strong><code>$XML</code></strong> = <code>&lt;tag&gt;content&lt;/tag&gt;</code> syntax (structured markup)</li>
 </ul>
 <p><strong>Note:</strong> This differs from some other languages where <code>[]</code> is called a "list" and <code>{}</code> is called a "dictionary" or "object". Grapa follows traditional C terminology where arrays are positional and lists are associative.</p>
@@ -6385,7 +6385,7 @@ obj.setconst(&quot;new value&quot;); /* Sets object to constant string */
 <hr />
 <h2 id="string-manipulation-methods">String Manipulation Methods</h2>
 <h3 id="leftcount"><code>.left(count)</code></h3>
-<p>Returns the leftmost characters of a string or elements of an array/list. <strong>Unicode-aware</strong>: Counts Unicode characters (grapheme clusters), not bytes. Also works with <code>$ARRAY</code> and <code>$LIST</code> types.</p>
+<p>Returns the leftmost characters of a string or elements of an array/list. <strong>Unicode-aware</strong>: Counts Unicode characters (grapheme clusters), not bytes. Also works with <code>$ARRAY</code> and <code>$GOBJ</code> types.</p>
 <div class="highlight"><pre><span></span><code>/* String examples */
 &quot;Hello, World!&quot;.left(5);   /* Returns: &quot;Hello&quot; */
 &quot;héllo&quot;.left(3);          /* Returns: &quot;hél&quot; (3 Unicode characters) */
@@ -6402,10 +6402,10 @@ obj.setconst(&quot;new value&quot;); /* Sets object to constant string */
 </code></pre></div>
 <p><strong>Parameters:</strong>
 - <code>count</code> (default: 0) - Number of Unicode characters to return (for strings) or elements to return (for arrays/lists) (negative counts from right)</p>
-<p><strong>Data Types:</strong> <code>$STR</code>, <code>$ARRAY</code>, <code>$LIST</code></p>
+<p><strong>Data Types:</strong> <code>$STR</code>, <code>$ARRAY</code>, <code>$GOBJ</code></p>
 <p><strong>Unicode Support:</strong> This function now properly handles Unicode characters, emoji, and complex grapheme clusters by counting characters rather than bytes.</p>
 <h3 id="rightcount"><code>.right(count)</code></h3>
-<p>Returns the rightmost characters of a string or elements of an array/list. <strong>Unicode-aware</strong>: Counts Unicode characters (grapheme clusters), not bytes. Also works with <code>$ARRAY</code> and <code>$LIST</code> types.</p>
+<p>Returns the rightmost characters of a string or elements of an array/list. <strong>Unicode-aware</strong>: Counts Unicode characters (grapheme clusters), not bytes. Also works with <code>$ARRAY</code> and <code>$GOBJ</code> types.</p>
 <div class="highlight"><pre><span></span><code>/* String examples */
 &quot;Hello, World!&quot;.right(5);  /* Returns: &quot;orld!&quot; */
 &quot;héllo&quot;.right(3);         /* Returns: &quot;llo&quot; (3 Unicode characters) */
@@ -6422,10 +6422,10 @@ obj.setconst(&quot;new value&quot;); /* Sets object to constant string */
 </code></pre></div>
 <p><strong>Parameters:</strong>
 - <code>count</code> (default: 0) - Number of Unicode characters to return (for strings) or elements to return (for arrays/lists) (negative counts from left)</p>
-<p><strong>Data Types:</strong> <code>$STR</code>, <code>$ARRAY</code>, <code>$LIST</code></p>
+<p><strong>Data Types:</strong> <code>$STR</code>, <code>$ARRAY</code>, <code>$GOBJ</code></p>
 <p><strong>Unicode Support:</strong> This function now properly handles Unicode characters, emoji, and complex grapheme clusters by counting characters rather than bytes.</p>
 <h3 id="midstart-count"><code>.mid(start, count)</code></h3>
-<p>Returns a substring starting at the specified position. <strong>Unicode-aware</strong>: Counts Unicode characters (grapheme clusters), not bytes. Also works with <code>$ARRAY</code> and <code>$LIST</code> types.</p>
+<p>Returns a substring starting at the specified position. <strong>Unicode-aware</strong>: Counts Unicode characters (grapheme clusters), not bytes. Also works with <code>$ARRAY</code> and <code>$GOBJ</code> types.</p>
 <div class="highlight"><pre><span></span><code>/* String examples */
 &quot;Hello, World!&quot;.mid(2, 5); /* Returns: &quot;llo, &quot; */
 &quot;héllo&quot;.mid(1, 3);        /* Returns: &quot;éll&quot; (3 Unicode characters from position 1) */
@@ -6443,7 +6443,7 @@ obj.setconst(&quot;new value&quot;); /* Sets object to constant string */
 <p><strong>Parameters:</strong>
 - <code>start</code> (default: 0) - Starting position (Unicode character position for strings, element position for arrays/lists)
 - <code>count</code> (default: 0) - Number of Unicode characters to return (for strings) or elements to return (for arrays/lists)</p>
-<p><strong>Data Types:</strong> <code>$STR</code>, <code>$ARRAY</code>, <code>$LIST</code></p>
+<p><strong>Data Types:</strong> <code>$STR</code>, <code>$ARRAY</code>, <code>$GOBJ</code></p>
 <p><strong>Unicode Support:</strong> This function now properly handles Unicode characters, emoji, and complex grapheme clusters by counting characters rather than bytes.</p>
 <h3 id="midtrimitems-offset-size"><code>.midtrim(items, offset, size)</code></h3>
 <p>Trims and extracts a portion of the object based on items, offset, and size.</p>
@@ -6476,8 +6476,8 @@ obj.setconst(&quot;new value&quot;); /* Sets object to constant string */
 <p><strong>Parameters:</strong>
 - <code>chars</code> (default: null) - Characters to remove (default: whitespace)</p>
 <h3 id="lrotcount"><code>.lrot(count)</code></h3>
-<p>Rotates elements left by the specified number of positions. Works with <code>$ARRAY</code>, <code>$LIST</code>, <code>$TUPLE</code>, and <code>$XML</code> data types.</p>
-<div class="highlight"><pre><span></span><code>/* ✅ CORRECT: Use with $ARRAY and $LIST */
+<p>Rotates elements left by the specified number of positions. Works with <code>$ARRAY</code>, <code>$GOBJ</code>, <code>$TUPLE</code>, and <code>$XML</code> data types.</p>
+<div class="highlight"><pre><span></span><code>/* ✅ CORRECT: Use with $ARRAY and $GOBJ */
 [1,2,3,4,5].lrot(2);     /* Returns: [3,4,5,1,2] - positional array */
 {a:1,b:2,c:3}.lrot(2);   /* Returns: {&quot;c&quot;:3,&quot;a&quot;:1,&quot;b&quot;:2} - associative list */
 
@@ -6486,10 +6486,10 @@ obj.setconst(&quot;new value&quot;); /* Sets object to constant string */
 </code></pre></div>
 <p><strong>Parameters:</strong>
 - <code>count</code> - Number of positions to rotate (default: 1)</p>
-<p><strong>Data Types:</strong> <code>$ARRAY</code>, <code>$LIST</code>, <code>$TUPLE</code>, <code>$XML</code></p>
+<p><strong>Data Types:</strong> <code>$ARRAY</code>, <code>$GOBJ</code>, <code>$TUPLE</code>, <code>$XML</code></p>
 <h3 id="rrotcount"><code>.rrot(count)</code></h3>
-<p>Rotates elements right by the specified number of positions. Works with <code>$ARRAY</code>, <code>$LIST</code>, <code>$TUPLE</code>, and <code>$XML</code> data types.</p>
-<div class="highlight"><pre><span></span><code>/* ✅ CORRECT: Use with $ARRAY and $LIST */
+<p>Rotates elements right by the specified number of positions. Works with <code>$ARRAY</code>, <code>$GOBJ</code>, <code>$TUPLE</code>, and <code>$XML</code> data types.</p>
+<div class="highlight"><pre><span></span><code>/* ✅ CORRECT: Use with $ARRAY and $GOBJ */
 [1,2,3,4,5].rrot(2);     /* Returns: [4,5,1,2,3] - positional array */
 {a:1,b:2,c:3}.rrot(2);   /* Returns: {&quot;b&quot;:2,&quot;c&quot;:3,&quot;a&quot;:1} - associative list */
 
@@ -6498,7 +6498,7 @@ obj.setconst(&quot;new value&quot;); /* Sets object to constant string */
 </code></pre></div>
 <p><strong>Parameters:</strong>
 - <code>count</code> - Number of positions to rotate (default: 1)</p>
-<p><strong>Data Types:</strong> <code>$ARRAY</code>, <code>$LIST</code>, <code>$TUPLE</code>, <code>$XML</code></p>
+<p><strong>Data Types:</strong> <code>$ARRAY</code>, <code>$GOBJ</code>, <code>$TUPLE</code>, <code>$XML</code></p>
 <h3 id="lpadwidth-char"><code>.lpad(width, char)</code></h3>
 <p>Pads the string on the left to the specified width. <strong>Unicode-aware</strong>: Counts Unicode characters (grapheme clusters), not bytes.</p>
 <div class="highlight"><pre><span></span><code>&quot;Hello&quot;.lpad(20, &quot;*&quot;); /* Returns: &quot;***************Hello&quot; */
@@ -6597,7 +6597,7 @@ matrix.diagonal(-1);       /* Returns: [4,8] (lower diagonal) */
 <div class="highlight"><pre><span></span><code>obj.identity();            /* Returns identity matrix */
 </code></pre></div>
 <h3 id="sortaxis-order-kind"><code>.sort(axis, order, kind)</code></h3>
-<p>Sorts elements across multiple data types: <code>$ARRAY</code>, <code>$TUPLE</code>, <code>$LIST</code>, <code>$OBJ</code>, <code>$XML</code>, <code>$TAG</code>, <code>$EL</code>, <code>$OP</code>, <code>$CODE</code>.</p>
+<p>Sorts elements across multiple data types: <code>$ARRAY</code>, <code>$TUPLE</code>, <code>$GOBJ</code>, <code>$OBJ</code>, <code>$XML</code>, <code>$TAG</code>, <code>$EL</code>, <code>$OP</code>, <code>$CODE</code>.</p>
 <div class="highlight"><pre><span></span><code>/* Arrays and Tuples - sort by value */
 [3,1,4,1,5].sort();        /* Returns: [1,1,3,4,5] */
 [3,1,4,1,5].sort(0, 1);    /* Returns: [5,4,3,1,1] */
@@ -6620,7 +6620,7 @@ matrix.diagonal(-1);       /* Returns: [4,8] (lower diagonal) */
 - <code>order</code> (default: null) - Sort order (1 for descending)
 - <code>kind</code> (default: null) - Sort algorithm</p>
 <h3 id="uniqueaxis"><code>.unique(axis)</code></h3>
-<p>Returns unique elements across multiple data types: <code>$ARRAY</code>, <code>$TUPLE</code>, <code>$LIST</code>, <code>$OBJ</code>, <code>$XML</code>, <code>$TAG</code>, <code>$EL</code>, <code>$OP</code>, <code>$CODE</code>.</p>
+<p>Returns unique elements across multiple data types: <code>$ARRAY</code>, <code>$TUPLE</code>, <code>$GOBJ</code>, <code>$OBJ</code>, <code>$XML</code>, <code>$TAG</code>, <code>$EL</code>, <code>$OP</code>, <code>$CODE</code>.</p>
 <div class="highlight"><pre><span></span><code>/* Arrays and Tuples - remove duplicate values */
 [1,2,2,3,3,3].unique();    /* Returns: [1,2,3] */
 [1,2,2,3,3,3].unique(1);   /* Returns: [1,2,3] */
@@ -6732,17 +6732,17 @@ $RAW(&quot;hello\0world&quot;).find(&quot;\0&quot;.raw());           /* Returns:
 - <strong>$STR</strong>: Searches for Unicode substrings
 - <strong>$RAW</strong>: Performs binary search (handles null bytes and binary data)
 - <strong>$ARRAY</strong>: Searches for subarrays using comprehensive comparison
-- <strong>$LIST</strong>: Searches for sublists using comprehensive comparison</p>
+- <strong>$GOBJ</strong>: Searches for sublists using comprehensive comparison</p>
 <p><strong>Return Value:</strong>
 - Returns the 0-based index of the first occurrence
 - Returns -1 if the term is not found
 - Returns -1 if start position is beyond the string/data length</p>
 <p><strong>Note:</strong> For RAW data, use <code>.uraw()</code> to create search terms from hex values to avoid padding issues.</p>
 <p><strong>Array and List Search:</strong> The <code>.find()</code> method supports searching for subarrays and sublists using the same comprehensive comparison logic as <code>switch</code> statements, ensuring consistent behavior across the language.</p>
-<p><strong>Array-in-List Search:</strong> When searching a <code>$LIST</code> with an <code>$ARRAY</code> term, the method searches for the array values within the list values and returns the position where the match is found. Use <code>.mid()</code> to extract the subset. For example: <code>{a:1,b:2,c:3}.find([2,3])</code> returns <code>1</code>, and <code>{a:1,b:2,c:3}.mid(1, 2)</code> returns <code>{b:2,c:3}</code>.</p>
+<p><strong>Array-in-List Search:</strong> When searching a <code>$GOBJ</code> with an <code>$ARRAY</code> term, the method searches for the array values within the list values and returns the position where the match is found. Use <code>.mid()</code> to extract the subset. For example: <code>{a:1,b:2,c:3}.find([2,3])</code> returns <code>1</code>, and <code>{a:1,b:2,c:3}.mid(1, 2)</code> returns <code>{b:2,c:3}</code>.</p>
 <h3 id="findallpattern"><code>.findall(pattern)</code></h3>
-<p>Finds all occurrences of a pattern in complex data structures. Works with <code>$XML</code>, <code>$LIST</code>, and <code>$ARRAY</code> data types using specific query patterns.</p>
-<div class="highlight"><pre><span></span><code>/* ✅ CORRECT: Use with $XML, $LIST, and $ARRAY */
+<p>Finds all occurrences of a pattern in complex data structures. Works with <code>$XML</code>, <code>$GOBJ</code>, and <code>$ARRAY</code> data types using specific query patterns.</p>
+<div class="highlight"><pre><span></span><code>/* ✅ CORRECT: Use with $XML, $GOBJ, and $ARRAY */
 xml_data = &lt;root&gt;&lt;item&gt;Hello&lt;/item&gt;&lt;item&gt;World&lt;/item&gt;&lt;/root&gt;;
 xml_data.findall({name:&quot;item&quot;});                  /* Returns: &lt;item&gt;Hello&lt;/item&gt;&lt;item&gt;World&lt;/item&gt; */
 
@@ -6757,7 +6757,7 @@ array_data.findall({has:{name:&quot;name&quot;}});          /* Returns: [{&quot;
 </code></pre></div>
 <p><strong>Parameters:</strong>
 - <code>pattern</code> - Query pattern object (varies by data type)</p>
-<p><strong>Data Types:</strong> <code>$XML</code>, <code>$LIST</code>, <code>$ARRAY</code></p>
+<p><strong>Data Types:</strong> <code>$XML</code>, <code>$GOBJ</code>, <code>$ARRAY</code></p>
 <p><strong>Query Patterns:</strong>
 - <strong>XML</strong>: <code>{name:"tag"}</code> - Find elements by tag name
 - <strong>LIST</strong>: <code>{has:{name:"key"}}</code> - Find objects containing specific keys
@@ -6987,7 +6987,7 @@ obj.getname(1);      /* Returns: property name at index 1 */
 - <code>index</code> (default: null) - Index of the property</p>
 <p><strong>Advanced Usage - Recursive Keys Function:</strong>
 <div class="highlight"><pre><span></span><code>/* Create a recursive .keys() function using .getname() */
-keys = op(lst){lst.reduce(op(acc,x){if(x.type()==$LIST){acc += keys(x);}else{acc += &#39;x&#39;.getname();}},[]);};
+keys = op(lst){lst.reduce(op(acc,x){if(x.type()==$GOBJ){acc += keys(x);}else{acc += &#39;x&#39;.getname();}},[]);};
 
 /* Usage examples */
 obj = {name:&quot;Alice&quot;, age:30, test:{a:1,b:2}, city:&quot;NYC&quot;};

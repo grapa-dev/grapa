@@ -4472,7 +4472,7 @@
 <td style="text-align: center;">—</td>
 </tr>
 <tr>
-<td>$LIST</td>
+<td>$GOBJ</td>
 <td style="text-align: center;">✗</td>
 <td style="text-align: center;">✗</td>
 <td style="text-align: center;">✓</td>
@@ -4620,7 +4620,7 @@
 </tr>
 <tr>
 <td><code>extension fun</code></td>
-<td><code>+=</code> (single item) or <code>++=</code> ($LIST of items)</td>
+<td><code>+=</code> (single item) or <code>++=</code> ($GOBJ of items)</td>
 <td>Grapa supports object and class extension</td>
 </tr>
 <tr>
@@ -4690,7 +4690,7 @@
 <li><strong>Tail recursion</strong>: <code>tailrec fun</code> - No tail recursion optimization</li>
 <li><strong>Operator functions</strong>: <code>operator fun</code> - No operator function system</li>
 <li><strong>Infix functions</strong>: <code>infix fun</code> - No infix function system</li>
-<li><strong>Extension functions</strong>: <code>extension fun</code> - Use <code>+=</code> for single item, <code>++=</code> for multiple items ($LIST)</li>
+<li><strong>Extension functions</strong>: <code>extension fun</code> - Use <code>+=</code> for single item, <code>++=</code> for multiple items ($GOBJ)</li>
 <li><strong>Data classes</strong>: <code>data class</code> - No data class system</li>
 <li><strong>Companion objects</strong>: <code>companion object</code> - No companion object system</li>
 </ul>
@@ -4959,7 +4959,7 @@ switch (value.type()) {
     case $INT: &quot;Integer value&quot;.echo();
     case $FLOAT: &quot;Float value&quot;.echo();
     case $ARRAY: &quot;Array value&quot;.echo();
-    case $LIST: &quot;List value&quot;.echo();
+    case $GOBJ: &quot;List value&quot;.echo();
     default: &quot;Unknown type&quot;.echo();
 }
 
@@ -4968,7 +4968,7 @@ if (value.type() == $STR || value.type() == $INT) {
     &quot;Value is string or integer&quot;.echo();
 }
 </code></pre></div>
-<p>Common type constants: <code>$STR</code>, <code>$INT</code>, <code>$FLOAT</code>, <code>$BOOL</code>, <code>$ARRAY</code>, <code>$LIST</code>, <code>$TABLE</code>, <code>$TIME</code>, <code>$ERR</code></p>
+<p>Common type constants: <code>$STR</code>, <code>$INT</code>, <code>$FLOAT</code>, <code>$BOOL</code>, <code>$ARRAY</code>, <code>$GOBJ</code>, <code>$TABLE</code>, <code>$TIME</code>, <code>$ERR</code></p>
 <h2 id="notes">Notes</h2>
 <ul>
 <li>See <a href="../../syntax/operator/">Operators</a> and <a href="../../sys/sys/">System</a> docs for more details.</li>

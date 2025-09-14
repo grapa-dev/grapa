@@ -5200,7 +5200,7 @@ double_and_add = compose(double, add_one);
 </code></pre></div>
 <p><strong>Features:</strong>
 - <strong>First-Class Functions</strong> - Functions as values
-- <strong>Lambda Expressions</strong> - <code>op(x) { x * 2; }</code> syntax
+- <strong>Function Expressions</strong> - <code>op { ... }</code>, <code>op() { ... }</code>, or <code>op(x) { ... }</code> syntax (parameters optional)
 - <strong>Functional Methods</strong> - <code>.map()</code>, <code>.filter()</code>, <code>.reduce()</code>
 - <strong>Parallel Processing</strong> - Built-in parallel execution
 - <strong>Complex Context Objects</strong> - Any data structure as initializers with state evolution</p>
@@ -5227,7 +5227,7 @@ test1.inc();      /* n becomes 1 */
 test1.inc(2);     /* n becomes 3 */
 
 /* Pattern 2: Creating custom classes */
-myclass = class ($LIST) {
+myclass = class ($GOBJ) {
     n = 0; 
     inc = op(inc:1){n+=inc;};
 };
@@ -5312,7 +5312,7 @@ cached_process = validate(process_data);
 generic_function = op(x) {
     /* Dynamic type checking */
     if (x.type() == $ARRAY) process_array(x);
-    else if (x.type() == $LIST) process_list(x);
+    else if (x.type() == $GOBJ) process_list(x);
     else process_other(x);
 };
 </code></pre></div>
@@ -5433,7 +5433,7 @@ switch (true) {
     case (data.type() == $STR): &quot;String data&quot;.echo();
     case (data.type() == $INT): &quot;Integer data&quot;.echo();
     case (data.type() == $ARRAY): &quot;Array data&quot;.echo();
-    case (data.type() == $LIST): &quot;List data&quot;.echo();
+    case (data.type() == $GOBJ): &quot;List data&quot;.echo();
     default: &quot;Other data type&quot;.echo();
 };
 
@@ -5601,7 +5601,7 @@ new_float = components.encode(&quot;FLOAT&quot;);
 <p><strong>Status</strong>: Fully implemented but advanced feature
 <strong>Current</strong>: <code>$global</code> syntax for redefining system classes</p>
 <div class="highlight"><pre><span></span><code>/* Redefine $ARRAY with custom methods */
-$global[&quot;$ARRAY&quot;] = class ($LIST, $VECTOR) {
+$global[&quot;$ARRAY&quot;] = class ($GOBJ, $VECTOR) {
     custom_method = op() { 
         &quot;Custom array method called&quot;.echo();
         $this.len();  /* Access the array&#39;s length */
@@ -5615,7 +5615,7 @@ result = arr.custom_method();
 /* result: 3 */
 </code></pre></div>
 <p><strong>Capabilities:</strong>
-- <strong>System Class Extension</strong> - Add methods to <code>$ARRAY</code>, <code>$LIST</code>, <code>$CLASS</code>, <code>$OBJ</code>, etc.
+- <strong>System Class Extension</strong> - Add methods to <code>$ARRAY</code>, <code>$GOBJ</code>, <code>$CLASS</code>, <code>$OBJ</code>, etc.
 - <strong>Global Variable Redefinition</strong> - Redefine any global variable or function
 - <strong>Runtime Modification</strong> - Change system behavior at runtime
 - <strong>Method Preservation</strong> - Keep existing methods while adding new ones</p>

@@ -4840,7 +4840,7 @@ properties = [&quot;name&quot;, &quot;age&quot;, &quot;city&quot;];
 properties.map(op(prop){data[prop];}).echo();
 
 /* Advanced: Recursive keys function using .getname() */
-keys = op(lst){lst.reduce(op(acc,x){if(x.type()==$LIST){acc += keys(x);}else{acc += &#39;x&#39;.getname();}},[]);};
+keys = op(lst){lst.reduce(op(acc,x){if(x.type()==$GOBJ){acc += keys(x);}else{acc += &#39;x&#39;.getname();}},[]);};
 
 obj = {name:&quot;Alice&quot;, age:30, test:{a:1,b:2}, city:&quot;NYC&quot;};
 keys(obj).echo();  /* Outputs: [name,age,[a,b],city] */

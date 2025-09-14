@@ -4713,7 +4713,7 @@ arr += [7, 8];            /* Add multiple elements: [1,2,3,4,5,6,7,8] */
 arr += 10 arr[0];         /* Insert at position: [10,1,2,3,4,5,6,7,8] */
 arr += 20 arr[2];         /* Insert at position 2: [10,1,20,2,3,4,5,6,7,8] */
 </code></pre></div></p>
-<p><strong>Lists (<code>$LIST</code>):</strong>
+<p><strong>Lists (<code>$GOBJ</code>):</strong>
 <div class="highlight"><pre><span></span><code>list = {a:1, b:2, c:3};
 list += (d:4);            /* Add single key-value pair: {&quot;a&quot;:1,&quot;b&quot;:2,&quot;c&quot;:3,&quot;d&quot;:4} */
 list += {d:4, e:5};       /* Add multiple key-value pairs: {&quot;a&quot;:1,&quot;b&quot;:2,&quot;c&quot;:3,&quot;d&quot;:4,&quot;e&quot;:5} */
@@ -4750,7 +4750,7 @@ arr2 = [4, 5, 6];
 arr1 ++= arr2;   /* Concatenate arrays: [1,2,3,4,5,6] */
 arr1 ++= arr2 arr1[0];  /* Insert at beginning: [4,5,6,1,2,3,4,5,6] */
 </code></pre></div></p>
-<p><strong>Lists (<code>$LIST</code>):</strong>
+<p><strong>Lists (<code>$GOBJ</code>):</strong>
 <div class="highlight"><pre><span></span><code>list1 = {a:1, b:2};
 list2 = {c:3, d:4};
 list1 ++= list2; /* Concatenate lists: {&quot;a&quot;:1,&quot;b&quot;:2,&quot;c&quot;:3,&quot;d&quot;:4} */
@@ -4793,7 +4793,7 @@ x
 arr -= arr[2];   /* Remove by index: [1,2,4,5] */
 arr -= arr[-1];  /* Remove last element: [1,2,4] */
 </code></pre></div></p>
-<p><strong>Lists (<code>$LIST</code>):</strong>
+<p><strong>Lists (<code>$GOBJ</code>):</strong>
 <div class="highlight"><pre><span></span><code>list = {a:1, b:2, c:3, d:4};
 list -= list.c;          /* Remove by key reference: {&quot;a&quot;:1,&quot;b&quot;:2,&quot;d&quot;:4} */
 list -= list[&quot;c&quot;];       /* Remove by key string: {&quot;a&quot;:1,&quot;b&quot;:2,&quot;d&quot;:4} */

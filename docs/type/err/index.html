@@ -4171,7 +4171,7 @@
 - <a href="syntax/basic_syntax.md#error-handling">Error Handling</a>
 - <a href="type/obj_methods.md#error-handling-with-iferr">Object Methods</a></p>
 <p>If an operation results in an error, the $ERR data type is returned. Check using the type function: <code>if (result.type() == $ERR) something;</code></p>
-<p>Under the hood, the $ERR type is a $LIST, and the same commands can be used to get more details on the error.</p>
+<p>Under the hood, the $ERR type is a $GOBJ, and the same commands can be used to get more details on the error.</p>
 <h2 id="creating-err-types">Creating $ERR Types</h2>
 <p>There are three ways to create <code>$ERR</code> types:</p>
 <h3 id="1-direct-construction">1. <strong>Direct Construction</strong></h3>
@@ -4185,7 +4185,7 @@ x.type();    /* $ERR */
 x;           /* {&quot;error&quot;:-1} */
 </code></pre></div>
 <h3 id="3-type-conversion-with-err">3. <strong>Type Conversion with .err()</strong></h3>
-<div class="highlight"><pre><span></span><code>z = {&quot;error&quot;: 43, &quot;info&quot;: [3, 4]}.err();  /* Convert $LIST to $ERR */
+<div class="highlight"><pre><span></span><code>z = {&quot;error&quot;: 43, &quot;info&quot;: [3, 4]}.err();  /* Convert $GOBJ to $ERR */
 z.type();    /* $ERR */
 z;           /* {&quot;error&quot;: 43, &quot;info&quot;: [3, 4]} */
 </code></pre></div>

@@ -4052,6 +4052,7 @@ while (i &lt; 5) {
 <ul>
 <li>Calls the operation for each item in the array, in parallel.</li>
 <li>Returns a new array with the results.</li>
+<li><strong>Context objects are passed by reference</strong> for performance (not copied).</li>
 </ul>
 <p>Example:
 <div class="highlight"><pre><span></span><code>arr = [1,2,3];
@@ -4059,12 +4060,44 @@ doubled = arr.map(op(n) { n * 2; });
 doubled.echo();
 /* Output: [2,4,6] */
 </code></pre></div></p>
+<h3 id="context-object-reference-passing">Context Object Reference Passing</h3>
+<p>When using context objects (optional parameters), they are passed by reference for enhanced performance:</p>
+<div class="highlight"><pre><span></span><code>/* WARNING: This demonstrates race conditions */
+x = {a: 0, b: 0};
+y = 20.range().map(op(x, y) {
+    y.a += 1;        /* Race condition: multiple threads may read same value */
+    y.b += x;        /* Race condition: multiple threads may read same value */
+    y.a * y.b;       /* Return computed value */
+}, x, 4);            /* 4 threads processing */
+
+/* Result: Race conditions cause incorrect values */
+/* Expected: x: {&quot;a&quot;: 20, &quot;b&quot;: 190} */
+/* Actual: x: {&quot;a&quot;: 19, &quot;b&quot;: 180} - showing lost updates */
+</code></pre></div>
+<p><strong>Better Approach - Map/Reduce Pattern:</strong>
+<div class="highlight"><pre><span></span><code>/* Recommended: Use .map() for computation, .reduce() for aggregation */
+x = {a: 1, b: 2};
+y = 20.range().map(op(x, y) {
+    x + y.a * y.b;   /* Pure computation - no mutations */
+}, x, 4).reduce(op(a, b) {
+    a += b;          /* Sequential aggregation */
+});
+
+/* Result: Correct and fast */
+/* x: {&quot;a&quot;: 1, &quot;b&quot;: 2} - unchanged */
+/* y: 230 - correct sum */
+</code></pre></div></p>
+<p><strong>Performance Benefits:</strong>
+- <strong>Reference passing</strong>: Context objects are passed by reference (not copied) for better performance
+- <strong>Read-only usage</strong>: Use context objects for configuration, not for state mutations
+- <strong>Parallel efficiency</strong>: Each thread can read shared context without synchronization overhead</p>
 <h2 id="filter">filter</h2>
 <p>Syntax:
 * arr.filter(op(x) { ... }, [params...]);</p>
 <ul>
 <li>Calls the operation for each item in the array, in parallel.</li>
 <li>Returns a new array containing only items for which the op returns a non-null, non-zero, non-empty value.</li>
+<li><strong>Context objects are passed by reference</strong> for performance (not copied).</li>
 </ul>
 <p>Minimal Example:
 <div class="highlight"><pre><span></span><code>arr = [1,2,3,4];
@@ -4072,6 +4105,43 @@ filtered = arr.filter(op(x) { x &gt; 2; });
 filtered.echo();
 /* Output: [3,4] */
 </code></pre></div></p>
+<h3 id="context-object-reference-passing_1">Context Object Reference Passing</h3>
+<p>When using context objects (optional parameters), they are passed by reference for enhanced performance:</p>
+<div class="highlight"><pre><span></span><code>/* WARNING: This demonstrates race conditions */
+x = {count: 0, sum: 0};
+y = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].filter(op(x, y) {
+    y.count += 1;        /* Race condition: multiple threads may read same value */
+    if (x % 2 == 0) {    /* Filter even numbers */
+        y.sum += x;      /* Race condition: multiple threads may read same value */
+        true;            /* Include in result */
+    } else {
+        false;           /* Exclude from result */
+    };
+}, x, 4);                /* 4 threads processing */
+
+/* Result: Race conditions cause incorrect values */
+/* Expected: x: {&quot;count&quot;: 10, &quot;sum&quot;: 30} */
+/* Actual: x: {&quot;count&quot;: 9, &quot;sum&quot;: 28} - showing lost updates */
+</code></pre></div>
+<p><strong>Better Approach - Separate Filtering and Aggregation:</strong>
+<div class="highlight"><pre><span></span><code>/* Recommended: Use .filter() for selection, separate aggregation */
+x = {threshold: 2};
+y = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].filter(op(x, y) {
+    x &gt; y.threshold;     /* Pure filtering - no mutations */
+}, x, 4);
+
+/* Separate aggregation if needed */
+sum = y.reduce(op(a, b) { a += b; });
+count = y.len();
+
+/* Result: Correct and fast */
+/* y: [3, 4, 5, 6, 7, 8, 9, 10] */
+/* sum: 52, count: 8 */
+</code></pre></div></p>
+<p><strong>Performance Benefits:</strong>
+- <strong>Reference passing</strong>: Context objects are passed by reference (not copied) for better performance
+- <strong>Read-only usage</strong>: Use context objects for configuration, not for state mutations
+- <strong>Parallel efficiency</strong>: Each thread can read shared context without synchronization overhead</p>
 <p>Edge Cases:
 <div class="highlight"><pre><span></span><code>arr = [1,2,3,4];
 filtered_none = arr.filter(op(x) { 0; });

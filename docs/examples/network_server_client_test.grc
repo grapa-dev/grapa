@@ -9,18 +9,19 @@
 
 /* HTTP Server Message Handler */
 httpMessageHandler = op(netSession, message, hasmore) {
-    netSession.data += message;
+    netSession."data" += message;
     
     if (hasmore == 0) {
-		if (netSession.data.len()==0)
+		if (netSession."data".len()==0)
 		{
-			("HTTP Server:" + netSession.connectionId.str() + ": CLOSE\n").echo();
+			("HTTP Server:" + netSession."connectionId".str() + ": CLOSE\n").echo();
 			netSession.disconnect();
+            ("HTTP Server:" + netSession."connectionId".str() + ": DISCONNECTED\n").echo();
 			return(null);
 		};
 				
-        /* Extract path from netSession.data */
-		$local.datasplit = netSession.data.split(" ");
+        /* Extract path from netSession."data" */
+		$local.datasplit = netSession."data".split(" ");
         $local.method = datasplit[0];
         $local.path = datasplit[1];
         
@@ -32,24 +33,24 @@ httpMessageHandler = op(netSession, message, hasmore) {
             json_data = {"message": "Hello from Grapa", "server": "HTTP"};
             response = "HTTP/1.1 200 OK\r\nContent-Type: application/json\r\n\r\n" + json_data.str();
         } else if (path == "/echo") {
-            /* Echo back the netSession.data */
-            response = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\n" + netSession.data;
+            /* Echo back the netSession."data" */
+            response = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\n" + netSession."data";
         } else {
             response = "HTTP/1.1 404 Not Found\r\nContent-Type: text/html\r\n\r\n<h1>404 - Not Found</h1>";
         };
         
-        ("HTTP Server:" + netSession.connectionId.str() + ": Processed " + method + " " + path + " message length " + netSession.data.len().str() +"\n").echo();
+        ("HTTP Server:" + netSession."connectionId".str() + ": Processed " + method + " " + path + " message length " + netSession."data".len().str() +"\n").echo();
 		
-        netSession.data = "";
+        netSession."data" = "";
         netSession.send(response);
     };
 };
 
 /* Connection Handler for server */
 connectionHandler = op(netSession) {
-    netSession.data = "";
-    netSession.connectionId = 32.random();
-    ("New connection established: " + netSession.connectionId + "\n").echo();
+    netSession."data" = "";
+    netSession."connectionId" = 32.random();
+    ("New connection established: " + netSession."connectionId" + "\n").echo();
 };
 
 /* ======================================== */
@@ -58,7 +59,7 @@ connectionHandler = op(netSession) {
 
 /* Start HTTP Server */
 httpServer = $net();
-httpServer.onlisten(':8080', httpMessageHandler, connectionHandler);
+httpServer.onlisten(':8080', httpMessageHandler, connectionHandler,5);
 
 
 ("HTTP server started on port 8080\n").echo();

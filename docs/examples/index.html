@@ -3489,6 +3489,15 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#output-streams" class="md-nav__link">
+    <span class="md-ellipsis">
+      Output Streams
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#working-with-lists" class="md-nav__link">
     <span class="md-ellipsis">
       Working with Lists
@@ -3988,6 +3997,21 @@
       Thread Safety and Parallelism
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="Thread Safety and Parallelism">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parallel-processing-with-mutable-context-objects" class="md-nav__link">
+    <span class="md-ellipsis">
+      Parallel Processing with Mutable Context Objects
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -4710,6 +4734,15 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#output-streams" class="md-nav__link">
+    <span class="md-ellipsis">
+      Output Streams
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#working-with-lists" class="md-nav__link">
     <span class="md-ellipsis">
       Working with Lists
@@ -5210,6 +5243,21 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Thread Safety and Parallelism">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parallel-processing-with-mutable-context-objects" class="md-nav__link">
+    <span class="md-ellipsis">
+      Parallel Processing with Mutable Context Objects
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
     </ul>
@@ -5419,6 +5467,21 @@
 result = 123456789012345678901234567890 * 987654321098765432109876543210;
 result.echo();
 </code></pre></div>
+<h3 id="output-streams">Output Streams</h3>
+<div class="highlight"><pre><span></span><code>/* Write to standard output */
+$file().set($stdout, &quot;Normal program output\n&quot;);
+
+/* Write to standard error */
+$file().set($stderr, &quot;Error or debug message\n&quot;);
+
+/* Conditional output based on debug mode */
+debug_mode = true;
+if (debug_mode) {
+    $file().set($stderr, &quot;Debug: Processing started\n&quot;);
+} else {
+    $file().set($stdout, &quot;Processing started\n&quot;);
+}
+</code></pre></div>
 <h3 id="working-with-lists">Working with Lists</h3>
 <div class="highlight"><pre><span></span><code>numbers = [1, 2, 3, 4, 5];
 sum = numbers.reduce(op(a, b) { a + b; }, 0);
@@ -5451,7 +5514,7 @@ list.a += 5;              /* Compound assignment: {&quot;e&quot;:5,&quot;a&quot;
 list.echo();
 
 /* Advanced: Recursive keys function using .getname() */
-keys = op(lst){lst.reduce(op(acc,x){if(x.type()==$LIST){acc += keys(x);}else{acc += &#39;x&#39;.getname();}},[]);};
+keys = op(lst){lst.reduce(op(acc,x){if(x.type()==$GOBJ){acc += keys(x);}else{acc += &#39;x&#39;.getname();}},[]);};
 
 obj = {name:&quot;Alice&quot;, age:30, test:{a:1,b:2}, city:&quot;NYC&quot;};
 keys(obj).echo();  /* Outputs: [name,age,[a,b],city] */
@@ -6299,6 +6362,73 @@ lock_obj.lock();
 // ... perform thread-safe operations on shared data ...
 lock_obj.unlock();
 </code></pre></div></p>
+<h3 id="parallel-processing-with-mutable-context-objects">Parallel Processing with Mutable Context Objects</h3>
+<p>Grapa's <code>.map()</code> and <code>.filter()</code> methods now support <strong>mutable context objects</strong> passed by reference for enhanced performance in parallel processing. This allows each thread to modify shared state while maintaining thread safety through internal locking.</p>
+<p><strong>Performance Enhancement:</strong>
+- <strong>Reference passing</strong>: Context objects are passed by reference (not copied) for better performance
+- <strong>Thread-safe mutations</strong>: Internal locking on data types (except vectors) ensures safe concurrent access
+- <strong>Parallel efficiency</strong>: Each thread can read and modify the shared context object</p>
+<p><strong>Example - Race Conditions in Parallel Mutations:</strong>
+<div class="highlight"><pre><span></span><code>/* WARNING: This demonstrates race conditions */
+x = {a: 0, b: 0};
+y = 20.range().map(op(x, y) {
+    y.a += 1;        /* Race condition: multiple threads may read same value */
+    y.b += x;        /* Race condition: multiple threads may read same value */
+    y.c += 1;        /* Race condition: multiple threads may add &quot;c&quot; */
+    y.a * y.b;
+}, x, 4);            /* 4 threads processing */
+
+/* Possible outcomes due to race conditions: */
+/* x: {&quot;a&quot;: 20, &quot;b&quot;: 190, &quot;c&quot;: 20}     - Expected if no race conditions */
+/* x: {&quot;a&quot;: 19, &quot;b&quot;: 180, &quot;c&quot;: 20}     - Actual result showing race conditions */
+/* x: {&quot;a&quot;: 20, &quot;b&quot;: 190, &quot;c&quot;: 1, &quot;c&quot;: 9} - Duplicate keys from race condition */
+</code></pre></div></p>
+<p><strong>Example - Using Locks (NOT RECOMMENDED):</strong>
+<div class="highlight"><pre><span></span><code>/* Using locks defeats the purpose of parallel processing */
+x = {a: 0, b: 0, t: $thread()};
+y = 20.range().map(op(x, y) {
+    y.t.lock();      /* Serializes access - defeats parallelism */
+    y.a += 1;        /* Now thread-safe but slow */
+    y.t.unlock();
+    y.b += x;        /* Still has race condition */
+    y.c += 1;        /* Still has race condition */
+    y.a * y.b;
+}, x, 4);
+
+/* Result: Correct but slow due to serialization */
+/* x: {&quot;a&quot;: 20, &quot;b&quot;: 175, &quot;t&quot;: null, &quot;c&quot;: 20} */
+</code></pre></div></p>
+<p><strong>Example - Better Approach: Map/Reduce Pattern:</strong>
+<div class="highlight"><pre><span></span><code>/* Recommended: Use .map() for computation, .reduce() for aggregation */
+x = {a: 1, b: 2};
+y = 20.range().map(op(x, y) {
+    x + y.a * y.b;   /* Pure computation - no mutations */
+}, x, 4).reduce(op(a, b) {
+    a += b;          /* Sequential aggregation */
+});
+
+/* Result: Correct and fast */
+/* x: {&quot;a&quot;: 1, &quot;b&quot;: 2} - unchanged */
+/* y: 230 - correct sum */
+</code></pre></div></p>
+<p><strong>Best Practices:</strong>
+1. <strong>AVOID mutating context objects</strong>: Race conditions will occur with parallel mutations
+2. <strong>Use Map/Reduce pattern</strong>: Use <code>.map()</code> for pure computation, <code>.reduce()</code> for aggregation
+3. <strong>Read-only context objects</strong>: Use context objects for reading configuration, not for state
+4. <strong>Prefer immutable operations</strong>: Return computed values instead of mutating shared state
+5. <strong>Performance benefit</strong>: Reference passing is significantly faster than copying large objects</p>
+<p><strong>Thread Safety Notes:</strong>
+- <strong>Data types with locking</strong>: All types except vectors have internal locking
+- <strong>Vector limitations</strong>: Vectors do not yet have locking - avoid mutating vector context objects
+- <strong>Race conditions</strong>: Multiple threads may read the same value before incrementing, causing lost updates
+- <strong>Logical consistency</strong>: Thread safety prevents crashes, but logical race conditions will occur
+- <strong>Lock performance impact</strong>: Using <code>$thread().lock()</code> defeats the purpose of parallel processing</p>
+<p><strong>When to Use Context Objects:</strong>
+- ✅ <strong>Configuration data</strong>: Read-only parameters for computation
+- ✅ <strong>Large data structures</strong>: Avoid copying expensive objects
+- ✅ <strong>Shared resources</strong>: Database connections, file handles
+- ❌ <strong>Counters/accumulators</strong>: Use <code>.reduce()</code> instead
+- ❌ <strong>State mutations</strong>: Use immutable patterns instead</p>
 <p>See <a href="../sys/thread/">Threading and Locking</a> and <a href="../operators/function/">Function Operators: static and const</a> for details and best practices.</p>
 
 

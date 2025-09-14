@@ -4924,7 +4924,7 @@ custom_command ++= rule &#39;(list&#39; $STR $STR $STR &#39;)&#39; {op(elem1:$2,
 custom_command ++= rule &#39;(car&#39; $STR &#39;)&#39; {op(list_expr:$2){
     /* Get first element - NO MANUAL PARSING */
     list_val = evaluate_sexp(list_expr);
-    if (list_val.type() == $LIST) {
+    if (list_val.type() == $GOBJ) {
         return list_val[0];
     };
 }};
@@ -4932,7 +4932,7 @@ custom_command ++= rule &#39;(car&#39; $STR &#39;)&#39; {op(list_expr:$2){
 custom_command ++= rule &#39;(cdr&#39; $STR &#39;)&#39; {op(list_expr:$2){
     /* Get rest of list - NO MANUAL PARSING */
     list_val = evaluate_sexp(list_expr);
-    if (list_val.type() == $LIST) {
+    if (list_val.type() == $GOBJ) {
         return list_val.range(1, list_val.len());
     };
 }};
@@ -4941,7 +4941,7 @@ custom_command ++= rule &#39;(cons&#39; $STR $STR &#39;)&#39; {op(element:$2,lis
     /* Construct list - NO MANUAL PARSING */
     element_val = evaluate_sexp(element);
     list_val = evaluate_sexp(list_expr);
-    if (list_val.type() == $LIST) {
+    if (list_val.type() == $GOBJ) {
         result = [element_val];
         result += list_val;
         return result;
@@ -5057,7 +5057,7 @@ safe_lisp_eval = op(expr) {
 <p>Use Grapa's native operations when possible:</p>
 <div class="highlight"><pre><span></span><code>/* Optimize list operations */
 optimized_car = op(list) {
-    if (type(list) == $LIST) {
+    if (type(list) == $GOBJ) {
         return list[0];  /* Use native access */
     } else {
         return op()(&quot;(car &quot; + list + &quot;)&quot;)();  /* Fallback to LISP */

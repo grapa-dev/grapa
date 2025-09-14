@@ -1,0 +1,67 @@
+/*
+Bad Syntax Example: Invalid Statements
+
+This file demonstrates invalid statement structures that the syntax checker should detect:
+- Missing parentheses in control structures
+- Invalid function call syntax
+- Malformed control flow statements
+*/
+
+// Example 1: Missing parentheses in if statement
+if true {  // Missing parentheses around condition
+    "This should have parentheses";
+}
+
+// Example 2: Missing parentheses in while statement
+while i < 10 {  // Missing parentheses around condition
+    i++;
+}
+
+// Example 3: Missing parentheses in for statement
+for i = 0; i < 10; i++ {  // Missing parentheses around for loop
+    "Loop iteration";
+}
+
+// Example 4: Invalid function call - missing parentheses
+functionName;  // Should be functionName()
+
+// Example 5: Function call with missing opening parenthesis
+functionName arg1, arg2);  // Missing opening parenthesis
+
+// Example 6: Function call with missing closing parenthesis
+functionName(arg1, arg2;  // Missing closing parenthesis
+
+// Example 7: Invalid switch statement structure
+switch value {  // Missing parentheses around value
+    case 1: "One";
+    case 2: "Two";
+}
+
+// Example 8: Invalid try-catch structure
+try {  // Missing opening brace
+    "Try block";
+} catch error {
+    "Catch block";
+}
+
+// Example 9: Invalid foreach statement
+foreach item in array {  // Missing parentheses around (item in array)
+    "Process item";
+}
+
+// Example 10: Invalid do-while structure
+do {  // Missing opening brace
+    "Do something";
+} while condition;  // Missing parentheses around condition
+
+// Example 11: Invalid return statement
+return;  // Missing semicolon (though this might be valid in some contexts)
+
+// Example 12: Invalid throw statement
+throw "Error message";  // Missing semicolon
+
+// Example 13: Invalid break/continue outside loop
+function test() {
+    break;  // break outside of loop context
+    continue;  // continue outside of loop context
+}

@@ -4145,15 +4145,15 @@ Grapa is fully thread safe in all supported environments (command line, Grapa sh
 */</p>
 <h2 id="mapop-params">map($OP [,params])</h2>
 <p>See <a href="../../operators/loop/#map">map in the Looping section</a> for full documentation, canonical examples, and troubleshooting.
-Iterates through a $LIST/$ARRAY calling an $OP. Processes each item in parallel. Result of $OP placed in a $LIST/$ARRAY which is returned at the completion.</p>
+Iterates through a $GOBJ/$ARRAY calling an $OP. Processes each item in parallel. Result of $OP placed in a $GOBJ/$ARRAY which is returned at the completion.</p>
 <h2 id="filterop-params">filter($OP [,params])</h2>
 <p>See <a href="../../operators/loop/#filter">filter in the Looping section</a> for full documentation, canonical examples, and troubleshooting.
-Iterates through a $LIST/$ARRAY calling an $OP. Processes each item in parallel. If $OP of op is true, item is placed in a $LIST/$ARRAY which is returned at the completion. </p>
+Iterates through a $GOBJ/$ARRAY calling an $OP. Processes each item in parallel. If $OP of op is true, item is placed in a $GOBJ/$ARRAY which is returned at the completion. </p>
 <h2 id="reduceop-start-params">reduce($OP [,start [,params]])</h2>
 <p>See <a href="../../operators/loop/#reduce">reduce in the Looping section</a> for full documentation, canonical examples, and troubleshooting.
-Iterates through a $LIST/$ARRAY calling an $OP. Processes each item in sequence as the intent is to combine results of each $OP. If "start" not provided, the first item of the list is used as the start. </p>
+Iterates through a $GOBJ/$ARRAY calling an $OP. Processes each item in sequence as the intent is to combine results of each $OP. If "start" not provided, the first item of the list is used as the start. </p>
 <h2 id="sortaxisorderop">sort([axis],[order],[op])</h2>
-<p>Sorts data structures across multiple types: <code>$ARRAY</code>, <code>$TUPLE</code>, <code>$LIST</code>, <code>$OBJ</code>, <code>$XML</code>, <code>$TAG</code>, <code>$EL</code>, <code>$OP</code>, <code>$CODE</code>.</p>
+<p>Sorts data structures across multiple types: <code>$ARRAY</code>, <code>$TUPLE</code>, <code>$GOBJ</code>, <code>$OBJ</code>, <code>$XML</code>, <code>$TAG</code>, <code>$EL</code>, <code>$OP</code>, <code>$CODE</code>.</p>
 <ul>
 <li>axis -&gt; 0 = row, 1 = col</li>
 <li>order -&gt; 0 = ascend, 1 = decend, or does selection if array if indexes passed in</li>
@@ -4184,7 +4184,7 @@ Iterates through a $LIST/$ARRAY calling an $OP. Processes each item in sequence 
 [&quot;a&quot;,&quot;B&quot;]
 </code></pre></div></p>
 <h2 id="uniqueop">unique([op])</h2>
-<p>Remove duplicates across multiple types: <code>$ARRAY</code>, <code>$TUPLE</code>, <code>$LIST</code>, <code>$OBJ</code>, <code>$XML</code>, <code>$TAG</code>, <code>$EL</code>, <code>$OP</code>, <code>$CODE</code>.</p>
+<p>Remove duplicates across multiple types: <code>$ARRAY</code>, <code>$TUPLE</code>, <code>$GOBJ</code>, <code>$OBJ</code>, <code>$XML</code>, <code>$TAG</code>, <code>$EL</code>, <code>$OP</code>, <code>$CODE</code>.</p>
 <p><strong>For Lists and Objects:</strong> Removes duplicate keys, keeping the last value for each key.
 <strong>For Arrays and Tuples:</strong> Removes duplicate values, keeping the last occurrence of each value.</p>
 <div class="highlight"><pre><span></span><code>/* Lists and Objects - remove duplicate keys */
@@ -4205,12 +4205,12 @@ Iterates through a $LIST/$ARRAY calling an $OP. Processes each item in sequence 
 [&quot;A&quot;,&quot;b&quot;,&quot;c&quot;]
 </code></pre></div></p>
 <h2 id="getnameindex">getname([index])</h2>
-<p>Used in a map/reduce/filter to identify the name of the passed in item from the original list (if processing a $LIST). </p>
+<p>Used in a map/reduce/filter to identify the name of the passed in item from the original list (if processing a $GOBJ). </p>
 <p>To use, do not de-reference the identify. The getname function will then see that it is an $ID and will attempt to locate it in the namespace. Since what is passed in is a pointer, the function is able to discover the item in the original list and discover the name.</p>
 <div class="highlight"><pre><span></span><code>&gt; {a:1,b:2}.map(op(a){&quot;a&quot;.getname()})
 {&quot;a&quot;:a,&quot;b&quot;:b}
 </code></pre></div>
-<p>Or used to get the name of an item in a $LIST, using the index parameter.</p>
+<p>Or used to get the name of an item in a $GOBJ, using the index parameter.</p>
 <div class="highlight"><pre><span></span><code>&gt; {a:1,b:2}.getname(0)
 a
 </code></pre></div>

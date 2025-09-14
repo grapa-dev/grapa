@@ -1973,27 +1973,27 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#certificatecertfile" class="md-nav__link">
+  <a href="#certificatecertdata" class="md-nav__link">
     <span class="md-ellipsis">
-      certificate(certFile)
+      certificate(certData)
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#privatekeyfile-passop-passparam" class="md-nav__link">
+  <a href="#privatekeydata-passop-passparam" class="md-nav__link">
     <span class="md-ellipsis">
-      private(keyFile, passOp, passParam)
+      private(keyData, passOp, passParam)
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#trustedcafile-capath" class="md-nav__link">
+  <a href="#trustedcadata-capath" class="md-nav__link">
     <span class="md-ellipsis">
-      trusted(caFile, caPath)
+      trusted(caData, caPath)
     </span>
   </a>
   
@@ -2163,6 +2163,24 @@
   <a href="#advanced-features" class="md-nav__link">
     <span class="md-ellipsis">
       ❌ Advanced Features
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#certificate-management-limitations" class="md-nav__link">
+    <span class="md-ellipsis">
+      ❌ Certificate Management Limitations
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#certificate-data-support" class="md-nav__link">
+    <span class="md-ellipsis">
+      ✅ Certificate Data Support
     </span>
   </a>
   
@@ -4526,27 +4544,27 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#certificatecertfile" class="md-nav__link">
+  <a href="#certificatecertdata" class="md-nav__link">
     <span class="md-ellipsis">
-      certificate(certFile)
+      certificate(certData)
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#privatekeyfile-passop-passparam" class="md-nav__link">
+  <a href="#privatekeydata-passop-passparam" class="md-nav__link">
     <span class="md-ellipsis">
-      private(keyFile, passOp, passParam)
+      private(keyData, passOp, passParam)
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#trustedcafile-capath" class="md-nav__link">
+  <a href="#trustedcadata-capath" class="md-nav__link">
     <span class="md-ellipsis">
-      trusted(caFile, caPath)
+      trusted(caData, caPath)
     </span>
   </a>
   
@@ -4716,6 +4734,24 @@
   <a href="#advanced-features" class="md-nav__link">
     <span class="md-ellipsis">
       ❌ Advanced Features
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#certificate-management-limitations" class="md-nav__link">
+    <span class="md-ellipsis">
+      ❌ Certificate Management Limitations
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#certificate-data-support" class="md-nav__link">
+    <span class="md-ellipsis">
+      ✅ Certificate Data Support
     </span>
   </a>
   
@@ -4949,8 +4985,8 @@ n2.listen(&#39;@n1&#39;);
 4. <strong>Automatic Restart</strong>: After each connection closes, the listener automatically restarts to accept new connections</p>
 <p><strong>Parameters:</strong>
 - <code>url</code>: Server URL to bind to (e.g., ":8080", "localhost:12345", "https://:8443")
-- <code>messageHandler</code>: Lambda function called for each received message
-- <code>connectHandler</code>: Lambda function called when a new connection is established (optional)
+- <code>messageHandler</code>: Function called for each received message
+- <code>connectHandler</code>: Function called when a new connection is established (optional)
 - <code>count</code>: Number of concurrent listeners (currently fixed to 1, but the system handles multiple connections per listener)</p>
 <p><strong>Handler Parameters:</strong>
 - <code>connectHandler(netSession)</code>: Called once per connection
@@ -5068,8 +5104,10 @@ server.disconnect();
 httpsServer = $net();
 
 /* Configure SSL server certificate */
-httpsServer.certificate(&quot;keys/server.crt&quot;);
-httpsServer.private(&quot;keys/server.key&quot;);
+serverCert = $file().get(&quot;keys/server.crt&quot;);
+serverKey = $file().get(&quot;keys/server.key&quot;);
+httpsServer.certificate(serverCert);
+httpsServer.private(serverKey);
 
 /* Handle HTTPS connections */
 httpsMessageHandler = op(netSession, message, hasmore) {
@@ -5120,8 +5158,10 @@ httpServer.onlisten(&#39;:8080&#39;, universalHandler);
 
 /* HTTPS Server */
 httpsServer = $net();
-httpsServer.certificate(&quot;keys/server.crt&quot;);
-httpsServer.private(&quot;keys/server.key&quot;);
+serverCert = $file().get(&quot;keys/server.crt&quot;);
+serverKey = $file().get(&quot;keys/server.key&quot;);
+httpsServer.certificate(serverCert);
+httpsServer.private(serverKey);
 httpsServer.onlisten(&#39;:8443&#39;, universalHandler);
 
 (&quot;Dual server started:&quot;).echo();
@@ -5192,17 +5232,21 @@ apiServer.onlisten(&#39;:3000&#39;, apiMessageHandler);
 sslServer = $net();
 
 /* Set server certificate (PEM format) */
-sslServer.certificate(&quot;keys/server.crt&quot;);
+serverCert = $file().get(&quot;keys/server.crt&quot;);
+sslServer.certificate(serverCert);
 
 /* Set private key (PEM format) */
-sslServer.private(&quot;keys/server.key&quot;);
+serverKey = $file().get(&quot;keys/server.key&quot;);
+sslServer.private(serverKey);
 
 /* Optional: Set password callback for encrypted private key */
 passwordCallback = op() { return &quot;server_key_password&quot;; };
-sslServer.private(&quot;keys/server_encrypted.key&quot;, passwordCallback);
+encryptedKey = $file().get(&quot;keys/server_encrypted.key&quot;);
+sslServer.private(encryptedKey, passwordCallback);
 
 /* Optional: Set trusted CA certificates for client verification */
-sslServer.trusted(&quot;keys/ca.crt&quot;, &quot;keys/ca/&quot;);
+caCert = $file().get(&quot;keys/ca.crt&quot;);
+sslServer.trusted(caCert, &quot;keys/ca/&quot;);
 
 /* Start HTTPS server */
 sslServer.onlisten(&#39;:8443&#39;, messageHandler);
@@ -5249,50 +5293,54 @@ server.disconnect();
 n2.proxy(&quot;HTTP&quot;, &quot;proxy.example.com:8080&quot;, &quot;proxy.example.com:8080&quot;);
 n2.connect(&quot;target.com:80&quot;, null, null);
 </code></pre></div></p>
-<h2 id="certificatecertfile">certificate(certFile)</h2>
-<p>Sets the SSL certificate file for HTTPS connections. This configures the client certificate to present to the server.</p>
+<h2 id="certificatecertdata">certificate(certData)</h2>
+<p>Sets the SSL certificate data for HTTPS connections. This configures the client certificate to present to the server.</p>
 <p><strong>Parameters:</strong>
-- <code>certFile</code>: Path to the certificate file (PEM format)</p>
+- <code>certData</code>: Certificate data (PEM or DER format)</p>
 <p><strong>Example:</strong>
 <div class="highlight"><pre><span></span><code>n2 = $net();
-n2.certificate(&quot;keys/client.crt&quot;);
+certData = $file().get(&quot;keys/client.crt&quot;);
+n2.certificate(certData);
 n2.connect(&quot;example.com:443&quot;, null, null);
 </code></pre></div></p>
 <p><strong>Use Cases:</strong>
 - <strong>Client Authentication</strong>: Present a client certificate to the server
 - <strong>Mutual TLS</strong>: Enable two-way SSL authentication
 - <strong>Server Setup</strong>: Configure server certificates for HTTPS servers</p>
-<h2 id="privatekeyfile-passop-passparam">private(keyFile, passOp, passParam)</h2>
-<p>Sets the private key file with optional password callback for HTTPS connections.</p>
+<h2 id="privatekeydata-passop-passparam">private(keyData, passOp, passParam)</h2>
+<p>Sets the private key data with optional password callback for HTTPS connections.</p>
 <p><strong>Parameters:</strong>
-- <code>keyFile</code>: Path to the private key file (PEM format)
-- <code>passOp</code>: Lambda function for password callback (optional)
+- <code>keyData</code>: Private key data (PEM or DER format)
+- <code>passOp</code>: Function for password callback (optional)
 - <code>passParam</code>: Parameter passed to password callback (optional)</p>
 <p><strong>Example:</strong>
 <div class="highlight"><pre><span></span><code>/* Simple private key without password */
 n2 = $net();
-n2.private(&quot;keys/private.key&quot;, null, null);
+keyData = $file().get(&quot;keys/private.key&quot;);
+n2.private(keyData, null, null);
 n2.connect(&quot;example.com:443&quot;, null, null);
 </code></pre></div></p>
 <p><strong>Example with Password:</strong>
 <div class="highlight"><pre><span></span><code>/* Private key with password callback */
 passwordCallback = op() { return &quot;mypassword&quot;; };
 n2 = $net();
-n2.private(&quot;keys/private.key&quot;, passwordCallback, null);
+keyData = $file().get(&quot;keys/private.key&quot;);
+n2.private(keyData, passwordCallback, null);
 n2.connect(&quot;example.com:443&quot;, null, null);
 </code></pre></div></p>
 <p><strong>Use Cases:</strong>
 - <strong>Client Authentication</strong>: Provide private key for client certificate
 - <strong>Server Setup</strong>: Configure server private key for HTTPS servers
 - <strong>Password Protection</strong>: Handle encrypted private keys</p>
-<h2 id="trustedcafile-capath">trusted(caFile, caPath)</h2>
-<p>Sets trusted CA certificate file and path for SSL verification. This configures which certificate authorities are trusted for verifying server certificates.</p>
+<h2 id="trustedcadata-capath">trusted(caData, caPath)</h2>
+<p>Sets trusted CA certificate data and path for SSL verification. This configures which certificate authorities are trusted for verifying server certificates.</p>
 <p><strong>Parameters:</strong>
-- <code>caFile</code>: Path to CA certificate file (PEM format)
-- <code>caPath</code>: Path to CA certificate directory</p>
+- <code>caData</code>: CA certificate data (PEM or DER format, optional)
+- <code>caPath</code>: Path to CA certificate directory (optional)</p>
 <p><strong>Example:</strong>
 <div class="highlight"><pre><span></span><code>n2 = $net();
-n2.trusted(&quot;keys/ca.crt&quot;, &quot;keys/ca/&quot;);
+caData = $file().get(&quot;keys/ca.crt&quot;);
+n2.trusted(caData, &quot;keys/ca/&quot;);
 n2.connect(&quot;example.com:443&quot;, null, null);
 </code></pre></div></p>
 <p><strong>Example with CA Path Only:</strong>
@@ -5310,11 +5358,14 @@ n2.connect(&quot;example.com:443&quot;, null, null);
 n2 = $net();
 
 /* Set up trusted CA certificates */
-n2.trusted(&quot;keys/ca.crt&quot;, &quot;keys/ca/&quot;);
+caData = $file().get(&quot;keys/ca.crt&quot;);
+n2.trusted(caData, &quot;keys/ca/&quot;);
 
 /* Configure client certificate and private key */
-n2.certificate(&quot;keys/client.crt&quot;);
-n2.private(&quot;keys/client.key&quot;, null, null);
+certData = $file().get(&quot;keys/client.crt&quot;);
+keyData = $file().get(&quot;keys/client.key&quot;);
+n2.certificate(certData);
+n2.private(keyData, null, null);
 
 /* Connect to HTTPS server */
 n2.connect(&quot;example.com:443&quot;, null, null);
@@ -5545,7 +5596,7 @@ if (pending &gt; 0) {
 <p>Sets up an asynchronous receive handler that will be called when data is received.</p>
 <p><strong>🚀 Key Advantage:</strong> Automatically handles incoming data without blocking, perfect for buffering and processing data as it arrives.</p>
 <p><strong>Parameters:</strong>
-- <code>handler</code>: Lambda function to handle received data</p>
+- <code>handler</code>: Function to handle received data</p>
 <p><strong>Handler Parameters:</strong>
 - <code>netSession</code>: Network session object
 - <code>message</code>: Received message data
@@ -5749,6 +5800,34 @@ n2.disconnect();
 <li><strong>Keep-Alive Management</strong>: Basic support only</li>
 <li><strong>HTTP Caching</strong>: No cache control or ETag support</li>
 </ul>
+<h3 id="certificate-management-limitations">❌ Certificate Management Limitations</h3>
+<ul>
+<li><strong>Certificate Generation</strong>: No CSR (Certificate Signing Request) creation</li>
+<li><strong>Self-Signed Certificates</strong>: No self-signed certificate generation</li>
+<li><strong>Certificate Renewal</strong>: No certificate renewal workflows</li>
+<li><strong>Certificate Lifecycle</strong>: No expiration monitoring or rotation</li>
+<li><strong>Certificate Format Conversion</strong>: No PEM ↔ DER conversion</li>
+<li><strong>Certificate Revocation</strong>: No CRL (Certificate Revocation List) or OCSP checking</li>
+<li><strong>Certificate Fingerprints</strong>: No fingerprint generation</li>
+<li><strong>Certificate Storage</strong>: No certificate store management</li>
+<li><strong>Advanced SSL/TLS</strong>: No cipher suite selection or TLS version specification</li>
+</ul>
+<h3 id="certificate-data-support">✅ Certificate Data Support</h3>
+<ul>
+<li><strong>Memory-Based Loading</strong>: All certificate methods now accept certificate data directly instead of file paths</li>
+<li><strong>PEM Format Support</strong>: Automatic detection and parsing of PEM format certificates</li>
+<li><strong>DER Format Support</strong>: Support for binary DER format certificates</li>
+<li><strong>Certificate Chains</strong>: Full certificate chain support in PEM format</li>
+<li><strong>Private Key Support</strong>: Memory-based private key loading with password callback support</li>
+<li><strong>CA Certificate Support</strong>: Memory-based CA certificate loading for custom trust stores</li>
+<li><strong>Certificate Pinning</strong>: No certificate pinning support</li>
+<li><strong>SNI Support</strong>: No Server Name Indication configuration</li>
+</ul>
+<p><strong>Developer Responsibility:</strong>
+For certificate management tasks not covered by Grapa's <code>$net</code> class, developers should use external tools such as:
+- <strong>OpenSSL CLI</strong>: For certificate generation, conversion, and validation
+- <strong>Certificate Management Tools</strong>: For enterprise certificate lifecycle management
+- <strong>Custom Scripts</strong>: For automated certificate monitoring and renewal workflows</p>
 
 
 

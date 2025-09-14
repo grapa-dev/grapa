@@ -2809,9 +2809,9 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#2a-list-object-organization" class="md-nav__link">
+  <a href="#2a-gobj-object-organization" class="md-nav__link">
     <span class="md-ellipsis">
-      2a. $LIST Object Organization
+      2a. $GOBJ Object Organization
     </span>
   </a>
   
@@ -2842,9 +2842,9 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#3a-dynamic-rule-addition-to-list-objects" class="md-nav__link">
+  <a href="#3a-dynamic-rule-addition-to-gobj-objects" class="md-nav__link">
     <span class="md-ellipsis">
-      3a. Dynamic Rule Addition to $LIST Objects
+      3a. Dynamic Rule Addition to $GOBJ Objects
     </span>
   </a>
   
@@ -4294,9 +4294,9 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#2a-list-object-organization" class="md-nav__link">
+  <a href="#2a-gobj-object-organization" class="md-nav__link">
     <span class="md-ellipsis">
-      2a. $LIST Object Organization
+      2a. $GOBJ Object Organization
     </span>
   </a>
   
@@ -4327,9 +4327,9 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#3a-dynamic-rule-addition-to-list-objects" class="md-nav__link">
+  <a href="#3a-dynamic-rule-addition-to-gobj-objects" class="md-nav__link">
     <span class="md-ellipsis">
-      3a. Dynamic Rule Addition to $LIST Objects
+      3a. Dynamic Rule Addition to $GOBJ Objects
     </span>
   </a>
   
@@ -4551,8 +4551,8 @@ result = op()(&quot;[2024-01-15 10:30:00] User login successful&quot;, log_rule)
 </code></pre></div></p>
 <h3 id="pattern-2-object-based-rule-organization"><strong>Pattern 2: Object-Based Rule Organization</strong></h3>
 <p>Organize rules in objects with a common parsing interface for better code organization.</p>
-<h4 id="2a-list-object-organization"><strong>2a. $LIST Object Organization</strong></h4>
-<div class="highlight"><pre><span></span><code>/* Define ETL rules in a $LIST object */
+<h4 id="2a-gobj-object-organization"><strong>2a. $GOBJ Object Organization</strong></h4>
+<div class="highlight"><pre><span></span><code>/* Define ETL rules in a $GOBJ object */
 etl_rules = {
     /* Common parsing interface */
     parse = op(parse_data, parse_rule){op()(parse_data, parse_rule)()},
@@ -4618,7 +4618,7 @@ config_result = etl_rules.parse(&quot;server_name=myapp&quot;, etl_rules.config_
 - <strong>Object-Oriented</strong>: Classes provide better encapsulation and reusability</p>
 <h3 id="pattern-3-dynamic-rule-creation-and-execution"><strong>Pattern 3: Dynamic Rule Creation and Execution</strong></h3>
 <p>Create rules dynamically and execute them immediately.</p>
-<h4 id="3a-dynamic-rule-addition-to-list-objects"><strong>3a. Dynamic Rule Addition to $LIST Objects</strong></h4>
+<h4 id="3a-dynamic-rule-addition-to-gobj-objects"><strong>3a. Dynamic Rule Addition to $GOBJ Objects</strong></h4>
 <div class="highlight"><pre><span></span><code>/* Start with base ETL rules object */
 etl_rules = {
     parse = op(parse_data, parse_rule){op()(parse_data, parse_rule)()},
@@ -4648,7 +4648,7 @@ csv_result = etl_rules.parse(&quot;John,25,NY&quot;, etl_rules.csv_parser);
 </code></pre></div>
 <p><strong>Key Features:</strong>
 - <strong>Dynamic Creation</strong>: Create rules based on runtime conditions
-- <strong>Object Extension</strong>: Add rules to existing <code>$LIST</code> objects using <code>+=</code> operator
+- <strong>Object Extension</strong>: Add rules to existing <code>$GOBJ</code> objects using <code>+=</code> operator
 - <strong>Class Methods</strong>: Use class methods to add rules dynamically to <code>$CLASS</code> instances
 - <strong>Immediate Execution</strong>: Execute rules as soon as they're created
 - <strong>Flexible Definitions</strong>: Support complex rule definitions</p>
@@ -4679,7 +4679,7 @@ csv_result = etl_rules.parse(&quot;John,25,NY&quot;, etl_rules.csv_parser);
 <p>Isolated rule execution provides the power of Grapa's executable BNF system without the risks of modifying the main language grammar. The three key patterns demonstrated are:</p>
 <ul>
 <li><strong>Pattern 1</strong>: <code>op()("input", rule)()</code> - Direct rule execution for simple parsing tasks</li>
-<li><strong>Pattern 2</strong>: Object-based organization with <code>$LIST</code> and <code>$CLASS</code> for structured rule management</li>
+<li><strong>Pattern 2</strong>: Object-based organization with <code>$GOBJ</code> and <code>$CLASS</code> for structured rule management</li>
 <li><strong>Pattern 3</strong>: Dynamic rule creation and execution for extensible parsing systems</li>
 </ul>
 <p>These patterns are essential for ETL workflows, domain-specific processing, protocol parsing, and any scenario where you need isolated, safe rule execution without affecting the main Grapa language.</p>

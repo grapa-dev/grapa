@@ -4994,20 +4994,44 @@ f.pwd();
 <p><strong>Return Format</strong>: Returns a list of objects with the following properties:
 - <code>$KEY</code>: File or directory name
 - <code>$TYPE</code>: Type ("FILE", "GROUP", etc.)
-- <code>$BYTES</code>: File size in bytes (0 for directories)</p>
+- <code>$BYTES</code>: File size in bytes (0 for directories)
+- <code>$PATH</code>: Path parameter passed to <code>.ls()</code> (relative to <code>$sys().getenv($WORK)</code>)</p>
 <p><strong>Note:</strong>
 - When navigating a traditional file system, folders/directories will be listed as <code>$TYPE: "GROUP"</code>.
-- In a database context, <code>GROUP</code> also refers to hierarchical/grouped database structures.</p>
-<div class="highlight"><pre><span></span><code>f.ls();
+- In a database context, <code>GROUP</code> also refers to hierarchical/grouped database structures.
+- The <code>$PATH</code> field contains the parameter passed to <code>.ls()</code>, making it easy to construct full paths.</p>
+<div class="highlight"><pre><span></span><code>/* List current directory */
+f.ls();
 [
-  {&quot;$KEY&quot;:&quot;docs&quot;,&quot;$TYPE&quot;:&quot;GROUP&quot;,&quot;$BYTES&quot;:0},
-  {&quot;$KEY&quot;:&quot;README.md&quot;,&quot;$TYPE&quot;:&quot;FILE&quot;,&quot;$BYTES&quot;:4302}
+  {&quot;$PATH&quot;:&quot;&quot;,&quot;$KEY&quot;:&quot;docs&quot;,&quot;$TYPE&quot;:&quot;GROUP&quot;,&quot;$BYTES&quot;:0},
+  {&quot;$PATH&quot;:&quot;&quot;,&quot;$KEY&quot;:&quot;README.md&quot;,&quot;$TYPE&quot;:&quot;FILE&quot;,&quot;$BYTES&quot;:4302}
 ]
 
-/* Check type of a directory */
-f.cd(&quot;docs&quot;);
-f.type();
-/* Returns: GROUP */
+/* List specific directory */
+f.ls(&quot;test&quot;);
+[
+  {&quot;$PATH&quot;:&quot;test&quot;,&quot;$KEY&quot;:&quot;database&quot;,&quot;$TYPE&quot;:&quot;GROUP&quot;,&quot;$BYTES&quot;:896},
+  {&quot;$PATH&quot;:&quot;test&quot;,&quot;$KEY&quot;:&quot;README.md&quot;,&quot;$TYPE&quot;:&quot;FILE&quot;,&quot;$BYTES&quot;:10174}
+]
+
+/* Navigate to directory and list */
+f.cd(&quot;test/database&quot;);
+f.ls();
+[
+  {&quot;$PATH&quot;:&quot;&quot;,&quot;$KEY&quot;:&quot;minimal_btree_test.grc&quot;,&quot;$TYPE&quot;:&quot;FILE&quot;,&quot;$BYTES&quot;:710},
+  {&quot;$PATH&quot;:&quot;&quot;,&quot;$KEY&quot;:&quot;test_table_basic.grc&quot;,&quot;$TYPE&quot;:&quot;FILE&quot;,&quot;$BYTES&quot;:7731}
+]
+
+/* Construct full paths using $PATH and $KEY */
+files = f.ls(&quot;test/database&quot;);
+foreach file in files {
+    full_path = file[&quot;$PATH&quot;] + &quot;/&quot; + file[&quot;$KEY&quot;];
+    (file[&quot;$TYPE&quot;] + &quot;:&quot; + full_path + &quot;\n&quot;).echo();
+}
+/* Output:
+FILE:test/database/minimal_btree_test.grc
+FILE:test/database/test_table_basic.grc
+*/
 </code></pre></div>
 <h2 id="mkname-type">mk(name [,type])</h2>
 <p>Creates a directory at the current working directory within the file system.</p>
@@ -5078,11 +5102,23 @@ f.cd(&quot;analytics_db&quot;);
 <h2 id="setname-value-field">set(name, value [, field])</h2>
 <p>Creates or updates a file with the specified content.</p>
 <p><strong>Parameters</strong>:
-- <code>name</code>: File name
-- <code>value</code>: Content to write to the file
+- <code>name</code>: File name or special stream (<code>$stdout</code>, <code>$stderr</code>)
+- <code>value</code>: Content to write to the file or stream
 - <code>field</code> (optional): Field name (defaults to <code>$VALUE</code>)</p>
-<div class="highlight"><pre><span></span><code>f.set(&quot;test.txt&quot;, &quot;Hello, World!&quot;);
+<p><strong>Special Streams</strong>:
+- <code>$stdout</code>: Writes to standard output stream
+- <code>$stderr</code>: Writes to standard error stream</p>
+<div class="highlight"><pre><span></span><code>/* Regular file operations */
+f.set(&quot;test.txt&quot;, &quot;Hello, World!&quot;);
 f.set(&quot;config.json&quot;, &#39;{&quot;name&quot;: &quot;test&quot;, &quot;value&quot;: 123}&#39;);
+
+/* Write to standard streams */
+f.set($stdout, &quot;Output message\n&quot;);
+f.set($stderr, &quot;Error message\n&quot;);
+
+/* Database field operations */
+f.set(&quot;user1&quot;, &quot;John Doe&quot;, &quot;name&quot;);
+f.set(&quot;user1&quot;, 30, &quot;age&quot;);
 </code></pre></div>
 <h2 id="getname-field">get(name [, field])</h2>
 <p>Reads the content of a file.</p>

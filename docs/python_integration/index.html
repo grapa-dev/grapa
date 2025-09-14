@@ -4454,6 +4454,39 @@ if file_info[&quot;$TYPE&quot;] == &quot;FILE&quot; and file_info[&quot;$BYTES&q
 <li><strong>Cross-platform</strong>: Consistent performance across systems</li>
 </ul>
 <h2 id="integration-with-python-ecosystem">Integration with Python Ecosystem</h2>
+<h3 id="text-processing-and-search"><strong>Text Processing and Search</strong></h3>
+<p>GrapaPy provides direct access to Grapa's powerful Unicode-aware grep functionality:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">grapapy</span>
+
+<span class="c1"># Basic text search</span>
+<span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;Hello world</span><span class="se">\n</span><span class="s2">Goodbye world</span><span class="se">\n</span><span class="s2">Python programming&quot;</span>
+<span class="n">matches</span> <span class="o">=</span> <span class="n">grapapy</span><span class="o">.</span><span class="n">grep</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="s2">&quot;world&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">matches</span><span class="p">)</span>  <span class="c1"># [&#39;Hello world&#39;, &#39;Goodbye world&#39;]</span>
+
+<span class="c1"># Match-only option (extract just the matched text)</span>
+<span class="n">matches</span> <span class="o">=</span> <span class="n">grapapy</span><span class="o">.</span><span class="n">grep</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="s2">&quot;world&quot;</span><span class="p">,</span> <span class="s2">&quot;o&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">matches</span><span class="p">)</span>  <span class="c1"># [&#39;world&#39;, &#39;world&#39;]</span>
+
+<span class="c1"># Case-insensitive search</span>
+<span class="n">matches</span> <span class="o">=</span> <span class="n">grapapy</span><span class="o">.</span><span class="n">grep</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="s2">&quot;python&quot;</span><span class="p">,</span> <span class="s2">&quot;i&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">matches</span><span class="p">)</span>  <span class="c1"># [&#39;Python programming&#39;]</span>
+
+<span class="c1"># Advanced regex with Unicode support</span>
+<span class="n">matches</span> <span class="o">=</span> <span class="n">grapapy</span><span class="o">.</span><span class="n">grep</span><span class="p">(</span><span class="s2">&quot;café naïve résumé&quot;</span><span class="p">,</span> <span class="sa">r</span><span class="s2">&quot;\w+é\w+&quot;</span><span class="p">,</span> <span class="s2">&quot;o&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">matches</span><span class="p">)</span>  <span class="c1"># [&#39;café&#39;, &#39;naïve&#39;, &#39;résumé&#39;]</span>
+
+<span class="c1"># Class-based interface for stateful operations</span>
+<span class="n">g</span> <span class="o">=</span> <span class="n">grapapy</span><span class="o">.</span><span class="n">grapa</span><span class="p">()</span>
+<span class="n">matches</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">grep</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="s2">&quot;world&quot;</span><span class="p">,</span> <span class="s2">&quot;o&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">matches</span><span class="p">)</span>  <span class="c1"># [&#39;world&#39;, &#39;world&#39;]</span>
+</code></pre></div>
+<p><strong>Advanced Grep Features:</strong>
+- <strong>Unicode-aware</strong>: Full Unicode normalization and case folding support
+- <strong>Regex support</strong>: Complete PCRE2 regex engine with advanced features
+- <strong>Multiple output formats</strong>: Line-based, match-only, JSON output
+- <strong>Performance optimized</strong>: Direct C++ implementation for maximum speed
+- <strong>Thread-safe</strong>: Can be used safely in multi-threaded Python applications
+- <strong>Direct integration</strong>: Bypasses Python's GIL for maximum performance</p>
 <h3 id="data-science-libraries"><strong>Data Science Libraries</strong></h3>
 <div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>

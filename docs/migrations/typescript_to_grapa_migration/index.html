@@ -3290,9 +3290,9 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#list-and-obj" class="md-nav__link">
+  <a href="#gobj-and-obj" class="md-nav__link">
     <span class="md-ellipsis">
-      $LIST and $OBJ
+      $GOBJ and $OBJ
     </span>
   </a>
   
@@ -4301,9 +4301,9 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#list-and-obj" class="md-nav__link">
+  <a href="#gobj-and-obj" class="md-nav__link">
     <span class="md-ellipsis">
-      $LIST and $OBJ
+      $GOBJ and $OBJ
     </span>
   </a>
   
@@ -4586,7 +4586,7 @@
 <td style="text-align: center;">—</td>
 </tr>
 <tr>
-<td>$LIST</td>
+<td>$GOBJ</td>
 <td style="text-align: center;">✗</td>
 <td style="text-align: center;">✗</td>
 <td style="text-align: center;">✓</td>
@@ -4623,7 +4623,7 @@
 </tbody>
 </table>
 <ul>
-<li>For $LIST and $OBJ, use bracket or dot notation (e.g., obj["key"], obj.key, obj[2]).</li>
+<li>For $GOBJ and $OBJ, use bracket or dot notation (e.g., obj["key"], obj.key, obj[2]).</li>
 <li>For $ARRAY, use bracket notation (e.g., arr[1]).</li>
 <li>Only $file and $TABLE support .get().</li>
 <li>This is based on direct testing in Grapa v0.0.39.</li>
@@ -4730,24 +4730,24 @@
 <blockquote>
 <p><strong>Note:</strong> Both <code>x = x + 1;</code> and <code>x += 1;</code> (and <code>s = s + "x";</code> and <code>s += "x";</code>) are valid in Grapa. The <code>+=</code> form is idiomatic and preferred in most cases.</p>
 <p><strong>String Interpolation:</strong> For combining strings and values, use <code>"Hello ${name}".interpolate()</code> instead of <code>"Hello " + name</code>. String interpolation is more powerful and less error-prone than concatenation. It also provides elegant solutions for complex method chaining: <code>"${'hello'.upper()} ${'world'.lower()}".interpolate()</code>.</p>
-<p><strong>Note:</strong> <code>.getfield("key")</code> is for <code>$file</code> and <code>$TABLE</code>. <code>.get()/.set()</code> is for <code>$WIDGET</code>. For <code>$LIST</code>/<code>$OBJ</code>, use <code>obj["key"]</code>, <code>obj.key</code>, or <code>obj."key"</code>. For <code>$ARRAY</code>, use <code>arr[index]</code> (bracket notation only).</p>
+<p><strong>Note:</strong> <code>.getfield("key")</code> is for <code>$file</code> and <code>$TABLE</code>. <code>.get()/.set()</code> is for <code>$WIDGET</code>. For <code>$GOBJ</code>/<code>$OBJ</code>, use <code>obj["key"]</code>, <code>obj.key</code>, or <code>obj."key"</code>. For <code>$ARRAY</code>, use <code>arr[index]</code> (bracket notation only).</p>
 </blockquote>
 <h2 id="access-patterns-objects-lists-arrays-files-and-tables">Access Patterns: Objects, Lists, Arrays, Files, and Tables</h2>
 <p>Below are all valid ways to access elements in Grapa data structures. See the canonical <a href="../../syntax/basic_syntax/">Basic Syntax Guide</a> for the latest tested rules.</p>
-<h3 id="list-and-obj">$LIST and $OBJ</h3>
+<h3 id="gobj-and-obj">$GOBJ and $OBJ</h3>
 <div class="highlight"><pre><span></span><code>obj = {&quot;a&quot;: 1, &quot;b&quot;: 2, &quot;c&quot;: 3};
 
 value = obj[&quot;b&quot;];      /* Returns 2 */
 value = obj.key;        /* Returns value for key &#39;key&#39; if present */
 value = obj.&quot;b&quot;;       /* Returns 2 */
 
-/* $LIST only: */
+/* $GOBJ only: */
 value = obj[1];         /* Returns 2 (by index) */
 name = obj.getname(1);  /* Returns &quot;b&quot; (key name at index 1) */
 </code></pre></div>
 <ul>
-<li>Dot notation (<code>obj.key</code>) and bracket notation (<code>obj["key"]</code>) are both valid for $LIST/$OBJ.</li>
-<li><code>.get()</code> is NOT valid for $LIST/$OBJ.</li>
+<li>Dot notation (<code>obj.key</code>) and bracket notation (<code>obj["key"]</code>) are both valid for $GOBJ/$OBJ.</li>
+<li><code>.get()</code> is NOT valid for $GOBJ/$OBJ.</li>
 </ul>
 <h3 id="array">$ARRAY</h3>
 <div class="highlight"><pre><span></span><code>arr = [10, 20, 30];
@@ -4783,7 +4783,7 @@ value = table.get(&quot;user1&quot;, &quot;name&quot;);   /* Correct */
 | Type      | .get("key") | .get(index) | Bracket Notation | Dot Notation |
 |-----------|:-----------:|:-----------:|:----------------:|:------------:|
 | $ARRAY    |      ✗      |     ✗      |       ✓         |      —       |
-| $LIST     |      ✗      |     ✗      |       ✓         |     ✓       |
+| $GOBJ     |      ✗      |     ✗      |       ✓         |     ✓       |
 | $file     |      ✓      |     ✗      |        —         |      —       |
 | $TABLE    |     ✓<em>      |     ✗      |        —         |      —       |
 | $OBJ      |      ✗      |     ✗      |       ✗         |     ✓       |
@@ -4796,7 +4796,7 @@ value = table.get(&quot;user1&quot;, &quot;name&quot;);   /* Correct */
 - <strong><code>.getfield()/.setfield()</code> method</strong>: Use for <code>$file</code> and <code>$TABLE</code> types
 - <strong><code>.get()/.set()</code> method</strong>: Exclusively for <code>$WIDGET</code> types
 - <strong><code>.size()</code> method</strong>: Not supported on any type (use <code>.len()</code> instead)
-- <strong><code>.keys()</code> method</strong>: Not supported on <code>$LIST</code> (use iteration instead)</p>
+- <strong><code>.keys()</code> method</strong>: Not supported on <code>$GOBJ</code> (use iteration instead)</p>
 </blockquote>
 <p>See <a href="../../syntax/basic_syntax/">Basic Syntax Guide</a> for empirical test results and future updates.</p>
 <h2 id="common-pitfalls">Common Pitfalls</h2>
@@ -5000,8 +5000,8 @@ if (result.type() == $ERR) {
 <blockquote>
 <p><strong>Clarification on .get() Usage:</strong>
 - <code>.get()</code> is <strong>required</strong> for <code>$file</code> and <code>$TABLE</code> access.
-- <code>.get()</code> is <strong>not supported</strong> for <code>$ARRAY</code>, <code>$LIST</code>, or <code>$OBJ</code> as of this writing.
-- Use bracket and dot notation for <code>$ARRAY</code>, <code>$LIST</code>, and <code>$OBJ</code>.
+- <code>.get()</code> is <strong>not supported</strong> for <code>$ARRAY</code>, <code>$GOBJ</code>, or <code>$OBJ</code> as of this writing.
+- Use bracket and dot notation for <code>$ARRAY</code>, <code>$GOBJ</code>, and <code>$OBJ</code>.
 - If more objects support <code>.get()</code> in the future, this guide will be updated. </p>
 <p><strong>Comment Style:</strong>
 - ✅ <strong>Comprehensive comment support</strong>: <code>/* */</code> (block), <code>/** */</code> (doc block), <code>//</code> (line), <code>///</code> (doc line)
@@ -5125,7 +5125,7 @@ keys.map(op(key) {
 Grapa's unified data structure approach is superior to specialized collections:</p>
 <ul>
 <li><strong>Sets</strong>: Use <code>.unique()</code> method on arrays: <code>[1, 2, 1, 3, 2].unique()</code> → <code>[1, 2, 3]</code></li>
-<li><strong>Maps</strong>: Use <code>$LIST</code> objects: <code>{key1: "value1", key2: "value2"}</code></li>
+<li><strong>Maps</strong>: Use <code>$GOBJ</code> objects: <code>{key1: "value1", key2: "value2"}</code></li>
 <li><strong>Priority Queues</strong>: Use <code>.sort()</code> with custom comparators</li>
 <li><strong>Deques</strong>: Use array operations with <code>+=</code> and <code>++=</code></li>
 <li><strong>Iterators</strong>: Use functional methods (<code>.map()</code>, <code>.filter()</code>, <code>.reduce()</code>) which are thread-safe and parallel</li>
@@ -5154,7 +5154,7 @@ sum = numbers.reduce(op(a, b) { a + b }, 0);      /* Sequential reduction */
 <p><strong>Advantages of Grapa's Approach:</strong>
 - <strong>Unified syntax</strong> across all data types
 - <strong>Parallel processing</strong> built into functional methods
-- <strong>Cross-format compatibility</strong> (works on <code>$ARRAY</code>, <code>$LIST</code>, <code>$OBJ</code>, <code>$XML</code>, etc.)
+- <strong>Cross-format compatibility</strong> (works on <code>$ARRAY</code>, <code>$GOBJ</code>, <code>$OBJ</code>, <code>$XML</code>, etc.)
 - <strong>Simpler learning curve</strong> - fewer specialized types to learn
 - <strong>Better performance</strong> - optimized for Grapa's execution model</p>
 <h3 id="access-control-and-visibility">Access Control and Visibility</h3>

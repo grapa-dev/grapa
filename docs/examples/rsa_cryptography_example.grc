@@ -5,115 +5,93 @@
  * - RSA key generation, encryption, decryption, signing, and verification
  * - Elliptic Curve (EC) cryptography
  * - Diffie-Hellman (DH) key exchange
- * - BLS12-381 pairing-based cryptography
  * - Hash functions and encoding
  * 
  * Note: These functions require proper initialization and may have OpenSSL 3.x compatibility issues
  * that need to be addressed in the C++ backend.
  */
 
-"=== RSA and Cryptographic Functions Example ===".echo();
-("").echo();
+"=== RSA and Cryptographic Functions Example ===\n".echo();
 
 /* ======================================== */
 /* 1. BASIC ENCODING/DECODING */
 /* ======================================== */
 
-"1. Basic Encoding/Decoding:".echo();
-("").echo();
+"1. Basic Encoding/Decoding:\n".echo();
 
 /* Base64 encoding/decoding */
 test_data = "Hello, Grapa Cryptography!";
-base64_encoded = test_data.encode({method: "base64"});
+base64_encoded = test_data.encode({"method": "base64"});
 base64_decoded = base64_encoded.decode("base64");
 
 ("Original: " + test_data + "\n").echo();
 ("Base64 encoded: " + base64_encoded + "\n").echo();
 ("Base64 decoded: " + base64_decoded + "\n").echo();
 ("Match: " + (test_data == base64_decoded).str() + "\n").echo();
-("").echo();
 
 /* Hex encoding (for output formatting) */
 hex_encoded = test_data.uhex();
 
 ("Hex encoded: " + hex_encoded + "\n").echo();
-("").echo();
-
-"".echo();
 
 /* ======================================== */
 /* 2. HASH FUNCTIONS */
 /* ======================================== */
 
-"2. Hash Functions:".echo();
-("").echo();
+"2. Hash Functions:\n".echo();
 
 /* SHA-256 hashing */
 md_keys_sha256 = "md".genkeys({"digest": "sha256"});
 sha256_hash = test_data.encode(md_keys_sha256);
 ("SHA-256 hash: " + sha256_hash.uhex() + "\n").echo();
-("").echo();
 
 /* MD5 hashing (for legacy compatibility) */
 md_keys_md5 = "md".genkeys({"digest": "md5"});
 md5_hash = test_data.encode(md_keys_md5);
 ("MD5 hash: " + md5_hash.uhex() + "\n").echo();
-("").echo();
-("").echo();
-
-"".echo();
 
 /* ======================================== */
 /* 3. RSA KEY GENERATION */
 /* ======================================== */
 
-"3. RSA Key Generation:".echo();
-("").echo();
+"3. RSA Key Generation:\n".echo();
 
 /* Generate RSA key pair */
 rsa_keys = "rsa".genkeys();
 ("RSA keys generated successfully\n").echo();
-("Key type: " + rsa_keys.type() + "\n").echo();
-("").echo();
-
-"".echo();
+("Key data type: " + rsa_keys.type() + "\n").echo();
+("Key type: " + rsa_keys."method" + "\n").echo();
 
 /* ======================================== */
 /* 4. ELLIPTIC CURVE CRYPTOGRAPHY */
 /* ======================================== */
 
-"4. Elliptic Curve Cryptography:".echo();
-("").echo();
+"4. Elliptic Curve Cryptography:\n".echo();
 
 /* Generate EC key pair */
-ec_keys = "ec".genkeys({curve: "prime256v1"});
+ec_keys = "ec".genkeys({"curve": "prime256v1"});
 ("EC keys generated successfully\n").echo();
-("Key type: " + ec_keys.type() + "\n").echo();
-("").echo();
+("Key data type: " + ec_keys.type() + "\n").echo();
+("Key type: " + ec_keys."method" + "\n").echo();
 
-"".echo();
 
 /* ======================================== */
 /* 5. DIFFIE-HELLMAN KEY EXCHANGE */
 /* ======================================== */
 
-"5. Diffie-Hellman Key Exchange:".echo();
-("").echo();
+"5. Diffie-Hellman Key Exchange:\n".echo();
 
 /* Generate DH parameters and keys */
 dh_keys = "dh".genkeys();
 ("DH keys generated successfully\n").echo();
-("Key type: " + dh_keys.type() + "\n").echo();
-("").echo();
-
-"".echo();
+("Key data type: " + dh_keys.type() + "\n").echo();
+("Key type: " + dh_keys."method" + "\n").echo();
 
 /* ======================================== */
 /* 6. RSA ENCRYPTION/DECRYPTION */
 /* ======================================== */
 
-"6. RSA Encryption/Decryption:".echo();
-("").echo();
+"6. RSA Encryption/Decryption:\n".echo();
 
 /* Example of how RSA encryption would work (if keys were properly generated) */
 message = "Secret message for RSA encryption";
@@ -122,189 +100,133 @@ message = "Secret message for RSA encryption";
 signature = message.sign(rsa_keys);
 ("RSA signature created successfully\n").echo();
 ("Signature type: " + signature.type() + "\n").echo();
-("").echo();
 
 /* Verify the signature */
 verified = signature.verify(rsa_keys, message);
 ("Signature verification: " + verified.str() + "\n").echo();
-("").echo();
-("").echo();
-
-"".echo();
 
 /* ======================================== */
 /* 7. DIGITAL SIGNATURES */
 /* ======================================== */
 
-"7. Digital Signatures:".echo();
-("").echo();
+"7. Digital Signatures:\n".echo();
 
 /* Test digital signatures with different algorithms */
 /* SHA-256 signature */
-sha256_sig = message.sign(rsa_keys, {digest: "sha256"});
+sha256_sig = message.sign(rsa_keys, {"digest": "sha256"});
 ("SHA-256 signature created\n").echo();
-("").echo();
 
 /* SHA-512 signature */
-sha512_sig = message.sign(rsa_keys, {digest: "sha512"});
+sha512_sig = message.sign(rsa_keys, {"digest": "sha512"});
 ("SHA-512 signature created\n").echo();
-("").echo();
 
 /* Verify signatures */
-sha256_verified = sha256_sig.verify(rsa_keys, message, {digest: "sha256"});
+sha256_verified = sha256_sig.verify(rsa_keys, message, {"digest": "sha256"});
 ("SHA-256 verification: " + sha256_verified.str() + "\n").echo();
-("").echo();
 
-sha512_verified = sha512_sig.verify(rsa_keys, message, {digest: "sha512"});
+sha512_verified = sha512_sig.verify(rsa_keys, message, {"digest": "sha512"});
 ("SHA-512 verification: " + sha512_verified.str() + "\n").echo();
-("").echo();
-("").echo();
-
-"".echo();
 
 /* ======================================== */
 /* 8. SECRET KEY DERIVATION (MULTIPLE METHODS) */
 /* ======================================== */
 
-"8. Secret Key Derivation (Multiple Methods):".echo();
-("").echo();
+"8. Secret Key Derivation (Multiple Methods):\n".echo();
 
 /* Method 1: EC Key Exchange */
 ("--- EC Key Exchange ---\n").echo();
-ec_alice = "ec".genkeys({curve: "prime256v1"});
-ec_bob = "ec".genkeys({curve: "prime256v1"});
+ec_alice = "ec".genkeys({"curve": "prime256v1"});
+ec_bob = "ec".genkeys({"curve": "prime256v1"});
 
 ec_alice_secret = ec_alice.secret({
-    method: 'ec',
-    curve: 'prime256v1',
-    pub: ec_bob.pub
+    'method': 'ec',
+    'curve': 'prime256v1',
+    'pub': ec_bob.'pub'
 });
 ec_bob_secret = ec_bob.secret({
-    method: 'ec',
-    curve: 'prime256v1',
-    pub: ec_alice.pub
+    'method': 'ec',
+    'curve': 'prime256v1',
+    'pub': ec_alice.'pub'
 });
 
 ("EC Alice secret: " + ec_alice_secret.uhex() + "\n").echo();
 ("EC Bob secret: " + ec_bob_secret.uhex() + "\n").echo();
 ("EC Secrets match: " + (ec_alice_secret == ec_bob_secret).str() + "\n").echo();
-("").echo();
 
 /* Method 2: RPK Key Exchange */
 ("--- RPK Key Exchange ---\n").echo();
-rpk_alice = "rpk".genkeys({alg: "X25519"});
-rpk_bob = "rpk".genkeys({alg: "X25519"});
+rpk_alice = "rpk".genkeys({"alg": "X25519"});
+rpk_bob = "rpk".genkeys({"alg": "X25519"});
 
 rpk_alice_secret = rpk_alice.secret({
-    method: 'rpk',
-    alg: 'X25519',
-    pub: rpk_bob.pub
+    'method': 'rpk',
+    'alg': 'X25519',
+    'pub': rpk_bob.'pub'
 });
 rpk_bob_secret = rpk_bob.secret({
-    method: 'rpk',
-    alg: 'X25519',
-    pub: rpk_alice.pub
+    'method': 'rpk',
+    'alg': 'X25519',
+    'pub': rpk_alice.'pub'
 });
 
 ("RPK Alice secret: " + rpk_alice_secret.uhex() + "\n").echo();
 ("RPK Bob secret: " + rpk_bob_secret.uhex() + "\n").echo();
 ("RPK Secrets match: " + (rpk_alice_secret == rpk_bob_secret).str() + "\n").echo();
-("").echo();
-
-"".echo();
 
 /* ======================================== */
 /* 9. AES ENCRYPTION */
 /* ======================================== */
 
-"9. AES Encryption:".echo();
-("").echo();
+"9. AES Encryption:\n".echo();
 
 /* Generate AES key and IV */
-aes_key = "AES256".genkeys();
-aes_iv = "AES256".genkeys();
+aes_key = "11111111111222222222222333333333";  /* 32 bytes for AES-256 */
+aes_iv = "1111111111112222";                   /* 16 bytes for IV */
 
-try {
-    /* Encrypt with AES-256 */
-    aes_encrypted = message.encode("AES256", {
-        cipher: "AES256",
-        key: aes_key,
-        iv: aes_iv
-    });
-    ("AES encrypted: " + aes_encrypted.str() + "\n").echo();
-    
-    /* Decrypt with AES-256 */
-    aes_decrypted = aes_encrypted.decode("AES256", {
-        cipher: "AES256", 
-        key: aes_key,
-        iv: aes_iv
-    });
-    ("AES decrypted: " + aes_decrypted.str() + "\n").echo();
-} {
-    catch 'error': ("AES encryption failed: " + error + "\n").echo();
-    default: ("AES encryption failed: " + error + "\n").echo();
-} finally: ("This requires properly generated AES keys\n").echo();
+/* Encrypt with AES-256 */
+aes_encrypted = message.encode("AES256", {
+    'cipher': 'AES256',
+    'key': aes_key,
+    'iv': aes_iv
+});
+("AES encrypted: " + aes_encrypted.uhex() + "\n").echo();
 
-"".echo();
+/* Decrypt with AES-256 */
+aes_decrypted = aes_encrypted.decode("AES256", {
+    'cipher': 'AES256', 
+    'key': aes_key,
+    'iv': aes_iv
+});
+("AES decrypted: " + aes_decrypted.str() + "\n").echo();
+
+("AES match: " + (message == aes_decrypted).str() + "\n").echo();
+
 
 /* ======================================== */
-/* 10. BLS12-381 PAIRING CRYPTOGRAPHY */
+/* 10. CRYPTOGRAPHIC UTILITIES */
 /* ======================================== */
 
-"10. BLS12-381 Pairing Cryptography:".echo();
-("").echo();
-
-/* Generate BLS12-381 keys */
-try {
-    bls_keys = "bls12-381".genkeys();
-    ("BLS12-381 keys generated: " + bls_keys.str() + "\n").echo();
-    
-    /* Sign with BLS */
-    bls_signature = message.sign("bls12-381", {method: "bls12-381", key: bls_keys});
-    ("BLS signature: " + bls_signature.str() + "\n").echo();
-    
-    /* Verify BLS signature */
-    bls_verified = message.verify("bls12-381", bls_signature, {method: "bls12-381", key: bls_keys});
-    ("BLS signature verified: " + bls_verified + "\n").echo();
-} {
-    catch 'error': ("BLS12-381 operations failed: " + error + "\n").echo();
-    default: ("BLS12-381 operations failed: " + error + "\n").echo();
-} finally: ("This requires properly generated BLS keys\n").echo();
-
-"".echo();
-
-/* ======================================== */
-/* 11. CRYPTOGRAPHIC UTILITIES */
-/* ======================================== */
-
-"11. Cryptographic Utilities:".echo();
-("").echo();
+"10. Cryptographic Utilities:\n".echo();
 
 /* Generate random data */
 random_large = 1024.random();
 ("Random large number: " + random_large + "\n").echo();
-("").echo();
 
 /* Generate random numbers in different ranges */
 random_0_99 = 100.random();
 ("Random 0-99: " + random_0_99 + "\n").echo();
-("").echo();
 
 random_1_1000 = 1000.random();
 ("Random 1-1000: " + random_1_1000 + "\n").echo();
-("").echo();
-
-"".echo();
 
 /* ======================================== */
-/* 12. ERROR HANDLING AND COMPATIBILITY */
+/* 11. ERROR HANDLING AND COMPATIBILITY */
 /* ======================================== */
 
-"12. Error Handling and Compatibility:".echo();
-("").echo();
+"11. Error Handling and Compatibility:\n".echo();
 
-"Note: Most cryptographic functions are working correctly!".echo();
-"The following functions are working:".echo();
+"Note: Most cryptographic functions are working correctly!\n".echo();
+"The following functions are working:\n".echo();
 ("- Basic encoding/decoding (base64, hex)\n").echo();
 ("- Hash functions (sha256, md5)\n").echo();
 ("- RSA key generation and signing/verification\n").echo();
@@ -313,23 +235,13 @@ random_1_1000 = 1000.random();
 ("- Digital signatures (sign, verify)\n").echo();
 ("- AES encryption/decryption\n").echo();
 ("- Random number generation\n").echo();
-("").echo();
-
-"The following functions have issues:".echo();
-("- BLS12-381 (not implemented)\n").echo();
-("").echo();
-
-"To fix these issues, the C++ backend needs updates for OpenSSL 3.x API changes.".echo();
-
-"".echo();
 
 /* ======================================== */
 /* SUMMARY */
 /* ======================================== */
 
-"=== Summary ===".echo();
-("").echo();
-"✅ Working functions:".echo();
+"=== Summary ===\n".echo();
+"✅ Working functions:\n".echo();
 ("- Basic encoding/decoding (base64, hex)\n").echo();
 ("- Hash functions (sha256, md5)\n").echo();
 ("- RSA key generation and signing/verification\n").echo();
@@ -338,16 +250,5 @@ random_1_1000 = 1000.random();
 ("- Digital signatures (sign, verify)\n").echo();
 ("- AES encryption/decryption\n").echo();
 ("- Random number generation\n").echo();
-("").echo();
 
-"⚠️ Functions with issues:".echo();
-("- BLS12-381 (not implemented)\n").echo();
-("").echo();
-
-"Next steps:".echo();
-("1. Implement BLS12-381 if needed\n").echo();
-("2. Document the working cryptographic functions\n").echo();
-("3. Create additional examples for advanced use cases\n").echo();
-("").echo();
-
-"=== RSA and Cryptographic Functions Example Complete ===".echo();
+"=== RSA and Cryptographic Functions Example Complete ===\n".echo();

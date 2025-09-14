@@ -1042,6 +1042,66 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#dynamic-class-creation-with-obj" class="md-nav__link">
+    <span class="md-ellipsis">
+      Dynamic Class Creation with obj
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Dynamic Class Creation with obj">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#automatic-vs-explicit-class-assignment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Automatic vs Explicit Class Assignment
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#key-differences" class="md-nav__link">
+    <span class="md-ellipsis">
+      Key Differences
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#practical-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      Practical Example
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#when-to-use-each-approach" class="md-nav__link">
+    <span class="md-ellipsis">
+      When to Use Each Approach
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#advanced-inheritance-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      Advanced Inheritance Example
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#best-practices" class="md-nav__link">
     <span class="md-ellipsis">
       Best Practices
@@ -4283,6 +4343,66 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#dynamic-class-creation-with-obj" class="md-nav__link">
+    <span class="md-ellipsis">
+      Dynamic Class Creation with obj
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Dynamic Class Creation with obj">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#automatic-vs-explicit-class-assignment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Automatic vs Explicit Class Assignment
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#key-differences" class="md-nav__link">
+    <span class="md-ellipsis">
+      Key Differences
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#practical-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      Practical Example
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#when-to-use-each-approach" class="md-nav__link">
+    <span class="md-ellipsis">
+      When to Use Each Approach
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#advanced-inheritance-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      Advanced Inheritance Example
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#best-practices" class="md-nav__link">
     <span class="md-ellipsis">
       Best Practices
@@ -4399,6 +4519,7 @@
 <li><a href="#method-inheritance">Method Inheritance</a></li>
 <li><a href="#inheritance-precedence">Inheritance Precedence</a></li>
 <li><a href="#system-classes-vs-user-classes">System Classes vs User Classes</a></li>
+<li><a href="#dynamic-class-creation-with-obj">Dynamic Class Creation with <code>obj</code></a></li>
 <li><a href="#examples">Examples</a></li>
 </ul>
 <hr />
@@ -4733,6 +4854,121 @@ DataProcessor = class ($OBJ, Loggable, Validatable) {
 processor = DataProcessor();
 processor.process(&quot;valid data&quot;);    /* Returns: &quot;Processed: valid data&quot; */
 processor.process(&quot;&quot;);              /* Returns: &quot;Failed to process: &quot; */
+</code></pre></div>
+<hr />
+<h2 id="dynamic-class-creation-with-obj">Dynamic Class Creation with <code>obj</code></h2>
+<p>Grapa provides the <code>obj</code> function for creating objects with custom class inheritance dynamically. This is particularly useful when you want to create objects that inherit from system classes like <code>$GOBJ</code> while adding your own methods and properties.</p>
+<h3 id="automatic-vs-explicit-class-assignment">Automatic vs Explicit Class Assignment</h3>
+<p>When you create an object with <code>{}</code>, Grapa automatically assigns the <code>$GOBJ</code> class:</p>
+<div class="highlight"><pre><span></span><code>/* Automatic class assignment */
+x2 = {x: 1, timesx: op(y){x*y}, setx: op(pX){x = pX;}};
+x2.type();  /* Returns: $GOBJ */
+</code></pre></div>
+<p>However, if you want to create an object that inherits from <code>$GOBJ</code> but has your own class definition, you can use the <code>obj</code> function:</p>
+<div class="highlight"><pre><span></span><code>/* Explicit class inheritance */
+x1 = obj class($GOBJ) {
+    x = 1;
+    timesx = op(y) { x * y; };
+    setx = op(pX) { x = pX; };
+};
+x1.type();  /* Returns: $OBJ (with $GOBJ inheritance) */
+</code></pre></div>
+<h3 id="key-differences">Key Differences</h3>
+<table>
+<thead>
+<tr>
+<th>Aspect</th>
+<th><code>{}</code> (Automatic)</th>
+<th><code>obj class($GOBJ){...}</code> (Explicit)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Type</strong></td>
+<td><code>$GOBJ</code></td>
+<td><code>$OBJ</code></td>
+</tr>
+<tr>
+<td><strong>Inheritance</strong></td>
+<td>Built-in <code>$GOBJ</code> methods only</td>
+<td><code>$GOBJ</code> methods + your custom methods</td>
+</tr>
+<tr>
+<td><strong>Extensibility</strong></td>
+<td>Limited to <code>$GOBJ</code> functionality</td>
+<td>Can add more classes to inheritance chain</td>
+</tr>
+<tr>
+<td><strong>Method Resolution</strong></td>
+<td><code>$GOBJ</code> methods</td>
+<td>Your methods + <code>$GOBJ</code> methods</td>
+</tr>
+<tr>
+<td><strong>Use Case</strong></td>
+<td>Simple data structures</td>
+<td>Complex objects with custom behavior</td>
+</tr>
+</tbody>
+</table>
+<h3 id="practical-example">Practical Example</h3>
+<div class="highlight"><pre><span></span><code>/* Both approaches work similarly for basic operations */
+x1 = obj class($GOBJ) {
+    x = 1;
+    timesx = op(y) { x * y; };
+    setx = op(pX) { x = pX; };
+};
+
+x2 = {x: 1, timesx: op(y){x*y}, setx: op(pX){x = pX;}};
+
+/* Both support the same operations */
+x1.x;           /* 1 */
+x1.timesx(5);   /* 5 */
+x1.setx(2);     /* Sets x to 2 */
+x1.timesx(5);   /* 10 */
+
+x2.x;           /* 1 */
+x2.timesx(5);   /* 5 */
+x2.setx(2);     /* Sets x to 2 */
+x2.timesx(5);   /* 10 */
+</code></pre></div>
+<h3 id="when-to-use-each-approach">When to Use Each Approach</h3>
+<p><strong>Use <code>{}</code> (Automatic) when:</strong>
+- Creating simple data structures
+- You only need basic <code>$GOBJ</code> functionality
+- Quick prototyping or simple objects
+- You don't need custom inheritance chains</p>
+<p><strong>Use <code>obj class($GOBJ){...}</code> (Explicit) when:</strong>
+- You need custom methods beyond <code>$GOBJ</code> functionality
+- You want to create reusable class definitions
+- You need to add multiple classes to the inheritance chain
+- You want to create objects that behave like lists but with additional capabilities</p>
+<h3 id="advanced-inheritance-example">Advanced Inheritance Example</h3>
+<div class="highlight"><pre><span></span><code>/* Create a class that inherits from multiple system classes */
+AdvancedObject = obj class($GOBJ, $OBJ) {
+    /* Custom properties */
+    name = &quot;default&quot;;
+    data = [];
+
+    /* Custom methods */
+    addData = op(item) { 
+        data.push(item); 
+        this;  /* Return self for chaining */
+    };
+
+    getName = op() { name; };
+    setName = op(newName) { name = newName; };
+
+    /* Override or extend inherited methods */
+    len = op() { data.len(); };
+};
+
+/* Usage */
+obj = AdvancedObject();
+obj.setName(&quot;MyObject&quot;);
+obj.addData(&quot;item1&quot;).addData(&quot;item2&quot;);
+obj.getName();  /* &quot;MyObject&quot; */
+obj.len();      /* 2 */
+obj.type();     /* $OBJ (with $GOBJ and $OBJ inheritance) */
 </code></pre></div>
 <hr />
 <h2 id="best-practices">Best Practices</h2>

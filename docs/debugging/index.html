@@ -2893,6 +2893,15 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#writing-to-standard-streams" class="md-nav__link">
+    <span class="md-ellipsis">
+      Writing to Standard Streams
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#system-level-debug-output" class="md-nav__link">
     <span class="md-ellipsis">
       System-Level Debug Output
@@ -5089,6 +5098,15 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#writing-to-standard-streams" class="md-nav__link">
+    <span class="md-ellipsis">
+      Writing to Standard Streams
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#system-level-debug-output" class="md-nav__link">
     <span class="md-ellipsis">
       System-Level Debug Output
@@ -5810,6 +5828,21 @@ $sys().putenv(&quot;GRAPA_DEBUG_COMPONENTS&quot;, &quot;database:3,*:0&quot;);
 <li><strong>Debug Output</strong>: Goes to stderr (standard error)</li>
 </ul>
 <p>This separation allows for proper stream redirection and filtering.</p>
+<h3 id="writing-to-standard-streams">Writing to Standard Streams</h3>
+<p>You can write directly to stdout and stderr using the <code>$file().set()</code> method:</p>
+<div class="highlight"><pre><span></span><code>/* Write to standard output */
+$file().set($stdout, &quot;Normal program output\n&quot;);
+
+/* Write to standard error */
+$file().set($stderr, &quot;Error or debug message\n&quot;);
+
+/* Example: Conditional output */
+if (debug_mode) {
+    $file().set($stderr, &quot;Debug: Processing item &quot; + item_id + &quot;\n&quot;);
+} else {
+    $file().set($stdout, &quot;Processing item &quot; + item_id + &quot;\n&quot;);
+}
+</code></pre></div>
 <h3 id="system-level-debug-output">System-Level Debug Output</h3>
 <p>System-level debug output appears on stderr with the format:
 <div class="highlight"><pre><span></span><code>[DEBUG] message

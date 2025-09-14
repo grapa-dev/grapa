@@ -24,11 +24,9 @@ coroutine.start(
     }
 );
 "Main: Waiting coroutine\n".echo();
-while(coroutine.suspended()==false) ;
-while(coroutine.suspended()==true) ;
+while(coroutine.suspended()==false) 0.sleep();
 "Main: Resuming coroutine\n".echo();
 coroutine.resume();
-while(coroutine.started()==true) ;
+while(coroutine.started()==true) 0.sleep();
 "Coroutine done\n".echo();
-coroutine.stop();
 coroutine = null;
