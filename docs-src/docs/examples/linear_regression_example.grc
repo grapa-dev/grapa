@@ -19,7 +19,7 @@
 ("--- Data Generation ---\n").echo();
 
 /* Generate sample data: y = 2*x1 + 3*x2 + 5 + noise */
-n_samples = 100000;
+n_samples = 1000;
 X_data = [];
 y_data = [];
 
@@ -237,7 +237,7 @@ results = lambda_values.map(op(lambda){
 training_time2 = start_time2.ms();
 "Training completed in ${training_time2}ms\n".interpolate().echo();
 for(i=0;i<results.len();i+=1) {
-    "  Lambda=${results[i].lambda.float(10)}: R²=${results[i].ridge_r_squared}, RMSE=${results[i].ridge_rmse}\n".interpolate().echo();
+    "  Lambda=${results[i].'lambda'.float(10)}: R²=${results[i].'ridge_r_squared'}, RMSE=${results[i].'ridge_rmse'}\n".interpolate().echo();
 };
 
 /* ======================================== */
