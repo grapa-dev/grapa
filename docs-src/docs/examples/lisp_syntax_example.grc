@@ -7,11 +7,11 @@ $global.lisp_vars = {};
 
 /* Step 2: Define LISP syntax using Grapa's grammar system - NO MANUAL PARSING */
 
-/* Initialize custom_command and custom_function for LISP syntax */
+/* Initialize $custom_command and custom_function for LISP syntax */
 ("Defining LISP syntax with native grammar...").echo();
 
 /* S-expressions with native grammar - individual argument parsing */
-custom_command = rule '(' $STR $STR $STR ')' {op(function:$2,arg1:$3,arg2:$4){
+$custom_command = rule '(' $STR $STR $STR ')' {op(function:$2,arg1:$3,arg2:$4){
     /* Evaluate S-expression - NO MANUAL PARSING */
     result = lisp_eval(function, [arg1, arg2]);
     ("LISP S-expression: (" + function + " " + arg1 + " " + arg2 + ") = " + result).echo();
@@ -19,7 +19,7 @@ custom_command = rule '(' $STR $STR $STR ')' {op(function:$2,arg1:$3,arg2:$4){
 }};
 
 /* S-expressions with three arguments */
-custom_command = custom_command | rule '(' $STR $STR $STR $STR ')' {op(function:$2,arg1:$3,arg2:$4,arg3:$5){
+$custom_command = $custom_command | rule '(' $STR $STR $STR $STR ')' {op(function:$2,arg1:$3,arg2:$4,arg3:$5){
     /* Evaluate S-expression - NO MANUAL PARSING */
     result = lisp_eval(function, [arg1, arg2, arg3]);
     ("LISP S-expression: (" + function + " " + arg1 + " " + arg2 + " " + arg3 + ") = " + result).echo();
@@ -27,7 +27,7 @@ custom_command = custom_command | rule '(' $STR $STR $STR $STR ')' {op(function:
 }};
 
 /* S-expressions with single argument */
-custom_command = custom_command | rule '(' $STR $STR ')' {op(function:$2,arg1:$3){
+$custom_command = $custom_command | rule '(' $STR $STR ')' {op(function:$2,arg1:$3){
     /* Evaluate S-expression - NO MANUAL PARSING */
     result = lisp_eval(function, [arg1]);
     ("LISP S-expression: (" + function + " " + arg1 + ") = " + result).echo();
@@ -35,7 +35,7 @@ custom_command = custom_command | rule '(' $STR $STR ')' {op(function:$2,arg1:$3
 }};
 
 /* Function definition with native grammar */
-custom_command = custom_command | rule '(defun' $STR '(' $STR $STR ')' $STR ')' {op(name:$2,param1:$4,param2:$5,body:$7){
+$custom_command = $custom_command | rule '(defun' $STR '(' $STR $STR ')' $STR ')' {op(name:$2,param1:$4,param2:$5,body:$7){
     /* Store function definition - NO MANUAL PARSING */
     $global.lisp_functions[name] = {
         params: [param1, param2],
@@ -46,7 +46,7 @@ custom_command = custom_command | rule '(defun' $STR '(' $STR $STR ')' $STR ')' 
 }};
 
 /* Function definition with single parameter */
-custom_command = custom_command | rule '(defun' $STR '(' $STR ')' $STR ')' {op(name:$2,param1:$4,body:$6){
+$custom_command = $custom_command | rule '(defun' $STR '(' $STR ')' $STR ')' {op(name:$2,param1:$4,body:$6){
     /* Store function definition - NO MANUAL PARSING */
     $global.lisp_functions[name] = {
         params: [param1],
@@ -57,7 +57,7 @@ custom_command = custom_command | rule '(defun' $STR '(' $STR ')' $STR ')' {op(n
 }};
 
 /* Variable assignment with native grammar */
-custom_command = custom_command | rule '(setq' $STR $STR ')' {op(var:$2,value:$3){
+$custom_command = $custom_command | rule '(setq' $STR $STR ')' {op(var:$2,value:$3){
     /* Set variable - NO MANUAL PARSING */
     evaluated_value = evaluate_sexp(value);
     $global.lisp_vars[var] = evaluated_value;
@@ -66,7 +66,7 @@ custom_command = custom_command | rule '(setq' $STR $STR ')' {op(var:$2,value:$3
 }};
 
 /* Conditional expression with native grammar */
-custom_command = custom_command | rule '(if' $STR $STR $STR ')' {op(condition:$2,then:$3,else:$4){
+$custom_command = $custom_command | rule '(if' $STR $STR $STR ')' {op(condition:$2,then:$3,else:$4){
     /* Evaluate conditional - NO MANUAL PARSING */
     cond_result = evaluate_sexp(condition);
     if (cond_result) {
@@ -80,7 +80,7 @@ custom_command = custom_command | rule '(if' $STR $STR $STR ')' {op(condition:$2
 }};
 
 /* List operations with native grammar */
-custom_command = custom_command | rule '(car' $STR ')' {op(list_expr:$2){
+$custom_command = $custom_command | rule '(car' $STR ')' {op(list_expr:$2){
     /* Get first element - NO MANUAL PARSING */
     list_val = evaluate_sexp(list_expr);
     if (list_val.type() == $GOBJ) {
@@ -93,7 +93,7 @@ custom_command = custom_command | rule '(car' $STR ')' {op(list_expr:$2){
     };
 }};
 
-custom_command = custom_command | rule '(cdr' $STR ')' {op(list_expr:$2){
+$custom_command = $custom_command | rule '(cdr' $STR ')' {op(list_expr:$2){
     /* Get rest of list - NO MANUAL PARSING */
     list_val = evaluate_sexp(list_expr);
     if (list_val.type() == $GOBJ) {
@@ -106,7 +106,7 @@ custom_command = custom_command | rule '(cdr' $STR ')' {op(list_expr:$2){
     };
 }};
 
-custom_command = custom_command | rule '(cons' $STR $STR ')' {op(element:$2,list_expr:$3){
+$custom_command = $custom_command | rule '(cons' $STR $STR ')' {op(element:$2,list_expr:$3){
     /* Construct list - NO MANUAL PARSING */
     element_val = evaluate_sexp(element);
     list_val = evaluate_sexp(list_expr);
@@ -120,7 +120,7 @@ custom_command = custom_command | rule '(cons' $STR $STR ')' {op(element:$2,list
     };
 }};
 
-custom_command = custom_command | rule '(list' $STR $STR ')' {op(elem1:$2,elem2:$3){
+$custom_command = $custom_command | rule '(list' $STR $STR ')' {op(elem1:$2,elem2:$3){
     /* Create list - NO MANUAL PARSING */
     val1 = evaluate_sexp(elem1);
     val2 = evaluate_sexp(elem2);
@@ -129,7 +129,7 @@ custom_command = custom_command | rule '(list' $STR $STR ')' {op(elem1:$2,elem2:
     return result;
 }};
 
-custom_command = custom_command | rule '(list' $STR $STR $STR ')' {op(elem1:$2,elem2:$3,elem3:$4){
+$custom_command = $custom_command | rule '(list' $STR $STR $STR ')' {op(elem1:$2,elem2:$3,elem3:$4){
     /* Create list with three elements - NO MANUAL PARSING */
     val1 = evaluate_sexp(elem1);
     val2 = evaluate_sexp(elem2);
@@ -140,7 +140,7 @@ custom_command = custom_command | rule '(list' $STR $STR $STR ')' {op(elem1:$2,e
 }};
 
 /* List with single element */
-custom_command = custom_command | rule '(list' $STR ')' {op(elem1:$2){
+$custom_command = $custom_command | rule '(list' $STR ')' {op(elem1:$2){
     /* Create list with single element - NO MANUAL PARSING */
     val1 = evaluate_sexp(elem1);
     result = [val1];

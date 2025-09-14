@@ -138,11 +138,11 @@ Add syntax directly to existing BNF rules using `@<function_name,{parameters}>` 
 ```
 
 #### **Secondary Approach: Custom Command/Function Variables**
-Use `custom_command`/`custom_function` as variables that leverage existing grammar rules:
+Use `$custom_command`/`$custom_function` as variables that leverage existing grammar rules:
 
 ```grapa
-/* custom_command - leverages existing $comp and $command rules */
-custom_command = rule for $ID from <$comp> to <$comp> <$command> {
+/* $custom_command - leverages existing $comp and $command rules */
+$custom_command = rule for $ID from <$comp> to <$comp> <$command> {
     op(var:$2, start:$4, end:$6, body:$8){
         /* Uses existing $comp and $command rules */
         op()(var + " = " + start)();
@@ -153,8 +153,8 @@ custom_command = rule for $ID from <$comp> to <$comp> <$command> {
     }
 };
 
-/* custom_function - leverages existing $comp rules */
-custom_function = rule <$comp> '*=' <$comp> {
+/* $custom_function - leverages existing $comp rules */
+$custom_function = rule <$comp> '*=' <$comp> {
     op(left:$1, right:$3){
         result = op()(left)() * op()(right)();
         op()(left + " = " + result)();
@@ -352,8 +352,8 @@ compile_grammar = op(rule_name, rule_def) {
 };
 
 /* Use cached grammar */
-sql_grammar = compile_grammar("sql", "custom_command = rule select...");
-json_grammar = compile_grammar("json", "custom_function = rule $STR->$STR...");
+sql_grammar = compile_grammar("sql", "$custom_command = rule select...");
+json_grammar = compile_grammar("json", "$custom_function = rule $STR->$STR...");
 ```
 
 ### **2. Lazy Evaluation**
@@ -396,7 +396,7 @@ y = "x";  /* y contains the string "x" */
 @@y += 1; /* Increments variable x */
 
 /* In rule implementations */
-custom_command = rule for $ID from <$comp> to <$comp> <$command> {
+$custom_command = rule for $ID from <$comp> to <$comp> <$command> {
     op(var:$2, start:$4, end:$6, body:$8){
         /* Instead of complex string concatenation */
         /* op()(var + " = " + start())(); */
@@ -623,7 +623,7 @@ api = op(parse)('api "user_api" {
 
 ### **3. Integration**
 1. **Leverage Existing Libraries**: Use Grapa's C++ libraries when possible
-2. **Follow Patterns**: Use established patterns like direct BNF integration for native features, `custom_command`/`custom_function` as variables that leverage existing grammar rules
+2. **Follow Patterns**: Use established patterns like direct BNF integration for native features, `$custom_command`/`$custom_function` as variables that leverage existing grammar rules
 3. **Test Thoroughly**: Validate grammar rules with comprehensive testing
 4. **Version Control**: Track grammar changes and maintain compatibility
 

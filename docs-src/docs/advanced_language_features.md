@@ -164,13 +164,13 @@ Grapa's metaprogramming extends beyond its own syntax:
 
 ```grapa
 /* Add SQL syntax to the language */
-custom_command = rule select $STR from $STR {op(fields:$2,table:$4){
+$custom_command = rule select $STR from $STR {op(fields:$2,table:$4){
     /* SQL becomes executable Grapa code */
     return query_database(fields, table);
 }};
 
 /* Add PROLOG syntax to the language */
-custom_command ++= rule $STR '(' $STR ')' '.' {op(predicate:$1,args:$3){
+$custom_command ++= rule $STR '(' $STR ')' '.' {op(predicate:$1,args:$3){
     /* PROLOG becomes executable Grapa code */
     return add_fact(predicate, args);
 }};

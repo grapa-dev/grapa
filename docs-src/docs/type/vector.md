@@ -436,11 +436,11 @@ order_indices = #[2, 0, 1, 3, 4, 5, 6, 7]#.vector();
 vec.sort(null, order_indices);  /* Reorder based on custom indices */
 
 /* Complete parameter reference */
-/* sort(axis, order, kind, custom_function) */
+/* sort(axis, order, kind, $custom_function) */
 /* - axis: 0 for rows, 1 for columns, null for default */
 /* - order: null/0 for ascending, 1 for descending, OR vector of indices */
 /* - kind: null/0 for signed, 1 for unsigned comparison */
-/* - custom_function: op(a,b){...} for custom comparison logic */
+/* - $custom_function: op(a,b){...} for custom comparison logic */
 
 /* Unique values */
 unique_vals = vec.array().unique().vector();   /* Convert to array, get unique, convert back to vector */
@@ -1188,16 +1188,16 @@ The `add()`, `mul()`, `pow()` functions in the C++ backend are internal methods 
 - `.join(delim, axis)` - Join 2D matrices (use `[vec1, vec2].join(null, axis)`)
 
 ### **Sorting and Searching Functions**
-- `.sort(axis=null, order=null, kind=null, custom_function=null)` - Sort elements
+- `.sort(axis=null, order=null, kind=null, $custom_function=null)` - Sort elements
   - `axis`: 0 for rows, 1 for columns, null for default
   - `order`: null/0 for ascending, 1 for descending, OR vector of indices for custom reordering
   - `kind`: null/0 for signed, 1 for unsigned comparison
-  - `custom_function`: op(a,b){...} for custom comparison logic
-- `.argsort(axis=null, order=null, kind=null, custom_function=null)` - Sort indices
+  - `$custom_function`: op(a,b){...} for custom comparison logic
+- `.argsort(axis=null, order=null, kind=null, $custom_function=null)` - Sort indices
   - `axis`: 0 for rows, 1 for columns, null for default
   - `order`: null/0 for ascending, 1 for descending, OR vector of indices for custom reordering
   - `kind`: null/0 for signed, 1 for unsigned comparison
-  - `custom_function`: op(a,b){...} for custom comparison logic
+  - `$custom_function`: op(a,b){...} for custom comparison logic
 - `.unique()` - Unique elements (use `vec.array().unique().vector()`)
 
 ## **Function Reference**

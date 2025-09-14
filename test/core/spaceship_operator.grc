@@ -1,7 +1,7 @@
 /*
  * Spaceship Operator Implementation
  * 
- * Implements spaceship operator <=> using custom_function mechanism.
+ * Implements spaceship operator <=> using $custom_function mechanism.
  * Returns -1 if left < right, 0 if left == right, 1 if left > right.
  */
 
@@ -9,7 +9,7 @@
  * Spaceship Operator: <=>
  * Returns -1, 0, or 1 based on comparison
  * ======================================== */
-custom_function = rule <$comp> '<=>' <$comp> {
+$custom_function = rule <$comp> '<=>' <$comp> {
     op(left:$1, right:$3){
         /* Get the values to compare */
         left_val = op()(left)();

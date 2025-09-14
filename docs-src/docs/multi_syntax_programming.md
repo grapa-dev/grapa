@@ -39,10 +39,10 @@ Add syntax directly to existing BNF rules using `@<function_name,{parameters}>` 
 ```
 
 #### **Secondary Approach: Custom Command/Function Variables**
-Use `custom_command`/`custom_function` as variables that leverage existing grammar rules:
+Use `$custom_command`/`$custom_function` as variables that leverage existing grammar rules:
 
-- **`custom_command`**: For domain-specific actions (ETL, DSLs, protocol parsers) - leverages `$comp` and `$command` rules
-- **`custom_function`**: For domain-specific expressions - leverages `$comp` rules
+- **`$custom_command`**: For domain-specific actions (ETL, DSLs, protocol parsers) - leverages `$comp` and `$command` rules
+- **`$custom_function`**: For domain-specific expressions - leverages `$comp` rules
 
 ### **Lexical Processing and Flags**
 For complex formats like XML and HTML, Grapa uses lexical flags to activate special processing:
@@ -69,16 +69,16 @@ processed = html_data.encode("HTML-GRAPA");
 
 ### **Basic SQL Usage**
 
-Grapa demonstrates SQL syntax integration through example scripts that show how to add domain-specific SQL syntax using `custom_command` and `custom_function` as variables:
+Grapa demonstrates SQL syntax integration through example scripts that show how to add domain-specific SQL syntax using `$custom_command` and `$custom_function` as variables:
 
 ```grapa
 /* Define SQL syntax as variables */
-custom_command = rule select $STR from $STR {op(fields:$2,table_name:$4){
+$custom_command = rule select $STR from $STR {op(fields:$2,table_name:$4){
     ("SQL SELECT: " + fields + " FROM " + table_name).echo();
     /* Database query implementation */
 }};
 
-custom_function = rule count '(' $STR ')' from $STR {op(field:$3,table_name:$6){
+$custom_function = rule count '(' $STR ')' from $STR {op(field:$3,table_name:$6){
     ("SQL COUNT: " + field + " FROM " + table_name).echo();
     records = table.ls();
     return records.len();
@@ -93,13 +93,13 @@ user_count = count(*) from users;
 
 ```grapa
 /* INSERT statement (example implementation) */
-custom_command = rule insert into $STR values $STR {op(table_name:$3,values_str:$5){
+$custom_command = rule insert into $STR values $STR {op(table_name:$3,values_str:$5){
     ("SQL INSERT: " + table_name + " VALUES " + values_str).echo();
     /* Insert implementation */
 }};
 
 /* UPDATE statement (example implementation) */
-custom_command = rule update $STR set $STR where $STR {op(table_name:$2,set_clause:$4,where_clause:$6){
+$custom_command = rule update $STR set $STR where $STR {op(table_name:$2,set_clause:$4,where_clause:$6){
     ("SQL UPDATE: " + table_name + " SET " + set_clause + " WHERE " + where_clause).echo();
     /* Update implementation */
 }};
@@ -115,12 +115,12 @@ update users set age=26 where name=John;
 
 ```grapa
 /* JSON path queries */
-custom_function = rule $STR '->' $STR {op(json:$1,path:$3){
+$custom_function = rule $STR '->' $STR {op(json:$1,path:$3){
     /* JSON path extraction */
     return json.json().get(path);
 }};
 
-custom_function = rule $STR '->>' $STR {op(json:$1,path:$3){
+$custom_function = rule $STR '->>' $STR {op(json:$1,path:$3){
     /* JSON path extraction as string */
     return json.json().get(path).str();
 }};
@@ -135,12 +135,12 @@ age = op(parse)('data->>"user"->>"age"')();
 
 ```grapa
 /* JSON validation */
-custom_function = rule json_valid '(' $STR ')' {op(json_str:$3){
+$custom_function = rule json_valid '(' $STR ')' {op(json_str:$3){
     return json_str.json().type() != $ERR;
 }};
 
 /* JSON aggregation */
-custom_function = rule json_agg '(' $STR ')' {op(expr:$3){
+$custom_function = rule json_agg '(' $STR ')' {op(expr:$3){
     /* JSON array aggregation */
     return expr.json();
 }};
@@ -152,13 +152,13 @@ custom_function = rule json_agg '(' $STR ')' {op(expr:$3){
 
 ```grapa
 /* XPath expression */
-custom_function = rule xpath '(' $STR ',' $STR ')' {op(xml:$3,xpath_expr:$5){
+$custom_function = rule xpath '(' $STR ',' $STR ')' {op(xml:$3,xpath_expr:$5){
     /* XPath evaluation */
     return xml.xml().xpath(xpath_expr);
 }};
 
 /* XML validation */
-custom_function = rule xml_valid '(' $STR ')' {op(xml_str:$3){
+$custom_function = rule xml_valid '(' $STR ')' {op(xml_str:$3){
     return xml_str.xml().type() != $ERR;
 }};
 
@@ -173,13 +173,13 @@ name = op(parse)('xpath(xml_data, "/user/name")')();
 
 ```grapa
 /* HTML element selection */
-custom_function = rule $STR '>>' $STR {op(html:$1,selector:$3){
+$custom_function = rule $STR '>>' $STR {op(html:$1,selector:$3){
     /* CSS selector implementation */
     return html.html().select(selector);
 }};
 
 /* HTML attribute extraction */
-custom_function = rule $STR '>>' $STR '@' $STR {op(html:$1,selector:$3,attr:$5){
+$custom_function = rule $STR '>>' $STR '@' $STR {op(html:$1,selector:$3,attr:$5){
     /* Attribute extraction */
     element = html.html().select(selector);
     return element.attr(attr);
@@ -196,13 +196,13 @@ user = op(parse)('page>>".user"')();
 
 ```grapa
 /* Custom configuration syntax */
-custom_command = rule config $STR '=' $STR {op(key:$2,value:$4){
+$custom_command = rule config $STR '=' $STR {op(key:$2,value:$4){
     /* Configuration setting */
     set_config(key, value);
 }};
 
 /* Custom loop syntax */
-custom_command = rule repeat $INT times '{' <$command_list> '}' {op(count:$2,body:$5){
+$custom_command = rule repeat $INT times '{' <$command_list> '}' {op(count:$2,body:$5){
     /* Repeat loop implementation */
     i = 0;
     while (i < count) {
@@ -220,7 +220,7 @@ op(parse)('repeat 5 times { "Hello".echo(); }')();
 
 ```grapa
 /* Template string interpolation */
-custom_function = rule '`' <> '`' {op(template:$2){
+$custom_function = rule '`' <> '`' {op(template:$2){
     /* Template processing */
     result = template;
     /* Replace variables */
@@ -231,7 +231,7 @@ custom_function = rule '`' <> '`' {op(template:$2){
 }};
 
 /* Range syntax */
-custom_function = rule $INT '..' $INT {op(start:$1,end:$3){
+$custom_function = rule $INT '..' $INT {op(start:$1,end:$3){
     /* Range generation */
     return (end - start + 1).range(start, 1);
 }};
@@ -247,7 +247,7 @@ numbers = op(parse)('1..10')();
 
 ```grapa
 /* SQL with JSON fields */
-custom_command = rule select $STR from $STR where $STR '->' $STR '=' $STR {
+$custom_command = rule select $STR from $STR where $STR '->' $STR '=' $STR {
     op(fields:$2,table:$4,json_field:$6,path:$8,value:$10){
         /* SQL query with JSON path filtering */
         records = table.ls();
@@ -275,7 +275,7 @@ load_syntax = op(filename) {
 
 /* Load custom syntax */
 load_syntax("my_syntax.grc");
-op(parse)("my_custom_command arg1 arg2")();
+op(parse)("my_$custom_command arg1 arg2")();
 ```
 
 ## Performance Considerations
@@ -344,8 +344,8 @@ $global["$format_step"] = rule <$validated_data,op(b:$1){format_output(b)}> {@<v
 ## Best Practices
 
 ### **Syntax Design**
-1. **Use `custom_command` for actions** (statements, commands)
-2. **Use `custom_function` for expressions** (operators, functions)
+1. **Use `$custom_command` for actions** (statements, commands)
+2. **Use `$custom_function` for expressions** (operators, functions)
 3. **Follow existing patterns** for consistency
 4. **Document syntax thoroughly** for users
 5. **Use wrapper functions** for complex ETL processing
@@ -359,7 +359,7 @@ $global["$format_step"] = rule <$validated_data,op(b:$1){format_output(b)}> {@<v
 ### **Error Handling**
 ```grapa
 /* Robust syntax definition */
-custom_function = rule safe_query '(' $STR ')' {op(query:$3){
+$custom_function = rule safe_query '(' $STR ')' {op(query:$3){
     try {
         return execute_query(query);
     } catch (error) {
@@ -375,12 +375,12 @@ custom_function = rule safe_query '(' $STR ')' {op(query:$3){
 
 ```grapa
 /* Configuration DSL */
-custom_command = rule server '{' <$server_config> '}' {op(config:$3){
+$custom_command = rule server '{' <$server_config> '}' {op(config:$3){
     /* Server configuration */
     create_server(config);
 }};
 
-custom_command = rule port $INT {op(port_num:$2){
+$custom_command = rule port $INT {op(port_num:$2){
     /* Port setting */
     set_port(port_num);
 }};
@@ -393,7 +393,7 @@ op(parse)('server { port 8080 }')();
 
 ```grapa
 /* Pipeline syntax */
-custom_command = rule pipeline '{' <$pipeline_steps> '}' {op(steps:$3){
+$custom_command = rule pipeline '{' <$pipeline_steps> '}' {op(steps:$3){
     /* Execute pipeline */
     result = null;
     i = 0;

@@ -146,14 +146,14 @@ Grapa's dynamic capabilities extend beyond code execution - you can actually ext
 
 ```grapa
 /* Define a custom function that becomes part of the language */
-custom_function = rule select $INT {op(p:$2){p*5}};
+$custom_function = rule select $INT {op(p:$2){p*5}};
 
 /* Use it as if it were built into the language */
 select 4;        // Returns 20
 x = select 8;    // x = 40
 
 /* Define custom commands for domain-specific languages */
-custom_command = rule reset_data {op(){clear_database()}};
+$custom_command = rule reset_data {op(){clear_database()}};
 reset_data;      // Executes clear_database()
 ```
 

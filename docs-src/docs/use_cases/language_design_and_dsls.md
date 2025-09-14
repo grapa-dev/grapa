@@ -44,8 +44,8 @@ Grapa's executable BNF system enables unprecedented power in language design and
 **Solution**: Create a configuration DSL that supports multiple formats, validation, and dynamic loading.
 
 ```grapa
-/* Configuration DSL using custom_command and custom_function as variables */
-custom_command = rule config '{' <$config_entries> '}' {op(entries:$3){
+/* Configuration DSL using $custom_command and $custom_function as variables */
+$custom_command = rule config '{' <$config_entries> '}' {op(entries:$3){
     ("Loading configuration...").echo();
     config = {};
     
@@ -59,11 +59,11 @@ custom_command = rule config '{' <$config_entries> '}' {op(entries:$3){
     return config;
 }};
 
-custom_command = rule config $STR '=' <$config_value> {op(key:$2,value:$4){
+$custom_command = rule config $STR '=' <$config_value> {op(key:$2,value:$4){
     return {key: key, value: value, type: "setting"};
 }};
 
-custom_command = rule include $STR {op(file:$2){
+$custom_command = rule include $STR {op(file:$2){
     return {file: file, type: "include"};
 }};
 
@@ -90,8 +90,8 @@ app_config = op(parse)('config {
 **Solution**: Create a pipeline DSL that defines data processing workflows declaratively.
 
 ```grapa
-/* ETL Pipeline DSL using custom_command and custom_function as variables */
-custom_command = rule pipeline '{' <$pipeline_steps> '}' {op(steps:$3){
+/* ETL Pipeline DSL using $custom_command and $custom_function as variables */
+$custom_command = rule pipeline '{' <$pipeline_steps> '}' {op(steps:$3){
     ("Starting ETL pipeline...").echo();
     result = null;
     
@@ -107,15 +107,15 @@ custom_command = rule pipeline '{' <$pipeline_steps> '}' {op(steps:$3){
     return result;
 }};
 
-custom_command = rule extract $STR {op(source:$2){
+$custom_command = rule extract $STR {op(source:$2){
     return {action: "extract", source: source};
 }};
 
-custom_command = rule transform $STR {op(transformation:$2){
+$custom_command = rule transform $STR {op(transformation:$2){
     return {action: "transform", transformation: transformation};
 }};
 
-custom_command = rule load $STR {op(target:$2){
+$custom_command = rule load $STR {op(target:$2){
     return {action: "load", target: target};
 }};
 
@@ -142,12 +142,12 @@ result = op(parse)('pipeline {
 
 ```grapa
 /* API Definition DSL */
-custom_command = rule api $STR '{' <$api_endpoints> '}' {op(name:$2,endpoints:$4){
+$custom_command = rule api $STR '{' <$api_endpoints> '}' {op(name:$2,endpoints:$4){
     ("Defining API: " + name).echo();
     return create_api(name, endpoints);
 }};
 
-custom_command = rule $STR $STR '{' <$endpoint_body> '}' {op(method:$1,path:$2,body:$4){
+$custom_command = rule $STR $STR '{' <$endpoint_body> '}' {op(method:$1,path:$2,body:$4){
     return define_endpoint(method, path, body);
 }};
 
@@ -182,7 +182,7 @@ user_api = op(parse)('api "user_management" {
 
 ```grapa
 /* HTTP Protocol DSL */
-custom_function = rule http_parse '(' $STR ')' {op(request:$3){
+$custom_function = rule http_parse '(' $STR ')' {op(request:$3){
     lines = request.split("\n");
     if (lines.len() > 0) {
         first_line = lines[1];
@@ -199,7 +199,7 @@ custom_function = rule http_parse '(' $STR ')' {op(request:$3){
     return $err("Invalid HTTP request");
 }};
 
-custom_function = rule http_build '(' <$http_response> ')' {op(response:$3){
+$custom_function = rule http_build '(' <$http_response> ')' {op(response:$3){
     status_line = "HTTP/1.1 " + response.status + " " + response.message;
     headers = build_headers(response.headers);
     body = response.body ? response.body : "";
@@ -233,7 +233,7 @@ http_response = op(parse)('http_build(' + response + ')')();
 
 ```grapa
 /* Validation DSL */
-custom_command = rule validate $STR '{' <$validation_rules> '}' {op(data:$2,rules:$4){
+$custom_command = rule validate $STR '{' <$validation_rules> '}' {op(data:$2,rules:$4){
     ("Validating data: " + data).echo();
     validation_result = true;
     errors = [];
@@ -252,15 +252,15 @@ custom_command = rule validate $STR '{' <$validation_rules> '}' {op(data:$2,rule
     return {valid: validation_result, errors: errors};
 }};
 
-custom_command = rule field $STR required {op(field_name:$2){
+$custom_command = rule field $STR required {op(field_name:$2){
     return {type: "required", field: field_name};
 }};
 
-custom_command = rule field $STR type $STR {op(field_name:$2,type_name:$4){
+$custom_command = rule field $STR type $STR {op(field_name:$2,type_name:$4){
     return {type: "type_check", field: field_name, expected_type: type_name};
 }};
 
-custom_command = rule field $STR range '(' $INT ',' $INT ')' {op(field_name:$2,min:$5,max:$7){
+$custom_command = rule field $STR range '(' $INT ',' $INT ')' {op(field_name:$2,min:$5,max:$7){
     return {type: "range", field: field_name, min: min, max: max};
 }};
 
@@ -352,8 +352,8 @@ compile_grammar = op(rule_name, rule_def) {
 };
 
 /* Reuse compiled grammars */
-sql_grammar = compile_grammar("sql", "custom_command = rule select...");
-json_grammar = compile_grammar("json", "custom_function = rule $STR->$STR...");
+sql_grammar = compile_grammar("sql", "$custom_command = rule select...");
+json_grammar = compile_grammar("json", "$custom_function = rule $STR->$STR...");
 ```
 
 ### **2. Lazy Evaluation**
@@ -389,7 +389,7 @@ lazy_result = op(parse)('lazy { expensive_calculation() }')();
 
 ### **3. Integration**
 1. **Leverage Existing Libraries**: Use Grapa's C++ libraries when possible
-2. **Follow Patterns**: Use established patterns like direct BNF integration for native features, `custom_command`/`custom_function` as variables that leverage existing grammar rules
+2. **Follow Patterns**: Use established patterns like direct BNF integration for native features, `$custom_command`/`$custom_function` as variables that leverage existing grammar rules
 3. **Test Thoroughly**: Validate grammar rules with comprehensive testing
 4. **Version Control**: Track grammar changes and maintain compatibility
 

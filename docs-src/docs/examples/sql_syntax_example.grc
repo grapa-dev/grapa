@@ -19,11 +19,11 @@ users_table.setfield("user3", "city", "Chicago");
 
 /* Step 2: Define SQL syntax using Grapa's grammar system - NO MANUAL PARSING */
 
-/* Initialize custom_command and custom_function for SQL syntax */
+/* Initialize $custom_command and $custom_function for SQL syntax */
 ("Defining SQL syntax with native grammar...\n").echo();
 
 /* SELECT with individual field parsing - TRUE NATIVE SYNTAX (MOST SPECIFIC FIRST) */
-custom_command = rule select $STR ',' $STR from $STR {op(field1:$2,field2:$4,table_name:$6){
+$custom_command = rule select $STR ',' $STR from $STR {op(field1:$2,field2:$4,table_name:$6){
     ("SQL SELECT: " + field1 + "," + field2 + " FROM " + table_name + "\n").echo();
     
     if (table_name == "users") {
@@ -54,7 +54,7 @@ custom_command = rule select $STR ',' $STR from $STR {op(field1:$2,field2:$4,tab
 }};
 
 /* SELECT with native grammar - individual field parsing (LESS SPECIFIC) */
-custom_command ++= rule select $STR from $STR {op(fields:$2,table_name:$4){
+$custom_command ++= rule select $STR from $STR {op(fields:$2,table_name:$4){
     ("SQL SELECT: " + fields + " FROM " + table_name).echo();
     
     if (table_name == "users") {
@@ -85,7 +85,7 @@ custom_command ++= rule select $STR from $STR {op(fields:$2,table_name:$4){
 }};
 
 /* COUNT function with native grammar */
-custom_function = rule count '(' $STR ')' from $STR {op(field:$3,table_name:$6){
+$custom_function = rule count '(' $STR ')' from $STR {op(field:$3,table_name:$6){
     ("SQL COUNT: " + field + " FROM " + table_name).echo();
     
     if (table_name == "users") {
@@ -100,7 +100,7 @@ custom_function = rule count '(' $STR ')' from $STR {op(field:$3,table_name:$6){
 }};
 
 /* INSERT with individual value parsing - TRUE NATIVE SYNTAX */
-custom_command ++= rule insert into $STR values $STR ',' $INT ',' $STR {op(table_name:$3,name:$6,age:$8,city:$10){
+$custom_command ++= rule insert into $STR values $STR ',' $INT ',' $STR {op(table_name:$3,name:$6,age:$8,city:$10){
     ("SQL INSERT: " + table_name + " VALUES " + name + "," + age + "," + city).echo();
     
     if (table_name == "users") {
@@ -118,7 +118,7 @@ custom_command ++= rule insert into $STR values $STR ',' $INT ',' $STR {op(table
 }};
 
 /* UPDATE with native grammar */
-custom_command ++= rule update $STR set $STR '=' $STR where $STR '=' $STR {op(table_name:$2,field:$4,value:$6,where_field:$8,where_value:$10){
+$custom_command ++= rule update $STR set $STR '=' $STR where $STR '=' $STR {op(table_name:$2,field:$4,value:$6,where_field:$8,where_value:$10){
     ("SQL UPDATE: " + table_name + " SET " + field + "=" + value + " WHERE " + where_field + "=" + where_value).echo();
     
     if (table_name == "users") {
@@ -152,7 +152,7 @@ custom_command ++= rule update $STR set $STR '=' $STR where $STR '=' $STR {op(ta
 }};
 
 /* DELETE with native grammar */
-custom_command ++= rule delete from $STR where $STR '=' $STR {op(table_name:$3,where_field:$5,where_value:$7){
+$custom_command ++= rule delete from $STR where $STR '=' $STR {op(table_name:$3,where_field:$5,where_value:$7){
     ("SQL DELETE: " + table_name + " WHERE " + where_field + "=" + where_value).echo();
     
     if (table_name == "users") {

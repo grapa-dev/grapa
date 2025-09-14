@@ -168,14 +168,14 @@ safe_get = op(obj, key) {
 Grapa's most powerful feature is its ability to extend the language syntax at runtime. You can define custom commands and functions that become part of the language grammar.
 
 **Key Concepts:**
-- **`custom_command`**: For commands that perform actions (no return value)
-- **`custom_function`**: For functions that return values
+- **`$custom_command`**: For commands that perform actions (no return value)
+- **`$custom_function`**: For functions that return values
 - **Scoping**: Local (function-level) or global (permanent) syntax extensions
 - **Dynamic Compilation**: New syntax applies to code compiled with `op(parse)()`
 
 ```grapa
 /* Define custom syntax */
-custom_function = rule select $INT {op(p:$2){p*5}};
+$custom_function = rule select $INT {op(p:$2){p*5}};
 
 /* Use it as if it were built into the language */
 select 4;        // Returns 20

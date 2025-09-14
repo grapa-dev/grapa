@@ -2,19 +2,19 @@
  * Phase 1 Comprehensive Test
  * 
  * Demonstrates all Phase 1 implementations working together:
- * 1. For Loops (custom_command)
- * 2. Enhanced Assignment Operators (custom_function)
- * 3. String Interpolation (custom_function)
- * 4. Range Function (custom_function)
- * 5. Ternary Operator (custom_function)
+ * 1. For Loops ($custom_command)
+ * 2. Enhanced Assignment Operators ($custom_function)
+ * 3. String Interpolation ($custom_function)
+ * 4. Range Function ($custom_function)
+ * 5. Ternary Operator ($custom_function)
  
- * 7. Spaceship Operator (custom_function)
+ * 7. Spaceship Operator ($custom_function)
  */
 
 /* ========================================
  * FOR LOOPS
  * ======================================== */
-custom_command = rule for $ID from <$comp> to <$comp> <$command> {
+$custom_command = rule for $ID from <$comp> to <$comp> <$command> {
     op(var:$2, start:$4, end:$6, body:$8){
         /* Set initial value */
         op()(var + " = " + start)();
@@ -32,7 +32,7 @@ custom_command = rule for $ID from <$comp> to <$comp> <$command> {
     }
 };
 
-custom_command = rule for $ID in <$comp> <$command> {
+$custom_command = rule for $ID in <$comp> <$command> {
     op(var:$2, range:$4, body:$6){
         /* Handle integer range */
         if (range.type() == "$INT") {
@@ -49,7 +49,7 @@ custom_command = rule for $ID in <$comp> <$command> {
 /* ========================================
  * ENHANCED ASSIGNMENT OPERATORS
  * ======================================== */
-custom_function = rule <$comp> '*=' <$comp> {
+$custom_function = rule <$comp> '*=' <$comp> {
     op(left:$1, right:$3){
         left_value = op()(left)();
         result = left_value * right;
@@ -58,7 +58,7 @@ custom_function = rule <$comp> '*=' <$comp> {
     }
 };
 
-custom_function = rule <$comp> '/=' <$comp> {
+$custom_function = rule <$comp> '/=' <$comp> {
     op(left:$1, right:$3){
         left_value = op()(left)();
         if (right == 0) {
@@ -71,7 +71,7 @@ custom_function = rule <$comp> '/=' <$comp> {
     }
 };
 
-custom_function = rule <$comp> '%=' <$comp> {
+$custom_function = rule <$comp> '%=' <$comp> {
     op(left:$1, right:$3){
         left_value = op()(left)();
         if (right == 0) {
@@ -84,7 +84,7 @@ custom_function = rule <$comp> '%=' <$comp> {
     }
 };
 
-custom_function = rule <$comp> '**=' <$comp> {
+$custom_function = rule <$comp> '**=' <$comp> {
     op(left:$1, right:$3){
         left_value = op()(left)();
         result = left_value ** right;
@@ -96,7 +96,7 @@ custom_function = rule <$comp> '**=' <$comp> {
 /* ========================================
  * STRING INTERPOLATION
  * ======================================== */
-custom_function = rule '$' '{' <$comp> '}' {
+$custom_function = rule '$' '{' <$comp> '}' {
     op(expression:$3){
         result = op()(expression)();
         result.str();
@@ -106,7 +106,7 @@ custom_function = rule '$' '{' <$comp> '}' {
 /* ========================================
  * RANGE FUNCTION
  * ======================================== */
-custom_function = rule range '(' <$comp> ')' {
+$custom_function = rule range '(' <$comp> ')' {
     op(stop:$3){
         result = [];
         i = 0;
@@ -118,7 +118,7 @@ custom_function = rule range '(' <$comp> ')' {
     }
 };
 
-custom_function = rule range '(' <$comp> ',' <$comp> ')' {
+$custom_function = rule range '(' <$comp> ',' <$comp> ')' {
     op(start:$3, stop:$5){
         result = [];
         i = start;
@@ -133,7 +133,7 @@ custom_function = rule range '(' <$comp> ',' <$comp> ')' {
 /* ========================================
  * TERNARY OPERATOR
  * ======================================== */
-custom_function = rule <$comp> '?' <$comp> ':' <$comp> {
+$custom_function = rule <$comp> '?' <$comp> ':' <$comp> {
     op(condition:$1, true_value:$3, false_value:$5){
         if (op()(condition)()) {
             op()(true_value)();
@@ -146,7 +146,7 @@ custom_function = rule <$comp> '?' <$comp> ':' <$comp> {
 /* ========================================
  
  * ======================================== */
-custom_function = rule '[' <$comp> for $ID in <$comp> ']' {
+$custom_function = rule '[' <$comp> for $ID in <$comp> ']' {
     op(expression:$2, variable:$4, iterable:$6){
         result = [];
         if (iterable.type() == "$INT") {
@@ -165,7 +165,7 @@ custom_function = rule '[' <$comp> for $ID in <$comp> ']' {
 /* ========================================
  * SPACESHIP OPERATOR
  * ======================================== */
-custom_function = rule <$comp> '<=>' <$comp> {
+$custom_function = rule <$comp> '<=>' <$comp> {
     op(left:$1, right:$3){
         left_val = op()(left)();
         right_val = op()(right)();

@@ -31,24 +31,24 @@ The goal is to create a unified data processing pipeline that can handle all the
 ```grapa
 /* Multi-Syntax ETL Pipeline Example */
 
-/* Step 1: Define SQL syntax for database operations using custom_command and custom_function as variables */
-custom_command = rule select $STR from $STR {op(fields:$2,table_name:$4){
+/* Step 1: Define SQL syntax for database operations using $custom_command and $custom_function as variables */
+$custom_command = rule select $STR from $STR {op(fields:$2,table_name:$4){
     ("SQL: SELECT " + fields + " FROM " + table_name).echo();
     /* Database query implementation */
 }};
 
-custom_function = rule count '(' $STR ')' from $STR {op(field:$3,table_name:$6){
+$custom_function = rule count '(' $STR ')' from $STR {op(field:$3,table_name:$6){
     records = get_table(table_name).ls();
     return records.len();
 }};
 
 /* Step 2: Define JSON syntax for API data */
-custom_function = rule $STR '->' $STR {op(json:$1,path:$3){
+$custom_function = rule $STR '->' $STR {op(json:$1,path:$3){
     /* JSON path extraction */
     return json.json().getfield(path);
 }};
 
-custom_function = rule json_extract '(' $STR ',' $STR ')' {op(json:$3,path:$5){
+$custom_function = rule json_extract '(' $STR ',' $STR ')' {op(json:$3,path:$5){
     /* JSON extraction with error handling */
     try {
         return json.json().getfield(path);
@@ -58,12 +58,12 @@ custom_function = rule json_extract '(' $STR ',' $STR ')' {op(json:$3,path:$5){
 }};
 
 /* Step 3: Define XML syntax for feed processing */
-custom_function = rule xpath '(' $STR ',' $STR ')' {op(xml:$3,xpath_expr:$5){
+$custom_function = rule xpath '(' $STR ',' $STR ')' {op(xml:$3,xpath_expr:$5){
     /* XPath evaluation */
     return xml.xml().xpath(xpath_expr);
 }};
 
-custom_function = rule xml_extract '(' $STR ',' $STR ')' {op(xml:$3,path:$5){
+$custom_function = rule xml_extract '(' $STR ',' $STR ')' {op(xml:$3,path:$5){
     /* XML extraction with validation */
     if (xml.xml().valid()) {
         return xml.xml().extract(path);
@@ -73,7 +73,7 @@ custom_function = rule xml_extract '(' $STR ',' $STR ')' {op(xml:$3,path:$5){
 }};
 
 /* Step 4: Define custom pipeline syntax */
-custom_command = rule pipeline '{' <$pipeline_steps> '}' {op(steps:$3){
+$custom_command = rule pipeline '{' <$pipeline_steps> '}' {op(steps:$3){
     ("Pipeline execution started").echo();
     result = null;
     i = 0;
@@ -131,7 +131,7 @@ result = op(parse)('pipeline {
 
 ```grapa
 /* Query database with JSON field filtering */
-custom_command = rule select $STR from $STR where $STR '->' $STR '=' $STR {
+$custom_command = rule select $STR from $STR where $STR '->' $STR '=' $STR {
     op(fields:$2,table:$4,json_field:$6,path:$8,value:$10){
         ("SQL with JSON: " + fields + " FROM " + table + " WHERE " + json_field + "->" + path + " = " + value).echo();
         
@@ -154,7 +154,7 @@ op(parse)('select name, age from users where preferences->"theme" = "dark"')();
 
 ```grapa
 /* Process XML and store in database */
-custom_command = rule process_xml $STR into $STR {op(xml_file:$2,table_name:$4){
+$custom_command = rule process_xml $STR into $STR {op(xml_file:$2,table_name:$4){
     ("Processing XML: " + xml_file + " into " + table_name).echo();
     
     xml_data = $file().read(xml_file);
@@ -180,7 +180,7 @@ op(parse)('process_xml inventory.xml into products')();
 
 ```grapa
 /* Define validation DSL */
-custom_command = rule validate $STR '{' <$validation_rules> '}' {op(data:$2,rules:$4){
+$custom_command = rule validate $STR '{' <$validation_rules> '}' {op(data:$2,rules:$4){
     ("Validating data: " + data).echo();
     
     validation_result = true;
@@ -202,11 +202,11 @@ custom_command = rule validate $STR '{' <$validation_rules> '}' {op(data:$2,rule
     return validation_result;
 }};
 
-custom_command = rule field $STR required {op(field_name:$2){
+$custom_command = rule field $STR required {op(field_name:$2){
     return {"type": "required", "field": field_name};
 }};
 
-custom_command = rule field $STR type $STR {op(field_name:$2,type_name:$4){
+$custom_command = rule field $STR type $STR {op(field_name:$2,type_name:$4){
     return {"type": "type_check", "field": field_name, "expected_type": type_name};
 }};
 
@@ -237,9 +237,9 @@ compile_syntax = op(syntax_name, syntax_def) {
 };
 
 /* Use cached syntax */
-sql_syntax = compile_syntax("sql", "custom_command = rule select...");
-json_syntax = compile_syntax("json", "custom_function = rule $STR->$STR...");
-xml_syntax = compile_syntax("xml", "custom_function = rule xpath...");
+sql_syntax = compile_syntax("sql", "$custom_command = rule select...");
+json_syntax = compile_syntax("json", "$custom_function = rule $STR->$STR...");
+xml_syntax = compile_syntax("xml", "$custom_function = rule xpath...");
 ```
 
 ### **2. Parallel Multi-Syntax Processing**
@@ -279,7 +279,7 @@ results = process_sources(sources);
 
 ```grapa
 /* E-commerce data pipeline */
-custom_command = rule ecommerce_pipeline '{' <$pipeline_steps> '}' {op(steps:$3){
+$custom_command = rule ecommerce_pipeline '{' <$pipeline_steps> '}' {op(steps:$3){
     ("E-commerce pipeline started").echo();
     
     /* Process customer data from CSV */
@@ -315,7 +315,7 @@ report = op(parse)('ecommerce_pipeline {
 
 ```grapa
 /* Financial data processing with validation */
-custom_command = rule financial_pipeline '{' <$pipeline_steps> '}' {op(steps:$3){
+$custom_command = rule financial_pipeline '{' <$pipeline_steps> '}' {op(steps:$3){
     ("Financial pipeline started").echo();
     
     /* Load transaction data */

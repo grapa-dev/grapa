@@ -29,9 +29,9 @@ Welcome to the Grapa Examples hub! Here you'll find practical, ready-to-run scri
 ### **Language Extension Examples**
 | Example | Description |
 |---------|-------------|
-| [SQL Syntax Example](examples/sql_syntax_example.grc) | **Example Implementation** - Demonstrates how SQL syntax can be added to Grapa using custom_command and custom_function. Shows working SQL parsing and execution. |
-| [PROLOG Syntax Example](examples/prolog_syntax_example.grc) | **Example Implementation** - Demonstrates how PROLOG syntax can be added to Grapa using custom_command and custom_function. Shows working PROLOG facts, rules, and queries. |
-| [LISP Syntax Example](examples/lisp_syntax_example.grc) | **Example Implementation** - Demonstrates how LISP syntax can be added to Grapa using custom_command and custom_function. Shows working LISP S-expressions, function definitions, and evaluation. |
+| [SQL Syntax Example](examples/sql_syntax_example.grc) | **Example Implementation** - Demonstrates how SQL syntax can be added to Grapa using $custom_command and $custom_function. Shows working SQL parsing and execution. |
+| [PROLOG Syntax Example](examples/prolog_syntax_example.grc) | **Example Implementation** - Demonstrates how PROLOG syntax can be added to Grapa using $custom_command and $custom_function. Shows working PROLOG facts, rules, and queries. |
+| [LISP Syntax Example](examples/lisp_syntax_example.grc) | **Example Implementation** - Demonstrates how LISP syntax can be added to Grapa using $custom_command and $custom_function. Shows working LISP S-expressions, function definitions, and evaluation. |
 | [Language Design Example](examples/language_design_example.grc) | Demonstrates executable BNF system for creating custom languages, DSLs, and extending Grapa. |
 | [Isolated Rule Execution Example](examples/isolated_rule_execution_demo.grc) | Demonstrates executing custom rules in isolation for ETL and domain-specific processing. |
 | [Wrapper Function Example](examples/wrapper_function_example.grc) | Demonstrates the wrapper function pattern for ETL processing using rule tokens with custom functions. |
@@ -1012,7 +1012,7 @@ For comprehensive documentation on syntax extension, including custom commands, 
 
 ```grapa
 // Define a custom function
-custom_function = rule select $INT {op(p:$2){p*5}};
+$custom_function = rule select $INT {op(p:$2){p*5}};
 
 // Use it directly
 select 4;        // Returns 20

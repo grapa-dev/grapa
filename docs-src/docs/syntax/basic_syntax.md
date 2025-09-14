@@ -3827,7 +3827,7 @@ For comprehensive documentation on syntax extension, including custom commands, 
 
 ```grapa
 // Define a custom function that becomes part of the language
-custom_function = rule select $INT {op(p:$2){p*5}};
+$custom_function = rule select $INT {op(p:$2){p*5}};
 
 // Use it as if it were built into the language
 select 4;        // Returns 20

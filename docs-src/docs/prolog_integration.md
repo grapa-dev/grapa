@@ -9,7 +9,7 @@ tags:
 ---
 # PROLOG Integration in Grapa
 
-Grapa's executable BNF architecture allows you to add **true native PROLOG syntax** to the language using `custom_command` and `custom_function` rules. This is **not** manual parsing - it's **native syntax** that integrates seamlessly with Grapa's grammar system.
+Grapa's executable BNF architecture allows you to add **true native PROLOG syntax** to the language using `$custom_command` and `$custom_function` rules. This is **not** manual parsing - it's **native syntax** that integrates seamlessly with Grapa's grammar system.
 
 ## True Native Syntax Implementation
 
@@ -18,8 +18,8 @@ The PROLOG integration uses Grapa's **rule-based grammar system** exclusively. A
 ### Example PROLOG Syntax Implementation
 
 ```grapa
-/* Initialize custom_command and custom_function for PROLOG syntax */
-custom_command = rule $STR '(' $STR ',' $STR ')' '.' {op(predicate:$1,arg1:$3,arg2:$5){
+/* Initialize $custom_command and $custom_function for PROLOG syntax */
+$custom_command = rule $STR '(' $STR ',' $STR ')' '.' {op(predicate:$1,arg1:$3,arg2:$5){
     /* Store fact in knowledge base - NO MANUAL PARSING */
     fact_key = predicate + "_" + arg1 + "_" + arg2;
     fact_value = predicate + "(" + arg1 + "," + arg2 + ")";
@@ -27,7 +27,7 @@ custom_command = rule $STR '(' $STR ',' $STR ')' '.' {op(predicate:$1,arg1:$3,ar
 }};
 
 /* Fact with single argument */
-custom_command ++= rule $STR '(' $STR ')' '.' {op(predicate:$1,arg1:$3){
+$custom_command ++= rule $STR '(' $STR ')' '.' {op(predicate:$1,arg1:$3){
     /* Store single-argument fact - NO MANUAL PARSING */
     fact_key = predicate + "_" + arg1;
     fact_value = predicate + "(" + arg1 + ")";
@@ -35,7 +35,7 @@ custom_command ++= rule $STR '(' $STR ')' '.' {op(predicate:$1,arg1:$3){
 }};
 
 /* Rule storage with native grammar */
-custom_command ++= rule $STR '(' $STR ',' $STR ')' ':-' $STR '(' $STR ',' $STR ')' '.' {op(head_pred:$1,head_arg1:$3,head_arg2:$5,body_pred:$7,body_arg1:$9,body_arg2:$11){
+$custom_command ++= rule $STR '(' $STR ',' $STR ')' ':-' $STR '(' $STR ',' $STR ')' '.' {op(head_pred:$1,head_arg1:$3,head_arg2:$5,body_pred:$7,body_arg1:$9,body_arg2:$11){
     /* Store rule in knowledge base - NO MANUAL PARSING */
     rule_key = "rule_" + head_pred + "_" + head_arg1 + "_" + head_arg2;
     rule_value = head_pred + "(" + head_arg1 + "," + head_arg2 + ") :- " + body_pred + "(" + body_arg1 + "," + body_arg2 + ")";
@@ -43,7 +43,7 @@ custom_command ++= rule $STR '(' $STR ',' $STR ')' ':-' $STR '(' $STR ',' $STR '
 }};
 
 /* Rule with single argument */
-custom_command ++= rule $STR '(' $STR ')' ':-' $STR '(' $STR ')' '.' {op(head_pred:$1,head_arg1:$3,body_pred:$5,body_arg1:$7){
+$custom_command ++= rule $STR '(' $STR ')' ':-' $STR '(' $STR ')' '.' {op(head_pred:$1,head_arg1:$3,body_pred:$5,body_arg1:$7){
     /* Store single-argument rule - NO MANUAL PARSING */
     rule_key = "rule_" + head_pred + "_" + head_arg1;
     rule_value = head_pred + "(" + head_arg1 + ") :- " + body_pred + "(" + body_arg1 + ")";
@@ -51,18 +51,18 @@ custom_command ++= rule $STR '(' $STR ')' ':-' $STR '(' $STR ')' '.' {op(head_pr
 }};
 
 /* Query execution with native grammar */
-custom_function = rule '?-' $STR '(' $STR ',' $STR ')' {op(predicate:$2,arg1:$4,arg2:$6){
+$custom_function = rule '?-' $STR '(' $STR ',' $STR ')' {op(predicate:$2,arg1:$4,arg2:$6){
     /* PROLOG query processing - NO MANUAL PARSING */
     /* Implementation receives already-parsed tokens from Grapa's grammar */
 }};
 
 /* Query with single variable */
-custom_function ++= rule '?-' $STR '(' $STR ',' 'X' ')' {op(predicate:$2,arg1:$4){
+$custom_function ++= rule '?-' $STR '(' $STR ',' 'X' ')' {op(predicate:$2,arg1:$4){
     /* PROLOG query processing - NO MANUAL PARSING */
 }};
 
 /* Query with single argument */
-custom_function ++= rule '?-' $STR '(' $STR ')' {op(predicate:$2,arg1:$4){
+$custom_function ++= rule '?-' $STR '(' $STR ')' {op(predicate:$2,arg1:$4){
     /* PROLOG query processing - NO MANUAL PARSING */
 }};
 ```
@@ -100,11 +100,11 @@ This demonstrates **true native syntax** - not string storage or manual parsing:
 ## Two Implementation Approaches
 
 ### 1. Syntax Extension (Recommended)
-Uses `custom_command ++= rule` and `custom_function ++= rule` to define **true native syntax**:
+Uses `$custom_command ++= rule` and `$custom_function ++= rule` to define **true native syntax**:
 
 ```grapa
 /* TRUE NATIVE SYNTAX - No manual parsing */
-custom_command = rule $STR '(' $STR ')' '.' {op(predicate:$1,args:$3){
+$custom_command = rule $STR '(' $STR ')' '.' {op(predicate:$1,args:$3){
     /* Grapa grammar provides already-parsed tokens */
 }};
 ```
@@ -127,10 +127,10 @@ prolog_fact = op(predicate, args) {
 
 The key features for true native syntax are:
 
-- **`custom_command = rule`**: Defines initial fact and rule syntax
-- **`custom_command ++= rule`**: Adds additional fact and rule syntax patterns
-- **`custom_function = rule`**: Defines initial query syntax (`?-`)
-- **`custom_function ++= rule`**: Adds additional query syntax patterns
+- **`$custom_command = rule`**: Defines initial fact and rule syntax
+- **`$custom_command ++= rule`**: Adds additional fact and rule syntax patterns
+- **`$custom_function = rule`**: Defines initial query syntax (`?-`)
+- **`$custom_function ++= rule`**: Adds additional query syntax patterns
 - **`op()(script)()`**: Executes the custom syntax
 - **`script.exec()`**: Alternative syntax for executing custom syntax (more readable)
 - **Token Capture**: Use `$STR` to capture predicates and arguments

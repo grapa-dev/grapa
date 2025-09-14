@@ -1,14 +1,14 @@
 /*
  * String Interpolation Implementation
  * 
- * Implements template string interpolation using custom_function mechanism.
+ * Implements template string interpolation using $custom_function mechanism.
  * Supports ${expression} syntax for embedding expressions in strings.
  */
 
 /* ========================================
  * String Interpolation: ${expression}
  * ======================================== */
-custom_function = rule '$' '{' <$comp> '}' {
+$custom_function = rule '$' '{' <$comp> '}' {
     op(expression:$3){
         /* Evaluate the expression and return its string representation */
         result = op()(expression)();

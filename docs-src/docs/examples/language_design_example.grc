@@ -4,7 +4,7 @@
  * to create custom languages, DSLs, and extend the language itself.
  * 
  * Key concepts:
- * - custom_command vs custom_function distinction
+ * - $custom_command vs $custom_function distinction
  * - Dynamic grammar modification
  * - DSL creation patterns
  * - Protocol parsing
@@ -18,13 +18,13 @@
 ("1. Defining basic custom commands and functions...").echo();
 
 /* Custom command for logging */
-custom_command = rule log $STR {op(message:$2){
+$custom_command = rule log $STR {op(message:$2){
     ("[LOG] " + message).echo();
 }};
 
 /* Custom function for calculations */
-custom_function = rule calc '(' $STR ')' {op(expression:$3){
-    ("Calculating: " + expression).echo();
+$custom_function = rule calc '(' $STR ')' {op(expression:$3){
+    ("Calculating: " + expression + "\n").echo();
     /* Simple calculation - in real implementation, you'd use eval */
     if (expression == "2+2") {
         return 4;
@@ -36,9 +36,10 @@ custom_function = rule calc '(' $STR ')' {op(expression:$3){
 }};
 
 /* Execute basic custom syntax */
-op(parse)("log Hello from custom command")();
-result = op(parse)("calc(2+2)")();
-("Calculation result: " + result).echo();
+op()("log 'Hello from custom command'")();
+result = op()("calc('2+2')")();
+("Calculation result: " + result + "\n").echo();
+
 
 ("\n").echo();
 
@@ -47,14 +48,14 @@ result = op(parse)("calc(2+2)")();
 ("2. Creating a configuration DSL...").echo();
 
 /* Configuration DSL grammar */
-custom_command = rule config $STR '=' $STR {op(key:$2,value:$4){
+$custom_command = rule config $STR '=' $STR {op(key:$2,value:$4){
     ("Setting config: " + key + " = " + value).echo();
     /* In real implementation, you'd store this in a config object */
     config_values = config_values ? config_values : {};
     config_values[key] = value;
 }};
 
-custom_command = rule config $STR '=' $INT {op(key:$2,value:$4){
+$custom_command = rule config $STR '=' $INT {op(key:$2,value:$4){
     ("Setting config: " + key + " = " + value).echo();
     config_values = config_values ? config_values : {};
     config_values[key] = value;
@@ -75,7 +76,7 @@ op(parse)('config debug = true')();
 ("3. Creating a data processing DSL...").echo();
 
 /* Pipeline DSL grammar */
-custom_command = rule pipeline '{' <$pipeline_steps> '}' {op(steps:$3){
+$custom_command = rule pipeline '{' <$pipeline_steps> '}' {op(steps:$3){
     ("Pipeline execution started").echo();
     result = null;
     i = 0;
@@ -125,7 +126,7 @@ result = op(parse)('pipeline {
 ("4. Creating a protocol parser...").echo();
 
 /* HTTP request parser */
-custom_function = rule http_parse '(' $STR ')' {op(request:$3){
+$custom_function = rule http_parse '(' $STR ')' {op(request:$3){
     ("Parsing HTTP request: " + request).echo();
     
     /* Simple HTTP request parsing */
@@ -163,7 +164,7 @@ parsed = op(parse)('http_parse("' + http_request + '")')();
 ("5. Dynamic grammar modification...").echo();
 
 /* Add new loop syntax at runtime */
-custom_command = rule repeat $INT times '{' <$command_list> '}' {op(count:$2,body:$5){
+$custom_command = rule repeat $INT times '{' <$command_list> '}' {op(count:$2,body:$5){
     ("Executing repeat loop " + count + " times").echo();
     i = 0;
     while (i < count) {
@@ -198,8 +199,8 @@ compile_grammar = op(rule_name, rule_def) {
 };
 
 /* Cache and use grammar */
-sql_grammar = compile_grammar("sql", "custom_command = rule select $STR from $STR {op(fields:$2,table:$4){ (\"SQL: \" + fields + \" FROM \" + table).echo(); }};");
-sql_grammar2 = compile_grammar("sql", "custom_command = rule select $STR from $STR {op(fields:$2,table:$4){ (\"SQL: \" + fields + \" FROM \" + table).echo(); }};");
+sql_grammar = compile_grammar("sql", "$custom_command = rule select $STR from $STR {op(fields:$2,table:$4){ (\"SQL: \" + fields + \" FROM \" + table).echo(); }};");
+sql_grammar2 = compile_grammar("sql", "$custom_command = rule select $STR from $STR {op(fields:$2,table:$4){ (\"SQL: \" + fields + \" FROM \" + table).echo(); }};");
 
 /* Execute cached grammar */
 op(parse)("select * from users")();
@@ -211,7 +212,7 @@ op(parse)("select * from users")();
 ("7. Error handling and debugging...").echo();
 
 /* Robust grammar with error recovery */
-custom_function = rule safe_parse '(' $STR ')' {op(expression:$3){
+$custom_function = rule safe_parse '(' $STR ')' {op(expression:$3){
     ("Attempting to parse: " + expression).echo();
     
     try {
@@ -225,7 +226,7 @@ custom_function = rule safe_parse '(' $STR ')' {op(expression:$3){
 }};
 
 /* Debug grammar execution */
-custom_command = rule debug <$command> {op(command:$2){
+$custom_command = rule debug <$command> {op(command:$2){
     ("Debug: Starting command execution").echo();
     result = command();
     ("Debug: Command completed with result: " + result).echo();
@@ -243,7 +244,7 @@ debug_result = op(parse)('debug { log "Debug test message" }')();
 ("8. Real-world application: Complete configuration system...").echo();
 
 /* Configuration system DSL */
-custom_command = rule load_config '{' <$config_entries> '}' {op(entries:$3){
+$custom_command = rule load_config '{' <$config_entries> '}' {op(entries:$3){
     ("Loading configuration system...").echo();
     config_system = {};
     
@@ -280,7 +281,7 @@ config_system = op(parse)('load_config {
 ("9. Advanced pattern: Recursive grammar...").echo();
 
 /* CSV parser with recursive grammar */
-custom_function = rule csv_parse '(' $STR ')' {op(csv_data:$3){
+$custom_function = rule csv_parse '(' $STR ')' {op(csv_data:$3){
     ("Parsing CSV data: " + csv_data).echo();
     
     /* Simple CSV parsing - in real implementation, you'd use proper recursive grammar */
@@ -313,8 +314,8 @@ parsed_csv = op(parse)('csv_parse("' + csv_data + '")')();
 ("=== Language Design Demo Complete ===").echo();
 
 ("Key takeaways from this demo:").echo();
-("1. custom_command: For actions (log, config, pipeline)").echo();
-("2. custom_function: For expressions (calc, http_parse, csv_parse)").echo();
+("1. $custom_command: For actions (log, config, pipeline)").echo();
+("2. $custom_function: For expressions (calc, http_parse, csv_parse)").echo();
 ("3. op(parse)(): Execution pattern for custom syntax").echo();
 ("4. Dynamic grammar: Add new syntax at runtime").echo();
 ("5. DSL creation: Build domain-specific languages").echo();
@@ -329,7 +330,7 @@ parsed_csv = op(parse)('csv_parse("' + csv_data + '")')();
 /* 
  * This example demonstrates:
  * 
- * 1. Basic custom_command and custom_function usage
+ * 1. Basic $custom_command and $custom_function usage
  * 2. DSL creation for configuration and data processing
  * 3. Protocol parsing for HTTP requests
  * 4. Dynamic grammar modification

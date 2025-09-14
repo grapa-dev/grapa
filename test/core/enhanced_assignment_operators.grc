@@ -1,14 +1,14 @@
 /*
  * Enhanced Assignment Operators Implementation
  * 
- * Implements `*=`, `/=`, `%=`, `**=` operators using custom_function mechanism.
+ * Implements `*=`, `/=`, `%=`, `**=` operators using $custom_function mechanism.
  * These operators perform the operation and assignment in one step.
  */
 
 /* ========================================
  * Multiplication Assignment: *=
  * ======================================== */
-custom_function = rule <$comp> '*=' <$comp> {
+$custom_function = rule <$comp> '*=' <$comp> {
     op(left:$1, right:$3){
         /* Get the current value of the left operand */
         left_value = op()(left)();
@@ -25,7 +25,7 @@ custom_function = rule <$comp> '*=' <$comp> {
 /* ========================================
  * Division Assignment: /=
  * ======================================== */
-custom_function = rule <$comp> '/=' <$comp> {
+$custom_function = rule <$comp> '/=' <$comp> {
     op(left:$1, right:$3){
         /* Get the current value of the left operand */
         left_value = op()(left)();
@@ -48,7 +48,7 @@ custom_function = rule <$comp> '/=' <$comp> {
 /* ========================================
  * Modulo Assignment: %=
  * ======================================== */
-custom_function = rule <$comp> '%=' <$comp> {
+$custom_function = rule <$comp> '%=' <$comp> {
     op(left:$1, right:$3){
         /* Get the current value of the left operand */
         left_value = op()(left)();
@@ -71,7 +71,7 @@ custom_function = rule <$comp> '%=' <$comp> {
 /* ========================================
  * Exponentiation Assignment: **=
  * ======================================== */
-custom_function = rule <$comp> '**=' <$comp> {
+$custom_function = rule <$comp> '**=' <$comp> {
     op(left:$1, right:$3){
         /* Get the current value of the left operand */
         left_value = op()(left)();

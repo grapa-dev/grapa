@@ -260,11 +260,11 @@ Based on the Grapa grammar system in `lib/grapa/$grapa.grc`, there are important
 **Identifier Tokens (automatic conversion):**
 ```grapa
 /* Define initial rule with identifier */
-custom_command = rule test {op(){'matched first'}};
+$custom_command = rule test {op(){'matched first'}};
 
 /* Append additional alternatives using ++= */
-custom_command ++= rule test2 {op(){'matched second'}};
-custom_command ++= rule test3 {op(){'matched third'}};
+$custom_command ++= rule test2 {op(){'matched second'}};
+$custom_command ++= rule test3 {op(){'matched third'}};
 
 /* Test the rule - use identifiers directly */
 test;   /* Returns: 'matched first' */
@@ -275,11 +275,11 @@ test3;  /* Returns: 'matched third' */
 **String Tokens (explicit conversion required):**
 ```grapa
 /* Define initial rule with string token */
-custom_command = rule $STR('first') {op(){'matched first'}};
+$custom_command = rule $STR('first') {op(){'matched first'}};
 
 /* Append additional alternatives using ++= */
-custom_command ++= rule $STR('second') {op(){'matched second'}};
-custom_command ++= rule $STR('third') {op(){'matched third'}};
+$custom_command ++= rule $STR('second') {op(){'matched second'}};
+$custom_command ++= rule $STR('third') {op(){'matched third'}};
 
 /* Test the rule - use string literals */
 "first";   /* Returns: 'matched first' */
@@ -345,17 +345,17 @@ $global["$list2"]
 **Example of Incorrect Ordering:**
 ```grapa
 /* WRONG - Simple rule first will prevent longer rules from matching */
-custom_command = rule test {op(){'simple'}};                    /* 1 token - too early! */
-custom_command ++= rule test $STR {op(arg:$2){'with arg'}};     /* 2 tokens - never reached */
-custom_command ++= rule test $STR $STR {op(arg1:$2,arg2:$3){'with 2 args'}}; /* 3 tokens - never reached */
+$custom_command = rule test {op(){'simple'}};                    /* 1 token - too early! */
+$custom_command ++= rule test $STR {op(arg:$2){'with arg'}};     /* 2 tokens - never reached */
+$custom_command ++= rule test $STR $STR {op(arg1:$2,arg2:$3){'with 2 args'}}; /* 3 tokens - never reached */
 ```
 
 **Correct Ordering:**
 ```grapa
 /* CORRECT - Most specific rules first */
-custom_command = rule test $STR $STR {op(arg1:$2,arg2:$3){'with 2 args'}}; /* 3 tokens */
-custom_command ++= rule test $STR {op(arg:$2){'with arg'}};     /* 2 tokens */
-custom_command ++= rule test {op(){'simple'}};                  /* 1 token - last */
+$custom_command = rule test $STR $STR {op(arg1:$2,arg2:$3){'with 2 args'}}; /* 3 tokens */
+$custom_command ++= rule test $STR {op(arg:$2){'with arg'}};     /* 2 tokens */
+$custom_command ++= rule test {op(){'simple'}};                  /* 1 token - last */
 ```
 
 #### Testing Custom Rules
@@ -364,8 +364,8 @@ custom_command ++= rule test {op(){'simple'}};                  /* 1 token - las
 
 ```grapa
 /* Define custom rules */
-custom_command = rule test {op(){'simple'}};
-custom_command ++= rule test $STR {op(arg:$2){'with arg: ' + arg}};
+$custom_command = rule test {op(){'simple'}};
+$custom_command ++= rule test $STR {op(arg:$2){'with arg: ' + arg}};
 
 /* Test using string execution */
 op()("test")();                    /* Returns: 'simple' */
@@ -394,22 +394,22 @@ This pattern is commonly used for implementing domain-specific languages and syn
 
 ```grapa
 /* Initialize SQL syntax */
-custom_command = rule select $STR from $STR {op(fields:$2,table:$4){
+$custom_command = rule select $STR from $STR {op(fields:$2,table:$4){
     ("SELECT " + fields + " FROM " + table).echo();
 }};
 
 /* Add INSERT syntax */
-custom_command ++= rule insert into $STR values $STR ',' $INT ',' $STR {op(table:$3,name:$6,age:$8,city:$10){
+$custom_command ++= rule insert into $STR values $STR ',' $INT ',' $STR {op(table:$3,name:$6,age:$8,city:$10){
     ("INSERT INTO " + table + " VALUES " + name + "," + age + "," + city).echo();
 }};
 
 /* Add UPDATE syntax */
-custom_command ++= rule update $STR set $STR '=' $STR where $STR '=' $STR {op(table:$2,field:$4,value:$6,where_field:$8,where_value:$10){
+$custom_command ++= rule update $STR set $STR '=' $STR where $STR '=' $STR {op(table:$2,field:$4,value:$6,where_field:$8,where_value:$10){
     ("UPDATE " + table + " SET " + field + "=" + value + " WHERE " + where_field + "=" + where_value).echo();
 }};
 
 /* Add DELETE syntax */
-custom_command ++= rule delete from $STR where $STR '=' $STR {op(table:$3,where_field:$5,where_value:$7){
+$custom_command ++= rule delete from $STR where $STR '=' $STR {op(table:$3,where_field:$5,where_value:$7){
     ("DELETE FROM " + table + " WHERE " + where_field + "=" + where_value).echo();
 }};
 ```
@@ -481,21 +481,21 @@ Grapa's most powerful feature is its ability to dynamically extend the language 
 
 The Grapa parser includes two special variables that allow you to inject custom syntax:
 
-- **`custom_command`**: For domain-specific commands that perform actions but don't return values
-- **`custom_function`**: For functions that return values
+- **`$custom_command`**: For domain-specific commands that perform actions but don't return values
+- **`$custom_function`**: For functions that return values
 
 #### Basic Syntax Extension
 
 ```grapa
 // Define a custom function that returns a value
-custom_function = rule select $INT {op(p:$2){p*5}};
+$custom_function = rule select $INT {op(p:$2){p*5}};
 
 // Now you can use it directly
 select 4;        // Returns 20
 x = select 8;    // x = 40
 
 // Define a custom command that performs an action
-custom_command = rule reset_data {op(){clear_database()}};
+$custom_command = rule reset_data {op(){clear_database()}};
 
 // Use the custom command
 reset_data;      // Executes clear_database()
@@ -503,7 +503,7 @@ reset_data;      // Executes clear_database()
 
 #### How It Works
 
-When you define `custom_function` or `custom_command`, you're essentially creating isolated rule execution for domain-specific processing. The parser:
+When you define `$custom_function` or `$custom_command`, you're essentially creating isolated rule execution for domain-specific processing. The parser:
 
 1. **Falls through** the built-in command patterns
 2. **Matches your custom rule** when the input fits the pattern
@@ -519,7 +519,7 @@ Custom syntax can be defined at different scopes, giving you precise control ove
 ```grapa
 function_with_custom_syntax() {
     // Custom syntax only available within this function
-    custom_function = rule local_cmd $INT {op(n:$2){n*2}};
+    $custom_function = rule local_cmd $INT {op(n:$2){n*2}};
     
     result = local_cmd 5;  // Works here
     // Function exits, local_cmd is gone
@@ -534,7 +534,7 @@ function_with_custom_syntax() {
 ```grapa
 function_with_permanent_syntax() {
     // Promote to global namespace - available everywhere
-    $global["custom_function"] = rule global_cmd $INT {op(n:$2){n*3}};
+    $global["$custom_function"] = rule global_cmd $INT {op(n:$2){n*3}};
     
     result = global_cmd 5;  // Works here
     // Function exits, but global_cmd is still available globally
@@ -549,12 +549,12 @@ result = global_cmd 10;  // Works here too
 ```grapa
 function_with_conditional_syntax() {
     // Create local syntax first
-    custom_function = rule temp_cmd $INT {op(n:$2){n*4}};
+    $custom_function = rule temp_cmd $INT {op(n:$2){n*4}};
     
     // Test it locally
     if (temp_cmd 5 == 20) {
         // If it works well, promote to global
-        $global["custom_function"] = rule temp_cmd $INT {op(n:$2){n*4}};
+        $global["$custom_function"] = rule temp_cmd $INT {op(n:$2){n*4}};
         echo "Syntax promoted to global";
     }
     
@@ -571,11 +571,11 @@ function_with_conditional_syntax() {
 ```grapa
 // This script was compiled with the original grammar
 function test() {
-    // Even if we change custom_function here, it won't affect
+    // Even if we change $custom_function here, it won't affect
     // the already-compiled code in this function
-    custom_function = rule new_syntax $INT {op(n:$2){n*10}};
+    $custom_function = rule new_syntax $INT {op(n:$2){n*10}};
     
-    // This line was compiled before the custom_function change
+    // This line was compiled before the $custom_function change
     // so it still uses the old grammar
     old_syntax 5;  // Uses whatever was defined when script was compiled
 }
@@ -586,7 +586,7 @@ function test() {
 ```grapa
 function dynamic_compilation() {
     // Set up custom syntax
-    custom_function = rule custom_cmd $INT {op(n:$2){n*5}};
+    $custom_function = rule custom_cmd $INT {op(n:$2){n*5}};
     
     // Compile and execute new code dynamically
     script_text = "result = custom_cmd 10; echo result;";
@@ -605,11 +605,11 @@ function dynamic_compilation() {
 ```grapa
 function create_sql_dsl() {
     // Define SQL-like syntax
-    custom_function = rule SELECT $STR FROM $STR {op(fields:$2,table:$4){
+    $custom_function = rule SELECT $STR FROM $STR {op(fields:$2,table:$4){
         build_select_query(fields, table)
     }};
     
-    custom_function = rule WHERE $STR {op(condition:$2){
+    $custom_function = rule WHERE $STR {op(condition:$2){
         build_where_clause(condition)
     }};
     
@@ -625,7 +625,7 @@ function create_sql_dsl() {
 ```grapa
 function load_plugin(plugin_config) {
     // Set up plugin-specific syntax
-    custom_function = rule plugin_cmd $STR {op(cmd:$2){execute_plugin(cmd)}};
+    $custom_function = rule plugin_cmd $STR {op(cmd:$2){execute_plugin(cmd)}};
     
     // Compile plugin script with new syntax
     plugin_script = plugin_config.script;
@@ -642,7 +642,7 @@ function load_plugin(plugin_config) {
 // Each thread can have its own syntax extensions
 function thread_with_custom_syntax() {
     // Local custom syntax for this thread
-    custom_function = rule thread_cmd $INT {op(n:$2){n*thread_id()}};
+    $custom_function = rule thread_cmd $INT {op(n:$2){n*thread_id()}};
     
     // This syntax is isolated to this thread
     result = thread_cmd 5;

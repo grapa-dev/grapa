@@ -33,15 +33,15 @@ Grapa's **executable BNF system** provides unique capabilities that no other mod
 
 ```grapa
 /* Add SQL syntax at runtime */
-custom_command = rule select $STR from $STR { op(fields:$2, table:$4){
+$custom_command = rule select $STR from $STR { op(fields:$2, table:$4){
     /* SQL implementation */
 } };
 
 /* Add PROLOG syntax at runtime */
-custom_command = rule $STR '(' $STR ')' '.' { op(predicate:$1, args:$3){
+$custom_command = rule $STR '(' $STR ')' '.' { op(predicate:$1, args:$3){
     /* PROLOG fact implementation */
 } };
-custom_function = rule '?-' $STR '(' $STR ')' { op(predicate:$2, query_args:$4){
+$custom_function = rule '?-' $STR '(' $STR ')' { op(predicate:$2, query_args:$4){
     /* PROLOG query implementation */
 } };
 
@@ -298,7 +298,7 @@ This table ranks programming languages across key capabilities, showing where Gr
 #### **1. Dynamic Language Creation**
 ```grapa
 /* Define custom syntax at runtime */
-$global["$custom_command"] = rule for '(' <$comp> ')' <$command> {
+$global["$$custom_command"] = rule for '(' <$comp> ')' <$command> {
     op(init:$3, body:$6){ /* Implementation */ }
 };
 
@@ -342,15 +342,15 @@ result = process_all_formats(json_data, xml_data, sql_data);
 #### **3. Runtime Language Integration**
 ```grapa
 /* Add SQL syntax at runtime */
-custom_command = rule select $STR from $STR { op(fields:$2, table:$4){
+$custom_command = rule select $STR from $STR { op(fields:$2, table:$4){
     /* SQL implementation */
 } };
 
 /* Add PROLOG syntax at runtime */
-custom_command = rule $STR '(' $STR ')' '.' { op(predicate:$1, args:$3){
+$custom_command = rule $STR '(' $STR ')' '.' { op(predicate:$1, args:$3){
     /* PROLOG fact implementation */
 } };
-custom_function = rule '?-' $STR '(' $STR ')' { op(predicate:$2, query_args:$4){
+$custom_function = rule '?-' $STR '(' $STR ')' { op(predicate:$2, query_args:$4){
     /* PROLOG query implementation */
 } };
 
@@ -664,8 +664,8 @@ Grapa provides **complete vector and matrix operations** that rival specialized 
 - `.cov(axis=null)` - Covariance matrix
 
 **Advanced Sorting and Selection**:
-- `.sort(axis=null, order=null, kind=null, custom_function=null)` - Advanced sorting with custom comparison functions
-- `.argsort(axis=null, order=null, kind=null, custom_function=null)` - Sort indices with custom functions
+- `.sort(axis=null, order=null, kind=null, $custom_function=null)` - Advanced sorting with custom comparison functions
+- `.argsort(axis=null, order=null, kind=null, $custom_function=null)` - Sort indices with custom functions
 - **Custom order vectors** - Non-consecutive column selection and reordering
 - **Custom comparison functions** - User-defined sorting logic
 - **Signed vs unsigned comparison** - Multiple comparison modes
@@ -844,7 +844,7 @@ xml = <users><user><name>John</name><age>30</age></user></users>;
 
 /* Load SQL syntax rules first (example implementation) */
 /* See docs-src/docs/examples/sql_syntax_example.grc for full implementation */
-custom_command = rule select $STR from $STR { op(fields:$2, table:$4){ /* SQL implementation */ } };
+$custom_command = rule select $STR from $STR { op(fields:$2, table:$4){ /* SQL implementation */ } };
 sql = op(parse)("SELECT name, age FROM users WHERE age > 25")();
 
 /* Process all formats */
@@ -1046,7 +1046,7 @@ GrapaState grapa;
 
 // Define custom language rules
 grapa.eval(R"(
-    custom_command = rule for $ID from <$comp> to <$comp> <$command> {
+    $custom_command = rule for $ID from <$comp> to <$comp> <$command> {
         op(var:$2, start:$4, end:$6, body:$8){
             /* Custom for loop implementation */
         }
@@ -1066,12 +1066,12 @@ grapa.eval("for i from 1 to 5 { ('Count: ' + i).echo(); }");
 // Define domain-specific language
 grapa.eval(R"(
     // Configuration DSL
-    custom_command = rule config '{' <$config_entries> '}' {
+    $custom_command = rule config '{' <$config_entries> '}' {
         op(entries:$3){ /* Process configuration */ }
     };
     
     // Protocol DSL
-    custom_function = rule parse $STR ':' $STR {
+    $custom_function = rule parse $STR ':' $STR {
         op(protocol:$2, data:$4){ /* Parse protocol */ }
     };
 )");
@@ -1108,7 +1108,7 @@ public:
 // Use Grapa for complex data processing
 grapa.eval(R"(
     // Define data transformation rules
-    custom_function = rule transform $STR {
+    $custom_function = rule transform $STR {
         op(data:$2){
             // Complex transformation logic
             result = data.grep(/pattern/, 'o');

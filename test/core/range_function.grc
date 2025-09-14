@@ -1,7 +1,7 @@
 /*
  * Range Function Implementation
  * 
- * Implements range() function using custom_function mechanism.
+ * Implements range() function using $custom_function mechanism.
  * Supports multiple range patterns similar to Python's range().
  */
 
@@ -9,7 +9,7 @@
  * Range Function: range(stop)
  * Returns list from 0 to stop-1
  * ======================================== */
-custom_function = rule range '(' <$comp> ')' {
+$custom_function = rule range '(' <$comp> ')' {
     op(stop:$3){
         /* Create range from 0 to stop-1 */
         result = [];
@@ -26,7 +26,7 @@ custom_function = rule range '(' <$comp> ')' {
  * Range Function: range(start, stop)
  * Returns list from start to stop-1
  * ======================================== */
-custom_function = rule range '(' <$comp> ',' <$comp> ')' {
+$custom_function = rule range '(' <$comp> ',' <$comp> ')' {
     op(start:$3, stop:$5){
         /* Create range from start to stop-1 */
         result = [];
@@ -43,7 +43,7 @@ custom_function = rule range '(' <$comp> ',' <$comp> ')' {
  * Range Function: range(start, stop, step)
  * Returns list from start to stop-1 with step
  * ======================================== */
-custom_function = rule range '(' <$comp> ',' <$comp> ',' <$comp> ')' {
+$custom_function = rule range '(' <$comp> ',' <$comp> ',' <$comp> ')' {
     op(start:$3, stop:$5, step:$7){
         /* Validate step */
         if (step == 0) {

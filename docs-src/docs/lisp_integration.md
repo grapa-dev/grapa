@@ -27,7 +27,7 @@ LISP's fundamental data structure - nested lists representing code and data:
 
 ```grapa
 /* LISP S-expression syntax */
-custom_command = rule '(' $STR* ')' { op(expression:$2){
+$custom_command = rule '(' $STR* ')' { op(expression:$2){
     /* Parse and evaluate S-expression */
     return evaluate_sexp($2);
 } };
@@ -42,7 +42,7 @@ Define new LISP functions using `defun`:
 
 ```grapa
 /* LISP function definition */
-custom_command = rule '(defun' $STR '(' $STR* ')' $STR* ')' { 
+$custom_command = rule '(defun' $STR '(' $STR* ')' $STR* ')' { 
     op(name:$2, params:$4, body:$6){
         /* Store function definition */
         $global.lisp_functions[$2] = {
@@ -63,7 +63,7 @@ LISP-style conditionals with `if` and `cond`:
 
 ```grapa
 /* LISP if statement */
-custom_command = rule '(if' $STR $STR $STR ')' { 
+$custom_command = rule '(if' $STR $STR $STR ')' { 
     op(condition:$2, then:$3, else:$4){
         if (evaluate_sexp($2)) {
             return evaluate_sexp($3);
@@ -82,19 +82,19 @@ Native LISP list manipulation:
 
 ```grapa
 /* LISP list operations */
-custom_command = rule '(car' $STR ')' { op(list:$2){
+$custom_command = rule '(car' $STR ')' { op(list:$2){
     /* Return first element */
     list_val = evaluate_sexp(list);
     return list_val[0];
 } };
 
-custom_command = rule '(cdr' $STR ')' { op(list:$2){
+$custom_command = rule '(cdr' $STR ')' { op(list:$2){
     /* Return rest of list */
     list_val = evaluate_sexp(list);
     return list_val.range(1, list_val.len());
 } };
 
-custom_command = rule '(cons' $STR $STR ')' { op(element:$2, list:$3){
+$custom_command = rule '(cons' $STR $STR ')' { op(element:$2, list:$3){
     /* Add element to front of list */
     element_val = evaluate_sexp(element);
     list_val = evaluate_sexp(list);
@@ -112,29 +112,29 @@ op()('(cons "0" "(1 2 3)")')();  /* Returns [0, 1, 2, 3] */
 ### Example LISP Syntax Implementation
 
 ```grapa
-/* Initialize custom_command and custom_function for LISP syntax */
-custom_command = rule '(' $STR $STR $STR ')' {op(function:$2,arg1:$3,arg2:$4){
+/* Initialize $custom_command and custom_function for LISP syntax */
+$custom_command = rule '(' $STR $STR $STR ')' {op(function:$2,arg1:$3,arg2:$4){
     /* Evaluate S-expression - NO MANUAL PARSING */
     result = lisp_eval(function, [arg1, arg2]);
     return result;
 }};
 
 /* S-expressions with single argument */
-custom_command = rule '(' $STR $STR ')' {op(function:$2,arg1:$3){
+$custom_command = rule '(' $STR $STR ')' {op(function:$2,arg1:$3){
     /* Evaluate S-expression - NO MANUAL PARSING */
     result = lisp_eval(function, [arg1]);
     return result;
 }};
 
 /* S-expressions with three arguments */
-custom_command ++= rule '(' $STR $STR $STR $STR ')' {op(function:$2,arg1:$3,arg2:$4,arg3:$5){
+$custom_command ++= rule '(' $STR $STR $STR $STR ')' {op(function:$2,arg1:$3,arg2:$4,arg3:$5){
     /* Evaluate S-expression - NO MANUAL PARSING */
     result = lisp_eval(function, [arg1, arg2, arg3]);
     return result;
 }};
 
 /* Function definition with native grammar */
-custom_command ++= rule '(defun' $STR '(' $STR $STR ')' $STR ')' {op(name:$2,param1:$4,param2:$5,body:$7){
+$custom_command ++= rule '(defun' $STR '(' $STR $STR ')' $STR ')' {op(name:$2,param1:$4,param2:$5,body:$7){
     /* Store function definition - NO MANUAL PARSING */
     $global.lisp_functions[name] = {
         params: [param1, param2],
@@ -144,7 +144,7 @@ custom_command ++= rule '(defun' $STR '(' $STR $STR ')' $STR ')' {op(name:$2,par
 }};
 
 /* Function definition with single parameter */
-custom_command ++= rule '(defun' $STR '(' $STR ')' $STR ')' {op(name:$2,param1:$4,body:$6){
+$custom_command ++= rule '(defun' $STR '(' $STR ')' $STR ')' {op(name:$2,param1:$4,body:$6){
     /* Store function definition - NO MANUAL PARSING */
     $global.lisp_functions[name] = {
         params: [param1],
@@ -154,7 +154,7 @@ custom_command ++= rule '(defun' $STR '(' $STR ')' $STR ')' {op(name:$2,param1:$
 }};
 
 /* Variable assignment with native grammar */
-custom_command ++= rule '(setq' $STR $STR ')' {op(var:$2,value:$3){
+$custom_command ++= rule '(setq' $STR $STR ')' {op(var:$2,value:$3){
     /* Set variable - NO MANUAL PARSING */
     evaluated_value = evaluate_sexp(value);
     $global.lisp_vars[var] = evaluated_value;
@@ -162,7 +162,7 @@ custom_command ++= rule '(setq' $STR $STR ')' {op(var:$2,value:$3){
 }};
 
 /* Conditional expression with native grammar */
-custom_command ++= rule '(if' $STR $STR $STR ')' {op(condition:$2,then:$3,else:$4){
+$custom_command ++= rule '(if' $STR $STR $STR ')' {op(condition:$2,then:$3,else:$4){
     /* Evaluate conditional - NO MANUAL PARSING */
     cond_result = evaluate_sexp(condition);
     if (cond_result) {
@@ -173,23 +173,23 @@ custom_command ++= rule '(if' $STR $STR $STR ')' {op(condition:$2,then:$3,else:$
 }};
 
 /* List operations with native grammar */
-custom_command ++= rule '(list' $STR ')' {op(elem1:$2){
+$custom_command ++= rule '(list' $STR ')' {op(elem1:$2){
     /* Create list with single element - NO MANUAL PARSING */
     return [elem1];
 }};
 
-custom_command ++= rule '(list' $STR $STR ')' {op(elem1:$2,elem2:$3){
+$custom_command ++= rule '(list' $STR $STR ')' {op(elem1:$2,elem2:$3){
     /* Create list - NO MANUAL PARSING */
     return [elem1, elem2];
 }};
 
-custom_command ++= rule '(list' $STR $STR $STR ')' {op(elem1:$2,elem2:$3,elem3:$4){
+$custom_command ++= rule '(list' $STR $STR $STR ')' {op(elem1:$2,elem2:$3,elem3:$4){
     /* Create list with three elements - NO MANUAL PARSING */
     return [elem1, elem2, elem3];
 }};
 
 /* List access operations */
-custom_command ++= rule '(car' $STR ')' {op(list_expr:$2){
+$custom_command ++= rule '(car' $STR ')' {op(list_expr:$2){
     /* Get first element - NO MANUAL PARSING */
     list_val = evaluate_sexp(list_expr);
     if (list_val.type() == $GOBJ) {
@@ -197,7 +197,7 @@ custom_command ++= rule '(car' $STR ')' {op(list_expr:$2){
     };
 }};
 
-custom_command ++= rule '(cdr' $STR ')' {op(list_expr:$2){
+$custom_command ++= rule '(cdr' $STR ')' {op(list_expr:$2){
     /* Get rest of list - NO MANUAL PARSING */
     list_val = evaluate_sexp(list_expr);
     if (list_val.type() == $GOBJ) {
@@ -205,7 +205,7 @@ custom_command ++= rule '(cdr' $STR ')' {op(list_expr:$2){
     };
 }};
 
-custom_command ++= rule '(cons' $STR $STR ')' {op(element:$2,list_expr:$3){
+$custom_command ++= rule '(cons' $STR $STR ')' {op(element:$2,list_expr:$3){
     /* Construct list - NO MANUAL PARSING */
     element_val = evaluate_sexp(element);
     list_val = evaluate_sexp(list_expr);
@@ -301,7 +301,7 @@ Implement LISP-style macros for code transformation:
 
 ```grapa
 /* Macro definition */
-custom_command = rule '(defmacro' $STR '(' $STR* ')' $STR* ')' { 
+$custom_command = rule '(defmacro' $STR '(' $STR* ')' $STR* ')' { 
     op(name:$2, params:$4, body:$6){
         $global.lisp_macros[$2] = {
             params: $4,
@@ -321,7 +321,7 @@ Implement LISP's functional programming features:
 
 ```grapa
 /* Map function */
-custom_command = rule '(map' $STR $STR ')' { op(func:$2, list:$3){
+$custom_command = rule '(map' $STR $STR ')' { op(func:$2, list:$3){
     return evaluate_sexp(list).map(op(x) {
         op()("(" + func + " " + x + ")")();
     });

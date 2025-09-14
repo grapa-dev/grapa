@@ -4,7 +4,7 @@
  * what's already implemented vs what might be missing.
  * 
  * Testing:
- * 1. Macro system (custom_command/custom_function)
+ * 1. Macro system ($custom_command/$custom_function)
  * 2. AST manipulation (execution trees)
  * 3. Code reflection (introspection)
  * 4. Dynamic grammar modification
@@ -16,7 +16,7 @@
 ("--- Test 1: Macro System (Custom Commands and Functions) ---").echo();
 
 // Define a custom function (macro)
-custom_function = rule select $INT {op(p:$2){p*5}};
+$custom_function = rule select $INT {op(p:$2){p*5}};
 
 // Use the custom function
 result1 = select 4;        // Should return 20
@@ -24,7 +24,7 @@ result2 = select 8;        // Should return 40
 ("Custom function results: " + result1 + ", " + result2).echo();
 
 // Define a custom command (macro)
-custom_command = rule repeat $INT times '{' <$command> '}' {
+$custom_command = rule repeat $INT times '{' <$command> '}' {
     op(count:$2, body:$5){
         i = 0;
         while (i < count) {
@@ -227,7 +227,7 @@ analysis = analyze_function(sample_func);
 /* Summary of Findings:
  * 
  * Grapa already has:
- * 1. ✅ Macro system via custom_command/custom_function
+ * 1. ✅ Macro system via $custom_command/$custom_function
  * 2. ✅ AST manipulation via execution trees (.plan())
  * 3. ✅ Code reflection via .describe() and .type()
  * 4. ✅ Dynamic grammar modification via $global rules
