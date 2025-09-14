@@ -16,6 +16,7 @@ httpMessageHandler = op(netSession, message, hasmore) {
 		{
 			("HTTP Server:" + netSession."connectionId".str() + ": CLOSE\n").echo();
 			netSession.disconnect();
+            ("HTTP Server:" + netSession."connectionId".str() + ": DISCONNECTED\n").echo();
 			return(null);
 		};
 				
@@ -58,7 +59,7 @@ connectionHandler = op(netSession) {
 
 /* Start HTTP Server */
 httpServer = $net();
-httpServer.onlisten(':8080', httpMessageHandler, connectionHandler);
+httpServer.onlisten(':8080', httpMessageHandler, connectionHandler,5);
 
 
 ("HTTP server started on port 8080\n").echo();
