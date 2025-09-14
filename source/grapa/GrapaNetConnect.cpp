@@ -78,6 +78,7 @@ void GrapaNetConnect::Set(GrapaCHAR& pURL)
 GrapaError GrapaNetConnect::Connect(GrapaRuleEvent* pUrl)
 {
 	Disconnect();
+	Stop();
 	vObj = pUrl;
 	mListenMode = false;
 	mError = mNet.Connect(mURL);
@@ -113,7 +114,7 @@ GrapaError GrapaNetConnect::Disconnect()
 		}
 	}
 	mNet.Disconnect();
-	//Stop();
+	//Stop(); // this will cause a hang if disconnect is called from within the running thread, which can happen if this is the server thread.
 	mStop = true;
 	return(0);
 }

@@ -504,10 +504,13 @@ $global["$function"]
 	| '!' <$function> {@<not,{$2}>}
 	| static <$comp> {@<static,{$2}>}
 	| const <$comp> {@<const,{$2}>}
-	| <custom_function>
+	| <$custom_function>
 	| <$litname> '(' ')' {@<call,{$1}>}
 	| <$litname> '(' <$list> ')' {@<call,{$1,$3}>}
 	| <$lit>
+	;
+$global["$custom_function"]
+	= rule
 	;
 $global["$compName"]
 	= rule <$opcreate> {@<name,{"$",$1}>}
@@ -657,7 +660,7 @@ $global["$command"]
 	| exit '(' ')'{@<exit,{}>}
 	| exit {@<exit,{}>}
     | reset {@<reset,{}>}
-	| <custom_command>
+	| <$custom_command>
 	| <$litname> '=' <$comp> {@<assign,{$1,$3}>}
 	| <$litname> '+' '=' <$comp> <$comp> {@<assignappend,{$1,$4,$5}>}
 	| <$litname> '+' '=' <$comp> {@<assignappend,{$1,$4}>}
@@ -681,6 +684,9 @@ $global["$command"]
     | <$comp> '%' '=' <$comp> {@<assignmod,{$1,$4}>}
     | <$comp> '*' '*' '=' <$comp> {@<assignpow,{$1,$5}>}
 	| <$comp>
+	;
+$global["$custom_command"]
+	= rule
 	;
 $global["$command_list"]
 	= rule <$command> ';' <$command_list>

@@ -6692,11 +6692,11 @@ GrapaRuleEvent* GrapaScriptExec::Exec(GrapaNames* pNameSpace, GrapaRuleEvent* ru
 	bool addLastNext = false;
 	if (rulexx == NULL)
 	{
-		rulexx = vScriptState->SearchVariable(pNameSpace, GrapaCHAR("custom_start"));
+		//rulexx = vScriptState->SearchVariable(pNameSpace, GrapaCHAR("custom_start"));
 		if (rulexx == NULL) rulexx = vScriptState->SearchVariable(pNameSpace, GrapaCHAR("$start"));
 		if (rulexx == NULL)
 		{
-			if (pRuleId == 0) pRuleId = vScriptState->mRuleStartQueue.SearchId("custom_start");
+			//if (pRuleId == 0) pRuleId = vScriptState->mRuleStartQueue.SearchId("custom_start");
 			if (pRuleId == 0) pRuleId = vScriptState->mRuleStartQueue.SearchId("$start");
 			rulexx = vScriptState->mRuleStartQueue.Search(pRuleId);
 		}
@@ -7005,11 +7005,11 @@ GrapaRuleEvent *GrapaScriptExec::Plan(GrapaNames* pNameSpace, GrapaCHAR& pInput,
 
 	if (rulexx == NULL)
 	{
-		rulexx = vScriptState->SearchVariable(pNameSpace, GrapaCHAR("custom_start"));
+		//rulexx = vScriptState->SearchVariable(pNameSpace, GrapaCHAR("custom_start"));
 		if (rulexx == NULL) rulexx = vScriptState->SearchVariable(pNameSpace, GrapaCHAR("$start"));
 		if (rulexx == NULL)
 		{
-			if (pRuleId == 0) pRuleId = vScriptState->mRuleStartQueue.SearchId("custom_start");
+			//if (pRuleId == 0) pRuleId = vScriptState->mRuleStartQueue.SearchId("custom_start");
 			if (pRuleId == 0) pRuleId = vScriptState->mRuleStartQueue.SearchId("$start");
 			rulexx = vScriptState->mRuleStartQueue.Search(pRuleId);
 		}
