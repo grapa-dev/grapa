@@ -98,7 +98,130 @@ void GrapaTime::FromString(const GrapaCHAR& pChar)
 		tm st;
 		memset(&st, 0, sizeof(tm));
 		char mst[32];
-		int len = sscanf((char*)pChar.mBytes, "%d-%02d-%02dT%02d:%02d:%02d.%s", &st.tm_year, &st.tm_mon, &st.tm_mday, &st.tm_hour, &st.tm_min, &st.tm_sec, mst);
+		char tz[16];
+		int len = 0;
+		s64 timezoneOffset = 0;
+		
+		// Parse incrementally: start with basic date-time, then add optional components
+		
+		// Step 1: Parse basic ISO 8601 date-time: "2025-09-14T20:15:17"
+		len = sscanf((char*)pChar.mBytes, "%d-%02d-%02dT%02d:%02d:%02d", &st.tm_year, &st.tm_mon, &st.tm_mday, &st.tm_hour, &st.tm_min, &st.tm_sec);
+		if (len < 6)
+		{
+			// Try space-separated format: "2025-09-14 20:15:17"
+			len = sscanf((char*)pChar.mBytes, "%d-%02d-%02d %02d:%02d:%02d", &st.tm_year, &st.tm_mon, &st.tm_mday, &st.tm_hour, &st.tm_min, &st.tm_sec);
+		}
+		if (len < 6)
+		{
+			// Try US date format: "09/14/2025 20:15:17"
+			len = sscanf((char*)pChar.mBytes, "%02d/%02d/%d %02d:%02d:%02d", &st.tm_mon, &st.tm_mday, &st.tm_year, &st.tm_hour, &st.tm_min, &st.tm_sec);
+		}
+		if (len < 6)
+		{
+			// Try European date format: "14/09/2025 20:15:17"
+			len = sscanf((char*)pChar.mBytes, "%02d/%02d/%d %02d:%02d:%02d", &st.tm_mday, &st.tm_mon, &st.tm_year, &st.tm_hour, &st.tm_min, &st.tm_sec);
+		}
+		if (len < 6)
+		{
+			// Try date only: "2025-09-14"
+			len = sscanf((char*)pChar.mBytes, "%d-%02d-%02d", &st.tm_year, &st.tm_mon, &st.tm_mday);
+			if (len >= 3)
+			{
+				st.tm_hour = 0; st.tm_min = 0; st.tm_sec = 0;
+			}
+		}
+		if (len < 3)
+		{
+			// Try time only: "20:15:17"
+			len = sscanf((char*)pChar.mBytes, "%02d:%02d:%02d", &st.tm_hour, &st.tm_min, &st.tm_sec);
+			if (len >= 3)
+			{
+				// Use current date for time-only strings
+				time_t now = time(NULL);
+				struct tm* now_tm = gmtime(&now);
+				st.tm_year = now_tm->tm_year;
+				st.tm_mon = now_tm->tm_mon;
+				st.tm_mday = now_tm->tm_mday;
+			}
+		}
+		
+		// Step 2: If we have basic date-time, try to add microseconds
+		if (len >= 6)
+		{
+			// Look for microseconds after the seconds: ".8017135"
+			char* dotPos = strchr((char*)pChar.mBytes, '.');
+			if (dotPos && dotPos > (char*)pChar.mBytes)
+			{
+				// Check if this dot is after seconds (not in date part)
+				char* tPos = strchr((char*)pChar.mBytes, 'T');
+				char* spacePos = strchr((char*)pChar.mBytes, ' ');
+				if ((tPos && dotPos > tPos) || (spacePos && dotPos > spacePos))
+				{
+					// This dot is after time, try to parse microseconds
+					int microLen = sscanf(dotPos, ".%s", mst);
+					if (microLen == 1)
+					{
+						// Successfully parsed microseconds
+						// mst now contains the microseconds string
+					}
+				}
+			}
+		}
+		
+		// Step 3: If we have basic date-time, try to add timezone
+		if (len >= 6)
+		{
+			// Look for timezone indicators: +05:00, -08:00, Z
+			char* tzPos = NULL;
+			char* plusPos = strrchr((char*)pChar.mBytes, '+');
+			char* minusPos = strrchr((char*)pChar.mBytes, '-');
+			char* zPos = strrchr((char*)pChar.mBytes, 'Z');
+			
+			// Find the last timezone indicator (most likely to be the actual timezone)
+			if (zPos && (!tzPos || zPos > tzPos)) tzPos = zPos;
+			if (plusPos && (!tzPos || plusPos > tzPos)) tzPos = plusPos;
+			if (minusPos && (!tzPos || minusPos > tzPos)) tzPos = minusPos;
+			
+			if (tzPos)
+			{
+				// Parse timezone
+				int tzHours = 0, tzMinutes = 0;
+				char tzSign;
+				if (*tzPos == 'Z')
+				{
+					timezoneOffset = 0;
+				}
+				else if (*tzPos == '+' || *tzPos == '-')
+				{
+					// Try colon format first: +05:00 or -08:00
+					int tzLen = sscanf(tzPos, "%c%02d:%02d", &tzSign, &tzHours, &tzMinutes);
+					if (tzLen >= 3)
+					{
+						timezoneOffset = (tzSign == '+') ? 1 : -1;
+						timezoneOffset *= (tzHours * 3600 + tzMinutes * 60);
+					}
+					else
+					{
+						// Try 4-digit format: +0500 or -0800
+						tzLen = sscanf(tzPos, "%c%04d", &tzSign, &tzHours);
+						if (tzLen >= 2)
+						{
+							timezoneOffset = (tzSign == '+') ? 1 : -1;
+							tzMinutes = tzHours % 100;
+							tzHours = tzHours / 100;
+							timezoneOffset *= (tzHours * 3600 + tzMinutes * 60);
+						}
+					}
+				}
+			}
+		}
+		
+		// Initialize microseconds to empty if not parsed
+		if (len < 6)
+		{
+			mst[0] = 0; // No microseconds
+		}
+		
 		if (len > 0)
 		{
 			// "1969-04-23T12:33:33.921638".time() + 24*60*60*1000000000;
@@ -124,6 +247,10 @@ void GrapaTime::FromString(const GrapaCHAR& pChar)
 				st.tm_mday--;
 			s64 offset1 = offsetDays(st.tm_mday, st.tm_mon, st.tm_year);
 			sec += offset1 * 86400 + (((st.tm_hour * 60) + st.tm_min) * 60) + st.tm_sec;
+			
+			// Apply timezone offset (convert to UTC)
+			sec -= timezoneOffset;
+			
 			u32 ms = 0;
 			u64 p = 1;
 			GrapaCHAR x(mst);

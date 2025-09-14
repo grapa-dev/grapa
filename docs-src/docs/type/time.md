@@ -12,6 +12,79 @@ Uses UTC timezone. $TIME is intended to be a timestamp starting at Jan 1 1970, a
 1970-01-01T00:00:00.000000
 ```
 
+### String Parsing
+
+The `.time()` method can parse various string formats to create a `$TIME` object:
+
+**Supported Formats:**
+
+1. **ISO 8601 with microseconds and timezone**:
+   ```grapa
+   "2025-09-14T20:15:17.8017135+05:00".time()
+   "2025-09-14T20:15:17.8017135-08:00".time()
+   "2025-09-14T20:15:17.8017135+0500".time()    // 4-digit timezone format
+   ```
+
+2. **ISO 8601 with microseconds** (default):
+   ```grapa
+   "2025-09-14T20:15:17.8017135".time()
+   ```
+
+3. **ISO 8601 without microseconds, with timezone**:
+   ```grapa
+   "2025-09-14T20:15:17+05:00".time()
+   "2025-09-14T20:15:17-08:00".time()
+   "2025-09-14T20:15:17+0500".time()            // 4-digit timezone format
+   "2025-09-14T20:15:17Z".time()                // UTC indicator
+   ```
+
+4. **ISO 8601 without microseconds**:
+   ```grapa
+   "2025-09-14T20:15:17".time()
+   ```
+
+5. **Space-separated date and time**:
+   ```grapa
+   "2025-09-14 20:15:17".time()
+   ```
+
+6. **US format (MM/DD/YYYY with time)**:
+   ```grapa
+   "09/14/2025 20:15:17".time()
+   ```
+
+7. **US format (MM/DD/YYYY, time defaults to 00:00:00)**:
+   ```grapa
+   "09/14/2025".time()
+   ```
+
+8. **European format (DD/MM/YYYY with time)**:
+   ```grapa
+   "14/09/2025 20:15:17".time()
+   ```
+
+9. **European format (DD/MM/YYYY, time defaults to 00:00:00)**:
+   ```grapa
+   "14/09/2025".time()
+   ```
+
+10. **Date only** (time defaults to 00:00:00):
+    ```grapa
+    "2025-09-14".time()
+    ```
+
+11. **Time only** (uses current date):
+    ```grapa
+    "20:15:17".time()
+    ```
+
+**Timezone Handling:**
+- All timezone offsets are automatically converted to UTC for internal storage
+- Supported timezone formats: `+05:00`, `-08:00`, `+0500`, `-0800`, `Z`
+- Use `.tz()` to convert from UTC to local timezones as needed
+
+**Note:** All parsed times are stored internally in UTC. Use `.tz()` to convert to local timezones as needed.
+
 ## tz()
 ```
 > $TIME().tz();
@@ -67,11 +140,32 @@ This example demonstrates:
 - **Delta**: Time difference in seconds (converted from nanoseconds)
 
 ## Examples
-The following illustrate using various date ranges.
+The following illustrate using various date ranges and string formats.
 
 ```
 > "1020-04-23T12:33:33.921638".time();
 1020-04-23T12:33:33.921638
+
+> "2025-09-14 20:15:17".time();
+2025-09-14T20:15:17.0
+
+> "2025-09-14".time();
+2025-09-14T00:00:00.0
+
+> "09/14/2025".time();
+2025-09-14T00:00:00.0
+
+> "2025-09-14T20:15:17+05:00".time();
+2025-09-14T15:15:17.0
+
+> "2025-09-14T20:15:17-08:00".time();
+2025-09-15T04:15:17.0
+
+> "2025-09-14T20:15:17.123456+05:00".time();
+2025-09-14T15:15:17.000123456
+
+> "2025-09-14T20:15:17Z".time();
+2025-09-14T20:15:17.0
 
 > "1020-04-23T12:33:33.921638".time() + 24*60*60*1000000000;
 1020-04-24T12:33:33.921638
