@@ -510,7 +510,7 @@ $global["$function"]
 	| <$lit>
 	;
 $global["$custom_function"]
-	= rule
+	= null
 	;
 $global["$compName"]
 	= rule <$opcreate> {@<name,{"$",$1}>}
@@ -686,8 +686,7 @@ $global["$command"]
 	| <$comp>
 	;
 $global["$custom_command"]
-	= rule
-	;
+	= null;
 $global["$command_list"]
 	= rule <$command> ';' <$command_list>
 	| <$command> <$command_list>
