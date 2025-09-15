@@ -31,20 +31,20 @@
 >
 > | Type      | .get("key") | .get(index) | Bracket Notation | Dot Notation | .len() | .size() |
 > |-----------|:-----------:|:-----------:|:----------------:|:------------:|:------:|:-------:|
-> | $ARRAY    |      ❌      |     ❌      |       ✅         |      —       |   ✅   |    ❌   |
-> | $GOBJ     |      ❌      |     ❌      |       ✅         |     ✅       |   ✅   |    ❌   |
-> | $OBJ      |      ❌      |     ❌      |       ✅         |     ✅       |   ❌   |    ❌   |
+> | $ARRAY    |      ✅      |     ✅      |       ✅         |     ✅       |   ✅   |    ❌   |
+> | $GOBJ     |      ✅      |     ✅      |       ✅         |     ✅       |   ✅   |    ❌   |
+> | $OBJ      |      ✅      |     ✅      |       ✅         |     ✅       |   ❌   |    ❌   |
 > | $file     |      ✅      |     ❌      |        —         |      —       |   ❌   |    ❌   |
 > | $TABLE    |     ✅*      |     ❌      |        —         |      —       |   ❌   |    ❌   |
 >
 > *$TABLE .getfield() requires two arguments: key and field.
 >
 > **Key Findings:**
-> - **Arrays (`[]`)**: Use `array[index]` and `array.len()` for access and length
-> - **Lists (`{}`)**: Use `list[key]` or `list.key` for access, `list.len()` for length
-> - **Objects (class)**: Use `object.property` or `object[key]` for access
-> - **`.getfield()/.setfield()` method**: Use for `$file` and `$TABLE` types
-> - **`.get()/.set()` method**: Exclusively for `$WIDGET` types
+> - **Arrays (`[]`)**: Use `array[index]`, `array.get(index)`, or `array.key` for access, `array.len()` for length
+> - **Lists (`{}`)**: Use `list[key]`, `list.get("key")`, or `list.key` for access, `list.len()` for length
+> - **Objects (class)**: Use `object.property`, `object.get("key")`, or `object[key]` for access
+> - **`.getfield()/.setfield()` method**: Use for `$file` and `$TABLE` types with field access
+> - **`.get()/.set()` method**: Universal methods for `$ARRAY`, `$GOBJ`, `$OBJ`, `$file`, and `$TABLE` types
 > - **`.size()` method**: Not supported on any type (use `.len()` instead)
 > - **`.keys()` method**: Not supported on `$GOBJ` (use iteration instead)
 
@@ -139,12 +139,12 @@ name = obj.getname(1);  /* Returns "b" (key name at index 1) */
 arr = [10, 20, 30];
 
 value = arr[1];         /* Returns 20 */
-/* Note: .get(index) is not supported for arrays - use bracket notation */
+/* Note: .get(index) is now supported for arrays - can use bracket notation or .get() */
 ```
 
-- Use bracket notation for $ARRAY access.
-- `.get(index)` is not supported for arrays.
-- Dot notation and `.get("key")` are NOT valid for $ARRAY.
+- Use bracket notation, `.get(index)`, or dot notation for $ARRAY access.
+- `.get(index)` is now supported for arrays.
+- `.get("key")` is now supported for $ARRAY when accessing by key.
 
 ### Array Comprehension Alternatives
 
@@ -186,7 +186,7 @@ while (i < big_data.len()) {
 - **Better performance** for large datasets
 - **Memory efficient** processing
 
-**Performance Note:** `.map()` and `.filter()` must copy results from worker threads, which can be expensive for very large datasets. For large datasets with simple operations, consider using sequential `for` or `while` loops instead.
+**Performance Note:** `.map()` and `.filter()` can split processing across multiple worker threads, which provides significant performance benefits for most operations. The minimal data copying cost is typically negligible compared to the computational work being performed. Use the `threads` parameter to control parallelism based on your system capabilities.
 
 ### Numeric Literals
 
@@ -283,7 +283,7 @@ file_info = files.get(0);   /* Correct */
 ```
 
 - Always use `.get(index)` for $file results.
-- Bracket and dot notation are NOT valid for $file.
+- Bracket and dot notation are not supported for $file.
 
 ### $TABLE
 
@@ -296,14 +296,14 @@ value = table.get("user1", "name");   /* Correct */
 ```
 
 - Always use `.get(key, field)` for $TABLE.
-- Bracket and dot notation are NOT valid for $TABLE.
+- Bracket and dot notation are not supported for $TABLE.
 
 > **Reference Table:**
 > | Type      | .get("key") | .get(index) | Bracket Notation | Dot Notation | .len() | .size() |
 > |-----------|:-----------:|:-----------:|:----------------:|:------------:|:------:|:-------:|
-> | $ARRAY    |      ✗      |     ✗      |       ✓         |      —       |   ✓   |    ✗   |
-> | $GOBJ     |      ✗      |     ✗      |       ✓         |     ✓       |   ✓   |    ✗   |
-> | $OBJ      |      ✗      |     ✗      |       ✓         |     ✓       |   ✗   |    ✗   |
+> | $ARRAY    |      ✓      |     ✓      |       ✓         |     ✓       |   ✓   |    ✗   |
+> | $GOBJ     |      ✓      |     ✓      |       ✓         |     ✓       |   ✓   |    ✗   |
+> | $OBJ      |      ✓      |     ✓      |       ✓         |     ✓       |   ✗   |    ✗   |
 > | $file     |      ✓      |     ✗      |        —         |      —       |   ✗   |    ✗   |
 > | $TABLE    |     ✓*      |     ✗      |        —         |      —       |   ✗   |    ✗   |
 > *$TABLE .get() requires two arguments: key and field.

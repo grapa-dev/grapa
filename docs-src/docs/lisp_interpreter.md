@@ -7,13 +7,13 @@ tags:
   - metaprogramming
 ---
 
-# LISP Integration
+# LISP Interpreter
 
 ## Overview
 
-Grapa's LISP integration demonstrates how the language can implement its own inspiration. Since Grapa is LISP-inspired with late-binding, functional programming, and code-as-data capabilities, implementing LISP syntax provides a natural bridge between traditional LISP concepts and Grapa's modern features.
+Grapa's LISP interpreter demonstrates how the language can implement its own inspiration. Since Grapa is LISP-inspired with late-binding, functional programming, and code-as-data capabilities, implementing LISP syntax provides a natural bridge between traditional LISP concepts and Grapa's modern features.
 
-This integration showcases:
+This interpreter showcases:
 - **LISP syntax parsing** using Grapa's executable BNF
 - **Functional programming** with LISP-style expressions
 - **Macro system** implementation
@@ -258,7 +258,7 @@ op()("(if (> x 5) \"large\" \"small\")")();  /* Returns "large" */
 ## Integration with Grapa Features
 
 ### **1. Native List Operations**
-LISP integration leverages Grapa's native list capabilities:
+LISP interpreter leverages Grapa's native list capabilities:
 
 ```grapa
 /* Combine LISP with native Grapa */
@@ -431,11 +431,11 @@ process_data = op(data) {
 
 ## Conclusion
 
-Grapa's LISP integration demonstrates the language's ability to implement its own inspiration while providing modern enhancements. This integration showcases:
+Grapa's LISP interpreter demonstrates the language's ability to implement its own inspiration while providing modern enhancements. This interpreter showcases:
 
 - **Natural language relationships** - Grapa implementing LISP concepts
 - **Metaprogramming power** - Dynamic syntax and code generation
 - **Educational value** - Teaching LISP through modern tools
 - **Practical applications** - Symbolic computation and prototyping
 
-The LISP integration serves as both a tribute to Grapa's heritage and a demonstration of its unique capabilities in language implementation and metaprogramming.
+The LISP interpreter serves as both a tribute to Grapa's heritage and a demonstration of its unique capabilities in language implementation and metaprogramming.

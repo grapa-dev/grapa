@@ -174,10 +174,10 @@ nav:
           - Core Differentiators: grapa_core_differentiators.md
       - Cryptography:
           - Key Exchange Methods: crypto/key_exchange_methods.md
-      - Language Integrations:
-          - SQL Integration: sql_integration.md
-          - PROLOG Integration: prolog_integration.md
-          - LISP Integration: lisp_integration.md
+      - Language Interpreters:
+          - SQL Interpreter: sql_interpreter.md
+          - PROLOG Interpreter: prolog_interpreter.md
+          - LISP Interpreter: lisp_interpreter.md
   - Guides:
       - Migration Guides:
           - Python: migrations/python_to_grapa_migration.md

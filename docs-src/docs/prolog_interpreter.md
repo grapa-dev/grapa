@@ -7,13 +7,13 @@ tags:
   - ai
   - knowledge
 ---
-# PROLOG Integration in Grapa
+# PROLOG Interpreter in Grapa
 
 Grapa's executable BNF architecture allows you to add **true native PROLOG syntax** to the language using `$custom_command` and `$custom_function` rules. This is **not** manual parsing - it's **native syntax** that integrates seamlessly with Grapa's grammar system.
 
 ## True Native Syntax Implementation
 
-The PROLOG integration uses Grapa's **rule-based grammar system** exclusively. All parsing is handled by Grapa's grammar engine - **no manual string manipulation** is required.
+The PROLOG interpreter uses Grapa's **rule-based grammar system** exclusively. All parsing is handled by Grapa's grammar engine - **no manual string manipulation** is required.
 
 ### Example PROLOG Syntax Implementation
 

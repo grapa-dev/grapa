@@ -835,7 +835,7 @@ Applies a function to each element of an array (parallel by default).
 - `data` (default: null) - Additional data for the function
 - `threads` (default: null) - Number of threads for parallel execution
 
-**Performance Note:** `.map()` and `.filter()` must copy results from worker threads, which can be expensive for large datasets. For large datasets where multiprocessing isn't needed, consider using sequential `for` or `while` loops instead.
+**Performance Note:** `.map()` and `.filter()` can split processing across multiple worker threads, which provides significant performance benefits for most operations. The minimal data copying cost is typically negligible compared to the computational work being performed. Use the `threads` parameter to control parallelism based on your system capabilities.
 
 ### `.filter(func, data, threads)`
 Filters elements based on a predicate function (parallel by default).
@@ -850,7 +850,7 @@ Filters elements based on a predicate function (parallel by default).
 - `data` (default: null) - Additional data for the function
 - `threads` (default: null) - Number of threads for parallel execution
 
-**Performance Note:** `.filter()` must copy results from worker threads, which can be expensive for large datasets. For large datasets where multiprocessing isn't needed, consider using sequential `for` or `while` loops instead.
+**Performance Note:** `.filter()` can split processing across multiple worker threads, which provides significant performance benefits for most operations. The minimal data copying cost is typically negligible compared to the computational work being performed. Use the `threads` parameter to control parallelism based on your system capabilities.
 
 ### `.reduce(func, init, data)`
 Reduces an array to a single value using a function.

@@ -460,7 +460,7 @@ result = large_data.map(op(x) { x * x; }, 8);  /* Limit to 8 threads */
 
 ### Performance Considerations: Parallel vs Sequential
 
-**Important:** `.map()` and `.filter()` must copy results from worker threads, which can be expensive for large datasets. Consider the trade-offs:
+**Important:** `.map()` and `.filter()` can split processing across multiple worker threads, which provides significant performance benefits for most operations. The minimal data copying cost is typically negligible compared to the computational work being performed. Consider the trade-offs:
 
 ```grapa
 /* For large datasets with simple operations - use sequential */

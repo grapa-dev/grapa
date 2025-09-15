@@ -251,7 +251,7 @@ while (i <= 10) {
 /* ✅ Arrays support bracket notation */
 element = ["a", "b", "c"];
 value = element[1];        /* Returns "b" */
-/* Note: .get() method not supported for arrays - use bracket notation */
+/* Note: .get() method is now supported for arrays - can use bracket notation or .get() */
 
 /* ✅ Lists support bracket notation and .getname() */
 obj = {"a": 11, "b": 22, "c": 33};

@@ -22,9 +22,9 @@
 >
 > | Type      | .get("key") | .get(index) | Bracket Notation | Dot Notation | .len() | .size() |
 > |-----------|:-----------:|:-----------:|:----------------:|:------------:|:------:|:-------:|
-> | $ARRAY    |      ❌      |     ❌      |       ✅         |      —       |   ✅   |    ❌   |
-> | $GOBJ     |      ❌      |     ❌      |       ✅         |     ✅       |   ✅   |    ❌   |
-> | $OBJ      |      ❌      |     ❌      |       ✅         |     ✅       |   ❌   |    ❌   |
+> | $ARRAY    |      ✅      |     ✅      |       ✅         |     ✅       |   ✅   |    ❌   |
+> | $GOBJ     |      ✅      |     ✅      |       ✅         |     ✅       |   ✅   |    ❌   |
+> | $OBJ      |      ✅      |     ✅      |       ✅         |     ✅       |   ❌   |    ❌   |
 > | $file     |      ✅      |     ❌      |        —         |      —       |   ❌   |    ❌   |
 > | $TABLE    |     ✅*      |     ❌      |        —         |      —       |   ❌   |    ❌   |
 >
@@ -123,11 +123,11 @@ name = obj.getname(1);  /* Returns "b" (key name at index 1) */
 arr = [10, 20, 30];
 
 value = arr[1];         /* Returns 20 */
-/* Note: .get(index) is not supported for arrays - use bracket notation */
+/* Note: .get(index) is now supported for arrays - can use bracket notation or .get() */
 ```
 
-- Use bracket notation or `.get(index)` for $ARRAY.
-- Dot notation and `.get("key")` are NOT valid for $ARRAY.
+- Use bracket notation, `.get(index)`, or dot notation for $ARRAY.
+- `.get("key")` is now supported for $ARRAY when accessing by key.
 
 ### $file
 
@@ -137,7 +137,7 @@ file_info = files.get(0);   /* Correct */
 ```
 
 - Always use `.get(index)` for $file results.
-- Bracket and dot notation are NOT valid for $file.
+- Bracket and dot notation are not supported for $file.
 
 ### $TABLE
 
@@ -150,14 +150,14 @@ value = table.get("user1", "name");   /* Correct */
 ```
 
 - Always use `.get(key, field)` for $TABLE.
-- Bracket and dot notation are NOT valid for $TABLE.
+- Bracket and dot notation are not supported for $TABLE.
 
 > **Reference Table:**
 > | Type      | .get("key") | .get(index) | Bracket Notation | Dot Notation | .len() | .size() |
 > |-----------|:-----------:|:-----------:|:----------------:|:------------:|:------:|:-------:|
-> | $ARRAY    |      ✗      |     ✗      |       ✓         |      —       |   ✓   |    ✗   |
-> | $GOBJ     |      ✗      |     ✗      |       ✓         |     ✓       |   ✓   |    ✗   |
-> | $OBJ      |      ✗      |     ✗      |       ✓         |     ✓       |   ✗   |    ✗   |
+> | $ARRAY    |      ✓      |     ✓      |       ✓         |     ✓       |   ✓   |    ✗   |
+> | $GOBJ     |      ✓      |     ✓      |       ✓         |     ✓       |   ✓   |    ✗   |
+> | $OBJ      |      ✓      |     ✓      |       ✓         |     ✓       |   ✗   |    ✗   |
 > | $file     |      ✓      |     ✗      |        —         |      —       |   ✗   |    ✗   |
 > | $TABLE    |     ✓*      |     ✗      |        —         |      —       |   ✗   |    ✗   |
 > *$TABLE .get() requires two arguments: key and field.
@@ -304,7 +304,7 @@ result = some_operation().iferr(0);
 > big = (1000000).range(0,1).map(op(x) { x * x; }, 8);  // Limit to 8 threads
 > ```
 > 
-> **Performance Note:** `.map()` and `.filter()` must copy results from worker threads, which can be expensive for very large datasets. For large datasets with simple operations, consider using sequential `for` or `while` loops instead.
+> **Performance Note:** `.map()` and `.filter()` can split processing across multiple worker threads, which provides significant performance benefits for most operations. The minimal data copying cost is typically negligible compared to the computational work being performed. Use the `threads` parameter to control parallelism based on your system capabilities.
 
 > **Tip:** Grapa's parallel ETL/data processing is robust, production-ready, and a core design goal. Unlike JavaScript, you can use parallel methods like `.map()` and `.filter()` out of the box for high-throughput data tasks.
 

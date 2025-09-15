@@ -4,16 +4,16 @@
 >
 > | Type      | .get("key") | .get(index) | Bracket Notation | Dot Notation |
 > |-----------|:-----------:|:-----------:|:----------------:|:------------:|
-> | $ARRAY    |      ✗      |     ✗      |       ✓         |      —       |
-> | $GOBJ     |      ✗      |     ✗      |       ✓         |     ✓       |
+> | $ARRAY    |      ✓      |     ✓      |       ✓         |     ✓       |
+> | $GOBJ     |      ✓      |     ✓      |       ✓         |     ✓       |
 > | $file     |      ✓      |     ✗      |        —         |      —       |
 > | $TABLE    |     ✓*      |     ✗      |        —         |      —       |
-> | $OBJ      |      ✗      |     ✗      |       ✗         |     ✓       |
+> | $OBJ      |      ✓      |     ✓      |       ✓         |     ✓       |
 > *$TABLE .getfield() requires two arguments: key and field.
 >
-> - For $GOBJ and $OBJ, use bracket or dot notation (e.g., obj["key"], obj.key, obj[2]).
-> - For $ARRAY, use bracket notation (e.g., arr[1]).
-> - Only $file and $TABLE support .get().
+> - For $GOBJ and $OBJ, use bracket notation, dot notation, or .get() methods (e.g., obj["key"], obj.key, obj.get("key")).
+> - For $ARRAY, use bracket notation, dot notation, or .get() methods (e.g., arr[1], arr.get(1)).
+> - $ARRAY, $GOBJ, $OBJ, $file, and $TABLE all support .get() methods.
 > - This is based on direct testing in Grapa v0.0.39.
 
 ---
@@ -89,11 +89,11 @@ name = obj.getname(1);  /* Returns "b" (key name at index 1) */
 arr = [10, 20, 30];
 
 value = arr[1];         /* Returns 20 */
-/* Note: .get(index) is not supported for arrays - use bracket notation */
+/* Note: .get(index) is now supported for arrays - can use bracket notation or .get() */
 ```
 
-- Use bracket notation or `.get(index)` for $ARRAY.
-- Dot notation and `.get("key")` are NOT valid for $ARRAY.
+- Use bracket notation, `.get(index)`, or dot notation for $ARRAY.
+- `.get("key")` is now supported for $ARRAY when accessing by key.
 
 ### $file
 
@@ -103,7 +103,7 @@ file_info = files.get(0);   /* Correct */
 ```
 
 - Always use `.get(index)` for $file results.
-- Bracket and dot notation are NOT valid for $file.
+- Bracket and dot notation are not supported for $file.
 
 ### $TABLE
 
@@ -116,16 +116,16 @@ value = table.get("user1", "name");   /* Correct */
 ```
 
 - Always use `.get(key, field)` for $TABLE.
-- Bracket and dot notation are NOT valid for $TABLE.
+- Bracket and dot notation are not supported for $TABLE.
 
 > **Reference Table:**
 > | Type      | .get("key") | .get(index) | Bracket Notation | Dot Notation |
 > |-----------|:-----------:|:-----------:|:----------------:|:------------:|
-> | $ARRAY    |      ✗      |     ✗      |       ✓         |      —       |
-> | $GOBJ     |      ✗      |     ✗      |       ✓         |     ✓       |
+> | $ARRAY    |      ✓      |     ✓      |       ✓         |     ✓       |
+> | $GOBJ     |      ✓      |     ✓      |       ✓         |     ✓       |
 > | $file     |      ✓      |     ✗      |        —         |      —       |
 > | $TABLE    |     ✓*      |     ✗      |        —         |      —       |
-> | $OBJ      |      ✗      |     ✗      |       ✗         |     ✓       |
+> | $OBJ      |      ✓      |     ✓      |       ✓         |     ✓       |
 > *$TABLE .get() requires two arguments: key and field.
 
 See [Basic Syntax Guide](../syntax/basic_syntax.md) for empirical test results and future updates.
