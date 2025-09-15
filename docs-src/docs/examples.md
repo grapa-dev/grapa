@@ -24,13 +24,16 @@ Welcome to the Grapa Examples hub! Here you'll find practical, ready-to-run scri
 | [Unsigned Methods Examples](examples/unsigned_methods_examples.grc) | Comprehensive demonstration of Grapa's unsigned methods (.uint(), .uraw(), .uhex(), .ubin()) for cryptographic applications, binary data processing, and handling large numbers without sign issues. |
 | [RSA and Cryptographic Functions](examples/rsa_cryptography_example.grc) | Comprehensive demonstration of Grapa's cryptographic capabilities including RSA, EC, DH, BLS12-381, hash functions, and encoding. **Note:** Some functions may have OpenSSL 3.x compatibility issues. |
 | [Thread System Examples](examples/thread/README.md) | Comprehensive demonstration of Grapa's complete $thread system including coroutines, synchronization primitives, producer-consumer patterns, resource pools, and proper thread-safe variable declarations. |
-
+| [Grapa Syntax Checker](examples/grapa_syntax_checker.grc) | Syntax validation tool for checking Grapa code correctness and identifying common syntax errors. |
 
 ### **Language Extension Examples**
 | Example | Description |
 |---------|-------------|
 | [SQL Syntax Example](examples/sql_syntax_example.grc) | **Example Implementation** - Demonstrates how SQL syntax can be added to Grapa using $custom_command and $custom_function. Shows working SQL parsing and execution. |
 | [PROLOG Syntax Example](examples/prolog_syntax_example.grc) | **Example Implementation** - Demonstrates how PROLOG syntax can be added to Grapa using $custom_command and $custom_function. Shows working PROLOG facts, rules, and queries. |
+| [PROLOG Demo Working](examples/prolog_demo_working.grc) | Working PROLOG implementation demonstrating facts, rules, and query resolution. |
+| [PROLOG Implementation Example](examples/prolog_implementation_example.grc) | Complete PROLOG implementation showing advanced features and rule processing. |
+| [Simple PROLOG Demo](examples/simple_prolog_demo.grc) | Basic PROLOG demonstration with simple facts and rules. |
 | [LISP Syntax Example](examples/lisp_syntax_example.grc) | **Example Implementation** - Demonstrates how LISP syntax can be added to Grapa using $custom_command and $custom_function. Shows working LISP S-expressions, function definitions, and evaluation. |
 | [Language Design Example](examples/language_design_example.grc) | Demonstrates executable BNF system for creating custom languages, DSLs, and extending Grapa. |
 | [Isolated Rule Execution Example](examples/isolated_rule_execution_demo.grc) | Demonstrates executing custom rules in isolation for ETL and domain-specific processing. |
@@ -49,6 +52,26 @@ Welcome to the Grapa Examples hub! Here you'll find practical, ready-to-run scri
 | [Simple Network Test](examples/simple_network_test.grc) | **User-facing example** - Basic networking operations including interface discovery, connection testing, and network information. |
 | [HTTPS Testing](examples/https_test.grc) | **User-facing example** - HTTPS connection testing with SSL certificates and verification using the curl function. |
 | [HTTP/HTTPS Network Test](examples/http_https_network_test.grc) | **User-facing example** - Low-level HTTP/HTTPS connections using the $net() API with SSL certificates, manual request construction, and connection management. |
+| [HTTP Methods Demo](examples/http_methods_demo.grc) | Demonstrates various HTTP methods (GET, POST, PUT, DELETE) and request handling. |
+| [Network Test](examples/net_test.grc) | Basic network connectivity testing and network interface discovery. |
+
+### **Thread Examples**
+| Example | Description |
+|---------|-------------|
+| [Thread Example 1](examples/thread/thread_example1.grc) | Basic thread lifecycle demonstration with simple thread creation and execution. |
+| [Thread Example 2](examples/thread/thread_example2.grc) | Coroutine suspend/resume pattern for thread coordination. |
+| [Thread Example 3](examples/thread/thread_example3.grc) | Thread-safe counter with proper locking mechanisms. |
+| [Thread Example 4](examples/thread/thread_example4.grc) | Producer-consumer pattern with multiple threads and coordination. |
+
+### **Bad Syntax Examples** (For Testing)
+| Example | Description |
+|---------|-------------|
+| [Invalid Operators](examples/bad_syntax/invalid_operators.grc) | Examples of invalid operator usage for syntax testing. |
+| [Invalid Statements](examples/bad_syntax/invalid_statements.grc) | Examples of invalid statement syntax for testing. |
+| [Missing Semicolons](examples/bad_syntax/missing_semicolons.grc) | Examples missing required semicolons for syntax testing. |
+| [Mixed Errors](examples/bad_syntax/mixed_errors.grc) | Examples with multiple types of syntax errors. |
+| [Unmatched Brackets](examples/bad_syntax/unmatched_brackets.grc) | Examples with unmatched brackets and parentheses. |
+| [Unterminated Strings](examples/bad_syntax/unterminated_strings.grc) | Examples with unterminated string literals. |
 
 > **How to use these examples:**
 > - Click any example to view the source.
