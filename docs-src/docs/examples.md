@@ -23,7 +23,7 @@ Welcome to the Grapa Examples hub! Here you'll find practical, ready-to-run scri
 | [Float Decimal Separators](examples/float_decimal_separators.grc) | Shows how Grapa supports both dot (`.`) and underscore (`_`) as decimal separators for float literals, providing flexibility in float syntax. |
 | [Unsigned Methods Examples](examples/unsigned_methods_examples.grc) | Comprehensive demonstration of Grapa's unsigned methods (.uint(), .uraw(), .uhex(), .ubin()) for cryptographic applications, binary data processing, and handling large numbers without sign issues. |
 | [RSA and Cryptographic Functions](examples/rsa_cryptography_example.grc) | Comprehensive demonstration of Grapa's cryptographic capabilities including RSA, EC, DH, BLS12-381, hash functions, and encoding. **Note:** Some functions may have OpenSSL 3.x compatibility issues. |
-| [Thread System Example](examples/thread_system_example.grc) | Comprehensive demonstration of Grapa's complete $thread system including coroutines, synchronization primitives, producer-consumer patterns, resource pools, and proper thread-safe variable declarations. |
+| [Thread System Examples](examples/thread/README.md) | Comprehensive demonstration of Grapa's complete $thread system including coroutines, synchronization primitives, producer-consumer patterns, resource pools, and proper thread-safe variable declarations. |
 
 
 ### **Language Extension Examples**
