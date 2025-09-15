@@ -928,9 +928,36 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#2d-array-access" class="md-nav__link">
+    <span class="md-ellipsis">
+      2D Array Access
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#key-based-access-for-gobj-arrays" class="md-nav__link">
+    <span class="md-ellipsis">
+      Key-Based Access for $GOBJ Arrays
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#assignment-operations" class="md-nav__link">
     <span class="md-ellipsis">
       Assignment Operations (=)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2d-array-assignment" class="md-nav__link">
+    <span class="md-ellipsis">
+      2D Array Assignment
     </span>
   </a>
   
@@ -4350,9 +4377,36 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#2d-array-access" class="md-nav__link">
+    <span class="md-ellipsis">
+      2D Array Access
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#key-based-access-for-gobj-arrays" class="md-nav__link">
+    <span class="md-ellipsis">
+      Key-Based Access for $GOBJ Arrays
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#assignment-operations" class="md-nav__link">
     <span class="md-ellipsis">
       Assignment Operations (=)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2d-array-assignment" class="md-nav__link">
+    <span class="md-ellipsis">
+      2D Array Assignment
     </span>
   </a>
   
@@ -4668,23 +4722,28 @@
 </tr>
 <tr>
 <td><strong>Access</strong></td>
-<td><code>array[0]</code></td>
+<td><code>array[0]</code> or <code>array['key']</code></td>
 <td><code>list.a</code> or <code>list["a"]</code></td>
 </tr>
 <tr>
 <td><strong>Type</strong></td>
-<td>Positional</td>
+<td>Positional (with key search)</td>
 <td>Associative</td>
 </tr>
 <tr>
 <td><strong>Keys</strong></td>
-<td>Numeric indices</td>
+<td>Numeric indices + key search</td>
 <td>Named keys</td>
 </tr>
 <tr>
 <td><strong>Order</strong></td>
 <td>Position-based</td>
 <td>Key-based</td>
+</tr>
+<tr>
+<td><strong>Key Search</strong></td>
+<td>Supports <code>$KEY</code> field search</td>
+<td>Direct key access</td>
 </tr>
 </tbody>
 </table>
@@ -4705,6 +4764,17 @@
 &gt; x[x.&quot;b&quot;];
 [&quot;b&quot;,964]
 &gt; x.g
+{&quot;err&quot;:-1}
+</code></pre></div></p>
+<p>If the elements are $GOBJ type with a "$KEY" field, the "$KEY" value is used for the match.
+<div class="highlight"><pre><span></span><code>&gt; d = $file().ls();
+&gt; d[&#39;test&#39;];
+9
+&gt; d.&#39;test&#39;;
+9
+&gt; d.&#39;test&#39;();
+{&quot;$PATH&quot;:&quot;&quot;,&quot;$KEY&quot;:&quot;test&quot;,&quot;$TYPE&quot;:&quot;DIR&quot;,&quot;$BYTES&quot;:608}
+&gt; d[&#39;nonexistent&#39;];
 {&quot;err&quot;:-1}
 </code></pre></div></p>
 <p>There isn't currently built in support for searching for an $ARRAY or $GOBJ item within an $ARRAY. Currently, this would require an itterator to scan and compare, or the use of a hash of the contents as a key.</p>
@@ -4743,6 +4813,56 @@ last = arr.get(-1);       /* 5 */
 first = arr.getfield(0);  /* 1 */
 last = arr.getfield(-1);  /* 5 */
 </code></pre></div>
+<h4 id="2d-array-access">2D Array Access</h4>
+<p>For 2D arrays (arrays of arrays), you can use <code>.getfield()</code> for row and column access:</p>
+<div class="highlight"><pre><span></span><code>/* 2D array example */
+matrix = [[1, 2, 3], [4, 5, 6], [7, 8, 9]];
+
+/* Access entire row */
+row1 = matrix.getfield(0);        /* [1, 2, 3] */
+row2 = matrix.getfield(1);        /* [4, 5, 6] */
+
+/* Access specific element in row */
+element = matrix.getfield(0).getfield(1);  /* 2 (row 0, column 1) */
+element = matrix.getfield(1).getfield(2);  /* 6 (row 1, column 2) */
+
+/* Alternative bracket notation */
+element = matrix[0][1];           /* 2 */
+element = matrix[1][2];           /* 6 */
+</code></pre></div>
+<p><strong>Method Selection Guidelines:</strong>
+- <strong><code>.get()</code></strong>: Use for 1D array access by index
+- <strong><code>.getfield()</code></strong>: Use for 1D array access by index (equivalent to <code>.get()</code>) or 2D array row access
+- <strong>Bracket notation</strong>: Use for direct access when you know the structure
+- <strong>Chained methods</strong>: Use <code>.getfield().getfield()</code> for 2D array element access
+- <strong>Key-based access</strong>: Use when array contains <code>$GOBJ</code> items with <code>"$KEY"</code> fields</p>
+<h4 id="key-based-access-for-gobj-arrays">Key-Based Access for $GOBJ Arrays</h4>
+<p>When an <code>$ARRAY</code> contains <code>$GOBJ</code> items that have a <code>"$KEY"</code> field, you can access elements by their key value:</p>
+<div class="highlight"><pre><span></span><code>/* Example: File listing from $file().ls() */
+d = $file().ls();
+/* Returns: [{&quot;$PATH&quot;:&quot;&quot;,&quot;$KEY&quot;:&quot;build.py&quot;,&quot;$TYPE&quot;:&quot;FILE&quot;,&quot;$BYTES&quot;:38707}, ...] */
+
+/* Access by key using bracket notation */
+test_index = d[&#39;test&#39;];                    /* Returns: 9 (index of &quot;test&quot; item) */
+test_item = d[9];                          /* Returns: {&quot;$PATH&quot;:&quot;&quot;,&quot;$KEY&quot;:&quot;test&quot;,&quot;$TYPE&quot;:&quot;DIR&quot;,&quot;$BYTES&quot;:608} */
+
+/* Access by key using method notation */
+test_index = d.&#39;test&#39;;                     /* Returns: 9 (index of &quot;test&quot; item) */
+test_item = d.&#39;test&#39;();                    /* Returns: {&quot;$PATH&quot;:&quot;&quot;,&quot;$KEY&quot;:&quot;test&quot;,&quot;$TYPE&quot;:&quot;DIR&quot;,&quot;$BYTES&quot;:608} */
+
+/* Access specific fields of the found item */
+test_type = d.&#39;test&#39;().&#39;$TYPE&#39;;            /* Returns: &quot;DIR&quot; */
+test_bytes = d.&#39;test&#39;().&#39;$BYTES&#39;;          /* Returns: 608 */
+</code></pre></div>
+<p><strong>Key-Based Access Methods:</strong>
+- <strong><code>array['key']</code></strong>: Returns the index of the item with <code>"$KEY"</code> equal to <code>"key"</code>
+- <strong><code>array.'key'</code></strong>: Same as bracket notation, returns the index
+- <strong><code>array.'key'()</code></strong>: Returns the actual <code>$GOBJ</code> item with <code>"$KEY"</code> equal to <code>"key"</code>
+- <strong><code>array[index]</code></strong>: Returns the item at the specified index</p>
+<p><strong>Use Cases:</strong>
+- File system listings (<code>$file().ls()</code>)
+- Database query results with key fields
+- Any structured data where items have identifying keys</p>
 <h4 id="assignment-operations">Assignment Operations (<code>=</code>)</h4>
 <div class="highlight"><pre><span></span><code>/* Direct element assignment */
 arr = [3, 6, &quot;hi&quot;];
@@ -4762,6 +4882,21 @@ arr.setfield(-2, &quot;good&quot;); /* [3,&quot;good&quot;,&quot;hi&quot;] */
 /* Compound assignment on accessed elements */
 arr[-2] += &quot;dee&quot;;         /* [3,&quot;gooddee&quot;,&quot;hi&quot;] */
 arr[0] += 8;              /* [11,&quot;gooddee&quot;,&quot;hi&quot;] */
+</code></pre></div>
+<h4 id="2d-array-assignment">2D Array Assignment</h4>
+<p>For 2D arrays, you can use <code>.setfield()</code> for row and column assignment:</p>
+<div class="highlight"><pre><span></span><code>/* 2D array example */
+matrix = [[1, 2, 3], [4, 5, 6], [7, 8, 9]];
+
+/* Assign entire row */
+matrix.setfield(0, [10, 11, 12]);        /* [[10, 11, 12], [4, 5, 6], [7, 8, 9]] */
+
+/* Assign specific element in row */
+matrix.getfield(1).setfield(2, 99);      /* [[10, 11, 12], [4, 5, 99], [7, 8, 9]] */
+
+/* Alternative bracket notation */
+matrix[1][2] = 99;                       /* Same result as above */
+matrix[0] = [10, 11, 12];                /* Same result as above */
 </code></pre></div>
 <h4 id="addition-operations">Addition Operations (<code>+=</code>)</h4>
 <div class="highlight"><pre><span></span><code>/* Add single element */

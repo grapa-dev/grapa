@@ -1158,9 +1158,27 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#2d-access-with-getfield" class="md-nav__link">
+    <span class="md-ellipsis">
+      2D Access with .getfield()
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#assignment-operations" class="md-nav__link">
     <span class="md-ellipsis">
       Assignment Operations (=)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2d-assignment-with-setfield" class="md-nav__link">
+    <span class="md-ellipsis">
+      2D Assignment with .setfield()
     </span>
   </a>
   
@@ -4447,9 +4465,27 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#2d-access-with-getfield" class="md-nav__link">
+    <span class="md-ellipsis">
+      2D Access with .getfield()
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#assignment-operations" class="md-nav__link">
     <span class="md-ellipsis">
       Assignment Operations (=)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2d-assignment-with-setfield" class="md-nav__link">
+    <span class="md-ellipsis">
+      2D Assignment with .setfield()
     </span>
   </a>
   
@@ -4752,22 +4788,27 @@
 <tr>
 <td><strong>Access</strong></td>
 <td><code>gobj."a"</code> or <code>gobj["a"]</code></td>
-<td><code>array[0]</code></td>
+<td><code>array[0]</code> or <code>array['key']</code></td>
 </tr>
 <tr>
 <td><strong>Type</strong></td>
 <td>Associative</td>
-<td>Positional</td>
+<td>Positional (with key search)</td>
 </tr>
 <tr>
 <td><strong>Keys</strong></td>
 <td>Named keys</td>
-<td>Numeric indices</td>
+<td>Numeric indices + key search</td>
 </tr>
 <tr>
 <td><strong>Order</strong></td>
 <td>Key-based</td>
 <td>Position-based</td>
+</tr>
+<tr>
+<td><strong>2D Access</strong></td>
+<td><code>.getfield(index, field)</code></td>
+<td><code>.getfield(index, field)</code></td>
 </tr>
 </tbody>
 </table>
@@ -4896,6 +4937,32 @@ value = list.getfield(&quot;a&quot;); /* 1 */
 value = list.getfield(0);   /* 1 (by index) */
 value = list.getfield(-1);  /* 3 (by negative index) */
 </code></pre></div>
+<h4 id="2d-access-with-getfield">2D Access with .getfield()</h4>
+<p>For 2D access (when accessing nested objects or specific fields), you can use <code>.getfield()</code> with two parameters:</p>
+<div class="highlight"><pre><span></span><code>/* Example: File listing object */
+d = $file().ls();
+/* Returns: [{&quot;$PATH&quot;:&quot;&quot;,&quot;$KEY&quot;:&quot;build.py&quot;,&quot;$TYPE&quot;:&quot;FILE&quot;,&quot;$BYTES&quot;:38707}, ...] */
+
+/* Access specific field of a specific item */
+test_bytes = d.getfield(9, &quot;$BYTES&quot;);        /* 608 (bytes of &quot;test&quot; item) */
+test_type = d.getfield(9, &quot;$TYPE&quot;);          /* &quot;DIR&quot; (type of &quot;test&quot; item) */
+test_key = d.getfield(9, &quot;$KEY&quot;);            /* &quot;test&quot; (key of &quot;test&quot; item) */
+
+/* Alternative: Chain access methods */
+test_item = d.getfield(9);                   /* {&quot;$PATH&quot;:&quot;&quot;,&quot;$KEY&quot;:&quot;test&quot;,&quot;$TYPE&quot;:&quot;DIR&quot;,&quot;$BYTES&quot;:608} */
+test_bytes = test_item.getfield(&quot;$BYTES&quot;);   /* 608 */
+test_type = test_item.getfield(&quot;$TYPE&quot;);     /* &quot;DIR&quot; */
+</code></pre></div>
+<p><strong>2D Access Methods:</strong>
+- <strong><code>.getfield(index, field)</code></strong>: Access specific field of item at index
+- <strong><code>.getfield(index).getfield(field)</code></strong>: Chain access (same result)
+- <strong><code>.getfield(index)["field"]</code></strong>: Alternative bracket notation</p>
+<p><strong>Method Selection Guidelines:</strong>
+- <strong><code>.get()</code></strong>: Use for 1D access by key or index
+- <strong><code>.getfield()</code></strong>: Use for 1D access by key/index (equivalent to <code>.get()</code>) or 2D access with two parameters
+- <strong>Bracket notation</strong>: Use for direct access when you know the structure
+- <strong>Chained methods</strong>: Use <code>.getfield().getfield()</code> for 2D access
+- <strong>Quoted access</strong>: Use <code>gobj."key"</code> for data items, <code>gobj.key</code> for methods/properties</p>
 <h4 id="assignment-operations">Assignment Operations (<code>=</code>)</h4>
 <div class="highlight"><pre><span></span><code>/* Direct property assignment */
 list = {&#39;a&#39;:1, &#39;b&#39;:2, &#39;c&#39;:3};
@@ -4922,16 +4989,35 @@ list.setfield(-2, 1234);  /* {&quot;a&quot;:1,&quot;b&quot;:1234,&quot;c&quot;:3
 list.&quot;b&quot; += &quot;dee&quot;;        /* {&quot;a&quot;:1,&quot;b&quot;:&quot;bydee&quot;,&quot;c&quot;:3} - quoted for data access */
 list[0] += 8;             /* {&quot;a&quot;:9,&quot;b&quot;:&quot;bydee&quot;,&quot;c&quot;:3} */
 </code></pre></div>
+<h4 id="2d-assignment-with-setfield">2D Assignment with .setfield()</h4>
+<p>For 2D assignment (when modifying nested objects or specific fields), you can use <code>.setfield()</code> with two parameters:</p>
+<div class="highlight"><pre><span></span><code>/* Example: File listing object */
+d = $file().ls();
+/* Returns: [{&quot;$PATH&quot;:&quot;&quot;,&quot;$KEY&quot;:&quot;build.py&quot;,&quot;$TYPE&quot;:&quot;FILE&quot;,&quot;$BYTES&quot;:38707}, ...] */
+
+/* Modify specific field of a specific item */
+d.setfield(9, &quot;$BYTES&quot;, 1024);              /* Change bytes of &quot;test&quot; item to 1024 */
+d.setfield(9, &quot;$TYPE&quot;, &quot;FILE&quot;);             /* Change type of &quot;test&quot; item to &quot;FILE&quot; */
+
+/* Alternative: Chain assignment methods */
+test_item = d.getfield(9);                  /* Get the item */
+test_item.setfield(&quot;$BYTES&quot;, 2048);         /* Modify bytes field */
+test_item.setfield(&quot;$TYPE&quot;, &quot;DIR&quot;);         /* Modify type field */
+</code></pre></div>
+<p><strong>2D Assignment Methods:</strong>
+- <strong><code>.setfield(index, field, value)</code></strong>: Set specific field of item at index
+- <strong><code>.getfield(index).setfield(field, value)</code></strong>: Chain access and assignment
+- <strong><code>.getfield(index)["field"] = value</code></strong>: Alternative bracket notation</p>
 <h4 id="addition-operations">Addition Operations (<code>+=</code>)</h4>
 <div class="highlight"><pre><span></span><code>/* Add single key-value pair */
 list = {a:1, b:2};
-list += (c:3);           /* {&quot;a&quot;:1,&quot;b&quot;:2,&quot;c&quot;:3} */
+list += (c:3);           /* {a:1, b:2, c:3} */
 
 /* Add multiple key-value pairs */
-list += {d:4, e:5};      /* {&quot;a&quot;:1,&quot;b&quot;:2,&quot;c&quot;:3,&quot;d&quot;:4,&quot;e&quot;:5} */
+list += {d:4, e:5};      /* {a:1, b:2, c:3, d:4, e:5} */
 
 /* Insert at specific position */
-list += (f:6) list[0];   /* {&quot;f&quot;:6,&quot;a&quot;:1,&quot;b&quot;:2,&quot;c&quot;:3,&quot;d&quot;:4,&quot;e&quot;:5} */
+list += (f:6) list[0];   /* {f:6, a:1, b:2, c:3, d:4, e:5} */
 </code></pre></div>
 <h4 id="concatenation-operations">Concatenation Operations (<code>++=</code>)</h4>
 <div class="highlight"><pre><span></span><code>/* Concatenate two lists */
@@ -5025,13 +5111,13 @@ list.rrot(0);                             /* {a:1, b:2, c:3, d:4} (no change) */
 <div class="highlight"><pre><span></span><code>data = {name:&quot;Alice&quot;, age:30, city:&quot;New York&quot;};
 
 /* Find by property existence */
-data.findall({has:{name:&quot;age&quot;}})          /* Returns: {&quot;data&quot;:{&quot;name&quot;:&quot;Alice&quot;,&quot;age&quot;:30}} */
+data.findall({has:{name:&quot;age&quot;}})          /* Returns: {data:{name:&quot;Alice&quot;,age:30}} */
 
 /* Find by property value */
-data.findall({has:{name:&quot;name&quot;, value:&quot;Alice&quot;}}) /* Returns: {&quot;data&quot;:{&quot;name&quot;:&quot;Alice&quot;,&quot;age&quot;:30}} */
+data.findall({has:{name:&quot;name&quot;, value:&quot;Alice&quot;}}) /* Returns: {data:{name:&quot;Alice&quot;,age:30}} */
 
 /* Find by value only */
-data.findall({has:{value:&quot;Alice&quot;}})       /* Returns: {&quot;data&quot;:{&quot;name&quot;:&quot;Alice&quot;,&quot;age&quot;:30}} */
+data.findall({has:{value:&quot;Alice&quot;}})       /* Returns: {data:{name:&quot;Alice&quot;,age:30}} */
 </code></pre></div>
 <h4 id="complex-nested-queries">Complex Nested Queries</h4>
 <div class="highlight"><pre><span></span><code>nested = {user:{name:&quot;Alice&quot;, age:30}, admin:{name:&quot;Bob&quot;, age:25}};

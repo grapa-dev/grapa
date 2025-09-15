@@ -5737,7 +5737,7 @@ grapa<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;</
 
 <span class="c1"># Parallel processing with built-in capabilities</span>
 grapa<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;</span>
-<span class="s2">large_data = (1000000).range(0,1);</span>
+<span class="s2">large_data = 1000000.range(0,1);</span>
 <span class="s2">squares = large_data.map(op(x) { x * x; }, 8);  /* 8 worker threads */</span>
 <span class="s2">(&#39;Processed &#39; + squares.len() + &#39; items in parallel&#39;).echo();</span>
 <span class="s2">&quot;</span>
@@ -5893,7 +5893,7 @@ grapa<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;</
 <h3 id="parallel-and-concurrent-processing">Parallel and Concurrent Processing</h3>
 <div class="highlight"><pre><span></span><code><span class="c1"># Parallel data processing</span>
 grapa<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;</span>
-<span class="s2">data = (10000).range(0,1);</span>
+<span class="s2">data = 10000.range(0,1);</span>
 <span class="s2">processed = data.map(op(x) { x * x + 1; }, 4);  /* 4 workers */</span>
 <span class="s2">(&#39;Processed &#39; + processed.len() + &#39; items&#39;).echo();</span>
 <span class="s2">&quot;</span>
@@ -5901,7 +5901,7 @@ grapa<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;</
 <span class="c1"># Concurrent operations</span>
 grapa<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;</span>
 <span class="s2">tasks = [];</span>
-<span class="s2">for (i in (5).range(0,1)) {</span>
+<span class="s2">for (i in 5.range(0,1)) {</span>
 <span class="s2">    task = op(id) {</span>
 <span class="s2">        \$sys().sleep(100);  /* Simulate work */</span>
 <span class="s2">        &#39;Task &#39; + id.str() + &#39; completed&#39;.echo();</span>

@@ -1015,6 +1015,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#method-call-syntax" class="md-nav__link">
+    <span class="md-ellipsis">
+      Method Call Syntax
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#float-encoding-and-decoding" class="md-nav__link">
     <span class="md-ellipsis">
       Float Encoding and Decoding
@@ -4124,6 +4133,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#method-call-syntax" class="md-nav__link">
+    <span class="md-ellipsis">
+      Method Call Syntax
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#float-encoding-and-decoding" class="md-nav__link">
     <span class="md-ellipsis">
       Float Encoding and Decoding
@@ -4257,6 +4275,28 @@
 (2.5 == 2_5).echo();      /* true */
 (1.0 == 1_0).echo();      /* true */
 </code></pre></div>
+<h2 id="method-call-syntax">Method Call Syntax</h2>
+<p>Grapa supports calling methods directly on float literals without parentheses:</p>
+<div class="highlight"><pre><span></span><code>/* Direct method calls on float literals */
+30.75.hex();              /* Same as (30.75).hex() */
+3.14.str();               /* Same as (3.14).str() */
+2.5.len();                /* Same as (2.5).len() */
+
+/* Works with underscore decimal notation too */
+30_75.hex();              /* Same as (30_75).hex() */
+3_14.str();               /* Same as (3_14).str() */
+2_5.len();                /* Same as (2_5).len() */
+
+/* Parentheses still work for clarity */
+(30.75).hex();            /* Also valid */
+(3.14).str();             /* Also valid */
+(2.5).len();              /* Also valid */
+
+/* All syntaxes are equivalent */
+(30.75).hex() == 30.75.hex();    /* true */
+(30_75).hex() == 30_75.hex();    /* true */
+30.75.hex() == 30_75.hex();      /* true */
+</code></pre></div>
 <p><strong>Key Points:</strong>
 - <strong>Interchangeable</strong>: Dots and underscores are completely equivalent for decimal separators
 - <strong>Single separator</strong>: Only one decimal separator is allowed per number (standard mathematical definition)
@@ -4281,20 +4321,23 @@
 6.84931506849315068493150684931506849315068493150684931560202071220533200564
 </code></pre></div>
 <p>Convert to other formats:
-<div class="highlight"><pre><span></span><code>&gt; (30.75).hex()
+<div class="highlight"><pre><span></span><code>&gt; 30.75.hex()
 1E.C
 
-&gt; (30.75).bin()
+&gt; (30.75).hex()
+1E.C (parentheses also work)
+
+&gt; 30.75.bin()
 11110.11
 
-&gt; (30.75).int()
+&gt; 30.75.int()
 30
 </code></pre></div></p>
 <p>Bit shifts:
-<div class="highlight"><pre><span></span><code>&gt; (30.75) &gt;&gt; 4
+<div class="highlight"><pre><span></span><code>&gt; 30.75 &gt;&gt; 4
 1.921875
 
-&gt; (30.75) &lt;&lt; 4
+&gt; 30.75 &lt;&lt; 4
 492.0
 </code></pre></div></p>
 <p>The binary representation for a grapa $FLOAT includes the items returned from the decode method - sign, trunc, fix, exp, max, extra, data.</p>

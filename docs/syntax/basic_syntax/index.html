@@ -7558,7 +7558,7 @@ do {
 <ul>
 <li><strong>For loops are now fully supported</strong> with multiple syntax variations</li>
 <li><code>while</code> loops and <code>.range()</code>+functional methods remain valid alternatives</li>
-<li>The <code>.range()</code> method is native: <code>(10).range()</code> → <code>[0,1,2,3,4,5,6,7,8,9]</code></li>
+<li>The <code>.range()</code> method is native: <code>10.range()</code> → <code>[0,1,2,3,4,5,6,7,8,9]</code></li>
 <li>If more objects support <code>.get()</code> in the future, this guide will be updated.</li>
 </ul>
 <h3 id="for-loop-syntax">For Loop Syntax</h3>
@@ -7817,16 +7817,16 @@ result = hash_uint.modpow(exponent, modulus);
 <h3 id="sequence-generation-with-range">Sequence Generation with .range()</h3>
 <p>Use <code>.range()</code> to generate sequences of numbers:</p>
 <div class="highlight"><pre><span></span><code>/* Generate sequence 0 to 9 */
-seq = (10).range(0,1);  /* [0,1,2,3,4,5,6,7,8,9] */
+seq = 10.range(0,1);  /* [0,1,2,3,4,5,6,7,8,9] */
 
 /* Generate sequence with custom start and step */
-seq = (10).range(1,2);  /* [1,3,5,7,9] */
+seq = 10.range(1,2);  /* [1,3,5,7,9] */
 
 /* Use .range() with functional methods for iteration */
-sum = (10).range(0,1).reduce(op(acc, x) { acc += x; }, 0);  /* Sum 0-9 */
+sum = 10.range(0,1).reduce(op(acc, x) { acc += x; }, 0);  /* Sum 0-9 */
 
 /* Parallel processing with thread count */
-squares = (1000000).range(0,1).map(op(x) { x * x; }, 8);  /* Limit to 8 threads */
+squares = 1000000.range(0,1).map(op(x) { x * x; }, 8);  /* Limit to 8 threads */
 </code></pre></div>
 <ul>
 <li>Use <code>.range()</code> instead of manual while loops for sequence generation</li>
@@ -9005,7 +9005,7 @@ lst.a;                     /* Returns 6 (updated last value) */
 (3, 1, 4, 1, 5, 9).sort();                /* Returns (1, 1, 3, 4, 5, 9) */
 
 /* Lists and Objects - sort by key */
-{c:3, a:1, b:2}.sort();                   /* Returns {&quot;a&quot;:1, &quot;b&quot;:2, &quot;c&quot;:3} */
+{c:3, a:1, b:2}.sort();                   /* Returns {a:1, b:2, c:3} */
 </code></pre></div>
 <p><strong>Advanced Sorting:</strong>
 <div class="highlight"><pre><span></span><code>/* Custom comparison function */
@@ -9017,7 +9017,7 @@ lst.a;                     /* Returns 6 (updated last value) */
 <h4 id="unique-function">.unique() Function</h4>
 <p>Removes duplicates while preserving the "last value wins" principle:</p>
 <p><strong>For Objects (<code>$OBJ</code>) and Grapa Objects (<code>$GOBJ</code>):</strong>
-<div class="highlight"><pre><span></span><code>{a: 1, b: 2, a: 3, c: 4, b: 5}.unique();  /* Returns {&quot;a&quot;: 3, &quot;b&quot;: 5, &quot;c&quot;: 4} */
+<div class="highlight"><pre><span></span><code>{a: 1, b: 2, a: 3, c: 4, b: 5}.unique();  /* Returns {a: 3, b: 5, c: 4} */
 </code></pre></div></p>
 <ul>
 <li>Removes duplicate keys, keeping the last value for each key</li>
