@@ -189,7 +189,7 @@ def check_system_dependencies():
         print("="*60)
         raise RuntimeError("Missing required system dependencies")
 
-grapapy_version = "0.1.54"
+grapapy_version = "0.1.55"
 is_aws = False
 is_apple = False
 from_os = ''
