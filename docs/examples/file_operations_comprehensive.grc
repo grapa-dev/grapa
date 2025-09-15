@@ -7,7 +7,6 @@
  * RECOMMENDED USAGE:
  * - Use .get()/.set() for simple file operations (reading/writing file content)
  * - Use .getfield()/.setfield() for structured data operations (database-style)
- * - The field parameter in .get()/.set() exists for backward compatibility
  */
 
 /* ========================================
@@ -28,34 +27,30 @@ content2 = f.getfield("test2.txt");
 "Content from .setfield(): " + content2.hex().str().echo();
 
 /* ========================================
- * PARAMETER ORDER DIFFERENCES
+ * STRUCTURED DATA OPERATIONS
  * ======================================== */
 
 /* Simple file content - use .set() */
 f.set("config.json", '{"name": "test", "value": 123}');
 
-/* Structured data - prefer .setfield() method: obj.setfield(key, field, value) */
+/* Structured data - use .setfield() method: obj.setfield(key, field, value) */
 f.setfield("user1", "name", "John Doe");    /* key, field, value */
 f.setfield("user1", "age", 30);             /* key, field, value */
-
-/* Legacy compatibility - .set() with field parameter: obj.set(key, value, field) */
-f.set("user2", "Jane Smith", "name");       /* key, value, field (backward compatibility) */
-f.set("user2", 25, "age");                  /* key, value, field (backward compatibility) */
+f.setfield("user2", "name", "Jane Smith");  /* key, field, value */
+f.setfield("user2", "age", 25);             /* key, field, value */
 
 /* ========================================
  * RETRIEVING DATA
  * ======================================== */
 
-/* Structured data - prefer .getfield() method */
+/* Structured data - use .getfield() method */
 name1 = f.getfield("user1", "name");  /* key, field */
 age1 = f.getfield("user1", "age");    /* key, field */
+name2 = f.getfield("user2", "name");  /* key, field */
+age2 = f.getfield("user2", "age");    /* key, field */
 
-/* Legacy compatibility - .get() method */
-name2 = f.get("user2", "name");       /* key, field */
-age2 = f.get("user2", "age");         /* key, field */
-
-"User 1 (using .getfield): " + name1 + ", Age: " + age1.echo();
-"User 2 (using .get): " + name2 + ", Age: " + age2.echo();
+"User 1: " + name1 + ", Age: " + age1.echo();
+"User 2: " + name2 + ", Age: " + age2.echo();
 
 /* ========================================
  * FILE CONTENT OPERATIONS
@@ -96,18 +91,22 @@ f.set($stdout, "This goes to standard output\n");
 f.set($stderr, "This goes to standard error\n");
 
 /* ========================================
- * COMPARISON: SAME FUNCTIONALITY, DIFFERENT SYNTAX
+ * COMPARISON: DIFFERENT USE CASES
  * ======================================== */
 
-/* These are functionally equivalent: */
-f.set("equivalent1.txt", "Content via .set()");
-f.setfield("equivalent2.txt", "Content via .setfield()");
+/* Simple file content - use .set()/.get() */
+f.set("simple_file.txt", "Simple file content");
+content_simple = f.get("simple_file.txt");
 
-/* These are functionally equivalent: */
-content_via_get = f.get("equivalent1.txt");
-content_via_getfield = f.getfield("equivalent2.txt");
+/* Structured data - use .setfield()/.getfield() */
+f.setfield("structured_data", "field1", "Value 1");
+f.setfield("structured_data", "field2", "Value 2");
+value1 = f.getfield("structured_data", "field1");
+value2 = f.getfield("structured_data", "field2");
 
-"Both methods work: " + (content_via_get.hex().str() == content_via_getfield.hex().str()).echo();
+"Simple file: " + content_simple.hex().str().echo();
+"Structured field1: " + value1.hex().str().echo();
+"Structured field2: " + value2.hex().str().echo();
 
 /* ========================================
  * CLEANUP
@@ -120,7 +119,6 @@ f.rm("config.json");
 f.rm("text.txt");
 f.rm("json.txt");
 f.rm("binary.txt");
-f.rm("equivalent1.txt");
-f.rm("equivalent2.txt");
+f.rm("simple_file.txt");
 
 "File operations completed successfully!".echo();

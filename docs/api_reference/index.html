@@ -6415,10 +6415,10 @@ transposed = t(matrix);
 <p>File and directory operations.</p>
 <h3 id="file-operations">File Operations</h3>
 <ul>
-<li><code>$file().get(path [, field])</code> - Read file content (field parameter for backward compatibility)</li>
-<li><code>$file().set(path, content [, field])</code> - Write to file (field parameter for backward compatibility)</li>
-<li><code>$file().getfield(path, field)</code> - Read file content (explicit field parameter)</li>
-<li><code>$file().setfield(path, field, content)</code> - Write to file (explicit field parameter)</li>
+<li><code>$file().get(path)</code> - Read file content</li>
+<li><code>$file().set(path, content)</code> - Write to file</li>
+<li><code>$file().getfield(path, field)</code> - Read structured data field</li>
+<li><code>$file().setfield(path, field, content)</code> - Write structured data field</li>
 <li><code>$file().set($stdout, content)</code> - Write to standard output</li>
 <li><code>$file().set($stderr, content)</code> - Write to standard error</li>
 <li><code>$file().ls(path)</code> - List directory contents</li>
@@ -6431,9 +6431,11 @@ content = $file().get(&quot;data.txt&quot;);
 /* Write file */
 $file().set(&quot;output.txt&quot;, &quot;Hello from Grapa!&quot;);
 
-/* Alternative syntax with .getfield()/.setfield() */
-$file().setfield(&quot;output2.txt&quot;, &quot;Hello from .setfield()!&quot;);
-content2 = $file().getfield(&quot;output2.txt&quot;);
+/* Structured data operations */
+$file().setfield(&quot;user1&quot;, &quot;name&quot;, &quot;John Doe&quot;);
+$file().setfield(&quot;user1&quot;, &quot;age&quot;, 30);
+name = $file().getfield(&quot;user1&quot;, &quot;name&quot;);
+age = $file().getfield(&quot;user1&quot;, &quot;age&quot;);
 
 /* Write to standard streams */
 $file().set($stdout, &quot;Output message\n&quot;);

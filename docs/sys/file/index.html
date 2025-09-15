@@ -1945,18 +1945,18 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#setname-value-field" class="md-nav__link">
+  <a href="#setname-value" class="md-nav__link">
     <span class="md-ellipsis">
-      set(name, value [, field])
+      set(name, value)
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#getname-field" class="md-nav__link">
+  <a href="#getname" class="md-nav__link">
     <span class="md-ellipsis">
-      get(name [, field])
+      get(name)
     </span>
   </a>
   
@@ -4625,18 +4625,18 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#setname-value-field" class="md-nav__link">
+  <a href="#setname-value" class="md-nav__link">
     <span class="md-ellipsis">
-      set(name, value [, field])
+      set(name, value)
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#getname-field" class="md-nav__link">
+  <a href="#getname" class="md-nav__link">
     <span class="md-ellipsis">
-      get(name [, field])
+      get(name)
     </span>
   </a>
   
@@ -5201,12 +5201,11 @@ f.cd(&quot;analytics_db&quot;);
 <div class="highlight"><pre><span></span><code>f.rm(&quot;test&quot;);
 </code></pre></div></p>
 <p><strong>Note</strong>: This will recursively remove directories and their contents.</p>
-<h2 id="setname-value-field">set(name, value [, field])</h2>
+<h2 id="setname-value">set(name, value)</h2>
 <p>Creates or updates a file with the specified content.</p>
 <p><strong>Parameters</strong>:
 - <code>name</code>: File name or special stream (<code>$stdout</code>, <code>$stderr</code>)
-- <code>value</code>: Content to write to the file or stream
-- <code>field</code> (optional): Field name (defaults to <code>$VALUE</code>)</p>
+- <code>value</code>: Content to write to the file or stream</p>
 <p><strong>Special Streams</strong>:
 - <code>$stdout</code>: Writes to standard output stream
 - <code>$stderr</code>: Writes to standard error stream</p>
@@ -5217,16 +5216,11 @@ f.set(&quot;config.json&quot;, &#39;{&quot;name&quot;: &quot;test&quot;, &quot;v
 /* Write to standard streams */
 f.set($stdout, &quot;Output message\n&quot;);
 f.set($stderr, &quot;Error message\n&quot;);
-
-/* Database field operations */
-f.set(&quot;user1&quot;, &quot;John Doe&quot;, &quot;name&quot;);
-f.set(&quot;user1&quot;, 30, &quot;age&quot;);
 </code></pre></div>
-<h2 id="getname-field">get(name [, field])</h2>
+<h2 id="getname">get(name)</h2>
 <p>Reads the content of a file.</p>
 <p><strong>Parameters</strong>:
-- <code>name</code>: File name
-- <code>field</code> (optional): Field name (defaults to <code>$VALUE</code>)</p>
+- <code>name</code>: File name</p>
 <p><strong>Return Format</strong>: Returns file content in hexadecimal format.</p>
 <div class="highlight"><pre><span></span><code>f.set(&quot;test.txt&quot;, &quot;Hello, World!&quot;);
 content = f.get(&quot;test.txt&quot;);
@@ -5234,88 +5228,76 @@ content = f.get(&quot;test.txt&quot;);
 </code></pre></div>
 <p><strong>Note</strong>: File content is returned in hexadecimal format, not plain text. To convert to string, you may need to use additional processing.</p>
 <h2 id="getfieldname-field">getfield(name, field)</h2>
-<p>Alternative method for reading file content with different parameter order.</p>
+<p>Reads structured data from a file or database record.</p>
 <p><strong>Parameters</strong>:
-- <code>name</code>: File name
+- <code>name</code>: File name or record key
 - <code>field</code>: Field name (required)</p>
-<p><strong>Return Format</strong>: Returns file content in hexadecimal format.</p>
-<div class="highlight"><pre><span></span><code>f.setfield(&quot;test.txt&quot;, &quot;Hello, World!&quot;);
-content = f.getfield(&quot;test.txt&quot;);
-/* Returns: 0x48656C6C6F2C20576F726C6421 */
+<p><strong>Return Format</strong>: Returns field content in hexadecimal format.</p>
+<div class="highlight"><pre><span></span><code>f.setfield(&quot;user1&quot;, &quot;name&quot;, &quot;John Doe&quot;);
+name = f.getfield(&quot;user1&quot;, &quot;name&quot;);
+/* Returns: 0x4A6F686E20446F65 */
 </code></pre></div>
 <h2 id="setfieldname-field-value">setfield(name, field, value)</h2>
-<p>Alternative method for writing file content with different parameter order.</p>
+<p>Writes structured data to a file or database record.</p>
 <p><strong>Parameters</strong>:
-- <code>name</code>: File name
+- <code>name</code>: File name or record key
 - <code>field</code>: Field name (required)
 - <code>value</code>: Content to write</p>
-<div class="highlight"><pre><span></span><code>f.setfield(&quot;test.txt&quot;, &quot;Hello, World!&quot;);
+<div class="highlight"><pre><span></span><code>f.setfield(&quot;user1&quot;, &quot;name&quot;, &quot;John Doe&quot;);
+f.setfield(&quot;user1&quot;, &quot;age&quot;, 30);
 </code></pre></div>
 <h2 id="method-comparison-getset-vs-getfieldsetfield">Method Comparison: .get()/.set() vs .getfield()/.setfield()</h2>
-<p>Both method pairs provide identical functionality but with different parameter ordering:</p>
+<p>The two method pairs serve different purposes:</p>
 <table>
 <thead>
 <tr>
 <th>Method</th>
 <th>Parameter Order</th>
-<th>Field Parameter</th>
 <th>Use Case</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td><code>.get()</code></td>
-<td><code>obj.get(key, field)</code></td>
-<td>Optional (backward compatibility)</td>
-<td>Standard file operations</td>
-</tr>
-<tr>
-<td><code>.getfield()</code></td>
-<td><code>obj.getfield(key, field)</code></td>
-<td>Required</td>
-<td>Database-style operations</td>
+<td><code>obj.get(name)</code></td>
+<td>Simple file content reading</td>
 </tr>
 <tr>
 <td><code>.set()</code></td>
-<td><code>obj.set(key, value, field)</code></td>
-<td>Optional (backward compatibility)</td>
-<td>Standard file operations</td>
+<td><code>obj.set(name, value)</code></td>
+<td>Simple file content writing</td>
+</tr>
+<tr>
+<td><code>.getfield()</code></td>
+<td><code>obj.getfield(name, field)</code></td>
+<td>Structured data field reading</td>
 </tr>
 <tr>
 <td><code>.setfield()</code></td>
-<td><code>obj.setfield(key, field, value)</code></td>
-<td>Required</td>
-<td>Database-style operations</td>
+<td><code>obj.setfield(name, field, value)</code></td>
+<td>Structured data field writing</td>
 </tr>
 </tbody>
 </table>
-<p><strong>Historical Context</strong>: The field parameter in <code>.get()/.set()</code> was added for backward compatibility during the transition when <code>.setfield()</code> was introduced to provide clearer database-style operations. For new code, prefer the explicit parameter ordering of <code>.getfield()/.setfield()</code> when working with structured data.</p>
 <h3 id="examples">Examples:</h3>
 <div class="highlight"><pre><span></span><code>f = $file();
 
-/* Using .get()/.set() - field parameter is optional */
-f.set(&quot;user1&quot;, &quot;Alice&quot;, &quot;name&quot;);     /* key, value, field */
-f.set(&quot;user1&quot;, 25, &quot;age&quot;);           /* key, value, field */
-name1 = f.get(&quot;user1&quot;, &quot;name&quot;);      /* key, field */
-age1 = f.get(&quot;user1&quot;, &quot;age&quot;);        /* key, field */
+/* Simple file operations */
+f.set(&quot;config.txt&quot;, &quot;Simple file content&quot;);
+content = f.get(&quot;config.txt&quot;);
 
-/* Using .getfield()/.setfield() - field parameter is required */
-f.setfield(&quot;user2&quot;, &quot;name&quot;, &quot;Bob&quot;);      /* key, field, value */
-f.setfield(&quot;user2&quot;, &quot;age&quot;, 30);          /* key, field, value */
-name2 = f.getfield(&quot;user2&quot;, &quot;name&quot;);     /* key, field */
-age2 = f.getfield(&quot;user2&quot;, &quot;age&quot;);       /* key, field */
-
-/* Simple file content (no field needed) */
-f.set(&quot;simple.txt&quot;, &quot;File content&quot;);
-content = f.get(&quot;simple.txt&quot;);
+/* Structured data operations */
+f.setfield(&quot;user1&quot;, &quot;name&quot;, &quot;Alice&quot;);
+f.setfield(&quot;user1&quot;, &quot;age&quot;, 25);
+name = f.getfield(&quot;user1&quot;, &quot;name&quot;);
+age = f.getfield(&quot;user1&quot;, &quot;age&quot;);
 </code></pre></div>
 <h3 id="when-to-use-which-method">When to Use Which Method:</h3>
 <ul>
-<li><strong>Use <code>.get()/.set()</code></strong> for simple file operations (reading/writing file content) and legacy code compatibility</li>
-<li><strong>Use <code>.getfield()/.setfield()</code></strong> for structured data operations, database-style operations, and new code where explicit field specification is preferred</li>
+<li><strong>Use <code>.get()/.set()</code></strong> for simple file operations (reading/writing file content)</li>
+<li><strong>Use <code>.getfield()/.setfield()</code></strong> for structured data operations and database-style field access</li>
 </ul>
-<p><strong>Recommendation</strong>: For new code, prefer <code>.getfield()/.setfield()</code> when working with structured data as it provides clearer parameter ordering and explicit field requirements.</p>
-<p>Both methods are functionally equivalent and call the same underlying C++ handlers.</p>
+<p><strong>Recommendation</strong>: Use <code>.getfield()/.setfield()</code> for any operation involving structured data or field-specific access.</p>
 <h2 id="infoname">info(name)</h2>
 <p>Returns detailed metadata information about a file or directory.</p>
 <p><strong>Parameters</strong>:
