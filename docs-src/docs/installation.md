@@ -46,11 +46,11 @@ If you prefer to download and install manually, you can download the specific pa
 **Download and install:**
 ```bash
 # Download the macOS ARM64 package
-curl -L -o grapa-0.1.53-mac-arm64.zip https://github.com/grapa-dev/grapa/releases/download/v0.1.53/grapa-0.1.53-mac-arm64.zip
+curl -L -o grapa-0.1.54-mac-arm64.zip https://github.com/grapa-dev/grapa/releases/download/v0.1.54/grapa-0.1.54-mac-arm64.zip
 
 # Extract the package
-unzip grapa-0.1.53-mac-arm64.zip
-cd grapa-0.1.53
+unzip grapa-0.1.54-mac-arm64.zip
+cd grapa-0.1.54
 
 # Run the installer
 python3 install-grapa.py
@@ -79,11 +79,11 @@ sudo rm -f /usr/local/lib/libgrapa.so
 **Download and install:**
 ```bash
 # Download the Linux AMD64 package
-wget https://github.com/grapa-dev/grapa/releases/download/v0.1.53/grapa-0.1.53-linux-amd64.zip
+wget https://github.com/grapa-dev/grapa/releases/download/v0.1.54/grapa-0.1.54-linux-amd64.zip
 
 # Extract and install
-unzip grapa-0.1.53-linux-amd64.zip
-cd grapa-0.1.53
+unzip grapa-0.1.54-linux-amd64.zip
+cd grapa-0.1.54
 sudo python3 install-grapa.py
 
 # Verify installation
@@ -95,11 +95,11 @@ grapa --version
 **Download and install:**
 ```bash
 # Download the Linux ARM64 package
-wget https://github.com/grapa-dev/grapa/releases/download/v0.1.53/grapa-0.1.53-linux-arm64.zip
+wget https://github.com/grapa-dev/grapa/releases/download/v0.1.54/grapa-0.1.54-linux-arm64.zip
 
 # Extract and install
-unzip grapa-0.1.53-linux-arm64.zip
-cd grapa-0.1.53
+unzip grapa-0.1.54-linux-arm64.zip
+cd grapa-0.1.54
 sudo python3 install-grapa.py
 
 # Verify installation
@@ -125,11 +125,11 @@ sudo rm -f /usr/local/lib/libgrapa.so
 **Download and install:**
 ```bash
 # Download the AWS AMD64 package
-wget https://github.com/grapa-dev/grapa/releases/download/v0.1.53/grapa-0.1.53-aws-amd64.zip
+wget https://github.com/grapa-dev/grapa/releases/download/v0.1.54/grapa-0.1.54-aws-amd64.zip
 
 # Extract and install
-unzip grapa-0.1.53-aws-amd64.zip
-cd grapa-0.1.53
+unzip grapa-0.1.54-aws-amd64.zip
+cd grapa-0.1.54
 sudo python3 install-grapa.py
 
 # Verify installation
@@ -141,11 +141,11 @@ grapa --version
 **Download and install:**
 ```bash
 # Download the AWS ARM64 package
-wget https://github.com/grapa-dev/grapa/releases/download/v0.1.53/grapa-0.1.53-aws-arm64.zip
+wget https://github.com/grapa-dev/grapa/releases/download/v0.1.54/grapa-0.1.54-aws-arm64.zip
 
 # Extract and install
-unzip grapa-0.1.53-aws-arm64.zip
-cd grapa-0.1.53
+unzip grapa-0.1.54-aws-arm64.zip
+cd grapa-0.1.54
 sudo python3 install-grapa.py
 
 # Verify installation
@@ -175,17 +175,17 @@ sudo rm -f /usr/local/lib/libgrapa.so
 1. **Download the Windows package:**
    ```powershell
    # Download the Windows AMD64 release
-   Invoke-WebRequest -Uri "https://github.com/grapa-dev/grapa/releases/download/v0.1.53/grapa-0.1.53-win-amd64.zip" -OutFile "grapa-0.1.53-win-amd64.zip"
+   Invoke-WebRequest -Uri "https://github.com/grapa-dev/grapa/releases/download/v0.1.54/grapa-0.1.54-win-amd64.zip" -OutFile "grapa-0.1.54-win-amd64.zip"
    ```
 
 2. **Extract the package:**
    ```powershell
-   Expand-Archive -Path "grapa-0.1.53-win-amd64.zip" -DestinationPath "grapa-0.1.53" -Force
+   Expand-Archive -Path "grapa-0.1.54-win-amd64.zip" -DestinationPath "grapa-0.1.54" -Force
    ```
 
 3. **Run the installer** (run PowerShell as Administrator):
    ```powershell
-   cd grapa-0.1.53
+   cd grapa-0.1.54
    python install-grapa.py
    ```
 
@@ -223,7 +223,7 @@ After extracting the universal package, you can build and run the included examp
 
 ```bash
 # Navigate to the extracted directory
-cd grapa-0.1.53
+cd grapa-0.1.54
 
 # Create build directory
 mkdir build && cd build
@@ -270,7 +270,7 @@ grapa --version
 
 You should see output similar to:
 ```
-Grapa version 0.1.53
+Grapa version 0.1.54
 ```
 
 ## Test Basic Functionality
@@ -374,7 +374,7 @@ After building, install the Python extension:
 pip install --upgrade pip
 
 # Install GrapaPy
-pip install grapapy==0.1.53
+pip install grapapy==0.1.54
 ```
 
 **Non-Windows:**
@@ -383,7 +383,7 @@ pip install grapapy==0.1.53
 pip3 install --upgrade pip
 
 # Install GrapaPy
-pip3 install grapapy==0.1.53
+pip3 install grapapy==0.1.54
 ```
 
 ### **Verify Python Integration**
@@ -398,18 +398,18 @@ print(f'Grapa result: {result}')
 
 The platform-specific release provides optimized packages for each platform:
 
-- `install-grapa-0.1.53.py` - **Universal Installer** (4 KB)
+- `install-grapa-0.1.54.py` - **Universal Installer** (4 KB)
   - Automatically detects your platform
   - Downloads the appropriate package
   - Installs Grapa with proper setup
 
 **Platform-Specific Packages:**
-- `grapa-0.1.53-mac-arm64.zip` - **macOS ARM64** (10.1 MB)
-- `grapa-0.1.53-linux-amd64.zip` - **Linux AMD64** (13.0 MB)
-- `grapa-0.1.53-linux-arm64.zip` - **Linux ARM64** (13.8 MB)
-- `grapa-0.1.53-win-amd64.zip` - **Windows AMD64** (41.3 MB)
-- `grapa-0.1.53-aws-amd64.zip` - **AWS AMD64** (12.4 MB)
-- `grapa-0.1.53-aws-arm64.zip` - **AWS ARM64** (12.8 MB)
+- `grapa-0.1.54-mac-arm64.zip` - **macOS ARM64** (10.1 MB)
+- `grapa-0.1.54-linux-amd64.zip` - **Linux AMD64** (13.0 MB)
+- `grapa-0.1.54-linux-arm64.zip` - **Linux ARM64** (13.8 MB)
+- `grapa-0.1.54-win-amd64.zip` - **Windows AMD64** (41.3 MB)
+- `grapa-0.1.54-aws-amd64.zip` - **AWS AMD64** (12.4 MB)
+- `grapa-0.1.54-aws-arm64.zip` - **AWS ARM64** (12.8 MB)
 
 **Each package includes:**
 - Platform-specific Grapa executable
