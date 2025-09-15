@@ -10,9 +10,9 @@ Grapa is distributed through GitHub releases, making updates straightforward. Yo
 grapa --version
 
 # Download and run the universal installer for the latest version
-# Example for version 0.1.53:
-curl -O https://github.com/grapa-dev/grapa/releases/download/v0.1.53/install-grapa-0.1.53.py
-python3 install-grapa-0.1.53.py
+# Example for version 0.1.54:
+curl -O https://github.com/grapa-dev/grapa/releases/download/v0.1.54/install-grapa-0.1.54.py
+python3 install-grapa-0.1.54.py
 ```
 
 ### Manual Platform-Specific Update
@@ -21,23 +21,23 @@ python3 install-grapa-0.1.53.py
 grapa --version
 
 # Download the appropriate package for your platform
-# Example for version 0.1.53:
+# Example for version 0.1.54:
 
 # macOS ARM64
-curl -L -o grapa-0.1.53-mac-arm64.zip https://github.com/grapa-dev/grapa/releases/download/v0.1.53/grapa-0.1.53-mac-arm64.zip
+curl -L -o grapa-0.1.54-mac-arm64.zip https://github.com/grapa-dev/grapa/releases/download/v0.1.54/grapa-0.1.54-mac-arm64.zip
 
 # Linux AMD64
-wget https://github.com/grapa-dev/grapa/releases/download/v0.1.53/grapa-0.1.53-linux-amd64.zip
+wget https://github.com/grapa-dev/grapa/releases/download/v0.1.54/grapa-0.1.54-linux-amd64.zip
 
 # Linux ARM64
-wget https://github.com/grapa-dev/grapa/releases/download/v0.1.53/grapa-0.1.53-linux-arm64.zip
+wget https://github.com/grapa-dev/grapa/releases/download/v0.1.54/grapa-0.1.54-linux-arm64.zip
 
 # Windows AMD64 (PowerShell)
-# Invoke-WebRequest -Uri "https://github.com/grapa-dev/grapa/releases/download/v0.1.53/grapa-0.1.53-win-amd64.zip" -OutFile "grapa-0.1.53-win-amd64.zip"
+# Invoke-WebRequest -Uri "https://github.com/grapa-dev/grapa/releases/download/v0.1.54/grapa-0.1.54-win-amd64.zip" -OutFile "grapa-0.1.54-win-amd64.zip"
 
 # Extract and install
-unzip grapa-0.1.53-<platform>.zip
-cd grapa-0.1.53
+unzip grapa-0.1.54-<platform>.zip
+cd grapa-0.1.54
 python3 install-grapa.py
 ```
 

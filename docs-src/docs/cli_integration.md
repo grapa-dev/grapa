@@ -9,16 +9,16 @@ The fastest way to use the Grapa CLI is to use the universal installer that auto
 - [Grapa Releases on GitHub](https://github.com/grapa-dev/grapa/releases)
 
 **Universal Installer:**
-- **All Platforms:** `install-grapa-0.1.53.py` - Automatically detects platform and downloads appropriate package
+- **All Platforms:** `install-grapa-0.1.54.py` - Automatically detects platform and downloads appropriate package
 
 **Instructions:**
 1. Download the universal installer:
    ```bash
-   curl -O https://github.com/grapa-dev/grapa/releases/download/v0.1.53/install-grapa-0.1.53.py
+   curl -O https://github.com/grapa-dev/grapa/releases/download/v0.1.54/install-grapa-0.1.54.py
    ```
 2. Run the installer:
    ```bash
-   python3 install-grapa-0.1.53.py
+   python3 install-grapa-0.1.54.py
    ```
 3. The installer will:
    - Detect your platform automatically
@@ -31,16 +31,16 @@ The fastest way to use the Grapa CLI is to use the universal installer that auto
 If you prefer to download manually, you can get the specific package for your platform:
 
 **Available Packages:**
-- `grapa-0.1.53-mac-arm64.zip` - macOS ARM64 (10.1 MB)
-- `grapa-0.1.53-linux-amd64.zip` - Linux AMD64 (13.0 MB)
-- `grapa-0.1.53-linux-arm64.zip` - Linux ARM64 (13.8 MB)
-- `grapa-0.1.53-win-amd64.zip` - Windows AMD64 (41.3 MB)
-- `grapa-0.1.53-aws-amd64.zip` - AWS AMD64 (12.4 MB)
-- `grapa-0.1.53-aws-arm64.zip` - AWS ARM64 (12.8 MB)
+- `grapa-0.1.54-mac-arm64.zip` - macOS ARM64 (10.1 MB)
+- `grapa-0.1.54-linux-amd64.zip` - Linux AMD64 (13.0 MB)
+- `grapa-0.1.54-linux-arm64.zip` - Linux ARM64 (13.8 MB)
+- `grapa-0.1.54-win-amd64.zip` - Windows AMD64 (41.3 MB)
+- `grapa-0.1.54-aws-amd64.zip` - AWS AMD64 (12.4 MB)
+- `grapa-0.1.54-aws-arm64.zip` - AWS ARM64 (12.8 MB)
 
 **Instructions:**
 1. Download the package for your platform from the latest release.
-2. Extract the archive and navigate to the directory: `cd grapa-0.1.53`
+2. Extract the archive and navigate to the directory: `cd grapa-0.1.54`
 3. Run the installer: `python3 install-grapa.py`
 4. The installer will set up Grapa and add it to your PATH.
 
