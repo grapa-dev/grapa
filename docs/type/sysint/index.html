@@ -1195,6 +1195,19 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    System Integer
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
@@ -1206,6 +1219,109 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#usage-in-rules" class="md-nav__link">
+    <span class="md-ellipsis">
+      Usage in Rules
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Usage in Rules">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#basic-rule-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      Basic Rule Example
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dynamic-dot-notation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Dynamic Dot Notation
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Dynamic Dot Notation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#creating-dynamic-methods" class="md-nav__link">
+    <span class="md-ellipsis">
+      Creating Dynamic Methods
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#inline-dynamic-dot-notation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Inline Dynamic Dot Notation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#how-it-works" class="md-nav__link">
+    <span class="md-ellipsis">
+      How It Works
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#advanced-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      Advanced Examples
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#use-cases" class="md-nav__link">
+    <span class="md-ellipsis">
+      Use Cases
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -3974,6 +4090,98 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#usage-in-rules" class="md-nav__link">
+    <span class="md-ellipsis">
+      Usage in Rules
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Usage in Rules">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#basic-rule-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      Basic Rule Example
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dynamic-dot-notation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Dynamic Dot Notation
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Dynamic Dot Notation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#creating-dynamic-methods" class="md-nav__link">
+    <span class="md-ellipsis">
+      Creating Dynamic Methods
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#inline-dynamic-dot-notation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Inline Dynamic Dot Notation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#how-it-works" class="md-nav__link">
+    <span class="md-ellipsis">
+      How It Works
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#advanced-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      Advanced Examples
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#use-cases" class="md-nav__link">
+    <span class="md-ellipsis">
+      Use Cases
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -3990,7 +4198,68 @@
 
 <h1 id="sysint">$SYSINT</h1>
 <p>References:</p>
-<p>Same as $INT, but was initialized with '$' at the front of the integer. Used for special system integers. </p>
+<p>Same as $INT, but was initialized with '$' at the front of the integer. Used for special system integers.</p>
+<h2 id="usage-in-rules">Usage in Rules</h2>
+<p><code>$SYSINT</code> is used in rule definitions to match integer tokens. When a rule matches an integer, the matched value is passed as a parameter to the rule's operation.</p>
+<h3 id="basic-rule-example">Basic Rule Example</h3>
+<div class="highlight"><pre><span></span><code>/* Define a rule that matches integers */
+x = rule $INT $INT {op(a:$1,b:$2){a*b}} | $INT {op(a:$1){a}};
+
+/* Test with single integer */
+(op()(&quot;4&quot;,x))();
+/* Returns: 4 */
+
+/* Test with two integers */
+(op()(&quot;4 3&quot;,x))();
+/* Returns: 12 */
+</code></pre></div>
+<p>In this example:
+- <code>$INT</code> matches integer tokens in the input
+- <code>$1</code> and <code>$2</code> refer to the first and second matched integers
+- The rule can handle both single integers and pairs of integers</p>
+<h2 id="dynamic-dot-notation">Dynamic Dot Notation</h2>
+<p><code>$SYSINT</code> is also used in dynamic dot notation, where you can create custom methods that operate on objects using the <code>@$0</code> syntax.</p>
+<h3 id="creating-dynamic-methods">Creating Dynamic Methods</h3>
+<div class="highlight"><pre><span></span><code>/* Create a custom method that doubles the length */
+mylen = op(){@$0.len()*2;};
+
+/* Use the dynamic method */
+&quot;hi&quot;.mylen();
+/* Returns: 4 (length of &quot;hi&quot; is 2, doubled is 4) */
+</code></pre></div>
+<h3 id="inline-dynamic-dot-notation">Inline Dynamic Dot Notation</h3>
+<p>You can also use dynamic dot notation inline without defining a separate function:</p>
+<div class="highlight"><pre><span></span><code>/* Inline dynamic dot notation */
+&quot;hi&quot;.{@$0.len()*3;};
+/* Returns: 6 (length of &quot;hi&quot; is 2, tripled is 6) */
+</code></pre></div>
+<h3 id="how-it-works">How It Works</h3>
+<ul>
+<li><code>@$0</code> refers to the object that the method is being called on</li>
+<li>The expression inside <code>{}</code> is evaluated with <code>@$0</code> as the context</li>
+<li>This allows you to create custom methods dynamically without modifying the class definition</li>
+</ul>
+<h3 id="advanced-examples">Advanced Examples</h3>
+<div class="highlight"><pre><span></span><code>/* Create a method that returns the object&#39;s type and length */
+getinfo = op(){@$0.type().str() + &quot; with length &quot; + @$0.len().str();};
+
+/* Use on different types */
+&quot;hello&quot;.getinfo();        /* Returns: &quot;STR with length 5&quot; */
+[1,2,3].getinfo();        /* Returns: &quot;ARRAY with length 3&quot; */
+{a:1,b:2}.getinfo();      /* Returns: &quot;GOBJ with length 2&quot; */
+
+/* Inline version */
+&quot;test&quot;.{@$0.upper() + &quot; has &quot; + @$0.len().str() + &quot; characters&quot;;};
+/* Returns: &quot;TEST has 4 characters&quot; */
+</code></pre></div>
+<h3 id="use-cases">Use Cases</h3>
+<ul>
+<li><strong>Custom utility methods</strong>: Create domain-specific methods for your objects</li>
+<li><strong>Data transformation</strong>: Apply custom transformations inline</li>
+<li><strong>Debugging</strong>: Create temporary methods to inspect object properties</li>
+<li><strong>Prototyping</strong>: Test new functionality without modifying existing classes</li>
+</ul>
+<p>This dynamic dot notation capability makes Grapa's object system highly extensible, allowing you to add custom behavior to any object at runtime. </p>
 
 
 
