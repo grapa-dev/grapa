@@ -1029,11 +1029,59 @@ n2.send('{"name":"test","value":123}');
 n2.disconnect();
 ```
 
-## httpread()
-Reads HTTP response data from the connection.
+## HTTP Methods: .httpsend(), .httpread(), .httpmessage()
+
+Grapa provides three HTTP-specific methods for making HTTP requests and parsing responses. Understanding their relationship is crucial for proper usage.
+
+### **⚠️ Critical Implementation Detail**
+
+**`.httpsend()` automatically calls `.httpread()`** after sending the request. This means:
+- **`.httpread()` can only be called once per request** (the network buffer is consumed)
+- **`.httpmessage()` parses the already-read response** from the internal buffer
+- **Manual `.httpread()` is only needed with low-level `.send()`**
+
+### **Usage Patterns**
+
+#### **High-Level Pattern (Recommended)**
+```grapa
+// .httpsend() automatically calls .httpread() internally
+client.httpsend("GET", "/endpoint", headers, body);
+response = client.httpmessage();  // Parse the auto-read response
+```
+
+#### **Low-Level Pattern (Manual Control)**
+```grapa
+// Use .send() for custom HTTP formatting (does NOT auto-call .httpread())
+client.send("GET /endpoint HTTP/1.1\r\nHost: server.com\r\n\r\n");
+raw = client.httpread();          // Manually read response
+response = client.httpmessage();  // Parse the manually-read response
+```
+
+### **Complete HTTP Workflow Example**
+```grapa
+/* High-level HTTP request with automatic parsing */
+client = $net();
+client.connect('jsonplaceholder.typicode.com', null, null);
+
+/* Send GET request - .httpsend() automatically calls .httpread() */
+headers = {
+    "Host": "jsonplaceholder.typicode.com",
+    "Accept": "application/json"
+};
+client.httpsend("GET", "/posts/1", headers, "");
+
+/* Parse response - data was already read by .httpsend() */
+response = client.httpmessage();
+("Status: " + response."status"."code").echo();        // 200
+("Content-Type: " + response."headers"."content-type").echo();
+("Title: " + response."body"."title").echo();          // JSON field access
+("Body Type: " + response."body".type()).echo();       // $GOBJ
+
+client.disconnect();
+```
 
 ## httpsend(method,entity,header,body)
-Sends an HTTP request using the specified method, entity (path), headers, and body.
+Sends an HTTP request using the specified method, entity (path), headers, and body. **Automatically calls `.httpread()`** after sending.
 
 **Parameters:**
 - `method`: HTTP method (GET, POST, PUT, DELETE, etc.)
@@ -1057,6 +1105,33 @@ header = {
     "Accept": ["text/html", "application/json"]
 };
 n2.httpsend("GET", "/get", header, "");
+// Response is automatically read and ready for .httpmessage()
+```
+
+## httpread()
+Reads HTTP response data from the connection. **Can only be called once per request** because the network buffer is consumed.
+
+**⚠️ Important Limitations:**
+- **Automatically called by `.httpsend()`** - don't call manually after `.httpsend()`
+- **Use with `.send()` only** for manual HTTP request formatting
+- **Buffer is consumed** - subsequent calls will fail or return empty data
+
+**Example - Manual Usage with .send():**
+```grapa
+client = $net();
+client.connect('httpbin.org', null, null);
+
+/* Use low-level .send() - does NOT auto-call .httpread() */
+client.send('GET /get HTTP/1.1\r\nHost: httpbin.org\r\n\r\n');
+
+/* Manually read response */
+rawResponse = client.httpread();  // Only works once!
+
+/* Then parse with .httpmessage() */
+response = client.httpmessage();
+response."status"."code".echo();
+
+client.disconnect();
 ```
 
 ## httpmessage([raw])
@@ -1064,15 +1139,20 @@ Parses HTTP response and automatically detects content type. Returns structured 
 
 **Returns:**
 - `status`: Object with `code`, `description`, `version`
-- `headers`: Object containing response headers
+- `headers`: Object containing response headers  
 - `body`: Parsed response body (JSON, HTML, XML, or plain text)
 
 **Content Type Detection:**
 The C++ implementation automatically detects and parses:
-- **JSON** (`application/json`, `text/json`) → Grapa objects
-- **HTML** (`text/html`) → Structured HTML objects
-- **XML** (`text/xml`, `application/xml`, `application/xhtml+xml`) → Structured XML objects
+- **JSON** (`application/json`, `text/json`) → `$GOBJ` objects
+- **HTML** (`text/html`) → `$XML` objects (HTML is treated as XML)
+- **XML** (`text/xml`, `application/xml`, `application/xhtml+xml`) → `$XML` objects
 - **Plain Text** (`text/plain`) → Raw string
+
+**$GOBJ/$XML Relationship:**
+- **JSON responses** become `$GOBJ` objects with direct field access
+- **HTML/XML responses** become `$XML` objects that can be nested within `$GOBJ`
+- **Mixed content** (JSON with embedded XML) is fully supported
 
 **Cookie Parsing:**
 - **Set-Cookie Headers**: Automatically parsed into structured format
@@ -1084,19 +1164,38 @@ The C++ implementation automatically detects and parses:
 - **Hex Length Parsing**: Correctly parses chunk sizes in hexadecimal
 - **Automatic Assembly**: Reassembles chunked response bodies
 
-**Example:**
+**Example - JSON Response:**
 ```grapa
 n2 = $net();
-n2.connect("httpbin.org:80", null, null);
-header = {"Host": "httpbin.org"};
-n2.httpsend("GET", "/get", header, "");
+n2.connect("jsonplaceholder.typicode.com", null, null);
+n2.httpsend("GET", "/posts/1", {"Host": "jsonplaceholder.typicode.com"}, "");
 response = n2.httpmessage();
-response.status.code.echo();  // 200
-response.body.echo();         // Parsed JSON object
+
+response."status"."code".echo();        // 200
+response."body"."title".echo();         // Direct JSON field access
+response."body".type().echo();          // $GOBJ
 n2.disconnect();
 ```
 
-## HTTP/HTTPS Complete Example
+**Example - HTML Response (XML parsing):**
+```grapa
+n2 = $net();
+n2.connect("httpbin.org", null, null);
+n2.httpsend("GET", "/html", {"Host": "httpbin.org"}, "");
+response = n2.httpmessage();
+
+response."status"."code".echo();        // 200
+response."body".type().echo();          // $XML (HTML parsed as XML)
+response."body".str().mid(0, 100).echo(); // HTML content preview
+n2.disconnect();
+```
+
+## HTTP/HTTPS Complete Examples
+
+### **HTTP Methods Demo**
+See [HTTP Methods Demo](../examples/http_methods_demo.grc) for comprehensive examples demonstrating `.httpsend()`, `.httpread()`, and `.httpmessage()` with real-world APIs.
+
+### **Advanced HTTP Client**
 See [curl function example](../examples/curl_function_simple.grc) for a complete HTTP/HTTPS client implementation.
 
 **HTTPS with SSL Certificates:**

@@ -2,7 +2,9 @@
 
 A comprehensive HTTP client implementation that replicates 100% of the CLI curl command functionality using Grapa's networking capabilities.
 
-**Working Example:** See [curl_function_simple.grc](examples/curl_function_simple.grc) for the complete, tested implementation that makes maximum use of Grapa's C++ HTTP capabilities.
+**Working Examples:** 
+- [HTTP Methods Demo](examples/http_methods_demo.grc) - Comprehensive examples of `.httpsend()`, `.httpread()`, `.httpmessage()`
+- [curl_function_simple.grc](examples/curl_function_simple.grc) - Complete curl-like implementation
 
 ## Overview
 
@@ -272,9 +274,23 @@ The curl function returns a response object with the following structure:
 The Grapa curl function leverages Grapa's built-in C++ HTTP capabilities:
 
 - **`net.connect()`**: Handles connection establishment with SSL and proxy support
-- **`net.httpsend()`**: Sends HTTP requests with proper header formatting
+- **`net.httpsend()`**: Sends HTTP requests with proper header formatting (**automatically calls `net.httpread()`**)
 - **`net.httpmessage()`**: Parses responses with automatic content type detection
 - **`net.proxy()`**: Configures proxy settings before connection
 - **`net.certificate()`**: Sets SSL certificate for HTTPS connections
 
+### **HTTP Method Workflow**
+The curl function uses Grapa's HTTP method workflow:
+1. **`.httpsend()`** sends the request and automatically calls **`.httpread()`** 
+2. **`.httpread()`** can only be called once per request (network buffer consumed)
+3. **`.httpmessage()`** parses the already-read response from internal buffer
+
+### **Content Type Handling**
+- **JSON responses** → `$GOBJ` objects with direct field access
+- **HTML responses** → `$XML` objects (HTML parsed as XML)
+- **XML responses** → `$XML` objects  
+- **Mixed content** (JSON with embedded XML) → `$GOBJ` containing `$XML` objects
+
 This implementation makes maximum use of Grapa's underlying C++ infrastructure while providing a high-level, curl-like interface for HTTP/HTTPS operations.
+
+**See Also:** [HTTP Methods Documentation](../sys/net.md#http-methods-httpsend-httpread-httpmessage) for detailed implementation details.

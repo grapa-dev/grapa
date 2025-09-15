@@ -3,23 +3,25 @@
 "\n===== HTTP Methods Demo =====\n".echo();
 
 /* Example 1: Simple GET request with .httpsend() and .httpmessage() */
-"\n--- Example 1: GET request with automatic parsing ---\n".echo();
+"\n--- Example 1: GET request with automatic JSON parsing ---\n".echo();
 client1 = $net();
-client1.connect('http://httpbin.org', null, null);
+client1.connect('http://jsonplaceholder.typicode.com', null, null);
 
 /* Send GET request with headers */
 headers = {
-    "Host": "httpbin.org",
+    "Host": "jsonplaceholder.typicode.com",
     "User-Agent": "Grapa-HTTP-Demo/1.0",
     "Accept": "application/json"
 };
-client1.httpsend("GET", "/get", headers, "");
+client1.httpsend("GET", "/posts/1", headers, "");
 
 /* Parse response automatically */
 response1 = client1.httpmessage();
 ("Status Code: " + response1."status"."code" + "\n").echo();
 ("Response Headers: " + response1."headers".str() + "\n").echo();
 ("Response Body Type: " + response1."body".type() + "\n").echo();
+("JSON Data - Title: " + response1."body"."title" + "\n").echo();
+("JSON Data - User ID: " + response1."body"."userId" + "\n").echo();
 response1."body".echo();
 "\n".echo();
 
@@ -54,23 +56,24 @@ response2 = client2.httpmessage();
 
 client2.disconnect();
 
-/* Example 3: Using .httpread() for raw response */
-"\n--- Example 3: Raw response with .httpread() ---\n".echo();
+/* Example 3: HTML response with XML parsing */
+"\n--- Example 3: HTML response with XML parsing ---\n".echo();
 client3 = $net();
 client3.connect('http://httpbin.org', null, null);
 
-/* Send simple GET request */
-client3.send('GET / HTTP/1.1\r\nHost: localhost:8080\r\n\r\n');
+/* Send GET request to get HTML response */
+headers3 = {"Host": "httpbin.org"};
+client3.httpsend("GET", "/html", headers3, "");
 
-/* Read raw response */
-err = client3.httpread();
+/* Parse response - .httpsend() automatically called .httpread() */
 rawResponse = client3.httpmessage();
 rawBody = rawResponse."body";
 
 ("Raw Response Status: " + rawResponse."status"."code" + "\n").echo();
 ("Raw Response Content Type: " + rawResponse."headers"."content-type".str() + "\n").echo();
 ("Raw Response Content Length: " + rawResponse."headers"."content-length" + "\n").echo();
-("Raw Response Data : " + rawBody.str().mid(0, 200) + "\n").echo();
+("Raw Response Data Type: " + rawBody.type() + "\n").echo();
+("Raw Response Data Preview: " + rawBody.str().mid(0, 200) + "...\n").echo();
 
 client3.disconnect();
 
@@ -88,25 +91,30 @@ response4 = client4.httpmessage();
 
 client4.disconnect();
 
-/* Example 5: Using .httpread() for raw response */
-"\n--- Example 5: html response ---\n".echo();
+/* Example 5: Using .httpread() separately (with low-level .send()) */
+"\n--- Example 5: Manual .httpread() with low-level .send() ---\n".echo();
 client5 = $net();
-client5.connect('http://httpbin.org', null, null);
+client5.connect('http://jsonplaceholder.typicode.com', null, null);
 
-headers5 = {"Host": "httpbin.org"};
-client5.httpsend("GET", "text/html", headers5, "");
+/* Use low-level .send() to send raw HTTP request */
+/* This does NOT automatically call .httpread() */
+client5.send('GET /posts/1 HTTP/1.1\r\nHost: jsonplaceholder.typicode.com\r\n\r\n');
 
-/* Read xml response */
-rawResponse = client5.httpmessage();
-rawBody = rawResponse."body";
+/* Now we manually call .httpread() to get the response */
+rawResponse = client5.httpread();
 
-("Raw Response Status: " + rawResponse."status"."code" + "\n").echo();
-("Raw Response Content Type: " + rawResponse."headers"."content-type".str() + "\n").echo();
-("Raw Response Content Length: " + rawResponse."headers"."content-length" + "\n").echo();
-("Raw Response Data Type: " + rawBody.type() + "\n").echo();
-("Raw Response Data : " + rawBody.str().mid(0, 200) + "\n").echo();
+/* Then parse it with .httpmessage() */
+parsedResponse = client5.httpmessage();
+parsedBody = parsedResponse."body";
+
+("Manual HttpRead - Raw Length: " + rawResponse.len() + "\n").echo();
+("Parsed Status: " + parsedResponse."status"."code" + "\n").echo();
+("Parsed Content Type: " + parsedResponse."headers"."content-type".str() + "\n").echo();
+("Parsed Data Type: " + parsedBody.type() + "\n").echo();
+("Parsed Title: " + parsedBody."title" + "\n").echo();
 
 client5.disconnect();
 
 
 "\n===== Demo Complete =====\n".echo();
+
