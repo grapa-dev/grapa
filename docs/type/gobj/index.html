@@ -1084,6 +1084,39 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#string-labels-vs-id-labels-in-gobj" class="md-nav__link">
+    <span class="md-ellipsis">
+      String Labels vs ID Labels in $GOBJ
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="String Labels vs ID Labels in $GOBJ">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#why-this-matters" class="md-nav__link">
+    <span class="md-ellipsis">
+      Why This Matters
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#best-practices" class="md-nav__link">
+    <span class="md-ellipsis">
+      Best Practices
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#important-data-item-labels-must-be-quoted" class="md-nav__link">
     <span class="md-ellipsis">
       ⚠️ IMPORTANT: Data Item Labels Must Be Quoted
@@ -1430,7 +1463,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#best-practices" class="md-nav__link">
+  <a href="#best-practices_1" class="md-nav__link">
     <span class="md-ellipsis">
       Best Practices
     </span>
@@ -4391,6 +4424,39 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#string-labels-vs-id-labels-in-gobj" class="md-nav__link">
+    <span class="md-ellipsis">
+      String Labels vs ID Labels in $GOBJ
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="String Labels vs ID Labels in $GOBJ">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#why-this-matters" class="md-nav__link">
+    <span class="md-ellipsis">
+      Why This Matters
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#best-practices" class="md-nav__link">
+    <span class="md-ellipsis">
+      Best Practices
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#important-data-item-labels-must-be-quoted" class="md-nav__link">
     <span class="md-ellipsis">
       ⚠️ IMPORTANT: Data Item Labels Must Be Quoted
@@ -4737,7 +4803,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#best-practices" class="md-nav__link">
+  <a href="#best-practices_1" class="md-nav__link">
     <span class="md-ellipsis">
       Best Practices
     </span>
@@ -4813,6 +4879,52 @@
 </tbody>
 </table>
 <p><strong>Note:</strong> This differs from some other languages where <code>[]</code> is called a "list" and <code>{}</code> is called a "dictionary" or "object". Grapa follows traditional C terminology.</p>
+<h2 id="string-labels-vs-id-labels-in-gobj">String Labels vs ID Labels in $GOBJ</h2>
+<p><strong>Important:</strong> In <code>$GOBJ</code> objects, there's a crucial distinction between string labels and ID labels:</p>
+<ul>
+<li><strong>String labels</strong> (<code>"x"</code>) - <code>$STR</code> values used as labels for data items</li>
+<li><strong>ID labels</strong> (<code>x</code>) - <code>$ID</code> values used as labels for variables/functions  </li>
+<li><strong>Variable references</strong> (<code>@x</code>) resolve to the current value of variable <code>x</code></li>
+</ul>
+<p>Both <code>$ID</code> and <code>$STR</code> can be used as labels, but they serve different purposes and are accessed differently.</p>
+<p>This separation prevents data items from overriding class methods:</p>
+<div class="highlight"><pre><span></span><code>/* Example showing the distinction */
+x = &quot;hi&quot;;
+z = &quot;by&quot;;
+
+/* Create object with both string and ID labels */
+d = {&quot;x&quot;:&quot;x str&quot;, x:&quot;x id&quot;, @x:&quot;test&quot;, @&quot;z&quot;:&quot;test2&quot;};
+
+/* Access string-labeled data item */
+d.&quot;x&quot;                    /* Returns: &quot;x str&quot; */
+
+/* Access ID-labeled item */
+d.x                      /* Returns: &quot;x id&quot; */
+
+/* Access variable-referenced items */
+d.&quot;hi&quot;                   /* Returns: &quot;test&quot; (from @x where x=&quot;hi&quot;) */
+d.&quot;by&quot;                   /* Returns: &quot;test2&quot; (from @&quot;z&quot; where z=&quot;by&quot;) */
+
+/* The object structure */
+d                        /* Returns: {&quot;x&quot;:&quot;x str&quot;,x:&quot;x id&quot;,&quot;hi&quot;:&quot;test&quot;,&quot;by&quot;:&quot;test2&quot;} */
+</code></pre></div>
+<h3 id="why-this-matters">Why This Matters</h3>
+<p>Without this separation, a data item with label <code>"len"</code> would override the class method <code>.len()</code>:</p>
+<div class="highlight"><pre><span></span><code>/* BAD: This would break .len() method */
+bad_obj = {len:&quot;some data&quot;};
+bad_obj.len();           /* Error: tries to access data instead of method */
+
+/* GOOD: Use string labels for data items */
+good_obj = {&quot;len&quot;:&quot;some data&quot;};
+good_obj.len();          /* Works: calls the .len() method */
+good_obj.&quot;len&quot;;          /* Works: accesses the data item */
+</code></pre></div>
+<h3 id="best-practices">Best Practices</h3>
+<ul>
+<li><strong>For data items</strong>: Use string labels <code>{"key":"value"}</code></li>
+<li><strong>For variables/functions</strong>: Use ID labels <code>{key:"value"}</code>  </li>
+<li><strong>For dynamic references</strong>: Use variable references <code>{@var:"value"}</code></li>
+</ul>
 <h2 id="important-data-item-labels-must-be-quoted"><strong>⚠️ IMPORTANT: Data Item Labels Must Be Quoted</strong></h2>
 <p>In Grapa Objects (<code>$GOBJ</code>), there's a crucial distinction between data access and method access:</p>
 <ul>
@@ -5277,7 +5389,7 @@ arr.set(3, 99);            /* APPENDS: [1, 2, 3, 99] */
 vec = [1, 2, 3].vector();
 result = vec.set(3, 99);   /* Returns $ERR - strict bounds */
 </code></pre></div>
-<h3 id="best-practices"><strong>Best Practices</strong></h3>
+<h3 id="best-practices_1"><strong>Best Practices</strong></h3>
 <ol>
 <li><strong>Use lists for dynamic key-value storage</strong> where you need flexible sizing</li>
 <li><strong>Use vectors for mathematical operations</strong> where fixed dimensions matter</li>
