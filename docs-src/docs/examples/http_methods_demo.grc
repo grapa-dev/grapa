@@ -1,0 +1,112 @@
+/* HTTP Methods Demo: .httpsend(), .httpread(), .httpmessage() */
+
+"\n===== HTTP Methods Demo =====\n".echo();
+
+/* Example 1: Simple GET request with .httpsend() and .httpmessage() */
+"\n--- Example 1: GET request with automatic parsing ---\n".echo();
+client1 = $net();
+client1.connect('http://httpbin.org', null, null);
+
+/* Send GET request with headers */
+headers = {
+    "Host": "httpbin.org",
+    "User-Agent": "Grapa-HTTP-Demo/1.0",
+    "Accept": "application/json"
+};
+client1.httpsend("GET", "/get", headers, "");
+
+/* Parse response automatically */
+response1 = client1.httpmessage();
+("Status Code: " + response1."status"."code" + "\n").echo();
+("Response Headers: " + response1."headers".str() + "\n").echo();
+("Response Body Type: " + response1."body".type() + "\n").echo();
+response1."body".echo();
+"\n".echo();
+
+client1.disconnect();
+
+/* Example 2: POST request with JSON data */
+"\n--- Example 2: POST request with JSON body ---\n".echo();
+client2 = $net();
+client2.connect('http://httpbin.org', null, null);
+
+/* Prepare JSON data */
+jsonData = {
+    "name": "Grapa Demo",
+    "version": "1.0",
+    "features": ["http", "json", "parsing"]
+};
+
+/* Send POST request */
+headers2 = {
+    "Host": "httpbin.org",
+    "Content-Type": "application/json",
+    "Content-Length": jsonData.len().str(),
+    "User-Agent": "Grapa-HTTP-Demo/1.0"
+};
+client2.httpsend("POST", "/post", headers2, jsonData);
+
+/* Parse response */
+response2 = client2.httpmessage();
+("Status Code: " + response2."status"."code" + "\n").echo();
+("Received Body: " + response2."body".str() + "\n").echo();
+("Received JSON Data: " + response2."body"."json".str() + "\n").echo();
+
+client2.disconnect();
+
+/* Example 3: Using .httpread() for raw response */
+"\n--- Example 3: Raw response with .httpread() ---\n".echo();
+client3 = $net();
+client3.connect('http://httpbin.org', null, null);
+
+/* Send simple GET request */
+client3.send('GET / HTTP/1.1\r\nHost: localhost:8080\r\n\r\n');
+
+/* Read raw response */
+err = client3.httpread();
+rawResponse = client3.httpmessage();
+rawBody = rawResponse."body";
+
+("Raw Response Status: " + rawResponse."status"."code" + "\n").echo();
+("Raw Response Content Type: " + rawResponse."headers"."content-type".str() + "\n").echo();
+("Raw Response Content Length: " + rawResponse."headers"."content-length" + "\n").echo();
+("Raw Response Data : " + rawBody.str().mid(0, 200) + "\n").echo();
+
+client3.disconnect();
+
+/* Example 4: Error handling */
+"\n--- Example 4: Error handling (404 Not Found) ---\n".echo();
+client4 = $net();
+client4.connect('http://httpbin.org', null, null);
+
+headers4 = {"Host": "httpbin.org"};
+client4.httpsend("GET", "/nonexistent", headers4, "");
+
+response4 = client4.httpmessage();
+("Error Status Code: " + response4."status"."code" + "\n").echo();
+("Error Description: " + response4."status"."description" + "\n").echo();
+
+client4.disconnect();
+
+/* Example 5: Using .httpread() for raw response */
+"\n--- Example 5: html response ---\n".echo();
+client5 = $net();
+client5.connect('http://httpbin.org', null, null);
+
+headers5 = {"Host": "httpbin.org"};
+client5.httpsend("GET", "text/html", headers5, "");
+
+/* Read xml response */
+rawResponse = client5.httpmessage();
+rawBody = rawResponse."body";
+
+("Raw Response Status: " + rawResponse."status"."code" + "\n").echo();
+("Raw Response Content Type: " + rawResponse."headers"."content-type".str() + "\n").echo();
+("Raw Response Content Length: " + rawResponse."headers"."content-length" + "\n").echo();
+("Raw Response Data Type: " + rawBody.type() + "\n").echo();
+("Raw Response Data : " + rawBody.str().mid(0, 200) + "\n").echo();
+
+client5.disconnect();
+
+
+"\n===== Demo Complete =====\n".echo();
