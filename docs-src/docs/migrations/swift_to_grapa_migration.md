@@ -4,11 +4,11 @@
 >
 > | Type      | .get("key") | .get(index) | Bracket Notation | Dot Notation |
 > |-----------|:-----------:|:-----------:|:----------------:|:------------:|
-> | $ARRAY    |      ✗      |     ✗      |       ✓         |      —       |
-> | $GOBJ     |      ✗      |     ✗      |       ✓         |     ✓       |
-> | $file     |      ✓      |     ✗      |        —         |      —       |
-> | $TABLE    |      ✓      |     ✗      |        —         |      —       |
-> | $OBJ      |      ✗      |     ✗      |       ✓         |     ✓       |
+> | $ARRAY    |      ✓      |     ✓      |       ✓         |     ✓       |
+> | $GOBJ     |      ✓      |     ✓      |       ✓         |     ✓       |
+> | $file     |      ✓      |     ✓      |       ✓         |     ✓       |
+> | $TABLE    |      ✓      |     ✓      |       ✓         |     ✓       |
+> | $OBJ      |      ✓      |     ✓      |       ✓         |     ✓       |
 > | $STR      |      ✗      |     ✗      |       ✓         |      —       |
 >
 > See [Basic Syntax Guide](../syntax/basic_syntax.md) for details.

@@ -4,6 +4,8 @@ Welcome to the Grapa Examples hub! Here you'll find practical, ready-to-run scri
 
 [See the Examples Overview](examples/README.md)
 
+**📁 View all examples on GitHub:** [https://github.com/grapa-dev/grapa/tree/main/docs-src/docs/examples](https://github.com/grapa-dev/grapa/tree/main/docs-src/docs/examples)
+
 ## Example Scripts
 
 ### **Core Language Examples**

@@ -282,8 +282,8 @@ files = $file().ls();
 file_info = files.get(0);   /* Correct */
 ```
 
-- Always use `.get(index)` for $file results.
-- Bracket and dot notation are not supported for $file.
+- Use `.get(index)`, bracket notation, or dot notation for $file results.
+- $file supports all access patterns: `.get()`, `[]`, and `.` notation.
 
 ### $TABLE
 
@@ -295,8 +295,8 @@ table.set("user1", "Alice", "name");
 value = table.get("user1", "name");   /* Correct */
 ```
 
-- Always use `.get(key, field)` for $TABLE.
-- Bracket and dot notation are not supported for $TABLE.
+- Use `.get(key, field)`, bracket notation, or dot notation for $TABLE.
+- $TABLE supports all access patterns: `.get()`, `[]`, and `.` notation.
 
 > **Reference Table:**
 > | Type      | .get("key") | .get(index) | Bracket Notation | Dot Notation | .len() | .size() |
@@ -304,8 +304,8 @@ value = table.get("user1", "name");   /* Correct */
 > | $ARRAY    |      ✓      |     ✓      |       ✓         |     ✓       |   ✓   |    ✗   |
 > | $GOBJ     |      ✓      |     ✓      |       ✓         |     ✓       |   ✓   |    ✗   |
 > | $OBJ      |      ✓      |     ✓      |       ✓         |     ✓       |   ✗   |    ✗   |
-> | $file     |      ✓      |     ✗      |        —         |      —       |   ✗   |    ✗   |
-> | $TABLE    |     ✓*      |     ✗      |        —         |      —       |   ✗   |    ✗   |
+> | $file     |      ✓      |     ✓      |       ✓         |     ✓       |   ✗   |    ✗   |
+> | $TABLE    |     ✓*      |     ✓      |       ✓         |     ✓       |   ✗   |    ✗   |
 > *$TABLE .get() requires two arguments: key and field.
 
 See [Basic Syntax Guide](../syntax/basic_syntax.md) for empirical test results and future updates.
