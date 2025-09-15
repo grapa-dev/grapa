@@ -2008,6 +2008,24 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#data-type-handling" class="md-nav__link">
+    <span class="md-ellipsis">
+      Data Type Handling:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#practical-example-filesystem-vs-database" class="md-nav__link">
+    <span class="md-ellipsis">
+      Practical Example: Filesystem vs Database
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -4688,6 +4706,24 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#data-type-handling" class="md-nav__link">
+    <span class="md-ellipsis">
+      Data Type Handling:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#practical-example-filesystem-vs-database" class="md-nav__link">
+    <span class="md-ellipsis">
+      Practical Example: Filesystem vs Database
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -5225,8 +5261,10 @@ f.set($stderr, &quot;Error message\n&quot;);
 <div class="highlight"><pre><span></span><code>f.set(&quot;test.txt&quot;, &quot;Hello, World!&quot;);
 content = f.get(&quot;test.txt&quot;);
 /* Returns: 0x48656C6C6F2C20576F726C6421 */
+contentStr = content.str();
+/* Returns: &quot;Hello, World!&quot; */
 </code></pre></div>
-<p><strong>Note</strong>: File content is returned in hexadecimal format, not plain text. To convert to string, you may need to use additional processing.</p>
+<p><strong>Note</strong>: When reading from filesystem files, Grapa doesn't know the data format, so content is returned in hexadecimal format. Use <code>.str()</code> to convert to readable string format. For database operations where data types are stored, Grapa may return properly typed data.</p>
 <h2 id="getfieldname-field">getfield(name, field)</h2>
 <p>Reads structured data from a file or database record.</p>
 <p><strong>Parameters</strong>:
@@ -5236,7 +5274,10 @@ content = f.get(&quot;test.txt&quot;);
 <div class="highlight"><pre><span></span><code>f.setfield(&quot;user1&quot;, &quot;name&quot;, &quot;John Doe&quot;);
 name = f.getfield(&quot;user1&quot;, &quot;name&quot;);
 /* Returns: 0x4A6F686E20446F65 */
+nameStr = name.str();
+/* Returns: &quot;John Doe&quot; */
 </code></pre></div>
+<p><strong>Note</strong>: When reading from filesystem files, Grapa doesn't know the data format, so content is returned in hexadecimal format. Use <code>.str()</code> to convert to readable string format. For database operations where data types are stored, Grapa may return properly typed data.</p>
 <h2 id="setfieldname-field-value">setfield(name, field, value)</h2>
 <p>Writes structured data to a file or database record.</p>
 <p><strong>Parameters</strong>:
@@ -5297,6 +5338,38 @@ age = f.getfield(&quot;user1&quot;, &quot;age&quot;);
 <li><strong>Use <code>.get()/.set()</code></strong> for simple file operations (reading/writing file content)</li>
 <li><strong>Use <code>.getfield()/.setfield()</code></strong> for structured data operations and database-style field access</li>
 </ul>
+<h3 id="data-type-handling">Data Type Handling:</h3>
+<p><strong>Filesystem Files:</strong>
+- Both <code>.get()</code> and <code>.getfield()</code> return hexadecimal format when reading from filesystem files
+- Grapa doesn't know the data format, so you must use <code>.str()</code> to convert to readable strings
+- Example: <code>content = f.get("file.txt"); readable = content.str();</code></p>
+<p><strong>Database Operations:</strong>
+- When using <code>.getfield()</code> with database tables that have defined field types, Grapa may return properly typed data
+- The data type information is stored with the database schema
+- Example: <code>age = f.getfield("user1", "age");</code> might return a proper <code>$INT</code> instead of hexadecimal</p>
+<h3 id="practical-example-filesystem-vs-database">Practical Example: Filesystem vs Database</h3>
+<div class="highlight"><pre><span></span><code>f = $file();
+
+/* Filesystem file - Grapa doesn&#39;t know the data type */
+f.set(&quot;user.txt&quot;, &quot;John Doe&quot;);
+name = f.get(&quot;user.txt&quot;);
+/* Returns: 0x4A6F686E20446F65 (hexadecimal) */
+nameStr = name.str();
+/* Returns: &quot;John Doe&quot; */
+
+/* Database with defined field types - Grapa knows the data type */
+f.mk(&quot;users&quot;, &quot;ROW&quot;);
+f.mkfield(&quot;name&quot;, &quot;STR&quot;, &quot;VAR&quot;);
+f.mkfield(&quot;age&quot;, &quot;INT&quot;, &quot;FIX&quot;, 4);
+f.cd(&quot;users&quot;);
+
+f.setfield(&quot;user1&quot;, &quot;name&quot;, &quot;Alice&quot;);
+f.setfield(&quot;user1&quot;, &quot;age&quot;, 25);
+
+/* With defined field types, Grapa may return properly typed data */
+name = f.getfield(&quot;user1&quot;, &quot;name&quot;);  /* May return proper $STR */
+age = f.getfield(&quot;user1&quot;, &quot;age&quot;);    /* May return proper $INT */
+</code></pre></div>
 <p><strong>Recommendation</strong>: Use <code>.getfield()/.setfield()</code> for any operation involving structured data or field-specific access.</p>
 <h2 id="infoname">info(name)</h2>
 <p>Returns detailed metadata information about a file or directory.</p>
