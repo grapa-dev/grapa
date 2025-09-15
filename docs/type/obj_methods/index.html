@@ -3988,7 +3988,7 @@
   
   
   <span class="md-ellipsis">
-    Language Integrations
+    Language Interpreters
     
   </span>
   
@@ -3999,7 +3999,7 @@
         <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_13_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_5_13">
             <span class="md-nav__icon md-icon"></span>
-            Language Integrations
+            Language Interpreters
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
@@ -4010,12 +4010,12 @@
   
   
     <li class="md-nav__item">
-      <a href="../../sql_integration/" class="md-nav__link">
+      <a href="../../sql_interpreter/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
-    SQL Integration
+    SQL Interpreter
     
   </span>
   
@@ -4033,12 +4033,12 @@
   
   
     <li class="md-nav__item">
-      <a href="../../prolog_integration/" class="md-nav__link">
+      <a href="../../prolog_interpreter/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
-    PROLOG Integration
+    PROLOG Interpreter
     
   </span>
   
@@ -4056,12 +4056,12 @@
   
   
     <li class="md-nav__item">
-      <a href="../../lisp_integration/" class="md-nav__link">
+      <a href="../../lisp_interpreter/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
-    LISP Integration
+    LISP Interpreter
     
   </span>
   
@@ -6651,7 +6651,7 @@ matrix.diagonal(-1);       /* Returns: [4,8] (lower diagonal) */
 - <code>func</code> - Function to apply to each element
 - <code>data</code> (default: null) - Additional data for the function
 - <code>threads</code> (default: null) - Number of threads for parallel execution</p>
-<p><strong>Performance Note:</strong> <code>.map()</code> and <code>.filter()</code> must copy results from worker threads, which can be expensive for large datasets. For large datasets where multiprocessing isn't needed, consider using sequential <code>for</code> or <code>while</code> loops instead.</p>
+<p><strong>Performance Note:</strong> <code>.map()</code> and <code>.filter()</code> can split processing across multiple worker threads, which provides significant performance benefits for most operations. The minimal data copying cost is typically negligible compared to the computational work being performed. Use the <code>threads</code> parameter to control parallelism based on your system capabilities.</p>
 <h3 id="filterfunc-data-threads"><code>.filter(func, data, threads)</code></h3>
 <p>Filters elements based on a predicate function (parallel by default).</p>
 <div class="highlight"><pre><span></span><code>[1,2,3,4,5].filter(op(x) { x &gt; 2; });      /* Returns: [3,4,5] */
@@ -6661,7 +6661,7 @@ matrix.diagonal(-1);       /* Returns: [4,8] (lower diagonal) */
 - <code>func</code> - Predicate function
 - <code>data</code> (default: null) - Additional data for the function
 - <code>threads</code> (default: null) - Number of threads for parallel execution</p>
-<p><strong>Performance Note:</strong> <code>.filter()</code> must copy results from worker threads, which can be expensive for large datasets. For large datasets where multiprocessing isn't needed, consider using sequential <code>for</code> or <code>while</code> loops instead.</p>
+<p><strong>Performance Note:</strong> <code>.filter()</code> can split processing across multiple worker threads, which provides significant performance benefits for most operations. The minimal data copying cost is typically negligible compared to the computational work being performed. Use the <code>threads</code> parameter to control parallelism based on your system capabilities.</p>
 <h3 id="reducefunc-init-data"><code>.reduce(func, init, data)</code></h3>
 <p>Reduces an array to a single value using a function.</p>
 <div class="highlight"><pre><span></span><code>[1,2,3,4,5].reduce(op(acc, x) { acc + x; }, 0); /* Returns: 15 */

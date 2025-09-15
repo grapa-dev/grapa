@@ -11,7 +11,7 @@
         <link rel="canonical" href="https://grapa-dev.github.io/grapa/migrations/python_to_grapa_migration/">
       
       
-        <link rel="prev" href="../../lisp_integration/">
+        <link rel="prev" href="../../lisp_interpreter/">
       
       
         <link rel="next" href="../js_to_grapa_migration/">
@@ -2957,7 +2957,7 @@
   
   
   <span class="md-ellipsis">
-    Language Integrations
+    Language Interpreters
     
   </span>
   
@@ -2968,7 +2968,7 @@
         <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_13_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_5_13">
             <span class="md-nav__icon md-icon"></span>
-            Language Integrations
+            Language Interpreters
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
@@ -2979,12 +2979,12 @@
   
   
     <li class="md-nav__item">
-      <a href="../../sql_integration/" class="md-nav__link">
+      <a href="../../sql_interpreter/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
-    SQL Integration
+    SQL Interpreter
     
   </span>
   
@@ -3002,12 +3002,12 @@
   
   
     <li class="md-nav__item">
-      <a href="../../prolog_integration/" class="md-nav__link">
+      <a href="../../prolog_interpreter/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
-    PROLOG Integration
+    PROLOG Interpreter
     
   </span>
   
@@ -3025,12 +3025,12 @@
   
   
     <li class="md-nav__item">
-      <a href="../../lisp_integration/" class="md-nav__link">
+      <a href="../../lisp_interpreter/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
-    LISP Integration
+    LISP Interpreter
     
   </span>
   
@@ -4977,17 +4977,17 @@
 <tbody>
 <tr>
 <td>$ARRAY</td>
-<td style="text-align: center;">❌</td>
-<td style="text-align: center;">❌</td>
 <td style="text-align: center;">✅</td>
-<td style="text-align: center;">—</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
 <td style="text-align: center;">✅</td>
 <td style="text-align: center;">❌</td>
 </tr>
 <tr>
 <td>$GOBJ</td>
-<td style="text-align: center;">❌</td>
-<td style="text-align: center;">❌</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
 <td style="text-align: center;">✅</td>
 <td style="text-align: center;">✅</td>
 <td style="text-align: center;">✅</td>
@@ -4995,8 +4995,8 @@
 </tr>
 <tr>
 <td>$OBJ</td>
-<td style="text-align: center;">❌</td>
-<td style="text-align: center;">❌</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
 <td style="text-align: center;">✅</td>
 <td style="text-align: center;">✅</td>
 <td style="text-align: center;">❌</td>
@@ -5024,11 +5024,11 @@
 </table>
 <p>*$TABLE .getfield() requires two arguments: key and field.</p>
 <p><strong>Key Findings:</strong>
-- <strong>Arrays (<code>[]</code>)</strong>: Use <code>array[index]</code> and <code>array.len()</code> for access and length
-- <strong>Lists (<code>{}</code>)</strong>: Use <code>list[key]</code> or <code>list.key</code> for access, <code>list.len()</code> for length
-- <strong>Objects (class)</strong>: Use <code>object.property</code> or <code>object[key]</code> for access
-- <strong><code>.getfield()/.setfield()</code> method</strong>: Use for <code>$file</code> and <code>$TABLE</code> types
-- <strong><code>.get()/.set()</code> method</strong>: Exclusively for <code>$WIDGET</code> types
+- <strong>Arrays (<code>[]</code>)</strong>: Use <code>array[index]</code>, <code>array.get(index)</code>, or <code>array.key</code> for access, <code>array.len()</code> for length
+- <strong>Lists (<code>{}</code>)</strong>: Use <code>list[key]</code>, <code>list.get("key")</code>, or <code>list.key</code> for access, <code>list.len()</code> for length
+- <strong>Objects (class)</strong>: Use <code>object.property</code>, <code>object.get("key")</code>, or <code>object[key]</code> for access
+- <strong><code>.getfield()/.setfield()</code> method</strong>: Use for <code>$file</code> and <code>$TABLE</code> types with field access
+- <strong><code>.get()/.set()</code> method</strong>: Universal methods for <code>$ARRAY</code>, <code>$GOBJ</code>, <code>$OBJ</code>, <code>$file</code>, and <code>$TABLE</code> types
 - <strong><code>.size()</code> method</strong>: Not supported on any type (use <code>.len()</code> instead)
 - <strong><code>.keys()</code> method</strong>: Not supported on <code>$GOBJ</code> (use iteration instead)</p>
 </blockquote>
@@ -5249,12 +5249,12 @@ name = obj.getname(1);  /* Returns &quot;b&quot; (key name at index 1) */
 <div class="highlight"><pre><span></span><code>arr = [10, 20, 30];
 
 value = arr[1];         /* Returns 20 */
-/* Note: .get(index) is not supported for arrays - use bracket notation */
+/* Note: .get(index) is now supported for arrays - can use bracket notation or .get() */
 </code></pre></div>
 <ul>
-<li>Use bracket notation for $ARRAY access.</li>
-<li><code>.get(index)</code> is not supported for arrays.</li>
-<li>Dot notation and <code>.get("key")</code> are NOT valid for $ARRAY.</li>
+<li>Use bracket notation, <code>.get(index)</code>, or dot notation for $ARRAY access.</li>
+<li><code>.get(index)</code> is now supported for arrays.</li>
+<li><code>.get("key")</code> is now supported for $ARRAY when accessing by key.</li>
 </ul>
 <h3 id="array-comprehension-alternatives">Array Comprehension Alternatives</h3>
 <p>Python's list comprehensions can be replaced with Grapa's functional methods:</p>
@@ -5289,7 +5289,7 @@ while (i &lt; big_data.len()) {
 - <strong>Functional programming style</strong> with chainable operations
 - <strong>Better performance</strong> for large datasets
 - <strong>Memory efficient</strong> processing</p>
-<p><strong>Performance Note:</strong> <code>.map()</code> and <code>.filter()</code> must copy results from worker threads, which can be expensive for very large datasets. For large datasets with simple operations, consider using sequential <code>for</code> or <code>while</code> loops instead.</p>
+<p><strong>Performance Note:</strong> <code>.map()</code> and <code>.filter()</code> can split processing across multiple worker threads, which provides significant performance benefits for most operations. The minimal data copying cost is typically negligible compared to the computational work being performed. Use the <code>threads</code> parameter to control parallelism based on your system capabilities.</p>
 <h3 id="numeric-literals">Numeric Literals</h3>
 <div class="highlight"><pre><span></span><code><span class="c1"># Python - basic numeric literals</span>
 <span class="n">int_val</span> <span class="o">=</span> <span class="mi">42</span>
@@ -5366,7 +5366,7 @@ file_info = files.get(0);   /* Correct */
 </code></pre></div>
 <ul>
 <li>Always use <code>.get(index)</code> for $file results.</li>
-<li>Bracket and dot notation are NOT valid for $file.</li>
+<li>Bracket and dot notation are not supported for $file.</li>
 </ul>
 <h3 id="table">$TABLE</h3>
 <div class="highlight"><pre><span></span><code>table = {}.table(&quot;ROW&quot;);
@@ -5377,15 +5377,15 @@ value = table.get(&quot;user1&quot;, &quot;name&quot;);   /* Correct */
 </code></pre></div>
 <ul>
 <li>Always use <code>.get(key, field)</code> for $TABLE.</li>
-<li>Bracket and dot notation are NOT valid for $TABLE.</li>
+<li>Bracket and dot notation are not supported for $TABLE.</li>
 </ul>
 <blockquote>
 <p><strong>Reference Table:</strong>
 | Type      | .get("key") | .get(index) | Bracket Notation | Dot Notation | .len() | .size() |
 |-----------|:-----------:|:-----------:|:----------------:|:------------:|:------:|:-------:|
-| $ARRAY    |      ✗      |     ✗      |       ✓         |      —       |   ✓   |    ✗   |
-| $GOBJ     |      ✗      |     ✗      |       ✓         |     ✓       |   ✓   |    ✗   |
-| $OBJ      |      ✗      |     ✗      |       ✓         |     ✓       |   ✗   |    ✗   |
+| $ARRAY    |      ✓      |     ✓      |       ✓         |     ✓       |   ✓   |    ✗   |
+| $GOBJ     |      ✓      |     ✓      |       ✓         |     ✓       |   ✓   |    ✗   |
+| $OBJ      |      ✓      |     ✓      |       ✓         |     ✓       |   ✗   |    ✗   |
 | $file     |      ✓      |     ✗      |        —         |      —       |   ✗   |    ✗   |
 | $TABLE    |     ✓<em>      |     ✗      |        —         |      —       |   ✗   |    ✗   |
 </em>$TABLE .get() requires two arguments: key and field.</p>

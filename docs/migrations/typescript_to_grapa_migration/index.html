@@ -2957,7 +2957,7 @@
   
   
   <span class="md-ellipsis">
-    Language Integrations
+    Language Interpreters
     
   </span>
   
@@ -2968,7 +2968,7 @@
         <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_13_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_5_13">
             <span class="md-nav__icon md-icon"></span>
-            Language Integrations
+            Language Interpreters
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
@@ -2979,12 +2979,12 @@
   
   
     <li class="md-nav__item">
-      <a href="../../sql_integration/" class="md-nav__link">
+      <a href="../../sql_interpreter/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
-    SQL Integration
+    SQL Interpreter
     
   </span>
   
@@ -3002,12 +3002,12 @@
   
   
     <li class="md-nav__item">
-      <a href="../../prolog_integration/" class="md-nav__link">
+      <a href="../../prolog_interpreter/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
-    PROLOG Integration
+    PROLOG Interpreter
     
   </span>
   
@@ -3025,12 +3025,12 @@
   
   
     <li class="md-nav__item">
-      <a href="../../lisp_integration/" class="md-nav__link">
+      <a href="../../lisp_interpreter/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
-    LISP Integration
+    LISP Interpreter
     
   </span>
   
@@ -4580,15 +4580,15 @@
 <tbody>
 <tr>
 <td>$ARRAY</td>
-<td style="text-align: center;">✗</td>
-<td style="text-align: center;">✗</td>
 <td style="text-align: center;">✓</td>
-<td style="text-align: center;">—</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
 </tr>
 <tr>
 <td>$GOBJ</td>
-<td style="text-align: center;">✗</td>
-<td style="text-align: center;">✗</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
 </tr>
@@ -4608,9 +4608,9 @@
 </tr>
 <tr>
 <td>$OBJ</td>
-<td style="text-align: center;">✗</td>
-<td style="text-align: center;">✗</td>
-<td style="text-align: center;">✗</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
 </tr>
 <tr>
@@ -4623,9 +4623,9 @@
 </tbody>
 </table>
 <ul>
-<li>For $GOBJ and $OBJ, use bracket or dot notation (e.g., obj["key"], obj.key, obj[2]).</li>
-<li>For $ARRAY, use bracket notation (e.g., arr[1]).</li>
-<li>Only $file and $TABLE support .get().</li>
+<li>For $GOBJ and $OBJ, use bracket notation, dot notation, or .get() methods (e.g., obj["key"], obj.key, obj.get("key")).</li>
+<li>For $ARRAY, use bracket notation, dot notation, or .get() methods (e.g., arr[1], arr.get(1)).</li>
+<li>$ARRAY, $GOBJ, $OBJ, $file, and $TABLE all support .get() methods.</li>
 <li>This is based on direct testing in Grapa v0.0.39.</li>
 </ul>
 </blockquote>
@@ -4753,11 +4753,11 @@ name = obj.getname(1);  /* Returns &quot;b&quot; (key name at index 1) */
 <div class="highlight"><pre><span></span><code>arr = [10, 20, 30];
 
 value = arr[1];         /* Returns 20 */
-/* Note: .get(index) is not supported for arrays - use bracket notation */
+/* Note: .get(index) is now supported for arrays - can use bracket notation or .get() */
 </code></pre></div>
 <ul>
-<li>Use bracket notation or <code>.get(index)</code> for $ARRAY.</li>
-<li>Dot notation and <code>.get("key")</code> are NOT valid for $ARRAY.</li>
+<li>Use bracket notation, <code>.get(index)</code>, or dot notation for $ARRAY.</li>
+<li><code>.get("key")</code> is now supported for $ARRAY when accessing by key.</li>
 </ul>
 <h3 id="file">$file</h3>
 <div class="highlight"><pre><span></span><code>files = $file().ls();
@@ -4765,7 +4765,7 @@ file_info = files.get(0);   /* Correct */
 </code></pre></div>
 <ul>
 <li>Always use <code>.get(index)</code> for $file results.</li>
-<li>Bracket and dot notation are NOT valid for $file.</li>
+<li>Bracket and dot notation are not supported for $file.</li>
 </ul>
 <h3 id="table">$TABLE</h3>
 <div class="highlight"><pre><span></span><code>table = {}.table(&quot;ROW&quot;);
@@ -4776,17 +4776,17 @@ value = table.get(&quot;user1&quot;, &quot;name&quot;);   /* Correct */
 </code></pre></div>
 <ul>
 <li>Always use <code>.get(key, field)</code> for $TABLE.</li>
-<li>Bracket and dot notation are NOT valid for $TABLE.</li>
+<li>Bracket and dot notation are not supported for $TABLE.</li>
 </ul>
 <blockquote>
 <p><strong>Reference Table:</strong>
 | Type      | .get("key") | .get(index) | Bracket Notation | Dot Notation |
 |-----------|:-----------:|:-----------:|:----------------:|:------------:|
-| $ARRAY    |      ✗      |     ✗      |       ✓         |      —       |
-| $GOBJ     |      ✗      |     ✗      |       ✓         |     ✓       |
+| $ARRAY    |      ✓      |     ✓      |       ✓         |     ✓       |
+| $GOBJ     |      ✓      |     ✓      |       ✓         |     ✓       |
 | $file     |      ✓      |     ✗      |        —         |      —       |
 | $TABLE    |     ✓<em>      |     ✗      |        —         |      —       |
-| $OBJ      |      ✗      |     ✗      |       ✗         |     ✓       |
+| $OBJ      |      ✓      |     ✓      |       ✓         |     ✓       |
 </em>$TABLE .get() requires two arguments: key and field.</p>
 <p>*$TABLE .getfield() requires two arguments: key and field.</p>
 <p><strong>Key Findings:</strong>

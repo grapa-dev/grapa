@@ -3382,7 +3382,7 @@
   
   
   <span class="md-ellipsis">
-    Language Integrations
+    Language Interpreters
     
   </span>
   
@@ -3393,7 +3393,7 @@
         <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_13_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_5_13">
             <span class="md-nav__icon md-icon"></span>
-            Language Integrations
+            Language Interpreters
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
@@ -3404,12 +3404,12 @@
   
   
     <li class="md-nav__item">
-      <a href="../sql_integration/" class="md-nav__link">
+      <a href="../sql_interpreter/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
-    SQL Integration
+    SQL Interpreter
     
   </span>
   
@@ -3427,12 +3427,12 @@
   
   
     <li class="md-nav__item">
-      <a href="../prolog_integration/" class="md-nav__link">
+      <a href="../prolog_interpreter/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
-    PROLOG Integration
+    PROLOG Interpreter
     
   </span>
   
@@ -3450,12 +3450,12 @@
   
   
     <li class="md-nav__item">
-      <a href="../lisp_integration/" class="md-nav__link">
+      <a href="../lisp_interpreter/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
-    LISP Integration
+    LISP Interpreter
     
   </span>
   
@@ -5189,7 +5189,7 @@ large_data = (1000000).range(0,1);
 result = large_data.map(op(x) { x * x; }, 8);  /* Limit to 8 threads */
 </code></pre></div>
 <h3 id="performance-considerations-parallel-vs-sequential">Performance Considerations: Parallel vs Sequential</h3>
-<p><strong>Important:</strong> <code>.map()</code> and <code>.filter()</code> must copy results from worker threads, which can be expensive for large datasets. Consider the trade-offs:</p>
+<p><strong>Important:</strong> <code>.map()</code> and <code>.filter()</code> can split processing across multiple worker threads, which provides significant performance benefits for most operations. The minimal data copying cost is typically negligible compared to the computational work being performed. Consider the trade-offs:</p>
 <div class="highlight"><pre><span></span><code>/* For large datasets with simple operations - use sequential */
 big_data = (1000000).range();
 result = [];
