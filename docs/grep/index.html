@@ -1023,12 +1023,12 @@
   
   
     <li class="md-nav__item">
-      <a href="../type/list/" class="md-nav__link">
+      <a href="../type/gobj/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
-    List
+    GOBJ
     
   </span>
   
@@ -2171,15 +2171,6 @@
   <a href="#recent-fixes-and-known-gaps" class="md-nav__link">
     <span class="md-ellipsis">
       Recent Fixes and Known Gaps
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#thread-safety-and-parallelism" class="md-nav__link">
-    <span class="md-ellipsis">
-      Thread Safety and Parallelism
     </span>
   </a>
   
@@ -4928,15 +4919,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#thread-safety-and-parallelism" class="md-nav__link">
-    <span class="md-ellipsis">
-      Thread Safety and Parallelism
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#who-is-this-for" class="md-nav__link">
     <span class="md-ellipsis">
       Who is this for?
@@ -5857,38 +5839,10 @@
 <li><strong>🎉 Complete feature parity</strong> - All ripgrep features now supported in Grapa</li>
 <li>See <code>maintainers/BINARY_grep.md</code> for internal details and future work.</li>
 </ul>
-<h2 id="thread-safety-and-parallelism">Thread Safety and Parallelism</h2>
-<p>Grapa is fully thread safe by design. All variable and data structure updates are internally synchronized at the C++ level, so you will never encounter crashes or corruption from concurrent access. However, if your program logic allows multiple threads to read and write the same variable or data structure (for example, when using parallel grep features), you may see <em>logical</em> race conditions (unexpected values, overwrites, etc.). This is a design consideration, not a stability issue. Minimize shared mutable state between threads unless intentional.</p>
-<p><strong>Only <code>$thread()</code> objects provide explicit locking and unlocking via <code>lock()</code>, <code>unlock()</code>, and <code>trylock()</code>.</strong> To protect access to a shared resource, create a <code>$thread()</code> lock object and use it to guard access. Calling <code>.lock()</code> or <code>.unlock()</code> on a regular variable (like an array or scalar) will return an error.</p>
-<p><strong>Canonical Example:</strong></p>
-<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">CLI</label><label for="__tabbed_1_2">Python</label></div>
-<div class="tabbed-content">
-<div class="tabbed-block">
-<div class="highlight"><pre><span></span><code>lock_obj = $thread();
-lock_obj.lock();
-/* ... perform thread-safe operations on shared data ... */
-lock_obj.unlock();
-</code></pre></div>
-</div>
-<div class="tabbed-block">
-<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">grapapy</span>
-<span class="n">xy</span> <span class="o">=</span> <span class="n">grapapy</span><span class="o">.</span><span class="n">grapa</span><span class="p">()</span>
-
-<span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
-<span class="s2">lock_obj = $thread();</span>
-<span class="s2">lock_obj.lock();</span>
-<span class="s2">/* ... perform thread-safe operations on shared data ... */</span>
-<span class="s2">lock_obj.unlock();</span>
-<span class="s2">&quot;&quot;&quot;</span><span class="p">)</span>
-</code></pre></div>
-</div>
-</div>
-</div>
-<p>See <a href="../sys/thread/">Threading and Locking</a> and <a href="../operators/function/">Function Operators: static and const</a> for details and best practices.</p>
 <h2 id="who-is-this-for">Who is this for?</h2>
 <p>Anyone who wants to use Grapa's advanced pattern matching, achieve ripgrep parity, or understand Unicode/PCRE2 grep features in Grapa.</p>
 <h2 id="key-syntax-rules">Key Syntax Rules</h2>
-<div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">CLI</label><label for="__tabbed_2_2">Python</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">CLI</label><label for="__tabbed_1_2">Python</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <ul>
@@ -5908,7 +5862,7 @@ lock_obj.unlock();
 </div>
 <h2 id="basic-usage">Basic Usage</h2>
 <h3 id="pattern-matching">Pattern Matching</h3>
-<div class="tabbed-set tabbed-alternate" data-tabs="3:2"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">CLI</label><label for="__tabbed_3_2">Python</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">CLI</label><label for="__tabbed_2_2">Python</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code>/* Basic pattern matching */
@@ -5947,7 +5901,7 @@ matches.echo();  /* [&quot;Hello world&quot;] */
 </div>
 <h2 id="unicode-and-normalization">Unicode and Normalization</h2>
 <p>Grapa's grep supports full Unicode processing with normalization options:</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="4:2"><input checked="checked" id="__tabbed_4_1" name="__tabbed_4" type="radio" /><input id="__tabbed_4_2" name="__tabbed_4" type="radio" /><div class="tabbed-labels"><label for="__tabbed_4_1">CLI</label><label for="__tabbed_4_2">Python</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="3:2"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">CLI</label><label for="__tabbed_3_2">Python</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code>/* NFC normalization (default) */
@@ -5983,7 +5937,7 @@ matches = text.grep(&quot;café&quot;, &quot;NFKD&quot;);
 </div>
 </div>
 <h2 id="unicode-properties">Unicode Properties</h2>
-<div class="tabbed-set tabbed-alternate" data-tabs="5:2"><input checked="checked" id="__tabbed_5_1" name="__tabbed_5" type="radio" /><input id="__tabbed_5_2" name="__tabbed_5" type="radio" /><div class="tabbed-labels"><label for="__tabbed_5_1">CLI</label><label for="__tabbed_5_2">Python</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="4:2"><input checked="checked" id="__tabbed_4_1" name="__tabbed_4" type="radio" /><input id="__tabbed_4_2" name="__tabbed_4" type="radio" /><div class="tabbed-labels"><label for="__tabbed_4_1">CLI</label><label for="__tabbed_4_2">Python</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code>/* Match letters */
@@ -6019,7 +5973,7 @@ matches = text.grep(&quot;\\X+&quot;);
 </div>
 </div>
 <h2 id="grapheme-cluster-examples">Grapheme Cluster Examples</h2>
-<div class="tabbed-set tabbed-alternate" data-tabs="6:2"><input checked="checked" id="__tabbed_6_1" name="__tabbed_6" type="radio" /><input id="__tabbed_6_2" name="__tabbed_6" type="radio" /><div class="tabbed-labels"><label for="__tabbed_6_1">CLI</label><label for="__tabbed_6_2">Python</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="5:2"><input checked="checked" id="__tabbed_5_1" name="__tabbed_5" type="radio" /><input id="__tabbed_5_2" name="__tabbed_5" type="radio" /><div class="tabbed-labels"><label for="__tabbed_5_1">CLI</label><label for="__tabbed_5_2">Python</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code>/* Basic grapheme cluster matching */
@@ -6096,7 +6050,7 @@ matches.echo();
 </div>
 </div>
 <h2 id="diacritic-insensitive-matching">Diacritic-Insensitive Matching</h2>
-<div class="tabbed-set tabbed-alternate" data-tabs="7:2"><input checked="checked" id="__tabbed_7_1" name="__tabbed_7" type="radio" /><input id="__tabbed_7_2" name="__tabbed_7" type="radio" /><div class="tabbed-labels"><label for="__tabbed_7_1">CLI</label><label for="__tabbed_7_2">Python</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="6:2"><input checked="checked" id="__tabbed_6_1" name="__tabbed_6" type="radio" /><input id="__tabbed_6_2" name="__tabbed_6" type="radio" /><div class="tabbed-labels"><label for="__tabbed_6_1">CLI</label><label for="__tabbed_6_2">Python</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code>/* Match café, cafe, café, etc. */
@@ -6135,7 +6089,7 @@ matches = text.grep(&quot;\\b\\w+\\b&quot;, &quot;o&quot;);
 matches.echo();  /* [&quot;café&quot;] */
 </code></pre></div>
 <h2 id="function-signature">Function Signature</h2>
-<div class="tabbed-set tabbed-alternate" data-tabs="8:2"><input checked="checked" id="__tabbed_8_1" name="__tabbed_8" type="radio" /><input id="__tabbed_8_2" name="__tabbed_8" type="radio" /><div class="tabbed-labels"><label for="__tabbed_8_1">CLI</label><label for="__tabbed_8_2">Python</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="7:2"><input checked="checked" id="__tabbed_7_1" name="__tabbed_7" type="radio" /><input id="__tabbed_7_2" name="__tabbed_7" type="radio" /><div class="tabbed-labels"><label for="__tabbed_7_1">CLI</label><label for="__tabbed_7_2">Python</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code>input.grep(pattern, options, delimiter, normalization, mode, num_workers)
@@ -6566,7 +6520,7 @@ input.grep(&quot;Line 2|Line 6&quot;, &quot;A1B1&quot;)
 - <strong>Memory dumps</strong> (forensic analysis)
 - <strong>Data that should not be Unicode-processed</strong></p>
 <h3 id="basic-binary-mode-usage">Basic Binary Mode Usage</h3>
-<div class="tabbed-set tabbed-alternate" data-tabs="9:2"><input checked="checked" id="__tabbed_9_1" name="__tabbed_9" type="radio" /><input id="__tabbed_9_2" name="__tabbed_9" type="radio" /><div class="tabbed-labels"><label for="__tabbed_9_1">CLI</label><label for="__tabbed_9_2">Python</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="8:2"><input checked="checked" id="__tabbed_8_1" name="__tabbed_8" type="radio" /><input id="__tabbed_8_2" name="__tabbed_8" type="radio" /><div class="tabbed-labels"><label for="__tabbed_8_1">CLI</label><label for="__tabbed_8_2">Python</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code>/* Process as binary data (no Unicode processing) */
@@ -6638,7 +6592,7 @@ binary_data.grep(&quot;data\\d+&quot;, &quot;o&quot;, &quot;\\x00&quot;, &quot;&
 </tbody>
 </table>
 <h3 id="common-binary-patterns">Common Binary Patterns</h3>
-<div class="tabbed-set tabbed-alternate" data-tabs="10:2"><input checked="checked" id="__tabbed_10_1" name="__tabbed_10" type="radio" /><input id="__tabbed_10_2" name="__tabbed_10" type="radio" /><div class="tabbed-labels"><label for="__tabbed_10_1">CLI</label><label for="__tabbed_10_2">Python</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="9:2"><input checked="checked" id="__tabbed_9_1" name="__tabbed_9" type="radio" /><input id="__tabbed_9_2" name="__tabbed_9" type="radio" /><div class="tabbed-labels"><label for="__tabbed_9_1">CLI</label><label for="__tabbed_9_2">Python</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code>/* Find null bytes in binary data */
@@ -6690,7 +6644,7 @@ network_data.grep(&quot;HTTP/[0-9.]+&quot;, &quot;o&quot;, &quot;&quot;, &quot;&
 </div>
 </div>
 <h3 id="real-world-binary-processing-examples">Real-World Binary Processing Examples</h3>
-<div class="tabbed-set tabbed-alternate" data-tabs="11:2"><input checked="checked" id="__tabbed_11_1" name="__tabbed_11" type="radio" /><input id="__tabbed_11_2" name="__tabbed_11" type="radio" /><div class="tabbed-labels"><label for="__tabbed_11_1">CLI</label><label for="__tabbed_11_2">Python</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="10:2"><input checked="checked" id="__tabbed_10_1" name="__tabbed_10" type="radio" /><input id="__tabbed_10_2" name="__tabbed_10" type="radio" /><div class="tabbed-labels"><label for="__tabbed_10_1">CLI</label><label for="__tabbed_10_2">Python</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code>/* Extract strings from executable files */
@@ -6768,7 +6722,7 @@ memory_dump.grep(&quot;\\x48\\x65\\x6c\\x6c\\x6f\\x20\\x57\\x6f\\x72\\x6c\\x64&q
 - Processing data that may contain Unicode characters</p>
 <h2 id="parallel-processing">Parallel Processing</h2>
 <p>Grapa grep provides <strong>massive performance improvements</strong> through parallel processing, especially for large inputs:</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="12:2"><input checked="checked" id="__tabbed_12_1" name="__tabbed_12" type="radio" /><input id="__tabbed_12_2" name="__tabbed_12" type="radio" /><div class="tabbed-labels"><label for="__tabbed_12_1">CLI</label><label for="__tabbed_12_2">Python</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="11:2"><input checked="checked" id="__tabbed_11_1" name="__tabbed_11" type="radio" /><input id="__tabbed_11_2" name="__tabbed_11" type="radio" /><div class="tabbed-labels"><label for="__tabbed_11_1">CLI</label><label for="__tabbed_11_2">Python</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code>/* Auto-detect number of workers (recommended) */
@@ -6814,7 +6768,7 @@ large_input.grep(&quot;pattern&quot;, &quot;o&quot;, &quot;&quot;, &quot;&quot;,
 <h2 id="error-handling">Error Handling</h2>
 <h3 id="graceful-error-handling">Graceful Error Handling</h3>
 <p>Invalid patterns and errors are handled gracefully by returning empty results:</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="13:2"><input checked="checked" id="__tabbed_13_1" name="__tabbed_13" type="radio" /><input id="__tabbed_13_2" name="__tabbed_13" type="radio" /><div class="tabbed-labels"><label for="__tabbed_13_1">CLI</label><label for="__tabbed_13_2">Python</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="12:2"><input checked="checked" id="__tabbed_12_1" name="__tabbed_12" type="radio" /><input id="__tabbed_12_2" name="__tabbed_12" type="radio" /><div class="tabbed-labels"><label for="__tabbed_12_1">CLI</label><label for="__tabbed_12_2">Python</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code>/* Invalid regex pattern - returns empty array instead of crashing */
@@ -6920,7 +6874,7 @@ large_input.grep(&quot;pattern&quot;, &quot;o&quot;, &quot;&quot;, &quot;&quot;,
 <span class="p">}</span>
 </code></pre></div>
 <h3 id="examples">Examples</h3>
-<div class="tabbed-set tabbed-alternate" data-tabs="14:2"><input checked="checked" id="__tabbed_14_1" name="__tabbed_14" type="radio" /><input id="__tabbed_14_2" name="__tabbed_14" type="radio" /><div class="tabbed-labels"><label for="__tabbed_14_1">CLI</label><label for="__tabbed_14_2">Python</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="13:2"><input checked="checked" id="__tabbed_13_1" name="__tabbed_13" type="radio" /><input id="__tabbed_13_2" name="__tabbed_13" type="radio" /><div class="tabbed-labels"><label for="__tabbed_13_1">CLI</label><label for="__tabbed_13_2">Python</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code>/* Basic JSON output */
@@ -7015,7 +6969,7 @@ age = result[0][&quot;age&quot;]           // &quot;30&quot;
 <p>Large inputs are automatically processed in parallel for better performance. Grapa grep provides <strong>up to 11x speedup</strong> over single-threaded processing on multi-core systems, making it significantly faster than Python's <code>re</code> module for large text processing tasks.</p>
 <h2 id="examples_1">Examples</h2>
 <h3 id="basic-examples">Basic Examples</h3>
-<div class="tabbed-set tabbed-alternate" data-tabs="15:2"><input checked="checked" id="__tabbed_15_1" name="__tabbed_15" type="radio" /><input id="__tabbed_15_2" name="__tabbed_15" type="radio" /><div class="tabbed-labels"><label for="__tabbed_15_1">CLI</label><label for="__tabbed_15_2">Python</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="14:2"><input checked="checked" id="__tabbed_14_1" name="__tabbed_14" type="radio" /><input id="__tabbed_14_2" name="__tabbed_14" type="radio" /><div class="tabbed-labels"><label for="__tabbed_14_1">CLI</label><label for="__tabbed_14_2">Python</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code>// Find lines containing &quot;error&quot;
@@ -7056,7 +7010,7 @@ log_content.grep(&quot;error&quot;, &quot;v&quot;)
 </div>
 </div>
 <h3 id="advanced-examples">Advanced Examples</h3>
-<div class="tabbed-set tabbed-alternate" data-tabs="16:2"><input checked="checked" id="__tabbed_16_1" name="__tabbed_16" type="radio" /><input id="__tabbed_16_2" name="__tabbed_16" type="radio" /><div class="tabbed-labels"><label for="__tabbed_16_1">CLI</label><label for="__tabbed_16_2">Python</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="15:2"><input checked="checked" id="__tabbed_15_1" name="__tabbed_15" type="radio" /><input id="__tabbed_15_2" name="__tabbed_15" type="radio" /><div class="tabbed-labels"><label for="__tabbed_15_1">CLI</label><label for="__tabbed_15_2">Python</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code>// Find &quot;error&quot; with 2 lines of context
@@ -7104,7 +7058,7 @@ log_content.grep(&quot;error&quot;, &quot;c&quot;)
 </div>
 </div>
 <h3 id="unicode-examples">Unicode Examples</h3>
-<div class="tabbed-set tabbed-alternate" data-tabs="17:2"><input checked="checked" id="__tabbed_17_1" name="__tabbed_17" type="radio" /><input id="__tabbed_17_2" name="__tabbed_17" type="radio" /><div class="tabbed-labels"><label for="__tabbed_17_1">CLI</label><label for="__tabbed_17_2">Python</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="16:2"><input checked="checked" id="__tabbed_16_1" name="__tabbed_16" type="radio" /><input id="__tabbed_16_2" name="__tabbed_16" type="radio" /><div class="tabbed-labels"><label for="__tabbed_16_1">CLI</label><label for="__tabbed_16_2">Python</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code>// Match Unicode letters
@@ -7182,7 +7136,7 @@ text.grep(&quot;\\p{L}+&quot;, &quot;o&quot;)
 </div>
 </div>
 <h3 id="error-handling-examples">Error Handling Examples</h3>
-<div class="tabbed-set tabbed-alternate" data-tabs="18:2"><input checked="checked" id="__tabbed_18_1" name="__tabbed_18" type="radio" /><input id="__tabbed_18_2" name="__tabbed_18" type="radio" /><div class="tabbed-labels"><label for="__tabbed_18_1">CLI</label><label for="__tabbed_18_2">Python</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="17:2"><input checked="checked" id="__tabbed_17_1" name="__tabbed_17" type="radio" /><input id="__tabbed_17_2" name="__tabbed_17" type="radio" /><div class="tabbed-labels"><label for="__tabbed_17_1">CLI</label><label for="__tabbed_17_2">Python</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code>// Handle invalid patterns gracefully
@@ -7213,7 +7167,7 @@ result = &quot;Hello world&quot;.grep(&quot;&quot;, &quot;o&quot;);
 </div>
 </div>
 <h3 id="context-line-examples">Context Line Examples</h3>
-<div class="tabbed-set tabbed-alternate" data-tabs="19:2"><input checked="checked" id="__tabbed_19_1" name="__tabbed_19" type="radio" /><input id="__tabbed_19_2" name="__tabbed_19" type="radio" /><div class="tabbed-labels"><label for="__tabbed_19_1">CLI</label><label for="__tabbed_19_2">Python</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="18:2"><input checked="checked" id="__tabbed_18_1" name="__tabbed_18" type="radio" /><input id="__tabbed_18_2" name="__tabbed_18" type="radio" /><div class="tabbed-labels"><label for="__tabbed_18_1">CLI</label><label for="__tabbed_18_2">Python</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code>// Basic context
@@ -7249,7 +7203,7 @@ result.echo();
 </div>
 </div>
 <h3 id="column-number-examples">Column Number Examples</h3>
-<div class="tabbed-set tabbed-alternate" data-tabs="20:2"><input checked="checked" id="__tabbed_20_1" name="__tabbed_20" type="radio" /><input id="__tabbed_20_2" name="__tabbed_20" type="radio" /><div class="tabbed-labels"><label for="__tabbed_20_1">CLI</label><label for="__tabbed_20_2">Python</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="19:2"><input checked="checked" id="__tabbed_19_1" name="__tabbed_19" type="radio" /><input id="__tabbed_19_2" name="__tabbed_19" type="radio" /><div class="tabbed-labels"><label for="__tabbed_19_1">CLI</label><label for="__tabbed_19_2">Python</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code>// Basic column numbers
@@ -7281,7 +7235,7 @@ result.echo();
 </div>
 </div>
 <h3 id="word-boundary-examples">Word Boundary Examples</h3>
-<div class="tabbed-set tabbed-alternate" data-tabs="21:2"><input checked="checked" id="__tabbed_21_1" name="__tabbed_21" type="radio" /><input id="__tabbed_21_2" name="__tabbed_21" type="radio" /><div class="tabbed-labels"><label for="__tabbed_21_1">CLI</label><label for="__tabbed_21_2">Python</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="20:2"><input checked="checked" id="__tabbed_20_1" name="__tabbed_20" type="radio" /><input id="__tabbed_20_2" name="__tabbed_20" type="radio" /><div class="tabbed-labels"><label for="__tabbed_20_1">CLI</label><label for="__tabbed_20_2">Python</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code>// Basic word boundaries
@@ -7347,7 +7301,7 @@ result.echo();
 </tbody>
 </table>
 <h3 id="examples_2">Examples</h3>
-<div class="tabbed-set tabbed-alternate" data-tabs="22:2"><input checked="checked" id="__tabbed_22_1" name="__tabbed_22" type="radio" /><input id="__tabbed_22_2" name="__tabbed_22" type="radio" /><div class="tabbed-labels"><label for="__tabbed_22_1">CLI</label><label for="__tabbed_22_2">Python</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="21:2"><input checked="checked" id="__tabbed_21_1" name="__tabbed_21" type="radio" /><input id="__tabbed_21_2" name="__tabbed_21" type="radio" /><div class="tabbed-labels"><label for="__tabbed_21_1">CLI</label><label for="__tabbed_21_2">Python</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code>input = &quot;Hello world\nGoodbye world\n&quot;;
