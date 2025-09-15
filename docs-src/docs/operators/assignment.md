@@ -90,10 +90,10 @@ arr += 20 arr[2];         /* Insert at position 2: [10,1,20,2,3,4,5,6,7,8] */
 **Lists (`$GOBJ`):**
 ```grapa
 list = {a:1, b:2, c:3};
-list += (d:4);            /* Add single key-value pair: {"a":1,"b":2,"c":3,"d":4} */
-list += {d:4, e:5};       /* Add multiple key-value pairs: {"a":1,"b":2,"c":3,"d":4,"e":5} */
-list += (f:6) list[0];    /* Insert at beginning: {"f":6,"a":1,"b":2,"c":3,"d":4,"e":5} */
-list += (g:7) list[1];    /* Insert at position 1: {"f":6,"g":7,"a":1,"b":2,"c":3,"d":4,"e":5} */
+list += (d:4);            /* Add single key-value pair: {a:1, b:2, c:3, d:4} */
+list += {d:4, e:5};       /* Add multiple key-value pairs: {a:1, b:2, c:3, d:4, e:5} */
+list += (f:6) list[0];    /* Insert at beginning: {f:6, a:1, b:2, c:3, d:4, e:5} */
+list += (g:7) list[1];    /* Insert at position 1: {f:6, g:7, a:1, b:2, c:3, d:4, e:5} */
 ```
 
 **Vectors (`$VECTOR`):**

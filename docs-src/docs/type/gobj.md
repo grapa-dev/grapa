@@ -10,10 +10,11 @@ An associative object that stores key-value pairs. Elements are accessed by thei
 | Feature | $GOBJ (`{}`) | $ARRAY (`[]`) |
 |---------|--------------|---------------|
 | **Syntax** | `{'a':1, 'b':2, 'c':3}` | `[1, 2, 3]` |
-| **Access** | `gobj."a"` or `gobj["a"]` | `array[0]` |
-| **Type** | Associative | Positional |
-| **Keys** | Named keys | Numeric indices |
+| **Access** | `gobj."a"` or `gobj["a"]` | `array[0]` or `array['key']` |
+| **Type** | Associative | Positional (with key search) |
+| **Keys** | Named keys | Numeric indices + key search |
 | **Order** | Key-based | Position-based |
+| **2D Access** | `.getfield(index, field)` | `.getfield(index, field)` |
 
 **Note:** This differs from some other languages where `[]` is called a "list" and `{}` is called a "dictionary" or "object". Grapa follows traditional C terminology.
 
@@ -107,6 +108,38 @@ value = list.getfield(0);   /* 1 (by index) */
 value = list.getfield(-1);  /* 3 (by negative index) */
 ```
 
+#### 2D Access with .getfield()
+
+For 2D access (when accessing nested objects or specific fields), you can use `.getfield()` with two parameters:
+
+```grapa
+/* Example: File listing object */
+d = $file().ls();
+/* Returns: [{"$PATH":"","$KEY":"build.py","$TYPE":"FILE","$BYTES":38707}, ...] */
+
+/* Access specific field of a specific item */
+test_bytes = d.getfield(9, "$BYTES");        /* 608 (bytes of "test" item) */
+test_type = d.getfield(9, "$TYPE");          /* "DIR" (type of "test" item) */
+test_key = d.getfield(9, "$KEY");            /* "test" (key of "test" item) */
+
+/* Alternative: Chain access methods */
+test_item = d.getfield(9);                   /* {"$PATH":"","$KEY":"test","$TYPE":"DIR","$BYTES":608} */
+test_bytes = test_item.getfield("$BYTES");   /* 608 */
+test_type = test_item.getfield("$TYPE");     /* "DIR" */
+```
+
+**2D Access Methods:**
+- **`.getfield(index, field)`**: Access specific field of item at index
+- **`.getfield(index).getfield(field)`**: Chain access (same result)
+- **`.getfield(index)["field"]`**: Alternative bracket notation
+
+**Method Selection Guidelines:**
+- **`.get()`**: Use for 1D access by key or index
+- **`.getfield()`**: Use for 1D access by key/index (equivalent to `.get()`) or 2D access with two parameters
+- **Bracket notation**: Use for direct access when you know the structure
+- **Chained methods**: Use `.getfield().getfield()` for 2D access
+- **Quoted access**: Use `gobj."key"` for data items, `gobj.key` for methods/properties
+
 #### Assignment Operations (`=`)
 ```grapa
 /* Direct property assignment */
@@ -135,17 +168,41 @@ list."b" += "dee";        /* {"a":1,"b":"bydee","c":3} - quoted for data access 
 list[0] += 8;             /* {"a":9,"b":"bydee","c":3} */
 ```
 
+#### 2D Assignment with .setfield()
+
+For 2D assignment (when modifying nested objects or specific fields), you can use `.setfield()` with two parameters:
+
+```grapa
+/* Example: File listing object */
+d = $file().ls();
+/* Returns: [{"$PATH":"","$KEY":"build.py","$TYPE":"FILE","$BYTES":38707}, ...] */
+
+/* Modify specific field of a specific item */
+d.setfield(9, "$BYTES", 1024);              /* Change bytes of "test" item to 1024 */
+d.setfield(9, "$TYPE", "FILE");             /* Change type of "test" item to "FILE" */
+
+/* Alternative: Chain assignment methods */
+test_item = d.getfield(9);                  /* Get the item */
+test_item.setfield("$BYTES", 2048);         /* Modify bytes field */
+test_item.setfield("$TYPE", "DIR");         /* Modify type field */
+```
+
+**2D Assignment Methods:**
+- **`.setfield(index, field, value)`**: Set specific field of item at index
+- **`.getfield(index).setfield(field, value)`**: Chain access and assignment
+- **`.getfield(index)["field"] = value`**: Alternative bracket notation
+
 #### Addition Operations (`+=`)
 ```grapa
 /* Add single key-value pair */
 list = {a:1, b:2};
-list += (c:3);           /* {"a":1,"b":2,"c":3} */
+list += (c:3);           /* {a:1, b:2, c:3} */
 
 /* Add multiple key-value pairs */
-list += {d:4, e:5};      /* {"a":1,"b":2,"c":3,"d":4,"e":5} */
+list += {d:4, e:5};      /* {a:1, b:2, c:3, d:4, e:5} */
 
 /* Insert at specific position */
-list += (f:6) list[0];   /* {"f":6,"a":1,"b":2,"c":3,"d":4,"e":5} */
+list += (f:6) list[0];   /* {f:6, a:1, b:2, c:3, d:4, e:5} */
 ```
 
 #### Concatenation Operations (`++=`)
@@ -263,13 +320,13 @@ The `.findall()` method provides **enterprise-grade querying capabilities** for 
 data = {name:"Alice", age:30, city:"New York"};
 
 /* Find by property existence */
-data.findall({has:{name:"age"}})          /* Returns: {"data":{"name":"Alice","age":30}} */
+data.findall({has:{name:"age"}})          /* Returns: {data:{name:"Alice",age:30}} */
 
 /* Find by property value */
-data.findall({has:{name:"name", value:"Alice"}}) /* Returns: {"data":{"name":"Alice","age":30}} */
+data.findall({has:{name:"name", value:"Alice"}}) /* Returns: {data:{name:"Alice",age:30}} */
 
 /* Find by value only */
-data.findall({has:{value:"Alice"}})       /* Returns: {"data":{"name":"Alice","age":30}} */
+data.findall({has:{value:"Alice"}})       /* Returns: {data:{name:"Alice",age:30}} */
 ```
 
 #### Complex Nested Queries

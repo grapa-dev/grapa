@@ -256,7 +256,7 @@ do {
 
 - **For loops are now fully supported** with multiple syntax variations
 - `while` loops and `.range()`+functional methods remain valid alternatives
-- The `.range()` method is native: `(10).range()` → `[0,1,2,3,4,5,6,7,8,9]`
+- The `.range()` method is native: `10.range()` → `[0,1,2,3,4,5,6,7,8,9]`
 - If more objects support `.get()` in the future, this guide will be updated.
 
 ### For Loop Syntax
@@ -572,16 +572,16 @@ Use `.range()` to generate sequences of numbers:
 
 ```grapa
 /* Generate sequence 0 to 9 */
-seq = (10).range(0,1);  /* [0,1,2,3,4,5,6,7,8,9] */
+seq = 10.range(0,1);  /* [0,1,2,3,4,5,6,7,8,9] */
 
 /* Generate sequence with custom start and step */
-seq = (10).range(1,2);  /* [1,3,5,7,9] */
+seq = 10.range(1,2);  /* [1,3,5,7,9] */
 
 /* Use .range() with functional methods for iteration */
-sum = (10).range(0,1).reduce(op(acc, x) { acc += x; }, 0);  /* Sum 0-9 */
+sum = 10.range(0,1).reduce(op(acc, x) { acc += x; }, 0);  /* Sum 0-9 */
 
 /* Parallel processing with thread count */
-squares = (1000000).range(0,1).map(op(x) { x * x; }, 8);  /* Limit to 8 threads */
+squares = 1000000.range(0,1).map(op(x) { x * x; }, 8);  /* Limit to 8 threads */
 ```
 
 - Use `.range()` instead of manual while loops for sequence generation
@@ -1930,7 +1930,7 @@ Sorts elements in ascending order by default:
 (3, 1, 4, 1, 5, 9).sort();                /* Returns (1, 1, 3, 4, 5, 9) */
 
 /* Lists and Objects - sort by key */
-{c:3, a:1, b:2}.sort();                   /* Returns {"a":1, "b":2, "c":3} */
+{c:3, a:1, b:2}.sort();                   /* Returns {a:1, b:2, c:3} */
 ```
 
 **Advanced Sorting:**
@@ -1948,7 +1948,7 @@ Removes duplicates while preserving the "last value wins" principle:
 
 **For Objects (`$OBJ`) and Grapa Objects (`$GOBJ`):**
 ```grapa
-{a: 1, b: 2, a: 3, c: 4, b: 5}.unique();  /* Returns {"a": 3, "b": 5, "c": 4} */
+{a: 1, b: 2, a: 3, c: 4, b: 5}.unique();  /* Returns {a: 3, b: 5, c: 4} */
 ```
 
 - Removes duplicate keys, keeping the last value for each key

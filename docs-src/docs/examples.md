@@ -152,15 +152,15 @@ arr.echo();
 
 /* List operations */
 list = {a:1, b:2, c:3};
-list += (d:4);            /* Add key-value: {"a":1,"b":2,"c":3,"d":4} */
-list += (e:5) list[0];    /* Insert at position: {"e":5,"a":1,"b":2,"c":3,"d":4} */
-list -= list.b;           /* Remove by key: {"e":5,"a":1,"c":3,"d":4} */
+list += (d:4);            /* Add key-value: {a:1, b:2, c:3, d:4} */
+list += (e:5) list[0];    /* Insert at position: {e:5, a:1, b:2, c:3, d:4} */
+list -= list.b;           /* Remove by key: {e:5, a:1, c:3, d:4} */
 
 /* List assignment operations */
-list.a = 10;              /* Dot notation assignment: {"e":5,"a":10,"c":3,"d":4} */
-list["c"] = 30;           /* Bracket notation assignment: {"e":5,"a":10,"c":30,"d":4} */
-list[-2] = 300;           /* Negative index assignment: {"e":5,"a":10,"c":300,"d":4} */
-list.a += 5;              /* Compound assignment: {"e":5,"a":15,"c":300,"d":4} */
+list.a = 10;              /* Dot notation assignment: {e:5, a:10, c:3, d:4} */
+list["c"] = 30;           /* Bracket notation assignment: {e:5, a:10, c:30, d:4} */
+list[-2] = 300;           /* Negative index assignment: {e:5, a:10, c:300, d:4} */
+list.a += 5;              /* Compound assignment: {e:5, a:15, c:300, d:4} */
 list.echo();
 
 /* Advanced: Recursive keys function using .getname() */
@@ -399,37 +399,37 @@ list.root[1][0].item[1][0]                /* Access converted data: "Hello" */
 data = {name:"Alice", age:30, city:"New York"};
 
 /* Find by property existence */
-data.findall({has:{name:"age"}})          /* Returns: {"data":{"name":"Alice","age":30}} */
+data.findall({has:{name:"age"}})          /* Returns: {data:{name:"Alice",age:30}} */
 
 /* Find by property value */
-data.findall({has:{name:"name", value:"Alice"}}) /* Returns: {"data":{"name":"Alice","age":30}} */
+data.findall({has:{name:"name", value:"Alice"}}) /* Returns: {data:{name:"Alice",age:30}} */
 
 /* Complex nested structures */
 nested = {user:{name:"Alice", age:30}, admin:{name:"Bob", age:25}};
 
 /* Find nested objects */
-nested.findall({has:{name:"user"}})       /* Returns: {"nested":{"user":{"name":"Alice","age":30},"admin":{"name":"Bob","age":25}}} */
+nested.findall({has:{name:"user"}})       /* Returns: {nested:{user:{name:"Alice",age:30},admin:{name:"Bob",age:25}}} */
 
 /* Find with nested criteria */
-nested.findall({has:{name:"user", has:{name:"name", value:"Alice"}}}) /* Returns: {"nested":{"user":{"name":"Alice","age":30},"admin":{"name":"Bob","age":25}}} */
+nested.findall({has:{name:"user", has:{name:"name", value:"Alice"}}}) /* Returns: {nested:{user:{name:"Alice",age:30},admin:{name:"Bob",age:25}}} */
 
 /* ARRAY findall capabilities */
 arr = [{name:"Alice"}, {name:"Bob"}, {name:"Charlie"}];
 
 /* Find objects with specific properties */
-arr.findall({has:{name:"name"}})          /* Returns: [{"name":"Alice"},{"name":"Bob"},{"name":"Charlie"}] */
+arr.findall({has:{name:"name"}})          /* Returns: [{name:"Alice"},{name:"Bob"},{name:"Charlie"}] */
 
 /* Find objects with specific property values */
-arr.findall({has:{name:"name", value:"Bob"}}) /* Returns: [{"name":"Bob"}] */
+arr.findall({has:{name:"name", value:"Bob"}}) /* Returns: [{name:"Bob"}] */
 
 /* Complex array queries */
 complex_arr = [{user:{name:"Alice", role:"admin"}}, {user:{name:"Bob", role:"user"}}];
 
 /* Find with nested criteria */
-complex_arr.findall({has:{name:"user", has:{name:"role", value:"admin"}}}) /* Returns: [{"user":{"name":"Alice","role":"admin"}}] */
+complex_arr.findall({has:{name:"user", has:{name:"role", value:"admin"}}}) /* Returns: [{user:{name:"Alice",role:"admin"}}] */
 
 /* Logical operations with arrays */
-complex_arr.findall({or:[{has:{name:"user", has:{name:"role", value:"admin"}}}, {has:{name:"user", has:{name:"role", value:"user"}}}]}) /* Returns: [{"user":{"name":"Alice","role":"admin"}},{"user":{"name":"Bob","role":"user"}}] */
+complex_arr.findall({or:[{has:{name:"user", has:{name:"role", value:"admin"}}}, {has:{name:"user", has:{name:"role", value:"user"}}}]}) /* Returns: [{user:{name:"Alice",role:"admin"}},{user:{name:"Bob",role:"user"}}] */
 ```
 
 ### String Interpolation

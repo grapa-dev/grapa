@@ -34,6 +34,32 @@ Grapa supports both dot (`.`) and underscore (`_`) as decimal separators for flo
 (1.0 == 1_0).echo();      /* true */
 ```
 
+## Method Call Syntax
+
+Grapa supports calling methods directly on float literals without parentheses:
+
+```grapa
+/* Direct method calls on float literals */
+30.75.hex();              /* Same as (30.75).hex() */
+3.14.str();               /* Same as (3.14).str() */
+2.5.len();                /* Same as (2.5).len() */
+
+/* Works with underscore decimal notation too */
+30_75.hex();              /* Same as (30_75).hex() */
+3_14.str();               /* Same as (3_14).str() */
+2_5.len();                /* Same as (2_5).len() */
+
+/* Parentheses still work for clarity */
+(30.75).hex();            /* Also valid */
+(3.14).str();             /* Also valid */
+(2.5).len();              /* Also valid */
+
+/* All syntaxes are equivalent */
+(30.75).hex() == 30.75.hex();    /* true */
+(30_75).hex() == 30_75.hex();    /* true */
+30.75.hex() == 30_75.hex();      /* true */
+```
+
 **Key Points:**
 - **Interchangeable**: Dots and underscores are completely equivalent for decimal separators
 - **Single separator**: Only one decimal separator is allowed per number (standard mathematical definition)
@@ -67,22 +93,25 @@ By default, all floats are "float" format. To change formats use the fix() and f
 
 Convert to other formats:
 ```
-> (30.75).hex()
+> 30.75.hex()
 1E.C
 
-> (30.75).bin()
+> (30.75).hex()
+1E.C (parentheses also work)
+
+> 30.75.bin()
 11110.11
 
-> (30.75).int()
+> 30.75.int()
 30
 ```
 
 Bit shifts:
 ```
-> (30.75) >> 4
+> 30.75 >> 4
 1.921875
 
-> (30.75) << 4
+> 30.75 << 4
 492.0
 ```
 

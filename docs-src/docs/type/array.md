@@ -18,10 +18,11 @@ A positional array that stores values without named keys. Elements are accessed 
 | Feature | $ARRAY (`[]`) | $GOBJ (`{}`) |
 |---------|---------------|--------------|
 | **Syntax** | `[1, 2, 3]` | `{a:1, b:2, c:3}` |
-| **Access** | `array[0]` | `list.a` or `list["a"]` |
-| **Type** | Positional | Associative |
-| **Keys** | Numeric indices | Named keys |
+| **Access** | `array[0]` or `array['key']` | `list.a` or `list["a"]` |
+| **Type** | Positional (with key search) | Associative |
+| **Keys** | Numeric indices + key search | Named keys |
 | **Order** | Position-based | Key-based |
+| **Key Search** | Supports `$KEY` field search | Direct key access |
 
 **Note:** This differs from some other languages where `[]` is called a "list" and `{}` is called a "dictionary" or "object". Grapa follows traditional C terminology.
 
@@ -44,6 +45,19 @@ If the elements are $ARRAY type, the first item of the array is used for the mat
 > x[x."b"];
 ["b",964]
 > x.g
+{"err":-1}
+```
+
+If the elements are $GOBJ type with a "$KEY" field, the "$KEY" value is used for the match.
+```
+> d = $file().ls();
+> d['test'];
+9
+> d.'test';
+9
+> d.'test'();
+{"$PATH":"","$KEY":"test","$TYPE":"DIR","$BYTES":608}
+> d['nonexistent'];
 {"err":-1}
 ```
 
@@ -92,6 +106,67 @@ first = arr.getfield(0);  /* 1 */
 last = arr.getfield(-1);  /* 5 */
 ```
 
+#### 2D Array Access
+
+For 2D arrays (arrays of arrays), you can use `.getfield()` for row and column access:
+
+```grapa
+/* 2D array example */
+matrix = [[1, 2, 3], [4, 5, 6], [7, 8, 9]];
+
+/* Access entire row */
+row1 = matrix.getfield(0);        /* [1, 2, 3] */
+row2 = matrix.getfield(1);        /* [4, 5, 6] */
+
+/* Access specific element in row */
+element = matrix.getfield(0).getfield(1);  /* 2 (row 0, column 1) */
+element = matrix.getfield(1).getfield(2);  /* 6 (row 1, column 2) */
+
+/* Alternative bracket notation */
+element = matrix[0][1];           /* 2 */
+element = matrix[1][2];           /* 6 */
+```
+
+**Method Selection Guidelines:**
+- **`.get()`**: Use for 1D array access by index
+- **`.getfield()`**: Use for 1D array access by index (equivalent to `.get()`) or 2D array row access
+- **Bracket notation**: Use for direct access when you know the structure
+- **Chained methods**: Use `.getfield().getfield()` for 2D array element access
+- **Key-based access**: Use when array contains `$GOBJ` items with `"$KEY"` fields
+
+#### Key-Based Access for $GOBJ Arrays
+
+When an `$ARRAY` contains `$GOBJ` items that have a `"$KEY"` field, you can access elements by their key value:
+
+```grapa
+/* Example: File listing from $file().ls() */
+d = $file().ls();
+/* Returns: [{"$PATH":"","$KEY":"build.py","$TYPE":"FILE","$BYTES":38707}, ...] */
+
+/* Access by key using bracket notation */
+test_index = d['test'];                    /* Returns: 9 (index of "test" item) */
+test_item = d[9];                          /* Returns: {"$PATH":"","$KEY":"test","$TYPE":"DIR","$BYTES":608} */
+
+/* Access by key using method notation */
+test_index = d.'test';                     /* Returns: 9 (index of "test" item) */
+test_item = d.'test'();                    /* Returns: {"$PATH":"","$KEY":"test","$TYPE":"DIR","$BYTES":608} */
+
+/* Access specific fields of the found item */
+test_type = d.'test'().'$TYPE';            /* Returns: "DIR" */
+test_bytes = d.'test'().'$BYTES';          /* Returns: 608 */
+```
+
+**Key-Based Access Methods:**
+- **`array['key']`**: Returns the index of the item with `"$KEY"` equal to `"key"`
+- **`array.'key'`**: Same as bracket notation, returns the index
+- **`array.'key'()`**: Returns the actual `$GOBJ` item with `"$KEY"` equal to `"key"`
+- **`array[index]`**: Returns the item at the specified index
+
+**Use Cases:**
+- File system listings (`$file().ls()`)
+- Database query results with key fields
+- Any structured data where items have identifying keys
+
 #### Assignment Operations (`=`)
 ```grapa
 /* Direct element assignment */
@@ -112,6 +187,25 @@ arr.setfield(-2, "good"); /* [3,"good","hi"] */
 /* Compound assignment on accessed elements */
 arr[-2] += "dee";         /* [3,"gooddee","hi"] */
 arr[0] += 8;              /* [11,"gooddee","hi"] */
+```
+
+#### 2D Array Assignment
+
+For 2D arrays, you can use `.setfield()` for row and column assignment:
+
+```grapa
+/* 2D array example */
+matrix = [[1, 2, 3], [4, 5, 6], [7, 8, 9]];
+
+/* Assign entire row */
+matrix.setfield(0, [10, 11, 12]);        /* [[10, 11, 12], [4, 5, 6], [7, 8, 9]] */
+
+/* Assign specific element in row */
+matrix.getfield(1).setfield(2, 99);      /* [[10, 11, 12], [4, 5, 99], [7, 8, 9]] */
+
+/* Alternative bracket notation */
+matrix[1][2] = 99;                       /* Same result as above */
+matrix[0] = [10, 11, 12];                /* Same result as above */
 ```
 
 #### Addition Operations (`+=`)

@@ -621,7 +621,7 @@ elapsed_ms = ((end_time - start_time) / 1000000).int();
 
 # Parallel processing with built-in capabilities
 grapa -c "
-large_data = (1000000).range(0,1);
+large_data = 1000000.range(0,1);
 squares = large_data.map(op(x) { x * x; }, 8);  /* 8 worker threads */
 ('Processed ' + squares.len() + ' items in parallel').echo();
 "
@@ -792,7 +792,7 @@ for (file in files) {
 ```bash
 # Parallel data processing
 grapa -c "
-data = (10000).range(0,1);
+data = 10000.range(0,1);
 processed = data.map(op(x) { x * x + 1; }, 4);  /* 4 workers */
 ('Processed ' + processed.len() + ' items').echo();
 "
@@ -800,7 +800,7 @@ processed = data.map(op(x) { x * x + 1; }, 4);  /* 4 workers */
 # Concurrent operations
 grapa -c "
 tasks = [];
-for (i in (5).range(0,1)) {
+for (i in 5.range(0,1)) {
     task = op(id) {
         \$sys().sleep(100);  /* Simulate work */
         'Task ' + id.str() + ' completed'.echo();
