@@ -1,0 +1,110 @@
+/*
+ * File Operations: Parameter Differences
+ * 
+ * This example clearly demonstrates the parameter order differences
+ * between .get()/.set() and .getfield()/.setfield() methods.
+ */
+
+f = $file();
+
+/* ========================================
+ * PARAMETER ORDER COMPARISON
+ * ======================================== */
+
+"=== PARAMETER ORDER COMPARISON ===".echo();
+
+/* .set() method: obj.set(key, value, field) */
+f.set("user1", "Alice", "name");     /* key=user1, value=Alice, field=name */
+f.set("user1", 25, "age");           /* key=user1, value=25, field=age */
+f.set("user1", "Engineer", "job");   /* key=user1, value=Engineer, field=job */
+
+/* .setfield() method: obj.setfield(key, field, value) */
+f.setfield("user2", "name", "Bob");      /* key=user2, field=name, value=Bob */
+f.setfield("user2", "age", 30);          /* key=user2, field=age, value=30 */
+f.setfield("user2", "job", "Designer");  /* key=user2, field=job, value=Designer */
+
+/* ========================================
+ * RETRIEVAL COMPARISON
+ * ======================================== */
+
+"=== RETRIEVAL COMPARISON ===".echo();
+
+/* .get() method: obj.get(key, field) */
+name1 = f.get("user1", "name");
+age1 = f.get("user1", "age");
+job1 = f.get("user1", "job");
+
+/* .getfield() method: obj.getfield(key, field) */
+name2 = f.getfield("user2", "name");
+age2 = f.getfield("user2", "age");
+job2 = f.getfield("user2", "job");
+
+"User 1 (.get method):".echo();
+"  Name: " + name1.echo();
+"  Age: " + age1.echo();
+"  Job: " + job1.echo();
+
+"User 2 (.getfield method):".echo();
+"  Name: " + name2.echo();
+"  Age: " + age2.echo();
+"  Job: " + job2.echo();
+
+/* ========================================
+ * FILE CONTENT EXAMPLES
+ * ======================================== */
+
+"=== FILE CONTENT EXAMPLES ===".echo();
+
+/* Simple file content (no field parameter needed) */
+f.set("simple.txt", "This is simple file content");
+content_simple = f.get("simple.txt");
+"Simple content: " + content_simple.hex().str().echo();
+
+/* Using .setfield() for simple content */
+f.setfield("simple2.txt", "This is also simple content");
+content_simple2 = f.getfield("simple2.txt");
+"Simple content via .setfield: " + content_simple2.hex().str().echo();
+
+/* ========================================
+ * FUNCTIONAL EQUIVALENCE DEMONSTRATION
+ * ======================================== */
+
+"=== FUNCTIONAL EQUIVALENCE ===".echo();
+
+/* These produce identical results */
+f.set("test1.txt", "Identical content");
+f.setfield("test2.txt", "Identical content");
+
+result1 = f.get("test1.txt");
+result2 = f.getfield("test2.txt");
+
+"Results are identical: " + (result1.hex().str() == result2.hex().str()).echo();
+
+/* ========================================
+ * ERROR CASES
+ * ======================================== */
+
+"=== ERROR HANDLING ===".echo();
+
+/* Missing field parameter with .getfield() */
+try {
+    missing_field = f.getfield("user1");  /* Missing field parameter */
+    "Unexpected success".echo();
+} catch {
+    "Expected error: .getfield() requires field parameter".echo();
+}
+
+/* Missing field parameter with .get() - this works */
+missing_field_ok = f.get("user1");  /* This works, returns the record */
+"Missing field with .get() works: " + (missing_field_ok != null).echo();
+
+/* ========================================
+ * CLEANUP
+ * ======================================== */
+
+f.rm("simple.txt");
+f.rm("simple2.txt");
+f.rm("test1.txt");
+f.rm("test2.txt");
+
+"Parameter differences demonstration completed!".echo();

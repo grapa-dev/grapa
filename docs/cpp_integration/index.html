@@ -4946,7 +4946,7 @@ grapa_example.exe<span class="w">  </span><span class="c1"># On Windows</span>
 <span class="k">public</span><span class="o">:</span>
 <span class="w">    </span><span class="n">ConfigManager</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span><span class="w"> </span><span class="n">path</span><span class="p">)</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">config_path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">        </span><span class="c1">// Load configuration with Grapa</span>
-<span class="w">        </span><span class="n">grapa</span><span class="p">.</span><span class="n">eval</span><span class="p">(</span><span class="s">&quot;config = $file().getfield(&#39;&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">config_path</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot;&#39;).json()&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="n">grapa</span><span class="p">.</span><span class="n">eval</span><span class="p">(</span><span class="s">&quot;config = $file().get(&#39;&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">config_path</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot;&#39;).json()&quot;</span><span class="p">);</span>
 <span class="w">    </span><span class="p">}</span>
 
 <span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">getString</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span><span class="w"> </span><span class="n">key</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
@@ -4971,7 +4971,7 @@ grapa_example.exe<span class="w">  </span><span class="c1"># On Windows</span>
 
 <span class="k">private</span><span class="o">:</span>
 <span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="n">saveConfig</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="n">grapa</span><span class="p">.</span><span class="n">eval</span><span class="p">(</span><span class="s">&quot;$file().setfield(&#39;&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">config_path</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot;&#39;, config.json())&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="n">grapa</span><span class="p">.</span><span class="n">eval</span><span class="p">(</span><span class="s">&quot;$file().set(&#39;&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">config_path</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot;&#39;, config.json())&quot;</span><span class="p">);</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">};</span>
 </code></pre></div>

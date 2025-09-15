@@ -5334,22 +5334,25 @@ result = function(10, 20);
 <h2 id="file-operations">File Operations</h2>
 <h3 id="reading-files">Reading Files</h3>
 <div class="highlight"><pre><span></span><code>/* Read entire file */
-content = $file().getfield(&quot;data.txt&quot;);
+content = $file().get(&quot;data.txt&quot;);
 (&quot;File content: &quot; + content).echo();
 
 /* Read file as lines */
-lines = $file().getfield(&quot;data.txt&quot;).split(&quot;\n&quot;);
+lines = $file().get(&quot;data.txt&quot;).split(&quot;\n&quot;);
 for (line in lines) {
     (&quot;Line: &quot; + line).echo();
 }
 </code></pre></div>
 <h3 id="writing-files">Writing Files</h3>
 <div class="highlight"><pre><span></span><code>/* Write to file */
-$file().setfield(&quot;output.txt&quot;, &quot;Hello from Grapa!&quot;);
+$file().set(&quot;output.txt&quot;, &quot;Hello from Grapa!&quot;);
 
-/* Append to file */
-$file().setfield(&quot;log.txt&quot;, &quot;a&quot;, &quot;New entry\n&quot;);
+/* Append to file (read, append, write) */
+existing_content = $file().get(&quot;log.txt&quot;);
+new_content = existing_content + &quot;New entry\n&quot;;
+$file().set(&quot;log.txt&quot;, new_content);
 </code></pre></div>
+<p><strong>Note:</strong> Grapa does not have a built-in append operation for <code>.set()</code>. To append to a file, you must read the existing content, append to it, and then write it back. The exception is <code>$file().set($stderr, "data")</code> which does append to stderr under the hood.</p>
 <h2 id="data-processing">Data Processing</h2>
 <h3 id="working-with-arrays">Working with Arrays</h3>
 <div class="highlight"><pre><span></span><code>/* Create array */
@@ -5563,7 +5566,7 @@ temp_file = temp_dir + &quot;/grapa_temp_&quot; + $TIME().utc().str();
 log_file = temp_dir + &quot;/grapa_log_&quot; + $TIME().utc().str();
 
 /* Write to temporary file */
-$file(temp_file).setfield(&quot;Temporary data&quot;);
+$file().set(temp_file, &quot;Temporary data&quot;);
 
 /* Clean up temporary files when done */
 $file(temp_file).rm();
@@ -5866,7 +5869,7 @@ grapa<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;</
 <h2 id="common-patterns">Common Patterns</h2>
 <h3 id="configuration-files">Configuration Files</h3>
 <div class="highlight"><pre><span></span><code>/* Read JSON config */
-config_text = $file().getfield(&quot;config.json&quot;);
+config_text = $file().get(&quot;config.json&quot;);
 config = config_text.json();
 
 /* Use configuration */

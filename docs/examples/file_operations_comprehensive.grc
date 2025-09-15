@@ -1,0 +1,126 @@
+/*
+ * Comprehensive File Operations Examples
+ * 
+ * This example demonstrates both .get()/.set() and .getfield()/.setfield()
+ * methods for file operations, showing their differences and use cases.
+ * 
+ * RECOMMENDED USAGE:
+ * - Use .get()/.set() for simple file operations (reading/writing file content)
+ * - Use .getfield()/.setfield() for structured data operations (database-style)
+ * - The field parameter in .get()/.set() exists for backward compatibility
+ */
+
+/* ========================================
+ * BASIC FILE OPERATIONS
+ * ======================================== */
+
+/* Create a file object */
+f = $file();
+
+/* Simple file operations - use .set() and .get() */
+f.set("test1.txt", "Hello from .set() method!");
+content1 = f.get("test1.txt");
+"Content from .set(): " + content1.hex().str().echo();
+
+/* Structured data operations - prefer .setfield() and .getfield() */
+f.setfield("test2.txt", "Hello from .setfield() method!");
+content2 = f.getfield("test2.txt");
+"Content from .setfield(): " + content2.hex().str().echo();
+
+/* ========================================
+ * PARAMETER ORDER DIFFERENCES
+ * ======================================== */
+
+/* Simple file content - use .set() */
+f.set("config.json", '{"name": "test", "value": 123}');
+
+/* Structured data - prefer .setfield() method: obj.setfield(key, field, value) */
+f.setfield("user1", "name", "John Doe");    /* key, field, value */
+f.setfield("user1", "age", 30);             /* key, field, value */
+
+/* Legacy compatibility - .set() with field parameter: obj.set(key, value, field) */
+f.set("user2", "Jane Smith", "name");       /* key, value, field (backward compatibility) */
+f.set("user2", 25, "age");                  /* key, value, field (backward compatibility) */
+
+/* ========================================
+ * RETRIEVING DATA
+ * ======================================== */
+
+/* Structured data - prefer .getfield() method */
+name1 = f.getfield("user1", "name");  /* key, field */
+age1 = f.getfield("user1", "age");    /* key, field */
+
+/* Legacy compatibility - .get() method */
+name2 = f.get("user2", "name");       /* key, field */
+age2 = f.get("user2", "age");         /* key, field */
+
+"User 1 (using .getfield): " + name1 + ", Age: " + age1.echo();
+"User 2 (using .get): " + name2 + ", Age: " + age2.echo();
+
+/* ========================================
+ * FILE CONTENT OPERATIONS
+ * ======================================== */
+
+/* Writing different types of content */
+f.set("text.txt", "Plain text content");
+f.set("json.txt", '{"key": "value", "number": 42}');
+f.set("binary.txt", "Binary data: \x00\x01\x02\x03");
+
+/* Reading content back */
+text_content = f.get("text.txt");
+json_content = f.get("json.txt");
+binary_content = f.get("binary.txt");
+
+"Text content: " + text_content.hex().str().echo();
+"JSON content: " + json_content.hex().str().echo();
+"Binary content: " + binary_content.hex().str().echo();
+
+/* ========================================
+ * ERROR HANDLING
+ * ======================================== */
+
+/* Attempting to read non-existent file */
+missing = f.get("nonexistent.txt");
+if (missing.type() == $ERR) {
+    "File not found (as expected)".echo();
+} else {
+    "Unexpected: file found".echo();
+}
+
+/* ========================================
+ * SPECIAL STREAMS
+ * ======================================== */
+
+/* Writing to standard streams */
+f.set($stdout, "This goes to standard output\n");
+f.set($stderr, "This goes to standard error\n");
+
+/* ========================================
+ * COMPARISON: SAME FUNCTIONALITY, DIFFERENT SYNTAX
+ * ======================================== */
+
+/* These are functionally equivalent: */
+f.set("equivalent1.txt", "Content via .set()");
+f.setfield("equivalent2.txt", "Content via .setfield()");
+
+/* These are functionally equivalent: */
+content_via_get = f.get("equivalent1.txt");
+content_via_getfield = f.getfield("equivalent2.txt");
+
+"Both methods work: " + (content_via_get.hex().str() == content_via_getfield.hex().str()).echo();
+
+/* ========================================
+ * CLEANUP
+ * ======================================== */
+
+/* Remove test files */
+f.rm("test1.txt");
+f.rm("test2.txt");
+f.rm("config.json");
+f.rm("text.txt");
+f.rm("json.txt");
+f.rm("binary.txt");
+f.rm("equivalent1.txt");
+f.rm("equivalent2.txt");
+
+"File operations completed successfully!".echo();

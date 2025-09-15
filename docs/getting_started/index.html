@@ -4765,14 +4765,14 @@ matches.echo();  /* [&quot;Hello world&quot;, &quot;Hello again&quot;] */
 <h2 id="common-patterns">Common Patterns</h2>
 <h3 id="data-processing">Data Processing</h3>
 <div class="highlight"><pre><span></span><code>/* Data processing example */
-content = $file().getfield(&quot;data.txt&quot;);
+content = $file().get(&quot;data.txt&quot;);
 lines = content.split(&quot;\n&quot;);
 filtered = lines.filter(op(line) { line.len() &gt; 0; });
 result = filtered.map(op(line) { line.upper(); });
 casefolded = filtered.map(op(line) { line.casefold(); });
 result.echo();
 
-json_data = $file().getfield(&quot;data.json&quot;).json();
+json_data = $file().get(&quot;data.json&quot;).json();
 users = json_data.users;
 active_users = users.filter(op(user) { user.active == true; });
 names = active_users.map(op(user) { user.name; });

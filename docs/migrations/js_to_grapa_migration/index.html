@@ -5122,7 +5122,7 @@
 - <strong>Length</strong>: Use <code>.len()</code> for arrays and lists, not <code>.size()</code>.
 - <strong>Keys</strong>: For lists, iterate manually instead of using <code>.keys()</code>.
 - If more objects support <code>.get()</code> in the future, this guide will be updated.</p>
-<p><strong>Note:</strong> <code>.getfield("key")</code> is for <code>$file</code> and <code>$TABLE</code>. <code>.get()/.set()</code> is for <code>$WIDGET</code>. For <code>$GOBJ</code>/<code>$OBJ</code>, use <code>obj["key"]</code>, <code>obj.key</code>, or <code>obj."key"</code>. For <code>$ARRAY</code>, use <code>arr[index]</code> (bracket notation only).</p>
+<p><strong>Note:</strong> <code>.get()/.set()</code> is for <code>$file</code> operations. <code>.getfield("key")</code> is for <code>$TABLE</code> with named keys. <code>.get()/.set()</code> is for <code>$WIDGET</code>. For <code>$GOBJ</code>/<code>$OBJ</code>, use <code>obj["key"]</code>, <code>obj.key</code>, or <code>obj."key"</code>. For <code>$ARRAY</code>, use <code>arr[index]</code> (bracket notation only).</p>
 </blockquote>
 <h2 id="access-patterns-objects-lists-arrays-files-and-tables">Access Patterns: Objects, Lists, Arrays, Files, and Tables</h2>
 <p>Below are all valid ways to access elements in Grapa data structures. See the canonical <a href="../../syntax/basic_syntax/">Basic Syntax Guide</a> for the latest tested rules.</p>

@@ -9066,11 +9066,11 @@ value = table.getfield(&quot;user1&quot;, &quot;name&quot;);    /* Named key, na
 
 /* $file and $TABLE only support named keys, not numeric indices */
 file = $file();
-file.setfield(&quot;file.txt&quot;, &quot;content&quot;);       /* Set with named key */
-content = file.getfield(&quot;file.txt&quot;);        /* Get by named key */
+file.set(&quot;file.txt&quot;, &quot;content&quot;);            /* Set file content */
+content = file.get(&quot;file.txt&quot;);             /* Get file content */
 </code></pre></div>
 <ul>
-<li>Use <code>.getfield()</code> and <code>.setfield()</code> for <code>$file</code> and <code>$TABLE</code> with named keys only.</li>
+<li>Use <code>.get()</code> and <code>.set()</code> for <code>$file</code> operations. Use <code>.getfield()</code> and <code>.setfield()</code> for <code>$TABLE</code> with named keys only.</li>
 <li>Bracket and dot notation are not valid for <code>$file</code> and <code>$TABLE</code>.</li>
 <li>Only <code>$ARRAY</code>, <code>$GOBJ</code>, and <code>$OBJ</code> (non-system classes) support flexible mix/match of names and indices with <code>.getfield()/.setfield()</code>.</li>
 </ul>
@@ -10144,9 +10144,9 @@ $global.my_file = $file();
 my_file.set(&quot;test.txt&quot;, &quot;Hello World&quot;);
 content = my_file.get(&quot;test.txt&quot;); /* &quot;Hello World&quot; */
 
-/* Alternative: .getfield()/.setfield() (still works) */
-my_file.setfield(&quot;test2.txt&quot;, &quot;Hello Again&quot;);
-content2 = my_file.getfield(&quot;test2.txt&quot;); /* &quot;Hello Again&quot; */
+/* Alternative: .get()/.set() for file operations */
+my_file.set(&quot;test2.txt&quot;, &quot;Hello Again&quot;);
+content2 = my_file.get(&quot;test2.txt&quot;); /* &quot;Hello Again&quot; */
 
 /* $TABLE examples */
 $global.my_table = {}.table(&quot;ROW&quot;);

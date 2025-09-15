@@ -1963,6 +1963,57 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#getfieldname-field" class="md-nav__link">
+    <span class="md-ellipsis">
+      getfield(name, field)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#setfieldname-field-value" class="md-nav__link">
+    <span class="md-ellipsis">
+      setfield(name, field, value)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#method-comparison-getset-vs-getfieldsetfield" class="md-nav__link">
+    <span class="md-ellipsis">
+      Method Comparison: .get()/.set() vs .getfield()/.setfield()
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Method Comparison: .get()/.set() vs .getfield()/.setfield()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      Examples:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#when-to-use-which-method" class="md-nav__link">
+    <span class="md-ellipsis">
+      When to Use Which Method:
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#infoname" class="md-nav__link">
     <span class="md-ellipsis">
       info(name)
@@ -4592,6 +4643,57 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#getfieldname-field" class="md-nav__link">
+    <span class="md-ellipsis">
+      getfield(name, field)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#setfieldname-field-value" class="md-nav__link">
+    <span class="md-ellipsis">
+      setfield(name, field, value)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#method-comparison-getset-vs-getfieldsetfield" class="md-nav__link">
+    <span class="md-ellipsis">
+      Method Comparison: .get()/.set() vs .getfield()/.setfield()
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Method Comparison: .get()/.set() vs .getfield()/.setfield()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      Examples:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#when-to-use-which-method" class="md-nav__link">
+    <span class="md-ellipsis">
+      When to Use Which Method:
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#infoname" class="md-nav__link">
     <span class="md-ellipsis">
       info(name)
@@ -5131,6 +5233,89 @@ content = f.get(&quot;test.txt&quot;);
 /* Returns: 0x48656C6C6F2C20576F726C6421 */
 </code></pre></div>
 <p><strong>Note</strong>: File content is returned in hexadecimal format, not plain text. To convert to string, you may need to use additional processing.</p>
+<h2 id="getfieldname-field">getfield(name, field)</h2>
+<p>Alternative method for reading file content with different parameter order.</p>
+<p><strong>Parameters</strong>:
+- <code>name</code>: File name
+- <code>field</code>: Field name (required)</p>
+<p><strong>Return Format</strong>: Returns file content in hexadecimal format.</p>
+<div class="highlight"><pre><span></span><code>f.setfield(&quot;test.txt&quot;, &quot;Hello, World!&quot;);
+content = f.getfield(&quot;test.txt&quot;);
+/* Returns: 0x48656C6C6F2C20576F726C6421 */
+</code></pre></div>
+<h2 id="setfieldname-field-value">setfield(name, field, value)</h2>
+<p>Alternative method for writing file content with different parameter order.</p>
+<p><strong>Parameters</strong>:
+- <code>name</code>: File name
+- <code>field</code>: Field name (required)
+- <code>value</code>: Content to write</p>
+<div class="highlight"><pre><span></span><code>f.setfield(&quot;test.txt&quot;, &quot;Hello, World!&quot;);
+</code></pre></div>
+<h2 id="method-comparison-getset-vs-getfieldsetfield">Method Comparison: .get()/.set() vs .getfield()/.setfield()</h2>
+<p>Both method pairs provide identical functionality but with different parameter ordering:</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Parameter Order</th>
+<th>Field Parameter</th>
+<th>Use Case</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>.get()</code></td>
+<td><code>obj.get(key, field)</code></td>
+<td>Optional (backward compatibility)</td>
+<td>Standard file operations</td>
+</tr>
+<tr>
+<td><code>.getfield()</code></td>
+<td><code>obj.getfield(key, field)</code></td>
+<td>Required</td>
+<td>Database-style operations</td>
+</tr>
+<tr>
+<td><code>.set()</code></td>
+<td><code>obj.set(key, value, field)</code></td>
+<td>Optional (backward compatibility)</td>
+<td>Standard file operations</td>
+</tr>
+<tr>
+<td><code>.setfield()</code></td>
+<td><code>obj.setfield(key, field, value)</code></td>
+<td>Required</td>
+<td>Database-style operations</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Historical Context</strong>: The field parameter in <code>.get()/.set()</code> was added for backward compatibility during the transition when <code>.setfield()</code> was introduced to provide clearer database-style operations. For new code, prefer the explicit parameter ordering of <code>.getfield()/.setfield()</code> when working with structured data.</p>
+<h3 id="examples">Examples:</h3>
+<div class="highlight"><pre><span></span><code>f = $file();
+
+/* Using .get()/.set() - field parameter is optional */
+f.set(&quot;user1&quot;, &quot;Alice&quot;, &quot;name&quot;);     /* key, value, field */
+f.set(&quot;user1&quot;, 25, &quot;age&quot;);           /* key, value, field */
+name1 = f.get(&quot;user1&quot;, &quot;name&quot;);      /* key, field */
+age1 = f.get(&quot;user1&quot;, &quot;age&quot;);        /* key, field */
+
+/* Using .getfield()/.setfield() - field parameter is required */
+f.setfield(&quot;user2&quot;, &quot;name&quot;, &quot;Bob&quot;);      /* key, field, value */
+f.setfield(&quot;user2&quot;, &quot;age&quot;, 30);          /* key, field, value */
+name2 = f.getfield(&quot;user2&quot;, &quot;name&quot;);     /* key, field */
+age2 = f.getfield(&quot;user2&quot;, &quot;age&quot;);       /* key, field */
+
+/* Simple file content (no field needed) */
+f.set(&quot;simple.txt&quot;, &quot;File content&quot;);
+content = f.get(&quot;simple.txt&quot;);
+</code></pre></div>
+<h3 id="when-to-use-which-method">When to Use Which Method:</h3>
+<ul>
+<li><strong>Use <code>.get()/.set()</code></strong> for simple file operations (reading/writing file content) and legacy code compatibility</li>
+<li><strong>Use <code>.getfield()/.setfield()</code></strong> for structured data operations, database-style operations, and new code where explicit field specification is preferred</li>
+</ul>
+<p><strong>Recommendation</strong>: For new code, prefer <code>.getfield()/.setfield()</code> when working with structured data as it provides clearer parameter ordering and explicit field requirements.</p>
+<p>Both methods are functionally equivalent and call the same underlying C++ handlers.</p>
 <h2 id="infoname">info(name)</h2>
 <p>Returns detailed metadata information about a file or directory.</p>
 <p><strong>Parameters</strong>:
