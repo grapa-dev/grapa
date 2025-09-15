@@ -4943,18 +4943,18 @@
 <tr>
 <td>$file</td>
 <td style="text-align: center;">✅</td>
-<td style="text-align: center;">❌</td>
-<td style="text-align: center;">—</td>
-<td style="text-align: center;">—</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
 <td style="text-align: center;">❌</td>
 <td style="text-align: center;">❌</td>
 </tr>
 <tr>
 <td>$TABLE</td>
 <td style="text-align: center;">✅*</td>
-<td style="text-align: center;">❌</td>
-<td style="text-align: center;">—</td>
-<td style="text-align: center;">—</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
 <td style="text-align: center;">❌</td>
 <td style="text-align: center;">❌</td>
 </tr>
@@ -5156,8 +5156,8 @@ value = arr[1];         /* Returns 20 */
 file_info = files.get(0);   /* Correct */
 </code></pre></div>
 <ul>
-<li>Always use <code>.get(index)</code> for $file results.</li>
-<li>Bracket and dot notation are not supported for $file.</li>
+<li>Use <code>.get(index)</code>, bracket notation, or dot notation for $file results.</li>
+<li>$file supports all access patterns: <code>.get()</code>, <code>[]</code>, and <code>.</code> notation.</li>
 </ul>
 <h3 id="table">$TABLE</h3>
 <div class="highlight"><pre><span></span><code>table = {}.table(&quot;ROW&quot;);
@@ -5167,8 +5167,8 @@ table.set(&quot;user1&quot;, &quot;Alice&quot;, &quot;name&quot;);
 value = table.get(&quot;user1&quot;, &quot;name&quot;);   /* Correct */
 </code></pre></div>
 <ul>
-<li>Always use <code>.get(key, field)</code> for $TABLE.</li>
-<li>Bracket and dot notation are not supported for $TABLE.</li>
+<li>Use <code>.get(key, field)</code>, bracket notation, or dot notation for $TABLE.</li>
+<li>$TABLE supports all access patterns: <code>.get()</code>, <code>[]</code>, and <code>.</code> notation.</li>
 </ul>
 <blockquote>
 <p><strong>Reference Table:</strong>
@@ -5177,8 +5177,8 @@ value = table.get(&quot;user1&quot;, &quot;name&quot;);   /* Correct */
 | $ARRAY    |      ✓      |     ✓      |       ✓         |     ✓       |   ✓   |    ✗   |
 | $GOBJ     |      ✓      |     ✓      |       ✓         |     ✓       |   ✓   |    ✗   |
 | $OBJ      |      ✓      |     ✓      |       ✓         |     ✓       |   ✗   |    ✗   |
-| $file     |      ✓      |     ✗      |        —         |      —       |   ✗   |    ✗   |
-| $TABLE    |     ✓<em>      |     ✗      |        —         |      —       |   ✗   |    ✗   |
+| $file     |      ✓      |     ✓      |       ✓         |     ✓       |   ✗   |    ✗   |
+| $TABLE    |     ✓<em>      |     ✓      |       ✓         |     ✓       |   ✗   |    ✗   |
 </em>$TABLE .get() requires two arguments: key and field.</p>
 </blockquote>
 <p>See <a href="../../syntax/basic_syntax/">Basic Syntax Guide</a> for empirical test results and future updates.</p>
