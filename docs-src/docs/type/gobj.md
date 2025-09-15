@@ -18,6 +18,61 @@ An associative object that stores key-value pairs. Elements are accessed by thei
 
 **Note:** This differs from some other languages where `[]` is called a "list" and `{}` is called a "dictionary" or "object". Grapa follows traditional C terminology.
 
+## String Labels vs ID Labels in $GOBJ
+
+**Important:** In `$GOBJ` objects, there's a crucial distinction between string labels and ID labels:
+
+- **String labels** (`"x"`) - `$STR` values used as labels for data items
+- **ID labels** (`x`) - `$ID` values used as labels for variables/functions  
+- **Variable references** (`@x`) resolve to the current value of variable `x`
+
+Both `$ID` and `$STR` can be used as labels, but they serve different purposes and are accessed differently.
+
+This separation prevents data items from overriding class methods:
+
+```grapa
+/* Example showing the distinction */
+x = "hi";
+z = "by";
+
+/* Create object with both string and ID labels */
+d = {"x":"x str", x:"x id", @x:"test", @"z":"test2"};
+
+/* Access string-labeled data item */
+d."x"                    /* Returns: "x str" */
+
+/* Access ID-labeled item */
+d.x                      /* Returns: "x id" */
+
+/* Access variable-referenced items */
+d."hi"                   /* Returns: "test" (from @x where x="hi") */
+d."by"                   /* Returns: "test2" (from @"z" where z="by") */
+
+/* The object structure */
+d                        /* Returns: {"x":"x str",x:"x id","hi":"test","by":"test2"} */
+```
+
+### Why This Matters
+
+Without this separation, a data item with label `"len"` would override the class method `.len()`:
+
+```grapa
+/* BAD: This would break .len() method */
+bad_obj = {len:"some data"};
+bad_obj.len();           /* Error: tries to access data instead of method */
+
+/* GOOD: Use string labels for data items */
+good_obj = {"len":"some data"};
+good_obj.len();          /* Works: calls the .len() method */
+good_obj."len";          /* Works: accesses the data item */
+```
+
+### Best Practices
+
+- **For data items**: Use string labels `{"key":"value"}`
+- **For variables/functions**: Use ID labels `{key:"value"}`  
+- **For dynamic references**: Use variable references `{@var:"value"}`
+
 ## **⚠️ IMPORTANT: Data Item Labels Must Be Quoted**
 
 In Grapa Objects (`$GOBJ`), there's a crucial distinction between data access and method access:
