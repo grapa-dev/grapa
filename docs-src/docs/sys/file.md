@@ -296,13 +296,12 @@ f.rm("test");
 
 **Note**: This will recursively remove directories and their contents.
 
-## set(name, value [, field])
+## set(name, value)
 Creates or updates a file with the specified content.
 
 **Parameters**:
 - `name`: File name or special stream (`$stdout`, `$stderr`)
 - `value`: Content to write to the file or stream
-- `field` (optional): Field name (defaults to `$VALUE`)
 
 **Special Streams**:
 - `$stdout`: Writes to standard output stream
@@ -316,18 +315,13 @@ f.set("config.json", '{"name": "test", "value": 123}');
 /* Write to standard streams */
 f.set($stdout, "Output message\n");
 f.set($stderr, "Error message\n");
-
-/* Database field operations */
-f.set("user1", "John Doe", "name");
-f.set("user1", 30, "age");
 ```
 
-## get(name [, field])
+## get(name)
 Reads the content of a file.
 
 **Parameters**:
 - `name`: File name
-- `field` (optional): Field name (defaults to `$VALUE`)
 
 **Return Format**: Returns file content in hexadecimal format.
 
@@ -340,75 +334,66 @@ content = f.get("test.txt");
 **Note**: File content is returned in hexadecimal format, not plain text. To convert to string, you may need to use additional processing.
 
 ## getfield(name, field)
-Alternative method for reading file content with different parameter order.
+Reads structured data from a file or database record.
 
 **Parameters**:
-- `name`: File name
+- `name`: File name or record key
 - `field`: Field name (required)
 
-**Return Format**: Returns file content in hexadecimal format.
+**Return Format**: Returns field content in hexadecimal format.
 
 ```grapa
-f.setfield("test.txt", "Hello, World!");
-content = f.getfield("test.txt");
-/* Returns: 0x48656C6C6F2C20576F726C6421 */
+f.setfield("user1", "name", "John Doe");
+name = f.getfield("user1", "name");
+/* Returns: 0x4A6F686E20446F65 */
 ```
 
 ## setfield(name, field, value)
-Alternative method for writing file content with different parameter order.
+Writes structured data to a file or database record.
 
 **Parameters**:
-- `name`: File name
+- `name`: File name or record key
 - `field`: Field name (required)
 - `value`: Content to write
 
 ```grapa
-f.setfield("test.txt", "Hello, World!");
+f.setfield("user1", "name", "John Doe");
+f.setfield("user1", "age", 30);
 ```
 
 ## Method Comparison: .get()/.set() vs .getfield()/.setfield()
 
-Both method pairs provide identical functionality but with different parameter ordering:
+The two method pairs serve different purposes:
 
-| Method | Parameter Order | Field Parameter | Use Case |
-|--------|----------------|-----------------|----------|
-| `.get()` | `obj.get(key, field)` | Optional (backward compatibility) | Standard file operations |
-| `.getfield()` | `obj.getfield(key, field)` | Required | Database-style operations |
-| `.set()` | `obj.set(key, value, field)` | Optional (backward compatibility) | Standard file operations |
-| `.setfield()` | `obj.setfield(key, field, value)` | Required | Database-style operations |
-
-**Historical Context**: The field parameter in `.get()/.set()` was added for backward compatibility during the transition when `.setfield()` was introduced to provide clearer database-style operations. For new code, prefer the explicit parameter ordering of `.getfield()/.setfield()` when working with structured data.
+| Method | Parameter Order | Use Case |
+|--------|----------------|----------|
+| `.get()` | `obj.get(name)` | Simple file content reading |
+| `.set()` | `obj.set(name, value)` | Simple file content writing |
+| `.getfield()` | `obj.getfield(name, field)` | Structured data field reading |
+| `.setfield()` | `obj.setfield(name, field, value)` | Structured data field writing |
 
 ### Examples:
 
 ```grapa
 f = $file();
 
-/* Using .get()/.set() - field parameter is optional */
-f.set("user1", "Alice", "name");     /* key, value, field */
-f.set("user1", 25, "age");           /* key, value, field */
-name1 = f.get("user1", "name");      /* key, field */
-age1 = f.get("user1", "age");        /* key, field */
+/* Simple file operations */
+f.set("config.txt", "Simple file content");
+content = f.get("config.txt");
 
-/* Using .getfield()/.setfield() - field parameter is required */
-f.setfield("user2", "name", "Bob");      /* key, field, value */
-f.setfield("user2", "age", 30);          /* key, field, value */
-name2 = f.getfield("user2", "name");     /* key, field */
-age2 = f.getfield("user2", "age");       /* key, field */
-
-/* Simple file content (no field needed) */
-f.set("simple.txt", "File content");
-content = f.get("simple.txt");
+/* Structured data operations */
+f.setfield("user1", "name", "Alice");
+f.setfield("user1", "age", 25);
+name = f.getfield("user1", "name");
+age = f.getfield("user1", "age");
 ```
 
 ### When to Use Which Method:
 
-- **Use `.get()/.set()`** for simple file operations (reading/writing file content) and legacy code compatibility
-- **Use `.getfield()/.setfield()`** for structured data operations, database-style operations, and new code where explicit field specification is preferred
+- **Use `.get()/.set()`** for simple file operations (reading/writing file content)
+- **Use `.getfield()/.setfield()`** for structured data operations and database-style field access
 
-**Recommendation**: For new code, prefer `.getfield()/.setfield()` when working with structured data as it provides clearer parameter ordering and explicit field requirements.
-
-Both methods are functionally equivalent and call the same underlying C++ handlers.
+**Recommendation**: Use `.getfield()/.setfield()` for any operation involving structured data or field-specific access.
 
 ## info(name)
 Returns detailed metadata information about a file or directory.

@@ -666,27 +666,20 @@ names.echo();
 
 ### File Operations: Method Comparison
 ```grapa
-/* Demonstrates both .get()/.set() and .getfield()/.setfield() methods */
+/* Demonstrates .get()/.set() for simple files and .getfield()/.setfield() for structured data */
 f = $file();
 
 /* Simple file operations - use .get()/.set() */
 f.set("config.txt", "Simple file content");
 content = f.get("config.txt");
 
-/* Structured data operations - prefer .getfield()/.setfield() */
+/* Structured data operations - use .getfield()/.setfield() */
 f.setfield("user1", "name", "Alice");     /* key, field, value */
 f.setfield("user1", "age", 25);           /* key, field, value */
 name1 = f.getfield("user1", "name");      /* key, field */
 age1 = f.getfield("user1", "age");        /* key, field */
 
-/* Legacy compatibility - .get()/.set() with field parameter */
-f.set("user2", "Bob", "name");            /* key, value, field (backward compatibility) */
-f.set("user2", 30, "age");                /* key, value, field (backward compatibility) */
-name2 = f.get("user2", "name");           /* key, field */
-age2 = f.get("user2", "age");             /* key, field */
-
 "User 1: " + name1 + ", Age: " + age1.echo();
-"User 2: " + name2 + ", Age: " + age2.echo();
 ```
 
 **See also:**

@@ -1,27 +1,30 @@
 /*
- * File Operations: Parameter Differences
+ * File Operations: Method Usage Patterns
  * 
- * This example clearly demonstrates the parameter order differences
- * between .get()/.set() and .getfield()/.setfield() methods.
+ * This example demonstrates the proper usage patterns for
+ * .get()/.set() and .getfield()/.setfield() methods.
  */
 
 f = $file();
 
 /* ========================================
- * PARAMETER ORDER COMPARISON
+ * USAGE PATTERN COMPARISON
  * ======================================== */
 
-"=== PARAMETER ORDER COMPARISON ===".echo();
+"=== USAGE PATTERN COMPARISON ===".echo();
 
-/* .set() method: obj.set(key, value, field) */
-f.set("user1", "Alice", "name");     /* key=user1, value=Alice, field=name */
-f.set("user1", 25, "age");           /* key=user1, value=25, field=age */
-f.set("user1", "Engineer", "job");   /* key=user1, value=Engineer, field=job */
+/* Simple file operations - use .set() */
+f.set("config.txt", "Simple configuration content");
+f.set("log.txt", "Log entry content");
 
-/* .setfield() method: obj.setfield(key, field, value) */
-f.setfield("user2", "name", "Bob");      /* key=user2, field=name, value=Bob */
-f.setfield("user2", "age", 30);          /* key=user2, field=age, value=30 */
-f.setfield("user2", "job", "Designer");  /* key=user2, field=job, value=Designer */
+/* Structured data operations - use .setfield() */
+f.setfield("user1", "name", "Alice");     /* key=user1, field=name, value=Alice */
+f.setfield("user1", "age", 25);           /* key=user1, field=age, value=25 */
+f.setfield("user1", "job", "Engineer");   /* key=user1, field=job, value=Engineer */
+
+f.setfield("user2", "name", "Bob");       /* key=user2, field=name, value=Bob */
+f.setfield("user2", "age", 30);           /* key=user2, field=age, value=30 */
+f.setfield("user2", "job", "Designer");   /* key=user2, field=job, value=Designer */
 
 /* ========================================
  * RETRIEVAL COMPARISON
@@ -29,64 +32,78 @@ f.setfield("user2", "job", "Designer");  /* key=user2, field=job, value=Designer
 
 "=== RETRIEVAL COMPARISON ===".echo();
 
-/* .get() method: obj.get(key, field) */
-name1 = f.get("user1", "name");
-age1 = f.get("user1", "age");
-job1 = f.get("user1", "job");
+/* Simple file retrieval - use .get() */
+config_content = f.get("config.txt");
+log_content = f.get("log.txt");
 
-/* .getfield() method: obj.getfield(key, field) */
+/* Structured data retrieval - use .getfield() */
+name1 = f.getfield("user1", "name");
+age1 = f.getfield("user1", "age");
+job1 = f.getfield("user1", "job");
+
 name2 = f.getfield("user2", "name");
 age2 = f.getfield("user2", "age");
 job2 = f.getfield("user2", "job");
 
-"User 1 (.get method):".echo();
+"Simple files:".echo();
+"  Config: " + config_content.hex().str().echo();
+"  Log: " + log_content.hex().str().echo();
+
+"User 1 (structured data):".echo();
 "  Name: " + name1.echo();
 "  Age: " + age1.echo();
 "  Job: " + job1.echo();
 
-"User 2 (.getfield method):".echo();
+"User 2 (structured data):".echo();
 "  Name: " + name2.echo();
 "  Age: " + age2.echo();
 "  Job: " + job2.echo();
 
 /* ========================================
- * FILE CONTENT EXAMPLES
+ * USE CASE EXAMPLES
  * ======================================== */
 
-"=== FILE CONTENT EXAMPLES ===".echo();
+"=== USE CASE EXAMPLES ===".echo();
 
-/* Simple file content (no field parameter needed) */
+/* Simple file content - use .set()/.get() */
 f.set("simple.txt", "This is simple file content");
 content_simple = f.get("simple.txt");
 "Simple content: " + content_simple.hex().str().echo();
 
-/* Using .setfield() for simple content */
-f.setfield("simple2.txt", "This is also simple content");
-content_simple2 = f.getfield("simple2.txt");
-"Simple content via .setfield: " + content_simple2.hex().str().echo();
+/* Structured data - use .setfield()/.getfield() */
+f.setfield("data_record", "title", "Document Title");
+f.setfield("data_record", "author", "John Doe");
+f.setfield("data_record", "pages", 150);
+title = f.getfield("data_record", "title");
+author = f.getfield("data_record", "author");
+pages = f.getfield("data_record", "pages");
+"Document: " + title + " by " + author + " (" + pages + " pages)".echo();
 
 /* ========================================
- * FUNCTIONAL EQUIVALENCE DEMONSTRATION
+ * METHOD SELECTION GUIDELINES
  * ======================================== */
 
-"=== FUNCTIONAL EQUIVALENCE ===".echo();
+"=== METHOD SELECTION GUIDELINES ===".echo();
 
-/* These produce identical results */
-f.set("test1.txt", "Identical content");
-f.setfield("test2.txt", "Identical content");
+"Use .get()/.set() for:".echo();
+"- Simple file content (text, JSON, binary data)".echo();
+"- Configuration files".echo();
+"- Log files".echo();
+"- Any content that doesn't need field-level access".echo();
 
-result1 = f.get("test1.txt");
-result2 = f.getfield("test2.txt");
-
-"Results are identical: " + (result1.hex().str() == result2.hex().str()).echo();
+"Use .getfield()/.setfield() for:".echo();
+"- Database records with multiple fields".echo();
+"- Structured data with named fields".echo();
+"- User profiles, settings, metadata".echo();
+"- Any data requiring field-specific access".echo();
 
 /* ========================================
- * ERROR CASES
+ * ERROR HANDLING
  * ======================================== */
 
 "=== ERROR HANDLING ===".echo();
 
-/* Missing field parameter with .getfield() */
+/* .getfield() requires field parameter */
 try {
     missing_field = f.getfield("user1");  /* Missing field parameter */
     "Unexpected success".echo();
@@ -94,17 +111,16 @@ try {
     "Expected error: .getfield() requires field parameter".echo();
 }
 
-/* Missing field parameter with .get() - this works */
-missing_field_ok = f.get("user1");  /* This works, returns the record */
-"Missing field with .get() works: " + (missing_field_ok != null).echo();
+/* .get() works without field parameter for simple files */
+simple_file_ok = f.get("simple.txt");  /* This works for simple files */
+"Simple file retrieval works: " + (simple_file_ok != null).echo();
 
 /* ========================================
  * CLEANUP
  * ======================================== */
 
+f.rm("config.txt");
+f.rm("log.txt");
 f.rm("simple.txt");
-f.rm("simple2.txt");
-f.rm("test1.txt");
-f.rm("test2.txt");
 
-"Parameter differences demonstration completed!".echo();
+"Method usage patterns demonstration completed!".echo();
