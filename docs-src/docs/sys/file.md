@@ -329,9 +329,11 @@ Reads the content of a file.
 f.set("test.txt", "Hello, World!");
 content = f.get("test.txt");
 /* Returns: 0x48656C6C6F2C20576F726C6421 */
+contentStr = content.str();
+/* Returns: "Hello, World!" */
 ```
 
-**Note**: File content is returned in hexadecimal format, not plain text. To convert to string, you may need to use additional processing.
+**Note**: When reading from filesystem files, Grapa doesn't know the data format, so content is returned in hexadecimal format. Use `.str()` to convert to readable string format. For database operations where data types are stored, Grapa may return properly typed data.
 
 ## getfield(name, field)
 Reads structured data from a file or database record.
@@ -346,7 +348,11 @@ Reads structured data from a file or database record.
 f.setfield("user1", "name", "John Doe");
 name = f.getfield("user1", "name");
 /* Returns: 0x4A6F686E20446F65 */
+nameStr = name.str();
+/* Returns: "John Doe" */
 ```
+
+**Note**: When reading from filesystem files, Grapa doesn't know the data format, so content is returned in hexadecimal format. Use `.str()` to convert to readable string format. For database operations where data types are stored, Grapa may return properly typed data.
 
 ## setfield(name, field, value)
 Writes structured data to a file or database record.
@@ -392,6 +398,44 @@ age = f.getfield("user1", "age");
 
 - **Use `.get()/.set()`** for simple file operations (reading/writing file content)
 - **Use `.getfield()/.setfield()`** for structured data operations and database-style field access
+
+### Data Type Handling:
+
+**Filesystem Files:**
+- Both `.get()` and `.getfield()` return hexadecimal format when reading from filesystem files
+- Grapa doesn't know the data format, so you must use `.str()` to convert to readable strings
+- Example: `content = f.get("file.txt"); readable = content.str();`
+
+**Database Operations:**
+- When using `.getfield()` with database tables that have defined field types, Grapa may return properly typed data
+- The data type information is stored with the database schema
+- Example: `age = f.getfield("user1", "age");` might return a proper `$INT` instead of hexadecimal
+
+### Practical Example: Filesystem vs Database
+
+```grapa
+f = $file();
+
+/* Filesystem file - Grapa doesn't know the data type */
+f.set("user.txt", "John Doe");
+name = f.get("user.txt");
+/* Returns: 0x4A6F686E20446F65 (hexadecimal) */
+nameStr = name.str();
+/* Returns: "John Doe" */
+
+/* Database with defined field types - Grapa knows the data type */
+f.mk("users", "ROW");
+f.mkfield("name", "STR", "VAR");
+f.mkfield("age", "INT", "FIX", 4);
+f.cd("users");
+
+f.setfield("user1", "name", "Alice");
+f.setfield("user1", "age", 25);
+
+/* With defined field types, Grapa may return properly typed data */
+name = f.getfield("user1", "name");  /* May return proper $STR */
+age = f.getfield("user1", "age");    /* May return proper $INT */
+```
 
 **Recommendation**: Use `.getfield()/.setfield()` for any operation involving structured data or field-specific access.
 
