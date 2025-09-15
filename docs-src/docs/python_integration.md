@@ -6,37 +6,114 @@ Grapa provides powerful Python integration capabilities, offering a unified inte
 
 ## Execution Model
 
-GrapaPy has two execution modes that affect variable persistence:
+GrapaPy has two execution modes that affect variable persistence, and differs significantly from the CLI `-c` option:
 
 ### Direct Execution (No Parameters)
 When calling `eval()` without parameters, code runs at the global level and variables persist between calls:
 
 ```python
 import grapapy
-xy = grapapy.grapa()
+g = grapapy.grapa()
 
 # Variables persist automatically - no $global needed
-xy.eval("b = 6;")
-result = xy.eval("b;")  # Returns 6
+g.eval("f = $file(); f.cd('project_data');")
+g.eval("f.mk('database', 'COL');")  # f persists from previous call
+g.eval("f.cd('database');")         # f still available
+result = g.eval("f.ls();")          # Returns database contents
 ```
 
 ### Parameterized Execution (With Parameters)
-When calling `eval()` with parameters, code runs in a local scope and variables don't persist:
+When calling `eval()` with parameters, code runs in a local scope and variables don't persist. **Parameters are automatically available as variables:**
 
 ```python
-# Variables are local and don't persist
-xy.eval("c = 9;", {'x': 5})
-result = xy.eval("c;")  # Returns {"error":-1} - variable not found
+# Parameters are automatically available as variables
+g.eval("result = x + y;", {'x': 5, 'y': 3})
+result = g.eval("result;")  # Returns {"error":-1} - variable not found (local scope)
+
+# Parameters persist and are available in the local scope
+g.eval("sum = x + y;", {'x': 10, 'y': 20})  # x and y are automatically available
+g.eval("product = x * y;", {'x': 10, 'y': 20})  # x and y still available
 
 # To persist variables with parameters, use $global
-xy.eval("$global.persistent_var = 10;", {'x': 5})
-result = xy.eval("persistent_var;")  # Returns 10
+g.eval("$global.persistent_var = 10;", {'x': 5})
+result = g.eval("persistent_var;")  # Returns 10
+```
+
+### Comparison with CLI `-c` Option
+
+**GrapaPy `.eval()` (with persistence):**
+```python
+g = grapapy.grapa()
+g.eval("f = $file(); f.cd('data');")     # f is created
+g.eval("f.mk('users', 'ROW');")          # f persists, can use it
+g.eval("f.cd('users');")                 # f still available
+g.eval("f.setfield('user1', 'name', 'Alice');")  # f persists
+```
+
+**CLI `-c` (no persistence):**
+```bash
+./grapa -c "f = $file(); f.cd('data');"           # f is created
+./grapa -c "f.mk('users', 'ROW');"                # f is gone, error!
+./grapa -c "f = $file(); f.cd('data/users');"     # Must recreate f
+./grapa -c "f.setfield('user1', 'name', 'Alice');" # f is gone, error!
+```
+
+### Parameter Handling Differences
+
+**GrapaPy `.eval()` (automatic parameter variables):**
+```python
+g = grapapy.grapa()
+# Parameters are automatically available as variables
+g.eval("result = x + y;", {'x': 5, 'y': 3})  # x and y are automatically available
+g.eval("name = user_name;", {'user_name': 'Alice'})  # user_name is automatically available
+```
+
+**CLI `-c` (manual parameter access):**
+```bash
+# Must access parameters through $sys().getenv($ARGV)
+./grapa -c "args = \$sys().getenv(\$ARGV); x = args.get(0).int(); y = args.get(1).int(); result = x + y; result.echo();" 5 3
+./grapa -c "args = \$sys().getenv(\$ARGV); name = args.get(0); ('Hello ' + name).echo();" Alice
+```
+
+### Practical Example: Parameter Handling
+
+**GrapaPy (automatic parameter variables):**
+```python
+import grapapy
+
+g = grapapy.grapa()
+
+# Simple calculation with automatic parameter access
+result = g.eval("x + y", {'x': 10, 'y': 20})
+print(result)  # 30
+
+# Complex operation with multiple parameters
+g.eval("f = $file(); f.mk('users', 'ROW');", {'db_name': 'users'})
+g.eval("f.setfield('user1', 'name', user_name);", {'user_name': 'Alice'})
+g.eval("f.setfield('user1', 'age', user_age);", {'user_age': 25})
+name = g.eval("f.getfield('user1', 'name');")
+print(name)  # Alice
+```
+
+**CLI equivalent (manual parameter access):**
+```bash
+# Simple calculation - must parse arguments manually
+./grapa -c "args = \$sys().getenv(\$ARGV); x = args.get(0).int(); y = args.get(1).int(); (x + y).echo();" 10 20
+
+# Complex operation - much more verbose
+./grapa -c "f = \$file(); f.mk('users', 'ROW');"
+./grapa -c "args = \$sys().getenv(\$ARGV); f = \$file(); f.cd('users'); f.setfield('user1', 'name', args.get(0));" Alice
+./grapa -c "args = \$sys().getenv(\$ARGV); f = \$file(); f.cd('users'); f.setfield('user1', 'age', args.get(0));" 25
+./grapa -c "f = \$file(); f.cd('users'); f.getfield('user1', 'name').echo();"
 ```
 
 ### Key Points
+- **GrapaPy persistence**: Variables like `f = $file()` persist across `.eval()` calls
+- **CLI limitation**: Each `-c` call is isolated - no variable persistence
+- **Parameter handling**: GrapaPy parameters are automatically available as variables; CLI requires `$sys().getenv($ARGV)`
 - **Top-level execution**: Variables persist automatically (no `$global` needed)
 - **Parameterized execution**: Variables are local and don't persist (need `$global` for persistence)
-- **`$file()` objects**: Still need `$global` for persistence when using parameters
+- **`$file()` objects**: Persist naturally in GrapaPy, need recreation in CLI
 - **Scope behavior**: Parameters create a local scope that shadows global variables
 
 ## Key Benefits
@@ -47,11 +124,11 @@ Grapa provides a single API that seamlessly navigates between file systems and d
 ```python
 import grapapy
 
-f = grapapy.grapa().file()
+g = grapapy.grapa()
 # Navigate from file system into database seamlessly
-f.cd("project_data")  # Could be file system directory
-f.cd("users")         # Could be database table
-f.cd("profile")       # Could be nested database structure
+g.eval('f = $file(); f.cd("project_data")')  # f persists across calls
+g.eval('f.cd("users")')                      # f still available - could be database table
+g.eval('f.cd("profile")')                    # f still available - could be nested structure
 ```
 
 **Advantages:**
@@ -66,16 +143,16 @@ Optimized for analytical workloads and data science:
 
 ```python
 # Python data science workflows with column store
-f = grapapy.grapa().file()
-f.mk("analytics_db", "COL")  # Column store for analytical queries
-f.cd("analytics_db")
-```
+g = grapapy.grapa()
+g.eval('f = $file(); f.mk("analytics_db", "COL")')  # f persists across calls
+g.eval('f.cd("analytics_db")')                      # f still available
 
-# Define schema optimized for analytics
-f.mkfield("timestamp", "TIME", "FIX", 8)
-f.mkfield("user_id", "INT", "FIX", 4)
-f.mkfield("metric_value", "FLOAT", "FIX", 8)
-f.mkfield("category", "STR", "VAR")
+# Define schema optimized for analytics - f persists throughout
+g.eval('f.mkfield("timestamp", "TIME", "FIX", 8)')
+g.eval('f.mkfield("user_id", "INT", "FIX", 4)')
+g.eval('f.mkfield("metric_value", "FLOAT", "FIX", 8)')
+g.eval('f.mkfield("category", "STR", "VAR")')
+```
 
 # Efficient column scans for aggregations
 # Python can process the results for statistical analysis
@@ -91,14 +168,15 @@ Optimized for transactional workloads and frequent updates:
 
 ```python
 # Transactional data with row store
-f.mk("user_sessions", "ROW")
-f.cd("user_sessions")
+g = grapapy.grapa()
+g.eval('f = $file(); f.mk("user_sessions", "ROW")')
+g.eval('f.cd("user_sessions")')
 ```
 
 # Fast point queries and updates
-f.set("session_123", "user_456", "user_id")
-f.set("session_123", "2024-01-15", "login_time")
-f.set("session_123", "active", "status")
+g.eval('f.setfield("session_123", "user_id", "user_456")')
+g.eval('f.setfield("session_123", "login_time", "2024-01-15")')
+g.eval('f.setfield("session_123", "status", "active")')
 ```
 
 ### 3. **File Processing Capabilities**
@@ -108,14 +186,14 @@ Built-in support for handling large files efficiently:
 
 ```python
 # Python can orchestrate large file operations
-f = grapa.file()
+g = grapapy.grapa()
 
 # Split large files for parallel processing
-result = f.split(8, "large_dataset.csv", "chunks", "", "csv")
+result = g.eval('f = $file(); f.split(8, "large_dataset.csv", "chunks", "", "csv")')
 # Python can then process each chunk in parallel
 
 # Get file metadata efficiently
-file_info = f.info("large_file.txt")
+file_info = g.eval('f = $file(); f.info("large_file.txt")')
 if file_info["$TYPE"] == "FILE" and file_info["$BYTES"] > 1000000:
     # Handle large files appropriately
     pass
@@ -126,11 +204,12 @@ Seamless navigation across complex data structures:
 
 ```python
 # Navigate complex data structures
-f.chd("/project/data")  # Set home directory
-f.cd("database")        # Enter database
-f.cd("users")           # Navigate to users table
-f.cd("..")              # Go back up
-f.cd("../logs")         # Navigate to logs directory
+g = grapapy.grapa()
+g.eval('f = $file(); f.chd("/project/data")')  # Set home directory
+g.eval('f.cd("database")')                     # Enter database
+g.eval('f.cd("users")')                        # Navigate to users table
+g.eval('f.cd("..")')                           # Go back up
+g.eval('f.cd("../logs")')                      # Navigate to logs directory
 ```
 
 ## Use Cases
@@ -140,15 +219,15 @@ f.cd("../logs")         # Navigate to logs directory
 #### **Scientific Computing**
 ```python
 # Scientific computing with Grapa
-f = grapa.file()
-f.mk("experiment_data", "COL")
-f.cd("experiment_data")
+g = grapapy.grapa()
+g.eval('f = $file(); f.mk("experiment_data", "COL")')
+g.eval('f.cd("experiment_data")')
 
 # Store experimental results efficiently
 for experiment in experiments:
-    f.set(f"exp_{experiment.id}", experiment.timestamp, "time")
-    f.set(f"exp_{experiment.id}", experiment.results, "data")
-    f.set(f"exp_{experiment.id}", experiment.parameters, "config")
+    g.eval(f'f.setfield("exp_{experiment.id}", "time", "{experiment.timestamp}")')
+    g.eval(f'f.setfield("exp_{experiment.id}", "data", "{experiment.results}")')
+    g.eval(f'f.setfield("exp_{experiment.id}", "config", "{experiment.parameters}")')
 
 # Fast column scans for statistical analysis
 ```
@@ -156,15 +235,15 @@ for experiment in experiments:
 #### **Machine Learning Workflows**
 ```python
 # ML data management with Grapa
-f = grapa.file()
-f.mk("ml_dataset", "COL")
-f.cd("ml_dataset")
+g = grapapy.grapa()
+g.eval('f = $file(); f.mk("ml_dataset", "COL")')
+g.eval('f.cd("ml_dataset")')
 
 # Store features and labels
 for sample in training_data:
-    f.set(f"sample_{sample.id}", sample.features, "features")
-    f.set(f"sample_{sample.id}", sample.label, "label")
-    f.set(f"sample_{sample.id}", sample.metadata, "meta")
+    g.eval(f'f.setfield("sample_{sample.id}", "features", "{sample.features}")')
+    g.eval(f'f.setfield("sample_{sample.id}", "label", "{sample.label}")')
+    g.eval(f'f.setfield("sample_{sample.id}", "meta", "{sample.metadata}")')
 
 # Efficient feature extraction for model training
 ```
@@ -174,33 +253,33 @@ for sample in training_data:
 #### **Backend Data Management**
 ```python
 # Web app with Grapa storage
-f = grapa.file()
-f.chd("/app/data")
+g = grapapy.grapa()
+g.eval('f = $file(); f.chd("/app/data")')
 
 # User management
-f.cd("users")
-f.set(user_id, user_data, "profile")
-f.set(user_id, session_data, "session")
+g.eval('f.cd("users")')
+g.eval(f'f.setfield("{user_id}", "profile", "{user_data}")')
+g.eval(f'f.setfield("{user_id}", "session", "{session_data}")')
 
 # Content management
-f.cd("../content")
-f.set(content_id, content_data, "body")
-f.set(content_id, metadata, "meta")
+g.eval('f.cd("../content")')
+g.eval(f'f.setfield("{content_id}", "body", "{content_data}")')
+g.eval(f'f.setfield("{content_id}", "meta", "{metadata}")')
 ```
 
 #### **API Development**
 ```python
 # FastAPI with Grapa backend
 from fastapi import FastAPI
-import grapa
+import grapapy
 
 app = FastAPI()
-f = grapa.file()
+g = grapapy.grapa()
 
 @app.get("/users/{user_id}")
 async def get_user(user_id: str):
-    f.cd("users")
-    profile = f.get(user_id, "profile")
+    g.eval('f = $file(); f.cd("users")')
+    profile = g.eval(f'f.getfield("{user_id}", "profile")')
     return {"user_id": user_id, "profile": profile}
 ```
 
@@ -209,25 +288,26 @@ async def get_user(user_id: str):
 #### **Log File Management**
 ```python
 # System admin tools with Grapa
-f = grapa.file()
+g = grapapy.grapa()
 
 # Log file management
-f.cd("/var/log")
-log_files = f.ls()
+g.eval('f = $file(); f.cd("/var/log")')
+log_files = g.eval('f.ls()')
 for log_file in log_files:
-    info = f.info(log_file)
+    info = g.eval(f'f.info("{log_file}")')
     if info["$BYTES"] > 1000000:  # 1MB
         # Split large log files
-        f.split(4, log_file, "log_chunks", "\n", "")
+        g.eval(f'f.split(4, "{log_file}", "log_chunks", "\\n", "")')
 ```
 
 #### **Configuration Management**
 ```python
 # Configuration management
-f.cd("/etc/configs")
-configs = f.ls()
+g = grapapy.grapa()
+g.eval('f = $file(); f.cd("/etc/configs")')
+configs = g.eval('f.ls()')
 for config in configs:
-    content = f.get(config)
+    content = g.eval(f'f.get("{config}")')
     if validate_config(content):
         deploy_config(config, content)
 ```
@@ -237,28 +317,29 @@ for config in configs:
 #### **ETL Workflows**
 ```python
 # Extract-Transform-Load with Grapa
-f = grapa.file()
+g = grapapy.grapa()
 
 # Extract: Read from various sources
-f.cd("source_data")
-raw_data = f.get("input.csv")
+g.eval('f = $file(); f.cd("source_data")')
+raw_data = g.eval('f.get("input.csv")')
 
 # Transform: Process in Python
 processed_data = python_transform_function(raw_data)
 
 # Load: Store in Grapa database
-f.cd("../processed_data")
-f.set("processed_batch_001", processed_data, "content")
+g.eval('f.cd("../processed_data")')
+g.eval(f'f.setfield("processed_batch_001", "content", "{processed_data}")')
 ```
 
 #### **Data Validation**
 ```python
 # Validate data before processing
-files = f.ls("input_directory")
+g = grapapy.grapa()
+files = g.eval('f = $file(); f.ls("input_directory")')
 for file in files:
-    info = f.info(file)
+    info = g.eval(f'f.info("{file}")')
     if info["$TYPE"] == "FILE":
-        content = f.get(file)
+        content = g.eval(f'f.get("{file}")')
         if validate_data_format(content):
             # Process valid files
             pass
@@ -319,19 +400,20 @@ print(matches)  # ['world', 'world']
 ```python
 import pandas as pd
 import numpy as np
-import grapa
+import grapapy
 
 # Process Grapa data with pandas
-f = grapa.file()
-f.cd("analytics_data")
+g = grapapy.grapa()
+g.eval('f = $file(); f.cd("analytics_data")')
 
 # Extract data for pandas processing
 data = []
-for record in f.ls():
+records = g.eval('f.ls()')
+for record in records:
     row = {
         'id': record,
-        'value': f.get(record, "value"),
-        'category': f.get(record, "category")
+        'value': g.eval(f'f.getfield("{record}", "value")'),
+        'category': g.eval(f'f.getfield("{record}", "category")')
     }
     data.append(row)
 
@@ -342,30 +424,30 @@ df = pd.DataFrame(data)
 ### **Machine Learning Frameworks**
 ```python
 import sklearn
-import grapa
+import grapapy
 
 # Feature storage for ML
-f = grapa.file()
-f.mk("ml_features", "COL")
-f.cd("ml_features")
+g = grapapy.grapa()
+g.eval('f = $file(); f.mk("ml_features", "COL")')
+g.eval('f.cd("ml_features")')
 
 # Store features efficiently
 for sample_id, features in feature_data.items():
-    f.set(sample_id, features.tobytes(), "features")
-    f.set(sample_id, labels[sample_id], "label")
+    g.eval(f'f.setfield("{sample_id}", "features", "{features.tobytes()}")')
+    g.eval(f'f.setfield("{sample_id}", "label", "{labels[sample_id]}")')
 ```
 
 ### **Web Frameworks**
 ```python
 # Django with Grapa
 from django.http import JsonResponse
-import grapa
+import grapapy
 
 def user_profile(request, user_id):
-    f = grapa.file()
-    f.cd("users")
+    g = grapapy.grapa()
+    g.eval('f = $file(); f.cd("users")')
     
-    profile = f.get(user_id, "profile")
+    profile = g.eval(f'f.getfield("{user_id}", "profile")')
     return JsonResponse({"profile": profile})
 ```
 
@@ -409,11 +491,13 @@ def user_profile(request, user_id):
 
 Grapa's Python integration provides a powerful combination of:
 - **Unified data access** across file systems and databases
+- **Variable persistence** across `.eval()` calls (unlike CLI `-c` option)
+- **Automatic parameter handling** - parameters are automatically available as variables
 - **Performance optimization** through specialized storage types
 - **Scalability** for large datasets and complex workflows
 - **Integration** with Python's rich ecosystem
 
-This makes Grapa particularly valuable for Python applications that need to handle diverse data types, large datasets, or complex data workflows. The unified path system and efficient storage options provide significant advantages over traditional file system + database combinations. 
+This makes Grapa particularly valuable for Python applications that need to handle diverse data types, large datasets, or complex data workflows. The unified path system, variable persistence, automatic parameter handling, and efficient storage options provide significant advantages over traditional file system + database combinations and even over using the CLI `-c` option for complex operations. 
 
 ---
 

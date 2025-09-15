@@ -269,6 +269,46 @@ grapa -i
 grapa -h
 ```
 
+### Command Execution vs Script Files
+
+**Important:** The `-c` option executes commands in isolation - variables don't persist between calls:
+
+```bash
+# Each -c call is independent - variables don't persist
+grapa -c "f = $file(); f.cd('data');"           # f is created
+grapa -c "f.mk('users', 'ROW');"                # f is gone, error!
+grapa -c "f = $file(); f.cd('data/users');"     # Must recreate f
+```
+
+**For complex operations with variable persistence, use script files:**
+```bash
+# script.grc - variables persist throughout the script
+f = $file();
+f.cd('data');
+f.mk('users', 'ROW');
+f.cd('users');
+f.setfield('user1', 'name', 'Alice');
+
+# Run the script
+grapa script.grc
+```
+
+**For Python integration with persistence, use GrapaPy:**
+```python
+import grapapy
+g = grapapy.grapa()
+g.eval("f = $file(); f.cd('data');")     # f persists
+g.eval("f.mk('users', 'ROW');")          # f still available
+g.eval("f.cd('users');")                 # f still available
+
+# Parameters are automatically available as variables
+g.eval("result = x + y;", {'x': 5, 'y': 3})  # x and y are automatically available
+```
+
+**Parameter handling differences:**
+- **GrapaPy**: Parameters passed to `.eval()` are automatically available as variables
+- **CLI**: Must access parameters through `$sys().getenv($ARGV)`
+
 ### Script Arguments
 Grapa provides two ways to access command line arguments:
 
