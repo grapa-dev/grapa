@@ -5005,12 +5005,16 @@
 <h3 id="python-extension-installation-failures">Python Extension Installation Failures</h3>
 <h4 id="missing-system-dependencies-error"><strong>"Missing system dependencies" Error</strong></h4>
 <p><strong>Problem</strong>: <code>pip install grapapy</code> fails with dependency errors.</p>
-<p><strong>Solutions</strong>:</p>
-<p><strong>Linux/macOS - Automatic:</strong>
-<div class="highlight"><pre><span></span><code><span class="c1"># Install Grapa with automatic dependency installation</span>
+<p><strong>What this means:</strong> GrapaPy requires system-level dependencies that <code>pip</code> cannot install automatically. You must install these dependencies manually before running <code>pip install grapapy</code>.</p>
+<p><strong>Solutions by Platform:</strong></p>
+<p><strong>Linux - Automatic (Recommended):</strong>
+<div class="highlight"><pre><span></span><code><span class="c1"># Install Grapa CLI with automatic dependency installation</span>
 python3<span class="w"> </span>install-grapa-0.1.54.py<span class="w"> </span>--install-dependencies
+
+<span class="c1"># Then install Python extension</span>
+pip3<span class="w"> </span>install<span class="w"> </span>grapapy
 </code></pre></div></p>
-<p><strong>Linux/macOS - Manual:</strong>
+<p><strong>Linux - Manual:</strong>
 <div class="highlight"><pre><span></span><code><span class="c1"># Ubuntu/Debian</span>
 sudo<span class="w"> </span>apt-get<span class="w"> </span>update
 sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>build-essential<span class="w"> </span>python3-dev<span class="w"> </span>libssl-dev<span class="w"> </span>libx11-dev<span class="w"> </span>libxext-dev<span class="w"> </span>cmake
@@ -5019,12 +5023,36 @@ sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w
 sudo<span class="w"> </span>yum<span class="w"> </span>groupinstall<span class="w"> </span><span class="s1">&#39;Development Tools&#39;</span>
 sudo<span class="w"> </span>yum<span class="w"> </span>install<span class="w"> </span>gcc-c++<span class="w"> </span>python3-devel<span class="w"> </span>openssl-devel<span class="w"> </span>libX11-devel<span class="w"> </span>libXext-devel<span class="w"> </span>cmake
 
-<span class="c1"># macOS</span>
-xcode-select<span class="w"> </span>--install
+<span class="c1"># Fedora</span>
+sudo<span class="w"> </span>dnf<span class="w"> </span>groupinstall<span class="w"> </span><span class="s1">&#39;Development Tools&#39;</span>
+sudo<span class="w"> </span>dnf<span class="w"> </span>install<span class="w"> </span>python3-devel<span class="w"> </span>openssl-devel<span class="w"> </span>libX11-devel<span class="w"> </span>libXext-devel<span class="w"> </span>cmake
+
+<span class="c1"># Then install Python extension</span>
+pip3<span class="w"> </span>install<span class="w"> </span>grapapy
 </code></pre></div></p>
-<p><strong>Windows:</strong>
-- Install <a href="https://visualstudio.microsoft.com/downloads/">Visual Studio 2022</a> or Build Tools for Visual Studio 2022
-- Ensure "Desktop development with C++" workload is selected</p>
+<p><strong>macOS - Automatic (Recommended):</strong>
+<div class="highlight"><pre><span></span><code><span class="c1"># Install Grapa CLI with automatic dependency installation</span>
+python3<span class="w"> </span>install-grapa-0.1.54.py<span class="w"> </span>--install-dependencies
+
+<span class="c1"># Then install Python extension</span>
+pip3<span class="w"> </span>install<span class="w"> </span>grapapy
+</code></pre></div></p>
+<p><strong>macOS - Manual:</strong>
+<div class="highlight"><pre><span></span><code><span class="c1"># Install Xcode Command Line Tools</span>
+xcode-select<span class="w"> </span>--install
+
+<span class="c1"># Then install Python extension</span>
+pip3<span class="w"> </span>install<span class="w"> </span>grapapy
+</code></pre></div></p>
+<p><strong>Windows - Manual Only:</strong>
+<div class="highlight"><pre><span></span><code><span class="c1"># 1. Install Visual Studio 2022 or Build Tools for Visual Studio 2022</span>
+<span class="c1">#    Download from: https://visualstudio.microsoft.com/downloads/</span>
+<span class="c1">#    Ensure &quot;Desktop development with C++&quot; workload is selected</span>
+
+<span class="c1"># 2. Run from &quot;x64 Native Tools Command Prompt for VS 2022&quot;</span>
+pip<span class="w"> </span>install<span class="w"> </span>grapapy
+</code></pre></div></p>
+<p><strong>Note:</strong> Windows does not support automatic dependency installation. Visual Studio must be installed manually.</p>
 <h4 id="ubuntu-2404-externally-managed-environment-error"><strong>Ubuntu 24.04+ "externally-managed-environment" Error</strong></h4>
 <p><strong>Problem</strong>: <code>pip install grapapy</code> fails with externally-managed-environment error.</p>
 <p><strong>Solution</strong>:
