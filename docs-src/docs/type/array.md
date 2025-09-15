@@ -5,7 +5,7 @@ tags:
 ---
 # $ARRAY
 References:
-- [$GOBJ object](list.md)
+- [$GOBJ object](gobj.md)
 - [$VECTOR object](vector.md)
 - [Array-Vector Interoperability](../advanced/array_vector_interoperability.md)
 

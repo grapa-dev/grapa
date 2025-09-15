@@ -412,5 +412,5 @@ result.echo();  /* "value" */
 - [Object Transformation Methods](../obj/transform.md)
 - [XML and HTML Processing](../type/xml.md)
 - [Array Operations](../type/array.md)
-- [List Operations](../type/list.md)
+- [List Operations](../type/gobj.md)
 - [Basic Syntax](../syntax/basic_syntax.md) 

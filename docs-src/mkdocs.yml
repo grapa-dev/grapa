@@ -100,7 +100,7 @@ nav:
           - Float: type/float.md
           - ID: type/id.md
           - Integer: type/int.md
-          - List: type/list.md
+          - GOBJ: type/gobj.md
           - Object Methods: type/obj_methods.md
           - Operation: type/op.md
           - Raw: type/raw.md

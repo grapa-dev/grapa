@@ -316,7 +316,7 @@ if (xml.root) {
 
 ## See also
 - [$ARRAY object](array.md)
-- [$GOBJ object](list.md)
+- [$GOBJ object](gobj.md)
 - [$TAG object](tag.md)
 - [Assignment Operators](../operators/assignment.md)
 - [String Operations](../obj/transform.md)

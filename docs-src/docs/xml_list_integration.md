@@ -5,7 +5,7 @@ tags:
 ---
 # XML and LIST Integration
 
-> **See also:** [Unified Dot Notation System](unified_dot_notation.md), [XML and HTML Processing](type/xml.md), [List Operations](type/list.md)
+> **See also:** [Unified Dot Notation System](unified_dot_notation.md), [XML and HTML Processing](type/xml.md), [List Operations](type/gobj.md)
 >
 > **Best Practices:**
 > - Use XML embedding in LIST for structured data with mixed content
@@ -345,6 +345,6 @@ if (arr.b[0].p.type() != $ERR) {
 ## See Also
 - [Unified Dot Notation System](unified_dot_notation.md)
 - [XML and HTML Processing](type/xml.md)
-- [List Operations](type/list.md)
+- [List Operations](type/gobj.md)
 - [Object Transformation Methods](obj/transform.md)
 - [Basic Syntax](syntax/basic_syntax.md) 
