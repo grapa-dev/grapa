@@ -681,8 +681,10 @@ transposed = t(matrix);
 File and directory operations.
 
 ### File Operations
-- `$file().getfield(path)` - Read file content
-- `$file().setfield(path, content)` - Write to file
+- `$file().get(path [, field])` - Read file content (field parameter for backward compatibility)
+- `$file().set(path, content [, field])` - Write to file (field parameter for backward compatibility)
+- `$file().getfield(path, field)` - Read file content (explicit field parameter)
+- `$file().setfield(path, field, content)` - Write to file (explicit field parameter)
 - `$file().set($stdout, content)` - Write to standard output
 - `$file().set($stderr, content)` - Write to standard error
 - `$file().ls(path)` - List directory contents
@@ -691,10 +693,14 @@ File and directory operations.
 ### Examples
 ```grapa
 /* Read file */
-content = $file().getfield("data.txt");
+content = $file().get("data.txt");
 
 /* Write file */
-$file().setfield("output.txt", "Hello from Grapa!");
+$file().set("output.txt", "Hello from Grapa!");
+
+/* Alternative syntax with .getfield()/.setfield() */
+$file().setfield("output2.txt", "Hello from .setfield()!");
+content2 = $file().getfield("output2.txt");
 
 /* Write to standard streams */
 $file().set($stdout, "Output message\n");

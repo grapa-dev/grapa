@@ -53,7 +53,7 @@ This guide helps TypeScript users transition to Grapa by mapping common TypeScri
 >
 > **String Interpolation:** For combining strings and values, use `"Hello ${name}".interpolate()` instead of `"Hello " + name`. String interpolation is more powerful and less error-prone than concatenation. It also provides elegant solutions for complex method chaining: `"${'hello'.upper()} ${'world'.lower()}".interpolate()`.
 
-> **Note:** `.getfield("key")` is for `$file` and `$TABLE`. `.get()/.set()` is for `$WIDGET`. For `$GOBJ`/`$OBJ`, use `obj["key"]`, `obj.key`, or `obj."key"`. For `$ARRAY`, use `arr[index]` (bracket notation only).
+> **Note:** `.get()/.set()` is for `$file` operations. `.getfield("key")` is for `$TABLE` with named keys. `.get()/.set()` is for `$WIDGET`. For `$GOBJ`/`$OBJ`, use `obj["key"]`, `obj.key`, or `obj."key"`. For `$ARRAY`, use `arr[index]` (bracket notation only).
 
 ## Access Patterns: Objects, Lists, Arrays, Files, and Tables
 

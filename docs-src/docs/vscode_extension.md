@@ -148,8 +148,8 @@ Configure the extension behavior in VSCode settings:
 'Hello, Grapa!'.echo();
 
 /* File operations */
-$file().setfield("data.txt", "Hello World");
-content = $file().getfield("data.txt");
+$file().set("data.txt", "Hello World");
+content = $file().get("data.txt");
 content.echo();
 ```
 

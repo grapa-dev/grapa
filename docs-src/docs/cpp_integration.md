@@ -260,7 +260,7 @@ private:
 public:
     ConfigManager(const std::string& path) : config_path(path) {
         // Load configuration with Grapa
-        grapa.eval("config = $file().getfield('" + config_path + "').json()");
+        grapa.eval("config = $file().get('" + config_path + "').json()");
     }
     
     std::string getString(const std::string& key) {
@@ -285,7 +285,7 @@ public:
     
 private:
     void saveConfig() {
-        grapa.eval("$file().setfield('" + config_path + "', config.json())");
+        grapa.eval("$file().set('" + config_path + "', config.json())");
     }
 };
 ```

@@ -94,7 +94,7 @@ This guide helps JavaScript users transition to Grapa by mapping common JS idiom
 > - **Keys**: For lists, iterate manually instead of using `.keys()`.
 > - If more objects support `.get()` in the future, this guide will be updated.
 
-> **Note:** `.getfield("key")` is for `$file` and `$TABLE`. `.get()/.set()` is for `$WIDGET`. For `$GOBJ`/`$OBJ`, use `obj["key"]`, `obj.key`, or `obj."key"`. For `$ARRAY`, use `arr[index]` (bracket notation only).
+> **Note:** `.get()/.set()` is for `$file` operations. `.getfield("key")` is for `$TABLE` with named keys. `.get()/.set()` is for `$WIDGET`. For `$GOBJ`/`$OBJ`, use `obj["key"]`, `obj.key`, or `obj."key"`. For `$ARRAY`, use `arr[index]` (bracket notation only).
 
 ## Access Patterns: Objects, Lists, Arrays, Files, and Tables
 

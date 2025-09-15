@@ -645,7 +645,7 @@ The following returns the length of each word in a string:
 ### File Processing
 ```grapa
 /* Read and process a file */
-content = $file().getfield("data.txt");
+content = $file().get("data.txt");
 lines = content.split("\n");
 filtered = lines.filter(op(line) { line.len() > 0; });
 result = filtered.map(op(line) { line.upper(); });
@@ -657,12 +657,41 @@ casefolded.echo();
 ### JSON Processing
 ```grapa
 /* Parse and process JSON data */
-json_data = $file().getfield("data.json").json();
+json_data = $file().get("data.json").json();
 users = json_data.users;
 active_users = users.filter(op(user) { user.active == true; });
 names = active_users.map(op(user) { user.name; });
 names.echo();
 ```
+
+### File Operations: Method Comparison
+```grapa
+/* Demonstrates both .get()/.set() and .getfield()/.setfield() methods */
+f = $file();
+
+/* Simple file operations - use .get()/.set() */
+f.set("config.txt", "Simple file content");
+content = f.get("config.txt");
+
+/* Structured data operations - prefer .getfield()/.setfield() */
+f.setfield("user1", "name", "Alice");     /* key, field, value */
+f.setfield("user1", "age", 25);           /* key, field, value */
+name1 = f.getfield("user1", "name");      /* key, field */
+age1 = f.getfield("user1", "age");        /* key, field */
+
+/* Legacy compatibility - .get()/.set() with field parameter */
+f.set("user2", "Bob", "name");            /* key, value, field (backward compatibility) */
+f.set("user2", 30, "age");                /* key, value, field (backward compatibility) */
+name2 = f.get("user2", "name");           /* key, field */
+age2 = f.get("user2", "age");             /* key, field */
+
+"User 1: " + name1 + ", Age: " + age1.echo();
+"User 2: " + name2 + ", Age: " + age2.echo();
+```
+
+**See also:**
+- [Comprehensive File Operations](examples/file_operations_comprehensive.grc) - Complete examples of both method types
+- [File Parameter Differences](examples/file_parameter_differences.grc) - Detailed parameter order comparison
 
 ## Dynamic Code Execution
 

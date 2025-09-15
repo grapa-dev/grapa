@@ -339,6 +339,77 @@ content = f.get("test.txt");
 
 **Note**: File content is returned in hexadecimal format, not plain text. To convert to string, you may need to use additional processing.
 
+## getfield(name, field)
+Alternative method for reading file content with different parameter order.
+
+**Parameters**:
+- `name`: File name
+- `field`: Field name (required)
+
+**Return Format**: Returns file content in hexadecimal format.
+
+```grapa
+f.setfield("test.txt", "Hello, World!");
+content = f.getfield("test.txt");
+/* Returns: 0x48656C6C6F2C20576F726C6421 */
+```
+
+## setfield(name, field, value)
+Alternative method for writing file content with different parameter order.
+
+**Parameters**:
+- `name`: File name
+- `field`: Field name (required)
+- `value`: Content to write
+
+```grapa
+f.setfield("test.txt", "Hello, World!");
+```
+
+## Method Comparison: .get()/.set() vs .getfield()/.setfield()
+
+Both method pairs provide identical functionality but with different parameter ordering:
+
+| Method | Parameter Order | Field Parameter | Use Case |
+|--------|----------------|-----------------|----------|
+| `.get()` | `obj.get(key, field)` | Optional (backward compatibility) | Standard file operations |
+| `.getfield()` | `obj.getfield(key, field)` | Required | Database-style operations |
+| `.set()` | `obj.set(key, value, field)` | Optional (backward compatibility) | Standard file operations |
+| `.setfield()` | `obj.setfield(key, field, value)` | Required | Database-style operations |
+
+**Historical Context**: The field parameter in `.get()/.set()` was added for backward compatibility during the transition when `.setfield()` was introduced to provide clearer database-style operations. For new code, prefer the explicit parameter ordering of `.getfield()/.setfield()` when working with structured data.
+
+### Examples:
+
+```grapa
+f = $file();
+
+/* Using .get()/.set() - field parameter is optional */
+f.set("user1", "Alice", "name");     /* key, value, field */
+f.set("user1", 25, "age");           /* key, value, field */
+name1 = f.get("user1", "name");      /* key, field */
+age1 = f.get("user1", "age");        /* key, field */
+
+/* Using .getfield()/.setfield() - field parameter is required */
+f.setfield("user2", "name", "Bob");      /* key, field, value */
+f.setfield("user2", "age", 30);          /* key, field, value */
+name2 = f.getfield("user2", "name");     /* key, field */
+age2 = f.getfield("user2", "age");       /* key, field */
+
+/* Simple file content (no field needed) */
+f.set("simple.txt", "File content");
+content = f.get("simple.txt");
+```
+
+### When to Use Which Method:
+
+- **Use `.get()/.set()`** for simple file operations (reading/writing file content) and legacy code compatibility
+- **Use `.getfield()/.setfield()`** for structured data operations, database-style operations, and new code where explicit field specification is preferred
+
+**Recommendation**: For new code, prefer `.getfield()/.setfield()` when working with structured data as it provides clearer parameter ordering and explicit field requirements.
+
+Both methods are functionally equivalent and call the same underlying C++ handlers.
+
 ## info(name)
 Returns detailed metadata information about a file or directory.
 

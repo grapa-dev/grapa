@@ -2010,11 +2010,11 @@ value = table.getfield("user1", "name");    /* Named key, named field */
 
 /* $file and $TABLE only support named keys, not numeric indices */
 file = $file();
-file.setfield("file.txt", "content");       /* Set with named key */
-content = file.getfield("file.txt");        /* Get by named key */
+file.set("file.txt", "content");            /* Set file content */
+content = file.get("file.txt");             /* Get file content */
 ```
 
-- Use `.getfield()` and `.setfield()` for `$file` and `$TABLE` with named keys only.
+- Use `.get()` and `.set()` for `$file` operations. Use `.getfield()` and `.setfield()` for `$TABLE` with named keys only.
 - Bracket and dot notation are not valid for `$file` and `$TABLE`.
 - Only `$ARRAY`, `$GOBJ`, and `$OBJ` (non-system classes) support flexible mix/match of names and indices with `.getfield()/.setfield()`.
 
@@ -3072,9 +3072,9 @@ $global.my_file = $file();
 my_file.set("test.txt", "Hello World");
 content = my_file.get("test.txt"); /* "Hello World" */
 
-/* Alternative: .getfield()/.setfield() (still works) */
-my_file.setfield("test2.txt", "Hello Again");
-content2 = my_file.getfield("test2.txt"); /* "Hello Again" */
+/* Alternative: .get()/.set() for file operations */
+my_file.set("test2.txt", "Hello Again");
+content2 = my_file.get("test2.txt"); /* "Hello Again" */
 
 /* $TABLE examples */
 $global.my_table = {}.table("ROW");

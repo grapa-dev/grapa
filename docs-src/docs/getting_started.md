@@ -227,14 +227,14 @@ matches.echo();  /* ["Hello world", "Hello again"] */
 
 ```grapa
 /* Data processing example */
-content = $file().getfield("data.txt");
+content = $file().get("data.txt");
 lines = content.split("\n");
 filtered = lines.filter(op(line) { line.len() > 0; });
 result = filtered.map(op(line) { line.upper(); });
 casefolded = filtered.map(op(line) { line.casefold(); });
 result.echo();
 
-json_data = $file().getfield("data.json").json();
+json_data = $file().get("data.json").json();
 users = json_data.users;
 active_users = users.filter(op(user) { user.active == true; });
 names = active_users.map(op(user) { user.name; });
