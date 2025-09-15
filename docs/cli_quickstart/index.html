@@ -969,6 +969,15 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#command-execution-vs-script-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      Command Execution vs Script Files
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#script-arguments" class="md-nav__link">
     <span class="md-ellipsis">
       Script Arguments
@@ -4814,6 +4823,15 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#command-execution-vs-script-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      Command Execution vs Script Files
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#script-arguments" class="md-nav__link">
     <span class="md-ellipsis">
       Script Arguments
@@ -5422,6 +5440,37 @@ grapa<span class="w"> </span>-i
 <span class="c1"># Help</span>
 grapa<span class="w"> </span>-h
 </code></pre></div>
+<h3 id="command-execution-vs-script-files">Command Execution vs Script Files</h3>
+<p><strong>Important:</strong> The <code>-c</code> option executes commands in isolation - variables don't persist between calls:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Each -c call is independent - variables don&#39;t persist</span>
+grapa<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;f = </span><span class="nv">$file</span><span class="s2">(); f.cd(&#39;data&#39;);&quot;</span><span class="w">           </span><span class="c1"># f is created</span>
+grapa<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;f.mk(&#39;users&#39;, &#39;ROW&#39;);&quot;</span><span class="w">                </span><span class="c1"># f is gone, error!</span>
+grapa<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;f = </span><span class="nv">$file</span><span class="s2">(); f.cd(&#39;data/users&#39;);&quot;</span><span class="w">     </span><span class="c1"># Must recreate f</span>
+</code></pre></div>
+<p><strong>For complex operations with variable persistence, use script files:</strong>
+<div class="highlight"><pre><span></span><code><span class="c1"># script.grc - variables persist throughout the script</span>
+<span class="nv">f</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">$file</span><span class="o">()</span><span class="p">;</span>
+f.cd<span class="o">(</span><span class="s1">&#39;data&#39;</span><span class="o">)</span><span class="p">;</span>
+f.mk<span class="o">(</span><span class="s1">&#39;users&#39;</span>,<span class="w"> </span><span class="s1">&#39;ROW&#39;</span><span class="o">)</span><span class="p">;</span>
+f.cd<span class="o">(</span><span class="s1">&#39;users&#39;</span><span class="o">)</span><span class="p">;</span>
+f.setfield<span class="o">(</span><span class="s1">&#39;user1&#39;</span>,<span class="w"> </span><span class="s1">&#39;name&#39;</span>,<span class="w"> </span><span class="s1">&#39;Alice&#39;</span><span class="o">)</span><span class="p">;</span>
+
+<span class="c1"># Run the script</span>
+grapa<span class="w"> </span>script.grc
+</code></pre></div></p>
+<p><strong>For Python integration with persistence, use GrapaPy:</strong>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">grapapy</span>
+<span class="n">g</span> <span class="o">=</span> <span class="n">grapapy</span><span class="o">.</span><span class="n">grapa</span><span class="p">()</span>
+<span class="n">g</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s2">&quot;f = $file(); f.cd(&#39;data&#39;);&quot;</span><span class="p">)</span>     <span class="c1"># f persists</span>
+<span class="n">g</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s2">&quot;f.mk(&#39;users&#39;, &#39;ROW&#39;);&quot;</span><span class="p">)</span>          <span class="c1"># f still available</span>
+<span class="n">g</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s2">&quot;f.cd(&#39;users&#39;);&quot;</span><span class="p">)</span>                 <span class="c1"># f still available</span>
+
+<span class="c1"># Parameters are automatically available as variables</span>
+<span class="n">g</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s2">&quot;result = x + y;&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;x&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">})</span>  <span class="c1"># x and y are automatically available</span>
+</code></pre></div></p>
+<p><strong>Parameter handling differences:</strong>
+- <strong>GrapaPy</strong>: Parameters passed to <code>.eval()</code> are automatically available as variables
+- <strong>CLI</strong>: Must access parameters through <code>$sys().getenv($ARGV)</code></p>
 <h3 id="script-arguments">Script Arguments</h3>
 <p>Grapa provides two ways to access command line arguments:</p>
 <h4 id="argv-positional-arguments-only"><strong>$ARGV - Positional Arguments Only</strong></h4>
