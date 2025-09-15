@@ -740,6 +740,8 @@ GrapaPy provides a Python extension that exposes Grapa's core functionality dire
 pip install grapapy
 ```
 
+**Note:** GrapaPy includes built-in dependency checking. If installation fails due to missing system dependencies, the installer will provide detailed error messages and installation instructions for your platform.
+
 ### Core Functions
 
 #### **grapapy.eval(script, params, rule, profile)**

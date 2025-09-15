@@ -11,15 +11,20 @@ This guide covers common issues encountered when working with Grapa and GrapaPy,
 #### **"Missing system dependencies" Error**
 **Problem**: `pip install grapapy` fails with dependency errors.
 
-**Solutions**:
+**What this means:** GrapaPy requires system-level dependencies that `pip` cannot install automatically. You must install these dependencies manually before running `pip install grapapy`.
 
-**Linux/macOS - Automatic:**
+**Solutions by Platform:**
+
+**Linux - Automatic (Recommended):**
 ```bash
-# Install Grapa with automatic dependency installation
+# Install Grapa CLI with automatic dependency installation
 python3 install-grapa-0.1.54.py --install-dependencies
+
+# Then install Python extension
+pip3 install grapapy
 ```
 
-**Linux/macOS - Manual:**
+**Linux - Manual:**
 ```bash
 # Ubuntu/Debian
 sudo apt-get update
@@ -29,13 +34,43 @@ sudo apt-get install build-essential python3-dev libssl-dev libx11-dev libxext-d
 sudo yum groupinstall 'Development Tools'
 sudo yum install gcc-c++ python3-devel openssl-devel libX11-devel libXext-devel cmake
 
-# macOS
-xcode-select --install
+# Fedora
+sudo dnf groupinstall 'Development Tools'
+sudo dnf install python3-devel openssl-devel libX11-devel libXext-devel cmake
+
+# Then install Python extension
+pip3 install grapapy
 ```
 
-**Windows:**
-- Install [Visual Studio 2022](https://visualstudio.microsoft.com/downloads/) or Build Tools for Visual Studio 2022
-- Ensure "Desktop development with C++" workload is selected
+**macOS - Automatic (Recommended):**
+```bash
+# Install Grapa CLI with automatic dependency installation
+python3 install-grapa-0.1.54.py --install-dependencies
+
+# Then install Python extension
+pip3 install grapapy
+```
+
+**macOS - Manual:**
+```bash
+# Install Xcode Command Line Tools
+xcode-select --install
+
+# Then install Python extension
+pip3 install grapapy
+```
+
+**Windows - Manual Only:**
+```bash
+# 1. Install Visual Studio 2022 or Build Tools for Visual Studio 2022
+#    Download from: https://visualstudio.microsoft.com/downloads/
+#    Ensure "Desktop development with C++" workload is selected
+
+# 2. Run from "x64 Native Tools Command Prompt for VS 2022"
+pip install grapapy
+```
+
+**Note:** Windows does not support automatic dependency installation. Visual Studio must be installed manually.
 
 #### **Ubuntu 24.04+ "externally-managed-environment" Error**
 **Problem**: `pip install grapapy` fails with externally-managed-environment error.

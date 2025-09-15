@@ -292,65 +292,110 @@ Hello World
 
 GrapaPy provides Python integration with Grapa's powerful data processing capabilities. Installation requirements vary by platform:
 
-### **Platform Requirements**
+### **Platform-Specific Dependencies**
 
-#### **Linux/macOS**
-- **System dependencies**: Automatically installed with `--install-dependencies` flag
-- **Python packages**: Standard `pip` installation
+GrapaPy requires system-level dependencies that must be installed before running `pip install grapapy`. The Python package includes built-in dependency checking and will provide detailed error messages if dependencies are missing.
 
-#### **Windows**
-- **Visual Studio Build Tools**: Required for compilation during installation
-- **Python packages**: Standard `pip` installation
+#### **Linux**
+**Required Dependencies:**
+- **OpenSSL development libraries** (`libssl-dev`, `libcrypto-dev`)
+- **X11 development libraries** (`libx11-dev`, `libxext-dev`)
+- **Build tools** (`build-essential`, `g++` with C++17 support)
+- **Python development headers** (`python3-dev`)
 
-### **Installation Methods**
-
-#### **Method 1: From PyPI (Recommended)**
+**Installation Commands:**
 ```bash
-# Linux/macOS
-pip3 install grapapy
-
-# Windows
-pip install grapapy
-```
-
-#### **Method 2: From Distribution Package**
-```bash
-# After installing Grapa CLI
-pip3 install dist/grapapy-0.1.54.tar.gz
-
-# Ubuntu 24.04+ may require:
-pip3 install dist/grapapy-0.1.54.tar.gz --break-system-packages
-```
-
-### **Dependency Installation**
-
-#### **Automatic (Linux/macOS)**
-```bash
-# Install Grapa with all dependencies
-python3 install-grapa-0.1.54.py --install-dependencies
-```
-
-#### **Manual (All Platforms)**
-**Linux (Ubuntu/Debian):**
-```bash
+# Ubuntu/Debian
 sudo apt-get update
-sudo apt-get install build-essential python3-dev libssl-dev libx11-dev libxext-dev cmake
-```
+sudo apt-get install build-essential python3-dev libssl-dev libx11-dev libxext-dev
 
-**Linux (CentOS/RHEL/Amazon Linux):**
-```bash
+# CentOS/RHEL/Amazon Linux
 sudo yum groupinstall 'Development Tools'
-sudo yum install gcc-c++ python3-devel openssl-devel libX11-devel libXext-devel cmake
+sudo yum install python3-devel openssl-devel libX11-devel libXext-devel
+
+# Fedora
+sudo dnf groupinstall 'Development Tools'
+sudo dnf install python3-devel openssl-devel libX11-devel libXext-devel
 ```
 
-**macOS:**
+**Automatic Installation:** ❌ **No** - `pip install grapapy` cannot install system packages. You must install dependencies manually or use the universal installer.
+
+#### **macOS**
+**Required Dependencies:**
+- **Xcode Command Line Tools** (includes compilers and build tools)
+
+**Installation Command:**
 ```bash
 xcode-select --install
 ```
 
-**Windows:**
-- Install [Visual Studio 2022](https://visualstudio.microsoft.com/downloads/) or Build Tools for Visual Studio 2022
-- Ensure "Desktop development with C++" workload is selected
+**Automatic Installation:** ❌ **No** - `pip install grapapy` cannot install Xcode tools. You must install manually.
+
+#### **Windows**
+**Required Dependencies:**
+- **Visual Studio 2022** or **Build Tools for Visual Studio 2022** (version 17.x)
+- **Windows 10/11 SDK** (usually included with Visual Studio 2022)
+- **Python 3.6+**
+
+**Installation Steps:**
+1. Download and install [Visual Studio 2022](https://visualstudio.microsoft.com/downloads/) or [Build Tools for Visual Studio 2022](https://visualstudio.microsoft.com/downloads/#build-tools-for-visual-studio-2022)
+2. During installation, ensure **"Desktop development with C++"** workload is selected
+3. This automatically includes the Windows SDK
+
+**Automatic Installation:** ❌ **No** - `pip install grapapy` cannot install Visual Studio. You must install manually.
+
+**Important:** Run `pip install grapapy` from the **"x64 Native Tools Command Prompt for VS 2022"** to ensure the build environment is properly configured.
+
+### **Installation Methods**
+
+#### **Method 1: From PyPI (Recommended)**
+
+**Step 1: Install System Dependencies**
+Install the platform-specific dependencies listed above before proceeding.
+
+**Step 2: Install GrapaPy**
+```bash
+# Linux/macOS
+pip3 install grapapy
+
+# Windows (run from "x64 Native Tools Command Prompt for VS 2022")
+pip install grapapy
+```
+
+**What happens during installation:**
+- GrapaPy checks for required system dependencies
+- If dependencies are missing, installation fails with detailed error messages
+- If dependencies are present, GrapaPy compiles and installs successfully
+
+#### **Method 2: Build from Source**
+```bash
+# Build Grapa with Python extension support
+python3 build.py --python
+
+# On Windows, use:
+python build.py --python
+```
+
+### **Alternative: Universal Installer for Dependencies**
+
+The Grapa universal installer can automatically install system dependencies for the CLI, which are the same dependencies needed for GrapaPy:
+
+#### **Automatic Dependency Installation (Linux/macOS)**
+```bash
+# Install Grapa CLI with automatic dependency installation
+python3 install-grapa-0.1.54.py --install-dependencies
+
+# Then install GrapaPy (dependencies already installed)
+pip3 install grapapy
+```
+
+**What the universal installer installs:**
+- **Linux**: All required development packages (OpenSSL, X11, build tools, etc.)
+- **macOS**: Xcode Command Line Tools
+- **Windows**: ❌ **Not supported** - requires manual Visual Studio installation
+
+#### **Manual Dependency Installation**
+If you prefer to install dependencies manually, use the commands listed in the platform-specific sections above.
 
 ## 🛠️ **Building from Source**
 
@@ -373,8 +418,8 @@ After building, install the Python extension:
 # Upgrade pip first
 pip install --upgrade pip
 
-# Install GrapaPy
-pip install grapapy==0.1.54
+# Install GrapaPy from PyPI
+pip install grapapy
 ```
 
 **Non-Windows:**
@@ -382,8 +427,8 @@ pip install grapapy==0.1.54
 # Upgrade pip first
 pip3 install --upgrade pip
 
-# Install GrapaPy
-pip3 install grapapy==0.1.54
+# Install GrapaPy from PyPI
+pip3 install grapapy
 ```
 
 ### **Verify Python Integration**

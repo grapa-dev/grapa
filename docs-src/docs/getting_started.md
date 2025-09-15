@@ -371,10 +371,12 @@ result = g.eval('2 + 2')
 print(f'Result: {result}')
 ```
 
-**Install GrapaPy:**
+**Install GrapaPy (Recommended):**
 ```bash
 pip install grapapy
 ```
+
+**Note:** GrapaPy includes built-in dependency checking and will provide helpful error messages if system dependencies are missing. See the [Installation Guide](installation.md) for complete setup instructions.
 
 ## Next Steps
 - Explore [Examples](examples.md) for more complex use cases
