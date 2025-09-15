@@ -5080,9 +5080,9 @@ $global[&quot;$filtered_data&quot;] = rule &lt;$raw_data,filter_function&gt; {@&
 | range &#39;(&#39; &lt;$comp&gt; &#39;)&#39; {@&lt;range,{$3}&gt;}
 </code></pre></div>
 <h4 id="secondary-approach-custom-commandfunction-variables"><strong>Secondary Approach: Custom Command/Function Variables</strong></h4>
-<p>Use <code>custom_command</code>/<code>custom_function</code> as variables that leverage existing grammar rules:</p>
-<div class="highlight"><pre><span></span><code>/* custom_command - leverages existing $comp and $command rules */
-custom_command = rule for $ID from &lt;$comp&gt; to &lt;$comp&gt; &lt;$command&gt; {
+<p>Use <code>$custom_command</code>/<code>$custom_function</code> as variables that leverage existing grammar rules:</p>
+<div class="highlight"><pre><span></span><code>/* $custom_command - leverages existing $comp and $command rules */
+$custom_command = rule for $ID from &lt;$comp&gt; to &lt;$comp&gt; &lt;$command&gt; {
     op(var:$2, start:$4, end:$6, body:$8){
         /* Uses existing $comp and $command rules */
         op()(var + &quot; = &quot; + start)();
@@ -5093,8 +5093,8 @@ custom_command = rule for $ID from &lt;$comp&gt; to &lt;$comp&gt; &lt;$command&g
     }
 };
 
-/* custom_function - leverages existing $comp rules */
-custom_function = rule &lt;$comp&gt; &#39;*=&#39; &lt;$comp&gt; {
+/* $custom_function - leverages existing $comp rules */
+$custom_function = rule &lt;$comp&gt; &#39;*=&#39; &lt;$comp&gt; {
     op(left:$1, right:$3){
         result = op()(left)() * op()(right)();
         op()(left + &quot; = &quot; + result)();
@@ -5262,8 +5262,8 @@ compile_grammar = op(rule_name, rule_def) {
 };
 
 /* Use cached grammar */
-sql_grammar = compile_grammar(&quot;sql&quot;, &quot;custom_command = rule select...&quot;);
-json_grammar = compile_grammar(&quot;json&quot;, &quot;custom_function = rule $STR-&gt;$STR...&quot;);
+sql_grammar = compile_grammar(&quot;sql&quot;, &quot;$custom_command = rule select...&quot;);
+json_grammar = compile_grammar(&quot;json&quot;, &quot;$custom_function = rule $STR-&gt;$STR...&quot;);
 </code></pre></div>
 <h3 id="2-lazy-evaluation"><strong>2. Lazy Evaluation</strong></h3>
 <div class="highlight"><pre><span></span><code>/* Lazy evaluation of complex expressions */
@@ -5298,7 +5298,7 @@ y = &quot;x&quot;;  /* y contains the string &quot;x&quot; */
 @@y += 1; /* Increments variable x */
 
 /* In rule implementations */
-custom_command = rule for $ID from &lt;$comp&gt; to &lt;$comp&gt; &lt;$command&gt; {
+$custom_command = rule for $ID from &lt;$comp&gt; to &lt;$comp&gt; &lt;$command&gt; {
     op(var:$2, start:$4, end:$6, body:$8){
         /* Instead of complex string concatenation */
         /* op()(var + &quot; = &quot; + start())(); */
@@ -5492,7 +5492,7 @@ api = op(parse)(&#39;api &quot;user_api&quot; {
 <h3 id="3-integration"><strong>3. Integration</strong></h3>
 <ol>
 <li><strong>Leverage Existing Libraries</strong>: Use Grapa's C++ libraries when possible</li>
-<li><strong>Follow Patterns</strong>: Use established patterns like direct BNF integration for native features, <code>custom_command</code>/<code>custom_function</code> as variables that leverage existing grammar rules</li>
+<li><strong>Follow Patterns</strong>: Use established patterns like direct BNF integration for native features, <code>$custom_command</code>/<code>$custom_function</code> as variables that leverage existing grammar rules</li>
 <li><strong>Test Thoroughly</strong>: Validate grammar rules with comprehensive testing</li>
 <li><strong>Version Control</strong>: Track grammar changes and maintain compatibility</li>
 </ol>

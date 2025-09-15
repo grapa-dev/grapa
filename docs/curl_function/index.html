@@ -2116,6 +2116,30 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Implementation Notes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#http-method-workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      HTTP Method Workflow
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#content-type-handling" class="md-nav__link">
+    <span class="md-ellipsis">
+      Content Type Handling
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
     </ul>
@@ -4568,6 +4592,30 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Implementation Notes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#http-method-workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      HTTP Method Workflow
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#content-type-handling" class="md-nav__link">
+    <span class="md-ellipsis">
+      Content Type Handling
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
     </ul>
@@ -4588,7 +4636,9 @@
 
 <h1 id="grapa-curl-function">Grapa curl Function</h1>
 <p>A comprehensive HTTP client implementation that replicates 100% of the CLI curl command functionality using Grapa's networking capabilities.</p>
-<p><strong>Working Example:</strong> See <a href="../examples/curl_function_simple.grc">curl_function_simple.grc</a> for the complete, tested implementation that makes maximum use of Grapa's C++ HTTP capabilities.</p>
+<p><strong>Working Examples:</strong> 
+- <a href="../examples/http_methods_demo.grc">HTTP Methods Demo</a> - Comprehensive examples of <code>.httpsend()</code>, <code>.httpread()</code>, <code>.httpmessage()</code>
+- <a href="../examples/curl_function_simple.grc">curl_function_simple.grc</a> - Complete curl-like implementation</p>
 <h2 id="overview">Overview</h2>
 <p>The <code>curl_function.grc</code> provides a complete HTTP client with support for:
 - All HTTP methods (GET, POST, PUT, DELETE, etc.)
@@ -4974,12 +5024,25 @@ result = curl(&quot;https://httpbin.org/post&quot;, options);
 <p>The Grapa curl function leverages Grapa's built-in C++ HTTP capabilities:</p>
 <ul>
 <li><strong><code>net.connect()</code></strong>: Handles connection establishment with SSL and proxy support</li>
-<li><strong><code>net.httpsend()</code></strong>: Sends HTTP requests with proper header formatting</li>
+<li><strong><code>net.httpsend()</code></strong>: Sends HTTP requests with proper header formatting (<strong>automatically calls <code>net.httpread()</code></strong>)</li>
 <li><strong><code>net.httpmessage()</code></strong>: Parses responses with automatic content type detection</li>
 <li><strong><code>net.proxy()</code></strong>: Configures proxy settings before connection</li>
 <li><strong><code>net.certificate()</code></strong>: Sets SSL certificate for HTTPS connections</li>
 </ul>
+<h3 id="http-method-workflow"><strong>HTTP Method Workflow</strong></h3>
+<p>The curl function uses Grapa's HTTP method workflow:
+1. <strong><code>.httpsend()</code></strong> sends the request and automatically calls <strong><code>.httpread()</code></strong> 
+2. <strong><code>.httpread()</code></strong> can only be called once per request (network buffer consumed)
+3. <strong><code>.httpmessage()</code></strong> parses the already-read response from internal buffer</p>
+<h3 id="content-type-handling"><strong>Content Type Handling</strong></h3>
+<ul>
+<li><strong>JSON responses</strong> → <code>$GOBJ</code> objects with direct field access</li>
+<li><strong>HTML responses</strong> → <code>$XML</code> objects (HTML parsed as XML)</li>
+<li><strong>XML responses</strong> → <code>$XML</code> objects  </li>
+<li><strong>Mixed content</strong> (JSON with embedded XML) → <code>$GOBJ</code> containing <code>$XML</code> objects</li>
+</ul>
 <p>This implementation makes maximum use of Grapa's underlying C++ infrastructure while providing a high-level, curl-like interface for HTTP/HTTPS operations.</p>
+<p><strong>See Also:</strong> <a href="../sys/net.md#http-methods-httpsend-httpread-httpmessage">HTTP Methods Documentation</a> for detailed implementation details.</p>
 
 
 

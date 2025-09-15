@@ -5362,15 +5362,15 @@
 <tbody>
 <tr>
 <td><a href="sql_syntax_example.grc">SQL Syntax Example</a></td>
-<td><strong>Example Implementation</strong> - Demonstrates how SQL syntax can be added to Grapa using custom_command and custom_function. Shows working SQL parsing and execution.</td>
+<td><strong>Example Implementation</strong> - Demonstrates how SQL syntax can be added to Grapa using $custom_command and $custom_function. Shows working SQL parsing and execution.</td>
 </tr>
 <tr>
 <td><a href="prolog_syntax_example.grc">PROLOG Syntax Example</a></td>
-<td><strong>Example Implementation</strong> - Demonstrates how PROLOG syntax can be added to Grapa using custom_command and custom_function. Shows working PROLOG facts, rules, and queries.</td>
+<td><strong>Example Implementation</strong> - Demonstrates how PROLOG syntax can be added to Grapa using $custom_command and $custom_function. Shows working PROLOG facts, rules, and queries.</td>
 </tr>
 <tr>
 <td><a href="lisp_syntax_example.grc">LISP Syntax Example</a></td>
-<td><strong>Example Implementation</strong> - Demonstrates how LISP syntax can be added to Grapa using custom_command and custom_function. Shows working LISP S-expressions, function definitions, and evaluation.</td>
+<td><strong>Example Implementation</strong> - Demonstrates how LISP syntax can be added to Grapa using $custom_command and $custom_function. Shows working LISP S-expressions, function definitions, and evaluation.</td>
 </tr>
 <tr>
 <td><a href="language_design_example.grc">Language Design Example</a></td>
@@ -6286,7 +6286,7 @@ for (i = 0; i &lt; patterns.len(); i = i + 1) {
 <p>For comprehensive documentation on syntax extension, including custom commands, custom functions, scoping, and dynamic compilation, see <a href="../type/rule/#language-syntax-extension">Language Syntax Extension</a>.</p>
 <h3 id="quick-example">Quick Example</h3>
 <div class="highlight"><pre><span></span><code>// Define a custom function
-custom_function = rule select $INT {op(p:$2){p*5}};
+$custom_function = rule select $INT {op(p:$2){p*5}};
 
 // Use it directly
 select 4;        // Returns 20

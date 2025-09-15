@@ -4267,39 +4267,39 @@
 
 
 <h1 id="sql-integration-in-grapa">SQL Integration in Grapa</h1>
-<p>Grapa's executable BNF architecture allows you to add <strong>true native SQL syntax</strong> to the language using <code>custom_command</code> and <code>custom_function</code> rules. This is <strong>not</strong> manual parsing - it's <strong>native syntax</strong> that integrates seamlessly with Grapa's grammar system.</p>
+<p>Grapa's executable BNF architecture allows you to add <strong>true native SQL syntax</strong> to the language using <code>$custom_command</code> and <code>$custom_function</code> rules. This is <strong>not</strong> manual parsing - it's <strong>native syntax</strong> that integrates seamlessly with Grapa's grammar system.</p>
 <h2 id="true-native-syntax-implementation">True Native Syntax Implementation</h2>
 <p>The SQL integration uses Grapa's <strong>rule-based grammar system</strong> exclusively. All parsing is handled by Grapa's grammar engine - <strong>no manual string manipulation</strong> is required.</p>
 <h3 id="example-sql-syntax-implementation">Example SQL Syntax Implementation</h3>
-<div class="highlight"><pre><span></span><code>/* Initialize custom_command and custom_function for SQL syntax */
-custom_command = rule select $STR from $STR {op(fields:$2,table_name:$4){
+<div class="highlight"><pre><span></span><code>/* Initialize $custom_command and $custom_function for SQL syntax */
+$custom_command = rule select $STR from $STR {op(fields:$2,table_name:$4){
     /* Implementation receives already-parsed tokens from Grapa&#39;s grammar */
     /* NO manual parsing - Grapa grammar handled everything */
 }};
 
 /* SELECT with individual field parsing - TRUE NATIVE SYNTAX */
-custom_command ++= rule select $STR &#39;,&#39; $STR from $STR {op(field1:$2,field2:$4,table_name:$6){
+$custom_command ++= rule select $STR &#39;,&#39; $STR from $STR {op(field1:$2,field2:$4,table_name:$6){
     /* Implementation receives already-parsed, structured data */
     /* NO manual parsing - Grapa grammar captured each component */
 }};
 
 /* INSERT with individual value parsing - TRUE NATIVE SYNTAX */
-custom_command ++= rule insert into $STR values $STR &#39;,&#39; $INT &#39;,&#39; $STR {op(table_name:$3,name:$6,age:$8,city:$10){
+$custom_command ++= rule insert into $STR values $STR &#39;,&#39; $INT &#39;,&#39; $STR {op(table_name:$3,name:$6,age:$8,city:$10){
     /* All components parsed by Grapa&#39;s grammar system */
 }};
 
 /* UPDATE with native grammar */
-custom_command ++= rule update $STR set $STR &#39;=&#39; $STR where $STR &#39;=&#39; $STR {op(table_name:$2,field:$4,value:$6,where_field:$8,where_value:$10){
+$custom_command ++= rule update $STR set $STR &#39;=&#39; $STR where $STR &#39;=&#39; $STR {op(table_name:$2,field:$4,value:$6,where_field:$8,where_value:$10){
     /* All components parsed by Grapa&#39;s grammar system */
 }};
 
 /* DELETE with native grammar */
-custom_command ++= rule delete from $STR where $STR &#39;=&#39; $STR {op(table_name:$3,where_field:$5,where_value:$7){
+$custom_command ++= rule delete from $STR where $STR &#39;=&#39; $STR {op(table_name:$3,where_field:$5,where_value:$7){
     /* All components parsed by Grapa&#39;s grammar system */
 }};
 
 /* COUNT function with native grammar */
-custom_function = rule count &#39;(&#39; $STR &#39;)&#39; from $STR {op(field:$3,table_name:$6){
+$custom_function = rule count &#39;(&#39; $STR &#39;)&#39; from $STR {op(field:$3,table_name:$6){
     /* Expression-based SQL function */
 }};
 </code></pre></div>
@@ -4329,9 +4329,9 @@ if (user_count &gt; 3) {
 </ul>
 <h2 id="two-implementation-approaches">Two Implementation Approaches</h2>
 <h3 id="1-syntax-extension-recommended">1. Syntax Extension (Recommended)</h3>
-<p>Uses <code>custom_command ++= rule</code> and <code>custom_function ++= rule</code> to define <strong>true native syntax</strong>:</p>
+<p>Uses <code>$custom_command ++= rule</code> and <code>$custom_function ++= rule</code> to define <strong>true native syntax</strong>:</p>
 <div class="highlight"><pre><span></span><code>/* TRUE NATIVE SYNTAX - No manual parsing */
-custom_command = rule select $STR from $STR {op(fields:$2,table:$4){
+$custom_command = rule select $STR from $STR {op(fields:$2,table:$4){
     /* Grapa grammar provides already-parsed tokens */
 }};
 </code></pre></div>
@@ -4348,10 +4348,10 @@ sql_select = op(fields, table) {
 <h2 id="sql-syntax-extension-pattern">SQL Syntax Extension Pattern</h2>
 <p>The key features for true native syntax are:</p>
 <ul>
-<li><strong><code>custom_command = rule</code></strong>: Defines initial action-based syntax (SELECT, INSERT, UPDATE)</li>
-<li><strong><code>custom_command ++= rule</code></strong>: Adds additional action-based syntax patterns</li>
-<li><strong><code>custom_function = rule</code></strong>: Defines initial expression-based syntax (COUNT, SUM, AVG)</li>
-<li><strong><code>custom_function ++= rule</code></strong>: Adds additional expression-based syntax patterns</li>
+<li><strong><code>$custom_command = rule</code></strong>: Defines initial action-based syntax (SELECT, INSERT, UPDATE)</li>
+<li><strong><code>$custom_command ++= rule</code></strong>: Adds additional action-based syntax patterns</li>
+<li><strong><code>$custom_function = rule</code></strong>: Defines initial expression-based syntax (COUNT, SUM, AVG)</li>
+<li><strong><code>$custom_function ++= rule</code></strong>: Adds additional expression-based syntax patterns</li>
 <li><strong><code>op()(script)()</code></strong>: Executes the custom syntax</li>
 <li><strong><code>script.exec()</code></strong>: Alternative syntax for executing custom syntax (more readable)</li>
 <li><strong>Token Capture</strong>: Use <code>$STR</code>, <code>$INT</code>, etc. to capture individual components</li>

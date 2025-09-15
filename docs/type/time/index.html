@@ -1334,6 +1334,21 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="time()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#string-parsing" class="md-nav__link">
+    <span class="md-ellipsis">
+      String Parsing
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -4088,6 +4103,21 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="time()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#string-parsing" class="md-nav__link">
+    <span class="md-ellipsis">
+      String Parsing
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -4173,6 +4203,76 @@
 <div class="highlight"><pre><span></span><code>&gt; (0).time();
 1970-01-01T00:00:00.000000
 </code></pre></div>
+<h3 id="string-parsing">String Parsing</h3>
+<p>The <code>.time()</code> method can parse various string formats to create a <code>$TIME</code> object:</p>
+<p><strong>Supported Formats:</strong></p>
+<ol>
+<li>
+<p><strong>ISO 8601 with microseconds and timezone</strong>:
+   <div class="highlight"><pre><span></span><code>&quot;2025-09-14T20:15:17.8017135+05:00&quot;.time()
+&quot;2025-09-14T20:15:17.8017135-08:00&quot;.time()
+&quot;2025-09-14T20:15:17.8017135+0500&quot;.time()    // 4-digit timezone format
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>ISO 8601 with microseconds</strong> (default):
+   <div class="highlight"><pre><span></span><code>&quot;2025-09-14T20:15:17.8017135&quot;.time()
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>ISO 8601 without microseconds, with timezone</strong>:
+   <div class="highlight"><pre><span></span><code>&quot;2025-09-14T20:15:17+05:00&quot;.time()
+&quot;2025-09-14T20:15:17-08:00&quot;.time()
+&quot;2025-09-14T20:15:17+0500&quot;.time()            // 4-digit timezone format
+&quot;2025-09-14T20:15:17Z&quot;.time()                // UTC indicator
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>ISO 8601 without microseconds</strong>:
+   <div class="highlight"><pre><span></span><code>&quot;2025-09-14T20:15:17&quot;.time()
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>Space-separated date and time</strong>:
+   <div class="highlight"><pre><span></span><code>&quot;2025-09-14 20:15:17&quot;.time()
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>US format (MM/DD/YYYY with time)</strong>:
+   <div class="highlight"><pre><span></span><code>&quot;09/14/2025 20:15:17&quot;.time()
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>US format (MM/DD/YYYY, time defaults to 00:00:00)</strong>:
+   <div class="highlight"><pre><span></span><code>&quot;09/14/2025&quot;.time()
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>European format (DD/MM/YYYY with time)</strong>:
+   <div class="highlight"><pre><span></span><code>&quot;14/09/2025 20:15:17&quot;.time()
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>European format (DD/MM/YYYY, time defaults to 00:00:00)</strong>:
+   <div class="highlight"><pre><span></span><code>&quot;14/09/2025&quot;.time()
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>Date only</strong> (time defaults to 00:00:00):
+    <div class="highlight"><pre><span></span><code>&quot;2025-09-14&quot;.time()
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>Time only</strong> (uses current date):
+    <div class="highlight"><pre><span></span><code>&quot;20:15:17&quot;.time()
+</code></pre></div></p>
+</li>
+</ol>
+<p><strong>Timezone Handling:</strong>
+- All timezone offsets are automatically converted to UTC for internal storage
+- Supported timezone formats: <code>+05:00</code>, <code>-08:00</code>, <code>+0500</code>, <code>-0800</code>, <code>Z</code>
+- Use <code>.tz()</code> to convert from UTC to local timezones as needed</p>
+<p><strong>Note:</strong> All parsed times are stored internally in UTC. Use <code>.tz()</code> to convert to local timezones as needed.</p>
 <h2 id="tz">tz()</h2>
 <div class="highlight"><pre><span></span><code>&gt; $TIME().tz();
 -28800000000000
@@ -4216,9 +4316,30 @@ Time1=2509.5192; Time2=1340.6389; Delta=1168.8803
 - <strong>Time2</strong>: Milliseconds between <code>t1</code> and <code>t2</code> 
 - <strong>Delta</strong>: Time difference in seconds (converted from nanoseconds)</p>
 <h2 id="examples">Examples</h2>
-<p>The following illustrate using various date ranges.</p>
+<p>The following illustrate using various date ranges and string formats.</p>
 <div class="highlight"><pre><span></span><code>&gt; &quot;1020-04-23T12:33:33.921638&quot;.time();
 1020-04-23T12:33:33.921638
+
+&gt; &quot;2025-09-14 20:15:17&quot;.time();
+2025-09-14T20:15:17.0
+
+&gt; &quot;2025-09-14&quot;.time();
+2025-09-14T00:00:00.0
+
+&gt; &quot;09/14/2025&quot;.time();
+2025-09-14T00:00:00.0
+
+&gt; &quot;2025-09-14T20:15:17+05:00&quot;.time();
+2025-09-14T15:15:17.0
+
+&gt; &quot;2025-09-14T20:15:17-08:00&quot;.time();
+2025-09-15T04:15:17.0
+
+&gt; &quot;2025-09-14T20:15:17.123456+05:00&quot;.time();
+2025-09-14T15:15:17.000123456
+
+&gt; &quot;2025-09-14T20:15:17Z&quot;.time();
+2025-09-14T20:15:17.0
 
 &gt; &quot;1020-04-23T12:33:33.921638&quot;.time() + 24*60*60*1000000000;
 1020-04-24T12:33:33.921638

@@ -10860,7 +10860,7 @@ arr.utilityMethod().echo();   /* outputs: Hello from extended array */
 <p>For comprehensive documentation on syntax extension, including custom commands, custom functions, scoping, and dynamic compilation, see <a href="../../type/rule/#language-syntax-extension">Language Syntax Extension</a>.</p>
 <h3 id="quick-syntax-extension-example">Quick Syntax Extension Example</h3>
 <div class="highlight"><pre><span></span><code>// Define a custom function that becomes part of the language
-custom_function = rule select $INT {op(p:$2){p*5}};
+$custom_function = rule select $INT {op(p:$2){p*5}};
 
 // Use it as if it were built into the language
 select 4;        // Returns 20

@@ -4524,24 +4524,24 @@
 <h3 id="solution-multi-syntax-etl-pipeline"><strong>Solution: Multi-Syntax ETL Pipeline</strong></h3>
 <div class="highlight"><pre><span></span><code>/* Multi-Syntax ETL Pipeline Example */
 
-/* Step 1: Define SQL syntax for database operations using custom_command and custom_function as variables */
-custom_command = rule select $STR from $STR {op(fields:$2,table_name:$4){
+/* Step 1: Define SQL syntax for database operations using $custom_command and $custom_function as variables */
+$custom_command = rule select $STR from $STR {op(fields:$2,table_name:$4){
     (&quot;SQL: SELECT &quot; + fields + &quot; FROM &quot; + table_name).echo();
     /* Database query implementation */
 }};
 
-custom_function = rule count &#39;(&#39; $STR &#39;)&#39; from $STR {op(field:$3,table_name:$6){
+$custom_function = rule count &#39;(&#39; $STR &#39;)&#39; from $STR {op(field:$3,table_name:$6){
     records = get_table(table_name).ls();
     return records.len();
 }};
 
 /* Step 2: Define JSON syntax for API data */
-custom_function = rule $STR &#39;-&gt;&#39; $STR {op(json:$1,path:$3){
+$custom_function = rule $STR &#39;-&gt;&#39; $STR {op(json:$1,path:$3){
     /* JSON path extraction */
     return json.json().getfield(path);
 }};
 
-custom_function = rule json_extract &#39;(&#39; $STR &#39;,&#39; $STR &#39;)&#39; {op(json:$3,path:$5){
+$custom_function = rule json_extract &#39;(&#39; $STR &#39;,&#39; $STR &#39;)&#39; {op(json:$3,path:$5){
     /* JSON extraction with error handling */
     try {
         return json.json().getfield(path);
@@ -4551,12 +4551,12 @@ custom_function = rule json_extract &#39;(&#39; $STR &#39;,&#39; $STR &#39;)&#39
 }};
 
 /* Step 3: Define XML syntax for feed processing */
-custom_function = rule xpath &#39;(&#39; $STR &#39;,&#39; $STR &#39;)&#39; {op(xml:$3,xpath_expr:$5){
+$custom_function = rule xpath &#39;(&#39; $STR &#39;,&#39; $STR &#39;)&#39; {op(xml:$3,xpath_expr:$5){
     /* XPath evaluation */
     return xml.xml().xpath(xpath_expr);
 }};
 
-custom_function = rule xml_extract &#39;(&#39; $STR &#39;,&#39; $STR &#39;)&#39; {op(xml:$3,path:$5){
+$custom_function = rule xml_extract &#39;(&#39; $STR &#39;,&#39; $STR &#39;)&#39; {op(xml:$3,path:$5){
     /* XML extraction with validation */
     if (xml.xml().valid()) {
         return xml.xml().extract(path);
@@ -4566,7 +4566,7 @@ custom_function = rule xml_extract &#39;(&#39; $STR &#39;,&#39; $STR &#39;)&#39;
 }};
 
 /* Step 4: Define custom pipeline syntax */
-custom_command = rule pipeline &#39;{&#39; &lt;$pipeline_steps&gt; &#39;}&#39; {op(steps:$3){
+$custom_command = rule pipeline &#39;{&#39; &lt;$pipeline_steps&gt; &#39;}&#39; {op(steps:$3){
     (&quot;Pipeline execution started&quot;).echo();
     result = null;
     i = 0;
@@ -4620,7 +4620,7 @@ result = op(parse)(&#39;pipeline {
 <h2 id="advanced-multi-syntax-patterns">Advanced Multi-Syntax Patterns</h2>
 <h3 id="1-sql-with-json-fields"><strong>1. SQL with JSON Fields</strong></h3>
 <div class="highlight"><pre><span></span><code>/* Query database with JSON field filtering */
-custom_command = rule select $STR from $STR where $STR &#39;-&gt;&#39; $STR &#39;=&#39; $STR {
+$custom_command = rule select $STR from $STR where $STR &#39;-&gt;&#39; $STR &#39;=&#39; $STR {
     op(fields:$2,table:$4,json_field:$6,path:$8,value:$10){
         (&quot;SQL with JSON: &quot; + fields + &quot; FROM &quot; + table + &quot; WHERE &quot; + json_field + &quot;-&gt;&quot; + path + &quot; = &quot; + value).echo();
 
@@ -4640,7 +4640,7 @@ op(parse)(&#39;select name, age from users where preferences-&gt;&quot;theme&quo
 </code></pre></div>
 <h3 id="2-xml-with-sql-integration"><strong>2. XML with SQL Integration</strong></h3>
 <div class="highlight"><pre><span></span><code>/* Process XML and store in database */
-custom_command = rule process_xml $STR into $STR {op(xml_file:$2,table_name:$4){
+$custom_command = rule process_xml $STR into $STR {op(xml_file:$2,table_name:$4){
     (&quot;Processing XML: &quot; + xml_file + &quot; into &quot; + table_name).echo();
 
     xml_data = $file().read(xml_file);
@@ -4663,7 +4663,7 @@ op(parse)(&#39;process_xml inventory.xml into products&#39;)();
 </code></pre></div>
 <h3 id="3-custom-dsl-for-data-validation"><strong>3. Custom DSL for Data Validation</strong></h3>
 <div class="highlight"><pre><span></span><code>/* Define validation DSL */
-custom_command = rule validate $STR &#39;{&#39; &lt;$validation_rules&gt; &#39;}&#39; {op(data:$2,rules:$4){
+$custom_command = rule validate $STR &#39;{&#39; &lt;$validation_rules&gt; &#39;}&#39; {op(data:$2,rules:$4){
     (&quot;Validating data: &quot; + data).echo();
 
     validation_result = true;
@@ -4685,11 +4685,11 @@ custom_command = rule validate $STR &#39;{&#39; &lt;$validation_rules&gt; &#39;}
     return validation_result;
 }};
 
-custom_command = rule field $STR required {op(field_name:$2){
+$custom_command = rule field $STR required {op(field_name:$2){
     return {&quot;type&quot;: &quot;required&quot;, &quot;field&quot;: field_name};
 }};
 
-custom_command = rule field $STR type $STR {op(field_name:$2,type_name:$4){
+$custom_command = rule field $STR type $STR {op(field_name:$2,type_name:$4){
     return {&quot;type&quot;: &quot;type_check&quot;, &quot;field&quot;: field_name, &quot;expected_type&quot;: type_name};
 }};
 
@@ -4716,9 +4716,9 @@ compile_syntax = op(syntax_name, syntax_def) {
 };
 
 /* Use cached syntax */
-sql_syntax = compile_syntax(&quot;sql&quot;, &quot;custom_command = rule select...&quot;);
-json_syntax = compile_syntax(&quot;json&quot;, &quot;custom_function = rule $STR-&gt;$STR...&quot;);
-xml_syntax = compile_syntax(&quot;xml&quot;, &quot;custom_function = rule xpath...&quot;);
+sql_syntax = compile_syntax(&quot;sql&quot;, &quot;$custom_command = rule select...&quot;);
+json_syntax = compile_syntax(&quot;json&quot;, &quot;$custom_function = rule $STR-&gt;$STR...&quot;);
+xml_syntax = compile_syntax(&quot;xml&quot;, &quot;$custom_function = rule xpath...&quot;);
 </code></pre></div>
 <h3 id="2-parallel-multi-syntax-processing"><strong>2. Parallel Multi-Syntax Processing</strong></h3>
 <div class="highlight"><pre><span></span><code>/* Process multiple data sources in parallel */
@@ -4751,7 +4751,7 @@ results = process_sources(sources);
 <h2 id="real-world-applications">Real-World Applications</h2>
 <h3 id="1-e-commerce-data-integration"><strong>1. E-commerce Data Integration</strong></h3>
 <div class="highlight"><pre><span></span><code>/* E-commerce data pipeline */
-custom_command = rule ecommerce_pipeline &#39;{&#39; &lt;$pipeline_steps&gt; &#39;}&#39; {op(steps:$3){
+$custom_command = rule ecommerce_pipeline &#39;{&#39; &lt;$pipeline_steps&gt; &#39;}&#39; {op(steps:$3){
     (&quot;E-commerce pipeline started&quot;).echo();
 
     /* Process customer data from CSV */
@@ -4784,7 +4784,7 @@ report = op(parse)(&#39;ecommerce_pipeline {
 </code></pre></div>
 <h3 id="2-financial-data-processing"><strong>2. Financial Data Processing</strong></h3>
 <div class="highlight"><pre><span></span><code>/* Financial data processing with validation */
-custom_command = rule financial_pipeline &#39;{&#39; &lt;$pipeline_steps&gt; &#39;}&#39; {op(steps:$3){
+$custom_command = rule financial_pipeline &#39;{&#39; &lt;$pipeline_steps&gt; &#39;}&#39; {op(steps:$3){
     (&quot;Financial pipeline started&quot;).echo();
 
     /* Load transaction data */

@@ -5293,11 +5293,11 @@ $global[&quot;$tagHtmlValue&quot;]
 <p>Based on the Grapa grammar system in <code>lib/grapa/$grapa.grc</code>, there are important distinctions between token types:</p>
 <p><strong>Identifier Tokens (automatic conversion):</strong>
 <div class="highlight"><pre><span></span><code>/* Define initial rule with identifier */
-custom_command = rule test {op(){&#39;matched first&#39;}};
+$custom_command = rule test {op(){&#39;matched first&#39;}};
 
 /* Append additional alternatives using ++= */
-custom_command ++= rule test2 {op(){&#39;matched second&#39;}};
-custom_command ++= rule test3 {op(){&#39;matched third&#39;}};
+$custom_command ++= rule test2 {op(){&#39;matched second&#39;}};
+$custom_command ++= rule test3 {op(){&#39;matched third&#39;}};
 
 /* Test the rule - use identifiers directly */
 test;   /* Returns: &#39;matched first&#39; */
@@ -5306,11 +5306,11 @@ test3;  /* Returns: &#39;matched third&#39; */
 </code></pre></div></p>
 <p><strong>String Tokens (explicit conversion required):</strong>
 <div class="highlight"><pre><span></span><code>/* Define initial rule with string token */
-custom_command = rule $STR(&#39;first&#39;) {op(){&#39;matched first&#39;}};
+$custom_command = rule $STR(&#39;first&#39;) {op(){&#39;matched first&#39;}};
 
 /* Append additional alternatives using ++= */
-custom_command ++= rule $STR(&#39;second&#39;) {op(){&#39;matched second&#39;}};
-custom_command ++= rule $STR(&#39;third&#39;) {op(){&#39;matched third&#39;}};
+$custom_command ++= rule $STR(&#39;second&#39;) {op(){&#39;matched second&#39;}};
+$custom_command ++= rule $STR(&#39;third&#39;) {op(){&#39;matched third&#39;}};
 
 /* Test the rule - use string literals */
 &quot;first&quot;;   /* Returns: &#39;matched first&#39; */
@@ -5362,21 +5362,21 @@ custom_command ++= rule $STR(&#39;third&#39;) {op(){&#39;matched third&#39;}};
 - <strong>Ambiguity Resolution</strong>: More specific rules should take precedence</p>
 <p><strong>Example of Incorrect Ordering:</strong>
 <div class="highlight"><pre><span></span><code>/* WRONG - Simple rule first will prevent longer rules from matching */
-custom_command = rule test {op(){&#39;simple&#39;}};                    /* 1 token - too early! */
-custom_command ++= rule test $STR {op(arg:$2){&#39;with arg&#39;}};     /* 2 tokens - never reached */
-custom_command ++= rule test $STR $STR {op(arg1:$2,arg2:$3){&#39;with 2 args&#39;}}; /* 3 tokens - never reached */
+$custom_command = rule test {op(){&#39;simple&#39;}};                    /* 1 token - too early! */
+$custom_command ++= rule test $STR {op(arg:$2){&#39;with arg&#39;}};     /* 2 tokens - never reached */
+$custom_command ++= rule test $STR $STR {op(arg1:$2,arg2:$3){&#39;with 2 args&#39;}}; /* 3 tokens - never reached */
 </code></pre></div></p>
 <p><strong>Correct Ordering:</strong>
 <div class="highlight"><pre><span></span><code>/* CORRECT - Most specific rules first */
-custom_command = rule test $STR $STR {op(arg1:$2,arg2:$3){&#39;with 2 args&#39;}}; /* 3 tokens */
-custom_command ++= rule test $STR {op(arg:$2){&#39;with arg&#39;}};     /* 2 tokens */
-custom_command ++= rule test {op(){&#39;simple&#39;}};                  /* 1 token - last */
+$custom_command = rule test $STR $STR {op(arg1:$2,arg2:$3){&#39;with 2 args&#39;}}; /* 3 tokens */
+$custom_command ++= rule test $STR {op(arg:$2){&#39;with arg&#39;}};     /* 2 tokens */
+$custom_command ++= rule test {op(){&#39;simple&#39;}};                  /* 1 token - last */
 </code></pre></div></p>
 <h4 id="testing-custom-rules">Testing Custom Rules</h4>
 <p><strong>Important</strong>: Custom rules must be tested using string execution since they cannot be used in the same script where they are defined (due to compilation timing).</p>
 <div class="highlight"><pre><span></span><code>/* Define custom rules */
-custom_command = rule test {op(){&#39;simple&#39;}};
-custom_command ++= rule test $STR {op(arg:$2){&#39;with arg: &#39; + arg}};
+$custom_command = rule test {op(){&#39;simple&#39;}};
+$custom_command ++= rule test $STR {op(arg:$2){&#39;with arg: &#39; + arg}};
 
 /* Test using string execution */
 op()(&quot;test&quot;)();                    /* Returns: &#39;simple&#39; */
@@ -5400,22 +5400,22 @@ script2.exec();                    /* Returns: &#39;with arg: hello&#39; */
 <h3 id="language-integration-example">Language Integration Example</h3>
 <p>This pattern is commonly used for implementing domain-specific languages and syntax extensions:</p>
 <div class="highlight"><pre><span></span><code>/* Initialize SQL syntax */
-custom_command = rule select $STR from $STR {op(fields:$2,table:$4){
+$custom_command = rule select $STR from $STR {op(fields:$2,table:$4){
     (&quot;SELECT &quot; + fields + &quot; FROM &quot; + table).echo();
 }};
 
 /* Add INSERT syntax */
-custom_command ++= rule insert into $STR values $STR &#39;,&#39; $INT &#39;,&#39; $STR {op(table:$3,name:$6,age:$8,city:$10){
+$custom_command ++= rule insert into $STR values $STR &#39;,&#39; $INT &#39;,&#39; $STR {op(table:$3,name:$6,age:$8,city:$10){
     (&quot;INSERT INTO &quot; + table + &quot; VALUES &quot; + name + &quot;,&quot; + age + &quot;,&quot; + city).echo();
 }};
 
 /* Add UPDATE syntax */
-custom_command ++= rule update $STR set $STR &#39;=&#39; $STR where $STR &#39;=&#39; $STR {op(table:$2,field:$4,value:$6,where_field:$8,where_value:$10){
+$custom_command ++= rule update $STR set $STR &#39;=&#39; $STR where $STR &#39;=&#39; $STR {op(table:$2,field:$4,value:$6,where_field:$8,where_value:$10){
     (&quot;UPDATE &quot; + table + &quot; SET &quot; + field + &quot;=&quot; + value + &quot; WHERE &quot; + where_field + &quot;=&quot; + where_value).echo();
 }};
 
 /* Add DELETE syntax */
-custom_command ++= rule delete from $STR where $STR &#39;=&#39; $STR {op(table:$3,where_field:$5,where_value:$7){
+$custom_command ++= rule delete from $STR where $STR &#39;=&#39; $STR {op(table:$3,where_field:$5,where_value:$7){
     (&quot;DELETE FROM &quot; + table + &quot; WHERE &quot; + where_field + &quot;=&quot; + where_value).echo();
 }};
 </code></pre></div>
@@ -5472,25 +5472,25 @@ func calls arg
 <h3 id="custom-commands-and-functions">Custom Commands and Functions</h3>
 <p>The Grapa parser includes two special variables that allow you to inject custom syntax:</p>
 <ul>
-<li><strong><code>custom_command</code></strong>: For domain-specific commands that perform actions but don't return values</li>
-<li><strong><code>custom_function</code></strong>: For functions that return values</li>
+<li><strong><code>$custom_command</code></strong>: For domain-specific commands that perform actions but don't return values</li>
+<li><strong><code>$custom_function</code></strong>: For functions that return values</li>
 </ul>
 <h4 id="basic-syntax-extension">Basic Syntax Extension</h4>
 <div class="highlight"><pre><span></span><code>// Define a custom function that returns a value
-custom_function = rule select $INT {op(p:$2){p*5}};
+$custom_function = rule select $INT {op(p:$2){p*5}};
 
 // Now you can use it directly
 select 4;        // Returns 20
 x = select 8;    // x = 40
 
 // Define a custom command that performs an action
-custom_command = rule reset_data {op(){clear_database()}};
+$custom_command = rule reset_data {op(){clear_database()}};
 
 // Use the custom command
 reset_data;      // Executes clear_database()
 </code></pre></div>
 <h4 id="how-it-works">How It Works</h4>
-<p>When you define <code>custom_function</code> or <code>custom_command</code>, you're essentially creating isolated rule execution for domain-specific processing. The parser:</p>
+<p>When you define <code>$custom_function</code> or <code>$custom_command</code>, you're essentially creating isolated rule execution for domain-specific processing. The parser:</p>
 <ol>
 <li><strong>Falls through</strong> the built-in command patterns</li>
 <li><strong>Matches your custom rule</strong> when the input fits the pattern</li>
@@ -5502,7 +5502,7 @@ reset_data;      // Executes clear_database()
 <h4 id="local-scope-function-level">Local Scope (Function-Level)</h4>
 <div class="highlight"><pre><span></span><code>function_with_custom_syntax() {
     // Custom syntax only available within this function
-    custom_function = rule local_cmd $INT {op(n:$2){n*2}};
+    $custom_function = rule local_cmd $INT {op(n:$2){n*2}};
 
     result = local_cmd 5;  // Works here
     // Function exits, local_cmd is gone
@@ -5514,7 +5514,7 @@ reset_data;      // Executes clear_database()
 <h4 id="global-scope-permanent">Global Scope (Permanent)</h4>
 <div class="highlight"><pre><span></span><code>function_with_permanent_syntax() {
     // Promote to global namespace - available everywhere
-    $global[&quot;custom_function&quot;] = rule global_cmd $INT {op(n:$2){n*3}};
+    $global[&quot;$custom_function&quot;] = rule global_cmd $INT {op(n:$2){n*3}};
 
     result = global_cmd 5;  // Works here
     // Function exits, but global_cmd is still available globally
@@ -5526,12 +5526,12 @@ result = global_cmd 10;  // Works here too
 <h4 id="conditional-global-promotion">Conditional Global Promotion</h4>
 <div class="highlight"><pre><span></span><code>function_with_conditional_syntax() {
     // Create local syntax first
-    custom_function = rule temp_cmd $INT {op(n:$2){n*4}};
+    $custom_function = rule temp_cmd $INT {op(n:$2){n*4}};
 
     // Test it locally
     if (temp_cmd 5 == 20) {
         // If it works well, promote to global
-        $global[&quot;custom_function&quot;] = rule temp_cmd $INT {op(n:$2){n*4}};
+        $global[&quot;$custom_function&quot;] = rule temp_cmd $INT {op(n:$2){n*4}};
         echo &quot;Syntax promoted to global&quot;;
     }
 
@@ -5543,11 +5543,11 @@ result = global_cmd 10;  // Works here too
 <h4 id="compilation-vs-runtime">Compilation vs. Runtime</h4>
 <div class="highlight"><pre><span></span><code>// This script was compiled with the original grammar
 function test() {
-    // Even if we change custom_function here, it won&#39;t affect
+    // Even if we change $custom_function here, it won&#39;t affect
     // the already-compiled code in this function
-    custom_function = rule new_syntax $INT {op(n:$2){n*10}};
+    $custom_function = rule new_syntax $INT {op(n:$2){n*10}};
 
-    // This line was compiled before the custom_function change
+    // This line was compiled before the $custom_function change
     // so it still uses the old grammar
     old_syntax 5;  // Uses whatever was defined when script was compiled
 }
@@ -5555,7 +5555,7 @@ function test() {
 <h4 id="dynamic-compilation">Dynamic Compilation</h4>
 <div class="highlight"><pre><span></span><code>function dynamic_compilation() {
     // Set up custom syntax
-    custom_function = rule custom_cmd $INT {op(n:$2){n*5}};
+    $custom_function = rule custom_cmd $INT {op(n:$2){n*5}};
 
     // Compile and execute new code dynamically
     script_text = &quot;result = custom_cmd 10; echo result;&quot;;
@@ -5570,11 +5570,11 @@ function test() {
 <h4 id="domain-specific-languages">Domain-Specific Languages</h4>
 <div class="highlight"><pre><span></span><code>function create_sql_dsl() {
     // Define SQL-like syntax
-    custom_function = rule SELECT $STR FROM $STR {op(fields:$2,table:$4){
+    $custom_function = rule SELECT $STR FROM $STR {op(fields:$2,table:$4){
         build_select_query(fields, table)
     }};
 
-    custom_function = rule WHERE $STR {op(condition:$2){
+    $custom_function = rule WHERE $STR {op(condition:$2){
         build_where_clause(condition)
     }};
 
@@ -5587,7 +5587,7 @@ function test() {
 <h4 id="configuration-driven-scripts">Configuration-Driven Scripts</h4>
 <div class="highlight"><pre><span></span><code>function load_plugin(plugin_config) {
     // Set up plugin-specific syntax
-    custom_function = rule plugin_cmd $STR {op(cmd:$2){execute_plugin(cmd)}};
+    $custom_function = rule plugin_cmd $STR {op(cmd:$2){execute_plugin(cmd)}};
 
     // Compile plugin script with new syntax
     plugin_script = plugin_config.script;
@@ -5601,7 +5601,7 @@ function test() {
 <div class="highlight"><pre><span></span><code>// Each thread can have its own syntax extensions
 function thread_with_custom_syntax() {
     // Local custom syntax for this thread
-    custom_function = rule thread_cmd $INT {op(n:$2){n*thread_id()}};
+    $custom_function = rule thread_cmd $INT {op(n:$2){n*thread_id()}};
 
     // This syntax is isolated to this thread
     result = thread_cmd 5;

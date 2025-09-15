@@ -5499,15 +5499,15 @@
 <h3 id="runtime-grammar-extension"><strong>Runtime Grammar Extension</strong> 🌐</h3>
 <p>Grapa's <strong>executable BNF system</strong> provides unique capabilities that no other modern programming language offers:</p>
 <div class="highlight"><pre><span></span><code>/* Add SQL syntax at runtime */
-custom_command = rule select $STR from $STR { op(fields:$2, table:$4){
+$custom_command = rule select $STR from $STR { op(fields:$2, table:$4){
     /* SQL implementation */
 } };
 
 /* Add PROLOG syntax at runtime */
-custom_command = rule $STR &#39;(&#39; $STR &#39;)&#39; &#39;.&#39; { op(predicate:$1, args:$3){
+$custom_command = rule $STR &#39;(&#39; $STR &#39;)&#39; &#39;.&#39; { op(predicate:$1, args:$3){
     /* PROLOG fact implementation */
 } };
-custom_function = rule &#39;?-&#39; $STR &#39;(&#39; $STR &#39;)&#39; { op(predicate:$2, query_args:$4){
+$custom_function = rule &#39;?-&#39; $STR &#39;(&#39; $STR &#39;)&#39; { op(predicate:$2, query_args:$4){
     /* PROLOG query implementation */
 } };
 
@@ -5985,7 +5985,7 @@ xml = xml + &lt;root&gt;&lt;item&gt;1&lt;/item&gt;&lt;/root&gt;;  /* Concatenate
 <h3 id="choose-grapa-when-you-need">✅ <strong>Choose Grapa When You Need:</strong></h3>
 <h4 id="1-dynamic-language-creation"><strong>1. Dynamic Language Creation</strong></h4>
 <div class="highlight"><pre><span></span><code>/* Define custom syntax at runtime */
-$global[&quot;$custom_command&quot;] = rule for &#39;(&#39; &lt;$comp&gt; &#39;)&#39; &lt;$command&gt; {
+$global[&quot;$$custom_command&quot;] = rule for &#39;(&#39; &lt;$comp&gt; &#39;)&#39; &lt;$command&gt; {
     op(init:$3, body:$6){ /* Implementation */ }
 };
 
@@ -6021,15 +6021,15 @@ result = process_all_formats(json_data, xml_data, sql_data);
 <p><strong>Grapa's native multi-syntax capabilities eliminate the need for external libraries and parsers.</strong></p>
 <h4 id="3-runtime-language-integration"><strong>3. Runtime Language Integration</strong></h4>
 <div class="highlight"><pre><span></span><code>/* Add SQL syntax at runtime */
-custom_command = rule select $STR from $STR { op(fields:$2, table:$4){
+$custom_command = rule select $STR from $STR { op(fields:$2, table:$4){
     /* SQL implementation */
 } };
 
 /* Add PROLOG syntax at runtime */
-custom_command = rule $STR &#39;(&#39; $STR &#39;)&#39; &#39;.&#39; { op(predicate:$1, args:$3){
+$custom_command = rule $STR &#39;(&#39; $STR &#39;)&#39; &#39;.&#39; { op(predicate:$1, args:$3){
     /* PROLOG fact implementation */
 } };
-custom_function = rule &#39;?-&#39; $STR &#39;(&#39; $STR &#39;)&#39; { op(predicate:$2, query_args:$4){
+$custom_function = rule &#39;?-&#39; $STR &#39;(&#39; $STR &#39;)&#39; { op(predicate:$2, query_args:$4){
     /* PROLOG query implementation */
 } };
 
@@ -6437,8 +6437,8 @@ encrypted_data = data.encode(aes_keys);
 - <code>.dot(other)</code> - Dot product
 - <code>.cov(axis=null)</code> - Covariance matrix</p>
 <p><strong>Advanced Sorting and Selection</strong>:
-- <code>.sort(axis=null, order=null, kind=null, custom_function=null)</code> - Advanced sorting with custom comparison functions
-- <code>.argsort(axis=null, order=null, kind=null, custom_function=null)</code> - Sort indices with custom functions
+- <code>.sort(axis=null, order=null, kind=null, $custom_function=null)</code> - Advanced sorting with custom comparison functions
+- <code>.argsort(axis=null, order=null, kind=null, $custom_function=null)</code> - Sort indices with custom functions
 - <strong>Custom order vectors</strong> - Non-consecutive column selection and reordering
 - <strong>Custom comparison functions</strong> - User-defined sorting logic
 - <strong>Signed vs unsigned comparison</strong> - Multiple comparison modes</p>
@@ -6598,7 +6598,7 @@ xml = &lt;users&gt;&lt;user&gt;&lt;name&gt;John&lt;/name&gt;&lt;age&gt;30&lt;/ag
 
 /* Load SQL syntax rules first (example implementation) */
 /* See docs-src/docs/examples/sql_syntax_example.grc for full implementation */
-custom_command = rule select $STR from $STR { op(fields:$2, table:$4){ /* SQL implementation */ } };
+$custom_command = rule select $STR from $STR { op(fields:$2, table:$4){ /* SQL implementation */ } };
 sql = op(parse)(&quot;SELECT name, age FROM users WHERE age &gt; 25&quot;)();
 
 /* Process all formats */
@@ -6769,7 +6769,7 @@ f.cd(&quot;../logs&quot;)       # File system
 
 <span class="c1">// Define custom language rules</span>
 <span class="n">grapa</span><span class="p">.</span><span class="n">eval</span><span class="p">(</span><span class="sa">R</span><span class="s">&quot;</span><span class="dl">(</span>
-<span class="s">    custom_command = rule for $ID from &lt;$comp&gt; to &lt;$comp&gt; &lt;$command&gt; {</span>
+<span class="s">    $custom_command = rule for $ID from &lt;$comp&gt; to &lt;$comp&gt; &lt;$command&gt; {</span>
 <span class="s">        op(var:$2, start:$4, end:$6, body:$8){</span>
 <span class="s">            /* Custom for loop implementation */</span>
 <span class="s">        }</span>
@@ -6785,12 +6785,12 @@ f.cd(&quot;../logs&quot;)       # File system
 <div class="highlight"><pre><span></span><code><span class="c1">// Define domain-specific language</span>
 <span class="n">grapa</span><span class="p">.</span><span class="n">eval</span><span class="p">(</span><span class="sa">R</span><span class="s">&quot;</span><span class="dl">(</span>
 <span class="s">    // Configuration DSL</span>
-<span class="s">    custom_command = rule config &#39;{&#39; &lt;$config_entries&gt; &#39;}&#39; {</span>
+<span class="s">    $custom_command = rule config &#39;{&#39; &lt;$config_entries&gt; &#39;}&#39; {</span>
 <span class="s">        op(entries:$3){ /* Process configuration */ }</span>
 <span class="s">    };</span>
 
 <span class="s">    // Protocol DSL</span>
-<span class="s">    custom_function = rule parse $STR &#39;:&#39; $STR {</span>
+<span class="s">    $custom_function = rule parse $STR &#39;:&#39; $STR {</span>
 <span class="s">        op(protocol:$2, data:$4){ /* Parse protocol */ }</span>
 <span class="s">    };</span>
 <span class="dl">)</span><span class="s">&quot;</span><span class="p">);</span>
@@ -6823,7 +6823,7 @@ f.cd(&quot;../logs&quot;)       # File system
 <div class="highlight"><pre><span></span><code><span class="c1">// Use Grapa for complex data processing</span>
 <span class="n">grapa</span><span class="p">.</span><span class="n">eval</span><span class="p">(</span><span class="sa">R</span><span class="s">&quot;</span><span class="dl">(</span>
 <span class="s">    // Define data transformation rules</span>
-<span class="s">    custom_function = rule transform $STR {</span>
+<span class="s">    $custom_function = rule transform $STR {</span>
 <span class="s">        op(data:$2){</span>
 <span class="s">            // Complex transformation logic</span>
 <span class="s">            result = data.grep(/pattern/, &#39;o&#39;);</span>

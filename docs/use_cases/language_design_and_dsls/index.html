@@ -4695,8 +4695,8 @@
 <h3 id="1-configuration-management-systems"><strong>1. Configuration Management Systems</strong></h3>
 <p><strong>Problem</strong>: Complex applications need flexible configuration systems that can handle various formats and validation rules.</p>
 <p><strong>Solution</strong>: Create a configuration DSL that supports multiple formats, validation, and dynamic loading.</p>
-<div class="highlight"><pre><span></span><code>/* Configuration DSL using custom_command and custom_function as variables */
-custom_command = rule config &#39;{&#39; &lt;$config_entries&gt; &#39;}&#39; {op(entries:$3){
+<div class="highlight"><pre><span></span><code>/* Configuration DSL using $custom_command and $custom_function as variables */
+$custom_command = rule config &#39;{&#39; &lt;$config_entries&gt; &#39;}&#39; {op(entries:$3){
     (&quot;Loading configuration...&quot;).echo();
     config = {};
 
@@ -4710,11 +4710,11 @@ custom_command = rule config &#39;{&#39; &lt;$config_entries&gt; &#39;}&#39; {op
     return config;
 }};
 
-custom_command = rule config $STR &#39;=&#39; &lt;$config_value&gt; {op(key:$2,value:$4){
+$custom_command = rule config $STR &#39;=&#39; &lt;$config_value&gt; {op(key:$2,value:$4){
     return {key: key, value: value, type: &quot;setting&quot;};
 }};
 
-custom_command = rule include $STR {op(file:$2){
+$custom_command = rule include $STR {op(file:$2){
     return {file: file, type: &quot;include&quot;};
 }};
 
@@ -4735,8 +4735,8 @@ app_config = op(parse)(&#39;config {
 <h3 id="2-data-processing-pipelines"><strong>2. Data Processing Pipelines</strong></h3>
 <p><strong>Problem</strong>: Complex ETL (Extract, Transform, Load) workflows require custom processing logic and data transformation rules.</p>
 <p><strong>Solution</strong>: Create a pipeline DSL that defines data processing workflows declaratively.</p>
-<div class="highlight"><pre><span></span><code>/* ETL Pipeline DSL using custom_command and custom_function as variables */
-custom_command = rule pipeline &#39;{&#39; &lt;$pipeline_steps&gt; &#39;}&#39; {op(steps:$3){
+<div class="highlight"><pre><span></span><code>/* ETL Pipeline DSL using $custom_command and $custom_function as variables */
+$custom_command = rule pipeline &#39;{&#39; &lt;$pipeline_steps&gt; &#39;}&#39; {op(steps:$3){
     (&quot;Starting ETL pipeline...&quot;).echo();
     result = null;
 
@@ -4752,15 +4752,15 @@ custom_command = rule pipeline &#39;{&#39; &lt;$pipeline_steps&gt; &#39;}&#39; {
     return result;
 }};
 
-custom_command = rule extract $STR {op(source:$2){
+$custom_command = rule extract $STR {op(source:$2){
     return {action: &quot;extract&quot;, source: source};
 }};
 
-custom_command = rule transform $STR {op(transformation:$2){
+$custom_command = rule transform $STR {op(transformation:$2){
     return {action: &quot;transform&quot;, transformation: transformation};
 }};
 
-custom_command = rule load $STR {op(target:$2){
+$custom_command = rule load $STR {op(target:$2){
     return {action: &quot;load&quot;, target: target};
 }};
 
@@ -4781,12 +4781,12 @@ result = op(parse)(&#39;pipeline {
 <p><strong>Problem</strong>: REST APIs and web services need clear, maintainable definitions that can generate documentation, client code, and server implementations.</p>
 <p><strong>Solution</strong>: Create an API definition DSL that describes endpoints, data models, and behavior.</p>
 <div class="highlight"><pre><span></span><code>/* API Definition DSL */
-custom_command = rule api $STR &#39;{&#39; &lt;$api_endpoints&gt; &#39;}&#39; {op(name:$2,endpoints:$4){
+$custom_command = rule api $STR &#39;{&#39; &lt;$api_endpoints&gt; &#39;}&#39; {op(name:$2,endpoints:$4){
     (&quot;Defining API: &quot; + name).echo();
     return create_api(name, endpoints);
 }};
 
-custom_command = rule $STR $STR &#39;{&#39; &lt;$endpoint_body&gt; &#39;}&#39; {op(method:$1,path:$2,body:$4){
+$custom_command = rule $STR $STR &#39;{&#39; &lt;$endpoint_body&gt; &#39;}&#39; {op(method:$1,path:$2,body:$4){
     return define_endpoint(method, path, body);
 }};
 
@@ -4815,7 +4815,7 @@ user_api = op(parse)(&#39;api &quot;user_management&quot; {
 <p><strong>Problem</strong>: Network protocols, data formats, and communication protocols require custom parsing and serialization logic.</p>
 <p><strong>Solution</strong>: Create protocol-specific DSLs that handle parsing, validation, and serialization.</p>
 <div class="highlight"><pre><span></span><code>/* HTTP Protocol DSL */
-custom_function = rule http_parse &#39;(&#39; $STR &#39;)&#39; {op(request:$3){
+$custom_function = rule http_parse &#39;(&#39; $STR &#39;)&#39; {op(request:$3){
     lines = request.split(&quot;\n&quot;);
     if (lines.len() &gt; 0) {
         first_line = lines[1];
@@ -4832,7 +4832,7 @@ custom_function = rule http_parse &#39;(&#39; $STR &#39;)&#39; {op(request:$3){
     return $err(&quot;Invalid HTTP request&quot;);
 }};
 
-custom_function = rule http_build &#39;(&#39; &lt;$http_response&gt; &#39;)&#39; {op(response:$3){
+$custom_function = rule http_build &#39;(&#39; &lt;$http_response&gt; &#39;)&#39; {op(response:$3){
     status_line = &quot;HTTP/1.1 &quot; + response.status + &quot; &quot; + response.message;
     headers = build_headers(response.headers);
     body = response.body ? response.body : &quot;&quot;;
@@ -4860,7 +4860,7 @@ http_response = op(parse)(&#39;http_build(&#39; + response + &#39;)&#39;)();
 <p><strong>Problem</strong>: Complex business logic and data validation rules need to be expressed clearly and maintained by non-programmers.</p>
 <p><strong>Solution</strong>: Create a validation DSL that allows business analysts to define validation rules.</p>
 <div class="highlight"><pre><span></span><code>/* Validation DSL */
-custom_command = rule validate $STR &#39;{&#39; &lt;$validation_rules&gt; &#39;}&#39; {op(data:$2,rules:$4){
+$custom_command = rule validate $STR &#39;{&#39; &lt;$validation_rules&gt; &#39;}&#39; {op(data:$2,rules:$4){
     (&quot;Validating data: &quot; + data).echo();
     validation_result = true;
     errors = [];
@@ -4879,15 +4879,15 @@ custom_command = rule validate $STR &#39;{&#39; &lt;$validation_rules&gt; &#39;}
     return {valid: validation_result, errors: errors};
 }};
 
-custom_command = rule field $STR required {op(field_name:$2){
+$custom_command = rule field $STR required {op(field_name:$2){
     return {type: &quot;required&quot;, field: field_name};
 }};
 
-custom_command = rule field $STR type $STR {op(field_name:$2,type_name:$4){
+$custom_command = rule field $STR type $STR {op(field_name:$2,type_name:$4){
     return {type: &quot;type_check&quot;, field: field_name, expected_type: type_name};
 }};
 
-custom_command = rule field $STR range &#39;(&#39; $INT &#39;,&#39; $INT &#39;)&#39; {op(field_name:$2,min:$5,max:$7){
+$custom_command = rule field $STR range &#39;(&#39; $INT &#39;,&#39; $INT &#39;)&#39; {op(field_name:$2,min:$5,max:$7){
     return {type: &quot;range&quot;, field: field_name, min: min, max: max};
 }};
 
@@ -4964,8 +4964,8 @@ compile_grammar = op(rule_name, rule_def) {
 };
 
 /* Reuse compiled grammars */
-sql_grammar = compile_grammar(&quot;sql&quot;, &quot;custom_command = rule select...&quot;);
-json_grammar = compile_grammar(&quot;json&quot;, &quot;custom_function = rule $STR-&gt;$STR...&quot;);
+sql_grammar = compile_grammar(&quot;sql&quot;, &quot;$custom_command = rule select...&quot;);
+json_grammar = compile_grammar(&quot;json&quot;, &quot;$custom_function = rule $STR-&gt;$STR...&quot;);
 </code></pre></div>
 <h3 id="2-lazy-evaluation"><strong>2. Lazy Evaluation</strong></h3>
 <div class="highlight"><pre><span></span><code>/* Lazy evaluation for expensive operations */
@@ -4999,7 +4999,7 @@ lazy_result = op(parse)(&#39;lazy { expensive_calculation() }&#39;)();
 <h3 id="3-integration"><strong>3. Integration</strong></h3>
 <ol>
 <li><strong>Leverage Existing Libraries</strong>: Use Grapa's C++ libraries when possible</li>
-<li><strong>Follow Patterns</strong>: Use established patterns like direct BNF integration for native features, <code>custom_command</code>/<code>custom_function</code> as variables that leverage existing grammar rules</li>
+<li><strong>Follow Patterns</strong>: Use established patterns like direct BNF integration for native features, <code>$custom_command</code>/<code>$custom_function</code> as variables that leverage existing grammar rules</li>
 <li><strong>Test Thoroughly</strong>: Validate grammar rules with comprehensive testing</li>
 <li><strong>Version Control</strong>: Track grammar changes and maintain compatibility</li>
 </ol>
