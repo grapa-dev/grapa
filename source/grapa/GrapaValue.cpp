@@ -371,7 +371,7 @@ u8 GrapaBYTE::ToDbType()
 	case GrapaTokenType::STR:
 	case GrapaTokenType::SYSSTR:
 	case GrapaTokenType::TIME:
-	case GrapaTokenType::ARRAY:
+	case GrapaTokenType::LIST:
 	case GrapaTokenType::TUPLE:
 	case GrapaTokenType::VECTOR:
 	case GrapaTokenType::WIDGET:
@@ -403,7 +403,7 @@ void GrapaBYTE::FromDbType(u8 pType)
 	case GrapaTokenType::STR:
 	case GrapaTokenType::SYSSTR:
 	case GrapaTokenType::TIME:
-	case GrapaTokenType::ARRAY:
+	case GrapaTokenType::LIST:
 	case GrapaTokenType::TUPLE:
 	case GrapaTokenType::VECTOR:
 	case GrapaTokenType::WIDGET:
@@ -815,7 +815,7 @@ void GrapaCHAR::RTrim2(GrapaRuleEvent* s)
 	{
 		RTrim(s->mValue);
 	}
-	else if (s->mValue.mToken == GrapaTokenType::ARRAY || s->mValue.mToken == GrapaTokenType::ARRAY)
+	else if (s->mValue.mToken == GrapaTokenType::LIST || s->mValue.mToken == GrapaTokenType::LIST)
 	{
 		bool found = true;
 		while (mLength && found)
@@ -843,7 +843,7 @@ void GrapaCHAR::LTrim2(GrapaRuleEvent* s)
 	{
 		LTrim(s->mValue);
 	}
-	else if (s->mValue.mToken == GrapaTokenType::ARRAY || s->mValue.mToken == GrapaTokenType::TUPLE)
+	else if (s->mValue.mToken == GrapaTokenType::LIST || s->mValue.mToken == GrapaTokenType::TUPLE)
 	{
 		bool found = true;
 		u64 i = 0;

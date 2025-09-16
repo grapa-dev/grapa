@@ -142,7 +142,7 @@ GrapaError GrapaLocalDatabase::DirectoryList(GrapaCHAR& pName, GrapaRuleEvent* p
 
 	if (mDb == NULL)
 	{
-		pTable->mValue.mToken = GrapaTokenType::ARRAY;
+		pTable->mValue.mToken = GrapaTokenType::LIST;
 		pTable->mValue.SetLength(0);
 		if (pTable->vQueue) pTable->vQueue->CLEAR();
 		else pTable->vQueue = new GrapaRuleQueue();
@@ -275,7 +275,7 @@ GrapaError GrapaLocalDatabase::DirectoryList(GrapaCHAR& pName, GrapaRuleEvent* p
 	}
 	else
 	{
-		pTable->mValue.mToken = GrapaTokenType::ARRAY;
+		pTable->mValue.mToken = GrapaTokenType::LIST;
 		pTable->mValue.SetLength(0);
 		if (pTable->vQueue) pTable->vQueue->CLEAR();
 		else pTable->vQueue = new GrapaRuleQueue();
@@ -1318,7 +1318,7 @@ GrapaError GrapaLocalDatabase::FieldSplit(s64 pParts, const GrapaCHAR& pName, co
 	GrapaCHAR delim(pDelim);
 	if (pTable)
 	{
-		pTable->mValue.mToken = GrapaTokenType::ARRAY;
+		pTable->mValue.mToken = GrapaTokenType::LIST;
 		pTable->mValue.SetLength(0);
 		if (pTable->vQueue) pTable->vQueue->CLEAR();
 		else pTable->vQueue = new GrapaRuleQueue();

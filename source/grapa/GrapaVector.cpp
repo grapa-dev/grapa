@@ -263,7 +263,7 @@ static u64* _scanvectordepth(GrapaRuleEvent* value, u8 pos, u8& dim, u8 maxDim, 
 {
 	if (maxDim && pos == maxDim) return(NULL);
 	if (value == NULL || value->vQueue == NULL) return(NULL);
-	if ((value->mValue.mToken != GrapaTokenType::ARRAY && value->mValue.mToken != GrapaTokenType::TUPLE) && (pos!=1 || value->mValue.mToken != GrapaTokenType::GOBJ)) return(NULL);
+	if ((value->mValue.mToken != GrapaTokenType::LIST && value->mValue.mToken != GrapaTokenType::TUPLE) && (pos!=1 || value->mValue.mToken != GrapaTokenType::GOBJ)) return(NULL);
 	u64* counts = _scanvectordepth(value->vQueue->Head(), pos+1, dim, maxDim, size* value->vQueue->mCount, tot);
 	if (counts == NULL)
 	{
@@ -279,7 +279,7 @@ static u64* _scanvectordepth(GrapaRuleEvent* value, u8 pos, u8& dim, u8 maxDim, 
 bool GrapaVector::_scanvectorcreate(GrapaRuleEvent* value, u8 pos, u8 dim, u64* counts, GrapaVectorItem* data, u8 block, u64& p, u8& maxblock)
 {
 	if (value == NULL || value->vQueue == NULL) return(false);
-	if ((value->mValue.mToken != GrapaTokenType::ARRAY && value->mValue.mToken != GrapaTokenType::TUPLE) && (pos != 1 || value->mValue.mToken != GrapaTokenType::GOBJ)) return(false);
+	if ((value->mValue.mToken != GrapaTokenType::LIST && value->mValue.mToken != GrapaTokenType::TUPLE) && (pos != 1 || value->mValue.mToken != GrapaTokenType::GOBJ)) return(false);
 	bool hasLabels = (mLabels.mCount == 0 && pos == 1 && value->mValue.mToken == GrapaTokenType::GOBJ);
 	GrapaInt b;
 	u64 i = 0;
@@ -1084,7 +1084,7 @@ void GrapaVector::_tocsv(GrapaScriptExec* pScriptExec, GrapaNames* pNameSpace, u
 				{
 				case GrapaTokenType::GOBJ:
 				case GrapaTokenType::ERR:
-				case GrapaTokenType::ARRAY:
+				case GrapaTokenType::LIST:
 				case GrapaTokenType::TUPLE:
 				case GrapaTokenType::XML:
 				case GrapaTokenType::TAG:
@@ -1320,7 +1320,7 @@ GrapaVectorParam::GrapaVectorParam(GrapaScriptExec* pScriptExec, GrapaVectorItem
 				case GrapaTokenType::STR:
 				case GrapaTokenType::GOBJ:
 				case GrapaTokenType::ERR:
-				case GrapaTokenType::ARRAY:
+				case GrapaTokenType::LIST:
 				case GrapaTokenType::TUPLE:
 				case GrapaTokenType::XML:
 				case GrapaTokenType::TAG:
@@ -3585,7 +3585,7 @@ GrapaRuleEvent* GrapaVector::ToArray()
 GrapaRuleEvent* GrapaVector::_toarray(u64 pos, u64& p)
 {
 	GrapaRuleEvent* result = new GrapaRuleEvent();
-	result->mValue.mToken = GrapaTokenType::ARRAY;
+	result->mValue.mToken = GrapaTokenType::LIST;
 	result->vQueue = new GrapaRuleQueue();
 	GrapaRuleEvent* label = mLabels.Head();
 	if (pos == 1 && label)
@@ -3649,7 +3649,7 @@ GrapaRuleEvent* GrapaVector::ToTuple()
 GrapaRuleEvent* GrapaVector::_totuple(u64 pos, u64& p)
 {
 	GrapaRuleEvent* result = new GrapaRuleEvent();
-	result->mValue.mToken = GrapaTokenType::ARRAY;
+	result->mValue.mToken = GrapaTokenType::LIST;
 	result->vQueue = new GrapaRuleQueue();
 	GrapaRuleEvent* label = mLabels.Head();
 	if (pos == 1 && label)
@@ -3795,7 +3795,7 @@ GrapaRuleEvent* GrapaVector::Split(u64 num, u64 axis)
 	if (mDim == 2)
 	{
 		result = new GrapaRuleEvent(0, GrapaCHAR(""), GrapaCHAR(""));
-		result->mValue.mToken = GrapaTokenType::ARRAY;
+		result->mValue.mToken = GrapaTokenType::LIST;
 		result->vQueue = new GrapaRuleQueue();
 
 		GrapaVector tmp(*this);
@@ -3901,7 +3901,7 @@ bool GrapaVector::Join(GrapaRuleEvent* event)
 {
 	CLEAR();
 
-	if (event == NULL || !(event->mValue.mToken == GrapaTokenType::ARRAY || event->mValue.mToken == GrapaTokenType::TUPLE || event->mValue.mToken == GrapaTokenType::GOBJ || event->mValue.mToken == GrapaTokenType::ERR))
+	if (event == NULL || !(event->mValue.mToken == GrapaTokenType::LIST || event->mValue.mToken == GrapaTokenType::TUPLE || event->mValue.mToken == GrapaTokenType::GOBJ || event->mValue.mToken == GrapaTokenType::ERR))
 		return false;
 
 	u64 rows = 0;
@@ -3997,7 +3997,7 @@ bool GrapaVector::JoinH(GrapaRuleEvent* event)
 {
 	CLEAR();
 
-	if (event == NULL || !(event->mValue.mToken == GrapaTokenType::ARRAY || event->mValue.mToken == GrapaTokenType::TUPLE || event->mValue.mToken == GrapaTokenType::GOBJ || event->mValue.mToken == GrapaTokenType::ERR))
+	if (event == NULL || !(event->mValue.mToken == GrapaTokenType::LIST || event->mValue.mToken == GrapaTokenType::TUPLE || event->mValue.mToken == GrapaTokenType::GOBJ || event->mValue.mToken == GrapaTokenType::ERR))
 		return false;
 
 	u64 rows = 0;
@@ -4081,7 +4081,7 @@ bool GrapaVector::JoinH(GrapaRuleEvent* event)
 GrapaRuleEvent* GrapaVector::Shape()
 {
 	GrapaRuleEvent* result = new GrapaRuleEvent(0, GrapaCHAR(""), GrapaCHAR(""));
-	result->mValue.mToken = GrapaTokenType::ARRAY;
+	result->mValue.mToken = GrapaTokenType::LIST;
 	result->vQueue = new GrapaRuleQueue();
 	for (u64 i = 0; i < mDim; i++)
 		result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR(""), GrapaInt(mCounts[i]).getBytes()));
@@ -4090,7 +4090,7 @@ GrapaRuleEvent* GrapaVector::Shape()
 
 GrapaRuleEvent* GrapaVector::Shape(GrapaRuleEvent* event)
 {
-	if (event == NULL || !(event->mValue.mToken == GrapaTokenType::ARRAY || event->mValue.mToken == GrapaTokenType::TUPLE || event->mValue.mToken == GrapaTokenType::GOBJ || event->mValue.mToken == GrapaTokenType::ERR))
+	if (event == NULL || !(event->mValue.mToken == GrapaTokenType::LIST || event->mValue.mToken == GrapaTokenType::TUPLE || event->mValue.mToken == GrapaTokenType::GOBJ || event->mValue.mToken == GrapaTokenType::ERR))
 		return NULL;
 
 	u64 size;
@@ -4098,7 +4098,7 @@ GrapaRuleEvent* GrapaVector::Shape(GrapaRuleEvent* event)
 	u64* counts = _scanvectordepth(event, 0, dim, 0, 1, size);
 
 	GrapaRuleEvent* result = new GrapaRuleEvent(0, GrapaCHAR(""), GrapaCHAR(""));
-	result->mValue.mToken = GrapaTokenType::ARRAY;
+	result->mValue.mToken = GrapaTokenType::LIST;
 	result->vQueue = new GrapaRuleQueue();
 	for (u64 i = 0; i < dim; i++)
 		result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR(""), GrapaInt(counts[i]).getBytes()));

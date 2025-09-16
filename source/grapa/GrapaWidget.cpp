@@ -624,7 +624,7 @@ public:
 			}
 			q.PushTail(new GrapaRuleEvent(0, GrapaCHAR(), eb));
 			GrapaRuleEvent* ek = new GrapaRuleEvent();
-			ek->mValue.mToken = GrapaTokenType::ARRAY;
+			ek->mValue.mToken = GrapaTokenType::LIST;
 			ek->vQueue = new GrapaRuleQueue();
 			int ekval = Fl::event_state();
 			if (ekval & FL_SHIFT) ek->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR(), GrapaCHAR("SHIFT")));
@@ -902,7 +902,7 @@ public:
 			}
 			q.PushTail(new GrapaRuleEvent(0, GrapaCHAR(), eb));
 			GrapaRuleEvent* ek = new GrapaRuleEvent();
-			ek->mValue.mToken = GrapaTokenType::ARRAY;
+			ek->mValue.mToken = GrapaTokenType::LIST;
 			ek->vQueue = new GrapaRuleQueue();
 			int ekval = Fl::event_state();
 			if (ekval & FL_SHIFT) ek->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR(), GrapaCHAR("SHIFT")));
@@ -1727,9 +1727,9 @@ void GrapaWidget::Add(GrapaRuleEvent* pList, GrapaRuleEvent* pAt)
 				else if (menu->mName.StrLowerCmp("options") == 0 || menu->mName.StrLowerCmp("flags") == 0)
 				{
 					hasNewFlags = true;
-					if (menudata && (menudata->mValue.mToken == GrapaTokenType::ARRAY || menudata->mValue.mToken == GrapaTokenType::TUPLE || menudata->mValue.mToken == GrapaTokenType::STR))
+					if (menudata && (menudata->mValue.mToken == GrapaTokenType::LIST || menudata->mValue.mToken == GrapaTokenType::TUPLE || menudata->mValue.mToken == GrapaTokenType::STR))
 					{
-						GrapaRuleEvent* m2 = (menudata->mValue.mToken == GrapaTokenType::ARRAY || menudata->mValue.mToken == GrapaTokenType::TUPLE) ? menudata->vQueue->Head() : menudata;
+						GrapaRuleEvent* m2 = (menudata->mValue.mToken == GrapaTokenType::LIST || menudata->mValue.mToken == GrapaTokenType::TUPLE) ? menudata->vQueue->Head() : menudata;
 						while (m2 && m2->mValue.mLength)
 						{
 							GrapaRuleEvent* m2data = m2;
@@ -1744,7 +1744,7 @@ void GrapaWidget::Add(GrapaRuleEvent* pList, GrapaRuleEvent* pAt)
 							else if (m2data->mValue.StrLowerCmp("SUBMENU") == 0) flags += FL_SUBMENU;
 							else if (m2data->mValue.StrLowerCmp("DIVIDER") == 0) flags += FL_MENU_DIVIDER;
 							else if (m2data->mValue.StrLowerCmp("HORIZONTAL") == 0) flags += FL_MENU_HORIZONTAL;
-							if (menudata->mValue.mToken != GrapaTokenType::ARRAY && menudata->mValue.mToken != GrapaTokenType::TUPLE) break;
+							if (menudata->mValue.mToken != GrapaTokenType::LIST && menudata->mValue.mToken != GrapaTokenType::TUPLE) break;
 							m2 = m2->Next();
 						}
 					}
@@ -2412,7 +2412,7 @@ GrapaRuleEvent* GrapaWidget::Set(GrapaRuleEvent* attr)
 							GrapaRuleEvent* g = data->vQueue->Head();
 							while (g)
 							{
-								if ((g->mValue.mToken == GrapaTokenType::GOBJ || g->mValue.mToken == GrapaTokenType::ARRAY || g->mValue.mToken == GrapaTokenType::TUPLE) && g->vQueue)
+								if ((g->mValue.mToken == GrapaTokenType::GOBJ || g->mValue.mToken == GrapaTokenType::LIST || g->mValue.mToken == GrapaTokenType::TUPLE) && g->vQueue)
 								{
 									Add(g);
 								}
@@ -2553,7 +2553,7 @@ GrapaRuleEvent* GrapaWidget::Set(GrapaRuleEvent* attr)
 				}
 				else if (value->mName.StrLowerCmp("size") == 0)
 				{
-					if (data->mValue.mToken == GrapaTokenType::ARRAY || data->mValue.mToken == GrapaTokenType::TUPLE)
+					if (data->mValue.mToken == GrapaTokenType::LIST || data->mValue.mToken == GrapaTokenType::TUPLE)
 					{
 						if (data->vQueue->mCount == 2)
 						{
@@ -2595,7 +2595,7 @@ GrapaRuleEvent* GrapaWidget::Set(GrapaRuleEvent* attr)
 					if (mWidgetName.Cmp("table_row") == 0)
 					{
 						Grapa_Table_Row* g = (Grapa_Table_Row*)vWidget;
-						if (data->mValue.mToken == GrapaTokenType::ARRAY || data->mValue.mToken == GrapaTokenType::TUPLE)
+						if (data->mValue.mToken == GrapaTokenType::LIST || data->mValue.mToken == GrapaTokenType::TUPLE)
 						{
 							if (data->vQueue->mCount == 2)
 							{
@@ -2632,7 +2632,7 @@ GrapaRuleEvent* GrapaWidget::Set(GrapaRuleEvent* attr)
 						g->vVector = NULL;
 						g->mDeleteVector = false;
 						while (data->mValue.mToken == GrapaTokenType::PTR) data = data->vRulePointer;
-						if (data && (data->mValue.mToken == GrapaTokenType::ARRAY || data->mValue.mToken == GrapaTokenType::TUPLE || data->mValue.mToken == GrapaTokenType::GOBJ))
+						if (data && (data->mValue.mToken == GrapaTokenType::LIST || data->mValue.mToken == GrapaTokenType::TUPLE || data->mValue.mToken == GrapaTokenType::GOBJ))
 						{
 							if (data->vQueue->mCount > 0)
 							{
@@ -3062,7 +3062,7 @@ GrapaRuleEvent* GrapaWidget::Set(GrapaRuleEvent* attr)
 						Grapa_Scrollbar* f = (Grapa_Scrollbar*)vWidget;
 						if (data->mValue.mToken == GrapaTokenType::INT)
 							f->value(GrapaInt(data->mValue).LongValue());
-						if (data->mValue.mToken == GrapaTokenType::ARRAY || data->mValue.mToken == GrapaTokenType::TUPLE)
+						if (data->mValue.mToken == GrapaTokenType::LIST || data->mValue.mToken == GrapaTokenType::TUPLE)
 						{
 							GrapaLibraryParam r1(vScriptExec, vNameSpace, data->vQueue ? data->vQueue->Head(0) : NULL);
 							GrapaLibraryParam r2(vScriptExec, vNameSpace, data->vQueue ? data->vQueue->Head(1) : NULL);
@@ -3113,14 +3113,14 @@ GrapaRuleEvent* GrapaWidget::Get(GrapaRuleEvent* data)
 {
 	GrapaRuleEvent* result = new GrapaRuleEvent();
 	result->mValue.mToken = GrapaTokenType::STR;
-	if (data->mValue.mToken == GrapaTokenType::ARRAY || data->mValue.mToken == GrapaTokenType::TUPLE)
+	if (data->mValue.mToken == GrapaTokenType::LIST || data->mValue.mToken == GrapaTokenType::TUPLE)
 	{
 		result->mValue.mToken = GrapaTokenType::GOBJ;
 		result->vQueue = new GrapaRuleQueue();
 	}
-	if (data->mValue.mToken == GrapaTokenType::ARRAY || data->mValue.mToken == GrapaTokenType::TUPLE || data->mValue.mToken == GrapaTokenType::STR)
+	if (data->mValue.mToken == GrapaTokenType::LIST || data->mValue.mToken == GrapaTokenType::TUPLE || data->mValue.mToken == GrapaTokenType::STR)
 	{
-		GrapaRuleEvent* value = (data->mValue.mToken == GrapaTokenType::ARRAY || data->mValue.mToken == GrapaTokenType::TUPLE) ? data->vQueue->Head() : data;
+		GrapaRuleEvent* value = (data->mValue.mToken == GrapaTokenType::LIST || data->mValue.mToken == GrapaTokenType::TUPLE) ? data->vQueue->Head() : data;
 		while (value)
 		{
 			GrapaRuleEvent* result2 = new GrapaRuleEvent();
@@ -3234,9 +3234,9 @@ GrapaRuleEvent* GrapaWidget::Get(GrapaRuleEvent* data)
 							result3->vQueue = new GrapaRuleQueue();
 							result3->mName.FROM(me->mName);
 							result3->mName.mToken = GrapaTokenType::STR;
-							if (me->mValue.mToken == GrapaTokenType::ARRAY || me->mValue.mToken == GrapaTokenType::STR)
+							if (me->mValue.mToken == GrapaTokenType::LIST || me->mValue.mToken == GrapaTokenType::STR)
 							{
-								GrapaRuleEvent* me2 = (me->mValue.mToken == GrapaTokenType::ARRAY || me->mValue.mToken == GrapaTokenType::TUPLE) ? me->vQueue->Head() : me;
+								GrapaRuleEvent* me2 = (me->mValue.mToken == GrapaTokenType::LIST || me->mValue.mToken == GrapaTokenType::TUPLE) ? me->vQueue->Head() : me;
 								while (me2)
 								{
 									if (me2->mValue.StrLowerCmp("shortcut") == 0)
@@ -3246,7 +3246,7 @@ GrapaRuleEvent* GrapaWidget::Get(GrapaRuleEvent* data)
 									else if (me2->mValue.StrLowerCmp("options") == 0 || me2->mValue.StrLowerCmp("flags") == 0)
 									{
 										GrapaRuleEvent* fl = new GrapaRuleEvent();
-										fl->mValue.mToken = GrapaTokenType::ARRAY;
+										fl->mValue.mToken = GrapaTokenType::LIST;
 										fl->mName.FROM("flags");
 										fl->mName.mToken = GrapaTokenType::STR;
 										fl->vQueue = new GrapaRuleQueue();
@@ -3291,7 +3291,7 @@ GrapaRuleEvent* GrapaWidget::Get(GrapaRuleEvent* data)
 									{
 										result3->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("path"), menuList->mPath));
 									}
-									if (me->mValue.mToken != GrapaTokenType::ARRAY && me->mValue.mToken != GrapaTokenType::TUPLE)
+									if (me->mValue.mToken != GrapaTokenType::LIST && me->mValue.mToken != GrapaTokenType::TUPLE)
 									{
 										break;
 									}
@@ -3304,7 +3304,7 @@ GrapaRuleEvent* GrapaWidget::Get(GrapaRuleEvent* data)
 				}
 			}
 
-			if (data->mValue.mToken != GrapaTokenType::ARRAY && data->mValue.mToken != GrapaTokenType::TUPLE)
+			if (data->mValue.mToken != GrapaTokenType::LIST && data->mValue.mToken != GrapaTokenType::TUPLE)
 			{
 				delete result;
 				result = result2;

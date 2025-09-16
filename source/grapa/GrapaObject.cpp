@@ -229,7 +229,7 @@ GrapaObjectEvent* GrapaObjectQueue::SearchCase(const GrapaCHAR& pName, s64& pInd
 						return(xitem);
 				}
 				break;
-			case GrapaTokenType::ARRAY:
+			case GrapaTokenType::LIST:
 			case GrapaTokenType::TUPLE:
 			case GrapaTokenType::GOBJ:
 			case GrapaTokenType::ERR:

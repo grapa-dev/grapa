@@ -32,7 +32,7 @@ public: enum {
 	SYM = 10,
 	SYSSYM = 11,
 	TIME = 12,
-	ARRAY = 13,
+	LIST = 13,
 	GOBJ = 14,
 	EL = 15,
 	TAG = 16,

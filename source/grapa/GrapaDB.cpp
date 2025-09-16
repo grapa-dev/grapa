@@ -540,7 +540,7 @@ GrapaError GrapaDB::CreateTableField(GrapaDBTable& pTable, GrapaDBField& pField,
 			else pField.mDictSize += 2; // 2 bytes for header, 1 bit isNull, 15 bits for length (0..32767)
 			break;
 		case GrapaTokenType::ERR:
-		case GrapaTokenType::ARRAY:
+		case GrapaTokenType::LIST:
 		case GrapaTokenType::TUPLE:
 		case GrapaTokenType::VECTOR:
 		case GrapaTokenType::WIDGET:
@@ -659,7 +659,7 @@ GrapaError GrapaDB::CreateTableField(GrapaDBTable& pTable, GrapaDBField& pField,
 				case GrapaTokenType::FLOAT:
 				case GrapaTokenType::STR:
 				case GrapaTokenType::TIME:
-				case GrapaTokenType::ARRAY:
+				case GrapaTokenType::LIST:
 				case GrapaTokenType::TUPLE:
 				case GrapaTokenType::VECTOR:
 				case GrapaTokenType::WIDGET:
@@ -908,7 +908,7 @@ GrapaError GrapaDB::DeleteTableField(GrapaDBTable& pTable, u64 pFieldId)
 				case GrapaTokenType::FLOAT:
 				case GrapaTokenType::STR:
 				case GrapaTokenType::TIME:
-				case GrapaTokenType::ARRAY:
+				case GrapaTokenType::LIST:
 				case GrapaTokenType::TUPLE:
 				case GrapaTokenType::VECTOR:
 				case GrapaTokenType::WIDGET:
@@ -3170,7 +3170,7 @@ GrapaError GrapaDB::DumpTheDT(GrapaCHAR& dbWrite, char *leader, GrapaCursor& cur
 		case GrapaTokenType::FLOAT: fieldTypeStr = (char*)"FLOAT"; break;
 		case GrapaTokenType::STR: fieldTypeStr = (char*)"STR"; break;
 		case GrapaTokenType::TIME: fieldTypeStr = (char*)"TIME"; break;
-		case GrapaTokenType::ARRAY: fieldTypeStr = (char*)"ARRAY"; break;
+		case GrapaTokenType::LIST: fieldTypeStr = (char*)"LIST"; break;
 		case GrapaTokenType::TUPLE: fieldTypeStr = (char*)"TUPLE"; break;
 		case GrapaTokenType::VECTOR: fieldTypeStr = (char*)"VECTOR"; break;
 		case GrapaTokenType::WIDGET: fieldTypeStr = (char*)"WIDGET"; break;

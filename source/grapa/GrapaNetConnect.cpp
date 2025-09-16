@@ -685,7 +685,7 @@ GrapaRuleEvent* GrapaNetConnect::HttpMessage(GrapaScriptExec* vScriptExec, Grapa
 					{
 						if (v2->vQueue == NULL)
 						{
-							v2->mValue.mToken = GrapaTokenType::ARRAY;
+							v2->mValue.mToken = GrapaTokenType::LIST;
 							v2->vQueue = new GrapaRuleQueue();
 						}
 						char* hc = cr2 + 2;
@@ -840,7 +840,7 @@ GrapaRuleEvent* GrapaNetConnect::HttpMessage(GrapaScriptExec* vScriptExec, Grapa
 				val.Append("$&");
 				GrapaRuleEvent* plan = vScriptExec->Plan(pNameSpace, val, rulexx, 0, GrapaCHAR());
 				v = vScriptExec->ProcessPlan(pNameSpace, plan);
-				if (v && v->mValue.mToken == GrapaTokenType::ARRAY && v->vQueue->Head()->mValue.mToken == GrapaTokenType::OP)
+				if (v && v->mValue.mToken == GrapaTokenType::LIST && v->vQueue->Head()->mValue.mToken == GrapaTokenType::OP)
 				{
 					GrapaRuleEvent* v2 = v;
 					v = vScriptExec->ProcessPlan(pNameSpace, v->vQueue->Head());
@@ -874,7 +874,7 @@ GrapaRuleEvent* GrapaNetConnect::HttpMessage(GrapaScriptExec* vScriptExec, Grapa
 				val.Append("$&");
 				GrapaRuleEvent* plan = vScriptExec->Plan(pNameSpace, val, rulexx, 0, GrapaCHAR());
 				v = vScriptExec->ProcessPlan(pNameSpace, plan);
-				if (v && v->mValue.mToken == GrapaTokenType::ARRAY && v->vQueue->Head()->mValue.mToken == GrapaTokenType::OP)
+				if (v && v->mValue.mToken == GrapaTokenType::LIST && v->vQueue->Head()->mValue.mToken == GrapaTokenType::OP)
 				{
 					GrapaRuleEvent* v2 = v;
 					v = vScriptExec->ProcessPlan(pNameSpace, v->vQueue->Head());
