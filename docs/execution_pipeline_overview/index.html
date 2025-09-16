@@ -4625,7 +4625,7 @@
 <h3 id="stage-1-lexer-text-tokens"><strong>Stage 1: Lexer (Text → Tokens)</strong></h3>
 <p>The lexer converts raw text input into a stream of tokens:</p>
 <p><strong>Input</strong>: <code>"x + 5"</code>
-<strong>Output</strong>: <code>[IDENTIFIER:x] [SPACE: ] [OPERATOR:+] [SPACE: ] [NUMBER:5]</code></p>
+<strong>Output</strong>: <code>$ID("x") $STR(" ",skip) $SYM("+") $STR(" ",skip) $INT("5")</code></p>
 <p><strong>Key Features</strong>:
 - <strong>Token Classification</strong>: Identifies tokens by type (identifier, operator, number, etc.)
 - <strong>State Machine</strong>: Handles complex token patterns (strings, comments, etc.)
@@ -4635,8 +4635,8 @@
 <strong>Usage</strong>: <code>GRAPA_SESSION_DEBUG_COMPONENTS=lexer</code></p>
 <h3 id="stage-2-parser-tokens-execution-trees"><strong>Stage 2: Parser (Tokens → Execution Trees)</strong></h3>
 <p>The parser converts tokens into execution trees using BNF grammar rules:</p>
-<p><strong>Input</strong>: <code>[IDENTIFIER:x] [OPERATOR:+] [NUMBER:5]</code>
-<strong>Output</strong>: <code>$OP(add, [$VAR(x), $CONST(5)])</code></p>
+<p><strong>Input</strong>: <code>$ID("x") $SYM("+") $INT("5")</code>
+<strong>Output</strong>: <code>@&lt;add,{@&lt;var,{x}&gt;,5}&gt;</code></p>
 <p><strong>Key Features</strong>:
 - <strong>Grammar Rules</strong>: Uses BNF grammar for syntax analysis
 - <strong>Left Recursion</strong>: Handles complex recursive expressions
@@ -4646,7 +4646,7 @@
 <strong>Usage</strong>: <code>GRAPA_SESSION_DEBUG_COMPONENTS=parser</code></p>
 <h3 id="stage-3-executor-execution-trees-results"><strong>Stage 3: Executor (Execution Trees → Results)</strong></h3>
 <p>The executor runs the execution trees to produce final results:</p>
-<p><strong>Input</strong>: <code>$OP(add, [$VAR(x), $CONST(5)])</code>
+<p><strong>Input</strong>: <code>@&lt;add,{@&lt;var,{x}&gt;,5}&gt;</code>
 <strong>Output</strong>: <code>8</code> (assuming x = 3)</p>
 <p><strong>Key Features</strong>:
 - <strong>Operation Execution</strong>: Executes $OP and $CODE nodes

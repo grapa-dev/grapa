@@ -2536,6 +2536,39 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Performance Monitoring">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#method-1-using-tms-recommended" class="md-nav__link">
+    <span class="md-ellipsis">
+      Method 1: Using t.ms() (Recommended)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#method-2-using-time-delta-calculation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Method 2: Using Time Delta Calculation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#method-3-using-function-with-built-in-timing" class="md-nav__link">
+    <span class="md-ellipsis">
+      Method 3: Using Function with Built-in Timing
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
         
       </ul>
@@ -4741,6 +4774,39 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Performance Monitoring">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#method-1-using-tms-recommended" class="md-nav__link">
+    <span class="md-ellipsis">
+      Method 1: Using t.ms() (Recommended)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#method-2-using-time-delta-calculation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Method 2: Using Time Delta Calculation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#method-3-using-function-with-built-in-timing" class="md-nav__link">
+    <span class="md-ellipsis">
+      Method 3: Using Function with Built-in Timing
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
         
       </ul>
@@ -5465,12 +5531,34 @@
 <p>The debug system infrastructure is fully implemented and ready for use. While no system components are currently instrumented with debug output, the framework is in place for future component integration. Users can set debug flags and configure the system, and debug output will appear once components are instrumented.</p>
 <h3 id="performance-monitoring">Performance Monitoring</h3>
 <p>For performance debugging and monitoring, Grapa provides the <code>$TIME.ms()</code> method for precise timing measurements:</p>
+<h4 id="method-1-using-tms-recommended">Method 1: Using <code>t.ms()</code> (Recommended)</h4>
 <div class="highlight"><pre><span></span><code>/* Performance monitoring example */
 t1 = $TIME().utc();
 /* Your code to measure */
 1000.sleep();
 t2 = $TIME().utc();
 &#39;Execution time: ${time}ms\n&#39;.interpolate(time:t1.ms(t2).float(30)).echo();
+</code></pre></div>
+<h4 id="method-2-using-time-delta-calculation">Method 2: Using Time Delta Calculation</h4>
+<div class="highlight"><pre><span></span><code>/* Alternative: Calculate time delta manually */
+t1 = $TIME().utc();
+/* Your code to measure */
+1000.sleep();
+t2 = $TIME().utc();
+delta = t2 - t1;
+&#39;Execution time: ${time}ms\n&#39;.interpolate(time:(delta / 1000000.0).float(30)).echo();
+</code></pre></div>
+<h4 id="method-3-using-function-with-built-in-timing">Method 3: Using Function with Built-in Timing</h4>
+<div class="highlight"><pre><span></span><code>/* Create a timing function */
+f = op() {
+    t = $TIME().utc();
+    1000.sleep();
+    t.ms();
+};
+
+/* Use the function */
+execution_time = f();  /* Returns time in milliseconds */
+&#39;Execution time: ${time}ms\n&#39;.interpolate(time:execution_time.float(30)).echo();
 </code></pre></div>
 <p>This is particularly useful for:
 - <strong>Algorithm performance</strong>: Measure execution time of specific operations

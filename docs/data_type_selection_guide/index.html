@@ -905,6 +905,15 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#mathematical-data-processing" class="md-nav__link">
+    <span class="md-ellipsis">
+      Mathematical Data Processing
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#user-session-data" class="md-nav__link">
     <span class="md-ellipsis">
       User Session Data
@@ -1008,6 +1017,15 @@
         
           <li class="md-nav__item">
   <a href="#dont-do-this_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      ❌ Don't Do This
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dont-do-this_2" class="md-nav__link">
     <span class="md-ellipsis">
       ❌ Don't Do This
     </span>
@@ -4221,6 +4239,15 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#mathematical-data-processing" class="md-nav__link">
+    <span class="md-ellipsis">
+      Mathematical Data Processing
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#user-session-data" class="md-nav__link">
     <span class="md-ellipsis">
       User Session Data
@@ -4332,6 +4359,15 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#dont-do-this_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      ❌ Don't Do This
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#do-this-instead" class="md-nav__link">
     <span class="md-ellipsis">
       ✅ Do This Instead
@@ -4377,6 +4413,10 @@
 ├─ YES → Use $file() (persistent storage)
 └─ NO → Continue below
 
+Do you need mathematical operations, statistics, or linear algebra?
+├─ YES → Use $VECTOR (mathematical operations)
+└─ NO → Continue below
+
 Is your dataset large (&gt; 100-500 items) and memory efficiency matters?
 ├─ YES → Use {}.table() (in-memory BTree)
 └─ NO → Use {} (linked list)
@@ -4388,6 +4428,7 @@ Is your dataset large (&gt; 100-500 items) and memory efficiency matters?
 <th>Feature</th>
 <th><code>{}</code> (Linked List)</th>
 <th><code>{}.table()</code> (BTree)</th>
+<th><code>$VECTOR</code> (Mathematical)</th>
 <th><code>$file()</code> (Persistent)</th>
 </tr>
 </thead>
@@ -4396,10 +4437,12 @@ Is your dataset large (&gt; 100-500 items) and memory efficiency matters?
 <td><strong>Storage</strong></td>
 <td>In-memory</td>
 <td>In-memory</td>
+<td>In-memory</td>
 <td>Disk-based</td>
 </tr>
 <tr>
 <td><strong>Persistence</strong></td>
+<td>No</td>
 <td>No</td>
 <td>No</td>
 <td>Yes</td>
@@ -4408,11 +4451,13 @@ Is your dataset large (&gt; 100-500 items) and memory efficiency matters?
 <td><strong>Performance (small data)</strong></td>
 <td>Very fast</td>
 <td>Slower</td>
+<td>Very fast</td>
 <td>Slowest (disk I/O)</td>
 </tr>
 <tr>
 <td><strong>Performance (large data)</strong></td>
 <td>Slower</td>
+<td>Fast</td>
 <td>Fast</td>
 <td>Moderate (disk I/O)</td>
 </tr>
@@ -4420,28 +4465,54 @@ Is your dataset large (&gt; 100-500 items) and memory efficiency matters?
 <td><strong>Memory efficiency</strong></td>
 <td>Lower</td>
 <td>Higher</td>
+<td>High</td>
 <td>Unlimited</td>
+</tr>
+<tr>
+<td><strong>Mathematical operations</strong></td>
+<td>No</td>
+<td>No</td>
+<td>Excellent</td>
+<td>No</td>
+</tr>
+<tr>
+<td><strong>Statistical functions</strong></td>
+<td>No</td>
+<td>No</td>
+<td>Excellent</td>
+<td>No</td>
+</tr>
+<tr>
+<td><strong>Linear algebra</strong></td>
+<td>No</td>
+<td>No</td>
+<td>Excellent</td>
+<td>No</td>
 </tr>
 <tr>
 <td><strong>Range queries</strong></td>
 <td>No</td>
 <td>Yes</td>
+<td>No</td>
 <td>Yes</td>
 </tr>
 <tr>
 <td><strong>Complex queries</strong></td>
 <td>No</td>
 <td>Yes</td>
+<td>No</td>
 <td>Yes</td>
 </tr>
 <tr>
 <td><strong>Frequent modifications</strong></td>
 <td>Excellent</td>
 <td>Good</td>
+<td>Good</td>
 <td>Poor</td>
 </tr>
 <tr>
 <td><strong>Data size limit</strong></td>
+<td>Memory limit</td>
 <td>Memory limit</td>
 <td>Memory limit</td>
 <td>Disk space limit</td>
@@ -4458,6 +4529,25 @@ config = {
 };
 </code></pre></div>
 <strong>Why</strong>: Small dataset, frequent access, no persistence needed.</p>
+<h3 id="mathematical-data-processing"><strong>Mathematical Data Processing</strong></h3>
+<p><div class="highlight"><pre><span></span><code>/* Use $VECTOR for mathematical operations */
+data = [1, 2, 3, 4, 5].vector();
+
+/* Statistical analysis */
+mean = data.mean();        /* 3 */
+std_dev = data.std();      /* 1.58 */
+sum = data.sum();          /* 15 */
+
+/* Element-wise operations */
+doubled = data * 2;        /* #[2, 4, 6, 8, 10]# */
+squared = data ** 2;       /* #[1, 4, 9, 16, 25]# */
+
+/* Matrix operations */
+matrix = [[1, 2], [3, 4]].vector();
+determinant = matrix.det(); /* -2 */
+inverse = matrix.inv();     /* Matrix inverse */
+</code></pre></div>
+<strong>Why</strong>: Need mathematical operations, statistics, or linear algebra.</p>
 <h3 id="user-session-data"><strong>User Session Data</strong></h3>
 <p><div class="highlight"><pre><span></span><code>/* Use {} for session data */
 session = {
@@ -4517,13 +4607,14 @@ if (cache.get(&quot;user_123&quot;).cached_at.ms() &lt; 300000) { /* 5 minutes *
 <h3 id="dataset-size-thresholds"><strong>Dataset Size Thresholds</strong></h3>
 <ul>
 <li><strong>&lt; 100 items</strong>: Always use <code>{}</code> (linked list)</li>
-<li><strong>100-500 items</strong>: Use <code>{}</code> unless you need range queries or memory efficiency</li>
-<li><strong>&gt; 500 items</strong>: Consider <code>{}.table()</code> for better memory efficiency</li>
+<li><strong>100-500 items</strong>: Use <code>{}</code> unless you need range queries, memory efficiency, or mathematical operations</li>
+<li><strong>&gt; 500 items</strong>: Consider <code>{}.table()</code> for better memory efficiency, or <code>$VECTOR</code> for mathematical operations</li>
 <li><strong>Very large datasets</strong>: Use <code>$file()</code> for persistence and unlimited size</li>
 </ul>
 <h3 id="operation-patterns"><strong>Operation Patterns</strong></h3>
 <ul>
 <li><strong>Frequent insertions/deletions</strong>: Prefer <code>{}</code> (linked list)</li>
+<li><strong>Mathematical operations</strong>: Use <code>$VECTOR</code> (statistics, linear algebra, element-wise operations)</li>
 <li><strong>Range queries</strong>: Use <code>{}.table()</code> or <code>$file()</code></li>
 <li><strong>Complex queries</strong>: Use <code>{}.table()</code> or <code>$file()</code></li>
 <li><strong>Simple key-value access</strong>: Use <code>{}</code> (linked list)</li>
@@ -4532,6 +4623,7 @@ if (cache.get(&quot;user_123&quot;).cached_at.ms() &lt; 300000) { /* 5 minutes *
 <ul>
 <li><strong>Memory constrained</strong>: Use <code>{}.table()</code> for large datasets</li>
 <li><strong>Memory abundant</strong>: Use <code>{}</code> for simplicity</li>
+<li><strong>Mathematical processing</strong>: Use <code>$VECTOR</code> for optimized mathematical operations</li>
 <li><strong>Unlimited data</strong>: Use <code>$file()</code> for persistence</li>
 </ul>
 <h2 id="common-mistakes">Common Mistakes</h2>
@@ -4543,6 +4635,13 @@ small_config.set(&quot;timeout&quot;, 30);
 </code></pre></div>
 <strong>Why</strong>: Overhead of BTree structure makes it slower than <code>{}</code> for small datasets.</p>
 <h3 id="dont-do-this_1"><strong>❌ Don't Do This</strong></h3>
+<p><div class="highlight"><pre><span></span><code>/* Don&#39;t use {} for mathematical operations */
+data = [1, 2, 3, 4, 5];
+mean = data.mean();  /* This won&#39;t work - {} doesn&#39;t have .mean() */
+doubled = data * 2;  /* This won&#39;t work - {} doesn&#39;t support element-wise operations */
+</code></pre></div>
+<strong>Why</strong>: <code>{}</code> doesn't support mathematical operations, statistics, or linear algebra.</p>
+<h3 id="dont-do-this_2"><strong>❌ Don't Do This</strong></h3>
 <p><div class="highlight"><pre><span></span><code>/* Don&#39;t use {} for very large datasets */
 large_dataset = {};
 for i in (10000).range() {
@@ -4557,6 +4656,11 @@ small_config = {
     &quot;timeout&quot;: 30
 };
 
+/* Use $VECTOR for mathematical operations */
+data = [1, 2, 3, 4, 5].vector();
+mean = data.mean();        /* 3 */
+doubled = data * 2;        /* #[2, 4, 6, 8, 10]# */
+
 /* Use {}.table() for large datasets */
 large_dataset = {}.table();
 for i in (10000).range() {
@@ -4567,9 +4671,12 @@ for i in (10000).range() {
 <ul>
 <li><strong><code>{}</code> (Linked List)</strong>: Fast, simple, best for small to medium datasets</li>
 <li><strong><code>{}.table()</code> (BTree)</strong>: Memory efficient, supports complex queries, best for large datasets</li>
+<li><strong><code>$VECTOR</code> (Mathematical)</strong>: Optimized for mathematical operations, statistics, and linear algebra</li>
 <li><strong><code>$file()</code> (Persistent)</strong>: Disk-based, unlimited size, best for persistent storage</li>
 </ul>
-<p><strong>Key Insight</strong>: The double-linked list implementation in <code>{}</code> is highly optimized. Don't add indexing - it would likely make things slower, not faster.</p>
+<p><strong>Key Insights</strong>: 
+- The double-linked list implementation in <code>{}</code> is highly optimized. Don't add indexing - it would likely make things slower, not faster.
+- Use <code>$VECTOR</code> when you need mathematical operations, statistical analysis, or linear algebra - it's specifically optimized for these use cases.</p>
 
 
 

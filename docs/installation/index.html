@@ -4956,7 +4956,7 @@ unzip<span class="w"> </span>grapa-0.1.54-mac-arm64.zip
 <span class="nb">cd</span><span class="w"> </span>grapa-0.1.54
 
 <span class="c1"># Run the installer</span>
-python3<span class="w"> </span>install-grapa.py
+python3<span class="w"> </span>install-grapa-0.1.54.py
 
 <span class="c1"># Verify installation</span>
 grapa<span class="w"> </span>--version
@@ -4980,7 +4980,7 @@ wget<span class="w"> </span>https://github.com/grapa-dev/grapa/releases/download
 <span class="c1"># Extract and install</span>
 unzip<span class="w"> </span>grapa-0.1.54-linux-amd64.zip
 <span class="nb">cd</span><span class="w"> </span>grapa-0.1.54
-sudo<span class="w"> </span>python3<span class="w"> </span>install-grapa.py
+sudo<span class="w"> </span>python3<span class="w"> </span>install-grapa-0.1.54.py
 
 <span class="c1"># Verify installation</span>
 grapa<span class="w"> </span>--version
@@ -4993,7 +4993,7 @@ wget<span class="w"> </span>https://github.com/grapa-dev/grapa/releases/download
 <span class="c1"># Extract and install</span>
 unzip<span class="w"> </span>grapa-0.1.54-linux-arm64.zip
 <span class="nb">cd</span><span class="w"> </span>grapa-0.1.54
-sudo<span class="w"> </span>python3<span class="w"> </span>install-grapa.py
+sudo<span class="w"> </span>python3<span class="w"> </span>install-grapa-0.1.54.py
 
 <span class="c1"># Verify installation</span>
 grapa<span class="w"> </span>--version
@@ -5016,7 +5016,7 @@ wget<span class="w"> </span>https://github.com/grapa-dev/grapa/releases/download
 <span class="c1"># Extract and install</span>
 unzip<span class="w"> </span>grapa-0.1.54-aws-amd64.zip
 <span class="nb">cd</span><span class="w"> </span>grapa-0.1.54
-sudo<span class="w"> </span>python3<span class="w"> </span>install-grapa.py
+sudo<span class="w"> </span>python3<span class="w"> </span>install-grapa-0.1.54.py
 
 <span class="c1"># Verify installation</span>
 grapa<span class="w"> </span>--version
@@ -5029,7 +5029,7 @@ wget<span class="w"> </span>https://github.com/grapa-dev/grapa/releases/download
 <span class="c1"># Extract and install</span>
 unzip<span class="w"> </span>grapa-0.1.54-aws-arm64.zip
 <span class="nb">cd</span><span class="w"> </span>grapa-0.1.54
-sudo<span class="w"> </span>python3<span class="w"> </span>install-grapa.py
+sudo<span class="w"> </span>python3<span class="w"> </span>install-grapa-0.1.54.py
 
 <span class="c1"># Verify installation</span>
 grapa<span class="w"> </span>--version
@@ -5062,7 +5062,7 @@ sudo<span class="w"> </span>rm<span class="w"> </span>-f<span class="w"> </span>
 <li>
 <p><strong>Run the installer</strong> (run PowerShell as Administrator):
    <div class="highlight"><pre><span></span><code><span class="nb">cd </span><span class="n">grapa</span><span class="p">-</span><span class="n">0</span><span class="p">.</span><span class="n">1</span><span class="p">.</span><span class="n">54</span>
-<span class="n">python</span> <span class="nb">install-grapa</span><span class="p">.</span><span class="n">py</span>
+<span class="n">python</span> <span class="nb">install-grapa</span><span class="p">-</span><span class="n">0</span><span class="p">.</span><span class="n">1</span><span class="p">.</span><span class="n">54</span><span class="p">.</span><span class="n">py</span>
 </code></pre></div></p>
 </li>
 <li>
@@ -5083,7 +5083,7 @@ After installation, Grapa will be available at:
 - <strong>PATH</strong>: Automatically added to system PATH for command-line access</p>
 <p><strong>Uninstall:</strong>
 <div class="highlight"><pre><span></span><code><span class="c"># Run PowerShell as Administrator</span>
-<span class="n">python</span> <span class="nb">install-grapa</span><span class="p">.</span><span class="n">py</span> <span class="p">-</span><span class="n">-uninstall</span>
+<span class="n">python</span> <span class="nb">install-grapa</span><span class="p">-</span><span class="n">0</span><span class="p">.</span><span class="n">1</span><span class="p">.</span><span class="n">54</span><span class="p">.</span><span class="n">py</span> <span class="p">-</span><span class="n">-uninstall</span>
 </code></pre></div></p>
 <h2 id="building-and-running-the-example">🛠️ <strong>Building and Running the Example</strong></h2>
 <p>The universal development kit includes a complete C++ example demonstrating how to embed Grapa in your applications.</p>
@@ -5262,7 +5262,7 @@ pip3<span class="w"> </span>install<span class="w"> </span>grapapy
 - <code>grapa-0.1.54-aws-arm64.zip</code> - <strong>AWS ARM64</strong> (12.8 MB)</p>
 <p><strong>Each package includes:</strong>
 - Platform-specific Grapa executable
-- Universal installer (<code>install-grapa.py</code>)
+- Universal installer (<code>install-grapa-0.1.54.py</code>)
 - Sample C++ application (<code>main.cpp</code>)
 - Complete CMake build system
 - Platform libraries and headers
@@ -5305,7 +5305,7 @@ ls<span class="w"> </span>-la<span class="w"> </span><span class="k">$(</span>wh
 </ol>
 <h3 id="windows-specific-issues">Windows-Specific Issues</h3>
 <h4 id="installation-script-issues">Installation Script Issues</h4>
-<p>If the <code>install-grapa.py</code> script fails:</p>
+<p>If the <code>install-grapa-0.1.54.py</code> script fails:</p>
 <ol>
 <li>
 <p><strong>Check Python installation:</strong>
@@ -5315,12 +5315,12 @@ ls<span class="w"> </span>-la<span class="w"> </span><span class="k">$(</span>wh
 </li>
 <li>
 <p><strong>Verify the script exists:</strong>
-   <div class="highlight"><pre><span></span><code><span class="nb">Test-Path</span> <span class="s2">&quot;install-grapa.py&quot;</span>
+   <div class="highlight"><pre><span></span><code><span class="nb">Test-Path</span> <span class="s2">&quot;install-grapa-0.1.54.py&quot;</span>
 </code></pre></div></p>
 </li>
 <li>
 <p><strong>Run the script with verbose output:</strong>
-   <div class="highlight"><pre><span></span><code><span class="n">python</span> <span class="nb">install-grapa</span><span class="p">.</span><span class="n">py</span> <span class="p">-</span><span class="n">-verbose</span>
+   <div class="highlight"><pre><span></span><code><span class="n">python</span> <span class="nb">install-grapa</span><span class="p">-</span><span class="n">0</span><span class="p">.</span><span class="n">1</span><span class="p">.</span><span class="n">54</span><span class="p">.</span><span class="n">py</span> <span class="p">-</span><span class="n">-verbose</span>
 </code></pre></div></p>
 </li>
 </ol>

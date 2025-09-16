@@ -4649,8 +4649,12 @@ result.echo();
 
 /* Working with lists */
 numbers = [1, 2, 3, 4, 5];
-sum = numbers.reduce(op(a, b) { a + b; }, 0);
+sum = numbers.reduce(op(a, b) { a += b; });
 (&quot;Sum: &quot; + sum).echo();
+
+/* Alternative: Using vector operations */
+sum2 = numbers.vector().sum();
+(&quot;Sum (vector): &quot; + sum2).echo();
 </code></pre></div>
 <hr />
 <h2 id="core-concepts">Core Concepts</h2>
