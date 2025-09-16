@@ -31,7 +31,7 @@ This document outlines a comprehensive plan to make the Grapa language more prog
 
 ### Syntax Ergonomics
 - **String Interpolation**: No string interpolation (use concatenation: `"Hello " + name`)
-- **Property Access**: No attribute-style access for dict/list keys (use `[]` or dot notation for $LIST/$OBJ)
+- **Property Access**: No attribute-style access for dict/list keys (use `[]` or dot notation for $GOBJ/$OBJ)
 - **Semicolons**: All statements and blocks must end with a semicolon (`;`)
 - **Boolean Logic**: No implicit truthy/falsy; use explicit boolean checks
 - **Regular Expressions**: No regex as first-class objects (use `.grep()` for pattern matching)

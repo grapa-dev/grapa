@@ -1,5 +1,5 @@
 /* Comprehensive Data Types and Access Patterns Test
-   - Tests all data types: $ARRAY, $GOBJ, $OBJ
+   - Tests all data types: $LIST, $GOBJ, $OBJ
    - Tests all access patterns: bracket notation, dot notation, methods
    - Tests all instantiation methods: [], {}, and object creation
    - Provides clear examples for documentation

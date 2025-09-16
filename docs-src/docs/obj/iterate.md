@@ -11,18 +11,18 @@ Grapa is fully thread safe in all supported environments (command line, Grapa sh
 
 ## map($OP [,params])
 See [map in the Looping section](../operators/loop.md#map) for full documentation, canonical examples, and troubleshooting.
-Iterates through a $GOBJ/$ARRAY calling an $OP. Processes each item in parallel. Result of $OP placed in a $GOBJ/$ARRAY which is returned at the completion.
+Iterates through a $GOBJ/$LIST calling an $OP. Processes each item in parallel. Result of $OP placed in a $GOBJ/$LIST which is returned at the completion.
 
 ## filter($OP [,params])
 See [filter in the Looping section](../operators/loop.md#filter) for full documentation, canonical examples, and troubleshooting.
-Iterates through a $GOBJ/$ARRAY calling an $OP. Processes each item in parallel. If $OP of op is true, item is placed in a $GOBJ/$ARRAY which is returned at the completion. 
+Iterates through a $GOBJ/$LIST calling an $OP. Processes each item in parallel. If $OP of op is true, item is placed in a $GOBJ/$LIST which is returned at the completion. 
 
 ## reduce($OP [,start [,params]])
 See [reduce in the Looping section](../operators/loop.md#reduce) for full documentation, canonical examples, and troubleshooting.
-Iterates through a $GOBJ/$ARRAY calling an $OP. Processes each item in sequence as the intent is to combine results of each $OP. If "start" not provided, the first item of the list is used as the start. 
+Iterates through a $GOBJ/$LIST calling an $OP. Processes each item in sequence as the intent is to combine results of each $OP. If "start" not provided, the first item of the list is used as the start. 
 
 ## sort([axis],[order],[op])
-Sorts data structures across multiple types: `$ARRAY`, `$TUPLE`, `$GOBJ`, `$OBJ`, `$XML`, `$TAG`, `$EL`, `$OP`, `$CODE`.
+Sorts data structures across multiple types: `$LIST`, `$TUPLE`, `$GOBJ`, `$OBJ`, `$XML`, `$TAG`, `$EL`, `$OP`, `$CODE`.
 
 - axis -> 0 = row, 1 = col
 - order -> 0 = ascend, 1 = decend, or does selection if array if indexes passed in
@@ -57,7 +57,7 @@ Optionally pass in a compare routine.'''
 ```
 
 ## unique([op])
-Remove duplicates across multiple types: `$ARRAY`, `$TUPLE`, `$GOBJ`, `$OBJ`, `$XML`, `$TAG`, `$EL`, `$OP`, `$CODE`.
+Remove duplicates across multiple types: `$LIST`, `$TUPLE`, `$GOBJ`, `$OBJ`, `$XML`, `$TAG`, `$EL`, `$OP`, `$CODE`.
 
 **For Lists and Objects:** Removes duplicate keys, keeping the last value for each key.
 **For Arrays and Tuples:** Removes duplicate values, keeping the last occurrence of each value.

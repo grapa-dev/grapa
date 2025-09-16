@@ -99,7 +99,7 @@ pointer_assignment = level1.ptr.ptr;
 pointer_assignment.data = "via pointer";
 
 // Test value assignment (should be copy)
-value_assignment = level1.ptr.ptr.list();
+value_assignment = level1.ptr.ptr.gobj();
 value_assignment.data = "via value";
 
 "Original after pointer assignment: " + level3.data.echo();
@@ -119,7 +119,7 @@ value_assignment.data = "via value";
 "- Automatic dereferencing works correctly".echo();
 "- Pointer chains are preserved".echo();
 "- Function parameters maintain references".echo();
-"- Explicit copying (.list()) provides isolation".echo();
+"- Explicit copying (.gobj()) provides isolation".echo();
 
 "mVar appears to be working for:".echo();
 "- Preventing unnecessary copying".echo();

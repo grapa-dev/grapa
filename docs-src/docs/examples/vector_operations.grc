@@ -28,8 +28,8 @@ vec3 = [[[1, 2], [3, 4]], [[5, 6], [7, 8]]].vector();
 ("3D Vector: " + vec3 + "\n").echo();
 
 // Convert back to arrays
-arr1 = vec1.array();
-arr2 = vec2.array();
+arr1 = vec1.list();
+arr2 = vec2.list();
 ("Converted back: " + arr1 + "\n").echo();
 
 // Shape information
@@ -369,7 +369,7 @@ sales_by_product = sales_data.sum(0); // Sum across periods
 ("--- Best Practices ---\n").echo();
 
 ("✅ Use .vector() for mathematical operations\n").echo();
-("✅ Use .array() for general data manipulation\n").echo();
+("✅ Use .list() for general data manipulation\n").echo();
 ("✅ Specify axis parameter for multi-dimensional operations\n").echo();
 ("✅ Check for $ERR when operations may fail\n").echo();
 ("✅ Use reshape() for changing dimensions\n").echo();

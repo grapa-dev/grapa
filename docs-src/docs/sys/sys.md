@@ -19,7 +19,7 @@ Returns the type of the specified object.
 **Parameters:**
 - `object` - Any Grapa object or value
 
-**Returns:** `$STR` - The type name (e.g., `$INT`, `$STR`, `$FLOAT`, `$ARRAY`)
+**Returns:** `$STR` - The type name (e.g., `$INT`, `$STR`, `$FLOAT`, `$LIST`)
 
 **Example:**
 ```grapa
@@ -30,7 +30,7 @@ $sys().type("hello");
 $STR
 
 $sys().type([1,2,3]);
-$ARRAY
+$LIST
 ```
 
 ### describe(object)

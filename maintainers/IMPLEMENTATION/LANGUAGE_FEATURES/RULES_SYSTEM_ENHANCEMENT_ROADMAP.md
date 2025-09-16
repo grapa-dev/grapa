@@ -233,7 +233,7 @@ custom_command = rule for '(' <$comp> ')' <$command> {op(init:$3,body:$6){
 
 **Features**:
 - ✅ Sets: Implemented via arrays with .unique() method
-- ✅ Maps: Implemented via objects ($LIST) with key-value pairs
+- ✅ Maps: Implemented via objects ($GOBJ) with key-value pairs
 - ✅ Weak references: Implemented via function closures and managed references
 - ✅ Iterators: Implemented via custom functions with has_next/next protocols
 
@@ -241,7 +241,7 @@ custom_command = rule for '(' <$comp> ')' <$command> {op(init:$3,body:$6){
 - **Status**: ✅ All advanced data structure features already implemented
 - **Existing Alternatives**: 
   - Sets via arrays with .unique() method
-  - Maps via objects ($LIST) with key-value operations
+  - Maps via objects ($GOBJ) with key-value operations
   - Weak references via function closures and reference counting
   - Iterators via custom functions with standard protocols
   - Priority queues, immutable structures, trees via composition

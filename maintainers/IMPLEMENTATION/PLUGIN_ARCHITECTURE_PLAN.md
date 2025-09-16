@@ -72,7 +72,7 @@ plugin_manager.load("javascript-v8");
 result = plugin_manager.execute("javascript-v8", "render_page", {"url": "https://example.com"});
 
 // List loaded plugins
-loaded_plugins = plugin_manager.list();
+loaded_plugins = plugin_manager.gobj();
 
 // Unload plugin
 plugin_manager.unload("javascript-v8");

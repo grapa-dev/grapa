@@ -153,7 +153,7 @@ if (read_content == test_content) {
 };
 
 /* Test file listing */
-files = fs.list();
+files = fs.gobj();
 if (files.len() > 0) {
     "✓ File listing test passed\n".echo();
 } else {

@@ -88,7 +88,7 @@ MultiClass = class (BaseClass, Mixin1, Mixin2) {
 - **Method Resolution Order**: Closer classes in inheritance chain override more distant ones
 - **Variable Inheritance**: All class-level variables are inherited
 - **Method Inheritance**: All methods are inherited and can be overridden
-- **System Class Inheritance**: Can inherit from system classes like `$OBJ`, `$ARRAY`, etc.
+- **System Class Inheritance**: Can inherit from system classes like `$OBJ`, `$LIST`, etc.
 
 ---
 

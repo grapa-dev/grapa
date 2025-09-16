@@ -2,7 +2,7 @@
 
 /* Test 1: Array instance */
 "=== Testing Array Instance ===".echo();
-arr = $ARRAY();
+arr = $LIST();
 arr.test_method();
 
 /* Test 2: List instance */

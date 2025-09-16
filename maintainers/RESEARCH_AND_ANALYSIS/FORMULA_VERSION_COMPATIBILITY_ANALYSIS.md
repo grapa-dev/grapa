@@ -40,7 +40,7 @@ else if (r1.vVal->mValue.Cmp("$VERSION") == 0 || r1.vVal->mValue.Cmp("VERSION") 
 compile = op(script,srule="",sprofile=""){{op:op()(script,srule,sprofile),version:$sys().getenv($VERSION)}.encode("ZIP-GRAPA")};
 ```
 
-**Structure**: Wraps compiled $OP in $LIST with version information
+**Structure**: Wraps compiled $OP in $GOBJ with version information
 ```grapa
 {
     op: compiled_op,

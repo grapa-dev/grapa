@@ -287,8 +287,8 @@ private:
     // Composite Type Comparisons
     ComparisonResult CompareArray(const GrapaValue& left, const GrapaValue& right) {
         // Array comparison (element-wise)
-        GrapaArray<GrapaValue> leftArray = left.array();
-        GrapaArray<GrapaValue> rightArray = right.array();
+        GrapaArray<GrapaValue> leftArray = left.list();
+        GrapaArray<GrapaValue> rightArray = right.list();
         
         u32 leftLen = leftArray.Count();
         u32 rightLen = rightArray.Count();
@@ -311,8 +311,8 @@ private:
     
     ComparisonResult CompareList(const GrapaValue& left, const GrapaValue& right) {
         // List comparison (element-wise)
-        GrapaList<GrapaValue> leftList = left.list();
-        GrapaList<GrapaValue> rightList = right.list();
+        GrapaList<GrapaValue> leftList = left.gobj();
+        GrapaList<GrapaValue> rightList = right.gobj();
         
         u32 leftLen = leftList.Count();
         u32 rightLen = rightList.Count();

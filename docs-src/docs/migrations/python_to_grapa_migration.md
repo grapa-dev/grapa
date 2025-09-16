@@ -31,7 +31,7 @@
 >
 > | Type      | .get("key") | .get(index) | Bracket Notation | Dot Notation | .len() | .size() |
 > |-----------|:-----------:|:-----------:|:----------------:|:------------:|:------:|:-------:|
-> | $ARRAY    |      ✅      |     ✅      |       ✅         |     ✅       |   ✅   |    ❌   |
+> | $LIST    |      ✅      |     ✅      |       ✅         |     ✅       |   ✅   |    ❌   |
 > | $GOBJ     |      ✅      |     ✅      |       ✅         |     ✅       |   ✅   |    ❌   |
 > | $OBJ      |      ✅      |     ✅      |       ✅         |     ✅       |   ❌   |    ❌   |
 > | $file     |      ✅      |     ❌      |        —         |      —       |   ❌   |    ❌   |
@@ -44,7 +44,7 @@
 > - **Lists (`{}`)**: Use `list[key]`, `list.get("key")`, or `list.key` for access, `list.len()` for length
 > - **Objects (class)**: Use `object.property`, `object.get("key")`, or `object[key]` for access
 > - **`.getfield()/.setfield()` method**: Use for `$file` and `$TABLE` types with field access
-> - **`.get()/.set()` method**: Universal methods for `$ARRAY`, `$GOBJ`, `$OBJ`, `$file`, and `$TABLE` types
+> - **`.get()/.set()` method**: Universal methods for `$LIST`, `$GOBJ`, `$OBJ`, `$file`, and `$TABLE` types
 > - **`.size()` method**: Not supported on any type (use `.len()` instead)
 > - **`.keys()` method**: Not supported on `$GOBJ` (use iteration instead)
 
@@ -110,7 +110,7 @@ This guide helps Python users transition to Grapa by mapping common Python idiom
 >
 > **Nullish Coalescing:** For providing default values, use `value.ifnull("default")` instead of `value or "default"`. The `.ifnull()` method treats a broader range of values as nullish (including zeros, empty collections, and errors).
 
-> **Note:** `.get()/.set()` is for `$file` operations. `.getfield("key")` is for `$TABLE` with named keys. `.get()/.set()` is for `$WIDGET`. For `$GOBJ`/`$OBJ`, use `obj["key"]`, `obj.key`, or `obj."key"`. For `$ARRAY`, use `arr[index]` (bracket notation only).
+> **Note:** `.get()/.set()` is for `$file` operations. `.getfield("key")` is for `$TABLE` with named keys. `.get()/.set()` is for `$WIDGET`. For `$GOBJ`/`$OBJ`, use `obj["key"]`, `obj.key`, or `obj."key"`. For `$LIST`, use `arr[index]` (bracket notation only).
 
 ## Access Patterns: Objects, Lists, Arrays, Files, and Tables
 
@@ -133,7 +133,7 @@ name = obj.getname(1);  /* Returns "b" (key name at index 1) */
 - Dot notation (`obj.key`) and bracket notation (`obj["key"]`) are both valid for $GOBJ/$OBJ.
 - `.get()` is NOT valid for $GOBJ/$OBJ.
 
-### $ARRAY
+### $LIST
 
 ```grapa
 arr = [10, 20, 30];
@@ -142,9 +142,9 @@ value = arr[1];         /* Returns 20 */
 /* Note: .get(index) is now supported for arrays - can use bracket notation or .get() */
 ```
 
-- Use bracket notation, `.get(index)`, or dot notation for $ARRAY access.
+- Use bracket notation, `.get(index)`, or dot notation for $LIST access.
 - `.get(index)` is now supported for arrays.
-- `.get("key")` is now supported for $ARRAY when accessing by key.
+- `.get("key")` is now supported for $LIST when accessing by key.
 
 ### Array Comprehension Alternatives
 
@@ -301,7 +301,7 @@ value = table.get("user1", "name");   /* Correct */
 > **Reference Table:**
 > | Type      | .get("key") | .get(index) | Bracket Notation | Dot Notation | .len() | .size() |
 > |-----------|:-----------:|:-----------:|:----------------:|:------------:|:------:|:-------:|
-> | $ARRAY    |      ✓      |     ✓      |       ✓         |     ✓       |   ✓   |    ✗   |
+> | $LIST    |      ✓      |     ✓      |       ✓         |     ✓       |   ✓   |    ✗   |
 > | $GOBJ     |      ✓      |     ✓      |       ✓         |     ✓       |   ✓   |    ✗   |
 > | $OBJ      |      ✓      |     ✓      |       ✓         |     ✓       |   ✗   |    ✗   |
 > | $file     |      ✓      |     ✓      |       ✓         |     ✓       |   ✗   |    ✗   |
@@ -482,8 +482,8 @@ result = some_operation().iferr(0);
 
 > **Clarification on .get() Usage:**
 > - `.get()` is **required** for `$file` and `$TABLE` access.
-> - `.get()` is **not supported** for `$ARRAY`, `$GOBJ`, or `$OBJ` as of this writing.
-> - Use bracket and dot notation for `$ARRAY`, `$GOBJ`, and `$OBJ`.
+> - `.get()` is **not supported** for `$LIST`, `$GOBJ`, or `$OBJ` as of this writing.
+> - Use bracket and dot notation for `$LIST`, `$GOBJ`, and `$OBJ`.
 > - If more objects support `.get()` in the future, this guide will be updated. 
 
 > **Comment Style:**

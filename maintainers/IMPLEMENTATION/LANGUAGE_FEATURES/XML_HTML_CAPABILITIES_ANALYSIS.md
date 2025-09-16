@@ -88,7 +88,7 @@ xml.findall({name:"item"})                    /* Finds items at any depth */
 #### **6. XML to LIST Conversion**
 ```grapa
 xml = <root><item id="1">Hello</item><item id="2">World</item></root>;
-list = xml.list();                            /* Full LIST conversion */
+list = xml.gobj();                            /* Full LIST conversion */
 list.root[1][0].item[1][0]                    /* Access converted data: "Hello" */
 ```
 
@@ -230,7 +230,7 @@ xml[0][0].attr            /* LIST of attributes */
 xml[0][0].attr.id         /* Direct property access */
 
 /* Full LIST conversion */
-list_data = xml.list();   /* Convert to LIST structure */
+list_data = xml.gobj();   /* Convert to LIST structure */
 ```
 
 ### **String Integration**
@@ -270,7 +270,7 @@ Grapa's XML/HTML implementation is **enterprise-grade** and **production-ready**
 - **Enterprise-grade `.findall()`** with logical operators
 - Attribute access via `.attr`
 - String output and conversion
-- **Full LIST conversion** with `.list()`
+- **Full LIST conversion** with `.gobj()`
 - **Unified query system** across XML, LIST, and ARRAY types
 
 ### **❌ What's Missing (Minor):**
@@ -281,7 +281,7 @@ Grapa's XML/HTML implementation is **enterprise-grade** and **production-ready**
 ### **🎯 Key Insights:**
 1. **`.findall()` is incredibly powerful** - supports complex queries with logical operators
 2. **Dot notation works perfectly** - `xml.root.item.attr.id` is fully functional
-3. **LIST conversion is working** - `xml.list()` provides full conversion
+3. **LIST conversion is working** - `xml.gobj()` provides full conversion
 4. **Unified query system** - same `.findall()` works across XML, LIST, and ARRAY
 5. **No need for `.find()`** - `findall()[0]` provides the same functionality with more power
 

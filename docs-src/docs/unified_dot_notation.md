@@ -378,7 +378,7 @@ item_count = items.len();
 
 /* Convert XML to LIST for easier processing */
 xml = <root><item>1</item><item>2</item></root>;
-list = xml.list();  /* Convert to LIST structure */
+list = xml.gobj();  /* Convert to LIST structure */
 list.echo();        /* View converted structure */
 ```
 

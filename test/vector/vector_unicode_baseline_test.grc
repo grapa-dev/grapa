@@ -15,7 +15,7 @@ vec1 = ascii_csv.vector();
 if (vec1 != null) {
     ("Vector type: " + vec1.type()).echo();
     ("Vector shape: " + vec1.shape()).echo();
-    ("Vector content: " + vec1.array()).echo();
+    ("Vector content: " + vec1.list()).echo();
 }
 
 /* Test 2: UTF-8 BOM CSV */
@@ -27,7 +27,7 @@ vec2 = bom_csv.vector();
 if (vec2 != null) {
     ("Vector type: " + vec2.type()).echo();
     ("Vector shape: " + vec2.shape()).echo();
-    ("Vector content: " + vec2.array()).echo();
+    ("Vector content: " + vec2.list()).echo();
 }
 
 /* Test 3: Unicode Headers */
@@ -39,7 +39,7 @@ vec3 = unicode_csv.vector();
 if (vec3 != null) {
     ("Vector type: " + vec3.type()).echo();
     ("Vector shape: " + vec3.shape()).echo();
-    ("Vector content: " + vec3.array()).echo();
+    ("Vector content: " + vec3.list()).echo();
 }
 
 /* Test 4: Cyrillic Headers */
@@ -51,7 +51,7 @@ vec4 = cyrillic_csv.vector();
 if (vec4 != null) {
     ("Vector type: " + vec4.type()).echo();
     ("Vector shape: " + vec4.shape()).echo();
-    ("Vector content: " + vec4.array()).echo();
+    ("Vector content: " + vec4.list()).echo();
 }
 
 /* Test 5: Mixed Encoding */
@@ -63,7 +63,7 @@ vec5 = mixed_csv.vector();
 if (vec5 != null) {
     ("Vector type: " + vec5.type()).echo();
     ("Vector shape: " + vec5.shape()).echo();
-    ("Vector content: " + vec5.array()).echo();
+    ("Vector content: " + vec5.list()).echo();
 }
 
 ("\n=== Baseline Test Complete ===").echo();

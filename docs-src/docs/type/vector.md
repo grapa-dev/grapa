@@ -46,7 +46,7 @@ Vectors in Grapa are multi-dimensional data structures that support mathematical
 - **1D Vectors**: `vec.get(-1)` returns last element, `vec.get(-2)` returns second-to-last
 - **2D Vectors**: `matrix.get(-1, -1)` returns bottom-right element
 - **All Methods**: Works with `.get()`, `.set()`, `.getfield()`, `.setfield()`
-- **Consistent**: Same behavior as `$ARRAY` and `$GOBJ`
+- **Consistent**: Same behavior as `$LIST` and `$GOBJ`
 
 #### **✅ Column Label Support (NEW)**
 - **Spreadsheet-like**: Column labels for intuitive data access
@@ -443,7 +443,7 @@ vec.sort(null, order_indices);  /* Reorder based on custom indices */
 /* - $custom_function: op(a,b){...} for custom comparison logic */
 
 /* Unique values */
-unique_vals = vec.array().unique().vector();   /* Convert to array, get unique, convert back to vector */
+unique_vals = vec.list().unique().vector();   /* Convert to array, get unique, convert back to vector */
 
 ### **Advanced Sorting Features**
 
@@ -673,13 +673,13 @@ expanded_2d = vec.reshape([3,1]); /* #[[1],[2],[3]]# */
 vec = #[1,2,3,4,5,6,7,8,9,10]#;
 
 /* Filter elements meeting condition */
-filtered = vec.array().filter(op(x){x > 5}).vector();  /* #[6,7,8,9,10]# */
+filtered = vec.list().filter(op(x){x > 5}).vector();  /* #[6,7,8,9,10]# */
 
 /* Complex condition: between 3 and 7, and even */
-filtered_complex = vec.array().filter(op(x){x >= 3 && x <= 7 && x % 2 == 0}).vector();  /* #[4,6]# */
+filtered_complex = vec.list().filter(op(x){x >= 3 && x <= 7 && x % 2 == 0}).vector();  /* #[4,6]# */
 
 /* Multiple ranges */
-ranges = vec.array().filter(op(x){(x >= 2 && x <= 4) || (x >= 8 && x <= 10)}).vector();  /* #[2,3,4,8,9,10]# */
+ranges = vec.list().filter(op(x){(x >= 2 && x <= 4) || (x >= 8 && x <= 10)}).vector();  /* #[2,3,4,8,9,10]# */
 
 /* Conditional replacement */
 replaced = vec * [op(x){x > 5 ? x * 2 : x}];  /* #[1,2,3,4,5,12,14,16,18,20]# */
@@ -878,18 +878,18 @@ left3 = vec.left(3);      /* #[1, 2, 3]# */
 right3 = vec.right(3);    /* #[8, 9, 10]# */
 
 /* Reverse vector elements */
-reversed = vec.array().reverse().vector(); /* #[10, 9, 8, 7, 6, 5, 4, 3, 2, 1]# */
+reversed = vec.list().reverse().vector(); /* #[10, 9, 8, 7, 6, 5, 4, 3, 2, 1]# */
 
 /* Combine utility operations */
 first_half = vec.left(5);           /* #[1, 2, 3, 4, 5]# */
 second_half = vec.right(5);         /* #[6, 7, 8, 9, 10]# */
-reversed_first = first_half.array().reverse().vector(); /* #[5, 4, 3, 2, 1]# */
+reversed_first = first_half.list().reverse().vector(); /* #[5, 4, 3, 2, 1]# */
 
 /* 2D matrix utility operations */
 matrix = #[[1, 2, 3], [4, 5, 6], [7, 8, 9]]#;
 left_cols = matrix.left(2);         /* #[[1, 2], [4, 5], [7, 8]]# */
 right_cols = matrix.right(1);       /* #[[3], [6], [9]]# */
-reversed_matrix = matrix.array().reverse().vector(); /* #[[7, 8, 9], [4, 5, 6], [1, 2, 3]]# */
+reversed_matrix = matrix.list().reverse().vector(); /* #[[7, 8, 9], [4, 5, 6], [1, 2, 3]]# */
 ```
 ```
 
@@ -916,7 +916,7 @@ vec1 = #[1, 2, 3]#;
 vec2 = #[4, 5, 6]#;
 
 /* Use array concatenation and convert back to vector */
-combined = vec1.array() ++ vec2.array();  /* Combine arrays: [1,2,3,4,5,6] */
+combined = vec1.list() ++ vec2.list();  /* Combine arrays: [1,2,3,4,5,6] */
 combined_vec = combined.vector();         /* Convert back to vector */
 ```
 
@@ -1080,7 +1080,7 @@ vec = arr.vector();           /* #[1, 2, 3, 4, 5]# */
 
 /* Vector to array conversion */
 vec = #[1, 2, 3, 4, 5]#;
-arr = vec.array();            /* [1, 2, 3, 4, 5] */
+arr = vec.list();            /* [1, 2, 3, 4, 5] */
 
 /* Complex type handling */
 mixed_vec = #[1, "hello", true, [1, 2, 3]]#;  /* Mixed types supported */
@@ -1198,7 +1198,7 @@ The `add()`, `mul()`, `pow()` functions in the C++ backend are internal methods 
   - `order`: null/0 for ascending, 1 for descending, OR vector of indices for custom reordering
   - `kind`: null/0 for signed, 1 for unsigned comparison
   - `$custom_function`: op(a,b){...} for custom comparison logic
-- `.unique()` - Unique elements (use `vec.array().unique().vector()`)
+- `.unique()` - Unique elements (use `vec.list().unique().vector()`)
 
 ## **Function Reference**
 
@@ -1267,7 +1267,7 @@ The `add()`, `mul()`, `pow()` functions in the C++ backend are internal methods 
 - `.transpose()` - Transpose matrix
 
 ### **Utility Functions**
-- `.array()` - Convert to array
+- `.list()` - Convert to array
 - `.vector()` - Convert to vector (from array)
 - `.len()` - Get length/size
 - `.sort()` - Sort elements
@@ -1275,7 +1275,7 @@ The `add()`, `mul()`, `pow()` functions in the C++ backend are internal methods 
 
 #### **Index Support**
 - **Positive Indices**: Fully supported (0, 1, 2, ...)
-- **Negative Indices**: ✅ **FULLY SUPPORTED** (same as `$ARRAY` and `$GOBJ`)
+- **Negative Indices**: ✅ **FULLY SUPPORTED** (same as `$LIST` and `$GOBJ`)
   - `-1` refers to the last element, `-2` to the second-to-last, etc.
   - Works for both 1D and 2D vectors
   - Works with all access methods: `.get()`, `.set()`, `.getfield()`, `.setfield()`
@@ -1358,11 +1358,11 @@ second_last = matrix.get(-2, -2);         /* ✅ Returns second-to-last element 
 ```
 
 ### **Utility Functions**
-- `.array()` - Convert to array
+- `.list()` - Convert to array
 - `.vector()` - Convert to vector (from array)
 - `.left(count)` - Extract leftmost elements
 - `.right(count)` - Extract rightmost elements
-- `.reverse()` - Reverse vector elements (use `vec.array().reverse().vector()`)
+- `.reverse()` - Reverse vector elements (use `vec.list().reverse().vector()`)
 
 ### **✅ Recent Fixes**
 
@@ -1473,7 +1473,7 @@ employees.set("department", "Sales"); /* Change first employee's department */
 **Status:** ✅ **NEW FEATURE** - Column label access provides intuitive, spreadsheet-like element access for structured data vectors.
 
 #### **Negative Index Support - NEW**
-Added full negative index support for all vector access methods, matching the behavior of `$ARRAY` and `$GOBJ`:
+Added full negative index support for all vector access methods, matching the behavior of `$LIST` and `$GOBJ`:
 
 **New Negative Index Capabilities:**
 - **1D Vectors**: `vec.get(-1)` returns last element, `vec.get(-2)` returns second-to-last, etc.

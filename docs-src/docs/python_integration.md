@@ -463,7 +463,7 @@ The callback system automatically handles type conversion between Grapa and Pyth
 | `$FLOAT` | `float` | Automatic conversion |
 | `$STR` | `str` | UTF-8 string conversion |
 | `$BOOL` | `bool` | True/false conversion |
-| `$ARRAY` | `list` | Element-by-element conversion |
+| `$LIST` | `list` | Element-by-element conversion |
 | `$GOBJ` | `dict` | Key-value conversion |
 | `$TUPLE` | `tuple` | Element-by-element conversion |
 | `$RAW` | `bytes` | Binary data conversion |

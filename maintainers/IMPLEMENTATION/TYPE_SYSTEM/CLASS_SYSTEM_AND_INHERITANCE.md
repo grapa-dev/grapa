@@ -99,11 +99,11 @@ Every Grapa data type is automatically assigned its corresponding class for dot 
 // Automatic class assignment in GrapaLibRule.cpp
 case GrapaTokenType::CLASS:    item->vClass = GetClass(pNameSpace, GrapaCHAR("$CLASS")); break;
 case GrapaTokenType::SYSID:    item->vClass = GetClass(pNameSpace, GrapaCHAR("$SYSID")); break;
-case GrapaTokenType::ARRAY:    item->vClass = GetClass(pNameSpace, GrapaCHAR("$ARRAY")); break;
+case GrapaTokenType::ARRAY:    item->vClass = GetClass(pNameSpace, GrapaCHAR("$LIST")); break;
 case GrapaTokenType::TUPLE:    item->vClass = GetClass(pNameSpace, GrapaCHAR("$TUPLE")); break;
 case GrapaTokenType::VECTOR:   item->vClass = GetClass(pNameSpace, GrapaCHAR("$VECTOR")); break;
 case GrapaTokenType::WIDGET:   item->vClass = GetClass(pNameSpace, GrapaCHAR("$WIDGET")); break;
-case GrapaTokenType::LIST:     item->vClass = GetClass(pNameSpace, GrapaCHAR("$LIST")); break;
+case GrapaTokenType::LIST:     item->vClass = GetClass(pNameSpace, GrapaCHAR("$GOBJ")); break;
 case GrapaTokenType::XML:      item->vClass = GetClass(pNameSpace, GrapaCHAR("$XML")); break;
 case GrapaTokenType::EL:       item->vClass = GetClass(pNameSpace, GrapaCHAR("$EL")); break;
 case GrapaTokenType::TAG:      item->vClass = GetClass(pNameSpace, GrapaCHAR("$TAG")); break;

@@ -585,7 +585,7 @@ g.eval("net.connect('example.com', 80)")  # Connection persists across calls
 ```
 
 **📊 Serializable vs Non-Serializable Types:**
-- **✅ Serializable** (can be passed between calls): `$INT`, `$FLOAT`, `$STR`, `$ARRAY`, `$LIST`, `$BOOL`
+- **✅ Serializable** (can be passed between calls): `$INT`, `$FLOAT`, `$STR`, `$LIST`, `$GOBJ`, `$BOOL`
 - **❌ Non-Serializable** (must use `$global`): `$file`, `$net`, `$TABLE`, database connections, network connections
 
 **⚡ Performance Optimization for Large Values:**

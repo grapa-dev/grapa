@@ -5,7 +5,7 @@ Grapa .grc File Authoring Rules (Windows)
 - End every command with a ; character
 - Use while loops instead of for (Grapa does not support for)
 - Wrap string concatenations in parentheses: (str1+str2).echo();
-- Arrays (type $ARRAY) and lists (type $GOBJ) are accessed with [index] syntax, not .get().
+- Arrays (type $LIST) and lists (type $GOBJ) are accessed with [index] syntax, not .get().
   Example:
     ar = [1,2,3];
     ar[1];  /* returns */

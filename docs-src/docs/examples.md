@@ -392,7 +392,7 @@ html = <html><body><h1>Title</h1><p>Content</p></body></html>;
 html.findall({name:"p"})                  /* All paragraph elements */
 
 /* XML to LIST conversion */
-list = xml.list();                        /* Convert to LIST structure */
+list = xml.gobj();                        /* Convert to LIST structure */
 list.root[1][0].item[1][0]                /* Access converted data: "Hello" */
 ```
 

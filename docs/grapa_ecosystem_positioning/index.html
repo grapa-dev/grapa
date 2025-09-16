@@ -5625,7 +5625,7 @@ arr.b[0].p[0] = &quot;New Content&quot;;  /* Modify embedded content */
 
 /* XML to LIST conversion */
 xml = &lt;root&gt;&lt;item&gt;1&lt;/item&gt;&lt;item&gt;2&lt;/item&gt;&lt;/root&gt;;
-list = xml.list();  /* Convert to LIST structure */
+list = xml.gobj();  /* Convert to LIST structure */
 
 /* Unified dot notation across all types */
 data = {json:{users:[...]}, xml:&lt;config&gt;...&lt;/config&gt;};
@@ -6407,7 +6407,7 @@ encrypted_data = data.encode(aes_keys);
 <li><strong>Database integration</strong> - Native table operations (ROW, COL, GROUP)</li>
 <li><strong>File system navigation</strong> - Unified path system for files and databases</li>
 <li><strong>ETL pipelines</strong> - Built-in data transformation capabilities</li>
-<li><strong>XML/LIST integration</strong> - Seamless embedding, unified dot notation, and <code>.list()</code> conversion</li>
+<li><strong>XML/LIST integration</strong> - Seamless embedding, unified dot notation, and <code>.gobj()</code> conversion</li>
 </ul>
 <h4 id="5-execution-tree-metaprogramming"><strong>5. Execution Tree Metaprogramming</strong></h4>
 <ul>

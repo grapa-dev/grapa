@@ -68,10 +68,10 @@ Grapa's type system provides the flexibility of dynamic typing with the safety o
 /* Dynamic type assignment */
 x = 42;        /* $INT */
 x = "hello";   /* $STR */
-x = [1, 2, 3]; /* $ARRAY */
+x = [1, 2, 3]; /* $LIST */
 
 /* Runtime type checking */
-if (x.type() == $ARRAY) {
+if (x.type() == $LIST) {
     /* Safe to use array methods */
     result = x.map(op(item) { item * 2; });
 }
@@ -104,7 +104,7 @@ func = op(x) { x * 2; };
 func_type = func.type();  /* $OP */
 
 /* Classes are data */
-class_obj = $ARRAY;
+class_obj = $LIST;
 class_type = class_obj.type();  /* $CLASS */
 
 /* Rules are data */
@@ -133,7 +133,7 @@ Best practices for type safety in Grapa:
 ```grapa
 /* Defensive programming */
 process_data = op(data) {
-    if (data.type() != $ARRAY) {
+    if (data.type() != $LIST) {
         return $ERR("Expected array");
     }
     
@@ -940,8 +940,8 @@ All Grapa objects support a comprehensive set of methods through the `$OBJ` clas
 - **Search & Pattern**: `.grep()`, `.match()`, `.findall()`
 - **Bit Manipulation**: `.setbit()`, `.clearbit()`, `.genbits()`
 - **Cryptography**: `.encode()`, `.decode()`, `.sign()`, `.verify()`, `.secret()`
-- **Universal Access**: `.get()`, `.set()` - works across `$ARRAY`, `$GOBJ`, `$OBJ`, `$file`, `$TABLE`, `$WIDGET`
-- **Flexible Field Access**: `.getfield()`, `.setfield()` - universal methods (mix/match of names and indices for `$ARRAY`, `$GOBJ`, and `$OBJ` non-system classes only)
+- **Universal Access**: `.get()`, `.set()` - works across `$LIST`, `$GOBJ`, `$OBJ`, `$file`, `$TABLE`, `$WIDGET`
+- **Flexible Field Access**: `.getfield()`, `.setfield()` - universal methods (mix/match of names and indices for `$LIST`, `$GOBJ`, and `$OBJ` non-system classes only)
 - **Utilities**: `.echo()`, `.debug()`, `.iferr()`, `.exec()`, `.getname()`
 
 ### Quick Examples
@@ -967,7 +967,7 @@ result = data
 The universal `.get()` and `.set()` methods provide consistent access patterns across multiple data types:
 
 ```grapa
-/* $ARRAY examples */
+/* $LIST examples */
 my_array = [1, 2, 3, 4, 5];
 my_array.set(2, 99);
 $local.value = my_array.get(2);  /* 99 */
@@ -995,7 +995,7 @@ name = my_table.get("user1", "name");  /* "Alice" */
 ```
 
 **Supported Types:**
-- **`$ARRAY`**: `array.get(index)`, `array.set(index, value)` - 0-based indexing
+- **`$LIST`**: `array.get(index)`, `array.set(index, value)` - 0-based indexing
 - **`$GOBJ`**: `list.get(key)`, `list.set(key, value)`
 - **`$OBJ`**: `obj.get(key)`, `obj.set(key, value)`
 - **`$file`**: `file.get(key)`, `file.set(key, value)`

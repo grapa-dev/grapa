@@ -257,9 +257,9 @@ test2.inc();      /* n becomes 1 */
 test2.dec(5);     /* n becomes -4, m becomes 1 */
 
 /* Pattern 3: Extending system classes */
-$ARRAY();  /* Load system class */
-@$ARRAY ++= {f:op(){55}};
-@$ARRAY += (c:op(){$this.len();});
+$LIST();  /* Load system class */
+@$LIST ++= {f:op(){55}};
+@$LIST += (c:op(){$this.len();});
 ar = [1,2,4];
 ar.f();           /* Returns 55 */
 ar.c();           /* Returns 3 */
@@ -348,7 +348,7 @@ cached_process = validate(process_data);
 /* Generic-like function using dynamic typing */
 generic_function = op(x) {
     /* Dynamic type checking */
-    if (x.type() == $ARRAY) process_array(x);
+    if (x.type() == $LIST) process_array(x);
     else if (x.type() == $GOBJ) process_list(x);
     else process_other(x);
 };
@@ -494,7 +494,7 @@ switch (true) {
 switch (true) {
     case (data.type() == $STR): "String data".echo();
     case (data.type() == $INT): "Integer data".echo();
-    case (data.type() == $ARRAY): "Array data".echo();
+    case (data.type() == $LIST): "Array data".echo();
     case (data.type() == $GOBJ): "List data".echo();
     default: "Other data type".echo();
 };
@@ -712,8 +712,8 @@ new_float = components.encode("FLOAT");
 **Current**: `$global` syntax for redefining system classes
 
 ```grapa
-/* Redefine $ARRAY with custom methods */
-$global["$ARRAY"] = class ($GOBJ, $VECTOR) {
+/* Redefine $LIST with custom methods */
+$global["$LIST"] = class ($GOBJ, $VECTOR) {
     custom_method = op() { 
         "Custom array method called".echo();
         $this.len();  /* Access the array's length */
@@ -728,7 +728,7 @@ result = arr.custom_method();
 ```
 
 **Capabilities:**
-- **System Class Extension** - Add methods to `$ARRAY`, `$GOBJ`, `$CLASS`, `$OBJ`, etc.
+- **System Class Extension** - Add methods to `$LIST`, `$GOBJ`, `$CLASS`, `$OBJ`, etc.
 - **Global Variable Redefinition** - Redefine any global variable or function
 - **Runtime Modification** - Change system behavior at runtime
 - **Method Preservation** - Keep existing methods while adding new ones
@@ -760,7 +760,7 @@ is_readonly = $sys().const(my_variable);
 The `+=` operator will be enhanced to safely add methods to system classes:
 ```grapa
 /* Future capability (not yet implemented) */
-$ARRAY += (custom_method: op() { $this.len(); });
+$LIST += (custom_method: op() { $this.len(); });
 ```
 
 ### **Current Limitations and Future Enhancements**

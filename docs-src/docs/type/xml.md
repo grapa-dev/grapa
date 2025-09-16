@@ -208,12 +208,12 @@ html.findall({name:"div", attr:{class:"container"}})
 
 ## XML to LIST Conversion
 
-### Using .list() Method
+### Using .gobj() Method
 ```grapa
 xml = <root><item id="1">Hello</item><item id="2">World</item></root>;
 
 /* Convert XML to LIST structure */
-list = xml.list();             /* Returns: {{"root":[{},[{"item":[{"id":"1"},["Hello"]]},{"item":[{"id":"2"},["World"]]}]]}} */
+list = xml.gobj();             /* Returns: {{"root":[{},[{"item":[{"id":"1"},["Hello"]]},{"item":[{"id":"2"},["World"]]}]]}} */
 
 /* Access converted data */
 list.root[1][0].item[1][0]     /* Returns: "Hello" */
@@ -225,7 +225,7 @@ list.root[1][1].item[1][0]     /* Returns: "World" */
 xml = <html><head><title>Test</title></head><body><h1>Hello</h1></body></html>;
 
 /* Convert complex nested structure */
-list = xml.list();             /* Complex nested LIST structure */
+list = xml.gobj();             /* Complex nested LIST structure */
 
 /* Access nested elements */
 list.html[1][0].head[1][0].title[1][0]  /* Returns: "Test" */
@@ -265,7 +265,7 @@ first_item = xml[0][0];        /* First item element */
 first_item.attr.id             /* Access attribute like a list property */
 
 /* Convert XML to LIST for complex processing */
-list_data = xml.list();        /* Full LIST conversion */
+list_data = xml.gobj();        /* Full LIST conversion */
 ```
 
 ## Performance Considerations
@@ -315,7 +315,7 @@ if (xml.root) {
 ```
 
 ## See also
-- [$ARRAY object](array.md)
+- [$LIST object](array.md)
 - [$GOBJ object](gobj.md)
 - [$TAG object](tag.md)
 - [Assignment Operators](../operators/assignment.md)

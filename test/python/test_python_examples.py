@@ -67,7 +67,7 @@ result = xy.eval('''
 print('absolute_value(-5) with object result:', result)
 
 print('--- XML to JSON ---')
-result = xy.eval('(<test "v"=5.4>this is a test</test>).list();')
+result = xy.eval('(<test "v"=5.4>this is a test</test>).gobj();')
 print('XML to JSON:', result) 
 
 print('--- End of test ---') 

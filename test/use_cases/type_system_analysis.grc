@@ -18,7 +18,7 @@
 // Grapa uses dynamic typing - types are determined at runtime
 x = 5;                    // $INT
 y = "hello";              // $STR
-z = [1, 2, 3];            // $ARRAY
+z = [1, 2, 3];            // $LIST
 w = {name: "Alice"};      // $GOBJ
 
 ("Dynamic types: x=" + x.type() + ", y=" + y.type() + ", z=" + z.type() + ", w=" + w.type()).echo();
@@ -44,7 +44,7 @@ check_type = op(value, expected_type) {
 type_tests = [
     {value: 42, expected: $INT},
     {value: "hello", expected: $STR},
-    {value: [1, 2, 3], expected: $ARRAY},
+    {value: [1, 2, 3], expected: $LIST},
     {value: {a: 1}, expected: $GOBJ},
     {value: 3.14, expected: $FLOAT}
 ];
@@ -94,7 +94,7 @@ try {
 inferred_int = 5 + 3;           // Automatically $INT
 inferred_float = 5.0 + 3;       // Automatically $FLOAT
 inferred_str = "Hello" + "World"; // Automatically $STR
-inferred_array = [1] + [2];     // Automatically $ARRAY
+inferred_array = [1] + [2];     // Automatically $LIST
 
 ("Inferred types: int=" + inferred_int.type() + ", float=" + inferred_float.type() + 
  ", str=" + inferred_str.type() + ", array=" + inferred_array.type()).echo();
@@ -119,7 +119,7 @@ validate_type = op(value, valid_types) {
 validation_tests = [
     {value: 42, valid_types: [$INT, $FLOAT]},
     {value: "hello", valid_types: [$STR]},
-    {value: [1, 2, 3], valid_types: [$ARRAY, $GOBJ]},
+    {value: [1, 2, 3], valid_types: [$LIST, $GOBJ]},
     {value: 3.14, valid_types: [$INT, $FLOAT]},
     {value: {a: 1}, valid_types: [$GOBJ]}
 ];
@@ -140,7 +140,7 @@ generic_process = op(data) {
     switch (data_type) {
         case $INT: data * 2;
         case $STR: data.upper();
-        case $ARRAY: data.map(op(x) { x * 2; });
+        case $LIST: data.map(op(x) { x * 2; });
         case $GOBJ: data.map(op(key, value) { key + ": " + value; });
         default: "Unsupported type: " + data_type;
     }
@@ -261,7 +261,7 @@ type_pattern_match = op(value) {
             if (value.len() == 0) "Empty string";
             else if (value.len() < 10) "Short string";
             else "Long string";
-        case $ARRAY:
+        case $LIST:
             if (value.len() == 0) "Empty array";
             else if (value.len() == 1) "Single element array";
             else "Multi-element array";

@@ -4,7 +4,7 @@
 >
 > | Type      | .get("key") | .get(index) | Bracket Notation | Dot Notation |
 > |-----------|:-----------:|:-----------:|:----------------:|:------------:|
-> | $ARRAY    |      ✓      |     ✓      |       ✓         |     ✓       |
+> | $LIST    |      ✓      |     ✓      |       ✓         |     ✓       |
 > | $GOBJ     |      ✓      |     ✓      |       ✓         |     ✓       |
 > | $file     |      ✓      |     ✓      |       ✓         |     ✓       |
 > | $TABLE    |      ✓      |     ✓      |       ✓         |     ✓       |
@@ -246,7 +246,7 @@ switch (value.type()) {
     case $STR: "String value".echo();
     case $INT: "Integer value".echo();
     case $FLOAT: "Float value".echo();
-    case $ARRAY: "Array value".echo();
+    case $LIST: "Array value".echo();
     case $GOBJ: "List value".echo();
     default: "Unknown type".echo();
 }
@@ -257,7 +257,7 @@ if (value.type() == $STR || value.type() == $INT) {
 }
 ```
 
-Common type constants: `$STR`, `$INT`, `$FLOAT`, `$BOOL`, `$ARRAY`, `$GOBJ`, `$TABLE`, `$TIME`, `$ERR`
+Common type constants: `$STR`, `$INT`, `$FLOAT`, `$BOOL`, `$LIST`, `$GOBJ`, `$TABLE`, `$TIME`, `$ERR`
 
 ## Notes
 - See [Operators](../syntax/operator.md) and [System](../sys/sys.md) docs for more details.

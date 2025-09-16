@@ -25,7 +25,7 @@ ref1.a = 999;
 "--- Test 2: Explicit Copy ---".echo();
 
 // Create copy
-copy1 = obj1.list();
+copy1 = obj1.gobj();
 copy1.b = 888;
 
 // Check if original is NOT modified
@@ -50,7 +50,7 @@ arr_ref[2] = 999;
 "--- Test 4: Array Copy ---".echo();
 
 // Create array copy
-arr_copy = arr1.list();
+arr_copy = arr1.gobj();
 arr_copy[3] = 888;
 
 // Check if original is NOT modified
@@ -100,7 +100,7 @@ deep_ref.value = "modified";
 "--- Test 7: Nested Object Copy ---".echo();
 
 // Create copy of nested object
-nested_copy = nested.list();
+nested_copy = nested.gobj();
 nested_copy.level1.level2.value = "copied";
 
 // Check if original is NOT modified
@@ -121,7 +121,7 @@ ref_time = end_time - start_time;
 
 // Test copy assignment
 start_time = $TIME();
-copy_medium = medium_obj.list();
+copy_medium = medium_obj.gobj();
 end_time = $TIME();
 copy_time = end_time - start_time;
 
@@ -172,7 +172,7 @@ ref_c.count = 3;
 "Basic reference semantics test completed.".echo();
 "Key observations:".echo();
 "- Direct assignment creates references".echo();
-"- .list() creates copies".echo();
+"- .gobj() creates copies".echo();
 "- References allow mutation of original".echo();
 "- Copies provide isolation".echo();
 "- Performance difference between reference and copy".echo();

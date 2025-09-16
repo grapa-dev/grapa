@@ -31,7 +31,7 @@ This document provides a comprehensive analysis of the current Grapa language fe
 
 ### Syntax Ergonomics
 - **String Interpolation**: No string interpolation (use concatenation: `"Hello " + name`)
-- **Property Access**: No attribute-style access for dict/list keys (use `[]` or dot notation for $LIST/$OBJ)
+- **Property Access**: No attribute-style access for dict/list keys (use `[]` or dot notation for $GOBJ/$OBJ)
 - **Semicolons**: All statements and blocks must end with a semicolon (`;`)
 - **Boolean Logic**: No implicit truthy/falsy; use explicit boolean checks
 - **Regular Expressions**: No regex as first-class objects (use `.grep()` for pattern matching)
@@ -122,7 +122,7 @@ while (i < 10) {
 
 /* Property access */
 data = [1, 2, 3];
-value = data.get(0);  /* For $LIST/$OBJ */
+value = data.get(0);  /* For $GOBJ/$OBJ */
 file_data = $file("data.txt").get("content");  /* For $file/$TABLE */
 ```
 

@@ -232,7 +232,7 @@ sys_type_array = $sys().type([1,2,3]);
 ("$sys().type('test'): " + sys_type_result + " (expected: $STR)\n").echo();
 ("$sys().type(123): " + sys_type_int + " (expected: $INT)\n").echo();
 ("$sys().type(3.14): " + sys_type_float + " (expected: $FLOAT)\n").echo();
-("$sys().type([1,2,3]): " + sys_type_array + " (expected: $ARRAY)\n").echo();
+("$sys().type([1,2,3]): " + sys_type_array + " (expected: $LIST)\n").echo();
 
 "---\n".echo();
 

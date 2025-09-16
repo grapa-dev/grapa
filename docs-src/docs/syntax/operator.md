@@ -682,7 +682,7 @@ str ++= " world";         /* str becomes "hello world" */
 
 /* Vector extension (++=) now works correctly for 2D vectors */
 /* For 1D vectors, use array conversion: */
-/* vec1.array() + vec2.array() then convert back to vector */
+/* vec1.list() + vec2.list() then convert back to vector */
 ```
 
 ### Dot Product (`.*`)

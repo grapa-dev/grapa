@@ -70,8 +70,8 @@ Grapa's type system is built around several core types:
 - **$TIME**: Time values
 
 ### Composite Types
-- **$ARRAY**: Dynamic arrays
-- **$LIST**: Linked lists
+- **$LIST**: Dynamic arrays
+- **$GOBJ**: Linked lists
 - **$VECTOR**: Mathematical vectors
 - **$TABLE**: Database tables
 - **$XML**: XML documents

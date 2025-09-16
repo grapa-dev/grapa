@@ -73,7 +73,7 @@ The `$py()` object automatically handles bidirectional type conversion:
 | `$FLOAT` | `float` | Direct conversion |
 | `$STR` | `str` | UTF-8 string |
 | `$BOOL` | `bool` | True/false values |
-| `$ARRAY` | `list` | Element-by-element conversion |
+| `$LIST` | `list` | Element-by-element conversion |
 | `$GOBJ` | `dict` | Key-value pairs |
 | `$TUPLE` | `tuple` | Element-by-element conversion |
 | `$RAW` | `bytes` | Binary data |
@@ -87,7 +87,7 @@ The `$py()` object automatically handles bidirectional type conversion:
 | `float` | `$FLOAT` | Direct conversion |
 | `str` | `$STR` | UTF-8 string |
 | `bool` | `$BOOL` | True/false values |
-| `list` | `$ARRAY` | Element-by-element conversion |
+| `list` | `$LIST` | Element-by-element conversion |
 | `dict` | `$GOBJ` | Key-value pairs |
 | `tuple` | `$TUPLE` | Element-by-element conversion |
 | `bytes` | `$RAW` | Binary data |
@@ -180,7 +180,7 @@ result = safe_python("2 + 2");  /* Returns: 4 */
 $this.python_rule = rule 
       $INT $INT {op(a:$1,b:$2) {$py().eval("a + b", {"a":a,"b":b});}}
     | $STR      {op(s:$1)      {$py().eval("s.upper()", {"s":s});}}
-    | $ARRAY    {op(arr:$1)    {$py().eval("sum(arr)", {"arr":arr});}}
+    | $LIST    {op(arr:$1)    {$py().eval("sum(arr)", {"arr":arr});}}
     ;
 
 /* Use the rule */

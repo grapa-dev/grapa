@@ -2,12 +2,12 @@
 
 ## Overview
 
-Grapa implements a sophisticated bidirectional conversion system between `$ARRAY` and `$VECTOR` types to provide users with seamless interoperability while leveraging the optimal capabilities of each type.
+Grapa implements a sophisticated bidirectional conversion system between `$LIST` and `$VECTOR` types to provide users with seamless interoperability while leveraging the optimal capabilities of each type.
 
 ## Core Principle
 
 **Arrays and vectors are conceptually similar but optimized for different use cases:**
-- `$ARRAY`: General-purpose collections, flexible indexing, mixed types
+- `$LIST`: General-purpose collections, flexible indexing, mixed types
 - `$VECTOR`: Mathematical operations, linear algebra, homogeneous numeric data
 
 **The conversion system allows:**
@@ -299,7 +299,7 @@ The `Aop` system can be extended for:
 [1,2,3] * [op(x){x*2}] == [2,4,6]
 
 // Bidirectional conversion
-array.vector().array() == array
+array.vector().list() == array
 
 // Error handling
 ["a","b"] * 2  // Should return $ERR

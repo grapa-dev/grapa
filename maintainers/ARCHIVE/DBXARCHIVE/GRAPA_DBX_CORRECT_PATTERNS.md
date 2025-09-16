@@ -192,7 +192,7 @@ if (result.type() == $ERR) {
 ```
 
 ### Error Types
-- `$ERR` type: Contains error details as `$LIST`
+- `$ERR` type: Contains error details as `$GOBJ`
 - Storage type detection errors: Invalid URLs fall back to `FILESYSTEM`
 - Field operation errors: `FindRecordField` failures need investigation
 

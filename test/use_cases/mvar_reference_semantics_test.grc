@@ -23,7 +23,7 @@ ref1.a = 999;
 "Original modified by reference: " + (large_data.a == 999).echo();
 
 // Test explicit copy
-copy1 = large_data.list();
+copy1 = large_data.gobj();
 copy1.b = 888;
 
 // Check if original is NOT modified (copy behavior)
@@ -78,7 +78,7 @@ ref_time = end_time - start_time;
 
 // Test explicit copy
 start_time = $TIME();
-copy_big = big_object.list();
+copy_big = big_object.gobj();
 end_time = $TIME();
 copy_time = end_time - start_time;
 
@@ -99,7 +99,7 @@ scope_test = op() {
     global_var.counter += 1;
     
     // Modify local copy
-    local_copy = local_var.list();
+    local_copy = local_var.gobj();
     local_copy.counter += 1;
     
     {global: global_var.counter, local: local_var.counter, copy: local_copy.counter};
@@ -121,7 +121,7 @@ array_ref[2] = 999;
 "Array reference modifies original: " + (original_array[2] == 999).echo();
 
 // Test array copy behavior
-array_copy = original_array.list();
+array_copy = original_array.gobj();
 array_copy[3] = 888;
 
 "Array copy does NOT modify original: " + (original_array[3] == 4).echo();
@@ -147,7 +147,7 @@ deep_ref.value = "modified";
 "Deep reference modifies original: " + (nested.level1.level2.level3.value == "modified").echo();
 
 // Test deep copy
-deep_copy = nested.list();
+deep_copy = nested.gobj();
 deep_copy.level1.level2.level3.value = "copied";
 
 "Deep copy does NOT modify original: " + (nested.level1.level2.level3.value == "modified").echo();
@@ -199,7 +199,7 @@ ref_perf = end_time - start_time;
 
 // Test copy assignment performance
 start_time = $TIME();
-copy_complex = complex_data.list();
+copy_complex = complex_data.gobj();
 end_time = $TIME();
 copy_perf = end_time - start_time;
 
@@ -222,7 +222,7 @@ reference.obj.x = 999;
 "Original object modified through reference: " + (original.obj.x == 999).echo();
 
 // Test that mutations through copies do NOT affect original
-copy = original.list();
+copy = original.gobj();
 copy.list.push(5);
 copy.obj.y = 888;
 

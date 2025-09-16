@@ -133,7 +133,7 @@ export class GrapaLanguageProvider implements
         { label: '$STR', kind: vscode.CompletionItemKind.Class, detail: 'Data type', documentation: 'String type' },
         { label: '$INT', kind: vscode.CompletionItemKind.Class, detail: 'Data type', documentation: 'Integer type' },
         { label: '$FLOAT', kind: vscode.CompletionItemKind.Class, detail: 'Data type', documentation: 'Float type' },
-        { label: '$LIST', kind: vscode.CompletionItemKind.Class, detail: 'Data type', documentation: 'List/Array type' },
+        { label: '$GOBJ', kind: vscode.CompletionItemKind.Class, detail: 'Data type', documentation: 'List/Array type' },
         { label: '$JSON', kind: vscode.CompletionItemKind.Class, detail: 'Data type', documentation: 'JSON object type' },
         { label: '$file', kind: vscode.CompletionItemKind.Class, detail: 'Data type', documentation: 'File type' },
         { label: '$sys', kind: vscode.CompletionItemKind.Class, detail: 'Data type', documentation: 'System type' },

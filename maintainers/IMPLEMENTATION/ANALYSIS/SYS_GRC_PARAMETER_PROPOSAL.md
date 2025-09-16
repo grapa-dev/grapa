@@ -14,7 +14,7 @@ This document proposes improved parameter names for methods in `$sys.grc` that c
 
 **Rationale:** Based on C++ implementation analysis:
 - `GrapaLibraryParam r1(vScriptExec, pNameSpace, pInput ? pInput->Head(0) : NULL);` (b) → The object whose type to determine
-- The method returns the type name as a string (e.g., "$INT", "$STR", "$ARRAY", etc.)
+- The method returns the type name as a string (e.g., "$INT", "$STR", "$LIST", etc.)
 
 ### 2. describe(b)
 **Current parameters:**

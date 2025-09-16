@@ -582,7 +582,7 @@ g.eval("net.connect('example.com', 80)")  # Connection persists across calls
 
 | Type Category | Examples | Serialization | Persistence Method |
 |---------------|----------|---------------|-------------------|
-| **✅ Serializable** | `$INT`, `$FLOAT`, `$STR`, `$ARRAY`, `$LIST`, `$BOOL` | Can be passed between calls | Direct assignment or return values |
+| **✅ Serializable** | `$INT`, `$FLOAT`, `$STR`, `$LIST`, `$GOBJ`, `$BOOL` | Can be passed between calls | Direct assignment or return values |
 | **❌ Non-Serializable** | `$file`, `$net`, `$TABLE`, database connections, network connections | Cannot be serialized | Must use `$global` storage |
 | **⚡ Large Values** | Large `$INT`/`$FLOAT` (5000+ bits) | Can be serialized but inefficient | Use `$global` or `$RAW` for efficiency |
 

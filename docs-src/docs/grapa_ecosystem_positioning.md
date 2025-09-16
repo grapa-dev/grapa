@@ -154,7 +154,7 @@ arr.b[0].p[0] = "New Content";  /* Modify embedded content */
 
 /* XML to LIST conversion */
 xml = <root><item>1</item><item>2</item></root>;
-list = xml.list();  /* Convert to LIST structure */
+list = xml.gobj();  /* Convert to LIST structure */
 
 /* Unified dot notation across all types */
 data = {json:{users:[...]}, xml:<config>...</config>};
@@ -611,7 +611,7 @@ Grapa possesses unique capabilities that modern languages cannot match (or provi
 - **Database integration** - Native table operations (ROW, COL, GROUP)
 - **File system navigation** - Unified path system for files and databases
 - **ETL pipelines** - Built-in data transformation capabilities
-- **XML/LIST integration** - Seamless embedding, unified dot notation, and `.list()` conversion
+- **XML/LIST integration** - Seamless embedding, unified dot notation, and `.gobj()` conversion
 
 #### **5. Execution Tree Metaprogramming**
 - **Core language as execution trees** - Grapa's fundamental representation is human-readable execution trees

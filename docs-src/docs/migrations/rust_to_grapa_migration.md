@@ -4,7 +4,7 @@
 >
 > | Type      | .get("key") | .get(index) | Bracket Notation | Dot Notation |
 > |-----------|:-----------:|:-----------:|:----------------:|:------------:|
-> | $ARRAY    |      ✓      |     ✓      |       ✓         |     ✓       |
+> | $LIST    |      ✓      |     ✓      |       ✓         |     ✓       |
 > | $GOBJ     |      ✓      |     ✓      |       ✓         |     ✓       |
 > | $file     |      ✓      |     ✓      |       ✓         |     ✓       |
 > | $TABLE    |     ✓*      |     ✓      |       ✓         |     ✓       |
@@ -12,7 +12,7 @@
 > *$TABLE .get() requires two arguments: key and field.
 >
 > - For $GOBJ and $OBJ, use bracket notation, dot notation, or .get() methods (e.g., obj["key"], obj.key, obj.get("key")).
-> - For $ARRAY, use bracket notation, dot notation, or .get() methods (e.g., arr[1], arr.get(1)).
+> - For $LIST, use bracket notation, dot notation, or .get() methods (e.g., arr[1], arr.get(1)).
 > - $file and $TABLE support .getfield() and .setfield() for field access.
 > - This is based on direct testing in Grapa v0.0.39.
 
@@ -56,7 +56,7 @@ This guide helps Rust users transition to Grapa by mapping common Rust idioms, p
 >
 > **Nullish Coalescing:** For providing default values, use `value.ifnull("default")` instead of Rust's `unwrap_or()` or `?` operator. The `.ifnull()` method treats a broader range of values as nullish (including zeros, empty collections, and errors).
 
-> **Note:** `.get()/.set()` is for `$file` operations. `.getfield("key")` is for `$TABLE` with named keys. `.get()/.set()` is for `$WIDGET`. For `$GOBJ`/`$OBJ`, use `obj["key"]`, `obj.key`, or `obj."key"`. For `$ARRAY`, use `arr[index]` (bracket notation only).
+> **Note:** `.get()/.set()` is for `$file` operations. `.getfield("key")` is for `$TABLE` with named keys. `.get()/.set()` is for `$WIDGET`. For `$GOBJ`/`$OBJ`, use `obj["key"]`, `obj.key`, or `obj."key"`. For `$LIST`, use `arr[index]` (bracket notation only).
 
 ## Access Patterns: Objects, Lists, Arrays, Files, and Tables
 
@@ -79,7 +79,7 @@ name = obj.getname(1);  /* Returns "b" (key name at index 1) */
 - Dot notation (`obj.key`) and bracket notation (`obj["key"]`) are both valid for $GOBJ/$OBJ.
 - `.get()` is NOT valid for $GOBJ/$OBJ.
 
-### $ARRAY
+### $LIST
 
 ```grapa
 arr = [10, 20, 30];
@@ -88,8 +88,8 @@ value = arr[1];         /* Returns 20 */
 /* Note: .get(index) is now supported for arrays - can use bracket notation or .get() */
 ```
 
-- Use bracket notation, `.get(index)`, or dot notation for $ARRAY.
-- `.get("key")` is now supported for $ARRAY when accessing by key.
+- Use bracket notation, `.get(index)`, or dot notation for $LIST.
+- `.get("key")` is now supported for $LIST when accessing by key.
 
 ### $file
 
@@ -117,7 +117,7 @@ value = table.get("user1", "name");   /* Correct */
 > **Reference Table:**
 > | Type      | .get("key") | .get(index) | Bracket Notation | Dot Notation |
 > |-----------|:-----------:|:-----------:|:----------------:|:------------:|
-> | $ARRAY    |      ✓      |     ✓      |       ✓         |     ✓       |
+> | $LIST    |      ✓      |     ✓      |       ✓         |     ✓       |
 > | $GOBJ     |      ✓      |     ✓      |       ✓         |     ✓       |
 > | $file     |      ✓      |     ✓      |       ✓         |     ✓       |
 > | $TABLE    |     ✓*      |     ✓      |       ✓         |     ✓       |
@@ -259,8 +259,8 @@ This is a handy workaround until Grapa adds a native `.match()` method.
 
 > **Clarification on .get() Usage:**
 > - `.get()` is **required** for `$file` and `$TABLE` access.
-> - `.get()` is **not supported** for `$ARRAY`, `$GOBJ`, or `$OBJ` as of this writing.
-> - Use bracket and dot notation for `$ARRAY`, `$GOBJ`, and `$OBJ`.
+> - `.get()` is **not supported** for `$LIST`, `$GOBJ`, or `$OBJ` as of this writing.
+> - Use bracket and dot notation for `$LIST`, `$GOBJ`, and `$OBJ`.
 > - If more objects support `.get()` in the future, this guide will be updated. 
 
 > **Comment Style:**
@@ -389,7 +389,7 @@ Grapa's unified data structure approach is superior to Rust's specialized collec
 
 - **Sets**: Use `.unique()` method on arrays: `[1, 2, 1, 3, 2].unique()` → `[1, 2, 3]`
 - **Maps**: Use `$GOBJ` objects: `{key1: "value1", key2: "value2"}`
-- **Vectors**: Use `$ARRAY` with dynamic operations: `arr += new_element`
+- **Vectors**: Use `$LIST` with dynamic operations: `arr += new_element`
 - **HashMaps**: Use `$GOBJ` objects with key-value pairs
 - **Iterators**: Use functional methods (`.map()`, `.filter()`, `.reduce()`) which are thread-safe and parallel
 
@@ -415,7 +415,7 @@ sum = numbers.reduce(op(a, b) { a + b }, 0);      /* Sequential reduction */
 **Advantages over Rust's Collections:**
 - **Unified syntax** across all data types
 - **Parallel processing** built into functional methods
-- **Cross-format compatibility** (works on `$ARRAY`, `$GOBJ`, `$OBJ`, `$XML`, etc.)
+- **Cross-format compatibility** (works on `$LIST`, `$GOBJ`, `$OBJ`, `$XML`, etc.)
 - **Simpler learning curve** - fewer specialized types to learn
 - **Better performance** - optimized for Grapa's execution model
 - **No ownership complexity** - automatic memory management

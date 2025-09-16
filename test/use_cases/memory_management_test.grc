@@ -93,7 +93,7 @@ complex_type_check = op(value) {
         "Integer: " + value;
     } else if (value.type() == $STR) {
         "String: " + value;
-    } else if (value.type() == $ARRAY) {
+    } else if (value.type() == $LIST) {
         "Array with " + value.len() + " elements";
     } else if (value.type() == $GOBJ) {
         "List with " + value.keys().len() + " keys";
@@ -142,7 +142,7 @@ null_results = null_tests.map(op(value) {
         "NULL value";
     } else if (value.type() == $STR && value.len() == 0) {
         "Empty string";
-    } else if (value.type() == $ARRAY && value.len() == 0) {
+    } else if (value.type() == $LIST && value.len() == 0) {
         "Empty array";
     } else if (value.type() == $GOBJ && value.keys().len() == 0) {
         "Empty object";

@@ -18,7 +18,7 @@ keys = op(lst){lst.reduce(op(acc,x){if(x.type()==$GOBJ){acc += keys(x);}else{acc
 extract_headers = op(csv_string) {
     keys = op(lst){lst.reduce(op(acc,x){if(x.type()==$GOBJ){acc += keys(x);}else{acc += 'x'.getname();}},[]);};
     vec = csv_string.vector();
-    arr = vec.array();
+    arr = vec.list();
     first = arr[0];
     keys(first);
 };
@@ -42,7 +42,7 @@ if (vec1 != null) {
     ("Headers: " + headers).echo();
     
     /* Test data access */
-    arr = vec1.array();
+    arr = vec1.list();
     first = arr[0];
     ("First row Name: " + first.Name).echo();
     ("First row Age: " + first.Age).echo();
@@ -68,7 +68,7 @@ if (vec2 != null) {
     ("Headers: " + headers).echo();
     
     /* Test data access */
-    arr = vec2.array();
+    arr = vec2.list();
     first = arr[0];
     ("First row Name: " + first.Name).echo();
     ("First row Value: " + first.Value).echo();
@@ -94,7 +94,7 @@ if (vec3 != null) {
     ("Headers: " + headers).echo();
     
     /* Test data access */
-    arr = vec3.array();
+    arr = vec3.list();
     first = arr[0];
     ("First row Naïve: " + first.Naïve).echo();
     ("First row Café: " + first.Café).echo();
@@ -120,7 +120,7 @@ if (vec4 != null) {
     ("Headers: " + headers).echo();
     
     /* Test data access */
-    arr = vec4.array();
+    arr = vec4.list();
     first = arr[0];
     ("First row Имя: " + first.Имя).echo();
     ("First row Возраст: " + first.Возраст).echo();
@@ -146,7 +146,7 @@ if (vec5 != null) {
     ("Headers: " + headers).echo();
     
     /* Test data access */
-    arr = vec5.array();
+    arr = vec5.list();
     first = arr[0];
     ("First row Name: " + first.Name).echo();
     ("First row Naïve: " + first.Naïve).echo();
@@ -172,7 +172,7 @@ if (vec6 != null) {
     ("Headers: " + headers).echo();
     
     /* Test data access */
-    arr = vec6.array();
+    arr = vec6.list();
     first = arr[0];
     ("First row 姓名: " + first.姓名).echo();
     ("First row 年齢: " + first.年齢).echo();
@@ -204,7 +204,7 @@ if (vec7 != null) {
     ("Fourth header: " + headers[3]).echo();
     
     /* Test data access by header names */
-    arr = vec7.array();
+    arr = vec7.list();
     first = arr[0];
     ("Product: " + first.Product).echo();
     ("Q1: " + first.Q1).echo();
@@ -238,7 +238,7 @@ if (vec9 != null) {
     headers = extract_headers(single_col_csv);
     ("Single column headers: " + headers).echo();
     
-    arr = vec9.array();
+    arr = vec9.list();
     first = arr[0];
     ("First row Name: " + first.Name).echo();
 }
@@ -252,7 +252,7 @@ if (vec10 != null) {
     headers = extract_headers(long_headers_csv);
     ("Long headers: " + headers).echo();
     
-    arr = vec10.array();
+    arr = vec10.list();
     first = arr[0];
     ("First row VeryLongHeaderNameForTestingPurposes: " + first.VeryLongHeaderNameForTestingPurposes).echo();
 }
@@ -301,7 +301,7 @@ if (vec12 != null) {
     ("Vector shape: " + vec12.shape()).echo();
     
     /* Test array conversion still works */
-    arr = vec12.array();
+    arr = vec12.list();
     ("Array conversion: " + arr).echo();
     
     /* Test header extraction works */

@@ -2,7 +2,7 @@
 
 ## Overview
 
-Grapa implements a unified dot notation system that provides consistent access patterns across multiple data types including `$LIST`, `$ARRAY`, `$XML`, `$TAG`, and other complex structures. This system is implemented through the `search` rule in `$grapa.grc` and the `GrapaLibraryRuleSearchEvent` class in C++.
+Grapa implements a unified dot notation system that provides consistent access patterns across multiple data types including `$GOBJ`, `$LIST`, `$XML`, `$TAG`, and other complex structures. This system is implemented through the `search` rule in `$grapa.grc` and the `GrapaLibraryRuleSearchEvent` class in C++.
 
 ## Grammar Definition
 
@@ -37,7 +37,7 @@ Grapa implements a unified dot notation system that provides consistent access p
 case GrapaTokenType::ARRAY:
     q = (GrapaRuleQueue*)item->vQueue;
     if (item->vClass == NULL)
-        item->vClass = vScriptExec->vScriptState->GetClass(pNameSpace, GrapaCHAR("$ARRAY"));
+        item->vClass = vScriptExec->vScriptState->GetClass(pNameSpace, GrapaCHAR("$LIST"));
     c = item->vClass;
     root = item;
     break;
@@ -48,7 +48,7 @@ case GrapaTokenType::ARRAY:
 case GrapaTokenType::LIST:
     q = (GrapaRuleQueue*)item->vQueue;
     if (item->vClass == NULL)
-        item->vClass = vScriptExec->vScriptState->GetClass(pNameSpace, GrapaCHAR("$LIST"));
+        item->vClass = vScriptExec->vScriptState->GetClass(pNameSpace, GrapaCHAR("$GOBJ"));
     c = item->vClass;
     root = item;
     break;
@@ -76,7 +76,7 @@ case GrapaTokenType::TAG:
 
 **Location**: `source/grapa/GrapaObject.cpp` - `GrapaObjectQueue::SearchCase()`
 
-**Search Algorithm**: The property resolution system searches through `$LIST` objects in **reverse order** (tail to head):
+**Search Algorithm**: The property resolution system searches through `$GOBJ` objects in **reverse order** (tail to head):
 
 ```cpp
 GrapaObjectEvent* GrapaObjectQueue::SearchCase(const GrapaCHAR& pName, s64& pIndex, bool pLower)
@@ -121,7 +121,7 @@ obj2.c;    // Returns 4 (only value)
 
 ### XML/HTML Internal Representation
 
-XML and HTML in Grapa use the same internal structure as JSON (`$LIST`/`$ARRAY`), but with special handling for:
+XML and HTML in Grapa use the same internal structure as JSON (`$GOBJ`/`$LIST`), but with special handling for:
 
 1. **Element Hierarchy**: XML elements are stored as nested structures
 2. **Attribute Storage**: Attributes are stored as key-value pairs within elements
@@ -129,7 +129,7 @@ XML and HTML in Grapa use the same internal structure as JSON (`$LIST`/`$ARRAY`)
 
 ### XML to LIST Conversion
 
-The `.list()` method provides direct conversion from XML to LIST format:
+The `.gobj()` method provides direct conversion from XML to LIST format:
 
 **Implementation**: `GrapaLibraryRuleListEvent::Run` (lines 15471-15509)
 ```cpp
@@ -153,7 +153,7 @@ case GrapaTokenType::ERR:
 **Usage**:
 ```grapa
 xml = <user><name>Alice</name><age>30</age></user>;
-list = xml.list();  /* Convert XML to LIST */
+list = xml.gobj();  /* Convert XML to LIST */
 ```
 
 ### XML and LIST Integration
@@ -388,7 +388,7 @@ The `.unique()` function was enhanced to properly handle duplicate keys in objec
 **Method:** `GrapaLibraryRuleUniqueEvent::Run` (lines 8336-8450)
 
 **Key Changes:**
-- **Post-Processing Approach**: Added special post-processing logic for `$LIST` and `$OBJ` types
+- **Post-Processing Approach**: Added special post-processing logic for `$GOBJ` and `$OBJ` types
 - **Sort Preservation**: Kept existing sort logic unchanged to avoid impacting `.sort()` behavior
 - **Reverse Traversal**: Post-processing traverses sorted items in reverse order to keep last occurrences
 - **Type-Specific Logic**: Different behavior for objects (key-based) vs lists (value-based)
@@ -442,7 +442,7 @@ if (result->mValue.mToken == GrapaTokenType::LIST || result->mValue.mToken == Gr
 - Consistent with property access "last value wins" behavior
 - Example: `{a:1, b:2, a:3, c:4, b:5}.unique()` → `{"a":3, "b":5, "c":4}`
 
-**For Lists (`$LIST`):**
+**For Lists (`$GOBJ`):**
 - Removes duplicate values, keeping the last occurrence of each value
 - Works with mixed data types
 - Example: `[1, 2, 1, 3, 2, 4].unique()` → `[1, 2, 3, 4]`

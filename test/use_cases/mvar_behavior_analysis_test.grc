@@ -33,7 +33,7 @@ arr_ref[2] = 999;
 "--- Analysis 3: Copy Behavior ---".echo();
 
 obj2 = {x: 10, y: 20};
-copy2 = obj2.list();
+copy2 = obj2.gobj();
 copy2.x = 888;
 
 "obj2.x: " + obj2.x.echo();
@@ -86,7 +86,7 @@ ref_b.count = 2;
 
 "Based on the analysis:".echo();
 "1. Direct assignment (obj1 = obj2) creates references".echo();
-"2. Explicit copy (.list()) creates isolated copies".echo();
+"2. Explicit copy (.gobj()) creates isolated copies".echo();
 "3. Function parameters are passed by reference".echo();
 "4. Nested object access preserves references".echo();
 "5. Multiple references to same object work correctly".echo();

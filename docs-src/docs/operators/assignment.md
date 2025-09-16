@@ -78,7 +78,7 @@ Add item to source.
 
 ### Array/List Addition
 
-**Arrays (`$ARRAY`):**
+**Arrays (`$LIST`):**
 ```grapa
 arr = [1, 2, 3, 4, 5];
 arr += 6;                 /* Add element to end: [1,2,3,4,5,6] */
@@ -128,7 +128,7 @@ The `++=` operator supports two syntax variations:
 
 ### Array/List Concatenation
 
-**Arrays (`$ARRAY`):**
+**Arrays (`$LIST`):**
 ```grapa
 arr1 = [1, 2, 3];
 arr2 = [4, 5, 6];
@@ -152,13 +152,13 @@ list1 ++= list2 list1[0];  /* Insert at beginning: {"c":3,"d":4,"a":1,"b":2} */
 /* For 1D vectors - convert to array, concatenate, convert back */
 vec1 = #[1, 2, 3]#;
 vec2 = #[4, 5, 6]#;
-result = vec1.array() + vec2.array();  /* [1,2,3,4,5,6] */
+result = vec1.list() + vec2.list();  /* [1,2,3,4,5,6] */
 vec_result = result.vector();          /* #[1,2,3,4,5,6]# */
 
 /* For 2D vectors - use array conversion */
 matrix1 = #[[1,2],[3,4]]#;
 matrix2 = #[[5,6],[7,8]]#;
-result = matrix1.array() + matrix2.array();  /* [[1,2],[3,4],[5,6],[7,8]] */
+result = matrix1.list() + matrix2.list();  /* [[1,2],[3,4],[5,6],[7,8]] */
 matrix_result = result.vector();             /* #[[1,2],[3,4],[5,6],[7,8]]# */
 ```
 
@@ -185,7 +185,7 @@ Subtract item from source.
 
 ### Array/List Removal
 
-**Arrays (`$ARRAY`):**
+**Arrays (`$LIST`):**
 ```grapa
 arr = [1, 2, 3, 4, 5];
 arr -= arr[2];   /* Remove by index: [1,2,4,5] */

@@ -1,6 +1,6 @@
 /* Test .get() compatibility for various Grapa types */
 
-"=== $ARRAY ===\n".echo();
+"=== $LIST ===\n".echo();
 my_arr = ["a", "b", "c"];
 ("my_arr.getfield(1): " + my_arr.getfield(1).str() + "\n").echo();
 ("my_arr[1]: " + my_arr[1].str() + "\n").echo();

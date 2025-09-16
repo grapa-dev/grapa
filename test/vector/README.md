@@ -57,7 +57,7 @@ Based on benchmark results, Grapa's vector operations show the following charact
 
 ### General Best Practices
 - Use `.vector()` for mathematical operations
-- Use `.array()` for general data manipulation
+- Use `.list()` for general data manipulation
 - Profile memory usage for long-running operations
 - Use appropriate data types (INT vs FLOAT)
 

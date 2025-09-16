@@ -548,8 +548,8 @@ table = $TABLE().create("users", {
 });
 
 /* Collection operations */
-numbers = $ARRAY().create(100);  // Fixed-size array
-names = $LIST().create();        // Dynamic list
+numbers = $LIST().create(100);  // Fixed-size array
+names = $GOBJ().create();        // Dynamic list
 config = $XML().parse(xml_data); // XML parsing
 
 /* Time operations with unlimited precision */

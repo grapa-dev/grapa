@@ -133,7 +133,7 @@ Returns the type of an object.
 ```grapa
 'hello'.type();    /* $STR */
 123.type();        /* $INT */
-[1,2,3].type();    /* $ARRAY */
+[1,2,3].type();    /* $LIST */
 {name:'Alice'}.type(); /* $GOBJ */
 ```
 

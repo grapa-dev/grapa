@@ -138,7 +138,7 @@ switch(arr:[1,2,3,4,5]) {
 switch (true) {
     case (data.type() == $STR): "String data".echo();
     case (data.type() == $INT): "Integer data".echo();
-    case (data.type() == $ARRAY): "Array data".echo();
+    case (data.type() == $LIST): "Array data".echo();
     case (data.type() == $GOBJ): "List data".echo();
     default: "Other data type".echo();
 };
@@ -184,7 +184,7 @@ try {
 /* Nested object with explicit copy - works correctly */
 try {
     user = {name: 'Alice', age: 30};
-    throw (err:{user: user.list()});
+    throw (err:{user: user.gobj()});
 } {
     default: ('User name: ' + err.user.name).echo();
 }
@@ -198,7 +198,7 @@ try {
 }
 ```
 
-**Note**: Local variable references in thrown objects are now automatically preserved. The `.list()` method is no longer required for reliable binding.
+**Note**: Local variable references in thrown objects are now automatically preserved. The `.gobj()` method is no longer required for reliable binding.
 
 ### Multiple Catch Blocks
 ```grapa

@@ -33,8 +33,8 @@ XML (GrapaTokenType::XML = 7)
 
 #### **Class Definitions**
 ```grapa
-@global["$XML"] = class ($ARRAY) {
-    // XML inherits from $ARRAY for collection behavior
+@global["$XML"] = class ($LIST) {
+    // XML inherits from $LIST for collection behavior
 };
 
 @global["$EL"] = class ($XML) {

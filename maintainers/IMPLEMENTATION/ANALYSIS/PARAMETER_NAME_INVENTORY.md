@@ -139,7 +139,7 @@ Notes:
 ---
 
 ## Other class files (no parameterized methods or trivial wrappers)
-- $ARRAY.grc, $LIST.grc, $STR.grc, $INT.grc, $FLOAT.grc, $TIME.grc, $TABLE.grc, $XML.grc, $TAG.grc, $EL.grc, $ERR.grc, $SYSINT.grc, $SYSID.grc, $ID.grc, $RULE.grc, $grapa.grc
+- $LIST.grc, $GOBJ.grc, $STR.grc, $INT.grc, $FLOAT.grc, $TIME.grc, $TABLE.grc, $XML.grc, $TAG.grc, $EL.grc, $ERR.grc, $SYSINT.grc, $SYSID.grc, $ID.grc, $RULE.grc, $grapa.grc
 
 Notes:
 - Either no methods, or methods without parameters, or inherited only.

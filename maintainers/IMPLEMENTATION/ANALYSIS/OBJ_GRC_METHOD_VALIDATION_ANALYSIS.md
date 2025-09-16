@@ -73,7 +73,7 @@ case GrapaTokenType::XML:
 "Hello".lrot(2);      /* Returns: {"error":-1} */
 ```
 
-**Issue**: Our test used a simple string, but rotation methods work with complex data types (`$ARRAY` with `[]`, `$LIST` with `{}`, `$TUPLE`, `$XML`) that have a `vQueue`.
+**Issue**: Our test used a simple string, but rotation methods work with complex data types (`$LIST` with `[]`, `$GOBJ` with `{}`, `$TUPLE`, `$XML`) that have a `vQueue`.
 
 ### FindAll Method (`.findall()`)
 
@@ -112,7 +112,7 @@ array_data.findall({has:{name:"name"}});
 "Hello, World!".findall("o");  /* Returns: {"error":-1} */
 ```
 
-**Issue**: Our test used a simple string, but `findall()` works with complex data structures (`$XML`, `$LIST` with `{}`, `$ARRAY` with `[]`) that have proper `vQueue` support and uses specific query patterns like `{has:{name:"key"}}` for lists/arrays.
+**Issue**: Our test used a simple string, but `findall()` works with complex data structures (`$XML`, `$GOBJ` with `{}`, `$LIST` with `[]`) that have proper `vQueue` support and uses specific query patterns like `{has:{name:"key"}}` for lists/arrays.
 
 ### Diagonal Method (`.diagonal()`)
 
@@ -314,14 +314,14 @@ All methods that were working before the parameter name changes are still workin
 - **Utilities**: `echo()`, `iferr()`, `exec()` ✅
 
 ### **Methods That Work with Correct Data Types**
-- **String Rotation**: `$ARRAY.lrot()`, `$ARRAY.rrot()`, `$LIST.lrot()`, `$LIST.rrot()` ✅ (but not with strings)
-- **FindAll**: `$XML.findall()`, `$LIST.findall()`, `$ARRAY.findall()` ✅ (but not with simple strings)
+- **String Rotation**: `$LIST.lrot()`, `$LIST.rrot()`, `$GOBJ.lrot()`, `$GOBJ.rrot()` ✅ (but not with strings)
+- **FindAll**: `$XML.findall()`, `$GOBJ.findall()`, `$LIST.findall()` ✅ (but not with simple strings)
 - **Diagonal**: `matrix.diagonal()` ✅ (but not with simple arrays)
-- **Vector**: `$ARRAY.vector()` ✅
+- **Vector**: `$LIST.vector()` ✅
 
 **Grapa Data Type Terminology**:
-- **`$ARRAY`** = `[]` syntax (positional, no names, indexed by position)
-- **`$LIST`** = `{}` syntax (associative, with names/keys)
+- **`$LIST`** = `[]` syntax (positional, no names, indexed by position)
+- **`$GOBJ`** = `{}` syntax (associative, with names/keys)
 - **`$XML`** = `<tag>content</tag>` syntax (structured markup)
 
 ### **Methods That Still Fail (Expected)**

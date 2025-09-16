@@ -41,7 +41,7 @@ Based on the C++ code analysis and testing, the `mVar` field is designed to addr
 
 1. **Basic Reference Semantics**
    - Direct assignment creates references
-   - Explicit copy (`.list()`) creates isolated copies
+   - Explicit copy (`.gobj()`) creates isolated copies
    - References allow mutation of original data
    - Copies provide isolation from original data
 

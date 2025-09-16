@@ -1,12 +1,12 @@
 # Array and Vector Interoperability
 
-Grapa provides seamless interoperability between `$ARRAY` and `$VECTOR` types, automatically converting between them to leverage the best capabilities of each type while maintaining intuitive user behavior.
+Grapa provides seamless interoperability between `$LIST` and `$VECTOR` types, automatically converting between them to leverage the best capabilities of each type while maintaining intuitive user behavior.
 
 ## Overview
 
-While `$ARRAY` and `$VECTOR` are distinct types in Grapa, they work together transparently:
+While `$LIST` and `$VECTOR` are distinct types in Grapa, they work together transparently:
 
-- **`$ARRAY`**: General-purpose collections with flexible indexing and iteration
+- **`$LIST`**: General-purpose collections with flexible indexing and iteration
 - **`$VECTOR`**: Mathematical structures optimized for linear algebra operations
 
 The Grapa runtime automatically converts between these types when needed, allowing you to use mathematical operations on arrays and array-like operations on vectors without explicit conversion.
@@ -34,12 +34,12 @@ Arrays are automatically converted to vectors when:
 Vectors are converted back to arrays when:
 
 1. **Method Results**: Many vector methods return array results for consistency
-2. **Explicit Conversion**: Using the `.array()` method
+2. **Explicit Conversion**: Using the `.list()` method
 3. **User Expectations**: Operations that users expect to return arrays
 
 ```grapa
 vector = #[1,2,3,4]#            // Create vector
-array = vector.array()          // Explicit conversion
+array = vector.list()          // Explicit conversion
 reshaped = [1,2,3,4].reshape([2,2])  // Returns array, not vector
 ```
 
@@ -130,7 +130,7 @@ vector_result = array_data * [op(x){x*2}]  // Works transparently
 
 // Explicit conversions when needed
 vector = [1,2,3].vector()        // Array to vector
-array = #[1,2,3]#.array()        // Vector to array
+array = #[1,2,3]#.list()        // Vector to array
 ```
 
 ## Implementation Details for Users
@@ -143,7 +143,7 @@ array = #[1,2,3]#.array()        // Vector to array
 
 ### When to Use Each Type
 
-**Use `$ARRAY` when:**
+**Use `$LIST` when:**
 - General data manipulation and iteration
 - Mixed data types
 - Building collections dynamically
@@ -170,12 +170,12 @@ result = matrix.inv()  // Matrix inverse
 
 | Method | Input Type | Conversion | Output Type |
 |--------|------------|------------|-------------|
-| `.reshape()` | `$ARRAY` | → `$VECTOR` → | `$ARRAY` |
-| `.triu()` | `$ARRAY` | → `$VECTOR` → | `$ARRAY` |
-| `.tril()` | `$ARRAY` | → `$VECTOR` → | `$ARRAY` |
-| `.dot()` | `$ARRAY` | → `$VECTOR` → | `$ARRAY` |
-| Arithmetic ops | `$ARRAY` | → `$VECTOR` → | `$ARRAY` |
-| `.array()` | `$VECTOR` | → | `$ARRAY` |
+| `.reshape()` | `$LIST` | → `$VECTOR` → | `$LIST` |
+| `.triu()` | `$LIST` | → `$VECTOR` → | `$LIST` |
+| `.tril()` | `$LIST` | → `$VECTOR` → | `$LIST` |
+| `.dot()` | `$LIST` | → `$VECTOR` → | `$LIST` |
+| Arithmetic ops | `$LIST` | → `$VECTOR` → | `$LIST` |
+| `.list()` | `$VECTOR` | → | `$LIST` |
 
 ### Native Methods
 

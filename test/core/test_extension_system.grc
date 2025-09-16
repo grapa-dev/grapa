@@ -9,11 +9,11 @@ user_obj.echo();
 "Calling user method: ".echo();
 user_obj.custom_method("hello");
 
-/* Test 2: System class $ARRAY */
+/* Test 2: System class $LIST */
 "\n=== Testing System Class Extension ===".echo();
-$ARRAY += (test_method: op() { "System method called"; });
-"$ARRAY type: ".echo();
-$ARRAY.echo();
+$LIST += (test_method: op() { "System method called"; });
+"$LIST type: ".echo();
+$LIST.echo();
 
 /* Test 3: Try to use the method on an array instance */
 "\n=== Testing Array Instance ===".echo();

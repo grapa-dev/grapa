@@ -23,7 +23,7 @@ This document provides comprehensive implementation details for Grapa's type sys
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │                    Grapa Language Layer                     │
-│  $INT, $FLOAT, $STR, $ARRAY, $LIST, $TIME, etc.            │
+│  $INT, $FLOAT, $STR, $LIST, $GOBJ, $TIME, etc.            │
 ├─────────────────────────────────────────────────────────────┤
 │                   Type Checking Layer                       │
 │  Runtime type validation, conversion, safety               │

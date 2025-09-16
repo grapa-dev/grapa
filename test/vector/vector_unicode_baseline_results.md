@@ -14,13 +14,13 @@ The **header extraction functionality** works perfectly using the `keys()` funct
 
 ```grapa
 /* Define the keys function for header extraction */
-keys = op(lst){lst.reduce(op(acc,x){if(x.type()==$LIST){acc += keys(x);}else{acc += 'x'.getname();}},[]);};
+keys = op(lst){lst.reduce(op(acc,x){if(x.type()==$GOBJ){acc += keys(x);}else{acc += 'x'.getname();}},[]);};
 
 /* Extract headers from CSV vector */
 extract_headers = op(csv_string) {
-    keys = op(lst){lst.reduce(op(acc,x){if(x.type()==$LIST){acc += keys(x);}else{acc += 'x'.getname();}},[]);};
+    keys = op(lst){lst.reduce(op(acc,x){if(x.type()==$GOBJ){acc += keys(x);}else{acc += 'x'.getname();}},[]);};
     vec = csv_string.vector();
-    arr = vec.array();
+    arr = vec.list();
     first = arr[0];
     keys(first);
 };

@@ -3,19 +3,19 @@ tags:
   - user
   - highlevel
 ---
-# $ARRAY
+# $LIST
 References:
 - [$GOBJ object](gobj.md)
 - [$VECTOR object](vector.md)
 - [Array-Vector Interoperability](../advanced/array_vector_interoperability.md)
 
-**`$ARRAY`** = `[]` syntax (positional, no names, indexed by position)
+**`$LIST`** = `[]` syntax (positional, no names, indexed by position)
 
 A positional array that stores values without named keys. Elements are accessed by their position (index) rather than by name. This follows traditional C-style array terminology where arrays are indexed collections.
 
-### $ARRAY vs $GOBJ Comparison
+### $LIST vs $GOBJ Comparison
 
-| Feature | $ARRAY (`[]`) | $GOBJ (`{}`) |
+| Feature | $LIST (`[]`) | $GOBJ (`{}`) |
 |---------|---------------|--------------|
 | **Syntax** | `[1, 2, 3]` | `{a:1, b:2, c:3}` |
 | **Access** | `array[0]` or `array['key']` | `list.a` or `list["a"]` |
@@ -26,7 +26,7 @@ A positional array that stores values without named keys. Elements are accessed 
 
 **Note:** This differs from some other languages where `[]` is called a "list" and `{}` is called a "dictionary" or "object". Grapa follows traditional C terminology.
 
-Supports an offset search if the contents of the array are $ID or $STR or $ARRAY values.
+Supports an offset search if the contents of the array are $ID or $STR or $LIST values.
 ```
 > months = ["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"];
 > months["MAR"];
@@ -37,7 +37,7 @@ Supports an offset search if the contents of the array are $ID or $STR or $ARRAY
 -1
 ```
 
-If the elements are $ARRAY type, the first item of the array is used for the match.
+If the elements are $LIST type, the first item of the array is used for the match.
 ```
 > x = [["a",496],["b",964],["c",221]];
 > x."b";
@@ -61,7 +61,7 @@ If the elements are $GOBJ type with a "$KEY" field, the "$KEY" value is used for
 {"err":-1}
 ```
 
-There isn't currently built in support for searching for an $ARRAY or $GOBJ item within an $ARRAY. Currently, this would require an itterator to scan and compare, or the use of a hash of the contents as a key.
+There isn't currently built in support for searching for an $LIST or $GOBJ item within an $LIST. Currently, this would require an itterator to scan and compare, or the use of a hash of the contents as a key.
 
 ### Mathematical Operations
 
@@ -136,7 +136,7 @@ element = matrix[1][2];           /* 6 */
 
 #### Key-Based Access for $GOBJ Arrays
 
-When an `$ARRAY` contains `$GOBJ` items that have a `"$KEY"` field, you can access elements by their key value:
+When an `$LIST` contains `$GOBJ` items that have a `"$KEY"` field, you can access elements by their key value:
 
 ```grapa
 /* Example: File listing from $file().ls() */
@@ -423,7 +423,7 @@ arr ++= [88, 77] arr[0];  /* INSERT multiple at position 0: [88, 77, 1, 99, 2, 3
 
 ### **Key Differences from Vectors**
 
-| Behavior | `$ARRAY` | `$VECTOR` |
+| Behavior | `$LIST` | `$VECTOR` |
 |----------|----------|-----------|
 | **Out-of-bounds Get** | Returns `null` | Returns `$ERR` |
 | **Out-of-bounds Set** | **APPENDS** element | Returns `$ERR` |

@@ -43,7 +43,7 @@ if (attrList->Next() == NULL && root->mValue.mToken != GrapaTokenType::ERR)
 ### Type Restrictions
 The hack is limited to types that naturally support property assignment:
 - `$OBJ` - Objects
-- `$LIST` - Lists/Objects  
+- `$GOBJ` - Lists/Objects  
 - `$TAG` - Tagged objects
 
 Other types (primitives, system types) are excluded to prevent crashes from temporary object deletion.
@@ -58,4 +58,4 @@ Other types (primitives, system types) are excluded to prevent crashes from temp
 - `AddRawParameter()` - Creates the actual property in the target object
 
 ## Recent Fix
-The fix implemented in 2024 limits the hack to only `$OBJ`, `$LIST`, and `$TAG` types to prevent crashes from temporary object deletion on primitive and system types.
+The fix implemented in 2024 limits the hack to only `$OBJ`, `$GOBJ`, and `$TAG` types to prevent crashes from temporary object deletion on primitive and system types.

@@ -24,7 +24,7 @@ test_null = $sys().type(null);
 ("$sys().type(5): " + test_int + " (expected: $INT)\n").echo();
 ("$sys().type('hello'): " + test_str + " (expected: $STR)\n").echo();
 ("$sys().type(3.14): " + test_float + " (expected: $FLOAT)\n").echo();
-("$sys().type([1,2,3]): " + test_array + " (expected: $ARRAY)\n").echo();
+("$sys().type([1,2,3]): " + test_array + " (expected: $LIST)\n").echo();
 ("$sys().type(true): " + test_bool + " (expected: $BOOL)\n").echo();
 ("$sys().type(null): " + test_null + " (expected: null)\n").echo();
 
@@ -303,7 +303,7 @@ static_lib = $sys().getenv($STATICLIB);
 if (static_lib.type() != $ERR) {
     ("$sys().getenv($STATICLIB): Retrieved static library\n").echo();
     /* Test if we can access a specific file from the library */
-    if (static_lib.type() == $ARRAY || static_lib.type() == $TABLE) {
+    if (static_lib.type() == $LIST || static_lib.type() == $TABLE) {
         ("Static library contains " + static_lib.len() + " items\n").echo();
     };
 } else {

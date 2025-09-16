@@ -91,13 +91,13 @@ test_raw = @<raw,{"test data"}>;
 
 /* list() - Convert to list */
 ("Testing list() method:").echo();
-(test_array.list()).echo();
-(test_str.list()).echo();
+(test_array.gobj()).echo();
+(test_str.gobj()).echo();
 
 /* array() - Convert to array */
 ("Testing array() method:").echo();
-(test_list.array()).echo();
-(test_str.array()).echo();
+(test_list.list()).echo();
+(test_str.list()).echo();
 
 /* vector() - Convert to vector */
 ("Testing vector() method:").echo();

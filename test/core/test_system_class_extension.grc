@@ -1,9 +1,9 @@
 /* Test System Class Extension Support */
 
-/* Test 1: $ARRAY */
-"=== Testing $ARRAY ===".echo();
-$ARRAY += (test_method: op() { "ARRAY method called"; });
-"$ARRAY extension completed".echo();
+/* Test 1: $LIST */
+"=== Testing $LIST ===".echo();
+$LIST += (test_method: op() { "ARRAY method called"; });
+"$LIST extension completed".echo();
 
 /* Test 2: $GOBJ */
 "=== Testing $GOBJ ===".echo();

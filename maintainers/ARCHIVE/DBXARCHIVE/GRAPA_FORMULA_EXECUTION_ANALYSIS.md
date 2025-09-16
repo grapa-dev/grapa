@@ -331,7 +331,7 @@ for (each field in current record) {
 compile = op(script,srule="",sprofile=""){{op:op()(script,srule,sprofile),version:$sys().getenv($VERSION)}.encode("ZIP-GRAPA")};
 ```
 
-**Mechanism**: Wraps compiled $OP in $LIST with version information
+**Mechanism**: Wraps compiled $OP in $GOBJ with version information
 **Purpose**: Detect compatibility issues when Grapa binary version changes
 
 ### GrapaCompile Object (Not Found in Current Codebase)

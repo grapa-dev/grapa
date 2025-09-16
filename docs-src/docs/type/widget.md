@@ -339,7 +339,7 @@ widget_list = {
 ```
 
 ## See also
-- [$ARRAY object](array.md)
+- [$LIST object](array.md)
 - [$GOBJ object](gobj.md)
 - [$VECTOR object](vector.md)
 - [Assignment Operators](../operators/assignment.md)

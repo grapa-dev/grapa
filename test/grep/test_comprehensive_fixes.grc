@@ -20,7 +20,7 @@ Grapa .grc File Authoring Rules (Windows)
  *    - Grapa grep is integrated into programming languages (Grapa/Python), not just console
  *    - Array format is appropriate for programming language integration
  *    - Delimiters at the end of each match should be removed
- *    - Console users can use $ARRAY.join("\n") to get equivalent output
+ *    - Console users can use $LIST.join("\n") to get equivalent output
  * 
  * 2. MULTILINE PATTERNS: Test all combinations of multiline patterns with different flags
  *    - Test with 's' flag (DOTALL)
@@ -436,7 +436,7 @@ result20 = input20.grep("test", "o", "|");
 "- Grapa grep returns arrays instead of newline-separated strings\n".echo();
 "- This is because Grapa grep is integrated into programming languages (Grapa/Python)\n".echo();
 "- Delimiters are removed from array elements for clean programming language integration\n".echo();
-"- Console users can use $ARRAY.join(\"\\n\") to get equivalent output\n".echo();
+"- Console users can use $LIST.join(\"\\n\") to get equivalent output\n".echo();
 "- This design choice enables better integration with programming workflows\n".echo();
 "\n".echo();
 

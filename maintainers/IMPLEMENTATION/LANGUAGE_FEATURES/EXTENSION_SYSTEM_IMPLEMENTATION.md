@@ -9,7 +9,7 @@ Grapa's extension system allows developers to extend both individual objects and
 ### **Object vs Class Inheritance**
 - **Objects** can have their own variables and members, but still inherit from their class
 - **Classes** define the template for objects, including default variables and methods
-- **System Classes** (like `$ARRAY`, `$LIST`) are loaded from `$STATICLIB` and can be extended
+- **System Classes** (like `$LIST`, `$GOBJ`) are loaded from `$STATICLIB` and can be extended
 
 ### **Extension Operators**
 - **`+=`** - Adds a single item to an object or class
@@ -44,8 +44,8 @@ test1.inc(2);     /* n becomes 3 */
 Developers can define custom classes that inherit from system classes:
 
 ```grapa
-/* Define a class that inherits from $LIST */
-myclass = class ($LIST) {
+/* Define a class that inherits from $GOBJ */
+myclass = class ($GOBJ) {
     n = 0; 
     inc = op(inc:1){n+=inc;};
 };
@@ -74,12 +74,12 @@ test2.dec(5);     /* n becomes -3, m becomes 2 */
 System classes can be extended globally by loading them into the namespace:
 
 ```grapa
-/* Load the $ARRAY class into the namespace */
-$ARRAY();
+/* Load the $LIST class into the namespace */
+$LIST();
 
 /* Extend the system class */
-@$ARRAY ++= {f:op(){55}};
-@$ARRAY += (c:op(){$this.len();});
+@$LIST ++= {f:op(){55}};
+@$LIST += (c:op(){$this.len();});
 
 /* Use the extended system class */
 ar = [1,2,4];
@@ -89,7 +89,7 @@ ar.c();           /* Returns 3 (length) */
 
 **Key Points:**
 - System classes must be loaded into the namespace before modification
-- Use `()` to trigger loading: `$ARRAY()`
+- Use `()` to trigger loading: `$LIST()`
 - Extensions apply to all future instances of the class
 - Both `+=` and `++=` work on loaded system classes
 

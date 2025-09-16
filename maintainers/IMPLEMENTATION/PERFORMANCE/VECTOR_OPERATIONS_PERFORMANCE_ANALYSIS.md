@@ -206,7 +206,7 @@ Estimated memory usage based on 8 bytes per element:
 
 **Recommendations**:
 - Use `.vector()` for mathematical operations
-- Use `.array()` for general data manipulation
+- Use `.list()` for general data manipulation
 - Choose appropriate data types (INT vs FLOAT)
 - Consider the trade-off between precision and performance
 

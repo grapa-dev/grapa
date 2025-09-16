@@ -4531,7 +4531,7 @@ try {
 /* Nested object with explicit copy - works correctly */
 try {
     user = {name: &#39;Alice&#39;, age: 30};
-    throw (err:{user: user.list()});
+    throw (err:{user: user.gobj()});
 } {
     default: (&#39;User name: &#39; + err.user.name).echo();
 }
@@ -4544,7 +4544,7 @@ try {
     default: (&#39;User name: &#39; + err.user.name).echo();
 }
 </code></pre></div>
-<p><strong>Note</strong>: Local variable references in thrown objects are now automatically preserved. The <code>.list()</code> method is no longer required for reliable binding.</p>
+<p><strong>Note</strong>: Local variable references in thrown objects are now automatically preserved. The <code>.gobj()</code> method is no longer required for reliable binding.</p>
 <h3 id="multiple-catch-blocks">Multiple Catch Blocks</h3>
 <div class="highlight"><pre><span></span><code>/* Multiple catch blocks with different conditions */
 try {

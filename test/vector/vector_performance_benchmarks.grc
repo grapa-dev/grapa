@@ -369,7 +369,7 @@ memory_results.each(op(result) {
 ("\nMemory Usage:").echo();
 ("  - Monitor memory usage for matrices > 100x100").echo();
 ("  - Consider memory-efficient operations for large datasets").echo();
-("  - Use .array() for general data manipulation, .vector() for mathematical operations").echo();
+("  - Use .list() for general data manipulation, .vector() for mathematical operations").echo();
 
 /* General recommendations */
 ("\nGeneral Performance Tips:").echo();

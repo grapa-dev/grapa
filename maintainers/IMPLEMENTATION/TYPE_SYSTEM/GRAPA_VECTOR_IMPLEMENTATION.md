@@ -226,7 +226,7 @@ if (ev) {
 
 **Operations Supporting Headers:**
 - **CSV export** (`_tocsv`): Writes headers as first row
-- **Array conversion** (`_toarray`): Converts to `$LIST` when headers present
+- **Array conversion** (`_toarray`): Converts to `$GOBJ` when headers present
 - **Vector concatenation**: Merges headers from multiple vectors
 - **Sorting**: Preserves column headers during row-wise sorting
 - **Transpose**: Clears headers (since meaning changes)
@@ -272,13 +272,13 @@ if (isInt) {
 **User-Level Header Extraction:**
 ```grapa
 // Define the keys function for header extraction
-keys = op(lst){lst.reduce(op(acc,x){if(x.type()==$LIST){acc += keys(x);}else{acc += 'x'.getname();}},[]);};
+keys = op(lst){lst.reduce(op(acc,x){if(x.type()==$GOBJ){acc += keys(x);}else{acc += 'x'.getname();}},[]);};
 
 // Extract headers from CSV vector
 extract_headers = op(csv_string) {
-    keys = op(lst){lst.reduce(op(acc,x){if(x.type()==$LIST){acc += keys(x);}else{acc += 'x'.getname();}},[]);};
+    keys = op(lst){lst.reduce(op(acc,x){if(x.type()==$GOBJ){acc += keys(x);}else{acc += 'x'.getname();}},[]);};
     vec = csv_string.vector();
-    arr = vec.array();
+    arr = vec.list();
     first = arr[0];
     keys(first);
 };
@@ -289,11 +289,11 @@ headers = extract_headers("Name,Value\nAlice,100\nBob,200");
 ```
 
 **Implementation Details:**
-- **`.getname()` method** - Returns the key name from a `$LIST` element
-- **`keys()` function** - Recursively extracts all key names from a `$LIST` object
+- **`.getname()` method** - Returns the key name from a `$GOBJ` element
+- **`keys()` function** - Recursively extracts all key names from a `$GOBJ` object
 - **`reduce()` method** - Iterates through list elements to collect key names
-- **Array conversion** - Uses `vec.array()` to convert vector to array of `$LIST` objects
-- **First element access** - Accesses `arr[0]` which contains the header row as a `$LIST`
+- **Array conversion** - Uses `vec.list()` to convert vector to array of `$GOBJ` objects
+- **First element access** - Accesses `arr[0]` which contains the header row as a `$GOBJ`
 
 **C++ Implementation:**
 ```cpp
@@ -325,7 +325,7 @@ bool FROM(GrapaScriptExec* pScriptExec, GrapaNames* pNameSpace,
 - **Dimension consistency** checking
 - **Type preservation** during conversion
 - **Error handling** for invalid structures
-- **Header detection** from `$LIST` types in first dimension
+- **Header detection** from `$GOBJ` types in first dimension
 
 ### Comparison Operations
 
@@ -427,7 +427,7 @@ result = vec.dot([4, 5, 6]);
 **Script Features:**
 - **Natural syntax** for vector operations
 - **Method chaining** for complex operations
-- **Type conversion** with `.vector()` and `.array()`
+- **Type conversion** with `.vector()` and `.list()`
 - **Error handling** with `$ERR` type
 
 ## Performance Characteristics and Design Trade-offs

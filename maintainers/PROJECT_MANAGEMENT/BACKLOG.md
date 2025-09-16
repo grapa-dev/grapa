@@ -110,8 +110,8 @@ This backlog tracks all future, long-term, and queued tasks for the Grapa projec
 - **Reference**: [`GRAPA_SYNTAX_IMPROVEMENTS_PLAN.md`](../RESEARCH_AND_ANALYSIS/GRAPA_SYNTAX_IMPROVEMENTS_PLAN.md)
 - **Status**: ✅ **COMPLETED** - Universal .get/.set methods now work across all major data types
 - **Implementation**: 
-  - **Universal Coverage**: `.get()/.set()` work across `$ARRAY`, `$LIST`, `$OBJ`, `$file`, `$TABLE`, and `$WIDGET`
-  - **Flexible Field Access**: `.getfield()/.setfield()` with mix/match of names and indices for `$ARRAY`, `$LIST`, and `$OBJ` (non-system classes)
+  - **Universal Coverage**: `.get()/.set()` work across `$LIST`, `$GOBJ`, `$OBJ`, `$file`, `$TABLE`, and `$WIDGET`
+  - **Flexible Field Access**: `.getfield()/.setfield()` with mix/match of names and indices for `$LIST`, `$GOBJ`, and `$OBJ` (non-system classes)
   - **Index Support**: 0-based indexing with negative indexing support for arrays and lists
   - **Boundary Operations**: Append/prepend functionality using length-based indexing
   - **System Class Handling**: `$file` and `$TABLE` use specialized C++ implementations for named keys only
@@ -426,7 +426,7 @@ The following work was completed in version 0.1.52 and is now stable:
 ### **Language Features & Enhancements**
 - [x] **Universal .get/.set Implementation**: ✅ **COMPLETED in 0.1.54** - Implemented consistent .get/.set methods across all data types
   - **Status**: ✅ **COMPLETED** - Universal .get/.set methods now work across all major data types
-  - **Implementation**: Universal coverage across `$ARRAY`, `$LIST`, `$OBJ`, `$file`, `$TABLE`, and `$WIDGET`
+  - **Implementation**: Universal coverage across `$LIST`, `$GOBJ`, `$OBJ`, `$file`, `$TABLE`, and `$WIDGET`
   - **Features**: Flexible field access, index support, boundary operations, system class handling
   - **Documentation**: Comprehensive coverage in basic_syntax.md, api_reference.md, and migration guides
   - **Result**: Consistent API across all data types with flexible access patterns
@@ -442,10 +442,10 @@ The following work was completed in version 0.1.52 and is now stable:
 - **Status**: Array and list slicing now properly handles all data types including strings
 - **Implementation**: 
   - Fixed `GrapaVector::Left()` and `GrapaVector::Right()` methods to properly handle string data
-  - Added support for `$LIST` type in `GrapaLibraryRuleLeftEvent` and `GrapaLibraryRuleRightEvent`
+  - Added support for `$GOBJ` type in `GrapaLibraryRuleLeftEvent` and `GrapaLibraryRuleRightEvent`
   - Ensured proper data type preservation for all array elements (strings, numbers, objects)
 - **Testing**: Verified with string arrays, mixed type arrays, and list types
-- **Benefits**: Proper array slicing for all data types, consistent behavior across `$ARRAY` and `$LIST`
+- **Benefits**: Proper array slicing for all data types, consistent behavior across `$LIST` and `$GOBJ`
 - **Documentation**: Updated `docs-src/docs/type/str.md`, `docs-src/docs/type/obj_methods.md`, `docs-src/docs/type/array.md`, and `docs-src/docs/type/list.md` to reflect full capabilities
 
 - [x] **Vector Functions for Single Dimension Vectors**: Add support for vector operations like sum, mean, min, max on single dimension vectors
@@ -497,7 +497,7 @@ The following work was completed in version 0.1.52 and is now stable:
 - **Status**: Boolean string conversion now works correctly
 
 - [x] **$ERR Class Constructor Support**: Already working correctly
-- **Current State**: `$ERR` type is a `$LIST` (name/value pairs) with proper constructor support
+- **Current State**: `$ERR` type is a `$GOBJ` (name/value pairs) with proper constructor support
 - **Working Examples**: 
   - `x = $ERR()` creates empty error object `{}`
   - `x = $ERR({error:44, desc:"hi"})` creates structured error object `{"error":44,"desc":"hi"}`
@@ -534,8 +534,8 @@ The following work was completed in version 0.1.52 and is now stable:
 - **Estimated Effort**: Medium Release (2-4 weeks) - requires careful design and testing
 - **Status**: Under consideration - not yet decided if this enhancement is needed
 
-- [ ] **$LIST and $file API Unification**: Combine common operations between list and file objects
-- **Current State**: `$LIST` and `$file` have separate command sets despite conceptual similarities
+- [ ] **$GOBJ and $file API Unification**: Combine common operations between list and file objects
+- **Current State**: `$GOBJ` and `$file` have separate command sets despite conceptual similarities
 - **Common Operations Identified**:
   - **Getting items**: `list.get(key)` vs `file.get(key)` 
   - **Setting items**: `list.set(key, value)` vs `file.set(key, value)`
@@ -626,7 +626,7 @@ The following work was completed in version 0.1.52 and is now stable:
   - **Use Cases**: Enhanced spreadsheet functionality, matrix operations with named dimensions
   - **Priority**: Medium (current column-only labels meet most spreadsheet needs)
 
-- [ ] **Extend .replace() to Collections**: Add support for `.replace()` method on `$LIST` and `$ARRAY` types
+- [ ] **Extend .replace() to Collections**: Add support for `.replace()` method on `$GOBJ` and `$LIST` types
   - **Current State**: `.replace()` only supports `$STR` type for string replacement
   - **Enhancement**: Extend to support element replacement in collections
   - **Technical Requirements**:
@@ -638,7 +638,7 @@ The following work was completed in version 0.1.52 and is now stable:
   - **Priority**: High (common data processing operation)
   - **Estimated Effort**: Small Release (1-2 weeks)
 
-- [ ] **Extend .trim() to Collections**: Add support for `.trim()` method on `$LIST` and `$ARRAY` types
+- [ ] **Extend .trim() to Collections**: Add support for `.trim()` method on `$GOBJ` and `$LIST` types
   - **Current State**: `.trim()` only supports `$STR` and `$RAW` types for character trimming
   - **Enhancement**: Extend to support element trimming in collections
   - **Technical Requirements**:
@@ -655,7 +655,7 @@ The following work was completed in version 0.1.52 and is now stable:
   - **Proposed Enhancement**: Split into separate functions for each data type category and move methods to respective class objects
   - **Technical Requirements**:
     - Create separate event handlers for ARRAY/LIST, FILE/TABLE, and VECTOR
-    - Move `.get()/.set()/.getfield()/.setfield()` methods to each class object (`$ARRAY.grc`, `$file.grc`, `$VECTOR.grc`, etc.)
+    - Move `.get()/.set()/.getfield()/.setfield()` methods to each class object (`$LIST.grc`, `$file.grc`, `$VECTOR.grc`, etc.)
     - Maintain backward compatibility during transition
   - **Motivation**: Future extension system may have different mechanisms for get/set operations (similar to how widgets and vectors are different)
   - **Benefits**: 
@@ -1190,7 +1190,7 @@ The following work was completed in version 0.1.52 and is now stable:
 - **Context**: Most C++ errors currently return `{"error":-1}` which provides minimal debugging information
 - **Current State**: 
   - Most C++ errors return `{"error":-1}` regardless of error type
-  - `$ERR` type is a `$LIST` (name/value pairs) with potential for rich error information
+  - `$ERR` type is a `$GOBJ` (name/value pairs) with potential for rich error information
   - Limited debugging capability due to lack of error context
   - Poor user experience with generic error codes
 - **Issues with Current Approach**: 
@@ -1256,7 +1256,7 @@ The following work was completed in version 0.1.52 and is now stable:
 
 2. **Property Access**: Attribute-style access for objects ✅ **COMPLETED**
    - **Status**: Basic property access works correctly
-   - **Verified**: `obj.property` syntax works for `$LIST` objects
+   - **Verified**: `obj.property` syntax works for `$GOBJ` objects
    - **Priority**: High - improves developer experience ✅ **DONE**
 
 #### **🟡 MEDIUM PRIORITY - Language Features**
@@ -1339,10 +1339,10 @@ The following work was completed in version 0.1.52 and is now stable:
    - **Priority**: Low - current system works well
    - **Estimated Effort**: 2-4 weeks
 
-7. **$LIST and $file API Unification**
+7. **$GOBJ and $file API Unification**
    - **Status**: Partially working
    - **Scope**: Combine common operations between list and file objects
-   - **Verified**: `$LIST` property access works (`list.a`), but `$file` property access doesn't work
+   - **Verified**: `$GOBJ` property access works (`list.a`), but `$file` property access doesn't work
    - **Priority**: Low - improves API consistency
    - **Estimated Effort**: 3-4 weeks
 
@@ -1414,7 +1414,7 @@ The following work was completed in version 0.1.52 and is now stable:
 **Completed in 0.1.52 (2024):**
 - Exception handling (try/catch/finally)
 - Control flow (return/break/continue)
-- Property access for $LIST objects
+- Property access for $GOBJ objects
 - `.find()` method for all data types
 - Array/list slicing fixes
 - Boolean string conversion

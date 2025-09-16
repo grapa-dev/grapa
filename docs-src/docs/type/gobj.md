@@ -5,9 +5,9 @@ References:
 
 An associative object that stores key-value pairs. Elements are accessed by their names (keys) rather than by position. This follows Grapa Object Notation (GOBJ) terminology for key-value collections.
 
-### $GOBJ vs $ARRAY Comparison
+### $GOBJ vs $LIST Comparison
 
-| Feature | $GOBJ (`{}`) | $ARRAY (`[]`) |
+| Feature | $GOBJ (`{}`) | $LIST (`[]`) |
 |---------|--------------|---------------|
 | **Syntax** | `{'a':1, 'b':2, 'c':3}` | `[1, 2, 3]` |
 | **Access** | `gobj."a"` or `gobj["a"]` | `array[0]` or `array['key']` |

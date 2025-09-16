@@ -274,7 +274,7 @@ new_predictions = new_data_with_bias.dot(coefficients);
 ("Predictions for new data:" + "\n").echo();
 i = 0;
 while (i < new_data.shape().get(0)) {
-    ("  Input: " + new_data.array()[i].str() + " -> Prediction: " + new_predictions.array()[i].str() + "\n").echo();
+    ("  Input: " + new_data.list()[i].str() + " -> Prediction: " + new_predictions.list()[i].str() + "\n").echo();
     i += 1;
 }
 

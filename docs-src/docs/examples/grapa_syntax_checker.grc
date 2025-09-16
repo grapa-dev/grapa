@@ -459,7 +459,7 @@ checkDirectory = op(dirPath) {
     
     $local.fileList = $file().ls(dirPath);
     
-    if (fileList.type() != $ARRAY) {
+    if (fileList.type() != $LIST) {
         return "Error: Failed to list directory contents\n".interpolate();
     };
     

@@ -499,7 +499,7 @@ The following rules apply to all Grapa .grc test and script files:
 - End every command with a ; character.
 - Use while loops instead of for (Grapa does not support for).
 - Wrap string concatenations in parentheses: (str1+str2).echo();
-- Arrays (type $ARRAY) and lists (type $LIST) are accessed with [index] syntax, not .getfield().
+- Arrays (type $LIST) and lists (type $GOBJ) are accessed with [index] syntax, not .getfield().
   Example:
     ar = [1,2,3];
     ar[1]; /* returns 2 */

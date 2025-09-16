@@ -4516,11 +4516,11 @@
 <p>Vectors are converted back to arrays when:</p>
 <ol>
 <li><strong>Method Results</strong>: Many vector methods return array results for consistency</li>
-<li><strong>Explicit Conversion</strong>: Using the <code>.array()</code> method</li>
+<li><strong>Explicit Conversion</strong>: Using the <code>.list()</code> method</li>
 <li><strong>User Expectations</strong>: Operations that users expect to return arrays</li>
 </ol>
 <div class="highlight"><pre><span></span><code>vector = #[1,2,3,4]#            // Create vector
-array = vector.array()          // Explicit conversion
+array = vector.list()          // Explicit conversion
 reshaped = [1,2,3,4].reshape([2,2])  // Returns array, not vector
 </code></pre></div>
 <h2 id="function-application">Function Application</h2>
@@ -4591,7 +4591,7 @@ vector_result = array_data * [op(x){x*2}]  // Works transparently
 
 // Explicit conversions when needed
 vector = [1,2,3].vector()        // Array to vector
-array = #[1,2,3]#.array()        // Vector to array
+array = #[1,2,3]#.list()        // Vector to array
 </code></pre></div>
 <h2 id="implementation-details-for-users">Implementation Details for Users</h2>
 <h3 id="performance-considerations">Performance Considerations</h3>
@@ -4661,7 +4661,7 @@ result = matrix.inv()  // Matrix inverse
 <td><code>$ARRAY</code></td>
 </tr>
 <tr>
-<td><code>.array()</code></td>
+<td><code>.list()</code></td>
 <td><code>$VECTOR</code></td>
 <td>→</td>
 <td><code>$ARRAY</code></td>

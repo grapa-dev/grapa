@@ -178,7 +178,7 @@ t3.start(increment_worker, {}, op(input, result) { ("Thread 3: counter = " + res
 /* Dynamic typing - types determined at runtime */
 x = 5;                    /* $INT */
 x = "hello";              /* $STR */
-x = [1, 2, 3];            /* $ARRAY */
+x = [1, 2, 3];            /* $LIST */
 ("Dynamic typing: x type=" + x.type() + "\n").echo();
 
 /* Runtime type checking via .type() method */
@@ -225,7 +225,7 @@ generic_process = op(data) {
     switch (data_type) {
         case $INT: result = data * 2;
         case $STR: result = data.upper();
-        case $ARRAY: result = data.map(op(x) { x * 2; });
+        case $LIST: result = data.map(op(x) { x * 2; });
         case $GOBJ: result = data.map(op(key, value) { key + ": " + value; });
         default: result = "Unsupported type: " + data_type.str();
     }

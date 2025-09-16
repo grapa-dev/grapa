@@ -282,7 +282,7 @@ for i from 1 to 5 {
 ```grapa
 custom_command = rule for $ID in <$comp> <$command> {op(var:$2,items:$4,body:$6){
     /* Handle different collection types */
-    if (items.type() == "$LIST" || items.type() == "$ARRAY") {
+    if (items.type() == "$GOBJ" || items.type() == "$LIST") {
         i = 1;
         while (i <= items.len()) {
             /* Set the loop variable */

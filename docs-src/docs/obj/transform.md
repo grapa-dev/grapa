@@ -148,7 +148,7 @@ Will right truncate input if length of input is less than n.
 ```
 
 ## lrot([n])
-For $GOBJ, $ARRAY, $XML.
+For $GOBJ, $LIST, $XML.
 
 Moves n (defaul=1) items from the start of the list to the end of the list, 1 at a time.
 
@@ -157,7 +157,7 @@ Moves n (defaul=1) items from the start of the list to the end of the list, 1 at
 ```
 
 ## rrot([n])
-For $GOBJ, $ARRAY, $XML.
+For $GOBJ, $LIST, $XML.
 
 Moves n (defaul=1) items from the end of the list to the start of the list, 1 at a time.
 

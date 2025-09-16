@@ -53,7 +53,7 @@ Based on the analysis, the performance characteristics are:
 - **`{}` (Linked List) and `[]` (Array)**: Very fast for most use cases due to double-linked list implementation
 - **`{}.table()` (BTree) and `$file`**: Use when persistence, order, range queries, or memory efficiency at scale are important
 
-**Key Insight**: Don't add indexing to `$LIST` or `$ARRAY` - the indexing overhead would likely make them slower, not faster.
+**Key Insight**: Don't add indexing to `$GOBJ` or `$LIST` - the indexing overhead would likely make them slower, not faster.
 
 ## Test Methodology
 
