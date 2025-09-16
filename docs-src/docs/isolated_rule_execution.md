@@ -70,15 +70,15 @@ id_list_rule = rule $ID <id_list_rule> {@<prepend,{$2,$1}>} | $ID {@<createarray
 /* Define main log parsing rule */
 log_rule = rule <catch_sq_bracket_rule> <id_list_rule> {op(timestamp:$1,message:$2){
     return {
-        timestamp: timestamp,
-        message: message,
-        level: "INFO"
+        "timestamp": timestamp,
+        "message": message,
+        "level": "INFO"
     };
 }};
 
 /* Execute log parsing */
 result = op()("[2024-01-15 10:30:00] User login successful", log_rule)();
-/* Result: {timestamp: [2024,"-",1,"-",15," ",10,":",30,":",0], message: [User,login,successful], level: "INFO"} */
+/* Result: {"timestamp": [2024,"-",1,"-",15," ",10,":",30,":",0], "message": [User,login,successful], "level": "INFO"} */
 ```
 
 ### **Pattern 2: Object-Based Rule Organization**
@@ -95,19 +95,19 @@ etl_rules = {
 
     /* CSV parsing rule */
     csv_parser = rule $ID ',' $INT ',' $ID {op(name:$1,age:$3,city:$5){
-        {name: name, age: age, city: city};
+        {"name": name, "age": age, "city": city};
     }},
 
     /* Log parsing rules */
     catch_sq_bracket_rule = rule ('[') <> (']') {@<lit,{$2}>},
     id_list_rule = rule $ID <id_list_rule> {@<prepend,{$2,$1}>} | $ID {@<createarray,{$1}>},
     log_parser = rule <catch_sq_bracket_rule> <id_list_rule> {op(timestamp:$1,message:$2){
-        {timestamp: timestamp, message: message, level: "INFO"};
+        {"timestamp": timestamp, "message": message, "level": "INFO"};
     }},
     
     /* Config parsing rule */
     config_parser = rule $ID '=' $ID {op(key:$1,value:$3){
-        {key: key, value: value};
+        {"key": key, "value": value};
     }}
 };
 
@@ -127,19 +127,19 @@ etl_rules_class = class {
 
     /* CSV parsing rule */
     csv_parser = rule $ID ',' $INT ',' $ID {op(name:$1,age:$3,city:$5){
-        {name: name, age: age, city: city};
+        {"name": name, "age": age, "city": city};
     }};
 
     /* Log parsing rules */
     catch_sq_bracket_rule = rule ('[') <> (']') {@<lit,{$2}>};
     id_list_rule = rule $ID <id_list_rule> {@<prepend,{$2,$1}>} | $ID {@<createarray,{$1}>};
     log_parser = rule <catch_sq_bracket_rule> <id_list_rule> {op(timestamp:$1,message:$2){
-        {timestamp: timestamp, message: message, level: "INFO"};
+        {"timestamp": timestamp, "message": message, "level": "INFO"};
     }};
     
     /* Config parsing rule */
     config_parser = rule $ID '=' $ID {op(key:$1,value:$3){
-        {key: key, value: value};
+        {"key": key, "value": value};
     }};
 };
 
@@ -170,11 +170,11 @@ etl_rules = {
 };
 
 /* Dynamically add new rules using += operator */
-etl_rules += (csv_parser : rule $ID ',' $INT ',' $ID {op(name:$1,age:$3,city:$5){{name: name, age: age, city: city};}});
+etl_rules += (csv_parser : rule $ID ',' $INT ',' $ID {op(name:$1,age:$3,city:$5){{"name": name, "age": age, "city": city};}});
 
 /* Execute with dynamically added rule */
 csv_result = etl_rules.parse("John,25,NY", etl_rules.csv_parser);
-/* Result: {name: "John", age: 25, city: "NY"} */
+/* Result: {"name": "John", "age": 25, "city": "NY"} */
 ```
 
 #### **3b. Dynamic Rule Addition to $CLASS Objects**
@@ -188,11 +188,11 @@ etl_rules_class = class {
 
 /* Create instance and add rules dynamically */
 etl_rules = etl_rules_class();
-etl_rules.add_rule("csv_parser", rule $ID ',' $INT ',' $ID {op(name:$1,age:$3,city:$5){{name: name, age: age, city: city};}});
+etl_rules.add_rule("csv_parser", rule $ID ',' $INT ',' $ID {op(name:$1,age:$3,city:$5){{"name": name, "age": age, "city": city};}});
 
 /* Execute with dynamically added rule */
 csv_result = etl_rules.parse("John,25,NY", etl_rules.csv_parser);
-/* Result: {name: "John", age: 25, city: "NY"} */
+/* Result: {"name": "John", "age": 25, "city": "NY"} */
 ```
 
 **Key Features:**
