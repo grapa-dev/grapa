@@ -3259,7 +3259,6 @@ GrapaLibraryEvent* GrapaLibraryRuleEvent::LoadLib(GrapaScriptExec *vScriptExec, 
 			{ "base", &GrapaLibraryRuleEvent::HandleBase },
 			{ "str", &GrapaLibraryRuleEvent::HandleStr },
 			{ "gobj", &GrapaLibraryRuleEvent::HandleList },
-			{ "list", &GrapaLibraryRuleEvent::HandleList },  // to depricate this
 			{ "err", &GrapaLibraryRuleEvent::HandleErr },
 			{ "list", &GrapaLibraryRuleEvent::HandleArray },
 			{ "vector", &GrapaLibraryRuleEvent::HandleVector },
