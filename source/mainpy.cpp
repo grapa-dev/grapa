@@ -105,7 +105,7 @@ public:
 		{
 			result = new GrapaRuleEvent(0, pname, GrapaCHAR());
 			result->vQueue = new GrapaRuleQueue();
-			result->mValue.mToken = GrapaTokenType::ARRAY;
+			result->mValue.mToken = GrapaTokenType::LIST;
 			for (int i = 0; i < PyList_Size(o); ++i)
 			{
 				PyObject* item = PyList_GetItem(o, i);
@@ -181,7 +181,7 @@ public:
 			if (e) isTrueA = !e->IsNullIsNegIsZero(isNegA, isNull);
 			*o = py::bool_(isTrueA);
 			break;
-		case GrapaTokenType::ARRAY:
+		case GrapaTokenType::LIST:
 			*o = py::list();
 			e = e->vQueue->Head();
 			while (e)
