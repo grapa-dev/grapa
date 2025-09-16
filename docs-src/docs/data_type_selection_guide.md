@@ -9,6 +9,10 @@ Do you need data to persist after program restart?
 ├─ YES → Use $file() (persistent storage)
 └─ NO → Continue below
 
+Do you need mathematical operations, statistics, or linear algebra?
+├─ YES → Use $VECTOR (mathematical operations)
+└─ NO → Continue below
+
 Is your dataset large (> 100-500 items) and memory efficiency matters?
 ├─ YES → Use {}.table() (in-memory BTree)
 └─ NO → Use {} (linked list)
@@ -16,17 +20,20 @@ Is your dataset large (> 100-500 items) and memory efficiency matters?
 
 ## Detailed Comparison
 
-| Feature | `{}` (Linked List) | `{}.table()` (BTree) | `$file()` (Persistent) |
-|---------|-------------------|---------------------|----------------------|
-| **Storage** | In-memory | In-memory | Disk-based |
-| **Persistence** | No | No | Yes |
-| **Performance (small data)** | Very fast | Slower | Slowest (disk I/O) |
-| **Performance (large data)** | Slower | Fast | Moderate (disk I/O) |
-| **Memory efficiency** | Lower | Higher | Unlimited |
-| **Range queries** | No | Yes | Yes |
-| **Complex queries** | No | Yes | Yes |
-| **Frequent modifications** | Excellent | Good | Poor |
-| **Data size limit** | Memory limit | Memory limit | Disk space limit |
+| Feature | `{}` (Linked List) | `{}.table()` (BTree) | `$VECTOR` (Mathematical) | `$file()` (Persistent) |
+|---------|-------------------|---------------------|-------------------------|----------------------|
+| **Storage** | In-memory | In-memory | In-memory | Disk-based |
+| **Persistence** | No | No | No | Yes |
+| **Performance (small data)** | Very fast | Slower | Very fast | Slowest (disk I/O) |
+| **Performance (large data)** | Slower | Fast | Fast | Moderate (disk I/O) |
+| **Memory efficiency** | Lower | Higher | High | Unlimited |
+| **Mathematical operations** | No | No | Excellent | No |
+| **Statistical functions** | No | No | Excellent | No |
+| **Linear algebra** | No | No | Excellent | No |
+| **Range queries** | No | Yes | No | Yes |
+| **Complex queries** | No | Yes | No | Yes |
+| **Frequent modifications** | Excellent | Good | Good | Poor |
+| **Data size limit** | Memory limit | Memory limit | Memory limit | Disk space limit |
 
 ## Use Case Examples
 
@@ -40,6 +47,27 @@ config = {
 };
 ```
 **Why**: Small dataset, frequent access, no persistence needed.
+
+### **Mathematical Data Processing**
+```grapa
+/* Use $VECTOR for mathematical operations */
+data = [1, 2, 3, 4, 5].vector();
+
+/* Statistical analysis */
+mean = data.mean();        /* 3 */
+std_dev = data.std();      /* 1.58 */
+sum = data.sum();          /* 15 */
+
+/* Element-wise operations */
+doubled = data * 2;        /* #[2, 4, 6, 8, 10]# */
+squared = data ** 2;       /* #[1, 4, 9, 16, 25]# */
+
+/* Matrix operations */
+matrix = [[1, 2], [3, 4]].vector();
+determinant = matrix.det(); /* -2 */
+inverse = matrix.inv();     /* Matrix inverse */
+```
+**Why**: Need mathematical operations, statistics, or linear algebra.
 
 ### **User Session Data**
 ```grapa
@@ -108,12 +136,13 @@ if (cache.get("user_123").cached_at.ms() < 300000) { /* 5 minutes */
 
 ### **Dataset Size Thresholds**
 - **< 100 items**: Always use `{}` (linked list)
-- **100-500 items**: Use `{}` unless you need range queries or memory efficiency
-- **> 500 items**: Consider `{}.table()` for better memory efficiency
+- **100-500 items**: Use `{}` unless you need range queries, memory efficiency, or mathematical operations
+- **> 500 items**: Consider `{}.table()` for better memory efficiency, or `$VECTOR` for mathematical operations
 - **Very large datasets**: Use `$file()` for persistence and unlimited size
 
 ### **Operation Patterns**
 - **Frequent insertions/deletions**: Prefer `{}` (linked list)
+- **Mathematical operations**: Use `$VECTOR` (statistics, linear algebra, element-wise operations)
 - **Range queries**: Use `{}.table()` or `$file()`
 - **Complex queries**: Use `{}.table()` or `$file()`
 - **Simple key-value access**: Use `{}` (linked list)
@@ -121,6 +150,7 @@ if (cache.get("user_123").cached_at.ms() < 300000) { /* 5 minutes */
 ### **Memory Considerations**
 - **Memory constrained**: Use `{}.table()` for large datasets
 - **Memory abundant**: Use `{}` for simplicity
+- **Mathematical processing**: Use `$VECTOR` for optimized mathematical operations
 - **Unlimited data**: Use `$file()` for persistence
 
 ## Common Mistakes
@@ -133,6 +163,15 @@ small_config.set("debug", true);
 small_config.set("timeout", 30);
 ```
 **Why**: Overhead of BTree structure makes it slower than `{}` for small datasets.
+
+### **❌ Don't Do This**
+```grapa
+/* Don't use {} for mathematical operations */
+data = [1, 2, 3, 4, 5];
+mean = data.mean();  /* This won't work - {} doesn't have .mean() */
+doubled = data * 2;  /* This won't work - {} doesn't support element-wise operations */
+```
+**Why**: `{}` doesn't support mathematical operations, statistics, or linear algebra.
 
 ### **❌ Don't Do This**
 ```grapa
@@ -152,6 +191,11 @@ small_config = {
     "timeout": 30
 };
 
+/* Use $VECTOR for mathematical operations */
+data = [1, 2, 3, 4, 5].vector();
+mean = data.mean();        /* 3 */
+doubled = data * 2;        /* #[2, 4, 6, 8, 10]# */
+
 /* Use {}.table() for large datasets */
 large_dataset = {}.table();
 for i in (10000).range() {
@@ -163,6 +207,9 @@ for i in (10000).range() {
 
 - **`{}` (Linked List)**: Fast, simple, best for small to medium datasets
 - **`{}.table()` (BTree)**: Memory efficient, supports complex queries, best for large datasets
+- **`$VECTOR` (Mathematical)**: Optimized for mathematical operations, statistics, and linear algebra
 - **`$file()` (Persistent)**: Disk-based, unlimited size, best for persistent storage
 
-**Key Insight**: The double-linked list implementation in `{}` is highly optimized. Don't add indexing - it would likely make things slower, not faster.
+**Key Insights**: 
+- The double-linked list implementation in `{}` is highly optimized. Don't add indexing - it would likely make things slower, not faster.
+- Use `$VECTOR` when you need mathematical operations, statistical analysis, or linear algebra - it's specifically optimized for these use cases.

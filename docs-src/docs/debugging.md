@@ -30,6 +30,7 @@ The debug system infrastructure is fully implemented and ready for use. While no
 ### Performance Monitoring
 For performance debugging and monitoring, Grapa provides the `$TIME.ms()` method for precise timing measurements:
 
+#### Method 1: Using `t.ms()` (Recommended)
 ```grapa
 /* Performance monitoring example */
 t1 = $TIME().utc();
@@ -37,6 +38,31 @@ t1 = $TIME().utc();
 1000.sleep();
 t2 = $TIME().utc();
 'Execution time: ${time}ms\n'.interpolate(time:t1.ms(t2).float(30)).echo();
+```
+
+#### Method 2: Using Time Delta Calculation
+```grapa
+/* Alternative: Calculate time delta manually */
+t1 = $TIME().utc();
+/* Your code to measure */
+1000.sleep();
+t2 = $TIME().utc();
+delta = t2 - t1;
+'Execution time: ${time}ms\n'.interpolate(time:(delta / 1000000.0).float(30)).echo();
+```
+
+#### Method 3: Using Function with Built-in Timing
+```grapa
+/* Create a timing function */
+f = op() {
+    t = $TIME().utc();
+    1000.sleep();
+    t.ms();
+};
+
+/* Use the function */
+execution_time = f();  /* Returns time in milliseconds */
+'Execution time: ${time}ms\n'.interpolate(time:execution_time.float(30)).echo();
 ```
 
 This is particularly useful for:

@@ -13,14 +13,14 @@ This page is for advanced Grapa users and deep experts who want to understand th
 The following documentation is available to contributors and maintainers (not part of the user-facing docs):
 
 - **Implementation Details:**
-  - [GRAPA_DB_IMPLEMENTATION.md](../../maintainers/IMPLEMENTATION/GRAPA_DB_IMPLEMENTATION.md) – Database architecture, table/index design
-  - [GRAPA_BTREE_IMPLEMENTATION.md](../../maintainers/IMPLEMENTATION/GRAPA_BTREE_IMPLEMENTATION.md) – BTree file structure and algorithms
-  - [FIELD_METADATA_LIFECYCLE.md](../../maintainers/IMPLEMENTATION/FIELD_METADATA_LIFECYCLE.md) – Field metadata lifecycle and best practices
+  - [GRAPA_DB_IMPLEMENTATION.md](../../maintainers/IMPLEMENTATION/DATABASE/GRAPA_DB_IMPLEMENTATION.md) – Database architecture, table/index design
+  - [GRAPA_BTREE_IMPLEMENTATION.md](../../maintainers/IMPLEMENTATION/DATABASE/GRAPA_BTREE_IMPLEMENTATION.md) – BTree file structure and algorithms
+  - [FIELD_METADATA_LIFECYCLE.md](../../maintainers/IMPLEMENTATION/DATABASE/FIELD_METADATA_LIFECYCLE.md) – Field metadata lifecycle and best practices
   - ...and more in the [maintainers/IMPLEMENTATION/](../../maintainers/IMPLEMENTATION/) directory
 - **Development & Debugging:**
-  - [LANGUAGE_IMPROVEMENT_PLAN.md](../../maintainers/DEVELOPMENT/LANGUAGE_IMPROVEMENT_PLAN.md) – Language improvement roadmap
+  - [LANGUAGE_IMPROVEMENT_PLAN.md](../../maintainers/ARCHIVE/DBXARCHIVE/LANGUAGE_IMPROVEMENT_PLAN.md) – Language improvement roadmap
 - **Backlog, Testing, and Internal Notes:**
-  - [BACKLOG.md](../../maintainers/DEVELOPMENT/BACKLOG.md), [TESTING_AND_QUALITY/](../../maintainers/TESTING_AND_QUALITY/), [INTERNAL_NOTES/](../../maintainers/INTERNAL_NOTES/)
+  - [BACKLOG.md](../../maintainers/PROJECT_MANAGEMENT/BACKLOG.md), [TESTING_AND_QUALITY/](../../maintainers/TESTING_AND_QUALITY/), [RESEARCH_AND_ANALYSIS/](../../maintainers/RESEARCH_AND_ANALYSIS/)
 
 > **Note:** These docs are for contributors/maintainers only. If you wish to contribute or need access, contact the project maintainers.
 
