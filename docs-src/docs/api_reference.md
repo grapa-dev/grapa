@@ -83,13 +83,13 @@ Every value in Grapa supports type introspection:
 
 ```grapa
 /* Get type information */
-value = 42;
-type = value.type();  /* $INT */
+$local.value = 42;
+type = $local.value.type();  /* $INT */
 
 /* Type comparison */
-if (value.type() == $INT) {
+if ($local.value.type() == $INT) {
     /* Handle integer */
-} elseif (value.type() == $STR) {
+} elseif ($local.value.type() == $STR) {
     /* Handle string */
 }
 ```
@@ -147,12 +147,12 @@ safe_get = op(obj, key) {
         return null;
     }
     
-    value = obj[key];
-    if (value.type() == $ERR) {
+    $local.value = obj[key];
+    if ($local.value.type() == $ERR) {
         return null;
     }
     
-    return value;
+    return $local.value;
 };
 ```
 
@@ -198,9 +198,9 @@ $global.config = {"debug": true};
 
 /* Function with local namespace */
 func = op(x) {
-    local_var = x * 2;  /* In function's local namespace */
+    $local.local_var = x * 2;  /* In function's local namespace */
     global_var = config;  /* Access global namespace */
-    local_var.echo();
+    $local.local_var.echo();
 };
 ```
 
@@ -589,8 +589,8 @@ Type checking, conversion, and input/output operations.
 
 ### Examples
 ```grapa
-value = "42";
-number = int(value);
+$local.value = "42";
+number = int($local.value);
 text = str(number);
 
 name = prompt("Enter your name: ");
@@ -970,7 +970,7 @@ The universal `.get()` and `.set()` methods provide consistent access patterns a
 /* $ARRAY examples */
 my_array = [1, 2, 3, 4, 5];
 my_array.set(2, 99);
-value = my_array.get(2);  /* 99 */
+$local.value = my_array.get(2);  /* 99 */
 
 /* $GOBJ examples */
 my_list = {"name": "Alice", "age": 30};
@@ -980,7 +980,7 @@ name = my_list.get("name");  /* "Bob" */
 /* $OBJ examples */
 my_obj = {};
 my_obj.set("property", "value");
-value = my_obj.get("property");  /* "value" */
+$local.value = my_obj.get("property");  /* "value" */
 
 /* $file examples */
 my_file = $file();
