@@ -53,22 +53,25 @@ $self = value;      /* Self reference */
 
 ### **System Namespace Protection**
 
-Grapa uses the `$` prefix to protect system namespace:
+Grapa uses the `$` prefix to protect system namespace. **Important**: The `$` prefix is reserved for system use only. Do not declare your own variables with `$` prefixes.
 
 ```grapa
 /* User namespace (recommended) */
 x = 5;                    /* User variable */
 name = "hello";           /* User string */
+my_data = [1, 2, 3];      /* User array */
 
-/* System namespace (reserved) */
-$x = 5;                   /* System variable */
-$name = "hello";          /* System string */
+/* System namespace (reserved for system use only) */
+/* These are predefined system variables - do not create your own */
+$global.config = {"debug": true};  /* Accessing system global namespace */
+$local.temp = "value";             /* Accessing system local namespace */
 ```
 
 **Guidelines:**
-- **Use user namespace** (`x`, `"hello"`) for your own code
-- **Avoid system namespace** (`$x`, `$"hello"`) unless necessary
-- **Both work** but system namespace is protected to prevent accidental overrides
+- **Use user namespace** (`x`, `"hello"`, `my_data`) for your own code
+- **Never declare your own `$` variables** - the `$` prefix is reserved for system use
+- **Access system variables** like `$global`, `$local`, `$this` as needed, but don't create new ones
+- **Exception**: `$custom_command` and `$custom_function` are special system variables for language extension
 
 ## `=`
 Assign.

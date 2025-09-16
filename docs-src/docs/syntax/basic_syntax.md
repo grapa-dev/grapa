@@ -118,9 +118,9 @@ goodFunction = op() {
     return errors;           // ✅ 'errors' contains all accumulated errors
 };
 
-/* ✅ ALTERNATIVE - Reset $local to a list */
+/* ✅ ALTERNATIVE - Add to $local namespace */
 myFunction2 = op() {
-    $local = {'result': null, 'temp': {}, 'i': 0};
+    $local ++= {'result': null, 'temp': {}, 'i': 0};
     
     // Now safe to use variables without conflicts
     result = process();

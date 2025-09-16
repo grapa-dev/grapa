@@ -380,15 +380,15 @@ $sys().compilef("~/.grapa/config.grc", "~/.grapa/config.grz");
 **Example: Setting Up Custom Environment Variables:**
 ```grapa
 /* ~/.grapa/config.grc */
-/* Set up custom environment variables */
-$GRAPA_HOME = $sys().getenv($WORK);
-$GRAPA_USER_LIB = $sys().getenv($HOME) + "/.grapa/lib";
-$GRAPA_PROJECT_LIB = $sys().getenv($WORK) + "/lib";
+/* Set up custom environment variables using regular variables */
+GRAPA_HOME = $sys().getenv($WORK);
+GRAPA_USER_LIB = $sys().getenv($HOME) + "/.grapa/lib";
+GRAPA_PROJECT_LIB = $sys().getenv($WORK) + "/lib";
 
 /* Add user library to search path if it exists */
-if ($file().exists($GRAPA_USER_LIB)) {
+if ($file().exists(GRAPA_USER_LIB)) {
     current_path = $sys().getenv($GRAPA_PATH);
-    $sys().putenv($GRAPA_PATH, current_path + [$GRAPA_USER_LIB]);
+    $sys().putenv($GRAPA_PATH, current_path + [GRAPA_USER_LIB]);
 }
 
 /* Set up custom functions */
