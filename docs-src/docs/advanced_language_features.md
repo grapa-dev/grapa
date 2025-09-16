@@ -310,15 +310,15 @@ workers = [1, 2, 3, 4, 5].map(op(worker_id) {
 
 ## Planned Advanced Features
 
-### **1. Decorators/Annotations** 🔄 **PLANNED**
+### **1. Decorators/Annotations** 🔄 **WORKAROUND SUPPORTED**
 
 **Status**: Not yet implemented
-**Planned Syntax**: `@decorator` pattern
+**Planned Syntax**: `$decorator` pattern
 
 ```grapa
-/* Planned decorator syntax */
-@validate
-@cache
+/* Possible decorator syntax if implemented*/
+$validate
+$cache
 process_data = op(data) {
     /* Function implementation */
 };
@@ -339,7 +339,7 @@ validate = op(f) { op(x) { if (x > 0) f(x); else $ERR("Invalid input"); }; };
 cached_process = validate(process_data);
 ```
 
-### **2. Generics/Templates** ✅ **IMPLEMENTED**
+### **2. Generics
 
 **Status**: Fully implemented via dynamic typing
 **Grapa's Approach**: Dynamic typing with runtime type checking
