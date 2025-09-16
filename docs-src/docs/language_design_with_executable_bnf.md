@@ -56,9 +56,6 @@ $global["$lookup"] = rule @variable {@<var,{$1}>}
 $global["$array_lookup"] = rule @tb["d"] {@<var,{$1}>}
 $global["$list_lookup"] = rule @tb.d {@<var,{$1}>}
 $global["$index_lookup"] = rule @tb[8] {@<var,{$1}>}
-
-/* Database/File object references */
-$global["$db_lookup"] = rule @{}.table("ROW") {@<var,{$1}>}
 ```
 
 #### **Post-Processing with Optional $OP**
