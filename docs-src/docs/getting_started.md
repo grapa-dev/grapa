@@ -75,8 +75,12 @@ result.echo();
 
 /* Working with lists */
 numbers = [1, 2, 3, 4, 5];
-sum = numbers.reduce(op(a, b) { a + b; }, 0);
+sum = numbers.reduce(op(a, b) { a += b; });
 ("Sum: " + sum).echo();
+
+/* Alternative: Using vector operations */
+sum2 = numbers.vector().sum();
+("Sum (vector): " + sum2).echo();
 ```
 
 ---

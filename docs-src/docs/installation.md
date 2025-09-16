@@ -53,7 +53,7 @@ unzip grapa-0.1.54-mac-arm64.zip
 cd grapa-0.1.54
 
 # Run the installer
-python3 install-grapa.py
+python3 install-grapa-0.1.54.py
 
 # Verify installation
 grapa --version
@@ -84,7 +84,7 @@ wget https://github.com/grapa-dev/grapa/releases/download/v0.1.54/grapa-0.1.54-l
 # Extract and install
 unzip grapa-0.1.54-linux-amd64.zip
 cd grapa-0.1.54
-sudo python3 install-grapa.py
+sudo python3 install-grapa-0.1.54.py
 
 # Verify installation
 grapa --version
@@ -100,7 +100,7 @@ wget https://github.com/grapa-dev/grapa/releases/download/v0.1.54/grapa-0.1.54-l
 # Extract and install
 unzip grapa-0.1.54-linux-arm64.zip
 cd grapa-0.1.54
-sudo python3 install-grapa.py
+sudo python3 install-grapa-0.1.54.py
 
 # Verify installation
 grapa --version
@@ -130,7 +130,7 @@ wget https://github.com/grapa-dev/grapa/releases/download/v0.1.54/grapa-0.1.54-a
 # Extract and install
 unzip grapa-0.1.54-aws-amd64.zip
 cd grapa-0.1.54
-sudo python3 install-grapa.py
+sudo python3 install-grapa-0.1.54.py
 
 # Verify installation
 grapa --version
@@ -146,7 +146,7 @@ wget https://github.com/grapa-dev/grapa/releases/download/v0.1.54/grapa-0.1.54-a
 # Extract and install
 unzip grapa-0.1.54-aws-arm64.zip
 cd grapa-0.1.54
-sudo python3 install-grapa.py
+sudo python3 install-grapa-0.1.54.py
 
 # Verify installation
 grapa --version
@@ -186,7 +186,7 @@ sudo rm -f /usr/local/lib/libgrapa.so
 3. **Run the installer** (run PowerShell as Administrator):
    ```powershell
    cd grapa-0.1.54
-   python install-grapa.py
+   python install-grapa-0.1.54.py
    ```
 
 4. **Verify installation:**
@@ -210,7 +210,7 @@ After installation, Grapa will be available at:
 **Uninstall:**
 ```powershell
 # Run PowerShell as Administrator
-python install-grapa.py --uninstall
+python install-grapa-0.1.54.py --uninstall
 ```
 
 ## 🛠️ **Building and Running the Example**
@@ -458,7 +458,7 @@ The platform-specific release provides optimized packages for each platform:
 
 **Each package includes:**
 - Platform-specific Grapa executable
-- Universal installer (`install-grapa.py`)
+- Universal installer (`install-grapa-0.1.54.py`)
 - Sample C++ application (`main.cpp`)
 - Complete CMake build system
 - Platform libraries and headers
@@ -501,7 +501,7 @@ The platform-specific release provides optimized packages for each platform:
 ### Windows-Specific Issues
 
 #### Installation Script Issues
-If the `install-grapa.py` script fails:
+If the `install-grapa-0.1.54.py` script fails:
 
 1. **Check Python installation:**
    ```powershell
@@ -511,12 +511,12 @@ If the `install-grapa.py` script fails:
 
 2. **Verify the script exists:**
    ```powershell
-   Test-Path "install-grapa.py"
+   Test-Path "install-grapa-0.1.54.py"
    ```
 
 3. **Run the script with verbose output:**
    ```powershell
-   python install-grapa.py --verbose
+   python install-grapa-0.1.54.py --verbose
    ```
 
 #### Python Installation Issues
