@@ -3067,6 +3067,26 @@ void GrapaLibraryRuleEvent::LoadLibWrap(GrapaScriptExec* vScriptExec, GrapaRuleE
 #include <unordered_map>
 #include <functional>
 
+/*
+* CHANGE BELOW MAP TO BINARY SEARCH
+*
+
+static constexpr std::array<std::pair<std::string_view, Handler>, N> handlerArray = {{
+	{"rule", &GrapaLibraryRuleEvent::HandleRule},
+	{"ruleval", &GrapaLibraryRuleEvent::HandleRuleVal},
+	// ... sorted alphabetically
+}};
+
+// Binary search lookup
+auto it = std::lower_bound(handlerArray.begin(), handlerArray.end(),
+	std::make_pair(std::string_view(pName.mBytes, pName.mLength), nullptr),
+	[](const auto& a, const auto& b) { return a.first < b.first; });
+
+if (it != handlerArray.end() && it->first == std::string_view(pName.mBytes, pName.mLength)) {
+	return (this->*(it->second))(pName);
+}
+*/
+
 GrapaLibraryEvent* GrapaLibraryRuleEvent::LoadLib(GrapaScriptExec *vScriptExec, GrapaRuleEvent *pOperation, GrapaCHAR& pName)
 {
 	if (pName.mBytes == NULL) return NULL;
