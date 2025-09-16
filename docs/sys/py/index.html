@@ -8,28 +8,28 @@
       
       
       
-        <link rel="canonical" href="https://grapa-dev.github.io/grapa/advanced_concurrency_and_callbacks/">
+        <link rel="canonical" href="https://grapa-dev.github.io/grapa/sys/py/">
       
       
-        <link rel="prev" href="../advanced_language_features/">
+        <link rel="prev" href="../net/">
       
       
-        <link rel="next" href="../advanced/array_vector_interoperability/">
+        <link rel="next" href="../../curl_function/">
       
       
-      <link rel="icon" href="../assets/images/favicon.png">
+      <link rel="icon" href="../../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.15">
     
     
       
-        <title>Concurrency and Callbacks - Grapa Documentation</title>
+        <title>Python Integration - Grapa Documentation</title>
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.342714a4.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.342714a4.min.css">
       
         
-        <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
       
       
 
@@ -48,7 +48,7 @@
       
     
     
-    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -74,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#advanced-concurrency-and-callbacks" class="md-skip">
+        <a href="#py-python-integration-system-object" class="md-skip">
           Skip to content
         </a>
       
@@ -88,7 +88,7 @@
 
 <header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href=".." title="Grapa Documentation" class="md-header__button md-logo" aria-label="Grapa Documentation" data-md-component="logo">
+    <a href="../.." title="Grapa Documentation" class="md-header__button md-logo" aria-label="Grapa Documentation" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -108,7 +108,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Concurrency and Callbacks
+              Python Integration
             
           </span>
         </div>
@@ -205,7 +205,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../about/" class="md-tabs__link">
+      <a href="../../about/" class="md-tabs__link">
         
   
   
@@ -224,7 +224,7 @@
   
   
     <li class="md-tabs__item">
-      <a href=".." class="md-tabs__link">
+      <a href="../.." class="md-tabs__link">
         
   
   
@@ -245,7 +245,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../getting_started/" class="md-tabs__link">
+        <a href="../../getting_started/" class="md-tabs__link">
           
   
   
@@ -263,7 +263,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../cli_quickstart/" class="md-tabs__link">
+      <a href="../../cli_quickstart/" class="md-tabs__link">
         
   
   
@@ -286,7 +286,7 @@
     
     
       <li class="md-tabs__item md-tabs__item--active">
-        <a href="../api_reference/" class="md-tabs__link">
+        <a href="../../api_reference/" class="md-tabs__link">
           
   
   
@@ -313,7 +313,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../migrations/python_to_grapa_migration/" class="md-tabs__link">
+        <a href="../../migrations/python_to_grapa_migration/" class="md-tabs__link">
           
   
   
@@ -336,7 +336,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../use_cases/" class="md-tabs__link">
+        <a href="../../use_cases/" class="md-tabs__link">
           
   
   
@@ -356,7 +356,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../troubleshooting/" class="md-tabs__link">
+        <a href="../../troubleshooting/" class="md-tabs__link">
           
   
   
@@ -390,7 +390,7 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href=".." title="Grapa Documentation" class="md-nav__button md-logo" aria-label="Grapa Documentation" data-md-component="logo">
+    <a href="../.." title="Grapa Documentation" class="md-nav__button md-logo" aria-label="Grapa Documentation" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -408,7 +408,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../about/" class="md-nav__link">
+      <a href="../../about/" class="md-nav__link">
         
   
   
@@ -430,7 +430,7 @@
   
   
     <li class="md-nav__item">
-      <a href=".." class="md-nav__link">
+      <a href="../.." class="md-nav__link">
         
   
   
@@ -493,7 +493,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../getting_started/" class="md-nav__link">
+      <a href="../../getting_started/" class="md-nav__link">
         
   
   
@@ -516,7 +516,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../installation/" class="md-nav__link">
+      <a href="../../installation/" class="md-nav__link">
         
   
   
@@ -539,7 +539,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../cli_integration/" class="md-nav__link">
+      <a href="../../cli_integration/" class="md-nav__link">
         
   
   
@@ -562,7 +562,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../vscode_extension/" class="md-nav__link">
+      <a href="../../vscode_extension/" class="md-nav__link">
         
   
   
@@ -585,7 +585,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../run/" class="md-nav__link">
+      <a href="../../run/" class="md-nav__link">
         
   
   
@@ -608,7 +608,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../python_integration/" class="md-nav__link">
+      <a href="../../python_integration/" class="md-nav__link">
         
   
   
@@ -631,7 +631,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../cpp_integration/" class="md-nav__link">
+      <a href="../../cpp_integration/" class="md-nav__link">
         
   
   
@@ -654,7 +654,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../grapa_ecosystem_positioning/" class="md-nav__link">
+      <a href="../../grapa_ecosystem_positioning/" class="md-nav__link">
         
   
   
@@ -684,7 +684,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../cli_quickstart/" class="md-nav__link">
+      <a href="../../cli_quickstart/" class="md-nav__link">
         
   
   
@@ -752,7 +752,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api_reference/" class="md-nav__link">
+      <a href="../../api_reference/" class="md-nav__link">
         
   
   
@@ -816,7 +816,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../data_type_selection_guide/" class="md-nav__link">
+      <a href="../../data_type_selection_guide/" class="md-nav__link">
         
   
   
@@ -839,7 +839,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../type/array/" class="md-nav__link">
+      <a href="../../type/array/" class="md-nav__link">
         
   
   
@@ -862,7 +862,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../type/bool/" class="md-nav__link">
+      <a href="../../type/bool/" class="md-nav__link">
         
   
   
@@ -885,7 +885,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../type/class/" class="md-nav__link">
+      <a href="../../type/class/" class="md-nav__link">
         
   
   
@@ -908,7 +908,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../type/code/" class="md-nav__link">
+      <a href="../../type/code/" class="md-nav__link">
         
   
   
@@ -931,7 +931,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../type/err/" class="md-nav__link">
+      <a href="../../type/err/" class="md-nav__link">
         
   
   
@@ -954,7 +954,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../type/float/" class="md-nav__link">
+      <a href="../../type/float/" class="md-nav__link">
         
   
   
@@ -977,7 +977,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../type/id/" class="md-nav__link">
+      <a href="../../type/id/" class="md-nav__link">
         
   
   
@@ -1000,7 +1000,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../type/int/" class="md-nav__link">
+      <a href="../../type/int/" class="md-nav__link">
         
   
   
@@ -1023,7 +1023,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../type/gobj/" class="md-nav__link">
+      <a href="../../type/gobj/" class="md-nav__link">
         
   
   
@@ -1046,7 +1046,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../type/obj_methods/" class="md-nav__link">
+      <a href="../../type/obj_methods/" class="md-nav__link">
         
   
   
@@ -1069,7 +1069,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../type/op/" class="md-nav__link">
+      <a href="../../type/op/" class="md-nav__link">
         
   
   
@@ -1092,7 +1092,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../type/raw/" class="md-nav__link">
+      <a href="../../type/raw/" class="md-nav__link">
         
   
   
@@ -1115,7 +1115,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../type/rule/" class="md-nav__link">
+      <a href="../../type/rule/" class="md-nav__link">
         
   
   
@@ -1138,7 +1138,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../type/str/" class="md-nav__link">
+      <a href="../../type/str/" class="md-nav__link">
         
   
   
@@ -1161,7 +1161,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../type/sysid/" class="md-nav__link">
+      <a href="../../type/sysid/" class="md-nav__link">
         
   
   
@@ -1184,7 +1184,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../type/sysint/" class="md-nav__link">
+      <a href="../../type/sysint/" class="md-nav__link">
         
   
   
@@ -1207,7 +1207,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../type/sysstr/" class="md-nav__link">
+      <a href="../../type/sysstr/" class="md-nav__link">
         
   
   
@@ -1230,7 +1230,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../type/table/" class="md-nav__link">
+      <a href="../../type/table/" class="md-nav__link">
         
   
   
@@ -1253,7 +1253,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../type/tag/" class="md-nav__link">
+      <a href="../../type/tag/" class="md-nav__link">
         
   
   
@@ -1276,7 +1276,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../type/time/" class="md-nav__link">
+      <a href="../../type/time/" class="md-nav__link">
         
   
   
@@ -1299,7 +1299,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../type/tuple/" class="md-nav__link">
+      <a href="../../type/tuple/" class="md-nav__link">
         
   
   
@@ -1322,7 +1322,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../type/vector/" class="md-nav__link">
+      <a href="../../type/vector/" class="md-nav__link">
         
   
   
@@ -1345,7 +1345,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../type/widget/" class="md-nav__link">
+      <a href="../../type/widget/" class="md-nav__link">
         
   
   
@@ -1368,7 +1368,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../type/widget/attributes/" class="md-nav__link">
+      <a href="../../type/widget/attributes/" class="md-nav__link">
         
   
   
@@ -1391,7 +1391,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../type/xml/" class="md-nav__link">
+      <a href="../../type/xml/" class="md-nav__link">
         
   
   
@@ -1463,7 +1463,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../operators/function/" class="md-nav__link">
+      <a href="../../operators/function/" class="md-nav__link">
         
   
   
@@ -1486,7 +1486,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../operators/assignment/" class="md-nav__link">
+      <a href="../../operators/assignment/" class="md-nav__link">
         
   
   
@@ -1509,7 +1509,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../operators/math/" class="md-nav__link">
+      <a href="../../operators/math/" class="md-nav__link">
         
   
   
@@ -1532,7 +1532,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../operators/bit/" class="md-nav__link">
+      <a href="../../operators/bit/" class="md-nav__link">
         
   
   
@@ -1555,7 +1555,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../operators/compare/" class="md-nav__link">
+      <a href="../../operators/compare/" class="md-nav__link">
         
   
   
@@ -1578,7 +1578,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../operators/condition/" class="md-nav__link">
+      <a href="../../operators/condition/" class="md-nav__link">
         
   
   
@@ -1601,7 +1601,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../operators/loop/" class="md-nav__link">
+      <a href="../../operators/loop/" class="md-nav__link">
         
   
   
@@ -1624,7 +1624,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../operators/command/" class="md-nav__link">
+      <a href="../../operators/command/" class="md-nav__link">
         
   
   
@@ -1647,7 +1647,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../operators/constants/" class="md-nav__link">
+      <a href="../../operators/constants/" class="md-nav__link">
         
   
   
@@ -1675,6 +1675,8 @@
                 
   
   
+    
+  
   
   
     
@@ -1685,11 +1687,11 @@
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_4" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_4" checked>
         
           
           <label class="md-nav__link" for="__nav_5_4" id="__nav_5_4_label" tabindex="0">
@@ -1705,7 +1707,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_4_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_4_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_5_4">
             <span class="md-nav__icon md-icon"></span>
             System Functions
@@ -1719,7 +1721,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../sys/file/" class="md-nav__link">
+      <a href="../file/" class="md-nav__link">
         
   
   
@@ -1742,7 +1744,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../sys/math/" class="md-nav__link">
+      <a href="../math/" class="md-nav__link">
         
   
   
@@ -1765,7 +1767,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../sys/net/" class="md-nav__link">
+      <a href="../net/" class="md-nav__link">
         
   
   
@@ -1785,10 +1787,32 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../sys/py/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Python Integration
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -1799,6 +1823,248 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      Overview
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#availability" class="md-nav__link">
+    <span class="md-ellipsis">
+      Availability
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#methods" class="md-nav__link">
+    <span class="md-ellipsis">
+      Methods
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Methods">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#evalscript-locals-import-attr" class="md-nav__link">
+    <span class="md-ellipsis">
+      .eval(script, locals={}, import='', attr='')
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#execscript-locals-import-attr" class="md-nav__link">
+    <span class="md-ellipsis">
+      .exec(script, locals={}, import='', attr='')
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#type-conversion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Type Conversion
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Type Conversion">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#grapa-python" class="md-nav__link">
+    <span class="md-ellipsis">
+      Grapa → Python
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#python-grapa" class="md-nav__link">
+    <span class="md-ellipsis">
+      Python → Grapa
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#parameter-access-changes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Parameter Access Changes
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#common-usage-patterns" class="md-nav__link">
+    <span class="md-ellipsis">
+      Common Usage Patterns
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Common Usage Patterns">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-simple-function-calls" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Simple Function Calls
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-custom-python-functions" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Custom Python Functions
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-complex-data-processing" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Complex Data Processing
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-error-handling" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Error Handling
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#advanced-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      Advanced Examples
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Advanced Examples">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#rule-based-python-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      Rule-Based Python Integration
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#compiled-code-with-python" class="md-nav__link">
+    <span class="md-ellipsis">
+      Compiled Code with Python
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#performance-considerations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Performance Considerations
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#error-handling" class="md-nav__link">
+    <span class="md-ellipsis">
+      Error Handling
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#thread-safety" class="md-nav__link">
+    <span class="md-ellipsis">
+      Thread Safety
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#limitations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Limitations
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#see-also" class="md-nav__link">
+    <span class="md-ellipsis">
+      See Also
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -1811,7 +2077,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../curl_function/" class="md-nav__link">
+      <a href="../../curl_function/" class="md-nav__link">
         
   
   
@@ -1834,7 +2100,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../sys/sys/" class="md-nav__link">
+      <a href="../sys/" class="md-nav__link">
         
   
   
@@ -1857,7 +2123,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../sys/thread/" class="md-nav__link">
+      <a href="../thread/" class="md-nav__link">
         
   
   
@@ -1880,7 +2146,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../function_quick_reference/" class="md-nav__link">
+      <a href="../../function_quick_reference/" class="md-nav__link">
         
   
   
@@ -1952,7 +2218,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../obj/document/" class="md-nav__link">
+      <a href="../../obj/document/" class="md-nav__link">
         
   
   
@@ -1975,7 +2241,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../obj/encode/" class="md-nav__link">
+      <a href="../../obj/encode/" class="md-nav__link">
         
   
   
@@ -1998,7 +2264,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../obj/grep/" class="md-nav__link">
+      <a href="../../obj/grep/" class="md-nav__link">
         
   
   
@@ -2021,7 +2287,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../obj/grep_python/" class="md-nav__link">
+      <a href="../../obj/grep_python/" class="md-nav__link">
         
   
   
@@ -2044,7 +2310,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../obj/iterate/" class="md-nav__link">
+      <a href="../../obj/iterate/" class="md-nav__link">
         
   
   
@@ -2067,7 +2333,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../obj/transform/" class="md-nav__link">
+      <a href="../../obj/transform/" class="md-nav__link">
         
   
   
@@ -2139,7 +2405,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../grep/" class="md-nav__link">
+      <a href="../../grep/" class="md-nav__link">
         
   
   
@@ -2211,7 +2477,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../database/quick_reference/" class="md-nav__link">
+      <a href="../../database/quick_reference/" class="md-nav__link">
         
   
   
@@ -2234,7 +2500,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../database/column_store/" class="md-nav__link">
+      <a href="../../database/column_store/" class="md-nav__link">
         
   
   
@@ -2257,7 +2523,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../database/troubleshooting/" class="md-nav__link">
+      <a href="../../database/troubleshooting/" class="md-nav__link">
         
   
   
@@ -2329,7 +2595,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../syntax/basic_syntax/" class="md-nav__link">
+      <a href="../../syntax/basic_syntax/" class="md-nav__link">
         
   
   
@@ -2352,7 +2618,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../syntax/namespace_scoping/" class="md-nav__link">
+      <a href="../../syntax/namespace_scoping/" class="md-nav__link">
         
   
   
@@ -2375,7 +2641,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../syntax/operator/" class="md-nav__link">
+      <a href="../../syntax/operator/" class="md-nav__link">
         
   
   
@@ -2398,7 +2664,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../syntax/precedence/" class="md-nav__link">
+      <a href="../../syntax/precedence/" class="md-nav__link">
         
   
   
@@ -2421,7 +2687,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../syntax/grammar_design/" class="md-nav__link">
+      <a href="../../syntax/grammar_design/" class="md-nav__link">
         
   
   
@@ -2444,7 +2710,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../syntax/thread_safe_variables/" class="md-nav__link">
+      <a href="../../syntax/thread_safe_variables/" class="md-nav__link">
         
   
   
@@ -2475,7 +2741,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../debugging/" class="md-nav__link">
+      <a href="../../debugging/" class="md-nav__link">
         
   
   
@@ -2498,7 +2764,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../execution_pipeline_overview/" class="md-nav__link">
+      <a href="../../execution_pipeline_overview/" class="md-nav__link">
         
   
   
@@ -2518,8 +2784,6 @@
                 
   
   
-    
-  
   
   
     
@@ -2530,11 +2794,11 @@
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_11" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_11" >
         
           
           <label class="md-nav__link" for="__nav_5_11" id="__nav_5_11_label" tabindex="0">
@@ -2550,7 +2814,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_11_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_11_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_5_11">
             <span class="md-nav__icon md-icon"></span>
             Advanced Topics
@@ -2564,7 +2828,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../advanced_topics/" class="md-nav__link">
+      <a href="../../advanced_topics/" class="md-nav__link">
         
   
   
@@ -2587,7 +2851,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../advanced_language_features/" class="md-nav__link">
+      <a href="../../advanced_language_features/" class="md-nav__link">
         
   
   
@@ -2607,32 +2871,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    Concurrency and Callbacks
-    
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../advanced_concurrency_and_callbacks/" class="md-nav__link">
         
   
   
@@ -2643,404 +2885,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#overview" class="md-nav__link">
-    <span class="md-ellipsis">
-      Overview
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#thread-safety-and-parallel-by-design-architecture" class="md-nav__link">
-    <span class="md-ellipsis">
-      Thread Safety and Parallel-by-Design Architecture
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Thread Safety and Parallel-by-Design Architecture">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#universal-thread-safety" class="md-nav__link">
-    <span class="md-ellipsis">
-      Universal Thread Safety
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#automatic-variable-locking" class="md-nav__link">
-    <span class="md-ellipsis">
-      Automatic Variable Locking
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#advanced-callback-systems" class="md-nav__link">
-    <span class="md-ellipsis">
-      Advanced Callback Systems
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Advanced Callback Systems">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#thread-callback-architecture" class="md-nav__link">
-    <span class="md-ellipsis">
-      $thread Callback Architecture
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#full-coroutine-support-with-advanced-control" class="md-nav__link">
-    <span class="md-ellipsis">
-      Full Coroutine Support with Advanced Control
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Full Coroutine Support with Advanced Control">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#core-coroutine-methods" class="md-nav__link">
-    <span class="md-ellipsis">
-      Core Coroutine Methods
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#advanced-synchronization-methods" class="md-nav__link">
-    <span class="md-ellipsis">
-      Advanced Synchronization Methods
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#state-inspection-methods" class="md-nav__link">
-    <span class="md-ellipsis">
-      State Inspection Methods
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#real-world-coroutine-usage" class="md-nav__link">
-    <span class="md-ellipsis">
-      Real-World Coroutine Usage
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#widget-callback-system" class="md-nav__link">
-    <span class="md-ellipsis">
-      Widget Callback System
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#network-callback-system" class="md-nav__link">
-    <span class="md-ellipsis">
-      Network Callback System
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#structured-concurrency-with-functional-methods" class="md-nav__link">
-    <span class="md-ellipsis">
-      Structured Concurrency with Functional Methods
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Structured Concurrency with Functional Methods">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#parallel-processing-by-default" class="md-nav__link">
-    <span class="md-ellipsis">
-      Parallel Processing by Default
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#advanced-functional-operations" class="md-nav__link">
-    <span class="md-ellipsis">
-      Advanced Functional Operations
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#method-chaining-with-parallel-processing" class="md-nav__link">
-    <span class="md-ellipsis">
-      Method Chaining with Parallel Processing
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#execution-tree-metaprogramming" class="md-nav__link">
-    <span class="md-ellipsis">
-      Execution Tree Metaprogramming
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Execution Tree Metaprogramming">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#human-readable-execution-trees" class="md-nav__link">
-    <span class="md-ellipsis">
-      Human-Readable Execution Trees
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#runtime-tree-manipulation" class="md-nav__link">
-    <span class="md-ellipsis">
-      Runtime Tree Manipulation
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#advanced-concurrency-patterns" class="md-nav__link">
-    <span class="md-ellipsis">
-      Advanced Concurrency Patterns
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Advanced Concurrency Patterns">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#worker-thread-coordination-with-functional-methods" class="md-nav__link">
-    <span class="md-ellipsis">
-      Worker Thread Coordination with Functional Methods
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Worker Thread Coordination with Functional Methods">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#thread-synchronization-barrier" class="md-nav__link">
-    <span class="md-ellipsis">
-      Thread Synchronization Barrier
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#parallel-task-execution" class="md-nav__link">
-    <span class="md-ellipsis">
-      Parallel Task Execution
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#resource-pool-coordination" class="md-nav__link">
-    <span class="md-ellipsis">
-      Resource Pool Coordination
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#system-initialization-pattern" class="md-nav__link">
-    <span class="md-ellipsis">
-      System Initialization Pattern
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#microservices-coordination" class="md-nav__link">
-    <span class="md-ellipsis">
-      Microservices Coordination
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#worker-pattern-integration" class="md-nav__link">
-    <span class="md-ellipsis">
-      Worker Pattern Integration
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#network-based-distributed-processing" class="md-nav__link">
-    <span class="md-ellipsis">
-      Network-Based Distributed Processing
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#comparison-with-traditional-asyncawait" class="md-nav__link">
-    <span class="md-ellipsis">
-      Comparison with Traditional Async/Await
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Comparison with Traditional Async/Await">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#grapas-superior-approach" class="md-nav__link">
-    <span class="md-ellipsis">
-      Grapa's Superior Approach
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#why-grapas-approach-is-superior" class="md-nav__link">
-    <span class="md-ellipsis">
-      Why Grapa's Approach is Superior
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#best-practices" class="md-nav__link">
-    <span class="md-ellipsis">
-      Best Practices
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Best Practices">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#thread-count-management" class="md-nav__link">
-    <span class="md-ellipsis">
-      Thread Count Management
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#performance-considerations-parallel-vs-sequential" class="md-nav__link">
-    <span class="md-ellipsis">
-      Performance Considerations: Parallel vs Sequential
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#callback-design-patterns" class="md-nav__link">
-    <span class="md-ellipsis">
-      Callback Design Patterns
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -3053,7 +2897,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../advanced/array_vector_interoperability/" class="md-nav__link">
+      <a href="../../advanced/array_vector_interoperability/" class="md-nav__link">
         
   
   
@@ -3076,7 +2920,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../multi_syntax_programming/" class="md-nav__link">
+      <a href="../../multi_syntax_programming/" class="md-nav__link">
         
   
   
@@ -3099,7 +2943,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../language_design_with_executable_bnf/" class="md-nav__link">
+      <a href="../../language_design_with_executable_bnf/" class="md-nav__link">
         
   
   
@@ -3122,7 +2966,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../isolated_rule_execution/" class="md-nav__link">
+      <a href="../../isolated_rule_execution/" class="md-nav__link">
         
   
   
@@ -3145,7 +2989,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../deep_expert_implementation_overview/" class="md-nav__link">
+      <a href="../../deep_expert_implementation_overview/" class="md-nav__link">
         
   
   
@@ -3168,7 +3012,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../xml_list_integration/" class="md-nav__link">
+      <a href="../../xml_list_integration/" class="md-nav__link">
         
   
   
@@ -3191,7 +3035,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../unified_dot_notation/" class="md-nav__link">
+      <a href="../../unified_dot_notation/" class="md-nav__link">
         
   
   
@@ -3214,7 +3058,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../module_system/" class="md-nav__link">
+      <a href="../../module_system/" class="md-nav__link">
         
   
   
@@ -3237,7 +3081,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../machine_learning/" class="md-nav__link">
+      <a href="../../machine_learning/" class="md-nav__link">
         
   
   
@@ -3260,7 +3104,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../vector_performance_guide/" class="md-nav__link">
+      <a href="../../vector_performance_guide/" class="md-nav__link">
         
   
   
@@ -3283,7 +3127,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../grapa_core_differentiators/" class="md-nav__link">
+      <a href="../../grapa_core_differentiators/" class="md-nav__link">
         
   
   
@@ -3355,7 +3199,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../crypto/key_exchange_methods/" class="md-nav__link">
+      <a href="../../crypto/key_exchange_methods/" class="md-nav__link">
         
   
   
@@ -3427,7 +3271,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../sql_interpreter/" class="md-nav__link">
+      <a href="../../sql_interpreter/" class="md-nav__link">
         
   
   
@@ -3450,7 +3294,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../prolog_interpreter/" class="md-nav__link">
+      <a href="../../prolog_interpreter/" class="md-nav__link">
         
   
   
@@ -3473,7 +3317,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../lisp_interpreter/" class="md-nav__link">
+      <a href="../../lisp_interpreter/" class="md-nav__link">
         
   
   
@@ -3593,7 +3437,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../migrations/python_to_grapa_migration/" class="md-nav__link">
+      <a href="../../migrations/python_to_grapa_migration/" class="md-nav__link">
         
   
   
@@ -3616,7 +3460,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../migrations/js_to_grapa_migration/" class="md-nav__link">
+      <a href="../../migrations/js_to_grapa_migration/" class="md-nav__link">
         
   
   
@@ -3639,7 +3483,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../migrations/rust_to_grapa_migration/" class="md-nav__link">
+      <a href="../../migrations/rust_to_grapa_migration/" class="md-nav__link">
         
   
   
@@ -3662,7 +3506,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../migrations/typescript_to_grapa_migration/" class="md-nav__link">
+      <a href="../../migrations/typescript_to_grapa_migration/" class="md-nav__link">
         
   
   
@@ -3685,7 +3529,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../migrations/go_to_grapa_migration/" class="md-nav__link">
+      <a href="../../migrations/go_to_grapa_migration/" class="md-nav__link">
         
   
   
@@ -3708,7 +3552,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../migrations/ruby_to_grapa_migration/" class="md-nav__link">
+      <a href="../../migrations/ruby_to_grapa_migration/" class="md-nav__link">
         
   
   
@@ -3731,7 +3575,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../migrations/kotlin_to_grapa_migration/" class="md-nav__link">
+      <a href="../../migrations/kotlin_to_grapa_migration/" class="md-nav__link">
         
   
   
@@ -3754,7 +3598,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../migrations/swift_to_grapa_migration/" class="md-nav__link">
+      <a href="../../migrations/swift_to_grapa_migration/" class="md-nav__link">
         
   
   
@@ -3785,7 +3629,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../examples/" class="md-nav__link">
+      <a href="../../examples/" class="md-nav__link">
         
   
   
@@ -3808,7 +3652,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../python_use_cases/" class="md-nav__link">
+      <a href="../../python_use_cases/" class="md-nav__link">
         
   
   
@@ -3831,7 +3675,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../grc_scripts/" class="md-nav__link">
+      <a href="../../grc_scripts/" class="md-nav__link">
         
   
   
@@ -3854,7 +3698,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../grz_format/" class="md-nav__link">
+      <a href="../../grz_format/" class="md-nav__link">
         
   
   
@@ -3877,7 +3721,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../grapapy_namespace_solution/" class="md-nav__link">
+      <a href="../../grapapy_namespace_solution/" class="md-nav__link">
         
   
   
@@ -3900,7 +3744,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../directory_navigation/" class="md-nav__link">
+      <a href="../../directory_navigation/" class="md-nav__link">
         
   
   
@@ -3923,7 +3767,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../unified_path_system/" class="md-nav__link">
+      <a href="../../unified_path_system/" class="md-nav__link">
         
   
   
@@ -3994,7 +3838,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../use_cases/" class="md-nav__link">
+      <a href="../../use_cases/" class="md-nav__link">
         
   
   
@@ -4017,7 +3861,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../use_cases/etl_data_engineering/" class="md-nav__link">
+      <a href="../../use_cases/etl_data_engineering/" class="md-nav__link">
         
   
   
@@ -4040,7 +3884,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../use_cases/compiler_bnf_learning/" class="md-nav__link">
+      <a href="../../use_cases/compiler_bnf_learning/" class="md-nav__link">
         
   
   
@@ -4063,7 +3907,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../use_cases/high_precision_math/" class="md-nav__link">
+      <a href="../../use_cases/high_precision_math/" class="md-nav__link">
         
   
   
@@ -4086,7 +3930,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../use_cases/parallel_concurrent_programming/" class="md-nav__link">
+      <a href="../../use_cases/parallel_concurrent_programming/" class="md-nav__link">
         
   
   
@@ -4109,7 +3953,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../use_cases/web_data_scraping/" class="md-nav__link">
+      <a href="../../use_cases/web_data_scraping/" class="md-nav__link">
         
   
   
@@ -4132,7 +3976,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../use_cases/database_file_system/" class="md-nav__link">
+      <a href="../../use_cases/database_file_system/" class="md-nav__link">
         
   
   
@@ -4155,7 +3999,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../use_cases/education_prototyping/" class="md-nav__link">
+      <a href="../../use_cases/education_prototyping/" class="md-nav__link">
         
   
   
@@ -4178,7 +4022,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../use_cases/cryptography/" class="md-nav__link">
+      <a href="../../use_cases/cryptography/" class="md-nav__link">
         
   
   
@@ -4201,7 +4045,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../use_cases/multi_syntax_data_processing/" class="md-nav__link">
+      <a href="../../use_cases/multi_syntax_data_processing/" class="md-nav__link">
         
   
   
@@ -4224,7 +4068,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../use_cases/language_design_and_dsls/" class="md-nav__link">
+      <a href="../../use_cases/language_design_and_dsls/" class="md-nav__link">
         
   
   
@@ -4247,7 +4091,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../use_cases/network_programming_patterns/" class="md-nav__link">
+      <a href="../../use_cases/network_programming_patterns/" class="md-nav__link">
         
   
   
@@ -4318,7 +4162,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../troubleshooting/" class="md-nav__link">
+      <a href="../../troubleshooting/" class="md-nav__link">
         
   
   
@@ -4341,7 +4185,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../testing/" class="md-nav__link">
+      <a href="../../testing/" class="md-nav__link">
         
   
   
@@ -4364,7 +4208,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../updates/" class="md-nav__link">
+      <a href="../../updates/" class="md-nav__link">
         
   
   
@@ -4423,28 +4267,37 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#thread-safety-and-parallel-by-design-architecture" class="md-nav__link">
+  <a href="#availability" class="md-nav__link">
     <span class="md-ellipsis">
-      Thread Safety and Parallel-by-Design Architecture
+      Availability
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Thread Safety and Parallel-by-Design Architecture">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#methods" class="md-nav__link">
+    <span class="md-ellipsis">
+      Methods
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Methods">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#universal-thread-safety" class="md-nav__link">
+  <a href="#evalscript-locals-import-attr" class="md-nav__link">
     <span class="md-ellipsis">
-      Universal Thread Safety
+      .eval(script, locals={}, import='', attr='')
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#automatic-variable-locking" class="md-nav__link">
+  <a href="#execscript-locals-import-attr" class="md-nav__link">
     <span class="md-ellipsis">
-      Automatic Variable Locking
+      .exec(script, locals={}, import='', attr='')
     </span>
   </a>
   
@@ -4456,88 +4309,28 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#advanced-callback-systems" class="md-nav__link">
+  <a href="#type-conversion" class="md-nav__link">
     <span class="md-ellipsis">
-      Advanced Callback Systems
+      Type Conversion
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Advanced Callback Systems">
+    <nav class="md-nav" aria-label="Type Conversion">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#thread-callback-architecture" class="md-nav__link">
+  <a href="#grapa-python" class="md-nav__link">
     <span class="md-ellipsis">
-      $thread Callback Architecture
+      Grapa → Python
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#full-coroutine-support-with-advanced-control" class="md-nav__link">
+  <a href="#python-grapa" class="md-nav__link">
     <span class="md-ellipsis">
-      Full Coroutine Support with Advanced Control
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Full Coroutine Support with Advanced Control">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#core-coroutine-methods" class="md-nav__link">
-    <span class="md-ellipsis">
-      Core Coroutine Methods
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#advanced-synchronization-methods" class="md-nav__link">
-    <span class="md-ellipsis">
-      Advanced Synchronization Methods
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#state-inspection-methods" class="md-nav__link">
-    <span class="md-ellipsis">
-      State Inspection Methods
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#real-world-coroutine-usage" class="md-nav__link">
-    <span class="md-ellipsis">
-      Real-World Coroutine Usage
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#widget-callback-system" class="md-nav__link">
-    <span class="md-ellipsis">
-      Widget Callback System
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#network-callback-system" class="md-nav__link">
-    <span class="md-ellipsis">
-      Network Callback System
+      Python → Grapa
     </span>
   </a>
   
@@ -4549,37 +4342,55 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#structured-concurrency-with-functional-methods" class="md-nav__link">
+  <a href="#parameter-access-changes" class="md-nav__link">
     <span class="md-ellipsis">
-      Structured Concurrency with Functional Methods
+      Parameter Access Changes
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Structured Concurrency with Functional Methods">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#common-usage-patterns" class="md-nav__link">
+    <span class="md-ellipsis">
+      Common Usage Patterns
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Common Usage Patterns">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#parallel-processing-by-default" class="md-nav__link">
+  <a href="#1-simple-function-calls" class="md-nav__link">
     <span class="md-ellipsis">
-      Parallel Processing by Default
+      1. Simple Function Calls
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#advanced-functional-operations" class="md-nav__link">
+  <a href="#2-custom-python-functions" class="md-nav__link">
     <span class="md-ellipsis">
-      Advanced Functional Operations
+      2. Custom Python Functions
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#method-chaining-with-parallel-processing" class="md-nav__link">
+  <a href="#3-complex-data-processing" class="md-nav__link">
     <span class="md-ellipsis">
-      Method Chaining with Parallel Processing
+      3. Complex Data Processing
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-error-handling" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Error Handling
     </span>
   </a>
   
@@ -4591,28 +4402,28 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#execution-tree-metaprogramming" class="md-nav__link">
+  <a href="#advanced-examples" class="md-nav__link">
     <span class="md-ellipsis">
-      Execution Tree Metaprogramming
+      Advanced Examples
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Execution Tree Metaprogramming">
+    <nav class="md-nav" aria-label="Advanced Examples">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#human-readable-execution-trees" class="md-nav__link">
+  <a href="#rule-based-python-integration" class="md-nav__link">
     <span class="md-ellipsis">
-      Human-Readable Execution Trees
+      Rule-Based Python Integration
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#runtime-tree-manipulation" class="md-nav__link">
+  <a href="#compiled-code-with-python" class="md-nav__link">
     <span class="md-ellipsis">
-      Runtime Tree Manipulation
+      Compiled Code with Python
     </span>
   </a>
   
@@ -4624,170 +4435,47 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#advanced-concurrency-patterns" class="md-nav__link">
+  <a href="#performance-considerations" class="md-nav__link">
     <span class="md-ellipsis">
-      Advanced Concurrency Patterns
+      Performance Considerations
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="Advanced Concurrency Patterns">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#worker-thread-coordination-with-functional-methods" class="md-nav__link">
-    <span class="md-ellipsis">
-      Worker Thread Coordination with Functional Methods
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Worker Thread Coordination with Functional Methods">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#thread-synchronization-barrier" class="md-nav__link">
-    <span class="md-ellipsis">
-      Thread Synchronization Barrier
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#parallel-task-execution" class="md-nav__link">
-    <span class="md-ellipsis">
-      Parallel Task Execution
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#resource-pool-coordination" class="md-nav__link">
-    <span class="md-ellipsis">
-      Resource Pool Coordination
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#system-initialization-pattern" class="md-nav__link">
-    <span class="md-ellipsis">
-      System Initialization Pattern
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#microservices-coordination" class="md-nav__link">
-    <span class="md-ellipsis">
-      Microservices Coordination
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#worker-pattern-integration" class="md-nav__link">
-    <span class="md-ellipsis">
-      Worker Pattern Integration
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#network-based-distributed-processing" class="md-nav__link">
-    <span class="md-ellipsis">
-      Network-Based Distributed Processing
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#comparison-with-traditional-asyncawait" class="md-nav__link">
+  <a href="#error-handling" class="md-nav__link">
     <span class="md-ellipsis">
-      Comparison with Traditional Async/Await
+      Error Handling
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="Comparison with Traditional Async/Await">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#grapas-superior-approach" class="md-nav__link">
-    <span class="md-ellipsis">
-      Grapa's Superior Approach
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#why-grapas-approach-is-superior" class="md-nav__link">
-    <span class="md-ellipsis">
-      Why Grapa's Approach is Superior
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#best-practices" class="md-nav__link">
+  <a href="#thread-safety" class="md-nav__link">
     <span class="md-ellipsis">
-      Best Practices
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Best Practices">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#thread-count-management" class="md-nav__link">
-    <span class="md-ellipsis">
-      Thread Count Management
+      Thread Safety
     </span>
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#performance-considerations-parallel-vs-sequential" class="md-nav__link">
+      
+        <li class="md-nav__item">
+  <a href="#limitations" class="md-nav__link">
     <span class="md-ellipsis">
-      Performance Considerations: Parallel vs Sequential
+      Limitations
     </span>
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#callback-design-patterns" class="md-nav__link">
+      
+        <li class="md-nav__item">
+  <a href="#see-also" class="md-nav__link">
     <span class="md-ellipsis">
-      Callback Design Patterns
+      See Also
     </span>
   </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -4807,453 +4495,281 @@
 
 
 
-<h1 id="advanced-concurrency-and-callbacks">Advanced Concurrency and Callbacks</h1>
+<h1 id="py-python-integration-system-object">$py() - Python Integration System Object</h1>
 <h2 id="overview">Overview</h2>
-<p>Grapa provides sophisticated concurrency and callback capabilities that go far beyond traditional async/await patterns. The language was designed from the ground up to be <strong>parallel by design</strong> with advanced callback systems for complex asynchronous operations.</p>
-<h2 id="thread-safety-and-parallel-by-design-architecture">Thread Safety and Parallel-by-Design Architecture</h2>
-<h3 id="universal-thread-safety">Universal Thread Safety</h3>
-<p>Grapa is <strong>fully thread safe</strong> in all supported environments:
-- <strong>Command line</strong> - Safe concurrent operations
-- <strong>Grapa shell</strong> - Safe interactive use
-- <strong>Python/GrapaPy</strong> - Safe integration</p>
-<p>All built-in operations—including <code>map</code>, <code>filter</code>, <code>reduce</code>, <code>$thread</code>, and <code>$net</code>—are safe to use concurrently without special precautions.</p>
-<h3 id="automatic-variable-locking">Automatic Variable Locking</h3>
-<p><strong>CRITICAL FEATURE</strong>: Every access to a Grapa variable automatically locks/unlocks the underlying object. This was extensively stress-tested with hundreds of threads to ensure:
-- No crashes under extreme concurrent access
-- Cross-platform thread safety
-- Worker object reliability
-- Predictable behavior under load</p>
-<h2 id="advanced-callback-systems">Advanced Callback Systems</h2>
-<h3 id="thread-callback-architecture">$thread Callback Architecture</h3>
-<p>Grapa's <code>$thread</code> system provides sophisticated callback capabilities:</p>
-<div class="highlight"><pre><span></span><code>/* Basic thread with callbacks */
-myRun = op(input) {
-    &quot;myRun:&quot;.echo();
-    $sys().echo(@$local);
-    input.c = input.a + input.b;
-    &quot;\n&quot;.echo();
-    @$local;
-};
+<p>The <code>$py()</code> system object provides bidirectional communication between Grapa and Python, allowing Grapa code to call back into Python functions. This object is <strong>only available in the Python extension</strong> (<code>grapapy</code>), not in the standalone CLI.</p>
+<h2 id="availability">Availability</h2>
+<ul>
+<li>✅ <strong>Python Extension</strong> (<code>grapapy</code>): Fully supported</li>
+<li>❌ <strong>Standalone CLI</strong>: Not available</li>
+</ul>
+<h2 id="methods">Methods</h2>
+<h3 id="evalscript-locals-import-attr"><code>.eval(script, locals={}, import='', attr='')</code></h3>
+<p>Executes Python code and returns the result converted to a Grapa object.</p>
+<p><strong>Parameters:</strong>
+- <code>script</code> (<code>$STR</code>): Python code to execute
+- <code>locals</code> (<code>$GOBJ</code>, optional): Dictionary of local variables for the Python execution context
+- <code>import</code> (<code>$STR</code>, optional): Python module to import (default: <code>"__main__"</code>)
+- <code>attr</code> (<code>$STR</code>, optional): Attribute to access from the imported module (default: <code>"__dict__"</code>)</p>
+<p><strong>Returns:</strong> Grapa object (converted from Python result)</p>
+<p><strong>Example:</strong>
+<div class="highlight"><pre><span></span><code>/* Basic Python evaluation */
+result = $py().eval(&quot;2 + 3 * 4&quot;);  /* Returns: 14 */
 
-myDone = op(input, result) {
-    &quot;myDone:&quot;.echo();
-    $sys().echo(@$local);
-    &quot;\n&quot;.echo();
-};
+/* With local variables - NEW WAY (correct) */
+locals = {&quot;x&quot;: 10, &quot;y&quot;: 5};
+result = $py().eval(&quot;x + y&quot;, locals);  /* Returns: 15 */
 
-t = $thread();
-t.start(myRun, {a:1, b:2}, myDone);
-</code></pre></div>
-<p><strong>Output:</strong>
-<div class="highlight"><pre><span></span><code>myRun:{&quot;input&quot;:{&quot;a&quot;:1,&quot;b&quot;:2}}
-myDone:{&quot;input&quot;:{&quot;a&quot;:1,&quot;b&quot;:2,&quot;c&quot;:3},&quot;result&quot;:{&quot;input&quot;:{&quot;a&quot;:1,&quot;b&quot;:2,&quot;c&quot;:3}}}
+/* When accessing parameters in Grapa scripts called from Python */
+result = $py().eval(&quot;x + y&quot;, {&quot;x&quot;: $local.&#39;x&#39;, &quot;y&quot;: $local.&#39;y&#39;});  /* Returns: 15 */
+
+/* Call Python function */
+result = $py().eval(&quot;abs(-42)&quot;);  /* Returns: 42 */
 </code></pre></div></p>
-<h3 id="full-coroutine-support-with-advanced-control"><strong>Full Coroutine Support with Advanced Control</strong></h3>
-<p>Grapa's <code>$thread</code> system is a <strong>complete coroutine implementation</strong> with advanced control methods:</p>
-<h4 id="core-coroutine-methods"><strong>Core Coroutine Methods</strong></h4>
-<div class="highlight"><pre><span></span><code>/* Create a coroutine thread */
-thread = $thread(op() {
-    &quot;Starting coroutine&quot;.echo();
-    thread.suspend();  /* Pause execution */
-    &quot;Resumed from suspend&quot;.echo();
-    thread.wait();     /* Wait for signal */
-    &quot;Woken by signal&quot;.echo();
-});
+<h3 id="execscript-locals-import-attr"><code>.exec(script, locals={}, import='', attr='')</code></h3>
+<p>Executes Python code without returning a value (for side effects).</p>
+<p><strong>Parameters:</strong>
+- <code>script</code> (<code>$STR</code>): Python code to execute
+- <code>locals</code> (<code>$GOBJ</code>, optional): Dictionary of local variables
+- <code>import</code> (<code>$STR</code>, optional): Python module to import (default: <code>"__main__"</code>)
+- <code>attr</code> (<code>$STR</code>, optional): Attribute to access from the imported module (default: <code>"__dict__"</code>)</p>
+<p><strong>Returns:</strong> <code>null</code> (no return value)</p>
+<p><strong>Example:</strong>
+<div class="highlight"><pre><span></span><code>/* Execute Python code for side effects */
+$py().exec(&quot;print(&#39;Hello from Python!&#39;)&quot;);
 
-/* Control the coroutine */
-thread.resume();   /* Resume from suspend */
-thread.signal();   /* Wake from wait */
-</code></pre></div>
-<h4 id="advanced-synchronization-methods"><strong>Advanced Synchronization Methods</strong></h4>
-<div class="highlight"><pre><span></span><code>/* Thread synchronization primitives */
-thread = $thread(op() {
-    /* Try to acquire lock */
-    if (thread.trylock()) {
-        &quot;Lock acquired&quot;.echo();
-        /* Critical section */
-        thread.unlock();  /* Release lock */
-    } else {
-        &quot;Lock busy&quot;.echo();
-    };
-
-    /* Wait for condition */
-    thread.wait();
-    &quot;Condition met&quot;.echo();
-});
-
-/* Control from another thread */
-thread.lock();     /* Acquire lock (blocking) */
-thread.signal();   /* Wake waiting thread */
-thread.unlock();   /* Release lock */
-</code></pre></div>
-<h4 id="state-inspection-methods"><strong>State Inspection Methods</strong></h4>
-<div class="highlight"><pre><span></span><code>/* Check thread state */
-thread = $thread(op() {
-    thread.suspend();
-    &quot;Suspended&quot;.echo();
-});
-
-/* State inspection */
-if (thread.suspended()) {
-    &quot;Thread is suspended&quot;.echo();
-};
-
-if (thread.waiting()) {
-    &quot;Thread is waiting&quot;.echo();
-};
-</code></pre></div>
-<h4 id="real-world-coroutine-usage"><strong>Real-World Coroutine Usage</strong></h4>
-<p>The lexer→compiler→executor pipeline demonstrates sophisticated coroutine usage:</p>
-<div class="highlight"><pre><span></span><code>/* Lexer thread - pauses when input queue is empty */
-lexer_thread = $thread(op() {
-    while (true) {
-        if (input_queue.empty()) {
-            lexer_thread.wait();  /* Wait for input */
-        };
-        token = process_input();
-        compiler_queue.add(token);
-        compiler_thread.signal();  /* Wake compiler */
-    };
-});
-
-/* Compiler thread - pauses when lexer queue is empty */
-compiler_thread = $thread(op() {
-    while (true) {
-        if (lexer_queue.empty()) {
-            compiler_thread.wait();  /* Wait for tokens */
-        };
-        code = compile_tokens();
-        executor_queue.add(code);
-        executor_thread.signal();  /* Wake executor */
-    };
-});
-
-/* Executor thread - pauses when compiler queue is empty */
-executor_thread = $thread(op() {
-    while (true) {
-        if (compiler_queue.empty()) {
-            executor_thread.wait();  /* Wait for code */
-        };
-        execute_code();
-    };
-});
-</code></pre></div>
-<p><strong>Key Features:</strong>
-- <strong><code>suspend()</code>/<code>resume()</code></strong>: Direct coroutine control
-- <strong><code>wait()</code>/<code>signal()</code></strong>: Condition variable support
-- <strong><code>trylock()</code>/<code>lock()</code>/<code>unlock()</code></strong>: Thread synchronization primitives
-- <strong><code>waiting()</code>/<code>suspended()</code></strong>: State inspection
-- <strong>Queue-based coordination</strong>: Built-in support for producer-consumer patterns
-- <strong>Cooperative multitasking</strong>: Explicit control flow without complex async patterns</p>
-<h3 id="widget-callback-system">Widget Callback System</h3>
-<p>The widget system provides rich callback capabilities with object references:</p>
-<div class="highlight"><pre><span></span><code>/* Widget with advanced callbacks */
-w = $WIDGET(&quot;double_window&quot;, 0, 0, 340, 260, &quot;test&quot;, {color: &quot;BLUE&quot;});
-w.show();
-
-/* Post callback handlers */
-w.set({
-    on_post_start: op(o) {
-        o.set({&quot;color&quot;:&quot;YELLOW&quot;});
-        o.redraw();
-    },
-    on_post_echo: op(o, data) {
-        o.set({&quot;append&quot;:data.str(), &quot;key&quot;:&quot;end&quot;});
-    },
-    on_post_prompt: op(o, data) {
-        o.set({&quot;append&quot;:&quot;\ngrapa&gt; &quot;, &quot;key&quot;:&quot;end&quot;});
-    },
-    on_post_end: op(o, data) {
-        o.set({
-            &quot;append&quot;:&quot;\n&quot; + data.str(),
-            &quot;key&quot;:&quot;end&quot;,
-            &quot;color&quot;:&quot;white&quot;,
-            &quot;cursor_state&quot;:&quot;show&quot;,
-            &quot;cursor_color&quot;:&quot;black&quot;
-        });
-        o.redraw();
-    }
-});
-</code></pre></div>
-<h3 id="network-callback-system">Network Callback System</h3>
-<p>Network operations support sophisticated callback patterns:</p>
-<div class="highlight"><pre><span></span><code>/* Network with callbacks */
-processPost = op(in) {
-    {processed: in};
-};
-
-postHandler = op(in) {
-    $local.data = in.split(&quot;\r&quot;).join(&quot;&quot;);
-    $local.len = data.len() - data.split(&quot;\n\n&quot;)[0].len() - 2;
-    if (len &lt; 0) len = 0;
-    $local.body = data.right(len);
-    $local.rstr = processPost(body).str();
-    &quot;HTTP/1.1 200 OK\r\nContent-Type: text/json\r\nContent-Length: &quot; + rstr.len().str() + &quot;\r\n\r\n&quot; + rstr;
-};
-
-postConnectHandler = op(netSession) {
-    netSession.data = &quot;&quot;;
-};
-
-postMessageHandler = op(netSession, message, hasmore) {
-    netSession.data += message;
-    if (hasmore == 0) {
-        netSession.send(postHandler(netSession.data));
-        netSession.data = &quot;&quot;;
-    };
-};
-
-n = $net();
-n.onlisten(&#39;:12345&#39;, postMessageHandler, postConnectHandler);
-</code></pre></div>
-<h2 id="structured-concurrency-with-functional-methods">Structured Concurrency with Functional Methods</h2>
-<h3 id="parallel-processing-by-default">Parallel Processing by Default</h3>
-<p>Grapa's functional methods provide <strong>structured concurrency</strong> that's superior to traditional async/await:</p>
-<div class="highlight"><pre><span></span><code>/* Parallel by default - creates one thread per item */
-small_data = [1, 2, 3, 4, 5];
-squares = small_data.map(op(x) { x * x; });
-
-/* For large datasets, limit threads to avoid resource exhaustion */
-large_data = (1000000).range(0,1);
-squares = large_data.map(op(x) { x * x; }, 8);  /* Limit to 8 threads */
-</code></pre></div>
-<h3 id="advanced-functional-operations">Advanced Functional Operations</h3>
-<div class="highlight"><pre><span></span><code>/* Parallel map with additional data */
-numbers = [1, 2, 3, 4, 5];
-result = numbers.map(op(x, multiplier) { x * multiplier; }, 10);
-/* Result: [10, 20, 30, 40, 50] */
-
-/* Parallel filter with threshold */
-filtered = numbers.filter(op(x, threshold) { x &gt; threshold; }, 3);
-/* Result: [4, 5] */
-
-/* Parallel reduce with thread count */
-sum = large_data.reduce(op(acc, x) { acc + x; }, 0, 4);
-</code></pre></div>
-<h3 id="method-chaining-with-parallel-processing">Method Chaining with Parallel Processing</h3>
-<div class="highlight"><pre><span></span><code>/* Complex parallel processing pipeline */
-result = (1000000).range(0,1)
-    .filter(op(x) { x % 2 == 0; }, null, 8)      /* Parallel filter */
-    .map(op(x) { x * x; }, null, 8)              /* Parallel map */
-    .reduce(op(acc, x) { acc + x; }, 0, 4);      /* Parallel reduce */
-</code></pre></div>
-<h2 id="execution-tree-metaprogramming">Execution Tree Metaprogramming</h2>
-<h3 id="human-readable-execution-trees">Human-Readable Execution Trees</h3>
-<p>Grapa's execution trees are <strong>human-readable and manipulable</strong>, providing advanced metaprogramming capabilities:</p>
-<div class="highlight"><pre><span></span><code>/* Compile script to execution tree */
-script = &quot;x = 5; y = x * 2; y.echo();&quot;;
-tree = $sys().compile(script);
-
-/* Execution tree is human-readable */
-tree.echo();
-/* Output shows the structured execution tree */
-</code></pre></div>
-<h3 id="runtime-tree-manipulation">Runtime Tree Manipulation</h3>
-<div class="highlight"><pre><span></span><code>/* Create and manipulate execution trees */
-custom_tree = op(x, y) { x + y; };
-tree_str = custom_tree.str();  /* Human-readable tree representation */
-
-/* Execute tree with parameters */
-result = custom_tree(5, 3);  /* Result: 8 */
-</code></pre></div>
-<h2 id="advanced-concurrency-patterns">Advanced Concurrency Patterns</h2>
-<h3 id="worker-thread-coordination-with-functional-methods">Worker Thread Coordination with Functional Methods</h3>
-<p>Grapa's <code>.map()</code> and <code>.filter()</code> methods are not just data processing tools - they're <strong>sophisticated concurrency primitives</strong> that can coordinate multiple worker threads. This enables structured concurrency patterns where all threads must complete before proceeding.</p>
-<h4 id="thread-synchronization-barrier"><strong>Thread Synchronization Barrier</strong></h4>
-<div class="highlight"><pre><span></span><code>/* Spawn multiple worker threads that all must complete */
-workers = [1, 2, 3, 4, 5].map(op(worker_id) {
-    /* Each worker does independent work */
-    (&quot;Worker &quot; + worker_id.str() + &quot; starting&quot;).echo();
-    sleep(worker_id);  /* Simulate work */
-    (&quot;Worker &quot; + worker_id.str() + &quot; completed&quot;).echo();
-    worker_id * 100;  /* Return result */
-});
-/* All workers complete before proceeding */
-(&quot;All workers finished&quot;).echo();
-/* Result: [100, 200, 300, 400, 500] */
-</code></pre></div>
-<h4 id="parallel-task-execution"><strong>Parallel Task Execution</strong></h4>
-<div class="highlight"><pre><span></span><code>/* Execute multiple independent tasks in parallel */
-tasks = [
-    op() { &quot;Task A: Database query&quot;.echo(); sleep(2); &quot;A done&quot;.echo(); },
-    op() { &quot;Task B: API call&quot;.echo(); sleep(1); &quot;B done&quot;.echo(); },
-    op() { &quot;Task C: File processing&quot;.echo(); sleep(3); &quot;C done&quot;.echo(); }
-];
-
-results = tasks.map(op(task) { task(); });
-/* All tasks complete before proceeding */
-(&quot;All tasks completed&quot;).echo();
-</code></pre></div>
-<h4 id="resource-pool-coordination"><strong>Resource Pool Coordination</strong></h4>
-<div class="highlight"><pre><span></span><code>/* Coordinate multiple resource operations */
-resources = [&quot;db1&quot;, &quot;db2&quot;, &quot;db3&quot;, &quot;cache1&quot;, &quot;cache2&quot;].map(op(resource) {
-    (&quot;Connecting to &quot; + resource).echo();
-    /* Simulate connection */
-    sleep(1);
-    (&quot;Connected to &quot; + resource).echo();
-    resource + &quot;_connection&quot;;
-});
-/* All resources connected before proceeding */
-(&quot;All resources ready&quot;).echo();
-/* Result: [&quot;db1_connection&quot;, &quot;db2_connection&quot;, &quot;db3_connection&quot;, &quot;cache1_connection&quot;, &quot;cache2_connection&quot;] */
-</code></pre></div>
-<h4 id="system-initialization-pattern"><strong>System Initialization Pattern</strong></h4>
-<div class="highlight"><pre><span></span><code>/* Initialize multiple system components in parallel */
-components = [
-    op() { initialize_database(); },
-    op() { initialize_cache(); },
-    op() { initialize_api_server(); },
-    op() { initialize_file_system(); }
-];
-
-initialized = components.map(op(init) { init(); });
-/* All components initialized before proceeding */
-(&quot;System ready&quot;).echo();
-</code></pre></div>
-<h4 id="microservices-coordination"><strong>Microservices Coordination</strong></h4>
-<div class="highlight"><pre><span></span><code>/* Coordinate multiple microservice calls */
-services = [
-    op() { call_user_service(); },
-    op() { call_payment_service(); },
-    op() { call_inventory_service(); }
-];
-results = services.map(op(service) { service(); });
-/* All services respond before proceeding */
-</code></pre></div>
-<h3 id="worker-pattern-integration">Worker Pattern Integration</h3>
-<p>Grapa's worker pattern is deeply integrated throughout the system:</p>
-<div class="highlight"><pre><span></span><code>/* Worker pattern for complex operations */
-worker_op = op(input) {
-    /* Complex processing */
-    result = input.map(op(x) { x * x; });
-    result;
-};
-
-/* Execute with worker thread */
-t = $thread();
-t.start(worker_op, large_dataset, op(result) { result.echo(); });
-</code></pre></div>
-<h3 id="network-based-distributed-processing">Network-Based Distributed Processing</h3>
-<div class="highlight"><pre><span></span><code>/* Distributed processing across network */
-distributed_op = op(data) {
-    /* Process data across multiple nodes */
-    processed = data.map(op(item) { process_item(item); });
-    processed;
-};
-
-/* Network callback for distributed results */
-network_handler = op(message, hasmore) {
-    if (hasmore == 0) {
-        /* Process complete message */
-        result = distributed_op(message);
-        send_result(result);
-    };
-};
-</code></pre></div>
-<h2 id="comparison-with-traditional-asyncawait">Comparison with Traditional Async/Await</h2>
-<h3 id="grapas-superior-approach">Grapa's Superior Approach</h3>
+/* Define Python variables */
+locals = {&quot;counter&quot;: 0};
+$py().exec(&quot;counter += 1&quot;, locals);
+</code></pre></div></p>
+<h2 id="type-conversion">Type Conversion</h2>
+<p>The <code>$py()</code> object automatically handles bidirectional type conversion:</p>
+<h3 id="grapa-python">Grapa → Python</h3>
 <table>
 <thead>
 <tr>
-<th>Feature</th>
-<th>Traditional Async/Await</th>
-<th>Grapa's Approach</th>
+<th>Grapa Type</th>
+<th>Python Type</th>
+<th>Notes</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><strong>Parallel Processing</strong></td>
-<td>Manual Promise.all()</td>
-<td>Automatic with .map()/.filter()</td>
+<td><code>$INT</code></td>
+<td><code>int</code></td>
+<td>Direct conversion</td>
 </tr>
 <tr>
-<td><strong>Thread Safety</strong></td>
-<td>Manual synchronization</td>
-<td>Automatic variable locking</td>
+<td><code>$FLOAT</code></td>
+<td><code>float</code></td>
+<td>Direct conversion</td>
 </tr>
 <tr>
-<td><strong>Callback Context</strong></td>
-<td>Limited scope</td>
-<td>Rich object references</td>
+<td><code>$STR</code></td>
+<td><code>str</code></td>
+<td>UTF-8 string</td>
 </tr>
 <tr>
-<td><strong>Execution Trees</strong></td>
-<td>Not accessible</td>
-<td>Human-readable and manipulable</td>
+<td><code>$BOOL</code></td>
+<td><code>bool</code></td>
+<td>True/false values</td>
 </tr>
 <tr>
-<td><strong>Structured Concurrency</strong></td>
-<td>Complex patterns</td>
-<td>Built-in with functional methods</td>
+<td><code>$ARRAY</code></td>
+<td><code>list</code></td>
+<td>Element-by-element conversion</td>
 </tr>
 <tr>
-<td><strong>Network Integration</strong></td>
-<td>Separate libraries</td>
-<td>Native $net() with callbacks</td>
+<td><code>$GOBJ</code></td>
+<td><code>dict</code></td>
+<td>Key-value pairs</td>
+</tr>
+<tr>
+<td><code>$TUPLE</code></td>
+<td><code>tuple</code></td>
+<td>Element-by-element conversion</td>
+</tr>
+<tr>
+<td><code>$RAW</code></td>
+<td><code>bytes</code></td>
+<td>Binary data</td>
+</tr>
+<tr>
+<td><code>null</code></td>
+<td><code>None</code></td>
+<td>Null values</td>
 </tr>
 </tbody>
 </table>
-<h3 id="why-grapas-approach-is-superior">Why Grapa's Approach is Superior</h3>
-<ol>
-<li><strong>Automatic Parallelism</strong>: <code>.map()</code> and <code>.filter()</code> are parallel by default</li>
-<li><strong>Rich Callbacks</strong>: Object references provide full context access</li>
-<li><strong>Execution Trees</strong>: Human-readable, manipulable execution structures</li>
-<li><strong>Built-in Thread Safety</strong>: No manual synchronization required</li>
-<li><strong>Network Integration</strong>: Native distributed processing capabilities</li>
-</ol>
-<h2 id="best-practices">Best Practices</h2>
-<h3 id="thread-count-management">Thread Count Management</h3>
-<div class="highlight"><pre><span></span><code>/* For small datasets - let Grapa handle parallelism */
-small_data = [1, 2, 3, 4, 5];
-result = small_data.map(op(x) { x * x; });
-
-/* For large datasets - specify thread count */
-large_data = (1000000).range(0,1);
-result = large_data.map(op(x) { x * x; }, 8);  /* Limit to 8 threads */
-</code></pre></div>
-<h3 id="performance-considerations-parallel-vs-sequential">Performance Considerations: Parallel vs Sequential</h3>
-<p><strong>Important:</strong> <code>.map()</code> and <code>.filter()</code> can split processing across multiple worker threads, which provides significant performance benefits for most operations. The minimal data copying cost is typically negligible compared to the computational work being performed. Consider the trade-offs:</p>
-<div class="highlight"><pre><span></span><code>/* For large datasets with simple operations - use sequential */
-big_data = (1000000).range();
-result = [];
-i = 0;
-while (i &lt; big_data.len()) {
-    result += big_data[i] * 2;
-    i += 1;
-}
-
-/* For smaller datasets with complex work - use parallel */
-small_data = (1000).range();
-result = small_data.map(op(x) { 
-    /* Complex calculation that benefits from parallelization */
-    complex_calculation = x * x + x.sqrt() + x.sin();
-    complex_calculation;
-}, 4);
-
-/* .reduce() is more efficient - can use PTR references */
-sum = big_data.reduce(op(acc, x) { acc + x; }, 0, 4);
-</code></pre></div>
-<p><strong>When to use each approach:</strong>
-- <strong>Use sequential (for/while)</strong> for large datasets with simple operations
-- <strong>Use parallel (.map/.filter)</strong> for smaller datasets with complex operations
-- <strong>Use .reduce()</strong> for large datasets when possible (more efficient)</p>
-<h3 id="callback-design-patterns">Callback Design Patterns</h3>
-<div class="highlight"><pre><span></span><code>/* Rich callback with object reference */
-widget_callback = op(o, data) {
-    /* o = widget object reference */
-    o.set({&quot;text&quot;: data.str()});
-    o.redraw();
+<h3 id="python-grapa">Python → Grapa</h3>
+<table>
+<thead>
+<tr>
+<th>Python Type</th>
+<th>Grapa Type</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>int</code></td>
+<td><code>$INT</code></td>
+<td>Direct conversion</td>
+</tr>
+<tr>
+<td><code>float</code></td>
+<td><code>$FLOAT</code></td>
+<td>Direct conversion</td>
+</tr>
+<tr>
+<td><code>str</code></td>
+<td><code>$STR</code></td>
+<td>UTF-8 string</td>
+</tr>
+<tr>
+<td><code>bool</code></td>
+<td><code>$BOOL</code></td>
+<td>True/false values</td>
+</tr>
+<tr>
+<td><code>list</code></td>
+<td><code>$ARRAY</code></td>
+<td>Element-by-element conversion</td>
+</tr>
+<tr>
+<td><code>dict</code></td>
+<td><code>$GOBJ</code></td>
+<td>Key-value pairs</td>
+</tr>
+<tr>
+<td><code>tuple</code></td>
+<td><code>$TUPLE</code></td>
+<td>Element-by-element conversion</td>
+</tr>
+<tr>
+<td><code>bytes</code></td>
+<td><code>$RAW</code></td>
+<td>Binary data</td>
+</tr>
+<tr>
+<td><code>None</code></td>
+<td><code>null</code></td>
+<td>Null values</td>
+</tr>
+</tbody>
+</table>
+<h2 id="parameter-access-changes">Parameter Access Changes</h2>
+<p><strong>Important</strong>: When Grapa scripts are called from Python (via <code>g.eval()</code>), parameters are now accessed as <strong>string labels</strong> rather than ID labels. This means you must use quoted syntax:</p>
+<div class="highlight"><pre><span></span><code>/* OLD WAY (broken in Python-called scripts) */
+$this.multiply = op(x=0, y=0) {
+    $py().eval(&quot;x * y&quot;, {&quot;x&quot;: x, &quot;y&quot;: y});
 };
 
-/* Network callback with session management */
-network_callback = op(session, message, hasmore) {
-    session.data += message;
-    if (hasmore == 0) {
-        process_complete_message(session.data);
-        session.data = &quot;&quot;;
+/* NEW WAY (correct for Python-called scripts) */
+$this.multiply = op(x=0, y=0) {
+    $py().eval(&quot;x * y&quot;, {&quot;x&quot;: $local.&#39;x&#39;, &quot;y&quot;: $local.&#39;y&#39;});
+};
+</code></pre></div>
+<p><strong>Key Points:</strong>
+- Use <code>$local.'param_name'</code> instead of <code>param_name</code> when accessing parameters
+- This applies to scripts called from Python via <code>g.eval()</code>
+- Scripts run directly in Grapa CLI still use the old syntax
+- This change aligns with the broader <code>$GOBJ</code> string label vs ID label distinction</p>
+<h2 id="common-usage-patterns">Common Usage Patterns</h2>
+<h3 id="1-simple-function-calls">1. Simple Function Calls</h3>
+<div class="highlight"><pre><span></span><code>/* Call Python built-in functions */
+result = $py().eval(&quot;len(&#39;hello&#39;)&quot;);  /* Returns: 5 */
+result = $py().eval(&quot;max([1, 5, 3, 9, 2])&quot;);  /* Returns: 9 */
+result = $py().eval(&quot;sorted([3, 1, 4, 1, 5])&quot;);  /* Returns: [1, 1, 3, 4, 5] */
+</code></pre></div>
+<h3 id="2-custom-python-functions">2. Custom Python Functions</h3>
+<div class="highlight"><pre><span></span><code>/* Define a Grapa function that calls Python */
+$this.process_data = op(data, multiplier=2) {
+    $local.locals = {&quot;data&quot;: data, &quot;mult&quot;: multiplier};
+    $py().eval(&quot;data * mult&quot;, $local.locals);
+};
+
+/* Use the function */
+result = process_data(5, 3);  /* Returns: 15 */
+result = process_data([1, 2, 3], 2);  /* Returns: [2, 4, 6] */
+</code></pre></div>
+<h3 id="3-complex-data-processing">3. Complex Data Processing</h3>
+<div class="highlight"><pre><span></span><code>/* Process complex data structures */
+data = {&quot;users&quot;: [{&quot;name&quot;: &quot;Alice&quot;, &quot;age&quot;: 30}, {&quot;name&quot;: &quot;Bob&quot;, &quot;age&quot;: 25}]};
+locals = {&quot;data&quot;: data};
+
+/* Python code to filter users by age */
+script = &quot;[user for user in data[&#39;users&#39;] if user[&#39;age&#39;] &gt;= 30]&quot;;
+result = $py().eval(script, locals);  /* Returns: [{&quot;name&quot;: &quot;Alice&quot;, &quot;age&quot;: 30}] */
+</code></pre></div>
+<h3 id="4-error-handling">4. Error Handling</h3>
+<div class="highlight"><pre><span></span><code>/* Safe Python execution with error handling */
+$this.safe_python = op(script, locals={}) {
+    $local.result = $py().eval(script, locals);
+    if ($local.result.type() == $ERR) {
+        &quot;Python error occurred&quot;.echo();
+        null;
+    } else {
+        $local.result;
     };
 };
+
+/* Test error handling */
+result = safe_python(&quot;1 / 0&quot;);  /* Returns: null, prints error message */
+result = safe_python(&quot;2 + 2&quot;);  /* Returns: 4 */
 </code></pre></div>
+<h2 id="advanced-examples">Advanced Examples</h2>
+<h3 id="rule-based-python-integration">Rule-Based Python Integration</h3>
+<div class="highlight"><pre><span></span><code>/* Create a rule that uses Python for different operations */
+$this.python_rule = rule 
+      $INT $INT {op(a:$1,b:$2) {$py().eval(&quot;a + b&quot;, {&quot;a&quot;:a,&quot;b&quot;:b});}}
+    | $STR      {op(s:$1)      {$py().eval(&quot;s.upper()&quot;, {&quot;s&quot;:s});}}
+    | $ARRAY    {op(arr:$1)    {$py().eval(&quot;sum(arr)&quot;, {&quot;arr&quot;:arr});}}
+    ;
+
+/* Use the rule */
+result = $sys().eval(&quot;5 3&quot;, {}, &quot;python_rule&quot;);     /* Returns: 8 */
+result = $sys().eval(&quot;hello&quot;, {}, &quot;python_rule&quot;);   /* Returns: &quot;HELLO&quot; */
+result = $sys().eval(&quot;[1,2,3,4]&quot;, {}, &quot;python_rule&quot;); /* Returns: 10 */
+</code></pre></div>
+<h3 id="compiled-code-with-python">Compiled Code with Python</h3>
+<div class="highlight"><pre><span></span><code>/* Compile Grapa code that uses Python */
+compiled = $sys().compile(&quot;$py().eval(&#39;x * 2&#39;, {&#39;x&#39;: input})&quot;, &quot;&quot;, &quot;&quot;);
+
+/* Use compiled code multiple times */
+result1 = $sys().eval(compiled, {&quot;input&quot;: 5});   /* Returns: 10 */
+result2 = $sys().eval(compiled, {&quot;input&quot;: 7});   /* Returns: 14 */
+</code></pre></div>
+<h2 id="performance-considerations">Performance Considerations</h2>
+<ol>
+<li><strong>Overhead</strong>: Python callbacks have overhead due to type conversion and GIL management</li>
+<li><strong>Use Cases</strong>: Best for complex operations that benefit from Python's ecosystem</li>
+<li><strong>Caching</strong>: Consider caching Python function results when possible</li>
+<li><strong>Batch Operations</strong>: Group multiple Python operations when possible</li>
+</ol>
+<h2 id="error-handling">Error Handling</h2>
+<p>Python exceptions are automatically converted to Grapa error objects:</p>
+<div class="highlight"><pre><span></span><code>/* Python exceptions become Grapa errors */
+result = $py().eval(&quot;1 / 0&quot;);  /* Returns: $ERR object */
+if (result.type() == $ERR) {
+    &quot;Python error occurred&quot;.echo();
+}
+</code></pre></div>
+<h2 id="thread-safety">Thread Safety</h2>
+<p>The <code>$py()</code> object automatically manages Python's Global Interpreter Lock (GIL), ensuring thread-safe execution even in multi-threaded Grapa applications.</p>
+<h2 id="limitations">Limitations</h2>
+<ol>
+<li><strong>Python Extension Only</strong>: Not available in standalone CLI</li>
+<li><strong>Type Conversion</strong>: Complex objects may have conversion overhead</li>
+<li><strong>Error Propagation</strong>: Python exceptions become Grapa error objects</li>
+<li><strong>Performance</strong>: Callbacks have overhead compared to native Grapa operations</li>
+</ol>
+<h2 id="see-also">See Also</h2>
+<ul>
+<li><a href="../../python_integration/">Python Integration Guide</a> - Comprehensive Python integration documentation</li>
+<li><a href="../../python_use_cases/">Python Use Cases</a> - Real-world examples and patterns</li>
+<li><a href="../sys/">System Objects</a> - Other system objects and their capabilities</li>
+</ul>
 
 
 
@@ -5310,16 +4826,16 @@ network_callback = op(session, message, hasmore) {
     
     
       
-      <script id="__config" type="application/json">{"base": "..", "features": ["navigation.tabs", "navigation.top", "search.suggest", "content.code.copy", "content.action.edit", "content.action.view", "content.tabs.link"], "search": "../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.top", "search.suggest", "content.code.copy", "content.action.edit", "content.action.view", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../assets/javascripts/bundle.56ea9cef.min.js"></script>
+      <script src="../../assets/javascripts/bundle.56ea9cef.min.js"></script>
       
         <script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.0/dist/mermaid.min.js"></script>
       
-        <script src="../javascripts/mermaid-init.js"></script>
+        <script src="../../javascripts/mermaid-init.js"></script>
       
-        <script src="../javascripts/search-fix.js"></script>
+        <script src="../../javascripts/search-fix.js"></script>
       
     
   </body>

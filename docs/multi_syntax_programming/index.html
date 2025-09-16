@@ -1788,6 +1788,29 @@
   
   
     <li class="md-nav__item">
+      <a href="../sys/py/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Python Integration
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../curl_function/" class="md-nav__link">
         
   
@@ -2768,18 +2791,18 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#basic-sql-usage" class="md-nav__link">
+  <a href="#basic-sql-example" class="md-nav__link">
     <span class="md-ellipsis">
-      Basic SQL Usage
+      **Basic SQL Example **
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#advanced-sql-features" class="md-nav__link">
+  <a href="#advanced-sql-example" class="md-nav__link">
     <span class="md-ellipsis">
-      Advanced SQL Features
+      **Advanced SQL Example **
     </span>
   </a>
   
@@ -4503,18 +4526,18 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#basic-sql-usage" class="md-nav__link">
+  <a href="#basic-sql-example" class="md-nav__link">
     <span class="md-ellipsis">
-      Basic SQL Usage
+      **Basic SQL Example **
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#advanced-sql-features" class="md-nav__link">
+  <a href="#advanced-sql-example" class="md-nav__link">
     <span class="md-ellipsis">
-      Advanced SQL Features
+      **Advanced SQL Example **
     </span>
   </a>
   
@@ -4923,7 +4946,7 @@ processed = html_data.encode(&quot;HTML-GRAPA&quot;);
 - <strong>Complex Syntax Handling</strong>: Enables proper processing of syntax that might conflict with normal Grapa syntax
 - <strong>Format-Specific Processing</strong>: Different lexical modes for different data formats</p>
 <h2 id="sql-syntax-integration-example-implementation">SQL Syntax Integration (Example Implementation)</h2>
-<h3 id="basic-sql-usage"><strong>Basic SQL Usage</strong></h3>
+<h3 id="basic-sql-example">**Basic SQL Example **</h3>
 <p>Grapa demonstrates SQL syntax integration through example scripts that show how to add domain-specific SQL syntax using <code>$custom_command</code> and <code>$custom_function</code> as variables:</p>
 <div class="highlight"><pre><span></span><code>/* Define SQL syntax as variables */
 $custom_command = rule select $STR from $STR {op(fields:$2,table_name:$4){
@@ -4941,7 +4964,7 @@ $custom_function = rule count &#39;(&#39; $STR &#39;)&#39; from $STR {op(field:$
 select * from users;
 user_count = count(*) from users;
 </code></pre></div>
-<h3 id="advanced-sql-features"><strong>Advanced SQL Features</strong></h3>
+<h3 id="advanced-sql-example">**Advanced SQL Example **</h3>
 <div class="highlight"><pre><span></span><code>/* INSERT statement (example implementation) */
 $custom_command = rule insert into $STR values $STR {op(table_name:$3,values_str:$5){
     (&quot;SQL INSERT: &quot; + table_name + &quot; VALUES &quot; + values_str).echo();

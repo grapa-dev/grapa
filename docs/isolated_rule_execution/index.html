@@ -1788,6 +1788,29 @@
   
   
     <li class="md-nav__item">
+      <a href="../sys/py/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Python Integration
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../curl_function/" class="md-nav__link">
         
   
@@ -4516,15 +4539,15 @@
 <div class="highlight"><pre><span></span><code>/* Define a custom CSV parsing rule */
 csv_rule = rule $ID &#39;,&#39; $INT &#39;,&#39; $ID {op(name:$1,age:$3,city:$5){
     return {
-        name: name,
-        age: age,
-        city: city
+        &quot;name&quot;: name,
+        &quot;age&quot;: age,
+        &quot;city&quot;: city
     };
 }};
 
 /* Execute against the custom rule */
 result = op()(&quot;John,25,NY&quot;, csv_rule)();
-/* Result: {name: &quot;John&quot;, age: 25, city: &quot;NY&quot;} */
+/* Result: {&quot;name&quot;:John,&quot;age&quot;:25,&quot;city&quot;:NY} */
 </code></pre></div>
 <p><strong>Key Features:</strong>
 - <strong>Direct Rule Application</strong>: Apply rule directly to input
@@ -4539,15 +4562,15 @@ id_list_rule = rule $ID &lt;id_list_rule&gt; {@&lt;prepend,{$2,$1}&gt;} | $ID {@
 /* Define main log parsing rule */
 log_rule = rule &lt;catch_sq_bracket_rule&gt; &lt;id_list_rule&gt; {op(timestamp:$1,message:$2){
     return {
-        timestamp: timestamp,
-        message: message,
-        level: &quot;INFO&quot;
+        &quot;timestamp&quot;: timestamp,
+        &quot;message&quot;: message,
+        &quot;level&quot;: &quot;INFO&quot;
     };
 }};
 
 /* Execute log parsing */
 result = op()(&quot;[2024-01-15 10:30:00] User login successful&quot;, log_rule)();
-/* Result: {timestamp: [2024,&quot;-&quot;,1,&quot;-&quot;,15,&quot; &quot;,10,&quot;:&quot;,30,&quot;:&quot;,0], message: [User,login,successful], level: &quot;INFO&quot;} */
+/* Result: {&quot;timestamp&quot;: [2024,&quot;-&quot;,1,&quot;-&quot;,15,&quot; &quot;,10,&quot;:&quot;,30,&quot;:&quot;,0], &quot;message&quot;: [User,login,successful], &quot;level&quot;: &quot;INFO&quot;} */
 </code></pre></div></p>
 <h3 id="pattern-2-object-based-rule-organization"><strong>Pattern 2: Object-Based Rule Organization</strong></h3>
 <p>Organize rules in objects with a common parsing interface for better code organization.</p>
@@ -4559,19 +4582,19 @@ etl_rules = {
 
     /* CSV parsing rule */
     csv_parser = rule $ID &#39;,&#39; $INT &#39;,&#39; $ID {op(name:$1,age:$3,city:$5){
-        {name: name, age: age, city: city};
+        {&quot;name&quot;: name, &quot;age&quot;: age, &quot;city&quot;: city};
     }},
 
     /* Log parsing rules */
     catch_sq_bracket_rule = rule (&#39;[&#39;) &lt;&gt; (&#39;]&#39;) {@&lt;lit,{$2}&gt;},
     id_list_rule = rule $ID &lt;id_list_rule&gt; {@&lt;prepend,{$2,$1}&gt;} | $ID {@&lt;createarray,{$1}&gt;},
     log_parser = rule &lt;catch_sq_bracket_rule&gt; &lt;id_list_rule&gt; {op(timestamp:$1,message:$2){
-        {timestamp: timestamp, message: message, level: &quot;INFO&quot;};
+        {&quot;timestamp&quot;: timestamp, &quot;message&quot;: message, &quot;level&quot;: &quot;INFO&quot;};
     }},
 
     /* Config parsing rule */
     config_parser = rule $ID &#39;=&#39; $ID {op(key:$1,value:$3){
-        {key: key, value: value};
+        {&quot;key&quot;: key, &quot;value&quot;: value};
     }}
 };
 
@@ -4588,19 +4611,19 @@ etl_rules_class = class {
 
     /* CSV parsing rule */
     csv_parser = rule $ID &#39;,&#39; $INT &#39;,&#39; $ID {op(name:$1,age:$3,city:$5){
-        {name: name, age: age, city: city};
+        {&quot;name&quot;: name, &quot;age&quot;: age, &quot;city&quot;: city};
     }};
 
     /* Log parsing rules */
     catch_sq_bracket_rule = rule (&#39;[&#39;) &lt;&gt; (&#39;]&#39;) {@&lt;lit,{$2}&gt;};
     id_list_rule = rule $ID &lt;id_list_rule&gt; {@&lt;prepend,{$2,$1}&gt;} | $ID {@&lt;createarray,{$1}&gt;};
     log_parser = rule &lt;catch_sq_bracket_rule&gt; &lt;id_list_rule&gt; {op(timestamp:$1,message:$2){
-        {timestamp: timestamp, message: message, level: &quot;INFO&quot;};
+        {&quot;timestamp&quot;: timestamp, &quot;message&quot;: message, &quot;level&quot;: &quot;INFO&quot;};
     }};
 
     /* Config parsing rule */
     config_parser = rule $ID &#39;=&#39; $ID {op(key:$1,value:$3){
-        {key: key, value: value};
+        {&quot;key&quot;: key, &quot;value&quot;: value};
     }};
 };
 
@@ -4625,11 +4648,11 @@ etl_rules = {
 };
 
 /* Dynamically add new rules using += operator */
-etl_rules += (csv_parser : rule $ID &#39;,&#39; $INT &#39;,&#39; $ID {op(name:$1,age:$3,city:$5){{name: name, age: age, city: city};}});
+etl_rules += (csv_parser : rule $ID &#39;,&#39; $INT &#39;,&#39; $ID {op(name:$1,age:$3,city:$5){{&quot;name&quot;: name, &quot;age&quot;: age, &quot;city&quot;: city};}});
 
 /* Execute with dynamically added rule */
 csv_result = etl_rules.parse(&quot;John,25,NY&quot;, etl_rules.csv_parser);
-/* Result: {name: &quot;John&quot;, age: 25, city: &quot;NY&quot;} */
+/* Result: {&quot;name&quot;: &quot;John&quot;, &quot;age&quot;: 25, &quot;city&quot;: &quot;NY&quot;} */
 </code></pre></div>
 <h4 id="3b-dynamic-rule-addition-to-class-objects"><strong>3b. Dynamic Rule Addition to $CLASS Objects</strong></h4>
 <div class="highlight"><pre><span></span><code>/* Define base ETL rules class with add_rule method */
@@ -4640,11 +4663,11 @@ etl_rules_class = class {
 
 /* Create instance and add rules dynamically */
 etl_rules = etl_rules_class();
-etl_rules.add_rule(&quot;csv_parser&quot;, rule $ID &#39;,&#39; $INT &#39;,&#39; $ID {op(name:$1,age:$3,city:$5){{name: name, age: age, city: city};}});
+etl_rules.add_rule(&quot;csv_parser&quot;, rule $ID &#39;,&#39; $INT &#39;,&#39; $ID {op(name:$1,age:$3,city:$5){{&quot;name&quot;: name, &quot;age&quot;: age, &quot;city&quot;: city};}});
 
 /* Execute with dynamically added rule */
 csv_result = etl_rules.parse(&quot;John,25,NY&quot;, etl_rules.csv_parser);
-/* Result: {name: &quot;John&quot;, age: 25, city: &quot;NY&quot;} */
+/* Result: {&quot;name&quot;: &quot;John&quot;, &quot;age&quot;: 25, &quot;city&quot;: &quot;NY&quot;} */
 </code></pre></div>
 <p><strong>Key Features:</strong>
 - <strong>Dynamic Creation</strong>: Create rules based on runtime conditions

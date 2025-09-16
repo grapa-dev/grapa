@@ -1956,6 +1956,29 @@
   
   
     <li class="md-nav__item">
+      <a href="../sys/py/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Python Integration
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../curl_function/" class="md-nav__link">
         
   
@@ -4574,6 +4597,197 @@ if file_info[&quot;$TYPE&quot;] == &quot;FILE&quot; and file_info[&quot;$BYTES&q
 <li><strong>Database optimization</strong>: Different storage types for different use cases</li>
 <li><strong>Cross-platform</strong>: Consistent performance across systems</li>
 </ul>
+<h2 id="bidirectional-communication-callbacks-with-pyeval">Bidirectional Communication: Callbacks with <code>$py().eval()</code></h2>
+<p><strong>Important</strong>: The <code>$py().eval()</code> callback mechanism is <strong>only available in the Python extension</strong> (<code>grapapy</code>), not in the standalone CLI.</p>
+<p><strong>Parameter Access Change</strong>: When accessing parameters in Grapa scripts called from Python, use <code>$local.'param_name'</code> instead of <code>param_name</code>. This is because parameters are now string labels rather than ID labels.</p>
+<h3 id="overview_1">Overview</h3>
+<p>GrapaPy provides powerful bidirectional communication through the <code>$py()</code> system object, allowing Grapa code to call back into Python functions. This enables seamless integration between Grapa's performance and Python's rich ecosystem.</p>
+<h3 id="basic-callback-usage">Basic Callback Usage</h3>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">grapapy</span>
+
+<span class="c1"># Define a Python function</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">python_function</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">x</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">10</span>
+
+<span class="c1"># Create GrapaPy instance</span>
+<span class="n">g</span> <span class="o">=</span> <span class="n">grapapy</span><span class="o">.</span><span class="n">grapa</span><span class="p">()</span>
+
+<span class="c1"># Register the Python function as a Grapa callback</span>
+<span class="n">g</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">    $this.double_and_add = op(n=0) {</span>
+<span class="s2">        $py().eval(&#39;python_function(n)&#39;, {&#39;n&#39;: $local.&#39;n&#39;});</span>
+<span class="s2">    };</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="p">)</span>
+
+<span class="c1"># Use the callback from Grapa</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s2">&quot;double_and_add(5);&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>  <span class="c1"># 20 (5 * 2 + 10)</span>
+</code></pre></div>
+<h3 id="advanced-callback-patterns">Advanced Callback Patterns</h3>
+<h4 id="complex-parameter-passing">Complex Parameter Passing</h4>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">grapapy</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">process_data</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">multiplier</span><span class="p">,</span> <span class="n">offset</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">x</span> <span class="o">*</span> <span class="n">multiplier</span> <span class="o">+</span> <span class="n">offset</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">data</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">data</span> <span class="o">*</span> <span class="n">multiplier</span> <span class="o">+</span> <span class="n">offset</span>
+
+<span class="n">g</span> <span class="o">=</span> <span class="n">grapapy</span><span class="o">.</span><span class="n">grapa</span><span class="p">()</span>
+
+<span class="c1"># Register with complex parameter handling</span>
+<span class="n">g</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">    $this.process = op(data, mult=2, off=0) {</span>
+<span class="s2">        $local.locals = {&#39;data&#39;: $local.&#39;data&#39;, &#39;multiplier&#39;: $local.&#39;mult&#39;, &#39;offset&#39;: $local.&#39;off&#39;};</span>
+<span class="s2">        $py().eval(&#39;process_data(data, multiplier, offset)&#39;, $local.locals);</span>
+<span class="s2">    };</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="p">)</span>
+
+<span class="c1"># Test with different data types</span>
+<span class="n">result1</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s2">&quot;process(5, 3, 10);&quot;</span><span class="p">)</span>        <span class="c1"># 25</span>
+<span class="n">result2</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s2">&quot;process([1,2,3], 2, 5);&quot;</span><span class="p">)</span>   <span class="c1"># [7, 9, 11]</span>
+</code></pre></div>
+<h4 id="rule-based-callbacks">Rule-Based Callbacks</h4>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">grapapy</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">classify_number</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">n</span> <span class="o">&gt;=</span> <span class="mi">10</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;high&quot;</span>
+    <span class="k">elif</span> <span class="n">n</span> <span class="o">&gt;=</span> <span class="mi">5</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;medium&quot;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;low&quot;</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">calculate_result</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">a</span> <span class="o">&gt;=</span> <span class="mi">10</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">a</span> <span class="o">/</span> <span class="n">b</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">a</span> <span class="o">*</span> <span class="n">b</span>
+
+<span class="n">g</span> <span class="o">=</span> <span class="n">grapapy</span><span class="o">.</span><span class="n">grapa</span><span class="p">()</span>
+
+<span class="c1"># Create a rule that uses callbacks</span>
+<span class="n">g</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">    $this.classify_rule = rule </span>
+<span class="s2">          $INT $INT {op(a:$1,b:$2) {$py().eval(&#39;calculate_result(v1,v2)&#39;, {&quot;v1&quot;:a,&quot;v2&quot;:b});}}</span>
+<span class="s2">        | $INT      {op(a:$1)      {$py().eval(&#39;classify_number(v)&#39;,     {&quot;v&quot;:a});}}</span>
+<span class="s2">        ;</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="p">)</span>
+
+<span class="c1"># Use the rule</span>
+<span class="n">result1</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s2">&quot;$sys().eval(&#39;4&#39;, </span><span class="si">{}</span><span class="s2">, &#39;classify_rule&#39;);&quot;</span><span class="p">)</span>     <span class="c1"># &quot;low&quot;</span>
+<span class="n">result2</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s2">&quot;$sys().eval(&#39;4 6&#39;, </span><span class="si">{}</span><span class="s2">, &#39;classify_rule&#39;);&quot;</span><span class="p">)</span>   <span class="c1"># 24 (4 * 6)</span>
+<span class="n">result3</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s2">&quot;$sys().eval(&#39;12 3&#39;, </span><span class="si">{}</span><span class="s2">, &#39;classify_rule&#39;);&quot;</span><span class="p">)</span>  <span class="c1"># 4.0 (12 / 3)</span>
+</code></pre></div>
+<h3 id="type-conversion">Type Conversion</h3>
+<p>The callback system automatically handles type conversion between Grapa and Python:</p>
+<table>
+<thead>
+<tr>
+<th>Grapa Type</th>
+<th>Python Type</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>$INT</code></td>
+<td><code>int</code></td>
+<td>Automatic conversion</td>
+</tr>
+<tr>
+<td><code>$FLOAT</code></td>
+<td><code>float</code></td>
+<td>Automatic conversion</td>
+</tr>
+<tr>
+<td><code>$STR</code></td>
+<td><code>str</code></td>
+<td>UTF-8 string conversion</td>
+</tr>
+<tr>
+<td><code>$BOOL</code></td>
+<td><code>bool</code></td>
+<td>True/false conversion</td>
+</tr>
+<tr>
+<td><code>$ARRAY</code></td>
+<td><code>list</code></td>
+<td>Element-by-element conversion</td>
+</tr>
+<tr>
+<td><code>$GOBJ</code></td>
+<td><code>dict</code></td>
+<td>Key-value conversion</td>
+</tr>
+<tr>
+<td><code>$TUPLE</code></td>
+<td><code>tuple</code></td>
+<td>Element-by-element conversion</td>
+</tr>
+<tr>
+<td><code>$RAW</code></td>
+<td><code>bytes</code></td>
+<td>Binary data conversion</td>
+</tr>
+<tr>
+<td><code>null</code></td>
+<td><code>None</code></td>
+<td>Null value conversion</td>
+</tr>
+</tbody>
+</table>
+<h3 id="error-handling">Error Handling</h3>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">grapapy</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">safe_divide</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">a</span> <span class="o">/</span> <span class="n">b</span>
+    <span class="k">except</span> <span class="ne">ZeroDivisionError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;Error: Division by zero&quot;</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Error: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+
+<span class="n">g</span> <span class="o">=</span> <span class="n">grapapy</span><span class="o">.</span><span class="n">grapa</span><span class="p">()</span>
+
+<span class="n">g</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">    $this.safe_div = op(a=0, b=1) {</span>
+<span class="s2">        $py().eval(&#39;safe_divide(a, b)&#39;, {&#39;a&#39;: $local.&#39;a&#39;, &#39;b&#39;: $local.&#39;b&#39;});</span>
+<span class="s2">    };</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="p">)</span>
+
+<span class="n">result1</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s2">&quot;safe_div(10, 2);&quot;</span><span class="p">)</span>  <span class="c1"># 5.0</span>
+<span class="n">result2</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s2">&quot;safe_div(10, 0);&quot;</span><span class="p">)</span>  <span class="c1"># &quot;Error: Division by zero&quot;</span>
+</code></pre></div>
+<h3 id="compiled-code-with-callbacks">Compiled Code with Callbacks</h3>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">grapapy</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">python_processor</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">x</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">x</span> <span class="o">+</span> <span class="mi">1</span>
+
+<span class="n">g</span> <span class="o">=</span> <span class="n">grapapy</span><span class="o">.</span><span class="n">grapa</span><span class="p">()</span>
+
+<span class="c1"># Compile Grapa code that uses callbacks</span>
+<span class="n">compiled</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s2">&quot;python_processor(n);&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+<span class="c1"># Use the compiled code multiple times</span>
+<span class="n">result1</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="n">compiled</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;n&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">})</span>  <span class="c1"># 36</span>
+<span class="n">result2</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="n">compiled</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;n&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">})</span>  <span class="c1"># 16</span>
+</code></pre></div>
+<h3 id="best-practices">Best Practices</h3>
+<ol>
+<li><strong>Parameter Naming</strong>: Use clear parameter names in the <code>locals</code> dictionary for better readability</li>
+<li><strong>Error Handling</strong>: Always handle exceptions in Python callback functions</li>
+<li><strong>Type Safety</strong>: Be aware of type conversions between Grapa and Python</li>
+<li><strong>Performance</strong>: Callbacks have overhead - use for complex operations, not simple calculations</li>
+<li><strong>State Management</strong>: Python functions can maintain state between calls if needed</li>
+</ol>
+<h3 id="limitations">Limitations</h3>
+<ul>
+<li><strong>Python Extension Only</strong>: <code>$py().eval()</code> is not available in the standalone CLI</li>
+<li><strong>GIL Management</strong>: The system automatically handles Python's Global Interpreter Lock</li>
+<li><strong>Type Conversion Overhead</strong>: Complex objects may have conversion overhead</li>
+<li><strong>Error Propagation</strong>: Python exceptions are converted to Grapa error objects</li>
+</ul>
 <h2 id="integration-with-python-ecosystem">Integration with Python Ecosystem</h2>
 <h3 id="text-processing-and-search"><strong>Text Processing and Search</strong></h3>
 <p>GrapaPy provides direct access to Grapa's powerful Unicode-aware grep functionality:</p>
@@ -4657,7 +4871,7 @@ if file_info[&quot;$TYPE&quot;] == &quot;FILE&quot; and file_info[&quot;$BYTES&q
     <span class="n">profile</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;f.getfield(&quot;</span><span class="si">{</span><span class="n">user_id</span><span class="si">}</span><span class="s1">&quot;, &quot;profile&quot;)&#39;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">JsonResponse</span><span class="p">({</span><span class="s2">&quot;profile&quot;</span><span class="p">:</span> <span class="n">profile</span><span class="p">})</span>
 </code></pre></div>
-<h2 id="best-practices">Best Practices</h2>
+<h2 id="best-practices_1">Best Practices</h2>
 <h3 id="database-design"><strong>Database Design</strong></h3>
 <ol>
 <li><strong>Choose appropriate storage types</strong>:</li>

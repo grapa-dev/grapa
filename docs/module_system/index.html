@@ -1788,6 +1788,29 @@
   
   
     <li class="md-nav__item">
+      <a href="../sys/py/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Python Integration
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../curl_function/" class="md-nav__link">
         
   
@@ -3113,15 +3136,6 @@
   <a href="#using-custom-classes" class="md-nav__link">
     <span class="md-ellipsis">
       Using Custom Classes
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#plugin-system" class="md-nav__link">
-    <span class="md-ellipsis">
-      Plugin System
     </span>
   </a>
   
@@ -4902,15 +4916,6 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#plugin-system" class="md-nav__link">
-    <span class="md-ellipsis">
-      Plugin System
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#development-vs-production-setup" class="md-nav__link">
     <span class="md-ellipsis">
       Development vs Production Setup
@@ -5454,21 +5459,6 @@ $sys().putenv($GRAPA_PATH, [&quot;lib/custom&quot;]);
 math = $MATH_UTILS();
 result = math.add(5, 3);  /* 8 */
 fact = math.factorial(5); /* 120 */
-</code></pre></div>
-<h3 id="plugin-system">Plugin System</h3>
-<div class="highlight"><pre><span></span><code>/* Dynamic plugin loading */
-plugin_paths = [
-    &quot;plugins/network&quot;,
-    &quot;plugins/database&quot;, 
-    &quot;plugins/ui&quot;
-];
-
-$sys().putenv($GRAPA_PATH, plugin_paths);
-
-/* Plugins are loaded on demand */
-network = $NETWORK_PLUGIN();
-db = $DATABASE_PLUGIN();
-ui = $UI_PLUGIN();
 </code></pre></div>
 <h3 id="development-vs-production-setup">Development vs Production Setup</h3>
 <h4 id="development-environment">Development Environment</h4>

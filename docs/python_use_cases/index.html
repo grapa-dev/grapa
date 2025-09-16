@@ -1785,6 +1785,29 @@
   
   
     <li class="md-nav__item">
+      <a href="../sys/py/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Python Integration
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../curl_function/" class="md-nav__link">
         
   
@@ -4012,16 +4035,6 @@
 - No attribute-style access for dict/list keys—use <code>[]</code> or <code>.getfield()</code> for files/tables.
 - See the upcoming <a href="../migrations/python_to_grapa_migration/">Python-to-Grapa Migration Guide</a> for a full mapping and more examples.</p>
 </blockquote>
-<h2 id="thread-safety-and-parallelism">Thread Safety and Parallelism</h2>
-<p>GrapaPy (and Grapa) are fully thread safe by design. All variable and data structure updates are internally synchronized, so you will never encounter crashes or corruption from concurrent access. However, if your program logic allows multiple threads to read and write the same variable or data structure, you may see <em>logical</em> race conditions (unexpected values, overwrites, etc.). This is a design consideration, not a stability issue. Minimize shared mutable state between threads unless intentional.</p>
-<p><strong>Only <code>$thread()</code> objects provide explicit locking and unlocking via <code>lock()</code>, <code>unlock()</code>, and <code>trylock()</code>.</strong> To protect access to a shared resource, create a <code>$thread()</code> lock object and use it to guard access. Calling <code>.lock()</code> or <code>.unlock()</code> on a regular variable (like an array or scalar) will return an error.</p>
-<p><strong>Canonical Example:</strong>
-<div class="highlight"><pre><span></span><code>lock_obj = $thread();
-lock_obj.lock();
-// ... perform thread-safe operations on shared data ...
-lock_obj.unlock();
-</code></pre></div></p>
-<p>See <a href="../sys/thread/">Threading and Locking</a> and <a href="../operators/function/">Function Operators: static and const</a> for details and best practices.</p>
 <h2 id="text-processing-and-search">Text Processing and Search</h2>
 <p>GrapaPy provides direct access to Grapa's powerful Unicode-aware grep functionality, making it ideal for text processing tasks that require advanced pattern matching and Unicode handling.</p>
 <p><strong>Example: Log file analysis</strong>
@@ -4136,7 +4149,7 @@ lock_obj.unlock();
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">grapapy</span>
 <span class="n">xy</span> <span class="o">=</span> <span class="n">grapapy</span><span class="o">.</span><span class="n">grapa</span><span class="p">()</span>
-<span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s2">&quot;$this.pyfunc = op(x=0){$py().eval(&#39;pyfunc&#39;, {&#39;x&#39;:x});};&quot;</span><span class="p">)</span>
+<span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s2">&quot;$this.pyfunc = op(x=0){$py().eval(&#39;pyfunc&#39;, {&#39;x&#39;:$local.&#39;x&#39;});};&quot;</span><span class="p">)</span>
 <span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s2">&quot;pyfunc(5);&quot;</span><span class="p">)</span>  <span class="c1"># Output: Python saw: 5</span>
 </code></pre></div></p>
 <hr />
@@ -4231,7 +4244,7 @@ lock_obj.unlock();
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">grapapy</span>
 <span class="n">xy</span> <span class="o">=</span> <span class="n">grapapy</span><span class="o">.</span><span class="n">grapa</span><span class="p">()</span>
-<span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s2">&quot;$this.pytrace = op(n=0){$py().eval(&#39;pytrace&#39;, {&#39;n&#39;:n});};&quot;</span><span class="p">)</span>
+<span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s2">&quot;$this.pytrace = op(n=0){$py().eval(&#39;pytrace&#39;, {&#39;n&#39;:$local.&#39;n&#39;});};&quot;</span><span class="p">)</span>
 <span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s2">&quot;pytrace(42);&quot;</span><span class="p">)</span>
 </code></pre></div></p>
 <hr />
