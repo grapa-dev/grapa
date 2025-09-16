@@ -170,7 +170,7 @@ def pyfunc(x):
 
 import grapapy
 xy = grapapy.grapa()
-xy.eval("$this.pyfunc = op(x=0){$py().eval('pyfunc', {'x':x});};")
+xy.eval("$this.pyfunc = op(x=0){$py().eval('pyfunc', {'x':$local.'x'});};")
 xy.eval("pyfunc(5);")  # Output: Python saw: 5
 ```
 
@@ -292,7 +292,7 @@ def pytrace(n):
 
 import grapapy
 xy = grapapy.grapa()
-xy.eval("$this.pytrace = op(n=0){$py().eval('pytrace', {'n':n});};")
+xy.eval("$this.pytrace = op(n=0){$py().eval('pytrace', {'n':$local.'n'});};")
 xy.eval("pytrace(42);")
 ```
 

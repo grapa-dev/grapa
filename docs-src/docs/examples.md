@@ -45,6 +45,7 @@ Welcome to the Grapa Examples hub! Here you'll find practical, ready-to-run scri
 | Example | Description |
 |---------|-------------|
 | [Python Integration Example](examples/python_integration_example.py) | Demonstrates how to use Grapa from Python, including math, strings, arrays, file, and grep operations. |
+| [Python Callback Integration](examples/python_callback_integration.py) | Comprehensive Python-side examples showing how to register and use callbacks with GrapaPy using the `$py().eval()` mechanism. |
 
 ### **Network and HTTP Examples**
 | Example | Description |

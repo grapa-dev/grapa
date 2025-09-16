@@ -357,6 +357,176 @@ for file in files:
 - **Database optimization**: Different storage types for different use cases
 - **Cross-platform**: Consistent performance across systems
 
+## Bidirectional Communication: Callbacks with `$py().eval()`
+
+**Important**: The `$py().eval()` callback mechanism is **only available in the Python extension** (`grapapy`), not in the standalone CLI.
+
+**Parameter Access Change**: When accessing parameters in Grapa scripts called from Python, use `$local.'param_name'` instead of `param_name`. This is because parameters are now string labels rather than ID labels.
+
+### Overview
+
+GrapaPy provides powerful bidirectional communication through the `$py()` system object, allowing Grapa code to call back into Python functions. This enables seamless integration between Grapa's performance and Python's rich ecosystem.
+
+### Basic Callback Usage
+
+```python
+import grapapy
+
+# Define a Python function
+def python_function(x):
+    return x * 2 + 10
+
+# Create GrapaPy instance
+g = grapapy.grapa()
+
+# Register the Python function as a Grapa callback
+g.eval("""
+    $this.double_and_add = op(n=0) {
+        $py().eval('python_function(n)', {'n': $local.'n'});
+    };
+""")
+
+# Use the callback from Grapa
+result = g.eval("double_and_add(5);")
+print(result)  # 20 (5 * 2 + 10)
+```
+
+### Advanced Callback Patterns
+
+#### Complex Parameter Passing
+
+```python
+import grapapy
+
+def process_data(data, multiplier, offset):
+    if isinstance(data, list):
+        return [x * multiplier + offset for x in data]
+    return data * multiplier + offset
+
+g = grapapy.grapa()
+
+# Register with complex parameter handling
+g.eval("""
+    $this.process = op(data, mult=2, off=0) {
+        $local.locals = {'data': $local.'data', 'multiplier': $local.'mult', 'offset': $local.'off'};
+        $py().eval('process_data(data, multiplier, offset)', $local.locals);
+    };
+""")
+
+# Test with different data types
+result1 = g.eval("process(5, 3, 10);")        # 25
+result2 = g.eval("process([1,2,3], 2, 5);")   # [7, 9, 11]
+```
+
+#### Rule-Based Callbacks
+
+```python
+import grapapy
+
+def classify_number(n):
+    if n >= 10:
+        return "high"
+    elif n >= 5:
+        return "medium"
+    else:
+        return "low"
+
+def calculate_result(a, b):
+    if a >= 10:
+        return a / b
+    else:
+        return a * b
+
+g = grapapy.grapa()
+
+# Create a rule that uses callbacks
+g.eval("""
+    $this.classify_rule = rule 
+          $INT $INT {op(a:$1,b:$2) {$py().eval('calculate_result(v1,v2)', {"v1":a,"v2":b});}}
+        | $INT      {op(a:$1)      {$py().eval('classify_number(v)',     {"v":a});}}
+        ;
+""")
+
+# Use the rule
+result1 = g.eval("$sys().eval('4', {}, 'classify_rule');")     # "low"
+result2 = g.eval("$sys().eval('4 6', {}, 'classify_rule');")   # 24 (4 * 6)
+result3 = g.eval("$sys().eval('12 3', {}, 'classify_rule');")  # 4.0 (12 / 3)
+```
+
+### Type Conversion
+
+The callback system automatically handles type conversion between Grapa and Python:
+
+| Grapa Type | Python Type | Notes |
+|------------|-------------|-------|
+| `$INT` | `int` | Automatic conversion |
+| `$FLOAT` | `float` | Automatic conversion |
+| `$STR` | `str` | UTF-8 string conversion |
+| `$BOOL` | `bool` | True/false conversion |
+| `$ARRAY` | `list` | Element-by-element conversion |
+| `$GOBJ` | `dict` | Key-value conversion |
+| `$TUPLE` | `tuple` | Element-by-element conversion |
+| `$RAW` | `bytes` | Binary data conversion |
+| `null` | `None` | Null value conversion |
+
+### Error Handling
+
+```python
+import grapapy
+
+def safe_divide(a, b):
+    try:
+        return a / b
+    except ZeroDivisionError:
+        return "Error: Division by zero"
+    except Exception as e:
+        return f"Error: {str(e)}"
+
+g = grapapy.grapa()
+
+g.eval("""
+    $this.safe_div = op(a=0, b=1) {
+        $py().eval('safe_divide(a, b)', {'a': $local.'a', 'b': $local.'b'});
+    };
+""")
+
+result1 = g.eval("safe_div(10, 2);")  # 5.0
+result2 = g.eval("safe_div(10, 0);")  # "Error: Division by zero"
+```
+
+### Compiled Code with Callbacks
+
+```python
+import grapapy
+
+def python_processor(x):
+    return x ** 2 + 2 * x + 1
+
+g = grapapy.grapa()
+
+# Compile Grapa code that uses callbacks
+compiled = g.compile("python_processor(n);", "", "")
+
+# Use the compiled code multiple times
+result1 = g.eval(compiled, {'n': 5})  # 36
+result2 = g.eval(compiled, {'n': 3})  # 16
+```
+
+### Best Practices
+
+1. **Parameter Naming**: Use clear parameter names in the `locals` dictionary for better readability
+2. **Error Handling**: Always handle exceptions in Python callback functions
+3. **Type Safety**: Be aware of type conversions between Grapa and Python
+4. **Performance**: Callbacks have overhead - use for complex operations, not simple calculations
+5. **State Management**: Python functions can maintain state between calls if needed
+
+### Limitations
+
+- **Python Extension Only**: `$py().eval()` is not available in the standalone CLI
+- **GIL Management**: The system automatically handles Python's Global Interpreter Lock
+- **Type Conversion Overhead**: Complex objects may have conversion overhead
+- **Error Propagation**: Python exceptions are converted to Grapa error objects
+
 ## Integration with Python Ecosystem
 
 ### **Text Processing and Search**

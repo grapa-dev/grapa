@@ -131,6 +131,7 @@ nav:
           - File Operations: sys/file.md
           - Math Functions: sys/math.md
           - Network Functions: sys/net.md
+          - Python Integration: sys/py.md
           - HTTP/HTTPS Client: curl_function.md
           - System Functions: sys/sys.md
           - Thread Functions: sys/thread.md
