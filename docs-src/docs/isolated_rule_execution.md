@@ -52,7 +52,7 @@ csv_rule = rule $ID ',' $INT ',' $ID {op(name:$1,age:$3,city:$5){
 
 /* Execute against the custom rule */
 result = op()("John,25,NY", csv_rule)();
-/* Result: {name: "John", age: 25, city: "NY"} */
+/* Result: {"name":John,"age":25,"city":NY} */
 ```
 
 **Key Features:**
