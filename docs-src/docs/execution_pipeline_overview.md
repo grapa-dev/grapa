@@ -17,7 +17,7 @@ Source Text → Lexer → Parser → Executor → Results
 The lexer converts raw text input into a stream of tokens:
 
 **Input**: `"x + 5"`
-**Output**: `[IDENTIFIER:x] [SPACE: ] [OPERATOR:+] [SPACE: ] [NUMBER:5]`
+**Output**: `$ID("x") $STR(" ",skip) $SYM("+") $STR(" ",skip) $INT("5")`
 
 **Key Features**:
 - **Token Classification**: Identifies tokens by type (identifier, operator, number, etc.)
@@ -32,8 +32,8 @@ The lexer converts raw text input into a stream of tokens:
 
 The parser converts tokens into execution trees using BNF grammar rules:
 
-**Input**: `[IDENTIFIER:x] [OPERATOR:+] [NUMBER:5]`
-**Output**: `$OP(add, [$VAR(x), $CONST(5)])`
+**Input**: `$ID("x") $SYM("+") $INT("5")`
+**Output**: `@<add,{@<var,{x}>,5}>`
 
 **Key Features**:
 - **Grammar Rules**: Uses BNF grammar for syntax analysis
@@ -48,7 +48,7 @@ The parser converts tokens into execution trees using BNF grammar rules:
 
 The executor runs the execution trees to produce final results:
 
-**Input**: `$OP(add, [$VAR(x), $CONST(5)])`
+**Input**: `@<add,{@<var,{x}>,5}>`
 **Output**: `8` (assuming x = 3)
 
 **Key Features**:
