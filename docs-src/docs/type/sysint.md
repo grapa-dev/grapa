@@ -30,13 +30,13 @@ In this example:
 
 ## Dynamic Dot Notation
 
-`$SYSINT` is also used in dynamic dot notation, where you can create custom methods that operate on objects using the `@$0` syntax.
+`$SYSINT` is also used in dynamic dot notation, where you can create custom methods that operate on objects using the `$0` syntax.
 
 ### Creating Dynamic Methods
 
 ```grapa
 /* Create a custom method that doubles the length */
-mylen = op(){@$0.len()*2;};
+mylen = op(){$0.len()*2;};
 
 /* Use the dynamic method */
 "hi".mylen();
@@ -49,21 +49,21 @@ You can also use dynamic dot notation inline without defining a separate functio
 
 ```grapa
 /* Inline dynamic dot notation */
-"hi".{@$0.len()*3;};
+"hi".{$0.len()*3;};
 /* Returns: 6 (length of "hi" is 2, tripled is 6) */
 ```
 
 ### How It Works
 
-- `@$0` refers to the object that the method is being called on
-- The expression inside `{}` is evaluated with `@$0` as the context
+- `$0` refers to the object that the method is being called on
+- The expression inside `{}` is evaluated with `$0` as the context
 - This allows you to create custom methods dynamically without modifying the class definition
 
 ### Advanced Examples
 
 ```grapa
 /* Create a method that returns the object's type and length */
-getinfo = op(){@$0.type().str() + " with length " + @$0.len().str();};
+getinfo = op(){$0.type().str() + " with length " + $0.len().str();};
 
 /* Use on different types */
 "hello".getinfo();        /* Returns: "STR with length 5" */
@@ -71,7 +71,7 @@ getinfo = op(){@$0.type().str() + " with length " + @$0.len().str();};
 {a:1,b:2}.getinfo();      /* Returns: "GOBJ with length 2" */
 
 /* Inline version */
-"test".{@$0.upper() + " has " + @$0.len().str() + " characters";};
+"test".{$0.upper() + " has " + $0.len().str() + " characters";};
 /* Returns: "TEST has 4 characters" */
 ```
 

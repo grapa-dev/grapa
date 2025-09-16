@@ -86,7 +86,7 @@ $global["$op"]
 	| '@' '[' <$code_list> ']'
 	| op '(' <$list_list> ')' '(' <$list_list> ')' {@<plan,{$6,$3}>}
 	| op '(' <$list_list> ')' '{' <$lib_start> '}' {@<wrap,{$6,$3}>}
-	| op '{' <$lib_start> '}' {@<wrap,{$3}>}
+	| op '{' <$lib_start> '}' {@<wrap,{$3,@<createlist,{}>}>}
 	;
 $global["$op_list"]
 	= rule <$list_value> ',' '[' <$array_list> ']' ',' '{' <$list_list> '}' {@<createop,{$1,$4,$8}>}
@@ -176,7 +176,7 @@ $global["$litname"]
 	| $SYSSTR {@<lit,{$1}>}
 	| $INT {@<lit,{$1}>}
 	| $RAW {@<lit,{$1}>}
-	| $SYSINT {@<lit,{$1}>}
+	| $SYSINT {@<var,{$1}>}
 	| $FLOAT {@<lit,{$1}>}
 	| $BOOL {@<lit,{$1}>}
 	;
@@ -197,7 +197,7 @@ $global["$lit"]
 	| $SYSSTR {@<lit,{$1}>}
 	| $INT {@<lit,{$1}>}
 	| $RAW {@<lit,{$1}>}
-	| $SYSINT {@<lit,{$1}>}
+	| $SYSINT {@<var,{$1}>}
 	| $FLOAT {@<lit,{$1}>}
 	| $BOOL {@<lit,{$1}>}
 	;
@@ -471,8 +471,8 @@ $global["$opcreate"]
 	| '(' ')' '{' <$lib_start> '}' {@<wrap,{$4,@<createlist,{}>}>}
 	| '(' <$list2> ')' '(' <$list> ')' {@<plan,{$5,$2}>}
 	| '(' <$list2> ')' '{' <$lib_start> '}' {@<wrap,{$5,$2}>}
-	| '(' <$list> ')' {@<plan,{$2}>}
-	| '{' <$lib_start> '}' {@<plan,{$2}>}
+	| '(' <$list> ')' {@<plan,{$2,@<createlist,{}>}>}
+	| '{' <$lib_start> '}' {@<wrap,{$2,@<createlist,{}>}>}
 	;
 $global["$function"]
 	= rule '[' ']' {@<createarray,{}>}
