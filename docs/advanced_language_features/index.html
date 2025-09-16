@@ -2780,18 +2780,18 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#1-decoratorsannotations-planned" class="md-nav__link">
+  <a href="#1-decoratorsannotations-workaround-supported" class="md-nav__link">
     <span class="md-ellipsis">
-      1. Decorators/Annotations 🔄 PLANNED
+      1. Decorators/Annotations 🔄 WORKAROUND SUPPORTED
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#2-genericstemplates-implemented" class="md-nav__link">
+  <a href="#2-generics" class="md-nav__link">
     <span class="md-ellipsis">
-      2. Generics/Templates ✅ IMPLEMENTED
+      **2. Generics
     </span>
   </a>
   
@@ -4683,18 +4683,18 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#1-decoratorsannotations-planned" class="md-nav__link">
+  <a href="#1-decoratorsannotations-workaround-supported" class="md-nav__link">
     <span class="md-ellipsis">
-      1. Decorators/Annotations 🔄 PLANNED
+      1. Decorators/Annotations 🔄 WORKAROUND SUPPORTED
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#2-genericstemplates-implemented" class="md-nav__link">
+  <a href="#2-generics" class="md-nav__link">
     <span class="md-ellipsis">
-      2. Generics/Templates ✅ IMPLEMENTED
+      **2. Generics
     </span>
   </a>
   
@@ -5283,12 +5283,12 @@ workers = [1, 2, 3, 4, 5].map(op(worker_id) {
 - <strong>Structured Concurrency</strong> - Automatic synchronization barriers
 - <strong>Worker Coordination</strong> - Use functional methods as thread synchronization barriers</p>
 <h2 id="planned-advanced-features">Planned Advanced Features</h2>
-<h3 id="1-decoratorsannotations-planned"><strong>1. Decorators/Annotations</strong> 🔄 <strong>PLANNED</strong></h3>
+<h3 id="1-decoratorsannotations-workaround-supported"><strong>1. Decorators/Annotations</strong> 🔄 <strong>WORKAROUND SUPPORTED</strong></h3>
 <p><strong>Status</strong>: Not yet implemented
-<strong>Planned Syntax</strong>: <code>@decorator</code> pattern</p>
-<div class="highlight"><pre><span></span><code>/* Planned decorator syntax */
-@validate
-@cache
+<strong>Planned Syntax</strong>: <code>$decorator</code> pattern</p>
+<div class="highlight"><pre><span></span><code>/* Possible decorator syntax if implemented*/
+$validate
+$cache
 process_data = op(data) {
     /* Function implementation */
 };
@@ -5305,7 +5305,7 @@ process_data = op(data) {
 validate = op(f) { op(x) { if (x &gt; 0) f(x); else $ERR(&quot;Invalid input&quot;); }; };
 cached_process = validate(process_data);
 </code></pre></div></p>
-<h3 id="2-genericstemplates-implemented"><strong>2. Generics/Templates</strong> ✅ <strong>IMPLEMENTED</strong></h3>
+<h3 id="2-generics">**2. Generics</h3>
 <p><strong>Status</strong>: Fully implemented via dynamic typing
 <strong>Grapa's Approach</strong>: Dynamic typing with runtime type checking</p>
 <div class="highlight"><pre><span></span><code>/* Generic-like function using dynamic typing */

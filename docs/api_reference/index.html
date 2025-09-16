@@ -5892,13 +5892,13 @@ if (x.type() == $ARRAY) {
 <h4 id="type-introspection"><strong>Type Introspection</strong></h4>
 <p>Every value in Grapa supports type introspection:</p>
 <div class="highlight"><pre><span></span><code>/* Get type information */
-value = 42;
-type = value.type();  /* $INT */
+$local.value = 42;
+type = $local.value.type();  /* $INT */
 
 /* Type comparison */
-if (value.type() == $INT) {
+if ($local.value.type() == $INT) {
     /* Handle integer */
-} elseif (value.type() == $STR) {
+} elseif ($local.value.type() == $STR) {
     /* Handle string */
 }
 </code></pre></div>
@@ -5944,12 +5944,12 @@ safe_get = op(obj, key) {
         return null;
     }
 
-    value = obj[key];
-    if (value.type() == $ERR) {
+    $local.value = obj[key];
+    if ($local.value.type() == $ERR) {
         return null;
     }
 
-    return value;
+    return $local.value;
 };
 </code></pre></div>
 <h4 id="core-type-methods"><strong>Core Type Methods</strong></h4>
@@ -5988,9 +5988,9 @@ $global.config = {&quot;debug&quot;: true};
 
 /* Function with local namespace */
 func = op(x) {
-    local_var = x * 2;  /* In function&#39;s local namespace */
+    $local.local_var = x * 2;  /* In function&#39;s local namespace */
     global_var = config;  /* Access global namespace */
-    local_var.echo();
+    $local.local_var.echo();
 };
 </code></pre></div>
 <h3 id="basic-operations">Basic Operations</h3>
@@ -6335,8 +6335,8 @@ results = tasks.map(op(task) { task(); });
 <li><code>prompt(message)</code> - Get user input</li>
 </ul>
 <h3 id="examples_5">Examples</h3>
-<div class="highlight"><pre><span></span><code>value = &quot;42&quot;;
-number = int(value);
+<div class="highlight"><pre><span></span><code>$local.value = &quot;42&quot;;
+number = int($local.value);
 text = str(number);
 
 name = prompt(&quot;Enter your name: &quot;);
@@ -6649,7 +6649,7 @@ result = data
 <div class="highlight"><pre><span></span><code>/* $ARRAY examples */
 my_array = [1, 2, 3, 4, 5];
 my_array.set(2, 99);
-value = my_array.get(2);  /* 99 */
+$local.value = my_array.get(2);  /* 99 */
 
 /* $GOBJ examples */
 my_list = {&quot;name&quot;: &quot;Alice&quot;, &quot;age&quot;: 30};
@@ -6659,7 +6659,7 @@ name = my_list.get(&quot;name&quot;);  /* &quot;Bob&quot; */
 /* $OBJ examples */
 my_obj = {};
 my_obj.set(&quot;property&quot;, &quot;value&quot;);
-value = my_obj.get(&quot;property&quot;);  /* &quot;value&quot; */
+$local.value = my_obj.get(&quot;property&quot;);  /* &quot;value&quot; */
 
 /* $file examples */
 my_file = $file();
