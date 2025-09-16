@@ -23,21 +23,6 @@ GrapaPy brings the power of Grapa to Python users, making advanced data processi
 > - No attribute-style access for dict/list keys—use `[]` or `.getfield()` for files/tables.
 > - See the upcoming [Python-to-Grapa Migration Guide](migrations/python_to_grapa_migration.md) for a full mapping and more examples.
 
-## Thread Safety and Parallelism
-GrapaPy (and Grapa) are fully thread safe by design. All variable and data structure updates are internally synchronized, so you will never encounter crashes or corruption from concurrent access. However, if your program logic allows multiple threads to read and write the same variable or data structure, you may see *logical* race conditions (unexpected values, overwrites, etc.). This is a design consideration, not a stability issue. Minimize shared mutable state between threads unless intentional.
-
-**Only `$thread()` objects provide explicit locking and unlocking via `lock()`, `unlock()`, and `trylock()`.** To protect access to a shared resource, create a `$thread()` lock object and use it to guard access. Calling `.lock()` or `.unlock()` on a regular variable (like an array or scalar) will return an error.
-
-**Canonical Example:**
-```grapa
-lock_obj = $thread();
-lock_obj.lock();
-// ... perform thread-safe operations on shared data ...
-lock_obj.unlock();
-```
-
-See [Threading and Locking](sys/thread.md) and [Function Operators: static and const](operators/function.md) for details and best practices.
-
 ## Text Processing and Search
 GrapaPy provides direct access to Grapa's powerful Unicode-aware grep functionality, making it ideal for text processing tasks that require advanced pattern matching and Unicode handling.
 

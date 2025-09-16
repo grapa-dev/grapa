@@ -312,24 +312,6 @@ result = math.add(5, 3);  /* 8 */
 fact = math.factorial(5); /* 120 */
 ```
 
-### Plugin System
-
-```grapa
-/* Dynamic plugin loading */
-plugin_paths = [
-    "plugins/network",
-    "plugins/database", 
-    "plugins/ui"
-];
-
-$sys().putenv($GRAPA_PATH, plugin_paths);
-
-/* Plugins are loaded on demand */
-network = $NETWORK_PLUGIN();
-db = $DATABASE_PLUGIN();
-ui = $UI_PLUGIN();
-```
-
 ### Development vs Production Setup
 
 #### Development Environment

@@ -67,7 +67,7 @@ processed = html_data.encode("HTML-GRAPA");
 
 ## SQL Syntax Integration (Example Implementation)
 
-### **Basic SQL Usage**
+### **Basic SQL Example **
 
 Grapa demonstrates SQL syntax integration through example scripts that show how to add domain-specific SQL syntax using `$custom_command` and `$custom_function` as variables:
 
@@ -89,7 +89,7 @@ select * from users;
 user_count = count(*) from users;
 ```
 
-### **Advanced SQL Features**
+### **Advanced SQL Example **
 
 ```grapa
 /* INSERT statement (example implementation) */
