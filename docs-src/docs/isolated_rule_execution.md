@@ -44,9 +44,9 @@ Execute a single rule against input data without affecting the main language.
 /* Define a custom CSV parsing rule */
 csv_rule = rule $ID ',' $INT ',' $ID {op(name:$1,age:$3,city:$5){
     return {
-        name: name,
-        age: age,
-        city: city
+        "name": name,
+        "age": age,
+        "city": city
     };
 }};
 
