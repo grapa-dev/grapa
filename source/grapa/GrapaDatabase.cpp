@@ -282,9 +282,12 @@ GrapaError GrapaLocalDatabase::DirectoryList(GrapaCHAR& pName, GrapaRuleEvent* p
 
 		u64 dirId = mDirId;
 		u8 dirType = mDirType;
-		GrapaCHAR fname;
-		err = GrapaLocalDatabase::GetNameInfo(pName, dirId, dirType, fname, true);
-		if (err) return(err);
+		if (pName.mLength)
+		{
+			GrapaCHAR fname;
+			err = GrapaLocalDatabase::GetNameInfo(pName, dirId, dirType, fname, true);
+			if (err) return(err);
+		}
 
 		GrapaDBTable parentDict;
 		parentDict.mRef = dirId;
