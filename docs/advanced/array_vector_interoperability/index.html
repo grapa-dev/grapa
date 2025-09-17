@@ -4490,11 +4490,11 @@
 
 
 <h1 id="array-and-vector-interoperability">Array and Vector Interoperability</h1>
-<p>Grapa provides seamless interoperability between <code>$ARRAY</code> and <code>$VECTOR</code> types, automatically converting between them to leverage the best capabilities of each type while maintaining intuitive user behavior.</p>
+<p>Grapa provides seamless interoperability between <code>$LIST</code> and <code>$VECTOR</code> types, automatically converting between them to leverage the best capabilities of each type while maintaining intuitive user behavior.</p>
 <h2 id="overview">Overview</h2>
-<p>While <code>$ARRAY</code> and <code>$VECTOR</code> are distinct types in Grapa, they work together transparently:</p>
+<p>While <code>$LIST</code> and <code>$VECTOR</code> are distinct types in Grapa, they work together transparently:</p>
 <ul>
-<li><strong><code>$ARRAY</code></strong>: General-purpose collections with flexible indexing and iteration</li>
+<li><strong><code>$LIST</code></strong>: General-purpose collections with flexible indexing and iteration</li>
 <li><strong><code>$VECTOR</code></strong>: Mathematical structures optimized for linear algebra operations</li>
 </ul>
 <p>The Grapa runtime automatically converts between these types when needed, allowing you to use mathematical operations on arrays and array-like operations on vectors without explicit conversion.</p>
@@ -4601,7 +4601,7 @@ array = #[1,2,3]#.list()        // Vector to array
 <li><strong>Optimization</strong>: Grapa optimizes common patterns to minimize conversions</li>
 </ol>
 <h3 id="when-to-use-each-type">When to Use Each Type</h3>
-<p><strong>Use <code>$ARRAY</code> when:</strong>
+<p><strong>Use <code>$LIST</code> when:</strong>
 - General data manipulation and iteration
 - Mixed data types
 - Building collections dynamically
@@ -4632,39 +4632,39 @@ result = matrix.inv()  // Matrix inverse
 <tbody>
 <tr>
 <td><code>.reshape()</code></td>
-<td><code>$ARRAY</code></td>
+<td><code>$LIST</code></td>
 <td>→ <code>$VECTOR</code> →</td>
-<td><code>$ARRAY</code></td>
+<td><code>$LIST</code></td>
 </tr>
 <tr>
 <td><code>.triu()</code></td>
-<td><code>$ARRAY</code></td>
+<td><code>$LIST</code></td>
 <td>→ <code>$VECTOR</code> →</td>
-<td><code>$ARRAY</code></td>
+<td><code>$LIST</code></td>
 </tr>
 <tr>
 <td><code>.tril()</code></td>
-<td><code>$ARRAY</code></td>
+<td><code>$LIST</code></td>
 <td>→ <code>$VECTOR</code> →</td>
-<td><code>$ARRAY</code></td>
+<td><code>$LIST</code></td>
 </tr>
 <tr>
 <td><code>.dot()</code></td>
-<td><code>$ARRAY</code></td>
+<td><code>$LIST</code></td>
 <td>→ <code>$VECTOR</code> →</td>
-<td><code>$ARRAY</code></td>
+<td><code>$LIST</code></td>
 </tr>
 <tr>
 <td>Arithmetic ops</td>
-<td><code>$ARRAY</code></td>
+<td><code>$LIST</code></td>
 <td>→ <code>$VECTOR</code> →</td>
-<td><code>$ARRAY</code></td>
+<td><code>$LIST</code></td>
 </tr>
 <tr>
 <td><code>.list()</code></td>
 <td><code>$VECTOR</code></td>
 <td>→</td>
-<td><code>$ARRAY</code></td>
+<td><code>$LIST</code></td>
 </tr>
 </tbody>
 </table>

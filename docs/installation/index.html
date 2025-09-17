@@ -4941,7 +4941,7 @@
 <p>Grapa is available as platform-specific packages with a universal installer that automatically detects your platform and downloads the appropriate package.</p>
 <p><strong>Note</strong>: Documentation and downloads are available on <a href="https://github.com/grapa-dev/grapa">GitHub</a>.</p>
 <h2 id="universal-installer-recommended">🚀 <strong>Universal Installer (Recommended)</strong></h2>
-<p>Grapa 0.1.54+ provides a <strong>universal installer</strong> that automatically detects your platform and downloads the correct package:</p>
+<p>Grapa 0.1.55+ provides a <strong>universal installer</strong> that automatically detects your platform and downloads the correct package:</p>
 <ul>
 <li><strong>Smart platform detection</strong> - automatically identifies your system</li>
 <li><strong>Automatic dependency installation</strong> - installs system dependencies on Linux/macOS</li>
@@ -4953,12 +4953,12 @@
 </ul>
 <h3 id="quick-installation"><strong>Quick Installation</strong></h3>
 <div class="highlight"><pre><span></span><code><span class="c1"># Download and run the universal installer</span>
-curl<span class="w"> </span>-O<span class="w"> </span>https://github.com/grapa-dev/grapa/releases/download/v0.1.54/install-grapa-0.1.54.py
-python3<span class="w"> </span>install-grapa-0.1.54.py
+curl<span class="w"> </span>-O<span class="w"> </span>https://github.com/grapa-dev/grapa/releases/download/v0.1.55/install-grapa-0.1.55.py
+python3<span class="w"> </span>install-grapa-0.1.55.py
 </code></pre></div>
 <h3 id="installation-with-automatic-dependencies"><strong>Installation with Automatic Dependencies</strong></h3>
 <div class="highlight"><pre><span></span><code><span class="c1"># Install Grapa and automatically install system dependencies (Linux/macOS)</span>
-python3<span class="w"> </span>install-grapa-0.1.54.py<span class="w"> </span>--install-dependencies
+python3<span class="w"> </span>install-grapa-0.1.55.py<span class="w"> </span>--install-dependencies
 </code></pre></div>
 <p>The installer will:
 1. <strong>Detect your platform</strong> (macOS, Linux, Windows, AWS)
@@ -4972,14 +4972,14 @@ python3<span class="w"> </span>install-grapa-0.1.54.py<span class="w"> </span>--
 <h3 id="macos-arm64-apple-silicon">macOS (ARM64 - Apple Silicon)</h3>
 <p><strong>Download and install:</strong>
 <div class="highlight"><pre><span></span><code><span class="c1"># Download the macOS ARM64 package</span>
-curl<span class="w"> </span>-L<span class="w"> </span>-o<span class="w"> </span>grapa-0.1.54-mac-arm64.zip<span class="w"> </span>https://github.com/grapa-dev/grapa/releases/download/v0.1.54/grapa-0.1.54-mac-arm64.zip
+curl<span class="w"> </span>-L<span class="w"> </span>-o<span class="w"> </span>grapa-0.1.55-mac-arm64.zip<span class="w"> </span>https://github.com/grapa-dev/grapa/releases/download/v0.1.55/grapa-0.1.55-mac-arm64.zip
 
 <span class="c1"># Extract the package</span>
-unzip<span class="w"> </span>grapa-0.1.54-mac-arm64.zip
-<span class="nb">cd</span><span class="w"> </span>grapa-0.1.54
+unzip<span class="w"> </span>grapa-0.1.55-mac-arm64.zip
+<span class="nb">cd</span><span class="w"> </span>grapa-0.1.55
 
 <span class="c1"># Run the installer</span>
-python3<span class="w"> </span>install-grapa-0.1.54.py
+python3<span class="w"> </span>install-grapa-0.1.55.py
 
 <span class="c1"># Verify installation</span>
 grapa<span class="w"> </span>--version
@@ -4998,12 +4998,12 @@ sudo<span class="w"> </span>rm<span class="w"> </span>-f<span class="w"> </span>
 <h3 id="linux-amd64">Linux (AMD64)</h3>
 <p><strong>Download and install:</strong>
 <div class="highlight"><pre><span></span><code><span class="c1"># Download the Linux AMD64 package</span>
-wget<span class="w"> </span>https://github.com/grapa-dev/grapa/releases/download/v0.1.54/grapa-0.1.54-linux-amd64.zip
+wget<span class="w"> </span>https://github.com/grapa-dev/grapa/releases/download/v0.1.55/grapa-0.1.55-linux-amd64.zip
 
 <span class="c1"># Extract and install</span>
-unzip<span class="w"> </span>grapa-0.1.54-linux-amd64.zip
-<span class="nb">cd</span><span class="w"> </span>grapa-0.1.54
-sudo<span class="w"> </span>python3<span class="w"> </span>install-grapa-0.1.54.py
+unzip<span class="w"> </span>grapa-0.1.55-linux-amd64.zip
+<span class="nb">cd</span><span class="w"> </span>grapa-0.1.55
+sudo<span class="w"> </span>python3<span class="w"> </span>install-grapa-0.1.55.py
 
 <span class="c1"># Verify installation</span>
 grapa<span class="w"> </span>--version
@@ -5011,12 +5011,12 @@ grapa<span class="w"> </span>--version
 <h3 id="linux-arm64">Linux (ARM64)</h3>
 <p><strong>Download and install:</strong>
 <div class="highlight"><pre><span></span><code><span class="c1"># Download the Linux ARM64 package</span>
-wget<span class="w"> </span>https://github.com/grapa-dev/grapa/releases/download/v0.1.54/grapa-0.1.54-linux-arm64.zip
+wget<span class="w"> </span>https://github.com/grapa-dev/grapa/releases/download/v0.1.55/grapa-0.1.55-linux-arm64.zip
 
 <span class="c1"># Extract and install</span>
-unzip<span class="w"> </span>grapa-0.1.54-linux-arm64.zip
-<span class="nb">cd</span><span class="w"> </span>grapa-0.1.54
-sudo<span class="w"> </span>python3<span class="w"> </span>install-grapa-0.1.54.py
+unzip<span class="w"> </span>grapa-0.1.55-linux-arm64.zip
+<span class="nb">cd</span><span class="w"> </span>grapa-0.1.55
+sudo<span class="w"> </span>python3<span class="w"> </span>install-grapa-0.1.55.py
 
 <span class="c1"># Verify installation</span>
 grapa<span class="w"> </span>--version
@@ -5034,12 +5034,12 @@ sudo<span class="w"> </span>rm<span class="w"> </span>-f<span class="w"> </span>
 <h3 id="aws-amd64">AWS (AMD64)</h3>
 <p><strong>Download and install:</strong>
 <div class="highlight"><pre><span></span><code><span class="c1"># Download the AWS AMD64 package</span>
-wget<span class="w"> </span>https://github.com/grapa-dev/grapa/releases/download/v0.1.54/grapa-0.1.54-aws-amd64.zip
+wget<span class="w"> </span>https://github.com/grapa-dev/grapa/releases/download/v0.1.55/grapa-0.1.55-aws-amd64.zip
 
 <span class="c1"># Extract and install</span>
-unzip<span class="w"> </span>grapa-0.1.54-aws-amd64.zip
-<span class="nb">cd</span><span class="w"> </span>grapa-0.1.54
-sudo<span class="w"> </span>python3<span class="w"> </span>install-grapa-0.1.54.py
+unzip<span class="w"> </span>grapa-0.1.55-aws-amd64.zip
+<span class="nb">cd</span><span class="w"> </span>grapa-0.1.55
+sudo<span class="w"> </span>python3<span class="w"> </span>install-grapa-0.1.55.py
 
 <span class="c1"># Verify installation</span>
 grapa<span class="w"> </span>--version
@@ -5047,12 +5047,12 @@ grapa<span class="w"> </span>--version
 <h3 id="aws-arm64">AWS (ARM64)</h3>
 <p><strong>Download and install:</strong>
 <div class="highlight"><pre><span></span><code><span class="c1"># Download the AWS ARM64 package</span>
-wget<span class="w"> </span>https://github.com/grapa-dev/grapa/releases/download/v0.1.54/grapa-0.1.54-aws-arm64.zip
+wget<span class="w"> </span>https://github.com/grapa-dev/grapa/releases/download/v0.1.55/grapa-0.1.55-aws-arm64.zip
 
 <span class="c1"># Extract and install</span>
-unzip<span class="w"> </span>grapa-0.1.54-aws-arm64.zip
-<span class="nb">cd</span><span class="w"> </span>grapa-0.1.54
-sudo<span class="w"> </span>python3<span class="w"> </span>install-grapa-0.1.54.py
+unzip<span class="w"> </span>grapa-0.1.55-aws-arm64.zip
+<span class="nb">cd</span><span class="w"> </span>grapa-0.1.55
+sudo<span class="w"> </span>python3<span class="w"> </span>install-grapa-0.1.55.py
 
 <span class="c1"># Verify installation</span>
 grapa<span class="w"> </span>--version
@@ -5074,18 +5074,18 @@ sudo<span class="w"> </span>rm<span class="w"> </span>-f<span class="w"> </span>
 <li>
 <p><strong>Download the Windows package:</strong>
    <div class="highlight"><pre><span></span><code><span class="c"># Download the Windows AMD64 release</span>
-<span class="nb">Invoke-WebRequest</span> <span class="n">-Uri</span> <span class="s2">&quot;https://github.com/grapa-dev/grapa/releases/download/v0.1.54/grapa-0.1.54-win-amd64.zip&quot;</span> <span class="n">-OutFile</span> <span class="s2">&quot;grapa-0.1.54-win-amd64.zip&quot;</span>
+<span class="nb">Invoke-WebRequest</span> <span class="n">-Uri</span> <span class="s2">&quot;https://github.com/grapa-dev/grapa/releases/download/v0.1.55/grapa-0.1.55-win-amd64.zip&quot;</span> <span class="n">-OutFile</span> <span class="s2">&quot;grapa-0.1.55-win-amd64.zip&quot;</span>
 </code></pre></div></p>
 </li>
 <li>
 <p><strong>Extract the package:</strong>
-   <div class="highlight"><pre><span></span><code><span class="nb">Expand-Archive</span> <span class="n">-Path</span> <span class="s2">&quot;grapa-0.1.54-win-amd64.zip&quot;</span> <span class="n">-DestinationPath</span> <span class="s2">&quot;grapa-0.1.54&quot;</span> <span class="n">-Force</span>
+   <div class="highlight"><pre><span></span><code><span class="nb">Expand-Archive</span> <span class="n">-Path</span> <span class="s2">&quot;grapa-0.1.55-win-amd64.zip&quot;</span> <span class="n">-DestinationPath</span> <span class="s2">&quot;grapa-0.1.55&quot;</span> <span class="n">-Force</span>
 </code></pre></div></p>
 </li>
 <li>
 <p><strong>Run the installer</strong> (run PowerShell as Administrator):
-   <div class="highlight"><pre><span></span><code><span class="nb">cd </span><span class="n">grapa</span><span class="p">-</span><span class="n">0</span><span class="p">.</span><span class="n">1</span><span class="p">.</span><span class="n">54</span>
-<span class="n">python</span> <span class="nb">install-grapa</span><span class="p">-</span><span class="n">0</span><span class="p">.</span><span class="n">1</span><span class="p">.</span><span class="n">54</span><span class="p">.</span><span class="n">py</span>
+   <div class="highlight"><pre><span></span><code><span class="nb">cd </span><span class="n">grapa</span><span class="p">-</span><span class="n">0</span><span class="p">.</span><span class="n">1</span><span class="p">.</span><span class="n">55</span>
+<span class="n">python</span> <span class="nb">install-grapa</span><span class="p">-</span><span class="n">0</span><span class="p">.</span><span class="n">1</span><span class="p">.</span><span class="n">55</span><span class="p">.</span><span class="n">py</span>
 </code></pre></div></p>
 </li>
 <li>
@@ -5106,14 +5106,14 @@ After installation, Grapa will be available at:
 - <strong>PATH</strong>: Automatically added to system PATH for command-line access</p>
 <p><strong>Uninstall:</strong>
 <div class="highlight"><pre><span></span><code><span class="c"># Run PowerShell as Administrator</span>
-<span class="n">python</span> <span class="nb">install-grapa</span><span class="p">-</span><span class="n">0</span><span class="p">.</span><span class="n">1</span><span class="p">.</span><span class="n">54</span><span class="p">.</span><span class="n">py</span> <span class="p">-</span><span class="n">-uninstall</span>
+<span class="n">python</span> <span class="nb">install-grapa</span><span class="p">-</span><span class="n">0</span><span class="p">.</span><span class="n">1</span><span class="p">.</span><span class="n">55</span><span class="p">.</span><span class="n">py</span> <span class="p">-</span><span class="n">-uninstall</span>
 </code></pre></div></p>
 <h2 id="building-and-running-the-example">🛠️ <strong>Building and Running the Example</strong></h2>
 <p>The universal development kit includes a complete C++ example demonstrating how to embed Grapa in your applications.</p>
 <h3 id="build-the-example-application"><strong>Build the Example Application</strong></h3>
 <p>After extracting the universal package, you can build and run the included example:</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># Navigate to the extracted directory</span>
-<span class="nb">cd</span><span class="w"> </span>grapa-0.1.54
+<span class="nb">cd</span><span class="w"> </span>grapa-0.1.55
 
 <span class="c1"># Create build directory</span>
 mkdir<span class="w"> </span>build<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">cd</span><span class="w"> </span>build
@@ -5147,7 +5147,7 @@ cmake<span class="w"> </span>--build<span class="w"> </span>.
 <div class="highlight"><pre><span></span><code>grapa<span class="w"> </span>--version
 </code></pre></div>
 <p>You should see output similar to:
-<div class="highlight"><pre><span></span><code>Grapa version 0.1.54
+<div class="highlight"><pre><span></span><code>Grapa version 0.1.55
 </code></pre></div></p>
 <h2 id="test-basic-functionality">Test Basic Functionality</h2>
 <p>Try running a simple Grapa command:</p>
@@ -5226,7 +5226,7 @@ python<span class="w"> </span>build.py<span class="w"> </span>--python
 <p>The Grapa universal installer can automatically install system dependencies for the CLI, which are the same dependencies needed for GrapaPy:</p>
 <h4 id="automatic-dependency-installation-linuxmacos"><strong>Automatic Dependency Installation (Linux/macOS)</strong></h4>
 <div class="highlight"><pre><span></span><code><span class="c1"># Install Grapa CLI with automatic dependency installation</span>
-python3<span class="w"> </span>install-grapa-0.1.54.py<span class="w"> </span>--install-dependencies
+python3<span class="w"> </span>install-grapa-0.1.55.py<span class="w"> </span>--install-dependencies
 
 <span class="c1"># Then install GrapaPy (dependencies already installed)</span>
 pip3<span class="w"> </span>install<span class="w"> </span>grapapy
@@ -5238,7 +5238,7 @@ pip3<span class="w"> </span>install<span class="w"> </span>grapapy
 <h4 id="manual-dependency-installation"><strong>Manual Dependency Installation</strong></h4>
 <p>If you prefer to install dependencies manually, use the commands listed in the platform-specific sections above.</p>
 <h2 id="building-from-source">🛠️ <strong>Building from Source</strong></h2>
-<p>Grapa 0.1.54 includes support for building Python extensions from source:</p>
+<p>Grapa 0.1.55 includes support for building Python extensions from source:</p>
 <h3 id="build-with-python-extension"><strong>Build with Python Extension</strong></h3>
 <div class="highlight"><pre><span></span><code><span class="c1"># Build Grapa with Python extension support</span>
 python3<span class="w"> </span>build.py<span class="w"> </span>--python
@@ -5271,21 +5271,21 @@ pip3<span class="w"> </span>install<span class="w"> </span>grapapy
 <h2 id="available-packages">Available Packages</h2>
 <p>The platform-specific release provides optimized packages for each platform:</p>
 <ul>
-<li><code>install-grapa-0.1.54.py</code> - <strong>Universal Installer</strong> (4 KB)</li>
+<li><code>install-grapa-0.1.55.py</code> - <strong>Universal Installer</strong> (4 KB)</li>
 <li>Automatically detects your platform</li>
 <li>Downloads the appropriate package</li>
 <li>Installs Grapa with proper setup</li>
 </ul>
 <p><strong>Platform-Specific Packages:</strong>
-- <code>grapa-0.1.54-mac-arm64.zip</code> - <strong>macOS ARM64</strong> (10.1 MB)
-- <code>grapa-0.1.54-linux-amd64.zip</code> - <strong>Linux AMD64</strong> (13.0 MB)
-- <code>grapa-0.1.54-linux-arm64.zip</code> - <strong>Linux ARM64</strong> (13.8 MB)
-- <code>grapa-0.1.54-win-amd64.zip</code> - <strong>Windows AMD64</strong> (41.3 MB)
-- <code>grapa-0.1.54-aws-amd64.zip</code> - <strong>AWS AMD64</strong> (12.4 MB)
-- <code>grapa-0.1.54-aws-arm64.zip</code> - <strong>AWS ARM64</strong> (12.8 MB)</p>
+- <code>grapa-0.1.55-mac-arm64.zip</code> - <strong>macOS ARM64</strong> (10.1 MB)
+- <code>grapa-0.1.55-linux-amd64.zip</code> - <strong>Linux AMD64</strong> (13.0 MB)
+- <code>grapa-0.1.55-linux-arm64.zip</code> - <strong>Linux ARM64</strong> (13.8 MB)
+- <code>grapa-0.1.55-win-amd64.zip</code> - <strong>Windows AMD64</strong> (41.3 MB)
+- <code>grapa-0.1.55-aws-amd64.zip</code> - <strong>AWS AMD64</strong> (12.4 MB)
+- <code>grapa-0.1.55-aws-arm64.zip</code> - <strong>AWS ARM64</strong> (12.8 MB)</p>
 <p><strong>Each package includes:</strong>
 - Platform-specific Grapa executable
-- Universal installer (<code>install-grapa-0.1.54.py</code>)
+- Universal installer (<code>install-grapa-0.1.55.py</code>)
 - Sample C++ application (<code>main.cpp</code>)
 - Complete CMake build system
 - Platform libraries and headers
@@ -5328,7 +5328,7 @@ ls<span class="w"> </span>-la<span class="w"> </span><span class="k">$(</span>wh
 </ol>
 <h3 id="windows-specific-issues">Windows-Specific Issues</h3>
 <h4 id="installation-script-issues">Installation Script Issues</h4>
-<p>If the <code>install-grapa-0.1.54.py</code> script fails:</p>
+<p>If the <code>install-grapa-0.1.55.py</code> script fails:</p>
 <ol>
 <li>
 <p><strong>Check Python installation:</strong>
@@ -5338,12 +5338,12 @@ ls<span class="w"> </span>-la<span class="w"> </span><span class="k">$(</span>wh
 </li>
 <li>
 <p><strong>Verify the script exists:</strong>
-   <div class="highlight"><pre><span></span><code><span class="nb">Test-Path</span> <span class="s2">&quot;install-grapa-0.1.54.py&quot;</span>
+   <div class="highlight"><pre><span></span><code><span class="nb">Test-Path</span> <span class="s2">&quot;install-grapa-0.1.55.py&quot;</span>
 </code></pre></div></p>
 </li>
 <li>
 <p><strong>Run the script with verbose output:</strong>
-   <div class="highlight"><pre><span></span><code><span class="n">python</span> <span class="nb">install-grapa</span><span class="p">-</span><span class="n">0</span><span class="p">.</span><span class="n">1</span><span class="p">.</span><span class="n">54</span><span class="p">.</span><span class="n">py</span> <span class="p">-</span><span class="n">-verbose</span>
+   <div class="highlight"><pre><span></span><code><span class="n">python</span> <span class="nb">install-grapa</span><span class="p">-</span><span class="n">0</span><span class="p">.</span><span class="n">1</span><span class="p">.</span><span class="n">55</span><span class="p">.</span><span class="n">py</span> <span class="p">-</span><span class="n">-verbose</span>
 </code></pre></div></p>
 </li>
 </ol>

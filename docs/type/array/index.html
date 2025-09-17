@@ -74,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#array" class="md-skip">
+        <a href="#list" class="md-skip">
           Skip to content
         </a>
       
@@ -891,9 +891,9 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#array-vs-gobj-comparison" class="md-nav__link">
+  <a href="#list-vs-gobj-comparison" class="md-nav__link">
     <span class="md-ellipsis">
-      $ARRAY vs $GOBJ Comparison
+      $LIST vs $GOBJ Comparison
     </span>
   </a>
   
@@ -4363,9 +4363,9 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#array-vs-gobj-comparison" class="md-nav__link">
+  <a href="#list-vs-gobj-comparison" class="md-nav__link">
     <span class="md-ellipsis">
-      $ARRAY vs $GOBJ Comparison
+      $LIST vs $GOBJ Comparison
     </span>
   </a>
   
@@ -4721,19 +4721,19 @@
 
 
 
-<h1 id="array">$ARRAY</h1>
+<h1 id="list">$LIST</h1>
 <p>References:
 - <a href="../gobj/">$GOBJ object</a>
 - <a href="../vector/">$VECTOR object</a>
 - <a href="../../advanced/array_vector_interoperability/">Array-Vector Interoperability</a></p>
-<p><strong><code>$ARRAY</code></strong> = <code>[]</code> syntax (positional, no names, indexed by position)</p>
+<p><strong><code>$LIST</code></strong> = <code>[]</code> syntax (positional, no names, indexed by position)</p>
 <p>A positional array that stores values without named keys. Elements are accessed by their position (index) rather than by name. This follows traditional C-style array terminology where arrays are indexed collections.</p>
-<h3 id="array-vs-gobj-comparison">$ARRAY vs $GOBJ Comparison</h3>
+<h3 id="list-vs-gobj-comparison">$LIST vs $GOBJ Comparison</h3>
 <table>
 <thead>
 <tr>
 <th>Feature</th>
-<th>$ARRAY (<code>[]</code>)</th>
+<th>$LIST (<code>[]</code>)</th>
 <th>$GOBJ (<code>{}</code>)</th>
 </tr>
 </thead>
@@ -4771,7 +4771,7 @@
 </tbody>
 </table>
 <p><strong>Note:</strong> This differs from some other languages where <code>[]</code> is called a "list" and <code>{}</code> is called a "dictionary" or "object". Grapa follows traditional C terminology.</p>
-<p>Supports an offset search if the contents of the array are $ID or $STR or $ARRAY values.
+<p>Supports an offset search if the contents of the array are $ID or $STR or $LIST values.
 <div class="highlight"><pre><span></span><code>&gt; months = [&quot;JAN&quot;,&quot;FEB&quot;,&quot;MAR&quot;,&quot;APR&quot;,&quot;MAY&quot;,&quot;JUN&quot;,&quot;JUL&quot;,&quot;AUG&quot;,&quot;SEP&quot;,&quot;OCT&quot;,&quot;NOV&quot;,&quot;DEC&quot;];
 &gt; months[&quot;MAR&quot;];
 2
@@ -4780,7 +4780,7 @@
 &gt; months[&quot;FFF&quot;].iferr(-1);
 -1
 </code></pre></div></p>
-<p>If the elements are $ARRAY type, the first item of the array is used for the match.
+<p>If the elements are $LIST type, the first item of the array is used for the match.
 <div class="highlight"><pre><span></span><code>&gt; x = [[&quot;a&quot;,496],[&quot;b&quot;,964],[&quot;c&quot;,221]];
 &gt; x.&quot;b&quot;;
 1
@@ -4800,7 +4800,7 @@
 &gt; d[&#39;nonexistent&#39;];
 {&quot;err&quot;:-1}
 </code></pre></div></p>
-<p>There isn't currently built in support for searching for an $ARRAY or $GOBJ item within an $ARRAY. Currently, this would require an itterator to scan and compare, or the use of a hash of the contents as a key.</p>
+<p>There isn't currently built in support for searching for an $LIST or $GOBJ item within an $LIST. Currently, this would require an itterator to scan and compare, or the use of a hash of the contents as a key.</p>
 <h3 id="mathematical-operations">Mathematical Operations</h3>
 <p>Arrays automatically convert to vectors for mathematical operations, then convert back to arrays:</p>
 <div class="highlight"><pre><span></span><code>/* Arithmetic operations (uses vector math internally) */
@@ -4860,7 +4860,7 @@ element = matrix[1][2];           /* 6 */
 - <strong>Chained methods</strong>: Use <code>.getfield().getfield()</code> for 2D array element access
 - <strong>Key-based access</strong>: Use when array contains <code>$GOBJ</code> items with <code>"$KEY"</code> fields</p>
 <h4 id="key-based-access-for-gobj-arrays">Key-Based Access for $GOBJ Arrays</h4>
-<p>When an <code>$ARRAY</code> contains <code>$GOBJ</code> items that have a <code>"$KEY"</code> field, you can access elements by their key value:</p>
+<p>When an <code>$LIST</code> contains <code>$GOBJ</code> items that have a <code>"$KEY"</code> field, you can access elements by their key value:</p>
 <div class="highlight"><pre><span></span><code>/* Example: File listing from $file().ls() */
 d = $file().ls();
 /* Returns: [{&quot;$PATH&quot;:&quot;&quot;,&quot;$KEY&quot;:&quot;build.py&quot;,&quot;$TYPE&quot;:&quot;FILE&quot;,&quot;$BYTES&quot;:38707}, ...] */
@@ -5103,7 +5103,7 @@ arr ++= [88, 77] arr[0];  /* INSERT multiple at position 0: [88, 77, 1, 99, 2, 3
 <thead>
 <tr>
 <th>Behavior</th>
-<th><code>$ARRAY</code></th>
+<th><code>$LIST</code></th>
 <th><code>$VECTOR</code></th>
 </tr>
 </thead>

@@ -6235,7 +6235,7 @@
 <li><strong>1D Vectors</strong>: <code>vec.get(-1)</code> returns last element, <code>vec.get(-2)</code> returns second-to-last</li>
 <li><strong>2D Vectors</strong>: <code>matrix.get(-1, -1)</code> returns bottom-right element</li>
 <li><strong>All Methods</strong>: Works with <code>.get()</code>, <code>.set()</code>, <code>.getfield()</code>, <code>.setfield()</code></li>
-<li><strong>Consistent</strong>: Same behavior as <code>$ARRAY</code> and <code>$GOBJ</code></li>
+<li><strong>Consistent</strong>: Same behavior as <code>$LIST</code> and <code>$GOBJ</code></li>
 </ul>
 <h4 id="column-label-support-new"><strong>✅ Column Label Support (NEW)</strong></h4>
 <ul>
@@ -7403,7 +7403,7 @@ result6 = vec1.pow(2);    /* Returns error */
 <h4 id="index-support"><strong>Index Support</strong></h4>
 <ul>
 <li><strong>Positive Indices</strong>: Fully supported (0, 1, 2, ...)</li>
-<li><strong>Negative Indices</strong>: ✅ <strong>FULLY SUPPORTED</strong> (same as <code>$ARRAY</code> and <code>$GOBJ</code>)</li>
+<li><strong>Negative Indices</strong>: ✅ <strong>FULLY SUPPORTED</strong> (same as <code>$LIST</code> and <code>$GOBJ</code>)</li>
 <li><code>-1</code> refers to the last element, <code>-2</code> to the second-to-last, etc.</li>
 <li>Works for both 1D and 2D vectors</li>
 <li>Works with all access methods: <code>.get()</code>, <code>.set()</code>, <code>.getfield()</code>, <code>.setfield()</code></li>
@@ -7579,7 +7579,7 @@ employees.set(&quot;department&quot;, &quot;Sales&quot;); /* Change first employ
 - ❌ <strong>2D Labels</strong>: Only one dimension can have labels (columns OR rows, not both)</p>
 <p><strong>Status:</strong> ✅ <strong>NEW FEATURE</strong> - Column label access provides intuitive, spreadsheet-like element access for structured data vectors.</p>
 <h4 id="negative-index-support-new_1"><strong>Negative Index Support - NEW</strong></h4>
-<p>Added full negative index support for all vector access methods, matching the behavior of <code>$ARRAY</code> and <code>$GOBJ</code>:</p>
+<p>Added full negative index support for all vector access methods, matching the behavior of <code>$LIST</code> and <code>$GOBJ</code>:</p>
 <p><strong>New Negative Index Capabilities:</strong>
 - <strong>1D Vectors</strong>: <code>vec.get(-1)</code> returns last element, <code>vec.get(-2)</code> returns second-to-last, etc.
 - <strong>2D Vectors</strong>: <code>matrix.get(-1, -1)</code> returns bottom-right element, <code>matrix.get(-2, -1)</code> returns second-to-last row, last column

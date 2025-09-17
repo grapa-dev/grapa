@@ -5263,9 +5263,9 @@ test2.inc();      /* n becomes 1 */
 test2.dec(5);     /* n becomes -4, m becomes 1 */
 
 /* Pattern 3: Extending system classes */
-$ARRAY();  /* Load system class */
-@$ARRAY ++= {f:op(){55}};
-@$ARRAY += (c:op(){$this.len();});
+$LIST();  /* Load system class */
+@$LIST ++= {f:op(){55}};
+@$LIST += (c:op(){$this.len();});
 ar = [1,2,4];
 ar.f();           /* Returns 55 */
 ar.c();           /* Returns 3 */
@@ -5334,7 +5334,7 @@ cached_process = validate(process_data);
 <div class="highlight"><pre><span></span><code>/* Generic-like function using dynamic typing */
 generic_function = op(x) {
     /* Dynamic type checking */
-    if (x.type() == $ARRAY) process_array(x);
+    if (x.type() == $LIST) process_array(x);
     else if (x.type() == $GOBJ) process_list(x);
     else process_other(x);
 };
@@ -5455,7 +5455,7 @@ switch (true) {
 switch (true) {
     case (data.type() == $STR): &quot;String data&quot;.echo();
     case (data.type() == $INT): &quot;Integer data&quot;.echo();
-    case (data.type() == $ARRAY): &quot;Array data&quot;.echo();
+    case (data.type() == $LIST): &quot;Array data&quot;.echo();
     case (data.type() == $GOBJ): &quot;List data&quot;.echo();
     default: &quot;Other data type&quot;.echo();
 };
@@ -5623,8 +5623,8 @@ new_float = components.encode(&quot;FLOAT&quot;);
 <h3 id="7-system-class-redefinition-implemented"><strong>7. System Class Redefinition</strong> ✅ <strong>IMPLEMENTED</strong></h3>
 <p><strong>Status</strong>: Fully implemented but advanced feature
 <strong>Current</strong>: <code>$global</code> syntax for redefining system classes</p>
-<div class="highlight"><pre><span></span><code>/* Redefine $ARRAY with custom methods */
-$global[&quot;$ARRAY&quot;] = class ($GOBJ, $VECTOR) {
+<div class="highlight"><pre><span></span><code>/* Redefine $LIST with custom methods */
+$global[&quot;$LIST&quot;] = class ($GOBJ, $VECTOR) {
     custom_method = op() { 
         &quot;Custom array method called&quot;.echo();
         $this.len();  /* Access the array&#39;s length */
@@ -5638,7 +5638,7 @@ result = arr.custom_method();
 /* result: 3 */
 </code></pre></div>
 <p><strong>Capabilities:</strong>
-- <strong>System Class Extension</strong> - Add methods to <code>$ARRAY</code>, <code>$GOBJ</code>, <code>$CLASS</code>, <code>$OBJ</code>, etc.
+- <strong>System Class Extension</strong> - Add methods to <code>$LIST</code>, <code>$GOBJ</code>, <code>$CLASS</code>, <code>$OBJ</code>, etc.
 - <strong>Global Variable Redefinition</strong> - Redefine any global variable or function
 - <strong>Runtime Modification</strong> - Change system behavior at runtime
 - <strong>Method Preservation</strong> - Keep existing methods while adding new ones</p>
@@ -5664,7 +5664,7 @@ is_readonly = $sys().const(my_variable);
 <p><strong>Future Enhancement:</strong>
 The <code>+=</code> operator will be enhanced to safely add methods to system classes:
 <div class="highlight"><pre><span></span><code>/* Future capability (not yet implemented) */
-$ARRAY += (custom_method: op() { $this.len(); });
+$LIST += (custom_method: op() { $this.len(); });
 </code></pre></div></p>
 <h3 id="current-limitations-and-future-enhancements"><strong>Current Limitations and Future Enhancements</strong></h3>
 <h4 id="object-lifecycle-management"><strong>Object Lifecycle Management</strong></h4>

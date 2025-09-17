@@ -4575,7 +4575,7 @@ $py().exec(&quot;counter += 1&quot;, locals);
 <td>True/false values</td>
 </tr>
 <tr>
-<td><code>$ARRAY</code></td>
+<td><code>$LIST</code></td>
 <td><code>list</code></td>
 <td>Element-by-element conversion</td>
 </tr>
@@ -4633,7 +4633,7 @@ $py().exec(&quot;counter += 1&quot;, locals);
 </tr>
 <tr>
 <td><code>list</code></td>
-<td><code>$ARRAY</code></td>
+<td><code>$LIST</code></td>
 <td>Element-by-element conversion</td>
 </tr>
 <tr>
@@ -4724,7 +4724,7 @@ result = safe_python(&quot;2 + 2&quot;);  /* Returns: 4 */
 $this.python_rule = rule 
       $INT $INT {op(a:$1,b:$2) {$py().eval(&quot;a + b&quot;, {&quot;a&quot;:a,&quot;b&quot;:b});}}
     | $STR      {op(s:$1)      {$py().eval(&quot;s.upper()&quot;, {&quot;s&quot;:s});}}
-    | $ARRAY    {op(arr:$1)    {$py().eval(&quot;sum(arr)&quot;, {&quot;arr&quot;:arr});}}
+    | $LIST    {op(arr:$1)    {$py().eval(&quot;sum(arr)&quot;, {&quot;arr&quot;:arr});}}
     ;
 
 /* Use the rule */

@@ -5904,10 +5904,10 @@ if (condition) {
 <div class="highlight"><pre><span></span><code>/* Dynamic type assignment */
 x = 42;        /* $INT */
 x = &quot;hello&quot;;   /* $STR */
-x = [1, 2, 3]; /* $ARRAY */
+x = [1, 2, 3]; /* $LIST */
 
 /* Runtime type checking */
-if (x.type() == $ARRAY) {
+if (x.type() == $LIST) {
     /* Safe to use array methods */
     result = x.map(op(item) { item * 2; });
 }
@@ -5932,7 +5932,7 @@ func = op(x) { x * 2; };
 func_type = func.type();  /* $OP */
 
 /* Classes are data */
-class_obj = $ARRAY;
+class_obj = $LIST;
 class_type = class_obj.type();  /* $CLASS */
 
 /* Rules are data */
@@ -5953,7 +5953,7 @@ float_value = &quot;3.14&quot;.float(); /* 3.14 */
 <p>Best practices for type safety in Grapa:</p>
 <div class="highlight"><pre><span></span><code>/* Defensive programming */
 process_data = op(data) {
-    if (data.type() != $ARRAY) {
+    if (data.type() != $LIST) {
         return $ERR(&quot;Expected array&quot;);
     }
 
@@ -6648,8 +6648,8 @@ tomorrow = now.add(86400);  /* Add 24 hours */
 <li><strong>Search &amp; Pattern</strong>: <code>.grep()</code>, <code>.match()</code>, <code>.findall()</code></li>
 <li><strong>Bit Manipulation</strong>: <code>.setbit()</code>, <code>.clearbit()</code>, <code>.genbits()</code></li>
 <li><strong>Cryptography</strong>: <code>.encode()</code>, <code>.decode()</code>, <code>.sign()</code>, <code>.verify()</code>, <code>.secret()</code></li>
-<li><strong>Universal Access</strong>: <code>.get()</code>, <code>.set()</code> - works across <code>$ARRAY</code>, <code>$GOBJ</code>, <code>$OBJ</code>, <code>$file</code>, <code>$TABLE</code>, <code>$WIDGET</code></li>
-<li><strong>Flexible Field Access</strong>: <code>.getfield()</code>, <code>.setfield()</code> - universal methods (mix/match of names and indices for <code>$ARRAY</code>, <code>$GOBJ</code>, and <code>$OBJ</code> non-system classes only)</li>
+<li><strong>Universal Access</strong>: <code>.get()</code>, <code>.set()</code> - works across <code>$LIST</code>, <code>$GOBJ</code>, <code>$OBJ</code>, <code>$file</code>, <code>$TABLE</code>, <code>$WIDGET</code></li>
+<li><strong>Flexible Field Access</strong>: <code>.getfield()</code>, <code>.setfield()</code> - universal methods (mix/match of names and indices for <code>$LIST</code>, <code>$GOBJ</code>, and <code>$OBJ</code> non-system classes only)</li>
 <li><strong>Utilities</strong>: <code>.echo()</code>, <code>.debug()</code>, <code>.iferr()</code>, <code>.exec()</code>, <code>.getname()</code></li>
 </ul>
 <h3 id="quick-examples">Quick Examples</h3>
@@ -6669,7 +6669,7 @@ result = data
 </code></pre></div>
 <h3 id="universal-getset-methods">Universal .get()/.set() Methods</h3>
 <p>The universal <code>.get()</code> and <code>.set()</code> methods provide consistent access patterns across multiple data types:</p>
-<div class="highlight"><pre><span></span><code>/* $ARRAY examples */
+<div class="highlight"><pre><span></span><code>/* $LIST examples */
 my_array = [1, 2, 3, 4, 5];
 my_array.set(2, 99);
 $local.value = my_array.get(2);  /* 99 */
@@ -6696,7 +6696,7 @@ my_table.set(&quot;user1&quot;, &quot;name&quot;, &quot;Alice&quot;);
 name = my_table.get(&quot;user1&quot;, &quot;name&quot;);  /* &quot;Alice&quot; */
 </code></pre></div>
 <p><strong>Supported Types:</strong>
-- <strong><code>$ARRAY</code></strong>: <code>array.get(index)</code>, <code>array.set(index, value)</code> - 0-based indexing
+- <strong><code>$LIST</code></strong>: <code>array.get(index)</code>, <code>array.set(index, value)</code> - 0-based indexing
 - <strong><code>$GOBJ</code></strong>: <code>list.get(key)</code>, <code>list.set(key, value)</code>
 - <strong><code>$OBJ</code></strong>: <code>obj.get(key)</code>, <code>obj.set(key, value)</code>
 - <strong><code>$file</code></strong>: <code>file.get(key)</code>, <code>file.set(key, value)</code>

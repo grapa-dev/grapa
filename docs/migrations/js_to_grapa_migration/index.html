@@ -3285,9 +3285,9 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#array" class="md-nav__link">
+  <a href="#list" class="md-nav__link">
     <span class="md-ellipsis">
-      $ARRAY
+      $LIST
     </span>
   </a>
   
@@ -4501,9 +4501,9 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#array" class="md-nav__link">
+  <a href="#list" class="md-nav__link">
     <span class="md-ellipsis">
-      $ARRAY
+      $LIST
     </span>
   </a>
   
@@ -4937,7 +4937,7 @@
 </thead>
 <tbody>
 <tr>
-<td>$ARRAY</td>
+<td>$LIST</td>
 <td style="text-align: center;">✅</td>
 <td style="text-align: center;">✅</td>
 <td style="text-align: center;">✅</td>
@@ -4989,7 +4989,7 @@
 - <strong>Lists (<code>{}</code>)</strong>: Use <code>list[key]</code> or <code>list.key</code> for access, <code>list.len()</code> for length
 - <strong>Objects (class)</strong>: Use <code>object.property</code> or <code>object[key]</code> for access
 - <strong><code>.getfield()/.setfield()</code> method</strong>: Use for <code>$file</code> and <code>$TABLE</code> types
-- <strong><code>.get()/.set()</code> method</strong>: Universal methods for <code>$ARRAY</code>, <code>$GOBJ</code>, <code>$OBJ</code>, <code>$file</code>, <code>$TABLE</code>, and <code>$WIDGET</code> types
+- <strong><code>.get()/.set()</code> method</strong>: Universal methods for <code>$LIST</code>, <code>$GOBJ</code>, <code>$OBJ</code>, <code>$file</code>, <code>$TABLE</code>, and <code>$WIDGET</code> types
 - <strong><code>.size()</code> method</strong>: Not supported on any type (use <code>.len()</code> instead)
 - <strong><code>.keys()</code> method</strong>: Not supported on <code>$GOBJ</code> (use iteration instead)</p>
 </blockquote>
@@ -5138,14 +5138,14 @@
 <blockquote>
 <p><strong>Note:</strong> Both <code>x = x + 1;</code> and <code>x += 1;</code> (and <code>s = s + "x";</code> and <code>s += "x";</code>) are valid in Grapa. The <code>+=</code> form is idiomatic and preferred in most cases.</p>
 <p><strong>Universal .get()/.set() Methods:</strong>
-- <code>.get()/.set()</code> now work across <code>$ARRAY</code>, <code>$GOBJ</code>, <code>$OBJ</code>, <code>$file</code>, <code>$TABLE</code>, and <code>$WIDGET</code> types.
+- <code>.get()/.set()</code> now work across <code>$LIST</code>, <code>$GOBJ</code>, <code>$OBJ</code>, <code>$file</code>, <code>$TABLE</code>, and <code>$WIDGET</code> types.
 - <code>.get()/.set()</code> provide consistent API access patterns across different data types.
-- For <code>$ARRAY</code>: <code>array.get(index)</code> and <code>array.set(index, value)</code> with 0-based indexing.
+- For <code>$LIST</code>: <code>array.get(index)</code> and <code>array.set(index, value)</code> with 0-based indexing.
 - Alternative access methods (bracket notation, dot notation, <code>.getfield()/.setfield()</code>) still work.
 - <strong>Length</strong>: Use <code>.len()</code> for arrays and lists, not <code>.size()</code>.
 - <strong>Keys</strong>: For lists, iterate manually instead of using <code>.keys()</code>.
 - If more objects support <code>.get()</code> in the future, this guide will be updated.</p>
-<p><strong>Note:</strong> <code>.get()/.set()</code> is for <code>$file</code> operations. <code>.getfield("key")</code> is for <code>$TABLE</code> with named keys. <code>.get()/.set()</code> is for <code>$WIDGET</code>. For <code>$GOBJ</code>/<code>$OBJ</code>, use <code>obj["key"]</code>, <code>obj.key</code>, or <code>obj."key"</code>. For <code>$ARRAY</code>, use <code>arr[index]</code> (bracket notation only).</p>
+<p><strong>Note:</strong> <code>.get()/.set()</code> is for <code>$file</code> operations. <code>.getfield("key")</code> is for <code>$TABLE</code> with named keys. <code>.get()/.set()</code> is for <code>$WIDGET</code>. For <code>$GOBJ</code>/<code>$OBJ</code>, use <code>obj["key"]</code>, <code>obj.key</code>, or <code>obj."key"</code>. For <code>$LIST</code>, use <code>arr[index]</code> (bracket notation only).</p>
 </blockquote>
 <h2 id="access-patterns-objects-lists-arrays-files-and-tables">Access Patterns: Objects, Lists, Arrays, Files, and Tables</h2>
 <p>Below are all valid ways to access elements in Grapa data structures. See the canonical <a href="../../syntax/basic_syntax/">Basic Syntax Guide</a> for the latest tested rules.</p>
@@ -5164,15 +5164,15 @@ name = obj.getname(1);  /* Returns &quot;b&quot; (key name at index 1) */
 <li>Dot notation (<code>obj.key</code>) and bracket notation (<code>obj["key"]</code>) are both valid for $GOBJ/$OBJ.</li>
 <li><code>.get()</code> is NOT valid for $GOBJ/$OBJ.</li>
 </ul>
-<h3 id="array">$ARRAY</h3>
+<h3 id="list">$LIST</h3>
 <div class="highlight"><pre><span></span><code>arr = [10, 20, 30];
 
 value = arr[1];         /* Returns 20 */
 /* Note: .get(index) is now supported for arrays - can use bracket notation or .get() */
 </code></pre></div>
 <ul>
-<li>Use bracket notation, <code>.get(index)</code>, or dot notation for $ARRAY.</li>
-<li><code>.get("key")</code> is now supported for $ARRAY when accessing by key.</li>
+<li>Use bracket notation, <code>.get(index)</code>, or dot notation for $LIST.</li>
+<li><code>.get("key")</code> is now supported for $LIST when accessing by key.</li>
 </ul>
 <h3 id="file">$file</h3>
 <div class="highlight"><pre><span></span><code>files = $file().ls();
@@ -5197,7 +5197,7 @@ value = table.get(&quot;user1&quot;, &quot;name&quot;);   /* Correct */
 <p><strong>Reference Table:</strong>
 | Type      | .get("key") | .get(index) | Bracket Notation | Dot Notation | .len() | .size() |
 |-----------|:-----------:|:-----------:|:----------------:|:------------:|:------:|:-------:|
-| $ARRAY    |      ✓      |     ✓      |       ✓         |     ✓       |   ✓   |    ✗   |
+| $LIST    |      ✓      |     ✓      |       ✓         |     ✓       |   ✓   |    ✗   |
 | $GOBJ     |      ✓      |     ✓      |       ✓         |     ✓       |   ✓   |    ✗   |
 | $OBJ      |      ✓      |     ✓      |       ✓         |     ✓       |   ✗   |    ✗   |
 | $file     |      ✓      |     ✓      |       ✓         |     ✓       |   ✗   |    ✗   |

@@ -12,7 +12,7 @@ responsea.echo();
 "http with no cert\n".echo();
 clienta = $net();
 certData = $file().get("keys/client.crt");
-clienta.connect('http://httpbin.org', certData, null);
+clienta.connect('https://httpbin.org', certData, null);
 clienta.send('GET / HTTP/1.1\r\nHost: localhost:8080\r\n\r\n');
 responsea = clienta.receive();
 while(clienta.pending()) responsea += clienta.receive();

@@ -4711,25 +4711,28 @@ $root = value;      /* Root object */
 $self = value;      /* Self reference */
 </code></pre></div>
 <h3 id="system-namespace-protection"><strong>System Namespace Protection</strong></h3>
-<p>Grapa uses the <code>$</code> prefix to protect system namespace:</p>
+<p>Grapa uses the <code>$</code> prefix to protect system namespace. <strong>Important</strong>: The <code>$</code> prefix is reserved for system use only. Do not declare your own variables with <code>$</code> prefixes.</p>
 <div class="highlight"><pre><span></span><code>/* User namespace (recommended) */
 x = 5;                    /* User variable */
 name = &quot;hello&quot;;           /* User string */
+my_data = [1, 2, 3];      /* User array */
 
-/* System namespace (reserved) */
-$x = 5;                   /* System variable */
-$name = &quot;hello&quot;;          /* System string */
+/* System namespace (reserved for system use only) */
+/* These are predefined system variables - do not create your own */
+$global.config = {&quot;debug&quot;: true};  /* Accessing system global namespace */
+$local.temp = &quot;value&quot;;             /* Accessing system local namespace */
 </code></pre></div>
 <p><strong>Guidelines:</strong>
-- <strong>Use user namespace</strong> (<code>x</code>, <code>"hello"</code>) for your own code
-- <strong>Avoid system namespace</strong> (<code>$x</code>, <code>$"hello"</code>) unless necessary
-- <strong>Both work</strong> but system namespace is protected to prevent accidental overrides</p>
+- <strong>Use user namespace</strong> (<code>x</code>, <code>"hello"</code>, <code>my_data</code>) for your own code
+- <strong>Never declare your own <code>$</code> variables</strong> - the <code>$</code> prefix is reserved for system use
+- <strong>Access system variables</strong> like <code>$global</code>, <code>$local</code>, <code>$this</code> as needed, but don't create new ones
+- <strong>Exception</strong>: <code>$custom_command</code> and <code>$custom_function</code> are special system variables for language extension</p>
 <h2 id="_1"><code>=</code></h2>
 <p>Assign.</p>
 <h2 id="_2"><code>+=</code></h2>
 <p>Add item to source.</p>
 <h3 id="arraylist-addition">Array/List Addition</h3>
-<p><strong>Arrays (<code>$ARRAY</code>):</strong>
+<p><strong>Arrays (<code>$LIST</code>):</strong>
 <div class="highlight"><pre><span></span><code>arr = [1, 2, 3, 4, 5];
 arr += 6;                 /* Add element to end: [1,2,3,4,5,6] */
 arr += [7, 8];            /* Add multiple elements: [1,2,3,4,5,6,7,8] */
@@ -4767,7 +4770,7 @@ xml += &lt;child&gt;3&lt;/child&gt; xml[0];            /* Add at specific positi
 <li><strong>Position-Based Insertion</strong>: <code>target ++= value position</code></li>
 </ol>
 <h3 id="arraylist-concatenation">Array/List Concatenation</h3>
-<p><strong>Arrays (<code>$ARRAY</code>):</strong>
+<p><strong>Arrays (<code>$LIST</code>):</strong>
 <div class="highlight"><pre><span></span><code>arr1 = [1, 2, 3];
 arr2 = [4, 5, 6];
 arr1 ++= arr2;   /* Concatenate arrays: [1,2,3,4,5,6] */
@@ -4811,7 +4814,7 @@ x
 <h2 id="-"><code>-=</code></h2>
 <p>Subtract item from source.</p>
 <h3 id="arraylist-removal">Array/List Removal</h3>
-<p><strong>Arrays (<code>$ARRAY</code>):</strong>
+<p><strong>Arrays (<code>$LIST</code>):</strong>
 <div class="highlight"><pre><span></span><code>arr = [1, 2, 3, 4, 5];
 arr -= arr[2];   /* Remove by index: [1,2,4,5] */
 arr -= arr[-1];  /* Remove last element: [1,2,4] */
