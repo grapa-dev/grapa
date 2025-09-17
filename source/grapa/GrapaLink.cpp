@@ -169,7 +169,7 @@ void GrapaLink::Start(bool& needExit, bool& showConsole, GrapaCHAR& outStr, Grap
 				}
 				else {
 					fprintf(stderr, "Error: - option requires pipe input (e.g., echo 'command' | grapa -)\n");
-					outStr.FROM("Error: - option requires pipe input");
+					outStr.FROM("Error: - option requires pipe input\n");
 					needExit = true;
 					return;
 				}
@@ -178,7 +178,7 @@ void GrapaLink::Start(bool& needExit, bool& showConsole, GrapaCHAR& outStr, Grap
 				/* Unknown flag - show error and exit */
 				fprintf(stderr, "Error: Unknown option '%s'\n", (char*)e->mValue.mBytes);
 				fprintf(stderr, "Use 'grapa -h' for help\n");
-				outStr.FROM("Error: Unknown option");
+				outStr.FROM("Error: Unknown option\n");
 				needExit = true;
 				return;
 			}

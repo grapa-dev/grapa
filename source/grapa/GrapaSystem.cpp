@@ -776,7 +776,7 @@ My_Console::~My_Console()
 	Stop();
 }
 
-void My_Console::Start(GrapaCHAR& in, GrapaCHAR& out, GrapaCHAR& run)
+void My_Console::Start(GrapaCHAR& run)
 {
     // [DEBUG] Print input arguments
     // printf("[DEBUG] Entering My_Console::Start\n");

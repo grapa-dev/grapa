@@ -71,8 +71,11 @@ int main(int argc, const char* argv[])
     GrapaLink::Start(needExit, showConsole, outStr, runStr);
     gSystem->mLibraryQueue.PushTail(new GrapaMainRuleEvent(GrapaCHAR("main")));
 
+    if (outStr.mLength && outStr.mBytes)
+		fprintf(stdout, "%.*s\n", (int)outStr.mLength, (char*)outStr.mBytes);
+
     My_Console mConsole;
-    mConsole.Start(inStr, outStr, runStr);
+    mConsole.Start(runStr);
     if (!needExit || showConsole)
         mConsole.Run(NULL, NULL);
     mConsole.Stop();
