@@ -16,10 +16,10 @@ tags:
 1. Download and run the universal installer:
    ```bash
    # Download the universal installer
-   curl -O https://github.com/grapa-dev/grapa/releases/download/v0.1.54/install-grapa-0.1.54.py
+   curl -O https://github.com/grapa-dev/grapa/releases/download/v0.1.55/install-grapa-0.1.55.py
    
    # Run the installer
-   python3 install-grapa-0.1.54.py
+   python3 install-grapa-0.1.55.py
    ```
 
 The installer will automatically:
@@ -30,18 +30,18 @@ The installer will automatically:
 
 ### Option 2: Manual Download
 1. Download the platform-specific package from [GitHub Releases](https://github.com/grapa-dev/grapa/releases):
-   - **macOS ARM64:** `grapa-0.1.54-mac-arm64.zip` (10.1 MB)
-   - **Linux AMD64:** `grapa-0.1.54-linux-amd64.zip` (13.0 MB)
-   - **Linux ARM64:** `grapa-0.1.54-linux-arm64.zip` (13.8 MB)
-   - **Windows AMD64:** `grapa-0.1.54-win-amd64.zip` (41.3 MB)
-   - **AWS AMD64:** `grapa-0.1.54-aws-amd64.zip` (12.4 MB)
-   - **AWS ARM64:** `grapa-0.1.54-aws-arm64.zip` (12.8 MB)
+   - **macOS ARM64:** `grapa-0.1.55-mac-arm64.zip` (10.1 MB)
+   - **Linux AMD64:** `grapa-0.1.55-linux-amd64.zip` (13.0 MB)
+   - **Linux ARM64:** `grapa-0.1.55-linux-arm64.zip` (13.8 MB)
+   - **Windows AMD64:** `grapa-0.1.55-win-amd64.zip` (41.3 MB)
+   - **AWS AMD64:** `grapa-0.1.55-aws-amd64.zip` (12.4 MB)
+   - **AWS ARM64:** `grapa-0.1.55-aws-arm64.zip` (12.8 MB)
 
 2. Extract and install:
    ```bash
    # Extract the package
-   unzip grapa-0.1.54-<platform>.zip
-   cd grapa-0.1.54
+   unzip grapa-0.1.55-<platform>.zip
+   cd grapa-0.1.55
    
    # Run the installer
    python3 install-grapa.py
