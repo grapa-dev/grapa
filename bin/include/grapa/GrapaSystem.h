@@ -37,7 +37,7 @@ public:
 	GrapaNames mRuleVariables;
 	My_Console();
 	~My_Console();
-	void Start(GrapaCHAR& in, GrapaCHAR& out, GrapaCHAR& run);
+	void Start(GrapaCHAR& run);
 	GrapaCHAR RunFile(GrapaCHAR& fname);
 	void Stop();
 	void RunOld(GrapaCB cb, void* data);
