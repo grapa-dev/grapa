@@ -67,6 +67,10 @@ public:
 
 	virtual GrapaError FieldGet(const GrapaCHAR& pName, const GrapaCHAR& pField, GrapaCHAR& pValue);
 	virtual GrapaError FieldGet(u64 pId, const GrapaCHAR& pField, GrapaCHAR& pValue);
+
+	virtual GrapaError FieldSet(const GrapaCHAR& pName, GrapaRuleEvent* pRowData);
+	virtual GrapaError FieldGet(const GrapaCHAR& pName, GrapaRuleEvent* pRowData, GrapaRuleEvent* pRowResults);
+
 	virtual GrapaError FieldSplit(s64 pParts, const GrapaCHAR& pName, const GrapaCHAR& pPath, const GrapaCHAR& pDelim, GrapaCHAR& pOption, GrapaRuleEvent* pTable);
 
 	virtual GrapaError GetNameInfo(const GrapaCHAR& pFullName, u64& pDirId, u8& pDirType, GrapaCHAR& pName, bool isDir=false);

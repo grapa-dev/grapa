@@ -1130,6 +1130,35 @@ void GrapaVector::_tocsv(GrapaScriptExec* pScriptExec, GrapaNames* pNameSpace, u
 	return;
 }
 
+// this FromBytes and ToBytes need to change to proper serialziation for VECTOR and not go through the LIST serialization
+
+void GrapaVector::FromBytes(GrapaScriptExec* pScriptExec, GrapaNames* pNameSpace, const GrapaBYTE& pValue)
+{
+	GrapaRuleEvent result;
+	GrapaRuleQueue rq;
+	result.vQueue = &rq;
+	GrapaBYTE temp(pValue);
+	temp.mToken = GrapaTokenType::LIST;
+	rq.FROM(pScriptExec->vScriptState, pNameSpace, temp);
+	result.mValue.mToken = GrapaTokenType::LIST;
+	FROM(pScriptExec->vScriptState->mItemState.mFloatFix, pScriptExec->vScriptState->mItemState.mFloatMax, pScriptExec->vScriptState->mItemState.mFloatExtra, &result, 0);
+	result.vQueue = NULL;
+}
+
+u64 GrapaVector::ToSize(GrapaScriptExec* pScriptExec, GrapaNames* pNameSpace)
+{
+	GrapaBYTE value;
+	ToBytes(pScriptExec, pNameSpace, value);
+	return value.mLength;
+}
+
+void GrapaVector::ToBytes(GrapaScriptExec* pScriptExec, GrapaNames* pNameSpace, GrapaBYTE& pValue)
+{
+	GrapaRuleEvent* result = ToArray();
+	result->TO(pValue);
+	pValue.mToken = GrapaTokenType::VECTOR;
+}
+
 GrapaVector& GrapaVector::operator =(const GrapaVector& that)
 {
 	if (this != &that)

@@ -1014,8 +1014,9 @@ GrapaError GrapaLocalDatabase::DataCreate(const GrapaCHAR& pName)
 		GrapaCHAR fname;
 		err = GrapaLocalDatabase::GetNameInfo(pName, dirId, dirType, fname);
 		if (err) return(err);
-		u64 id = 0;
-		err = mDb->mValue.CreateEntry(dirId, dirType, fname, id);
+		u64 dict = 0, id = 0;
+		GrapaDBTable parentDict;
+		err = mDb->mValue.CreateEntry(dirId, dirType, fname, parentDict, id);
 		mDb->mValue.FlushFile();
 	}
 	return(err);
@@ -1312,6 +1313,39 @@ GrapaError GrapaLocalDatabase::FieldGet(u64 pId, const GrapaCHAR& pField, GrapaC
 	GrapaCHAR field(pField);
 	if (field.mLength == 0) field.FROM("$VALUE");
 	err = mDb->mValue.GetField(mDirId, mDirType, pId, field, pValue);
+	return(err);
+}
+
+GrapaError GrapaLocalDatabase::FieldSet(const GrapaCHAR& pName, GrapaRuleEvent* pRowData)
+{
+	GrapaError err = -1;
+	if (mDb)
+	{
+		u64 dirId = mDirId;
+		u8 dirType = mDirType;
+		GrapaCHAR fname;
+		err = GrapaLocalDatabase::GetNameInfo(pName, dirId, dirType, fname);
+		if (err) return(err);
+		err = mDb->mValue.SetField(dirId, dirType, fname, pRowData);
+		mDb->mValue.FlushFile();
+	}
+	return(err);
+}
+
+GrapaError GrapaLocalDatabase::FieldGet(const GrapaCHAR& pName, GrapaRuleEvent* pRowData, GrapaRuleEvent* pRowResults)
+{
+	GrapaError err = -1;
+	if (pRowResults == NULL) return(-1);
+	pRowResults->CLEAR();
+	if (mDb)
+	{
+		u64 dirId = mDirId;
+		u8 dirType = mDirType;
+		GrapaCHAR fname;
+		err = GrapaLocalDatabase::GetNameInfo(pName, dirId, dirType, fname);
+		if (err) return(err);
+		err = mDb->mValue.GetField(dirId, dirType, fname, pRowData, pRowResults);
+	}
 	return(err);
 }
 

@@ -280,7 +280,7 @@ void GrapaLink::Start(bool& needExit, bool& showConsole, GrapaCHAR& outStr, Grap
     signal(SIGPIPE, SIG_IGN);
 #endif
 
-	GrapaCHAR grname("$grapa.grz");
+	//GrapaCHAR grname("$grapa.grz");
 
 	//gGrapaLinkCallback = pCallback;
     time(&gSystem->mStartTime);
@@ -352,12 +352,16 @@ void GrapaLink::Start(bool& needExit, bool& showConsole, GrapaCHAR& outStr, Grap
 	// Set library directory to $WORK/lib (simplified approach)
 	gSystem->mLibDir.FROM(gSystem->mWorkDir);
 	gSystem->mLibDir.Append("/lib");
+
+	/*
 	// Load grammar from $WORK/lib/grapa
 	GrapaLocalDatabase dir;
 	GrapaCHAR grammarPath(gSystem->mWorkDir);
 	grammarPath.Append("/lib/grapa");
 	dir.mHomeDir = grammarPath;
 	dir.FieldGet(GrapaCHAR("$grapa.grz"), GrapaCHAR(), gSystem->mGrammar);
+	*/
+
 	GrapaCHAR stlib;
 	u32 sti = 0;
 	while (GrapaStaticLib::staticlist[sti] != NULL && GrapaStaticLib::staticlist[sti][0])
@@ -372,6 +376,7 @@ void GrapaLink::Start(bool& needExit, bool& showConsole, GrapaCHAR& outStr, Grap
 	// If grammar not found in $WORK/lib/grapa, try $GRAPA_BIN/lib/grapa as fallback
 	if (gSystem->mGrammar.mLength == 0)
 	{
+		GrapaLocalDatabase dir;
 		GrapaCHAR binlib(gSystem->mBinDir);
 		binlib.Append("/lib/grapa");
 		dir.mHomeDir = binlib;

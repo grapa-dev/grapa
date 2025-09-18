@@ -94,6 +94,9 @@ public:
 	virtual void FromValue(GrapaScriptExec* pScriptExec, const GrapaBYTE& pValue);
 	virtual void TO(GrapaBYTE& pValue);
 	virtual void TO(GrapaScriptExec* pScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* delim, GrapaBYTE& pValue);
+	virtual void FromBytes(GrapaScriptExec* pScriptExec, GrapaNames* pNameSpace, const GrapaBYTE& pValue);
+	virtual u64 ToSize(GrapaScriptExec* pScriptExec, GrapaNames* pNameSpace);
+	virtual void ToBytes(GrapaScriptExec* pScriptExec, GrapaNames* pNameSpace, GrapaBYTE& pValue);
 	void _tocsv(GrapaScriptExec* pScriptExec, GrapaNames* pNameSpace, u64 pos, u64& p, GrapaRuleEvent* delim, GrapaBYTE& pValue);
 	GrapaVector& operator=(const GrapaVector& that);
 	GrapaError Dot(GrapaScriptExec* pScriptExec, GrapaNames* pNameSpace, GrapaVector& bi, GrapaVector& result);
