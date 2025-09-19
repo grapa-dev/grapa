@@ -9,6 +9,9 @@
 #include "GrapaState.h"
 #include "llama.h"  // LLAMA.cpp includes
 
+// Forward declarations
+class GrapaRuleEvent;
+
 class GrapaModel : public GrapaCritical
 {
 public:
@@ -33,7 +36,7 @@ public:
     s32 mContextSize;
     
     // Persistent parameter management
-    GrapaCHAR mPersistentParams;  // JSON string of current parameters
+    GrapaRuleEvent* mPersistentParams;  // Grapa object of current parameters
     bool mUserParamsSet;          // Whether user has explicitly set parameters
     
 public:
@@ -50,36 +53,36 @@ public:
     bool IsLoaded() const;
     
     // Generation operations
-    GrapaError Generate(const GrapaCHAR& prompt, GrapaCHAR& result, const GrapaCHAR& callParams);
-    GrapaError GenerateStream(const GrapaCHAR& prompt, GrapaCHAR& result, const GrapaCHAR& callParams);
+    GrapaError Generate(const GrapaCHAR& prompt, GrapaCHAR& result, GrapaRuleEvent* callParams);
+    GrapaError GenerateStream(const GrapaCHAR& prompt, GrapaCHAR& result, GrapaRuleEvent* callParams);
     
     // Model information
-    GrapaCHAR GetModelInfo() const;
+    GrapaRuleEvent* GetModelInfo() const;
     GrapaCHAR GetBackend() const;
     GrapaCHAR GetModelPath() const;
     
     // Parameter management
-    GrapaError SetParams(const GrapaCHAR& params);
-    GrapaCHAR GetParams() const;
+    GrapaError SetParams(GrapaRuleEvent* params);
+    GrapaRuleEvent* GetParams() const;
     
     // Backend-specific operations
     GrapaError LoadLlama(const GrapaCHAR& modelPath);
     GrapaError UnloadLlama();
-    GrapaError GenerateLlama(const GrapaCHAR& prompt, GrapaCHAR& result, const GrapaCHAR& mergedParams);
+    GrapaError GenerateLlama(const GrapaCHAR& prompt, GrapaCHAR& result, GrapaRuleEvent* mergedParams);
     
     // Future backends
     GrapaError LoadOnnx(const GrapaCHAR& modelPath);
     GrapaError LoadTensorFlow(const GrapaCHAR& modelPath);
     
 private:
-    GrapaError ParseParams(const GrapaCHAR& params);
+    GrapaError ParseParams(GrapaRuleEvent* params);
     GrapaError InitializeLlama();
     
     // Parameter management
     void ResetModelSpecificParams();
     void SetModelDefaults();
-    GrapaCHAR MergeParams(const GrapaCHAR& persistent, const GrapaCHAR& callSpecific);
-    GrapaError ApplyParamsToLlama(const GrapaCHAR& params);
+    GrapaRuleEvent* MergeParams(GrapaRuleEvent* persistent, GrapaRuleEvent* callSpecific);
+    GrapaError ApplyParamsToLlama(GrapaRuleEvent* params);
     int GetModelSize();  // Estimate model size for parameter defaults
 };
 

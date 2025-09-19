@@ -1,0 +1,50 @@
+/* Basic Model Test - Tests core $MODEL() functionality */
+
+"Testing Grapa Model functionality...\n".echo();
+
+/* Test 1: Create and load model */
+"=== Test 1: Model Creation and Loading ==n".echo();
+model = $MODEL();
+"Created model object\n".echo();
+
+loadResult = model.load("models/qwen2.5-7b-instruct-q5_k_m.gguf", "llama");
+"Load result: ${loadResult}\n".interpolate().echo();
+
+/* Test 2: Get model info */
+"=== Test 2: Model Information ===\n".echo();
+info = model.info();
+"Model info: ${info}\n".interpolate().echo();
+
+/* Test 3: Get current parameters */
+"=== Test 3: Current Parameters ===\n".echo();
+params = model.params();
+"Current parameters: ${params}\n".interpolate().echo();
+
+/* Test 4: Basic text generation */
+"=== Test 4: Text Generation ===\n".echo();
+prompt = "Hello, how are you?";
+"Generating response for: ${prompt}\n".interpolate().echo();
+
+result = model.gen(prompt, {});
+"Generated response: ${result}\n".interpolate().echo();
+
+/* Test 5: Generation with custom parameters */
+"=== Test 5: Custom Parameters ===\n".echo();
+customParams = {
+    "max_tokens": 20,
+    "temperature": 0.8
+};
+"Setting custom parameters...\n".echo();
+setResult = model.params(customParams);
+"Parameter set result: ${setResult}\n".interpolate().echo();
+
+"Generating with custom params...\n".echo();
+result2 = model.gen("What is programming?", {});
+"Generated response: ${result2}\n".interpolate().echo();
+
+/* Test 6: Verify parameters were updated */
+"=== Test 6: Verify Parameter Update ===\n".echo();
+updatedParams = model.params();
+"Updated parameters: ${updatedParams}\n".interpolate().echo();
+
+"=== Model Test Complete ===\n".echo();

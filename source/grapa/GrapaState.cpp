@@ -3360,6 +3360,7 @@ GrapaRuleEvent* GrapaScriptState::SearchTarget(GrapaNames* pNameSpace, GrapaRule
 		case GrapaTokenType::GOBJ:
 		case GrapaTokenType::LIST:
 		case GrapaTokenType::VECTOR:
+		case GrapaTokenType::MODEL:
 			e2 = e;
 			break;
 		}
@@ -3376,6 +3377,7 @@ GrapaRuleEvent* GrapaScriptState::SearchTarget(GrapaNames* pNameSpace, GrapaRule
 		case GrapaTokenType::GOBJ:
 		case GrapaTokenType::LIST:
 		case GrapaTokenType::VECTOR:
+		case GrapaTokenType::MODEL:
 			return(e2);
 	}
 	return(NULL);

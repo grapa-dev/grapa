@@ -1,8 +1,9 @@
 $global["$MODEL"]
 	= class {
-    load = @<[op,@<"$MODEL","load",{@<this,{}>,@<var,{path}>,@<var,{backend}>}>],{"path","backend"}>;
-    gen = @<[op,@<"$MODEL","gen",{@<this,{}>,@<var,{prompt}>,@<var,{params}>}>],{"prompt","params"}>;
+	type = @<"type",{@<this>}>; 
+    load = @<[op,@<"$MODEL","load",{@<this,{}>,@<var,{path}>,@<var,{backend}>}>],{path,backend}>;
+    gen = @<[op,@<"$MODEL","gen",{@<this,{}>,@<var,{prompt}>,@<var,{params}>}>],{prompt,params}>;
     info = @<"$MODEL","info",{@<this>}>;
-    params = @<[op,@<"$MODEL","params",{@<this,{}>,@<var,{params}>}>],{"params"}>;
+    params = @<[op,@<"$MODEL","params",{@<this,{}>,@<var,{params}>}>],{params}>;
 	};
 	
