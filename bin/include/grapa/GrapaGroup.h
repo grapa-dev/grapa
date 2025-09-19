@@ -43,7 +43,7 @@ public:
 	GrapaError OpenGroup(u64 parentTree, u8 parentType, u64 pId, u64& pNewTree, u8& pNewType, u64& pTableId, GrapaCHAR& pName);
 	//GrapaError ListGroup(u64 parentTree, u8 parentType, GrapaRuleEvent* pTable);
 
-	GrapaError CreateEntry(u64 parentTree, u8 parentType, const GrapaCHAR& pDataName, u64& pId);
+	GrapaError CreateEntry(u64 parentTree, u8 parentType, const GrapaCHAR& pDataName, GrapaDBTable& pDict, u64& pId);
 	GrapaError FindEntry(u64 parentTree, u8 parentType, const GrapaCHAR& pDataName, u64& pId);
 	GrapaError DeleteEntry(u64 parentTree, u8 parentType, const GrapaCHAR& pDataName);
 	GrapaError DeleteEntry(u64 parentTree, u8 parentType, u64 pId);
@@ -57,8 +57,12 @@ public:
 	GrapaError SetField(u64 parentTree, u8 parentType, u64 pId, const char* pField, const GrapaBYTE& pValue);
 	GrapaError SetField(u64 parentTree, u8 parentType, u64 pId, const GrapaCHAR& pField, const GrapaBYTE& pValue);
 
+	GrapaError SetField(u64 parentTree, u8 parentType, const GrapaCHAR& pName, GrapaRuleEvent* pRowData);
+
 	GrapaError GetField(u64 parentTree, u8 parentType, const GrapaCHAR& pName, const GrapaCHAR& pField, GrapaBYTE& pValue);
 	GrapaError GetField(u64 parentTree, u8 parentType, u64 pId, const GrapaCHAR& pField, GrapaBYTE& pValue);
+
+	GrapaError GetField(u64 parentTree, u8 parentType, const GrapaCHAR& pName, GrapaRuleEvent* pRowData, GrapaRuleEvent* pRowResults);
 
 	GrapaError DumpGroup(u64 parentTree, u8 parentType, u64 pId=0, GrapaFile *pDumpFile=NULL);
 

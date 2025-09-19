@@ -3042,6 +3042,37 @@ public:
 GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleWidgetClear(GrapaCHAR& pName) { return new GrapaLibraryRuleWidgetClearEvent(pName); }
 
 
+class GrapaLibraryRuleModelLoadEvent : public GrapaLibraryEvent
+{
+public:
+    GrapaLibraryRuleModelLoadEvent(GrapaCHAR& pName) { mName.FROM(pName); };
+    virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
+};
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleModelLoad(GrapaCHAR& pName) { return new GrapaLibraryRuleModelLoadEvent(pName); }
+
+class GrapaLibraryRuleModelGenEvent : public GrapaLibraryEvent
+{
+public:
+    GrapaLibraryRuleModelGenEvent(GrapaCHAR& pName) { mName.FROM(pName); };
+    virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
+};
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleModelGen(GrapaCHAR& pName) { return new GrapaLibraryRuleModelGenEvent(pName); }
+
+class GrapaLibraryRuleModelInfoEvent : public GrapaLibraryEvent
+{
+public:
+    GrapaLibraryRuleModelInfoEvent(GrapaCHAR& pName) { mName.FROM(pName); };
+    virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
+};
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleModelInfo(GrapaCHAR& pName) { return new GrapaLibraryRuleModelInfoEvent(pName); }
+
+class GrapaLibraryRuleModelParamsEvent : public GrapaLibraryEvent
+{
+public:
+    GrapaLibraryRuleModelParamsEvent(GrapaCHAR& pName) { mName.FROM(pName); };
+    virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
+};
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleModelParams(GrapaCHAR& pName) { return new GrapaLibraryRuleModelParamsEvent(pName); }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -3357,43 +3388,56 @@ GrapaLibraryEvent* GrapaLibraryRuleEvent::LoadLib(GrapaScriptExec *vScriptExec, 
 			return (this->*(it->second))(pName);
 		return NULL;
 	}
-	else if (mName.Cmp("$VECTOR") == 0)
-	{
-		static const std::unordered_map<std::string, Handler> handlerMap = {
-			{ "t", &GrapaLibraryRuleEvent::HandleVectorTranspose },
-			{ "rref", &GrapaLibraryRuleEvent::HandleVectorRref },
-			{ "inv", &GrapaLibraryRuleEvent::HandleVectorInv },
-			{ "det", &GrapaLibraryRuleEvent::HandleVectorDet },
-			{ "rank", &GrapaLibraryRuleEvent::HandleVectorRank },
-			{ "solve", &GrapaLibraryRuleEvent::HandleVectorSolve },
-			{ "cov", &GrapaLibraryRuleEvent::HandleVectorCov },
-			{ "sum", &GrapaLibraryRuleEvent::HandleVectorSum },
-			{ "mean", &GrapaLibraryRuleEvent::HandleVectorMean },
-			{ "min", &GrapaLibraryRuleEvent::HandleVectorMin },
-			{ "max", &GrapaLibraryRuleEvent::HandleVectorMax },
-			{ "std", &GrapaLibraryRuleEvent::HandleVectorStd },
-			{ "var", &GrapaLibraryRuleEvent::HandleVectorVar },
-			{ "shape", &GrapaLibraryRuleEvent::HandleVectorShape },
-			{ "reshape", &GrapaLibraryRuleEvent::HandleVectorReShape },
-			{ "dot", &GrapaLibraryRuleEvent::HandleVectorDot },
-			{ "triu", &GrapaLibraryRuleEvent::HandleVectorTriU },
-			{ "tril", &GrapaLibraryRuleEvent::HandleVectorTriL },
-			{ "eigh", &GrapaLibraryRuleEvent::HandleVectorEigH },
-			{ "identity", &GrapaLibraryRuleEvent::HandleVectorIdentity },
-			{ "diag", &GrapaLibraryRuleEvent::HandleVectorDiag },
-			{ "norm",&GrapaLibraryRuleEvent::HandleVectorNorm },
-			{ "mode", &GrapaLibraryRuleEvent::HandleVectorMode },
-			{ "median", &GrapaLibraryRuleEvent::HandleVectorMedian },
-			{ "percentile", &GrapaLibraryRuleEvent::HandleVectorPercentile },
-			{ "quantile", &GrapaLibraryRuleEvent::HandleVectorQuantile },
-			{ "skew", &GrapaLibraryRuleEvent::HandleVectorSkew },
-			{ "kurtosis", &GrapaLibraryRuleEvent::HandleVectorKurtosis },
-		};
-		auto it = handlerMap.find((char*)pName.mBytes);
-		if (it != handlerMap.end())
-			return (this->*(it->second))(pName);
-		return NULL;
-	}
+    else if (mName.Cmp("$VECTOR") == 0)
+    {
+        static const std::unordered_map<std::string, Handler> handlerMap = {
+            { "t", &GrapaLibraryRuleEvent::HandleVectorTranspose },
+            { "rref", &GrapaLibraryRuleEvent::HandleVectorRref },
+            { "inv", &GrapaLibraryRuleEvent::HandleVectorInv },
+            { "det", &GrapaLibraryRuleEvent::HandleVectorDet },
+            { "rank", &GrapaLibraryRuleEvent::HandleVectorRank },
+            { "solve", &GrapaLibraryRuleEvent::HandleVectorSolve },
+            { "cov", &GrapaLibraryRuleEvent::HandleVectorCov },
+            { "sum", &GrapaLibraryRuleEvent::HandleVectorSum },
+            { "mean", &GrapaLibraryRuleEvent::HandleVectorMean },
+            { "min", &GrapaLibraryRuleEvent::HandleVectorMin },
+            { "max", &GrapaLibraryRuleEvent::HandleVectorMax },
+            { "std", &GrapaLibraryRuleEvent::HandleVectorStd },
+            { "var", &GrapaLibraryRuleEvent::HandleVectorVar },
+            { "shape", &GrapaLibraryRuleEvent::HandleVectorShape },
+            { "reshape", &GrapaLibraryRuleEvent::HandleVectorReShape },
+            { "dot", &GrapaLibraryRuleEvent::HandleVectorDot },
+            { "triu", &GrapaLibraryRuleEvent::HandleVectorTriU },
+            { "tril", &GrapaLibraryRuleEvent::HandleVectorTriL },
+            { "eigh", &GrapaLibraryRuleEvent::HandleVectorEigH },
+            { "identity", &GrapaLibraryRuleEvent::HandleVectorIdentity },
+            { "diag", &GrapaLibraryRuleEvent::HandleVectorDiag },
+            { "norm",&GrapaLibraryRuleEvent::HandleVectorNorm },
+            { "mode", &GrapaLibraryRuleEvent::HandleVectorMode },
+            { "median", &GrapaLibraryRuleEvent::HandleVectorMedian },
+            { "percentile", &GrapaLibraryRuleEvent::HandleVectorPercentile },
+            { "quantile", &GrapaLibraryRuleEvent::HandleVectorQuantile },
+            { "skew", &GrapaLibraryRuleEvent::HandleVectorSkew },
+            { "kurtosis", &GrapaLibraryRuleEvent::HandleVectorKurtosis },
+        };
+        auto it = handlerMap.find((char*)pName.mBytes);
+        if (it != handlerMap.end())
+            return (this->*(it->second))(pName);
+        return NULL;
+    }
+    else if (mName.Cmp("$MODEL") == 0)
+    {
+        static const std::unordered_map<std::string, Handler> handlerMap = {
+            { "load", &GrapaLibraryRuleEvent::HandleModelLoad },
+            { "gen", &GrapaLibraryRuleEvent::HandleModelGen },
+            { "info", &GrapaLibraryRuleEvent::HandleModelInfo },
+            { "params", &GrapaLibraryRuleEvent::HandleModelParams },
+        };
+        auto it = handlerMap.find((char*)pName.mBytes);
+        if (it != handlerMap.end())
+            return (this->*(it->second))(pName);
+        return NULL;
+    }
 	else if (mName.Cmp("$net") == 0)
 	{
 		static const std::unordered_map<std::string, Handler> handlerMap = {
@@ -23333,6 +23377,98 @@ GrapaRuleEvent* GrapaLibraryRuleWidgetClearEvent::Run(GrapaScriptExec* vScriptEx
 
 	return(result);
 };
+
+GrapaRuleEvent* GrapaLibraryRuleModelLoadEvent::Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput)
+{
+    GrapaError err = -1;
+    GrapaRuleEvent* result = NULL;
+
+    GrapaLibraryParam r1(vScriptExec, pNameSpace, pInput ? pInput->Head(0) : NULL);
+
+    GrapaRuleEvent* objEvent = vScriptExec->vScriptState->SearchTarget(pNameSpace, r1.vVal);
+    if (objEvent && objEvent->vModel == NULL)
+    {
+        objEvent->vWidget = new GrapaModel();
+    }
+
+    if (objEvent)
+    {
+        err = 0;
+    }
+    if (err && result == NULL)
+        result = Error(vScriptExec, pNameSpace, err);
+
+    return(result);
+}
+
+GrapaRuleEvent* GrapaLibraryRuleModelGenEvent::Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput)
+{
+    GrapaError err = -1;
+    GrapaRuleEvent* result = NULL;
+
+    GrapaLibraryParam r1(vScriptExec, pNameSpace, pInput ? pInput->Head(0) : NULL);
+
+    GrapaRuleEvent* objEvent = vScriptExec->vScriptState->SearchTarget(pNameSpace, r1.vVal);
+    if (objEvent && objEvent->vModel == NULL)
+    {
+        objEvent->vWidget = new GrapaModel();
+    }
+
+    if (objEvent)
+    {
+        err = 0;
+    }
+    if (err && result == NULL)
+        result = Error(vScriptExec, pNameSpace, err);
+
+    return(result);
+}
+
+GrapaRuleEvent* GrapaLibraryRuleModelInfoEvent::Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput)
+{
+    GrapaError err = -1;
+    GrapaRuleEvent* result = NULL;
+
+    GrapaLibraryParam r1(vScriptExec, pNameSpace, pInput ? pInput->Head(0) : NULL);
+
+    GrapaRuleEvent* objEvent = vScriptExec->vScriptState->SearchTarget(pNameSpace, r1.vVal);
+    if (objEvent && objEvent->vModel == NULL)
+    {
+        objEvent->vWidget = new GrapaModel();
+    }
+
+    if (objEvent)
+    {
+        err = 0;
+    }
+    if (err && result == NULL)
+        result = Error(vScriptExec, pNameSpace, err);
+
+    return(result);
+}
+
+GrapaRuleEvent* GrapaLibraryRuleModelParamsEvent::Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput)
+{
+    GrapaError err = -1;
+    GrapaRuleEvent* result = NULL;
+
+    GrapaLibraryParam r1(vScriptExec, pNameSpace, pInput ? pInput->Head(0) : NULL);
+
+    GrapaRuleEvent* objEvent = vScriptExec->vScriptState->SearchTarget(pNameSpace, r1.vVal);
+    if (objEvent && objEvent->vModel == NULL)
+    {
+        objEvent->vWidget = new GrapaModel();
+    }
+
+    if (objEvent)
+    {
+        err = 0;
+    }
+    if (err && result == NULL)
+        result = Error(vScriptExec, pNameSpace, err);
+
+    return(result);
+}
 
 
 // String Distance Helper Functions

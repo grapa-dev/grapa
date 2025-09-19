@@ -189,7 +189,7 @@ error_result4.echo();
 "Testing different data types...\n".echo();
 
 "String data:\n".echo();
-f2.setfield("test1", "Hello, World!", "name");
+f2.setfield("test1", "name", "Hello, World!");
 f2.getfield("test1", "name").echo();
 "\n".echo();
 

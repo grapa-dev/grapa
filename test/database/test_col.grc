@@ -7,9 +7,9 @@ fdata.mkfield("name", "STR", "VAR");
 fdata.mkfield("age", "INT", "FIX", 4);
 fdata.mkfield("city", "STR", "VAR");
 setFields = op(pData,rName,pName,pAge,pCity) {
-	pData.setfield(rName, pName, "name");
-	pData.setfield(rName, pAge, "age");
-	pData.setfield(rName, pCity, "city");
+	pData.setfield(rName, "name", pName);
+	pData.setfield(rName, "age", pAge);
+	pData.setfield(rName, "city", pCity);
 };
 getFields = op(pData,rName) {
 	{"name":pData.getfield(rName, "name"),"age":pData.getfield(rName, "age"), "city":pData.getfield(rName, "city")};

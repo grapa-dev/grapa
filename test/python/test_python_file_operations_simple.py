@@ -18,11 +18,11 @@ class GrapaFileHelper:
         return self.xy.eval(r'f.phd();')
     def set(self, name, content):
         escaped_content = content.replace('"', '\\"').replace('\n', '\\n')
-        return self.xy.eval(fr'f.setfield("{name}", "{escaped_content}");')
+        return self.xy.eval(fr'f.set("{name}", "{escaped_content}");')
     def get(self, name):
-        return self.xy.eval(fr'f.getfield("{name}");')
+        return self.xy.eval(fr'f.get("{name}");')
     def get_str(self, name):
-        return self.xy.eval(fr'f.getfield("{name}").str();')
+        return self.xy.eval(fr'f.get("{name}").str();')
     def info(self, name):
         return self.xy.eval(fr'f.info("{name}");')
     def ls(self):
@@ -84,7 +84,7 @@ def test_file_split():
                 content = content + "Line " + i + ": Test data for splitting.\n";
                 i = i + 1;
             };
-            f.setfield("test_file.txt", content);
+            f.set("test_file.txt", content);
         ''')
         file_info = file_helper.info("test_file.txt")
         print(f"File info: {file_info}")

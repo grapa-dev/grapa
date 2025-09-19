@@ -4495,7 +4495,8 @@ void GrapaScriptExec::LoadLib(GrapaRuleEvent* libName)
 		if (libName->vLibraryEvent == NULL)
 		{
 			if (s.StrCmp("$SYS") == 0) libName->vLibraryEvent = new GrapaLibraryRuleEvent(s);
-			else if (s.StrCmp("$VECTOR") == 0) libName->vLibraryEvent = new GrapaLibraryRuleEvent(s);
+            else if (s.StrCmp("$VECTOR") == 0) libName->vLibraryEvent = new GrapaLibraryRuleEvent(s);
+            else if (s.StrCmp("$MODEL") == 0) libName->vLibraryEvent = new GrapaLibraryRuleEvent(s);
 			else if (s.StrCmp("$WIDGET") == 0) libName->vLibraryEvent = new GrapaLibraryRuleEvent(s);
 			else if (s.StrCmp("$file") == 0) libName->vLibraryEvent = new GrapaLibraryRuleEvent(s);
 			else if (s.StrCmp("$thread") == 0) libName->vLibraryEvent = new GrapaLibraryRuleEvent(s);

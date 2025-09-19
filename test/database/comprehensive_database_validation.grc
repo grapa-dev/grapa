@@ -21,15 +21,15 @@ row_db.mkfield("city", "STR", "VAR");
 "✓ ROW fields created\n".echo();
 
 /* Insert data */
-row_db.setfield("user1", 1, "id");
-row_db.setfield("user1", "Alice", "name");
-row_db.setfield("user1", 25, "age");
-row_db.setfield("user1", "New York", "city");
+row_db.setfield("user1", "id", 1);
+row_db.setfield("user1", "name", "Alice");
+row_db.setfield("user1", "age", 25);
+row_db.setfield("user1", "city", "New York");
 
-row_db.setfield("user2", 2, "id");
-row_db.setfield("user2", "Bob", "name");
-row_db.setfield("user2", 30, "age");
-row_db.setfield("user2", "Los Angeles", "city");
+row_db.setfield("user2", "id", 2);
+row_db.setfield("user2", "name", "Bob");
+row_db.setfield("user2", "age", 30);
+row_db.setfield("user2", "city", "Los Angeles");
 "✓ ROW data inserted\n".echo();
 
 /* Retrieve data */
@@ -58,15 +58,15 @@ col_db.mkfield("city", "STR", "VAR");
 "✓ COL fields created\n".echo();
 
 /* Insert data */
-col_db.setfield("user1", 1, "id");
-col_db.setfield("user1", "Alice", "name");
-col_db.setfield("user1", 25, "age");
-col_db.setfield("user1", "New York", "city");
+col_db.setfield("user1", "id", 1);
+col_db.setfield("user1", "name", "Alice");
+col_db.setfield("user1", "age", 25);
+col_db.setfield("user1", "city", "New York");
 
-col_db.setfield("user2", 2, "id");
-col_db.setfield("user2", "Bob", "name");
-col_db.setfield("user2", 30, "age");
-col_db.setfield("user2", "Los Angeles", "city");
+col_db.setfield("user2", "id", 2);
+col_db.setfield("user2", "name", "Bob");
+col_db.setfield("user2", "age", 30);
+col_db.setfield("user2", "city", "Los Angeles");
 "✓ COL data inserted\n".echo();
 
 /* Retrieve data */
@@ -94,35 +94,35 @@ group_db.mk("config", "GROUP");
 "✓ Nested databases created in GROUP\n".echo();
 
 /* Navigate to users database */
-users_db = group_db.cd("users");
+group_db.cd("users");
 "✓ Navigated to users database\n".echo();
 
 /* Create fields in users database */
-users_db.mkfield("id", "INT", "FIX", 4);
-users_db.mkfield("name", "STR", "VAR");
-users_db.mkfield("age", "INT", "FIX", 4);
+group_db.mkfield("id", "INT", "FIX", 4);
+group_db.mkfield("name", "STR", "VAR");
+group_db.mkfield("age", "INT", "FIX", 4);
 "✓ Users fields created\n".echo();
 
 /* Insert data in users database */
-users_db.setfield("user1", 1, "id");
-users_db.setfield("user1", "Alice", "name");
-users_db.setfield("user1", 25, "age");
+group_db.setfield("user1", "id", 1);
+group_db.setfield("user1", "name", "Alice");
+group_db.setfield("user1", "age", 25);
 "✓ Users data inserted\n".echo();
 
 /* Navigate to analytics database */
-analytics_db = group_db.cd("analytics");
+group_db.cd("../analytics");
 "✓ Navigated to analytics database\n".echo();
 
 /* Create fields in analytics database */
-analytics_db.mkfield("metric", "STR", "VAR");
-analytics_db.mkfield("value", "FLOAT", "FIX", 8);
-analytics_db.mkfield("timestamp", "INT", "FIX", 8);
+group_db.mkfield("metric", "STR", "VAR");
+group_db.mkfield("value", "FLOAT", "FIX", 8);
+group_db.mkfield("timestamp", "INT", "FIX", 8);
 "✓ Analytics fields created\n".echo();
 
 /* Insert data in analytics database */
-analytics_db.setfield("metric1", "page_views", "metric");
-analytics_db.setfield("metric1", 1250.5, "value");
-analytics_db.setfield("metric1", 1640995200, "timestamp");
+group_db.setfield("metric1", "metric", "page_views");
+group_db.setfield("metric1", "value", 1250.5);
+group_db.setfield("metric1", "timestamp", 1640995200);
 "✓ Analytics data inserted\n".echo();
 
 /* Navigate back to root and list contents */
@@ -147,13 +147,15 @@ col_user2_city = col_db.getfield("user2", "city");
 ("✓ COL integrity: " + col_user2_name + " from " + col_user2_city + "\n").echo();
 
 /* Verify GROUP nested data integrity */
-users_db = group_db.cd("users");
-group_user1_name = users_db.getfield("user1", "name");
-group_user1_age = users_db.getfield("user1", "age").raw().int();
+group_db.cd("users");
+group_user1_name = group_db.getfield("user1", "name");
+group_user1_age = group_db.getfield("user1", "age");
+group_db.cd("..");
 ("✓ GROUP nested integrity: " + group_user1_name + ", age " + group_user1_age.str() + "\n").echo();
 
-analytics_db = group_db.cd("analytics");
-group_metric_value = analytics_db.getfield("metric1", "value").raw().flt();
+group_db.cd("analytics");
+group_metric_value = group_db.getfield("metric1", "value");
+group_db.cd("..");
 ("✓ GROUP analytics integrity: metric value " + group_metric_value.str() + "\n").echo();
 
 /* ================================================================================ */
@@ -163,32 +165,34 @@ group_metric_value = analytics_db.getfield("metric1", "value").raw().flt();
 "Testing BTree operations across all database types\n".echo();
 
 /* Test ROW BTree operations */
-row_db.setfield("user3", 3, "id");
-row_db.setfield("user3", "Charlie", "name");
-row_db.setfield("user3", 35, "age");
-row_db.setfield("user3", "Chicago", "city");
+row_db.setfield("user3", "id", 3);
+row_db.setfield("user3", "name", "Charlie");
+row_db.setfield("user3", "age", 35);
+row_db.setfield("user3", "city", "Chicago");
 "✓ ROW BTree insert operation\n".echo();
 
 /* Test COL BTree operations */
-col_db.setfield("user3", 3, "id");
-col_db.setfield("user3", "Charlie", "name");
-col_db.setfield("user3", 35, "age");
-col_db.setfield("user3", "Chicago", "city");
+col_db.setfield("user3", "id", 3);
+col_db.setfield("user3", "name", "Charlie");
+col_db.setfield("user3", "age", 35);
+col_db.setfield("user3", "city", "Chicago");
 "✓ COL BTree insert operation\n".echo();
 
 /* Test GROUP BTree operations */
-users_db = group_db.cd("users");
-users_db.setfield("user2", 2, "id");
-users_db.setfield("user2", "Bob", "name");
-users_db.setfield("user2", 30, "age");
+group_db.cd("users");
+group_db.setfield("user2", "id", 2);
+group_db.setfield("user2", "name", "Bob");
+group_db.setfield("user2", "age", 30);
+group_db.cd("..");
 "✓ GROUP BTree insert operation\n".echo();
 
 /* Verify all operations */
 row_final_count = row_db.ls().len();
 col_final_count = col_db.ls().len();
 // Ensure users_db is set to the GROUP's users table before counting
-users_db = group_db.cd("users");
-group_final_count = users_db.ls().len();
+group_db.cd("users");
+group_final_count = group_db.ls().len();
+group_db.cd("..");
 
 ("✓ Final counts - ROW: " + row_final_count.str() + ", COL: " + col_final_count.str() + ", GROUP users: " + group_final_count.str() + "\n").echo();
 

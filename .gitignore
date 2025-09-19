@@ -136,4 +136,21 @@ dmypy.json
 temp/
 *.deb
 *.rpm
-*.tar.gz 
+*.tar.gz
+
+# AI/ML Models (large files, typically not committed)
+models/*.gguf
+models/*.bin
+models/*.safetensors
+models/*.pt
+models/*.pth
+models/*.onnx
+models/*.h5
+models/*.pb
+models/*.tflite
+models/*.mlmodel
+models/*.coreml
+models/*.pkl
+models/*.joblib
+models/*.npy
+models/*.npz 

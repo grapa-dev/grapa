@@ -11,8 +11,8 @@ db.mkfield("age", "INT", "FIX", 4);
 "✓ Fields created\n".echo();
 
 /* Insert data */
-db.setfield("user1", "Alice", "name");
-db.setfield("user1", 25, "age");
+db.setfield("user1", "name", "Alice");
+db.setfield("user1", "age", 25);
 "✓ Data inserted\n".echo();
 
 /* Retrieve data */
