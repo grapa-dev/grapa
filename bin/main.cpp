@@ -1,150 +1,85 @@
-// main.cpp - Simple Grapa CLI Tool
+// main.cpp
+//
+////////////////////////////////////////////////////////////////////////////////
+
+
 #include "grapa/GrapaLink.h"
-#include "grapa/GrapaValue.h"
 #include "grapa/GrapaSystem.h"
-#include "grapa/GrapaCompress.h"
 #include "grapa/GrapaLibRule.h"
-#include "grapa/GrapaConsole.h"
-#include <iostream>
-#include <string>
 
-// Global Grapa system - required by the libraries
-extern GrapaSystem* gSystem;
+#include <unordered_map>
+#include <functional>
 
-class GrapaMainResponse : public GrapaConsoleResponse
+// @<main,test,{a:1}>()
+class GrapaLibraryRuleMainTestEvent : public GrapaLibraryEvent
 {
 public:
-    virtual void SendCommand(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, const void* sendbuf, u64 sendbuflen)
+    GrapaLibraryRuleMainTestEvent(GrapaCHAR& pName) { mName.FROM(pName); };
+    virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput)
     {
-    };
-    virtual void SendPrompt(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, const GrapaBYTE& sendbuf)
-    {
-    };
-    virtual void Send(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, void* sendbuf, u64 sendbuflen)
-    {
-        if (sendbuf && sendbuflen > 0) {
-            std::cout.write((char*)sendbuf, sendbuflen);
-            std::cout.flush();
+        GrapaRuleEvent* result = NULL;
+        GrapaLibraryParam r1(vScriptExec, pNameSpace, pInput ? pInput->Head(0) : NULL);
+        result = new GrapaRuleEvent(GrapaTokenType::GOBJ, 0, "", "");
+        result->vQueue = new GrapaRuleQueue();
+        if (r1.vVal)
+        {
+            GrapaRuleEvent* p = NULL;
+            p = new GrapaRuleEvent(GrapaTokenType::GOBJ, 0, "params", "");
+            p->vQueue = vScriptExec->CopyQueue(pInput);
+            result->vQueue->PushTail(p);
         }
+        return result;
     }
-    virtual void SendEnd(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pValue)
-    {
-    };
 };
 
-class SimpleGrapaCLI {
-private:
-    GrapaScriptExec mScriptExec;
-    GrapaConsoleSend mConsoleSend;
-    GrapaNames mRuleVariables;
-    GrapaMainResponse mConsoleResponse;
-    
+class GrapaMainRuleEvent : public GrapaLibraryRuleEvent
+{
 public:
-    SimpleGrapaCLI() {
-        // Set up the console send chain exactly like mainpy.cpp does
-        mConsoleSend.mScriptState.vScriptExec = &mScriptExec;
-        mScriptExec.vScriptState = &mConsoleSend.mScriptState;
-        mConsoleSend.mScriptState.SetNameSpace(&mRuleVariables);
-        mRuleVariables.SetResponse(&mConsoleResponse);
-        mConsoleSend.Start();
-    }
-    
-    ~SimpleGrapaCLI() {
-        mConsoleSend.Stop();
-    }
-    
-    bool start() {
-        try {
-            // Initialize the global system
-            gSystem = GrapaLink::GetGrapaSystem();
-            if (!gSystem) {
-                std::cerr << "Failed to get Grapa system" << std::endl;
-                return false;
-            }
-            
-            // Start the system first - this initializes the grammar data
-            bool needExit = false, showConsole = false;
-            GrapaCHAR outStr, runStr;
-            GrapaLink::Start(needExit, showConsole, outStr, runStr);
-            
-            // Initialize grammar like the source code does (without checking result)
-            if (gSystem->mGrammar.mLength) {
-                GrapaCHAR grresult = mConsoleSend.SendSync(gSystem->mGrammar, NULL, 0, GrapaCHAR());
-                // Note: source code doesn't check grresult.mLength, so we don't either
-                GrapaCHAR configName(gSystem->mHomeDir);
-                configName.Append("/.grapa/config");
-                GrapaLink::RunFile(mConsoleSend,configName);
-                // Note: source code doesn't check grresult.mLength, so we don't either
-            }
-            
-            return true;
-        } catch (const std::exception& e) {
-            std::cerr << "Exception during startup: " << e.what() << std::endl;
-            return false;
-        } catch (...) {
-            std::cerr << "Unknown exception during startup" << std::endl;
-            return false;
-        }
-    }
-    
-    void stop() {
-        try {
-            GrapaLink::Stop();
-        } catch (...) {
-            std::cerr << "Exception during shutdown" << std::endl;
-        }
-    }
-    
-    std::string executeCommand(const std::string& input) {
-        try {
-            GrapaCHAR command(input.c_str());
-            
-            // Use SendSync - it automatically outputs the result to stdout
-            GrapaCHAR result = mConsoleSend.SendSync(command, NULL, 0, GrapaCHAR());
-            
-            // Don't return the result since SendSync already displayed it
-            return "";
-        } catch (...) {
-            return "Error executing command";
-        }
+    GrapaMainRuleEvent(GrapaCHAR pName) { mName.FROM(pName); };
+    GrapaLibraryEvent* HandleTest(GrapaCHAR& pName) { return new GrapaLibraryRuleMainTestEvent(pName); }
+    virtual GrapaLibraryEvent* LoadLib(GrapaScriptExec* vScriptExec, GrapaRuleEvent* pLib, GrapaCHAR& pName)
+    {
+        if (pName.mBytes == NULL) return NULL;
+        using Handler = GrapaLibraryEvent * (GrapaMainRuleEvent::*)(GrapaCHAR& pName);
+        static const std::unordered_map<std::string, Handler> handlerMap = {
+                { "test", &GrapaMainRuleEvent::HandleTest },
+        };
+        auto it = handlerMap.find((char*)pName.mBytes);
+        if (it != handlerMap.end())
+            return (this->*(it->second))(pName);
+        return NULL;
     }
 };
 
-void printUsage(const char* programName) {
-    std::cout << "Usage: " << programName << " <command>" << std::endl;
-    std::cout << "Examples:" << std::endl;
-    std::cout << "  " << programName << " \"2+3\"" << std::endl;
-    std::cout << "  " << programName << " \"[1,2,3]\"" << std::endl;
-    std::cout << "  " << programName << " \"x=5\"" << std::endl;
-    std::cout << "  " << programName << " \"help\"" << std::endl;
-}
+int main(int argc, const char* argv[])
+{
+	GrapaSystem* gSystem = GrapaLink::GetGrapaSystem();
 
-int main(int argc, char* argv[]) {
-    if (argc != 2) {
-        printUsage(argv[0]);
-        return 1;
+    if (argv)
+    {
+        for (int i = 0; i < argc; i++)
+        {
+            GrapaCHAR ss(argv[i]);
+            ss.Trim(',');
+            if (ss.mLength)
+                gSystem->mCliArgv->PushTail(new GrapaRuleEvent(0, GrapaCHAR(), ss));
+        }
     }
-    
-    std::string command = argv[1];
-    
-    if (command == "help") {
-        printUsage(argv[0]);
-        return 0;
-    }
-    
-    SimpleGrapaCLI cli;
-    
-    if (!cli.start()) {
-        std::cerr << "Failed to start Grapa system" << std::endl;
-        return 1;
-    }
-    
-    std::string result = cli.executeCommand(command);
-    if (!result.empty()) {
-        std::cout << result << std::endl;
-    }
-    
-    cli.stop();
-    
+
+    GrapaCHAR inStr,  outStr, runStr;
+    bool needExit = false, showConsole = false;
+    GrapaLink::Start(needExit, showConsole, outStr, runStr);
+    gSystem->mLibraryQueue.PushTail(new GrapaMainRuleEvent(GrapaCHAR("main")));
+
+    if (outStr.mLength && outStr.mBytes)
+		fprintf(stdout, "%.*s\n", (int)outStr.mLength, (char*)outStr.mBytes);
+
+    My_Console mConsole;
+    mConsole.Start(runStr);
+    if (!needExit || showConsole)
+        mConsole.Run(NULL, NULL);
+    mConsole.Stop();
+
+    GrapaLink::Stop();
     return 0;
 }

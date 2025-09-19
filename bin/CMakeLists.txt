@@ -65,10 +65,10 @@ if(WIN32)
     # Windows flags - add PCRE2_STATIC and proper include paths
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DUTF8PROC_STATIC -DPCRE2_STATIC -std:c++17 /wd4996")
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DUTF8PROC_STATIC -DPCRE2_STATIC -O3 /wd4996")
-    
-    # Add Visual Studio and Windows SDK include paths to match VS project
+
     include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
-    
+    include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/llama)
+
     # Set Windows-specific compiler definitions to match Visual Studio project
     add_definitions(-D_CRT_SECURE_NO_WARNINGS)
     add_definitions(-DNDEBUG)
@@ -235,6 +235,11 @@ if(WIN32)
 		${CMAKE_CURRENT_SOURCE_DIR}/lib/${GRAPA_PLATFORM_DIR}/libcrypto.lib
 		${CMAKE_CURRENT_SOURCE_DIR}/lib/${GRAPA_PLATFORM_DIR}/libssl.lib
 		${CMAKE_CURRENT_SOURCE_DIR}/lib/${GRAPA_PLATFORM_DIR}/pcre2-8-static.lib
+		${CMAKE_CURRENT_SOURCE_DIR}/lib/${GRAPA_PLATFORM_DIR}/llama.lib
+		${CMAKE_CURRENT_SOURCE_DIR}/lib/${GRAPA_PLATFORM_DIR}/mtmd.lib
+		${CMAKE_CURRENT_SOURCE_DIR}/lib/${GRAPA_PLATFORM_DIR}/ggml.lib
+		${CMAKE_CURRENT_SOURCE_DIR}/lib/${GRAPA_PLATFORM_DIR}/ggml-cpu.lib
+		${CMAKE_CURRENT_SOURCE_DIR}/lib/${GRAPA_PLATFORM_DIR}/ggml-base.lib
 		# Windows system libraries
 		gdiplus.lib
 		ComCtl32.lib
