@@ -133,7 +133,7 @@ class GrapaBuilder:
         print(f"Building for {config.target} using Visual Studio...")
         
         try:
-            # Build main executable
+            # Build main executable with llama.cpp libraries
             subprocess.run([
                 "msbuild", "prj/win-amd64/grapa.sln", "/p:Configuration=Release"
             ], check=True)
@@ -800,6 +800,44 @@ class GrapaBuilder:
                     shutil.copy2(src_path, dst_path)
                     print(f"✅ Copied {lib_file} to {lib_dir}/")
         
+        # Copy llama.cpp libraries (Release)
+        llama_src = f"source/llama-lib/{config.target}"
+        if os.path.exists(llama_src):
+            for lib_file in os.listdir(llama_src):
+                if lib_file.endswith('.a') or lib_file.endswith('.lib'):
+                    src_path = os.path.join(llama_src, lib_file)
+                    dst_path = os.path.join(lib_dir, lib_file)
+                    shutil.copy2(src_path, dst_path)
+                    print(f"✅ Copied {lib_file} to {lib_dir}/")
+        
+        # Copy llama.cpp Debug libraries (Windows only)
+        if config.platform == "windows":
+            llama_debug_src = f"source/llama-lib/{config.target}-debug"
+            if os.path.exists(llama_debug_src):
+                debug_lib_dir = f"bin/lib/{config.target}-debug"
+                os.makedirs(debug_lib_dir, exist_ok=True)
+                
+                # Copy all other 3rd party libraries to debug directory (same as release)
+                for lib_src_dir in [f"source/openssl-lib/{config.target}", 
+                                   f"source/fl-lib/{config.target}",
+                                   f"source/blst-lib/{config.target}",
+                                   f"source/pcre2-lib/{config.target}"]:
+                    if os.path.exists(lib_src_dir):
+                        for lib_file in os.listdir(lib_src_dir):
+                            if lib_file.endswith('.a') or lib_file.endswith('.lib'):
+                                src_path = os.path.join(lib_src_dir, lib_file)
+                                dst_path = os.path.join(debug_lib_dir, lib_file)
+                                shutil.copy2(src_path, dst_path)
+                                print(f"✅ Copied {lib_file} to {debug_lib_dir}/")
+                
+                # Copy Debug llama.cpp libraries
+                for lib_file in os.listdir(llama_debug_src):
+                    if lib_file.endswith('.a') or lib_file.endswith('.lib'):
+                        src_path = os.path.join(llama_debug_src, lib_file)
+                        dst_path = os.path.join(debug_lib_dir, lib_file)
+                        shutil.copy2(src_path, dst_path)
+                        print(f"✅ Copied Debug {lib_file} to {debug_lib_dir}/")
+        
         # Copy include directories for 3rd party libraries
         # Copy FLTK headers
         fl_include_src = "source/FL"
@@ -818,6 +856,24 @@ class GrapaBuilder:
                 shutil.rmtree(openssl_include_dst)
             shutil.copytree(openssl_include_src, openssl_include_dst)
             print(f"✅ Copied OpenSSL headers to {openssl_include_dst}/")
+        
+        # Copy llama.cpp headers
+        llama_include_src = "source/llama"
+        llama_include_dst = f"bin/include/llama"
+        if os.path.exists(llama_include_src):
+            if os.path.exists(llama_include_dst):
+                shutil.rmtree(llama_include_dst)
+            shutil.copytree(llama_include_src, llama_include_dst)
+            print(f"✅ Copied llama.cpp headers to {llama_include_dst}/")
+        
+        # Copy GGML headers
+        ggml_include_src = "source/ggml/include"
+        ggml_include_dst = f"bin/include/ggml"
+        if os.path.exists(ggml_include_src):
+            if os.path.exists(ggml_include_dst):
+                shutil.rmtree(ggml_include_dst)
+            shutil.copytree(ggml_include_src, ggml_include_dst)
+            print(f"✅ Copied GGML headers to {ggml_include_dst}/")
         
         # Create platform-specific build files (no longer needed with CMake)
         # The CMakeLists.txt handles all platforms automatically

@@ -423,7 +423,7 @@ def pick_library_dirs():
         else:
             return ["source", "source/grapa-lib/mac-amd64"]
     if my_system == 'Windows':
-        return ["source", "source/grapa-lib/win-amd64", "source/fl-lib/win-amd64", "source/blst-lib/win-amd64", "source/pcre2-lib/win-amd64", "source/openssl-lib/win-amd64"]
+        return ["source", "source/grapa-lib/win-amd64", "source/fl-lib/win-amd64", "source/blst-lib/win-amd64", "source/pcre2-lib/win-amd64", "source/openssl-lib/win-amd64", "source/llama-lib/win-amd64"]
     raise ValueError("Unknown platform: " + my_system)
 
 def pick_libraries():
@@ -445,6 +445,11 @@ def pick_libraries():
             "fltk_z",
             "libcrypto",
             "libssl",
+            "llama",    
+            "ggml",
+            "ggml-base",
+            "ggml-cpu",
+            "mtmd",
             "blst",
             "pcre2-8-static",
             "gdiplus",
@@ -462,7 +467,7 @@ def pick_libraries():
 
 if sys.platform.startswith('win32') and 'include_dirs' in locals():
     # Use custom include_dirs that puts Windows SDK paths first
-    base_include_dirs = ["source","source/utf8proc",'source/pybind11/include']
+    base_include_dirs = ["source","source/utf8proc",'source/pybind11/include','source/llama']
     include_dirs = include_dirs + base_include_dirs
 
 lib_grapa = Extension(

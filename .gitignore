@@ -126,6 +126,7 @@ prj/winlib-amd64_static/x64
 # Dependency directories
 dep/fltk-1.4.4/
 dep/openssl-3.5.2/
+dep/llama.cpp-master/
 
 # mypy
 .mypy_cache/

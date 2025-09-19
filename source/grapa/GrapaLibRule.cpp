@@ -25,6 +25,7 @@ limitations under the License.
 #include "GrapaFloat.h"
 #include "GrapaVector.h"
 #include "GrapaWidget.h"
+#include "GrapaModel.h"
 #include "GrapaLink.h"
 #include "GrapaNetConnect.h"
 #include "GrapaTime.h"
@@ -23388,7 +23389,7 @@ GrapaRuleEvent* GrapaLibraryRuleModelLoadEvent::Run(GrapaScriptExec* vScriptExec
     GrapaRuleEvent* objEvent = vScriptExec->vScriptState->SearchTarget(pNameSpace, r1.vVal);
     if (objEvent && objEvent->vModel == NULL)
     {
-        objEvent->vWidget = new GrapaModel();
+        objEvent->vModel = new GrapaModel();
     }
 
     if (objEvent)
@@ -23411,7 +23412,7 @@ GrapaRuleEvent* GrapaLibraryRuleModelGenEvent::Run(GrapaScriptExec* vScriptExec,
     GrapaRuleEvent* objEvent = vScriptExec->vScriptState->SearchTarget(pNameSpace, r1.vVal);
     if (objEvent && objEvent->vModel == NULL)
     {
-        objEvent->vWidget = new GrapaModel();
+        objEvent->vModel = new GrapaModel();
     }
 
     if (objEvent)
@@ -23434,7 +23435,7 @@ GrapaRuleEvent* GrapaLibraryRuleModelInfoEvent::Run(GrapaScriptExec* vScriptExec
     GrapaRuleEvent* objEvent = vScriptExec->vScriptState->SearchTarget(pNameSpace, r1.vVal);
     if (objEvent && objEvent->vModel == NULL)
     {
-        objEvent->vWidget = new GrapaModel();
+        objEvent->vModel = new GrapaModel();
     }
 
     if (objEvent)
@@ -23457,7 +23458,7 @@ GrapaRuleEvent* GrapaLibraryRuleModelParamsEvent::Run(GrapaScriptExec* vScriptEx
     GrapaRuleEvent* objEvent = vScriptExec->vScriptState->SearchTarget(pNameSpace, r1.vVal);
     if (objEvent && objEvent->vModel == NULL)
     {
-        objEvent->vWidget = new GrapaModel();
+        objEvent->vModel = new GrapaModel();
     }
 
     if (objEvent)

@@ -72,23 +72,23 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\Users\matic\Documents\GitHub\Grapa\source;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\matic\Documents\GitHub\Grapa\source;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)..\..\source;$(SolutionDir)..\..\source\llama;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)..\..\source;$(SolutionDir)..\..\bin;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>C:\Users\matic\Documents\GitHub\Grapa\source;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\matic\Documents\GitHub\Grapa\source;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)..\..\source;$(SolutionDir)..\..\source\llama;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)..\..\source;$(SolutionDir)..\..\bin;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(SolutionDir)..\..\source;$(SolutionDir)..\..\source\pre2;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)..\..\source;$(SolutionDir)..\..\source\llama;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)..\..\source;$(SolutionDir)..\..\bin;$(LibraryPath)</LibraryPath>
     <TargetName>grapa</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(SolutionDir)..\..\source;$(SolutionDir)..\..\source\pre2;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)..\..\source;$(SolutionDir)..\..\source\llama;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)..\..\source;$(SolutionDir)..\..\bin;$(LibraryPath)</LibraryPath>
     <TargetName>grapa</TargetName>
   </PropertyGroup>
@@ -220,6 +220,7 @@
     <ClCompile Include="..\..\source\grapa\GrapaInt.cpp" />
     <ClCompile Include="..\..\source\grapa\GrapaLibRule.cpp" />
     <ClCompile Include="..\..\source\grapa\GrapaLink.cpp" />
+    <ClCompile Include="..\..\source\grapa\GrapaModel.cpp" />
     <ClCompile Include="..\..\source\grapa\GrapaNet.cpp" />
     <ClCompile Include="..\..\source\grapa\GrapaNetConnect.cpp" />
     <ClCompile Include="..\..\source\grapa\GrapaObject.cpp" />

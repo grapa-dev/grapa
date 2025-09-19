@@ -24,12 +24,13 @@ limitations under the License.
 #include "GrapaState.h"
 #include "GrapaVector.h"
 #include "GrapaWidget.h"
+#include "GrapaModel.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 
 void GrapaObjectEvent::INIT() 
 { 
-	mDirType = 0; mId = 0;  vQueue = NULL; vRulePointer = NULL; vDatabase = NULL; vNetConnect = NULL; vVector = NULL; vWorker = NULL; vWidget = NULL;
+	mDirType = 0; mId = 0;  vQueue = NULL; vRulePointer = NULL; vDatabase = NULL; vNetConnect = NULL; vVector = NULL; vWorker = NULL; vWidget = NULL; vModel = NULL;
 	mSkip = mRun = mStart = mEnd = mEscape = mExit = mNull = false;
 	mTouch = false;
 }
@@ -69,6 +70,12 @@ void GrapaObjectEvent::CLEAR()
 		vWidget->CLEAR();
 		delete vWidget;
 		vWidget = NULL;
+	}
+	if (vModel)
+	{
+		vModel->CLEAR();
+		delete vModel;
+		vModel = NULL;
 	}
 	mValue.SetNull();
 	mNull = false;

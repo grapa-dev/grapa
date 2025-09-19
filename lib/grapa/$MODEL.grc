@@ -1,5 +1,5 @@
 $global["$MODEL"]
-	= {
+	= class {
     load = @<[op,@<"$MODEL","load",{@<this,{}>,@<var,{path}>,@<var,{backend}>}>],{"path","backend"}>;
     gen = @<[op,@<"$MODEL","gen",{@<this,{}>,@<var,{prompt}>,@<var,{params}>}>],{"prompt","params"}>;
     info = @<"$MODEL","info",{@<this>}>;

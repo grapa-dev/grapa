@@ -17,6 +17,9 @@ limitations under the License.
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "GrapaModel.h"
+#include "GrapaSystem.h"
+
+#include <vector>
 
 extern GrapaSystem* gSystem;
 
@@ -93,13 +96,13 @@ GrapaError GrapaModel::Load(const GrapaCHAR& modelPath, const GrapaCHAR& backend
     mModelPath = modelPath;
     mBackend = backend;
     
-    if (backend.StrCmp("llama") == 0) {
+    if (mBackend.StrCmp("llama") == 0) {
         result = LoadLlama(modelPath);
     }
-    else if (backend.StrCmp("onnx") == 0) {
+    else if (mBackend.StrCmp("onnx") == 0) {
         result = LoadOnnx(modelPath);
     }
-    else if (backend.StrCmp("tensorflow") == 0) {
+    else if (mBackend.StrCmp("tensorflow") == 0) {
         result = LoadTensorFlow(modelPath);
     }
     else {
@@ -143,7 +146,7 @@ GrapaError GrapaModel::LoadLlama(const GrapaCHAR& modelPath)
     GrapaError result = 0;
     
     // Load the model
-    mLlamaModel = llama_load_model_from_file(modelPath.mBytes, mLlamaModelParams);
+    mLlamaModel = llama_load_model_from_file((char*)modelPath.mBytes, mLlamaModelParams);
     if (!mLlamaModel) {
         return -1;
     }
@@ -201,12 +204,13 @@ GrapaError GrapaModel::GenerateLlama(const GrapaCHAR& prompt, GrapaCHAR& result,
     }
     
     // Tokenize the prompt
+    const struct llama_vocab* vocab = llama_model_get_vocab(mLlamaModel);
     std::vector<llama_token> tokens_list;
     tokens_list.resize(prompt.mLength + 1);
-    int n_tokens = llama_tokenize(mLlamaModel, prompt.mBytes, prompt.mLength, tokens_list.data(), tokens_list.size(), true, false);
+    int n_tokens = llama_tokenize(vocab, (char*)prompt.mBytes, (int32_t)prompt.mLength, tokens_list.data(), (int32_t)tokens_list.size(), true, false);
     if (n_tokens < 0) {
         tokens_list.resize(-n_tokens);
-        n_tokens = llama_tokenize(mLlamaModel, prompt.mBytes, prompt.mLength, tokens_list.data(), tokens_list.size(), true, false);
+        n_tokens = llama_tokenize(vocab, (char*)prompt.mBytes, (int32_t)prompt.mLength, tokens_list.data(), (int32_t)tokens_list.size(), true, false);
     }
     tokens_list.resize(n_tokens);
     
@@ -216,22 +220,35 @@ GrapaError GrapaModel::GenerateLlama(const GrapaCHAR& prompt, GrapaCHAR& result,
     
     for (int i = 0; i < mMaxTokens; i++) {
         // Evaluate the model
-        if (llama_decode(mLlamaContext, llama_batch_get_one(&tokens_list[i], 1, i, 0))) {
+        struct llama_batch batch = llama_batch_get_one(&tokens_list[i], 1);
+        if (llama_decode(mLlamaContext, batch)) {
             return -2;
         }
         
-        // Get next token
-        llama_token next_token = llama_sample_token(mLlamaContext, nullptr);
-        if (next_token == llama_token_eos(mLlamaModel)) {
+        // Get next token using simple greedy sampling
+        float* logits = llama_get_logits(mLlamaContext);
+        int n_vocab = llama_vocab_n_tokens(vocab);
+        
+        // Find the token with highest probability (greedy sampling)
+        llama_token next_token = 0;
+        float max_logit = logits[0];
+        for (int j = 1; j < n_vocab; j++) {
+            if (logits[j] > max_logit) {
+                max_logit = logits[j];
+                next_token = j;
+            }
+        }
+        
+        if (next_token == llama_vocab_eos(vocab)) {
             break;
         }
         
         // Convert token to string
         char token_str[256];
-        int n_chars = llama_token_to_piece(mLlamaModel, next_token, token_str, sizeof(token_str), false);
+        int n_chars = llama_token_to_piece(vocab, next_token, token_str, sizeof(token_str), 0, false);
         if (n_chars > 0) {
             currentToken.FROM(token_str, n_chars);
-            result += currentToken;
+            result.Append(currentToken);
         }
         
         tokens_list.push_back(next_token);
@@ -242,28 +259,28 @@ GrapaError GrapaModel::GenerateLlama(const GrapaCHAR& prompt, GrapaCHAR& result,
 
 GrapaCHAR GrapaModel::GetModelInfo() const
 {
-    GrapaCHAR result = "{";
-    result += "\"loaded\":";
-    result += mLoaded ? "true" : "false";
-    result += ",\"backend\":\"";
-    result += mBackend;
-    result += "\",\"path\":\"";
-    result += mModelPath;
-    result += "\",\"max_tokens\":";
-    result += GrapaInt(mMaxTokens).ToString();
-    result += ",\"context_size\":";
-    result += GrapaInt(mContextSize).ToString();
-    result += ",\"temperature\":";
-    result += GrapaFloat(mTemperature).ToString();
-    result += ",\"top_k\":";
-    result += GrapaInt(mTopK).ToString();
-    result += ",\"top_p\":";
-    result += GrapaFloat(mTopP).ToString();
-    result += ",\"repeat_penalty\":";
-    result += GrapaFloat(mRepeatPenalty).ToString();
-    result += ",\"seed\":";
-    result += GrapaInt(mSeed).ToString();
-    result += "}";
+    GrapaCHAR result("{");
+    result.Append("\"loaded\":");
+    result.Append(mLoaded ? "true" : "false");
+    result.Append(",\"backend\":\"");
+    result.Append(mBackend);
+    result.Append("\",\"path\":\"");
+    result.Append(mModelPath);
+    result.Append("\",\"max_tokens\":");
+    result.Append(GrapaInt(mMaxTokens).ToString());
+    result.Append(",\"context_size\":");
+    result.Append(GrapaInt(mContextSize).ToString());
+    result.Append(",\"temperature\":");
+    result.Append(GrapaFloat(mTemperature).ToString());
+    result.Append(",\"top_k\":");
+    result.Append(GrapaInt(mTopK).ToString());
+    result.Append(",\"top_p\":");
+    result.Append(GrapaFloat(mTopP).ToString());
+    result.Append(",\"repeat_penalty\":");
+    result.Append(GrapaFloat(mRepeatPenalty).ToString());
+    result.Append(",\"seed\":");
+    result.Append(GrapaInt(mSeed).ToString());
+    result.Append("}");
     return result;
 }
 
@@ -290,20 +307,20 @@ GrapaError GrapaModel::SetParams(const GrapaCHAR& params)
 
 GrapaCHAR GrapaModel::GetParams() const
 {
-    GrapaCHAR result = "{";
-    result += "\"max_tokens\":";
-    result += GrapaInt(mMaxTokens).ToString();
-    result += ",\"temperature\":";
-    result += GrapaFloat(mTemperature).ToString();
-    result += ",\"top_k\":";
-    result += GrapaInt(mTopK).ToString();
-    result += ",\"top_p\":";
-    result += GrapaFloat(mTopP).ToString();
-    result += ",\"repeat_penalty\":";
-    result += GrapaFloat(mRepeatPenalty).ToString();
-    result += ",\"seed\":";
-    result += GrapaInt(mSeed).ToString();
-    result += "}";
+    GrapaCHAR result("{");
+    result.Append("\"max_tokens\":");
+    result.Append(GrapaInt(mMaxTokens).ToString());
+    result.Append(",\"temperature\":");
+    result.Append(GrapaFloat(mTemperature).ToString());
+    result.Append(",\"top_k\":");
+    result.Append(GrapaInt(mTopK).ToString());
+    result.Append(",\"top_p\":");
+    result.Append(GrapaFloat(mTopP).ToString());
+    result.Append(",\"repeat_penalty\":");
+    result.Append(GrapaFloat(mRepeatPenalty).ToString());
+    result.Append(",\"seed\":");
+    result.Append(GrapaInt(mSeed).ToString());
+    result.Append("}");
     return result;
 }
 

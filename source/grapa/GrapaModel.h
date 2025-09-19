@@ -25,10 +25,10 @@ public:
     
     // Generation parameters
     s32 mMaxTokens;
-    f32 mTemperature;
+    float mTemperature;
     s32 mTopK;
-    f32 mTopP;
-    f32 mRepeatPenalty;
+    float mTopP;
+    float mRepeatPenalty;
     s32 mSeed;
     s32 mContextSize;
     
@@ -40,16 +40,18 @@ public:
     GrapaModel();
     GrapaModel(const GrapaModel& that);
     ~GrapaModel();
+    void INIT();
+    void CLEAR();
     GrapaModel& operator=(const GrapaModel& that);
     
     // Core model operations
-    GrapaError Load(const GrapaCHAR& modelPath, const GrapaCHAR& backend = "llama");
+    GrapaError Load(const GrapaCHAR& modelPath, const GrapaCHAR& backend);
     GrapaError Unload();
     bool IsLoaded() const;
     
     // Generation operations
-    GrapaError Generate(const GrapaCHAR& prompt, GrapaCHAR& result, const GrapaCHAR& callParams = "");
-    GrapaError GenerateStream(const GrapaCHAR& prompt, GrapaCHAR& result, const GrapaCHAR& callParams = "");
+    GrapaError Generate(const GrapaCHAR& prompt, GrapaCHAR& result, const GrapaCHAR& callParams);
+    GrapaError GenerateStream(const GrapaCHAR& prompt, GrapaCHAR& result, const GrapaCHAR& callParams);
     
     // Model information
     GrapaCHAR GetModelInfo() const;
@@ -63,15 +65,13 @@ public:
     // Backend-specific operations
     GrapaError LoadLlama(const GrapaCHAR& modelPath);
     GrapaError UnloadLlama();
-    GrapaError GenerateLlama(const GrapaCHAR& prompt, GrapaCHAR& result, const GrapaCHAR& mergedParams = "");
+    GrapaError GenerateLlama(const GrapaCHAR& prompt, GrapaCHAR& result, const GrapaCHAR& mergedParams);
     
     // Future backends
     GrapaError LoadOnnx(const GrapaCHAR& modelPath);
     GrapaError LoadTensorFlow(const GrapaCHAR& modelPath);
     
 private:
-    void INIT();
-    void CLEAR();
     GrapaError ParseParams(const GrapaCHAR& params);
     GrapaError InitializeLlama();
     

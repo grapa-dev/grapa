@@ -37,10 +37,10 @@ def test_etl_data_engineering():
             f.write(content)
     
     # Test the example - initialize file system once
-    xy.eval("$global.fs = $file();")
+    xy.eval("fs = $file();")
     total_lines = 0
     for file in test_files:
-        content = xy.eval("fs.getfield(filename);", {"filename": file})
+        content = xy.eval("fs.getfield($local.'filename');", {"filename": file})
         if content:
             # Handle bytes object and escaped newlines
             content_str = str(content)
@@ -113,7 +113,7 @@ def test_parallel_concurrent_programming():
     # Test basic parallel processing
     data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
     result = xy.eval("""
-        $global.data = python_data;
+        data = $local.'python_data';
         data.map(op(x){x * 2});
     """, {"python_data": data})
     
@@ -121,7 +121,7 @@ def test_parallel_concurrent_programming():
     
     # Test map with parameters
     result2 = xy.eval("""
-        $global.data = python_data;
+        data = $local.'python_data';
         data.map(op(x, p){x * 2 + p}, 5);
     """, {"python_data": [1, 2, 3, 4, 5]})
     
@@ -129,7 +129,7 @@ def test_parallel_concurrent_programming():
     
     # Test map with threading
     result3 = xy.eval("""
-        $global.data = python_data;
+        data = $local.'python_data';
         data.map(op(x){x * x}, null, 4);
     """, {"python_data": [1, 2, 3, 4, 5]})
     
@@ -151,8 +151,8 @@ def test_web_data_scraping():
     test_content = "<h1>Title 1</h1><h2>Title 2</h2><a href='http://example.com'>Link</a>"
     
     # Use grep to extract data
-    titles = xy.eval("content.grep('<h[1-6][^>]*>.*?</h[1-6]>', 'o');", {"content": test_content})
-    links = xy.eval("content.grep('href=[\\'\"][^\\'\"]*[\\'\"]', 'o');", {"content": test_content})
+    titles = xy.eval("$local.'content'.grep('<h[1-6][^>]*>.*?</h[1-6]>', 'o');", {"content": test_content})
+    links = xy.eval("$local.'content'.grep('href=[\\'\"][^\\'\"]*[\\'\"]', 'o');", {"content": test_content})
     
     print(f"Extracted titles: {titles}")
     print(f"Extracted links: {links}")
@@ -167,8 +167,8 @@ def test_database_file_system_integration():
     
     # Test file system operations
     test_content = "Hello World!"
-    xy.eval("$global.fs = $file();")
-    xy.eval("fs.set('test.txt', content);", {"content": test_content})
+    xy.eval("fs = $file();")
+    xy.eval("fs.set('test.txt', $local.'content');", {"content": test_content})
     content = xy.eval("fs.get('test.txt');")
     print(f"File content: {content}")
     
@@ -179,7 +179,7 @@ def test_database_file_system_integration():
         content_str = str(content)
     
     # Test table operations
-    xy.eval("$global.table = {}.table('ROW');")
+    xy.eval("table = {}.table('ROW');")
     xy.eval("table.mkfield('name', 'STR', 'VAR');")
     xy.eval("table.setfield('user1', 'name', 'Alice');")
     name = xy.eval("table.getfield('user1', 'name');")
@@ -203,12 +203,12 @@ def test_education_prototyping():
     xy = grapapy.grapa()
     
     # Test function definition and call
-    xy.eval("$global.square = op(x=0){x*x;};")
+    xy.eval("square = op(x=0){x*x;};")
     result1 = xy.eval("square(7);")
     print(f"Square function result: {result1}")
     
     # Define Grapa function using the exact pattern from the working notebook
-    xy.eval("$this.pytrace = op(n=0){$local.locals={'g':n};$py().eval('pytrace(g)',locals);};")
+    xy.eval("pytrace = op(n=0){$local.locals={'g':n};$py().eval('pytrace(g)',locals);};")
     # Call the Grapa function
     try:
         result2 = xy.eval("pytrace(42);")
@@ -233,7 +233,7 @@ def test_large_dataset_performance():
     start_time = time.time()
     
     result = xy.eval("""
-        $global.data = python_data;
+        data = $local.'python_data';
         data.map(op(x){x * 2});
     """, {"python_data": data})
     
@@ -267,7 +267,7 @@ def test_error_handling():
     
     # Test invalid table access
     try:
-        result = xy.eval("$global.table = {}.table('ROW');")
+        result = xy.eval("table = {}.table('ROW');")
         result = xy.eval("table.getfield('nonexistent', 'field');")
         print(f"Table access result: {result}")
     except Exception as e:
