@@ -62,7 +62,7 @@ bin/
 
 5. **Run the example:**
    ```bash
-   ./grapa_example "2+3"
+   ./grapa_example -c "2+3"
    ```
 
 ## Using Grapa in Your Project
