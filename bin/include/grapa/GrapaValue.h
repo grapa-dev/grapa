@@ -51,7 +51,8 @@ public: enum {
 	WIDGET = 29,
 	TUPLE = 30,
 	COMMENT = 31,
-	DOC = 32,
+    DOC = 32,
+    MODEL = 33,
 	X1 = 128,  // don't change above numbers
 	OTHER,
 	PTR,

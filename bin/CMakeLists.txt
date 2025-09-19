@@ -14,6 +14,17 @@ endif()
 if(WIN32)
     set(CMAKE_BUILD_TYPE Release)
     set(CMAKE_CONFIGURATION_TYPES Release)
+    
+    # Ensure Ninja generator works properly on Windows
+    if(CMAKE_GENERATOR STREQUAL "Ninja")
+        # Set Ninja-specific variables
+        set(CMAKE_CXX_COMPILER_LAUNCHER "")
+        set(CMAKE_C_COMPILER_LAUNCHER "")
+        
+        # Ensure proper Windows SDK detection for Ninja
+        set(CMAKE_SYSTEM_VERSION 10.0)
+        set(CMAKE_SYSTEM_NAME Windows)
+    endif()
 endif()
 
 # Platform detection
@@ -62,12 +73,72 @@ endif()
 
 # Set compiler flags to match build.py exactly
 if(WIN32)
-    # Windows flags - add PCRE2_STATIC and proper include paths
+    # Windows flags - match Python extension configuration exactly
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DUTF8PROC_STATIC -DPCRE2_STATIC -std:c++17 /wd4996")
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DUTF8PROC_STATIC -DPCRE2_STATIC -O3 /wd4996")
+    
+    # Add manifest flag to match Python extension
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /MANIFEST:NO")
 
     include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
     include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/llama)
+    
+    # Add Windows SDK include paths for standard C headers like float.h
+    # This is especially important for Ninja builds which may not auto-detect SDK paths
+    set(WINDOWS_SDK_FOUND FALSE)
+    
+    # Try the newer Windows SDK location first (Windows 10/11)
+    if(EXISTS "C:/Program Files/Windows Kits/10/Include")
+        file(GLOB WINDOWS_SDK_VERSIONS "C:/Program Files/Windows Kits/10/Include/*")
+        if(WINDOWS_SDK_VERSIONS)
+            list(SORT WINDOWS_SDK_VERSIONS)
+            list(REVERSE WINDOWS_SDK_VERSIONS)
+            list(GET WINDOWS_SDK_VERSIONS 0 LATEST_SDK_PATH)
+            get_filename_component(LATEST_SDK_VERSION ${LATEST_SDK_PATH} NAME)
+            include_directories("C:/Program Files/Windows Kits/10/Include/${LATEST_SDK_VERSION}/ucrt")
+            include_directories("C:/Program Files/Windows Kits/10/Include/${LATEST_SDK_VERSION}/shared")
+            include_directories("C:/Program Files/Windows Kits/10/Include/${LATEST_SDK_VERSION}/um")
+            set(WINDOWS_SDK_FOUND TRUE)
+            message(STATUS "Added Windows SDK ${LATEST_SDK_VERSION} include paths (Program Files)")
+        endif()
+    endif()
+    
+    # Fallback to x86 location
+    if(NOT WINDOWS_SDK_FOUND AND EXISTS "C:/Program Files (x86)/Windows Kits/10/Include")
+        file(GLOB WINDOWS_SDK_VERSIONS "C:/Program Files (x86)/Windows Kits/10/Include/*")
+        if(WINDOWS_SDK_VERSIONS)
+            list(SORT WINDOWS_SDK_VERSIONS)
+            list(REVERSE WINDOWS_SDK_VERSIONS)
+            list(GET WINDOWS_SDK_VERSIONS 0 LATEST_SDK_PATH)
+            get_filename_component(LATEST_SDK_VERSION ${LATEST_SDK_PATH} NAME)
+            include_directories("C:/Program Files (x86)/Windows Kits/10/Include/${LATEST_SDK_VERSION}/ucrt")
+            include_directories("C:/Program Files (x86)/Windows Kits/10/Include/${LATEST_SDK_VERSION}/shared")
+            include_directories("C:/Program Files (x86)/Windows Kits/10/Include/${LATEST_SDK_VERSION}/um")
+            set(WINDOWS_SDK_FOUND TRUE)
+            message(STATUS "Added Windows SDK ${LATEST_SDK_VERSION} include paths (Program Files x86)")
+        endif()
+    endif()
+    
+    # Additional fallback paths for older SDKs or different installations
+    if(NOT WINDOWS_SDK_FOUND)
+        # Try Visual Studio installation paths
+        if(EXISTS "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC")
+            file(GLOB VS_VERSIONS "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/*")
+            if(VS_VERSIONS)
+                list(SORT VS_VERSIONS)
+                list(REVERSE VS_VERSIONS)
+                list(GET VS_VERSIONS 0 VS_VERSION_PATH)
+                get_filename_component(VS_VERSION ${VS_VERSION_PATH} NAME)
+                include_directories("C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/${VS_VERSION}/include")
+                message(STATUS "Added Visual Studio 2022 Community include paths: ${VS_VERSION}")
+                set(WINDOWS_SDK_FOUND TRUE)
+            endif()
+        endif()
+    endif()
+    
+    if(NOT WINDOWS_SDK_FOUND)
+        message(WARNING "Windows SDK not found. Standard C headers like float.h may not be available.")
+    endif()
 
     # Set Windows-specific compiler definitions to match Visual Studio project
     add_definitions(-D_CRT_SECURE_NO_WARNINGS)
@@ -220,30 +291,44 @@ add_executable(grapa_example main.cpp)
 # Set include directories
 target_include_directories(grapa_example PRIVATE include)
 
+# Add library directories first
+target_link_directories(grapa_example PRIVATE 
+	${CMAKE_CURRENT_SOURCE_DIR}/platforms/${GRAPA_PLATFORM_DIR}
+	${CMAKE_CURRENT_SOURCE_DIR}/lib/${GRAPA_PLATFORM_DIR}
+)
+
 # Link against Grapa static library and all required 3rd party libraries
+# Match the exact configuration used by the Python extension (setup.py)
 if(WIN32)
 	target_link_libraries(grapa_example 
-		${CMAKE_CURRENT_SOURCE_DIR}/platforms/${GRAPA_PLATFORM_DIR}/${GRAPA_STATIC_LIB}
-		${CMAKE_CURRENT_SOURCE_DIR}/lib/${GRAPA_PLATFORM_DIR}/blst.lib
-		${CMAKE_CURRENT_SOURCE_DIR}/lib/${GRAPA_PLATFORM_DIR}/fltk.lib
-		${CMAKE_CURRENT_SOURCE_DIR}/lib/${GRAPA_PLATFORM_DIR}/fltk_forms.lib
-		${CMAKE_CURRENT_SOURCE_DIR}/lib/${GRAPA_PLATFORM_DIR}/fltk_gl.lib
-		${CMAKE_CURRENT_SOURCE_DIR}/lib/${GRAPA_PLATFORM_DIR}/fltk_images.lib
-		${CMAKE_CURRENT_SOURCE_DIR}/lib/${GRAPA_PLATFORM_DIR}/fltk_jpeg.lib
-		${CMAKE_CURRENT_SOURCE_DIR}/lib/${GRAPA_PLATFORM_DIR}/fltk_png.lib
-		${CMAKE_CURRENT_SOURCE_DIR}/lib/${GRAPA_PLATFORM_DIR}/fltk_z.lib
-		${CMAKE_CURRENT_SOURCE_DIR}/lib/${GRAPA_PLATFORM_DIR}/libcrypto.lib
-		${CMAKE_CURRENT_SOURCE_DIR}/lib/${GRAPA_PLATFORM_DIR}/libssl.lib
-		${CMAKE_CURRENT_SOURCE_DIR}/lib/${GRAPA_PLATFORM_DIR}/pcre2-8-static.lib
-		${CMAKE_CURRENT_SOURCE_DIR}/lib/${GRAPA_PLATFORM_DIR}/llama.lib
-		${CMAKE_CURRENT_SOURCE_DIR}/lib/${GRAPA_PLATFORM_DIR}/mtmd.lib
-		${CMAKE_CURRENT_SOURCE_DIR}/lib/${GRAPA_PLATFORM_DIR}/ggml.lib
-		${CMAKE_CURRENT_SOURCE_DIR}/lib/${GRAPA_PLATFORM_DIR}/ggml-cpu.lib
-		${CMAKE_CURRENT_SOURCE_DIR}/lib/${GRAPA_PLATFORM_DIR}/ggml-base.lib
-		# Windows system libraries
-		gdiplus.lib
-		ComCtl32.lib
-		crypt32.lib
+		${GRAPA_STATIC_LIB}
+		fltk
+		fltk_forms
+		fltk_gl
+		fltk_images
+		fltk_jpeg
+		fltk_png
+		fltk_z
+		libcrypto
+		libssl
+		llama
+		ggml
+		ggml-base
+		ggml-cpu
+		mtmd
+		blst
+		pcre2-8-static
+		# Windows system libraries (matching Python extension)
+		gdiplus
+		Gdi32
+		Advapi32
+		User32
+		Ole32
+		Shell32
+		Comdlg32
+		winspool
+		crypt32
+		comctl32
 	)
 else()
 	target_link_libraries(grapa_example 

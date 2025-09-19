@@ -325,6 +325,11 @@ public:
 	GrapaLibraryEvent* HandleWidgetAppend(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleWidgetPost(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleWidgetClear(GrapaCHAR& pName);
+	GrapaLibraryEvent* HandleModelLoad(GrapaCHAR& pName);
+	GrapaLibraryEvent* HandleModelGen(GrapaCHAR& pName);
+	GrapaLibraryEvent* HandleModelInfo(GrapaCHAR& pName);
+	GrapaLibraryEvent* HandleModelParams(GrapaCHAR& pName);
+
 };
 
 // String Distance Helper Functions

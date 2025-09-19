@@ -15,6 +15,7 @@ class GrapaNetConnect;
 class GrapaWorker;
 class GrapaVector;
 class GrapaWidget;
+class GrapaModel;
 
 class GrapaObjectEvent : public GrapaEvent
 {
@@ -29,6 +30,7 @@ public:
 	GrapaVector* vVector;
 	GrapaWorker* vWorker;
 	GrapaWidget* vWidget;
+	GrapaModel* vModel;
 	bool mSkip, mRun, mStart, mEnd, mEscape, mExit, mNull, mTouch;
 	u8 mDirType;
 public:
