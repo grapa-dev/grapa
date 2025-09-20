@@ -59,6 +59,11 @@ target_link_libraries(grapapy PRIVATE
     libfltk_forms.a libfltk_gl.a libfltk_images.a libfltk_jpeg.a libfltk.a
     libcrypto.a libssl.a
     libpcre2-8.a
+    libllama.a
+    libggml.a
+    libggml-base.a
+    libggml-cpu.a
+    libmtmd.a
     X11 Xfixes Xft Xext Xrender Xinerama Xcursor xcb Xau png16 fontconfig freetype
     )
 SET(CMAKE_SKIP_BUILD_RPATH  FALSE)
@@ -73,6 +78,11 @@ target_link_libraries(grapapy PRIVATE
     libfltk_forms.a libfltk_gl.a libfltk_images.a libfltk_jpeg.a libfltk.a
     libcrypto.a libssl.a
     libpcre2-8.a
+    libllama.a
+    libggml.a
+    libggml-base.a
+    libggml-cpu.a
+    libmtmd.a
     X11 Xfixes Xft Xext Xrender Xinerama Xcursor xcb Xau png16 fontconfig freetype
     )
 SET(CMAKE_SKIP_BUILD_RPATH  FALSE)

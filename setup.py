@@ -409,14 +409,14 @@ def pick_library_dirs():
     if my_system == 'Linux':
         if is_aws:
             if is_arm:
-                return ["source", "source/grapa-lib/aws-arm64", "source/X11-lib/aws-arm64"]
+                return ["source", "source/grapa-lib/aws-arm64", "source/X11-lib/aws-arm64", "source/llama-lib/aws-arm64"]
             else:
-                return ["source", "source/grapa-lib/aws-amd64", "source/X11-lib/aws-amd64"]
+                return ["source", "source/grapa-lib/aws-amd64", "source/X11-lib/aws-amd64", "source/llama-lib/aws-amd64"]
         else:
             if is_arm:
-                return ["source", "source/grapa-lib/linux-arm64", "source/X11-lib/linux-arm64"]
+                return ["source", "source/grapa-lib/linux-arm64", "source/X11-lib/linux-arm64", "source/llama-lib/linux-arm64"]
             else:
-                return ["source", "source/grapa-lib/linux-amd64", "source/X11-lib/linux-amd64"]
+                return ["source", "source/grapa-lib/linux-amd64", "source/X11-lib/linux-amd64", "source/llama-lib/linux-amd64"]
     if my_system == 'Darwin':
         if is_arm:
             return ["source", "source/grapa-lib/mac-arm64", "source/llama-lib/mac-arm64"]
@@ -429,7 +429,14 @@ def pick_library_dirs():
 def pick_libraries():
     my_system = platform.system()
     if my_system == 'Linux':
-        return ['grapa']
+        return [
+            'grapa',
+            'llama',
+            'ggml',
+            'ggml-base',
+            'ggml-cpu',
+            'mtmd'
+        ]
     if my_system == 'Darwin':
         #return ['@rpath/grapa']
         return [

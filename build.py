@@ -372,7 +372,7 @@ class GrapaBuilder:
         # Use -fPIC for shared library builds, regular for executable
         pic_flag = ["-fPIC"] if is_library else []
         subprocess.run([
-            "gcc", "-Isource", "-DUTF8PROC_STATIC", "-c", 
+            "gcc", "-Isource", "-Isource/llama", "-DUTF8PROC_STATIC", "-c", 
             "source/utf8proc/utf8proc.c", "-O3"
         ] + pic_flag, check=True)
         
@@ -419,11 +419,14 @@ class GrapaBuilder:
             # Get X11 libraries conditionally
             x11_libs = self._get_x11_libs()
             
+            # Add LLAMA.cpp libraries
+            llama_libs = glob.glob(f"source/llama-lib/{config.target}/*.a")
+            
             cmd = [
                 "g++"
             ] + config.flags + [
                 "source/main.cpp"
-            ] + cpp_files + ["source/utf8proc/utf8proc.c"] + openssl_libs + fl_libs + blst_libs + [
+            ] + cpp_files + ["source/utf8proc/utf8proc.c"] + openssl_libs + fl_libs + blst_libs + llama_libs + [
                 f"source/pcre2-lib/{config.target}/libpcre2-8.a", f"-Lsource/openssl-lib/{config.target}", "-lcrypto"
             ] + x11_libs + [
                 "-ldl", "-lm", "-static-libgcc", 
@@ -516,11 +519,14 @@ class GrapaBuilder:
             # Get X11 libraries conditionally
             x11_libs = self._get_x11_libs()
             
+            # Add LLAMA.cpp libraries
+            llama_libs = glob.glob(f"source/llama-lib/{config.target}/*.a")
+            
             cmd = [
                 "g++"
             ] + config.flags + [
                 "source/main.cpp"
-            ] + cpp_files + ["source/utf8proc/utf8proc.c"] + openssl_libs + fl_libs + blst_libs + [
+            ] + cpp_files + ["source/utf8proc/utf8proc.c"] + openssl_libs + fl_libs + blst_libs + llama_libs + [
                 f"source/pcre2-lib/{config.target}/libpcre2-8.a", f"-Lsource/openssl-lib/{config.target}", "-lcrypto"
             ] + x11_libs + [
                 "-ldl", "-lm", "-static-libgcc", 
