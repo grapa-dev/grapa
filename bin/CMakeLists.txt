@@ -377,6 +377,7 @@ else()
 		${CMAKE_CURRENT_SOURCE_DIR}/lib/${GRAPA_PLATFORM_DIR}/libggml-base.a
 		${CMAKE_CURRENT_SOURCE_DIR}/lib/${GRAPA_PLATFORM_DIR}/libggml-cpu.a
 		${CMAKE_CURRENT_SOURCE_DIR}/lib/${GRAPA_PLATFORM_DIR}/libmtmd.a
+		${CMAKE_CURRENT_SOURCE_DIR}/lib/${GRAPA_PLATFORM_DIR}/libcommon.a
 	)
 endif()
 

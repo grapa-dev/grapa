@@ -1,19 +1,20 @@
 # Grapa Development Kit
 
-This directory contains everything you need to build and run Grapa applications using the Grapa static library.
+This directory contains everything you need to build and run Grapa applications using the Grapa static library, including AI/ML model support via LLAMA.cpp integration.
 
 ## Directory Structure
 
 ```
 bin/
 ├── include/grapa/          # Grapa public API headers
+├── include/llama/          # LLAMA.cpp headers for AI/ML support
 ├── lib/                    # 3rd party static libraries
-│   ├── mac-arm64/         # Mac ARM64 libraries
-│   ├── linux-arm64/       # Linux ARM64 libraries
-│   ├── linux-amd64/       # Linux AMD64 libraries
-│   ├── aws-arm64/         # AWS ARM64 libraries
-│   ├── aws-amd64/         # AWS AMD64 libraries
-│   └── win-amd64/         # Windows AMD64 libraries
+│   ├── mac-arm64/         # Mac ARM64 libraries (including LLAMA.cpp)
+│   ├── linux-arm64/       # Linux ARM64 libraries (including LLAMA.cpp)
+│   ├── linux-amd64/       # Linux AMD64 libraries (including LLAMA.cpp)
+│   ├── aws-arm64/         # AWS ARM64 libraries (including LLAMA.cpp)
+│   ├── aws-amd64/         # AWS AMD64 libraries (including LLAMA.cpp)
+│   └── win-amd64/         # Windows AMD64 libraries (including LLAMA.cpp)
 ├── platforms/              # Platform-specific Grapa files
 │   ├── mac-arm64/         # Mac ARM64 executable and static library
 │   ├── linux-arm64/       # Linux ARM64 executable and static library
@@ -36,6 +37,10 @@ bin/
   - **Windows**: Visual Studio 2019 or later
   - **macOS**: Xcode Command Line Tools (clang++)
   - **Linux**: GCC 7+ or Clang 5+
+- **AI/ML Dependencies** (for $MODEL functionality):
+  - **Linux**: OpenMP support (`libomp-dev` on Ubuntu/Debian, `libgomp` on CentOS/RHEL)
+  - **macOS**: Metal framework (included with Xcode)
+  - **Windows**: No additional dependencies required
 
 ### Build Steps
 
@@ -64,6 +69,43 @@ bin/
    ```bash
    ./grapa_example -c "2+3"
    ```
+
+6. **Test AI/ML functionality:**
+   ```bash
+   ./grapa_example -c "m = \$MODEL(); m.info();"
+   ```
+
+## AI/ML Model Support
+
+Grapa includes comprehensive AI/ML model support via LLAMA.cpp integration:
+
+### Available Libraries
+- **libllama.a** - Main LLAMA.cpp library
+- **libggml.a** - Core GGML tensor library  
+- **libggml-base.a** - Base GGML operations
+- **libggml-cpu.a** - CPU-specific GGML operations
+- **libmtmd.a** - Multi-threaded matrix operations
+- **libcommon.a** - Common utilities and GGUF support
+
+### Platform-Specific Features
+- **macOS**: Metal GPU acceleration support
+- **Linux**: OpenMP multi-threading support
+- **Windows**: CPU-only implementation
+
+### Usage Example
+```cpp
+#include "grapa/GrapaLink.h"
+#include "grapa/GrapaValue.h"
+
+// Create a model instance
+GrapaValue model = GrapaValue::CreateObject("MODEL");
+
+// Load a GGUF model file
+GrapaValue result = model.Call("load", "path/to/model.gguf");
+
+// Generate text
+GrapaValue response = model.Call("generate", "Hello, how are you?");
+```
 
 ## Using Grapa in Your Project
 
@@ -147,15 +189,15 @@ python3 install-grapa.py --uninstall
 
 ## Platform Support
 
-| Platform | Architecture | Status | Notes |
-|----------|--------------|---------|-------|
-| macOS | ARM64 | ✅ Supported | Apple Silicon only |
-| macOS | AMD64 | ❌ Not supported | Use Apple Silicon |
-| Linux | ARM64 | ✅ Supported | Ubuntu, Debian, etc. |
-| Linux | AMD64 | ✅ Supported | Ubuntu, Debian, etc. |
-| AWS Linux | ARM64 | ✅ Supported | Amazon Linux 2/3 |
-| AWS Linux | AMD64 | ✅ Supported | Amazon Linux 2/3 |
-| Windows | AMD64 | ✅ Supported | Visual Studio 2019+ |
+| Platform | Architecture | Status | AI/ML Support | Notes |
+|----------|--------------|---------|---------------|-------|
+| macOS | ARM64 | ✅ Supported | ✅ Complete | Apple Silicon with Metal GPU |
+| macOS | AMD64 | ❌ Not supported | ❌ N/A | Use Apple Silicon |
+| Linux | ARM64 | ✅ Supported | ✅ Complete | Ubuntu, Debian, etc. |
+| Linux | AMD64 | ✅ Supported | ⏳ Pending | Libraries need to be built |
+| AWS Linux | ARM64 | ✅ Supported | ⏳ Pending | Libraries need to be built |
+| AWS Linux | AMD64 | ✅ Supported | ⏳ Pending | Libraries need to be built |
+| Windows | AMD64 | ✅ Supported | ✅ Complete | Visual Studio 2019+ |
 
 ## Troubleshooting
 
@@ -172,6 +214,12 @@ python3 install-grapa.py --uninstall
 3. **Runtime errors:**
    - Check that `gSystem` is properly initialized
    - Verify platform compatibility
+
+4. **AI/ML model errors:**
+   - **Linux**: Ensure OpenMP is installed (`libomp-dev` on Ubuntu/Debian)
+   - **Missing libraries**: Verify all LLAMA.cpp libraries are present in `lib/{platform}/`
+   - **Model loading**: Check that GGUF model files are accessible and valid
+   - **OpenMP errors**: Install `libomp-dev` (Ubuntu/Debian) or `libgomp` (CentOS/RHEL)
 
 ### Getting Help
 
