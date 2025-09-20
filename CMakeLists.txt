@@ -64,7 +64,9 @@ target_link_libraries(grapapy PRIVATE
     libggml-base.a
     libggml-cpu.a
     libmtmd.a
+    libcommon.a
     X11 Xfixes Xft Xext Xrender Xinerama Xcursor xcb Xau png16 fontconfig freetype
+    gomp
     )
 SET(CMAKE_SKIP_BUILD_RPATH  FALSE)
 SET(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
@@ -83,7 +85,9 @@ target_link_libraries(grapapy PRIVATE
     libggml-base.a
     libggml-cpu.a
     libmtmd.a
+    libcommon.a
     X11 Xfixes Xft Xext Xrender Xinerama Xcursor xcb Xau png16 fontconfig freetype
+    gomp
     )
 SET(CMAKE_SKIP_BUILD_RPATH  FALSE)
 SET(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)

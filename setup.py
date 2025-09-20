@@ -268,6 +268,11 @@ elif sys.platform.startswith('linux'):
                     is_aws = True;
     except:
         pass
+    
+    # Add Linux-specific flags
+    extra_compile_args = ['-DUTF8PROC_STATIC', '-DPCRE2_STATIC', '-std=c++17', '-O3', '-pthread', '-DFLTK_USE_X11', '-fPIC']
+    extra_link_args = ['-lgomp', '-static-libgcc']
+    
 elif sys.platform.startswith('darwin'):
     is_apple = True
     if is_arm:
@@ -409,14 +414,14 @@ def pick_library_dirs():
     if my_system == 'Linux':
         if is_aws:
             if is_arm:
-                return ["source", "source/grapa-lib/aws-arm64", "source/X11-lib/aws-arm64", "source/llama-lib/aws-arm64"]
+                return ["source", "source/grapa-lib/aws-arm64", "source/fl-lib/aws-arm64", "source/blst-lib/aws-arm64", "source/pcre2-lib/aws-arm64", "source/openssl-lib/aws-arm64", "source/llama-lib/aws-arm64"]
             else:
-                return ["source", "source/grapa-lib/aws-amd64", "source/X11-lib/aws-amd64", "source/llama-lib/aws-amd64"]
+                return ["source", "source/grapa-lib/aws-amd64", "source/fl-lib/aws-amd64", "source/blst-lib/aws-amd64", "source/pcre2-lib/aws-amd64", "source/openssl-lib/aws-amd64", "source/llama-lib/aws-amd64"]
         else:
             if is_arm:
-                return ["source", "source/grapa-lib/linux-arm64", "source/X11-lib/linux-arm64", "source/llama-lib/linux-arm64"]
+                return ["source", "source/grapa-lib/linux-arm64", "source/fl-lib/linux-arm64", "source/blst-lib/linux-arm64", "source/pcre2-lib/linux-arm64", "source/openssl-lib/linux-arm64", "source/llama-lib/linux-arm64"]
             else:
-                return ["source", "source/grapa-lib/linux-amd64", "source/X11-lib/linux-amd64", "source/llama-lib/linux-amd64"]
+                return ["source", "source/grapa-lib/linux-amd64", "source/fl-lib/linux-amd64", "source/blst-lib/linux-amd64", "source/pcre2-lib/linux-amd64", "source/openssl-lib/linux-amd64", "source/llama-lib/linux-amd64"]
     if my_system == 'Darwin':
         if is_arm:
             return ["source", "source/grapa-lib/mac-arm64", "source/llama-lib/mac-arm64"]
@@ -435,7 +440,19 @@ def pick_libraries():
             'ggml',
             'ggml-base',
             'ggml-cpu',
-            'mtmd'
+            'mtmd',
+            'common',  # Add common library
+            'fltk',
+            'fltk_forms',
+            'fltk_gl',
+            'fltk_images',
+            'fltk_jpeg',
+            'fltk_png',
+            'fltk_z',
+            'ssl',
+            'crypto',
+            'blst',
+            'pcre2-8'
         ]
     if my_system == 'Darwin':
         #return ['@rpath/grapa']

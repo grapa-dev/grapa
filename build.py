@@ -420,7 +420,29 @@ class GrapaBuilder:
             x11_libs = self._get_x11_libs()
             
             # Add LLAMA.cpp libraries
-            llama_libs = glob.glob(f"source/llama-lib/{config.target}/*.a")
+            # Add LLAMA.cpp libraries in dependency order
+            llama_libs = []
+            llama_lib_dir = f"source/llama-lib/{config.target}"
+            # Link in dependency order with circular dependency resolution
+            # Static libraries with circular dependencies need to be linked multiple times
+            llama_lib_order = [
+                "libggml-base.a",
+                "libggml-cpu.a", 
+                "libggml.a",
+                "libcommon.a",
+                "libmtmd.a",
+                "libllama.a",
+                # Link core GGML libraries again to resolve circular dependencies
+                "libggml.a",
+                "libggml-base.a",
+                "libggml-cpu.a"
+            ]
+            for lib_name in llama_lib_order:
+                lib_path = f"{llama_lib_dir}/{lib_name}"
+                if os.path.exists(lib_path):
+                    llama_libs.append(lib_path)
+                else:
+                    print(f"⚠️  Warning: LLAMA.cpp library not found: {lib_path}")
             
             cmd = [
                 "g++"
@@ -429,7 +451,7 @@ class GrapaBuilder:
             ] + cpp_files + ["source/utf8proc/utf8proc.c"] + openssl_libs + fl_libs + blst_libs + llama_libs + [
                 f"source/pcre2-lib/{config.target}/libpcre2-8.a", f"-Lsource/openssl-lib/{config.target}", "-lcrypto"
             ] + x11_libs + [
-                "-ldl", "-lm", "-static-libgcc", 
+                "-ldl", "-lm", "-fopenmp", "-static-libgcc", 
                 "-o", config.output_name
             ]
             
@@ -520,7 +542,29 @@ class GrapaBuilder:
             x11_libs = self._get_x11_libs()
             
             # Add LLAMA.cpp libraries
-            llama_libs = glob.glob(f"source/llama-lib/{config.target}/*.a")
+            # Add LLAMA.cpp libraries in dependency order
+            llama_libs = []
+            llama_lib_dir = f"source/llama-lib/{config.target}"
+            # Link in dependency order with circular dependency resolution
+            # Static libraries with circular dependencies need to be linked multiple times
+            llama_lib_order = [
+                "libggml-base.a",
+                "libggml-cpu.a", 
+                "libggml.a",
+                "libcommon.a",
+                "libmtmd.a",
+                "libllama.a",
+                # Link core GGML libraries again to resolve circular dependencies
+                "libggml.a",
+                "libggml-base.a",
+                "libggml-cpu.a"
+            ]
+            for lib_name in llama_lib_order:
+                lib_path = f"{llama_lib_dir}/{lib_name}"
+                if os.path.exists(lib_path):
+                    llama_libs.append(lib_path)
+                else:
+                    print(f"⚠️  Warning: LLAMA.cpp library not found: {lib_path}")
             
             cmd = [
                 "g++"
@@ -529,7 +573,7 @@ class GrapaBuilder:
             ] + cpp_files + ["source/utf8proc/utf8proc.c"] + openssl_libs + fl_libs + blst_libs + llama_libs + [
                 f"source/pcre2-lib/{config.target}/libpcre2-8.a", f"-Lsource/openssl-lib/{config.target}", "-lcrypto"
             ] + x11_libs + [
-                "-ldl", "-lm", "-static-libgcc", 
+                "-ldl", "-lm", "-fopenmp", "-static-libgcc", 
                 "-o", config.output_name
             ]
             

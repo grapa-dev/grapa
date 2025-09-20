@@ -434,6 +434,7 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
         "-lXcursor"
         "-ldl"
         "-lm"
+        "-lgomp"  # Add OpenMP library for LLAMA.cpp
     )
 elseif(WIN32)
     # Windows settings
