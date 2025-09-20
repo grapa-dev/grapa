@@ -161,6 +161,7 @@ elseif(APPLE)
     
     # Add include directories for macOS
     include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
+    include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/llama)
 endif()
 
 # Set output directory
@@ -330,7 +331,32 @@ if(WIN32)
 		crypt32
 		comctl32
 	)
+elseif(APPLE)
+	# macOS libraries
+	target_link_libraries(grapa_example 
+		${CMAKE_CURRENT_SOURCE_DIR}/platforms/${GRAPA_PLATFORM_DIR}/${GRAPA_STATIC_LIB}
+		${CMAKE_CURRENT_SOURCE_DIR}/lib/${GRAPA_PLATFORM_DIR}/libfltk.a
+		${CMAKE_CURRENT_SOURCE_DIR}/lib/${GRAPA_PLATFORM_DIR}/libfltk_gl.a
+		${CMAKE_CURRENT_SOURCE_DIR}/lib/${GRAPA_PLATFORM_DIR}/libfltk_png.a
+		${CMAKE_CURRENT_SOURCE_DIR}/lib/${GRAPA_PLATFORM_DIR}/libfltk_z.a
+		${CMAKE_CURRENT_SOURCE_DIR}/lib/${GRAPA_PLATFORM_DIR}/libfltk_images.a
+		${CMAKE_CURRENT_SOURCE_DIR}/lib/${GRAPA_PLATFORM_DIR}/libfltk_forms.a
+		${CMAKE_CURRENT_SOURCE_DIR}/lib/${GRAPA_PLATFORM_DIR}/libfltk_jpeg.a
+		${CMAKE_CURRENT_SOURCE_DIR}/lib/${GRAPA_PLATFORM_DIR}/libssl.a
+		${CMAKE_CURRENT_SOURCE_DIR}/lib/${GRAPA_PLATFORM_DIR}/libcrypto.a
+		${CMAKE_CURRENT_SOURCE_DIR}/lib/${GRAPA_PLATFORM_DIR}/libblst.a
+		${CMAKE_CURRENT_SOURCE_DIR}/lib/${GRAPA_PLATFORM_DIR}/libpcre2-8.a
+		# LLAMA.cpp libraries
+		${CMAKE_CURRENT_SOURCE_DIR}/lib/${GRAPA_PLATFORM_DIR}/libllama.a
+		${CMAKE_CURRENT_SOURCE_DIR}/lib/${GRAPA_PLATFORM_DIR}/libggml.a
+		${CMAKE_CURRENT_SOURCE_DIR}/lib/${GRAPA_PLATFORM_DIR}/libggml-base.a
+		${CMAKE_CURRENT_SOURCE_DIR}/lib/${GRAPA_PLATFORM_DIR}/libggml-cpu.a
+		${CMAKE_CURRENT_SOURCE_DIR}/lib/${GRAPA_PLATFORM_DIR}/libggml-metal.a
+		${CMAKE_CURRENT_SOURCE_DIR}/lib/${GRAPA_PLATFORM_DIR}/libggml-blas.a
+		${CMAKE_CURRENT_SOURCE_DIR}/lib/${GRAPA_PLATFORM_DIR}/libmtmd.a
+	)
 else()
+	# Linux libraries
 	target_link_libraries(grapa_example 
 		${CMAKE_CURRENT_SOURCE_DIR}/platforms/${GRAPA_PLATFORM_DIR}/${GRAPA_STATIC_LIB}
 		${CMAKE_CURRENT_SOURCE_DIR}/lib/${GRAPA_PLATFORM_DIR}/libfltk.a
@@ -368,6 +394,10 @@ if(APPLE)
         "-framework ApplicationServices"
         "-framework Security"
         "-framework SystemConfiguration"
+        # LLAMA.cpp frameworks for GPU acceleration
+        "-framework Metal"
+        "-framework MetalKit"
+        "-framework Accelerate"
     )
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
     # Linux settings
