@@ -49,6 +49,8 @@ result2 = model.gen("What is programming?", {});
 updatedParams = model.params();
 "Updated parameters: ${updatedParams}\n".interpolate().echo();
 
+"=== Test Time ===\n".echo();
+
 "Test Time = ${test_time.ms().float(30)}ms\n".interpolate().echo();
 
 "=== Model Test Complete ===\n".echo();
