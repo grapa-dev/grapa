@@ -6415,7 +6415,7 @@ static GrapaRuleEvent* ItemSearchCall(GrapaScriptExec *vScriptExec, GrapaNames* 
 				else if (o->mName.Cmp("$MODEL") == 0)
 				{
 					result->mValue.mToken = GrapaTokenType::MODEL;
-					result->vModel = new GrapaModel();
+					result->vModel = new GrapaModel(vScriptExec, pNameSpace, result);
 				}
 				else if (o->mName.Cmp("$BOOL") == 0)
 				{
@@ -13931,7 +13931,7 @@ GrapaRuleEvent* GrapaLibraryRuleDecodeEvent::Run(GrapaScriptExec *vScriptExec, G
 				result->vClass = vScriptExec->vScriptState->GetClass(pNameSpace, GrapaCHAR("$WIDGET"));
 				break;
 			case GrapaTokenType::MODEL:
-				result->vModel = new GrapaModel();
+				result->vModel = new GrapaModel(vScriptExec, pNameSpace, result);
 				result->vClass = vScriptExec->vScriptState->GetClass(pNameSpace, GrapaCHAR("$MODEL"));
 				break;
 			}
@@ -14355,7 +14355,7 @@ GrapaRuleEvent* GrapaLibraryRuleAddEvent::Run(GrapaScriptExec *vScriptExec, Grap
 				case GrapaTokenType::MODEL:
 					if (rM == NULL && r1.vVal->vModel)
 					{
-						rM = new GrapaModel();
+						rM = new GrapaModel(vScriptExec, pNameSpace); // vParams will be set later in the code
 					}
 					break;
 				case GrapaTokenType::LIST:
@@ -14573,6 +14573,7 @@ GrapaRuleEvent* GrapaLibraryRuleAddEvent::Run(GrapaScriptExec *vScriptExec, Grap
 		result = new GrapaRuleEvent(0, item, item);
 		result->mValue.mToken = GrapaTokenType::MODEL;
 		result->vModel = rM;
+		rM->SetRuleEvent(result);
 		rM = NULL;
 		break;
 	case GrapaTokenType::LIST:
@@ -20204,7 +20205,7 @@ GrapaRuleEvent* GrapaLibraryRuleJoinEvent::Run(GrapaScriptExec* vScriptExec, Gra
 					{
 						isModel = true;
 						result->mValue.mToken = e2->mValue.mToken;
-						result->vModel = new GrapaModel();
+						result->vModel = new GrapaModel(vScriptExec, pNameSpace, result);
 					}
 				}
 				else
@@ -23453,7 +23454,7 @@ GrapaRuleEvent* GrapaLibraryRuleModelLoadEvent::Run(GrapaScriptExec* vScriptExec
     
     // Create model if needed
     if (!objEvent->vModel) {
-        objEvent->vModel = new GrapaModel();
+        objEvent->vModel = new GrapaModel(vScriptExec, pNameSpace, objEvent);
     }
     
     // Get path and backend parameters
@@ -23490,7 +23491,7 @@ GrapaRuleEvent* GrapaLibraryRuleModelGenEvent::Run(GrapaScriptExec* vScriptExec,
 
 	// Create model if needed
 	if (!objEvent->vModel) {
-		objEvent->vModel = new GrapaModel();
+		objEvent->vModel = new GrapaModel(vScriptExec, pNameSpace, objEvent);
 	}
     
     // Get prompt and params
@@ -23528,7 +23529,7 @@ GrapaRuleEvent* GrapaLibraryRuleModelInfoEvent::Run(GrapaScriptExec* vScriptExec
 
 	// Create model if needed
 	if (!objEvent->vModel) {
-		objEvent->vModel = new GrapaModel();
+		objEvent->vModel = new GrapaModel(vScriptExec, pNameSpace, objEvent);
 	}
     
     // Get model info
@@ -23552,20 +23553,18 @@ GrapaRuleEvent* GrapaLibraryRuleModelParamsEvent::Run(GrapaScriptExec* vScriptEx
 
 	// Create model if needed
 	if (!objEvent->vModel) {
-		objEvent->vModel = new GrapaModel();
+		objEvent->vModel = new GrapaModel(vScriptExec, pNameSpace, objEvent);
 	}
     
     // Get params
     GrapaLibraryParam r2(vScriptExec, pNameSpace, pInput ? pInput->Head(1) : NULL);
-    GrapaRuleEvent* params = r2.vVal->vValueEvent;
+    GrapaRuleEvent* params = r2.vVal;
     
-    if (params) {
+    if (params && params->mValue.mToken == GrapaTokenType::GOBJ) {
         // Set parameters
         err = objEvent->vModel->SetParams(params);
-        if (err == 0) {
-            result = new GrapaRuleEvent(GrapaTokenType::GOBJ, 0, "success", "Parameters set successfully");
-        } else {
-            result = Error(vScriptExec, pNameSpace, err);
+        if (err) {
+           result = Error(vScriptExec, pNameSpace, err);
         }
     } else {
         // Get current parameters

@@ -27,56 +27,70 @@ extern GrapaSystem* gSystem;
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
-GrapaModel::GrapaModel() { INIT(); }
-GrapaModel::GrapaModel(const GrapaModel& that) { INIT(); *this = that; }
+GrapaModel::GrapaModel(GrapaScriptExec* pScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pParams) { vScriptExec = pScriptExec; vNameSpace = pNameSpace; INIT(pParams); }
 GrapaModel::~GrapaModel() { CLEAR(); }
 
-GrapaModel& GrapaModel::operator=(const GrapaModel& that)
+void GrapaModel::SetRuleEvent(GrapaRuleEvent* pParams)
 {
-    if (this != &that) {
-        CLEAR();
-        mLoaded = that.mLoaded;
-        mModelPath = that.mModelPath;
-        mBackend = that.mBackend;
-        mMaxTokens = that.mMaxTokens;
-        mTemperature = that.mTemperature;
-        mTopK = that.mTopK;
-        mTopP = that.mTopP;
-        mRepeatPenalty = that.mRepeatPenalty;
-        mSeed = that.mSeed;
-        mContextSize = that.mContextSize;
-        mUserParamsSet = that.mUserParamsSet;
-        
-        // Deep copy persistent params if they exist
-        if (that.mPersistentParams) {
-            mPersistentParams = new GrapaRuleEvent(*that.mPersistentParams);
-        } else {
-            mPersistentParams = nullptr;
-        }
-        
-        // Note: Don't copy LLAMA contexts - they need to be recreated
-        if (mLoaded && mBackend.StrCmp("llama") == 0) {
-            LoadLlama(mModelPath);
-        }
-    }
-    return *this;
+    if (pParams == NULL)
+        return;
+
+    vParams = pParams;
 }
 
-void GrapaModel::INIT()
+void GrapaModel::INIT(GrapaRuleEvent* pParams)
 {
     mLoaded = false;
     mLlamaModel = nullptr;
     mLlamaContext = nullptr;
+
     mMaxTokens = 10;  // Very low for testing
+    mContextSize = 0;
+
     mTemperature = 0.7f;
     mTopK = 40;
     mTopP = 0.9f;
     mRepeatPenalty = 1.1f;
     mSeed = -1;
-    mContextSize = 0;
-    mPersistentParams = nullptr;
-    mUserParamsSet = false;
     
+    if (pParams)
+    {
+        vParams = pParams;
+
+        vParams->CLEAR();
+        vParams->mValue.mToken = GrapaTokenType::MODEL;
+        vParams->vQueue = new GrapaRuleQueue();
+
+        // Add max tokens
+        GrapaRuleEvent* maxTokens = new GrapaRuleEvent(0, GrapaCHAR("max_tokens"), GrapaInt(mMaxTokens).getBytes());
+        vParams->vQueue->PushTail(maxTokens);
+
+        // Add context size
+        GrapaRuleEvent* contextSize = new GrapaRuleEvent(0, GrapaCHAR("context_size"), GrapaInt(mContextSize).getBytes());
+        vParams->vQueue->PushTail(contextSize);
+
+        // Add temperature
+        GrapaRuleEvent* temperature = new GrapaRuleEvent(0, GrapaCHAR("temperature"), GrapaFloat((double)mTemperature).getBytes());
+        vParams->vQueue->PushTail(temperature);
+
+        // Add top_k
+        GrapaRuleEvent* topK = new GrapaRuleEvent(0, GrapaCHAR("top_k"), GrapaInt(mTopK).getBytes());
+        vParams->vQueue->PushTail(topK);
+
+        // Add top_p
+        GrapaRuleEvent* topP = new GrapaRuleEvent(0, GrapaCHAR("top_p"), GrapaFloat(mTopP).getBytes());
+        vParams->vQueue->PushTail(topP);
+
+        // Add repeat penalty
+        GrapaRuleEvent* repeatPenalty = new GrapaRuleEvent(0, GrapaCHAR("repeat_penalty"), GrapaFloat((double)mRepeatPenalty).getBytes());
+        vParams->vQueue->PushTail(repeatPenalty);
+
+        // Add seed
+        GrapaRuleEvent* seed = new GrapaRuleEvent(0, GrapaCHAR("seed"), GrapaInt(mSeed).getBytes());
+        vParams->vQueue->PushTail(seed);
+
+    }
+        
     // Initialize LLAMA parameters
     mLlamaModelParams = llama_model_default_params();
     mLlamaContextParams = llama_context_default_params();
@@ -89,10 +103,6 @@ void GrapaModel::CLEAR()
     if (mLoaded) {
         Unload();
     }
-    if (mPersistentParams) {
-        delete mPersistentParams;
-        mPersistentParams = nullptr;
-    }
     mModelPath.SetNull();
     mBackend.SetNull();
 }
@@ -101,10 +111,6 @@ GrapaError GrapaModel::Load(const GrapaCHAR& modelPath, const GrapaCHAR& backend
 {
     GrapaError result = 0;
     
-    printf("GrapaModel::Load called\n");
-    printf("modelPath: %s\n", (char*)modelPath.mBytes);
-    printf("backend: %s\n", (char*)backend.mBytes);
-    
     if (mLoaded) {
         Unload();
     }
@@ -112,13 +118,11 @@ GrapaError GrapaModel::Load(const GrapaCHAR& modelPath, const GrapaCHAR& backend
     // Reset model-specific parameters, preserve user preferences
     ResetModelSpecificParams();
     
-    mModelPath = modelPath;
-    mBackend = backend;
-    
+    mModelPath.FROM(modelPath);
+    mBackend.FROM(backend);
+
     if (mBackend.StrCmp("llama") == 0) {
-        printf("Loading llama model...\n");
         result = LoadLlama(modelPath);
-        printf("LoadLlama returned: %d\n", result);
     }
     else if (mBackend.StrCmp("onnx") == 0) {
         result = LoadOnnx(modelPath);
@@ -132,11 +136,7 @@ GrapaError GrapaModel::Load(const GrapaCHAR& modelPath, const GrapaCHAR& backend
     
     if (result == 0) {
         mLoaded = true;
-        
-        // Apply model-appropriate defaults if no user params set
-        if (!mUserParamsSet) {
-            SetModelDefaults();
-        }
+        SetModelDefaults();
     }
     
     return result;
@@ -165,28 +165,21 @@ bool GrapaModel::IsLoaded() const
 GrapaError GrapaModel::LoadLlama(const GrapaCHAR& modelPath)
 {
     GrapaError result = 0;
-    
-    printf("GrapaModel::LoadLlama called\n");
-    printf("Loading model from: %s\n", (char*)modelPath.mBytes);
-    
+
     // Load the model
     mLlamaModel = llama_load_model_from_file((char*)modelPath.mBytes, mLlamaModelParams);
     if (!mLlamaModel) {
-        printf("llama_load_model_from_file failed\n");
         return -1;
     }
-    printf("Model loaded successfully\n");
-    
+
     // Create context
     mLlamaContext = llama_new_context_with_model(mLlamaModel, mLlamaContextParams);
     if (!mLlamaContext) {
-        printf("llama_new_context_with_model failed\n");
         llama_free_model(mLlamaModel);
         mLlamaModel = nullptr;
         return -2;
     }
-    printf("Context created successfully\n");
-    
+
     return result;
 }
 
@@ -205,49 +198,32 @@ GrapaError GrapaModel::UnloadLlama()
 
 GrapaError GrapaModel::Generate(const GrapaCHAR& prompt, GrapaCHAR& result, GrapaRuleEvent* callParams)
 {
-    printf("GrapaModel::Generate called\n");
-    printf("mLoaded: %d\n", mLoaded);
-    printf("mBackend: %s\n", (char*)mBackend.mBytes);
-    
     if (!mLoaded) {
-        printf("Model not loaded, returning -1\n");
         return -1;
     }
     
     // Merge persistent + call-specific parameters
-    GrapaRuleEvent* mergedParams = MergeParams(mPersistentParams, callParams);
+    GrapaRuleEvent* mergedParams = MergeParams(vParams, callParams);
     
     if (mBackend.StrCmp("llama") == 0) {
-        printf("Backend is llama, calling GenerateLlama\n");
         GrapaError err = GenerateLlama(prompt, result, mergedParams);
-        if (mergedParams && mergedParams != callParams) {
-            delete mergedParams;
-        }
-        printf("GenerateLlama returned: %d\n", err);
+        delete mergedParams;
         return err;
     }
     
-    printf("Backend not llama, returning -2\n");
-    if (mergedParams && mergedParams != callParams) {
-        delete mergedParams;
-    }
+    delete mergedParams;
     return -2; // Unsupported backend
 }
 
 GrapaError GrapaModel::GenerateLlama(const GrapaCHAR& prompt, GrapaCHAR& result, GrapaRuleEvent* mergedParams)
 {
-    printf("GrapaModel::GenerateLlama called\n");
-    printf("mLlamaContext: %p\n", this->mLlamaContext);
-    
     if (!this->mLlamaContext) {
-        printf("mLlamaContext is null, returning -1\n");
         return -1;
     }
     
     // Apply parameters to LLAMA context
     GrapaError paramResult = this->ApplyParamsToLlama(mergedParams);
     if (paramResult != 0) {
-        printf("ApplyParamsToLlama failed: %d\n", paramResult);
         return paramResult;
     }
     
@@ -255,32 +231,26 @@ GrapaError GrapaModel::GenerateLlama(const GrapaCHAR& prompt, GrapaCHAR& result,
     const struct llama_vocab* vocab = llama_model_get_vocab(this->mLlamaModel);
     std::vector<llama_token> tokens_list;
     tokens_list.resize(prompt.mLength + 1);
-    printf("Tokenizing prompt: %s\n", (char*)prompt.mBytes);
     int n_tokens = llama_tokenize(vocab, (char*)prompt.mBytes, (int32_t)prompt.mLength, tokens_list.data(), (int32_t)tokens_list.size(), true, false);
     if (n_tokens < 0) {
         tokens_list.resize(-n_tokens);
         n_tokens = llama_tokenize(vocab, (char*)prompt.mBytes, (int32_t)prompt.mLength, tokens_list.data(), (int32_t)tokens_list.size(), true, false);
     }
     tokens_list.resize(n_tokens);
-    printf("n_tokens is %d\n", n_tokens);
     
     // Generate response
     result.SetLength(0);
     GrapaCHAR currentToken;
     
     // First, process the initial prompt tokens
-    printf("Processing initial prompt tokens: %d\n", n_tokens);
     for (int i = 0; i < n_tokens; i++) {
         struct llama_batch batch = llama_batch_get_one(&tokens_list[i], 1);
-        printf("Processing prompt token %d: %d\n", i, tokens_list[i]);
         if (llama_decode(this->mLlamaContext, batch)) {
-            printf("llama_decode failed on prompt token %d\n", i);
             return -2;
         }
     }
     
     // Now generate new tokens
-    printf("Starting generation loop (max tokens: %d)...\n", this->mMaxTokens);
     for (int i = 0; i < this->mMaxTokens; i++) {
         // Get next token using simple greedy sampling
         float* logits = llama_get_logits(this->mLlamaContext);
@@ -295,11 +265,8 @@ GrapaError GrapaModel::GenerateLlama(const GrapaCHAR& prompt, GrapaCHAR& result,
                 next_token = j;
             }
         }
-        
-        printf("Generated token %d/%d: %d\n", i+1, this->mMaxTokens, next_token);
-        
+                
         if (next_token == llama_vocab_eos(vocab)) {
-            printf("EOS token reached, stopping generation\n");
             break;
         }
         
@@ -310,22 +277,17 @@ GrapaError GrapaModel::GenerateLlama(const GrapaCHAR& prompt, GrapaCHAR& result,
             token_str[n_chars] = '\0';  // Ensure null termination
             currentToken.FROM(token_str, n_chars);
             result.Append(currentToken);
-            printf("Token %d: ID=%d, Text='%s' (len=%d)\n", i+1, next_token, token_str, n_chars);
         } else {
-            printf("Token %d: ID=%d, Text='<empty>' (n_chars=%d)\n", i+1, next_token, n_chars);
         }
         
         // Add the new token to the sequence and decode it
         tokens_list.push_back(next_token);
         struct llama_batch batch = llama_batch_get_one(&next_token, 1);
-        printf("Decoding generated token %d\n", i);
         if (llama_decode(this->mLlamaContext, batch)) {
-            printf("llama_decode failed on generated token %d\n", i);
             return -2;
         }
     }
     
-    printf("Final generated text: '%s' (length: %d)\n", (char*)result.mBytes, result.mLength);
     return 0;
 }
 
@@ -349,97 +311,35 @@ GrapaRuleEvent* GrapaModel::GetModelInfo() const
     // Add model path
     GrapaRuleEvent* path = new GrapaRuleEvent(0, GrapaCHAR("path"), mModelPath);
     result->vQueue->PushTail(path);
-    
-    // Add max tokens
-    GrapaRuleEvent* maxTokens = new GrapaRuleEvent(0, GrapaCHAR("max_tokens"), GrapaInt(mMaxTokens).getBytes());
-    result->vQueue->PushTail(maxTokens);
-    
-    // Add context size
-    GrapaRuleEvent* contextSize = new GrapaRuleEvent(0, GrapaCHAR("context_size"), GrapaInt(mContextSize).getBytes());
-    result->vQueue->PushTail(contextSize);
-    
-    // Add temperature
-    GrapaRuleEvent* temperature = new GrapaRuleEvent(0, GrapaCHAR("temperature"), GrapaFloat((double)mTemperature).getBytes());
-    result->vQueue->PushTail(temperature);
-    
-    // Add top_k
-    GrapaRuleEvent* topK = new GrapaRuleEvent(0, GrapaCHAR("top_k"), GrapaInt(mTopK).getBytes());
-    result->vQueue->PushTail(topK);
-    
-    // Add top_p
-    GrapaRuleEvent* topP = new GrapaRuleEvent(0, GrapaCHAR("top_p"), GrapaFloat(mTopP).getBytes());
-    result->vQueue->PushTail(topP);
-    
-    // Add repeat penalty
-    GrapaRuleEvent* repeatPenalty = new GrapaRuleEvent(0, GrapaCHAR("repeat_penalty"), GrapaFloat((double)mRepeatPenalty).getBytes());
-    result->vQueue->PushTail(repeatPenalty);
-    
-    // Add seed
-    GrapaRuleEvent* seed = new GrapaRuleEvent(0, GrapaCHAR("seed"), GrapaInt(mSeed).getBytes());
-    result->vQueue->PushTail(seed);
-    
+  
     return result;
-}
-
-GrapaCHAR GrapaModel::GetBackend() const
-{
-    return mBackend;
-}
-
-GrapaCHAR GrapaModel::GetModelPath() const
-{
-    return mModelPath;
 }
 
 GrapaError GrapaModel::SetParams(GrapaRuleEvent* params)
 {
-    // Parse Grapa object parameters
-    GrapaError result = ParseParams(params);
-    if (result == 0) {
-        mPersistentParams = params;
-        mUserParamsSet = true;
+    if (params == NULL) 
+		return -1;
+    if (vParams == NULL)
+        return -1;
+    GrapaRuleEvent* current = params->vQueue ? params->vQueue->Head() : nullptr;
+    while (current) {
+        s64 index;
+        GrapaRuleEvent* override = vParams->vQueue ? vParams->vQueue->Search(current->mName, index) : nullptr;
+        if (override)
+            override->mValue = current->mValue;
+        else
+            vParams->vQueue->PushTail(new GrapaRuleEvent(0, current->mName, current->mValue));
+        current = current->Next();
     }
-    return result;
+    return 0;
 }
 
 GrapaRuleEvent* GrapaModel::GetParams() const
 {
     GrapaRuleEvent* result = new GrapaRuleEvent();
-    result->mValue.mToken = GrapaTokenType::GOBJ;
-    result->vQueue = new GrapaRuleQueue();
-
-    // Add max tokens
-    GrapaRuleEvent* maxTokens = new GrapaRuleEvent(0, GrapaCHAR("max_tokens"), GrapaInt(mMaxTokens).getBytes());
-    result->vQueue->PushTail(maxTokens);
-    
-    // Add temperature
-    GrapaRuleEvent* temperature = new GrapaRuleEvent(0, GrapaCHAR("temperature"), GrapaFloat((double)mTemperature).getBytes());
-    result->vQueue->PushTail(temperature);
-    
-    // Add top_k
-    GrapaRuleEvent* topK = new GrapaRuleEvent(0, GrapaCHAR("top_k"), GrapaInt(mTopK).getBytes());
-    result->vQueue->PushTail(topK);
-    
-    // Add top_p
-    GrapaRuleEvent* topP = new GrapaRuleEvent(0, GrapaCHAR("top_p"), GrapaFloat((double)mTopP).getBytes());
-    result->vQueue->PushTail(topP);
-    
-    // Add repeat penalty
-    GrapaRuleEvent* repeatPenalty = new GrapaRuleEvent(0, GrapaCHAR("repeat_penalty"), GrapaFloat((double)mRepeatPenalty).getBytes());
-    result->vQueue->PushTail(repeatPenalty);
-    
-    // Add seed
-    GrapaRuleEvent* seed = new GrapaRuleEvent(0, GrapaCHAR("seed"), GrapaInt(mSeed).getBytes());
-    result->vQueue->PushTail(seed);
-    
+	result->mValue.mToken = GrapaTokenType::GOBJ;
+	result->vQueue = vScriptExec->CopyQueue(vParams->vQueue);
     return result;
-}
-
-GrapaError GrapaModel::ParseParams(GrapaRuleEvent* params)
-{
-    // TODO: Implement proper parameter parsing
-    // For now, just return success
-    return 0;
 }
 
 // Future backend implementations
@@ -458,9 +358,16 @@ GrapaError GrapaModel::LoadTensorFlow(const GrapaCHAR& modelPath)
 void GrapaModel::ResetModelSpecificParams()
 {
     // Reset model-dependent parameters
-    mMaxTokens = 10;  // Very low for testing - will be adjusted based on model
-    mContextSize = 0;  // Will be set from model
-    
+
+    GrapaRuleEvent* override;
+    s64 index;
+    override = vParams->vQueue ? vParams->vQueue->Search("max_tokens", index) : nullptr;
+    if (override)
+        override->mValue.FROM(GrapaInt(10).getBytes());
+    override = vParams->vQueue ? vParams->vQueue->Search("context_size", index) : nullptr;
+    if (override)
+        override->mValue.FROM(GrapaInt(0).getBytes());
+
     // Preserve user preference parameters
     // mTemperature, mTopK, mTopP, mRepeatPenalty, mSeed stay the same
 }
@@ -471,34 +378,99 @@ void GrapaModel::SetModelDefaults()
     if (mBackend.StrCmp("llama") == 0) {
         // Get model info and set appropriate defaults
         int modelSize = GetModelSize();  // 7B, 13B, 70B, etc.
-        
+        GrapaRuleEvent* override;
+        s64 index;
+
         if (modelSize <= 7) {
-            mMaxTokens = 10;  // Very low for testing
-            mTemperature = 0.7f;
+            override = vParams->vQueue ? vParams->vQueue->Search("max_tokens", index) : nullptr;
+            if (override)
+                override->mValue.FROM(GrapaInt(10).getBytes());
+            override = vParams->vQueue ? vParams->vQueue->Search("temperature", index) : nullptr;
+            if (override)
+                override->mValue.FROM(GrapaFloat((double)0.7f).getBytes());
         } else if (modelSize <= 13) {
-            mMaxTokens = 100;  // Much lower for testing
-            mTemperature = 0.6f;
+            override = vParams->vQueue ? vParams->vQueue->Search("max_tokens", index) : nullptr;
+            if (override)
+                override->mValue.FROM(GrapaInt(100).getBytes());
+            override = vParams->vQueue ? vParams->vQueue->Search("temperature", index) : nullptr;
+            if (override)
+                override->mValue.FROM(GrapaFloat((double)0.6f).getBytes());
         } else {
-            mMaxTokens = 200;  // Much lower for testing
-            mTemperature = 0.5f;
+            override = vParams->vQueue ? vParams->vQueue->Search("max_tokens", index) : nullptr;
+            if (override)
+                override->mValue.FROM(GrapaInt(200).getBytes());
+            override = vParams->vQueue ? vParams->vQueue->Search("temperature", index) : nullptr;
+            if (override)
+                override->mValue.FROM(GrapaFloat((double)0.5f).getBytes());
         }
     }
 }
 
 GrapaRuleEvent* GrapaModel::MergeParams(GrapaRuleEvent* persistent, GrapaRuleEvent* callSpecific)
 {
-    // Simple merge - call-specific overrides persistent
-    if (callSpecific) {
-        return callSpecific;  // For now, just use call-specific if provided
+    GrapaRuleEvent* result = new GrapaRuleEvent();
+    result->mValue.mToken = GrapaTokenType::GOBJ;
+    result->vQueue = vScriptExec->CopyQueue(persistent->vQueue);
+    GrapaRuleEvent* current = callSpecific->vQueue ? callSpecific->vQueue->Head() : nullptr;
+    while (current) {
+        s64 index;
+        GrapaRuleEvent* override = result->vQueue ? result->vQueue->Search(current->mName, index) : nullptr;
+        if (override)
+            override->mValue = current->mValue;
+        else
+            result->vQueue->PushTail(new GrapaRuleEvent(0, current->mName, current->mValue));
+        current = current->Next();
     }
-    return persistent;
+    return result;
 }
 
 GrapaError GrapaModel::ApplyParamsToLlama(GrapaRuleEvent* params)
 {
-    // Apply parameters to LLAMA context
-    // This would parse the Grapa object params and apply them to the context
-    // For now, just return success
+    if (params->mValue.mToken != GrapaTokenType::GOBJ)
+        return -1;
+    if (params->vQueue == NULL)
+        return 0;
+    params = params->vQueue->Head();
+    while (params)
+    {
+        if (params->mName.StrCmp("max_tokens") == 0) {
+            if (params->mValue.mToken == GrapaTokenType::INT) {
+                mMaxTokens = GrapaInt(params->mValue).LongValue();
+            }
+        }
+        else if (params->mName.StrCmp("context_size") == 0) {
+            if (params->mValue.mToken == GrapaTokenType::INT) {
+                mContextSize = GrapaInt(params->mValue).LongValue();
+            }
+        }
+        else if (params->mName.StrCmp("temperature") == 0) {
+            if (params->mValue.mToken == GrapaTokenType::FLOAT) {
+                mTemperature = GrapaFloat(params->mValue).ToDouble();
+            }
+        }
+        else if (params->mName.StrCmp("top_k") == 0) {
+            if (params->mValue.mToken == GrapaTokenType::INT) {
+                mTopK = GrapaInt(params->mValue).LongValue();
+            }
+        }
+        else if (params->mName.StrCmp("top_p") == 0) {
+            if (params->mValue.mToken == GrapaTokenType::FLOAT) {
+                mTopP = GrapaFloat(params->mValue).ToDouble();
+            }
+        }
+        else if (params->mName.StrCmp("repeat_penalty") == 0) {
+            if (params->mValue.mToken == GrapaTokenType::FLOAT) {
+                mRepeatPenalty = GrapaFloat(params->mValue).ToDouble();
+            }
+        }
+        else if (params->mName.StrCmp("seed") == 0) {
+            if (params->mValue.mToken == GrapaTokenType::INT) {
+                mSeed = GrapaInt(params->mValue).LongValue();
+            }
+        }
+
+        params = params->Next();
+    }
     return 0;
 }
 

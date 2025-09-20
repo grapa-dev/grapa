@@ -38,6 +38,7 @@ limitations under the License.
 #include "GrapaWidget.h"
 #include "GrapaNetConnect.h"
 #include "GrapaTime.h"
+#include "GrapaModel.h"
 
 #include "GrapaLibRule.h"
 
@@ -5138,6 +5139,26 @@ GrapaRuleEvent* GrapaScriptExec::CopyItem(GrapaRuleEvent* pAction, bool isTAG, b
 	if (p->vWorker)
 	{
 	}
+	if (p->vModel)
+	{
+		result->vModel = new GrapaModel(p->vModel->vScriptExec, p->vModel->vNameSpace);
+		result->vModel->SetRuleEvent(result);
+		result->vModel->mLoaded = p->vModel->mLoaded;
+		result->vModel->mModelPath.FROM(p->vModel->mModelPath);
+		result->vModel->mBackend.FROM(p->vModel->mBackend);
+		result->vModel->mMaxTokens = p->vModel->mMaxTokens;
+		result->vModel->mTemperature = p->vModel->mTemperature;
+		result->vModel->mTopK = p->vModel->mTopK;
+		result->vModel->mTopP = p->vModel->mTopP;
+		result->vModel->mRepeatPenalty = p->vModel->mRepeatPenalty;
+		result->vModel->mSeed = p->vModel->mSeed;
+		result->vModel->mContextSize = p->vModel->mContextSize;
+
+		// Note: Don't copy LLAMA contexts - they need to be recreated
+		if (result->vModel->mLoaded && result->vModel->mBackend.StrCmp("llama") == 0) {
+			result->vModel->LoadLlama(result->vModel->mModelPath);
+		}
+	}
 
 	return(result);
 }
@@ -6394,6 +6415,7 @@ void GrapaScriptExec::EchoList(GrapaSystemSend* pSend, GrapaRuleEvent* pEvent, b
 	case GrapaTokenType::ERR:
 	case GrapaTokenType::GOBJ:
 	case GrapaTokenType::OBJ:
+	case GrapaTokenType::MODEL:
 	case GrapaTokenType::RULEOP:
 		pSend->Send(this, vScriptState->vRuleVariables, "{");
 		break;
@@ -6464,6 +6486,7 @@ void GrapaScriptExec::EchoList(GrapaSystemSend* pSend, GrapaRuleEvent* pEvent, b
 				case GrapaTokenType::GOBJ:
 				case GrapaTokenType::CLASS:
 				case GrapaTokenType::OBJ:
+				case GrapaTokenType::MODEL:
 				case GrapaTokenType::RULEOP:
 				case GrapaTokenType::XML:
 				case GrapaTokenType::EL:
@@ -6536,6 +6559,7 @@ void GrapaScriptExec::EchoList(GrapaSystemSend* pSend, GrapaRuleEvent* pEvent, b
 		case GrapaTokenType::ERR:
 		case GrapaTokenType::GOBJ:
 		case GrapaTokenType::OBJ:
+		case GrapaTokenType::MODEL:
 		case GrapaTokenType::RULEOP:
 		case GrapaTokenType::OP:
 		case GrapaTokenType::CODE:
@@ -6567,6 +6591,7 @@ void GrapaScriptExec::EchoList(GrapaSystemSend* pSend, GrapaRuleEvent* pEvent, b
 		case GrapaTokenType::LIST:
 		case GrapaTokenType::TUPLE:
 		case GrapaTokenType::OBJ:
+		case GrapaTokenType::MODEL:
 		case GrapaTokenType::RULEOP:
 		case GrapaTokenType::XML:
 		case GrapaTokenType::EL:
@@ -6618,6 +6643,7 @@ void GrapaScriptExec::EchoList(GrapaSystemSend* pSend, GrapaRuleEvent* pEvent, b
 		break;
 	case GrapaTokenType::ERR:
 	case GrapaTokenType::GOBJ:
+	case GrapaTokenType::MODEL:
 	case GrapaTokenType::OBJ:
 	case GrapaTokenType::RULEOP:
 		pSend->Send(this, vScriptState->vRuleVariables, "}");

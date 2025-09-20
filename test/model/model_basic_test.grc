@@ -5,7 +5,7 @@ test_time = $TIME().utc();
 "Testing Grapa Model functionality...\n".echo();
 
 /* Test 1: Create and load model */
-"=== Test 1: Model Creation and Loading ==n".echo();
+"=== Test 1: Model Creation and Loading ==\n".echo();
 model = $MODEL();
 "Created model object\n".echo();
 
@@ -32,10 +32,7 @@ result = model.gen(prompt, {});
 
 /* Test 5: Generation with custom parameters */
 "=== Test 5: Custom Parameters ===\n".echo();
-customParams = {
-    "max_tokens": 20,
-    "temperature": 0.8
-};
+customParams = {"max_tokens": 20, "temperature": 0.8};
 "Setting custom parameters...\n".echo();
 setResult = model.params(customParams);
 "Parameter set result: ${setResult}\n".interpolate().echo();

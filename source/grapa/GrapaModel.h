@@ -36,16 +36,16 @@ public:
     s32 mContextSize;
     
     // Persistent parameter management
-    GrapaRuleEvent* mPersistentParams;  // Grapa object of current parameters
-    bool mUserParamsSet;          // Whether user has explicitly set parameters
+    GrapaScriptExec* vScriptExec;
+    GrapaNames* vNameSpace;
+    GrapaRuleEvent* vParams;  // Grapa object of current parameters
     
 public:
-    GrapaModel();
-    GrapaModel(const GrapaModel& that);
+    GrapaModel(GrapaScriptExec* pScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pParams=NULL);
     ~GrapaModel();
-    void INIT();
+    void SetRuleEvent(GrapaRuleEvent* pParams);
+    void INIT(GrapaRuleEvent* pParams);
     void CLEAR();
-    GrapaModel& operator=(const GrapaModel& that);
     
     // Core model operations
     GrapaError Load(const GrapaCHAR& modelPath, const GrapaCHAR& backend);
@@ -58,8 +58,6 @@ public:
     
     // Model information
     GrapaRuleEvent* GetModelInfo() const;
-    GrapaCHAR GetBackend() const;
-    GrapaCHAR GetModelPath() const;
     
     // Parameter management
     GrapaError SetParams(GrapaRuleEvent* params);
@@ -75,7 +73,6 @@ public:
     GrapaError LoadTensorFlow(const GrapaCHAR& modelPath);
     
 private:
-    GrapaError ParseParams(GrapaRuleEvent* params);
     GrapaError InitializeLlama();
     
     // Parameter management
