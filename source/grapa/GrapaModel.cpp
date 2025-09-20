@@ -21,6 +21,7 @@ limitations under the License.
 #include "GrapaState.h"
 
 #include <vector>
+#include <thread>
 
 extern GrapaSystem* gSystem;
 
@@ -79,6 +80,8 @@ void GrapaModel::INIT()
     // Initialize LLAMA parameters
     mLlamaModelParams = llama_model_default_params();
     mLlamaContextParams = llama_context_default_params();
+    //mLlamaContextParams.n_threads = std::thread::hardware_concurrency();
+    //mLlamaContextParams.n_threads_batch = mLlamaContextParams.n_threads;
 }
 
 void GrapaModel::CLEAR()
