@@ -141,7 +141,7 @@
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;UTF8PROC_STATIC;PCRE2_STATIC;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalOptions>/wd4996 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/wd4996 /openmp %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -165,7 +165,7 @@
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;UTF8PROC_STATIC;PCRE2_STATIC;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalOptions>/wd4996 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/wd4996 /openmp %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

@@ -34,6 +34,8 @@ pybind11_add_module(grapapy
     )
 
 if (MSVC)
+# Enable OpenMP for Windows
+find_package(OpenMP REQUIRED)
 target_link_libraries(grapapy PRIVATE 
     grapa_static
     llama
@@ -49,6 +51,7 @@ target_link_libraries(grapapy PRIVATE
     Comdlg32
     winspool
     crypt32
+    OpenMP::OpenMP_CXX
     )
 endif (MSVC)
 

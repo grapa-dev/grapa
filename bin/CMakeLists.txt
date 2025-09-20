@@ -14,16 +14,26 @@ endif()
 if(WIN32)
     set(CMAKE_BUILD_TYPE Release)
     set(CMAKE_CONFIGURATION_TYPES Release)
-    
+
     # Ensure Ninja generator works properly on Windows
     if(CMAKE_GENERATOR STREQUAL "Ninja")
         # Set Ninja-specific variables
         set(CMAKE_CXX_COMPILER_LAUNCHER "")
         set(CMAKE_C_COMPILER_LAUNCHER "")
-        
+
         # Ensure proper Windows SDK detection for Ninja
         set(CMAKE_SYSTEM_VERSION 10.0)
         set(CMAKE_SYSTEM_NAME Windows)
+    endif()
+    
+    # Enable OpenMP for Windows using clang (better OpenMP support than MSVC)
+    find_package(OpenMP REQUIRED)
+    if(OpenMP_CXX_FOUND)
+        message(STATUS "OpenMP found: ${OpenMP_CXX_VERSION}")
+        message(STATUS "OpenMP C++ flags: ${OpenMP_CXX_FLAGS}")
+        message(STATUS "OpenMP C++ libraries: ${OpenMP_CXX_LIB_NAMES}")
+    else()
+        message(WARNING "OpenMP not found - LLAMA.cpp may run slower without parallel processing")
     endif()
 endif()
 
@@ -331,6 +341,8 @@ if(WIN32)
 		winspool
 		crypt32
 		comctl32
+		# OpenMP library for LLAMA.cpp parallel processing
+		OpenMP::OpenMP_CXX
 	)
 elseif(APPLE)
 	# macOS libraries

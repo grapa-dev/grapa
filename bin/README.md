@@ -38,9 +38,10 @@ bin/
   - **macOS**: Xcode Command Line Tools (clang++)
   - **Linux**: GCC 7+ or Clang 5+
 - **AI/ML Dependencies** (for $MODEL functionality):
-  - **Linux**: OpenMP support (`libomp-dev` on Ubuntu/Debian, `libgomp` on CentOS/RHEL)
-  - **macOS**: Metal framework (included with Xcode)
-  - **Windows**: No additional dependencies required
+  - **Linux**: OpenMP support (`libomp-dev` on Ubuntu/Debian, `libgomp` on CentOS/RHEL) - requires separate library linking
+  - **macOS**: Metal framework (included with Xcode) - uses hardware acceleration
+  - **Windows**: OpenMP support (included with Visual Studio 2019+ or LLVM/Clang) - built into MSVC runtime, no separate library needed
+    - **Debug Support**: Debug LLAMA libraries are available in `source/llama-lib/win-amd64-debug/` for Visual Studio debugging sessions
 
 ### Build Steps
 
@@ -49,28 +50,35 @@ bin/
    cd bin
    ```
 
-2. **Create and enter build directory:**
+2. **Optional: Rebuild LLAMA libraries with OpenMP (Windows only):**
+   If you need to rebuild LLAMA libraries with OpenMP support or for debugging:
+   ```bash
+   python ../scripts/build_llama_windows.py
+   ```
+   This creates both Release and Debug versions with full CPU optimizations.
+
+3. **Create and enter build directory:**
    ```bash
    mkdir build
    cd build
    ```
 
-3. **Configure with CMake:**
+4. **Configure with CMake:**
    ```bash
    cmake ..
    ```
 
-4. **Build the example:**
+5. **Build the example:**
    ```bash
    cmake --build .
    ```
 
-5. **Run the example:**
+6. **Run the example:**
    ```bash
    ./grapa_example -c "2+3"
    ```
 
-6. **Test AI/ML functionality:**
+7. **Test AI/ML functionality:**
    ```bash
    ./grapa_example -c "m = \$MODEL(); m.info();"
    ```
