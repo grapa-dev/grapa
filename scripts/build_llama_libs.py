@@ -86,14 +86,14 @@ def check_dependencies():
         print("  ✅ CURL headers: Found")
     
     # Check OpenMP support
+    omp_available = False
     try:
         result = subprocess.run(['gcc', '-fopenmp', '--version'], capture_output=True, text=True)
-        if result.returncode != 0:
-            missing_deps.append('libomp-dev')
-        else:
+        if result.returncode == 0:
+            omp_available = True
             print("  ✅ OpenMP: Available")
     except FileNotFoundError:
-        missing_deps.append('libomp-dev')
+        pass
     
     # Check for OpenMP library
     omp_lib_found = False
@@ -103,14 +103,32 @@ def check_dependencies():
         '/usr/lib/x86_64-linux-gnu/libgomp.so',
         '/usr/lib/aarch64-linux-gnu/libgomp.so',
         '/usr/lib/libgomp.so',
-        '/usr/lib64/libgomp.so'
+        '/usr/lib64/libgomp.so',
+        # Amazon Linux specific paths
+        '/usr/lib64/libgomp.so.1',
+        '/usr/lib/libgomp.so.1',
+        # Check if libgomp is available via pkg-config or ldconfig
     ]
     for path in omp_paths:
         if os.path.exists(path):
             omp_lib_found = True
             break
     
-    if not omp_lib_found and 'libomp-dev' not in missing_deps:
+    # If not found in standard paths, try ldconfig
+    if not omp_lib_found:
+        try:
+            result = subprocess.run(['ldconfig', '-p'], capture_output=True, text=True)
+            if result.returncode == 0 and 'libgomp' in result.stdout:
+                omp_lib_found = True
+                print("  ✅ OpenMP library: Found via ldconfig")
+        except FileNotFoundError:
+            pass
+    
+    if omp_lib_found and omp_available:
+        print("  ✅ OpenMP: Fully available (compiler + library)")
+    
+    # Only add OpenMP dependency if both compiler support and library are missing
+    if not omp_available and not omp_lib_found:
         missing_deps.append('libomp-dev')
     
     if missing_deps:

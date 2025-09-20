@@ -178,6 +178,12 @@ Successfully implemented Python extension build support for all Linux/AWS platfo
    - Ensures consistent behavior across all build scripts
    - Proper AWS vs Linux detection using `/etc/system-release` check
 
+6. **Fixed OpenMP Dependency Detection on Amazon Linux**:
+   - Updated `scripts/build_llama_libs.py` to properly detect OpenMP on Amazon Linux systems
+   - Fixed logic error where script incorrectly reported missing `libomp-dev` when `libgomp` was already installed
+   - Added robust OpenMP detection using both file system paths and `ldconfig`
+   - Now correctly identifies OpenMP availability on Amazon Linux ARM64 and AMD64 systems
+
 ### Verification Results ✅
 **Tested on linux-arm64 platform:**
 - ✅ **Python Extension Build**: `python3 build.py --python-only` succeeds
@@ -266,6 +272,7 @@ sudo apt-get install -y cmake build-essential git libcurl4-openssl-dev libomp-de
 - If Python extension fails: Check that `-fPIC` libraries were built (script should show this)
 - If import fails: Check that OpenMP library is available (`ldd grapapy.cpython-*.so | grep gomp`)
 - If OpenMP errors occur: Install `libomp-dev` (Ubuntu/Debian) or `libgomp` (CentOS/RHEL)
+- **If script reports "Missing dependencies: libomp-dev" on Amazon Linux**: This is a known issue that has been fixed. The script now properly detects OpenMP on Amazon Linux systems where `libgomp` is already installed.
 - If certificate errors with repositories: See ShiftKey.dev certificate troubleshooting above
 
 ### Success Criteria
