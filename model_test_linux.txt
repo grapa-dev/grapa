@@ -664,4 +664,6 @@ GenerateLlama returned: 0
 Generated response:  Programming is the process of creating instructions for a computer
 === Test 6: Verify Parameter Update ===
 Updated parameters: {"max_tokens":10,"temperature":0.699999988079071044921875,"top_k":40,"top_p":0.89999997615814208984375,"repeat_penalty":1.10000002384185791015625,"seed":-1}
+=== Test Time ===
+Test Time = 6821.419ms
 === Model Test Complete ===
