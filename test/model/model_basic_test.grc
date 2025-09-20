@@ -1,5 +1,7 @@
 /* Basic Model Test - Tests core $MODEL() functionality */
 
+test_time = $TIME().utc();
+
 "Testing Grapa Model functionality...\n".echo();
 
 /* Test 1: Create and load model */
@@ -46,5 +48,7 @@ result2 = model.gen("What is programming?", {});
 "=== Test 6: Verify Parameter Update ===\n".echo();
 updatedParams = model.params();
 "Updated parameters: ${updatedParams}\n".interpolate().echo();
+
+"Test Time = ${test_time.ms()}ms\n".interpolate().echo();
 
 "=== Model Test Complete ===\n".echo();
