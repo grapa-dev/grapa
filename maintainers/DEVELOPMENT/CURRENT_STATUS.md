@@ -80,6 +80,8 @@ Build LLAMA.cpp static libraries for all Linux platforms to enable $MODEL functi
 - **CMake 3.16+**: `sudo apt-get install cmake` (Ubuntu/Debian) or `sudo yum install cmake3` (CentOS/RHEL)
 - **Build Tools**: `sudo apt-get install build-essential` (Ubuntu/Debian) or `sudo yum groupinstall "Development Tools"` (CentOS/RHEL)
 - **Git**: `sudo apt-get install git` (Ubuntu/Debian) or `sudo yum install git` (CentOS/RHEL)
+- **CURL Development Headers**: `sudo apt-get install libcurl4-openssl-dev` (Ubuntu/Debian) or `sudo yum install libcurl-devel` (CentOS/RHEL)
+- **OpenMP Support**: `sudo apt-get install libomp-dev` (Ubuntu/Debian) or `sudo yum install libgomp` (CentOS/RHEL)
 - **LLAMA.cpp Source**: Must exist at `dep/llama.cpp-master/` (script will detect if missing)
 
 ### Expected Libraries to Be Built
@@ -213,9 +215,12 @@ g++ --version
 # Check Git
 git --version
 
+# Check OpenMP support
+gcc -fopenmp --version
+
 # Install if missing (Ubuntu/Debian):
 sudo apt-get update
-sudo apt-get install -y cmake build-essential git libcurl4-openssl-dev
+sudo apt-get install -y cmake build-essential git libcurl4-openssl-dev libomp-dev
 ```
 
 ### Step-by-Step Instructions
@@ -260,6 +265,8 @@ sudo apt-get install -y cmake build-essential git libcurl4-openssl-dev
 - If Grapa build fails: Check that all LLAMA.cpp libraries were built successfully
 - If Python extension fails: Check that `-fPIC` libraries were built (script should show this)
 - If import fails: Check that OpenMP library is available (`ldd grapapy.cpython-*.so | grep gomp`)
+- If OpenMP errors occur: Install `libomp-dev` (Ubuntu/Debian) or `libgomp` (CentOS/RHEL)
+- If certificate errors with repositories: See ShiftKey.dev certificate troubleshooting above
 
 ### Success Criteria
 - [ ] LLAMA.cpp libraries built in `source/llama-lib/linux-amd64/`

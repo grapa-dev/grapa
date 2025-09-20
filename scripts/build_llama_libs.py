@@ -17,6 +17,129 @@ import subprocess
 import shutil
 from pathlib import Path
 
+def check_dependencies():
+    """Check if all required dependencies are installed for the build."""
+    print("🔍 Checking build dependencies...")
+    
+    missing_deps = []
+    
+    # Check CMake
+    try:
+        result = subprocess.run(['cmake', '--version'], capture_output=True, text=True)
+        if result.returncode != 0:
+            missing_deps.append('cmake')
+        else:
+            version = result.stdout.split('\n')[0]
+            print(f"  ✅ CMake: {version}")
+    except FileNotFoundError:
+        missing_deps.append('cmake')
+    
+    # Check build tools (gcc/g++)
+    try:
+        result = subprocess.run(['gcc', '--version'], capture_output=True, text=True)
+        if result.returncode != 0:
+            missing_deps.append('build-essential')
+        else:
+            version = result.stdout.split('\n')[0]
+            print(f"  ✅ GCC: {version}")
+    except FileNotFoundError:
+        missing_deps.append('build-essential')
+    
+    try:
+        result = subprocess.run(['g++', '--version'], capture_output=True, text=True)
+        if result.returncode != 0:
+            missing_deps.append('build-essential')
+        else:
+            version = result.stdout.split('\n')[0]
+            print(f"  ✅ G++: {version}")
+    except FileNotFoundError:
+        missing_deps.append('build-essential')
+    
+    # Check Git
+    try:
+        result = subprocess.run(['git', '--version'], capture_output=True, text=True)
+        if result.returncode != 0:
+            missing_deps.append('git')
+        else:
+            version = result.stdout.strip()
+            print(f"  ✅ Git: {version}")
+    except FileNotFoundError:
+        missing_deps.append('git')
+    
+    # Check CURL development headers
+    curl_headers_found = False
+    curl_paths = [
+        '/usr/include/curl/curl.h',
+        '/usr/local/include/curl/curl.h',
+        f'/usr/include/{platform.machine()}-linux-gnu/curl/curl.h',
+        '/usr/include/x86_64-linux-gnu/curl/curl.h',
+        '/usr/include/aarch64-linux-gnu/curl/curl.h'
+    ]
+    for path in curl_paths:
+        if os.path.exists(path):
+            curl_headers_found = True
+            break
+    
+    if not curl_headers_found:
+        missing_deps.append('libcurl4-openssl-dev')
+    else:
+        print("  ✅ CURL headers: Found")
+    
+    # Check OpenMP support
+    try:
+        result = subprocess.run(['gcc', '-fopenmp', '--version'], capture_output=True, text=True)
+        if result.returncode != 0:
+            missing_deps.append('libomp-dev')
+        else:
+            print("  ✅ OpenMP: Available")
+    except FileNotFoundError:
+        missing_deps.append('libomp-dev')
+    
+    # Check for OpenMP library
+    omp_lib_found = False
+    omp_paths = [
+        f'/usr/lib/{platform.machine()}-linux-gnu/libgomp.so',
+        f'/usr/lib/{platform.machine()}-linux-gnu/libgomp.so.1',
+        '/usr/lib/x86_64-linux-gnu/libgomp.so',
+        '/usr/lib/aarch64-linux-gnu/libgomp.so',
+        '/usr/lib/libgomp.so',
+        '/usr/lib64/libgomp.so'
+    ]
+    for path in omp_paths:
+        if os.path.exists(path):
+            omp_lib_found = True
+            break
+    
+    if not omp_lib_found and 'libomp-dev' not in missing_deps:
+        missing_deps.append('libomp-dev')
+    
+    if missing_deps:
+        print("\n❌ Missing dependencies:")
+        for dep in missing_deps:
+            print(f"  - {dep}")
+        
+        print("\n📦 Install missing dependencies:")
+        print("Ubuntu/Debian:")
+        print(f"  sudo apt-get update")
+        print(f"  sudo apt-get install -y {' '.join(missing_deps)}")
+        print("\nCentOS/RHEL/Amazon Linux:")
+        centos_deps = []
+        for dep in missing_deps:
+            if dep == 'build-essential':
+                centos_deps.append('gcc gcc-c++ make')
+            elif dep == 'libcurl4-openssl-dev':
+                centos_deps.append('libcurl-devel')
+            elif dep == 'libomp-dev':
+                centos_deps.append('libgomp')
+            else:
+                centos_deps.append(dep)
+        print(f"  sudo yum install -y {' '.join(centos_deps)}")
+        
+        return False
+    
+    print("✅ All dependencies satisfied!")
+    return True
+
 def detect_platform():
     """Detect the current platform and return the appropriate platform identifier.
     Uses the same logic as build.py for consistency."""
@@ -175,6 +298,14 @@ def main():
     """Main function to build LLAMA.cpp libraries for the current platform."""
     print("🚀 LLAMA.cpp Static Library Builder")
     print("=" * 50)
+    
+    # Check dependencies first
+    if not check_dependencies():
+        print("\n❌ Build aborted due to missing dependencies.")
+        print("Please install the missing dependencies and try again.")
+        return 1
+    
+    print()  # Add spacing
     
     # Detect platform
     platform_name = detect_platform()
