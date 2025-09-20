@@ -62,6 +62,9 @@ class BuildConfig:
         """Get compiler flags for the platform"""
         base_flags = ["-Isource", "-DUTF8PROC_STATIC", "-std=c++17", "-O3", "-pthread"]
         
+        # Add LLAMA.cpp include path
+        base_flags.append("-Isource/llama")
+        
         # Define FLTK_USE_X11 for Linux/AWS builds since FLTK was built with X11 support
         if self.platform in ["linux", "aws"]:
             base_flags.append("-DFLTK_USE_X11")
@@ -87,12 +90,16 @@ class BuildConfig:
             frameworks = [
                 "-framework CoreFoundation",
                 "-framework AppKit", 
-                "-framework IOKit"
+                "-framework IOKit",
+                "-framework Metal",           # For LLAMA.cpp Metal GPU acceleration
+                "-framework MetalKit",        # For LLAMA.cpp Metal GPU acceleration
+                "-framework Accelerate"       # For LLAMA.cpp BLAS operations
             ]
             
             # Always include ScreenCaptureKit for mac-arm64 (requires macOS 15.0+)
             frameworks.append("-framework ScreenCaptureKit")
             print("✅ Including ScreenCaptureKit framework for mac-arm64")
+            print("✅ Including Metal, MetalKit, and Accelerate frameworks for LLAMA.cpp")
             
             return frameworks
         return []
@@ -251,7 +258,7 @@ class GrapaBuilder:
         # Build utf8proc first (C compilation)
         print("Building utf8proc...")
         subprocess.run([
-            "clang", "-Isource", "-DUTF8PROC_STATIC", "-c", 
+            "clang", "-Isource", "-Isource/llama", "-DUTF8PROC_STATIC", "-c", 
             "source/utf8proc/utf8proc.c", "-m64", "-O3"
         ], check=True)
         
@@ -261,7 +268,7 @@ class GrapaBuilder:
                 print("Building static library...")
                 cpp_files = glob.glob("source/grapa/*.cpp")
                 subprocess.run([
-                    "clang++", "-Isource", "-c"
+                    "clang++", "-Isource", "-Isource/llama", "-c"
                 ] + cpp_files + [
                     "-std=c++17", "-m64", "-O3", "-pthread"
                 ], check=True)
@@ -295,9 +302,10 @@ class GrapaBuilder:
             # Step 1: utf8proc.o is already built above
             # Step 2: Build executable using utf8proc.o - use shell globs like manual command
             cmd = [
-                "clang++", "-Isource", "source/main.cpp", "source/grapa/*.cpp", "utf8proc.o",
+                "clang++", "-Isource", "-Isource/llama", "source/main.cpp", "source/grapa/*.cpp", "utf8proc.o",
                 f"source/openssl-lib/{config.target}/*.a", f"source/fl-lib/{config.target}/*.a", 
-                f"source/blst-lib/{config.target}/*.a", f"source/pcre2-lib/{config.target}/libpcre2-8.a"
+                f"source/blst-lib/{config.target}/*.a", f"source/pcre2-lib/{config.target}/libpcre2-8.a",
+                f"source/llama-lib/{config.target}/*.a"
             ] + config.frameworks + [
                 "-std=c++17", "-m64", "-O3", "-pthread", "-o", config.output_name
             ]

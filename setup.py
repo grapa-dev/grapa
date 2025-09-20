@@ -419,9 +419,9 @@ def pick_library_dirs():
                 return ["source", "source/grapa-lib/linux-amd64", "source/X11-lib/linux-amd64"]
     if my_system == 'Darwin':
         if is_arm:
-            return ["source", "source/grapa-lib/mac-arm64"]
+            return ["source", "source/grapa-lib/mac-arm64", "source/llama-lib/mac-arm64"]
         else:
-            return ["source", "source/grapa-lib/mac-amd64"]
+            return ["source", "source/grapa-lib/mac-amd64", "source/llama-lib/mac-amd64"]
     if my_system == 'Windows':
         return ["source", "source/grapa-lib/win-amd64", "source/fl-lib/win-amd64", "source/blst-lib/win-amd64", "source/pcre2-lib/win-amd64", "source/openssl-lib/win-amd64", "source/llama-lib/win-amd64"]
     raise ValueError("Unknown platform: " + my_system)
@@ -432,7 +432,16 @@ def pick_libraries():
         return ['grapa']
     if my_system == 'Darwin':
         #return ['@rpath/grapa']
-        return ['source/grapa-lib/libgrapa_static.a']
+        return [
+            'source/grapa-lib/libgrapa_static.a',
+            'llama',
+            'ggml',
+            'ggml-base',
+            'ggml-cpu',
+            'ggml-metal',
+            'ggml-blas',
+            'mtmd'
+        ]
     if my_system == 'Windows':
         return [
             "grapa_static",
@@ -469,6 +478,9 @@ if sys.platform.startswith('win32') and 'include_dirs' in locals():
     # Use custom include_dirs that puts Windows SDK paths first
     base_include_dirs = ["source","source/utf8proc",'source/pybind11/include','source/llama']
     include_dirs = include_dirs + base_include_dirs
+else:
+    # For non-Windows platforms, set up base include directories
+    include_dirs = ["source","source/utf8proc",'source/pybind11/include','source/llama']
 
 lib_grapa = Extension(
     'grapapy', 

@@ -170,7 +170,12 @@ public:
 	virtual void Replace(const GrapaBYTE& pFrom, const GrapaBYTE& pTo);
 	virtual GrapaCHAR ToBase(u32 radix);
 	virtual GrapaCHAR FromBase(u32 radix);
-	static GrapaCHAR SetBool(bool isTrue) { GrapaCHAR r("\0"); if (isTrue) r.FROM("\1");  r.mToken = GrapaTokenType::BOOL; return(r); };
+	static GrapaCHAR SetBool(bool isTrue) { 
+		GrapaCHAR r("\0"); 
+		if (isTrue) r.FROM("\1");  
+		r.mToken = GrapaTokenType::BOOL;
+		return(r); 
+	};
 };
 
 class GrapaSS64 : public GrapaValue

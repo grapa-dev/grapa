@@ -87,9 +87,19 @@ target_link_libraries(grapapy PRIVATE
     libfltk.a libfltk_forms.a libfltk_gl.a libfltk_images.a libfltk_jpeg.a libfltk_png.a
     libcrypto.a libssl.a
     libpcre2-8.a
+    libllama.a
+    libggml.a
+    libggml-base.a
+    libggml-cpu.a
+    libggml-metal.a
+    libggml-blas.a
+    libmtmd.a
     "-framework CoreFoundation"
     "-framework AppKit"
     "-framework IOKit"
     "-framework ScreenCaptureKit"
+    "-framework Metal"
+    "-framework MetalKit"
+    "-framework Accelerate"
     )
 endif (APPLE)
