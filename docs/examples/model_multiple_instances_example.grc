@@ -1,0 +1,111 @@
+/* Multiple Model Instances Example */
+
+"Multiple Model Instances Example".echo();
+"=================================".echo();
+
+/* Create multiple model instances */
+model1 = $MODEL();
+model2 = $MODEL();
+model3 = $MODEL();
+
+"Created 3 model instances".echo();
+
+/* Configure different parameters for each model */
+"=== Configuring Different Parameters ===".echo();
+
+/* Model 1: Conservative */
+model1.params({
+    "temperature": 0.3,
+    "max_tokens": 30,
+    "verbose": 0
+});
+"Model 1: Conservative settings".echo();
+
+/* Model 2: Balanced */
+model2.params({
+    "temperature": 0.7,
+    "max_tokens": 50,
+    "verbose": 0
+});
+"Model 2: Balanced settings".echo();
+
+/* Model 3: Creative */
+model3.params({
+    "temperature": 1.2,
+    "max_tokens": 100,
+    "verbose": 0
+});
+"Model 3: Creative settings".echo();
+
+/* Load the same model in all instances */
+"=== Loading Models ===".echo();
+result1 = model1.load("models/qwen2.5-7b-instruct-q3_k_m.gguf");
+result2 = model2.load("models/qwen2.5-7b-instruct-q3_k_m.gguf");
+result3 = model3.load("models/qwen2.5-7b-instruct-q3_k_m.gguf");
+
+if (result1 == 0 && result2 == 0 && result3 == 0) {
+    "All models loaded successfully!".echo();
+    
+    /* Test concurrent generation with different styles */
+    "=== Concurrent Generation ===".echo();
+    
+    prompt = "Write a short story about space exploration";
+    
+    /* Generate with different models */
+    conservative_story = model1.gen(prompt);
+    balanced_story = model2.gen(prompt);
+    creative_story = model3.gen(prompt);
+    
+    "Conservative story:".echo();
+    (conservative_story.str()).echo();
+    "".echo();
+    
+    "Balanced story:".echo();
+    (balanced_story.str()).echo();
+    "".echo();
+    
+    "Creative story:".echo();
+    (creative_story.str()).echo();
+    "".echo();
+    
+    /* Demonstrate parameter independence */
+    "=== Parameter Independence ===".echo();
+    
+    /* Change parameters on one model */
+    model1.params({
+        "temperature": 2.0,
+        "max_tokens": 200
+    });
+    
+    "Changed Model 1 parameters:".echo();
+    params1 = model1.params();
+    ("  Temperature: " + params1.temperature.str()).echo();
+    ("  Max tokens: " + params1.max_tokens.str()).echo();
+    
+    "Model 2 parameters unchanged:".echo();
+    params2 = model2.params();
+    ("  Temperature: " + params2.temperature.str()).echo();
+    ("  Max tokens: " + params2.max_tokens.str()).echo();
+    
+    "Model 3 parameters unchanged:".echo();
+    params3 = model3.params();
+    ("  Temperature: " + params3.temperature.str()).echo();
+    ("  Max tokens: " + params3.max_tokens.str()).echo();
+    
+    /* Test with modified parameters */
+    "=== Testing Modified Parameters ===".echo();
+    extreme_response = model1.gen("What is the meaning of life?");
+    ("Extreme response: " + extreme_response.str()).echo();
+    
+} else {
+    ("Failed to load models: " + result1.str() + ", " + result2.str() + ", " + result3.str()).echo();
+}
+
+/* Clean up all models */
+"=== Cleanup ===".echo();
+model1.unload();
+model2.unload();
+model3.unload();
+"All models unloaded".echo();
+
+"Example completed!".echo();

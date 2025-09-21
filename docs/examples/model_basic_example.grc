@@ -1,0 +1,66 @@
+/* Basic Model Usage Example */
+
+"Basic Model Usage Example".echo();
+"=========================".echo();
+
+/* Create a new model instance */
+model = $MODEL();
+"Model instance created".echo();
+
+/* Configure basic parameters */
+model.params({
+    "temperature": 0.7,
+    "max_tokens": 50,
+    "verbose": 0
+});
+
+"Parameters configured:".echo();
+params = model.params();
+("  Temperature: " + params.temperature.str()).echo();
+("  Max tokens: " + params.max_tokens.str()).echo();
+("  Context size: " + params.context_size.str()).echo();
+
+/* Load a model (assuming it exists) */
+"Loading model...".echo();
+result = model.load("models/qwen2.5-7b-instruct-q3_k_m.gguf");
+
+if (result == 0) {
+    "Model loaded successfully!".echo();
+    
+    /* Get model information */
+    info = model.info();
+    ("Model loaded: " + info.loaded.str()).echo();
+    ("Backend: " + info.backend.str()).echo();
+    ("Path: " + info.path.str()).echo();
+    
+    /* Generate text */
+    "Generating text...".echo();
+    response = model.gen("Hello, how are you?");
+    ("Response: " + response.str()).echo();
+    
+    /* Generate with different parameters */
+    "Generating with custom parameters...".echo();
+    creative_response = model.gen("Write a short poem about programming", {
+        "temperature": 1.2,
+        "max_tokens": 100
+    });
+    ("Creative response: " + creative_response.str()).echo();
+    
+} else {
+    ("Failed to load model: " + result.str()).echo();
+    "This could be due to:".echo();
+    "  - File not found".echo();
+    "  - Invalid model format".echo();
+    "  - Insufficient memory".echo();
+}
+
+/* Clean up */
+"Unloading model...".echo();
+unload_result = model.unload();
+if (unload_result == 0) {
+    "Model unloaded successfully".echo();
+} else {
+    ("Warning: Error unloading model: " + unload_result.str()).echo();
+}
+
+"Example completed!".echo();

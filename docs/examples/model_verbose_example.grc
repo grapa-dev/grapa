@@ -1,0 +1,63 @@
+/* Model Verbose Control Example */
+
+"Model Verbose Control Example".echo();
+"=============================".echo();
+
+model = $MODEL();
+
+/* Test different verbose levels */
+verbose_levels = [0, 1, 2, 3, 4];
+level_names = ["Silent", "Errors Only", "Warnings+", "Info+", "Debug+"];
+
+for (i = 0; i < verbose_levels.len(); i++) {
+    level = verbose_levels[i];
+    name = level_names[i];
+    
+    ("=== Verbose Level " + level.str() + " (" + name + ") ===").echo();
+    
+    /* Set verbose level */
+    model.params({"verbose": level});
+    
+    /* Load model with this verbose level */
+    result = model.load("models/qwen2.5-7b-instruct-q3_k_m.gguf");
+    
+    if (result == 0) {
+        ("Model loaded with verbose level " + level.str()).echo();
+        
+        /* Generate text to see output */
+        response = model.gen("Hello");
+        ("Response: " + response.str()).echo();
+        
+        /* Unload for next test */
+        model.unload();
+    } else {
+        ("Failed to load model with verbose level " + level.str() + ": " + result.str()).echo();
+    }
+    
+    "".echo();  /* Empty line for readability */
+}
+
+/* Demonstrate practical usage */
+"=== Practical Usage Examples ===".echo();
+
+/* Silent mode for production */
+"Production mode (silent):".echo();
+model.params({"verbose": 0});
+result = model.load("models/qwen2.5-7b-instruct-q3_k_m.gguf");
+if (result == 0) {
+    response = model.gen("What is AI?");
+    ("Response: " + response.str()).echo();
+    model.unload();
+}
+
+/* Debug mode for troubleshooting */
+"Debug mode (verbose):".echo();
+model.params({"verbose": 4});
+result = model.load("models/qwen2.5-7b-instruct-q3_k_m.gguf");
+if (result == 0) {
+    response = model.gen("Debug test");
+    ("Response: " + response.str()).echo();
+    model.unload();
+}
+
+"Example completed!".echo();
