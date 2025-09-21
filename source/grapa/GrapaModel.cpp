@@ -17,11 +17,15 @@ limitations under the License.
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "GrapaModel.h"
+#include <ctime>  // For time() function
 #include "GrapaSystem.h"
 #include "GrapaState.h"
 
 #include <vector>
 #include <thread>
+#include <fstream>
+#include <algorithm>
+#include <cctype>
 
 #include "llama.h"
 #include "ggml.h"   // for ggml_log_level enum
@@ -57,9 +61,8 @@ void GrapaModel::INIT(GrapaRuleEvent* pParams)
     mSeed = -1;
     mVerbose = 0;     // Default to silent (no LLAMA.cpp output)
     
-    // Initialize optimization buffers
-    mTempToken.SetLength(0);
-    memset(mTokenBuffer, 0, sizeof(mTokenBuffer));
+    // Initialize sampler to NULL
+    mLlamaSampler = nullptr;
     
     // Set LLAMA.cpp logging callback to control verbosity
     llama_log_set(LogCallback, (void*)&mVerbose);
@@ -134,7 +137,16 @@ GrapaError GrapaModel::Load(const GrapaCHAR& modelPath, const GrapaCHAR& backend
     ResetModelSpecificParams();
     
     mModelPath.FROM(modelPath);
-    mBackend.FROM(backend);
+    
+    // If backend is not specified, try to auto-detect it
+    if (backend.mLength == 0) {
+        mBackend = AutoDetectBackend(modelPath);
+        if (mBackend.mLength == 0) {
+            return -1; // Could not detect backend
+        }
+    } else {
+        mBackend.FROM(backend);
+    }
 
     if (mBackend.StrCmp("llama") == 0) {
         result = LoadLlama(modelPath);
@@ -155,6 +167,72 @@ GrapaError GrapaModel::Load(const GrapaCHAR& modelPath, const GrapaCHAR& backend
     }
     
     return result;
+}
+
+GrapaCHAR GrapaModel::AutoDetectBackend(const GrapaCHAR& modelPath)
+{
+    GrapaCHAR result;
+    std::string path((char*)modelPath.mBytes, modelPath.mLength);
+    
+    // First try file extension detection
+    size_t dotPos = path.find_last_of('.');
+    if (dotPos != std::string::npos) {
+        std::string ext = path.substr(dotPos);
+        
+        // Convert to lowercase for case-insensitive comparison
+        std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+        
+        if (ext == ".gguf") {
+            result.FROM("llama");
+            return result;
+        }
+        else if (ext == ".pkl" || ext == ".joblib") {
+            result.FROM("sklearn");
+            return result;
+        }
+        else if (ext == ".onnx") {
+            result.FROM("onnx");
+            return result;
+        }
+        else if (ext == ".tflite") {
+            result.FROM("tensorflow");
+            return result;
+        }
+    }
+    
+    // If extension doesn't match, try magic bytes detection
+    std::ifstream file(path, std::ios::binary);
+    if (file) {
+        char header[8];
+        file.read(header, 8);
+        
+        // GGUF format (LLAMA.cpp)
+        if (strncmp(header, "GGUF", 4) == 0) {
+            result.FROM("llama");
+            return result;
+        }
+        
+        // Python pickle format (sklearn)
+        if (strncmp(header, "PK", 2) == 0) {
+            result.FROM("sklearn");
+            return result;
+        }
+        
+        // ONNX format
+        if (strncmp(header, "ONNX", 4) == 0) {
+            result.FROM("onnx");
+            return result;
+        }
+        
+        // TensorFlow Lite format
+        if (strncmp(header, "TFL3", 4) == 0) {
+            result.FROM("tensorflow");
+            return result;
+        }
+    }
+    
+    // Could not detect backend
+    return result;  // Empty result
 }
 
 GrapaError GrapaModel::Unload()
@@ -198,11 +276,21 @@ GrapaError GrapaModel::LoadLlama(const GrapaCHAR& modelPath)
         return -2;
     }
 
+    // Initialize sampler chain for temperature-aware generation
+    result = InitializeSampler();
+    if (result != 0) {
+        // Sampler initialization failed, but model is still usable with greedy sampling
+        // We'll continue without the sampler
+    }
+
     return result;
 }
 
 GrapaError GrapaModel::UnloadLlama()
 {
+    // Clean up sampler first
+    CleanupSampler();
+    
     if (mLlamaContext) {
         llama_free(mLlamaContext);
         mLlamaContext = nullptr;
@@ -283,19 +371,27 @@ GrapaError GrapaModel::GenerateLlama(const GrapaCHAR& prompt, GrapaCHAR& result,
     // Generate response
     result.SetLength(0);
     
-    // Now generate new tokens
+    // Now generate new tokens using LLAMA.cpp sampler
     for (int i = 0; i < this->mMaxTokens; i++) {
-        // Get next token using improved greedy sampling with temperature
-        float* logits = llama_get_logits(this->mLlamaContext);
-        int n_vocab = llama_vocab_n_tokens(vocab);
+        llama_token next_token;
         
-        // Find the token with highest probability (greedy sampling - revert to original)
-        llama_token next_token = 0;
-        float max_logit = logits[0];
-        for (int j = 1; j < n_vocab; j++) {
-            if (logits[j] > max_logit) {
-                max_logit = logits[j];
-                next_token = j;
+        // Use LLAMA.cpp sampler if available, otherwise fall back to greedy
+        if (mLlamaSampler) {
+            // Use the sampler chain for temperature-aware generation
+            next_token = llama_sampler_sample(mLlamaSampler, this->mLlamaContext, -1);
+            llama_sampler_accept(mLlamaSampler, next_token);
+        } else {
+            // Fallback to greedy sampling if sampler is not available
+            float* logits = llama_get_logits(this->mLlamaContext);
+            int n_vocab = llama_vocab_n_tokens(vocab);
+            
+            next_token = 0;
+            float max_logit = logits[0];
+            for (int j = 1; j < n_vocab; j++) {
+                if (logits[j] > max_logit) {
+                    max_logit = logits[j];
+                    next_token = j;
+                }
             }
         }
                 
@@ -303,13 +399,11 @@ GrapaError GrapaModel::GenerateLlama(const GrapaCHAR& prompt, GrapaCHAR& result,
             break;
         }
         
-        // Convert token to string (temporarily revert to stack allocation to debug)
+        // Convert token to string
         char token_str[256];
         int n_chars = llama_token_to_piece(vocab, next_token, token_str, sizeof(token_str), 0, false);
         if (n_chars > 0) {
-            token_str[n_chars] = '\0';  // Ensure null termination
-            mTempToken.FROM(token_str, n_chars);
-            result.Append(mTempToken);
+            result.Append(token_str, n_chars);
         }
         
         // Add the new token to the sequence and decode it
@@ -330,7 +424,6 @@ GrapaRuleEvent* GrapaModel::GetModelInfo() const
     result->vQueue = new GrapaRuleQueue();
     
     // Add loaded status
-
     GrapaRuleEvent* loaded = new GrapaRuleEvent(GrapaTokenType::BOOL, 0, "loaded", mLoaded?"\1":"");
     result->vQueue->PushTail(loaded);
 
@@ -341,6 +434,53 @@ GrapaRuleEvent* GrapaModel::GetModelInfo() const
     // Add model path
     GrapaRuleEvent* path = new GrapaRuleEvent(0, GrapaCHAR("path"), mModelPath);
     result->vQueue->PushTail(path);
+    
+    // Note: Configuration parameters (temperature, top_k, etc.) are available via .params()
+    // This method focuses on model metadata and status information
+    
+    // Add LLAMA.cpp specific information if model is loaded
+    if (mLoaded && const_cast<GrapaModel*>(this)->mBackend.StrCmp("llama") == 0 && mLlamaModel) {
+        // Model size in bytes
+        uint64_t model_size = llama_model_size(mLlamaModel);
+        GrapaRuleEvent* model_size_info = new GrapaRuleEvent(0, GrapaCHAR("model_size_bytes"), GrapaInt((s64)model_size).getBytes());
+        result->vQueue->PushTail(model_size_info);
+        
+        // Number of parameters
+        uint64_t n_params = llama_model_n_params(mLlamaModel);
+        GrapaRuleEvent* n_params_info = new GrapaRuleEvent(0, GrapaCHAR("n_params"), GrapaInt((s64)n_params).getBytes());
+        result->vQueue->PushTail(n_params_info);
+        
+        // Model description
+        char desc_buf[256];
+        int desc_len = llama_model_desc(mLlamaModel, desc_buf, sizeof(desc_buf));
+        if (desc_len > 0) {
+            GrapaRuleEvent* model_desc = new GrapaRuleEvent(0, GrapaCHAR("model_description"), GrapaCHAR(desc_buf, desc_len));
+            result->vQueue->PushTail(model_desc);
+        }
+        
+        // Model capabilities
+        bool has_encoder = llama_model_has_encoder(mLlamaModel);
+        GrapaRuleEvent* encoder_info = new GrapaRuleEvent(GrapaTokenType::BOOL, 0, "has_encoder", has_encoder?"\1":"");
+        result->vQueue->PushTail(encoder_info);
+        
+        bool has_decoder = llama_model_has_decoder(mLlamaModel);
+        GrapaRuleEvent* decoder_info = new GrapaRuleEvent(GrapaTokenType::BOOL, 0, "has_decoder", has_decoder?"\1":"");
+        result->vQueue->PushTail(decoder_info);
+        
+        bool is_recurrent = llama_model_is_recurrent(mLlamaModel);
+        GrapaRuleEvent* recurrent_info = new GrapaRuleEvent(GrapaTokenType::BOOL, 0, "is_recurrent", is_recurrent?"\1":"");
+        result->vQueue->PushTail(recurrent_info);
+        
+        // Vocabulary size (if context is available)
+        if (mLlamaContext) {
+            // Use the context to get vocabulary size - skip for now as API is unclear
+            // int32_t vocab_size = llama_n_vocab(mLlamaContext);
+            // if (vocab_size > 0) {
+            //     GrapaRuleEvent* vocab_info = new GrapaRuleEvent(0, GrapaCHAR("vocab_size"), GrapaInt(vocab_size).getBytes());
+            //     result->vQueue->PushTail(vocab_info);
+            // }
+        }
+    }
   
     return result;
 }
@@ -460,6 +600,10 @@ GrapaError GrapaModel::ApplyParamsToLlama(GrapaRuleEvent* params)
         return -1;
     if (params->vQueue == NULL)
         return 0;
+    
+    // Track if any sampling-related parameters changed
+    bool samplerParamsChanged = false;
+    
     params = params->vQueue->Head();
     while (params)
     {
@@ -476,26 +620,31 @@ GrapaError GrapaModel::ApplyParamsToLlama(GrapaRuleEvent* params)
         else if (params->mName.StrCmp("temperature") == 0) {
             if (params->mValue.mToken == GrapaTokenType::FLOAT) {
                 mTemperature = GrapaFloat(params->mValue).ToDouble();
+                samplerParamsChanged = true;  // Temperature affects sampler
             }
         }
         else if (params->mName.StrCmp("top_k") == 0) {
             if (params->mValue.mToken == GrapaTokenType::INT) {
                 mTopK = GrapaInt(params->mValue).LongValue();
+                samplerParamsChanged = true;  // Top-K affects sampler
             }
         }
         else if (params->mName.StrCmp("top_p") == 0) {
             if (params->mValue.mToken == GrapaTokenType::FLOAT) {
                 mTopP = GrapaFloat(params->mValue).ToDouble();
+                samplerParamsChanged = true;  // Top-P affects sampler
             }
         }
         else if (params->mName.StrCmp("repeat_penalty") == 0) {
             if (params->mValue.mToken == GrapaTokenType::FLOAT) {
                 mRepeatPenalty = GrapaFloat(params->mValue).ToDouble();
+                // Note: repeat_penalty not currently used in sampler, but could be added
             }
         }
         else if (params->mName.StrCmp("seed") == 0) {
             if (params->mValue.mToken == GrapaTokenType::INT) {
                 mSeed = GrapaInt(params->mValue).LongValue();
+                samplerParamsChanged = true;  // Seed affects sampler
             }
         }
         else if (params->mName.StrCmp("verbose") == 0) {
@@ -503,11 +652,18 @@ GrapaError GrapaModel::ApplyParamsToLlama(GrapaRuleEvent* params)
                 mVerbose = GrapaInt(params->mValue).LongValue();
                 // Apply logging callback immediately with new verbose level
                 llama_log_set(LogCallback, (void*)&mVerbose);
+                // verbose does NOT affect sampler - no need to reinitialize
             }
         }
 
         params = params->Next();
     }
+    
+    // Only reinitialize sampler if sampling-related parameters changed and model is loaded
+    if (samplerParamsChanged && mLlamaContext && mLlamaSampler) {
+        InitializeSampler();  // This will clean up and recreate the sampler with new parameters
+    }
+    
     return 0;
 }
 
@@ -566,6 +722,73 @@ int GrapaModel::GetModelSize()
     if (mModelPath.StrCmp("30b") >= 0) return 30;
     if (mModelPath.StrCmp("70b") >= 0) return 70;
     return 7;  // Default to 7B
+}
+
+GrapaError GrapaModel::InitializeSampler()
+{
+    if (!mLlamaContext) {
+        return -1;  // Context not loaded
+    }
+    
+    // Clean up existing sampler
+    CleanupSampler();
+    
+    // Create sampler chain with default parameters
+    auto sparams = llama_sampler_chain_default_params();
+    mLlamaSampler = llama_sampler_chain_init(sparams);
+    
+    if (!mLlamaSampler) {
+        return -2;  // Failed to create sampler
+    }
+    
+    // Add samplers to the chain based on current parameters
+    // Top-K sampling
+    if (mTopK > 0) {
+        struct llama_sampler* top_k_sampler = llama_sampler_init_top_k(mTopK);
+        if (top_k_sampler) {
+            llama_sampler_chain_add(mLlamaSampler, top_k_sampler);
+        }
+    }
+    
+    // Top-P sampling
+    if (mTopP > 0.0f && mTopP < 1.0f) {
+        struct llama_sampler* top_p_sampler = llama_sampler_init_top_p(mTopP, 1);
+        if (top_p_sampler) {
+            llama_sampler_chain_add(mLlamaSampler, top_p_sampler);
+        }
+    }
+    
+    // Temperature sampling
+    if (mTemperature > 0.0f) {
+        struct llama_sampler* temp_sampler = llama_sampler_init_temp(mTemperature);
+        if (temp_sampler) {
+            llama_sampler_chain_add(mLlamaSampler, temp_sampler);
+        }
+    }
+    
+    // End with distribution sampler (greedy if temperature <= 0, otherwise random)
+    struct llama_sampler* dist_sampler;
+    if (mTemperature <= 0.0f) {
+        dist_sampler = llama_sampler_init_greedy();
+    } else {
+        // Use seed if provided, otherwise use random seed
+        uint32_t seed = (mSeed >= 0) ? (uint32_t)mSeed : (uint32_t)time(nullptr);
+        dist_sampler = llama_sampler_init_dist(seed);
+    }
+    
+    if (dist_sampler) {
+        llama_sampler_chain_add(mLlamaSampler, dist_sampler);
+    }
+    
+    return 0;  // Success
+}
+
+void GrapaModel::CleanupSampler()
+{
+    if (mLlamaSampler) {
+        llama_sampler_free(mLlamaSampler);
+        mLlamaSampler = nullptr;
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////

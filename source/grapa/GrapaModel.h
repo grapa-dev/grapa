@@ -25,6 +25,7 @@ public:
     struct llama_context* mLlamaContext;
     struct llama_model_params mLlamaModelParams;
     struct llama_context_params mLlamaContextParams;
+    struct llama_sampler* mLlamaSampler;  // Sampler chain for temperature-aware generation
     
     // Generation parameters
     s32 mMaxTokens;
@@ -35,10 +36,6 @@ public:
     s32 mSeed;
     s32 mContextSize;
     s32 mVerbose;     // Logging verbosity level (0=silent, 1=errors, 2=warnings, 3=info, 4=debug)
-    
-    // Performance optimization buffers
-    GrapaCHAR mTempToken;        // Reuse token buffer
-    char mTokenBuffer[256];      // Reuse token string buffer
     
     // Persistent parameter management
     GrapaScriptExec* vScriptExec;
@@ -54,6 +51,7 @@ public:
     
     // Core model operations
     GrapaError Load(const GrapaCHAR& modelPath, const GrapaCHAR& backend);
+    GrapaError Load(const GrapaCHAR& modelPath);  // Auto-detect backend
     GrapaError Unload();
     bool IsLoaded() const;
     
@@ -79,6 +77,8 @@ public:
     
 private:
     GrapaError InitializeLlama();
+    GrapaError InitializeSampler();  // Initialize LLAMA.cpp sampler chain
+    void CleanupSampler();           // Clean up sampler resources
     
     // Parameter management
     void ResetModelSpecificParams();
@@ -86,6 +86,9 @@ private:
     GrapaRuleEvent* MergeParams(GrapaRuleEvent* persistent, GrapaRuleEvent* callSpecific);
     GrapaError ApplyParamsToLlama(GrapaRuleEvent* params);
     int GetModelSize();  // Estimate model size for parameter defaults
+    
+    // Auto-detection
+    GrapaCHAR AutoDetectBackend(const GrapaCHAR& modelPath);
     
     // Logging callback
     static void LogCallback(enum ggml_log_level level, const char * text, void * user_data);

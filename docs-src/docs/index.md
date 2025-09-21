@@ -39,6 +39,7 @@
 - **Parallel Processing**: Built-in parallel data operations with `.map()`, `.filter()`, `.reduce()`
 - **Comprehensive Vector Operations**: Complete matrix operations, linear algebra, statistical functions, and creative capabilities
 - **Machine Learning**: Linear regression, statistical analysis, and ML algorithms using optimized vector operations
+- **AI/ML Model Integration**: Native support for AI models via `$MODEL` type with LLAMA.cpp backend for text generation
 - **Advanced Pattern Matching**: 100% ripgrep compatibility with binary data support and Unicode awareness
 - **HTTP/HTTPS Networking**: Complete HTTP client with SSL/TLS, proxy support, cookie handling, and chunked encoding
 - **Comprehensive Cryptography**: Production-ready cryptographic capabilities with OpenSSL 3.5.2 integration (RSA, EC, DH, AES, hash functions, key exchange)
