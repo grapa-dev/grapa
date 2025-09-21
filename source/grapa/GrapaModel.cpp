@@ -424,7 +424,6 @@ GrapaRuleEvent* GrapaModel::GetModelInfo() const
     result->vQueue = new GrapaRuleQueue();
     
     // Add loaded status
-
     GrapaRuleEvent* loaded = new GrapaRuleEvent(GrapaTokenType::BOOL, 0, "loaded", mLoaded?"\1":"");
     result->vQueue->PushTail(loaded);
 
@@ -435,6 +434,53 @@ GrapaRuleEvent* GrapaModel::GetModelInfo() const
     // Add model path
     GrapaRuleEvent* path = new GrapaRuleEvent(0, GrapaCHAR("path"), mModelPath);
     result->vQueue->PushTail(path);
+    
+    // Note: Configuration parameters (temperature, top_k, etc.) are available via .params()
+    // This method focuses on model metadata and status information
+    
+    // Add LLAMA.cpp specific information if model is loaded
+    if (mLoaded && const_cast<GrapaModel*>(this)->mBackend.StrCmp("llama") == 0 && mLlamaModel) {
+        // Model size in bytes
+        uint64_t model_size = llama_model_size(mLlamaModel);
+        GrapaRuleEvent* model_size_info = new GrapaRuleEvent(0, GrapaCHAR("model_size_bytes"), GrapaInt((s64)model_size).getBytes());
+        result->vQueue->PushTail(model_size_info);
+        
+        // Number of parameters
+        uint64_t n_params = llama_model_n_params(mLlamaModel);
+        GrapaRuleEvent* n_params_info = new GrapaRuleEvent(0, GrapaCHAR("n_params"), GrapaInt((s64)n_params).getBytes());
+        result->vQueue->PushTail(n_params_info);
+        
+        // Model description
+        char desc_buf[256];
+        int desc_len = llama_model_desc(mLlamaModel, desc_buf, sizeof(desc_buf));
+        if (desc_len > 0) {
+            GrapaRuleEvent* model_desc = new GrapaRuleEvent(0, GrapaCHAR("model_description"), GrapaCHAR(desc_buf, desc_len));
+            result->vQueue->PushTail(model_desc);
+        }
+        
+        // Model capabilities
+        bool has_encoder = llama_model_has_encoder(mLlamaModel);
+        GrapaRuleEvent* encoder_info = new GrapaRuleEvent(GrapaTokenType::BOOL, 0, "has_encoder", has_encoder?"\1":"");
+        result->vQueue->PushTail(encoder_info);
+        
+        bool has_decoder = llama_model_has_decoder(mLlamaModel);
+        GrapaRuleEvent* decoder_info = new GrapaRuleEvent(GrapaTokenType::BOOL, 0, "has_decoder", has_decoder?"\1":"");
+        result->vQueue->PushTail(decoder_info);
+        
+        bool is_recurrent = llama_model_is_recurrent(mLlamaModel);
+        GrapaRuleEvent* recurrent_info = new GrapaRuleEvent(GrapaTokenType::BOOL, 0, "is_recurrent", is_recurrent?"\1":"");
+        result->vQueue->PushTail(recurrent_info);
+        
+        // Vocabulary size (if context is available)
+        if (mLlamaContext) {
+            // Use the context to get vocabulary size - skip for now as API is unclear
+            // int32_t vocab_size = llama_n_vocab(mLlamaContext);
+            // if (vocab_size > 0) {
+            //     GrapaRuleEvent* vocab_info = new GrapaRuleEvent(0, GrapaCHAR("vocab_size"), GrapaInt(vocab_size).getBytes());
+            //     result->vQueue->PushTail(vocab_info);
+            // }
+        }
+    }
   
     return result;
 }
