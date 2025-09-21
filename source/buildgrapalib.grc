@@ -1,13 +1,15 @@
 f=$file();
 f.chd($sys().getenv($GRAPA_LIB)+"/grapa");
-a=f.ls().reduce(op(a,b){if ((b.$KEY.left(1)=="$")&&(b.$KEY.right(1)=="c")) a+=b.$KEY.rtrim("c");},{});
+a=f.ls().reduce(op(a,b){if ((b."$KEY".left(1)=="$")&&(b."$KEY".right(1)=="c")) a+=b."$KEY".rtrim("c");},{});
 a.reduce(op(x,b,g){$local.d=$sys().encode(op()(g.get(b+"c")),"ZIP-GRAPA");g.set(b+"z",d)},{},f);
 
 f=$file();
 f.chd($sys().getenv($GRAPA_LIB)+"/grapa");
-x=f.ls().reduce(op(a,b,g){n=b.$KEY;a+=(@n:g.get(n))},{},f).encode("ZIP-GRAPA").encode("BASE64");
+x=f.ls().reduce(op(a,b,g){n=b."$KEY";a+=(@n:g.get(n))},{},f).encode("ZIP-GRAPA").encode("BASE64");
 y=x.split(x.len()/80);
 z = y.join('",\n"');
 a='class GrapaStaticLib {public:const static char* staticlist[];};\nconst char* GrapaStaticLib::staticlist[] = {\n"'+z+'",""\n};';
 f.chd($sys().getenv($WORK));
 f.set("source/grapa/GrapaStaticLib.c",a);
+
+//a.map(op(x,g){$local.d=op()(g.get(b+"c"));d.type()},f);
