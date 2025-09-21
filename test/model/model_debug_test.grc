@@ -1,0 +1,33 @@
+/* Debug test to check if reverting fixes the garbled output issue */
+
+"Testing Model Generation After Reverting Optimizations...".echo();
+"=======================================================".echo();
+
+model = $MODEL();
+model.param('verbose', 0);
+
+"Loading model...".echo();
+result = model.load("models/qwen2.5-7b-instruct-q5_k_m.gguf");
+("Load result: " + result.str()).echo();
+
+if (model.info().loaded || result.str().find("Model info") != -1) {
+    "Model loaded successfully!".echo();
+    
+    /* Test with the same prompt that produced garbled output */
+    test_prompt = "Hello, how are you?";
+    "Testing with prompt: " + test_prompt.str().echo();
+    
+    response = model.gen(test_prompt);
+    ("Response: " + response.str()).echo();
+    
+    /* Test with temperature parameter */
+    "Testing with temperature parameter...".echo();
+    response2 = model.gen(test_prompt, {"temperature": 0.8});
+    ("Response with temperature: " + response2.str()).echo();
+    
+} else {
+    "Failed to load model".echo();
+    ("Error details: " + model.info().str()).echo();
+}
+
+"Debug test complete!".echo();

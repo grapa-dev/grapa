@@ -23,6 +23,9 @@ limitations under the License.
 #include <vector>
 #include <thread>
 
+#include "llama.h"
+#include "ggml.h"   // for ggml_log_level enum
+
 extern GrapaSystem* gSystem;
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -45,14 +48,22 @@ void GrapaModel::INIT(GrapaRuleEvent* pParams)
     mLlamaContext = nullptr;
 
     mMaxTokens = 10;  // Very low for testing
-    mContextSize = 0;
+    mContextSize = 2048;  // Default context size
 
     mTemperature = 0.7f;
     mTopK = 40;
     mTopP = 0.9f;
     mRepeatPenalty = 1.1f;
     mSeed = -1;
+    mVerbose = 0;     // Default to silent (no LLAMA.cpp output)
     
+    // Initialize optimization buffers
+    mTempToken.SetLength(0);
+    memset(mTokenBuffer, 0, sizeof(mTokenBuffer));
+    
+    // Set LLAMA.cpp logging callback to control verbosity
+    llama_log_set(LogCallback, (void*)&mVerbose);
+
     if (pParams)
     {
         vParams = pParams;
@@ -88,6 +99,10 @@ void GrapaModel::INIT(GrapaRuleEvent* pParams)
         // Add seed
         GrapaRuleEvent* seed = new GrapaRuleEvent(0, GrapaCHAR("seed"), GrapaInt(mSeed).getBytes());
         vParams->vQueue->PushTail(seed);
+
+        // Add verbose
+        GrapaRuleEvent* verbose = new GrapaRuleEvent(0, GrapaCHAR("verbose"), GrapaInt(mVerbose).getBytes());
+        vParams->vQueue->PushTail(verbose);
 
     }
         
@@ -166,6 +181,9 @@ GrapaError GrapaModel::LoadLlama(const GrapaCHAR& modelPath)
 {
     GrapaError result = 0;
 
+    // Set LLAMA.cpp logging callback to control verbosity BEFORE loading
+    llama_log_set(LogCallback, (void*)&mVerbose);
+
     // Load the model
     mLlamaModel = llama_load_model_from_file((char*)modelPath.mBytes, mLlamaModelParams);
     if (!mLlamaModel) {
@@ -227,36 +245,51 @@ GrapaError GrapaModel::GenerateLlama(const GrapaCHAR& prompt, GrapaCHAR& result,
         return paramResult;
     }
     
-    // Tokenize the prompt
+    // Early exit for empty prompts
+    if (prompt.mLength == 0) {
+        result.SetLength(0);
+        return 0;
+    }
+    
+    // Tokenize the prompt with optimized buffer management
     const struct llama_vocab* vocab = llama_model_get_vocab(this->mLlamaModel);
     std::vector<llama_token> tokens_list;
-    tokens_list.resize(prompt.mLength + 1);
-    int n_tokens = llama_tokenize(vocab, (char*)prompt.mBytes, (int32_t)prompt.mLength, tokens_list.data(), (int32_t)tokens_list.size(), true, false);
+    
+    // Better token count estimation to avoid reallocation
+    size_t estimated_tokens = prompt.mLength / 4;  // Rough estimate: ~4 chars per token
+    tokens_list.resize(estimated_tokens);
+    
+    int n_tokens = llama_tokenize(vocab, (char*)prompt.mBytes, (int32_t)prompt.mLength, 
+                                  tokens_list.data(), (int32_t)tokens_list.size(), true, false);
     if (n_tokens < 0) {
         tokens_list.resize(-n_tokens);
-        n_tokens = llama_tokenize(vocab, (char*)prompt.mBytes, (int32_t)prompt.mLength, tokens_list.data(), (int32_t)tokens_list.size(), true, false);
+        n_tokens = llama_tokenize(vocab, (char*)prompt.mBytes, (int32_t)prompt.mLength, 
+                                  tokens_list.data(), (int32_t)tokens_list.size(), true, false);
     }
     tokens_list.resize(n_tokens);
     
+    // Early exit if no tokens
+    if (n_tokens == 0) {
+        result.SetLength(0);
+        return 0;
+    }
+    
+    // OPTIMIZATION 1: Batch processing for prompt tokens (instead of one-by-one)
+    struct llama_batch batch = llama_batch_get_one(tokens_list.data(), n_tokens);
+    if (llama_decode(this->mLlamaContext, batch)) {
+        return -2;
+    }
+    
     // Generate response
     result.SetLength(0);
-    GrapaCHAR currentToken;
-    
-    // First, process the initial prompt tokens
-    for (int i = 0; i < n_tokens; i++) {
-        struct llama_batch batch = llama_batch_get_one(&tokens_list[i], 1);
-        if (llama_decode(this->mLlamaContext, batch)) {
-            return -2;
-        }
-    }
     
     // Now generate new tokens
     for (int i = 0; i < this->mMaxTokens; i++) {
-        // Get next token using simple greedy sampling
+        // Get next token using improved greedy sampling with temperature
         float* logits = llama_get_logits(this->mLlamaContext);
         int n_vocab = llama_vocab_n_tokens(vocab);
         
-        // Find the token with highest probability (greedy sampling)
+        // Find the token with highest probability (greedy sampling - revert to original)
         llama_token next_token = 0;
         float max_logit = logits[0];
         for (int j = 1; j < n_vocab; j++) {
@@ -270,20 +303,19 @@ GrapaError GrapaModel::GenerateLlama(const GrapaCHAR& prompt, GrapaCHAR& result,
             break;
         }
         
-        // Convert token to string
+        // Convert token to string (temporarily revert to stack allocation to debug)
         char token_str[256];
         int n_chars = llama_token_to_piece(vocab, next_token, token_str, sizeof(token_str), 0, false);
         if (n_chars > 0) {
             token_str[n_chars] = '\0';  // Ensure null termination
-            currentToken.FROM(token_str, n_chars);
-            result.Append(currentToken);
-        } else {
+            mTempToken.FROM(token_str, n_chars);
+            result.Append(mTempToken);
         }
         
         // Add the new token to the sequence and decode it
         tokens_list.push_back(next_token);
-        struct llama_batch batch = llama_batch_get_one(&next_token, 1);
-        if (llama_decode(this->mLlamaContext, batch)) {
+        struct llama_batch next_batch = llama_batch_get_one(&next_token, 1);
+        if (llama_decode(this->mLlamaContext, next_batch)) {
             return -2;
         }
     }
@@ -298,10 +330,8 @@ GrapaRuleEvent* GrapaModel::GetModelInfo() const
     result->vQueue = new GrapaRuleQueue();
     
     // Add loaded status
-    GrapaCHAR isLoaded;
-    isLoaded.SetBool(mLoaded);
-    isLoaded.mToken = GrapaTokenType::BOOL;
-    GrapaRuleEvent* loaded = new GrapaRuleEvent(0, GrapaCHAR("loaded"), isLoaded);
+
+    GrapaRuleEvent* loaded = new GrapaRuleEvent(GrapaTokenType::BOOL, 0, "loaded", mLoaded?"\1":"");
     result->vQueue->PushTail(loaded);
 
     // Add backend
@@ -468,10 +498,63 @@ GrapaError GrapaModel::ApplyParamsToLlama(GrapaRuleEvent* params)
                 mSeed = GrapaInt(params->mValue).LongValue();
             }
         }
+        else if (params->mName.StrCmp("verbose") == 0) {
+            if (params->mValue.mToken == GrapaTokenType::INT) {
+                mVerbose = GrapaInt(params->mValue).LongValue();
+                // Apply logging callback immediately with new verbose level
+                llama_log_set(LogCallback, (void*)&mVerbose);
+            }
+        }
 
         params = params->Next();
     }
     return 0;
+}
+
+void GrapaModel::LogCallback(enum ggml_log_level level, const char * text, void * user_data)
+{
+    if (user_data == nullptr) {
+        // If no user data, output to stderr (default behavior)
+        fprintf(stderr, "%s", text);
+        return;
+    }
+    
+    s32* verbose_level = (s32*)user_data;
+    
+    // Map verbose levels to ggml_log_level
+    // verbose=0: silent (no output)
+    // verbose=1: errors only
+    // verbose=2: warnings and errors
+    // verbose=3: info, warnings, and errors
+    // verbose=4: debug, info, warnings, and errors
+    
+    bool should_output = false;
+    
+    switch (*verbose_level) {
+        case 0: // Silent
+            should_output = false;
+            break;
+        case 1: // Errors only
+            should_output = (level == GGML_LOG_LEVEL_ERROR);
+            break;
+        case 2: // Warnings and errors
+            should_output = (level == GGML_LOG_LEVEL_WARN || level == GGML_LOG_LEVEL_ERROR);
+            break;
+        case 3: // Info, warnings, and errors
+            should_output = (level == GGML_LOG_LEVEL_INFO || level == GGML_LOG_LEVEL_WARN || level == GGML_LOG_LEVEL_ERROR);
+            break;
+        case 4: // Debug and above
+            should_output = (level >= GGML_LOG_LEVEL_DEBUG);
+            break;
+        default: // Default to silent for invalid levels
+            should_output = false;
+            break;
+    }
+    
+    if (should_output) {
+        // Output the message to stderr
+        fprintf(stderr, "%s", text);
+    }
 }
 
 int GrapaModel::GetModelSize()

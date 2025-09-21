@@ -23467,9 +23467,7 @@ GrapaRuleEvent* GrapaLibraryRuleModelLoadEvent::Run(GrapaScriptExec* vScriptExec
     // Load the model
     err = objEvent->vModel->Load(modelPath, backend);
     
-    if (err == 0) {
-        result = new GrapaRuleEvent(GrapaTokenType::GOBJ, 0, "success", "Model loaded successfully");
-    } else {
+    if (err) {
         result = Error(vScriptExec, pNameSpace, err);
     }
 

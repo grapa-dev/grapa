@@ -1,0 +1,40 @@
+/* Simple test to verify verbose control works */
+
+"Testing Simple Verbose Control...".echo();
+"=================================".echo();
+
+/* Test 1: Create model with default verbose=0 */
+"=== Test 1: Default Silent Mode ===".echo();
+model = $MODEL();
+"Model created with default verbose=0".echo();
+("Current parameters: " + model.params().str()).echo();
+
+/* Test 2: Set verbose to 3 before loading */
+"\n=== Test 2: Set Verbose to 3 ===".echo();
+model.params({"verbose": 3});
+"Set verbose to 3 (info level)".echo();
+("Current parameters: " + model.params().str()).echo();
+
+/* Test 3: Load model with verbose=3 */
+"\n=== Test 3: Load Model with Verbose=3 ===".echo();
+"Loading model... (should show LLAMA.cpp output)".echo();
+result = model.load("models/qwen2.5-7b-instruct-q5_k_m.gguf", "llama");
+("Load result: " + result.str()).echo();
+
+/* Test 4: Generate with verbose=3 */
+"\n=== Test 4: Generate with Verbose=3 ===".echo();
+response = model.gen("Hello");
+("Generated response: " + response.str()).echo();
+
+/* Test 5: Set verbose to 0 */
+"\n=== Test 5: Set Verbose to 0 ===".echo();
+model.params({"verbose": 0});
+"Set verbose to 0 (silent)".echo();
+("Current parameters: " + model.params().str()).echo();
+
+/* Test 6: Generate with verbose=0 */
+"\n=== Test 6: Generate with Verbose=0 ===".echo();
+response2 = model.gen("World");
+("Generated response: " + response2.str()).echo();
+
+"\n=== Simple Verbose Test Complete ===".echo();

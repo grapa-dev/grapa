@@ -1,0 +1,51 @@
+/* Test script to demonstrate LLAMA.cpp verbose control */
+
+"Testing Grapa Model Verbose Control...".echo();
+"=====================================".echo();
+
+/* Test 1: Silent Mode (Default) */
+"=== Test 1: Default Silent Mode ===".echo();
+model = $MODEL();
+"Loading model with default verbose=0 (silent)...".echo();
+result = model.load("models/qwen2.5-7b-instruct-q5_k_m.gguf", "llama");
+("Load result: " + result.str()).echo();
+("Model info: " + model.info().str()).echo();
+("Current parameters: " + model.params().str()).echo();
+
+/* Test 2: Generate with Silent Mode */
+"\n=== Test 2: Generate with Silent Mode ===".echo();
+response = model.gen("Hello, how are you?");
+("Generated response: " + response.str()).echo();
+
+/* Test 3: Unload and reload with Verbose Mode */
+"\n=== Test 3: Reload with Verbose Mode ===".echo();
+model.unload();
+model.params({"verbose": 3});  /* Set verbose to 3 (info level) before loading */
+"Set verbose to 3 (info level) before loading".echo();
+("Current parameters: " + model.params().str()).echo();
+"Loading model with verbose=3...".echo();
+result = model.load("models/qwen2.5-7b-instruct-q5_k_m.gguf", "llama");
+("Load result: " + result.str()).echo();
+
+/* Test 4: Generate with Verbose Mode */
+"\n=== Test 4: Generate with Verbose Mode ===".echo();
+response2 = model.gen("What is programming?");
+("Generated response: " + response2.str()).echo();
+
+/* Test 5: Unload and reload with Silent Mode Again */
+"\n=== Test 5: Reload with Silent Mode Again ===".echo();
+model.unload();
+model.params({"verbose": 0});  /* Set verbose to 0 (silent) before loading */
+"Set verbose to 0 (silent) before loading".echo();
+"Loading model with verbose=0...".echo();
+result = model.load("models/qwen2.5-7b-instruct-q5_k_m.gguf", "llama");
+("Load result: " + result.str()).echo();
+
+/* Test 6: Generate with Silent Mode Again */
+"\n=== Test 6: Generate with Silent Mode Again ===".echo();
+response3 = model.gen("Tell me a joke.");
+("Generated response: " + response3.str()).echo();
+
+"\n=== Verbose Control Test Complete ===".echo();
+"Note: Verbose level only takes effect when the model is loaded.".echo();
+"To change verbose level, unload and reload the model with new settings.".echo();

@@ -1,0 +1,44 @@
+/* Performance test for optimized GenerateLlama function */
+
+"Testing Optimized GenerateLlama Performance...".echo();
+"=============================================".echo();
+
+/* Test with a longer prompt to see batch processing benefits */
+"=== Performance Test with Longer Prompt ===".echo();
+
+model = $MODEL();
+"Setting verbose=0 for clean output...".echo();
+model.param('verbose', 0);
+
+"Loading model...".echo();
+result = model.load("models/qwen2.5-7b-instruct-q5_k_m.gguf");
+("Load result: " + result.str()).echo();
+
+if (model.info().loaded) {
+    "Model loaded successfully!".echo();
+    
+    /* Test with a longer prompt to demonstrate batch processing optimization */
+    long_prompt = "Please write a comprehensive analysis of artificial intelligence, including its history, current applications, benefits, challenges, and future prospects. Focus on machine learning, natural language processing, computer vision, and robotics. Include specific examples and technical details where appropriate.";
+    
+    "Testing with longer prompt (batch processing optimization)...".echo();
+    ("Prompt length: " + long_prompt.len().str() + " characters").echo();
+    
+    start_time = $INT();
+    start_time.now();
+    
+    "Generating response...".echo();
+    response = model.gen(long_prompt);
+    
+    end_time = $INT();
+    end_time.now();
+    
+    generation_time = end_time - start_time;
+    ("Generation time: " + generation_time.str() + " milliseconds").echo();
+    ("Response length: " + response.len().str() + " characters").echo();
+    ("Response: " + response.str()).echo();
+    
+} else {
+    "Failed to load model".echo();
+}
+
+"Performance test complete!".echo();

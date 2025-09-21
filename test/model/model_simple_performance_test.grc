@@ -1,0 +1,44 @@
+/* Simple performance test for optimized GenerateLlama function */
+
+"Testing Optimized GenerateLlama Performance...".echo();
+"=============================================".echo();
+
+model = $MODEL();
+model.param('verbose', 0);
+
+"Loading model...".echo();
+result = model.load("models/qwen2.5-7b-instruct-q5_k_m.gguf");
+("Load result: " + result.str()).echo();
+
+if (model.info().loaded) {
+    "Model loaded successfully!".echo();
+    
+    /* Test with different prompt lengths to see optimizations */
+    short_prompt = "Hello";
+    medium_prompt = "Please explain the concept of machine learning in simple terms.";
+    long_prompt = "Please write a comprehensive analysis of artificial intelligence, including its history, current applications, benefits, challenges, and future prospects. Focus on machine learning, natural language processing, computer vision, and robotics.";
+    
+    /* Test 1: Short prompt */
+    "=== Test 1: Short Prompt ===".echo();
+    ("Prompt: " + short_prompt.str()).echo();
+    response1 = model.gen(short_prompt);
+    ("Response: " + response1.str()).echo();
+    
+    /* Test 2: Medium prompt */
+    "=== Test 2: Medium Prompt ===".echo();
+    ("Prompt length: " + medium_prompt.len().str() + " characters").echo();
+    response2 = model.gen(medium_prompt);
+    ("Response: " + response2.str()).echo();
+    
+    /* Test 3: Long prompt (batch processing optimization) */
+    "=== Test 3: Long Prompt (Batch Processing) ===".echo();
+    ("Prompt length: " + long_prompt.len().str() + " characters").echo();
+    response3 = model.gen(long_prompt);
+    ("Response: " + response3.str()).echo();
+    
+} else {
+    "Failed to load model".echo();
+    ("Error details: " + model.info().str()).echo();
+}
+
+"Performance test complete!".echo();

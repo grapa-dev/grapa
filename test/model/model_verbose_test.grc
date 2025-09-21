@@ -1,0 +1,38 @@
+/* Test script to demonstrate LLAMA.cpp verbose control */
+
+"Testing Grapa Model Verbose Control...".echo();
+"=====================================".echo();
+
+/* Test 1: Default (Silent) Mode */
+"=== Test 1: Default Silent Mode ===".echo();
+model = $MODEL();
+result = model.load("models/qwen2.5-7b-instruct-q5_k_m.gguf", "llama");
+("Load result: " + result.str()).echo();
+("Model info: " + model.info().str()).echo();
+("Current parameters: " + model.params().str()).echo();
+
+/* Test 2: Verbose Mode (Level 3 - Info) */
+"\n=== Test 2: Verbose Mode (Level 3) ===".echo();
+model.params({"verbose": 3});
+"Set verbose to 3 (info level)".echo();
+("Current parameters: " + model.params().str()).echo();
+
+/* Test 3: Silent Mode Again */
+"\n=== Test 3: Silent Mode Again ===".echo();
+model.params({"verbose": 0});
+"Set verbose to 0 (silent)".echo();
+("Current parameters: " + model.params().str()).echo();
+
+/* Test 4: Generate with Silent Mode */
+"\n=== Test 4: Generate with Silent Mode ===".echo();
+response = model.gen("Hello, how are you?");
+("Generated response: " + response.str()).echo();
+
+/* Test 5: Generate with Verbose Mode */
+"\n=== Test 5: Generate with Verbose Mode ===".echo();
+model.params({"verbose": 2});  /* Warnings level */
+"Set verbose to 2 (warnings level)".echo();
+response2 = model.gen("What is programming?");
+("Generated response: " + response2.str()).echo();
+
+"\n=== Verbose Control Test Complete ===".echo();

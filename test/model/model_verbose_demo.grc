@@ -1,0 +1,63 @@
+/* Comprehensive test to demonstrate LLAMA.cpp verbose control levels */
+
+"Testing LLAMA.cpp Verbose Control Levels...".echo();
+"=============================================".echo();
+
+/* Test 1: Silent Mode (verbose=0) */
+"=== Test 1: Silent Mode (verbose=0) ===".echo();
+model = $MODEL();
+model.params({"verbose": 0});
+"Loading model with verbose=0 (should be silent)...".echo();
+result = model.load("models/qwen2.5-7b-instruct-q5_k_m.gguf", "llama");
+("Load result: " + result.str()).echo();
+("Model info: " + model.info().str()).echo();
+
+/* Test 2: Errors Only (verbose=1) */
+"\\n=== Test 2: Errors Only (verbose=1) ===".echo();
+model.unload();
+model.params({"verbose": 1});
+"Loading model with verbose=1 (errors only)...".echo();
+result = model.load("models/qwen2.5-7b-instruct-q5_k_m.gguf", "llama");
+("Load result: " + result.str()).echo();
+
+/* Test 3: Warnings and Errors (verbose=2) */
+"\\n=== Test 3: Warnings and Errors (verbose=2) ===".echo();
+model.unload();
+model.params({"verbose": 2});
+"Loading model with verbose=2 (warnings and errors)...".echo();
+result = model.load("models/qwen2.5-7b-instruct-q5_k_m.gguf", "llama");
+("Load result: " + result.str()).echo();
+
+/* Test 4: Info, Warnings, and Errors (verbose=3) */
+"\\n=== Test 4: Info, Warnings, and Errors (verbose=3) ===".echo();
+model.unload();
+model.params({"verbose": 3});
+"Loading model with verbose=3 (info, warnings, and errors)...".echo();
+result = model.load("models/qwen2.5-7b-instruct-q5_k_m.gguf", "llama");
+("Load result: " + result.str()).echo();
+
+/* Test 5: Debug and Above (verbose=4) */
+"\\n=== Test 5: Debug and Above (verbose=4) ===".echo();
+model.unload();
+model.params({"verbose": 4});
+"Loading model with verbose=4 (debug and above)...".echo();
+result = model.load("models/qwen2.5-7b-instruct-q5_k_m.gguf", "llama");
+("Load result: " + result.str()).echo();
+
+/* Test 6: Generate with Silent Mode */
+"\\n=== Test 6: Generate with Silent Mode ===".echo();
+model.params({"verbose": 0});
+"Generating with verbose=0 (should be silent)...".echo();
+response = model.gen("Hello, how are you?");
+("Generated response: " + response.str()).echo();
+
+/* Test 7: Generate with Verbose Mode */
+"\\n=== Test 7: Generate with Verbose Mode ===".echo();
+model.params({"verbose": 3});
+"Generating with verbose=3 (should show info)...".echo();
+response2 = model.gen("What is programming?");
+("Generated response: " + response2.str()).echo();
+
+"\\n=== Verbose Control Demo Complete ===".echo();
+"Note: Verbose level controls LLAMA.cpp internal logging output.".echo();
+"Use verbose=0 for silent operation, verbose=3 for normal info, verbose=4 for debug.".echo();
