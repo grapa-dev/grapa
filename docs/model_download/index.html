@@ -11,7 +11,7 @@
         <link rel="canonical" href="https://grapa-dev.github.io/grapa/model_download/">
       
       
-        <link rel="prev" href="../model_examples/">
+        <link rel="prev" href="../model_usage_guide/">
       
       
         <link rel="next" href="../python_use_cases/">
@@ -3434,12 +3434,12 @@
   
   
     <li class="md-nav__item">
-      <a href="../model_examples/" class="md-nav__link">
+      <a href="../model_usage_guide/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
-    Model Examples
+    Model Usage Guide
     
   </span>
   
@@ -4784,7 +4784,7 @@ download_cmd = &quot;curl -L -o &quot; + models_dir + &quot;/qwen2.5-7b-instruct
                &quot;\&quot;https://huggingface.co/Qwen/Qwen2.5-7B-Instruct-GGUF/resolve/main/qwen2.5-7b-instruct-q3_k_m.gguf\&quot;&quot;;
 
 result = $system(download_cmd);
-if (result == 0) {
+if (result.type() != $ERR) {
     &quot;Q3_K_M model downloaded successfully!&quot;.echo();
 } else {
     (&quot;Download failed with error: &quot; + result.str()).echo();
@@ -4810,13 +4810,13 @@ for (i = 0; i &lt; model_files.len(); i++) {
         file_size = $file(model_path).size();
         (&quot;✅ &quot; + model_files[i] + &quot; - &quot; + file_size.str() + &quot; bytes&quot;).echo();
 
-        /* Test loading the model */
+        /* Test loading the model (auto-detect method) */
         test_model = $MODEL();
         test_model.params({&quot;verbose&quot;: 0});
         load_result = test_model.load(model_path);
-        if (load_result == 0) {
+        if (load_result.type() != $ERR) {
             &quot;   Model loads successfully&quot;.echo();
-            test_model.unload();
+            test_model.load();
         } else {
             (&quot;   ⚠️ Model load failed: &quot; + load_result.str()).echo();
         }
@@ -4892,7 +4892,7 @@ for (i = 0; i &lt; model_files.len(); i++) {
 </table>
 <h2 id="see-also">See Also</h2>
 <ul>
-<li><a href="../model_examples/">Model Examples</a> - How to use downloaded models</li>
+<li><a href="../examples/model_examples.grc">Model Examples</a> - How to use downloaded models</li>
 <li><a href="../type/model.md">$MODEL Data Type</a> - Complete type reference</li>
 <li><a href="../api/model.md">API Reference</a> - Complete API documentation</li>
 </ul>

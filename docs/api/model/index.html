@@ -859,9 +859,9 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#loadpath-backend" class="md-nav__link">
+  <a href="#loadpath-method" class="md-nav__link">
     <span class="md-ellipsis">
-      .load(path, backend)
+      .load(path, method)
     </span>
   </a>
   
@@ -904,18 +904,27 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#echotext" class="md-nav__link">
+  <a href="#context" class="md-nav__link">
     <span class="md-ellipsis">
-      .echo(text)
+      .context()
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#unload" class="md-nav__link">
+  <a href="#contextcontextdata" class="md-nav__link">
     <span class="md-ellipsis">
-      .unload()
+      .context(contextData)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#load" class="md-nav__link">
+    <span class="md-ellipsis">
+      .load()
     </span>
   </a>
   
@@ -1017,28 +1026,28 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#backend-specific-information" class="md-nav__link">
+  <a href="#method-specific-information" class="md-nav__link">
     <span class="md-ellipsis">
-      Backend-Specific Information
+      Method-Specific Information
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Backend-Specific Information">
+    <nav class="md-nav" aria-label="Method-Specific Information">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#llamacpp-backend" class="md-nav__link">
+  <a href="#llamacpp-method" class="md-nav__link">
     <span class="md-ellipsis">
-      LLAMA.cpp Backend
+      LLAMA.cpp Method
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#future-backends" class="md-nav__link">
+  <a href="#future-methods" class="md-nav__link">
     <span class="md-ellipsis">
-      Future Backends
+      Future Methods
     </span>
   </a>
   
@@ -3708,12 +3717,12 @@
   
   
     <li class="md-nav__item">
-      <a href="../../model_examples/" class="md-nav__link">
+      <a href="../../model_usage_guide/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
-    Model Examples
+    Model Usage Guide
     
   </span>
   
@@ -4394,9 +4403,9 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#loadpath-backend" class="md-nav__link">
+  <a href="#loadpath-method" class="md-nav__link">
     <span class="md-ellipsis">
-      .load(path, backend)
+      .load(path, method)
     </span>
   </a>
   
@@ -4439,18 +4448,27 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#echotext" class="md-nav__link">
+  <a href="#context" class="md-nav__link">
     <span class="md-ellipsis">
-      .echo(text)
+      .context()
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#unload" class="md-nav__link">
+  <a href="#contextcontextdata" class="md-nav__link">
     <span class="md-ellipsis">
-      .unload()
+      .context(contextData)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#load" class="md-nav__link">
+    <span class="md-ellipsis">
+      .load()
     </span>
   </a>
   
@@ -4552,28 +4570,28 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#backend-specific-information" class="md-nav__link">
+  <a href="#method-specific-information" class="md-nav__link">
     <span class="md-ellipsis">
-      Backend-Specific Information
+      Method-Specific Information
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Backend-Specific Information">
+    <nav class="md-nav" aria-label="Method-Specific Information">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#llamacpp-backend" class="md-nav__link">
+  <a href="#llamacpp-method" class="md-nav__link">
     <span class="md-ellipsis">
-      LLAMA.cpp Backend
+      LLAMA.cpp Method
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#future-backends" class="md-nav__link">
+  <a href="#future-methods" class="md-nav__link">
     <span class="md-ellipsis">
-      Future Backends
+      Future Methods
     </span>
   </a>
   
@@ -4619,21 +4637,25 @@
 <div class="highlight"><pre><span></span><code>model = $MODEL();
 </code></pre></div></p>
 <h2 id="methods">Methods</h2>
-<h3 id="loadpath-backend"><code>.load(path, backend)</code></h3>
+<h3 id="loadpath-method"><code>.load(path, method)</code></h3>
 <p>Loads a model from the specified file path.</p>
 <p><strong>Parameters:</strong>
 - <code>path</code> (string): Path to the model file (GGUF format)
-- <code>backend</code> (string, optional): Backend to use ("llama" is currently the only supported backend)</p>
+- <code>method</code> (string, optional): Method to use ("llama" is currently the only supported method). If not specified, the method will be auto-detected from the file extension or magic bytes.</p>
 <p><strong>Returns:</strong> 
 - <code>0</code> - Success
 - <code>-1</code> - Model context creation failed
 - <code>-2</code> - Model loading failed
 - Other negative values - Various error conditions</p>
 <p><strong>Example:</strong>
-<div class="highlight"><pre><span></span><code>result = model.load(&quot;models/qwen2.5-7b-instruct-q3_k_m.gguf&quot;, &quot;llama&quot;);
-if (result == 0) {
+<div class="highlight"><pre><span></span><code>/* Auto-detect method from file extension */
+result = model.load(&quot;models/qwen2.5-7b-instruct-q3_k_m.gguf&quot;);
+if (result.type() != $ERR) {
     &quot;Model loaded successfully&quot;.echo();
 }
+
+/* Explicitly specify method */
+result = model.load(&quot;models/qwen2.5-7b-instruct-q3_k_m.gguf&quot;, &quot;llama&quot;);
 </code></pre></div></p>
 <p><strong>Error Codes:</strong>
 - <code>-1</code>: Failed to create LLAMA context (usually memory or file issues)
@@ -4667,13 +4689,22 @@ response = model.gen(&quot;Explain AI&quot;, {
 <p>Returns information about the current model state.</p>
 <p><strong>Returns:</strong> Object containing:
 - <code>loaded</code> (boolean): Whether the model is currently loaded
-- <code>backend</code> (string): Backend being used ("llama")
-- <code>path</code> (string): Path to the loaded model file</p>
+- <code>method</code> (string): Method being used ("llama")
+- <code>model_path</code> (string): Full path to the loaded model file
+- <code>model</code> (string): Model filename only
+- <code>model_size_bytes</code> (int): Size of the model in bytes (LLAMA.cpp only)
+- <code>n_params</code> (int): Number of parameters in the model (LLAMA.cpp only)
+- <code>model_description</code> (string): Model description (LLAMA.cpp only)
+- <code>has_encoder</code> (boolean): Whether model has encoder (LLAMA.cpp only)
+- <code>has_decoder</code> (boolean): Whether model has decoder (LLAMA.cpp only)
+- <code>is_recurrent</code> (boolean): Whether model is recurrent (LLAMA.cpp only)</p>
 <p><strong>Example:</strong>
 <div class="highlight"><pre><span></span><code>info = model.info();
-(&quot;Model loaded: &quot; + info.loaded.str()).echo();
-(&quot;Backend: &quot; + info.backend.str()).echo();
-(&quot;Path: &quot; + info.path.str()).echo();
+(&quot;Model loaded: &quot; + info.&quot;loaded&quot;.str()).echo();
+(&quot;Method: &quot; + info.&quot;method&quot;.str()).echo();
+(&quot;Model path: &quot; + info.&quot;model_path&quot;.str()).echo();
+(&quot;Model name: &quot; + info.&quot;model&quot;.str()).echo();
+(&quot;Model size: &quot; + info.&quot;model_size_bytes&quot;.str() + &quot; bytes&quot;).echo();
 </code></pre></div></p>
 <h3 id="params"><code>.params()</code></h3>
 <p>Returns current generation parameters.</p>
@@ -4688,8 +4719,8 @@ response = model.gen(&quot;Explain AI&quot;, {
 - <code>verbose</code> (int): Current verbose level setting</p>
 <p><strong>Example:</strong>
 <div class="highlight"><pre><span></span><code>params = model.params();
-(&quot;Current temperature: &quot; + params.temperature.str()).echo();
-(&quot;Max tokens: &quot; + params.max_tokens.str()).echo();
+(&quot;Current temperature: &quot; + params.&quot;temperature&quot;.str()).echo();
+(&quot;Max tokens: &quot; + params.&quot;max_tokens&quot;.str()).echo();
 </code></pre></div></p>
 <h3 id="paramsparameters"><code>.params(parameters)</code></h3>
 <p>Sets generation parameters using a <code>$GOBJ</code> collection.</p>
@@ -4712,22 +4743,49 @@ response = model.gen(&quot;Explain AI&quot;, {
 - <code>"seed"</code> (int): -1 for random, or any integer
 - <code>"context_size"</code> (int): 512 to 131072+
 - <code>"verbose"</code> (int): 0-4 (0=silent, 1=errors, 2=warnings, 3=info, 4=debug)</p>
-<h3 id="echotext"><code>.echo(text)</code></h3>
-<p>Echoes text to output stream.</p>
+<h3 id="context"><code>.context()</code></h3>
+<p>Gets the current context state of the model.</p>
+<p><strong>Returns:</strong> Object containing context information:
+- <code>text</code> (string): Current text context
+- <code>tokens</code> (list): Current token context (for efficient method processing)
+- <code>method</code> (string): Method being used
+- <code>model</code> (string): Model filename</p>
+<p><strong>Example:</strong>
+<div class="highlight"><pre><span></span><code>context = model.context();
+(&quot;Context text: &quot; + context.&quot;text&quot;.str()).echo();
+(&quot;Context tokens: &quot; + context.&quot;tokens&quot;.len().str() + &quot; tokens&quot;).echo();
+(&quot;Method: &quot; + context.&quot;method&quot;.str()).echo();
+</code></pre></div></p>
+<h3 id="contextcontextdata"><code>.context(contextData)</code></h3>
+<p>Sets the context for the model.</p>
 <p><strong>Parameters:</strong>
-- <code>text</code> (string): Text to echo</p>
+- <code>contextData</code> (string, list, or object): Context data to set
+  - If string: Sets text context
+  - If list: Sets token context (for efficient processing)
+  - If object: Can contain both "text" and "tokens" fields</p>
 <p><strong>Returns:</strong> None</p>
 <p><strong>Example:</strong>
-<div class="highlight"><pre><span></span><code>model.echo(&quot;Model is ready for generation&quot;);
+<div class="highlight"><pre><span></span><code>/* Set text context */
+model.context(&quot;Previous conversation: Hello, how are you?&quot;);
+
+/* Set token context (more efficient) */
+tokenList = [1, 2, 3, 4, 5];
+model.context(tokenList);
+
+/* Set both text and tokens */
+model.context({
+    &quot;text&quot;: &quot;Previous conversation&quot;,
+    &quot;tokens&quot;: [1, 2, 3, 4, 5]
+});
 </code></pre></div></p>
-<h3 id="unload"><code>.unload()</code></h3>
-<p>Unloads the current model and frees memory.</p>
+<h3 id="load"><code>.load()</code></h3>
+<p>Unloads the current model and frees memory by calling <code>.load()</code> with no parameters.</p>
 <p><strong>Returns:</strong>
 - <code>0</code> - Success
 - <code>-1</code> - Error during unload</p>
 <p><strong>Example:</strong>
-<div class="highlight"><pre><span></span><code>result = model.unload();
-if (result == 0) {
+<div class="highlight"><pre><span></span><code>result = model.load();
+if (result.type() != $ERR) {
     &quot;Model unloaded successfully&quot;.echo();
 }
 </code></pre></div></p>
@@ -4848,7 +4906,7 @@ model.load(&quot;large_model.gguf&quot;);
 
 /* Use model... */
 
-model.unload();  /* Free memory */
+model.load();  /* Free memory */
 </code></pre></div></p>
 </li>
 <li>
@@ -4898,26 +4956,28 @@ model.load(&quot;qwen2.5-7b-instruct-q2_k.gguf&quot;);
 </code></pre></div></p>
 </li>
 </ol>
-<h2 id="backend-specific-information">Backend-Specific Information</h2>
-<h3 id="llamacpp-backend">LLAMA.cpp Backend</h3>
-<p>The current implementation uses LLAMA.cpp as the backend:</p>
+<h2 id="method-specific-information">Method-Specific Information</h2>
+<h3 id="llamacpp-method">LLAMA.cpp Method</h3>
+<p>The current implementation uses LLAMA.cpp as the method:</p>
 <ul>
 <li><strong>Supported formats:</strong> GGUF</li>
 <li><strong>Quantization levels:</strong> Q2_K, Q3_K_M, Q4_K_M, Q5_K_M, Q6_K, Q8_0, FP16</li>
 <li><strong>Hardware acceleration:</strong> CPU-optimized</li>
 <li><strong>Thread safety:</strong> Yes</li>
+<li><strong>Auto-detection:</strong> From <code>.gguf</code> file extension or "GGUF" magic bytes</li>
 </ul>
-<h3 id="future-backends">Future Backends</h3>
-<p>The <code>$MODEL</code> type is designed to support multiple backends:</p>
+<h3 id="future-methods">Future Methods</h3>
+<p>The <code>$MODEL</code> type is designed to support multiple methods:</p>
 <ul>
-<li><strong>ONNX:</strong> For cross-platform inference</li>
-<li><strong>TensorFlow:</strong> For TensorFlow models</li>
+<li><strong>ONNX:</strong> For cross-platform inference (auto-detected from <code>.onnx</code> extension)</li>
+<li><strong>TensorFlow:</strong> For TensorFlow models (auto-detected from <code>.tflite</code> extension)</li>
 <li><strong>PyTorch:</strong> For PyTorch models (via Python integration)</li>
+<li><strong>scikit-learn:</strong> For traditional ML models (auto-detected from <code>.pkl</code> extension)</li>
 </ul>
 <h2 id="see-also">See Also</h2>
 <ul>
 <li><a href="../../type/model/">$MODEL Data Type</a> - Complete type reference</li>
-<li><a href="../examples/model_examples.md">Model Examples</a> - Practical usage examples</li>
+<li><a href="../../examples/model_examples.grc">Model Examples</a> - Practical usage examples</li>
 <li><a href="../examples/model_download.md">Model Download Guide</a> - How to download models</li>
 </ul>
 

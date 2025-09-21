@@ -1518,9 +1518,9 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#unload" class="md-nav__link">
+  <a href="#load" class="md-nav__link">
     <span class="md-ellipsis">
-      .unload()
+      .load()
     </span>
   </a>
   
@@ -4521,12 +4521,12 @@
   
   
     <li class="md-nav__item">
-      <a href="../model_examples/" class="md-nav__link">
+      <a href="../model_usage_guide/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
-    Model Examples
+    Model Usage Guide
     
   </span>
   
@@ -5889,9 +5889,9 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#unload" class="md-nav__link">
+  <a href="#load" class="md-nav__link">
     <span class="md-ellipsis">
-      .unload()
+      .load()
     </span>
   </a>
   
@@ -6907,7 +6907,7 @@ tomorrow = now.add(86400);  /* Add 24 hours */
 - <code>backend</code> (string, optional): Backend to use ("llama" is currently the only supported backend)</p>
 <p><strong>Returns:</strong> Error code (0 for success)</p>
 <div class="highlight"><pre><span></span><code>result = model.load(&quot;models/qwen2.5-7b-instruct-q3_k_m.gguf&quot;, &quot;llama&quot;);
-if (result == 0) {
+if (result.type() != $ERR) {
     &quot;Model loaded successfully!&quot;.echo();
 }
 </code></pre></div>
@@ -6930,15 +6930,15 @@ response = model.gen(&quot;Explain AI&quot;, {
 <p>Returns information about the current model state.</p>
 <p><strong>Returns:</strong> Object containing model information</p>
 <div class="highlight"><pre><span></span><code>info = model.info();
-(&quot;Model loaded: &quot; + info.loaded.str()).echo();
-(&quot;Backend: &quot; + info.backend.str()).echo();
-(&quot;Path: &quot; + info.path.str()).echo();
+(&quot;Model loaded: &quot; + info.&quot;loaded&quot;.str()).echo();
+(&quot;Method: &quot; + info.&quot;method&quot;.str()).echo();
+(&quot;Model path: &quot; + info.&quot;model_path&quot;.str()).echo();
 </code></pre></div>
 <h4 id="params"><strong><code>.params()</code></strong></h4>
 <p>Returns current generation parameters.</p>
 <div class="highlight"><pre><span></span><code>params = model.params();
-(&quot;Current temperature: &quot; + params.temperature.str()).echo();
-(&quot;Max tokens: &quot; + params.max_tokens.str()).echo();
+(&quot;Current temperature: &quot; + params.&quot;temperature&quot;.str()).echo();
+(&quot;Max tokens: &quot; + params.&quot;max_tokens&quot;.str()).echo();
 </code></pre></div>
 <h4 id="paramsparameters"><strong><code>.params(parameters)</code></strong></h4>
 <p>Sets generation parameters using a <code>$GOBJ</code> collection.</p>
@@ -6948,11 +6948,11 @@ response = model.gen(&quot;Explain AI&quot;, {
     &quot;verbose&quot;: 2
 });
 </code></pre></div>
-<h4 id="unload"><strong><code>.unload()</code></strong></h4>
-<p>Unloads the current model and frees memory.</p>
+<h4 id="load"><strong><code>.load()</code></strong></h4>
+<p>Unloads the current model and frees memory by calling <code>.load()</code> with no parameters.</p>
 <p><strong>Returns:</strong> Error code (0 for success)</p>
-<div class="highlight"><pre><span></span><code>result = model.unload();
-if (result == 0) {
+<div class="highlight"><pre><span></span><code>result = model.load();
+if (result.type() != $ERR) {
     &quot;Model unloaded successfully&quot;.echo();
 }
 </code></pre></div>
@@ -7030,7 +7030,7 @@ model.params({
 
 /* Load model */
 result = model.load(&quot;models/qwen2.5-7b-instruct-q3_k_m.gguf&quot;);
-if (result == 0) {
+if (result.type() != $ERR) {
     &quot;Model loaded successfully!&quot;.echo();
 
     /* Generate text */
@@ -7048,7 +7048,7 @@ if (result == 0) {
 }
 
 /* Clean up */
-model.unload();
+model.load();
 </code></pre></div>
 <h3 id="model-formats">Model Formats</h3>
 <p>Currently supports:
@@ -7096,12 +7096,9 @@ response2 = model2.gen(&quot;Hi&quot;);
 </code></pre></div>
 <p>For complete documentation, see:
 - <a href="../type/model/">$MODEL Data Type</a> - Complete type reference
-- <a href="../model_examples/">Model Examples Guide</a> - Comprehensive usage examples
+- <a href="../examples/model_examples.grc">Model Examples Guide</a> - Comprehensive usage examples
 - <a href="../model_download/">Model Download Guide</a> - How to download models
-- <a href="../api/model/">Model API Reference</a> - Complete API documentation
-- <a href="../examples/model_basic_example.grc">Model Basic Example</a> - Basic usage example
-- <a href="../examples/model_parameter_example.grc">Model Parameter Example</a> - Parameter configuration
-- <a href="../examples/model_error_handling_example.grc">Model Error Handling Example</a> - Error handling patterns</p>
+- <a href="../api/model/">Model API Reference</a> - Complete API documentation</p>
 <p><a href="#grapa-api-reference">Back to Top</a></p>
 <hr />
 <h2 id="python-integration">Python Integration</h2>
