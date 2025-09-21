@@ -1,0 +1,192 @@
+/* Model Download Example */
+
+"Model Download Example".echo();
+"======================".echo();
+
+/* This example demonstrates how to download models using Grapa */
+/* Note: This is a demonstration - actual downloads require curl or other tools */
+
+"=== Model Download Information ===".echo();
+
+/* Display available models and their download URLs */
+models = {
+    "qwen2.5-7b-instruct-q2_k": {
+        "size": "3.0 GB",
+        "type": "single file",
+        "recommended": "smallest",
+        "url": "https://huggingface.co/Qwen/Qwen2.5-7B-Instruct-GGUF/resolve/main/qwen2.5-7b-instruct-q2_k.gguf"
+    },
+    "qwen2.5-7b-instruct-q3_k_m": {
+        "size": "3.8 GB", 
+        "type": "single file",
+        "recommended": "examples",
+        "url": "https://huggingface.co/Qwen/Qwen2.5-7B-Instruct-GGUF/resolve/main/qwen2.5-7b-instruct-q3_k_m.gguf"
+    },
+    "qwen2.5-7b-instruct-q4_k_m": {
+        "size": "4.7 GB",
+        "type": "split (2 parts)",
+        "recommended": "balanced",
+        "url1": "https://huggingface.co/Qwen/Qwen2.5-7B-Instruct-GGUF/resolve/main/qwen2.5-7b-instruct-q4_k_m-00001-of-00002.gguf",
+        "url2": "https://huggingface.co/Qwen/Qwen2.5-7B-Instruct-GGUF/resolve/main/qwen2.5-7b-instruct-q4_k_m-00002-of-00002.gguf"
+    },
+    "qwen2.5-7b-instruct-q5_k_m": {
+        "size": "5.4 GB",
+        "type": "split (2 parts)",
+        "recommended": "production",
+        "url1": "https://huggingface.co/Qwen/Qwen2.5-7B-Instruct-GGUF/resolve/main/qwen2.5-7b-instruct-q5_k_m-00001-of-00002.gguf",
+        "url2": "https://huggingface.co/Qwen/Qwen2.5-7B-Instruct-GGUF/resolve/main/qwen2.5-7b-instruct-q5_k_m-00002-of-00002.gguf"
+    }
+};
+
+"Available models:".echo();
+for (model_name in models) {
+    model_info = models[model_name];
+    ("  " + model_name + ": " + model_info.size + " (" + model_info.type + ") - " + model_info.recommended).echo();
+}
+
+"".echo();
+
+/* Generate download commands */
+"=== Download Commands ===".echo();
+
+"Recommended for examples (Q3_K_M - single file):".echo();
+q3_model = models["qwen2.5-7b-instruct-q3_k_m"];
+("curl -L -o models/qwen2.5-7b-instruct-q3_k_m.gguf \"" + q3_model.url + "\"").echo();
+
+"".echo();
+
+"Recommended for production (Q5_K_M - higher quality, requires merging):".echo();
+q5_model = models["qwen2.5-7b-instruct-q5_k_m"];
+("curl -L -o models/qwen2.5-7b-instruct-q5_k_m-00001-of-00002.gguf \"" + q5_model.url1 + "\"").echo();
+("curl -L -o models/qwen2.5-7b-instruct-q5_k_m-00002-of-00002.gguf \"" + q5_model.url2 + "\"").echo();
+"cat models/qwen2.5-7b-instruct-q5_k_m-00001-of-00002.gguf models/qwen2.5-7b-instruct-q5_k_m-00002-of-00002.gguf > models/qwen2.5-7b-instruct-q5_k_m.gguf".echo();
+"rm models/qwen2.5-7b-instruct-q5_k_m-00001-of-00002.gguf models/qwen2.5-7b-instruct-q5_k_m-00002-of-00002.gguf".echo();
+
+"".echo();
+
+/* Create models directory if it doesn't exist */
+"=== Directory Setup ===".echo();
+models_dir = "models";
+if (!$file(models_dir).exists()) {
+    $file(models_dir).mkdir();
+    ("Created directory: " + models_dir).echo();
+} else {
+    ("Directory already exists: " + models_dir).echo();
+}
+
+/* Check for existing model files */
+"=== Existing Model Files ===".echo();
+if ($file(models_dir).exists()) {
+    files = $file(models_dir).ls();
+    if (files.len() > 0) {
+        "Found existing files:".echo();
+        for (i = 0; i < files.len(); i++) {
+            file_info = files[i];
+            file_name = file_info["$KEY"];
+            file_type = file_info["$TYPE"];
+            if (file_name.find(".gguf") != -1) {
+                ("  " + file_name + " (" + file_type + ")").echo();
+            }
+        }
+    } else {
+        "No files found in models directory".echo();
+    }
+} else {
+    "Models directory does not exist".echo();
+}
+
+/* Model verification function */
+"=== Model Verification ===".echo();
+
+verify_model = op(model_path) {
+    if (!$file(model_path).exists()) {
+        return {"valid": false, "error": "File not found"};
+    }
+    
+    file_size = $file(model_path).size();
+    if (file_size < 1000000) {  /* Less than 1MB is suspicious */
+        return {"valid": false, "error": "File too small"};
+    }
+    
+    /* Try to load the model */
+    test_model = $MODEL();
+    test_model.params({"verbose": 0});
+    result = test_model.load(model_path);
+    
+    if (result == 0) {
+        test_model.unload();
+        return {"valid": true, "size": file_size};
+    } else {
+        return {"valid": false, "error": "Load failed", "code": result};
+    }
+};
+
+/* Test verification with existing models */
+if ($file(models_dir).exists()) {
+    files = $file(models_dir).ls();
+    for (i = 0; i < files.len(); i++) {
+        file_info = files[i];
+        file_name = file_info["$KEY"];
+        if (file_name.find(".gguf") != -1) {
+            model_path = models_dir + "/" + file_name;
+            ("Verifying " + file_name + "...").echo();
+            result = verify_model(model_path);
+            if (result.valid) {
+                ("  ✅ Valid model (" + result.size.str() + " bytes)").echo();
+            } else {
+                ("  ❌ Invalid model: " + result.error.str()).echo();
+            }
+        }
+    }
+}
+
+/* Download script generation */
+"=== Download Script Generation ===".echo();
+
+generate_download_script = op(script_name) {
+    script_content = "#!/bin/bash\n";
+    script_content += "# " + script_name + "\n";
+    script_content += "# Generated by Grapa model download example\n\n";
+    script_content += "MODELS_DIR=\"models\"\n";
+    script_content += "mkdir -p \"$MODELS_DIR\"\n\n";
+    script_content += "echo \"Downloading Qwen2.5-7B-Instruct models...\"\n\n";
+    
+    /* Add download commands for each model */
+    for (model_name in models) {
+        model_info = models[model_name];
+        script_content += "# " + model_name + " (" + model_info.size + ")\n";
+        
+        if (model_info.type == "single file") {
+            script_content += "echo \"Downloading " + model_name + "...\"\n";
+            script_content += "curl -L -o \"$MODELS_DIR/" + model_name + ".gguf\" \\\n";
+            script_content += "  \"" + model_info.url + "\"\n\n";
+        } else if (model_info.type == "split (2 parts)") {
+            script_content += "echo \"Downloading " + model_name + " parts...\"\n";
+            script_content += "curl -L -o \"$MODELS_DIR/" + model_name + "-00001-of-00002.gguf\" \\\n";
+            script_content += "  \"" + model_info.url1 + "\"\n";
+            script_content += "curl -L -o \"$MODELS_DIR/" + model_name + "-00002-of-00002.gguf\" \\\n";
+            script_content += "  \"" + model_info.url2 + "\"\n";
+            script_content += "echo \"Merging " + model_name + "...\"\n";
+            script_content += "cat \"$MODELS_DIR/" + model_name + "-00001-of-00002.gguf\" \\\n";
+            script_content += "     \"$MODELS_DIR/" + model_name + "-00002-of-00002.gguf\" \\\n";
+            script_content += "     > \"$MODELS_DIR/" + model_name + ".gguf\"\n";
+            script_content += "rm \"$MODELS_DIR/" + model_name + "-00001-of-00002.gguf\"\n";
+            script_content += "rm \"$MODELS_DIR/" + model_name + "-00002-of-00002.gguf\"\n\n";
+        }
+    }
+    
+    script_content += "echo \"Download complete!\"\n";
+    
+    return script_content;
+};
+
+/* Generate and save download script */
+script_content = generate_download_script("download_models.sh");
+$file().set("download_models.sh", script_content);
+"Generated download script: download_models.sh".echo();
+
+/* Display script content */
+"Script content:".echo();
+script_content.echo();
+
+"Example completed!".echo();

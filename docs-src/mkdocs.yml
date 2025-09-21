@@ -90,6 +90,7 @@ nav:
   - Quickstart: cli_quickstart.md
   - Reference:
       - API Reference: api_reference.md
+      - Model API: api/model.md
       - Data Types:
           - Data Type Selection Guide: data_type_selection_guide.md
           - Array: type/array.md
@@ -100,6 +101,7 @@ nav:
           - Float: type/float.md
           - ID: type/id.md
           - Integer: type/int.md
+          - Model: type/model.md
           - GOBJ: type/gobj.md
           - Object Methods: type/obj_methods.md
           - Operation: type/op.md
@@ -190,6 +192,8 @@ nav:
           - Kotlin: migrations/kotlin_to_grapa_migration.md
           - Swift: migrations/swift_to_grapa_migration.md
       - Examples: examples.md
+      - Model Examples: model_examples.md
+      - Model Download Guide: model_download.md
       - Python Use Cases: python_use_cases.md
       - GRC Scripts: grc_scripts.md
       - GRZ Format: grz_format.md

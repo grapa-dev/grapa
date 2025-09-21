@@ -25,6 +25,7 @@ tags:
 - [Array/Matrix Operations](#arraymatrix-operations)
 - [File System](#file-system)
 - [Time & Date](#time-date)
+- [AI/ML Model Integration](#aiml-model-integration)
 - [Python Integration](#python-integration)
 - [Universal Object Methods](#universal-object-methods)
 
@@ -734,6 +735,214 @@ now = $time();
 formatted = now.format("%Y-%m-%d %H:%M:%S");
 tomorrow = now.add(86400);  /* Add 24 hours */
 ```
+
+[Back to Top](#grapa-api-reference)
+
+---
+
+## AI/ML Model Integration
+
+Grapa provides native support for AI/ML models through the `$MODEL` data type, currently supporting LLAMA.cpp-based models for text generation.
+
+### Core Functions
+
+#### **`$MODEL()`**
+Creates a new model instance.
+
+```grapa
+model = $MODEL();
+```
+
+#### **`.load(path, backend)`**
+Loads a model from the specified file path.
+
+**Parameters:**
+- `path` (string): Path to the model file (GGUF format)
+- `backend` (string, optional): Backend to use ("llama" is currently the only supported backend)
+
+**Returns:** Error code (0 for success)
+
+```grapa
+result = model.load("models/qwen2.5-7b-instruct-q3_k_m.gguf", "llama");
+if (result == 0) {
+    "Model loaded successfully!".echo();
+}
+```
+
+#### **`.gen(prompt, params)`**
+Generates text using the loaded model.
+
+**Parameters:**
+- `prompt` (string): Input text prompt
+- `params` (object, optional): Generation parameters to override defaults
+
+**Returns:** Generated text string
+
+```grapa
+/* Basic generation */
+response = model.gen("Hello, how are you?");
+
+/* Generation with custom parameters */
+response = model.gen("Explain AI", {
+    "temperature": 0.8,
+    "max_tokens": 100
+});
+```
+
+#### **`.info()`**
+Returns information about the current model state.
+
+**Returns:** Object containing model information
+
+```grapa
+info = model.info();
+("Model loaded: " + info.loaded.str()).echo();
+("Backend: " + info.backend.str()).echo();
+("Path: " + info.path.str()).echo();
+```
+
+#### **`.params()`**
+Returns current generation parameters.
+
+```grapa
+params = model.params();
+("Current temperature: " + params.temperature.str()).echo();
+("Max tokens: " + params.max_tokens.str()).echo();
+```
+
+#### **`.params(parameters)`**
+Sets generation parameters using a `$GOBJ` collection.
+
+```grapa
+model.params({
+    "temperature": 0.7,
+    "max_tokens": 50,
+    "verbose": 2
+});
+```
+
+#### **`.unload()`**
+Unloads the current model and frees memory.
+
+**Returns:** Error code (0 for success)
+
+```grapa
+result = model.unload();
+if (result == 0) {
+    "Model unloaded successfully".echo();
+}
+```
+
+### Generation Parameters
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `temperature` | float | 0.7 | Controls randomness (0.0 = deterministic, 1.0+ = more random) |
+| `max_tokens` | int | 10 | Maximum number of tokens to generate |
+| `top_k` | int | 40 | Number of top tokens to consider |
+| `top_p` | float | 0.9 | Nucleus sampling threshold |
+| `repeat_penalty` | float | 1.1 | Penalty for repeating tokens |
+| `seed` | int | -1 | Random seed (-1 for random) |
+| `context_size` | int | 2048 | Context window size |
+| `verbose` | int | 0 | Logging verbosity (0=silent, 1=errors, 2=warnings, 3=info, 4=debug) |
+
+### Complete Example
+
+```grapa
+/* Complete AI model usage example */
+model = $MODEL();
+
+/* Configure parameters */
+model.params({
+    "temperature": 0.8,
+    "max_tokens": 100,
+    "verbose": 0
+});
+
+/* Load model */
+result = model.load("models/qwen2.5-7b-instruct-q3_k_m.gguf");
+if (result == 0) {
+    "Model loaded successfully!".echo();
+    
+    /* Generate text */
+    response = model.gen("What is artificial intelligence?");
+    ("Response: " + response.str()).echo();
+    
+    /* Generate with different parameters */
+    creative_response = model.gen("Write a poem about space", {
+        "temperature": 1.2,
+        "max_tokens": 150
+    });
+    ("Creative response: " + creative_response.str()).echo();
+} else {
+    ("Failed to load model: " + result.str()).echo();
+}
+
+/* Clean up */
+model.unload();
+```
+
+### Model Formats
+
+Currently supports:
+- **GGUF**: The standard format for LLAMA.cpp models
+  - Efficient quantization (Q2_K, Q3_K_M, Q4_K_M, Q5_K_M, Q6_K, Q8_0, FP16)
+  - Cross-platform compatibility
+  - Metadata inclusion
+
+### Backend Support
+
+- **LLAMA.cpp**: For GGUF format models
+  - Supports various quantization levels
+  - Optimized for CPU inference
+  - Thread-safe operations
+
+### Performance Considerations
+
+- **Memory Usage**: Large models (7B+ parameters) require significant RAM
+- **Loading Time**: Initial model loading can take several seconds
+- **Generation Speed**: Depends on model size and hardware capabilities
+- **Context Size**: Larger context windows use more memory
+
+### Error Handling
+
+```grapa
+model = $MODEL();
+result = model.load("model.gguf");
+if (result != 0) {
+    ("Error loading model: " + result.str()).echo();
+    return;
+}
+
+/* Use model safely */
+response = model.gen("Hello");
+```
+
+### Thread Safety
+
+The `$MODEL` type is designed to be thread-safe, allowing multiple model instances to be used concurrently.
+
+```grapa
+/* Safe to use multiple instances */
+model1 = $MODEL();
+model2 = $MODEL();
+
+model1.load("model.gguf");
+model2.load("model.gguf");
+
+/* These can run concurrently */
+response1 = model1.gen("Hello");
+response2 = model2.gen("Hi");
+```
+
+For complete documentation, see:
+- [$MODEL Data Type](type/model.md) - Complete type reference
+- [Model Examples Guide](model_examples.md) - Comprehensive usage examples
+- [Model Download Guide](model_download.md) - How to download models
+- [Model API Reference](api/model.md) - Complete API documentation
+- [Model Basic Example](examples/model_basic_example.grc) - Basic usage example
+- [Model Parameter Example](examples/model_parameter_example.grc) - Parameter configuration
+- [Model Error Handling Example](examples/model_error_handling_example.grc) - Error handling patterns
 
 [Back to Top](#grapa-api-reference)
 
