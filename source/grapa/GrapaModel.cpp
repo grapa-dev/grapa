@@ -23,6 +23,9 @@ limitations under the License.
 
 #include <vector>
 #include <thread>
+#include <fstream>
+#include <algorithm>
+#include <cctype>
 
 #include "llama.h"
 #include "ggml.h"   // for ggml_log_level enum
@@ -134,7 +137,16 @@ GrapaError GrapaModel::Load(const GrapaCHAR& modelPath, const GrapaCHAR& backend
     ResetModelSpecificParams();
     
     mModelPath.FROM(modelPath);
-    mBackend.FROM(backend);
+    
+    // If backend is not specified, try to auto-detect it
+    if (backend.mLength == 0) {
+        mBackend = AutoDetectBackend(modelPath);
+        if (mBackend.mLength == 0) {
+            return -1; // Could not detect backend
+        }
+    } else {
+        mBackend.FROM(backend);
+    }
 
     if (mBackend.StrCmp("llama") == 0) {
         result = LoadLlama(modelPath);
@@ -155,6 +167,72 @@ GrapaError GrapaModel::Load(const GrapaCHAR& modelPath, const GrapaCHAR& backend
     }
     
     return result;
+}
+
+GrapaCHAR GrapaModel::AutoDetectBackend(const GrapaCHAR& modelPath)
+{
+    GrapaCHAR result;
+    std::string path((char*)modelPath.mBytes, modelPath.mLength);
+    
+    // First try file extension detection
+    size_t dotPos = path.find_last_of('.');
+    if (dotPos != std::string::npos) {
+        std::string ext = path.substr(dotPos);
+        
+        // Convert to lowercase for case-insensitive comparison
+        std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+        
+        if (ext == ".gguf") {
+            result.FROM("llama");
+            return result;
+        }
+        else if (ext == ".pkl" || ext == ".joblib") {
+            result.FROM("sklearn");
+            return result;
+        }
+        else if (ext == ".onnx") {
+            result.FROM("onnx");
+            return result;
+        }
+        else if (ext == ".tflite") {
+            result.FROM("tensorflow");
+            return result;
+        }
+    }
+    
+    // If extension doesn't match, try magic bytes detection
+    std::ifstream file(path, std::ios::binary);
+    if (file) {
+        char header[8];
+        file.read(header, 8);
+        
+        // GGUF format (LLAMA.cpp)
+        if (strncmp(header, "GGUF", 4) == 0) {
+            result.FROM("llama");
+            return result;
+        }
+        
+        // Python pickle format (sklearn)
+        if (strncmp(header, "PK", 2) == 0) {
+            result.FROM("sklearn");
+            return result;
+        }
+        
+        // ONNX format
+        if (strncmp(header, "ONNX", 4) == 0) {
+            result.FROM("onnx");
+            return result;
+        }
+        
+        // TensorFlow Lite format
+        if (strncmp(header, "TFL3", 4) == 0) {
+            result.FROM("tensorflow");
+            return result;
+        }
+    }
+    
+    // Could not detect backend
+    return result;  // Empty result
 }
 
 GrapaError GrapaModel::Unload()

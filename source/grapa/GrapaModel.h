@@ -51,6 +51,7 @@ public:
     
     // Core model operations
     GrapaError Load(const GrapaCHAR& modelPath, const GrapaCHAR& backend);
+    GrapaError Load(const GrapaCHAR& modelPath);  // Auto-detect backend
     GrapaError Unload();
     bool IsLoaded() const;
     
@@ -85,6 +86,9 @@ private:
     GrapaRuleEvent* MergeParams(GrapaRuleEvent* persistent, GrapaRuleEvent* callSpecific);
     GrapaError ApplyParamsToLlama(GrapaRuleEvent* params);
     int GetModelSize();  // Estimate model size for parameter defaults
+    
+    // Auto-detection
+    GrapaCHAR AutoDetectBackend(const GrapaCHAR& modelPath);
     
     // Logging callback
     static void LogCallback(enum ggml_log_level level, const char * text, void * user_data);
