@@ -25,6 +25,7 @@ public:
     struct llama_context* mLlamaContext;
     struct llama_model_params mLlamaModelParams;
     struct llama_context_params mLlamaContextParams;
+    struct llama_sampler* mLlamaSampler;  // Sampler chain for temperature-aware generation
     
     // Generation parameters
     s32 mMaxTokens;
@@ -79,6 +80,8 @@ public:
     
 private:
     GrapaError InitializeLlama();
+    GrapaError InitializeSampler();  // Initialize LLAMA.cpp sampler chain
+    void CleanupSampler();           // Clean up sampler resources
     
     // Parameter management
     void ResetModelSpecificParams();

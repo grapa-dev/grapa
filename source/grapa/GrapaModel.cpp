@@ -17,6 +17,7 @@ limitations under the License.
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "GrapaModel.h"
+#include <ctime>  // For time() function
 #include "GrapaSystem.h"
 #include "GrapaState.h"
 
@@ -60,6 +61,9 @@ void GrapaModel::INIT(GrapaRuleEvent* pParams)
     // Initialize optimization buffers
     mTempToken.SetLength(0);
     memset(mTokenBuffer, 0, sizeof(mTokenBuffer));
+    
+    // Initialize sampler to NULL
+    mLlamaSampler = nullptr;
     
     // Set LLAMA.cpp logging callback to control verbosity
     llama_log_set(LogCallback, (void*)&mVerbose);
@@ -198,11 +202,21 @@ GrapaError GrapaModel::LoadLlama(const GrapaCHAR& modelPath)
         return -2;
     }
 
+    // Initialize sampler chain for temperature-aware generation
+    result = InitializeSampler();
+    if (result != 0) {
+        // Sampler initialization failed, but model is still usable with greedy sampling
+        // We'll continue without the sampler
+    }
+
     return result;
 }
 
 GrapaError GrapaModel::UnloadLlama()
 {
+    // Clean up sampler first
+    CleanupSampler();
+    
     if (mLlamaContext) {
         llama_free(mLlamaContext);
         mLlamaContext = nullptr;
@@ -283,19 +297,27 @@ GrapaError GrapaModel::GenerateLlama(const GrapaCHAR& prompt, GrapaCHAR& result,
     // Generate response
     result.SetLength(0);
     
-    // Now generate new tokens
+    // Now generate new tokens using LLAMA.cpp sampler
     for (int i = 0; i < this->mMaxTokens; i++) {
-        // Get next token using improved greedy sampling with temperature
-        float* logits = llama_get_logits(this->mLlamaContext);
-        int n_vocab = llama_vocab_n_tokens(vocab);
+        llama_token next_token;
         
-        // Find the token with highest probability (greedy sampling - revert to original)
-        llama_token next_token = 0;
-        float max_logit = logits[0];
-        for (int j = 1; j < n_vocab; j++) {
-            if (logits[j] > max_logit) {
-                max_logit = logits[j];
-                next_token = j;
+        // Use LLAMA.cpp sampler if available, otherwise fall back to greedy
+        if (mLlamaSampler) {
+            // Use the sampler chain for temperature-aware generation
+            next_token = llama_sampler_sample(mLlamaSampler, this->mLlamaContext, -1);
+            llama_sampler_accept(mLlamaSampler, next_token);
+        } else {
+            // Fallback to greedy sampling if sampler is not available
+            float* logits = llama_get_logits(this->mLlamaContext);
+            int n_vocab = llama_vocab_n_tokens(vocab);
+            
+            next_token = 0;
+            float max_logit = logits[0];
+            for (int j = 1; j < n_vocab; j++) {
+                if (logits[j] > max_logit) {
+                    max_logit = logits[j];
+                    next_token = j;
+                }
             }
         }
                 
@@ -303,7 +325,7 @@ GrapaError GrapaModel::GenerateLlama(const GrapaCHAR& prompt, GrapaCHAR& result,
             break;
         }
         
-        // Convert token to string (temporarily revert to stack allocation to debug)
+        // Convert token to string
         char token_str[256];
         int n_chars = llama_token_to_piece(vocab, next_token, token_str, sizeof(token_str), 0, false);
         if (n_chars > 0) {
@@ -460,6 +482,10 @@ GrapaError GrapaModel::ApplyParamsToLlama(GrapaRuleEvent* params)
         return -1;
     if (params->vQueue == NULL)
         return 0;
+    
+    // Track if any sampling-related parameters changed
+    bool samplerParamsChanged = false;
+    
     params = params->vQueue->Head();
     while (params)
     {
@@ -476,26 +502,31 @@ GrapaError GrapaModel::ApplyParamsToLlama(GrapaRuleEvent* params)
         else if (params->mName.StrCmp("temperature") == 0) {
             if (params->mValue.mToken == GrapaTokenType::FLOAT) {
                 mTemperature = GrapaFloat(params->mValue).ToDouble();
+                samplerParamsChanged = true;  // Temperature affects sampler
             }
         }
         else if (params->mName.StrCmp("top_k") == 0) {
             if (params->mValue.mToken == GrapaTokenType::INT) {
                 mTopK = GrapaInt(params->mValue).LongValue();
+                samplerParamsChanged = true;  // Top-K affects sampler
             }
         }
         else if (params->mName.StrCmp("top_p") == 0) {
             if (params->mValue.mToken == GrapaTokenType::FLOAT) {
                 mTopP = GrapaFloat(params->mValue).ToDouble();
+                samplerParamsChanged = true;  // Top-P affects sampler
             }
         }
         else if (params->mName.StrCmp("repeat_penalty") == 0) {
             if (params->mValue.mToken == GrapaTokenType::FLOAT) {
                 mRepeatPenalty = GrapaFloat(params->mValue).ToDouble();
+                // Note: repeat_penalty not currently used in sampler, but could be added
             }
         }
         else if (params->mName.StrCmp("seed") == 0) {
             if (params->mValue.mToken == GrapaTokenType::INT) {
                 mSeed = GrapaInt(params->mValue).LongValue();
+                samplerParamsChanged = true;  // Seed affects sampler
             }
         }
         else if (params->mName.StrCmp("verbose") == 0) {
@@ -503,11 +534,18 @@ GrapaError GrapaModel::ApplyParamsToLlama(GrapaRuleEvent* params)
                 mVerbose = GrapaInt(params->mValue).LongValue();
                 // Apply logging callback immediately with new verbose level
                 llama_log_set(LogCallback, (void*)&mVerbose);
+                // verbose does NOT affect sampler - no need to reinitialize
             }
         }
 
         params = params->Next();
     }
+    
+    // Only reinitialize sampler if sampling-related parameters changed and model is loaded
+    if (samplerParamsChanged && mLlamaContext && mLlamaSampler) {
+        InitializeSampler();  // This will clean up and recreate the sampler with new parameters
+    }
+    
     return 0;
 }
 
@@ -566,6 +604,73 @@ int GrapaModel::GetModelSize()
     if (mModelPath.StrCmp("30b") >= 0) return 30;
     if (mModelPath.StrCmp("70b") >= 0) return 70;
     return 7;  // Default to 7B
+}
+
+GrapaError GrapaModel::InitializeSampler()
+{
+    if (!mLlamaContext) {
+        return -1;  // Context not loaded
+    }
+    
+    // Clean up existing sampler
+    CleanupSampler();
+    
+    // Create sampler chain with default parameters
+    auto sparams = llama_sampler_chain_default_params();
+    mLlamaSampler = llama_sampler_chain_init(sparams);
+    
+    if (!mLlamaSampler) {
+        return -2;  // Failed to create sampler
+    }
+    
+    // Add samplers to the chain based on current parameters
+    // Top-K sampling
+    if (mTopK > 0) {
+        struct llama_sampler* top_k_sampler = llama_sampler_init_top_k(mTopK);
+        if (top_k_sampler) {
+            llama_sampler_chain_add(mLlamaSampler, top_k_sampler);
+        }
+    }
+    
+    // Top-P sampling
+    if (mTopP > 0.0f && mTopP < 1.0f) {
+        struct llama_sampler* top_p_sampler = llama_sampler_init_top_p(mTopP, 1);
+        if (top_p_sampler) {
+            llama_sampler_chain_add(mLlamaSampler, top_p_sampler);
+        }
+    }
+    
+    // Temperature sampling
+    if (mTemperature > 0.0f) {
+        struct llama_sampler* temp_sampler = llama_sampler_init_temp(mTemperature);
+        if (temp_sampler) {
+            llama_sampler_chain_add(mLlamaSampler, temp_sampler);
+        }
+    }
+    
+    // End with distribution sampler (greedy if temperature <= 0, otherwise random)
+    struct llama_sampler* dist_sampler;
+    if (mTemperature <= 0.0f) {
+        dist_sampler = llama_sampler_init_greedy();
+    } else {
+        // Use seed if provided, otherwise use random seed
+        uint32_t seed = (mSeed >= 0) ? (uint32_t)mSeed : (uint32_t)time(nullptr);
+        dist_sampler = llama_sampler_init_dist(seed);
+    }
+    
+    if (dist_sampler) {
+        llama_sampler_chain_add(mLlamaSampler, dist_sampler);
+    }
+    
+    return 0;  // Success
+}
+
+void GrapaModel::CleanupSampler()
+{
+    if (mLlamaSampler) {
+        llama_sampler_free(mLlamaSampler);
+        mLlamaSampler = nullptr;
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////

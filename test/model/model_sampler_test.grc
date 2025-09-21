@@ -1,0 +1,141 @@
+/* Test LLAMA.cpp Sampler API Implementation */
+
+"Testing LLAMA.cpp Sampler API Implementation\n".echo();
+"=============================================\n".echo();
+
+/* Test 1: Temperature-aware sampling */
+"=== Test 1: Temperature-Aware Sampling ===\n".echo();
+model1 = $MODEL();
+model1.params({
+    "temperature": 0.8,
+    "max_tokens": 20,
+    "top_k": 50,
+    "top_p": 0.9,
+    "verbose": 1
+});
+
+"Loading model with temperature sampling...\n".echo();
+result1 = model1.load("models/qwen2.5-7b-instruct-q5_k_m.gguf", "llama");
+if (result1.type() != $ERR) {
+    "Model loaded successfully!\n".echo();
+    
+    /* Generate with temperature sampling */
+    "Generating with temperature=0.8 (creative)...\n".echo();
+    response1 = model1.gen("Write a short poem about");
+    ("Response: " + response1.str() + "\n").echo();
+    
+    /* Generate again to see variation */
+    "Generating again to see variation...\n".echo();
+    response2 = model1.gen("Write a short poem about");
+    ("Response: " + response2.str() + "\n").echo();
+    
+    model1.unload();
+} else {
+    ("Failed to load model: " + result1.str() + "\n").echo();
+}
+
+"\n".echo();
+
+/* Test 2: Greedy sampling (temperature=0) */
+"=== Test 2: Greedy Sampling (Deterministic) ===\n".echo();
+model2 = $MODEL();
+model2.params({
+    "temperature": 0.0,
+    "max_tokens": 20,
+    "verbose": 1
+});
+
+"Loading model with greedy sampling...\n".echo();
+result2 = model2.load("models/qwen2.5-7b-instruct-q5_k_m.gguf", "llama");
+if (result2.type() != $ERR) {
+    "Model loaded successfully!\n".echo();
+    
+    /* Generate with greedy sampling */
+    "Generating with temperature=0.0 (deterministic)...\n".echo();
+    response3 = model2.gen("Write a short poem about");
+    ("Response: " + response3.str() + "\n").echo();
+    
+    /* Generate again - should be identical */
+    "Generating again (should be identical)...\n".echo();
+    response4 = model2.gen("Write a short poem about");
+    ("Response: " + response4.str() + "\n").echo();
+    
+    model2.unload();
+} else {
+    ("Failed to load model: " + result2.str() + "\n").echo();
+}
+
+"\n".echo();
+
+/* Test 3: Parameter changes during runtime */
+"=== Test 3: Runtime Parameter Changes ===\n".echo();
+model3 = $MODEL();
+model3.params({
+    "temperature": 0.3,
+    "max_tokens": 15,
+    "verbose": 1
+});
+
+"Loading model for parameter testing...\n".echo();
+result3 = model3.load("models/qwen2.5-7b-instruct-q5_k_m.gguf", "llama");
+if (result3.type() != $ERR) {
+    "Model loaded successfully!\n".echo();
+    
+    /* Generate with conservative settings */
+    "Generating with temperature=0.3 (conservative)...\n".echo();
+    response5 = model3.gen("The weather today is");
+    ("Response: " + response5.str() + "\n").echo();
+    
+    /* Change parameters and generate again */
+    "Changing to creative parameters...\n".echo();
+    model3.params({
+        "temperature": 1.2,
+        "max_tokens": 25
+    });
+    
+    "Generating with temperature=1.2 (creative)...\n".echo();
+    response6 = model3.gen("The weather today is");
+    ("Response: " + response6.str() + "\n").echo();
+    
+    model3.unload();
+} else {
+    ("Failed to load model: " + result3.str() + "\n").echo();
+}
+
+"\n".echo();
+
+/* Test 4: Top-K and Top-P filtering */
+"=== Test 4: Top-K and Top-P Filtering ===\n".echo();
+model4 = $MODEL();
+model4.params({
+    "temperature": 0.7,
+    "max_tokens": 20,
+    "top_k": 20,    /* Very restrictive top-k */
+    "top_p": 0.5,   /* Very restrictive top-p */
+    "verbose": 1
+});
+
+"Loading model for filtering test...\n".echo();
+result4 = model4.load("models/qwen2.5-7b-instruct-q5_k_m.gguf", "llama");
+if (result4.type() != $ERR) {
+    "Model loaded successfully!\n".echo();
+    
+    /* Generate with restrictive filtering */
+    "Generating with top_k=20, top_p=0.5 (very focused)...\n".echo();
+    response7 = model4.gen("The best programming language is");
+    ("Response: " + response7.str() + "\n").echo();
+    
+    model4.unload();
+} else {
+    ("Failed to load model: " + result4.str() + "\n").echo();
+}
+
+"\n".echo();
+
+"=== Sampler API Test Complete ===\n".echo();
+"Expected improvements:\n".echo();
+"- Temperature-aware sampling for creative responses\n".echo();
+"- Deterministic greedy sampling when temperature=0\n".echo();
+"- Runtime parameter changes without reloading\n".echo();
+"- Top-K and Top-P filtering for quality control\n".echo();
+"- Fallback to greedy sampling if sampler fails\n".echo();
