@@ -37,10 +37,6 @@ public:
     s32 mContextSize;
     s32 mVerbose;     // Logging verbosity level (0=silent, 1=errors, 2=warnings, 3=info, 4=debug)
     
-    // Performance optimization buffers
-    GrapaCHAR mTempToken;        // Reuse token buffer
-    char mTokenBuffer[256];      // Reuse token string buffer
-    
     // Persistent parameter management
     GrapaScriptExec* vScriptExec;
     GrapaNames* vNameSpace;

@@ -58,10 +58,6 @@ void GrapaModel::INIT(GrapaRuleEvent* pParams)
     mSeed = -1;
     mVerbose = 0;     // Default to silent (no LLAMA.cpp output)
     
-    // Initialize optimization buffers
-    mTempToken.SetLength(0);
-    memset(mTokenBuffer, 0, sizeof(mTokenBuffer));
-    
     // Initialize sampler to NULL
     mLlamaSampler = nullptr;
     
@@ -329,9 +325,7 @@ GrapaError GrapaModel::GenerateLlama(const GrapaCHAR& prompt, GrapaCHAR& result,
         char token_str[256];
         int n_chars = llama_token_to_piece(vocab, next_token, token_str, sizeof(token_str), 0, false);
         if (n_chars > 0) {
-            token_str[n_chars] = '\0';  // Ensure null termination
-            mTempToken.FROM(token_str, n_chars);
-            result.Append(mTempToken);
+            result.Append(token_str, n_chars);
         }
         
         // Add the new token to the sequence and decode it
