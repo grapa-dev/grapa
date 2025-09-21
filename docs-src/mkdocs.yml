@@ -192,7 +192,7 @@ nav:
           - Kotlin: migrations/kotlin_to_grapa_migration.md
           - Swift: migrations/swift_to_grapa_migration.md
       - Examples: examples.md
-      - Model Examples: model_examples.md
+      - Model Usage Guide: model_usage_guide.md
       - Model Download Guide: model_download.md
       - Python Use Cases: python_use_cases.md
       - GRC Scripts: grc_scripts.md

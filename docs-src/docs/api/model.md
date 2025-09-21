@@ -16,13 +16,13 @@ model = $MODEL();
 
 ## Methods
 
-### `.load(path, backend)`
+### `.load(path, method)`
 
 Loads a model from the specified file path.
 
 **Parameters:**
 - `path` (string): Path to the model file (GGUF format)
-- `backend` (string, optional): Backend to use ("llama" is currently the only supported backend)
+- `method` (string, optional): Method to use ("llama" is currently the only supported method). If not specified, the method will be auto-detected from the file extension or magic bytes.
 
 **Returns:** 
 - `0` - Success
@@ -32,10 +32,14 @@ Loads a model from the specified file path.
 
 **Example:**
 ```grapa
-result = model.load("models/qwen2.5-7b-instruct-q3_k_m.gguf", "llama");
-if (result == 0) {
+/* Auto-detect method from file extension */
+result = model.load("models/qwen2.5-7b-instruct-q3_k_m.gguf");
+if (result.type() != $ERR) {
     "Model loaded successfully".echo();
 }
+
+/* Explicitly specify method */
+result = model.load("models/qwen2.5-7b-instruct-q3_k_m.gguf", "llama");
 ```
 
 **Error Codes:**
@@ -80,15 +84,24 @@ Returns information about the current model state.
 
 **Returns:** Object containing:
 - `loaded` (boolean): Whether the model is currently loaded
-- `backend` (string): Backend being used ("llama")
-- `path` (string): Path to the loaded model file
+- `method` (string): Method being used ("llama")
+- `model_path` (string): Full path to the loaded model file
+- `model` (string): Model filename only
+- `model_size_bytes` (int): Size of the model in bytes (LLAMA.cpp only)
+- `n_params` (int): Number of parameters in the model (LLAMA.cpp only)
+- `model_description` (string): Model description (LLAMA.cpp only)
+- `has_encoder` (boolean): Whether model has encoder (LLAMA.cpp only)
+- `has_decoder` (boolean): Whether model has decoder (LLAMA.cpp only)
+- `is_recurrent` (boolean): Whether model is recurrent (LLAMA.cpp only)
 
 **Example:**
 ```grapa
 info = model.info();
-("Model loaded: " + info.loaded.str()).echo();
-("Backend: " + info.backend.str()).echo();
-("Path: " + info.path.str()).echo();
+("Model loaded: " + info."loaded".str()).echo();
+("Method: " + info."method".str()).echo();
+("Model path: " + info."model_path".str()).echo();
+("Model name: " + info."model".str()).echo();
+("Model size: " + info."model_size_bytes".str() + " bytes").echo();
 ```
 
 ### `.params()`
@@ -108,8 +121,8 @@ Returns current generation parameters.
 **Example:**
 ```grapa
 params = model.params();
-("Current temperature: " + params.temperature.str()).echo();
-("Max tokens: " + params.max_tokens.str()).echo();
+("Current temperature: " + params."temperature".str()).echo();
+("Max tokens: " + params."max_tokens".str()).echo();
 ```
 
 ### `.params(parameters)`
@@ -140,23 +153,55 @@ model.params({
 - `"context_size"` (int): 512 to 131072+
 - `"verbose"` (int): 0-4 (0=silent, 1=errors, 2=warnings, 3=info, 4=debug)
 
-### `.echo(text)`
+### `.context()`
 
-Echoes text to output stream.
+Gets the current context state of the model.
+
+**Returns:** Object containing context information:
+- `text` (string): Current text context
+- `tokens` (list): Current token context (for efficient method processing)
+- `method` (string): Method being used
+- `model` (string): Model filename
+
+**Example:**
+```grapa
+context = model.context();
+("Context text: " + context."text".str()).echo();
+("Context tokens: " + context."tokens".len().str() + " tokens").echo();
+("Method: " + context."method".str()).echo();
+```
+
+### `.context(contextData)`
+
+Sets the context for the model.
 
 **Parameters:**
-- `text` (string): Text to echo
+- `contextData` (string, list, or object): Context data to set
+  - If string: Sets text context
+  - If list: Sets token context (for efficient processing)
+  - If object: Can contain both "text" and "tokens" fields
 
 **Returns:** None
 
 **Example:**
 ```grapa
-model.echo("Model is ready for generation");
+/* Set text context */
+model.context("Previous conversation: Hello, how are you?");
+
+/* Set token context (more efficient) */
+tokenList = [1, 2, 3, 4, 5];
+model.context(tokenList);
+
+/* Set both text and tokens */
+model.context({
+    "text": "Previous conversation",
+    "tokens": [1, 2, 3, 4, 5]
+});
 ```
 
-### `.unload()`
+### `.load()`
 
-Unloads the current model and frees memory.
+Unloads the current model and frees memory by calling `.load()` with no parameters.
 
 **Returns:**
 - `0` - Success
@@ -164,8 +209,8 @@ Unloads the current model and frees memory.
 
 **Example:**
 ```grapa
-result = model.unload();
-if (result == 0) {
+result = model.load();
+if (result.type() != $ERR) {
     "Model unloaded successfully".echo();
 }
 ```
@@ -253,7 +298,7 @@ response2 = model2.gen("Hi");
    
    /* Use model... */
    
-   model.unload();  /* Free memory */
+   model.load();  /* Free memory */
    ```
 
 2. **Check available memory before loading large models:**
@@ -302,27 +347,29 @@ response2 = model2.gen("Hi");
    model.load("qwen2.5-7b-instruct-q2_k.gguf");
    ```
 
-## Backend-Specific Information
+## Method-Specific Information
 
-### LLAMA.cpp Backend
+### LLAMA.cpp Method
 
-The current implementation uses LLAMA.cpp as the backend:
+The current implementation uses LLAMA.cpp as the method:
 
 - **Supported formats:** GGUF
 - **Quantization levels:** Q2_K, Q3_K_M, Q4_K_M, Q5_K_M, Q6_K, Q8_0, FP16
 - **Hardware acceleration:** CPU-optimized
 - **Thread safety:** Yes
+- **Auto-detection:** From `.gguf` file extension or "GGUF" magic bytes
 
-### Future Backends
+### Future Methods
 
-The `$MODEL` type is designed to support multiple backends:
+The `$MODEL` type is designed to support multiple methods:
 
-- **ONNX:** For cross-platform inference
-- **TensorFlow:** For TensorFlow models
+- **ONNX:** For cross-platform inference (auto-detected from `.onnx` extension)
+- **TensorFlow:** For TensorFlow models (auto-detected from `.tflite` extension)
 - **PyTorch:** For PyTorch models (via Python integration)
+- **scikit-learn:** For traditional ML models (auto-detected from `.pkl` extension)
 
 ## See Also
 
 - [$MODEL Data Type](../type/model.md) - Complete type reference
-- [Model Examples](../examples/model_examples.md) - Practical usage examples
+- [Model Examples](../examples/model_examples.grc) - Practical usage examples
 - [Model Download Guide](../examples/model_download.md) - How to download models

@@ -64,6 +64,12 @@ void GrapaModel::INIT(GrapaRuleEvent* pParams)
     // Initialize sampler to NULL
     mLlamaSampler = nullptr;
     
+    // Initialize context management
+    mContextPreserved = false;
+    mContextTokens.clear();
+    mContextHistory.SetLength(0);
+    mContextInitialized = false;
+    
     // Set LLAMA.cpp logging callback to control verbosity
     llama_log_set(LogCallback, (void*)&mVerbose);
 
@@ -122,43 +128,53 @@ void GrapaModel::CLEAR()
         Unload();
     }
     mModelPath.SetNull();
-    mBackend.SetNull();
+    mMethod.SetNull();
 }
 
-GrapaError GrapaModel::Load(const GrapaCHAR& modelPath, const GrapaCHAR& backend)
+GrapaError GrapaModel::Load(const GrapaCHAR& modelPath, const GrapaCHAR& method)
 {
     GrapaError result = 0;
     
     if (mLoaded) {
         Unload();
     }
-    
     // Reset model-specific parameters, preserve user preferences
     ResetModelSpecificParams();
     
-    mModelPath.FROM(modelPath);
+    // Clear context cache when loading new model
+    mContextPreserved = false;
+    mContextTokens.clear();
+    mContextHistory.SetLength(0);
+    mContextInitialized = false;
     
-    // If backend is not specified, try to auto-detect it
-    if (backend.mLength == 0) {
-        mBackend = AutoDetectBackend(modelPath);
-        if (mBackend.mLength == 0) {
-            return -1; // Could not detect backend
-        }
-    } else {
-        mBackend.FROM(backend);
+    mModelPath.FROM(modelPath);
+    mMethod.FROM(method);
+
+    if (mModelPath.mLength == 0) {
+        return 0; // Could not detect model path
     }
 
-    if (mBackend.StrCmp("llama") == 0) {
+    // If method is not specified, try to auto-detect it
+    if (method.mLength == 0) {
+        mMethod = AutoDetectMethod(modelPath);
+        if (mMethod.mLength == 0) {
+            return -1; // Could not detect method
+        }
+    } else {
+        mMethod.FROM(method);
+    }
+
+    if (mMethod.StrCmp("llama") == 0) {
         result = LoadLlama(modelPath);
     }
-    else if (mBackend.StrCmp("onnx") == 0) {
+    else if (mMethod.StrCmp("onnx") == 0) {
         result = LoadOnnx(modelPath);
     }
-    else if (mBackend.StrCmp("tensorflow") == 0) {
+    else if (mMethod.StrCmp("tensorflow") == 0) {
         result = LoadTensorFlow(modelPath);
     }
     else {
-        result = -1; // Unsupported backend
+        result = -1; // Unsupported method
     }
     
     if (result == 0) {
@@ -169,7 +185,7 @@ GrapaError GrapaModel::Load(const GrapaCHAR& modelPath, const GrapaCHAR& backend
     return result;
 }
 
-GrapaCHAR GrapaModel::AutoDetectBackend(const GrapaCHAR& modelPath)
+GrapaCHAR GrapaModel::AutoDetectMethod(const GrapaCHAR& modelPath)
 {
     GrapaCHAR result;
     std::string path((char*)modelPath.mBytes, modelPath.mLength);
@@ -240,7 +256,7 @@ GrapaError GrapaModel::Unload()
     GrapaError result = 0;
     
     if (mLoaded) {
-        if (mBackend.StrCmp("llama") == 0) {
+        if (mMethod.StrCmp("llama") == 0) {
             result = UnloadLlama();
         }
         // Add other backend cleanup here
@@ -311,7 +327,7 @@ GrapaError GrapaModel::Generate(const GrapaCHAR& prompt, GrapaCHAR& result, Grap
     // Merge persistent + call-specific parameters
     GrapaRuleEvent* mergedParams = MergeParams(vParams, callParams);
     
-    if (mBackend.StrCmp("llama") == 0) {
+    if (mMethod.StrCmp("llama") == 0) {
         GrapaError err = GenerateLlama(prompt, result, mergedParams);
         delete mergedParams;
         return err;
@@ -339,33 +355,50 @@ GrapaError GrapaModel::GenerateLlama(const GrapaCHAR& prompt, GrapaCHAR& result,
         return 0;
     }
     
-    // Tokenize the prompt with optimized buffer management
+    // Backend-optimized context management
     const struct llama_vocab* vocab = llama_model_get_vocab(this->mLlamaModel);
-    std::vector<llama_token> tokens_list;
+    std::vector<llama_token> new_tokens;
     
-    // Better token count estimation to avoid reallocation
+    // Tokenize the new prompt
     size_t estimated_tokens = prompt.mLength / 4;  // Rough estimate: ~4 chars per token
-    tokens_list.resize(estimated_tokens);
+    new_tokens.resize(estimated_tokens);
     
-    int n_tokens = llama_tokenize(vocab, (char*)prompt.mBytes, (int32_t)prompt.mLength, 
-                                  tokens_list.data(), (int32_t)tokens_list.size(), true, false);
-    if (n_tokens < 0) {
-        tokens_list.resize(-n_tokens);
-        n_tokens = llama_tokenize(vocab, (char*)prompt.mBytes, (int32_t)prompt.mLength, 
-                                  tokens_list.data(), (int32_t)tokens_list.size(), true, false);
+    int n_new_tokens = llama_tokenize(vocab, (char*)prompt.mBytes, (int32_t)prompt.mLength, 
+                                      new_tokens.data(), (int32_t)new_tokens.size(), true, false);
+    if (n_new_tokens < 0) {
+        new_tokens.resize(-n_new_tokens);
+        n_new_tokens = llama_tokenize(vocab, (char*)prompt.mBytes, (int32_t)prompt.mLength, 
+                                      new_tokens.data(), (int32_t)new_tokens.size(), true, false);
     }
-    tokens_list.resize(n_tokens);
+    new_tokens.resize(n_new_tokens);
     
     // Early exit if no tokens
-    if (n_tokens == 0) {
+    if (n_new_tokens == 0) {
         result.SetLength(0);
         return 0;
     }
     
-    // OPTIMIZATION 1: Batch processing for prompt tokens (instead of one-by-one)
-    struct llama_batch batch = llama_batch_get_one(tokens_list.data(), n_tokens);
-    if (llama_decode(this->mLlamaContext, batch)) {
-        return -2;
+    // For LLAMA.cpp: Use truly persistent context (Option 3 - most efficient)
+    if (mContextPreserved && mContextInitialized) {
+        // Context is already initialized - just append new tokens and process them
+        mContextTokens.insert(mContextTokens.end(), new_tokens.begin(), new_tokens.end());
+        
+        // Process only the new tokens (LLAMA.cpp context preserves all previous state)
+        struct llama_batch batch = llama_batch_get_one(new_tokens.data(), n_new_tokens);
+        if (llama_decode(this->mLlamaContext, batch)) {
+            return -2;
+        }
+    } else {
+        // First call - initialize context with all tokens
+        mContextTokens = new_tokens;
+        mContextPreserved = true;
+        mContextInitialized = true;
+        
+        // Process all tokens to initialize the context
+        struct llama_batch batch = llama_batch_get_one(mContextTokens.data(), mContextTokens.size());
+        if (llama_decode(this->mLlamaContext, batch)) {
+            return -2;
+        }
     }
     
     // Generate response
@@ -406,8 +439,8 @@ GrapaError GrapaModel::GenerateLlama(const GrapaCHAR& prompt, GrapaCHAR& result,
             result.Append(token_str, n_chars);
         }
         
-        // Add the new token to the sequence and decode it
-        tokens_list.push_back(next_token);
+        // Add the new token to persistent context and decode it
+        mContextTokens.push_back(next_token);
         struct llama_batch next_batch = llama_batch_get_one(&next_token, 1);
         if (llama_decode(this->mLlamaContext, next_batch)) {
             return -2;
@@ -427,19 +460,30 @@ GrapaRuleEvent* GrapaModel::GetModelInfo() const
     GrapaRuleEvent* loaded = new GrapaRuleEvent(GrapaTokenType::BOOL, 0, "loaded", mLoaded?"\1":"");
     result->vQueue->PushTail(loaded);
 
-    // Add backend
-    GrapaRuleEvent* backend = new GrapaRuleEvent(0, GrapaCHAR("backend"), mBackend);
-    result->vQueue->PushTail(backend);
+    // Add method
+    GrapaRuleEvent* method = new GrapaRuleEvent(0, GrapaCHAR("method"), mMethod);
+    result->vQueue->PushTail(method);
     
     // Add model path
-    GrapaRuleEvent* path = new GrapaRuleEvent(0, GrapaCHAR("path"), mModelPath);
+    GrapaRuleEvent* path = new GrapaRuleEvent(0, GrapaCHAR("model_path"), mModelPath);
     result->vQueue->PushTail(path);
+    
+    // Add model filename (for consistency with .context())
+    GrapaCHAR modelName = mModelPath;
+    // Extract filename from path
+    std::string pathStr((char*)modelName.mBytes, modelName.mLength);
+    size_t lastSlash = pathStr.find_last_of("/\\");
+    if (lastSlash != std::string::npos) {
+        pathStr = pathStr.substr(lastSlash + 1);
+    }
+    GrapaRuleEvent* model = new GrapaRuleEvent(0, GrapaCHAR("model"), GrapaCHAR(pathStr.c_str(), pathStr.length()));
+    result->vQueue->PushTail(model);
     
     // Note: Configuration parameters (temperature, top_k, etc.) are available via .params()
     // This method focuses on model metadata and status information
     
     // Add LLAMA.cpp specific information if model is loaded
-    if (mLoaded && const_cast<GrapaModel*>(this)->mBackend.StrCmp("llama") == 0 && mLlamaModel) {
+    if (mLoaded && const_cast<GrapaModel*>(this)->mMethod.StrCmp("llama") == 0 && mLlamaModel) {
         // Model size in bytes
         uint64_t model_size = llama_model_size(mLlamaModel);
         GrapaRuleEvent* model_size_info = new GrapaRuleEvent(0, GrapaCHAR("model_size_bytes"), GrapaInt((s64)model_size).getBytes());
@@ -512,6 +556,169 @@ GrapaRuleEvent* GrapaModel::GetParams() const
     return result;
 }
 
+// Context management
+GrapaRuleEvent* GrapaModel::GetContext() const
+{
+    GrapaRuleEvent* result = new GrapaRuleEvent();
+    result->mValue.mToken = GrapaTokenType::GOBJ;
+    result->vQueue = new GrapaRuleQueue();
+    
+    // Add text context (convert tokens back to text for human readability)
+    GrapaCHAR textContext;
+    if (!mContextTokens.empty() && const_cast<GrapaModel*>(this)->mMethod.StrCmp("llama") == 0 && mLlamaModel) {
+        const struct llama_vocab* vocab = llama_model_get_vocab(mLlamaModel);
+        for (size_t i = 0; i < mContextTokens.size(); i++) {
+            char token_str[256];
+            int n_chars = llama_token_to_piece(vocab, mContextTokens[i], token_str, sizeof(token_str), 0, false);
+            if (n_chars > 0) {
+                textContext.Append(token_str, n_chars);
+            }
+        }
+    }
+    GrapaRuleEvent* text = new GrapaRuleEvent(0, GrapaCHAR("text"), textContext);
+    result->vQueue->PushTail(text);
+    
+    // Add tokens as $LIST of $INT values
+    GrapaRuleEvent* tokens = new GrapaRuleEvent();
+    tokens->mValue.mToken = GrapaTokenType::LIST;
+    tokens->vQueue = new GrapaRuleQueue();
+    for (size_t i = 0; i < mContextTokens.size(); i++) {
+        GrapaRuleEvent* token = new GrapaRuleEvent(0, GrapaCHAR(""), GrapaInt((s64)mContextTokens[i]).getBytes());
+        tokens->vQueue->PushTail(token);
+    }
+    GrapaRuleEvent* tokensField = new GrapaRuleEvent(0, GrapaCHAR("tokens"), GrapaCHAR(""));
+    tokensField->mValue.mToken = GrapaTokenType::LIST;
+    tokensField->vQueue = tokens->vQueue;
+    result->vQueue->PushTail(tokensField);
+    
+    // Add method (backend type)
+    GrapaRuleEvent* method = new GrapaRuleEvent(0, GrapaCHAR("method"), const_cast<GrapaModel*>(this)->mMethod);
+    result->vQueue->PushTail(method);
+    
+    // Add model (filename only, no path)
+    GrapaCHAR modelName = const_cast<GrapaModel*>(this)->mModelPath;
+    // Extract filename from path
+    std::string path((char*)modelName.mBytes, modelName.mLength);
+    size_t lastSlash = path.find_last_of("/\\");
+    if (lastSlash != std::string::npos) {
+        path = path.substr(lastSlash + 1);
+    }
+    GrapaRuleEvent* model = new GrapaRuleEvent(0, GrapaCHAR("model"), GrapaCHAR(path.c_str(), path.length()));
+    result->vQueue->PushTail(model);
+    
+    return result;
+}
+
+GrapaError GrapaModel::SetContext(GrapaRuleEvent* context)
+{
+    if (!context) {
+        return -1; // Invalid context format
+    }
+    
+    if (!mLoaded) {
+        return -2; // Model not loaded
+    }
+    
+    // Clear existing context
+    mContextTokens.clear();
+    mContextPreserved = false;
+    mContextInitialized = false;
+    
+    if (context->mValue.mToken == GrapaTokenType::GOBJ && context->vQueue) {
+        // Handle $GOBJ input - check for tokens first (most efficient)
+        s64 index;
+        GrapaRuleEvent* tokens = context->vQueue->Search("tokens", index);
+        if (tokens && tokens->mValue.mToken == GrapaTokenType::LIST && tokens->vQueue) {
+            // Use tokens if available
+            GrapaRuleEvent* item = tokens->vQueue->Head();
+            while (item) {
+                if (item->mValue.mToken == GrapaTokenType::INT) {
+                    s64 token_id = GrapaInt(item->mValue).LongValue();
+                    mContextTokens.push_back((llama_token)token_id);
+                }
+                item = item->Next();
+            }
+        } else {
+            // Fall back to text
+            GrapaRuleEvent* text = context->vQueue->Search("text", index);
+            if (text && text->mValue.mToken == GrapaTokenType::STR) {
+                GrapaCHAR textStr = text->mValue;
+                return SetContextFromText(textStr);
+            }
+        }
+    }
+    else if (context->mValue.mToken == GrapaTokenType::LIST && context->vQueue) {
+        // Handle $LIST input (current behavior)
+        GrapaRuleEvent* item = context->vQueue->Head();
+        while (item) {
+            if (item->mValue.mToken == GrapaTokenType::INT) {
+                s64 token_id = GrapaInt(item->mValue).LongValue();
+                mContextTokens.push_back((llama_token)token_id);
+            }
+            item = item->Next();
+        }
+    }
+    else if (context->mValue.mToken == GrapaTokenType::STR) {
+        // Handle $STR input (new behavior)
+        GrapaCHAR textStr = context->mValue;
+        return SetContextFromText(textStr);
+    }
+    else {
+        return -1; // Invalid context format
+    }
+    
+    // Rebuild the LLAMA.cpp context from tokens
+    if (!mContextTokens.empty() && mMethod.StrCmp("llama") == 0) {
+        // Process all tokens to rebuild the context
+        struct llama_batch batch = llama_batch_get_one(mContextTokens.data(), (int32_t)mContextTokens.size());
+        if (llama_decode(mLlamaContext, batch)) {
+            return -3; // Failed to rebuild context
+        }
+        mContextPreserved = true;
+        mContextInitialized = true;
+    }
+    
+    return 0; // Success
+}
+
+GrapaError GrapaModel::SetContextFromText(const GrapaCHAR& text)
+{
+    if (!mLoaded || mMethod.StrCmp("llama") != 0 || !mLlamaModel) {
+        return -1; // Model not loaded or not LLAMA backend
+    }
+    
+    // Tokenize the text
+    const struct llama_vocab* vocab = llama_model_get_vocab(mLlamaModel);
+    std::vector<llama_token> new_tokens;
+    
+    size_t estimated_tokens = text.mLength / 4;  // Rough estimate: ~4 chars per token
+    new_tokens.resize(estimated_tokens);
+    
+    int n_tokens = llama_tokenize(vocab, (char*)text.mBytes, (int32_t)text.mLength, 
+                                  new_tokens.data(), (int32_t)new_tokens.size(), true, false);
+    if (n_tokens < 0) {
+        new_tokens.resize(-n_tokens);
+        n_tokens = llama_tokenize(vocab, (char*)text.mBytes, (int32_t)text.mLength, 
+                                  new_tokens.data(), (int32_t)new_tokens.size(), true, false);
+    }
+    new_tokens.resize(n_tokens);
+    
+    // Set the context tokens
+    mContextTokens = new_tokens;
+    
+    // Rebuild the LLAMA.cpp context from tokens
+    if (!mContextTokens.empty()) {
+        struct llama_batch batch = llama_batch_get_one(mContextTokens.data(), (int32_t)mContextTokens.size());
+        if (llama_decode(mLlamaContext, batch)) {
+            return -2; // Failed to rebuild context
+        }
+        mContextPreserved = true;
+        mContextInitialized = true;
+    }
+    
+    return 0; // Success
+}
+
 // Future backend implementations
 GrapaError GrapaModel::LoadOnnx(const GrapaCHAR& modelPath)
 {
@@ -545,7 +752,7 @@ void GrapaModel::ResetModelSpecificParams()
 void GrapaModel::SetModelDefaults()
 {
     // Set reasonable defaults for this specific model
-    if (mBackend.StrCmp("llama") == 0) {
+    if (mMethod.StrCmp("llama") == 0) {
         // Get model info and set appropriate defaults
         int modelSize = GetModelSize();  // 7B, 13B, 70B, etc.
         GrapaRuleEvent* override;

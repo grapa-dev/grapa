@@ -8,6 +8,7 @@
 #include "GrapaFloat.h"
 #include "GrapaState.h"
 #include "llama.h"  // LLAMA.cpp includes
+#include <vector>   // For std::vector<llama_token>
 
 // Forward declarations
 class GrapaRuleEvent;
@@ -18,7 +19,7 @@ public:
     // Model state
     bool mLoaded;
     GrapaCHAR mModelPath;
-    GrapaCHAR mBackend;  // "llama", "onnx", etc.
+    GrapaCHAR mMethod;  // "llama", "onnx", etc.
     
     // LLAMA.cpp specific
     struct llama_model* mLlamaModel;
@@ -26,6 +27,14 @@ public:
     struct llama_model_params mLlamaModelParams;
     struct llama_context_params mLlamaContextParams;
     struct llama_sampler* mLlamaSampler;  // Sampler chain for temperature-aware generation
+    
+    // Backend-optimized context management
+    bool mContextPreserved;  // Whether context is preserved between calls
+    std::vector<llama_token> mContextTokens;  // LLAMA.cpp: Persistent token context
+    GrapaCHAR mContextHistory;  // Generic: Text-based conversation history
+    
+    // LLAMA.cpp persistent context optimization
+    bool mContextInitialized;  // Whether the context has been initialized with tokens
     
     // Generation parameters
     s32 mMaxTokens;
@@ -50,8 +59,8 @@ public:
     void CLEAR();
     
     // Core model operations
-    GrapaError Load(const GrapaCHAR& modelPath, const GrapaCHAR& backend);
-    GrapaError Load(const GrapaCHAR& modelPath);  // Auto-detect backend
+    GrapaError Load(const GrapaCHAR& modelPath, const GrapaCHAR& method);
+    GrapaError Load(const GrapaCHAR& modelPath);  // Auto-detect method
     GrapaError Unload();
     bool IsLoaded() const;
     
@@ -65,6 +74,11 @@ public:
     // Parameter management
     GrapaError SetParams(GrapaRuleEvent* params);
     GrapaRuleEvent* GetParams() const;
+    
+    // Context management
+    GrapaRuleEvent* GetContext() const;  // Returns $GOBJ with text, tokens, method, model
+    GrapaError SetContext(GrapaRuleEvent* context);  // Accepts $GOBJ, $LIST, or $STR
+    GrapaError SetContextFromText(const GrapaCHAR& text);  // Helper for text-based context
     
     // Backend-specific operations
     GrapaError LoadLlama(const GrapaCHAR& modelPath);
@@ -88,7 +102,7 @@ private:
     int GetModelSize();  // Estimate model size for parameter defaults
     
     // Auto-detection
-    GrapaCHAR AutoDetectBackend(const GrapaCHAR& modelPath);
+    GrapaCHAR AutoDetectMethod(const GrapaCHAR& modelPath);
     
     // Logging callback
     static void LogCallback(enum ggml_log_level level, const char * text, void * user_data);

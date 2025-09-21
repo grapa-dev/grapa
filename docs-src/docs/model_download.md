@@ -207,7 +207,7 @@ download_cmd = "curl -L -o " + models_dir + "/qwen2.5-7b-instruct-q3_k_m.gguf " 
                "\"https://huggingface.co/Qwen/Qwen2.5-7B-Instruct-GGUF/resolve/main/qwen2.5-7b-instruct-q3_k_m.gguf\"";
 
 result = $system(download_cmd);
-if (result == 0) {
+if (result.type() != $ERR) {
     "Q3_K_M model downloaded successfully!".echo();
 } else {
     ("Download failed with error: " + result.str()).echo();
@@ -237,13 +237,13 @@ for (i = 0; i < model_files.len(); i++) {
         file_size = $file(model_path).size();
         ("✅ " + model_files[i] + " - " + file_size.str() + " bytes").echo();
         
-        /* Test loading the model */
+        /* Test loading the model (auto-detect method) */
         test_model = $MODEL();
         test_model.params({"verbose": 0});
         load_result = test_model.load(model_path);
-        if (load_result == 0) {
+        if (load_result.type() != $ERR) {
             "   Model loads successfully".echo();
-            test_model.unload();
+            test_model.load();
         } else {
             ("   ⚠️ Model load failed: " + load_result.str()).echo();
         }
@@ -289,6 +289,6 @@ Expected file sizes for Qwen2.5-7B-Instruct models:
 
 ## See Also
 
-- [Model Examples](model_examples.md) - How to use downloaded models
+- [Model Examples](examples/model_examples.grc) - How to use downloaded models
 - [$MODEL Data Type](../type/model.md) - Complete type reference
 - [API Reference](../api/model.md) - Complete API documentation

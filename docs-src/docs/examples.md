@@ -44,13 +44,8 @@ Welcome to the Grapa Examples hub! Here you'll find practical, ready-to-run scri
 ### **AI/ML Model Examples**
 | Example | Description |
 |---------|-------------|
-| [Model Basic Example](examples/model_basic_example.grc) | Basic usage of the `$MODEL` data type including loading, generating text, and parameter configuration. |
-| [Model Parameter Example](examples/model_parameter_example.grc) | Demonstrates different parameter configurations and inline parameter overrides for text generation. |
-| [Model Verbose Example](examples/model_verbose_example.grc) | Shows how to control LLAMA.cpp output verbosity levels for debugging and production use. |
-| [Model Multiple Instances Example](examples/model_multiple_instances_example.grc) | Demonstrates using multiple model instances concurrently with different parameter configurations. |
-| [Model Error Handling Example](examples/model_error_handling_example.grc) | Comprehensive error handling patterns including parameter validation and robust generation functions. |
-| [Model Download Example](examples/model_download_example.grc) | Shows how to generate download commands and verify model files using Grapa. |
-| [Model Examples Guide](model_examples.md) | Comprehensive documentation of using the `$MODEL` data type for AI/ML model integration. |
+| [Model Usage Guide](model_usage_guide.md) | Comprehensive guide covering all ways to use the `$MODEL` data type, from basic usage to advanced patterns and real-world applications. |
+| [Model Examples Guide](examples/model_examples.grc) | Working code examples demonstrating `$MODEL` functionality. |
 | [Model Download Guide](model_download.md) | Complete guide for downloading AI/ML models, including curl commands, Hugging Face CLI, file merging, and verification scripts. |
 
 ### **Integration Examples**
