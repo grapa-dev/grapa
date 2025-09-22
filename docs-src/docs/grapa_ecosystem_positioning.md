@@ -164,6 +164,30 @@ result = data.json.users[0].name + " from " + data.xml.config.setting;
 **Grapa's unified data type integration is unique - no other language provides this level of seamless cross-format data manipulation.**
 
 ### **Machine Learning & Statistical Analysis** 🧠
+Grapa provides **comprehensive machine learning capabilities** that rival dedicated ML libraries, plus **native AI model integration**:
+
+### **AI/ML Model Integration** 🤖
+Grapa's `$MODEL` type provides **native AI model support** with unique capabilities:
+- **LLAMA.cpp Integration** - Direct access to state-of-the-art language models
+- **Grapa Interpolation** - AI responses can contain `${expression}` placeholders for Grapa evaluation
+- **Hybrid Computation** - Combine AI natural language with Grapa's precise computation
+- **Context Management** - Persistent conversation context across sessions
+- **Multi-Platform Support** - Works on Windows, macOS, Linux with GPU acceleration where available
+
+```grapa
+/* AI + Grapa hybrid computation */
+model = $MODEL();
+model.load("models/qwen2.5-7b-instruct-q3_k_m.gguf");
+model.context("Use ${expression} placeholders for calculations.");
+
+response = model.gen("What is 15 * 23 + 45?");
+/* LLAMA: "The calculation is ${15 * 23 + 45} which equals ${15 * 23 + 45}" */
+result = response.interpolate();
+/* Result: "The calculation is 390 which equals 390" */
+```
+
+**No other language provides this level of AI integration with native computation capabilities.**
+
 Grapa provides **comprehensive machine learning capabilities** that rival dedicated ML libraries:
 - **Linear regression** with multiple algorithms (normal equation, gradient descent, ridge regression)
 - **Statistical analysis** with built-in functions for mean, standard deviation, covariance, correlation
@@ -724,6 +748,7 @@ Grapa provides **comprehensive IDE support** through a dedicated VSCode extensio
 - **Array Comprehension Alternatives** - Functional methods (.filter(), .map()) with threading support
 - **Vector Operations** - **COMPREHENSIVE** matrix operations, linear algebra, statistical functions, and creative capabilities
 - **Machine Learning** - Linear regression, statistical analysis, and ML algorithms with optimized vector operations
+- **AI/ML Model Integration** - Native `$MODEL` type with LLAMA.cpp backend for text generation and Grapa interpolation
 - **String Interpolation** - Advanced template literal support with expressions
 - **Advanced Pattern Matching** - 100% ripgrep compatibility with binary data support
 - **Unified Data Type Integration** - Seamless cross-format manipulation

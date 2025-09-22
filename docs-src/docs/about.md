@@ -8,6 +8,7 @@ Grapa is a modern, grammar-based programming language and data processing platfo
 - **True Parallelism:** Production-ready parallel ETL/data processing (map/reduce/filter, $thread, $net)
 - **Comprehensive Vector Operations:** Complete matrix operations, linear algebra, statistical functions, and creative capabilities
 - **Machine Learning:** Linear regression, statistical analysis, and ML algorithms using optimized vector operations
+- **AI/ML Model Integration:** Native support for AI models via `$MODEL` type with LLAMA.cpp backend for text generation and Grapa interpolation
 - **Advanced Pattern Matching:** 100% ripgrep compatibility with binary data support and Unicode awareness
 - **Comprehensive Cryptography:** Production-ready cryptographic capabilities with OpenSSL 3.5.2 integration (RSA, EC, DH, AES, hash functions, key exchange, digital signatures)
 - **Unified File/Database API:** Seamless navigation and processing of files and databases
@@ -18,7 +19,7 @@ Grapa is a modern, grammar-based programming language and data processing platfo
 
 ## Who Should Use Grapa?
 - **Data Engineers & Scientists:** For high-throughput ETL, analytics, and automation
-- **Machine Learning Practitioners:** For linear regression, statistical analysis, and ML prototyping
+- **Machine Learning Practitioners:** For linear regression, statistical analysis, ML prototyping, and AI model integration
 - **Mathematical Computing Users:** For comprehensive vector operations, linear algebra, and statistical analysis
 - **Security Engineers & Cryptographers:** For cryptographic operations, key management, and security applications
 - **Binary Analysis & Forensics:** For advanced pattern matching with binary data support
@@ -37,6 +38,7 @@ Grapa is a modern, grammar-based programming language and data processing platfo
 ## Why/When to Use Grapa?
 - When you need to process large data sets with true parallelism
 - When you want to implement machine learning algorithms with optimized vector operations
+- When you need AI model integration with native text generation and Grapa interpolation capabilities
 - When you need comprehensive vector and matrix operations with creative function application
 - When you need advanced pattern matching with binary data support and Unicode awareness
 - When you need production-ready cryptographic operations with OpenSSL 3.5.2 integration
