@@ -22,9 +22,9 @@ limitations under the License.
 #include "GrapaState.h"
 
 #include <vector>
+#include <algorithm>  // For std::transform
 #include <thread>
 #include <fstream>
-#include <algorithm>
 #include <cctype>
 
 #include "llama.h"
@@ -219,31 +219,38 @@ GrapaCHAR GrapaModel::AutoDetectMethod(const GrapaCHAR& modelPath)
     // If extension doesn't match, try magic bytes detection
     std::ifstream file(path, std::ios::binary);
     if (file) {
-        char header[8];
+        // Zero-initialize header buffer to prevent false positives
+        char header[8] = {0};
+        
+        // Read header and validate we got enough bytes
         file.read(header, 8);
+        std::streamsize bytesRead = file.gcount();
         
-        // GGUF format (LLAMA.cpp)
-        if (strncmp(header, "GGUF", 4) == 0) {
-            result.FROM("llama");
-            return result;
-        }
-        
-        // Python pickle format (sklearn)
-        if (strncmp(header, "PK", 2) == 0) {
-            result.FROM("sklearn");
-            return result;
-        }
-        
-        // ONNX format
-        if (strncmp(header, "ONNX", 4) == 0) {
-            result.FROM("onnx");
-            return result;
-        }
-        
-        // TensorFlow Lite format
-        if (strncmp(header, "TFL3", 4) == 0) {
-            result.FROM("tensorflow");
-            return result;
+        // Only proceed if we read enough bytes for the largest magic number (4 bytes)
+        if (bytesRead >= 4) {
+            // GGUF format (LLAMA.cpp) - requires 4 bytes
+            if (bytesRead >= 4 && strncmp(header, "GGUF", 4) == 0) {
+                result.FROM("llama");
+                return result;
+            }
+            
+            // ONNX format - requires 4 bytes
+            if (bytesRead >= 4 && strncmp(header, "ONNX", 4) == 0) {
+                result.FROM("onnx");
+                return result;
+            }
+            
+            // TensorFlow Lite format - requires 4 bytes
+            if (bytesRead >= 4 && strncmp(header, "TFL3", 4) == 0) {
+                result.FROM("tensorflow");
+                return result;
+            }
+            
+            // Python pickle format (sklearn) - requires 2 bytes
+            if (bytesRead >= 2 && strncmp(header, "PK", 2) == 0) {
+                result.FROM("sklearn");
+                return result;
+            }
         }
     }
     
@@ -297,6 +304,7 @@ GrapaError GrapaModel::LoadLlama(const GrapaCHAR& modelPath)
     if (result != 0) {
         // Sampler initialization failed, but model is still usable with greedy sampling
         // We'll continue without the sampler
+        result = 0;  // Reset to success since model is usable
     }
 
     return result;
@@ -552,6 +560,13 @@ GrapaRuleEvent* GrapaModel::GetParams() const
 {
     GrapaRuleEvent* result = new GrapaRuleEvent();
 	result->mValue.mToken = GrapaTokenType::GOBJ;
+	
+	// Check if vParams is null to prevent crash
+	if (!vParams) {
+	    result->vQueue = new GrapaRuleQueue();  // Create empty queue
+	    return result;
+	}
+	
 	result->vQueue = vScriptExec->CopyQueue(vParams->vQueue);
     return result;
 }
@@ -735,6 +750,9 @@ GrapaError GrapaModel::LoadTensorFlow(const GrapaCHAR& modelPath)
 void GrapaModel::ResetModelSpecificParams()
 {
     // Reset model-dependent parameters
+    if (!vParams) {
+        return;  // No parameters to reset
+    }
 
     GrapaRuleEvent* override;
     s64 index;
@@ -752,6 +770,10 @@ void GrapaModel::ResetModelSpecificParams()
 void GrapaModel::SetModelDefaults()
 {
     // Set reasonable defaults for this specific model
+    if (!vParams) {
+        return;  // No parameters to set defaults for
+    }
+    
     if (mMethod.StrCmp("llama") == 0) {
         // Get model info and set appropriate defaults
         int modelSize = GetModelSize();  // 7B, 13B, 70B, etc.
@@ -787,7 +809,20 @@ GrapaRuleEvent* GrapaModel::MergeParams(GrapaRuleEvent* persistent, GrapaRuleEve
 {
     GrapaRuleEvent* result = new GrapaRuleEvent();
     result->mValue.mToken = GrapaTokenType::GOBJ;
+    
+    // Check if persistent is null to prevent crash
+    if (!persistent) {
+        result->vQueue = new GrapaRuleQueue();  // Create empty queue
+        return result;
+    }
+    
     result->vQueue = vScriptExec->CopyQueue(persistent->vQueue);
+    
+    // Check if callSpecific is null to prevent crash
+    if (!callSpecific) {
+        return result;
+    }
+    
     GrapaRuleEvent* current = callSpecific->vQueue ? callSpecific->vQueue->Head() : nullptr;
     while (current) {
         s64 index;
@@ -924,10 +959,15 @@ int GrapaModel::GetModelSize()
 {
     // Estimate model size from filename or model metadata
     // This is a simple heuristic - in practice you'd get this from the model file
-    if (mModelPath.StrCmp("7b") >= 0) return 7;
-    if (mModelPath.StrCmp("13b") >= 0) return 13;
-    if (mModelPath.StrCmp("30b") >= 0) return 30;
-    if (mModelPath.StrCmp("70b") >= 0) return 70;
+    // Check for model size indicators in the path (case-insensitive)
+    std::string path((char*)mModelPath.mBytes, mModelPath.mLength);
+    std::transform(path.begin(), path.end(), path.begin(), ::tolower);
+    
+    if (path.find("70b") != std::string::npos) return 70;
+    if (path.find("30b") != std::string::npos) return 30;
+    if (path.find("13b") != std::string::npos) return 13;
+    if (path.find("7b") != std::string::npos) return 7;
+    
     return 7;  // Default to 7B
 }
 
