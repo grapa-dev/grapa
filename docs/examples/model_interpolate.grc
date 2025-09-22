@@ -1,0 +1,46 @@
+/*
+    Model Interpolation Example
+    
+    This example demonstrates how to use LLAMA + Grapa interpolation
+    to combine natural language generation with precise computation.
+    
+    The pattern:
+    1. Set up model context to use ${} placeholders
+    2. Generate response with math question
+    3. Show raw LLAMA response
+    4. Interpolate to get final result with computed values
+*/
+
+modelpath = "models/qwen2.5-7b-instruct-q5_k_m.gguf";
+
+/* Create and load model */
+model = $MODEL();
+result = model.load(modelpath);
+
+if (result.type() != $ERR) {
+    ("Model loaded successfully\n").echo();
+
+    expression = "${expression}";
+    
+    /* Set up context for interpolation */
+    model.context("You are a helpful math tutor. When doing calculations, you MUST use ${expression} placeholders that can be evaluated by Grapa. For example, instead of writing '15 * 23 = 345', write '15 * 23 = ${15 * 23}'. Always show the calculation step by step using this format.");
+    
+    /* Generate response to math question */
+    prompt = "What is 15 * 23 + 45? Please show your work step by step using ${expression} format for all calculations.";
+    ("Prompt: " + prompt + "\n").echo();
+    
+    /* Show what we expect */
+    ("Expected format: '15 * 23 = ${15 * 23}' and '345 + 45 = ${345 + 45}'\n").echo();
+    
+    response = model.gen(prompt,{"max_tokens":200});
+    ("Raw LLAMA response:\n" + response.str() + "\n").echo();
+    
+    /* Interpolate to get final result */
+    final_result = response.interpolate();
+    ("After interpolation:\n" + final_result.str() + "\n").echo();
+    
+    /* Clean up */
+    model.load();
+} else {
+    ("Failed to load model: " + result.str() + "\n").echo();
+};

@@ -3778,6 +3778,30 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#grapa-integration-patterns" class="md-nav__link">
+    <span class="md-ellipsis">
+      Grapa Integration Patterns
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Grapa Integration Patterns">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#llama-grapa-interpolation" class="md-nav__link">
+    <span class="md-ellipsis">
+      LLAMA + Grapa Interpolation
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#see-also" class="md-nav__link">
     <span class="md-ellipsis">
       See Also
@@ -4725,6 +4749,30 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#grapa-integration-patterns" class="md-nav__link">
+    <span class="md-ellipsis">
+      Grapa Integration Patterns
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Grapa Integration Patterns">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#llama-grapa-interpolation" class="md-nav__link">
+    <span class="md-ellipsis">
+      LLAMA + Grapa Interpolation
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#see-also" class="md-nav__link">
     <span class="md-ellipsis">
       See Also
@@ -5333,6 +5381,52 @@ safe_generate_explicit = op(model, prompt) {
     return response;
 };
 </code></pre></div>
+<h2 id="grapa-integration-patterns">Grapa Integration Patterns</h2>
+<h3 id="llama-grapa-interpolation">LLAMA + Grapa Interpolation</h3>
+<p>A powerful pattern is to have LLAMA generate responses with Grapa interpolation placeholders, then use <code>.interpolate()</code> to evaluate them:</p>
+<div class="highlight"><pre><span></span><code>/* Set up model to use interpolation placeholders */
+model = $MODEL();
+model.load(&quot;models/qwen2.5-7b-instruct-q3_k_m.gguf&quot;);
+model.context(&quot;You are a helpful math tutor. When doing calculations, you MUST use ${expression} placeholders that can be evaluated by Grapa. For example, instead of writing &#39;15 * 23 = 345&#39;, write &#39;15 * 23 = ${15 * 23}&#39;. Always show the calculation step by step using this format.&quot;);
+
+/* Important: Define variables for literal text that looks like placeholders */
+expression = &quot;${expression}&quot;;  /* Prevents interpolation errors on literal text */
+
+/* Math calculations */
+math_response = model.gen(&quot;What is 15 * 23 + 45? Please show your work step by step using ${expression} format for all calculations.&quot;);
+/* LLAMA: &quot;The calculation is ${15 * 23 + 45} which equals ${15 * 23 + 45}&quot; */
+result = math_response.interpolate();
+/* Result: &quot;The calculation is 390 which equals 390&quot; */
+
+/* Data processing */
+data_response = model.gen(&quot;What&#39;s the average of [10, 20, 30, 40, 50]?&quot;);
+/* LLAMA: &quot;The average is ${[10, 20, 30, 40, 50].reduce(op(a,b){a+b}) / 5}&quot; */
+avg_result = data_response.interpolate();
+/* Result: &quot;The average is 30&quot; */
+
+/* File operations */
+file_response = model.gen(&quot;How many lines are in my data.txt file?&quot;);
+/* LLAMA: &quot;The file has ${$file(&#39;data.txt&#39;).get().split(&#39;\n&#39;).len()} lines&quot; */
+line_count = file_response.interpolate();
+/* Result: &quot;The file has 42 lines&quot; */
+
+/* With context variables */
+user_name = &quot;Alice&quot;;
+user_age = 30;
+personal_response = model.gen(&quot;Tell me about this user&quot;);
+/* LLAMA: &quot;User ${user_name} is ${user_age} years old, born in ${2024 - user_age}&quot; */
+personal_result = personal_response.interpolate();
+/* Result: &quot;User Alice is 30 years old, born in 1994&quot; */
+</code></pre></div>
+<p><strong>Important Notes:</strong>
+- <strong>Pre-define literal variables</strong>: If LLAMA generates text like <code>"use ${expression} format"</code>, define <code>expression = "${expression}";</code> to prevent interpolation errors
+- <strong>Interpolation scope</strong>: Variables in <code>${}</code> must be defined in the current scope before calling <code>.interpolate()</code>
+- <strong>Error handling</strong>: Undefined variables in placeholders will result in <code>{"error":-1}</code></p>
+<p><strong>Benefits:</strong>
+- <strong>Simple</strong>: LLAMA just uses <code>${}</code> syntax
+- <strong>Flexible</strong>: Interpolate when/where you want
+- <strong>Safe</strong>: Programmer controls evaluation
+- <strong>Powerful</strong>: Full Grapa capabilities in responses</p>
 <h2 id="see-also">See Also</h2>
 <ul>
 <li><a href="../type/model/">$MODEL Data Type</a> - Complete type reference</li>
