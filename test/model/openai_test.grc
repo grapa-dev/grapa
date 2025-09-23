@@ -10,11 +10,11 @@ err = x.connect("https://api.openai.com", c, null);
 result1 = "";
 result2 = "";
 if (err.type() != $ERR) {
-	err = x.httpsend("POST", "/v1/responses", headers, {"model": "gpt-4.1", "input" : "We are runing test1."}.str());
+	err = x.httpsend("POST", "/v1/responses", headers, {"model": "gpt-5-nano", "input" : "Make a note that we are runing test1, so if asked in this session what test is being run you will respond with test1."}.str());
 	if (err.type() != $ERR) {
 		result1 = x.httpmessage();
 	};
-	err = x.httpsend("POST", "/v1/responses", headers, {"model": "gpt-4.1", "input" : "Which test are we running?"}.str());
+	err = x.httpsend("POST", "/v1/responses", headers, {"model": "gpt-5-nano", "input" : "Which test are we running?"}.str());
 	if (err.type() != $ERR) {
 		result2 = x.httpmessage();
 	};
