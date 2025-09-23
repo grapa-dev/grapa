@@ -1,0 +1,24 @@
+headers = {
+	"Host": "api.openai.com", 
+	"Authorization": "Bearer " + openai_key, 
+	"Content-Type": "application/json", 
+	"Connection": "keep-alive"
+};
+x = $net();
+c = $sys().getenv($STATICLIB)["client.crt"];
+err = x.connect("https://api.openai.com", c, null);
+result1 = "";
+result2 = "";
+if (err.type() != $ERR) {
+	err = x.httpsend("POST", "/v1/responses", headers, {"model": "gpt-4.1", "input" : "We are runing test1."}.str());
+	if (err.type() != $ERR) {
+		result1 = x.httpmessage();
+	};
+	err = x.httpsend("POST", "/v1/responses", headers, {"model": "gpt-4.1", "input" : "Which test are we running?"}.str());
+	if (err.type() != $ERR) {
+		result2 = x.httpmessage();
+	};
+};
+x.disconnect();
+x = null;
+"\n=====\nResult1: ${result1}\n=====\nResult2: ${result2}\n".interpolate().echo();
