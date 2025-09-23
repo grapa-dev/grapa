@@ -329,6 +329,7 @@ public:
 	GrapaLibraryEvent* HandleModelGen(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleModelInfo(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleModelParams(GrapaCHAR& pName);
+	GrapaLibraryEvent* HandleModelContext(GrapaCHAR& pName);
 
 };
 

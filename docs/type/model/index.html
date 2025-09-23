@@ -1126,9 +1126,9 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#loadpath-backend" class="md-nav__link">
+  <a href="#loadmodelpath-method" class="md-nav__link">
     <span class="md-ellipsis">
-      .load(path, backend)
+      .load(modelpath, method)
     </span>
   </a>
   
@@ -1171,18 +1171,27 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#echotext" class="md-nav__link">
+  <a href="#context" class="md-nav__link">
     <span class="md-ellipsis">
-      .echo(text)
+      .context()
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#unload" class="md-nav__link">
+  <a href="#contextcontextdata" class="md-nav__link">
     <span class="md-ellipsis">
-      .unload()
+      .context(contextData)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#load" class="md-nav__link">
+    <span class="md-ellipsis">
+      .load()
     </span>
   </a>
   
@@ -1203,9 +1212,9 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#backend-support" class="md-nav__link">
+  <a href="#method-support" class="md-nav__link">
     <span class="md-ellipsis">
-      Backend Support
+      Method Support
     </span>
   </a>
   
@@ -3635,12 +3644,12 @@
   
   
     <li class="md-nav__item">
-      <a href="../../model_examples/" class="md-nav__link">
+      <a href="../../model_usage_guide/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
-    Model Examples
+    Model Usage Guide
     
   </span>
   
@@ -4315,9 +4324,9 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#loadpath-backend" class="md-nav__link">
+  <a href="#loadmodelpath-method" class="md-nav__link">
     <span class="md-ellipsis">
-      .load(path, backend)
+      .load(modelpath, method)
     </span>
   </a>
   
@@ -4360,18 +4369,27 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#echotext" class="md-nav__link">
+  <a href="#context" class="md-nav__link">
     <span class="md-ellipsis">
-      .echo(text)
+      .context()
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#unload" class="md-nav__link">
+  <a href="#contextcontextdata" class="md-nav__link">
     <span class="md-ellipsis">
-      .unload()
+      .context(contextData)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#load" class="md-nav__link">
+    <span class="md-ellipsis">
+      .load()
     </span>
   </a>
   
@@ -4392,9 +4410,9 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#backend-support" class="md-nav__link">
+  <a href="#method-support" class="md-nav__link">
     <span class="md-ellipsis">
-      Backend Support
+      Method Support
     </span>
   </a>
   
@@ -4484,22 +4502,26 @@ response = model.gen(&quot;Hello, how are you?&quot;);
 info = model.info();
 
 /* Unload the model */
-model.unload();
+model.load();
 </code></pre></div>
 <h2 id="methods">Methods</h2>
-<h3 id="loadpath-backend"><code>.load(path, backend)</code></h3>
+<h3 id="loadmodelpath-method"><code>.load(modelpath, method)</code></h3>
 <p>Loads a model from the specified file path.</p>
 <p><strong>Parameters:</strong>
 - <code>path</code> (string): Path to the model file (GGUF format)
-- <code>backend</code> (string, optional): Backend to use ("llama" is currently the only supported backend)</p>
+- <code>method</code> (string, optional): Method to use ("llama" is currently the only supported method). If not specified, the method will be auto-detected from the file extension or magic bytes.</p>
 <p><strong>Returns:</strong> Error code (0 for success)</p>
 <p><strong>Example:</strong>
-<div class="highlight"><pre><span></span><code>result = model.load(&quot;models/qwen2.5-7b-instruct-q3_k_m.gguf&quot;, &quot;llama&quot;);
-if (result == 0) {
+<div class="highlight"><pre><span></span><code>/* Auto-detect method from file extension */
+result = model.load(&quot;models/qwen2.5-7b-instruct-q3_k_m.gguf&quot;);
+if (result.type() != $ERR) {
     &quot;Model loaded successfully!&quot;.echo();
 } else {
     (&quot;Failed to load model: &quot; + result.str()).echo();
 }
+
+/* Explicitly specify method */
+result = model.load(&quot;models/qwen2.5-7b-instruct-q3_k_m.gguf&quot;, &quot;llama&quot;);
 </code></pre></div></p>
 <h3 id="genprompt-params"><code>.gen(prompt, params)</code></h3>
 <p>Generates text using the loaded model.</p>
@@ -4522,17 +4544,18 @@ response = model.gen(&quot;Explain machine learning&quot;, {
 <p><strong>Returns:</strong> Object containing model information</p>
 <p><strong>Example:</strong>
 <div class="highlight"><pre><span></span><code>info = model.info();
-(&quot;Model loaded: &quot; + info.loaded.str()).echo();
-(&quot;Backend: &quot; + info.backend.str()).echo();
-(&quot;Path: &quot; + info.path.str()).echo();
+(&quot;Model loaded: &quot; + info.&quot;loaded&quot;.str()).echo();
+(&quot;Method: &quot; + info.&quot;method&quot;.str()).echo();
+(&quot;Model path: &quot; + info.&quot;model_path&quot;.str()).echo();
+(&quot;Model name: &quot; + info.&quot;model&quot;.str()).echo();
 </code></pre></div></p>
 <h3 id="params"><code>.params()</code></h3>
 <p>Returns current generation parameters.</p>
 <p><strong>Returns:</strong> Object containing all current parameters</p>
 <p><strong>Example:</strong>
 <div class="highlight"><pre><span></span><code>params = model.params();
-(&quot;Current temperature: &quot; + params.temperature.str()).echo();
-(&quot;Max tokens: &quot; + params.max_tokens.str()).echo();
+(&quot;Current temperature: &quot; + params.&quot;temperature&quot;.str()).echo();
+(&quot;Max tokens: &quot; + params.&quot;max_tokens&quot;.str()).echo();
 </code></pre></div></p>
 <h3 id="paramsparameters"><code>.params(parameters)</code></h3>
 <p>Sets generation parameters using a <code>$GOBJ</code> collection.</p>
@@ -4545,19 +4568,45 @@ response = model.gen(&quot;Explain machine learning&quot;, {
     &quot;verbose&quot;: 2
 });
 </code></pre></div></p>
-<h3 id="echotext"><code>.echo(text)</code></h3>
-<p>Echoes text to output (useful for debugging and status messages).</p>
-<p><strong>Parameters:</strong>
-- <code>text</code> (string): Text to echo</p>
+<h3 id="context"><code>.context()</code></h3>
+<p>Gets the current context state of the model.</p>
+<p><strong>Returns:</strong> Object containing context information:
+- <code>text</code> (string): Current text context
+- <code>tokens</code> (list): Current token context (for efficient method processing)
+- <code>method</code> (string): Method being used
+- <code>model</code> (string): Model filename</p>
 <p><strong>Example:</strong>
-<div class="highlight"><pre><span></span><code>model.echo(&quot;Model is ready for generation&quot;);
+<div class="highlight"><pre><span></span><code>context = model.context();
+(&quot;Context text: &quot; + context.&quot;text&quot;.str()).echo();
+(&quot;Context tokens: &quot; + context.&quot;tokens&quot;.len().str() + &quot; tokens&quot;).echo();
 </code></pre></div></p>
-<h3 id="unload"><code>.unload()</code></h3>
-<p>Unloads the current model and frees memory.</p>
+<h3 id="contextcontextdata"><code>.context(contextData)</code></h3>
+<p>Sets the context for the model.</p>
+<p><strong>Parameters:</strong>
+- <code>contextData</code> (string, list, or object): Context data to set
+  - If string: Sets text context
+  - If list: Sets token context (for efficient processing)
+  - If object: Can contain both "text" and "tokens" fields</p>
+<p><strong>Example:</strong>
+<div class="highlight"><pre><span></span><code>/* Set text context */
+model.context(&quot;Previous conversation: Hello, how are you?&quot;);
+
+/* Set token context (more efficient) */
+tokenList = [1, 2, 3, 4, 5];
+model.context(tokenList);
+
+/* Set both text and tokens */
+model.context({
+    &quot;text&quot;: &quot;Previous conversation&quot;,
+    &quot;tokens&quot;: [1, 2, 3, 4, 5]
+});
+</code></pre></div></p>
+<h3 id="load"><code>.load()</code></h3>
+<p>Unloads the current model and frees memory by calling <code>.load()</code> with no parameters.</p>
 <p><strong>Returns:</strong> Error code (0 for success)</p>
 <p><strong>Example:</strong>
-<div class="highlight"><pre><span></span><code>result = model.unload();
-if (result == 0) {
+<div class="highlight"><pre><span></span><code>result = model.load();
+if (result.type() != $ERR) {
     &quot;Model unloaded successfully&quot;.echo();
 }
 </code></pre></div></p>
@@ -4623,13 +4672,14 @@ if (result == 0) {
 </tr>
 </tbody>
 </table>
-<h2 id="backend-support">Backend Support</h2>
+<h2 id="method-support">Method Support</h2>
 <p>Currently, the <code>$MODEL</code> type supports:</p>
 <ul>
 <li><strong>LLAMA.cpp</strong>: For GGUF format models</li>
 <li>Supports various quantization levels (Q2_K, Q3_K_M, Q4_K_M, Q5_K_M, Q6_K, Q8_0, FP16)</li>
 <li>Optimized for CPU inference</li>
 <li>Thread-safe operations</li>
+<li>Auto-detected from <code>.gguf</code> file extension or "GGUF" magic bytes</li>
 </ul>
 <h2 id="model-formats">Model Formats</h2>
 <p>The <code>$MODEL</code> type currently supports:</p>
@@ -4638,6 +4688,7 @@ if (result == 0) {
 <li>Efficient quantization</li>
 <li>Cross-platform compatibility</li>
 <li>Metadata inclusion</li>
+<li>Auto-detected by file extension (<code>.gguf</code>) or magic bytes ("GGUF")</li>
 </ul>
 <h2 id="performance-considerations">Performance Considerations</h2>
 <ul>
@@ -4649,6 +4700,7 @@ if (result == 0) {
 <h2 id="error-handling">Error Handling</h2>
 <p>Always check return values from <code>.load()</code> and <code>.unload()</code>:</p>
 <div class="highlight"><pre><span></span><code>model = $MODEL();
+/* Auto-detect method from file extension */
 result = model.load(&quot;model.gguf&quot;);
 if (result != 0) {
     (&quot;Error loading model: &quot; + result.str()).echo();
@@ -4657,12 +4709,13 @@ if (result != 0) {
 
 /* Use model safely */
 response = model.gen(&quot;Hello&quot;);
+model.load(); /* Unload when done */
 </code></pre></div>
 <h2 id="thread-safety">Thread Safety</h2>
 <p>The <code>$MODEL</code> type is designed to be thread-safe, allowing multiple model instances to be used concurrently in different threads.</p>
 <h2 id="see-also">See Also</h2>
 <ul>
-<li><a href="../examples/model_examples.md">Model Examples</a> - Practical usage examples</li>
+<li><a href="../../examples/model_examples.grc">Model Examples</a> - Practical usage examples</li>
 <li><a href="../examples/model_download.md">Model Download Guide</a> - How to download models</li>
 <li><a href="../../api/model/">API Reference</a> - Complete API documentation</li>
 </ul>

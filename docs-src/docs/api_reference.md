@@ -764,7 +764,7 @@ Loads a model from the specified file path.
 
 ```grapa
 result = model.load("models/qwen2.5-7b-instruct-q3_k_m.gguf", "llama");
-if (result == 0) {
+if (result.type() != $ERR) {
     "Model loaded successfully!".echo();
 }
 ```
@@ -796,9 +796,9 @@ Returns information about the current model state.
 
 ```grapa
 info = model.info();
-("Model loaded: " + info.loaded.str()).echo();
-("Backend: " + info.backend.str()).echo();
-("Path: " + info.path.str()).echo();
+("Model loaded: " + info."loaded".str()).echo();
+("Method: " + info."method".str()).echo();
+("Model path: " + info."model_path".str()).echo();
 ```
 
 #### **`.params()`**
@@ -806,8 +806,8 @@ Returns current generation parameters.
 
 ```grapa
 params = model.params();
-("Current temperature: " + params.temperature.str()).echo();
-("Max tokens: " + params.max_tokens.str()).echo();
+("Current temperature: " + params."temperature".str()).echo();
+("Max tokens: " + params."max_tokens".str()).echo();
 ```
 
 #### **`.params(parameters)`**
@@ -821,14 +821,14 @@ model.params({
 });
 ```
 
-#### **`.unload()`**
-Unloads the current model and frees memory.
+#### **`.load()`**
+Unloads the current model and frees memory by calling `.load()` with no parameters.
 
 **Returns:** Error code (0 for success)
 
 ```grapa
-result = model.unload();
-if (result == 0) {
+result = model.load();
+if (result.type() != $ERR) {
     "Model unloaded successfully".echo();
 }
 ```
@@ -861,7 +861,7 @@ model.params({
 
 /* Load model */
 result = model.load("models/qwen2.5-7b-instruct-q3_k_m.gguf");
-if (result == 0) {
+if (result.type() != $ERR) {
     "Model loaded successfully!".echo();
     
     /* Generate text */
@@ -879,7 +879,7 @@ if (result == 0) {
 }
 
 /* Clean up */
-model.unload();
+model.load();
 ```
 
 ### Model Formats
@@ -937,12 +937,9 @@ response2 = model2.gen("Hi");
 
 For complete documentation, see:
 - [$MODEL Data Type](type/model.md) - Complete type reference
-- [Model Examples Guide](model_examples.md) - Comprehensive usage examples
+- [Model Examples Guide](examples/model_examples.grc) - Comprehensive usage examples
 - [Model Download Guide](model_download.md) - How to download models
 - [Model API Reference](api/model.md) - Complete API documentation
-- [Model Basic Example](examples/model_basic_example.grc) - Basic usage example
-- [Model Parameter Example](examples/model_parameter_example.grc) - Parameter configuration
-- [Model Error Handling Example](examples/model_error_handling_example.grc) - Error handling patterns
 
 [Back to Top](#grapa-api-reference)
 

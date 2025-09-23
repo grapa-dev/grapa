@@ -3075,6 +3075,14 @@ public:
 };
 GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleModelParams(GrapaCHAR& pName) { return new GrapaLibraryRuleModelParamsEvent(pName); }
 
+class GrapaLibraryRuleModelContextEvent : public GrapaLibraryEvent
+{
+public:
+GrapaLibraryRuleModelContextEvent(GrapaCHAR& pName) { mName.FROM(pName); };
+    virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
+};
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleModelContext(GrapaCHAR& pName) { return new GrapaLibraryRuleModelContextEvent(pName); }
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 void GrapaLibraryRuleEvent::LoadLibWrap(GrapaScriptExec* vScriptExec, GrapaRuleEvent* pOperation)
@@ -3433,6 +3441,7 @@ GrapaLibraryEvent* GrapaLibraryRuleEvent::LoadLib(GrapaScriptExec *vScriptExec, 
             { "gen", &GrapaLibraryRuleEvent::HandleModelGen },
             { "info", &GrapaLibraryRuleEvent::HandleModelInfo },
             { "params", &GrapaLibraryRuleEvent::HandleModelParams },
+            { "context", &GrapaLibraryRuleEvent::HandleModelContext },
         };
         auto it = handlerMap.find((char*)pName.mBytes);
         if (it != handlerMap.end())
@@ -23572,6 +23581,41 @@ GrapaRuleEvent* GrapaLibraryRuleModelParamsEvent::Run(GrapaScriptExec* vScriptEx
     return(result);
 }
 
+GrapaRuleEvent* GrapaLibraryRuleModelContextEvent::Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput)
+{
+    GrapaError err = -1;
+    GrapaRuleEvent* result = NULL;
+
+    // Get the model object
+    GrapaLibraryParam r1(vScriptExec, pNameSpace, pInput ? pInput->Head(0) : NULL);
+    GrapaRuleEvent* objEvent = vScriptExec->vScriptState->SearchTarget(pNameSpace, r1.vVal);
+    
+	if (!objEvent) {
+		return Error(vScriptExec, pNameSpace, -1);
+	}
+
+	// Create model if needed
+	if (!objEvent->vModel) {
+		objEvent->vModel = new GrapaModel(vScriptExec, pNameSpace, objEvent);
+	}
+    
+    // Get params
+    GrapaLibraryParam r2(vScriptExec, pNameSpace, pInput ? pInput->Head(1) : NULL);
+    GrapaRuleEvent* params = r2.vVal;
+    
+    if (params && (params->mValue.mToken == GrapaTokenType::STR || params->mValue.mToken == GrapaTokenType::LIST || params->mValue.mToken == GrapaTokenType::GOBJ)) {
+        // Set parameters
+        err = objEvent->vModel->SetContext(params);
+        if (err) {
+           result = Error(vScriptExec, pNameSpace, err);
+        }
+    } else {
+        // Get current parameters
+        result = objEvent->vModel->GetContext();
+    }
+
+    return(result);
+}
 
 // String Distance Helper Functions
 

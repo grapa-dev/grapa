@@ -8,7 +8,7 @@
       
       
       
-        <link rel="canonical" href="https://grapa-dev.github.io/grapa/model_examples/">
+        <link rel="canonical" href="https://grapa-dev.github.io/grapa/model_usage_guide/">
       
       
         <link rel="prev" href="../examples/">
@@ -22,7 +22,7 @@
     
     
       
-        <title>Model Examples - Grapa Documentation</title>
+        <title>Model Usage Guide - Grapa Documentation</title>
       
     
     
@@ -74,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#model-examples" class="md-skip">
+        <a href="#model-usage-guide" class="md-skip">
           Skip to content
         </a>
       
@@ -108,7 +108,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Model Examples
+              Model Usage Guide
             
           </span>
         </div>
@@ -3448,7 +3448,7 @@
   
   
   <span class="md-ellipsis">
-    Model Examples
+    Model Usage Guide
     
   </span>
   
@@ -3461,7 +3461,7 @@
   
   
   <span class="md-ellipsis">
-    Model Examples
+    Model Usage Guide
     
   </span>
   
@@ -3484,13 +3484,22 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#basic-model-usage" class="md-nav__link">
+  <a href="#table-of-contents" class="md-nav__link">
     <span class="md-ellipsis">
-      Basic Model Usage
+      Table of Contents
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Basic Model Usage">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#basic-usage-patterns" class="md-nav__link">
+    <span class="md-ellipsis">
+      Basic Usage Patterns
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Basic Usage Patterns">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -3503,33 +3512,9 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#model-information" class="md-nav__link">
-    <span class="md-ellipsis">
-      Model Information
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#parameter-configuration" class="md-nav__link">
     <span class="md-ellipsis">
       Parameter Configuration
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Parameter Configuration">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#setting-generation-parameters" class="md-nav__link">
-    <span class="md-ellipsis">
-      Setting Generation Parameters
     </span>
   </a>
   
@@ -3550,28 +3535,70 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#verbose-control" class="md-nav__link">
+  <a href="#context-management" class="md-nav__link">
     <span class="md-ellipsis">
-      Verbose Control
+      Context Management
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Verbose Control">
+    <nav class="md-nav" aria-label="Context Management">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#debugging-with-verbose-output" class="md-nav__link">
+  <a href="#basic-context-usage" class="md-nav__link">
     <span class="md-ellipsis">
-      Debugging with Verbose Output
+      Basic Context Usage
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#silent-operation" class="md-nav__link">
+  <a href="#efficient-token-context" class="md-nav__link">
     <span class="md-ellipsis">
-      Silent Operation
+      Efficient Token Context
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#context-transfer-between-models" class="md-nav__link">
+    <span class="md-ellipsis">
+      Context Transfer Between Models
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cross-cli-context-persistence" class="md-nav__link">
+    <span class="md-ellipsis">
+      Cross-CLI Context Persistence
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Cross-CLI Context Persistence">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#save-context-to-file" class="md-nav__link">
+    <span class="md-ellipsis">
+      Save Context to File
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#token-based-context-persistence" class="md-nav__link">
+    <span class="md-ellipsis">
+      Token-Based Context Persistence
     </span>
   </a>
   
@@ -3601,58 +3628,10 @@
   
 </li>
         
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#error-handling" class="md-nav__link">
-    <span class="md-ellipsis">
-      Error Handling
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Error Handling">
-      <ul class="md-nav__list">
-        
           <li class="md-nav__item">
-  <a href="#robust-error-handling" class="md-nav__link">
+  <a href="#model-comparison" class="md-nav__link">
     <span class="md-ellipsis">
-      Robust Error Handling
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#practical-applications" class="md-nav__link">
-    <span class="md-ellipsis">
-      Practical Applications
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Practical Applications">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#chat-bot-implementation" class="md-nav__link">
-    <span class="md-ellipsis">
-      Chat Bot Implementation
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#content-generation" class="md-nav__link">
-    <span class="md-ellipsis">
-      Content Generation
+      Model Comparison
     </span>
   </a>
   
@@ -3677,6 +3656,141 @@
   <a href="#efficient-model-usage" class="md-nav__link">
     <span class="md-ellipsis">
       Efficient Model Usage
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#memory-management" class="md-nav__link">
+    <span class="md-ellipsis">
+      Memory Management
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#real-world-use-cases" class="md-nav__link">
+    <span class="md-ellipsis">
+      Real-world Use Cases
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Real-world Use Cases">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#chat-bot-implementation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Chat Bot Implementation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#content-generation-pipeline" class="md-nav__link">
+    <span class="md-ellipsis">
+      Content Generation Pipeline
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#context-aware-assistant" class="md-nav__link">
+    <span class="md-ellipsis">
+      Context-Aware Assistant
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#best-practices" class="md-nav__link">
+    <span class="md-ellipsis">
+      Best Practices
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Best Practices">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-always-check-load-results" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Always Check Load Results
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-use-appropriate-parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Use Appropriate Parameters
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-manage-memory-efficiently" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Manage Memory Efficiently
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-use-context-appropriately" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Use Context Appropriately
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-handle-errors-gracefully" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. Handle Errors Gracefully
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#grapa-integration-patterns" class="md-nav__link">
+    <span class="md-ellipsis">
+      Grapa Integration Patterns
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Grapa Integration Patterns">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#llama-grapa-interpolation" class="md-nav__link">
+    <span class="md-ellipsis">
+      LLAMA + Grapa Interpolation
     </span>
   </a>
   
@@ -4341,13 +4455,22 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#basic-model-usage" class="md-nav__link">
+  <a href="#table-of-contents" class="md-nav__link">
     <span class="md-ellipsis">
-      Basic Model Usage
+      Table of Contents
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Basic Model Usage">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#basic-usage-patterns" class="md-nav__link">
+    <span class="md-ellipsis">
+      Basic Usage Patterns
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Basic Usage Patterns">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -4360,33 +4483,9 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#model-information" class="md-nav__link">
-    <span class="md-ellipsis">
-      Model Information
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#parameter-configuration" class="md-nav__link">
     <span class="md-ellipsis">
       Parameter Configuration
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Parameter Configuration">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#setting-generation-parameters" class="md-nav__link">
-    <span class="md-ellipsis">
-      Setting Generation Parameters
     </span>
   </a>
   
@@ -4407,28 +4506,70 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#verbose-control" class="md-nav__link">
+  <a href="#context-management" class="md-nav__link">
     <span class="md-ellipsis">
-      Verbose Control
+      Context Management
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Verbose Control">
+    <nav class="md-nav" aria-label="Context Management">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#debugging-with-verbose-output" class="md-nav__link">
+  <a href="#basic-context-usage" class="md-nav__link">
     <span class="md-ellipsis">
-      Debugging with Verbose Output
+      Basic Context Usage
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#silent-operation" class="md-nav__link">
+  <a href="#efficient-token-context" class="md-nav__link">
     <span class="md-ellipsis">
-      Silent Operation
+      Efficient Token Context
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#context-transfer-between-models" class="md-nav__link">
+    <span class="md-ellipsis">
+      Context Transfer Between Models
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cross-cli-context-persistence" class="md-nav__link">
+    <span class="md-ellipsis">
+      Cross-CLI Context Persistence
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Cross-CLI Context Persistence">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#save-context-to-file" class="md-nav__link">
+    <span class="md-ellipsis">
+      Save Context to File
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#token-based-context-persistence" class="md-nav__link">
+    <span class="md-ellipsis">
+      Token-Based Context Persistence
     </span>
   </a>
   
@@ -4458,58 +4599,10 @@
   
 </li>
         
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#error-handling" class="md-nav__link">
-    <span class="md-ellipsis">
-      Error Handling
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Error Handling">
-      <ul class="md-nav__list">
-        
           <li class="md-nav__item">
-  <a href="#robust-error-handling" class="md-nav__link">
+  <a href="#model-comparison" class="md-nav__link">
     <span class="md-ellipsis">
-      Robust Error Handling
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#practical-applications" class="md-nav__link">
-    <span class="md-ellipsis">
-      Practical Applications
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Practical Applications">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#chat-bot-implementation" class="md-nav__link">
-    <span class="md-ellipsis">
-      Chat Bot Implementation
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#content-generation" class="md-nav__link">
-    <span class="md-ellipsis">
-      Content Generation
+      Model Comparison
     </span>
   </a>
   
@@ -4534,6 +4627,141 @@
   <a href="#efficient-model-usage" class="md-nav__link">
     <span class="md-ellipsis">
       Efficient Model Usage
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#memory-management" class="md-nav__link">
+    <span class="md-ellipsis">
+      Memory Management
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#real-world-use-cases" class="md-nav__link">
+    <span class="md-ellipsis">
+      Real-world Use Cases
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Real-world Use Cases">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#chat-bot-implementation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Chat Bot Implementation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#content-generation-pipeline" class="md-nav__link">
+    <span class="md-ellipsis">
+      Content Generation Pipeline
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#context-aware-assistant" class="md-nav__link">
+    <span class="md-ellipsis">
+      Context-Aware Assistant
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#best-practices" class="md-nav__link">
+    <span class="md-ellipsis">
+      Best Practices
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Best Practices">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-always-check-load-results" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Always Check Load Results
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-use-appropriate-parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Use Appropriate Parameters
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-manage-memory-efficiently" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Manage Memory Efficiently
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-use-context-appropriately" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Use Context Appropriately
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-handle-errors-gracefully" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. Handle Errors Gracefully
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#grapa-integration-patterns" class="md-nav__link">
+    <span class="md-ellipsis">
+      Grapa Integration Patterns
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Grapa Integration Patterns">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#llama-grapa-interpolation" class="md-nav__link">
+    <span class="md-ellipsis">
+      LLAMA + Grapa Interpolation
     </span>
   </a>
   
@@ -4569,174 +4797,400 @@
 
 
 
-<h1 id="model-examples">Model Examples</h1>
-<p>This page provides practical examples of using the <code>$MODEL</code> data type for AI/ML model integration in Grapa.</p>
-<p><strong>Note:</strong> The examples in this guide use <code>qwen2.5-7b-instruct-q3_k_m.gguf</code> for simplicity (single file download). For higher quality results, you can substitute <code>qwen2.5-7b-instruct-q5_k_m.gguf</code> (requires downloading and merging 2 files). See the <a href="../model_download/">Model Download Guide</a> for instructions on downloading both options.</p>
-<h2 id="basic-model-usage">Basic Model Usage</h2>
+<h1 id="model-usage-guide">Model Usage Guide</h1>
+<p>This comprehensive guide covers all the different ways to use the <code>$MODEL</code> data type in Grapa, from basic usage to advanced patterns and real-world applications.</p>
+<h2 id="table-of-contents">Table of Contents</h2>
+<ol>
+<li><a href="#basic-usage-patterns">Basic Usage Patterns</a></li>
+<li><a href="#context-management">Context Management</a></li>
+<li><a href="#cross-cli-context-persistence">Cross-CLI Context Persistence</a></li>
+<li><a href="#multiple-model-instances">Multiple Model Instances</a></li>
+<li><a href="#performance-optimization">Performance Optimization</a></li>
+<li><a href="#real-world-use-cases">Real-world Use Cases</a></li>
+<li><a href="#best-practices">Best Practices</a></li>
+</ol>
+<h2 id="basic-usage-patterns">Basic Usage Patterns</h2>
 <h3 id="simple-text-generation">Simple Text Generation</h3>
-<div class="highlight"><pre><span></span><code>/* Basic model loading and text generation */
+<p>The most basic pattern for using <code>$MODEL</code>:</p>
+<div class="highlight"><pre><span></span><code>/* Create and load a model */
 model = $MODEL();
-&quot;Loading model...&quot;.echo();
-
 result = model.load(&quot;models/qwen2.5-7b-instruct-q3_k_m.gguf&quot;);
-if (result == 0) {
-    &quot;Model loaded successfully!&quot;.echo();
 
-    /* Generate a simple response */
+if (result.type() != $ERR) {
+    /* Generate text */
     response = model.gen(&quot;Hello, how are you?&quot;);
-    (&quot;Response: &quot; + response.str()).echo();
+    (&quot;Response: &quot; + response.str() + &quot;\n&quot;).echo();
+
+    /* Clean up */
+    model.load();
 } else {
-    (&quot;Failed to load model: &quot; + result.str()).echo();
+    (&quot;Failed to load model: &quot; + result.str() + &quot;\n&quot;).echo();
 }
-
-/* Clean up */
-model.unload();
 </code></pre></div>
-<h3 id="model-information">Model Information</h3>
-<div class="highlight"><pre><span></span><code>/* Get detailed model information */
-model = $MODEL();
-model.load(&quot;models/qwen2.5-7b-instruct-q3_k_m.gguf&quot;);
+<h3 id="parameter-configuration">Parameter Configuration</h3>
+<p>Configure generation parameters before or after loading:</p>
+<div class="highlight"><pre><span></span><code>model = $MODEL();
 
-info = model.info();
-(&quot;Model loaded: &quot; + info.loaded.str()).echo();
-(&quot;Backend: &quot; + info.backend.str()).echo();
-(&quot;Model path: &quot; + info.path.str()).echo();
-
-/* Display current parameters */
-params = model.params();
-(&quot;Current parameters:&quot;).echo();
-(&quot;  Temperature: &quot; + params.temperature.str()).echo();
-(&quot;  Max tokens: &quot; + params.max_tokens.str()).echo();
-(&quot;  Context size: &quot; + params.context_size.str()).echo();
-</code></pre></div>
-<h2 id="parameter-configuration">Parameter Configuration</h2>
-<h3 id="setting-generation-parameters">Setting Generation Parameters</h3>
-<div class="highlight"><pre><span></span><code>/* Configure model parameters before loading */
-model = $MODEL();
-
-/* Set generation parameters */
+/* Configure parameters before loading */
 model.params({
-    &quot;temperature&quot;: 0.8,      /* More creative responses */
-    &quot;max_tokens&quot;: 100,       /* Longer responses */
-    &quot;top_k&quot;: 50,             /* More diverse token selection */
-    &quot;verbose&quot;: 1             /* Show errors only */
+    &quot;temperature&quot;: 0.8,
+    &quot;max_tokens&quot;: 100,
+    &quot;verbose&quot;: 0
 });
 
-&quot;Parameters configured&quot;.echo();
 model.load(&quot;models/qwen2.5-7b-instruct-q3_k_m.gguf&quot;);
 
 /* Generate with configured parameters */
-response = model.gen(&quot;Write a short story about a robot&quot;);
-(&quot;Story: &quot; + response.str()).echo();
+response = model.gen(&quot;Write a short story&quot;);
+(&quot;Story: &quot; + response.str() + &quot;\n&quot;).echo();
+
+model.load();
 </code></pre></div>
 <h3 id="dynamic-parameter-override">Dynamic Parameter Override</h3>
-<div class="highlight"><pre><span></span><code>/* Override parameters for specific generation calls */
-model = $MODEL();
+<p>Override parameters for specific generation calls:</p>
+<div class="highlight"><pre><span></span><code>model = $MODEL();
 model.load(&quot;models/qwen2.5-7b-instruct-q3_k_m.gguf&quot;);
 
 /* Conservative generation */
-conservative_response = model.gen(&quot;Explain quantum computing&quot;, {
+conservative = model.gen(&quot;Explain AI&quot;, {
     &quot;temperature&quot;: 0.3,
     &quot;max_tokens&quot;: 50
 });
 
 /* Creative generation */
-creative_response = model.gen(&quot;Write a poem about space&quot;, {
+creative = model.gen(&quot;Write a poem&quot;, {
     &quot;temperature&quot;: 1.2,
     &quot;max_tokens&quot;: 150
 });
 
-(&quot;Conservative: &quot; + conservative_response.str()).echo();
-(&quot;Creative: &quot; + creative_response.str()).echo();
+(&quot;Conservative: &quot; + conservative.str() + &quot;\n&quot;).echo();
+(&quot;Creative: &quot; + creative.str() + &quot;\n&quot;).echo();
+
+model.load();
 </code></pre></div>
-<h2 id="verbose-control">Verbose Control</h2>
-<h3 id="debugging-with-verbose-output">Debugging with Verbose Output</h3>
-<div class="highlight"><pre><span></span><code>/* Enable verbose output for debugging */
-model = $MODEL();
-model.params({&quot;verbose&quot;: 4});  /* Maximum verbosity */
-
-&quot;Loading model with debug output...&quot;.echo();
-result = model.load(&quot;models/qwen2.5-7b-instruct-q3_k_m.gguf&quot;);
-
-if (result == 0) {
-    &quot;Model loaded, generating with debug info...&quot;.echo();
-    response = model.gen(&quot;What is machine learning?&quot;);
-    (&quot;Response: &quot; + response.str()).echo();
-} else {
-    (&quot;Load failed with error: &quot; + result.str()).echo();
-}
-</code></pre></div>
-<h3 id="silent-operation">Silent Operation</h3>
-<div class="highlight"><pre><span></span><code>/* Silent operation for production use */
-model = $MODEL();
-model.params({&quot;verbose&quot;: 0});  /* No output */
-
+<h2 id="context-management">Context Management</h2>
+<h3 id="basic-context-usage">Basic Context Usage</h3>
+<p>Context allows the model to maintain conversation history and state:</p>
+<div class="highlight"><pre><span></span><code>model = $MODEL();
 model.load(&quot;models/qwen2.5-7b-instruct-q3_k_m.gguf&quot;);
-response = model.gen(&quot;Hello&quot;);
-(&quot;Response: &quot; + response.str()).echo();
+
+/* Set initial context */
+model.context(&quot;You are a helpful assistant. Previous conversation: User asked about AI.&quot;);
+
+/* Generate with context */
+response1 = model.gen(&quot;What is machine learning?&quot;);
+(&quot;Response 1: &quot; + response1.str() + &quot;\n&quot;).echo();
+
+/* Continue conversation with preserved context */
+response2 = model.gen(&quot;Can you explain that in simpler terms?&quot;);
+(&quot;Response 2: &quot; + response2.str() + &quot;\n&quot;).echo();
+
+model.load();
 </code></pre></div>
-<h2 id="multiple-model-instances">Multiple Model Instances</h2>
-<h3 id="concurrent-model-usage">Concurrent Model Usage</h3>
-<div class="highlight"><pre><span></span><code>/* Create multiple model instances */
+<h3 id="efficient-token-context">Efficient Token Context</h3>
+<p>For better performance, use token context instead of text:</p>
+<div class="highlight"><pre><span></span><code>model = $MODEL();
+model.load(&quot;models/qwen2.5-7b-instruct-q3_k_m.gguf&quot;);
+
+/* Set context using tokens (more efficient) */
+token_context = [1, 2, 3, 4, 5];  /* Example token IDs */
+model.context(token_context);
+
+/* Generate with token context */
+response = model.gen(&quot;Continue the conversation&quot;);
+(&quot;Response: &quot; + response.str() + &quot;\n&quot;).echo();
+
+model.load();
+</code></pre></div>
+<h3 id="context-transfer-between-models">Context Transfer Between Models</h3>
+<p>Transfer context from one model instance to another:</p>
+<div class="highlight"><pre><span></span><code>/* Create two model instances */
 model1 = $MODEL();
 model2 = $MODEL();
-
-/* Configure different parameters for each */
-model1.params({&quot;temperature&quot;: 0.5});
-model2.params({&quot;temperature&quot;: 1.0});
 
 /* Load the same model in both instances */
 model1.load(&quot;models/qwen2.5-7b-instruct-q3_k_m.gguf&quot;);
 model2.load(&quot;models/qwen2.5-7b-instruct-q3_k_m.gguf&quot;);
 
-/* Generate with different styles */
-conservative = model1.gen(&quot;Explain AI&quot;);
-creative = model2.gen(&quot;Explain AI&quot;);
+/* Set up context in first model */
+model1.context(&quot;Previous conversation: User asked about quantum computing.&quot;);
 
-(&quot;Conservative: &quot; + conservative.str()).echo();
-(&quot;Creative: &quot; + creative.str()).echo();
+/* Generate response in first model */
+response1 = model1.gen(&quot;What is quantum computing?&quot;);
+(&quot;Model 1 Response: &quot; + response1.str() + &quot;\n&quot;).echo();
 
-/* Clean up both models */
-model1.unload();
-model2.unload();
+/* Get context from first model */
+context_data = model1.context();
+(&quot;Context from model1: &quot; + context_data.&quot;text&quot;.str() + &quot;\n&quot;).echo();
+
+/* Transfer context to second model */
+model2.context(context_data);
+
+/* Continue conversation in second model */
+response2 = model2.gen(&quot;Can you give me a simple example?&quot;);
+(&quot;Model 2 Response: &quot; + response2.str() + &quot;\n&quot;).echo();
+
+/* Clean up */
+model1.load();
+model2.load();
 </code></pre></div>
-<h2 id="error-handling">Error Handling</h2>
-<h3 id="robust-error-handling">Robust Error Handling</h3>
-<div class="highlight"><pre><span></span><code>/* Comprehensive error handling example */
-model = $MODEL();
+<h2 id="cross-cli-context-persistence">Cross-CLI Context Persistence</h2>
+<h3 id="save-context-to-file">Save Context to File</h3>
+<p>Save context to persist across CLI sessions:</p>
+<div class="highlight"><pre><span></span><code>/* Save context function */
+save_context = op(model, filename) {
+    context = model.context();
 
-/* Try to load a model */
-result = model.load(&quot;nonexistent/model.gguf&quot;);
-if (result != 0) {
-    (&quot;Error loading model: &quot; + result.str()).echo();
-    (&quot;This could be due to:&quot;).echo();
-    (&quot;  - File not found&quot;).echo();
-    (&quot;  - Invalid model format&quot;).echo();
-    (&quot;  - Insufficient memory&quot;).echo();
-    return;
-}
+    /* Create context data structure */
+    context_data = {
+        &quot;text&quot;: context.&quot;text&quot;,
+        &quot;tokens&quot;: context.&quot;tokens&quot;,
+        &quot;method&quot;: context.&quot;method&quot;,
+        &quot;model&quot;: context.&quot;model&quot;,
+        &quot;timestamp&quot;: $TIME().utc().str()
+    };
 
-/* Try to generate text */
-try {
-    response = model.gen(&quot;Hello&quot;);
-    if (response.len() == 0) {
-        &quot;Warning: Empty response generated&quot;.echo();
+    /* Save to file */
+    $file(filename).set(context_data.str());
+    (&quot;Context saved to: &quot; + filename + &quot;\n&quot;).echo();
+};
+
+/* Load context function */
+load_context = op(model, filename) {
+    if ($file(filename).exists()) {
+        context_str = $file(filename).get();
+        /* Parse and set context - convert back to $GOBJ */
+        context_data = op()(context_str)();
+        model.context(context_data);
+        (&quot;Context loaded from: &quot; + filename + &quot;\n&quot;).echo();
+        return true;
     } else {
-        (&quot;Generated: &quot; + response.str()).echo();
-    }
-} catch (error) {
-    (&quot;Generation error: &quot; + error.str()).echo();
-}
+        (&quot;No context file found: &quot; + filename + &quot;\n&quot;).echo();
+        return false;
+    };
+};
 
-/* Always clean up */
-unload_result = model.unload();
-if (unload_result != 0) {
-    (&quot;Warning: Error unloading model: &quot; + unload_result.str()).echo();
-}
+/* Usage example */
+model = $MODEL();
+model.load(&quot;models/qwen2.5-7b-instruct-q3_k_m.gguf&quot;);
+
+/* Try to load existing context */
+if (!load_context(model, &quot;conversation_context.txt&quot;)) {
+    /* No existing context, start fresh */
+    model.context(&quot;You are a helpful assistant.&quot;);
+};
+
+/* Have a conversation */
+response = model.gen(&quot;Hello, I&#39;d like to learn about machine learning.&quot;);
+(&quot;Response: &quot; + response.str() + &quot;\n&quot;).echo();
+
+/* Save context for next session */
+save_context(model, &quot;conversation_context.txt&quot;);
+
+model.load();
 </code></pre></div>
-<h2 id="practical-applications">Practical Applications</h2>
+<h3 id="token-based-context-persistence">Token-Based Context Persistence</h3>
+<p>For maximum efficiency, save and load token context:</p>
+<div class="highlight"><pre><span></span><code>/* Save text-only context function (alternative approach) */
+save_text_context = op(model, filename) {
+    context = model.context();
+    if (context.&quot;text&quot;.len() &gt; 0) {
+        /* Save just the text */
+        $file(filename).set(context.&quot;text&quot;.str());
+        (&quot;Text context saved: &quot; + context.&quot;text&quot;.len().str() + &quot; characters\n&quot;).echo();
+    } else {
+        (&quot;No text context to save\n&quot;).echo();
+    };
+};
+
+/* Load text-only context function */
+load_text_context = op(model, filename) {
+    if ($file(filename).exists()) {
+        text_str = $file(filename).get();
+        /* Set context from text string */
+        model.context(text_str);
+        (&quot;Text context loaded from: &quot; + filename + &quot;\n&quot;).echo();
+        return true;
+    } else {
+        (&quot;No text context file found: &quot; + filename + &quot;\n&quot;).echo();
+        return false;
+    };
+};
+
+/* Save token context function */
+save_token_context = op(model, filename) {
+    context = model.context();
+    if (context.&quot;tokens&quot;.len() &gt; 0) {
+        /* Save just the tokens */
+        $file(filename).set(context.&quot;tokens&quot;.str());
+        (&quot;Token context saved: &quot; + context.&quot;tokens&quot;.len().str() + &quot; tokens\n&quot;).echo();
+    } else {
+        (&quot;No token context to save\n&quot;).echo();
+    };
+};
+
+/* Load token context function */
+load_token_context = op(model, filename) {
+    if ($file(filename).exists()) {
+        token_str = $file(filename).get();
+        /* Parse token list and set context - convert back to $LIST */
+        token_list = op()(token_str)();
+        model.context(token_list);
+        (&quot;Token context loaded from: &quot; + filename + &quot;\n&quot;).echo();
+        return true;
+    } else {
+        (&quot;No token context file found: &quot; + filename + &quot;\n&quot;).echo();
+        return false;
+    };
+};
+
+/* Usage example - try text context first, then token context */
+model = $MODEL();
+model.load(&quot;models/qwen2.5-7b-instruct-q3_k_m.gguf&quot;);
+
+/* Try to load existing text context first (simpler approach) */
+if (!load_text_context(model, &quot;text_context.txt&quot;)) {
+    /* Try token context if text context not found */
+    if (!load_token_context(model, &quot;token_context.txt&quot;)) {
+        /* No existing context, start with text */
+        model.context(&quot;You are a helpful assistant.&quot;);
+    };
+};
+
+/* Continue conversation */
+response = model.gen(&quot;What are the benefits of using token context?&quot;);
+(&quot;Response: &quot; + response.str() + &quot;\n&quot;).echo();
+
+/* Save both text and token context for next session */
+save_text_context(model, &quot;text_context.txt&quot;);
+save_token_context(model, &quot;token_context.txt&quot;);
+
+model.load();
+</code></pre></div>
+<h2 id="multiple-model-instances">Multiple Model Instances</h2>
+<h3 id="concurrent-model-usage">Concurrent Model Usage</h3>
+<p>Use multiple model instances with different configurations:</p>
+<div class="highlight"><pre><span></span><code>/* Create multiple model instances */
+conservative_model = $MODEL();
+creative_model = $MODEL();
+
+/* Configure different parameters */
+conservative_model.params({
+    &quot;temperature&quot;: 0.3,
+    &quot;max_tokens&quot;: 50,
+    &quot;verbose&quot;: 0
+});
+
+creative_model.params({
+    &quot;temperature&quot;: 1.2,
+    &quot;max_tokens&quot;: 200,
+    &quot;verbose&quot;: 0
+});
+
+/* Load the same model in both instances */
+conservative_model.load(&quot;models/qwen2.5-7b-instruct-q3_k_m.gguf&quot;);
+creative_model.load(&quot;models/qwen2.5-7b-instruct-q3_k_m.gguf&quot;);
+
+/* Generate with different styles */
+prompt = &quot;Write a story about space exploration&quot;;
+
+conservative_story = conservative_model.gen(prompt);
+creative_story = creative_model.gen(prompt);
+
+(&quot;Conservative Story: &quot; + conservative_story.str() + &quot;\n&quot;).echo();
+(&quot;Creative Story: &quot; + creative_story.str() + &quot;\n&quot;).echo();
+
+/* Clean up */
+conservative_model.load();
+creative_model.load();
+</code></pre></div>
+<h3 id="model-comparison">Model Comparison</h3>
+<p>Compare responses from different models or configurations:</p>
+<div class="highlight"><pre><span></span><code>/* Compare different temperature settings */
+compare_temperatures = op(prompt) {
+    results = {};
+
+    temperatures = [0.1, 0.5, 0.8, 1.2];
+
+    for (i = 0; i &lt; temperatures.len(); i++) {
+        temp = temperatures[i];
+
+        model = $MODEL();
+        model.params({&quot;temperature&quot;: temp, &quot;max_tokens&quot;: 100});
+        model.load(&quot;models/qwen2.5-7b-instruct-q3_k_m.gguf&quot;);
+
+        response = model.gen(prompt);
+        results[temp.str()] = response;
+
+        model.load();
+    };
+
+    return results;
+};
+
+/* Compare responses */
+prompt = &quot;Explain the concept of artificial intelligence&quot;;
+results = compare_temperatures(prompt);
+
+(&quot;Temperature Comparison for: &quot; + prompt + &quot;\n&quot;).echo();
+for (temp in results) {
+    (&quot;Temperature &quot; + temp + &quot;: &quot; + results[temp].str() + &quot;\n&quot;).echo();
+};
+</code></pre></div>
+<h2 id="performance-optimization">Performance Optimization</h2>
+<h3 id="efficient-model-usage">Efficient Model Usage</h3>
+<p>Optimize model usage for better performance:</p>
+<div class="highlight"><pre><span></span><code>/* Optimize for speed */
+fast_model = $MODEL();
+fast_model.params({
+    &quot;context_size&quot;: 1024,    /* Smaller context */
+    &quot;max_tokens&quot;: 50,        /* Shorter responses */
+    &quot;verbose&quot;: 0             /* No logging */
+});
+
+fast_model.load(&quot;models/qwen2.5-7b-instruct-q3_k_m.gguf&quot;);
+
+/* Batch multiple generations */
+prompts = [&quot;What is AI?&quot;, &quot;Explain ML&quot;, &quot;Define deep learning&quot;];
+responses = [];
+
+for (i = 0; i &lt; prompts.len(); i++) {
+    response = fast_model.gen(prompts[i]);
+    responses.append(response);
+    (&quot;Response &quot; + (i+1).str() + &quot;: &quot; + response.str() + &quot;\n&quot;).echo();
+};
+
+fast_model.load();
+</code></pre></div>
+<h3 id="memory-management">Memory Management</h3>
+<p>Proper memory management for large models:</p>
+<div class="highlight"><pre><span></span><code>/* Memory-efficient model usage */
+use_model_efficiently = op(prompt) {
+    model = $MODEL();
+
+    /* Load model */
+    result = model.load(&quot;models/qwen2.5-7b-instruct-q3_k_m.gguf&quot;);
+    if (result.type() != $ERR) {
+        /* Generate response */
+        response = model.gen(prompt);
+
+        /* Always clean up */
+        model.load();
+
+        return response;
+    } else {
+        model.load();
+        return &quot;Error loading model&quot;;
+    };
+};
+
+/* Use the function */
+response = use_model_efficiently(&quot;What is machine learning?&quot;);
+(&quot;Response: &quot; + response.str() + &quot;\n&quot;).echo();
+</code></pre></div>
+<h2 id="real-world-use-cases">Real-world Use Cases</h2>
 <h3 id="chat-bot-implementation">Chat Bot Implementation</h3>
-<div class="highlight"><pre><span></span><code>/* Simple chat bot using $MODEL */
+<div class="highlight"><pre><span></span><code>/* Simple chat bot */
 chatbot = $MODEL();
 chatbot.params({
     &quot;temperature&quot;: 0.7,
@@ -4744,81 +5198,241 @@ chatbot.params({
     &quot;verbose&quot;: 0
 });
 
-&quot;Loading chatbot model...&quot;.echo();
-result = chatbot.load(&quot;models/qwen2.5-7b-instruct-q3_k_m.gguf&quot;);
+chatbot.load(&quot;models/qwen2.5-7b-instruct-q3_k_m.gguf&quot;);
 
-if (result == 0) {
-    &quot;Chatbot ready! Type &#39;quit&#39; to exit&quot;.echo();
+/* Set up chatbot personality */
+chatbot.context(&quot;You are a helpful, friendly AI assistant. Be concise but informative.&quot;);
 
-    /* Simulate chat loop */
-    user_input = &quot;Hello, what can you help me with?&quot;;
-    while (user_input != &quot;quit&quot;) {
-        response = chatbot.gen(user_input);
-        (&quot;Bot: &quot; + response.str()).echo();
+/* Simulate chat loop */
+user_messages = [
+    &quot;Hello, what can you help me with?&quot;,
+    &quot;Tell me about machine learning&quot;,
+    &quot;What are the main types of ML?&quot;,
+    &quot;Thanks for the explanation!&quot;
+];
 
-        /* In a real implementation, you would get user input here */
-        user_input = &quot;quit&quot;;  /* Exit after first response for demo */
-    }
+for (i = 0; i &lt; user_messages.len(); i++) {
+    user_msg = user_messages[i];
+    (&quot;User: &quot; + user_msg + &quot;\n&quot;).echo();
+
+    response = chatbot.gen(user_msg);
+    (&quot;Bot: &quot; + response.str() + &quot;\n&quot;).echo();
+};
+
+chatbot.load();
+</code></pre></div>
+<h3 id="content-generation-pipeline">Content Generation Pipeline</h3>
+<div class="highlight"><pre><span></span><code>/* Content generation with different styles */
+content_pipeline = op(topic) {
+    results = {};
+
+    /* Technical writing */
+    technical_model = $MODEL();
+    technical_model.params({&quot;temperature&quot;: 0.3, &quot;max_tokens&quot;: 150});
+    technical_model.load(&quot;models/qwen2.5-7b-instruct-q3_k_m.gguf&quot;);
+
+    technical_content = technical_model.gen(&quot;Write a technical explanation of &quot; + topic);
+    results[&quot;technical&quot;] = technical_content;
+    technical_model.load();
+
+    /* Creative writing */
+    creative_model = $MODEL();
+    creative_model.params({&quot;temperature&quot;: 1.1, &quot;max_tokens&quot;: 200});
+    creative_model.load(&quot;models/qwen2.5-7b-instruct-q3_k_m.gguf&quot;);
+
+    creative_content = creative_model.gen(&quot;Write a creative story about &quot; + topic);
+    results[&quot;creative&quot;] = creative_content;
+    creative_model.load();
+
+    return results;
+};
+
+/* Generate content */
+topic = &quot;artificial intelligence&quot;;
+content = content_pipeline(topic);
+
+(&quot;Technical Content: &quot; + content[&quot;technical&quot;].str() + &quot;\n&quot;).echo();
+(&quot;Creative Content: &quot; + content[&quot;creative&quot;].str() + &quot;\n&quot;).echo();
+</code></pre></div>
+<h3 id="context-aware-assistant">Context-Aware Assistant</h3>
+<div class="highlight"><pre><span></span><code>/* Context-aware assistant with memory */
+assistant = $MODEL();
+assistant.load(&quot;models/qwen2.5-7b-instruct-q3_k_m.gguf&quot;);
+
+/* Load previous context if available */
+context_file = &quot;assistant_context.txt&quot;;
+if ($file(context_file).exists()) {
+    context_data = $file(context_file).get();
+    assistant.context(context_data);
+    (&quot;Previous context loaded\n&quot;).echo();
 } else {
-    (&quot;Failed to load chatbot: &quot; + result.str()).echo();
+    assistant.context(&quot;You are a helpful assistant with a good memory.&quot;);
+};
+
+/* Simulate conversation with memory */
+conversations = [
+    &quot;My name is John and I&#39;m interested in learning Python.&quot;,
+    &quot;What are the best resources for learning Python?&quot;,
+    &quot;What about data science libraries in Python?&quot;,
+    &quot;Can you recommend some projects to practice?&quot;
+];
+
+for (i = 0; i &lt; conversations.len(); i++) {
+    user_msg = conversations[i];
+    (&quot;User: &quot; + user_msg + &quot;\n&quot;).echo();
+
+    response = assistant.gen(user_msg);
+    (&quot;Assistant: &quot; + response.str() + &quot;\n&quot;).echo();
+};
+
+/* Save context for next session */
+current_context = assistant.context();
+$file(context_file).set(current_context.&quot;text&quot;.str());
+(&quot;Context saved for next session at &quot; + $TIME().utc().str() + &quot;\n&quot;).echo();
+
+assistant.load();
+</code></pre></div>
+<h2 id="best-practices">Best Practices</h2>
+<h3 id="1-always-check-load-results">1. Always Check Load Results</h3>
+<div class="highlight"><pre><span></span><code>model = $MODEL();
+result = model.load(&quot;models/qwen2.5-7b-instruct-q3_k_m.gguf&quot;);
+
+if (result.type() != $ERR) {
+    /* Model loaded successfully */
+    response = model.gen(&quot;Hello&quot;);
+    (&quot;Response: &quot; + response.str() + &quot;\n&quot;).echo();
+} else {
+    (&quot;Error loading model: &quot; + result.str() + &quot;\n&quot;).echo();
+    return;
 }
 
-chatbot.unload();
+model.load();
 </code></pre></div>
-<h3 id="content-generation">Content Generation</h3>
-<div class="highlight"><pre><span></span><code>/* Content generation with different styles */
-content_generator = $MODEL();
-content_generator.load(&quot;models/qwen2.5-7b-instruct-q3_k_m.gguf&quot;);
-
-/* Technical writing */
-technical = content_generator.gen(&quot;Explain how neural networks work&quot;, {
+<h3 id="2-use-appropriate-parameters">2. Use Appropriate Parameters</h3>
+<div class="highlight"><pre><span></span><code>/* For factual responses */
+model.params({
     &quot;temperature&quot;: 0.3,
-    &quot;max_tokens&quot;: 150
+    &quot;max_tokens&quot;: 100
 });
 
-/* Creative writing */
-creative = content_generator.gen(&quot;Write a creative story about AI&quot;, {
-    &quot;temperature&quot;: 1.1,
+/* For creative responses */
+model.params({
+    &quot;temperature&quot;: 1.0,
     &quot;max_tokens&quot;: 200
 });
 
-(&quot;Technical: &quot; + technical.str()).echo();
-(&quot;Creative: &quot; + creative.str()).echo();
-
-content_generator.unload();
-</code></pre></div>
-<h2 id="performance-optimization">Performance Optimization</h2>
-<h3 id="efficient-model-usage">Efficient Model Usage</h3>
-<div class="highlight"><pre><span></span><code>/* Optimize model usage for better performance */
-model = $MODEL();
-
-/* Set optimal parameters for your use case */
+/* For debugging */
 model.params({
-    &quot;context_size&quot;: 1024,    /* Smaller context for faster processing */
-    &quot;max_tokens&quot;: 50,        /* Limit response length */
-    &quot;verbose&quot;: 0             /* Disable logging for speed */
+    &quot;verbose&quot;: 4
 });
-
-&quot;Loading optimized model...&quot;.echo();
-model.load(&quot;models/qwen2.5-7b-instruct-q3_k_m.gguf&quot;);
-
-/* Batch multiple generations */
-prompts = [&quot;What is AI?&quot;, &quot;Explain ML&quot;, &quot;Define deep learning&quot;];
-responses = [];
-
-for (i = 0; i &lt; prompts.len(); i++) {
-    response = model.gen(prompts[i]);
-    responses.append(response);
-    (&quot;Response &quot; + (i+1).str() + &quot;: &quot; + response.str()).echo();
-}
-
-model.unload();
 </code></pre></div>
+<h3 id="3-manage-memory-efficiently">3. Manage Memory Efficiently</h3>
+<div class="highlight"><pre><span></span><code>/* Always clean up models */
+model = $MODEL();
+model.load(&quot;large_model.gguf&quot;);
+
+/* Use model... */
+
+model.load();  /* Free memory */
+</code></pre></div>
+<h3 id="4-use-context-appropriately">4. Use Context Appropriately</h3>
+<div class="highlight"><pre><span></span><code>/* For conversation continuity */
+model.context(&quot;Previous conversation: User asked about AI.&quot;);
+
+/* For role-playing */
+model.context(&quot;You are a helpful coding tutor.&quot;);
+
+/* For specific tasks */
+model.context(&quot;You are an expert in machine learning.&quot;);
+</code></pre></div>
+<h3 id="5-handle-errors-gracefully">5. Handle Errors Gracefully</h3>
+<div class="highlight"><pre><span></span><code>/* Option 1: Using .iferr() for fallback */
+safe_generate = op(model, prompt) {
+    response = model.gen(prompt).iferr(&quot;Generation failed&quot;);
+    if (response.len() == 0) {
+        return &quot;Empty response generated&quot;;
+    };
+    return response;
+};
+
+/* Option 2: Using try/catch for detailed error handling */
+safe_generate_detailed = op(model, prompt) {
+    try {
+        response = model.gen(prompt);
+        if (response.len() == 0) {
+            return &quot;Empty response generated&quot;;
+        };
+        return response;
+    } {
+        catch (true): return &quot;Generation error occurred&quot;;
+        default: return &quot;Unknown error occurred&quot;;
+    };
+};
+
+/* Option 3: Using explicit error checking */
+safe_generate_explicit = op(model, prompt) {
+    response = model.gen(prompt);
+    if (response.type() == $ERR) {
+        return &quot;Generation error: &quot; + response.str();
+    }
+    if (response.len() == 0) {
+        return &quot;Empty response generated&quot;;
+    };
+    return response;
+};
+</code></pre></div>
+<h2 id="grapa-integration-patterns">Grapa Integration Patterns</h2>
+<h3 id="llama-grapa-interpolation">LLAMA + Grapa Interpolation</h3>
+<p>A powerful pattern is to have LLAMA generate responses with Grapa interpolation placeholders, then use <code>.interpolate()</code> to evaluate them:</p>
+<div class="highlight"><pre><span></span><code>/* Set up model to use interpolation placeholders */
+model = $MODEL();
+model.load(&quot;models/qwen2.5-7b-instruct-q3_k_m.gguf&quot;);
+model.context(&quot;You are a helpful math tutor. When doing calculations, you MUST use ${expression} placeholders that can be evaluated by Grapa. For example, instead of writing &#39;15 * 23 = 345&#39;, write &#39;15 * 23 = ${15 * 23}&#39;. Always show the calculation step by step using this format.&quot;);
+
+/* Important: Define variables for literal text that looks like placeholders */
+expression = &quot;${expression}&quot;;  /* Prevents interpolation errors on literal text */
+
+/* Math calculations */
+math_response = model.gen(&quot;What is 15 * 23 + 45? Please show your work step by step using ${expression} format for all calculations.&quot;);
+/* LLAMA: &quot;The calculation is ${15 * 23 + 45} which equals ${15 * 23 + 45}&quot; */
+result = math_response.interpolate();
+/* Result: &quot;The calculation is 390 which equals 390&quot; */
+
+/* Data processing */
+data_response = model.gen(&quot;What&#39;s the average of [10, 20, 30, 40, 50]?&quot;);
+/* LLAMA: &quot;The average is ${[10, 20, 30, 40, 50].reduce(op(a,b){a+b}) / 5}&quot; */
+avg_result = data_response.interpolate();
+/* Result: &quot;The average is 30&quot; */
+
+/* File operations */
+file_response = model.gen(&quot;How many lines are in my data.txt file?&quot;);
+/* LLAMA: &quot;The file has ${$file(&#39;data.txt&#39;).get().split(&#39;\n&#39;).len()} lines&quot; */
+line_count = file_response.interpolate();
+/* Result: &quot;The file has 42 lines&quot; */
+
+/* With context variables */
+user_name = &quot;Alice&quot;;
+user_age = 30;
+personal_response = model.gen(&quot;Tell me about this user&quot;);
+/* LLAMA: &quot;User ${user_name} is ${user_age} years old, born in ${2024 - user_age}&quot; */
+personal_result = personal_response.interpolate();
+/* Result: &quot;User Alice is 30 years old, born in 1994&quot; */
+</code></pre></div>
+<p><strong>Important Notes:</strong>
+- <strong>Pre-define literal variables</strong>: If LLAMA generates text like <code>"use ${expression} format"</code>, define <code>expression = "${expression}";</code> to prevent interpolation errors
+- <strong>Interpolation scope</strong>: Variables in <code>${}</code> must be defined in the current scope before calling <code>.interpolate()</code>
+- <strong>Error handling</strong>: Undefined variables in placeholders will result in <code>{"error":-1}</code></p>
+<p><strong>Benefits:</strong>
+- <strong>Simple</strong>: LLAMA just uses <code>${}</code> syntax
+- <strong>Flexible</strong>: Interpolate when/where you want
+- <strong>Safe</strong>: Programmer controls evaluation
+- <strong>Powerful</strong>: Full Grapa capabilities in responses</p>
 <h2 id="see-also">See Also</h2>
 <ul>
-<li><a href="../type/model.md">$MODEL Data Type</a> - Complete type reference</li>
+<li><a href="../type/model/">$MODEL Data Type</a> - Complete type reference</li>
+<li><a href="../api/model/">Model API Reference</a> - Complete API documentation</li>
+<li><a href="../examples/model_examples.grc">Model Examples</a> - Working code examples</li>
 <li><a href="../model_download/">Model Download Guide</a> - How to download models</li>
-<li><a href="../api/model.md">API Reference</a> - Complete API documentation</li>
 </ul>
 
 

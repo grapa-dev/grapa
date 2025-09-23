@@ -27,28 +27,32 @@ response = model.gen("Hello, how are you?");
 info = model.info();
 
 /* Unload the model */
-model.unload();
+model.load();
 ```
 
 ## Methods
 
-### `.load(path, backend)`
+### `.load(modelpath, method)`
 Loads a model from the specified file path.
 
 **Parameters:**
 - `path` (string): Path to the model file (GGUF format)
-- `backend` (string, optional): Backend to use ("llama" is currently the only supported backend)
+- `method` (string, optional): Method to use ("llama" is currently the only supported method). If not specified, the method will be auto-detected from the file extension or magic bytes.
 
 **Returns:** Error code (0 for success)
 
 **Example:**
 ```grapa
-result = model.load("models/qwen2.5-7b-instruct-q3_k_m.gguf", "llama");
-if (result == 0) {
+/* Auto-detect method from file extension */
+result = model.load("models/qwen2.5-7b-instruct-q3_k_m.gguf");
+if (result.type() != $ERR) {
     "Model loaded successfully!".echo();
 } else {
     ("Failed to load model: " + result.str()).echo();
 }
+
+/* Explicitly specify method */
+result = model.load("models/qwen2.5-7b-instruct-q3_k_m.gguf", "llama");
 ```
 
 ### `.gen(prompt, params)`
@@ -80,9 +84,10 @@ Returns information about the current model state.
 **Example:**
 ```grapa
 info = model.info();
-("Model loaded: " + info.loaded.str()).echo();
-("Backend: " + info.backend.str()).echo();
-("Path: " + info.path.str()).echo();
+("Model loaded: " + info."loaded".str()).echo();
+("Method: " + info."method".str()).echo();
+("Model path: " + info."model_path".str()).echo();
+("Model name: " + info."model".str()).echo();
 ```
 
 ### `.params()`
@@ -93,8 +98,8 @@ Returns current generation parameters.
 **Example:**
 ```grapa
 params = model.params();
-("Current temperature: " + params.temperature.str()).echo();
-("Max tokens: " + params.max_tokens.str()).echo();
+("Current temperature: " + params."temperature".str()).echo();
+("Max tokens: " + params."max_tokens".str()).echo();
 ```
 
 ### `.params(parameters)`
@@ -112,26 +117,56 @@ model.params({
 });
 ```
 
-### `.echo(text)`
-Echoes text to output (useful for debugging and status messages).
+### `.context()`
+Gets the current context state of the model.
 
-**Parameters:**
-- `text` (string): Text to echo
+**Returns:** Object containing context information:
+- `text` (string): Current text context
+- `tokens` (list): Current token context (for efficient method processing)
+- `method` (string): Method being used
+- `model` (string): Model filename
 
 **Example:**
 ```grapa
-model.echo("Model is ready for generation");
+context = model.context();
+("Context text: " + context."text".str()).echo();
+("Context tokens: " + context."tokens".len().str() + " tokens").echo();
 ```
 
-### `.unload()`
-Unloads the current model and frees memory.
+### `.context(contextData)`
+Sets the context for the model.
+
+**Parameters:**
+- `contextData` (string, list, or object): Context data to set
+  - If string: Sets text context
+  - If list: Sets token context (for efficient processing)
+  - If object: Can contain both "text" and "tokens" fields
+
+**Example:**
+```grapa
+/* Set text context */
+model.context("Previous conversation: Hello, how are you?");
+
+/* Set token context (more efficient) */
+tokenList = [1, 2, 3, 4, 5];
+model.context(tokenList);
+
+/* Set both text and tokens */
+model.context({
+    "text": "Previous conversation",
+    "tokens": [1, 2, 3, 4, 5]
+});
+```
+
+### `.load()`
+Unloads the current model and frees memory by calling `.load()` with no parameters.
 
 **Returns:** Error code (0 for success)
 
 **Example:**
 ```grapa
-result = model.unload();
-if (result == 0) {
+result = model.load();
+if (result.type() != $ERR) {
     "Model unloaded successfully".echo();
 }
 ```
@@ -151,7 +186,7 @@ The following parameters can be set using `.params()`:
 | `context_size` | int | 2048 | Context window size |
 | `verbose` | int | 0 | Logging verbosity (0=silent, 1=errors, 2=warnings, 3=info, 4=debug) |
 
-## Backend Support
+## Method Support
 
 Currently, the `$MODEL` type supports:
 
@@ -159,6 +194,7 @@ Currently, the `$MODEL` type supports:
   - Supports various quantization levels (Q2_K, Q3_K_M, Q4_K_M, Q5_K_M, Q6_K, Q8_0, FP16)
   - Optimized for CPU inference
   - Thread-safe operations
+  - Auto-detected from `.gguf` file extension or "GGUF" magic bytes
 
 ## Model Formats
 
@@ -168,6 +204,7 @@ The `$MODEL` type currently supports:
   - Efficient quantization
   - Cross-platform compatibility
   - Metadata inclusion
+  - Auto-detected by file extension (`.gguf`) or magic bytes ("GGUF")
 
 ## Performance Considerations
 
@@ -182,6 +219,7 @@ Always check return values from `.load()` and `.unload()`:
 
 ```grapa
 model = $MODEL();
+/* Auto-detect method from file extension */
 result = model.load("model.gguf");
 if (result != 0) {
     ("Error loading model: " + result.str()).echo();
@@ -190,6 +228,7 @@ if (result != 0) {
 
 /* Use model safely */
 response = model.gen("Hello");
+model.load(); /* Unload when done */
 ```
 
 ## Thread Safety
@@ -198,6 +237,6 @@ The `$MODEL` type is designed to be thread-safe, allowing multiple model instanc
 
 ## See Also
 
-- [Model Examples](../examples/model_examples.md) - Practical usage examples
+- [Model Examples](../examples/model_examples.grc) - Practical usage examples
 - [Model Download Guide](../examples/model_download.md) - How to download models
 - [API Reference](../api/model.md) - Complete API documentation
