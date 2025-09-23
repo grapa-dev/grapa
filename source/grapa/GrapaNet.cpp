@@ -418,21 +418,32 @@ GrapaError GrapaNet::Connect(const GrapaCHAR& pURL)
 		}
 		if (!ca_loaded)
 		{
-			const char* env_grapa_cert = getenv("GRAPA_CACERT");
-			if (env_grapa_cert && SSL_CTX_load_verify_locations(vXCTX, env_grapa_cert, NULL))
+			s64 index = 0;
+			GrapaRuleEvent* ca = gSystem->mStaticLib->Search("ca-bundle.crt",index);
+			if (ca && ca->mValue.mLength)
 			{
-				ca_loaded = true;
+				BIO* cert_bio = BIO_new_mem_buf(ca->mValue.mBytes, ca->mValue.mLength);
+				if (cert_bio) {
+					X509_STORE* store = SSL_CTX_get_cert_store(vXCTX);
+					STACK_OF(X509_INFO)* certs = PEM_X509_INFO_read_bio(cert_bio, NULL, NULL, NULL);
+					if (certs) {
+						for (int i = 0; i < sk_X509_INFO_num(certs); i++) {
+							X509_INFO* info = sk_X509_INFO_value(certs, i);
+							if (info->x509) {
+								if (X509_STORE_add_cert(store, info->x509)) {
+									ca_loaded = true;
+								}
+							}
+						}
+						sk_X509_INFO_pop_free(certs, X509_INFO_free);
+					}
+					BIO_free(cert_bio);
+				}
 			}
 		}
 		if (!ca_loaded)
 		{
 			const char* ca_bundle_paths[] = {
-				"/opt/homebrew/etc/ca-certificates/cert.pem", // macOS Homebrew (most likely)
-				"/usr/local/etc/ca-certificates/cert.pem",    // macOS Homebrew alternative
-				"/etc/ssl/certs/ca-certificates.crt",     // Debian/Ubuntu
-				"/etc/ssl/certs/ca-bundle.crt",           // CentOS/RHEL
-				"/etc/pki/tls/certs/ca-bundle.crt",       // Fedora
-				"/usr/local/share/ca-certificates/ca-certificates.crt", // Some systems
 #ifdef _WIN32
 				"C:\\Windows\\System32\\curl-ca-bundle.crt",           // Windows system curl bundle
 				"C:\\Windows\\curl-ca-bundle.crt",                      // Alternate Windows location
@@ -443,6 +454,13 @@ GrapaError GrapaNet::Connect(const GrapaCHAR& pURL)
 				"C:\\msys64\\usr\\ssl\\certs\\ca-bundle.crt",       // MSYS2
 				"C:\\msys64\\etc\\pki\\ca-trust\\extracted\\pem\\tls-ca-bundle.pem", // MSYS2 trust
 				"C:\\vcpkg\\installed\\x64-windows\\ssl\\cert.pem", // vcpkg OpenSSL
+#else
+				"/opt/homebrew/etc/ca-certificates/cert.pem", // macOS Homebrew (most likely)
+				"/usr/local/etc/ca-certificates/cert.pem",    // macOS Homebrew alternative
+				"/etc/ssl/certs/ca-certificates.crt",     // Debian/Ubuntu
+				"/etc/ssl/certs/ca-bundle.crt",           // CentOS/RHEL
+				"/etc/pki/tls/certs/ca-bundle.crt",       // Fedora
+				"/usr/local/share/ca-certificates/ca-certificates.crt", // Some systems
 #endif
 				NULL
 			};
