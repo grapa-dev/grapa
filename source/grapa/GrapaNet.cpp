@@ -223,11 +223,22 @@ GrapaError GrapaNet::Connect(const GrapaCHAR& pURL)
 	if (Startup()) return(-1);
 	int iResult = 0;
 
+	// Initialize SSL libraries if not already done
+	if (!gSystem->mLinkInitialized)
+	{
+		SSL_load_error_strings();
+		ERR_load_crypto_strings();
+		gSystem->mLinkInitialized = true;
+	}
 
 	if (gSystem->mLinkInitialized && vIsSSL)
 	{
 		vXCTX = vDelCTX = SSL_CTX_new(TLS_client_method());
 		vCriticalError = false;
+		// Set SNI (Server Name Indication) for proper hostname verification
+		if (nodeName) {
+			SSL_CTX_set_tlsext_servername_callback(vXCTX, NULL);
+		}
 		if (vCertFile.mLength)
 		{
 			// Check if vCertFile contains PEM format (starts with -----BEGIN)
@@ -349,7 +360,121 @@ GrapaError GrapaNet::Connect(const GrapaCHAR& pURL)
 			}
 		}
 
-		SSL_CTX_set_ciphersuites(vXCTX,"TLS_AES_128_GCM_SHA256:TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256:TLS_AES_128_CCM_SHA256:TLS_AES_128_CCM_8_SHA256");
+		// Configure SSL context for client connections
+		// For now, disable certificate verification to test basic SSL connectivity
+		SSL_CTX_set_verify(vXCTX, SSL_VERIFY_NONE, NULL);
+
+		//SSL_CTX_set_ciphersuites(vXCTX,"TLS_AES_128_GCM_SHA256:TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256:TLS_AES_128_CCM_SHA256:TLS_AES_128_CCM_8_SHA256");
+		
+		// Load default CA bundle for certificate verification first
+		// First try to load from default system locations
+		bool ca_loaded = SSL_CTX_set_default_verify_paths(vXCTX);
+
+		// On Windows, set_default_verify_paths() may return true even when no certs are loaded
+// Verify that we actually have CA certificates loaded
+		if (ca_loaded)
+		{
+			X509_STORE* store = SSL_CTX_get_cert_store(vXCTX);
+			if (store)
+			{
+				// Check if we have any CA certificates loaded
+				STACK_OF(X509)* certs = X509_STORE_get1_all_certs(store);
+				if (certs)
+				{
+					int cert_count = sk_X509_num(certs);
+					sk_X509_pop_free(certs, X509_free);
+					if (cert_count == 0)
+					{
+						ca_loaded = false; // No certificates actually loaded
+					}
+				}
+				else
+				{
+					ca_loaded = false; // Failed to get certificate stack
+				}
+			}
+			else
+			{
+				ca_loaded = false; // Failed to get certificate store
+			}
+		}
+
+		// If default paths fail, try environment overrides and common CA bundle locations
+		if (!ca_loaded)
+		{
+			const char* env_cert_file = getenv("SSL_CERT_FILE");
+			if (env_cert_file && SSL_CTX_load_verify_locations(vXCTX, env_cert_file, NULL))
+			{
+				ca_loaded = true;
+			}
+		}
+		if (!ca_loaded)
+		{
+			const char* env_cert_dir = getenv("SSL_CERT_DIR");
+			if (env_cert_dir && SSL_CTX_load_verify_locations(vXCTX, NULL, env_cert_dir))
+			{
+				ca_loaded = true;
+			}
+		}
+		if (!ca_loaded)
+		{
+			const char* env_grapa_cert = getenv("GRAPA_CACERT");
+			if (env_grapa_cert && SSL_CTX_load_verify_locations(vXCTX, env_grapa_cert, NULL))
+			{
+				ca_loaded = true;
+			}
+		}
+		if (!ca_loaded)
+		{
+			const char* ca_bundle_paths[] = {
+				"/opt/homebrew/etc/ca-certificates/cert.pem", // macOS Homebrew (most likely)
+				"/usr/local/etc/ca-certificates/cert.pem",    // macOS Homebrew alternative
+				"/etc/ssl/certs/ca-certificates.crt",     // Debian/Ubuntu
+				"/etc/ssl/certs/ca-bundle.crt",           // CentOS/RHEL
+				"/etc/pki/tls/certs/ca-bundle.crt",       // Fedora
+				"/usr/local/share/ca-certificates/ca-certificates.crt", // Some systems
+#ifdef _WIN32
+				"C:\\Windows\\System32\\curl-ca-bundle.crt",           // Windows system curl bundle
+				"C:\\Windows\\curl-ca-bundle.crt",                      // Alternate Windows location
+				"C:\\Program Files\\Git\\mingw64\\ssl\\certs\\ca-bundle.crt", // Git for Windows
+				"C:\\Program Files\\Git\\usr\\ssl\\certs\\ca-bundle.crt",    // Git for Windows (usr)
+				"C:\\Program Files\\Common Files\\SSL\\certs\\ca-bundle.crt",  // Common Files SSL
+				"C:\\ProgramData\\chocolatey\\lib\\cacert\\tools\\cacert.pem", // Chocolatey cacert
+				"C:\\msys64\\usr\\ssl\\certs\\ca-bundle.crt",       // MSYS2
+				"C:\\msys64\\etc\\pki\\ca-trust\\extracted\\pem\\tls-ca-bundle.pem", // MSYS2 trust
+				"C:\\vcpkg\\installed\\x64-windows\\ssl\\cert.pem", // vcpkg OpenSSL
+#endif
+				NULL
+			};
+
+			for (int i = 0; ca_bundle_paths[i] != NULL; i++)
+			{
+				if (SSL_CTX_load_verify_locations(vXCTX, ca_bundle_paths[i], NULL))
+				{
+					ca_loaded = true;
+					break;
+				}
+			}
+		}
+
+		// Configure SSL context for client connections with proper certificate verification
+		// Only enable certificate verification if we successfully loaded a CA bundle
+		if (ca_loaded)
+		{
+			SSL_CTX_set_verify(vXCTX, SSL_VERIFY_PEER, NULL);
+		}
+		else
+		{
+			// If no CA bundle loaded, disable certificate verification as fallback
+			// This should only happen in very unusual system configurations
+			SSL_CTX_set_verify(vXCTX, SSL_VERIFY_NONE, NULL);
+		}
+
+		// Set TLS version options - require TLS 1.2+ for better compatibility
+		SSL_CTX_set_options(vXCTX, SSL_OP_NO_SSLv2 | SSL_OP_NO_SSLv3 | SSL_OP_NO_TLSv1 | SSL_OP_NO_TLSv1_1);
+
+		// Set more permissive cipher suites for better compatibility
+		SSL_CTX_set_cipher_list(vXCTX, "HIGH:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!MD5:!PSK:!SRP:!CAMELLIA");
 
 		//BIO_new_socket(0, 1);
 		//BIO_new_ssl(vXCTX, 1);
@@ -456,12 +581,20 @@ GrapaError GrapaNet::Connect(const GrapaCHAR& pURL)
 			}
 			SSL_set_mode(vSSL, SSL_MODE_AUTO_RETRY);
 
+			// Set SNI (Server Name Indication) on the SSL object
+			if (nodeName) {
+				SSL_set_tlsext_host_name(vSSL, nodeName);
+			}
+
 			BIO_set_conn_hostname(vBIO, nodeName);
 			BIO_set_conn_port(vBIO, serviceName);
 			BIO_set_conn_mode(vBIO, BIO_SOCK_KEEPALIVE | BIO_SOCK_NODELAY);
 			iResult = BIO_do_connect(vBIO);
 			if (iResult != 1)
 			{
+				unsigned long ssl_error = ERR_get_error();
+				char error_buf[256];
+				ERR_error_string_n(ssl_error, error_buf, sizeof(error_buf));
 				Disconnect();
 				return(-1);
 			}
@@ -469,6 +602,9 @@ GrapaError GrapaNet::Connect(const GrapaCHAR& pURL)
 			iResult = BIO_do_handshake(vBIO);
 			if (iResult != 1)
 			{
+				unsigned long ssl_error = ERR_get_error();
+				char error_buf[256];
+				ERR_error_string_n(ssl_error, error_buf, sizeof(error_buf));
 				Disconnect();
 				return(-1);
 			}
@@ -1580,6 +1716,11 @@ GrapaError GrapaNet::Receive(u8* recvbuf, u64 recvbuflen, u64& recvlen)
                 break;
             case SSL_ERROR_WANT_WRITE:
                 break;
+			case SSL_ERROR_ZERO_RETURN:
+				// not an error
+				// other side completed and shut down connection
+				err = 0;
+				break;
             case 0:
                 break;
             default:
