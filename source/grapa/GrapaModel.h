@@ -37,6 +37,9 @@ public:
     // LLAMA.cpp persistent context optimization
     bool mContextInitialized;  // Whether the context has been initialized with tokens
     
+    // OpenAI context management
+    GrapaCHAR mOpenAIResponseId;  // OpenAI: Response ID for context continuity
+    
     // Generation parameters
     s32 mMaxTokens;
     float mTemperature;
@@ -88,6 +91,11 @@ public:
     GrapaError LoadLlama(const GrapaCHAR& modelPath);
     GrapaError UnloadLlama();
     GrapaError GenerateLlama(const GrapaCHAR& prompt, GrapaCHAR& result, GrapaRuleEvent* mergedParams);
+    
+    // OpenAI cloud model operations
+    GrapaError LoadOpenAI(const GrapaCHAR& modelPath);
+    GrapaError UnloadOpenAI();
+    GrapaError GenerateOpenAI(const GrapaCHAR& prompt, GrapaCHAR& result, GrapaRuleEvent* mergedParams);
     
     // Future backends
     GrapaError LoadOnnx(const GrapaCHAR& modelPath);

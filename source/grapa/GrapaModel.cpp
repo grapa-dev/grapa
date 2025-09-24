@@ -167,6 +167,9 @@ GrapaError GrapaModel::Load(const GrapaCHAR& modelPath, const GrapaCHAR& method)
     if (mMethod.StrCmp("llama") == 0) {
         result = LoadLlama(modelPath);
     }
+    else if (mMethod.StrCmp("openai") == 0) {
+        result = LoadOpenAI(modelPath);
+    }
     else if (mMethod.StrCmp("onnx") == 0) {
         result = LoadOnnx(modelPath);
     }
@@ -266,6 +269,9 @@ GrapaError GrapaModel::Unload()
         if (mMethod.StrCmp("llama") == 0) {
             result = UnloadLlama();
         }
+        else if (mMethod.StrCmp("openai") == 0) {
+            result = UnloadOpenAI();
+        }
         // Add other backend cleanup here
     }
     
@@ -326,6 +332,78 @@ GrapaError GrapaModel::UnloadLlama()
     return 0;
 }
 
+GrapaError GrapaModel::LoadOpenAI(const GrapaCHAR& modelPath)
+{
+    // Unload first if already loaded
+    if (mLoaded) {
+        UnloadOpenAI();
+    }
+    
+    // Store the model name (e.g., "gpt-5-nano")
+    mModelPath.FROM(modelPath);
+    
+    // Initialize OpenAI response ID
+    mOpenAIResponseId.SetNull();
+    
+    // Get client.crt from static library for SSL
+    GrapaCHAR clientCert;
+    if (gSystem && gSystem->mStaticLib) {
+        s64 index;
+        GrapaRuleEvent* certParam = gSystem->mStaticLib->Search("client.crt", index);
+        if (certParam && certParam->mValue.mToken == GrapaTokenType::STR) {
+            clientCert.FROM(certParam->mValue);
+        }
+    }
+    
+    // Create URL object for connection
+    GrapaRuleEvent* urlObj = new GrapaRuleEvent();
+    urlObj->mValue.mToken = GrapaTokenType::STR;
+    urlObj->mValue.FROM("https://api.openai.com");
+    
+    // Set the certificate data in the mNet object (like in the .grc example)
+    if (clientCert.mLength > 0) {
+        GrapaRuleEvent* certObj = new GrapaRuleEvent();
+        certObj->mValue.mToken = GrapaTokenType::STR;
+        certObj->mValue.FROM(clientCert);
+        mNet.Certificate(certObj);
+        delete certObj;
+    }
+    
+    // Connect to OpenAI API using the mNet object (keep-alive connection)
+    GrapaError err = mNet.Connect(urlObj);
+    if (err != 0) {
+        delete urlObj;
+        return -1; // Connection failed
+    }
+    
+    // Verify connection is established
+    if (!mNet.mNet.mConnected) {
+        mNet.Disconnect();
+        delete urlObj;
+        return -2; // Connection verification failed
+    }
+    
+    delete urlObj;
+    mLoaded = true;
+    
+    return 0;
+}
+
+GrapaError GrapaModel::UnloadOpenAI()
+{
+    // Disconnect from OpenAI API
+    if (mNet.mNet.mConnected) {
+        mNet.Disconnect();
+    }
+    
+    // Clear OpenAI context
+    mOpenAIResponseId.SetNull();
+    
+    mLoaded = false;
+    
+    return 0;
+}
+
 GrapaError GrapaModel::Generate(const GrapaCHAR& prompt, GrapaCHAR& result, GrapaRuleEvent* callParams)
 {
     if (!mLoaded) {
@@ -337,6 +415,11 @@ GrapaError GrapaModel::Generate(const GrapaCHAR& prompt, GrapaCHAR& result, Grap
     
     if (mMethod.StrCmp("llama") == 0) {
         GrapaError err = GenerateLlama(prompt, result, mergedParams);
+        delete mergedParams;
+        return err;
+    }
+    else if (mMethod.StrCmp("openai") == 0) {
+        GrapaError err = GenerateOpenAI(prompt, result, mergedParams);
         delete mergedParams;
         return err;
     }
@@ -453,6 +536,154 @@ GrapaError GrapaModel::GenerateLlama(const GrapaCHAR& prompt, GrapaCHAR& result,
         if (llama_decode(this->mLlamaContext, next_batch)) {
             return -2;
         }
+    }
+    
+    return 0;
+}
+
+GrapaError GrapaModel::GenerateOpenAI(const GrapaCHAR& prompt, GrapaCHAR& result, GrapaRuleEvent* mergedParams)
+{
+    s64 index;
+
+    // Early exit for empty prompts
+    if (prompt.mLength == 0) {
+        result.SetLength(0);
+        return 0;
+    }
+    
+    // Extract authorization and store parameters
+    GrapaCHAR authToken;
+    bool storeContext = true; // Default to true for backward compatibility
+    if (mergedParams && mergedParams->vQueue) {
+        GrapaRuleEvent* authParam = mergedParams->vQueue->Search("api_key", index);
+        if (authParam && authParam->mValue.mToken == GrapaTokenType::STR) {
+            authToken.FROM(authParam->mValue);
+        }
+        
+        // Check for store parameter (optional)
+        GrapaRuleEvent* storeParam = mergedParams->vQueue->Search("store", index);
+        if (storeParam && storeParam->mValue.mToken == GrapaTokenType::BOOL) {
+            storeContext = storeParam->mValue.mLength==0 || storeParam->mValue.mBytes[0] != 0;
+        }
+    }
+    
+    if (authToken.mLength == 0) {
+        return -1; // No authorization token provided
+    }
+    
+    // Check if connection is still active
+    if (!mNet.mNet.mConnected) {
+        return -2; // Connection lost, need to reload
+    }
+    
+    // Prepare headers
+    GrapaCHAR headers;
+    headers.FROM("Host: api.openai.com\r\n");
+    headers.Append("Authorization: Bearer ");
+    headers.Append(authToken);
+    headers.Append("\r\nContent-Type: application/json\r\nConnection: keep-alive\r\n");
+    
+    // Prepare request body
+    GrapaCHAR requestBody;
+    requestBody.FROM("{");
+    requestBody.Append("\"model\": \"");
+    requestBody.Append(mModelPath);
+    requestBody.Append("\",");
+    requestBody.Append("\"input\": \"");
+    
+    // Escape the prompt for JSON
+    GrapaCHAR escapedPrompt = prompt;
+    escapedPrompt.Replace("\"", "\\\"");
+    escapedPrompt.Replace("\n", "\\n");
+    escapedPrompt.Replace("\r", "\\r");
+    escapedPrompt.Replace("\t", "\\t");
+    requestBody.Append(escapedPrompt);
+    requestBody.Append("\",");
+    requestBody.Append("\"store\": ");
+    requestBody.Append(storeContext ? "true" : "false");
+    
+    // Add previous_response_id if we have context
+    if (mOpenAIResponseId.mLength > 0) {
+        requestBody.Append(",");
+        requestBody.Append("\"previous_response_id\": \"");
+        requestBody.Append(mOpenAIResponseId);
+        requestBody.Append("\"");
+    }
+    
+    requestBody.Append("}");
+    
+    // Send request using the existing connection
+    GrapaCHAR headerStr;
+    headerStr.Append("POST /v1/responses HTTP/1.1\r\n");
+    headerStr.Append(headers);
+    headerStr.Append("\r\n");
+    headerStr.Append(requestBody);
+    
+    GrapaError err = mNet.mNet.Send(headerStr);
+    if (err != 0) {
+        return -3; // HTTP request failed
+    }
+    
+    mNet.HttpRead(vScriptExec);
+    GrapaRuleEvent* message = mNet.HttpMessage(vScriptExec, vNameSpace);
+    if (message && message->vQueue)
+    {
+        // Extract response ID for context management
+        GrapaRuleEvent* body = message->vQueue->Search("body", index);
+        if (body && body->vQueue)
+        {
+            // Get the response ID for context
+            GrapaRuleEvent* responseId = body->vQueue->Search("id", index);
+            if (responseId && responseId->mValue.mToken == GrapaTokenType::STR) {
+                mOpenAIResponseId.FROM(responseId->mValue);
+            }
+            
+            // Extract the generated text from output array
+            GrapaRuleEvent* output = body->vQueue->Search("output", index);
+            if (output && output->vQueue)
+            {
+                GrapaRuleEvent* outputItem = output->vQueue->Head();
+                while(outputItem)
+                {
+                    // Look for message type items
+                    GrapaRuleEvent* type = outputItem->vQueue->Search("type", index);
+                    if (type && type->mValue.mToken == GrapaTokenType::STR && 
+                        type->mValue.StrCmp("message") == 0)
+                    {
+                        // Get content array
+                        GrapaRuleEvent* content = outputItem->vQueue->Search("content", index);
+                        if (content && content->vQueue)
+                        {
+                            GrapaRuleEvent* contentItem = content->vQueue->Head();
+                            while(contentItem)
+                            {
+                                // Look for output_text type
+                                GrapaRuleEvent* contentType = contentItem->vQueue->Search("type", index);
+                                if (contentType && contentType->mValue.mToken == GrapaTokenType::STR && 
+                                    contentType->mValue.StrCmp("output_text") == 0)
+                                {
+                                    // Extract the text
+                                    GrapaRuleEvent* text = contentItem->vQueue->Search("text", index);
+                                    if (text && text->mValue.mToken == GrapaTokenType::STR) {
+                                        result.FROM(text->mValue);
+                                        break; // Found the text, exit loops
+                                    }
+                                }
+                                contentItem = contentItem->Next();
+                            }
+                        }
+                        break; // Found message type, exit outer loop
+                    }
+                    outputItem = outputItem->Next();
+                }
+            }
+        }
+    }
+    if (message)
+    {
+        message->CLEAR();
+        delete message;
+        message = NULL;
     }
     
     return 0;
@@ -578,6 +809,22 @@ GrapaRuleEvent* GrapaModel::GetContext() const
     result->mValue.mToken = GrapaTokenType::GOBJ;
     result->vQueue = new GrapaRuleQueue();
     
+    if (const_cast<GrapaModel*>(this)->mMethod.StrCmp("openai") == 0) {
+        // For OpenAI method, return response ID as context
+        GrapaRuleEvent* responseId = new GrapaRuleEvent(0, GrapaCHAR("id"), mOpenAIResponseId);
+        result->vQueue->PushTail(responseId);
+        
+        // Add method
+        GrapaRuleEvent* method = new GrapaRuleEvent(0, GrapaCHAR("method"), mMethod);
+        result->vQueue->PushTail(method);
+        
+        // Add model
+        GrapaRuleEvent* model = new GrapaRuleEvent(0, GrapaCHAR("model"), mModelPath);
+        result->vQueue->PushTail(model);
+        
+        return result;
+    }
+    
     // Add text context (convert tokens back to text for human readability)
     GrapaCHAR textContext;
     if (!mContextTokens.empty() && const_cast<GrapaModel*>(this)->mMethod.StrCmp("llama") == 0 && mLlamaModel) {
@@ -634,7 +881,20 @@ GrapaError GrapaModel::SetContext(GrapaRuleEvent* context)
         return -2; // Model not loaded
     }
     
-    // Clear existing context
+    if (mMethod.StrCmp("openai") == 0) {
+        // For OpenAI method, extract response ID from context
+        if (context->mValue.mToken == GrapaTokenType::GOBJ && context->vQueue) {
+            s64 index;
+            GrapaRuleEvent* responseId = context->vQueue->Search("id", index);
+            if (responseId && responseId->mValue.mToken == GrapaTokenType::STR) {
+                mOpenAIResponseId.FROM(responseId->mValue);
+                return 0; // Success
+            }
+        }
+        return -1; // Invalid context format for OpenAI
+    }
+    
+    // Clear existing context for other methods
     mContextTokens.clear();
     mContextPreserved = false;
     mContextInitialized = false;

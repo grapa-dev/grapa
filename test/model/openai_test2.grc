@@ -1,0 +1,66 @@
+headers = {
+	"Host": "api.openai.com", 
+	"Authorization": "Bearer " + openai_key, 
+	"Content-Type": "application/json", 
+	"Connection": "keep-alive"
+};
+x = $net();
+c = $sys().getenv($STATICLIB)["client.crt"];
+err = x.connect("https://api.openai.com", c, null);
+result1 = "";
+result2 = "";
+id = "";
+if (err.type() != $ERR) {
+	message = {
+		"model": "gpt-5-nano", 
+		"input" : "Make a note that we are runing test1, so if asked in this session what test is being run you will respond with test1.",
+		"store": true
+	};
+	err = x.httpsend("POST", "/v1/responses", headers, message.str());
+	if (err.type() != $ERR) {
+		result1 = x.httpmessage();
+		id = result1."body"."id";
+	};
+	message = {
+		"model": "gpt-5-nano", 
+		"input" : "Which test are we running?",
+		"previous_response_id": id,
+		"store": true
+	};
+	err = x.httpsend("POST", "/v1/responses", headers, message.str());
+	if (err.type() != $ERR) {
+		result2 = x.httpmessage();
+	};
+};
+x.disconnect();
+x = null;
+"\n=====\nResult1: ${result1}\n=====\nResult2: ${result2}\n=====\n".interpolate().echo();
+
+
+
+headers = {
+	"Host": "api.openai.com", 
+	"Authorization": "Bearer " + openai_key, 
+	"Content-Type": "application/json", 
+	"Connection": "keep-alive"
+};
+x = $net();
+c = $sys().getenv($STATICLIB)["client.crt"];
+err = x.connect("https://api.openai.com", c, null);
+result3 = "";
+if (err.type() != $ERR) {
+	message = {
+		"model": "gpt-5-nano", 
+		"input" : "Which test are we running?",
+		"previous_response_id": id,
+		"store": true
+	};
+	err = x.httpsend("POST", "/v1/responses", headers, message.str());
+	if (err.type() != $ERR) {
+		result3 = x.httpmessage();
+	};
+};
+x.disconnect();
+x = null;
+"\n=====\nResult3: ${result3}\n=====\n".interpolate().echo();
+
