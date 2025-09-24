@@ -1013,14 +1013,17 @@ void GrapaModel::ResetModelSpecificParams()
         return;  // No parameters to reset
     }
 
+    mMaxTokens = 20;  // Very low for testing
+    mContextSize = 2048;  // Default context size
+
     GrapaRuleEvent* override;
     s64 index;
     override = vParams->vQueue ? vParams->vQueue->Search("max_tokens", index) : nullptr;
     if (override)
-        override->mValue.FROM(GrapaInt(10).getBytes());
+        override->mValue.FROM(GrapaInt(mMaxTokens).getBytes());
     override = vParams->vQueue ? vParams->vQueue->Search("context_size", index) : nullptr;
     if (override)
-        override->mValue.FROM(GrapaInt(0).getBytes());
+        override->mValue.FROM(GrapaInt(mContextSize).getBytes());
 
     // Preserve user preference parameters
     // mTemperature, mTopK, mTopP, mRepeatPenalty, mSeed stay the same
@@ -1042,24 +1045,24 @@ void GrapaModel::SetModelDefaults()
         if (modelSize <= 7) {
             override = vParams->vQueue ? vParams->vQueue->Search("max_tokens", index) : nullptr;
             if (override)
-                override->mValue.FROM(GrapaInt(10).getBytes());
+                override->mValue.FROM(GrapaInt(20).getBytes());
             override = vParams->vQueue ? vParams->vQueue->Search("temperature", index) : nullptr;
             if (override)
-                override->mValue.FROM(GrapaFloat((double)0.7f).getBytes());
+                override->mValue.FROM(GrapaFloat((double)0.1f).getBytes());
         } else if (modelSize <= 13) {
             override = vParams->vQueue ? vParams->vQueue->Search("max_tokens", index) : nullptr;
             if (override)
                 override->mValue.FROM(GrapaInt(100).getBytes());
             override = vParams->vQueue ? vParams->vQueue->Search("temperature", index) : nullptr;
             if (override)
-                override->mValue.FROM(GrapaFloat((double)0.6f).getBytes());
+                override->mValue.FROM(GrapaFloat((double)0.1f).getBytes());
         } else {
             override = vParams->vQueue ? vParams->vQueue->Search("max_tokens", index) : nullptr;
             if (override)
                 override->mValue.FROM(GrapaInt(200).getBytes());
             override = vParams->vQueue ? vParams->vQueue->Search("temperature", index) : nullptr;
             if (override)
-                override->mValue.FROM(GrapaFloat((double)0.5f).getBytes());
+                override->mValue.FROM(GrapaFloat((double)0.1f).getBytes());
         }
     }
 }
