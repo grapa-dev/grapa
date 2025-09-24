@@ -13205,7 +13205,7 @@ GrapaRuleEvent* GrapaLibraryRuleHttpSendEvent::Run(GrapaScriptExec* vScriptExec,
 		headerStr.Append("\r\n");
 		if (body.vVal && body.vVal->mValue.mToken == GrapaTokenType::STR && body.vVal->mValue.mLength)
 		{
-			headerStr.Append(body.vVal->mValue);
+			headerStr.Append(body.vVal->mValue); 
 		}
 
 		err = objEvent->vNetConnect->mNet.Send(headerStr);

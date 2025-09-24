@@ -350,16 +350,13 @@ GrapaError GrapaModel::LoadOpenAI(const GrapaCHAR& modelPath)
     if (gSystem && gSystem->mStaticLib) {
         s64 index;
         GrapaRuleEvent* certParam = gSystem->mStaticLib->Search("client.crt", index);
-        if (certParam && certParam->mValue.mToken == GrapaTokenType::STR) {
+        if (certParam) {
             clientCert.FROM(certParam->mValue);
         }
     }
-    
-    // Create URL object for connection
-    GrapaRuleEvent* urlObj = new GrapaRuleEvent();
-    urlObj->mValue.mToken = GrapaTokenType::STR;
-    urlObj->mValue.FROM("https://api.openai.com");
-    
+
+    GrapaCHAR url("https://api.openai.com");
+    mNet.Set(url);
     // Set the certificate data in the mNet object (like in the .grc example)
     if (clientCert.mLength > 0) {
         GrapaRuleEvent* certObj = new GrapaRuleEvent();
@@ -370,20 +367,17 @@ GrapaError GrapaModel::LoadOpenAI(const GrapaCHAR& modelPath)
     }
     
     // Connect to OpenAI API using the mNet object (keep-alive connection)
-    GrapaError err = mNet.Connect(urlObj);
+    GrapaError err = mNet.Connect(NULL);
     if (err != 0) {
-        delete urlObj;
         return -1; // Connection failed
     }
     
     // Verify connection is established
     if (!mNet.mNet.mConnected) {
         mNet.Disconnect();
-        delete urlObj;
         return -2; // Connection verification failed
     }
     
-    delete urlObj;
     mLoaded = true;
     
     return 0;
@@ -556,12 +550,14 @@ GrapaError GrapaModel::GenerateOpenAI(const GrapaCHAR& prompt, GrapaCHAR& result
     bool storeContext = true; // Default to true for backward compatibility
     if (mergedParams && mergedParams->vQueue) {
         GrapaRuleEvent* authParam = mergedParams->vQueue->Search("api_key", index);
+        while (authParam && authParam->mValue.mToken == GrapaTokenType::PTR && authParam->vRulePointer) authParam = authParam->vRulePointer;
         if (authParam && authParam->mValue.mToken == GrapaTokenType::STR) {
             authToken.FROM(authParam->mValue);
         }
         
         // Check for store parameter (optional)
         GrapaRuleEvent* storeParam = mergedParams->vQueue->Search("store", index);
+        while (storeParam && storeParam->mValue.mToken == GrapaTokenType::PTR && storeParam->vRulePointer) storeParam = storeParam->vRulePointer;
         if (storeParam && storeParam->mValue.mToken == GrapaTokenType::BOOL) {
             storeContext = storeParam->mValue.mLength==0 || storeParam->mValue.mBytes[0] != 0;
         }
@@ -616,6 +612,9 @@ GrapaError GrapaModel::GenerateOpenAI(const GrapaCHAR& prompt, GrapaCHAR& result
     GrapaCHAR headerStr;
     headerStr.Append("POST /v1/responses HTTP/1.1\r\n");
     headerStr.Append(headers);
+    headerStr.Append("Content-Length: ");
+    headerStr.Append(GrapaInt(requestBody.mLength).ToString());
+    headerStr.Append("\r\n");
     headerStr.Append("\r\n");
     headerStr.Append(requestBody);
     
@@ -1088,9 +1087,9 @@ GrapaRuleEvent* GrapaModel::MergeParams(GrapaRuleEvent* persistent, GrapaRuleEve
         s64 index;
         GrapaRuleEvent* override = result->vQueue ? result->vQueue->Search(current->mName, index) : nullptr;
         if (override)
-            override->mValue = current->mValue;
+            vScriptExec->AssignValue(vNameSpace, override, current, NULL);
         else
-            result->vQueue->PushTail(new GrapaRuleEvent(0, current->mName, current->mValue));
+            result->vQueue->PushTail(vScriptExec->CopyItem(current));
         current = current->Next();
     }
     return result;
