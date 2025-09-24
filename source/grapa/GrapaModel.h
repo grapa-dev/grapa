@@ -7,6 +7,7 @@
 
 #include "GrapaFloat.h"
 #include "GrapaState.h"
+#include "GrapaNetConnect.h"
 #include "llama.h"  // LLAMA.cpp includes
 #include <vector>   // For std::vector<llama_token>
 
@@ -50,6 +51,9 @@ public:
     GrapaScriptExec* vScriptExec;
     GrapaNames* vNameSpace;
     GrapaRuleEvent* vParams;  // Grapa object of current parameters
+
+    // Network for cloud models
+    GrapaNetConnect mNet;
     
 public:
     GrapaModel(GrapaScriptExec* pScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pParams=NULL);
