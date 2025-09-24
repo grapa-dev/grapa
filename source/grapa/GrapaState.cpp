@@ -5145,7 +5145,7 @@ GrapaRuleEvent* GrapaScriptExec::CopyItem(GrapaRuleEvent* pAction, bool isTAG, b
 		result->vModel->SetRuleEvent(result);
 		result->vModel->mLoaded = p->vModel->mLoaded;
 		result->vModel->mModelPath.FROM(p->vModel->mModelPath);
-                result->vModel->mMethod.FROM(p->vModel->mMethod);
+		result->vModel->mMethod.FROM(p->vModel->mMethod);
 		result->vModel->mMaxTokens = p->vModel->mMaxTokens;
 		result->vModel->mTemperature = p->vModel->mTemperature;
 		result->vModel->mTopK = p->vModel->mTopK;

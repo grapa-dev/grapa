@@ -51,13 +51,13 @@ void GrapaModel::INIT(GrapaRuleEvent* pParams)
     mLlamaModel = nullptr;
     mLlamaContext = nullptr;
 
-    mMaxTokens = 10;  // Very low for testing
+    mMaxTokens = 20;  // Very low for testing
     mContextSize = 2048;  // Default context size
 
-    mTemperature = 0.7f;
-    mTopK = 40;
-    mTopP = 0.9f;
-    mRepeatPenalty = 1.1f;
+    mTemperature = 0.1f;
+    mTopK = 20;
+    mTopP = 0.7f;
+    mRepeatPenalty = 1.3f;
     mSeed = -1;
     mVerbose = 0;     // Default to silent (no LLAMA.cpp output)
     
