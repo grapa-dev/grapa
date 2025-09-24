@@ -73,6 +73,22 @@ void GrapaModel::INIT(GrapaRuleEvent* pParams)
     // Set LLAMA.cpp logging callback to control verbosity
     llama_log_set(LogCallback, (void*)&mVerbose);
 
+    float v;
+    char buffer[128];
+    GrapaCHAR s;
+
+   // GrapaFloat d(vScriptExec->vScriptState->mItemState.mFloatFix, vScriptExec->vScriptState->mItemState.mFloatMax, vScriptExec->vScriptState->mItemState.mFloatExtra, 0);
+    GrapaFloat d(false, 56, 4, 0);
+    sprintf(buffer, "%f", mTemperature);
+    d.FromString(buffer, 10);
+	s = d.ToString(10);
+
+    sprintf(buffer, "%f", 0.15f);
+    d.FromString(buffer, 10);
+    s = d.ToString(10);
+
+
+
     if (pParams)
     {
         vParams = pParams;

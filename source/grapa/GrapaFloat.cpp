@@ -85,26 +85,18 @@ GrapaFloat::GrapaFloat(const GrapaBYTE& inData)
 GrapaFloat::GrapaFloat(double value)
 {
 	INIT();
-	mSigned = value < 0;
-	if (mSigned)
-		value = -value;
-	mData = (u64)trunc(value);
-	mExp = mData.bitCount() - 1;
-	mData = (mData * (u64)0x10000000000000) + (u64)trunc((value - trunc(value)) * (u64)0x10000000000000);
+	mSigned = false;
+	mData = 0;
 	mBits = mData.bitCount();
+	mExp = mBits - 1;
 	mFix = false;
 	mMax = 56;
 	mExtra = 4;
 	mTrunc = false;
 	Truncate();
-	if (mBits > 49 && ((mExp + 1) < mBits))
-	{
-		mTrunc = true;
-		mData.SetItem(0, mData.GetItem(0) - 1);	
-		mData = mData << 1;
-		mData.SetItem(0, mData.GetItem(0) + 1);
-		mBits += 1;
-	}
+	char buffer[128];
+	sprintf(buffer, "%f", value);
+	FromString(buffer, 10);
 }
 double GrapaFloat::ToDouble()
 {
