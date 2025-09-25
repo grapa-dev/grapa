@@ -221,8 +221,7 @@ response1 = model.gen("What is machine learning?",{"api_key":openai_key});
 
 /* Get current context */
 current_context = model.context();
-("Current context: " + current_context."text".str() + "\n").echo();
-("Context tokens: " + current_context."tokens".len().str() + " tokens" + "\n").echo();
+("Current context: " + current_context.str() + "\n").echo();
 
 /* Continue conversation with preserved context */
 response2 = model.gen("Can you explain that in simpler terms?",{"api_key":openai_key});
