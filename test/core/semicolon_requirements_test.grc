@@ -60,10 +60,9 @@ MyClass = class {
 }; /* This semicolon is currently required */
 
 /* Test 10: Switch statements - semicolon after closing brace */
-switch (x) {
+switch (x)
     case 10: "x is 10".echo(); break;
     case 20: "x is 20".echo(); break;
     default: "x is something else".echo(); break;
-}; /* This semicolon is currently required */
 
 "All semicolon tests completed".echo();

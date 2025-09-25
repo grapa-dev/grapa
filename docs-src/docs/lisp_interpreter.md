@@ -348,11 +348,8 @@ Implement robust error handling for LISP expressions:
 ```grapa
 /* Safe evaluation */
 safe_lisp_eval = op(expr) {
-    try {
-        return op()(expr)();
-    } catch (error) {
-        return "LISP Error: " + error;
-    };
+    try return op()(expr)();
+    catch (error) return "LISP Error: " + error;
 };
 ```
 

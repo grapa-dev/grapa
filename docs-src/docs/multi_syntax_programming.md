@@ -360,9 +360,8 @@ $global["$format_step"] = rule <$validated_data,op(b:$1){format_output(b)}> {@<v
 ```grapa
 /* Robust syntax definition */
 $custom_function = rule safe_query '(' $STR ')' {op(query:$3){
-    try {
-        return execute_query(query);
-    } catch (error) {
+    try return execute_query(query);
+    catch (error) {
         ("Query error: " + error).echo();
         return $err("Query failed");
     };

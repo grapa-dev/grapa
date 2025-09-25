@@ -34,6 +34,11 @@ test_prime = (256).staticprime();
 ("Test prime: " + test_prime.str() + "\n").echo();
 ```
 
+**genprime() Parameters:**
+- **`(bits).genprime()`** - Generate a standard prime number
+- **`(bits).genprime(1)`** - Generate a safe prime (where (p-1)/2 is also prime)
+- **`(bits).genprime(0)`** - Explicitly generate a standard prime (same as no parameter)
+
 **Available staticprime() bit sizes**: 2, 3, 4, 256, 512, 768, 1024, 1536, 2048, 3072, 4096
 
 ### Testing Primality
@@ -815,14 +820,12 @@ is_valid = ec_keys.verify(message, signature);
 **Error Handling:**
 ```grapa
 /* Handle signature errors gracefully */
-try {
-    keys = "rsa".genkeys();
-    signature = keys.sign("test message");
-    is_valid = keys.verify("test message", signature);
-    ("Signature operation successful: " + is_valid.str() + "\n").echo();
-} catch (error) {
-    ("Signature error: " + error.str() + "\n").echo();
-}
+try keys = "rsa".genkeys();
+catch (error) ("Signature error: " + error.str() + "\n").echo();
+
+signature = keys.sign("test message");
+is_valid = keys.verify("test message", signature);
+("Signature operation successful: " + is_valid.str() + "\n").echo();
 ```
 
 #### Performance Considerations
@@ -1600,9 +1603,7 @@ safe_crypto_operation = op(operation, params) {
         } else {
             "Error: Unknown operation";
         }
-    } catch (error) {
-        "Error: " + error;
-    }
+    } catch (error) "Error: " + error;
 };
 
 /* Example usage */

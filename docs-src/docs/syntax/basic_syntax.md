@@ -2537,75 +2537,69 @@ Grapa provides switch statements for multiple condition checking:
 
 **Single command in case:**
 ```grapa
-switch (x) {
-    case 10: "x is 10".echo();
-    case 5: "x is 5".echo();
-    default: "x is something else".echo();
-};
+switch (x)
+case 10: "x is 10".echo();
+case 5: "x is 5".echo();
+default: "x is something else".echo();
 ```
 
-**Multiple commands in case (must use {}):**
+**Multiple commands in case (use {}):**
 ```grapa
-switch (x) {
-    case 10: {
-        "x is 10".echo();
-        "Additional handling".echo();
-    }
-    case 5: {
-        "x is 5".echo();
-        "More handling".echo();
-    }
-    default: {
-        "x is something else".echo();
-        "Default handling".echo();
-    }
-};
+switch (x)
+case 10: {
+    "x is 10".echo();
+    "Additional handling".echo();
+}
+case 5: {
+    "x is 5".echo();
+    "More handling".echo();
+}
+default: {
+    "x is something else".echo();
+    "Default handling".echo();
+}
 ```
 
 #### Type Switching
 ```grapa
 /* Switch based on type */
-switch (value.type()) {
-    case $STR: "String value".echo();
-    case $INT: "Integer value".echo();
-    case $LIST: "Array value".echo();
-    case $GOBJ: "Grapa Object value".echo();
-    default: "Unknown type".echo();
-};
+switch (value.type())
+case $STR: "String value".echo();
+case $INT: "Integer value".echo();
+case $LIST: "Array value".echo();
+case $GOBJ: "Grapa Object value".echo();
+default: "Unknown type".echo();
 ```
 
 #### Value Switching
 ```grapa
 /* Switch based on value */
-switch (status) {
-    case "active": "User is active".echo();
-    case "inactive": "User is inactive".echo();
-    case "pending": "User is pending".echo();
-    default: "Unknown status".echo();
-};
+switch (status)
+case "active": "User is active".echo();
+case "inactive": "User is inactive".echo();
+case "pending": "User is pending".echo();
+default: "Unknown status".echo();
 ```
 
 #### Boolean Switching
 ```grapa
 /* Switch based on boolean conditions */
-switch(true) {
-    case (score >= 90): "Grade: A".echo();
-    case (score >= 80): "Grade: B".echo();
-    case (score >= 70): "Grade: C".echo();
-    case (score >= 60): "Grade: D".echo();
-    default: "Grade: F".echo();
-};
+switch(true)
+case (score >= 90): "Grade: A".echo();
+case (score >= 80): "Grade: B".echo();
+case (score >= 70): "Grade: C".echo();
+case (score >= 60): "Grade: D".echo();
+default: "Grade: F".echo();
 ```
 
 #### Switch with Complex Conditions
 ```grapa
 /* Switch with complex expressions */
-switch(true) {
-    case (age < 18 && income < 30000): "Young and low income".echo();
-    case (age >= 65): "Senior citizen".echo();
-    case (income > 100000): "High income".echo();
-    default: "Standard category".echo();
-};
+switch(true)
+case (age < 18 && income < 30000): "Young and low income".echo();
+case (age >= 65): "Senior citizen".echo();
+case (income > 100000): "High income".echo();
+default: "Standard category".echo();
 ```
 
 #### Variable Declaration in Switch Expression
@@ -2614,37 +2608,33 @@ Grapa's switch statement can declare and initialize variables directly in the sw
 
 ```grapa
 /* Declare variable in switch expression for advanced matching */
-switch(a:[1,3,5]) {
-    case (a[2]==5): "Array element matches".echo();
-    default: "No match found".echo();
-};
+switch(a:[1,3,5])
+case (a[2]==5): "Array element matches".echo();
+default: "No match found".echo();
 ```
 
 **Advanced Pattern Matching Examples:**
 
 ```grapa
 /* Fuzzy string matching */
-switch(input:"hello world") {
-    case (input.grep("hello", "i")): "Contains 'hello' (case insensitive)".echo();
-    case (input.len() > 10): "Long string".echo();
-    default: "No pattern match".echo();
-};
+switch(input:"hello world")
+case (input.grep("hello", "i")): "Contains 'hello' (case insensitive)".echo();
+case (input.len() > 10): "Long string".echo();
+default: "No pattern match".echo();
 
 /* Complex data structure analysis */
-switch(data:{name: "Alice", scores: [85, 92, 78]}) {
-    case (data.scores.mean()[0] >= 90): "High performer".echo();
-    case (data.scores.mean()[0] >= 80): "Good performer".echo();
-    case (data.scores.min()[0] < 70): "Needs improvement".echo();
-    default: "Average performer".echo();
-};
+switch(data:{name: "Alice", scores: [85, 92, 78]})
+case (data.scores.mean()[0] >= 90): "High performer".echo();
+case (data.scores.mean()[0] >= 80): "Good performer".echo();
+case (data.scores.min()[0] < 70): "Needs improvement".echo();
+default: "Average performer".echo();
 
 /* Array pattern matching */
-switch(arr:[1,2,3,4,5]) {
-    case (arr.len() == 5 && arr[0] == 1): "Five-element array starting with 1".echo();
-    case (arr.sum()[0] > 10): "Array sum greater than 10".echo();
-    case (arr.grep(3)): "Array contains 3".echo();
-    default: "No specific pattern".echo();
-};
+switch(arr:[1,2,3,4,5])
+case (arr.len() == 5 && arr[0] == 1): "Five-element array starting with 1".echo();
+case (arr.sum()[0] > 10): "Array sum greater than 10".echo();
+case (arr.grep(3)): "Array contains 3".echo();
+default: "No specific pattern".echo();
 ```
 
 **Key Features:**
@@ -2663,24 +2653,20 @@ Grapa provides comprehensive exception handling with try/catch/finally blocks an
 ### Basic Exception Handling
 ```grapa
 /* Basic try/catch with finally */
-try {
-    throw 'error message';
-} {
-    catch 'error message': 'Caught specific error'.echo();
-    default: 'Caught any other error'.echo();
-} finally: 'Always executed'.echo();
+try throw 'error message'
+catch 'error message': 'Caught specific error'.echo();
+default: 'Caught any other error'.echo();
+finally: 'Always executed'.echo();
 ```
 
 ### Exception with Variable Binding
 ```grapa
 /* Throw with variable binding for detailed error handling */
-try {
-    throw (err:'error message');
-} {
-    catch (err.left(1)=='e'): 'Error starts with e: '.interpolate({msg=err}).echo();
-    catch (err.len() > 10): 'Long error message'.echo();
-    default: 'Caught other error'.echo();
-} finally: 'Cleanup completed'.echo();
+try throw (err:'error message')
+catch (err.left(1)=='e'): 'Error starts with e: '.interpolate({msg=err}).echo();
+catch (err.len() > 10): 'Long error message'.echo();
+default: 'Caught other error'.echo();
+finally: 'Cleanup completed'.echo();
 ```
 
 ### Exception Handling Syntax
@@ -2693,13 +2679,11 @@ throw (err:'error message');              // With variable binding
 
 **Try/catch/finally:**
 ```grapa
-try {
-    // Code that might throw
-} {
-    catch 'error': 'Handle specific error'.echo();
-    catch (condition): 'Handle based on condition'.echo();
-    default: 'Handle any other error'.echo();
-} finally: 'Always execute'.echo();
+try throw 'error'
+catch 'error': 'Handle specific error'.echo();
+catch (condition): 'Handle based on condition'.echo();
+default: 'Handle any other error'.echo();
+finally: 'Always execute'.echo();
 ```
 
 **Key Features:**
@@ -3524,19 +3508,17 @@ for (i = 0; i < 10; i += 1) {
 #### **Switch Statements**
 ```grapa
 /* Switch statements with control flow */
-switch (day) {
-    case 1: day_name = "Monday";;
-    case 2: day_name = "Tuesday";;
-    case 3: day_name = "Wednesday";;
-    default: day_name = "Unknown";;
-}
+switch (day)
+case 1: day_name = "Monday";;
+case 2: day_name = "Tuesday";;
+case 3: day_name = "Wednesday";;
+default: day_name = "Unknown";;
 
 /* Switch with return statements */
-switch (value) {
-    case 1: return "one";;
-    case 2: return "two";;
-    default: return "unknown";;
-}
+switch (value)
+case 1: return "one";;
+case 2: return "two";;
+default: return "unknown";;
 ```
 
 #### **Function Control Flow**
@@ -3574,11 +3556,11 @@ func test() {
 test();  /* Returns 999 */
 
 /* Control flow in switch statements */
-switch (1) { 
-    case 1: "hi".{if (true) return 999; x=@$$; x.len()}.range(); 
-    return 888; 
-    default: return 777; 
-};  /* Returns 999 */
+switch (1)
+case 1: "hi".{if (true) return 999; x=@$$; x.len()}.range(); 
+return 888; 
+default: return 777; 
+/* Returns 999 */
 ```
 
 #### **Control Flow Propagation**

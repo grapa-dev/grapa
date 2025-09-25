@@ -270,11 +270,8 @@ if (result.error) {
 }
 
 # Safe field creation
-try {
-    f.mkfield("test", "INT", "FIX", 4)
-} catch {
-    # Handle field creation error
-}
+try f.mkfield("test", "INT", "FIX", 4)
+catch "Handle field creation error".echo();
 ```
 
 ### Debug Information

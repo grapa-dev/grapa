@@ -40,6 +40,7 @@ $math().hypot(x,y) | $math().hypot(3,4) | 5
 (val).abs() | (-78).abs() | 78
 (val).modpow(p,m) | (4).modpow(13,497) | 445
 (val).modinv(m) | (3504).modinv(385) | 79
-(val).genprime() | (16).genprime() | 60913
+(val).genprime([safe]) | (16).genprime() | 60913
+(val).genprime([safe]) | (16).genprime(1) | Safe prime
 (val).isprime | (60913).isprime() | 1
 (val).gcd(n) | (18).gcd(24) | 6

@@ -74,6 +74,11 @@ safe_prime = (256).genprime(1);
 ("Safe prime: " + safe_prime.str()).echo();
 ```
 
+**genprime() Parameters:**
+- **`(bits).genprime()`** - Generate a standard prime number
+- **`(bits).genprime(1)`** - Generate a safe prime (where (p-1)/2 is also prime)
+- **`(bits).genprime(0)`** - Explicitly generate a standard prime (same as no parameter)
+
 ### Primality Testing
 ```grapa
 /* Test numbers for primality with high confidence */

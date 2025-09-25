@@ -53,23 +53,18 @@ if (upper_string == "  HELLO WORLD  ") {
 "\n=== Error Handling Tests ===\n".echo();
 
 /* Test division by zero */
-try {
-    result = 10 / 0;
-    "✗ Division by zero test failed - should have thrown error\n".echo();
-} catch {
-    "✓ Division by zero correctly throws error\n".echo();
-};
+try result = 10 / 0;
+catch "✓ Division by zero correctly throws error\n".echo();
+"✗ Division by zero test failed - should have thrown error\n".echo();
 
 /* Test normal division */
-try {
-    result = 10 / 2;
-    if (result == 5) {
-        "✓ Division test passed\n".echo();
-    } else {
-        "✗ Division test failed\n".echo();
-    };
-} catch {
-    "✗ Division test failed - should not throw error\n".echo();
+try result = 10 / 2;
+catch "✗ Division test failed - should not throw error\n".echo();
+
+if (result == 5) {
+    "✓ Division test passed\n".echo();
+} else {
+    "✗ Division test failed\n".echo();
 };
 
 /* Test object property access */

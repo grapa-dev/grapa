@@ -29,7 +29,7 @@ tags:
 `isint`, `iferr`, `message`, `string`, `echo`, `console`, `prompt`
 
 ## Cryptography
-**Mathematical**: `genprime`, `staticprime`, `isprime`, `isaks`, `random`, `setbit`, `clearbit`, `genbits`
+**Mathematical**: `genprime([safe])`, `staticprime`, `isprime`, `isaks`, `random`, `setbit`, `clearbit`, `genbits`
 **OpenSSL-Based**: `genkeys`, `encode`, `encoderaw`, `decode`, `sign`, `signadd`, `verify`, `verifyrecover`, `secret`
 
 ## Math - Basic

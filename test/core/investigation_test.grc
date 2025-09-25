@@ -112,12 +112,10 @@ i = 0;
 while (i < patterns.length) {
     j = 0;
     while (j < inputs.length) {
-        try {
-            result = inputs[j].grep(patterns[i], "");
-            "Pattern: " + patterns[i] + " Input: " + inputs[j] + " Result: " + result.str() + "\n".echo();
-        } catch (e) {
-            "Pattern: " + patterns[i] + " Input: " + inputs[j] + " Error: " + e.str() + "\n".echo();
-        }
+        try result = inputs[j].grep(patterns[i], "");
+        catch (e) "Pattern: " + patterns[i] + " Input: " + inputs[j] + " Error: " + e.str() + "\n".echo();
+        
+        "Pattern: " + patterns[i] + " Input: " + inputs[j] + " Result: " + result.str() + "\n".echo();
         j = j + 1;
     }
     i = i + 1;

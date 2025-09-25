@@ -430,11 +430,10 @@ critical_function = op() {
 ### Switch Statements
 ```grapa
 /* Switch with control flow */
-switch (value) {
-    case 1: return "one";;
-    case 2: return "two";;
-    default: return "unknown";;
-}
+switch (value)
+case 1: return "one";;
+case 2: return "two";;
+default: return "unknown";;
 ```
 
 ### Control Flow in Inline Code Blocks

@@ -20,23 +20,19 @@ scrape_pages = op(urls, delay_ms) {
             $sys().sleep(delay_ms);
         };
         
-        try {
-            /* Perform HTTP GET request */
-            response = $net().get(url);
-            /* Check for successful response */
-            if (response.getfield("status") == 200) {
-                {
-                    "url": url,
-                    "success": true,
-                    "content": response.getfield("body"),
-                    "size": response.getfield("body").len()
-                };
-            } else {
-                {"url": url, "success": false, "error": "HTTP " + response.getfield("status").str()};
+        try response = $net().get(url);
+        catch (error) {"url": url, "success": false, "error": error.getfield("message")};
+        
+        /* Check for successful response */
+        if (response.getfield("status") == 200) {
+            {
+                "url": url,
+                "success": true,
+                "content": response.getfield("body"),
+                "size": response.getfield("body").len()
             };
-        } catch (error) {
-            /* Handle network or HTTP errors */
-            {"url": url, "success": false, "error": error.getfield("message")};
+        } else {
+            {"url": url, "success": false, "error": "HTTP " + response.getfield("status").str()};
         };
     });
     results;
@@ -80,19 +76,17 @@ extracted_data = scraped_data.map(op(page) {
 /* Collect data from REST API endpoints */
 collect_api_data = op(base_url, endpoints) {
     results = endpoints.map(op(endpoint) {
-        try {
-            url = base_url + endpoint;
-            response = $net().get(url);
-            
-            if (response.getfield("status") == 200) {
-                /* Parse JSON response */
-                data = $JSON().parse(response.getfield("body"));
-                {"endpoint": endpoint, "success": true, "data": data};
-            } else {
-                {"endpoint": endpoint, "success": false, "error": "HTTP " + response.getfield("status").str()};
-            };
-        } catch (error) {
-            {"endpoint": endpoint, "success": false, "error": error.getfield("message")};
+        try url = base_url + endpoint;
+        catch (error) {"endpoint": endpoint, "success": false, "error": error.getfield("message")};
+        
+        response = $net().get(url);
+        
+        if (response.getfield("status") == 200) {
+            /* Parse JSON response */
+            data = $JSON().parse(response.getfield("body"));
+            {"endpoint": endpoint, "success": true, "data": data};
+        } else {
+            {"endpoint": endpoint, "success": false, "error": "HTTP " + response.getfield("status").str()};
         };
     });
     results;
@@ -114,23 +108,19 @@ failed_requests = api_data.filter(op(result) { !result.getfield("success"); });
 ```grapa
 /* Automated form submission with validation */
 submit_form = op(form_data) {
-    try {
-        /* Prepare form data */
-        post_data = $JSON().stringify(form_data);
-        
-        /* Submit form via POST request */
-        response = $net().post("https://example.com/submit", post_data, {
-            "Content-Type": "application/json"
-        });
-        
-        if (response.getfield("status") == 200) {
-            result = $JSON().parse(response.getfield("body"));
-            {"success": true, "result": result};
-        } else {
-            {"success": false, "error": "HTTP " + response.getfield("status").str()};
-        };
-    } catch (error) {
-        {"success": false, "error": error.getfield("message")};
+    try post_data = $JSON().stringify(form_data);
+    catch (error) {"success": false, "error": error.getfield("message")};
+    
+    /* Submit form via POST request */
+    response = $net().post("https://example.com/submit", post_data, {
+        "Content-Type": "application/json"
+    });
+    
+    if (response.getfield("status") == 200) {
+        result = $JSON().parse(response.getfield("body"));
+        {"success": true, "result": result};
+    } else {
+        {"success": false, "error": "HTTP " + response.getfield("status").str()};
     };
 };
 

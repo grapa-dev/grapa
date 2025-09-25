@@ -215,14 +215,13 @@ op(parse)("select * from users")();
 $custom_function = rule safe_parse '(' $STR ')' {op(expression:$3){
     ("Attempting to parse: " + expression).echo();
     
-    try {
-        result = op(parse)(expression)();
-        ("Parse successful: " + result).echo();
-        return result;
-    } catch (error) {
+    try result = op(parse)(expression)()
+    catch (error) {
         ("Parse failed, using fallback").echo();
         return "fallback_value";
     };
+    ("Parse successful: " + result).echo();
+    return result;
 }};
 
 /* Debug grammar execution */

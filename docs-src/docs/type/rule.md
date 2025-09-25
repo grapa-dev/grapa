@@ -1012,15 +1012,13 @@ Validate rule definitions before use:
 ```grapa
 /* Rule validation function */
 validate_rule = op(rule_name, rule_definition, test_input, expected_output) {
-    try {
-        result = op()(test_input, rule_definition)();
-        if (result == expected_output) {
-            return {valid: true, rule: rule_name, message: "Rule works correctly"};
-        } else {
-            return {valid: false, rule: rule_name, message: "Rule returned unexpected result", expected: expected_output, actual: result};
-        };
-    } catch (error) {
-        return {valid: false, rule: rule_name, message: "Rule execution failed", error: error};
+    try result = op()(test_input, rule_definition)();
+    catch (error) return {valid: false, rule: rule_name, message: "Rule execution failed", error: error};
+    
+    if (result == expected_output) {
+        return {valid: true, rule: rule_name, message: "Rule works correctly"};
+    } else {
+        return {valid: false, rule: rule_name, message: "Rule returned unexpected result", expected: expected_output, actual: result};
     };
 };
 

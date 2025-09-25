@@ -256,9 +256,7 @@ error_ref = error_obj;
 try {
     error_obj.valid = false;
     error_obj.nonexistent.method();
-} {
-    default: "Error caught: " + error_obj.data.echo();
-}
+} default: "Error caught: " + error_obj.data.echo();
 
 "Error handling preserves reference: " + (error_ref.data == "test").echo();
 

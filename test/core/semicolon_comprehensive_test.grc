@@ -42,11 +42,10 @@ MyClass = class {
 }
 
 /* Test 8: Switch statements - semicolons seem optional */
-switch (x) {
+switch (x)
     case 10: "x is 10".echo(); break;
     case 20: "x is 20".echo(); break;
     default: "x is something else".echo(); break;
-}
 
 /* Test 9: Multiple statements on same line - semicolons required */
 x = 10; y = 20; "Multiple statements need semicolons".echo()

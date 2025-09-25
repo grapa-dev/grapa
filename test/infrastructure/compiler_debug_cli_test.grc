@@ -15,9 +15,8 @@ z.echo();
 
 // Test 2: Invalid syntax via op() - should show error context
 "Test 2: Invalid syntax via op()".echo();
-try {
-    op()("x = 5; y = 10; z = x +;")();  // Missing operand - should trigger error
-} catch (e) {
+try op()("x = 5; y = 10; z = x +;")();  // Missing operand - should trigger error
+catch (e) {
     "Caught error: ".echo();
     e.echo();
 }

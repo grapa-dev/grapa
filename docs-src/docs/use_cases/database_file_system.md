@@ -15,19 +15,17 @@ process_files = op(directory, file_pattern) {
     files = $file().find(directory, file_pattern);
     
     results = files.map(op(file) {
-        try {
-            content = $file().read(file);
-            stats = $file().stat(file);
-            
-            {
-                "file": file,
-                "size": stats.get("size"),
-                "modified": stats.get("modified"),
-                "lines": content.split("\n").len(),
-                "words": content.split(" ").len()
-            };
-        } catch (error) {
-            {"file": file, "error": error.get("message")};
+        try content = $file().read(file);
+        catch (error) {"file": file, "error": error.get("message")};
+        
+        stats = $file().stat(file);
+        
+        {
+            "file": file,
+            "size": stats.get("size"),
+            "modified": stats.get("modified"),
+            "lines": content.split("\n").len(),
+            "words": content.split(" ").len()
         };
     });
     
@@ -188,11 +186,8 @@ restore_database = op(backup_file) {
         table_data = backup_data.get(table);
         
         /* Drop existing table if it exists */
-        try {
-            $TABLE().drop(table);
-        } catch (error) {
-            /* Table doesn't exist, continue */
-        };
+        try $TABLE().drop(table);
+        catch (error) /* Table doesn't exist, continue */;
         
         /* Recreate table and insert data */
         if (table_data.len() > 0) {

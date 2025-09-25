@@ -126,11 +126,8 @@ include "lib/production/utils.grz";
 #### File Not Found
 ```grapa
 /* Include with error handling */
-try {
-    include "lib/missing_file.grc";
-} catch (error) {
-    ("Warning: Could not include missing_file.grc: " + error).echo();
-}
+try include "lib/missing_file.grc";
+catch (error) ("Warning: Could not include missing_file.grc: " + error).echo();
 ```
 
 #### Compilation Errors

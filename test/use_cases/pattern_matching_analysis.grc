@@ -59,12 +59,11 @@ $local ++= {name: obj.name, age: obj.age};
 
 // Test basic match expression
 test_match = op(value) {
-    switch (value) {
-        case 1: "One".echo();
-        case 2: "Two".echo();
-        case 3: "Three".echo();
-        default: "Other".echo();
-    }
+    switch (value)
+    case 1: "One".echo();
+    case 2: "Two".echo();
+    case 3: "Three".echo();
+    default: "Other".echo();
 };
 
 test_match(1);  // Should print "One"
@@ -73,11 +72,10 @@ test_match(5);  // Should print "Other"
 
 // Test match with expressions
 test_match_expr = op(value) {
-    switch (value) {
-        case (value < 0): "Negative".echo();
-        case (value == 0): "Zero".echo();
-        case (value > 0): "Positive".echo();
-    }
+    switch (value)
+    case (value < 0): "Negative".echo();
+    case (value == 0): "Zero".echo();
+    case (value > 0): "Positive".echo();
 };
 
 test_match_expr(-5);  // Should print "Negative"
@@ -89,13 +87,12 @@ test_match_expr(10);  // Should print "Positive"
 
 // Test guard clauses using conditional cases
 test_guards = op(user) {
-    switch (user) {
-        case (user.age < 18): "Too young".echo();
-        case (user.age >= 18 && user.role == "admin"): "Admin access".echo();
-        case (user.age >= 18 && user.role == "user"): "User access".echo();
-        case (user.age >= 65): "Senior access".echo();
-        default: "No access".echo();
-    }
+    switch (user)
+    case (user.age < 18): "Too young".echo();
+    case (user.age >= 18 && user.role == "admin"): "Admin access".echo();
+    case (user.age >= 18 && user.role == "user"): "User access".echo();
+    case (user.age >= 65): "Senior access".echo();
+    default: "No access".echo();
 };
 
 test_guards({age: 16, role: "user"});     // Should print "Too young"

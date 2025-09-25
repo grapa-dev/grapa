@@ -103,9 +103,7 @@ error_ref = error_obj;
 try {
     error_obj.valid = false;
     error_obj.nonexistent.method();
-} {
-    default: "Error caught successfully".echo();
-}
+} default: "Error caught successfully".echo();
 
 "Reference preserved after error: " + (error_ref.data == "test").echo();
 

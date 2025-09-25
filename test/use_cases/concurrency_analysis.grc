@@ -228,9 +228,7 @@ safe_parallel_operation = op(data) {
             }
             result = 100 / item;
             {success: true, result: result};
-        } catch (error) {
-            {success: false, error: error};
-        }
+        } catch (error) {success: false, error: error};
     }, 2);
 };
 

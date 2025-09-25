@@ -477,18 +477,16 @@ apiHandlers = {
 /* Process API requests */
 processApiRequest = op(requestData) {
     /* Parse JSON request */
-    try {
-        request = requestData.parse();
-        endpoint = request.path || "/";
-        
-        if (apiHandlers[endpoint]) {
-            response = apiHandlers[endpoint]();
-            return "HTTP/1.1 200 OK\r\nContent-Type: application/json\r\n\r\n" + response.str();
-        } else {
-            return "HTTP/1.1 404 Not Found\r\n\r\n";
-        };
-    } catch (e) {
-        return "HTTP/1.1 400 Bad Request\r\n\r\n";
+    try request = requestData.parse();
+    catch (e) return "HTTP/1.1 400 Bad Request\r\n\r\n";
+    
+    endpoint = request.path || "/";
+    
+    if (apiHandlers[endpoint]) {
+        response = apiHandlers[endpoint]();
+        return "HTTP/1.1 200 OK\r\nContent-Type: application/json\r\n\r\n" + response.str();
+    } else {
+        return "HTTP/1.1 404 Not Found\r\n\r\n";
     };
 };
 
@@ -1011,12 +1009,9 @@ jsonHandler = op(netSession, message, hasmore)
 	if (hasmore == 0)
 	{
 		/* Try to parse complete JSON */
-		try {
-			jsonData = jsonBuffer.parse();
-			("Received JSON: " + jsonData.str()).echo();
-		} catch (e) {
-			("Invalid JSON received: " + jsonBuffer).echo();
-		};
+		try jsonData = jsonBuffer.parse();
+		catch (e) ("Invalid JSON received: " + jsonBuffer).echo();
+		("Received JSON: " + jsonData.str()).echo();
 		
 		jsonBuffer = "";
 	};

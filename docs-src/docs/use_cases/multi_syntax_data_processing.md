@@ -50,11 +50,8 @@ $custom_function = rule $STR '->' $STR {op(json:$1,path:$3){
 
 $custom_function = rule json_extract '(' $STR ',' $STR ')' {op(json:$3,path:$5){
     /* JSON extraction with error handling */
-    try {
-        return json.json().getfield(path);
-    } catch (error) {
-        return $err("JSON extraction failed");
-    };
+    try return json.json().getfield(path);
+    catch (error) return $err("JSON extraction failed");
 }};
 
 /* Step 3: Define XML syntax for feed processing */

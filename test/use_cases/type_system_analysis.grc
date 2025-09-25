@@ -73,19 +73,13 @@ safe_divide = op(a, b) {
 };
 
 // Test type constraints
-try {
-    result1 = safe_divide(10, 2);
-    ("Safe divide result: " + result1).echo();
-} catch (error) {
-    ("Error: " + error).echo();
-}
+try result1 = safe_divide(10, 2);
+catch (error) ("Error: " + error).echo();
+("Safe divide result: " + result1).echo();
 
-try {
-    result2 = safe_divide("10", 2);
-    ("Safe divide result: " + result2).echo();
-} catch (error) {
-    ("Error: " + error).echo();
-}
+try result2 = safe_divide("10", 2);
+catch (error) ("Error: " + error).echo();
+("Safe divide result: " + result2).echo();
 
 /* Test 4: Type Inference (Automatic Deduction) */
 ("--- Test 4: Type Inference (Automatic Deduction) ---").echo();
@@ -137,13 +131,12 @@ validation_tests.map(op(test) {
 generic_process = op(data) {
     data_type = data.type();
     
-    switch (data_type) {
+    switch (data_type)
         case $INT: data * 2;
         case $STR: data.upper();
         case $LIST: data.map(op(x) { x * 2; });
         case $GOBJ: data.map(op(key, value) { key + ": " + value; });
         default: "Unsupported type: " + data_type;
-    }
 };
 
 // Test generic-like function
@@ -193,7 +186,7 @@ collection_result = type_safe_collection(mixed_data, numeric_validator);
 
 // Safe type conversion with validation
 safe_convert = op(value, target_type) {
-    switch (target_type) {
+    switch (target_type)
         case $INT: 
             if (value.type() == $STR) {
                 // Try to convert string to int
@@ -225,7 +218,6 @@ safe_convert = op(value, target_type) {
                 throw("Cannot convert " + value.type() + " to float");
             }
         default: throw("Unsupported target type: " + target_type);
-    }
 };
 
 // Test safe conversion
@@ -237,12 +229,10 @@ conversion_tests = [
 ];
 
 conversion_tests.map(op(test) {
-    try {
-        result = safe_convert(test.value, test.target);
-        ("Safe convert: " + test.value + " -> " + test.target + " = " + result).echo();
-    } catch (error) {
-        ("Safe convert error: " + test.value + " -> " + test.target + " = " + error).echo();
-    }
+    try result = safe_convert(test.value, test.target);
+    catch (error) ("Safe convert error: " + test.value + " -> " + test.target + " = " + error).echo();
+    
+    ("Safe convert: " + test.value + " -> " + test.target + " = " + result).echo();
 });
 
 /* Test 9: Advanced Type Patterns */
@@ -252,7 +242,7 @@ conversion_tests.map(op(test) {
 type_pattern_match = op(value) {
     value_type = value.type();
     
-    switch (value_type) {
+    switch (value_type)
         case $INT: 
             if (value < 0) "Negative integer";
             else if (value == 0) "Zero";
@@ -269,7 +259,6 @@ type_pattern_match = op(value) {
             if (value.len() == 0) "Empty object";
             else "Object with " + value.len() + " properties";
         default: "Other type: " + value_type;
-    }
 };
 
 // Test type pattern matching

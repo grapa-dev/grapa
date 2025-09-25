@@ -71,12 +71,10 @@ Grapa's `.map()` function provides sophisticated parallel execution with automat
 /* Fetch multiple URLs concurrently with automatic completion */
 fetch_urls = op(urls) {
     responses = urls.map(op(url) {
-        try {
-            response = $net().get(url);
-            {"url": url, "success": true, "data": response.getfield("body")};
-        } catch (error) {
-            {"url": url, "success": false, "error": error.getfield("message")};
-        };
+        try response = $net().get(url);
+        catch (error) {"url": url, "success": false, "error": error.getfield("message")};
+        
+        {"url": url, "success": true, "data": response.getfield("body")};
     });
     responses;
 };

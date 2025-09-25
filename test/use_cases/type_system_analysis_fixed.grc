@@ -138,13 +138,12 @@ validation_tests.map(op(test) {
 generic_process = op(data) {
     data_type = data.type();
     
-    switch (data_type) {
+    switch (data_type)
         case $INT: data * 2;
         case $STR: data.upper();
         case $LIST: data.map(op(x) { x * 2; });
         case $GOBJ: data.map(op(key, value) { key + ": " + value; });
         default: "Unsupported type: " + data_type;
-    }
 };
 
 // Test generic-like function

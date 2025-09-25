@@ -386,21 +386,17 @@ while (condition) {
     /* code */
 }
 
-switch (value) {
+switch (value)
     case 1: /* code */;
     case 2: /* code */;
     default: /* code */;
-}
 ```
 
 #### **Implemented Exception Handling:**
 ```grapa
 /* Implemented try/catch syntax */
-try {
-    risky_operation();
-} catch (error) {
-    handle_error(error);
-}
+try risky_operation();
+catch (error) handle_error(error);
 ```
 
 #### **Implemented Return/Break/Continue:**
@@ -483,29 +479,26 @@ $local ++= {a:10, c:3};  /* 'a' now refers to 10, not 1 */
 
 ```grapa
 /* Each case can be a full boolean expression */
-switch (true) {
+switch (true)
     case (user.role == "admin" && user.age >= 18): "Admin access granted".echo();
     case (user.role == "user" && user.age >= 18): "User access granted".echo();
     case (user.age < 18): "Access denied - too young".echo();
     default: "Access denied - unknown role".echo();
-};
 
 /* Type-based pattern matching */
-switch (true) {
+switch (true)
     case (data.type() == $STR): "String data".echo();
     case (data.type() == $INT): "Integer data".echo();
     case (data.type() == $LIST): "Array data".echo();
     case (data.type() == $GOBJ): "List data".echo();
     default: "Other data type".echo();
-};
 
 /* Complex data structure matching */
-switch (true) {
+switch (true)
     case (user.name == "admin" && user.permissions.len() > 0): "Full admin".echo();
     case (user.permissions.find("read")): "Read access".echo();
     case (user.guest == true): "Guest access".echo();
     default: "No access".echo();
-};
 ```
 
 **Advantages of Grapa's Switch Pattern Matching:**
