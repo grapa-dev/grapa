@@ -639,12 +639,8 @@ $global["$command"]
 	| if '(' <$comp> ')' <$command> <$else> {@<if,{$3,$5,$6}>}
 	| if '(' <$comp> ')' <$command> {@<if,{$3,$5}>}
 	| while '(' <$comp> ')' <$command> {@<while,{$3,$5}>}
-	| switch '(' <$comp> ')' '{' <$case_list> '}' finally <$command> {@<switch,{$3,$6,$9}>}
-	| switch '(' <$comp> ')' '{' <$case_list> '}' {@<switch,{$3,$6,null}>}
 	| switch <$comp> <$case_list> finally <$command> {@<switch,{$2,$3,$5}>}
 	| switch <$comp> <$case_list> {@<switch,{$2,$3,null}>}
-	| try <$command> '{' <$case_list> '}' finally <$command> {@<try,{$2,$4,$7}>}
-	| try <$command> '{' <$case_list> '}' {@<try,{$2,$4,null}>}
 	| try <$command> ';' <$case_list> finally <$command> {@<try,{$2,$4,$6}>}
 	| try <$command> ';' <$case_list> {@<try,{$2,$4,null}>}
 	| try <$command> <$case_list> finally <$command> {@<try,{$2,$3,$5}>}
