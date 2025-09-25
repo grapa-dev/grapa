@@ -1,5 +1,5 @@
 /* Test Advanced Context Combinations */
-/* This test covers advanced and edge case context options */
+/* This test covers advanced and edge case context options */:
 
 "=== ADVANCED CONTEXT TEST ===\n".echo();
 "Testing advanced context option combinations\n".echo();

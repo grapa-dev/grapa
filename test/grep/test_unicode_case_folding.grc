@@ -1,8 +1,8 @@
 /* Test Unicode Case Folding Enhancements */
-/* This test focuses specifically on case folding issues identified in the enhancement plan */
+/* This test focuses specifically on case folding issues identified in the enhancement plan */:
 
 "=== UNICODE CASE FOLDING ENHANCEMENT TEST ===\n".echo();
-"Testing specific Unicode case folding issues\n".echo();
+"Testing specific Unicode case folding issues\n".echo();:
 
 /* Test 1: Turkish Dotted/Dotless I */
 "Test 1: Turkish Dotted/Dotless I\n".echo();
@@ -78,7 +78,7 @@ result = input.grep("istanbul|ss|sigma|i", "i");
 ("Input: " + input + "\n").echo();
 ("Pattern: istanbul|ss|sigma|i (case-insensitive)\n").echo();
 ("Result: " + result.str() + "\n").echo();
-("Expected: Should handle mixed case folding properly\n").echo();
+("Expected: Should handle mixed case folding properly\n").echo();:
 "---\n".echo();
 
 /* Test 6: Case Folding with Unicode Properties */
@@ -88,7 +88,7 @@ result = input.grep("\\p{L}+", "i");
 ("Input: " + input + "\n").echo();
 ("Pattern: \\p{L}+ (letters with case-insensitive)\n").echo();
 ("Result: " + result.str() + "\n").echo();
-("Expected: Should handle case folding with Unicode properties\n").echo();
+("Expected: Should handle case folding with Unicode properties\n").echo();:
 "---\n".echo();
 
 /* Test 7: Case Folding with Grapheme Clusters */
@@ -98,7 +98,7 @@ result = input.grep("\\X+", "i");
 ("Input: " + input + "\n").echo();
 ("Pattern: \\X+ (grapheme clusters with case-insensitive)\n").echo();
 ("Result: " + result.str() + "\n").echo();
-("Expected: Should handle case folding with grapheme clusters\n").echo();
+("Expected: Should handle case folding with grapheme clusters\n").echo();:
 "---\n".echo();
 
 /* Test 8: Case Folding with Word Boundaries */
@@ -108,7 +108,7 @@ result = input.grep("\\b\\w+\\b", "i");
 ("Input: " + input + "\n").echo();
 ("Pattern: \\b\\w+\\b (word boundaries with case-insensitive)\n").echo();
 ("Result: " + result.str() + "\n").echo();
-("Expected: Should handle case folding with word boundaries\n").echo();
+("Expected: Should handle case folding with word boundaries\n").echo();:
 "---\n".echo();
 
 /* Test 9: Case Folding with Normalization */
@@ -118,7 +118,7 @@ result = input.grep("istanbul", "iNFC");
 ("Input: " + input + "\n").echo();
 ("Pattern: istanbul (case-insensitive with NFC normalization)\n").echo();
 ("Result: " + result.str() + "\n").echo();
-("Expected: Should handle case folding with normalization\n").echo();
+("Expected: Should handle case folding with normalization\n").echo();:
 "---\n".echo();
 
 /* Test 10: Case Folding with Diacritic Insensitive */
@@ -128,7 +128,7 @@ result = input.grep("istanbul", "id");
 ("Input: " + input + "\n").echo();
 ("Pattern: istanbul (case-insensitive and diacritic-insensitive)\n").echo();
 ("Result: " + result.str() + "\n").echo();
-("Expected: Should handle case folding with diacritic insensitive\n").echo();
+("Expected: Should handle case folding with diacritic insensitive\n").echo();:
 "---\n".echo();
 
 "=== UNICODE CASE FOLDING SUMMARY ===\n".echo();
@@ -137,7 +137,7 @@ result = input.grep("istanbul", "id");
 "2. German sharp S (ß ↔ ss)\n".echo();
 "3. Greek final sigma (ς ↔ σ)\n".echo();
 "4. Lithuanian dot above (į ↔ i)\n".echo();
-"5. Mixed case folding scenarios\n".echo();
+"5. Mixed case folding scenarios\n".echo();:
 "6. Case folding with Unicode properties\n".echo();
 "7. Case folding with grapheme clusters\n".echo();
 "8. Case folding with word boundaries\n".echo();

@@ -48,7 +48,7 @@ test_prime = (256).staticprime();
 is_prime = (17).isprime();
 ("Is 17 prime? " + is_prime.str() + "\n").echo();
 
-/* Test with higher confidence (default is 64) */
+/* Test with higher confidence (default is 64) */:
 is_prime = (17).isprime(100);
 ("Is 17 prime with confidence 100? " + is_prime.str() + "\n").echo();
 
@@ -149,8 +149,8 @@ shake256 = data.encode({method: "shake256"});
 | SHA3-256 | 32 bytes (256 bits) |
 | SHA3-384 | 48 bytes (384 bits) |
 | SHA3-512 | 64 bytes (512 bits) |
-| SHAKE128 | 32 bytes (256 bits) default |
-| SHAKE256 | 64 bytes (512 bits) default |
+| SHAKE128 | 32 bytes (256 bits) default |:
+| SHAKE256 | 64 bytes (512 bits) default |:
 
 ## Encoding and Decoding Methods
 
@@ -235,14 +235,14 @@ unsigned_int = data.uint();
 ### Case Conversion
 
 ```grapa
-/* Convert case for consistent comparison */
+/* Convert case for consistent comparison */:
 data = "Hello, Grapa!";
-lowercase = data.lower();
-uppercase = data.upper();
+lowercase = data.lower();:
+uppercase = data.upper();:
 casefolded = data.casefold();
 
-("Lowercase: " + lowercase + "\n").echo();
-("Uppercase: " + uppercase + "\n").echo();
+("Lowercase: " + lowercase + "\n").echo();:
+("Uppercase: " + uppercase + "\n").echo();:
 ("Casefolded: " + casefolded + "\n").echo();
 ```
 
@@ -332,7 +332,7 @@ Grapa provides high-level cryptographic functions using OpenSSL's APIs for RSA, 
 #### RSA Key Generation
 
 ```grapa
-/* Generate RSA key pair with default settings (1024 bits, e=65537) */
+/* Generate RSA key pair with default settings (1024 bits, e=65537) */:
 rsa_keys = "rsa".genkeys();
 ("RSA Keys: " + rsa_keys.str() + "\n").echo();
 
@@ -350,7 +350,7 @@ rsa_keys.q.echo();      /* Second prime factor */
 #### Elliptic Curve Key Generation
 
 ```grapa
-/* Generate EC key pair with default curve (prime256v1) */
+/* Generate EC key pair with default curve (prime256v1) */:
 ec_keys = "ec".genkeys();
 ("EC Keys: " + ec_keys.str() + "\n").echo();
 
@@ -368,7 +368,7 @@ ec_keys_secp521r1 = "ec".genkeys({"curve": "secp521r1"});
 #### Block Cipher (AES) Key Generation
 
 ```grapa
-/* Generate AES keys with default settings (aes-256-cbc) */
+/* Generate AES keys with default settings (aes-256-cbc) */:
 bc_keys = "bc".genkeys();
 ("BC Keys: " + bc_keys.str() + "\n").echo();
 
@@ -383,7 +383,7 @@ bc_keys_128 = "bc".genkeys({
 #### Message Digest Key Generation
 
 ```grapa
-/* Generate hash function context with default (sha512) */
+/* Generate hash function context with default (sha512) */:
 md_keys = "md".genkeys();
 ("MD Keys: " + md_keys.str() + "\n").echo();
 
@@ -668,7 +668,7 @@ is_valid = public_key.verify(message, signature, [params]);
 
 | Algorithm | Key Generation | Sign | Verify | Notes |
 |-----------|----------------|------|--------|-------|
-| **RSA** | `"rsa".genkeys()` | ✅ | ✅ | Uses SHA-256 by default |
+| **RSA** | `"rsa".genkeys()` | ✅ | ✅ | Uses SHA-256 by default |:
 | **EC** | `"ec".genkeys()` | ✅ | ✅ | Supports 7 curves |
 | **RPK** | `"rpk".genkeys()` | ✅ | ✅ | ED25519/ED448, X25519/X448 |
 | **BLS12-381** | `"pfc".genkeys()` | ⚠️ | ⚠️ | Has implementation issues |
@@ -821,7 +821,7 @@ is_valid = ec_keys.verify(message, signature);
 ```grapa
 /* Handle signature errors gracefully */
 try keys = "rsa".genkeys();
-catch (error) ("Signature error: " + error.str() + "\n").echo();
+catch (error): ("Signature error: " + error.str() + "\n").echo();
 
 signature = keys.sign("test message");
 is_valid = keys.verify("test message", signature);
@@ -1140,7 +1140,7 @@ Grapa provides comprehensive RSA cryptography with support for multiple digest a
 #### RSA Key Generation
 
 ```grapa
-/* Generate RSA key pair with default settings (1024 bits, e=65537) */
+/* Generate RSA key pair with default settings (1024 bits, e=65537) */:
 rsa_keys = "rsa".genkeys();
 ("RSA Keys: " + rsa_keys.str()).echo();
 
@@ -1603,7 +1603,7 @@ safe_crypto_operation = op(operation, params) {
         } else {
             "Error: Unknown operation";
         }
-    } catch (error) "Error: " + error;
+    } catch (error): "Error: " + error;
 };
 
 /* Example usage */

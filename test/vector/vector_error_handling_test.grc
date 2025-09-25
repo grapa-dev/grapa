@@ -12,7 +12,7 @@ empty_vec = [].vector();
 ("Empty vector created successfully").echo();
 
 try empty_sum = empty_vec.sum()
-catch 'error': ("Empty vector sum error: " + error).echo();
+catch (error): ("Empty vector sum error: " + error).echo();
 default: ("Empty vector sum: null").echo();
 
 /* Test 2: Singular Matrix Determinant */
@@ -31,7 +31,7 @@ rect_mat = [[1, 2, 3], [4, 5, 6]].vector();
 ("2x3 matrix created").echo();
 
 try rect_det = rect_mat.det()
-catch 'error': ("2x3 matrix determinant error: " + error).echo();
+catch (error): ("2x3 matrix determinant error: " + error).echo();
 default: ("2x3 matrix determinant: null").echo();
 
 /* Test 4: Matrix Multiplication Compatibility */
@@ -42,7 +42,7 @@ mat_b = [[1, 2, 3], [4, 5, 6]].vector();
 ("2x2 and 2x3 matrices created").echo();
 
 try mult_result = mat_a.dot(mat_b)
-catch 'error': ("2x2 * 2x3 error: " + error).echo();
+catch (error): ("2x2 * 2x3 error: " + error).echo();
 default: ("2x2 * 2x3: null").echo();
 
 /* Test 5: Extreme Value Handling */

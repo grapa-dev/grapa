@@ -1,9 +1,9 @@
 /* Test Case Folding Simple Debug */
-/* Simple test to see if case folding is working at all */
+/* Simple test to see if case folding is working at all */:
 
 "=== CASE FOLDING SIMPLE DEBUG ===\n".echo();
 
-/* Test 1: Simple ASCII case folding */
+/* Test 1: Simple ASCII case folding */:
 "Test 1: Simple ASCII Case Folding\n".echo();
 input = "HELLO";
 ("Input: " + input + "\n").echo();
@@ -15,7 +15,7 @@ folded = input.case_fold();
 ("Folded == 'hello': " + (folded == "hello").str() + "\n").echo();
 "---\n".echo();
 
-/* Test 2: Turkish I case folding */
+/* Test 2: Turkish I case folding */:
 "Test 2: Turkish I Case Folding\n".echo();
 input = "İ";
 ("Input: " + input + "\n").echo();

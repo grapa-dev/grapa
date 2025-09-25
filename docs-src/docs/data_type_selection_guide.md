@@ -1,6 +1,6 @@
 # Data Type Selection Guide
 
-This guide helps you choose the right data type for your specific use case in Grapa.
+This guide helps you choose the right data type for your specific use case in Grapa.:
 
 ## Quick Decision Tree
 

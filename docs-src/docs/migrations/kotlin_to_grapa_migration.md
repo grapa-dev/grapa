@@ -218,7 +218,7 @@ if (result.type() == $ERR) {
 | `super`                       | `super`                                           |
 | `when (x) { ... }`            | `switch(x) { ... }`                               |
 | `x = if (cond) a else b`      | `x = (cond) ? a : b`                              |
-| `try { ... } catch { ... }`   | `try { ... } catch (err) { ... }`                 |
+| `try { ... } catch { ... }`   | `try { ... } catch (err): { ... }`                 |
 | `finally`                     | WIP                                               |
 | `::foo` (function ref)        | Not relevant (functions are data, pass directly) |
 | `x!!` (non-null assert)       | `x.isnull() ? error : x` (explicit null check)    |

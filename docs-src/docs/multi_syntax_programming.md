@@ -361,7 +361,7 @@ $global["$format_step"] = rule <$validated_data,op(b:$1){format_output(b)}> {@<v
 /* Robust syntax definition */
 $custom_function = rule safe_query '(' $STR ')' {op(query:$3){
     try return execute_query(query);
-    catch (error) {
+    catch (error): {
         ("Query error: " + error).echo();
         return $err("Query failed");
     };

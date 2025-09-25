@@ -42,4 +42,4 @@ emptyObj = {};
 "emptyArr.IsZero(): ".echo(); emptyArr.IsZero().echo();
 "emptyObj.IsZero(): ".echo(); emptyObj.IsZero().echo();
 
-"Edge case tests completed".echo();
+"Edge case tests completed".echo();:

@@ -81,10 +81,10 @@ op()("5 * 2;");          /* String compilation */
 /* Basic parameter definition */
 op(a,b){a*b}; | @<[op,@<mul,{@<var,{a}>,@<var,{b}>}>],{a,b}>
 
-/* Parameters with default values */
+/* Parameters with default values */:
 op(a=1,b=2){b**a}; | @<[op,@<pow,{@<var,{b}>,@<var,{a}>}>],{"a":1,"b":2}>
 
-/* Mixed default and non-default parameters */
+/* Mixed default and non-default parameters */:
 op(a,b=10,c){a+b+c}; | @<[op,@<add,{@<add,{@<var,{a}>,@<var,{b}>}>,@<var,{c}>}>],{a,"b":10,c}>
 ```
 
@@ -141,7 +141,7 @@ The `@<[op,body],params>` format represents the internal structure of a $OP:
 
 - **`op`** - Operation type identifier
 - **`body`** - The execution tree (can be nested operations)
-- **`params`** - Parameter namespace `{}` containing default values
+- **`params`** - Parameter namespace `{}` containing default values:
 
 ### Tree Components
 
@@ -178,7 +178,7 @@ compiled;
 $OP functions can have parameters with default values that create a namespace:
 
 ```grapa
-/* Create function with parameters and default values */
+/* Create function with parameters and default values */:
 compiled = op("b"=0,"c"=0)("a = 5 + b + c; a.echo();");
 
 /* Execute with no parameters (uses defaults) */

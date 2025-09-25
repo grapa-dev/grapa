@@ -351,7 +351,7 @@ Extracts matches from a string using PCRE2-powered regular expressions with full
 
   **Matching Options:**
   - `a` – All mode: treat the entire input as one block (no line splitting).
-  - `i` – Case-insensitive match with Unicode case folding.
+  - `i` – Case-insensitive match with Unicode case folding.:
   - `d` – Diacritic-insensitive match (strip accents/diacritics from both input and pattern, robust Unicode-aware).
   - `v` – Invert match (select non-matching lines or spans).
   - `x` – Match entire line exactly (equivalent to anchoring with `^` and `$`).
@@ -473,8 +473,8 @@ Tests if a pattern matches in a string, returning a boolean value.
 "hello world".match("a{");        /* false - invalid pattern handled gracefully */
 
 /* Case insensitive matching */
-"hello world".match("HELLO", "i"); /* true - case insensitive match */
-"Hello World".match("world", "i"); /* true - case insensitive match */
+"hello world".match("HELLO", "i"); /* true - case insensitive match */:
+"Hello World".match("world", "i"); /* true - case insensitive match */:
 
 /* With regex patterns */
 "hello world".match(r"\w+");      /* true - word characters found */
@@ -730,7 +730,7 @@ Converts to lower.
 ```
 
 ## casefold()
-Converts to Unicode case folded form for case-insensitive comparisons.
+Converts to Unicode case folded form for case-insensitive comparisons.:
 
 ```
 "İstanbul".casefold() -> "istanbul"
@@ -738,7 +738,7 @@ Converts to Unicode case folded form for case-insensitive comparisons.
 "HELLO".casefold() -> "hello"
 ```
 
-**Note**: `casefold()` is more aggressive than `lower()` and handles Unicode-specific case conversions like Turkish İ → i and German ß → ss.
+**Note**: `casefold()` is more aggressive than `lower()` and handles Unicode-specific case conversions like Turkish İ → i and German ß → ss.:
 
 ## data = (stop).range(start,step)
 
@@ -830,10 +830,10 @@ Converts to $FLOAT. Sets bit count for the entire number. Calculations are perfo
 Converts to fixed float. Sets bit count after the decimal to bits. Calculations are performed with "extra" bits and truncated for display.
 
 ## setfloat([bits [,extra]])
-Sets the default float type to float, and the default bits and extra.
+Sets the default float type to float, and the default bits and extra.:
 
 ## setfix([bits [,extra]])
-Sets the default float type to fix, and the default bits and extra.
+Sets the default float type to fix, and the default bits and extra.:
 
 ## str()
 Converts to string. 

@@ -20,8 +20,8 @@ result3 = "éñü\nabc\ndef".grep(".", "o");
 ("Result: " + result3.str() + "\n").echo();
 "---\n".echo();
 
-/* Test 4: Multiline with case insensitive */
-"Test 4: Multiline with case insensitive\n".echo();
+/* Test 4: Multiline with case insensitive */:
+"Test 4: Multiline with case insensitive\n".echo();:
 result4 = "ÉÑÜ\nABC\nDEF".grep(".", "oi");
 ("Result: " + result4.str() + "\n").echo();
 "---\n".echo();

@@ -13,7 +13,7 @@
 input1a = "start\nmiddle\nend";
 result1a = input1a.grep("start.*end", "s");
 (("Input: " + input1a + "\n")).echo();
-(("Pattern: start.*end, Options: s (default delimiter)\n")).echo();
+(("Pattern: start.*end, Options: s (default delimiter)\n")).echo();:
 (("Result: " + result1a.str() + "\n")).echo();
 ("Expected: [\"start\\nmiddle\\nend\"]\n").echo();
 ("---\n").echo();
@@ -54,10 +54,10 @@ result2a = input2a.grep("\\w+(?=\\d)", "o", "|");
 input2b = "word123\ntext456\nword789";
 result2b = input2b.grep("\\w+(?=\\d)", "o");
 (("Input: " + input2b + "\n")).echo();
-(("Pattern: \\w+(?=\\d) (positive lookahead), Options: o (default delimiter)\n")).echo();
+(("Pattern: \\w+(?=\\d) (positive lookahead), Options: o (default delimiter)\n")).echo();:
 (("Result: " + result2b.str() + "\n")).echo();
 ("Expected: [\"word\", \"text\", \"word\"]\n").echo();
-("Issue: Same problem with default delimiter\n").echo();
+("Issue: Same problem with default delimiter\n").echo();:
 ("---\n").echo();
 
 /* Test 2c: Negative lookahead - ISSUE IDENTIFIED */
@@ -160,10 +160,10 @@ result5a = input5a.grep("\\X", "o", "|||");
 input5b = "Hello 👋 world 🌍\nGoodbye 👋 universe 🌌";
 result5b = input5b.grep("\\X", "o");
 (("Input: " + input5b + "\n")).echo();
-(("Pattern: \\X (grapheme clusters), Options: o (default delimiter)\n")).echo();
+(("Pattern: \\X (grapheme clusters), Options: o (default delimiter)\n")).echo();:
 (("Result length: " + result5b.len() + "\n")).echo();
 (("First few results: " + result5b.str() + "\n")).echo();
-("Issue: Same problem with default delimiter\n").echo();
+("Issue: Same problem with default delimiter\n").echo();:
 ("---\n").echo();
 
 /* ======================================== */

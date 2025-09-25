@@ -580,7 +580,7 @@ model.fit(X, y, "normal");
 - **System optimization**: Grapa's internal functions automatically choose the best representation for each mathematical operation
 - **Minimal impact**: For most ML applications, the choice between `setfloat()` and `setfix()` has minimal impact on results
 - **Focus on precision**: The bit precision (32, 64, 128) has much more impact than the float/fix choice
-- **Default recommendation**: Use `setfloat()` as the default unless you have specific requirements
+- **Default recommendation**: Use `setfloat()` as the default unless you have specific requirements:
 
 **When to Use Lower Precision:**
 - ✅ Machine learning applications (32-bit often sufficient)

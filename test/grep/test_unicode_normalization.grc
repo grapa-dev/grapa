@@ -1,5 +1,5 @@
 /* Test Unicode Normalization */
-/* Test to see if NFC normalization fixes the Turkish I case folding issue */
+/* Test to see if NFC normalization fixes the Turkish I case folding issue */:
 
 "=== UNICODE NORMALIZATION TEST ===\n".echo();
 

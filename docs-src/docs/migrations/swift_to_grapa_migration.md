@@ -50,7 +50,7 @@
 | `inheritance`               | `class (ParentClass)` | Grapa supports inheritance |
 | `method overriding`         | —                | Use regular method definitions |
 | `method overloading`        | —                | Use different function names |
-| `default parameters`        | —                | Use explicit checks |
+| `default parameters`        | —                | Use explicit checks |:
 | `variadic parameters`       | —                | Use array arguments |
 | `inout parameters`          | —                | Use regular parameters |
 | `autoclosure`               | —                | Use regular closures |
@@ -139,7 +139,7 @@ These are advanced features that most developers won't miss:
 | `super`                      | `super`                                           |
 | `switch x { ... }`           | `switch(x) { ... }`                               |
 | `x = condition ? a : b`      | `x = (condition) ? a : b`                         |
-| `try { ... } catch { ... }`  | `try { ... } catch (err) { ... }`                 |
+| `try { ... } catch { ... }`  | `try { ... } catch (err): { ... }`                 |
 | `@escaping`                  | WIP                                               |
 | `@objc`                      | WIP                                               |
 

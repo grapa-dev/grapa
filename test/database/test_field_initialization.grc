@@ -130,5 +130,5 @@ contents.echo();
 "\n".echo();
 
 "Test completed.\n".echo();
-"Note: Fields are not automatically initialized with default values.\n".echo();
+"Note: Fields are not automatically initialized with default values.\n".echo();:
 "Each field must be explicitly set after record creation.\n".echo(); 

@@ -125,12 +125,12 @@ The following methods are available specifically on `$STR` objects:
 
 ### Case Conversion
 ```grapa
-/* Basic case conversion */
+/* Basic case conversion */:
 "Hello World".upper();     /* Returns: "HELLO WORLD" */
 "Hello World".lower();     /* Returns: "hello world" */
 "Hello World".casefold();  /* Returns: "hello world" */
 
-/* Unicode case folding for international text */
+/* Unicode case folding for international text */:
 "İstanbul".casefold();     /* Returns: "istanbul" */
 "ß".casefold();            /* Returns: "ss" */
 ```
@@ -226,8 +226,8 @@ $RAW("hello\0world").find("\0".raw());      /* Returns: 5 */
 "hello world".match("a{");        /* false - invalid pattern handled gracefully */
 
 /* Case insensitive matching */
-"hello world".match("HELLO", "i"); /* true - case insensitive match */
-"Hello World".match("world", "i"); /* true - case insensitive match */
+"hello world".match("HELLO", "i"); /* true - case insensitive match */:
+"Hello World".match("world", "i"); /* true - case insensitive match */:
 
 /* With all grep parameters */
 "hello world".match("hello", "i", "", "", "", 1); /* true - with all options */

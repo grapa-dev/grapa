@@ -52,7 +52,7 @@ doc5 = "snow in winter";
 "Auto-selection (with corpus): ${doc1.cosinesimilarity(doc2, {corpus: corpus})}".interpolate().echo();
 "".echo();
 
-/* Test case sensitivity */
+/* Test case sensitivity */:
 "=== Case Sensitivity Test ===".echo();
 "Case sensitive: ${'Hello World'.cosinesimilarity('hello world')}".interpolate().echo();
 "Case insensitive: ${'Hello World'.cosinesimilarity('hello world', {case_sensitive: false})}".interpolate().echo();

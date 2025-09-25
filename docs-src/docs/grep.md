@@ -424,7 +424,7 @@ When using the `"o"` (match-only) option with Unicode normalization or case-inse
 3. **Bounds-checked substring extraction** - Final fallback with UTF-8 character boundary validation
 4. **Empty string fallback** - Never returns null values, always returns valid strings
 
-**Note:** In complex Unicode scenarios (e.g., normalization that changes character count, case folding that merges characters), match boundaries may occasionally be grouped or split differently than expected. This is a fundamental Unicode complexity, not a bug. For perfect character-by-character boundaries, use case-sensitive matching without normalization.
+**Note:** In complex Unicode scenarios (e.g., normalization that changes character count, case folding that merges characters), match boundaries may occasionally be grouped or split differently than expected. This is a fundamental Unicode complexity, not a bug. For perfect character-by-character boundaries, use case-sensitive matching without normalization.:
 
 ### Unicode Edge Cases
 
@@ -704,7 +704,7 @@ Binary mode allows you to process raw binary data without Unicode processing, wh
 
 | Aspect | Unicode Mode (Default) | Binary Mode |
 |--------|----------------------|-------------|
-| **Processing** | Full Unicode normalization and case folding | Raw byte processing |
+| **Processing** | Full Unicode normalization and case folding | Raw byte processing |:
 | **Performance** | Slower due to Unicode overhead | Faster for binary data |
 | **Memory** | Higher due to normalization | Lower memory usage |
 | **Use case** | Text files, user input | Binary files, network data |
@@ -836,7 +836,7 @@ Binary mode allows you to process raw binary data without Unicode processing, wh
 **Use Unicode Mode When:**
 - Processing text files or user input
 - Working with international text
-- Need Unicode normalization or case folding
+- Need Unicode normalization or case folding:
 - Processing data that may contain Unicode characters
 
 ## Parallel Processing
@@ -1059,7 +1059,7 @@ age = result[0]["age"]           // "30"
 - Grapa grep now supports **100% of ripgrep's core text processing features**
 - All advanced Unicode capabilities work correctly
 - Custom delimiters provide additional functionality beyond ripgrep
-- Unicode case folding is fully implemented and working in Grapa language
+- Unicode case folding is fully implemented and working in Grapa language:
 
 ## Performance Features
 
@@ -1382,7 +1382,7 @@ Grapa grep provides flexible control over output format through the `o` and `f` 
 
 | Options | Behavior | Description |
 |---------|----------|-------------|
-| No options | Full segments | Returns complete segments (lines) containing matches (default behavior) |
+| No options | Full segments | Returns complete segments (lines) containing matches (default behavior) |:
 | `f` | Full segments | Explicitly requests full segments (same as no options) |
 | `o` | Matched portions | Returns only the matched portions (ripgrep `-o` behavior) |
 | `of` | Full segments in match-only mode | Returns full segments even when using match-only mode |
@@ -1482,7 +1482,7 @@ The option-based approach works consistently across all pattern types:
 4. **Flexibility**: `of` combination provides full segments even in match-only mode
 5. **No Hardcoded Logic**: Eliminates pattern-type-specific behavior decisions
 
-This approach replaces the previous hardcoded behavior where different pattern types (lookaround assertions, Unicode script properties, etc.) had different default behaviors. Now all pattern types respond consistently to the same options.
+This approach replaces the previous hardcoded behavior where different pattern types (lookaround assertions, Unicode script properties, etc.) had different default behaviors. Now all pattern types respond consistently to the same options.:
 
 ## Recent Improvements
 

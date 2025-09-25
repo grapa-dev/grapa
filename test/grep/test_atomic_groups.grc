@@ -45,11 +45,11 @@ input = "café";
 result = input.grep("(?>café)", "oj");
 if (result == ["café"]) "PASS - Atomic group with Unicode\n".echo(); else "FAIL - Should match 'café'\n".echo();
 
-/* Test 8: Atomic group with case insensitive */
-"Test 8: Atomic group with case insensitive\n".echo();
+/* Test 8: Atomic group with case insensitive */:
+"Test 8: Atomic group with case insensitive\n".echo();:
 input = "Café";
 result = input.grep("(?>café)", "ioj");
-if (result == ["Café"]) "PASS - Atomic group with case insensitive\n".echo(); else "FAIL - Should match 'Café'\n".echo();
+if (result == ["Café"]) "PASS - Atomic group with case insensitive\n".echo(); else "FAIL - Should match 'Café'\n".echo();:
 
 /* Test 9: Atomic group with diacritic insensitive */
 "Test 9: Atomic group with diacritic insensitive\n".echo();

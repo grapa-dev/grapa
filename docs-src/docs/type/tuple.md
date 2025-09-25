@@ -123,7 +123,7 @@ updated_user = (user_data[0], 31, user_data[2]);
 ### Trade-offs
 - **No in-place modification** - Must create new tuples for changes
 - **Memory allocation** - Creating new tuples requires memory allocation
-- **Use case specific** - Not suitable for frequently changing data
+- **Use case specific** - Not suitable for frequently changing data:
 
 ## Comparison with Other Types
 

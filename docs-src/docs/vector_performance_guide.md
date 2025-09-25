@@ -68,7 +68,7 @@ result = large_matrix.cov();         // Monitor performance
 
 #### Matrix Multiplication
 ```grapa
-/* Use appropriate algorithms for your use case */
+/* Use appropriate algorithms for your use case */:
 // For small matrices - standard multiplication is fine
 small_result = mat_a.dot(mat_b);  // Fast for < 100x100
 
@@ -178,12 +178,12 @@ result = matrix.dot(matrix);  // Grapa chooses optimal representation per operat
 - **Automatic optimization**: Grapa's internal functions automatically choose the best representation for each mathematical operation
 - **System preference**: `setfloat()` and `setfix()` set a system preference, but Grapa overrides this when it knows better
 - **Same bit precision**: Performance is similar, accuracy is optimized per operation
-- **Default recommendation**: Use `setfloat()` as the default unless you have specific requirements
+- **Default recommendation**: Use `setfloat()` as the default unless you have specific requirements:
 
 **When the Choice Matters:**
 - **Financial calculations**: May benefit from `setfix()` preference for decimal precision
 - **Scientific calculations**: May benefit from `setfloat()` preference for large dynamic ranges
-- **Most applications**: The system default choice is sufficient due to internal optimizations
+- **Most applications**: The system default choice is sufficient due to internal optimizations:
 
 #### Precision Performance Example
 ```grapa

@@ -89,9 +89,9 @@ if (result.type() != $ERR && result.len() > 0) {
 input = "a";
 result = input.grep("a", "oj");
 if (result.type() != $ERR && result.len() > 0) {
-    "PASS - Edge case patterns working with optimizations\n".echo();
+    "PASS - Edge case patterns working with optimizations\n".echo();:
 } else {
-    "FAIL - Edge case patterns not working\n".echo();
+    "FAIL - Edge case patterns not working\n".echo();:
 }
 "---\n".echo();
 

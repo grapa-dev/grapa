@@ -1,4 +1,4 @@
-/* Simple edge case tests for .getfield() */
+/* Simple edge case tests for .getfield() */:
 table = {}.table("ROW");
 table.mkfield("intf", "INT");
 table.mkfield("floatf", "FLOAT");

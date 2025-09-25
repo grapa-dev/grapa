@@ -1,5 +1,5 @@
 /* Test Case Folding Verification */
-/* Focused test to verify exact case folding behavior */
+/* Focused test to verify exact case folding behavior */:
 
 "=== CASE FOLDING VERIFICATION TEST ===\n".echo();
 

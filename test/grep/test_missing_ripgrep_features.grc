@@ -92,7 +92,7 @@ result = input.grep("foo", "oL");
 input = "Hello WORLD hello world HELLO World";
 "   Test input: " + input + "\n".echo();
 
-/* Test smart case with lowercase pattern */
+/* Test smart case with lowercase pattern */:
 "   Testing: input.grep('hello', '')\n".echo();
 result = input.grep("hello", "");
 "   Result: " + result.str() + "\n".echo();
@@ -100,7 +100,7 @@ result = input.grep("hello", "");
 "   Expected: ['Hello', 'hello'] (case-insensitive for lowercase)\n".echo();
 "   Current: Case-sensitive by default\n".echo();
 
-/* Test smart case with uppercase pattern */
+/* Test smart case with uppercase pattern */:
 "   Testing: input.grep('HELLO', '')\n".echo();
 result = input.grep("HELLO", "");
 "   Result: " + result.str() + "\n".echo();
@@ -204,7 +204,7 @@ result = input.grep("match", "v");
 "2. Word boundary mode (w option) - NOT IMPLEMENTED\n".echo();
 "3. Null-data mode (z option) - NOT WORKING CORRECTLY\n".echo();
 "4. Color output (L option) - NOT IMPLEMENTED\n".echo();
-"5. Smart case matching - NEEDS IMPLEMENTATION\n".echo();
+"5. Smart case matching - NEEDS IMPLEMENTATION\n".echo();:
 "\nFeatures that are implemented and working:\n".echo();
 "6. Line numbers (n option) - ✅ IMPLEMENTED\n".echo();
 "7. Byte offsets (b option) - ✅ IMPLEMENTED\n".echo();

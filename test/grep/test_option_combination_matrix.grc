@@ -1,5 +1,5 @@
 /* Expanded Option Combination Matrix Test (Grapa Syntax) */
-/* Systematically covers all higher-order and edge-case option combinations */
+/* Systematically covers all higher-order and edge-case option combinations */:
 
 "=== EXPANDED OPTION COMBINATION MATRIX TEST ===\n".echo();
 

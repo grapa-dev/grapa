@@ -358,7 +358,7 @@ generic_function = op(x) {
 - **Type-Safe Collections** - Via arrays and objects with .type() validation
 - **Algorithm Templates** - Via function composition and dynamic typing
 - **Type Constraints** - Via runtime type checking with .type() method
-- **Specialization** - Via switch/case on type() results
+- **Specialization** - Via switch/case on type() results:
 
 **Advantages over Static Generics:**
 - **Runtime flexibility** - Types determined at execution time
@@ -369,7 +369,7 @@ generic_function = op(x) {
 ### **3. Advanced Control Flow** ✅ **IMPLEMENTED**
 
 **Status**: Fully implemented
-**Capabilities**: Exception handling, return/break/continue, switch/case with expressions
+**Capabilities**: Exception handling, return/break/continue, switch/case with expressions:
 
 #### **Current Control Flow:**
 ```grapa
@@ -396,7 +396,7 @@ switch (value)
 ```grapa
 /* Implemented try/catch syntax */
 try risky_operation();
-catch (error) handle_error(error);
+catch (error): handle_error(error);
 ```
 
 #### **Implemented Return/Break/Continue:**
@@ -464,7 +464,7 @@ $global ++= {config:true, version:"1.0"};
 
 **Duplicate Handling:**
 ```grapa
-/* References access the last added in case of duplicates */
+/* References access the last added in case of duplicates */:
 $local ++= {a:1, b:2};
 $local ++= {a:10, c:3};  /* 'a' now refers to 10, not 1 */
 
@@ -478,7 +478,7 @@ $local ++= {a:10, c:3};  /* 'a' now refers to 10, not 1 */
 **Grapa's Syntax**: Expression-based switch statements
 
 ```grapa
-/* Each case can be a full boolean expression */
+/* Each case can be a full boolean expression */:
 switch (true)
     case (user.role == "admin" && user.age >= 18): "Admin access granted".echo();
     case (user.role == "user" && user.age >= 18): "User access granted".echo();
@@ -502,7 +502,7 @@ switch (true)
 ```
 
 **Advantages of Grapa's Switch Pattern Matching:**
-- **Full Expressions**: Each case can contain complex boolean expressions
+- **Full Expressions**: Each case can contain complex boolean expressions:
 - **Sequential Evaluation**: Evaluates from first to last case, stops at first match
 - **No Fall-Through**: Unlike C-style switches, Grapa doesn't fall through to next case
 - **Pattern Matching**: Can match on data structure patterns, types, and conditions
@@ -763,7 +763,7 @@ $LIST += (custom_method: op() { $this.len(); });
 
 **What's Available:**
 - **Automatic Constructors**: `$new()` method is automatically called when creating instances using `Class()` syntax
-- **Parameter Support**: Constructors can accept parameters with default values
+- **Parameter Support**: Constructors can accept parameters with default values:
 - **Single Constructor**: Only one `$new()` method is supported per class
 
 **What's Missing:**

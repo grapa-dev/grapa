@@ -58,7 +58,7 @@ Grapa .grc File Authoring Rules (Windows)
 "Expected: Array elements should not contain trailing delimiters\n".echo();
 "\n".echo();
 
-/* Test with default newline delimiter */
+/* Test with default newline delimiter */:
 input1 = "line1\nline2\nline3\n";
 result1 = input1.grep("line", "o", "\n");
 "Input: 'line1\\nline2\\nline3\\n'\n".echo();

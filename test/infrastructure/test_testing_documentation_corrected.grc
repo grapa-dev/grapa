@@ -266,7 +266,7 @@ data = [
     {"name": "bob", "age": 35, "city": "chicago"}
 ];
 
-/* Transform: uppercase names */
+/* Transform: uppercase names */:
 transformed = data.map(op(record) {
     record.name = record.name.upper();
     record;

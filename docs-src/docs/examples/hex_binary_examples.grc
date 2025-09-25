@@ -7,7 +7,7 @@
 "Basic hex literals:".echo();
 0x12.echo();              /* 18 */
 0xABCD.echo();            /* 43981 */
-0xAbCd.echo();            /* 43981 (case insensitive) */
+0xAbCd.echo();            /* 43981 (case insensitive) */:
 0x123456.echo();          /* 1193046 */
 
 /* Hex with underscores for readability */

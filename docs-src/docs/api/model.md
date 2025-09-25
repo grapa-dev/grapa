@@ -246,7 +246,7 @@ When a new `$MODEL` instance is created, the following default parameters are se
 2. **Generation Errors:**
    ```grapa
    try response = model.gen("Hello");
-   catch (error) ("Generation error: " + error.str()).echo();
+   catch (error): ("Generation error: " + error.str()).echo();
    
    if (response.len() == 0) {
        "Warning: Empty response".echo();

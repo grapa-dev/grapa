@@ -866,7 +866,7 @@ for (file in files) {
 - **Direct Script Execution:** You can run script files directly without the -f flag: `grapa script.grc`
 - **Clean Output:** By default, Grapa runs without showing version headers (like Python/Node.js)
 - **Verbose Mode:** Use `--verbose` to show version headers when needed
-- **Parallel Operations:** `map` and `filter` are parallel by default and great for data processing
+- **Parallel Operations:** `map` and `filter` are parallel by default and great for data processing:
 - **File Extensions:** Use `.grc` extension for Grapa script files, `.grz` for compiled scripts
 - **Interactive Mode:** Run `grapa` without arguments for interactive experimentation
 - **Error Messages:** Grapa provides detailed error messages to help debug issues

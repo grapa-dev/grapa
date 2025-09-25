@@ -349,7 +349,7 @@ Implement robust error handling for LISP expressions:
 /* Safe evaluation */
 safe_lisp_eval = op(expr) {
     try return op()(expr)();
-    catch (error) return "LISP Error: " + error;
+    catch (error): return "LISP Error: " + error;
 };
 ```
 

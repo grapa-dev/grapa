@@ -102,7 +102,7 @@ print("Cities:", cities)
 
 **Advanced Features:**
 - **Unicode normalization**: Support for NFC, NFD, NFKC, NFKD normalization forms
-- **Case-insensitive matching**: Built-in support for Unicode case folding
+- **Case-insensitive matching**: Built-in support for Unicode case folding:
 - **Regex engine**: Full PCRE2 regex support with advanced features
 - **Performance**: Direct C++ implementation for maximum speed
 - **Thread safety**: Safe for use in multi-threaded Python applications

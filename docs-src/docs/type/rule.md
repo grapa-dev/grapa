@@ -50,7 +50,7 @@ Example system rule:
 rule <$command_list> $SYSID("BE") | <$command_list> ';' | <$command_list>
 ```
 
-The above is the entry point to the grapa language. This entry point is a global variable that can be updated...so take caution as it is the default entry point all scripts. It is also possible to navigate the language syntax by looking up each rule that is lined from any other rule.
+The above is the entry point to the grapa language. This entry point is a global variable that can be updated...so take caution as it is the default entry point all scripts. It is also possible to navigate the language syntax by looking up each rule that is lined from any other rule.:
 
 Example of defining a custom rule, and applying the rule:
 ```
@@ -974,7 +974,7 @@ test_cases = [
 /* Run tests */
 i = 0;
 while (i < test_cases.len()) {
-    test_case = test_cases[i];
+    test_case = test_cases[i];:
     input = test_case[0];
     rule = test_case[1];
     expected = test_case[2];
@@ -1013,7 +1013,7 @@ Validate rule definitions before use:
 /* Rule validation function */
 validate_rule = op(rule_name, rule_definition, test_input, expected_output) {
     try result = op()(test_input, rule_definition)();
-    catch (error) return {valid: false, rule: rule_name, message: "Rule execution failed", error: error};
+    catch (error): return {valid: false, rule: rule_name, message: "Rule execution failed", error: error};
     
     if (result == expected_output) {
         return {valid: true, rule: rule_name, message: "Rule works correctly"};

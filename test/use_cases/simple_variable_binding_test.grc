@@ -4,13 +4,13 @@
 
 /* Test 1: Basic throw with simple value */
 try throw "Simple error message";
-catch (err) ("Caught error: " + err).echo();
+catch (err): ("Caught error: " + err).echo();
 
 /* Test 2: Throw with object */
 try {
     error_data = {code: 404, message: "Not found"};
     throw error_data;
-} catch (err) ("Error code: " + err.code).echo();
+} catch (err): ("Error code: " + err.code).echo();
 ("Error message: " + err.message).echo();
 
 /* Test 3: Throw with computed object */
@@ -18,21 +18,21 @@ try {
     user_id = 123;
     operation = "delete";
     throw {user_id: user_id, operation: operation};
-} catch (err) ("User ID: " + err.user_id).echo();
+} catch (err): ("User ID: " + err.user_id).echo();
 ("Operation: " + err.operation).echo();
 
 /* Test 4: Throw with array */
 try {
     errors = ["First error", "Second error"];
     throw errors;
-} catch (err) ("Number of errors: " + err.len()).echo();
+} catch (err): ("Number of errors: " + err.len()).echo();
 ("First error: " + err[0]).echo();
 
 /* Test 5: Throw with function result */
 try {
     get_error_info = op() { {severity: "high", category: "validation"}; };
     throw get_error_info();
-} catch (err) ("Severity: " + err.severity).echo();
+} catch (err): ("Severity: " + err.severity).echo();
 ("Category: " + err.category).echo();
 
 "=== Simple Variable Binding Test Complete ===".echo();

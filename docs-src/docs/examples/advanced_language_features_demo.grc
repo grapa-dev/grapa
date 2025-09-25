@@ -24,7 +24,7 @@ age = person.age;
 city = person.city;
 ("Destructured person: name=" + name + ", age=" + age + ", city=" + city + "\n").echo();
 
-/* Match expressions via switch/case */
+/* Match expressions via switch/case */:
 value = 42;
 result = null;
 switch (value)

@@ -559,7 +559,7 @@ print(matches)  # ['world', 'world']
 ```
 
 **Advanced Grep Features:**
-- **Unicode-aware**: Full Unicode normalization and case folding support
+- **Unicode-aware**: Full Unicode normalization and case folding support:
 - **Regex support**: Complete PCRE2 regex engine with advanced features
 - **Multiple output formats**: Line-based, match-only, JSON output
 - **Performance optimized**: Direct C++ implementation for maximum speed

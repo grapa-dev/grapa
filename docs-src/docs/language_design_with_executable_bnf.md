@@ -421,7 +421,7 @@ The `@` symbol in Grapa has evolved from the original design:
 
 **Original Design (Early Grapa):**
 ```grapa
-/* Variables were literal by default */
+/* Variables were literal by default */:
 x = 5;        /* x was the literal string "x" */
 @x;           /* @x was needed to get the value 5 */
 ```

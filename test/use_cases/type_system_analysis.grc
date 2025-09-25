@@ -74,11 +74,11 @@ safe_divide = op(a, b) {
 
 // Test type constraints
 try result1 = safe_divide(10, 2);
-catch (error) ("Error: " + error).echo();
+catch (error): ("Error: " + error).echo();
 ("Safe divide result: " + result1).echo();
 
 try result2 = safe_divide("10", 2);
-catch (error) ("Error: " + error).echo();
+catch (error): ("Error: " + error).echo();
 ("Safe divide result: " + result2).echo();
 
 /* Test 4: Type Inference (Automatic Deduction) */
@@ -187,7 +187,7 @@ collection_result = type_safe_collection(mixed_data, numeric_validator);
 // Safe type conversion with validation
 safe_convert = op(value, target_type) {
     switch (target_type)
-        case $INT: 
+        case $INT:
             if (value.type() == $STR) {
                 // Try to convert string to int
                 converted = value.int();
@@ -203,7 +203,7 @@ safe_convert = op(value, target_type) {
                 throw("Cannot convert " + value.type() + " to integer");
             }
         case $STR: value.str();
-        case $FLOAT: 
+        case $FLOAT:
             if (value.type() == $STR) {
                 converted = value.float();
                 if (converted.type() == $ERR) {
@@ -230,7 +230,7 @@ conversion_tests = [
 
 conversion_tests.map(op(test) {
     try result = safe_convert(test.value, test.target);
-    catch (error) ("Safe convert error: " + test.value + " -> " + test.target + " = " + error).echo();
+    catch (error): ("Safe convert error: " + test.value + " -> " + test.target + " = " + error).echo();
     
     ("Safe convert: " + test.value + " -> " + test.target + " = " + result).echo();
 });
@@ -243,7 +243,7 @@ type_pattern_match = op(value) {
     value_type = value.type();
     
     switch (value_type)
-        case $INT: 
+        case $INT:
             if (value < 0) "Negative integer";
             else if (value == 0) "Zero";
             else "Positive integer";

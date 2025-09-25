@@ -476,7 +476,7 @@ f = op(x=0) {
     x;
 };
 f();  // Returns 1
-f();  // Returns 1 (expected - default value is not modified)
+f();  // Returns 1 (expected - default value is not modified):
 
 # ❌ Problem: Original variables are modified
 data = [1, 2, 3];

@@ -1,9 +1,9 @@
 /* Test Case Folding Detailed Debug */
-/* Detailed debug to understand the case folding issue */
+/* Detailed debug to understand the case folding issue */:
 
 "=== CASE FOLDING DETAILED DEBUG ===\n".echo();
 
-/* Test 1: Check what case folding actually produces */
+/* Test 1: Check what case folding actually produces */:
 "Test 1: Case Folding Output\n".echo();
 input1 = "İ";
 input2 = "i";
@@ -14,7 +14,7 @@ input2 = "i";
 ("İ case folded == i case folded: " + (input1.case_fold() == input2.case_fold()).str() + "\n").echo();
 "---\n".echo();
 
-/* Test 2: Check full word case folding */
+/* Test 2: Check full word case folding */:
 "Test 2: Full Word Case Folding\n".echo();
 word1 = "İstanbul";
 word2 = "istanbul";
@@ -52,7 +52,7 @@ result = input.grep("İstanbul", "io");
 ("Result length: " + result.len().str() + "\n").echo();
 "---\n".echo();
 
-/* Test 6: Check case folding with normalization */
+/* Test 6: Check case folding with normalization */:
 "Test 6: Case Folding with Normalization\n".echo();
 result = input.grep("istanbul", "iNFC");
 ("Pattern: istanbul (case-insensitive, NFC normalization)\n").echo();
