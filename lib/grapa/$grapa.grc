@@ -641,8 +641,14 @@ $global["$command"]
 	| while '(' <$comp> ')' <$command> {@<while,{$3,$5}>}
 	| switch '(' <$comp> ')' '{' <$case_list> '}' finally <$command> {@<switch,{$3,$6,$9}>}
 	| switch '(' <$comp> ')' '{' <$case_list> '}' {@<switch,{$3,$6,null}>}
+	| switch <$comp> <$case_list> finally <$command> {@<switch,{$2,$3,$5}>}
+	| switch <$comp> <$case_list> {@<switch,{$2,$3,null}>}
 	| try <$command> '{' <$case_list> '}' finally <$command> {@<try,{$2,$4,$7}>}
 	| try <$command> '{' <$case_list> '}' {@<try,{$2,$4,null}>}
+	| try <$command> ';' <$case_list> finally <$command> {@<try,{$2,$4,$6}>}
+	| try <$command> ';' <$case_list> {@<try,{$2,$4,null}>}
+	| try <$command> <$case_list> finally <$command> {@<try,{$2,$3,$5}>}
+	| try <$command> <$case_list> {@<try,{$2,$3,null}>}
     | foreach $ID in <$comp> <$command> {@<for,{$2,$4,$5}>}
     | do <$command> while '(' <$comp> ')' {@<for,{$2,$5}>}
     | for '(' <$command> ';' <$comp> ';' <$command> ')' <$command> {@<for,{$3,$5,$7,$9}>}
