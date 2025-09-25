@@ -8521,6 +8521,8 @@ int GrapaLibraryItemSortEventCompareName(const void *arg1, const void *arg2)
 {
 	CompareOPStruct* cs = (CompareOPStruct*)((GrapaRuleEvent**)arg2)[1];
 	int v = (int)(*(GrapaRuleEvent**)arg1)->mName.StrCmp((*(GrapaRuleEvent**)arg2)->mName);
+	if (v == 0)
+		v = (*(GrapaRuleEvent**)arg1)->mName.mToken - (*(GrapaRuleEvent**)arg2)->mName.mToken;
 	if (v == 0 && cs->mKeyOnly)
 		return 0;
 	if (v == 0) v = GrapaLibraryItemSortEventCompareValue(arg1, arg2);
@@ -8945,6 +8947,8 @@ GrapaRuleEvent* GrapaLibraryRuleUniqueEvent::Run(GrapaScriptExec* vScriptExec, G
 						{
 							// For LIST/OBJ, compare only by name (simple string comparison)
 							match = (last->mName.StrCmp(rq[idx]->mName) == 0);
+							if (match)
+								match = last->mName.mToken == rq[idx]->mName.mToken;
 						}
 						
 						if (!match)
