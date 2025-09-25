@@ -4309,12 +4309,10 @@ processed_data = parallel_process(large_dataset, 8);
 <div class="highlight"><pre><span></span><code>/* Fetch multiple URLs concurrently with automatic completion */
 fetch_urls = op(urls) {
     responses = urls.map(op(url) {
-        try {
-            response = $net().get(url);
-            {&quot;url&quot;: url, &quot;success&quot;: true, &quot;data&quot;: response.getfield(&quot;body&quot;)};
-        } catch (error) {
-            {&quot;url&quot;: url, &quot;success&quot;: false, &quot;error&quot;: error.getfield(&quot;message&quot;)};
-        };
+        try response = $net().get(url);
+        catch (error): {&quot;url&quot;: url, &quot;success&quot;: false, &quot;error&quot;: error.getfield(&quot;message&quot;)};
+
+        {&quot;url&quot;: url, &quot;success&quot;: true, &quot;data&quot;: response.getfield(&quot;body&quot;)};
     });
     responses;
 };

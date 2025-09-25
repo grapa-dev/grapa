@@ -5435,7 +5435,7 @@ generic_function = op(x) {
 - <strong>Type-Safe Collections</strong> - Via arrays and objects with .type() validation
 - <strong>Algorithm Templates</strong> - Via function composition and dynamic typing
 - <strong>Type Constraints</strong> - Via runtime type checking with .type() method
-- <strong>Specialization</strong> - Via switch/case on type() results</p>
+- <strong>Specialization</strong> - Via switch/case on type() results:</p>
 <p><strong>Advantages over Static Generics:</strong>
 - <strong>Runtime flexibility</strong> - Types determined at execution time
 - <strong>Dynamic grammar changes</strong> - Works with executable BNF system
@@ -5443,7 +5443,7 @@ generic_function = op(x) {
 - <strong>Better performance</strong> - No compile-time type checking overhead</p>
 <h3 id="3-advanced-control-flow-implemented"><strong>3. Advanced Control Flow</strong> ✅ <strong>IMPLEMENTED</strong></h3>
 <p><strong>Status</strong>: Fully implemented
-<strong>Capabilities</strong>: Exception handling, return/break/continue, switch/case with expressions</p>
+<strong>Capabilities</strong>: Exception handling, return/break/continue, switch/case with expressions:</p>
 <h4 id="current-control-flow"><strong>Current Control Flow:</strong></h4>
 <div class="highlight"><pre><span></span><code>/* Basic control flow (implemented) */
 if (condition) {
@@ -5458,19 +5458,15 @@ while (condition) {
     /* code */
 }
 
-switch (value) {
+switch (value)
     case 1: /* code */;
     case 2: /* code */;
     default: /* code */;
-}
 </code></pre></div>
 <h4 id="implemented-exception-handling"><strong>Implemented Exception Handling:</strong></h4>
 <div class="highlight"><pre><span></span><code>/* Implemented try/catch syntax */
-try {
-    risky_operation();
-} catch (error) {
-    handle_error(error);
-}
+try risky_operation();
+catch (error): handle_error(error);
 </code></pre></div>
 <h4 id="implemented-returnbreakcontinue"><strong>Implemented Return/Break/Continue:</strong></h4>
 <div class="highlight"><pre><span></span><code>/* Implemented control flow */
@@ -5525,7 +5521,7 @@ $global ++= {config:true, version:&quot;1.0&quot;};
 @my_namespace ++= {data:123, flag:false};
 </code></pre></div></p>
 <p><strong>Duplicate Handling:</strong>
-<div class="highlight"><pre><span></span><code>/* References access the last added in case of duplicates */
+<div class="highlight"><pre><span></span><code>/* References access the last added in case of duplicates */:
 $local ++= {a:1, b:2};
 $local ++= {a:10, c:3};  /* &#39;a&#39; now refers to 10, not 1 */
 
@@ -5535,33 +5531,30 @@ $local ++= {a:10, c:3};  /* &#39;a&#39; now refers to 10, not 1 */
 <h4 id="4b-grapas-switch-based-pattern-matching-implemented"><strong>4b. Grapa's Switch-Based Pattern Matching</strong> ✅ <strong>IMPLEMENTED</strong></h4>
 <p><strong>Status</strong>: Fully implemented with superior approach
 <strong>Grapa's Syntax</strong>: Expression-based switch statements</p>
-<div class="highlight"><pre><span></span><code>/* Each case can be a full boolean expression */
-switch (true) {
+<div class="highlight"><pre><span></span><code>/* Each case can be a full boolean expression */:
+switch (true)
     case (user.role == &quot;admin&quot; &amp;&amp; user.age &gt;= 18): &quot;Admin access granted&quot;.echo();
     case (user.role == &quot;user&quot; &amp;&amp; user.age &gt;= 18): &quot;User access granted&quot;.echo();
     case (user.age &lt; 18): &quot;Access denied - too young&quot;.echo();
     default: &quot;Access denied - unknown role&quot;.echo();
-};
 
 /* Type-based pattern matching */
-switch (true) {
+switch (true)
     case (data.type() == $STR): &quot;String data&quot;.echo();
     case (data.type() == $INT): &quot;Integer data&quot;.echo();
     case (data.type() == $LIST): &quot;Array data&quot;.echo();
     case (data.type() == $GOBJ): &quot;List data&quot;.echo();
     default: &quot;Other data type&quot;.echo();
-};
 
 /* Complex data structure matching */
-switch (true) {
+switch (true)
     case (user.name == &quot;admin&quot; &amp;&amp; user.permissions.len() &gt; 0): &quot;Full admin&quot;.echo();
     case (user.permissions.find(&quot;read&quot;)): &quot;Read access&quot;.echo();
     case (user.guest == true): &quot;Guest access&quot;.echo();
     default: &quot;No access&quot;.echo();
-};
 </code></pre></div>
 <p><strong>Advantages of Grapa's Switch Pattern Matching:</strong>
-- <strong>Full Expressions</strong>: Each case can contain complex boolean expressions
+- <strong>Full Expressions</strong>: Each case can contain complex boolean expressions:
 - <strong>Sequential Evaluation</strong>: Evaluates from first to last case, stops at first match
 - <strong>No Fall-Through</strong>: Unlike C-style switches, Grapa doesn't fall through to next case
 - <strong>Pattern Matching</strong>: Can match on data structure patterns, types, and conditions
@@ -5763,7 +5756,7 @@ $LIST += (custom_method: op() { $this.len(); });
 <p><strong>Current State</strong>: Grapa supports automatic constructors through the <code>$new()</code> method, but still lacks automatic destructors.</p>
 <p><strong>What's Available:</strong>
 - <strong>Automatic Constructors</strong>: <code>$new()</code> method is automatically called when creating instances using <code>Class()</code> syntax
-- <strong>Parameter Support</strong>: Constructors can accept parameters with default values
+- <strong>Parameter Support</strong>: Constructors can accept parameters with default values:
 - <strong>Single Constructor</strong>: Only one <code>$new()</code> method is supported per class</p>
 <p><strong>What's Missing:</strong>
 - <strong>Automatic Destructors</strong>: No <code>destructor()</code> or <code>finalize()</code> method for cleanup

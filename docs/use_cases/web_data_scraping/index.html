@@ -4234,23 +4234,19 @@ scrape_pages = op(urls, delay_ms) {
             $sys().sleep(delay_ms);
         };
 
-        try {
-            /* Perform HTTP GET request */
-            response = $net().get(url);
-            /* Check for successful response */
-            if (response.getfield(&quot;status&quot;) == 200) {
-                {
-                    &quot;url&quot;: url,
-                    &quot;success&quot;: true,
-                    &quot;content&quot;: response.getfield(&quot;body&quot;),
-                    &quot;size&quot;: response.getfield(&quot;body&quot;).len()
-                };
-            } else {
-                {&quot;url&quot;: url, &quot;success&quot;: false, &quot;error&quot;: &quot;HTTP &quot; + response.getfield(&quot;status&quot;).str()};
+        try response = $net().get(url);
+        catch (error): {&quot;url&quot;: url, &quot;success&quot;: false, &quot;error&quot;: error.getfield(&quot;message&quot;)};
+
+        /* Check for successful response */
+        if (response.getfield(&quot;status&quot;) == 200) {
+            {
+                &quot;url&quot;: url,
+                &quot;success&quot;: true,
+                &quot;content&quot;: response.getfield(&quot;body&quot;),
+                &quot;size&quot;: response.getfield(&quot;body&quot;).len()
             };
-        } catch (error) {
-            /* Handle network or HTTP errors */
-            {&quot;url&quot;: url, &quot;success&quot;: false, &quot;error&quot;: error.getfield(&quot;message&quot;)};
+        } else {
+            {&quot;url&quot;: url, &quot;success&quot;: false, &quot;error&quot;: &quot;HTTP &quot; + response.getfield(&quot;status&quot;).str()};
         };
     });
     results;
@@ -4292,19 +4288,17 @@ extracted_data = scraped_data.map(op(page) {
 <div class="highlight"><pre><span></span><code>/* Collect data from REST API endpoints */
 collect_api_data = op(base_url, endpoints) {
     results = endpoints.map(op(endpoint) {
-        try {
-            url = base_url + endpoint;
-            response = $net().get(url);
+        try url = base_url + endpoint;
+        catch (error): {&quot;endpoint&quot;: endpoint, &quot;success&quot;: false, &quot;error&quot;: error.getfield(&quot;message&quot;)};
 
-            if (response.getfield(&quot;status&quot;) == 200) {
-                /* Parse JSON response */
-                data = $JSON().parse(response.getfield(&quot;body&quot;));
-                {&quot;endpoint&quot;: endpoint, &quot;success&quot;: true, &quot;data&quot;: data};
-            } else {
-                {&quot;endpoint&quot;: endpoint, &quot;success&quot;: false, &quot;error&quot;: &quot;HTTP &quot; + response.getfield(&quot;status&quot;).str()};
-            };
-        } catch (error) {
-            {&quot;endpoint&quot;: endpoint, &quot;success&quot;: false, &quot;error&quot;: error.getfield(&quot;message&quot;)};
+        response = $net().get(url);
+
+        if (response.getfield(&quot;status&quot;) == 200) {
+            /* Parse JSON response */
+            data = $JSON().parse(response.getfield(&quot;body&quot;));
+            {&quot;endpoint&quot;: endpoint, &quot;success&quot;: true, &quot;data&quot;: data};
+        } else {
+            {&quot;endpoint&quot;: endpoint, &quot;success&quot;: false, &quot;error&quot;: &quot;HTTP &quot; + response.getfield(&quot;status&quot;).str()};
         };
     });
     results;
@@ -4324,23 +4318,19 @@ failed_requests = api_data.filter(op(result) { !result.getfield(&quot;success&qu
 <h2 id="example-automated-form-submission">Example: Automated Form Submission</h2>
 <div class="highlight"><pre><span></span><code>/* Automated form submission with validation */
 submit_form = op(form_data) {
-    try {
-        /* Prepare form data */
-        post_data = $JSON().stringify(form_data);
+    try post_data = $JSON().stringify(form_data);
+    catch (error): {&quot;success&quot;: false, &quot;error&quot;: error.getfield(&quot;message&quot;)};
 
-        /* Submit form via POST request */
-        response = $net().post(&quot;https://example.com/submit&quot;, post_data, {
-            &quot;Content-Type&quot;: &quot;application/json&quot;
-        });
+    /* Submit form via POST request */
+    response = $net().post(&quot;https://example.com/submit&quot;, post_data, {
+        &quot;Content-Type&quot;: &quot;application/json&quot;
+    });
 
-        if (response.getfield(&quot;status&quot;) == 200) {
-            result = $JSON().parse(response.getfield(&quot;body&quot;));
-            {&quot;success&quot;: true, &quot;result&quot;: result};
-        } else {
-            {&quot;success&quot;: false, &quot;error&quot;: &quot;HTTP &quot; + response.getfield(&quot;status&quot;).str()};
-        };
-    } catch (error) {
-        {&quot;success&quot;: false, &quot;error&quot;: error.getfield(&quot;message&quot;)};
+    if (response.getfield(&quot;status&quot;) == 200) {
+        result = $JSON().parse(response.getfield(&quot;body&quot;));
+        {&quot;success&quot;: true, &quot;result&quot;: result};
+    } else {
+        {&quot;success&quot;: false, &quot;error&quot;: &quot;HTTP &quot; + response.getfield(&quot;status&quot;).str()};
     };
 };
 

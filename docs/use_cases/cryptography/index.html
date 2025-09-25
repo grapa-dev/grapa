@@ -7392,13 +7392,17 @@ safe_prime = (256).genprime(1);
 test_prime = (256).staticprime();
 (&quot;Test prime: &quot; + test_prime.str() + &quot;\n&quot;).echo();
 </code></pre></div>
+<p><strong>genprime() Parameters:</strong>
+- <strong><code>(bits).genprime()</code></strong> - Generate a standard prime number
+- <strong><code>(bits).genprime(1)</code></strong> - Generate a safe prime (where (p-1)/2 is also prime)
+- <strong><code>(bits).genprime(0)</code></strong> - Explicitly generate a standard prime (same as no parameter)</p>
 <p><strong>Available staticprime() bit sizes</strong>: 2, 3, 4, 256, 512, 768, 1024, 1536, 2048, 3072, 4096</p>
 <h3 id="testing-primality">Testing Primality</h3>
 <div class="highlight"><pre><span></span><code>/* Test if a number is prime */
 is_prime = (17).isprime();
 (&quot;Is 17 prime? &quot; + is_prime.str() + &quot;\n&quot;).echo();
 
-/* Test with higher confidence (default is 64) */
+/* Test with higher confidence (default is 64) */:
 is_prime = (17).isprime(100);
 (&quot;Is 17 prime with confidence 100? &quot; + is_prime.str() + &quot;\n&quot;).echo();
 
@@ -7634,14 +7638,14 @@ unsigned_int = data.uint();
 (&quot;Unsigned int: &quot; + unsigned_int.str() + &quot;\n&quot;).echo();
 </code></pre></div>
 <h3 id="case-conversion">Case Conversion</h3>
-<div class="highlight"><pre><span></span><code>/* Convert case for consistent comparison */
+<div class="highlight"><pre><span></span><code>/* Convert case for consistent comparison */:
 data = &quot;Hello, Grapa!&quot;;
-lowercase = data.lower();
-uppercase = data.upper();
+lowercase = data.lower();:
+uppercase = data.upper();:
 casefolded = data.casefold();
 
-(&quot;Lowercase: &quot; + lowercase + &quot;\n&quot;).echo();
-(&quot;Uppercase: &quot; + uppercase + &quot;\n&quot;).echo();
+(&quot;Lowercase: &quot; + lowercase + &quot;\n&quot;).echo();:
+(&quot;Uppercase: &quot; + uppercase + &quot;\n&quot;).echo();:
 (&quot;Casefolded: &quot; + casefolded + &quot;\n&quot;).echo();
 </code></pre></div>
 <h2 id="cryptographic-output-interpretation">Cryptographic Output Interpretation</h2>
@@ -7710,7 +7714,7 @@ secret_uint = shared_secret.uint();  /* Ensure unsigned for crypto operations */
 <p>Grapa provides high-level cryptographic functions using OpenSSL's APIs for RSA, Elliptic Curve (EC), and other cryptographic operations.</p>
 <h3 id="key-generation">Key Generation</h3>
 <h4 id="rsa-key-generation">RSA Key Generation</h4>
-<div class="highlight"><pre><span></span><code>/* Generate RSA key pair with default settings (1024 bits, e=65537) */
+<div class="highlight"><pre><span></span><code>/* Generate RSA key pair with default settings (1024 bits, e=65537) */:
 rsa_keys = &quot;rsa&quot;.genkeys();
 (&quot;RSA Keys: &quot; + rsa_keys.str() + &quot;\n&quot;).echo();
 
@@ -7725,7 +7729,7 @@ rsa_keys.p.echo();      /* First prime factor */
 rsa_keys.q.echo();      /* Second prime factor */
 </code></pre></div>
 <h4 id="elliptic-curve-key-generation">Elliptic Curve Key Generation</h4>
-<div class="highlight"><pre><span></span><code>/* Generate EC key pair with default curve (prime256v1) */
+<div class="highlight"><pre><span></span><code>/* Generate EC key pair with default curve (prime256v1) */:
 ec_keys = &quot;ec&quot;.genkeys();
 (&quot;EC Keys: &quot; + ec_keys.str() + &quot;\n&quot;).echo();
 
@@ -7740,7 +7744,7 @@ ec_keys_secp521r1 = &quot;ec&quot;.genkeys({&quot;curve&quot;: &quot;secp521r1&q
 /* Supported curves: &quot;prime256v1&quot;, &quot;secp224r1&quot;, &quot;secp256k1&quot;, &quot;secp384r1&quot;, &quot;secp521r1&quot;, &quot;prime192v1&quot;, &quot;prime239v1&quot; */
 </code></pre></div>
 <h4 id="block-cipher-aes-key-generation">Block Cipher (AES) Key Generation</h4>
-<div class="highlight"><pre><span></span><code>/* Generate AES keys with default settings (aes-256-cbc) */
+<div class="highlight"><pre><span></span><code>/* Generate AES keys with default settings (aes-256-cbc) */:
 bc_keys = &quot;bc&quot;.genkeys();
 (&quot;BC Keys: &quot; + bc_keys.str() + &quot;\n&quot;).echo();
 
@@ -7752,7 +7756,7 @@ bc_keys_128 = &quot;bc&quot;.genkeys({
 });
 </code></pre></div>
 <h4 id="message-digest-key-generation">Message Digest Key Generation</h4>
-<div class="highlight"><pre><span></span><code>/* Generate hash function context with default (sha512) */
+<div class="highlight"><pre><span></span><code>/* Generate hash function context with default (sha512) */:
 md_keys = &quot;md&quot;.genkeys();
 (&quot;MD Keys: &quot; + md_keys.str() + &quot;\n&quot;).echo();
 
@@ -8154,14 +8158,12 @@ is_valid = ec_keys.verify(message, signature);
 </code></pre></div></p>
 <p><strong>Error Handling:</strong>
 <div class="highlight"><pre><span></span><code>/* Handle signature errors gracefully */
-try {
-    keys = &quot;rsa&quot;.genkeys();
-    signature = keys.sign(&quot;test message&quot;);
-    is_valid = keys.verify(&quot;test message&quot;, signature);
-    (&quot;Signature operation successful: &quot; + is_valid.str() + &quot;\n&quot;).echo();
-} catch (error) {
-    (&quot;Signature error: &quot; + error.str() + &quot;\n&quot;).echo();
-}
+try keys = &quot;rsa&quot;.genkeys();
+catch (error): (&quot;Signature error: &quot; + error.str() + &quot;\n&quot;).echo();
+
+signature = keys.sign(&quot;test message&quot;);
+is_valid = keys.verify(&quot;test message&quot;, signature);
+(&quot;Signature operation successful: &quot; + is_valid.str() + &quot;\n&quot;).echo();
 </code></pre></div></p>
 <h4 id="performance-considerations">Performance Considerations</h4>
 <ul>
@@ -8457,7 +8459,7 @@ decrypted = encrypted.decode(aes_key);
 <h3 id="rsa-cryptography">RSA Cryptography</h3>
 <p>Grapa provides comprehensive RSA cryptography with support for multiple digest algorithms and padding schemes.</p>
 <h4 id="rsa-key-generation_1">RSA Key Generation</h4>
-<div class="highlight"><pre><span></span><code>/* Generate RSA key pair with default settings (1024 bits, e=65537) */
+<div class="highlight"><pre><span></span><code>/* Generate RSA key pair with default settings (1024 bits, e=65537) */:
 rsa_keys = &quot;rsa&quot;.genkeys();
 (&quot;RSA Keys: &quot; + rsa_keys.str()).echo();
 
@@ -8864,9 +8866,7 @@ safe_crypto_operation = op(operation, params) {
         } else {
             &quot;Error: Unknown operation&quot;;
         }
-    } catch (error) {
-        &quot;Error: &quot; + error;
-    }
+    } catch (error): &quot;Error: &quot; + error;
 };
 
 /* Example usage */

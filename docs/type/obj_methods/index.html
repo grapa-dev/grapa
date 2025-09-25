@@ -6666,8 +6666,8 @@ obj.setconst(&quot;new value&quot;); /* Sets object to constant string */
 <p>The following string-specific methods are available in the <code>$STR</code> class:</p>
 <ul>
 <li><strong><code>.upper()</code></strong> - Converts the string to uppercase</li>
-<li><strong><code>.lower()</code></strong> - Converts the string to lowercase  </li>
-<li><strong><code>.casefold()</code></strong> - Converts the string to Unicode case folded form for case-insensitive comparisons</li>
+<li><strong><code>.lower()</code></strong> - Converts the string to lowercase  :</li>
+<li><strong><code>.casefold()</code></strong> - Converts the string to Unicode case folded form for case-insensitive comparisons:</li>
 <li><strong><code>.levenshtein()</code></strong> - Calculates Levenshtein distance between strings</li>
 <li><strong><code>.jarowinkler()</code></strong> - Calculates Jaro-Winkler similarity between strings</li>
 <li><strong><code>.cosinesimilarity()</code></strong> - Calculates cosine similarity between strings</li>
@@ -7179,8 +7179,8 @@ result.echo();  /* Outputs: 220 */
 </code></pre></div>
 <h3 id="error-handling-with-iferr">Error Handling with .iferr()</h3>
 <div class="highlight"><pre><span></span><code>/* Safe access to potentially problematic operations */
-value = risky_operation().iferr(&quot;default value&quot;);
-value.echo();  /* Outputs: result or &quot;default value&quot; */
+value = risky_operation().iferr(&quot;default value&quot;);:
+value.echo();  /* Outputs: result or &quot;default value&quot; */:
 </code></pre></div>
 <h3 id="pattern-matching-with-grep">Pattern Matching with .grep()</h3>
 <div class="highlight"><pre><span></span><code>/* Find all email addresses in text */
@@ -7191,7 +7191,7 @@ emails.echo();  /* Outputs: [&quot;john@example.com&quot;, &quot;jane@test.org&q
 <hr />
 <h2 id="notes">Notes</h2>
 <ul>
-<li><strong>Parallel Execution</strong>: <code>.map()</code> and <code>.filter()</code> are parallel by default for large arrays</li>
+<li><strong>Parallel Execution</strong>: <code>.map()</code> and <code>.filter()</code> are parallel by default for large arrays:</li>
 <li><strong>Error Handling</strong>: Use <code>.iferr()</code> for simple error fallbacks</li>
 <li><strong>Type Safety</strong>: Always check types with <code>.type()</code> before using type-specific methods</li>
 <li><strong>Performance</strong>: For large datasets, specify thread counts in parallel operations</li>

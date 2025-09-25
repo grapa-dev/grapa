@@ -64,7 +64,7 @@ chars = "abc".filter(op(x){x!="b"}).map(op(x){x.upper()});
 
 ("--- Threading Performance Examples ---\n").echo();
 
-// Sequential processing (default for small arrays)
+// Sequential processing (default for small arrays):
 small_result = (10).range().filter(op(x){x%2==0}).map(op(x){x*3});
 ("Small dataset (sequential): " + small_result + "\n").echo();
 

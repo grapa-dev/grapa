@@ -5865,7 +5865,7 @@ $sys().putenv(&quot;GRAPA_SESSION_DEBUG_COMPONENTS&quot;, &quot;filesystem,netwo
 <div class="highlight"><pre><span></span><code>// Set specific levels per component
 $sys().putenv(&quot;GRAPA_DEBUG_COMPONENTS&quot;, &quot;grep:3,database:1,vector:0&quot;);
 
-// Set default level for all components except specified ones
+// Set default level for all components except specified ones:
 $sys().putenv(&quot;GRAPA_DEBUG_COMPONENTS&quot;, &quot;grep:3,*:1&quot;);
 
 // Enable only one component at high level, disable others

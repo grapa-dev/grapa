@@ -4264,19 +4264,17 @@ process_files = op(directory, file_pattern) {
     files = $file().find(directory, file_pattern);
 
     results = files.map(op(file) {
-        try {
-            content = $file().read(file);
-            stats = $file().stat(file);
+        try content = $file().read(file);
+        catch (error): {&quot;file&quot;: file, &quot;error&quot;: error.get(&quot;message&quot;)};
 
-            {
-                &quot;file&quot;: file,
-                &quot;size&quot;: stats.get(&quot;size&quot;),
-                &quot;modified&quot;: stats.get(&quot;modified&quot;),
-                &quot;lines&quot;: content.split(&quot;\n&quot;).len(),
-                &quot;words&quot;: content.split(&quot; &quot;).len()
-            };
-        } catch (error) {
-            {&quot;file&quot;: file, &quot;error&quot;: error.get(&quot;message&quot;)};
+        stats = $file().stat(file);
+
+        {
+            &quot;file&quot;: file,
+            &quot;size&quot;: stats.get(&quot;size&quot;),
+            &quot;modified&quot;: stats.get(&quot;modified&quot;),
+            &quot;lines&quot;: content.split(&quot;\n&quot;).len(),
+            &quot;words&quot;: content.split(&quot; &quot;).len()
         };
     });
 
@@ -4431,11 +4429,8 @@ restore_database = op(backup_file) {
         table_data = backup_data.get(table);
 
         /* Drop existing table if it exists */
-        try {
-            $TABLE().drop(table);
-        } catch (error) {
-            /* Table doesn&#39;t exist, continue */
-        };
+        try $TABLE().drop(table);
+        catch (error): /* Table doesn&#39;t exist, continue */;
 
         /* Recreate table and insert data */
         if (table_data.len() &gt; 0) {

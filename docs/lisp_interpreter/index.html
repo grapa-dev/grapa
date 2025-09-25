@@ -5161,11 +5161,8 @@ op()(&quot;(length (list 1 2 3 4 5))&quot;)();  /* Returns 5 */
 <p>Implement robust error handling for LISP expressions:</p>
 <div class="highlight"><pre><span></span><code>/* Safe evaluation */
 safe_lisp_eval = op(expr) {
-    try {
-        return op()(expr)();
-    } catch (error) {
-        return &quot;LISP Error: &quot; + error;
-    };
+    try return op()(expr)();
+    catch (error): return &quot;LISP Error: &quot; + error;
 };
 </code></pre></div>
 <h3 id="2-performance-optimization"><strong>2. Performance Optimization</strong></h3>

@@ -4856,13 +4856,11 @@ if (result != 0) {
 </li>
 <li>
 <p><strong>Generation Errors:</strong>
-   <div class="highlight"><pre><span></span><code>try {
-    response = model.gen(&quot;Hello&quot;);
-    if (response.len() == 0) {
-        &quot;Warning: Empty response&quot;.echo();
-    }
-} catch (error) {
-    (&quot;Generation error: &quot; + error.str()).echo();
+   <div class="highlight"><pre><span></span><code>try response = model.gen(&quot;Hello&quot;);
+catch (error): (&quot;Generation error: &quot; + error.str()).echo();
+
+if (response.len() == 0) {
+    &quot;Warning: Empty response&quot;.echo();
 }
 </code></pre></div></p>
 </li>

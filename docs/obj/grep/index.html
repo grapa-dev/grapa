@@ -6387,7 +6387,7 @@ console_output = result.join(&quot;\n&quot;);  /* &quot;line1\nline2\nline3&quot
 <li>Unicode normalization (NFC, NFD, NFKC, NFKD)</li>
 <li><strong>Advanced Unicode properties</strong> (<code>\p{L}</code>, <code>\p{N}</code>, <code>\p{Emoji}</code>, <code>\p{So}</code>, etc.)</li>
 <li><strong>Unicode grapheme clusters</strong> (<code>\X</code>)</li>
-<li>Case-insensitive matching with proper Unicode case folding</li>
+<li>Case-insensitive matching with proper Unicode case folding:</li>
 </ul>
 <h3 id="advanced-regex-features">🎯 <strong>Advanced Regex Features</strong></h3>
 <ul>
@@ -6922,7 +6922,7 @@ input.grep(&quot;Line 2|Line 6&quot;, &quot;jA1B1&quot;)
 
 /* Complex password validation */
 &quot;password123&quot;.grep(&quot;(?=.*[A-Z])(?=.*[a-z])(?=.*\\d).{8,}&quot;, &quot;o&quot;)
-/* Result: [] (no uppercase letter) */
+/* Result: [] (no uppercase letter) */:
 
 &quot;Password123&quot;.grep(&quot;(?=.*[A-Z])(?=.*[a-z])(?=.*\\d).{8,}&quot;, &quot;o&quot;)
 /* Result: [&quot;Password123&quot;] (valid password) */
@@ -7176,7 +7176,7 @@ Note: Overlapping context lines are allowed for complete coverage */
 large_content.grep(&quot;pattern&quot;, &quot;a&quot;)     /* Process as single string */
 
 /* Use specific Unicode properties instead of broad categories */
-large_content.grep(&quot;\\p{Lu}&quot;, &quot;o&quot;)     /* Better than \\p{L} for uppercase only */
+large_content.grep(&quot;\\p{Lu}&quot;, &quot;o&quot;)     /* Better than \\p{L} for uppercase only */:
 
 /* Disable normalization if not needed */
 large_content.grep(&quot;pattern&quot;, &quot;o&quot;)     /* No &#39;N&#39; option unless required */
@@ -7243,7 +7243,7 @@ long_string.grep(&quot;(?&gt;a+)+&quot;, &quot;o&quot;) /* Much faster */
 &quot;text&quot;.grep(&quot;\\p{L}+&quot;, &quot;o&quot;)            /* Slower for large text */
 
 /* Solution: Use specific properties */
-&quot;text&quot;.grep(&quot;\\p{Lu}+&quot;, &quot;o&quot;)           /* Faster for uppercase only */
+&quot;text&quot;.grep(&quot;\\p{Lu}+&quot;, &quot;o&quot;)           /* Faster for uppercase only */:
 </code></pre></div></p>
 <p><strong>Memory usage issues</strong>:
 <div class="highlight"><pre><span></span><code>/* Problem: Large cache accumulation */
@@ -7279,7 +7279,7 @@ if (result.type() == $ERR) {
 <div class="highlight"><pre><span></span><code>/* Test Unicode normalization */
 &quot;café&quot;.grep(&quot;cafe&quot;, &quot;N&quot;)               /* Should match with normalization */
 
-/* Test case folding */
+/* Test case folding */:
 &quot;CAFÉ&quot;.grep(&quot;cafe&quot;, &quot;i&quot;)               /* Should match case-insensitive */
 
 /* Test diacritic stripping */
@@ -7307,7 +7307,7 @@ grapa -f &quot;test_performance_optimizations.grc&quot;
 - LRU cache functionality for text normalization
 - Complex Unicode pattern performance
 - Mixed pattern performance
-- Edge case handling</p>
+- Edge case handling:</p>
 <h3 id="capability-testing">Capability Testing</h3>
 <p>Verify current Unicode and regex capabilities:</p>
 <div class="highlight"><pre><span></span><code>/* Run comprehensive capability tests */
@@ -7433,7 +7433,7 @@ console_output = result.join(&quot;\n&quot;);  /* &quot;line1\nline2\nline3&quot
 - ✅ <strong>Unicode general categories</strong> (<code>\p{Lu}</code>, <code>\p{Ll}</code>, <code>\p{Lt}</code>, etc.)
 - ✅ <strong>Unicode grapheme clusters</strong> (<code>\X</code>) - handles emoji sequences, combining characters
 - ✅ <strong>Unicode normalization</strong> (NFC, NFD, NFKC, NFKD)
-- ✅ <strong>Case-insensitive matching</strong> with proper Unicode case folding</p>
+- ✅ <strong>Case-insensitive matching</strong> with proper Unicode case folding:</p>
 <p><strong>Advanced Regex Features:</strong>
 - ✅ <strong>Named groups</strong> (<code>(?P&lt;name&gt;...)</code>)
 - ✅ <strong>Atomic groups</strong> (<code>(?&gt;...)</code>)
@@ -7466,7 +7466,7 @@ console_output = result.join(&quot;\n&quot;);  /* &quot;line1\nline2\nline3&quot
 <li>✅ <strong>Word boundary mode</strong> - Use "w" option or <code>\b</code> pattern anchors: <code>"word".grep("hello", "w")</code> or <code>"word".grep("\\bhello\\b", "o")</code></li>
 <li>✅ <strong>Column numbers</strong> - Use "T" option for column numbers: <code>"word".grep("hello", "oT")</code></li>
 </ul>
-<p><strong>Note</strong>: Grapa uses explicit "i" flag for case-insensitive matching rather than ripgrep's automatic smart-case behavior. This provides more predictable and explicit control over case sensitivity.</p>
+<p><strong>Note</strong>: Grapa uses explicit "i" flag for case-insensitive matching rather than ripgrep's automatic smart-case behavior. This provides more predictable and explicit control over case sensitivity.:</p>
 <h3 id="file-handling-features-handled-by-grapa-language-or-python-integration"><strong>File Handling Features</strong> (handled by Grapa language or Python integration)</h3>
 <ul>
 <li>❌ <strong>Automatic .gitignore support</strong> - Grapa handles file filtering separately via <code>file().ls()</code> with filters</li>
@@ -7490,8 +7490,8 @@ console_output = result.join(&quot;\n&quot;);  /* &quot;line1\nline2\nline3&quot
 /* ripgrep: rg &quot;HELLO&quot; (case-sensitive for uppercase) */
 &quot;Hello WORLD&quot;.grep(&quot;HELLO&quot;, &quot;&quot;)
 
-/* Note: Grapa uses explicit &quot;i&quot; flag rather than ripgrep&#39;s automatic smart-case behavior */
-/* This provides more predictable and explicit control over case sensitivity */
+/* Note: Grapa uses explicit &quot;i&quot; flag rather than ripgrep&#39;s automatic smart-case behavior */:
+/* This provides more predictable and explicit control over case sensitivity */:
 </code></pre></div>
 <h3 id="word-boundary-mode"><strong>Word Boundary Mode</strong></h3>
 <div class="highlight"><pre><span></span><code>/* ripgrep: rg --word-regexp &quot;hello&quot; */
@@ -7537,7 +7537,7 @@ console_output = result.join(&quot;\n&quot;);  /* &quot;line1\nline2\nline3&quot
 - ✅ All core text processing, regex, Unicode, and search strategy features
 - ❌ Only missing: SIMD (vectorized) search optimizations</p>
 <p><strong>ripgrep covers ~80-85% of Grapa grep's features:</strong>
-- ✅ Core regex, case handling, context lines, binary mode, line numbers, invert match
+- ✅ Core regex, case handling, context lines, binary mode, line numbers, invert match:
 - ❌ Missing: Unicode normalization, diacritic-insensitive matching, grapheme clusters, advanced Unicode properties, script extensions, flexible JSON output, integrated language features, Python integration</p>
 <h3 id="when-to-use-each-tool"><strong>When to Use Each Tool</strong></h3>
 <table>
@@ -7677,7 +7677,7 @@ matches = content.grep(&quot;pattern&quot;, &quot;oj&quot;);  /* Pure text proce
 - ✅ <strong>Unicode Language Binding</strong> - <code>casefold()</code> method fully implemented and working</p>
 <p><strong>🎉 COMPLETE RIPGREP COMPATIBILITY ACHIEVED</strong>
 - All ripgrep features are now supported in Grapa
-- Unicode case folding is fully implemented and working
+- Unicode case folding is fully implemented and working:
 - Custom delimiter edge cases are all resolved
 - Grapa grep is production-ready with complete feature parity</p>
 <h3 id="recent-fixes-and-improvements-august-2025">Recent Fixes and Improvements (August 2025)</h3>
@@ -7685,7 +7685,7 @@ matches = content.grep(&quot;pattern&quot;, &quot;oj&quot;);  /* Pure text proce
 - ✅ <strong><code>casefold()</code> method</strong> - Fully implemented and working in Grapa language
 - ✅ <strong>Turkish I support</strong> - <code>"İstanbul".casefold()</code> returns <code>"istanbul"</code>
 - ✅ <strong>German sharp S support</strong> - <code>"ß".casefold()</code> returns <code>"s"</code>
-- ✅ <strong>Basic case folding</strong> - <code>"HELLO".casefold()</code> returns <code>"hello"</code>
+- ✅ <strong>Basic case folding</strong> - <code>"HELLO".casefold()</code> returns <code>"hello"</code>:
 - ✅ <strong>Standalone function</strong> - <code>grapa_case_fold_string()</code> implemented in <code>source/grep/grapa_grep_unicode.cpp</code>
 - ✅ <strong>Language binding</strong> - Connected to Grapa language via <code>GrapaLibraryRuleCaseFoldEvent::Run()</code></p>
 <p><strong>Custom Delimiter Edge Cases - ALL RESOLVED:</strong>
@@ -7703,7 +7703,7 @@ matches = content.grep(&quot;pattern&quot;, &quot;oj&quot;);  /* Pure text proce
 - ✅ Parallel processing with excellent performance scaling
 - ✅ Python integration fully functional
 - ✅ <strong>100% ripgrep parity</strong> - All ripgrep features now supported
-- ✅ <strong>Unicode case folding</strong> - <code>casefold()</code> method fully implemented and working</p>
+- ✅ <strong>Unicode case folding</strong> - <code>casefold()</code> method fully implemented and working:</p>
 <p><strong>🎉 PRODUCTION READY</strong>
 - Grapa grep is now production-ready with complete feature parity with ripgrep
 - All Unicode features are fully supported and working
@@ -7774,7 +7774,7 @@ log_content.grep(&quot;error&quot;, &quot;A2B1io&quot;)  /* 2 lines after, 1 bef
 <p><strong>Second Priority:</strong></p>
 </li>
 <li>Once the above is complete, address <strong>edge cases</strong>.</li>
-<li>Edge case handling must be implemented in a way that is compatible with all possible option combinations that may reach the relevant code path.</li>
+<li>Edge case handling must be implemented in a way that is compatible with all possible option combinations that may reach the relevant code path.:</li>
 <li>Edge cases are exceptions layered on top of the comprehensive option combination coverage.</li>
 </ol>
 <blockquote>
@@ -7943,13 +7943,13 @@ log_content.grep(&quot;error&quot;, &quot;A2B1io&quot;)  /* 2 lines after, 1 bef
 <h3 id="status">Status</h3>
 <ul>
 <li><strong>All valid single, pair, triple, higher-order, and parallel option combinations are now systematically covered by dedicated test files.</strong></li>
-<li>The next step is to proceed with edge case coverage, ensuring all edge case handling is compatible with the full option matrix.</li>
+<li>The next step is to proceed with edge case coverage, ensuring all edge case handling is compatible with the full option matrix.:</li>
 </ul>
 <h3 id="edge-case-handling">Edge Case Handling</h3>
 <ul>
-<li>Edge case tests will be added <strong>after</strong> the main option matrix is complete.</li>
-<li>Edge case handling must be compatible with all option combinations that may reach the relevant code path.</li>
-<li>Edge case test files will be clearly marked and cross-referenced here.</li>
+<li>Edge case tests will be added <strong>after</strong> the main option matrix is complete.:</li>
+<li>Edge case handling must be compatible with all option combinations that may reach the relevant code path.:</li>
+<li>Edge case test files will be clearly marked and cross-referenced here.:</li>
 </ul>
 <blockquote>
 <p><strong>This living section ensures that the current state of Grapa grep option support, test coverage, and design philosophy is always visible and up to date.</strong></p>

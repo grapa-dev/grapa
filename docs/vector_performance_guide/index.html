@@ -5121,7 +5121,7 @@ result = large_matrix.cov();         // Monitor performance
 </code></pre></div>
 <h3 id="2-algorithm-selection">2. Algorithm Selection</h3>
 <h4 id="matrix-multiplication">Matrix Multiplication</h4>
-<div class="highlight"><pre><span></span><code>/* Use appropriate algorithms for your use case */
+<div class="highlight"><pre><span></span><code>/* Use appropriate algorithms for your use case */:
 // For small matrices - standard multiplication is fine
 small_result = mat_a.dot(mat_b);  // Fast for &lt; 100x100
 
@@ -5212,11 +5212,11 @@ result = matrix.dot(matrix);  // Grapa chooses optimal representation per operat
 - <strong>Automatic optimization</strong>: Grapa's internal functions automatically choose the best representation for each mathematical operation
 - <strong>System preference</strong>: <code>setfloat()</code> and <code>setfix()</code> set a system preference, but Grapa overrides this when it knows better
 - <strong>Same bit precision</strong>: Performance is similar, accuracy is optimized per operation
-- <strong>Default recommendation</strong>: Use <code>setfloat()</code> as the default unless you have specific requirements</p>
+- <strong>Default recommendation</strong>: Use <code>setfloat()</code> as the default unless you have specific requirements:</p>
 <p><strong>When the Choice Matters:</strong>
 - <strong>Financial calculations</strong>: May benefit from <code>setfix()</code> preference for decimal precision
 - <strong>Scientific calculations</strong>: May benefit from <code>setfloat()</code> preference for large dynamic ranges
-- <strong>Most applications</strong>: The system default choice is sufficient due to internal optimizations</p>
+- <strong>Most applications</strong>: The system default choice is sufficient due to internal optimizations:</p>
 <h4 id="precision-performance-example">Precision Performance Example</h4>
 <div class="highlight"><pre><span></span><code>/* Linear regression with different precision settings */
 n_samples = 10000;

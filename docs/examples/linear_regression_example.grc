@@ -30,12 +30,12 @@ while (i <= n_samples) {
     noise = ((i % 3) - 1) * 0.1;  /* Small noise */
     y = 2 * x1 + 3 * x2 + 5 + noise;  /* True relationship */
     
-    X_data += [x1, x2];
+    X_data += [x1, x2];  /* Add both features as a single row */
     y_data += y;
     i += 1;
 }
 
-/* Convert to vectors */
+/* Convert to vectors - create proper 2D structure */
 X = X_data.vector();
 y = y_data.vector();
 
@@ -53,8 +53,10 @@ y = y_data.vector();
 feature_means = X.mean(0);
 feature_stds = X.std(0);
 
-("Feature means: " + feature_means.str() + "\n").echo();
-("Feature standard deviations: " + feature_stds.str()  + "\n").echo();
+/* Display feature statistics in a readable format */
+("Feature statistics:\n").echo();
+("  Feature 0: mean=" + feature_means.get(0).str() + ", std=" + feature_stds.get(0).str() + "\n").echo();
+("  Feature 1: mean=" + feature_means.get(1).str() + ", std=" + feature_stds.get(1).str() + "\n").echo();
 
 /* Scale the features */
 X_scaled = [];

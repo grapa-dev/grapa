@@ -4847,7 +4847,7 @@
 <blockquote>
 <p><strong>Note:</strong> Both <code>x = x + 1;</code> and <code>x += 1;</code> (and <code>s = s + "x";</code> and <code>s += "x";</code>) are valid in Grapa. The <code>+=</code> form is idiomatic and preferred in most cases.</p>
 <p><strong>String Interpolation:</strong> For combining strings and values, use <code>"Hello ${name}".interpolate()</code> instead of <code>"Hello " + name</code>. String interpolation is more powerful and less error-prone than concatenation. It also provides elegant solutions for complex method chaining: <code>"${'hello'.upper()} ${'world'.lower()}".interpolate()</code>.</p>
-<p><strong>Nullish Coalescing:</strong> For providing default values, use <code>value.ifnull("default")</code> instead of Go's zero value handling. The <code>.ifnull()</code> method treats a broader range of values as nullish (including zeros, empty collections, and errors).</p>
+<p><strong>Nullish Coalescing:</strong> For providing default values, use <code>value.ifnull("default")</code> instead of Go's zero value handling. The <code>.ifnull()</code> method treats a broader range of values as nullish (including zeros, empty collections, and errors).:</p>
 <p><strong>Note:</strong> <code>.get()/.set()</code> is for <code>$file</code> operations. <code>.getfield("key")</code> is for <code>$TABLE</code> with named keys. <code>.get()/.set()</code> is for <code>$WIDGET</code>. For <code>$GOBJ</code>/<code>$OBJ</code>, use <code>obj["key"]</code>, <code>obj.key</code>, or <code>obj."key"</code>. For <code>$LIST</code>, use <code>arr[index]</code> (bracket notation only).</p>
 </blockquote>
 <h2 id="access-patterns-objects-lists-arrays-files-and-tables">Access Patterns: Objects, Lists, Arrays, Files, and Tables</h2>

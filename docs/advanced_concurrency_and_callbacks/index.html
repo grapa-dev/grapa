@@ -5101,7 +5101,7 @@ n.onlisten(&#39;:12345&#39;, postMessageHandler, postConnectHandler);
 <h2 id="structured-concurrency-with-functional-methods">Structured Concurrency with Functional Methods</h2>
 <h3 id="parallel-processing-by-default">Parallel Processing by Default</h3>
 <p>Grapa's functional methods provide <strong>structured concurrency</strong> that's superior to traditional async/await:</p>
-<div class="highlight"><pre><span></span><code>/* Parallel by default - creates one thread per item */
+<div class="highlight"><pre><span></span><code>/* Parallel by default - creates one thread per item */:
 small_data = [1, 2, 3, 4, 5];
 squares = small_data.map(op(x) { x * x; });
 

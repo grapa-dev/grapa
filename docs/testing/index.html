@@ -5041,7 +5041,7 @@ test_division = op(a, b) {
     };
 };
 
-/* Test error case */
+/* Test error case */:
 result = test_division(10, 0);
 if (result.type() == $ERR) {
     &quot;Division by zero correctly caught&quot;.echo();
@@ -5049,7 +5049,7 @@ if (result.type() == $ERR) {
     &quot;Division by zero test failed&quot;.echo();
 };
 
-/* Test success case */
+/* Test success case */:
 result = test_division(10, 2);
 if (result.type() != $ERR &amp;&amp; result == 5) {
     &quot;Division test passed&quot;.echo();
@@ -5275,31 +5275,31 @@ if (case_matches.len() == 2) {
     &quot;Case-insensitive grep test failed&quot;.echo();
 };
 
-/* Test Unicode case folding */
+/* Test Unicode case folding */:
 turkish_text = &quot;İstanbul ıstanbul&quot;;
 turkish_matches = turkish_text.grep(&quot;istanbul&quot;, &quot;i&quot;);
 if (turkish_matches.len() == 1) {
-    &quot;Turkish I case folding test passed&quot;.echo();
+    &quot;Turkish I case folding test passed&quot;.echo();:
 } else {
-    &quot;Turkish I case folding test failed&quot;.echo();
+    &quot;Turkish I case folding test failed&quot;.echo();:
 };
 
-/* Test German sharp S case folding */
+/* Test German sharp S case folding */:
 german_text = &quot;Straße&quot;;
 german_matches = german_text.grep(&quot;strasse&quot;, &quot;i&quot;);
 if (german_matches.len() == 1) {
-    &quot;German sharp S case folding test passed&quot;.echo();
+    &quot;German sharp S case folding test passed&quot;.echo();:
 } else {
-    &quot;German sharp S case folding test failed&quot;.echo();
+    &quot;German sharp S case folding test failed&quot;.echo();:
 };
 
-/* Test Greek final sigma case folding */
+/* Test Greek final sigma case folding */:
 greek_text = &quot;γράμμα&quot;;
 greek_matches = greek_text.grep(&quot;ΓΡΑΜΜΑ&quot;, &quot;i&quot;);
 if (greek_matches.len() == 1) {
-    &quot;Greek final sigma case folding test passed&quot;.echo();
+    &quot;Greek final sigma case folding test passed&quot;.echo();:
 } else {
-    &quot;Greek final sigma case folding test failed&quot;.echo();
+    &quot;Greek final sigma case folding test failed&quot;.echo();:
 };
 </code></pre></div>
 <h3 id="testing-complex-patterns">Testing Complex Patterns</h3>
@@ -5356,7 +5356,7 @@ test_etl_workflow = op() {
         {&quot;name&quot;: record.get(&quot;name&quot;).upper(), &quot;age&quot;: record.get(&quot;age&quot;)};
     });
 
-    /* Transform data with case folding */
+    /* Transform data with case folding */:
     processed_casefold = test_data.map(op(record) {
         {&quot;name&quot;: record.get(&quot;name&quot;).casefold(), &quot;age&quot;: record.get(&quot;age&quot;)};
     });
@@ -5584,20 +5584,20 @@ test_with_assertions = op() {
 <h3 id="5-test-both-success-and-failure-paths">5. Test Both Success and Failure Paths</h3>
 <div class="highlight"><pre><span></span><code>/* Test both success and failure scenarios */
 test_comprehensive = op() {
-    /* Test success case */
+    /* Test success case */:
     success_result = test_function(5);
     if (success_result == 10) {
-        &quot;Success case test passed&quot;.echo();
+        &quot;Success case test passed&quot;.echo();:
     } else {
-        &quot;Success case test failed&quot;.echo();
+        &quot;Success case test failed&quot;.echo();:
     };
 
-    /* Test failure case */
+    /* Test failure case */:
     error_result = test_function(null);
     if (error_result.type() == $ERR) {
-        &quot;Error case test passed&quot;.echo();
+        &quot;Error case test passed&quot;.echo();:
     } else {
-        &quot;Error case test failed&quot;.echo();
+        &quot;Error case test failed&quot;.echo();:
     };
 };
 </code></pre></div>

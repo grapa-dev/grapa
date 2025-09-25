@@ -4566,10 +4566,10 @@
 <div class="highlight"><pre><span></span><code>/* Basic parameter definition */
 f = op(a, b) { a + b; };
 
-/* Parameters with default values */
+/* Parameters with default values */:
 f = op(a=1, b=2) { b**a; };
 
-/* Mixed default and non-default parameters */
+/* Mixed default and non-default parameters */:
 f = op(a, b=10, c) { a + b + c; };
 </code></pre></div>
 <h4 id="parameter-calling">Parameter Calling</h4>
@@ -4626,7 +4626,7 @@ calculator(operation=&quot;power&quot;, y:3, x:2);  /* → 8 */
 };
 
 counter();  /* 1 */
-counter();  /* 1 - default value is not modified */
+counter();  /* 1 - default value is not modified */:
 </code></pre></div>
 <h4 id="parameter-modification">Parameter Modification</h4>
 <p>Parameters can be modified within functions, affecting the original values:</p>
@@ -4689,7 +4689,7 @@ myIns;
 <h2 id="obj">obj</h2>
 <p>Creating an instance of a class. See class.</p>
 <h2 id="token">token</h2>
-<p>Used to define lexical rules. Currently only used to define special character handling like space and tab, where the default handling is to skip these characters so they do not need to be specified in the grammar. </p>
+<p>Used to define lexical rules. Currently only used to define special character handling like space and tab, where the default handling is to skip these characters so they do not need to be specified in the grammar. :</p>
 <h2 id="rule">rule</h2>
 <p>See <a href="../../type/rule/">$RULE type</a></p>
 <h2 id="const">const</h2>

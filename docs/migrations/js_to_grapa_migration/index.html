@@ -5552,7 +5552,7 @@ big_num.echo();  /* Exact result, no overflow */
 </code></pre></div>
 <p><strong>JavaScript equivalent requires:</strong> <code>BigInt</code> with limited operations and conversion overhead</p>
 <h4 id="advanced-pattern-matching-with-grep"><strong>Advanced Pattern Matching with Grep</strong></h4>
-<div class="highlight"><pre><span></span><code>/* Rich grep with context, case options, and advanced patterns */
+<div class="highlight"><pre><span></span><code>/* Rich grep with context, case options, and advanced patterns */:
 text = &quot;Line 1\nLine 2\nLine 3\nLine 4\nLine 5&quot;;
 
 /* Context lines */
@@ -5938,7 +5938,7 @@ longStrings = strings.filter(op(s) { s.len() &gt; 5; });
 
 /* Mapping works on any type */
 doubled = numbers.map(op(x) { x * 2; });
-uppercase = strings.map(op(s) { s.upper(); });
+uppercase = strings.map(op(s) { s.upper(); });:
 </code></pre></div></p>
 <p><strong>Note:</strong> Grapa abstracts type complexity into C++ libraries rather than exposing generics in scripts. This approach is simpler, more performant, and leverages Grapa's dynamic typing strengths. The same methods work on all types without explicit type parameters.</p>
 <h3 id="reflection-and-introspection">Reflection and Introspection</h3>

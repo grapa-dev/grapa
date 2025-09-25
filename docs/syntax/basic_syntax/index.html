@@ -7785,7 +7785,7 @@ while (i &lt; array.len()) {
 <div class="highlight"><pre><span></span><code>/* Hexadecimal literals */
 0x12;              /* 18 in decimal */
 0xABCD;            /* 43981 in decimal */
-0xAbCd;            /* 43981 in decimal (case insensitive) */
+0xAbCd;            /* 43981 in decimal (case insensitive) */:
 0x1234;            /* 4660 in decimal */
 0x12.34;           /* 18.203125 in decimal (hex float) */
 0x1234.5678;       /* 4660.33984375 in decimal (hex float) */
@@ -7958,7 +7958,7 @@ doubled = numbers.map(op(x) { x * 2; });  /* [2, 4, 6, 8, 10] */
 
 /* Transform with string operations */
 names = [&quot;john&quot;, &quot;jane&quot;, &quot;bob&quot;];
-uppercase = names.map(op(name) { name.upper(); });  /* [&quot;JOHN&quot;, &quot;JANE&quot;, &quot;BOB&quot;] */
+uppercase = names.map(op(name) { name.upper(); });  /* [&quot;JOHN&quot;, &quot;JANE&quot;, &quot;BOB&quot;] */:
 casefolded = names.map(op(name) { name.casefold(); });  /* [&quot;john&quot;, &quot;jane&quot;, &quot;bob&quot;] */
 
 /* Parallel processing with thread count */
@@ -8134,7 +8134,7 @@ evens = data.filter(op(x) { x % 2 == 0; }, 8);
 sum = data.reduce(op(acc, x) { acc + x; }, 0, 4);
 </code></pre></div>
 <p><strong>Important Notes:</strong>
-- <code>.map()</code> and <code>.filter()</code> are parallel by default for large arrays
+- <code>.map()</code> and <code>.filter()</code> are parallel by default for large arrays:
 - Always specify thread count for very large datasets to avoid too many threads
 - <code>.reduce()</code> can be parallel but requires careful consideration of the operation
 - Method chaining is efficient and readable
@@ -8502,7 +8502,7 @@ f = op(a=0) {
 
 /* Default values are now immutable - each call gets a fresh copy */
 f();  /* Returns 1 */
-f();  /* Returns 1 - default value is not modified! */
+f();  /* Returns 1 - default value is not modified! */:
 </code></pre></div>
 <h4 id="parameter-side-effects">Parameter Side Effects</h4>
 <p>Modifying parameters within functions affects the original values:</p>
@@ -8583,7 +8583,7 @@ $global ++= {config:true, version:&quot;1.0&quot;};
 @my_namespace ++= {data:123, flag:false};
 </code></pre></div>
 <h4 id="duplicate-handling">Duplicate Handling</h4>
-<div class="highlight"><pre><span></span><code>/* References access the last added in case of duplicates */
+<div class="highlight"><pre><span></span><code>/* References access the last added in case of duplicates */:
 $local ++= {a:1, b:2};
 $local ++= {a:10, c:3};  /* &#39;a&#39; now refers to 10, not 1 */
 
@@ -8836,7 +8836,7 @@ MyClass = class {
 };
 
 /* Create instances - constructor is called automatically */
-x = MyClass();      /* n = -1 (default value) */
+x = MyClass();      /* n = -1 (default value) */:
 y = MyClass(4);     /* n = 4 */
 
 x.n.echo();         /* Output: -1 */
@@ -8845,7 +8845,7 @@ y.n.echo();         /* Output: 4 */
 <p><strong>Key Points:</strong>
 - <strong>Single Constructor</strong>: Only one <code>$new()</code> method is supported per class
 - <strong>Automatic Invocation</strong>: The constructor is called automatically when creating instances
-- <strong>Parameter Support</strong>: The constructor can accept parameters with default values
+- <strong>Parameter Support</strong>: The constructor can accept parameters with default values:
 - <strong>Instance Creation</strong>: Use <code>Class()</code> syntax instead of <code>obj Class</code> when using <code>$new()</code></p>
 <blockquote>
 <p><strong>Important Note on Constructors and Destructors:</strong></p>
@@ -9250,20 +9250,20 @@ table.setfield(&quot;key&quot;, &quot;field&quot;, &quot;value&quot;);
 value = table.getfield(&quot;key&quot;, &quot;field&quot;);
 </code></pre></div>
 <h3 id="function-definitions-with-default-parameters">Function Definitions with Default Parameters</h3>
-<div class="highlight"><pre><span></span><code>/* Function with default parameters */
+<div class="highlight"><pre><span></span><code>/* Function with default parameters */:
 f = op(&quot;x&quot;=1, &quot;y&quot;=0) { x + y; };
 
 /* Call with all parameters */
 result1 = f(5, 3);  /* 8 */
 
-/* Call with default for y */
+/* Call with default for y */:
 result2 = f(5);     /* 6 (y defaults to 0) */
 
 /* Call with defaults for both */
 result3 = f();      /* 1 (x defaults to 1, y defaults to 0) */
 </code></pre></div>
 <ul>
-<li>Use <code>op("param"=default_value)</code> for default parameters</li>
+<li>Use <code>op("param"=default_value)</code> for default parameters:</li>
 <li>Parameters with defaults can be omitted when calling</li>
 <li>Parameters without defaults must be provided</li>
 </ul>
@@ -9285,7 +9285,7 @@ f(1, 2);                     /* {1, 2} - positional parameters */
 f(a:1, b:2);                 /* {&quot;a&quot;:1, &quot;b&quot;:2} - named parameters */
 </code></pre></div>
 <h4 id="default-parameters-and-local">Default Parameters and <code>$local</code></h4>
-<div class="highlight"><pre><span></span><code>/* Function with default parameters */
+<div class="highlight"><pre><span></span><code>/* Function with default parameters */:
 f = op(a:null, b:null) { $local; };
 
 f();                         /* {&quot;a&quot;:null, &quot;b&quot;:null} */
@@ -9350,7 +9350,7 @@ flexible_sum(1.5, 2.5);      /* 4.0 */
 <li><strong>Positional parameters</strong> appear as array elements: <code>{1, 2, 3}</code></li>
 <li><strong>Named parameters</strong> appear as object properties: <code>{"a":1, "b":2}</code></li>
 <li><strong>Mixed parameters</strong> combine both: <code>{"a":1, "b":2, 3, 4}</code></li>
-<li><strong>Default parameters</strong> are included with their default values</li>
+<li><strong>Default parameters</strong> are included with their default values:</li>
 <li><strong><code>$local</code> can be modified</strong> within the function</li>
 <li><strong>Useful for introspection</strong>, validation, and dynamic parameter handling</li>
 </ul>
@@ -9732,7 +9732,7 @@ if (items) {
 if (config) {
     (&quot;Using configuration&quot;).echo();
 } else {
-    (&quot;Using default settings&quot;).echo();
+    (&quot;Using default settings&quot;).echo();:
 }
 
 /* Check for errors */
@@ -9807,101 +9807,91 @@ if ([1,2,3] == #[1,2,3]#) { } // false (array vs vector)
 <p>Grapa provides switch statements for multiple condition checking:</p>
 <h4 id="switch-statement-syntax">Switch Statement Syntax</h4>
 <p><strong>Single command in case:</strong>
-<div class="highlight"><pre><span></span><code>switch (x) {
-    case 10: &quot;x is 10&quot;.echo();
-    case 5: &quot;x is 5&quot;.echo();
-    default: &quot;x is something else&quot;.echo();
-};
+<div class="highlight"><pre><span></span><code>switch (x)
+case 10: &quot;x is 10&quot;.echo();
+case 5: &quot;x is 5&quot;.echo();
+default: &quot;x is something else&quot;.echo();
 </code></pre></div></p>
-<p><strong>Multiple commands in case (must use {}):</strong>
-<div class="highlight"><pre><span></span><code>switch (x) {
-    case 10: {
-        &quot;x is 10&quot;.echo();
-        &quot;Additional handling&quot;.echo();
-    }
-    case 5: {
-        &quot;x is 5&quot;.echo();
-        &quot;More handling&quot;.echo();
-    }
-    default: {
-        &quot;x is something else&quot;.echo();
-        &quot;Default handling&quot;.echo();
-    }
-};
+<p><strong>Multiple commands in case (use {}):</strong>
+<div class="highlight"><pre><span></span><code>switch (x)
+case 10: {
+    &quot;x is 10&quot;.echo();
+    &quot;Additional handling&quot;.echo();
+}
+case 5: {
+    &quot;x is 5&quot;.echo();
+    &quot;More handling&quot;.echo();
+}
+default: {
+    &quot;x is something else&quot;.echo();
+    &quot;Default handling&quot;.echo();
+}
 </code></pre></div></p>
 <h4 id="type-switching">Type Switching</h4>
 <div class="highlight"><pre><span></span><code>/* Switch based on type */
-switch (value.type()) {
-    case $STR: &quot;String value&quot;.echo();
-    case $INT: &quot;Integer value&quot;.echo();
-    case $LIST: &quot;Array value&quot;.echo();
-    case $GOBJ: &quot;Grapa Object value&quot;.echo();
-    default: &quot;Unknown type&quot;.echo();
-};
+switch (value.type())
+case $STR: &quot;String value&quot;.echo();
+case $INT: &quot;Integer value&quot;.echo();
+case $LIST: &quot;Array value&quot;.echo();
+case $GOBJ: &quot;Grapa Object value&quot;.echo();
+default: &quot;Unknown type&quot;.echo();
 </code></pre></div>
 <h4 id="value-switching">Value Switching</h4>
 <div class="highlight"><pre><span></span><code>/* Switch based on value */
-switch (status) {
-    case &quot;active&quot;: &quot;User is active&quot;.echo();
-    case &quot;inactive&quot;: &quot;User is inactive&quot;.echo();
-    case &quot;pending&quot;: &quot;User is pending&quot;.echo();
-    default: &quot;Unknown status&quot;.echo();
-};
+switch (status)
+case &quot;active&quot;: &quot;User is active&quot;.echo();
+case &quot;inactive&quot;: &quot;User is inactive&quot;.echo();
+case &quot;pending&quot;: &quot;User is pending&quot;.echo();
+default: &quot;Unknown status&quot;.echo();
 </code></pre></div>
 <h4 id="boolean-switching">Boolean Switching</h4>
 <div class="highlight"><pre><span></span><code>/* Switch based on boolean conditions */
-switch(true) {
-    case (score &gt;= 90): &quot;Grade: A&quot;.echo();
-    case (score &gt;= 80): &quot;Grade: B&quot;.echo();
-    case (score &gt;= 70): &quot;Grade: C&quot;.echo();
-    case (score &gt;= 60): &quot;Grade: D&quot;.echo();
-    default: &quot;Grade: F&quot;.echo();
-};
+switch(true)
+case (score &gt;= 90): &quot;Grade: A&quot;.echo();
+case (score &gt;= 80): &quot;Grade: B&quot;.echo();
+case (score &gt;= 70): &quot;Grade: C&quot;.echo();
+case (score &gt;= 60): &quot;Grade: D&quot;.echo();
+default: &quot;Grade: F&quot;.echo();
 </code></pre></div>
 <h4 id="switch-with-complex-conditions">Switch with Complex Conditions</h4>
 <div class="highlight"><pre><span></span><code>/* Switch with complex expressions */
-switch(true) {
-    case (age &lt; 18 &amp;&amp; income &lt; 30000): &quot;Young and low income&quot;.echo();
-    case (age &gt;= 65): &quot;Senior citizen&quot;.echo();
-    case (income &gt; 100000): &quot;High income&quot;.echo();
-    default: &quot;Standard category&quot;.echo();
-};
+switch(true)
+case (age &lt; 18 &amp;&amp; income &lt; 30000): &quot;Young and low income&quot;.echo();
+case (age &gt;= 65): &quot;Senior citizen&quot;.echo();
+case (income &gt; 100000): &quot;High income&quot;.echo();
+default: &quot;Standard category&quot;.echo();
 </code></pre></div>
 <h4 id="variable-declaration-in-switch-expression">Variable Declaration in Switch Expression</h4>
 <p>Grapa's switch statement can declare and initialize variables directly in the switch expression, enabling advanced pattern matching and fuzzy matching:</p>
 <div class="highlight"><pre><span></span><code>/* Declare variable in switch expression for advanced matching */
-switch(a:[1,3,5]) {
-    case (a[2]==5): &quot;Array element matches&quot;.echo();
-    default: &quot;No match found&quot;.echo();
-};
+switch(a:[1,3,5])
+case (a[2]==5): &quot;Array element matches&quot;.echo();
+default: &quot;No match found&quot;.echo();
 </code></pre></div>
 <p><strong>Advanced Pattern Matching Examples:</strong></p>
 <div class="highlight"><pre><span></span><code>/* Fuzzy string matching */
-switch(input:&quot;hello world&quot;) {
-    case (input.grep(&quot;hello&quot;, &quot;i&quot;)): &quot;Contains &#39;hello&#39; (case insensitive)&quot;.echo();
-    case (input.len() &gt; 10): &quot;Long string&quot;.echo();
-    default: &quot;No pattern match&quot;.echo();
-};
+switch(input:&quot;hello world&quot;)
+case (input.grep(&quot;hello&quot;, &quot;i&quot;)): &quot;Contains &#39;hello&#39; (case insensitive)&quot;.echo();:
+case (input.len() &gt; 10): &quot;Long string&quot;.echo();
+default: &quot;No pattern match&quot;.echo();
 
 /* Complex data structure analysis */
-switch(data:{name: &quot;Alice&quot;, scores: [85, 92, 78]}) {
-    case (data.scores.mean()[0] &gt;= 90): &quot;High performer&quot;.echo();
-    case (data.scores.mean()[0] &gt;= 80): &quot;Good performer&quot;.echo();
-    case (data.scores.min()[0] &lt; 70): &quot;Needs improvement&quot;.echo();
-    default: &quot;Average performer&quot;.echo();
-};
+switch(data:{name: &quot;Alice&quot;, scores: [85, 92, 78]})
+case (data.scores.mean()[0] &gt;= 90): &quot;High performer&quot;.echo();
+case (data.scores.mean()[0] &gt;= 80): &quot;Good performer&quot;.echo();
+case (data.scores.min()[0] &lt; 70): &quot;Needs improvement&quot;.echo();
+default: &quot;Average performer&quot;.echo();
 
 /* Array pattern matching */
-switch(arr:[1,2,3,4,5]) {
-    case (arr.len() == 5 &amp;&amp; arr[0] == 1): &quot;Five-element array starting with 1&quot;.echo();
-    case (arr.sum()[0] &gt; 10): &quot;Array sum greater than 10&quot;.echo();
-    case (arr.grep(3)): &quot;Array contains 3&quot;.echo();
-    default: &quot;No specific pattern&quot;.echo();
-};
+switch(arr:[1,2,3,4,5])
+case (arr.len() == 5 &amp;&amp; arr[0] == 1): &quot;Five-element array starting with 1&quot;.echo();
+case (arr.sum()[0] &gt; 10): &quot;Array sum greater than 10&quot;.echo();
+case (arr.grep(3)): &quot;Array contains 3&quot;.echo();
+default: &quot;No specific pattern&quot;.echo();
 </code></pre></div>
 <p><strong>Key Features:</strong>
 - <strong>Implicit break</strong>: No break statements required, execution stops after first match
-- <strong>Multiple commands</strong>: Must be enclosed in <code>{}</code> when case contains multiple statements
+- <strong>Multiple commands</strong>: Must be enclosed in <code>{}</code> when case contains multiple statements:
 - <strong>Sequential evaluation</strong>: Evaluates from first to last case, stops at first match
 - <strong>No fall-through</strong>: Unlike C-style switches, Grapa doesn't fall through to next case
 - <strong>Variable declaration</strong>: Can declare variables in switch expression for advanced matching
@@ -9911,22 +9901,18 @@ switch(arr:[1,2,3,4,5]) {
 <p>Grapa provides comprehensive exception handling with try/catch/finally blocks and throw statements.</p>
 <h3 id="basic-exception-handling">Basic Exception Handling</h3>
 <div class="highlight"><pre><span></span><code>/* Basic try/catch with finally */
-try {
-    throw &#39;error message&#39;;
-} {
-    catch &#39;error message&#39;: &#39;Caught specific error&#39;.echo();
-    default: &#39;Caught any other error&#39;.echo();
-} finally: &#39;Always executed&#39;.echo();
+try throw &#39;error message&#39;
+catch &#39;error message&#39;: &#39;Caught specific error&#39;.echo();
+default: &#39;Caught any other error&#39;.echo();
+finally: &#39;Always executed&#39;.echo();
 </code></pre></div>
 <h3 id="exception-with-variable-binding">Exception with Variable Binding</h3>
 <div class="highlight"><pre><span></span><code>/* Throw with variable binding for detailed error handling */
-try {
-    throw (err:&#39;error message&#39;);
-} {
-    catch (err.left(1)==&#39;e&#39;): &#39;Error starts with e: &#39;.interpolate({msg=err}).echo();
-    catch (err.len() &gt; 10): &#39;Long error message&#39;.echo();
-    default: &#39;Caught other error&#39;.echo();
-} finally: &#39;Cleanup completed&#39;.echo();
+try throw (err:&#39;error message&#39;)
+catch (err.left(1)==&#39;e&#39;): &#39;Error starts with e: &#39;.interpolate({msg=err}).echo();
+catch (err.len() &gt; 10): &#39;Long error message&#39;.echo();
+default: &#39;Caught other error&#39;.echo();
+finally: &#39;Cleanup completed&#39;.echo();
 </code></pre></div>
 <h3 id="exception-handling-syntax">Exception Handling Syntax</h3>
 <p><strong>Throw statements:</strong>
@@ -9934,20 +9920,18 @@ try {
 throw (err:&#39;error message&#39;);              // With variable binding
 </code></pre></div></p>
 <p><strong>Try/catch/finally:</strong>
-<div class="highlight"><pre><span></span><code>try {
-    // Code that might throw
-} {
-    catch &#39;error&#39;: &#39;Handle specific error&#39;.echo();
-    catch (condition): &#39;Handle based on condition&#39;.echo();
-    default: &#39;Handle any other error&#39;.echo();
-} finally: &#39;Always execute&#39;.echo();
+<div class="highlight"><pre><span></span><code>try throw &#39;error&#39;
+catch &#39;error&#39;: &#39;Handle specific error&#39;.echo();
+catch (condition): &#39;Handle based on condition&#39;.echo();
+default: &#39;Handle any other error&#39;.echo();
+finally: &#39;Always execute&#39;.echo();
 </code></pre></div></p>
 <p><strong>Key Features:</strong>
 - <strong>Variable binding</strong>: Variables declared in throw are accessible in catch blocks
 - <strong>Flexible matching</strong>: Catch conditions can be constants, expressions, or complex patterns
 - <strong>Multiple catch blocks</strong>: Can have multiple catch conditions
 - <strong>Finally block</strong>: Always executes regardless of exception
-- <strong>Consistent syntax</strong>: Follows the same pattern as switch/case statements
+- <strong>Consistent syntax</strong>: Follows the same pattern as switch/case statements:
 - <strong>No parentheses required</strong>: Simple constants don't need parentheses</p>
 <h2 id="unsupported-syntax-operators">Unsupported Syntax Operators</h2>
 <p>Grapa does not support several modern JavaScript/TypeScript operators. Use explicit alternatives:</p>
@@ -10010,7 +9994,7 @@ if (result == {&quot;error&quot;:-1}) {
 <div class="highlight"><pre><span></span><code>/* Simple error fallback */
 result = risky_operation().iferr(0);  /* Returns 0 if operation fails */
 
-/* Error fallback with default value */
+/* Error fallback with default value */:
 value = (10/0).iferr(55);  /* Returns 55 since division by zero fails */
 
 /* Array access with fallback */
@@ -10488,7 +10472,7 @@ file.setfield(&quot;key&quot;, &quot;value&quot;);        /* Works - named key o
 <p>View a text version of the grammar rules loaded into Grapa on startup here:
 Grapa Grammar</p>
 <p>The system will first check for a match on the "start" rule, which is a global variable. If that global variable is of type $RULE, then it will become the first rule for scripts. This is an easy way to provide an override on command processing. If the "start" rule does not provide a match, then the system will evaluate using the "$start" rule.</p>
-<p>The default rules may be subject to change.</p>
+<p>The default rules may be subject to change.:</p>
 <p>If you modify the file, you can try it out by placing it in "lib/grapa/" under the same directory that the above command would have written the file to, and then restart Grapa. If Grapa finds this file with this name in that location, it will use that file instead of the default.</p>
 <p>If you are familiar with YACC or BNF, following the grammar logic should be rather straightforward. Each rule is evaluated until a successful match, and all matches produce an execution plan where the code associated with each rule match is included in the execution plan. To optimize grammar resolution, rules are carefully constructed to avoid re-evaluating rules more than necessary by placing the most complex rules first and following with common rule patterns. It is also important to avoid infinite recursive situations—mostly this is avoided by not referencing the same rule as the first token to evaluate.</p>
 <p>There are a few standard tokens that are defined—mostly the tokens provide special handling for either the lexical engine or the rules engine. One example is the space character, which when found sets a bit in the token to skip the value for rules evaluation. This can be changed—but then would require including the space token in the rules.
@@ -10530,7 +10514,7 @@ result.echo();  // Output: Result: DLROW OLLEH
 result = &quot;  hello world  &quot;.trim().upper().replace(&quot;WORLD&quot;, &quot;GRAPA&quot;);
 result.echo();  // Output: HELLO GRAPA
 
-/* String chaining with case folding */
+/* String chaining with case folding */:
 result = &quot;  İstanbul  &quot;.trim().casefold().upper();
 result.echo();  // Output: ISTANBUL
 
@@ -10711,19 +10695,17 @@ for (i = 0; i &lt; 10; i += 1) {
 </code></pre></div>
 <h4 id="switch-statements_1"><strong>Switch Statements</strong></h4>
 <div class="highlight"><pre><span></span><code>/* Switch statements with control flow */
-switch (day) {
-    case 1: day_name = &quot;Monday&quot;;;
-    case 2: day_name = &quot;Tuesday&quot;;;
-    case 3: day_name = &quot;Wednesday&quot;;;
-    default: day_name = &quot;Unknown&quot;;;
-}
+switch (day)
+case 1: day_name = &quot;Monday&quot;;;
+case 2: day_name = &quot;Tuesday&quot;;;
+case 3: day_name = &quot;Wednesday&quot;;;
+default: day_name = &quot;Unknown&quot;;;
 
 /* Switch with return statements */
-switch (value) {
-    case 1: return &quot;one&quot;;;
-    case 2: return &quot;two&quot;;;
-    default: return &quot;unknown&quot;;;
-}
+switch (value)
+case 1: return &quot;one&quot;;;
+case 2: return &quot;two&quot;;;
+default: return &quot;unknown&quot;;;
 </code></pre></div>
 <h4 id="function-control-flow"><strong>Function Control Flow</strong></h4>
 <div class="highlight"><pre><span></span><code>/* Function with return statements */
@@ -10757,11 +10739,11 @@ func test() {
 test();  /* Returns 999 */
 
 /* Control flow in switch statements */
-switch (1) { 
-    case 1: &quot;hi&quot;.{if (true) return 999; x=@$$; x.len()}.range(); 
-    return 888; 
-    default: return 777; 
-};  /* Returns 999 */
+switch (1)
+case 1: &quot;hi&quot;.{if (true) return 999; x=@$$; x.len()}.range(); 
+return 888; 
+default: return 777; 
+/* Returns 999 */
 </code></pre></div>
 <h4 id="control-flow-propagation"><strong>Control Flow Propagation</strong></h4>
 <p>All control flow statements properly propagate through all execution contexts:

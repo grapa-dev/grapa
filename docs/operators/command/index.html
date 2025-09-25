@@ -4652,11 +4652,8 @@ include &quot;lib/production/utils.grz&quot;;
 <h3 id="error-handling">Error Handling</h3>
 <h4 id="file-not-found">File Not Found</h4>
 <div class="highlight"><pre><span></span><code>/* Include with error handling */
-try {
-    include &quot;lib/missing_file.grc&quot;;
-} catch (error) {
-    (&quot;Warning: Could not include missing_file.grc: &quot; + error).echo();
-}
+try include &quot;lib/missing_file.grc&quot;;
+catch (error): (&quot;Warning: Could not include missing_file.grc: &quot; + error).echo();
 </code></pre></div>
 <h4 id="compilation-errors">Compilation Errors</h4>
 <div class="highlight"><pre><span></span><code>/* Compilation errors in included files are reported during compilation */

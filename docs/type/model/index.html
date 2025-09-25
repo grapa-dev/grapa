@@ -1209,6 +1209,21 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Generation Parameters">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#openai-specific-parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      OpenAI-Specific Parameters
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -1251,6 +1266,15 @@
   <a href="#thread-safety" class="md-nav__link">
     <span class="md-ellipsis">
       Thread Safety
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#openai-usage-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      OpenAI Usage Example
     </span>
   </a>
   
@@ -4407,6 +4431,21 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Generation Parameters">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#openai-specific-parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      OpenAI-Specific Parameters
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -4455,6 +4494,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#openai-usage-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      OpenAI Usage Example
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#see-also" class="md-nav__link">
     <span class="md-ellipsis">
       See Also
@@ -4480,14 +4528,15 @@
 
 
 <h1 id="model-data-type">$MODEL Data Type</h1>
-<p>The <code>$MODEL</code> data type provides AI/ML model integration capabilities in Grapa, currently supporting LLAMA.cpp-based models for text generation.</p>
+<p>The <code>$MODEL</code> data type provides AI/ML model integration capabilities in Grapa, supporting both local LLAMA.cpp-based models and cloud-based OpenAI models for text generation.</p>
 <h2 id="overview">Overview</h2>
 <p>The <code>$MODEL</code> type allows you to:
-- Load and manage AI/ML models (currently GGUF format)
+- Load and manage AI/ML models (GGUF format for local models, OpenAI models for cloud)
 - Generate text using loaded models
 - Configure generation parameters
 - Control model verbosity and logging
-- Unload models to free memory</p>
+- Unload models to free memory
+- Use cloud-based models with persistent context</p>
 <h2 id="basic-usage">Basic Usage</h2>
 <div class="highlight"><pre><span></span><code>/* Create a new model instance */
 model = $MODEL();
@@ -4508,8 +4557,8 @@ model.load();
 <h3 id="loadmodelpath-method"><code>.load(modelpath, method)</code></h3>
 <p>Loads a model from the specified file path.</p>
 <p><strong>Parameters:</strong>
-- <code>path</code> (string): Path to the model file (GGUF format)
-- <code>method</code> (string, optional): Method to use ("llama" is currently the only supported method). If not specified, the method will be auto-detected from the file extension or magic bytes.</p>
+- <code>path</code> (string): Path to the model file (GGUF format) or model name (for OpenAI)
+- <code>method</code> (string, optional): Method to use ("llama" for local models, "openai" for cloud models). If not specified, the method will be auto-detected from the file extension or magic bytes.</p>
 <p><strong>Returns:</strong> Error code (0 for success)</p>
 <p><strong>Example:</strong>
 <div class="highlight"><pre><span></span><code>/* Auto-detect method from file extension */
@@ -4520,8 +4569,11 @@ if (result.type() != $ERR) {
     (&quot;Failed to load model: &quot; + result.str()).echo();
 }
 
-/* Explicitly specify method */
+/* Explicitly specify method for local model */
 result = model.load(&quot;models/qwen2.5-7b-instruct-q3_k_m.gguf&quot;, &quot;llama&quot;);
+
+/* Load OpenAI cloud model */
+result = model.load(&quot;gpt-4o&quot;, &quot;openai&quot;);
 </code></pre></div></p>
 <h3 id="genprompt-params"><code>.gen(prompt, params)</code></h3>
 <p>Generates text using the loaded model.</p>
@@ -4533,10 +4585,15 @@ result = model.load(&quot;models/qwen2.5-7b-instruct-q3_k_m.gguf&quot;, &quot;ll
 <div class="highlight"><pre><span></span><code>/* Basic generation */
 response = model.gen(&quot;What is artificial intelligence?&quot;);
 
-/* Generation with custom parameters */
+/* Generation with custom parameters (local model) */
 response = model.gen(&quot;Explain machine learning&quot;, {
     &quot;temperature&quot;: 0.8,
     &quot;max_tokens&quot;: 100
+});
+
+/* Generation with OpenAI API key (cloud model) */
+response = model.gen(&quot;Hello, how are you?&quot;, {
+    &quot;api_key&quot;: &quot;sk-your-openai-api-key&quot;
 });
 </code></pre></div></p>
 <h3 id="info"><code>.info()</code></h3>
@@ -4611,7 +4668,7 @@ if (result.type() != $ERR) {
 }
 </code></pre></div></p>
 <h2 id="generation-parameters">Generation Parameters</h2>
-<p>The following parameters can be set using <code>.params()</code>:</p>
+<p>The following parameters can be set using <code>.params()</code>. Note that not all parameters apply to every method:</p>
 <table>
 <thead>
 <tr>
@@ -4619,6 +4676,8 @@ if (result.type() != $ERR) {
 <th>Type</th>
 <th>Default</th>
 <th>Description</th>
+<th>LLAMA</th>
+<th>OpenAI</th>
 </tr>
 </thead>
 <tbody>
@@ -4627,51 +4686,94 @@ if (result.type() != $ERR) {
 <td>float</td>
 <td>0.7</td>
 <td>Controls randomness (0.0 = deterministic, 1.0+ = more random)</td>
+<td>✅</td>
+<td>✅</td>
 </tr>
 <tr>
 <td><code>max_tokens</code></td>
 <td>int</td>
 <td>10</td>
 <td>Maximum number of tokens to generate</td>
+<td>✅</td>
+<td>✅</td>
 </tr>
 <tr>
 <td><code>top_k</code></td>
 <td>int</td>
 <td>40</td>
 <td>Number of top tokens to consider</td>
+<td>✅</td>
+<td>❌</td>
 </tr>
 <tr>
 <td><code>top_p</code></td>
 <td>float</td>
 <td>0.9</td>
 <td>Nucleus sampling threshold</td>
+<td>✅</td>
+<td>✅</td>
 </tr>
 <tr>
 <td><code>repeat_penalty</code></td>
 <td>float</td>
 <td>1.1</td>
 <td>Penalty for repeating tokens</td>
+<td>✅</td>
+<td>❌</td>
 </tr>
 <tr>
 <td><code>seed</code></td>
 <td>int</td>
 <td>-1</td>
 <td>Random seed (-1 for random)</td>
+<td>✅</td>
+<td>❌</td>
 </tr>
 <tr>
 <td><code>context_size</code></td>
 <td>int</td>
 <td>2048</td>
 <td>Context window size</td>
+<td>✅</td>
+<td>❌</td>
 </tr>
 <tr>
 <td><code>verbose</code></td>
 <td>int</td>
 <td>0</td>
 <td>Logging verbosity (0=silent, 1=errors, 2=warnings, 3=info, 4=debug)</td>
+<td>✅</td>
+<td>✅</td>
 </tr>
 </tbody>
 </table>
+<h3 id="openai-specific-parameters">OpenAI-Specific Parameters</h3>
+<p>When using the "openai" method, additional parameters are available:</p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>api_key</code></td>
+<td>string</td>
+<td>Yes</td>
+<td>OpenAI API key for authentication</td>
+</tr>
+<tr>
+<td><code>store</code></td>
+<td>boolean</td>
+<td>No</td>
+<td>Enable server-side context persistence (default: true)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Note:</strong> For OpenAI models, only <code>temperature</code>, <code>max_tokens</code>, <code>top_p</code>, and <code>verbose</code> parameters are applied. Other parameters (<code>top_k</code>, <code>repeat_penalty</code>, <code>seed</code>, <code>context_size</code>) are ignored as they are not supported by the OpenAI API.</p>
 <h2 id="method-support">Method Support</h2>
 <p>Currently, the <code>$MODEL</code> type supports:</p>
 <ul>
@@ -4679,7 +4781,16 @@ if (result.type() != $ERR) {
 <li>Supports various quantization levels (Q2_K, Q3_K_M, Q4_K_M, Q5_K_M, Q6_K, Q8_0, FP16)</li>
 <li>Optimized for CPU inference</li>
 <li>Thread-safe operations</li>
-<li>Auto-detected from <code>.gguf</code> file extension or "GGUF" magic bytes</li>
+<li>
+<p>Auto-detected from <code>.gguf</code> file extension or "GGUF" magic bytes</p>
+</li>
+<li>
+<p><strong>OpenAI</strong>: For cloud-based models</p>
+</li>
+<li>Supports GPT-4, GPT-3.5-turbo, and other OpenAI models</li>
+<li>Server-side context persistence</li>
+<li>Requires API key authentication</li>
+<li>Uses HTTPS with SSL certificate verification</li>
 </ul>
 <h2 id="model-formats">Model Formats</h2>
 <p>The <code>$MODEL</code> type currently supports:</p>
@@ -4713,6 +4824,41 @@ model.load(); /* Unload when done */
 </code></pre></div>
 <h2 id="thread-safety">Thread Safety</h2>
 <p>The <code>$MODEL</code> type is designed to be thread-safe, allowing multiple model instances to be used concurrently in different threads.</p>
+<h2 id="openai-usage-example">OpenAI Usage Example</h2>
+<p>Here's a complete example of using OpenAI models:</p>
+<div class="highlight"><pre><span></span><code>/* Load OpenAI model */
+model = $MODEL();
+result = model.load(&quot;gpt-4o&quot;, &quot;openai&quot;);
+if (result.type() != $ERR) {
+    &quot;OpenAI model loaded successfully!&quot;.echo();
+} else {
+    (&quot;Failed to load OpenAI model: &quot; + result.str()).echo();
+    return;
+}
+
+/* Generate with API key */
+response1 = model.gen(&quot;Hello, how are you?&quot;, {
+    &quot;api_key&quot;: &quot;sk-your-openai-api-key&quot;
+});
+response1.echo();
+
+/* Continue conversation with context */
+response2 = model.gen(&quot;What&#39;s the weather like?&quot;, {
+    &quot;api_key&quot;: &quot;sk-your-openai-api-key&quot;
+});
+response2.echo();
+
+/* Disable context persistence */
+response3 = model.gen(&quot;Tell me a joke&quot;, {
+    &quot;api_key&quot;: &quot;sk-your-openai-api-key&quot;,
+    &quot;store&quot;: false
+});
+response3.echo();
+
+/* Unload model */
+model.load();
+model = null;
+</code></pre></div>
 <h2 id="see-also">See Also</h2>
 <ul>
 <li><a href="../../examples/model_examples.grc">Model Examples</a> - Practical usage examples</li>

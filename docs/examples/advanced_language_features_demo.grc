@@ -24,27 +24,25 @@ age = person.age;
 city = person.city;
 ("Destructured person: name=" + name + ", age=" + age + ", city=" + city + "\n").echo();
 
-/* Match expressions via switch/case */
+/* Match expressions via switch/case */:
 value = 42;
 result = null;
-switch (value) {
-    case 10: result = "ten";
-    case 20: result = "twenty";
-    case 42: result = "forty-two";
-    default: result = "unknown";
-};
+switch (value)
+case 10: result = "ten";
+case 20: result = "twenty";
+case 42: result = "forty-two";
+default: result = "unknown";
 ("Switch result: " + result + "\n").echo();
 
 /* Guard clauses via conditional cases */
 score = 85;
 grade = null;
-switch (true) {
-    case (score >= 90): grade = "A";
-    case (score >= 80): grade = "B";
-    case (score >= 70): grade = "C";
-    case (score >= 60): grade = "D";
-    default: grade = "F";
-};
+switch (true)
+case (score >= 90): grade = "A";
+case (score >= 80): grade = "B";
+case (score >= 70): grade = "C";
+case (score >= 60): grade = "D";
+default: grade = "F";
 ("Grade for " + score + ": " + grade + "\n").echo();
 
 /* Pattern matching via .grep() */
@@ -222,13 +220,12 @@ inferred_str = "Hello" + "World"; /* Automatically $STR */
 generic_process = op(data) {
     $local.data_type = data.type();
     $local.result = "";
-    switch (data_type) {
-        case $INT: result = data * 2;
-        case $STR: result = data.upper();
-        case $LIST: result = data.map(op(x) { x * 2; });
-        case $GOBJ: result = data.map(op(key, value) { key + ": " + value; });
-        default: result = "Unsupported type: " + data_type.str();
-    }
+    switch (data_type)
+    case $INT: result = data * 2;
+    case $STR: result = data.upper();
+    case $LIST: result = data.map(op(x) { x * 2; });
+    case $GOBJ: result = data.map(op(key, value) { key + ": " + value; });
+    default: result = "Unsupported type: " + data_type.str();
 	result;
 };
 
