@@ -92,6 +92,7 @@ void GrapaObjectEvent::CLEAR()
 void GrapaObjectEvent::SetItem(u64 pId, const GrapaCHAR& pName, const GrapaBYTE& pValue)
 {
 	mId = pId;
+	/*
 	if (pName.mToken == GrapaTokenType::SYSID && (pName.mLength && pName.mBytes[0] != '$'))
 	{
 		mName.FROM("$");
@@ -99,6 +100,8 @@ void GrapaObjectEvent::SetItem(u64 pId, const GrapaCHAR& pName, const GrapaBYTE&
 	}
 	else
 		mName.FROM(pName);
+	*/
+	mName.FROM(pName); mName.mToken = pName.mToken;
 	mValue.FROM(pValue);
 	mName.SetSize(mName.GetLength());
 	mValue.SetSize(mValue.GetLength());
