@@ -19623,11 +19623,12 @@ GrapaRuleEvent* GrapaLibraryRuleMatchEvent::Run(GrapaScriptExec* vScriptExec, Gr
 GrapaRuleEvent* GrapaLibraryRuleKeysEvent::Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput)
 {
 	GrapaLibraryParam r1(vScriptExec, pNameSpace, pInput ? pInput->Head(0) : NULL);
-	GrapaRuleEvent* result = new GrapaRuleEvent();
-	result->mValue.mToken = GrapaTokenType::LIST;
-	result->vQueue = new GrapaRuleQueue();
+	GrapaRuleEvent* result = NULL;
 	if (r1.vVal && r1.vVal->mValue.mToken == GrapaTokenType::GOBJ)
 	{
+		result = new GrapaRuleEvent();
+		result->mValue.mToken = GrapaTokenType::LIST;
+		result->vQueue = new GrapaRuleQueue();
 		GrapaRuleEvent* p = r1.vVal->vQueue ? r1.vVal->vQueue->Head() : NULL;
 		while (p)
 		{
@@ -19635,6 +19636,21 @@ GrapaRuleEvent* GrapaLibraryRuleKeysEvent::Run(GrapaScriptExec* vScriptExec, Gra
 			p = p->Next();
 		}
 	}
+	else if (r1.vVal && r1.vVal->mValue.mToken == GrapaTokenType::VECTOR && r1.vVal->vVector)
+	{
+		result = new GrapaRuleEvent();
+		result->mValue.mToken = GrapaTokenType::LIST;
+		result->vQueue = new GrapaRuleQueue();
+		GrapaRuleEvent* item = r1.vVal->vVector->mLabels.Head();
+		while (item)
+		{
+			GrapaRuleEvent* ev = new GrapaRuleEvent(0,GrapaCHAR(),item->mName);
+			result->vQueue->PushTail(ev);
+			item = item->Next();
+		}
+	}
+	if (result == NULL)
+		result = Error(vScriptExec, pNameSpace, -1);
 	return result;
 }
 
