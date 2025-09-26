@@ -1990,6 +1990,7 @@ GrapaRuleEvent* GrapaRuleQueue::FROM(GrapaScriptState* pScriptState, GrapaNames*
 	GrapaCHAR value;
 	u8 tType = 0;
 	u64 len = 0;
+	u8 nType = 0;
 
 	u64 pos = 0, lastPos = 0;
 	u64 blockSize = 0;
@@ -2008,7 +2009,13 @@ GrapaRuleEvent* GrapaRuleQueue::FROM(GrapaScriptState* pScriptState, GrapaNames*
 	if (count != (countP ^ (-1))) return(result);
 
 	name.SetLength(0);
-	memcpy(&len, &pValue.mBytes[pos], sizeof(u64));			name.SetLength(BE_S64(len), false);		pos += sizeof(u64);
+	memcpy(&len, &pValue.mBytes[pos], sizeof(u64));
+	len = BE_S64(len);
+	nType = len >> 56;
+	name.mToken = nType ? nType : GrapaTokenType::STR;
+	len = len & 0x00FFFFFFFFFFFFFF;
+	name.SetLength(len, false);
+	pos += sizeof(u64);
 	if (name.mBytes) memcpy(name.mBytes, &pValue.mBytes[pos], (size_t)name.mLength);						pos += name.mLength;
 	if (name.mLength && pScriptState && pNameSpace)
 	{
@@ -2024,7 +2031,13 @@ GrapaRuleEvent* GrapaRuleQueue::FROM(GrapaScriptState* pScriptState, GrapaNames*
 
 		memcpy(&blockSize, &pValue.mBytes[pos], sizeof(u64));	blockSize = BE_S64(blockSize);			pos += sizeof(u64);
 		memcpy(&tType, &pValue.mBytes[pos], 1);															pos += 1;
-		memcpy(&len, &pValue.mBytes[pos], sizeof(u64));			name.SetLength(BE_S64(len), false);		pos += sizeof(u64);
+		memcpy(&len, &pValue.mBytes[pos], sizeof(u64));
+		len = BE_S64(len);
+		nType = len >> 56;
+		name.mToken = nType ? nType : GrapaTokenType::STR;
+		len = len & 0x00FFFFFFFFFFFFFF;
+		name.SetLength(len, false);		
+		pos += sizeof(u64);
 		if (name.mBytes) memcpy(name.mBytes, &pValue.mBytes[pos], (size_t)name.mLength);						pos += name.mLength;
 		memcpy(&len, &pValue.mBytes[pos], sizeof(u64));			value.SetLength(BE_S64(len), false);	pos += sizeof(u64);
 		if (value.mBytes) memcpy(value.mBytes, &pValue.mBytes[pos], (size_t)value.mLength);						pos += value.mLength;
@@ -2124,7 +2137,7 @@ void GrapaRuleQueue::TO(GrapaBYTE& pValue, GrapaRuleEvent* pClass, u8 pType)
 																										pos += sizeof(u64);
 	count = BE_S64(count);					memcpy(&pValue.mBytes[pos], &count, sizeof(u64));			pos += sizeof(u64);
 	countP = BE_S64(countP^(-1));			memcpy(&pValue.mBytes[pos], &countP, sizeof(u64));			pos += sizeof(u64);
-	len = pClass ? pClass->mName.mLength : 0;
+	len = pClass ? (pClass->mName.mLength | (((u64)pClass->mName.mToken) << 56)) : 0;
 	len = BE_S64(len);						memcpy(&pValue.mBytes[pos], &len, sizeof(u64));				pos += sizeof(u64);
 	if (pClass&&pClass->mName.mBytes)		memcpy(&pValue.mBytes[pos], pClass->mName.mBytes, (size_t)pClass->mName.mLength);		pos += pClass?pClass->mName.mLength:0;
 
@@ -2265,7 +2278,8 @@ void GrapaRuleQueue::TO(GrapaBYTE& pValue, GrapaRuleEvent* pClass, u8 pType)
 			pValue.SetLength(pos + (sizeof(u64) + 1 + (sizeof(u64) + ev->mName.mLength) + (sizeof(u64) + valuePtr->mLength)), true);
 																															pos += sizeof(u64);
 													memcpy(&pValue.mBytes[pos], &fieldType, 1);								pos += 1;
-			len = BE_S64(ev->mName.mLength);		memcpy(&pValue.mBytes[pos], &len, sizeof(u64));							pos += sizeof(u64);
+			len = ev->mName.mLength | (((u64)ev->mName.mToken) << 56);
+			len = BE_S64(len);						memcpy(&pValue.mBytes[pos], &len, sizeof(u64));							pos += sizeof(u64);
 			if (ev->mName.mBytes)					memcpy(&pValue.mBytes[pos], ev->mName.mBytes, (size_t)ev->mName.mLength);		pos += ev->mName.mLength;
 			len = BE_S64(valuePtr->mLength);		memcpy(&pValue.mBytes[pos], &len, sizeof(u64));							pos += sizeof(u64);
 			if (valuePtr->mBytes)					memcpy(&pValue.mBytes[pos], valuePtr->mBytes, (size_t)valuePtr->mLength);		pos += valuePtr->mLength;
