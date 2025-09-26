@@ -1134,6 +1134,7 @@ void GrapaVector::_tocsv(GrapaScriptExec* pScriptExec, GrapaNames* pNameSpace, u
 
 void GrapaVector::FromBytes(GrapaScriptExec* pScriptExec, GrapaNames* pNameSpace, const GrapaBYTE& pValue)
 {
+	/*
 	GrapaRuleEvent result;
 	GrapaRuleQueue rq;
 	result.vQueue = &rq;
@@ -1143,20 +1144,459 @@ void GrapaVector::FromBytes(GrapaScriptExec* pScriptExec, GrapaNames* pNameSpace
 	result.mValue.mToken = GrapaTokenType::LIST;
 	FROM(pScriptExec->vScriptState->mItemState.mFloatFix, pScriptExec->vScriptState->mItemState.mFloatMax, pScriptExec->vScriptState->mItemState.mFloatExtra, &result, 0);
 	result.vQueue = NULL;
+	*/
+
+	CLEAR();
+	if (pValue.mLength == 0) {
+		return;
+	}
+		
+	u64 pos = 0;
+	
+	// Read header section
+	if (pValue.mLength < (2 * sizeof(u32) + 2 * sizeof(u64))) {
+		printf("[DEBUG] GrapaVector::FromBytes - input too short\n");
+		return;
+	}
+	
+	// Standard header
+	u32 headerVers;
+	memcpy(&headerVers, &pValue.mBytes[pos], sizeof(u32));
+	headerVers = BE_S32(headerVers); 
+	pos += sizeof(u32);
+	printf("[DEBUG] GrapaVector::FromBytes - headerVers: %u\n", headerVers);
+	
+	u32 headerBlockSize;
+	memcpy(&headerBlockSize, &pValue.mBytes[pos], sizeof(u32));
+	headerBlockSize = BE_S32(headerBlockSize); 
+	pos += sizeof(u32);
+	printf("[DEBUG] GrapaVector::FromBytes - headerBlockSize: %u\n", headerBlockSize);
+	
+	u64 count; 
+	memcpy(&count, &pValue.mBytes[pos], sizeof(u64));
+	count = BE_S64(count); 
+	pos += sizeof(u64);
+	
+	u64 countP;
+	memcpy(&countP, &pValue.mBytes[pos], sizeof(u64));
+	countP = BE_S64(countP); 
+	pos += sizeof(u64);
+	
+	printf("[DEBUG] GrapaVector::FromBytes - count: %lu, countP: %lu, check: %d\n", count, countP, (count == (countP ^ (-1))));
+	
+	if (count != (countP ^ (-1))) {
+		printf("[DEBUG] GrapaVector::FromBytes - count validation failed\n");
+		return;
+	}
+	
+	// At this point we should check if we have enough data to read the full header or just return early for minimal vectors
+	if (count == 0 && countP == 0) {
+		printf("[DEBUG] GrapaVector::FromBytes - minimal empty vector case\n");
+		return;
+	}
+	
+	if (headerVers != 0) {
+		printf("[DEBUG] GrapaVector::FromBytes - header version mismatch\n");
+		return;
+	}
+	
+	//  Make sure we have minimum size for vector header
+	if (pValue.mLength < pos + 8) {
+		printf("[DEBUG] GrapaVector::FromBytes - insufficient data for vector header at pos: %lu\n", pos);
+		return;
+	}
+	
+	u8 dim;
+	memcpy(&dim, &pValue.mBytes[pos], sizeof(u8));
+	pos += sizeof(u8);
+	
+	u8 block;
+	memcpy(&block, &pValue.mBytes[pos], sizeof(u8));
+	pos += sizeof(u8);
+	
+	u8 maxBlock;
+	memcpy(&maxBlock, &pValue.mBytes[pos], sizeof(u8));
+	pos += sizeof(u8);
+	
+	u8 setBlock;
+	memcpy(&setBlock, &pValue.mBytes[pos], sizeof(u8));
+	pos += sizeof(u8);
+	
+	u64 size;
+	memcpy(&size, &pValue.mBytes[pos], sizeof(u64));
+	size = BE_S64(size);
+	pos += sizeof(u64);
+	
+	printf("[DEBUG] GrapaVector::FromBytes - vector info: dim=%u, block=%u, maxBlock=%u, setBlock=%u, size=%lu\n", dim, block, maxBlock, setBlock, size);
+	
+	// Initialize vector structure
+	mDim = dim;
+	mBlock = block;
+	mMaxBlock = maxBlock;
+	mSetBlock = setBlock;
+	mSize = size;
+	mCounts = (u64*)GrapaMem::Create(mDim * sizeof(u64));
+	
+	for (u8 i = 0; i < mDim; i++) {
+		memcpy(&mCounts[i], &pValue.mBytes[pos], sizeof(u64));
+		mCounts[i] = BE_S64(mCounts[i]);
+		pos += sizeof(u64);
+		printf("[DEBUG] GrapaVector::FromBytes - counts[%u]: %lu\n", i, mCounts[i]);
+	}
+	
+	// Allocate data space
+	mData = (GrapaVectorItem*)GrapaMem::Create(mBlock * mSize);
+	memset(mData, 0, mBlock * mSize);
+	printf("[DEBUG] GrapaVector::FromBytes - allocated data space, pos before items: %lu\n", pos);
+	
+	// Read embedded items section
+	for (u64 i = 0; i < mSize; i++) {
+		if (pos >= pValue.mLength) {
+			printf("[DEBUG] GrapaVector::FromBytes - pos exceeded length at item %lu\n", i);
+			break;
+		}
+		
+		GrapaVectorItem* item = _datavectorpos(mData, mBlock, i);
+		
+		// Read packed bit fields (isValue, isNull, mLen) correctly
+		u8 bitData = pValue.mBytes[pos++];
+		item->isValue = (bitData & 0x01) ? 1 : 0;
+		item->isNull = (bitData & 0x02) ? 1 : 0;
+		item->mLen = (bitData >> 2) & 0x3F; // Get 6 bits of mLen from upper bits
+		
+		printf("[DEBUG] GrapaVector::FromBytes - item[%lu]: isValue=%d, isNull=%d, mLen=%u, bitData=%02X\n", i, item->isValue, item->isNull, item->mLen, bitData);
+		
+		if (item->isValue && !item->isNull) {
+			// External object reference
+			u32 refIndex;
+			memcpy(&refIndex, &pValue.mBytes[pos], sizeof(u32));
+			refIndex = BE_S32(refIndex);
+			pos += sizeof(u32);
+			printf("[DEBUG] GrapaVector::FromBytes - external ref for item %lu: %u\n", i, refIndex);
+			// Actual external object read happens later
+		}
+		else if (!item->isNull) {
+			// Embedded data
+			item->mToken = pValue.mBytes[pos++];
+			printf("[DEBUG] GrapaVector::FromBytes - embedded item[%lu]: token=%u, len=%u, bytes:", i, item->mToken, item->mLen);
+			
+			for (u8 j = 0; j < item->mLen && pos < pValue.mLength; j++) {
+				item->d[j] = pValue.mBytes[pos++];
+				printf(" %02X", item->d[j]);
+			}
+			printf("\n");
+		}
+	}
+	
+	// Read external objects section  
+	u32 externalCount;
+	if (pos + sizeof(u32) <= pValue.mLength) {
+		memcpy(&externalCount, &pValue.mBytes[pos], sizeof(u32));
+		externalCount = BE_S32(externalCount);
+		pos += sizeof(u32);
+		printf("[DEBUG] GrapaVector::FromBytes - external objects count: %u at pos %lu\n", externalCount, pos);
+		
+		// Skip over external objects data if any
+		// For labeled vectors like #[{"a":1,b:2}]#, these might be the labels section serialized
+		if (externalCount == 0) {
+			printf("[DEBUG] GrapaVector::FromBytes - no external objects to skip\n");
+		} else {
+			printf("[DEBUG] GrapaVector::FromBytes - skipping external objects section\n");
+		}
+		// Position is already correct as external objects section would traverse data
+	}
+	
+	// Read labels section - safe labels deserialization
+	if (pos < pValue.mLength) {
+		try {
+			GrapaRuleQueue rq;
+			GrapaBYTE temp;
+			// Extract just the labels section 
+			temp.SetSize(pValue.mLength - pos);
+			temp.SetLength(pValue.mLength - pos);
+			memcpy(temp.mBytes, &pValue.mBytes[pos], pValue.mLength - pos);
+			temp.mToken = GrapaTokenType::LIST;
+			
+			// deserialize GrapaRuleQueue
+			rq.FROM(pScriptExec->vScriptState, pNameSpace, temp);
+			mLabels.CLEAR();
+			mLabels = rq;
+		} catch (...) {
+			// fallback on empty labels if parsing fails 
+			mLabels.CLEAR();
+		}
+	}
+	
+	printf("[DEBUG] GrapaVector::FromBytes COMPLETE - final pos: %lu, length: %lu\n", pos, pValue.mLength);
 }
 
 u64 GrapaVector::ToSize(GrapaScriptExec* pScriptExec, GrapaNames* pNameSpace)
 {
+	/*
 	GrapaBYTE value;
 	ToBytes(pScriptExec, pNameSpace, value);
 	return value.mLength;
+	*/
+
+	if (mData == NULL || mSize == 0)
+		return sizeof(u32) + sizeof(u32) + (8 * sizeof(u64)) + (4 * sizeof(u8));  // Minimum header
+	
+	u64 totalSize = 0;
+	
+	// =====================================
+	// HEADER SECTION CALCULATION
+	// =====================================
+	u64 headerSize = sizeof(u32) +                // headerVers  
+	                 sizeof(u32) +                 // headerBlockSize
+	                 sizeof(u64) +                 // count
+	                 sizeof(u64) +                 // countP  
+	                 sizeof(u8) +                  // mDim
+	                 sizeof(u8) +                  // mBlock
+	                 sizeof(u8) +                  // mMaxBlock  
+	                 sizeof(u8) +                  // mSetBlock
+	                 sizeof(u64) +                 // mSize
+	                 (mDim * sizeof(u64));         // mCounts array
+	
+	totalSize += headerSize;
+	
+	// ===================================
+	// EMBEDDED ITEMS SECTION CALCULATION  
+	// ===================================
+	// Fast scan for external objects in single pass
+	std::vector<GrapaVectorValue*> externalObjs;
+	externalObjs.clear();
+	
+	for (u64 i = 0; i < mSize; i++) {
+		GrapaVectorItem* item = _datavectorpos(mData, mBlock, i);
+		totalSize += 1;  // Standard isValue + isNull fields (packed)
+		
+		if (item->isValue && !item->isNull) {
+			// External object reference - track unique objects  
+			GrapaVectorValue* ptr = *(GrapaVectorValue**)item->d;
+			if (ptr) {
+				// Check if this external object was already processed
+				bool found = false;
+				for (GrapaVectorValue* existing : externalObjs) {
+					if (existing == ptr) {
+						found = true;
+						break;
+					}
+				}
+				if (!found) {
+					externalObjs.push_back(ptr);
+				}
+				totalSize += sizeof(u32);  // Reference index storage
+			}
+		}
+		else if (!item->isNull) {
+			// Embedded data: mToken + mData content 
+			totalSize += 1 + item->mLen;  // mToken + embedded bytes
+		}
+	}
+	
+	// =====================================
+	// EXTERNAL OBJECTS SECTION
+	// =====================================
+	totalSize += sizeof(u32);  // External objects count field
+	
+	for (GrapaVectorValue* extObj : externalObjs) {
+		if (extObj && extObj->e) {
+			// Use object serialization to calculate its size 
+			u64 objSize = 0;
+			extObj->e->TOSize(objSize);
+			totalSize += objSize;
+		}
+	}
+	
+	// =====================================
+	// LABELS SECTION  
+	// =====================================
+	if (mLabels.mCount > 0) {
+		u64 labelSize = 0;
+		mLabels.TOSize(labelSize, 0);
+		totalSize += labelSize;
+	}
+	
+	return totalSize;
 }
 
 void GrapaVector::ToBytes(GrapaScriptExec* pScriptExec, GrapaNames* pNameSpace, GrapaBYTE& pValue)
 {
+	/*
 	GrapaRuleEvent* result = ToArray();
 	result->TO(pValue);
 	pValue.mToken = GrapaTokenType::VECTOR;
+	*/
+
+	// Calculate size and pre-allocate buffer
+	u64 totalSize = ToSize(pScriptExec, pNameSpace);
+	pValue.SetSize(totalSize, false);
+	pValue.SetLength(totalSize);
+	pValue.mToken = GrapaTokenType::VECTOR;
+	if (mData == NULL || mSize == 0) {
+		// Minimal header for empty vector
+		u64 pos = 0;
+		
+		u32 headerVers = 0;
+		u32 headerBlockSize = sizeof(u32) * 2 + sizeof(u64) * 4;
+		headerVers = BE_S32(headerVers);
+		headerBlockSize = BE_S32(headerBlockSize);
+		memcpy(&pValue.mBytes[pos], &headerVers, sizeof(u32)); pos += sizeof(u32);
+		memcpy(&pValue.mBytes[pos], &headerBlockSize, sizeof(u32)); pos += sizeof(u32);
+		
+		u64 count = 0;
+		u64 countP = 0;
+		count = BE_S64(count);
+		countP = BE_S64(countP);
+		memcpy(&pValue.mBytes[pos], &count, sizeof(u64)); pos += sizeof(u64);
+		memcpy(&pValue.mBytes[pos], &countP, sizeof(u64)); pos += sizeof(u64);
+		
+		printf("[DEBUG] GrapaVector::ToBytes - empty vector complete\n");
+		return;
+	}
+	
+	u64 pos = 0;
+	
+	// =====================================
+	// HEADER SECTION
+	// =====================================
+	
+	printf("[DEBUG] GrapaVector::ToBytes - writing header pos=%lu\n", pos);
+	
+	// Standard GrapaRuleQueue header structure
+	u32 headerVers = 0;
+	u32 headerBlockSize = sizeof(u32) * 2 + sizeof(u64) * 4 + sizeof(u8) * 4 + sizeof(u64) + (mDim * sizeof(u64));
+	printf("[DEBUG] GrapaVector::ToBytes - headerVers=%u, headerBlockSize=%u\n", headerVers, headerBlockSize);
+	headerVers = BE_S32(headerVers);
+	headerBlockSize = BE_S32(headerBlockSize);
+	memcpy(&pValue.mBytes[pos], &headerVers, sizeof(u32)); pos += sizeof(u32);
+	memcpy(&pValue.mBytes[pos], &headerBlockSize, sizeof(u32)); pos += sizeof(u32);
+	
+	u64 count = 1;
+	u64 countP = count ^ (-1);
+	count = BE_S64(count);
+	countP = BE_S64(countP);
+	memcpy(&pValue.mBytes[pos], &count, sizeof(u64)); pos += sizeof(u64);
+	memcpy(&pValue.mBytes[pos], &countP, sizeof(u64)); pos += sizeof(u64);
+	
+	// Vector-specific header fields
+	pValue.mBytes[pos++] = mDim;
+	pValue.mBytes[pos++] = mBlock;
+	pValue.mBytes[pos++] = mMaxBlock;
+	pValue.mBytes[pos++] = mSetBlock;
+	
+	u64 size = mSize;
+	printf("[DEBUG] GrapaVector::ToBytes - dim=%u, block=%u, maxBlock=%u, setBlock=%u, original_size=%lu, pos=%lu\n", mDim, mBlock, mMaxBlock, mSetBlock, mSize, pos);
+	size = BE_S64(size);
+	memcpy(&pValue.mBytes[pos], &size, sizeof(u64)); pos += sizeof(u64);
+	
+	for (u8 i = 0; i < mDim; i++) {
+		u64 countVal = mCounts[i];
+		countVal = BE_S64(countVal);
+		memcpy(&pValue.mBytes[pos], &countVal, sizeof(u64)); pos += sizeof(u64);
+		printf("[DEBUG] GrapaVector::ToBytes - counts[%u]: %lu\n", i, mCounts[i]);
+	}
+	
+	// ===================================
+	// EMBEDDED ITEMS SECTION
+	// ===================================
+	
+	// Catalog external objects with stable ordering
+	std::vector<GrapaVectorValue*> externalObjs;
+	externalObjs.clear();
+	
+	// First pass: identify all external objects
+	for (u64 i = 0; i < mSize; i++) {
+		GrapaVectorItem* item = _datavectorpos(mData, mBlock, i);
+		if (item->isValue && !item->isNull) {
+			GrapaVectorValue* ptr = *(GrapaVectorValue**)item->d;
+			if (ptr) {
+				bool found = false;
+				for (GrapaVectorValue* existing : externalObjs) {
+					if (existing == ptr) {
+						found = true;
+						break;
+					}
+				}
+				if (!found) {
+					externalObjs.push_back(ptr);
+				}
+			}
+		}
+	}
+	
+	// Second pass: serialize embedded items section
+	printf("[DEBUG] GrapaVector::ToBytes - writing embedded items, pos=%lu\n", pos);
+	for (u64 i = 0; i < mSize; i++) {
+		GrapaVectorItem* item = _datavectorpos(mData, mBlock, i);
+		
+		// Pack bit fields correctly: bits 0-1: flags, bits 2-7: mLen (max 63)
+		u8 bitData = (item->isValue ? 0x01 : 0) | (item->isNull ? 0x02 : 0) | ((item->mLen & 0x3F) << 2);
+		pValue.mBytes[pos++] = bitData;
+		
+		printf("[DEBUG] GrapaVector::ToBytes - item[%lu]: isValue=%d, isNull=%d, mLen=%u, bitData=%02X\n", i, item->isValue, item->isNull, item->mLen, bitData);
+		
+		if (item->isValue && !item->isNull) {
+			// External object reference
+			GrapaVectorValue* ptr = *(GrapaVectorValue**)item->d;
+			u32 refIndex = 0;
+			if (ptr) {
+				// Find index in external objects list
+				for (u32 j = 0; j < externalObjs.size(); j++) {
+					if (externalObjs[j] == ptr) {
+						refIndex = j;
+						break;
+					}
+				}
+			}
+			refIndex = BE_S32(refIndex);
+			memcpy(&pValue.mBytes[pos], &refIndex, sizeof(u32)); pos += sizeof(u32);
+			printf("[DEBUG] GrapaVector::ToBytes - external ref for item %lu: %u\n", i, refIndex);
+		}
+		else if (!item->isNull) {
+			// Embedded data
+			pValue.mBytes[pos++] = item->mToken;
+			printf("[DEBUG] GrapaVector::ToBytes - embedded item[%lu]: token=%u, len=%u, pos=%lu, bytes:", i, item->mToken, item->mLen, pos);
+			for (u8 j = 0; j < item->mLen; j++) {
+				pValue.mBytes[pos++] = item->d[j];
+				printf(" %02X", item->d[j]);
+			}
+			printf("\n");
+		}
+	}
+	
+	// =====================================
+	// EXTERNAL OBJECTS SECTION
+	// =====================================
+	
+	u32 externalCount = (u32)externalObjs.size();
+	externalCount = BE_S32(externalCount);
+	memcpy(&pValue.mBytes[pos], &externalCount, sizeof(u32)); pos += sizeof(u32);
+	
+	for (GrapaVectorValue* extObj : externalObjs) {
+		if (extObj && extObj->e) {
+			// Serialize external object using existing GrapaRuleEvent TO method
+			GrapaBYTE localBytes;
+			extObj->e->TO(localBytes);
+			// Copy the serialized bytes
+			memcpy(&pValue.mBytes[pos], localBytes.mBytes, localBytes.mLength); 
+			pos += localBytes.mLength;
+		}
+	}
+	
+	// =====================================
+	// LABELS SECTION  
+	// =====================================
+	
+	// Safe labels serialization - only when labels exist
+	if (mLabels.mCount > 0) {
+		GrapaBYTE labelBytes;
+		mLabels.TO(labelBytes, NULL, GrapaTokenType::LIST);
+		if (labelBytes.mLength > 0) {
+			memcpy(&pValue.mBytes[pos], labelBytes.mBytes, labelBytes.mLength);
+			pos += labelBytes.mLength;
+		}
+	}
 }
 
 GrapaVector& GrapaVector::operator =(const GrapaVector& that)
