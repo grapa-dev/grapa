@@ -29,6 +29,7 @@ Vectors in Grapa are multi-dimensional data structures that support mathematical
 | **Access (Label)** | `vec.get("columnName")` | Get by column label |
 | **Set** | `vec.set(index, value)` | Set element value |
 | **Field Access** | `vec.getfield(index)` | Alternative access method |
+| **Get Labels** | `vec.keys()` | Get column labels |
 | **Mathematical** | `vec1 + vec2`, `vec * 2` | Element-wise operations |
 | **Statistical** | `vec.sum()`, `vec.mean()` | Statistical functions |
 
@@ -1272,6 +1273,7 @@ The `add()`, `mul()`, `pow()` functions in the C++ backend are internal methods 
 - `.len()` - Get length/size
 - `.sort()` - Sort elements
 - `.unique()` - Get unique elements
+- `.keys()` - Get column labels (for vectors with structured data)
 
 #### **Index Support**
 - **Positive Indices**: Fully supported (0, 1, 2, ...)
