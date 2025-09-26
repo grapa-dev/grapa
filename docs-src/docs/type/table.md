@@ -246,6 +246,94 @@ f.setfield("sale_001", "quantity", 2);
 /* (In a real implementation, you'd have aggregation functions) */
 ```
 
+## Data Access Patterns
+
+### Multiple Access Methods
+
+$TABLE objects support both key-based and ID-based record access, providing flexibility for different use cases:
+
+```grapa
+/* Create table and add records */
+table = {}.table("ROW");
+table.mkfield("name", "STR", "VAR");
+table.set("user1", "Alice", "name");
+table.set("user2", "Bob", "name");
+
+/* List records to see structure - includes $ID field */
+records = table.ls();
+/* Returns: [{"$PATH":"","$KEY":"user1","$ID":1,"$TYPE":"VALUE","$BYTES":5},{"$PATH":"","$KEY":"user2","$ID":2,"$TYPE":"VALUE","$BYTES":3}] */
+
+/* Access by key (name) */
+name1 = table.get("user1", "name");  /* "Alice" */
+
+/* Access by ID (record database ID) */
+name2 = table.get(2, "name");        /* "Bob" - using record ID */
+
+/* Both methods work for getfield/setfield too */
+table.set(1, "name", "Alice Updated");  /* Update using record ID */
+value = table.getfield(1, "name");      /* Retrieve using record ID */
+```
+
+### Key vs ID Access
+
+| Access Method | Use | Syntax | Persistence |
+|---------------|-----|--------|-------------|
+| **Key-based** | Human-readable record names | `table.get("record_name", "field")` | Names can change |
+| **ID-based** | Database-assigned numeric IDs | `table.get(record_id, "field")` | IDs are permanent |
+
+**ID Benefits:**
+- **Permanent references**: Record IDs never change, even after deletions
+- **Performance**: Direct numeric lookup is faster than string comparison  
+- **Stability**: Bo/s deletion of other records doesn't affect ID references
+
+**Example of ID stability:**
+```grapa
+table = {}.table("ROW");
+table.mkfield("name", "STR", "VAR");
+
+table.set("a", "one");
+table.set("b", "two"); 
+table.set("c", "three");
+
+records = table.ls();
+/* Returns: [{"$PATH":"","$KEY":"a","$ID":1,"$TYPE":"VALUE","$BYTES":3},{"$PATH":"","$KEY":"b","$ID":2,"$TYPE":"VALUE","$BYTES":3},{"$PATH":"","$KEY":"c","$ID":3,"$TYPE":"VALUE","$BYTES":5}] */
+/* Note: Each record includes $ID field for numeric access */
+
+table.rm("b");  /* Delete record b */
+records = table.ls();
+/* Returns: [{"$PATH":"","$KEY":"a","$ID":1,"$TYPE":"VALUE","$BYTES":3},{"$PATH":"","$KEY":"c","$ID":3,"$TYPE":"VALUE","$BYTES":5}] */
+/* IDs remain: a=1, c=3 (ID 2 is gone but not renumbered) */
+
+table.set("d", "four");
+records = table.ls();
+/* Returns: [{"$PATH":"","$KEY":"a","$ID":1,"$TYPE":"VALUE","$BYTES":3},{"$PATH":"","$KEY":"c","$ID":3,"$TYPE":"VALUE","$BYTES":5},{"$PATH":"","$KEY":"d","$ID":4,"$TYPE":"VALUE","$BYTES":4}] */
+/* ID 4 assigned to d */
+
+table.get(3, "name");  /* Still returns "three" */
+table.get(4, "name");  /* Returns "four" */
+```
+
+### List Format with $ID Field
+
+The `.ls()` method returns records with **$ID field included**:
+
+```grapa
+table = {}.table("ROW");
+table.mkfield("name", "STR", "VAR");
+table.set("user1", "Alice", "name");
+table.set("user2", "Bob", "name");
+
+records = table.ls();
+/* Returns: [{"$PATH":"","$KEY":"user1","$ID":1,"$TYPE":"VALUE","$BYTES":5},{"$PATH":"","$KEY":"user2","$ID":2,"$TYPE":"VALUE","$BYTES":3}] */
+```
+
+**Record Object Fields:**
+- **$PATH**: Path component (usually empty for $TABLE)
+- **$KEY**: Record name/key (e.g., "user1")
+- **$ID**: **Numeric record ID** for direct access (e.g., 1, 2, 3...)
+- **$TYPE**: Record type (usually "VALUE" for data records)
+- **$BYTES**: Size of record data
+
 ## Data Retrieval and Type Conversion
 
 ### Retrieving Data with Type Conversion
@@ -253,10 +341,10 @@ f.setfield("sale_001", "quantity", 2);
 When retrieving data from tables, use appropriate type conversion methods:
 
 ```grapa
-/* Retrieve with type conversion */
-name = table.get("user1", "name").str();       /* Convert to string */
-age = table.get("user1", "age").int();         /* Convert to integer */
-salary = table.get("user1", "salary").float(); /* Convert to float */
+/* Retrieve with type conversion - both key and ID access supported */
+name = table.get("user1", "name").str();       /* Key-based: Convert to string */
+age = table.get(1, "age").int();              /* ID-based: Convert to integer */
+salary = table.get("user1", "salary").float(); /* Key-based: Convert to float */
 ```
 
 ### Type Conversion Methods

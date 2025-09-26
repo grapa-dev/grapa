@@ -36,7 +36,7 @@ tags:
 > - For Grapa Objects: `gobj[key]` (preferred) or `gobj."key"` for data access, and `gobj.len()`
 > - For objects: `object.property` (preferred) or `object[key]`
 > - For files: `file.getfield(key)` and `file.setfield(key, value)`
-> - For tables: `table.getfield(key, field)` and `table.setfield(key, value, field)`
+> - For tables: `table.getfield(key_or_id, field)` and `table.setfield(key_or_id, value, field)` - supports both record keys and IDs
 > - For widgets: `widget.get(name, params)` and `widget.set(name, data)`
 > - For universal access: `object.get(key)` and `object.set(key, value)` (works with `$LIST`, `$GOBJ`, `$OBJ`, `$file`, `$TABLE`, `$WIDGET`)
 > - For flexible field access: `object.getfield(key, field)` and `object.setfield(key, field, value)` (mix/match of names and indices supported for `$LIST`, `$GOBJ`, and `$OBJ` non-system classes only)
@@ -47,7 +47,7 @@ tags:
 > - **`.get()/.set()` for `$GOBJ`**: `gobj.get(key)` and `gobj.set(key, value)` - alternative to bracket notation
 > - **`.get()/.set()` for `$OBJ`**: `obj.get(key)` and `obj.set(key, value)` - alternative to dot/bracket notation  
 > - **`.get()/.set()` for `$file`**: `file.get(key)` and `file.set(key, value)` - alternative to `.getfield()/.setfield()`
-> - **`.get()/.set()` for `$TABLE`**: `table.get(key, field)` and `table.set(key, field, value)` - alternative to `.getfield()/.setfield()`
+> - **`.get()/.set()` for `$TABLE`**: `table.get(key_or_id, field)` and `table.set(key_or_id, field, value)` - supports both record names (keys) and record IDs
 > - **`.get()/.set()` for `$WIDGET`**: `widget.get(name, params)` and `widget.set(name, data)` - widget-specific operations
 > - **Length**: Use `.len()` for arrays and lists, not `.size()`.
 > - **Keys**: For lists, iterate manually instead of using `.keys()`.
