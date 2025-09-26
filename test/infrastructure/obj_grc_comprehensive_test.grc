@@ -296,11 +296,11 @@ test_raw = @<raw,{"test data"}>;
 (test_array.join(", ", 0)).echo();    /* delim, axis */
 (test_array.join("-", 1)).echo();     /* Different axis */
 
-/* upper() - Convert to uppercase */
+/* upper() - Convert to uppercase */:
 ("Testing upper() method:").echo();
 (test_str.upper()).echo();
 
-/* lower() - Convert to lowercase */
+/* lower() - Convert to lowercase */:
 ("Testing lower() method:").echo();
 (test_str.lower()).echo();
 

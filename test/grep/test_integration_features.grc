@@ -164,8 +164,8 @@ result = input.grep(pattern, options, "|||");
 ("Status: " + (result.len() == 2 ? "PASS" : "FAIL") + "\n").echo();
 "---\n".echo();
 
-/* Test 5: Edge case interactions */
-"Test 5: Edge case interactions\n".echo();
+/* Test 5: Edge case interactions */:
+"Test 5: Edge case interactions\n".echo();:
 "---\n".echo();
 
 /* Empty pattern with match-only */

@@ -60,11 +60,11 @@ test_array = [1, 2, 3, 4, 5];
 
 ("=== String Methods ===").echo();
 
-/* upper() - Convert to uppercase */
+/* upper() - Convert to uppercase */:
 ("Testing upper() method:").echo();
 (test_str.upper()).echo();
 
-/* lower() - Convert to lowercase */
+/* lower() - Convert to lowercase */:
 ("Testing lower() method:").echo();
 (test_str.lower()).echo();
 

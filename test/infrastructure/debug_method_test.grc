@@ -1,6 +1,6 @@
 /* Test script for the new .debug() method */
 
-/* Test 1: Basic debug output with default component */
+/* Test 1: Basic debug output with default component */:
 "Basic debug test".debug(0);
 
 /* Test 2: Debug with custom component */

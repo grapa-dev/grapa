@@ -242,7 +242,7 @@ n.onlisten(':12345', postMessageHandler, postConnectHandler);
 Grapa's functional methods provide **structured concurrency** that's superior to traditional async/await:
 
 ```grapa
-/* Parallel by default - creates one thread per item */
+/* Parallel by default - creates one thread per item */:
 small_data = [1, 2, 3, 4, 5];
 squares = small_data.map(op(x) { x * x; });
 

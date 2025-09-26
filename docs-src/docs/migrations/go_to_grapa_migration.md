@@ -58,7 +58,7 @@ This guide helps Go users transition to Grapa by mapping common Go idioms, patte
 >
 > **String Interpolation:** For combining strings and values, use `"Hello ${name}".interpolate()` instead of `"Hello " + name`. String interpolation is more powerful and less error-prone than concatenation. It also provides elegant solutions for complex method chaining: `"${'hello'.upper()} ${'world'.lower()}".interpolate()`.
 >
-> **Nullish Coalescing:** For providing default values, use `value.ifnull("default")` instead of Go's zero value handling. The `.ifnull()` method treats a broader range of values as nullish (including zeros, empty collections, and errors).
+> **Nullish Coalescing:** For providing default values, use `value.ifnull("default")` instead of Go's zero value handling. The `.ifnull()` method treats a broader range of values as nullish (including zeros, empty collections, and errors).:
 
 > **Note:** `.get()/.set()` is for `$file` operations. `.getfield("key")` is for `$TABLE` with named keys. `.get()/.set()` is for `$WIDGET`. For `$GOBJ`/`$OBJ`, use `obj["key"]`, `obj.key`, or `obj."key"`. For `$LIST`, use `arr[index]` (bracket notation only).
 

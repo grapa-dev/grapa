@@ -5127,11 +5127,8 @@ if (result.error) {
 }
 
 # Safe field creation
-try {
-    f.mkfield(&quot;test&quot;, &quot;INT&quot;, &quot;FIX&quot;, 4)
-} catch {
-    # Handle field creation error
-}
+try f.mkfield(&quot;test&quot;, &quot;INT&quot;, &quot;FIX&quot;, 4)
+catch: &quot;Handle field creation error&quot;.echo();
 </code></pre></div>
 <h3 id="debug-information">Debug Information</h3>
 <div class="highlight"><pre><span></span><code># Get detailed database information

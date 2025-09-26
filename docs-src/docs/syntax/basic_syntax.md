@@ -394,7 +394,7 @@ Grapa supports hexadecimal and binary literals with underscore separators for re
 /* Hexadecimal literals */
 0x12;              /* 18 in decimal */
 0xABCD;            /* 43981 in decimal */
-0xAbCd;            /* 43981 in decimal (case insensitive) */
+0xAbCd;            /* 43981 in decimal (case insensitive) */:
 0x1234;            /* 4660 in decimal */
 0x12.34;           /* 18.203125 in decimal (hex float) */
 0x1234.5678;       /* 4660.33984375 in decimal (hex float) */
@@ -602,7 +602,7 @@ doubled = numbers.map(op(x) { x * 2; });  /* [2, 4, 6, 8, 10] */
 
 /* Transform with string operations */
 names = ["john", "jane", "bob"];
-uppercase = names.map(op(name) { name.upper(); });  /* ["JOHN", "JANE", "BOB"] */
+uppercase = names.map(op(name) { name.upper(); });  /* ["JOHN", "JANE", "BOB"] */:
 casefolded = names.map(op(name) { name.casefold(); });  /* ["john", "jane", "bob"] */
 
 /* Parallel processing with thread count */
@@ -803,7 +803,7 @@ sum = data.reduce(op(acc, x) { acc + x; }, 0, 4);
 ```
 
 **Important Notes:**
-- `.map()` and `.filter()` are parallel by default for large arrays
+- `.map()` and `.filter()` are parallel by default for large arrays:
 - Always specify thread count for very large datasets to avoid too many threads
 - `.reduce()` can be parallel but requires careful consideration of the operation
 - Method chaining is efficient and readable
@@ -1188,7 +1188,7 @@ f = op(a=0) {
 
 /* Default values are now immutable - each call gets a fresh copy */
 f();  /* Returns 1 */
-f();  /* Returns 1 - default value is not modified! */
+f();  /* Returns 1 - default value is not modified! */:
 ```
 
 #### Parameter Side Effects
@@ -1288,7 +1288,7 @@ $global ++= {config:true, version:"1.0"};
 
 #### Duplicate Handling
 ```grapa
-/* References access the last added in case of duplicates */
+/* References access the last added in case of duplicates */:
 $local ++= {a:1, b:2};
 $local ++= {a:10, c:3};  /* 'a' now refers to 10, not 1 */
 
@@ -1586,7 +1586,7 @@ MyClass = class {
 };
 
 /* Create instances - constructor is called automatically */
-x = MyClass();      /* n = -1 (default value) */
+x = MyClass();      /* n = -1 (default value) */:
 y = MyClass(4);     /* n = 4 */
 
 x.n.echo();         /* Output: -1 */
@@ -1596,7 +1596,7 @@ y.n.echo();         /* Output: 4 */
 **Key Points:**
 - **Single Constructor**: Only one `$new()` method is supported per class
 - **Automatic Invocation**: The constructor is called automatically when creating instances
-- **Parameter Support**: The constructor can accept parameters with default values
+- **Parameter Support**: The constructor can accept parameters with default values:
 - **Instance Creation**: Use `Class()` syntax instead of `obj Class` when using `$new()`
 
 > **Important Note on Constructors and Destructors:**
@@ -2093,20 +2093,20 @@ value = table.getfield("key", "field");
 ### Function Definitions with Default Parameters
 
 ```grapa
-/* Function with default parameters */
+/* Function with default parameters */:
 f = op("x"=1, "y"=0) { x + y; };
 
 /* Call with all parameters */
 result1 = f(5, 3);  /* 8 */
 
-/* Call with default for y */
+/* Call with default for y */:
 result2 = f(5);     /* 6 (y defaults to 0) */
 
 /* Call with defaults for both */
 result3 = f();      /* 1 (x defaults to 1, y defaults to 0) */
 ```
 
-- Use `op("param"=default_value)` for default parameters
+- Use `op("param"=default_value)` for default parameters:
 - Parameters with defaults can be omitted when calling
 - Parameters without defaults must be provided
 
@@ -2138,7 +2138,7 @@ f(a:1, b:2);                 /* {"a":1, "b":2} - named parameters */
 #### Default Parameters and `$local`
 
 ```grapa
-/* Function with default parameters */
+/* Function with default parameters */:
 f = op(a:null, b:null) { $local; };
 
 f();                         /* {"a":null, "b":null} */
@@ -2217,7 +2217,7 @@ wrapper = op() {
 - **Positional parameters** appear as array elements: `{1, 2, 3}`
 - **Named parameters** appear as object properties: `{"a":1, "b":2}`
 - **Mixed parameters** combine both: `{"a":1, "b":2, 3, 4}`
-- **Default parameters** are included with their default values
+- **Default parameters** are included with their default values:
 - **`$local` can be modified** within the function
 - **Useful for introspection**, validation, and dynamic parameter handling
 
@@ -2451,7 +2451,7 @@ if (items) {
 if (config) {
     ("Using configuration").echo();
 } else {
-    ("Using default settings").echo();
+    ("Using default settings").echo();:
 }
 
 /* Check for errors */
@@ -2618,7 +2618,7 @@ default: "No match found".echo();
 ```grapa
 /* Fuzzy string matching */
 switch(input:"hello world")
-case (input.grep("hello", "i")): "Contains 'hello' (case insensitive)".echo();
+case (input.grep("hello", "i")): "Contains 'hello' (case insensitive)".echo();:
 case (input.len() > 10): "Long string".echo();
 default: "No pattern match".echo();
 
@@ -2639,7 +2639,7 @@ default: "No specific pattern".echo();
 
 **Key Features:**
 - **Implicit break**: No break statements required, execution stops after first match
-- **Multiple commands**: Must be enclosed in `{}` when case contains multiple statements
+- **Multiple commands**: Must be enclosed in `{}` when case contains multiple statements:
 - **Sequential evaluation**: Evaluates from first to last case, stops at first match
 - **No fall-through**: Unlike C-style switches, Grapa doesn't fall through to next case
 - **Variable declaration**: Can declare variables in switch expression for advanced matching
@@ -2691,7 +2691,7 @@ finally: 'Always execute'.echo();
 - **Flexible matching**: Catch conditions can be constants, expressions, or complex patterns
 - **Multiple catch blocks**: Can have multiple catch conditions
 - **Finally block**: Always executes regardless of exception
-- **Consistent syntax**: Follows the same pattern as switch/case statements
+- **Consistent syntax**: Follows the same pattern as switch/case statements:
 - **No parentheses required**: Simple constants don't need parentheses
 
 ## Unsupported Syntax Operators
@@ -2779,7 +2779,7 @@ Grapa provides a built-in error fallback mechanism using `.iferr()`:
 /* Simple error fallback */
 result = risky_operation().iferr(0);  /* Returns 0 if operation fails */
 
-/* Error fallback with default value */
+/* Error fallback with default value */:
 value = (10/0).iferr(55);  /* Returns 55 since division by zero fails */
 
 /* Array access with fallback */
@@ -3223,7 +3223,7 @@ Grapa Grammar
 
 The system will first check for a match on the "start" rule, which is a global variable. If that global variable is of type $RULE, then it will become the first rule for scripts. This is an easy way to provide an override on command processing. If the "start" rule does not provide a match, then the system will evaluate using the "$start" rule.
 
-The default rules may be subject to change.
+The default rules may be subject to change.:
 
 If you modify the file, you can try it out by placing it in "lib/grapa/" under the same directory that the above command would have written the file to, and then restart Grapa. If Grapa finds this file with this name in that location, it will use that file instead of the default.
 
@@ -3279,7 +3279,7 @@ Many built-in types have chainable methods:
 result = "  hello world  ".trim().upper().replace("WORLD", "GRAPA");
 result.echo();  // Output: HELLO GRAPA
 
-/* String chaining with case folding */
+/* String chaining with case folding */:
 result = "  İstanbul  ".trim().casefold().upper();
 result.echo();  // Output: ISTANBUL
 

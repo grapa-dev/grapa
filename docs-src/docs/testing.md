@@ -100,7 +100,7 @@ test_division = op(a, b) {
     };
 };
 
-/* Test error case */
+/* Test error case */:
 result = test_division(10, 0);
 if (result.type() == $ERR) {
     "Division by zero correctly caught".echo();
@@ -108,7 +108,7 @@ if (result.type() == $ERR) {
     "Division by zero test failed".echo();
 };
 
-/* Test success case */
+/* Test success case */:
 result = test_division(10, 2);
 if (result.type() != $ERR && result == 5) {
     "Division test passed".echo();
@@ -356,31 +356,31 @@ if (case_matches.len() == 2) {
     "Case-insensitive grep test failed".echo();
 };
 
-/* Test Unicode case folding */
+/* Test Unicode case folding */:
 turkish_text = "İstanbul ıstanbul";
 turkish_matches = turkish_text.grep("istanbul", "i");
 if (turkish_matches.len() == 1) {
-    "Turkish I case folding test passed".echo();
+    "Turkish I case folding test passed".echo();:
 } else {
-    "Turkish I case folding test failed".echo();
+    "Turkish I case folding test failed".echo();:
 };
 
-/* Test German sharp S case folding */
+/* Test German sharp S case folding */:
 german_text = "Straße";
 german_matches = german_text.grep("strasse", "i");
 if (german_matches.len() == 1) {
-    "German sharp S case folding test passed".echo();
+    "German sharp S case folding test passed".echo();:
 } else {
-    "German sharp S case folding test failed".echo();
+    "German sharp S case folding test failed".echo();:
 };
 
-/* Test Greek final sigma case folding */
+/* Test Greek final sigma case folding */:
 greek_text = "γράμμα";
 greek_matches = greek_text.grep("ΓΡΑΜΜΑ", "i");
 if (greek_matches.len() == 1) {
-    "Greek final sigma case folding test passed".echo();
+    "Greek final sigma case folding test passed".echo();:
 } else {
-    "Greek final sigma case folding test failed".echo();
+    "Greek final sigma case folding test failed".echo();:
 };
 ```
 
@@ -444,7 +444,7 @@ test_etl_workflow = op() {
         {"name": record.get("name").upper(), "age": record.get("age")};
     });
     
-    /* Transform data with case folding */
+    /* Transform data with case folding */:
     processed_casefold = test_data.map(op(record) {
         {"name": record.get("name").casefold(), "age": record.get("age")};
     });
@@ -688,20 +688,20 @@ test_with_assertions = op() {
 ```grapa
 /* Test both success and failure scenarios */
 test_comprehensive = op() {
-    /* Test success case */
+    /* Test success case */:
     success_result = test_function(5);
     if (success_result == 10) {
-        "Success case test passed".echo();
+        "Success case test passed".echo();:
     } else {
-        "Success case test failed".echo();
+        "Success case test failed".echo();:
     };
 
-    /* Test failure case */
+    /* Test failure case */:
     error_result = test_function(null);
     if (error_result.type() == $ERR) {
-        "Error case test passed".echo();
+        "Error case test passed".echo();:
     } else {
-        "Error case test failed".echo();
+        "Error case test failed".echo();:
     };
 };
 ```

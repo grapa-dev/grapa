@@ -72,7 +72,7 @@ Grapa's `.map()` function provides sophisticated parallel execution with automat
 fetch_urls = op(urls) {
     responses = urls.map(op(url) {
         try response = $net().get(url);
-        catch (error) {"url": url, "success": false, "error": error.getfield("message")};
+        catch (error): {"url": url, "success": false, "error": error.getfield("message")};
         
         {"url": url, "success": true, "data": response.getfield("body")};
     });

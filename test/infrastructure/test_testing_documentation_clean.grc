@@ -54,12 +54,12 @@ if (upper_string == "  HELLO WORLD  ") {
 
 /* Test division by zero */
 try result = 10 / 0;
-catch "✓ Division by zero correctly throws error\n".echo();
+catch: "✓ Division by zero correctly throws error\n".echo();
 "✗ Division by zero test failed - should have thrown error\n".echo();
 
 /* Test normal division */
 try result = 10 / 2;
-catch "✗ Division test failed - should not throw error\n".echo();
+catch: "✗ Division test failed - should not throw error\n".echo();
 
 if (result == 5) {
     "✓ Division test passed\n".echo();
@@ -264,7 +264,7 @@ data = [
     {"name": "bob", "age": 35, "city": "chicago"}
 ];
 
-/* Transform: uppercase names */
+/* Transform: uppercase names */:
 transformed = data.map(op(record) {
     record.name = record.name.upper();
     record;

@@ -26,8 +26,8 @@ result4 = "hello éñü world".grep("\\w+", "o");
 ("Result: " + result4.str() + "\n").echo();
 "---\n".echo();
 
-/* Test 5: Unicode with case insensitive */
-"Test 5: Unicode with case insensitive\n".echo();
+/* Test 5: Unicode with case insensitive */:
+"Test 5: Unicode with case insensitive\n".echo();:
 result5 = "ÉÑÜ".grep(".", "oi");
 ("Result: " + result5.str() + "\n").echo();
 "---\n".echo();

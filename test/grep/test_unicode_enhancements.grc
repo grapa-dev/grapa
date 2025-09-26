@@ -51,7 +51,7 @@ result = input.grep("istanbul", "i");
 ("Input: " + input + "\n").echo();
 ("Pattern: istanbul (case-insensitive with Unicode)\n").echo();
 ("Result: " + result.str() + "\n").echo();
-("Expected: Should handle Unicode case folding properly\n").echo();
+("Expected: Should handle Unicode case folding properly\n").echo();:
 "---\n".echo();
 
 /* Test 6: Unicode Collation */
@@ -89,9 +89,9 @@ result = input.grep("\\p{scx:Han}+", "o");
 input = "Hello世界123!@#";
 result = input.grep("\\p{Lu}", "o");
 ("Input: " + input + "\n").echo();
-("Pattern: \\p{Lu} (uppercase letters)\n").echo();
+("Pattern: \\p{Lu} (uppercase letters)\n").echo();:
 ("Result: " + result.str() + "\n").echo();
-("Expected: Should detect uppercase letters\n").echo();
+("Expected: Should detect uppercase letters\n").echo();:
 "---\n".echo();
 
 /* Test 10: Unicode Properties with Quantifiers */
@@ -160,11 +160,11 @@ result = input.grep("(?P<latin>\\p{sc=Latin}+)(?P<han>\\p{sc=Han}+)", "oj");
 "2. Unicode line boundary handling\n".echo();
 "3. Unicode character class optimizations\n".echo();
 "4. Unicode quantifier refinements\n".echo();
-"5. Unicode case folding enhancements\n".echo();
+"5. Unicode case folding enhancements\n".echo();:
 "6. Unicode collation improvements\n".echo();
 "7. Unicode script detection refinements\n".echo();
 "8. Unicode grapheme cluster boundary handling\n".echo();
-"9. Unicode normalization edge case handling\n".echo();
+"9. Unicode normalization edge case handling\n".echo();:
 "10. Unicode lookaround with grapheme clusters\n".echo();
 "11. Unicode named groups optimization\n".echo();
 "12. Unicode emoji sequence handling\n".echo();

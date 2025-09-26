@@ -3,10 +3,10 @@
 "Testing Simple Verbose Control...".echo();
 "=================================".echo();
 
-/* Test 1: Create model with default verbose=0 */
+/* Test 1: Create model with default verbose=0 */:
 "=== Test 1: Default Silent Mode ===".echo();
 model = $MODEL();
-"Model created with default verbose=0".echo();
+"Model created with default verbose=0".echo();:
 ("Current parameters: " + model.params().str()).echo();
 
 /* Test 2: Set verbose to 3 before loading */

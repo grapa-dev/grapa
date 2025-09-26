@@ -20,7 +20,7 @@ Grapa .grc File Authoring Rules (Windows)
 - See the living section in docs/obj/grep.md for updates.
 
 Edge Case Category: Null Bytes and Binary Data
-- Tests handling of \x00 (null bytes) in text and binary mode, as delimiters and as part of matches, following ripgrep/PCRE2 edge case handling.
+- Tests handling of \x00 (null bytes) in text and binary mode, as delimiters and as part of matches, following ripgrep/PCRE2 edge case handling.:
 - Each test prints input, pattern, options, result, and expected output.
 */
 

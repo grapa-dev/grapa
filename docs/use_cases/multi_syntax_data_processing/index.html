@@ -4627,7 +4627,7 @@
 
 <h1 id="multi-syntax-data-processing">Multi-Syntax Data Processing</h1>
 <h2 id="overview">Overview</h2>
-<p>Grapa's multi-syntax capabilities enable powerful data processing workflows that combine SQL, JSON, XML, and custom syntaxes seamlessly. This use case demonstrates how to build sophisticated data pipelines using multiple native syntaxes.</p>
+<p>Grapa's multi-syntax capabilities enable powerful data processing workflows that combine SQL, JSON, XML, and custom syntaxes seamlessly. This use case demonstrates how to build sophisticated data pipelines using multiple native syntaxes.:</p>
 <h2 id="scenario-etl-pipeline-with-multi-syntax-support">Scenario: ETL Pipeline with Multi-Syntax Support</h2>
 <h3 id="problem-statement"><strong>Problem Statement</strong></h3>
 <p>You need to process data from multiple sources:
@@ -4658,11 +4658,8 @@ $custom_function = rule $STR &#39;-&gt;&#39; $STR {op(json:$1,path:$3){
 
 $custom_function = rule json_extract &#39;(&#39; $STR &#39;,&#39; $STR &#39;)&#39; {op(json:$3,path:$5){
     /* JSON extraction with error handling */
-    try {
-        return json.json().getfield(path);
-    } catch (error) {
-        return $err(&quot;JSON extraction failed&quot;);
-    };
+    try return json.json().getfield(path);
+    catch (error): return $err(&quot;JSON extraction failed&quot;);
 }};
 
 /* Step 3: Define XML syntax for feed processing */

@@ -5288,9 +5288,8 @@ $global[&quot;$format_step&quot;] = rule &lt;$validated_data,op(b:$1){format_out
 <h3 id="error-handling"><strong>Error Handling</strong></h3>
 <div class="highlight"><pre><span></span><code>/* Robust syntax definition */
 $custom_function = rule safe_query &#39;(&#39; $STR &#39;)&#39; {op(query:$3){
-    try {
-        return execute_query(query);
-    } catch (error) {
+    try return execute_query(query);
+    catch (error): {
         (&quot;Query error: &quot; + error).echo();
         return $err(&quot;Query failed&quot;);
     };

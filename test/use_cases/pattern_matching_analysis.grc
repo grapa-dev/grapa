@@ -219,7 +219,7 @@ valid_items = advanced_data.filter(op(item) {
  * Grapa already has:
  * 1. ✅ Array destructuring via namespace concatenation ($local ++= {first: arr[0], second: arr[1]})
  * 2. ✅ Object destructuring via namespace concatenation ($local ++= obj)
- * 3. ✅ Match expressions via switch/case statements
+ * 3. ✅ Match expressions via switch/case statements:
  * 4. ✅ Guard clauses via conditional cases (case (condition):)
  * 5. ✅ Pattern matching via .grep() and .match() methods
  * 6. ✅ Complex pattern matching via .filter() and .map()

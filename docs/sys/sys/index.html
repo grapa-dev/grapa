@@ -5468,12 +5468,9 @@ result = $sys().eval(compiled);
 <h3 id="dynamic-script-evaluation">Dynamic Script Evaluation</h3>
 <div class="highlight"><pre><span></span><code>/* Evaluate user-provided expressions safely */
 user_input = &quot;2 * (3 + 4)&quot;;
-try {
-    result = $sys().eval(user_input);
-    (&quot;Result: &quot; + result).echo();
-} catch (error) {
-    &quot;Invalid expression&quot;.echo();
-}
+try result = $sys().eval(user_input);
+catch (error): &quot;Invalid expression&quot;.echo();
+(&quot;Result: &quot; + result).echo();
 </code></pre></div>
 <h3 id="performance-timing">Performance Timing</h3>
 <div class="highlight"><pre><span></span><code>/* Measure execution time */

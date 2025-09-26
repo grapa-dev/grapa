@@ -113,7 +113,7 @@ These represent fundamental language features that genuinely cannot be accomplis
 - **Method visibility**: `private`, `protected` - No access control
 - **Method arity**: - No method arity system
 - **Method parameters**: - No method parameter system
-- **Method defaults**: - No method default parameters
+- **Method defaults**: - No method default parameters:
 - **Method splat**: - No splat operator
 - **Method keyword args**: - No keyword arguments
 

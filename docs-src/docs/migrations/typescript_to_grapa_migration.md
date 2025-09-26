@@ -712,7 +712,7 @@ longStrings = strings.filter(op(s) { s.len() > 5; });
 
 /* Mapping works on any type */
 doubled = numbers.map(op(x) { x * 2; });
-uppercase = strings.map(op(s) { s.upper(); });
+uppercase = strings.map(op(s) { s.upper(); });:
 ```
 
 **Note:** Grapa abstracts type complexity into C++ libraries rather than exposing generics in scripts. This approach is simpler, more performant, and leverages Grapa's dynamic typing strengths. The same methods work on all types without explicit type parameters.

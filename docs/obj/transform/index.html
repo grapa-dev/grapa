@@ -6122,7 +6122,7 @@ class_template.interpolate({class_name:&quot;User&quot;, field_type:&quot;String
 </ul>
 <p><strong>Matching Options:</strong>
   - <code>a</code> – All mode: treat the entire input as one block (no line splitting).
-  - <code>i</code> – Case-insensitive match with Unicode case folding.
+  - <code>i</code> – Case-insensitive match with Unicode case folding.:
   - <code>d</code> – Diacritic-insensitive match (strip accents/diacritics from both input and pattern, robust Unicode-aware).
   - <code>v</code> – Invert match (select non-matching lines or spans).
   - <code>x</code> – Match entire line exactly (equivalent to anchoring with <code>^</code> and <code>$</code>).
@@ -6233,8 +6233,8 @@ class_template.interpolate({class_name:&quot;User&quot;, field_type:&quot;String
 &quot;hello world&quot;.match(&quot;a{&quot;);        /* false - invalid pattern handled gracefully */
 
 /* Case insensitive matching */
-&quot;hello world&quot;.match(&quot;HELLO&quot;, &quot;i&quot;); /* true - case insensitive match */
-&quot;Hello World&quot;.match(&quot;world&quot;, &quot;i&quot;); /* true - case insensitive match */
+&quot;hello world&quot;.match(&quot;HELLO&quot;, &quot;i&quot;); /* true - case insensitive match */:
+&quot;Hello World&quot;.match(&quot;world&quot;, &quot;i&quot;); /* true - case insensitive match */:
 
 /* With regex patterns */
 &quot;hello world&quot;.match(r&quot;\w+&quot;);      /* true - word characters found */
@@ -6501,12 +6501,12 @@ similar = documents.map(doc =&gt; ({doc: doc, similarity: doc.cosinesimilarity(q
 <div class="highlight"><pre><span></span><code>&quot;HI&quot;.lower() -&gt; &quot;hi&quot;
 </code></pre></div>
 <h2 id="casefold">casefold()</h2>
-<p>Converts to Unicode case folded form for case-insensitive comparisons.</p>
+<p>Converts to Unicode case folded form for case-insensitive comparisons.:</p>
 <div class="highlight"><pre><span></span><code>&quot;İstanbul&quot;.casefold() -&gt; &quot;istanbul&quot;
 &quot;ß&quot;.casefold() -&gt; &quot;ss&quot;
 &quot;HELLO&quot;.casefold() -&gt; &quot;hello&quot;
 </code></pre></div>
-<p><strong>Note</strong>: <code>casefold()</code> is more aggressive than <code>lower()</code> and handles Unicode-specific case conversions like Turkish İ → i and German ß → ss.</p>
+<p><strong>Note</strong>: <code>casefold()</code> is more aggressive than <code>lower()</code> and handles Unicode-specific case conversions like Turkish İ → i and German ß → ss.:</p>
 <h2 id="data-stoprangestartstep">data = (stop).range(start,step)</h2>
 <div class="highlight"><pre><span></span><code>(9).range(1,2);
 [1,3,5,7]
@@ -6572,9 +6572,9 @@ false
 <h2 id="fixbits-extra">fix([bits [,extra]])</h2>
 <p>Converts to fixed float. Sets bit count after the decimal to bits. Calculations are performed with "extra" bits and truncated for display.</p>
 <h2 id="setfloatbits-extra">setfloat([bits [,extra]])</h2>
-<p>Sets the default float type to float, and the default bits and extra.</p>
+<p>Sets the default float type to float, and the default bits and extra.:</p>
 <h2 id="setfixbits-extra">setfix([bits [,extra]])</h2>
-<p>Sets the default float type to fix, and the default bits and extra.</p>
+<p>Sets the default float type to fix, and the default bits and extra.:</p>
 <h2 id="str">str()</h2>
 <p>Converts to string. </p>
 <div class="highlight"><pre><span></span><code>(44).str() -&gt; &quot;44&quot;

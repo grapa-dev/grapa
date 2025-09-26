@@ -32,7 +32,7 @@ recovered = sig_raw_raw.verifyrecover(k, {digest: 'raw', padding: 'raw'});
 ("  Recovered message: " + recovered.str()).echo();
 
 "Testing default parameters (should use SHA-256 + PSS):".echo();
-sig_default = message.sign(k);
+sig_default = message.sign(k);:
 verify_result = sig_default.verify(k, message);
 ("  Sign/Verify: " + verify_result).echo();
 

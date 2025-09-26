@@ -2,7 +2,7 @@
    - Tests all known and potential edge cases for the "o" (match-only) option.
    - Includes: empty input, zero-length matches, Unicode, overlapping, groups, quantifiers, anchors, invert, word boundary, column, color, JSON, etc.
    - Ensures ripgrep parity and robust error handling.
-   - Maintainers: If you add new output options, add corresponding edge case tests here.
+   - Maintainers: If you add new output options, add corresponding edge case tests here.:
    - Status: All tests pass - critical for production reliability.
 */
 

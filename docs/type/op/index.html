@@ -4797,10 +4797,10 @@ op()(&quot;5 * 2;&quot;);          /* String compilation */
 /* Basic parameter definition */
 op(a,b){a*b}; | @&lt;[op,@&lt;mul,{@&lt;var,{a}&gt;,@&lt;var,{b}&gt;}&gt;],{a,b}&gt;
 
-/* Parameters with default values */
+/* Parameters with default values */:
 op(a=1,b=2){b**a}; | @&lt;[op,@&lt;pow,{@&lt;var,{b}&gt;,@&lt;var,{a}&gt;}&gt;],{&quot;a&quot;:1,&quot;b&quot;:2}&gt;
 
-/* Mixed default and non-default parameters */
+/* Mixed default and non-default parameters */:
 op(a,b=10,c){a+b+c}; | @&lt;[op,@&lt;add,{@&lt;add,{@&lt;var,{a}&gt;,@&lt;var,{b}&gt;}&gt;,@&lt;var,{c}&gt;}&gt;],{a,&quot;b&quot;:10,c}&gt;
 </code></pre></div>
 <h4 id="parameter-calling">Parameter Calling</h4>
@@ -4864,7 +4864,7 @@ f(c:30, 5);      /* → 37 (a=5, b=2, c=30) */
 <ul>
 <li><strong><code>op</code></strong> - Operation type identifier</li>
 <li><strong><code>body</code></strong> - The execution tree (can be nested operations)</li>
-<li><strong><code>params</code></strong> - Parameter namespace <code>{}</code> containing default values</li>
+<li><strong><code>params</code></strong> - Parameter namespace <code>{}</code> containing default values:</li>
 </ul>
 <h3 id="tree-components">Tree Components</h3>
 <table>
@@ -4917,7 +4917,7 @@ compiled;
 </code></pre></div>
 <h2 id="parameter-binding-and-namespace-management">Parameter Binding and Namespace Management</h2>
 <p>$OP functions can have parameters with default values that create a namespace:</p>
-<div class="highlight"><pre><span></span><code>/* Create function with parameters and default values */
+<div class="highlight"><pre><span></span><code>/* Create function with parameters and default values */:
 compiled = op(&quot;b&quot;=0,&quot;c&quot;=0)(&quot;a = 5 + b + c; a.echo();&quot;);
 
 /* Execute with no parameters (uses defaults) */

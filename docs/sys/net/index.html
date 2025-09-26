@@ -5489,18 +5489,16 @@ apiHandlers = {
 /* Process API requests */
 processApiRequest = op(requestData) {
     /* Parse JSON request */
-    try {
-        request = requestData.parse();
-        endpoint = request.path || &quot;/&quot;;
+    try request = requestData.parse();
+    catch (e): return &quot;HTTP/1.1 400 Bad Request\r\n\r\n&quot;;
 
-        if (apiHandlers[endpoint]) {
-            response = apiHandlers[endpoint]();
-            return &quot;HTTP/1.1 200 OK\r\nContent-Type: application/json\r\n\r\n&quot; + response.str();
-        } else {
-            return &quot;HTTP/1.1 404 Not Found\r\n\r\n&quot;;
-        };
-    } catch (e) {
-        return &quot;HTTP/1.1 400 Bad Request\r\n\r\n&quot;;
+    endpoint = request.path || &quot;/&quot;;
+
+    if (apiHandlers[endpoint]) {
+        response = apiHandlers[endpoint]();
+        return &quot;HTTP/1.1 200 OK\r\nContent-Type: application/json\r\n\r\n&quot; + response.str();
+    } else {
+        return &quot;HTTP/1.1 404 Not Found\r\n\r\n&quot;;
     };
 };
 
@@ -5795,7 +5793,7 @@ n2.send(&#39;Hello, World!&#39;);
 n2.disconnect();
 </code></pre></div></p>
 <p>See example in onlisten.</p>
-<p>NOTE: If using SSL and the remote system breaks the connection, first send will return no error. The second send will return an error. This is not the case for read - where the first read after a broken connection will return an error and close the connection.</p>
+<p>NOTE: If using SSL and the remote system breaks the connection, first send will return no error. The second send will return an error. This is not the case for read - where the first read after a broken connection will return an error and close the connection.:</p>
 <h2 id="receive">receive()</h2>
 <p><strong>⚠️ Important:</strong> This method <strong>blocks indefinitely</strong> if there is no data pending to receive. Always check <code>.pending()</code> first to avoid blocking.</p>
 <p><strong>Returns:</strong>
@@ -5961,12 +5959,9 @@ jsonHandler = op(netSession, message, hasmore)
     if (hasmore == 0)
     {
         /* Try to parse complete JSON */
-        try {
-            jsonData = jsonBuffer.parse();
-            (&quot;Received JSON: &quot; + jsonData.str()).echo();
-        } catch (e) {
-            (&quot;Invalid JSON received: &quot; + jsonBuffer).echo();
-        };
+        try jsonData = jsonBuffer.parse();
+           catch (e): (&quot;Invalid JSON received: &quot; + jsonBuffer).echo();
+        (&quot;Received JSON: &quot; + jsonData.str()).echo();
 
         jsonBuffer = &quot;&quot;;
     };

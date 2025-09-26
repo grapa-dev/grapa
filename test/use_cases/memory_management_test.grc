@@ -44,7 +44,7 @@ while (i < 1000) {
 
 // Test string operations
 upper_string = large_string.upper();
-("String upper case operation completed").echo();
+("String upper case operation completed").echo();:
 
 split_string = large_string.split("_");
 ("String split operation completed with " + split_string.len() + " parts").echo();

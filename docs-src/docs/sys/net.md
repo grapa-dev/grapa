@@ -478,7 +478,7 @@ apiHandlers = {
 processApiRequest = op(requestData) {
     /* Parse JSON request */
     try request = requestData.parse();
-    catch (e) return "HTTP/1.1 400 Bad Request\r\n\r\n";
+    catch (e): return "HTTP/1.1 400 Bad Request\r\n\r\n";
     
     endpoint = request.path || "/";
     
@@ -839,7 +839,7 @@ n2.disconnect();
 
 See example in onlisten.
 
-NOTE: If using SSL and the remote system breaks the connection, first send will return no error. The second send will return an error. This is not the case for read - where the first read after a broken connection will return an error and close the connection.
+NOTE: If using SSL and the remote system breaks the connection, first send will return no error. The second send will return an error. This is not the case for read - where the first read after a broken connection will return an error and close the connection.:
 
 ## receive()
 **⚠️ Important:** This method **blocks indefinitely** if there is no data pending to receive. Always check `.pending()` first to avoid blocking.
@@ -1010,7 +1010,7 @@ jsonHandler = op(netSession, message, hasmore)
 	{
 		/* Try to parse complete JSON */
 		try jsonData = jsonBuffer.parse();
-		catch (e) ("Invalid JSON received: " + jsonBuffer).echo();
+           catch (e): ("Invalid JSON received: " + jsonBuffer).echo();
 		("Received JSON: " + jsonData.str()).echo();
 		
 		jsonBuffer = "";

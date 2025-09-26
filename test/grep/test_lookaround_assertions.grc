@@ -53,7 +53,7 @@ if (result.type() != $ERR && result.len() > 0) {
 input = "password123";
 result = input.grep("(?=.*[A-Z])(?=.*[a-z])(?=.*\\d).{8,}", "oj");
 if (result.type() != $ERR && result.len() == 0) {
-    "PASS - Complex password validation works (no uppercase letter)\n".echo();
+    "PASS - Complex password validation works (no uppercase letter)\n".echo();:
 } else {
     "FAIL - Complex password validation not working\n".echo();
 }

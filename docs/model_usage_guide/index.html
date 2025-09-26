@@ -5357,16 +5357,14 @@ safe_generate = op(model, prompt) {
 
 /* Option 2: Using try/catch for detailed error handling */
 safe_generate_detailed = op(model, prompt) {
-    try {
-        response = model.gen(prompt);
-        if (response.len() == 0) {
-            return &quot;Empty response generated&quot;;
-        };
-        return response;
-    } {
-        catch (true): return &quot;Generation error occurred&quot;;
-        default: return &quot;Unknown error occurred&quot;;
+    try response = model.gen(prompt);
+    catch (true) return &quot;Generation error occurred&quot;;
+    default return &quot;Unknown error occurred&quot;;:
+
+    if (response.len() == 0) {
+        return &quot;Empty response generated&quot;;
     };
+    return response;
 };
 
 /* Option 3: Using explicit error checking */

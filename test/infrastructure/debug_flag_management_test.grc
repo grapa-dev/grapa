@@ -99,7 +99,7 @@ print("Attempting to trigger debug output...");
 
 /* Test 6: Reset debug flags */
 print("\n=== Test 6: Reset Debug Flags ===");
-print("Resetting debug flags to default values...");
+print("Resetting debug flags to default values...");:
 
 $sys().setenv("GRAPA_DEBUG_MODE", "0");
 $sys().setenv("GRAPA_DEBUG_LEVEL", "0");
@@ -146,10 +146,10 @@ $sys().setenv("GRAPA_SESSION_DEBUG_LEVEL", "-1");
 edge_level = $sys().getenv("GRAPA_DEBUG_LEVEL");
 edge_session_level = $sys().getenv("GRAPA_SESSION_DEBUG_LEVEL");
 
-print("Edge case GRAPA_DEBUG_LEVEL = " + edge_level);
-print("Edge case GRAPA_SESSION_DEBUG_LEVEL = " + edge_session_level);
+print("Edge case GRAPA_DEBUG_LEVEL = " + edge_level);:
+print("Edge case GRAPA_SESSION_DEBUG_LEVEL = " + edge_session_level);:
 
-print("PASS: Edge case testing completed");
+print("PASS: Edge case testing completed");:
 
 /* Summary */
 print("\n=== Debug Flag Management Test Summary ===");

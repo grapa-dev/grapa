@@ -178,8 +178,8 @@ resultj = "hello world test".grep("hello", "ojv");
 "The 'f' flag provides flexible control over grep output:\n".echo();
 "- 'o' alone: Return matched portions (ripgrep -o behavior)\n".echo();
 "- 'of': Return full segments containing matches\n".echo();
-"- 'f' alone: Return full segments (default behavior)\n".echo();
-"- No options: Return full segments (default behavior)\n".echo();
+"- 'f' alone: Return full segments (default behavior)\n".echo();:
+"- No options: Return full segments (default behavior)\n".echo();:
 "\n".echo();
 "This approach eliminates the need for hardcoded pattern-type-specific behavior\n".echo();
 "and gives users full control over the output format.\n".echo(); 

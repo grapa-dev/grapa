@@ -697,8 +697,8 @@ Interpolates variables into a string template.
 The following string-specific methods are available in the `$STR` class:
 
 - **`.upper()`** - Converts the string to uppercase
-- **`.lower()`** - Converts the string to lowercase  
-- **`.casefold()`** - Converts the string to Unicode case folded form for case-insensitive comparisons
+- **`.lower()`** - Converts the string to lowercase  :
+- **`.casefold()`** - Converts the string to Unicode case folded form for case-insensitive comparisons:
 - **`.levenshtein()`** - Calculates Levenshtein distance between strings
 - **`.jarowinkler()`** - Calculates Jaro-Winkler similarity between strings
 - **`.cosinesimilarity()`** - Calculates cosine similarity between strings
@@ -1405,8 +1405,8 @@ result.echo();  /* Outputs: 220 */
 ### Error Handling with .iferr()
 ```grapa
 /* Safe access to potentially problematic operations */
-value = risky_operation().iferr("default value");
-value.echo();  /* Outputs: result or "default value" */
+value = risky_operation().iferr("default value");:
+value.echo();  /* Outputs: result or "default value" */:
 ```
 
 ### Pattern Matching with .grep()
@@ -1421,7 +1421,7 @@ emails.echo();  /* Outputs: ["john@example.com", "jane@test.org"] */
 
 ## Notes
 
-- **Parallel Execution**: `.map()` and `.filter()` are parallel by default for large arrays
+- **Parallel Execution**: `.map()` and `.filter()` are parallel by default for large arrays:
 - **Error Handling**: Use `.iferr()` for simple error fallbacks
 - **Type Safety**: Always check types with `.type()` before using type-specific methods
 - **Performance**: For large datasets, specify thread counts in parallel operations

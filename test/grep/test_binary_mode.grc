@@ -161,4 +161,4 @@ result_binary = input.grep("Hello", "", "", "", "BINARY", 2);
 "Key differences expected:\n".echo();
 "- Binary mode should handle null bytes and control characters as literal bytes\n".echo();
 "- Unicode mode should process text according to Unicode standards\n".echo();
-"- Binary mode may not support Unicode normalization or case folding\n".echo(); 
+"- Binary mode may not support Unicode normalization or case folding\n".echo(); :

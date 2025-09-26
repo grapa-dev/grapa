@@ -20,8 +20,8 @@ result3 = "ÉÑÜ".grep(".", "oi");
 ("Result: " + result3.str() + "\n").echo();
 "---\n".echo();
 
-/* Test 4: Mixed case Unicode */
-"Test 4: Mixed case Unicode\n".echo();
+/* Test 4: Mixed case Unicode */:
+"Test 4: Mixed case Unicode\n".echo();:
 result4 = "ÉñÜ".grep(".", "oi");
 ("Result: " + result4.str() + "\n").echo();
 "---\n".echo();

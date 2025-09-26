@@ -1,9 +1,9 @@
 /* Test Case Folding Simple */
-/* Simple test to see what case folding produces */
+/* Simple test to see what case folding produces */:
 
 "=== CASE FOLDING SIMPLE TEST ===\n".echo();
 
-/* Test 1: Single character case folding */
+/* Test 1: Single character case folding */:
 "Test 1: Single Character\n".echo();
 input = "İ";
 folded = input.case_fold();
@@ -12,7 +12,7 @@ folded = input.case_fold();
 ("İ case folded == 'i': " + (folded == "i").str() + "\n").echo();
 "---\n".echo();
 
-/* Test 2: Word case folding */
+/* Test 2: Word case folding */:
 "Test 2: Word Case Folding\n".echo();
 input = "İstanbul";
 folded = input.case_fold();

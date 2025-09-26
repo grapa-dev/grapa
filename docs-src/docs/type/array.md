@@ -389,7 +389,7 @@ first.user.age                             /* Returns: 30 */
 ```
 
 > **Parallelism Note:**
-> Array operations like `.map()` and `.filter()` are parallel by default and hardened for ETL/data processing workloads. Context objects are passed by reference for enhanced performance, but **avoid mutating context objects** as this causes race conditions. Use `.map()` for pure computation and `.reduce()` for aggregation instead.
+> Array operations like `.map()` and `.filter()` are parallel by default and hardened for ETL/data processing workloads. Context objects are passed by reference for enhanced performance, but **avoid mutating context objects** as this causes race conditions. Use `.map()` for pure computation and `.reduce()` for aggregation instead.:
 
 ## Error Handling and Boundary Conditions
 

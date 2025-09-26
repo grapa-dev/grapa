@@ -4548,6 +4548,10 @@ prime_1024 = (1024).genprime(); /* 1024-bit prime */
 safe_prime = (256).genprime(1);
 (&quot;Safe prime: &quot; + safe_prime.str()).echo();
 </code></pre></div>
+<p><strong>genprime() Parameters:</strong>
+- <strong><code>(bits).genprime()</code></strong> - Generate a standard prime number
+- <strong><code>(bits).genprime(1)</code></strong> - Generate a safe prime (where (p-1)/2 is also prime)
+- <strong><code>(bits).genprime(0)</code></strong> - Explicitly generate a standard prime (same as no parameter)</p>
 <h3 id="primality-testing">Primality Testing</h3>
 <div class="highlight"><pre><span></span><code>/* Test numbers for primality with high confidence */
 is_prime = (17).isprime();      /* true */

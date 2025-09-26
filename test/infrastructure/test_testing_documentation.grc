@@ -62,7 +62,7 @@ test_division = op(a, b) {
     };
 };
 
-/* Test error case */
+/* Test error case */:
 result = test_division(10, 0);
 if (result.type() == $ERR) {
     "✓ Division by zero correctly caught".echo();
@@ -70,7 +70,7 @@ if (result.type() == $ERR) {
     "✗ Division by zero test failed".echo();
 };
 
-/* Test success case */
+/* Test success case */:
 result = test_division(10, 2);
 if (result.type() != $ERR && result == 5) {
     "✓ Division test passed".echo();

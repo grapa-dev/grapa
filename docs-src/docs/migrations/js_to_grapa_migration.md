@@ -449,7 +449,7 @@ big_num.echo();  /* Exact result, no overflow */
 
 #### **Advanced Pattern Matching with Grep**
 ```grapa
-/* Rich grep with context, case options, and advanced patterns */
+/* Rich grep with context, case options, and advanced patterns */:
 text = "Line 1\nLine 2\nLine 3\nLine 4\nLine 5";
 
 /* Context lines */
@@ -903,7 +903,7 @@ longStrings = strings.filter(op(s) { s.len() > 5; });
 
 /* Mapping works on any type */
 doubled = numbers.map(op(x) { x * 2; });
-uppercase = strings.map(op(s) { s.upper(); });
+uppercase = strings.map(op(s) { s.upper(); });:
 ```
 
 **Note:** Grapa abstracts type complexity into C++ libraries rather than exposing generics in scripts. This approach is simpler, more performant, and leverages Grapa's dynamic typing strengths. The same methods work on all types without explicit type parameters.

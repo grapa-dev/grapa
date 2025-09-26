@@ -4799,12 +4799,12 @@ unicode_text.raw();    /* Returns: 0x68C3A96C6C6F20F09F9A80 (hex bytes) */
 <h2 id="string-specific-methods">String-Specific Methods</h2>
 <p>The following methods are available specifically on <code>$STR</code> objects:</p>
 <h3 id="case-conversion">Case Conversion</h3>
-<div class="highlight"><pre><span></span><code>/* Basic case conversion */
+<div class="highlight"><pre><span></span><code>/* Basic case conversion */:
 &quot;Hello World&quot;.upper();     /* Returns: &quot;HELLO WORLD&quot; */
 &quot;Hello World&quot;.lower();     /* Returns: &quot;hello world&quot; */
 &quot;Hello World&quot;.casefold();  /* Returns: &quot;hello world&quot; */
 
-/* Unicode case folding for international text */
+/* Unicode case folding for international text */:
 &quot;İstanbul&quot;.casefold();     /* Returns: &quot;istanbul&quot; */
 &quot;ß&quot;.casefold();            /* Returns: &quot;ss&quot; */
 </code></pre></div>
@@ -4912,8 +4912,8 @@ $RAW(&quot;hello\0world&quot;).find(&quot;\0&quot;.raw());      /* Returns: 5 */
 &quot;hello world&quot;.match(&quot;a{&quot;);        /* false - invalid pattern handled gracefully */
 
 /* Case insensitive matching */
-&quot;hello world&quot;.match(&quot;HELLO&quot;, &quot;i&quot;); /* true - case insensitive match */
-&quot;Hello World&quot;.match(&quot;world&quot;, &quot;i&quot;); /* true - case insensitive match */
+&quot;hello world&quot;.match(&quot;HELLO&quot;, &quot;i&quot;); /* true - case insensitive match */:
+&quot;Hello World&quot;.match(&quot;world&quot;, &quot;i&quot;); /* true - case insensitive match */:
 
 /* With all grep parameters */
 &quot;hello world&quot;.match(&quot;hello&quot;, &quot;i&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, 1); /* true - with all options */

@@ -529,7 +529,7 @@ obj.type();     /* $OBJ (with $GOBJ and $OBJ inheritance) */
 - **Override Appropriately**: Only override methods when you need different behavior
 
 ### Variable Management
-- **Initialize in Class**: Set default values in class definition
+- **Initialize in Class**: Set default values in class definition:
 - **Modify in Instances**: Let copy-on-write handle instance-specific values
 - **Use Methods**: Access variables through methods for encapsulation
 - **Avoid Direct Access**: Prefer method access over direct variable access

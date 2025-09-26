@@ -105,7 +105,7 @@ pages = f.getfield("data_record", "pages");
 
 /* .getfield() requires field parameter */
 try missing_field = f.getfield("user1")  /* Missing field parameter */
-catch "Expected error: .getfield() requires field parameter".echo();
+catch: "Expected error: .getfield() requires field parameter".echo();
 
 /* .get() works without field parameter for simple files */
 simple_file_ok = f.get("simple.txt");  /* This works for simple files */

@@ -60,6 +60,10 @@ model.load();
 "--- Setting Generation Parameters ---\n".echo();
 model = $MODEL();
 
+"Parameters configured\n".echo();
+/* Auto-detect method from file extension */
+model.load(modelpath);
+
 /* Set generation parameters */
 model.params({
     "temperature": 0.8,      /* More creative responses */
@@ -68,9 +72,6 @@ model.params({
     "verbose": 1             /* Show errors only */
 });
 
-"Parameters configured\n".echo();
-/* Auto-detect method from file extension */
-model.load(modelpath);
 
 /* Generate with configured parameters */
 response = model.gen("Write a short story about a robot");
@@ -110,11 +111,12 @@ model.load();
 /* Debugging with Verbose Output */
 "--- Debugging with Verbose Output ---\n".echo();
 model = $MODEL();
-model.params({"verbose": 4});  /* Maximum verbosity */
 
 "Loading model with debug output...\n".echo();
 /* Auto-detect method from file extension */
 result = model.load(modelpath);
+
+model.params({"verbose": 4});  /* Maximum verbosity */
 
 if (result.type() != $ERR) {
     "Model loaded, generating with debug info...\n".echo();
@@ -131,10 +133,12 @@ model.load();
 /* Silent Operation */
 "--- Silent Operation ---\n".echo();
 model = $MODEL();
-model.params({"verbose": 0});  /* No output */
 
 /* Auto-detect method from file extension */
 model.load(modelpath);
+
+model.params({"verbose": 0});  /* No output */
+
 response = model.gen("Hello");
 ("Response: " + response.str() + "\n").echo();
 
@@ -149,15 +153,14 @@ model.load();
 model1 = $MODEL();
 model2 = $MODEL();
 
-/* Configure different parameters for each */
-model1.params({"temperature": 0.5});
-model2.params({"temperature": 1.0});
-
 /* Load the same model in both instances (auto-detect method) */
 model1.load(modelpath);
 model2.load(modelpath);
 
-/* Generate with different styles */
+/* Configure different parameters for each */
+model1.params({"temperature": 0.5});
+model2.params({"temperature": 1.0});
+
 conservative = model1.gen("Explain AI");
 creative = model2.gen("Explain AI");
 
@@ -254,15 +257,16 @@ model.load();
 /* Chat Bot Implementation */
 "--- Chat Bot Implementation ---\n".echo();
 chatbot = $MODEL();
+
+"Loading chatbot model...\n".echo();
+/* Auto-detect method from file extension */
+result = chatbot.load(modelpath);
+
 chatbot.params({
     "temperature": 0.7,
     "max_tokens": 200,
     "verbose": 0
 });
-
-"Loading chatbot model...\n".echo();
-/* Auto-detect method from file extension */
-result = chatbot.load(modelpath);
 
 if (result.type() != $ERR) {
     "Chatbot ready! Type 'quit' to exit\n".echo();
@@ -315,16 +319,16 @@ content_generator.load();
 "--- Efficient Model Usage ---\n".echo();
 model = $MODEL();
 
-/* Set optimal parameters for your use case */
+"Loading optimized model...\n".echo();
+/* Auto-detect method from file extension */
+model.load(modelpath);
+
+/* Set optimal parameters for your use case */:
 model.params({
     "context_size": 1024,    /* Smaller context for faster processing */
     "max_tokens": 50,        /* Limit response length */
     "verbose": 0             /* Disable logging for speed */
 });
-
-"Loading optimized model...\n".echo();
-/* Auto-detect method from file extension */
-model.load(modelpath);
 
 /* Batch multiple generations */
 prompts = ["What is AI?", "Explain ML", "Define deep learning"];

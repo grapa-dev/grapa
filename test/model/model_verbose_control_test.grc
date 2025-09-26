@@ -6,7 +6,7 @@
 /* Test 1: Silent Mode (Default) */
 "=== Test 1: Default Silent Mode ===".echo();
 model = $MODEL();
-"Loading model with default verbose=0 (silent)...".echo();
+"Loading model with default verbose=0 (silent)...".echo();:
 result = model.load("models/qwen2.5-7b-instruct-q5_k_m.gguf", "llama");
 ("Load result: " + result.str()).echo();
 ("Model info: " + model.info().str()).echo();

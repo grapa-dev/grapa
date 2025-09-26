@@ -288,7 +288,7 @@ Set different debug levels for different components:
 // Set specific levels per component
 $sys().putenv("GRAPA_DEBUG_COMPONENTS", "grep:3,database:1,vector:0");
 
-// Set default level for all components except specified ones
+// Set default level for all components except specified ones:
 $sys().putenv("GRAPA_DEBUG_COMPONENTS", "grep:3,*:1");
 
 // Enable only one component at high level, disable others

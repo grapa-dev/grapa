@@ -87,8 +87,8 @@ result5 = input5.grep(pattern5, "of", "|", "NONE", "UNICODE", 2);
 ("Expected: Full segments for all matches, processed in parallel\n").echo();
 "---\n".echo();
 
-/* Section 6: 'f' with edge-case precedence (e.g., with 'c' count) */
-"\n-- 6. 'f' with edge-case precedence (with 'c' count) --\n".echo();
+/* Section 6: 'f' with edge-case precedence (e.g., with 'c' count) */:
+"\n-- 6. 'f' with edge-case precedence (with 'c' count) --\n".echo();:
 input6 = "foo|bar|baz|foo|bar|baz";
 pattern6 = "foo|bar";
 result6 = input6.grep(pattern6, "ofc", "|");

@@ -249,7 +249,7 @@ grep_result = "Hello World".grep("World");
 grep_o_result = "Hello World".grep("\\w+", "o");
 ("'Hello World'.grep('\\\\w+', 'o'): " + grep_o_result.str() + " (expected: [\"Hello\", \"World\"])\n").echo();
 
-/* Test .grep() with case insensitive */
+/* Test .grep() with case insensitive */:
 grep_i_result = "Hello WORLD".grep("world", "i");
 ("'Hello WORLD'.grep('world', 'i'): " + grep_i_result.str() + " (expected: [\"Hello WORLD\"])\n").echo();
 

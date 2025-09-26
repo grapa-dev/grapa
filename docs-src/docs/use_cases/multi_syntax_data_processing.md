@@ -13,7 +13,7 @@ tags:
 
 ## Overview
 
-Grapa's multi-syntax capabilities enable powerful data processing workflows that combine SQL, JSON, XML, and custom syntaxes seamlessly. This use case demonstrates how to build sophisticated data pipelines using multiple native syntaxes.
+Grapa's multi-syntax capabilities enable powerful data processing workflows that combine SQL, JSON, XML, and custom syntaxes seamlessly. This use case demonstrates how to build sophisticated data pipelines using multiple native syntaxes.:
 
 ## Scenario: ETL Pipeline with Multi-Syntax Support
 
@@ -51,7 +51,7 @@ $custom_function = rule $STR '->' $STR {op(json:$1,path:$3){
 $custom_function = rule json_extract '(' $STR ',' $STR ')' {op(json:$3,path:$5){
     /* JSON extraction with error handling */
     try return json.json().getfield(path);
-    catch (error) return $err("JSON extraction failed");
+    catch (error): return $err("JSON extraction failed");
 }};
 
 /* Step 3: Define XML syntax for feed processing */

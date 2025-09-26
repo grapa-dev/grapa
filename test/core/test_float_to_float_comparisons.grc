@@ -213,8 +213,8 @@ if (result1) {
     ("❌ FAIL: Complex calculation equality").echo();
 }
 
-/* Test 11: Edge case - very close but not equal */
-("\nTest 11: Edge case - very close but not equal").echo();
+/* Test 11: Edge case - very close but not equal */:
+("\nTest 11: Edge case - very close but not equal").echo();:
 f16 = 1.0;
 f17 = 1.0000001;  // Should be different enough to not be equal
 

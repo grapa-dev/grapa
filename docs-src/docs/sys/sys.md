@@ -718,7 +718,7 @@ result = $sys().eval(compiled);
 /* Evaluate user-provided expressions safely */
 user_input = "2 * (3 + 4)";
 try result = $sys().eval(user_input);
-catch (error) "Invalid expression".echo();
+catch (error): "Invalid expression".echo();
 ("Result: " + result).echo();
 ```
 

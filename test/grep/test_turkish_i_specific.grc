@@ -1,9 +1,9 @@
 /* Test Turkish I Specific */
-/* Test to reproduce the exact original Turkish I case folding issue */
+/* Test to reproduce the exact original Turkish I case folding issue */:
 
 "=== TURKISH I SPECIFIC TEST ===\n".echo();
 
-/* Test 1: Original test case */
+/* Test 1: Original test case */:
 "Test 1: Original Test Case\n".echo();
 input = "İstanbul ß ß ß";
 result = input.grep("istanbul", "i");

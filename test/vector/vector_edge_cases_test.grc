@@ -8,7 +8,7 @@
  * - Singular matrices and error conditions
  * - Boundary conditions for different matrix sizes
  * - Error handling and recovery mechanisms
- * - Performance with edge case data patterns
+ * - Performance with edge case data patterns:
  */
 
 ("=== Vector Edge Cases Test Suite ===").echo();
@@ -28,12 +28,12 @@ empty_vec = [].vector();
 
 /* Test operations on empty vectors */
 try empty_sum = empty_vec.sum();
-catch 'error': ("Empty vector sum error: " + error).echo();
+catch (error): ("Empty vector sum error: " + error).echo();
 default: ("Empty vector sum: null").echo();
 ("Empty vector sum: " + empty_sum).echo();
 
 try empty_mean = empty_vec.mean();
-catch 'error': ("Empty vector mean error: " + error).echo();
+catch (error): ("Empty vector mean error: " + error).echo();
 default: ("Empty vector mean: null").echo();
 ("Empty vector mean: " + empty_mean).echo();
 
@@ -43,7 +43,7 @@ empty_mat = [[]].vector();
 ("Empty matrix shape: " + empty_mat.shape()).echo();
 
 try empty_det = empty_mat.det();
-catch 'error': ("Empty matrix determinant error: " + error).echo();
+catch (error): ("Empty matrix determinant error: " + error).echo();
 default: ("Empty matrix determinant: null").echo();
 ("Empty matrix determinant: " + empty_det).echo();
 
@@ -61,12 +61,12 @@ singular_2x2 = [[1, 1], [1, 1]].vector();
 ("Singular 2x2 matrix: " + singular_2x2).echo();
 
 try det_2x2 = singular_2x2.det();
-catch 'error': ("2x2 singular determinant error: " + error).echo();
+catch (error): ("2x2 singular determinant error: " + error).echo();
 default: ("2x2 singular determinant: null").echo();
 ("2x2 singular determinant: " + det_2x2).echo();
 
 try inv_2x2 = singular_2x2.inv();
-catch 'error': ("2x2 singular inverse error: " + error).echo();
+catch (error): ("2x2 singular inverse error: " + error).echo();
 default: ("2x2 singular inverse: null").echo();
 ("2x2 singular inverse: " + inv_2x2).echo();
 
@@ -75,7 +75,7 @@ singular_3x3 = [[1, 2, 3], [2, 4, 6], [3, 6, 9]].vector();
 ("Singular 3x3 matrix: " + singular_3x3).echo();
 
 try det_3x3 = singular_3x3.det();
-catch 'error': ("3x3 singular determinant error: " + error).echo();
+catch (error): ("3x3 singular determinant error: " + error).echo();
 default: ("3x3 singular determinant: null").echo();
 ("3x3 singular determinant: " + det_3x3).echo();
 
@@ -92,12 +92,12 @@ mat_1x1 = [[5]].vector();
 ("1x1 matrix: " + mat_1x1).echo();
 
 try det_1x1 = mat_1x1.det();
-catch 'error': ("1x1 determinant error: " + error).echo();
+catch (error): ("1x1 determinant error: " + error).echo();
 default: ("1x1 determinant: null").echo();
 ("1x1 determinant: " + det_1x1).echo();
 
 try inv_1x1 = mat_1x1.inv();
-catch 'error': ("1x1 inverse error: " + error).echo();
+catch (error): ("1x1 inverse error: " + error).echo();
 default: ("1x1 inverse: null").echo();
 ("1x1 inverse: " + inv_1x1).echo();
 
@@ -111,7 +111,7 @@ mat_3x1 = [[1], [2], [3]].vector();
 ("3x1 matrix: " + mat_3x1).echo();
 
 try mult_1x3_3x1 = mat_1x3.dot(mat_3x1);
-catch 'error': ("1x3 * 3x1 error: " + error).echo();
+catch (error): ("1x3 * 3x1 error: " + error).echo();
 default: ("1x3 * 3x1: null").echo();
 ("1x3 * 3x1 result: " + mult_1x3_3x1).echo();
 
@@ -131,7 +131,7 @@ mat_2x2 = [[1, 2], [3, 4]].vector();
 ("2x2 matrix: " + mat_2x2).echo();
 
 try incompatible_mult = mat_2x3.dot(mat_2x2);
-catch 'error': ("2x3 * 2x2 error: " + error).echo();
+catch (error): ("2x3 * 2x2 error: " + error).echo();
 default: ("2x3 * 2x2: null").echo();
 ("2x3 * 2x2 result: " + incompatible_mult).echo();
 
@@ -139,7 +139,7 @@ default: ("2x3 * 2x2: null").echo();
 ("Testing non-square matrix determinant...").echo();
 
 try nonsquare_det = mat_2x3.det();
-catch 'error': ("2x3 determinant error: " + error).echo();
+catch (error): ("2x3 determinant error: " + error).echo();
 default: ("2x3 determinant: null").echo();
 ("2x3 determinant: " + nonsquare_det).echo();
 
@@ -147,7 +147,7 @@ default: ("2x3 determinant: null").echo();
 ("Testing non-square matrix inverse...").echo();
 
 try nonsquare_inv = mat_2x3.inv();
-catch 'error': ("2x3 inverse error: " + error).echo();
+catch (error): ("2x3 inverse error: " + error).echo();
 default: ("2x3 inverse: null").echo();
 ("2x3 inverse: " + nonsquare_inv).echo();
 
@@ -165,7 +165,7 @@ large_mat = [[1e15, 2e15], [3e15, 4e15]].vector();
 ("Large number matrix: " + large_mat).echo();
 
 try large_det = large_mat.det();
-catch 'error': ("Large number determinant error: " + error).echo();
+catch (error): ("Large number determinant error: " + error).echo();
 default: ("Large number determinant: null").echo();
 ("Large number determinant: " + large_det).echo();
 
@@ -174,7 +174,7 @@ small_mat = [[1e-15, 2e-15], [3e-15, 4e-15]].vector();
 ("Small number matrix: " + small_mat).echo();
 
 try small_det = small_mat.det();
-catch 'error': ("Small number determinant error: " + error).echo();
+catch (error): ("Small number determinant error: " + error).echo();
 default: ("Small number determinant: null").echo();
 ("Small number determinant: " + small_det).echo();
 
@@ -183,7 +183,7 @@ mixed_mat = [[1, -2], [-3, 4]].vector();
 ("Mixed sign matrix: " + mixed_mat).echo();
 
 try mixed_det = mixed_mat.det();
-catch 'error': ("Mixed sign determinant error: " + error).echo();
+catch (error): ("Mixed sign determinant error: " + error).echo();
 default: ("Mixed sign determinant: null").echo();
 ("Mixed sign determinant: " + mixed_det).echo();
 
@@ -230,7 +230,7 @@ single_col = [[1], [2], [3]].vector();
 ("Single column matrix: " + single_col).echo();
 
 try single_cov = single_col.cov();
-catch 'error': ("Single column covariance error: " + error).echo();
+catch (error): ("Single column covariance error: " + error).echo();
 default: ("Single column covariance: null").echo();
 ("Single column covariance: " + single_cov).echo();
 
@@ -241,7 +241,7 @@ single_row = [[1, 2, 3]].vector();
 ("Single row matrix: " + single_row).echo();
 
 try single_row_cov = single_row.cov();
-catch 'error': ("Single row covariance error: " + error).echo();
+catch (error): ("Single row covariance error: " + error).echo();
 default: ("Single row covariance: null").echo();
 ("Single row covariance: " + single_row_cov).echo();
 
@@ -252,7 +252,7 @@ constant_mat = [[1, 1, 1], [1, 1, 1], [1, 1, 1]].vector();
 ("Constant values matrix: " + constant_mat).echo();
 
 try constant_cov = constant_mat.cov();
-catch 'error': ("Constant values covariance error: " + error).echo();
+catch (error): ("Constant values covariance error: " + error).echo();
 default: ("Constant values covariance: null").echo();
 ("Constant values covariance: " + constant_cov).echo();
 
@@ -269,7 +269,7 @@ identity_mat = [[1, 0], [0, 1]].vector();
 ("Identity matrix: " + identity_mat).echo();
 
 try eigen_result = identity_mat.eigh();
-catch 'error': ("Identity matrix eigenvalues error: " + error).echo();
+catch (error): ("Identity matrix eigenvalues error: " + error).echo();
 default: ("Identity matrix eigenvalues: null").echo();
 ("Identity matrix eigenvalues: " + eigen_result).echo();
 
@@ -280,7 +280,7 @@ nonsym_mat = [[1, 2], [3, 4]].vector();
 ("Non-symmetric matrix: " + nonsym_mat).echo();
 
 try nonsym_eigen = nonsym_mat.eigh();
-catch 'error': ("Non-symmetric eigenvalues error: " + error).echo();
+catch (error): ("Non-symmetric eigenvalues error: " + error).echo();
 default: ("Non-symmetric eigenvalues: null").echo();
 ("Non-symmetric eigenvalues: " + nonsym_eigen).echo();
 
@@ -323,13 +323,13 @@ large_sum_time = (($TIME().utc() - start_time) / 1000000).int();
 
 ("\n--- Test Summary ---").echo();
 
-("Edge case testing completed.").echo();
+("Edge case testing completed.").echo();:
 ("Tests covered:").echo();
 ("  - Empty matrices and vectors").echo();
 ("  - Singular matrices").echo();
 ("  - Boundary conditions (1x1, 1xN, Nx1)").echo();
 ("  - Error conditions (incompatible operations)").echo();
-("  - Edge case data patterns (large/small numbers)").echo();
+("  - Edge case data patterns (large/small numbers)").echo();:
 ("  - Performance edge cases (sparse, identical values)").echo();
 ("  - Covariance edge cases").echo();
 ("  - Eigenvalue edge cases").echo();

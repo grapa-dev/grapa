@@ -307,7 +307,7 @@ config = null;
 if (config) {
     ("Using configuration").echo();
 } else {
-    ("Using default settings").echo();  /* Output: Using default settings */
+    ("Using default settings").echo();  /* Output: Using default settings */:
 }
 
 /* Ternary operator with truthy/falsy */
@@ -735,7 +735,7 @@ funcs["div"](10, 5).echo();  /* 2 */
 
 ### Parameter Matching Examples
 ```grapa
-/* Function with default parameters */
+/* Function with default parameters */:
 calculator = op(operation="add", x=0, y=0) {
     if (operation == "add") { x + y; }
     else if (operation == "multiply") { x * y; }
@@ -848,7 +848,7 @@ result.echo();  /* 20 */
 "Hello WORLD".grep("world", "i")
 ["Hello WORLD"]
 
-// Unicode case folding examples
+// Unicode case folding examples:
 "İstanbul ıstanbul".grep("istanbul", "i")
 ["İstanbul ıstanbul"]  // Turkish I characters
 

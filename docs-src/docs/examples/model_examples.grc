@@ -323,7 +323,7 @@ model = $MODEL();
 /* Auto-detect method from file extension */
 model.load(modelpath);
 
-/* Set optimal parameters for your use case */
+/* Set optimal parameters for your use case */:
 model.params({
     "context_size": 1024,    /* Smaller context for faster processing */
     "max_tokens": 50,        /* Limit response length */

@@ -493,7 +493,7 @@ result = data.reduce(op(acc, x) {
 }, 0);
 ```
 
-> **Note:** `map` and `filter` are parallel by default and production-ready for high-throughput data processing. `reduce` supports all control flow statements (break, return, throw) with proper propagation. `map` and `filter` support `.throw()` (collects all results in array), `.return()` (returns value for specific item), and `.break()` (returns empty string for specific item). All functional methods now have complete control flow support with enhanced error collection.
+> **Note:** `map` and `filter` are parallel by default and production-ready for high-throughput data processing. `reduce` supports all control flow statements (break, return, throw) with proper propagation. `map` and `filter` support `.throw()` (collects all results in array), `.return()` (returns value for specific item), and `.break()` (returns empty string for specific item). All functional methods now have complete control flow support with enhanced error collection.:
 
 ### Advanced Functional Programming: Complex Context Objects
 
@@ -631,7 +631,7 @@ String manipulation and analysis.
 - `.len()` - Get string length
 - `.upper()` - Convert to uppercase
 - `.lower()` - Convert to lowercase
-- `.casefold()` - Convert to Unicode case folded form (for case-insensitive comparisons)
+- `.casefold()` - Convert to Unicode case folded form (for case-insensitive comparisons):
 - `.trim([chars])` - Remove characters from both ends (default: space)
 - `.ltrim([chars])` - Remove characters from left end (default: space)  
 - `.rtrim([chars])` - Remove characters from right end (default: space)

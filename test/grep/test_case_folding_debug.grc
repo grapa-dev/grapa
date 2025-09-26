@@ -1,5 +1,5 @@
 /* Test Case Folding Debug */
-/* Debug test to see what case folding actually produces */
+/* Debug test to see what case folding actually produces */:
 
 "=== CASE FOLDING DEBUG TEST ===\n".echo();
 

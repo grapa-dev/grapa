@@ -71,7 +71,7 @@ default: {
 ### Boolean Expression Matching
 
 ```grapa
-/* Each case can be a full boolean expression */
+/* Each case can be a full boolean expression */:
 switch (true)
 case (x < 0): "Negative".echo();
 case (x == 0): "Zero".echo();
@@ -108,7 +108,7 @@ default: "No match found".echo();
 ```grapa
 /* Fuzzy string matching */
 switch(input:"hello world")
-case (input.grep("hello", "i")): "Contains 'hello' (case insensitive)".echo();
+case (input.grep("hello", "i")): "Contains 'hello' (case insensitive)".echo();:
 case (input.len() > 10): "Long string".echo();
 default: "No pattern match".echo();
 
@@ -258,7 +258,7 @@ finally: 'Always execute'.echo();
 * **Flexible matching**: Catch conditions can be constants, expressions, or complex patterns
 * **Multiple catch blocks**: Can have multiple catch conditions
 * **Finally block**: Always executes regardless of exception
-* **Consistent syntax**: Follows the same pattern as switch/case statements
+* **Consistent syntax**: Follows the same pattern as switch/case statements:
 * **No parentheses required**: Simple constants don't need parentheses
 
 ### Sequential Evaluation (First Match Wins)
@@ -275,8 +275,8 @@ default: "Zero or negative".echo();
 **Key Features:**
 
 * **Implicit break**: No break statements required, execution stops after first match
-* **Multiple commands**: Must be enclosed in `{}` when case contains multiple statements
-* **Full expressions**: Each case can contain complex boolean expressions
+* **Multiple commands**: Must be enclosed in `{}` when case contains multiple statements:
+* **Full expressions**: Each case can contain complex boolean expressions:
 * **Sequential evaluation**: Evaluates from first to last case, stops at first match
 * **No fall-through**: Unlike C-style switches, Grapa doesn't fall through to next case
 * **Pattern matching**: Can match on data structure patterns, types, and conditions

@@ -6623,11 +6623,10 @@ critical_function = op() {
 </code></pre></div>
 <h3 id="switch-statements">Switch Statements</h3>
 <div class="highlight"><pre><span></span><code>/* Switch with control flow */
-switch (value) {
-    case 1: return &quot;one&quot;;;
-    case 2: return &quot;two&quot;;;
-    default: return &quot;unknown&quot;;;
-}
+switch (value)
+case 1: return &quot;one&quot;;;
+case 2: return &quot;two&quot;;;
+default: return &quot;unknown&quot;;;
 </code></pre></div>
 <h3 id="control-flow-in-inline-code-blocks">Control Flow in Inline Code Blocks</h3>
 <div class="highlight"><pre><span></span><code>/* Control flow in inline code blocks */
@@ -6680,7 +6679,7 @@ result = data.reduce(op(acc, x) {
 }, 0);
 </code></pre></div>
 <blockquote>
-<p><strong>Note:</strong> <code>map</code> and <code>filter</code> are parallel by default and production-ready for high-throughput data processing. <code>reduce</code> supports all control flow statements (break, return, throw) with proper propagation. <code>map</code> and <code>filter</code> support <code>.throw()</code> (collects all results in array), <code>.return()</code> (returns value for specific item), and <code>.break()</code> (returns empty string for specific item). All functional methods now have complete control flow support with enhanced error collection.</p>
+<p><strong>Note:</strong> <code>map</code> and <code>filter</code> are parallel by default and production-ready for high-throughput data processing. <code>reduce</code> supports all control flow statements (break, return, throw) with proper propagation. <code>map</code> and <code>filter</code> support <code>.throw()</code> (collects all results in array), <code>.return()</code> (returns value for specific item), and <code>.break()</code> (returns empty string for specific item). All functional methods now have complete control flow support with enhanced error collection.:</p>
 </blockquote>
 <h3 id="advanced-functional-programming-complex-context-objects">Advanced Functional Programming: Complex Context Objects</h3>
 <p>Functional methods support <strong>any data structure as initializers</strong>, enabling sophisticated state machines and context-aware operations:</p>
@@ -6799,7 +6798,7 @@ remainder = mod(17, 5);
 <li><code>.len()</code> - Get string length</li>
 <li><code>.upper()</code> - Convert to uppercase</li>
 <li><code>.lower()</code> - Convert to lowercase</li>
-<li><code>.casefold()</code> - Convert to Unicode case folded form (for case-insensitive comparisons)</li>
+<li><code>.casefold()</code> - Convert to Unicode case folded form (for case-insensitive comparisons):</li>
 <li><code>.trim([chars])</code> - Remove characters from both ends (default: space)</li>
 <li><code>.ltrim([chars])</code> - Remove characters from left end (default: space)  </li>
 <li><code>.rtrim([chars])</code> - Remove characters from right end (default: space)</li>

@@ -21,7 +21,7 @@ scrape_pages = op(urls, delay_ms) {
         };
         
         try response = $net().get(url);
-        catch (error) {"url": url, "success": false, "error": error.getfield("message")};
+        catch (error): {"url": url, "success": false, "error": error.getfield("message")};
         
         /* Check for successful response */
         if (response.getfield("status") == 200) {
@@ -77,7 +77,7 @@ extracted_data = scraped_data.map(op(page) {
 collect_api_data = op(base_url, endpoints) {
     results = endpoints.map(op(endpoint) {
         try url = base_url + endpoint;
-        catch (error) {"endpoint": endpoint, "success": false, "error": error.getfield("message")};
+        catch (error): {"endpoint": endpoint, "success": false, "error": error.getfield("message")};
         
         response = $net().get(url);
         
@@ -109,7 +109,7 @@ failed_requests = api_data.filter(op(result) { !result.getfield("success"); });
 /* Automated form submission with validation */
 submit_form = op(form_data) {
     try post_data = $JSON().stringify(form_data);
-    catch (error) {"success": false, "error": error.getfield("message")};
+    catch (error): {"success": false, "error": error.getfield("message")};
     
     /* Submit form via POST request */
     response = $net().post("https://example.com/submit", post_data, {

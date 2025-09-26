@@ -16,7 +16,7 @@ process_files = op(directory, file_pattern) {
     
     results = files.map(op(file) {
         try content = $file().read(file);
-        catch (error) {"file": file, "error": error.get("message")};
+        catch (error): {"file": file, "error": error.get("message")};
         
         stats = $file().stat(file);
         
@@ -187,7 +187,7 @@ restore_database = op(backup_file) {
         
         /* Drop existing table if it exists */
         try $TABLE().drop(table);
-        catch (error) /* Table doesn't exist, continue */;
+        catch (error): /* Table doesn't exist, continue */;
         
         /* Recreate table and insert data */
         if (table_data.len() > 0) {

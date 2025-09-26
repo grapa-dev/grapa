@@ -1,4 +1,4 @@
-/* Minimal test case to debug oa option crash */
+/* Minimal test case to debug oa option crash */:
 
 "=== OA OPTION CRASH DEBUG TEST ===\n".echo();
 

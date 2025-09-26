@@ -11,10 +11,10 @@ Grapa's `op` function supports flexible parameter definition and calling with bo
 /* Basic parameter definition */
 f = op(a, b) { a + b; };
 
-/* Parameters with default values */
+/* Parameters with default values */:
 f = op(a=1, b=2) { b**a; };
 
-/* Mixed default and non-default parameters */
+/* Mixed default and non-default parameters */:
 f = op(a, b=10, c) { a + b + c; };
 ```
 
@@ -89,7 +89,7 @@ counter = op(count=0) {
 };
 
 counter();  /* 1 */
-counter();  /* 1 - default value is not modified */
+counter();  /* 1 - default value is not modified */:
 ```
 
 #### Parameter Modification
@@ -169,7 +169,7 @@ myIns;
 Creating an instance of a class. See class.
 
 ## token
-Used to define lexical rules. Currently only used to define special character handling like space and tab, where the default handling is to skip these characters so they do not need to be specified in the grammar. 
+Used to define lexical rules. Currently only used to define special character handling like space and tab, where the default handling is to skip these characters so they do not need to be specified in the grammar. :
 
 ## rule
 See [$RULE type](../type/rule.md)

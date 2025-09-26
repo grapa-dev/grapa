@@ -9,7 +9,7 @@
 ("--- Test 1: Basic throw with object ---\n").echo();
 
 try throw {code: 404, message: "Not found"};
-catch (e) {
+catch (e) : {
     ("Caught error: " + e + "\n").echo();
     ("Error code: " + e.code + "\n").echo();
     ("Error message: " + e.message + "\n").echo();
@@ -26,6 +26,6 @@ obj = {code: 404, message: "Not found"};
 ("--- Test 3: Simple string throw ---\n").echo();
 
 try throw "simple error";
-catch (e) ("Caught string: " + e + "\n").echo();
+catch (e) : ("Caught string: " + e + "\n").echo();
 
 ("=== Test Complete ===\n").echo();
