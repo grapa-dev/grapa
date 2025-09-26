@@ -335,6 +335,7 @@ GrapaError GrapaLocalDatabase::DirectoryList(GrapaCHAR& pName, GrapaRuleEvent* p
 					if (err) return(err);
 					item->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("$PATH"), GrapaCHAR((char*)pName.mBytes, pName.mLength)));
 					item->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("$KEY"), fieldValue));
+					item->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("$ID"), GrapaInt(cursor.mKey).getBytes()));
 
 					u64 treeSize = 0;
 					bool hasTreeSize = false;

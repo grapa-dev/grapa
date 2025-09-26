@@ -17165,7 +17165,6 @@ GrapaRuleEvent* GrapaLibraryRuleLenEvent::Run(GrapaScriptExec *vScriptExec, Grap
 			result = new GrapaRuleEvent(0, item, a.getBytes());
 		}
 		break;
-		case GrapaTokenType::TABLE:
 		case GrapaTokenType::RAW:
 		case GrapaTokenType::BOOL:
 		case GrapaTokenType::SYSID:
