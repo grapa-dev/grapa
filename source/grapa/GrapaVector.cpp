@@ -1271,6 +1271,21 @@ void GrapaVector::FromBytes(GrapaScriptExec* pScriptExec, GrapaNames* pNameSpace
 		pos += labelSize;
 		mLabels.FROM(pScriptExec->vScriptState, pNameSpace, labelBytes);
 	}
+
+	memcpy(&labelSize, &pValue.mBytes[pos], sizeof(u64));
+	labelSize = BE_S64(labelSize);
+	pos += sizeof(u64);
+
+	// Read labels if they exist
+	if (labelSize > 0) {
+		GrapaBYTE labelBytes;
+		labelBytes.SetSize(labelSize, false);
+		labelBytes.SetLength(labelSize);
+		memcpy(labelBytes.mBytes, &pValue.mBytes[pos], labelSize);
+		labelBytes.mToken = GrapaTokenType::LIST;
+		pos += labelSize;
+		mKeys.FROM(pScriptExec->vScriptState, pNameSpace, labelBytes);
+	}
 }
 
 u64 GrapaVector::ToSize(GrapaScriptExec* pScriptExec, GrapaNames* pNameSpace)
@@ -1342,11 +1357,19 @@ u64 GrapaVector::ToSize(GrapaScriptExec* pScriptExec, GrapaNames* pNameSpace)
 	// LABELS SECTION  
 	// =====================================
 
-	totalSize += sizeof(u64);  // for labelSize
+	totalSize += sizeof(u64);  // for mLabels
 
 	if (mLabels.mCount > 0) {
 		u64 labelSize = 0;
 		mLabels.TOSize(labelSize, 0);
+		totalSize += labelSize;
+	}
+
+	totalSize += sizeof(u64);  // for mKeys
+
+	if (mKeys.mCount > 0) {
+		u64 labelSize = 0;
+		mKeys.TOSize(labelSize, 0);
 		totalSize += labelSize;
 	}
 
@@ -1470,6 +1493,23 @@ void GrapaVector::ToBytes(GrapaScriptExec* pScriptExec, GrapaNames* pNameSpace, 
 		memcpy(&pValue.mBytes[pos], tempBytes.mBytes, tempBytes.mLength);
 		pos += tempBytes.mLength;
 	}
+
+	if (mKeys.mCount == 0)
+	{
+		u64 labelSize = 0;
+		memcpy(&pValue.mBytes[pos], &labelSize, sizeof(u64)); pos += sizeof(u64);
+	}
+	else
+	{
+		GrapaBYTE tempBytes;
+		mKeys.TO(tempBytes, NULL, GrapaTokenType::LIST);
+		u64 labelSize = tempBytes.mLength;
+		labelSize = BE_S64(labelSize);
+		memcpy(&pValue.mBytes[pos], &labelSize, sizeof(u64)); pos += sizeof(u64);
+		memcpy(&pValue.mBytes[pos], tempBytes.mBytes, tempBytes.mLength);
+		pos += tempBytes.mLength;
+	}
+
 }
 
 GrapaVector& GrapaVector::operator =(const GrapaVector& that)

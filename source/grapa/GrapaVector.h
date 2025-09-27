@@ -82,7 +82,7 @@ public:
 	GrapaVectorItem* mData;
 	u64 mSize;
 	u8 mDim, mBlock, mMaxBlock, mSetBlock;
-	GrapaRuleQueue mLabels;
+	GrapaRuleQueue mLabels, mKeys;
 	GrapaVector();
 	GrapaVector(const GrapaVector& bi, u8 pBlock = 0);
 	~GrapaVector();
