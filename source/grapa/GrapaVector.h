@@ -25,11 +25,12 @@ class GrapaVectorValue
 {
 public:
 	u8 isRaw;
+	u8 reserved;
 	union {
 		GrapaRuleEvent* e;
 		GrapaVectorBYTE* b;
 	};
-	GrapaVectorValue() { isRaw = 0; e = NULL; };
+	GrapaVectorValue() { isRaw = 0; reserved = 0;  e = NULL; };
 	GrapaVectorValue(GrapaRuleEvent* v) { isRaw = 0; e = NULL; Set(v); };
 	GrapaVectorValue(GrapaVectorValue* v) { isRaw = 0; e = NULL; Set(v); };
 	GrapaVectorValue(GrapaFloat* v) { isRaw = 0; e = NULL; Set(v); };

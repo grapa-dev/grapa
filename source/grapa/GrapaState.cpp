@@ -1744,7 +1744,7 @@ void GrapaRuleEvent::TOSize(u64& pSize)
 	case GrapaTokenType::SYSID:
 	case GrapaTokenType::SYSINT:
 	case GrapaTokenType::SYSSTR:
-		pSize += (sizeof(u64) + 1 + sizeof(u64) + (sizeof(u64) + mName.mLength) + (sizeof(u64) + mValue.mLength));
+		pSize += mValue.mLength;
 		break;
 	case GrapaTokenType::LIST:
 	case GrapaTokenType::TUPLE:
@@ -1758,12 +1758,12 @@ void GrapaRuleEvent::TOSize(u64& pSize)
 	case GrapaTokenType::OBJ:
 		size = 0;
 		if (vQueue) ((GrapaRuleQueue*)vQueue)->TOSize(size, vClass ? vClass->mName.mLength : 0);
-		pSize += (sizeof(u64) + 1 + sizeof(u64) + (sizeof(u64) + mName.mLength) + (sizeof(u64) + size));
+		pSize += size;
 		break;
 	case GrapaTokenType::PTR:
 		size = 0;
 		if (vRulePointer) vRulePointer->TOSize(size);
-		pSize += (sizeof(u64) + 1 + sizeof(u64) + (sizeof(u64) + mName.mLength) + (sizeof(u64) + size));
+		pSize +=  size;
 		break;
 	case GrapaTokenType::VECTOR:
 		break;
@@ -2000,7 +2000,7 @@ GrapaRuleEvent* GrapaRuleQueue::FROM(GrapaScriptState* pScriptState, GrapaNames*
 	u32 headerBlockSize = 0;
 	u32 headerVers = 0;
 
-	if (pValue.mLength < (sizeof(u64) * 3)) return(result);
+	if (pValue.mLength < (sizeof(u64) * 4)) return(result);
 	memcpy(&headerVers, &pValue.mBytes[pos], sizeof(u32));		headerVers = BE_S32(headerVers);			pos += sizeof(u32);
 	memcpy(&headerBlockSize, &pValue.mBytes[pos], sizeof(u32));	headerBlockSize = BE_S32(headerBlockSize);	pos += sizeof(u32);
 	memcpy(&count, &pValue.mBytes[pos], sizeof(u64));			count = BE_S64(count);					pos += sizeof(u64);
@@ -2108,13 +2108,13 @@ GrapaRuleEvent* GrapaRuleQueue::FROM(GrapaScriptState* pScriptState, GrapaNames*
 
 void GrapaRuleQueue::TOSize(u64& pSize, u64 pClassNameSize)
 {
-	pSize = (sizeof(u64) * 3) + pClassNameSize;
+	pSize = (sizeof(u64) * 4) + pClassNameSize;
 	u64 size = 0;
 	GrapaRuleEvent *ev = Head();
 	while (ev)
 	{
 		ev->TOSize(size);
-		pSize += size;
+		pSize += (sizeof(u64) + 1 + (sizeof(u64) + ev->mName.mLength) + (sizeof(u64) + size));
 		ev = ev->Next();
 	}
 }

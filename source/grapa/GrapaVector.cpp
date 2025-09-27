@@ -46,46 +46,46 @@ extern GrapaSystem* gSystem;
 
 /* Unicode-aware string length helper function */
 size_t GetUnicodeLength(const char* str, size_t byte_len) {
-    if (!str || byte_len == 0) return 0;
-    
-    std::string input_str(str, byte_len);
-    size_t char_count = 0;
-    size_t offset = 0;
-    
-    while (offset < input_str.size()) {
-        std::string cluster = extract_grapheme_cluster(input_str, offset);
-        if (cluster.empty()) break;
-        char_count++;
-        offset += cluster.size();
-    }
-    
-    return char_count;
+	if (!str || byte_len == 0) return 0;
+
+	std::string input_str(str, byte_len);
+	size_t char_count = 0;
+	size_t offset = 0;
+
+	while (offset < input_str.size()) {
+		std::string cluster = extract_grapheme_cluster(input_str, offset);
+		if (cluster.empty()) break;
+		char_count++;
+		offset += cluster.size();
+	}
+
+	return char_count;
 }
 
 /* Enhanced BOM detection function */
 bool ProcessUnicodeBOM(char*& vS, u64& vL) {
-    // UTF-8 BOM: EF BB BF
-    if (vL >= 3 && memcmp(vS, "\xEF\xBB\xBF", 3) == 0) {
-        vS += 3;
-        vL -= 3;
-        return true;
-    }
-    
-    // UTF-16 BE BOM: FE FF  
-    if (vL >= 2 && memcmp(vS, "\xFE\xFF", 2) == 0) {
-        vS += 2;
-        vL -= 2;
-        return true;
-    }
-    
-    // UTF-16 LE BOM: FF FE
-    if (vL >= 2 && memcmp(vS, "\xFF\xFE", 2) == 0) {
-        vS += 2;
-        vL -= 2;
-        return true;
-    }
-    
-    return false;
+	// UTF-8 BOM: EF BB BF
+	if (vL >= 3 && memcmp(vS, "\xEF\xBB\xBF", 3) == 0) {
+		vS += 3;
+		vL -= 3;
+		return true;
+	}
+
+	// UTF-16 BE BOM: FE FF  
+	if (vL >= 2 && memcmp(vS, "\xFE\xFF", 2) == 0) {
+		vS += 2;
+		vL -= 2;
+		return true;
+	}
+
+	// UTF-16 LE BOM: FF FE
+	if (vL >= 2 && memcmp(vS, "\xFF\xFE", 2) == 0) {
+		vS += 2;
+		vL -= 2;
+		return true;
+	}
+
+	return false;
 }
 
 GrapaVectorBYTE::GrapaVectorBYTE(const GrapaBYTE& b)
@@ -182,7 +182,7 @@ void GrapaVectorValue::Set(GrapaRuleEvent* v)
 			b = new GrapaVectorBYTE(v->mValue);
 			isRaw = 1;
 			break;
-		default: 
+		default:
 			e = GrapaScriptExec::CopyItem(v);
 			isRaw = 0;
 			break;
@@ -263,14 +263,14 @@ static u64* _scanvectordepth(GrapaRuleEvent* value, u8 pos, u8& dim, u8 maxDim, 
 {
 	if (maxDim && pos == maxDim) return(NULL);
 	if (value == NULL || value->vQueue == NULL) return(NULL);
-	if ((value->mValue.mToken != GrapaTokenType::LIST && value->mValue.mToken != GrapaTokenType::TUPLE) && (pos!=1 || value->mValue.mToken != GrapaTokenType::GOBJ)) return(NULL);
-	u64* counts = _scanvectordepth(value->vQueue->Head(), pos+1, dim, maxDim, size* value->vQueue->mCount, tot);
+	if ((value->mValue.mToken != GrapaTokenType::LIST && value->mValue.mToken != GrapaTokenType::TUPLE) && (pos != 1 || value->mValue.mToken != GrapaTokenType::GOBJ)) return(NULL);
+	u64* counts = _scanvectordepth(value->vQueue->Head(), pos + 1, dim, maxDim, size * value->vQueue->mCount, tot);
 	if (counts == NULL)
 	{
-		dim = pos+1;
-		tot = size* value->vQueue->mCount;
+		dim = pos + 1;
+		tot = size * value->vQueue->mCount;
 		counts = (u64*)GrapaMem::Create(dim * sizeof(u64));
-		memset(counts,0, dim * sizeof(u64));
+		memset(counts, 0, dim * sizeof(u64));
 	}
 	counts[pos] = value->vQueue->mCount;
 	return(counts);
@@ -291,7 +291,7 @@ bool GrapaVector::_scanvectorcreate(GrapaRuleEvent* value, u8 pos, u8 dim, u64* 
 	{
 		if ((pos + 1) < dim)
 		{
-			if (counts[pos+1] != value->vQueue->mCount) return(false);
+			if (counts[pos + 1] != value->vQueue->mCount) return(false);
 			if (!_scanvectorcreate(value, pos + 1, dim, counts, data, block, p, maxblock)) return(false);
 		}
 		else
@@ -329,7 +329,7 @@ bool GrapaVector::_scanvectorcreate(GrapaRuleEvent* value, u8 pos, u8 dim, u64* 
 			}
 			if (hasLabels)
 				mLabels.PushTail(new GrapaRuleEvent(0, value->mName, nullval));
-			GrapaVectorItem *d1 = _datavectorpos(data, block, p);
+			GrapaVectorItem* d1 = _datavectorpos(data, block, p);
 			if (value->IsNull())
 			{
 				d1->isValue = 0;
@@ -446,7 +446,7 @@ bool GrapaVector::FROM(const GrapaVector& pData, u8 pBlock)
 	mDim = pData.mDim;
 	mBlock = pData.mBlock;
 	mMaxBlock = _minvectordatablock_;
-	if (mSetBlock >= _minvectorblock_ && mSetBlock <= _maxvectorblock_) 
+	if (mSetBlock >= _minvectorblock_ && mSetBlock <= _maxvectorblock_)
 		mBlock = mSetBlock;
 	if (mSetBlock == 0 && (pData.mMaxBlock + _minvectorheadblock_) > mBlock)
 		mBlock = (pData.mMaxBlock + _minvectorheadblock_) < _maxvectorblock_ ? (pData.mMaxBlock + _minvectorheadblock_) : _maxvectorblock_;
@@ -501,7 +501,7 @@ bool GrapaVector::FROM(const GrapaVector& pData, u8 pBlock)
 	GrapaRuleEvent* ev = ((GrapaVector*)&pData)->mLabels.Head();
 	while (ev)
 	{
-		mLabels.PushTail(new GrapaRuleEvent(0,ev->mName,ev->mValue));
+		mLabels.PushTail(new GrapaRuleEvent(0, ev->mName, ev->mValue));
 		ev = ev->Next();
 	}
 	return(true);
@@ -557,7 +557,7 @@ char* _next_vector_token(GrapaCHAR& sep, char*& sC, u64& lenC, char*& vS, u64& v
 		sC = NULL;
 		return ret;
 	}
-	if (*sC == '"' || (lenC>=7 && sC[0] == '"' && sC[1] == '=' && sC[2] == '"' && sC[3] == '"'))
+	if (*sC == '"' || (lenC >= 7 && sC[0] == '"' && sC[1] == '=' && sC[2] == '"' && sC[3] == '"'))
 	{
 		isQuoted = true;
 		if (lenC >= 7 && sC[0] == '"' && sC[1] == '=' && sC[2] == '"' && sC[3] == '"')
@@ -582,7 +582,7 @@ char* _next_vector_token(GrapaCHAR& sep, char*& sC, u64& lenC, char*& vS, u64& v
 			v = v + 1;
 			lenC2--;
 		}
-		vS = &sC[1 +(isSYS ? 3 : 0)];
+		vS = &sC[1 + (isSYS ? 3 : 0)];
 		vL = sC2 - sC - 1 - (isSYS ? 4 : 0);
 		lenC = lenC - (v - sC) - 1;
 		sC = v + 1;
@@ -598,7 +598,7 @@ char* _next_vector_token(GrapaCHAR& sep, char*& sC, u64& lenC, char*& vS, u64& v
 			if (lenC2 && *sC2 == '\t') sep.Append('\t');
 			else sep.Append(',');
 		}
-		if (lenC>=sep.mLength && memcmp(sC, sep.mBytes, sep.mLength)==0)
+		if (lenC >= sep.mLength && memcmp(sC, sep.mBytes, sep.mLength) == 0)
 		{
 			lenC -= sep.mLength;
 			sC = sC + sep.mLength;
@@ -682,36 +682,36 @@ bool GrapaVector::FROM(GrapaScriptExec* pScriptExec, GrapaNames* pNameSpace, boo
 		if (cols == 1 && !isQuoted && vL >= 2)
 		{
 			// UTF-8 BOM: 0xEF 0xBB 0xBF (actual UTF-8 BOM)
-			if (vL >= 3 && 
-				(unsigned char)vS[0] == 0xEF && 
-				(unsigned char)vS[1] == 0xBB && 
+			if (vL >= 3 &&
+				(unsigned char)vS[0] == 0xEF &&
+				(unsigned char)vS[1] == 0xBB &&
 				(unsigned char)vS[2] == 0xBF)
 			{
 				vS += 3;
 				vL -= 3;
 			}
 			// String literal 'ï»¿' encoded as UTF-8: 0xC3 0xAF 0xC2 0xBB 0xC2 0xBF
-			else if (vL >= 6 && 
-				(unsigned char)vS[0] == 0xC3 && 
-				(unsigned char)vS[1] == 0xAF && 
-				(unsigned char)vS[2] == 0xC2 && 
-				(unsigned char)vS[3] == 0xBB && 
-				(unsigned char)vS[4] == 0xC2 && 
+			else if (vL >= 6 &&
+				(unsigned char)vS[0] == 0xC3 &&
+				(unsigned char)vS[1] == 0xAF &&
+				(unsigned char)vS[2] == 0xC2 &&
+				(unsigned char)vS[3] == 0xBB &&
+				(unsigned char)vS[4] == 0xC2 &&
 				(unsigned char)vS[5] == 0xBF)
 			{
 				vS += 6;
 				vL -= 6;
 			}
 			// UTF-16 LE BOM: 0xFF 0xFE
-			else if ((unsigned char)vS[0] == 0xFF && 
-					 (unsigned char)vS[1] == 0xFE)
+			else if ((unsigned char)vS[0] == 0xFF &&
+				(unsigned char)vS[1] == 0xFE)
 			{
 				vS += 2;
 				vL -= 2;
 			}
 			// UTF-16 BE BOM: 0xFE 0xFF
-			else if ((unsigned char)vS[0] == 0xFE && 
-					 (unsigned char)vS[1] == 0xFF)
+			else if ((unsigned char)vS[0] == 0xFE &&
+				(unsigned char)vS[1] == 0xFF)
 			{
 				vS += 2;
 				vL -= 2;
@@ -761,7 +761,7 @@ bool GrapaVector::FROM(GrapaScriptExec* pScriptExec, GrapaNames* pNameSpace, boo
 	while (s2)
 	{
 		rows++;
-		s2 = (char*)GrapaMem::MemFind(s2, len-(s2-s), (void*)del.mBytes, del.mLength);
+		s2 = (char*)GrapaMem::MemFind(s2, len - (s2 - s), (void*)del.mBytes, del.mLength);
 		if (s2 == NULL)
 			break;
 		if (len == (s2 - s) + del.mLength)
@@ -772,9 +772,9 @@ bool GrapaVector::FROM(GrapaScriptExec* pScriptExec, GrapaNames* pNameSpace, boo
 	mBlock = _minvectorblock_;
 	mMaxBlock = _minvectordatablock_;
 	if (mSetBlock >= _minvectorblock_ && mSetBlock <= _maxvectorblock_) mBlock = mSetBlock;
-	mSize = (rows-1)*cols;
+	mSize = (rows - 1) * cols;
 	mCounts = (u64*)GrapaMem::Create(sizeof(u64) * mDim);
-	mCounts[0] = rows-1;
+	mCounts[0] = rows - 1;
 	mCounts[1] = cols;
 	mData = (GrapaVectorItem*)GrapaMem::Create(mBlock * mSize);
 	memset(mData, 0, mBlock * mSize);
@@ -782,7 +782,7 @@ bool GrapaVector::FROM(GrapaScriptExec* pScriptExec, GrapaNames* pNameSpace, boo
 	u64 rows2 = 0;
 	u64 i = 0;
 	s2 = s;
-	while (s2 && (s2 - s)<len)
+	while (s2 && (s2 - s) < len)
 	{
 		rows2++;
 		if (rows2 > rows)
@@ -1003,7 +1003,7 @@ void GrapaVector::TO(GrapaScriptExec* pScriptExec, GrapaNames* pNameSpace, Grapa
 	u64 p = 0;
 	u64 oldG = pValue.mGrow;
 	pValue.mGrow = 1024 * 32;
-	_tocsv(pScriptExec, pNameSpace, 0, p, (delim&&delim->vQueue)?delim->vQueue->Head():NULL, pValue);
+	_tocsv(pScriptExec, pNameSpace, 0, p, (delim && delim->vQueue) ? delim->vQueue->Head() : NULL, pValue);
 	pValue.mGrow = oldG;
 	pValue.SetSize(pValue.mSize);
 }
@@ -1018,7 +1018,7 @@ void GrapaVector::_tocsv(GrapaScriptExec* pScriptExec, GrapaNames* pNameSpace, u
 			if (i == 0 && pos == 0)
 			{
 				bool hadItem2 = false;
-				GrapaRuleEvent* delim2 = delim?delim->Next():NULL;
+				GrapaRuleEvent* delim2 = delim ? delim->Next() : NULL;
 				GrapaRuleEvent* ev = mLabels.Head();
 				if (ev)
 				{
@@ -1047,7 +1047,7 @@ void GrapaVector::_tocsv(GrapaScriptExec* pScriptExec, GrapaNames* pNameSpace, u
 			if (hadItem && delim)
 				pValue.Append(delim->mValue);
 			hadItem = true;
-			_tocsv(pScriptExec, pNameSpace, pos + 1, p, delim?delim->Next():NULL, pValue);
+			_tocsv(pScriptExec, pNameSpace, pos + 1, p, delim ? delim->Next() : NULL, pValue);
 		}
 		else
 		{
@@ -1147,187 +1147,130 @@ void GrapaVector::FromBytes(GrapaScriptExec* pScriptExec, GrapaNames* pNameSpace
 	*/
 
 	CLEAR();
+
 	if (pValue.mLength == 0) {
 		return;
 	}
-		
+
 	u64 pos = 0;
-	
-	// Read header section
-	if (pValue.mLength < (2 * sizeof(u32) + 2 * sizeof(u64))) {
-		printf("[DEBUG] GrapaVector::FromBytes - input too short\n");
-		return;
-	}
-	
-	// Standard header
+
+	// =====================================
+	// HEADER SECTION
+	// =====================================
+
 	u32 headerVers;
 	memcpy(&headerVers, &pValue.mBytes[pos], sizeof(u32));
-	headerVers = BE_S32(headerVers); 
+	headerVers = BE_S32(headerVers);
 	pos += sizeof(u32);
-	printf("[DEBUG] GrapaVector::FromBytes - headerVers: %u\n", headerVers);
-	
+
 	u32 headerBlockSize;
 	memcpy(&headerBlockSize, &pValue.mBytes[pos], sizeof(u32));
-	headerBlockSize = BE_S32(headerBlockSize); 
+	headerBlockSize = BE_S32(headerBlockSize);
 	pos += sizeof(u32);
-	printf("[DEBUG] GrapaVector::FromBytes - headerBlockSize: %u\n", headerBlockSize);
-	
-	u64 count; 
-	memcpy(&count, &pValue.mBytes[pos], sizeof(u64));
-	count = BE_S64(count); 
-	pos += sizeof(u64);
-	
-	u64 countP;
-	memcpy(&countP, &pValue.mBytes[pos], sizeof(u64));
-	countP = BE_S64(countP); 
-	pos += sizeof(u64);
-	
-	printf("[DEBUG] GrapaVector::FromBytes - count: %lu, countP: %lu, check: %d\n", count, countP, (count == (countP ^ (-1))));
-	
-	if (count != (countP ^ (-1))) {
-		printf("[DEBUG] GrapaVector::FromBytes - count validation failed\n");
-		return;
-	}
-	
-	// At this point we should check if we have enough data to read the full header or just return early for minimal vectors
-	if (count == 0 && countP == 0) {
-		printf("[DEBUG] GrapaVector::FromBytes - minimal empty vector case\n");
-		return;
-	}
-	
-	if (headerVers != 0) {
-		printf("[DEBUG] GrapaVector::FromBytes - header version mismatch\n");
-		return;
-	}
-	
-	//  Make sure we have minimum size for vector header
-	if (pValue.mLength < pos + 8) {
-		printf("[DEBUG] GrapaVector::FromBytes - insufficient data for vector header at pos: %lu\n", pos);
-		return;
-	}
-	
-	u8 dim;
-	memcpy(&dim, &pValue.mBytes[pos], sizeof(u8));
-	pos += sizeof(u8);
-	
-	u8 block;
-	memcpy(&block, &pValue.mBytes[pos], sizeof(u8));
-	pos += sizeof(u8);
-	
-	u8 maxBlock;
-	memcpy(&maxBlock, &pValue.mBytes[pos], sizeof(u8));
-	pos += sizeof(u8);
-	
-	u8 setBlock;
-	memcpy(&setBlock, &pValue.mBytes[pos], sizeof(u8));
-	pos += sizeof(u8);
-	
+
+	// Vector-specific header fields
+	u8 dim = pValue.mBytes[pos++];
+	u8 block = pValue.mBytes[pos++];
+	u8 maxBlock = pValue.mBytes[pos++];
+	u8 setBlock = pValue.mBytes[pos++];
+
 	u64 size;
 	memcpy(&size, &pValue.mBytes[pos], sizeof(u64));
 	size = BE_S64(size);
 	pos += sizeof(u64);
-	
-	printf("[DEBUG] GrapaVector::FromBytes - vector info: dim=%u, block=%u, maxBlock=%u, setBlock=%u, size=%lu\n", dim, block, maxBlock, setBlock, size);
-	
+
 	// Initialize vector structure
 	mDim = dim;
 	mBlock = block;
 	mMaxBlock = maxBlock;
 	mSetBlock = setBlock;
 	mSize = size;
+	if (mCounts) GrapaMem::Delete(mCounts);
 	mCounts = (u64*)GrapaMem::Create(mDim * sizeof(u64));
-	
+
 	for (u8 i = 0; i < mDim; i++) {
 		memcpy(&mCounts[i], &pValue.mBytes[pos], sizeof(u64));
 		mCounts[i] = BE_S64(mCounts[i]);
 		pos += sizeof(u64);
-		printf("[DEBUG] GrapaVector::FromBytes - counts[%u]: %lu\n", i, mCounts[i]);
 	}
-	
-	// Allocate data space
+
+	// ===================================
+	// MData BLOCK SECTION
+	// ===================================
+
+	if (mData) GrapaMem::Delete(mData);
+	// Allocate and copy the full mData block
 	mData = (GrapaVectorItem*)GrapaMem::Create(mBlock * mSize);
-	memset(mData, 0, mBlock * mSize);
-	printf("[DEBUG] GrapaVector::FromBytes - allocated data space, pos before items: %lu\n", pos);
-	
-	// Read embedded items section
+	memcpy(mData, &pValue.mBytes[pos], mSize * mBlock);
+	pos += mSize * mBlock;
+
+	// =====================================
+	// EXTERNAL OBJECTS SECTION
+	// =====================================
+
+	// Read external objects count
+	u64 externalCount;
+	memcpy(&externalCount, &pValue.mBytes[pos], sizeof(u64));
+	externalCount = BE_S64(externalCount);
+	pos += sizeof(u64);
+
+	u64 extObjIndex = 0;
+
+	// Read each external object
 	for (u64 i = 0; i < mSize; i++) {
-		if (pos >= pValue.mLength) {
-			printf("[DEBUG] GrapaVector::FromBytes - pos exceeded length at item %lu\n", i);
-			break;
-		}
-		
 		GrapaVectorItem* item = _datavectorpos(mData, mBlock, i);
-		
-		// Read packed bit fields (isValue, isNull, mLen) correctly
-		u8 bitData = pValue.mBytes[pos++];
-		item->isValue = (bitData & 0x01) ? 1 : 0;
-		item->isNull = (bitData & 0x02) ? 1 : 0;
-		item->mLen = (bitData >> 2) & 0x3F; // Get 6 bits of mLen from upper bits
-		
-		printf("[DEBUG] GrapaVector::FromBytes - item[%lu]: isValue=%d, isNull=%d, mLen=%u, bitData=%02X\n", i, item->isValue, item->isNull, item->mLen, bitData);
-		
-		if (item->isValue && !item->isNull) {
-			// External object reference
-			u32 refIndex;
-			memcpy(&refIndex, &pValue.mBytes[pos], sizeof(u32));
-			refIndex = BE_S32(refIndex);
-			pos += sizeof(u32);
-			printf("[DEBUG] GrapaVector::FromBytes - external ref for item %lu: %u\n", i, refIndex);
-			// Actual external object read happens later
-		}
-		else if (!item->isNull) {
-			// Embedded data
-			item->mToken = pValue.mBytes[pos++];
-			printf("[DEBUG] GrapaVector::FromBytes - embedded item[%lu]: token=%u, len=%u, bytes:", i, item->mToken, item->mLen);
-			
-			for (u8 j = 0; j < item->mLen && pos < pValue.mLength; j++) {
-				item->d[j] = pValue.mBytes[pos++];
-				printf(" %02X", item->d[j]);
+		if (item->isValue && !item->isNull && extObjIndex < externalCount) {
+			extObjIndex++;
+			u8 isRaw = 0, reserved = 0;
+			memcpy(&isRaw, &pValue.mBytes[pos], 1); pos += 1;
+			memcpy(&reserved, &pValue.mBytes[pos], 1); pos += 1;
+			u64 objSize;
+			memcpy(&objSize, &pValue.mBytes[pos], sizeof(u64));
+			objSize = BE_S64(objSize);
+			pos += sizeof(u64);
+			GrapaBYTE ob;
+			ob.SetSize(objSize, false);
+			ob.SetLength(objSize - 1);
+			memcpy(&ob.mToken, &pValue.mBytes[pos], 1);
+			memcpy(ob.mBytes, &pValue.mBytes[pos + 1], objSize - 1);
+			pos += objSize;
+			GrapaVectorValue* ex = NULL;
+			if (isRaw)
+				ex = new GrapaVectorValue(&ob);
+			else
+			{
+				ex = new GrapaVectorValue();
+				ex->isRaw = isRaw;
+				ex->e = new GrapaRuleEvent();
+				ex->e->mValue.mToken = ob.mToken;
+				ex->e->vQueue = new GrapaRuleQueue();
+				ex->e->vClass = ex->e->vQueue->FROM(pScriptExec->vScriptState, pNameSpace, ob);
 			}
-			printf("\n");
+			memcpy(item->d, &ex, sizeof(GrapaVectorValue*));
 		}
 	}
-	
-	// Read external objects section  
-	u32 externalCount;
-	if (pos + sizeof(u32) <= pValue.mLength) {
-		memcpy(&externalCount, &pValue.mBytes[pos], sizeof(u32));
-		externalCount = BE_S32(externalCount);
-		pos += sizeof(u32);
-		printf("[DEBUG] GrapaVector::FromBytes - external objects count: %u at pos %lu\n", externalCount, pos);
-		
-		// Skip over external objects data if any
-		// For labeled vectors like #[{"a":1,b:2}]#, these might be the labels section serialized
-		if (externalCount == 0) {
-			printf("[DEBUG] GrapaVector::FromBytes - no external objects to skip\n");
-		} else {
-			printf("[DEBUG] GrapaVector::FromBytes - skipping external objects section\n");
-		}
-		// Position is already correct as external objects section would traverse data
+
+
+	// =====================================
+	// LABELS SECTION  
+	// =====================================
+
+	// Read label size
+	u64 labelSize;
+	memcpy(&labelSize, &pValue.mBytes[pos], sizeof(u64));
+	labelSize = BE_S64(labelSize);
+	pos += sizeof(u64);
+
+	// Read labels if they exist
+	if (labelSize > 0) {
+		GrapaBYTE labelBytes;
+		labelBytes.SetSize(labelSize, false);
+		labelBytes.SetLength(labelSize);
+		memcpy(labelBytes.mBytes, &pValue.mBytes[pos], labelSize);
+		labelBytes.mToken = GrapaTokenType::LIST;
+		pos += labelSize;
+		mLabels.FROM(pScriptExec->vScriptState, pNameSpace, labelBytes);
 	}
-	
-	// Read labels section - safe labels deserialization
-	if (pos < pValue.mLength) {
-		try {
-			GrapaRuleQueue rq;
-			GrapaBYTE temp;
-			// Extract just the labels section 
-			temp.SetSize(pValue.mLength - pos);
-			temp.SetLength(pValue.mLength - pos);
-			memcpy(temp.mBytes, &pValue.mBytes[pos], pValue.mLength - pos);
-			temp.mToken = GrapaTokenType::LIST;
-			
-			// deserialize GrapaRuleQueue
-			rq.FROM(pScriptExec->vScriptState, pNameSpace, temp);
-			mLabels.CLEAR();
-			mLabels = rq;
-		} catch (...) {
-			// fallback on empty labels if parsing fails 
-			mLabels.CLEAR();
-		}
-	}
-	
-	printf("[DEBUG] GrapaVector::FromBytes COMPLETE - final pos: %lu, length: %lu\n", pos, pValue.mLength);
 }
 
 u64 GrapaVector::ToSize(GrapaScriptExec* pScriptExec, GrapaNames* pNameSpace)
@@ -1338,264 +1281,194 @@ u64 GrapaVector::ToSize(GrapaScriptExec* pScriptExec, GrapaNames* pNameSpace)
 	return value.mLength;
 	*/
 
-	if (mData == NULL || mSize == 0)
-		return sizeof(u32) + sizeof(u32) + (8 * sizeof(u64)) + (4 * sizeof(u8));  // Minimum header
-	
 	u64 totalSize = 0;
-	
+
 	// =====================================
 	// HEADER SECTION CALCULATION
 	// =====================================
 	u64 headerSize = sizeof(u32) +                // headerVers  
-	                 sizeof(u32) +                 // headerBlockSize
-	                 sizeof(u64) +                 // count
-	                 sizeof(u64) +                 // countP  
-	                 sizeof(u8) +                  // mDim
-	                 sizeof(u8) +                  // mBlock
-	                 sizeof(u8) +                  // mMaxBlock  
-	                 sizeof(u8) +                  // mSetBlock
-	                 sizeof(u64) +                 // mSize
-	                 (mDim * sizeof(u64));         // mCounts array
-	
+		sizeof(u32) +                 // headerBlockSize
+		sizeof(u8) +                  // mDim
+		sizeof(u8) +                  // mBlock
+		sizeof(u8) +                  // mMaxBlock  
+		sizeof(u8) +                  // mSetBlock
+		sizeof(u64) +                 // mSize
+		(mDim * sizeof(u64));         // mCounts array
+
 	totalSize += headerSize;
-	
+
 	// ===================================
 	// EMBEDDED ITEMS SECTION CALCULATION  
 	// ===================================
 	// Fast scan for external objects in single pass
 	std::vector<GrapaVectorValue*> externalObjs;
 	externalObjs.clear();
-	
-	for (u64 i = 0; i < mSize; i++) {
-		GrapaVectorItem* item = _datavectorpos(mData, mBlock, i);
-		totalSize += 1;  // Standard isValue + isNull fields (packed)
-		
-		if (item->isValue && !item->isNull) {
-			// External object reference - track unique objects  
-			GrapaVectorValue* ptr = *(GrapaVectorValue**)item->d;
-			if (ptr) {
-				// Check if this external object was already processed
-				bool found = false;
-				for (GrapaVectorValue* existing : externalObjs) {
-					if (existing == ptr) {
-						found = true;
-						break;
-					}
-				}
-				if (!found) {
+
+	totalSize += (mSize * mBlock);
+
+	if (mData)
+	{
+		for (u64 i = 0; i < mSize; i++) {
+			GrapaVectorItem* item = _datavectorpos(mData, mBlock, i);
+			if (!item->isNull)
+			{
+				if (item->isValue) {
+					GrapaVectorValue* ptr = *(GrapaVectorValue**)item->d;
 					externalObjs.push_back(ptr);
 				}
-				totalSize += sizeof(u32);  // Reference index storage
 			}
 		}
-		else if (!item->isNull) {
-			// Embedded data: mToken + mData content 
-			totalSize += 1 + item->mLen;  // mToken + embedded bytes
-		}
 	}
-	
+
 	// =====================================
 	// EXTERNAL OBJECTS SECTION
 	// =====================================
-	totalSize += sizeof(u32);  // External objects count field
-	
+	totalSize += sizeof(u64);  // External objects count field
+
 	for (GrapaVectorValue* extObj : externalObjs) {
-		if (extObj && extObj->e) {
-			// Use object serialization to calculate its size 
+		totalSize += 2;
+		totalSize += sizeof(u64); // each external bytes starts with a 64-bit size field
+		if (extObj->isRaw) {
+			totalSize += 1 + extObj->b->mLength;  // mToken + raw data 
+		}
+		else {
 			u64 objSize = 0;
-			extObj->e->TOSize(objSize);
-			totalSize += objSize;
+			extObj->e->TOSize(objSize); // Use GrapaRuleEvent to serialize
+			totalSize += 1 + objSize;  // will add mToken to the start to allign with isRaw
 		}
 	}
-	
+
 	// =====================================
 	// LABELS SECTION  
 	// =====================================
+
+	totalSize += sizeof(u64);  // for labelSize
+
 	if (mLabels.mCount > 0) {
 		u64 labelSize = 0;
 		mLabels.TOSize(labelSize, 0);
 		totalSize += labelSize;
 	}
-	
+
 	return totalSize;
 }
 
 void GrapaVector::ToBytes(GrapaScriptExec* pScriptExec, GrapaNames* pNameSpace, GrapaBYTE& pValue)
 {
-	/*
-	GrapaRuleEvent* result = ToArray();
-	result->TO(pValue);
-	pValue.mToken = GrapaTokenType::VECTOR;
-	*/
-
 	// Calculate size and pre-allocate buffer
 	u64 totalSize = ToSize(pScriptExec, pNameSpace);
 	pValue.SetSize(totalSize, false);
 	pValue.SetLength(totalSize);
+	memset(pValue.mBytes, 0, totalSize);
+
 	pValue.mToken = GrapaTokenType::VECTOR;
-	if (mData == NULL || mSize == 0) {
-		// Minimal header for empty vector
-		u64 pos = 0;
-		
-		u32 headerVers = 0;
-		u32 headerBlockSize = sizeof(u32) * 2 + sizeof(u64) * 4;
-		headerVers = BE_S32(headerVers);
-		headerBlockSize = BE_S32(headerBlockSize);
-		memcpy(&pValue.mBytes[pos], &headerVers, sizeof(u32)); pos += sizeof(u32);
-		memcpy(&pValue.mBytes[pos], &headerBlockSize, sizeof(u32)); pos += sizeof(u32);
-		
-		u64 count = 0;
-		u64 countP = 0;
-		count = BE_S64(count);
-		countP = BE_S64(countP);
-		memcpy(&pValue.mBytes[pos], &count, sizeof(u64)); pos += sizeof(u64);
-		memcpy(&pValue.mBytes[pos], &countP, sizeof(u64)); pos += sizeof(u64);
-		
-		printf("[DEBUG] GrapaVector::ToBytes - empty vector complete\n");
-		return;
-	}
-	
+
 	u64 pos = 0;
-	
+
 	// =====================================
 	// HEADER SECTION
 	// =====================================
-	
-	printf("[DEBUG] GrapaVector::ToBytes - writing header pos=%lu\n", pos);
-	
-	// Standard GrapaRuleQueue header structure
+
 	u32 headerVers = 0;
-	u32 headerBlockSize = sizeof(u32) * 2 + sizeof(u64) * 4 + sizeof(u8) * 4 + sizeof(u64) + (mDim * sizeof(u64));
-	printf("[DEBUG] GrapaVector::ToBytes - headerVers=%u, headerBlockSize=%u\n", headerVers, headerBlockSize);
+	u32 headerBlockSize = sizeof(u32) + sizeof(u32) + sizeof(u64) + sizeof(u64) + sizeof(u8) + sizeof(u8) + sizeof(u8) + sizeof(u8) + sizeof(u64) + (mDim * sizeof(u64));
 	headerVers = BE_S32(headerVers);
 	headerBlockSize = BE_S32(headerBlockSize);
 	memcpy(&pValue.mBytes[pos], &headerVers, sizeof(u32)); pos += sizeof(u32);
 	memcpy(&pValue.mBytes[pos], &headerBlockSize, sizeof(u32)); pos += sizeof(u32);
-	
-	u64 count = 1;
-	u64 countP = count ^ (-1);
-	count = BE_S64(count);
-	countP = BE_S64(countP);
-	memcpy(&pValue.mBytes[pos], &count, sizeof(u64)); pos += sizeof(u64);
-	memcpy(&pValue.mBytes[pos], &countP, sizeof(u64)); pos += sizeof(u64);
-	
+
 	// Vector-specific header fields
 	pValue.mBytes[pos++] = mDim;
 	pValue.mBytes[pos++] = mBlock;
 	pValue.mBytes[pos++] = mMaxBlock;
 	pValue.mBytes[pos++] = mSetBlock;
-	
+
 	u64 size = mSize;
-	printf("[DEBUG] GrapaVector::ToBytes - dim=%u, block=%u, maxBlock=%u, setBlock=%u, original_size=%lu, pos=%lu\n", mDim, mBlock, mMaxBlock, mSetBlock, mSize, pos);
 	size = BE_S64(size);
 	memcpy(&pValue.mBytes[pos], &size, sizeof(u64)); pos += sizeof(u64);
-	
+
 	for (u8 i = 0; i < mDim; i++) {
 		u64 countVal = mCounts[i];
 		countVal = BE_S64(countVal);
 		memcpy(&pValue.mBytes[pos], &countVal, sizeof(u64)); pos += sizeof(u64);
-		printf("[DEBUG] GrapaVector::ToBytes - counts[%u]: %lu\n", i, mCounts[i]);
 	}
-	
+
 	// ===================================
-	// EMBEDDED ITEMS SECTION
+	// MData BLOCK SECTION
 	// ===================================
-	
-	// Catalog external objects with stable ordering
+
+		// Collect external objects
 	std::vector<GrapaVectorValue*> externalObjs;
 	externalObjs.clear();
-	
-	// First pass: identify all external objects
-	for (u64 i = 0; i < mSize; i++) {
-		GrapaVectorItem* item = _datavectorpos(mData, mBlock, i);
-		if (item->isValue && !item->isNull) {
-			GrapaVectorValue* ptr = *(GrapaVectorValue**)item->d;
-			if (ptr) {
-				bool found = false;
-				for (GrapaVectorValue* existing : externalObjs) {
-					if (existing == ptr) {
-						found = true;
-						break;
-					}
-				}
-				if (!found) {
-					externalObjs.push_back(ptr);
-				}
+
+	// Copy the full mData block
+	if (mData) {
+		// Create a copy of mData for serialization
+		GrapaVectorItem* serializedData = (GrapaVectorItem*) &pValue.mBytes[pos];
+		pos += mSize * mBlock;
+		memcpy(serializedData, mData, mSize * mBlock);
+		// Zero out pointer data for isValue items (keep first 4 bytes, zero the rest)
+		for (u64 i = 0; i < mSize; i++) {
+			GrapaVectorItem* item = _datavectorpos(serializedData, mBlock, i);
+			if (item->isValue && !item->isNull) {
+				GrapaVectorValue* ptr = *(GrapaVectorValue**)item->d;
+				externalObjs.push_back(ptr);
+				*(GrapaVectorValue**)item->d = NULL;
 			}
 		}
 	}
-	
-	// Second pass: serialize embedded items section
-	printf("[DEBUG] GrapaVector::ToBytes - writing embedded items, pos=%lu\n", pos);
-	for (u64 i = 0; i < mSize; i++) {
-		GrapaVectorItem* item = _datavectorpos(mData, mBlock, i);
-		
-		// Pack bit fields correctly: bits 0-1: flags, bits 2-7: mLen (max 63)
-		u8 bitData = (item->isValue ? 0x01 : 0) | (item->isNull ? 0x02 : 0) | ((item->mLen & 0x3F) << 2);
-		pValue.mBytes[pos++] = bitData;
-		
-		printf("[DEBUG] GrapaVector::ToBytes - item[%lu]: isValue=%d, isNull=%d, mLen=%u, bitData=%02X\n", i, item->isValue, item->isNull, item->mLen, bitData);
-		
-		if (item->isValue && !item->isNull) {
-			// External object reference
-			GrapaVectorValue* ptr = *(GrapaVectorValue**)item->d;
-			u32 refIndex = 0;
-			if (ptr) {
-				// Find index in external objects list
-				for (u32 j = 0; j < externalObjs.size(); j++) {
-					if (externalObjs[j] == ptr) {
-						refIndex = j;
-						break;
-					}
-				}
-			}
-			refIndex = BE_S32(refIndex);
-			memcpy(&pValue.mBytes[pos], &refIndex, sizeof(u32)); pos += sizeof(u32);
-			printf("[DEBUG] GrapaVector::ToBytes - external ref for item %lu: %u\n", i, refIndex);
-		}
-		else if (!item->isNull) {
-			// Embedded data
-			pValue.mBytes[pos++] = item->mToken;
-			printf("[DEBUG] GrapaVector::ToBytes - embedded item[%lu]: token=%u, len=%u, pos=%lu, bytes:", i, item->mToken, item->mLen, pos);
-			for (u8 j = 0; j < item->mLen; j++) {
-				pValue.mBytes[pos++] = item->d[j];
-				printf(" %02X", item->d[j]);
-			}
-			printf("\n");
-		}
-	}
-	
-	// =====================================
-	// EXTERNAL OBJECTS SECTION
-	// =====================================
-	
-	u32 externalCount = (u32)externalObjs.size();
-	externalCount = BE_S32(externalCount);
-	memcpy(&pValue.mBytes[pos], &externalCount, sizeof(u32)); pos += sizeof(u32);
-	
+
+	// Write external objects count
+	u64 externalCount = externalObjs.size();
+	externalCount = BE_S64(externalCount);
+	memcpy(&pValue.mBytes[pos], &externalCount, sizeof(u64)); pos += sizeof(u64);
+
+	// Write each external object
 	for (GrapaVectorValue* extObj : externalObjs) {
-		if (extObj && extObj->e) {
-			// Serialize external object using existing GrapaRuleEvent TO method
-			GrapaBYTE localBytes;
-			extObj->e->TO(localBytes);
-			// Copy the serialized bytes
-			memcpy(&pValue.mBytes[pos], localBytes.mBytes, localBytes.mLength); 
-			pos += localBytes.mLength;
+		if (extObj) {
+			pValue.mBytes[pos++] = extObj->isRaw;
+			pValue.mBytes[pos++] = extObj->reserved;
+			if (extObj->isRaw) {
+				// Raw data: write size + token + data
+				u64 objSize = 1 + extObj->b->mLength;
+				objSize = BE_S64(objSize);
+				memcpy(&pValue.mBytes[pos], &objSize, sizeof(u64)); pos += sizeof(u64);
+				pValue.mBytes[pos++] = extObj->b->mToken;
+				memcpy(&pValue.mBytes[pos], extObj->b->mBytes, extObj->b->mLength);
+				pos += extObj->b->mLength;
+			}
+			else {
+				// GrapaRuleEvent: write size + serialized object
+				u64 objSize = 0;
+				GrapaBYTE tempBytes;
+				extObj->e->TO(tempBytes);
+				objSize = 1 + tempBytes.mLength;
+				objSize = BE_S64(objSize);
+				memcpy(&pValue.mBytes[pos], &objSize, sizeof(u64)); pos += sizeof(u64);
+				pValue.mBytes[pos++] = extObj->e->mValue.mToken;
+				memcpy(&pValue.mBytes[pos], tempBytes.mBytes, tempBytes.mLength);
+				pos += tempBytes.mLength;
+			}
 		}
 	}
-	
+
 	// =====================================
 	// LABELS SECTION  
 	// =====================================
-	
-	// Safe labels serialization - only when labels exist
-	if (mLabels.mCount > 0) {
-		GrapaBYTE labelBytes;
-		mLabels.TO(labelBytes, NULL, GrapaTokenType::LIST);
-		if (labelBytes.mLength > 0) {
-			memcpy(&pValue.mBytes[pos], labelBytes.mBytes, labelBytes.mLength);
-			pos += labelBytes.mLength;
-		}
+
+	if (mLabels.mCount == 0)
+	{
+		u64 labelSize = 0;
+		memcpy(&pValue.mBytes[pos], &labelSize, sizeof(u64)); pos += sizeof(u64);
+	}
+	else
+	{
+		GrapaBYTE tempBytes;
+		mLabels.TO(tempBytes, NULL, GrapaTokenType::LIST);
+		u64 labelSize = tempBytes.mLength;
+		labelSize = BE_S64(labelSize);
+		memcpy(&pValue.mBytes[pos], &labelSize, sizeof(u64)); pos += sizeof(u64);
+		memcpy(&pValue.mBytes[pos], tempBytes.mBytes, tempBytes.mLength);
+		pos += tempBytes.mLength;
 	}
 }
 
@@ -1694,7 +1567,7 @@ int GrapaVectorParam::Cmp(GrapaScriptExec* pScriptExec, GrapaNames* pNameSpace, 
 	{
 		GrapaFloat f = Op(pScriptExec, pNameSpace, fl);
 		GrapaInt i = f.ToInt();
-		return (int) i.LongValue();
+		return (int)i.LongValue();
 	}
 	if (fl)
 	{
@@ -1705,7 +1578,7 @@ int GrapaVectorParam::Cmp(GrapaScriptExec* pScriptExec, GrapaNames* pNameSpace, 
 		}
 		else
 		{
-			if (*aa > * fl->aa) return pDecend ? -1 : 1;
+			if (*aa > *fl->aa) return pDecend ? -1 : 1;
 		}
 		return pDecend ? 1 : -1;
 	}
@@ -1746,8 +1619,8 @@ GrapaVectorParam::GrapaVectorParam(GrapaScriptExec* pScriptExec, GrapaVectorItem
 				case GrapaTokenType::STR:
 					// For raw STR tokens, we need to create a GrapaRuleEvent
 					// This is a simplified approach - may need refinement
-                                        Aop = new GrapaRuleEvent(GrapaTokenType::STR, 0, "", "");
-                                        Aop->mValue.FROM(a->b->Get());
+					Aop = new GrapaRuleEvent(GrapaTokenType::STR, 0, "", "");
+					Aop->mValue.FROM(a->b->Get());
 					AopOwned = true;  // We own this memory
 					break;
 				case GrapaTokenType::BOOL:
@@ -1994,11 +1867,11 @@ GrapaRuleEvent* GrapaVector::Get(u64 pPos)
 
 	if (mData == NULL || pPos >= mSize)
 		return NULL;
-	
+
 	GrapaVectorItem* d1 = _datavectorpos(mData, mBlock, pPos);
 	if (d1->isNull)
 		return result;
-	
+
 	if (d1->isValue)
 	{
 		GrapaVectorValue* d = 0L;
@@ -2032,7 +1905,7 @@ GrapaRuleEvent* GrapaVector::Get(const GrapaCHAR& pLabel)
 {
 	if (mLabels.mCount == 0)
 		return NULL;
-	
+
 	s64 index = 0;
 	GrapaRuleEvent* label = mLabels.Search(pLabel, index);
 	if (label && index >= 0 && index < (s64)mSize)
@@ -2044,12 +1917,12 @@ GrapaRuleEvent* GrapaVector::Get(const GrapaCHAR& pRowLabel, const GrapaCHAR& pC
 {
 	if (mDim != 2 || mLabels.mCount == 0)
 		return NULL;
-	
+
 	s64 rowIndex = 0, colIndex = 0;
 	GrapaRuleEvent* rowLabel = mLabels.Search(pRowLabel, rowIndex);
 	GrapaRuleEvent* colLabel = mLabels.Search(pColLabel, colIndex);
-	
-	if (rowLabel && colLabel && rowIndex >= 0 && colIndex >= 0 && 
+
+	if (rowLabel && colLabel && rowIndex >= 0 && colIndex >= 0 &&
 		rowIndex < (s64)mCounts[0] && colIndex < (s64)mCounts[1])
 		return Get(rowIndex, colIndex);
 	return NULL;
@@ -2059,10 +1932,10 @@ GrapaRuleEvent* GrapaVector::Get(u64 pRow, const GrapaCHAR& pColLabel)
 {
 	if (mDim != 2 || mLabels.mCount == 0)
 		return NULL;
-	
+
 	s64 colIndex = 0;
 	GrapaRuleEvent* colLabel = mLabels.Search(pColLabel, colIndex);
-	
+
 	if (colLabel && colIndex >= 0 && colIndex < (s64)mCounts[1] && pRow < mCounts[0])
 		return Get(pRow, colIndex);
 	return NULL;
@@ -2072,10 +1945,10 @@ GrapaRuleEvent* GrapaVector::Get(const GrapaCHAR& pRowLabel, u64 pCol)
 {
 	if (mDim != 2 || mLabels.mCount == 0)
 		return NULL;
-	
+
 	s64 rowIndex = 0;
 	GrapaRuleEvent* rowLabel = mLabels.Search(pRowLabel, rowIndex);
-	
+
 	if (rowLabel && rowIndex >= 0 && rowIndex < (s64)mCounts[0] && pCol < mCounts[1])
 		return Get(rowIndex, pCol);
 	return NULL;
@@ -2085,7 +1958,7 @@ void GrapaVector::Set(const GrapaCHAR& pLabel, GrapaRuleEvent* value)
 {
 	if (mLabels.mCount == 0)
 		return;
-	
+
 	s64 index = 0;
 	GrapaRuleEvent* label = mLabels.Search(pLabel, index);
 	if (label && index >= 0 && index < (s64)mSize)
@@ -2096,12 +1969,12 @@ void GrapaVector::Set(const GrapaCHAR& pRowLabel, const GrapaCHAR& pColLabel, Gr
 {
 	if (mDim != 2 || mLabels.mCount == 0)
 		return;
-	
+
 	s64 rowIndex = 0, colIndex = 0;
 	GrapaRuleEvent* rowLabel = mLabels.Search(pRowLabel, rowIndex);
 	GrapaRuleEvent* colLabel = mLabels.Search(pColLabel, colIndex);
-	
-	if (rowLabel && colLabel && rowIndex >= 0 && colIndex >= 0 && 
+
+	if (rowLabel && colLabel && rowIndex >= 0 && colIndex >= 0 &&
 		rowIndex < (s64)mCounts[0] && colIndex < (s64)mCounts[1])
 		Set(rowIndex * mCounts[1] + colIndex, value);
 }
@@ -2110,10 +1983,10 @@ void GrapaVector::Set(u64 pRow, const GrapaCHAR& pColLabel, GrapaRuleEvent* valu
 {
 	if (mDim != 2 || mLabels.mCount == 0)
 		return;
-	
+
 	s64 colIndex = 0;
 	GrapaRuleEvent* colLabel = mLabels.Search(pColLabel, colIndex);
-	
+
 	if (colLabel && colIndex >= 0 && colIndex < (s64)mCounts[1] && pRow < mCounts[0])
 		Set(pRow * mCounts[1] + colIndex, value);
 }
@@ -2122,10 +1995,10 @@ void GrapaVector::Set(const GrapaCHAR& pRowLabel, u64 pCol, GrapaRuleEvent* valu
 {
 	if (mDim != 2 || mLabels.mCount == 0)
 		return;
-	
+
 	s64 rowIndex = 0;
 	GrapaRuleEvent* rowLabel = mLabels.Search(pRowLabel, rowIndex);
-	
+
 	if (rowLabel && rowIndex >= 0 && rowIndex < (s64)mCounts[0] && pCol < mCounts[1])
 		Set(rowIndex * mCounts[1] + pCol, value);
 }
@@ -2179,7 +2052,7 @@ GrapaError GrapaVector::Dot(GrapaScriptExec* pScriptExec, GrapaNames* pNameSpace
 			result.mSize = 1;
 			result.mData = (GrapaVectorItem*)GrapaMem::Create(result.mBlock * result.mSize);
 			memset(result.mData, 0, result.mBlock * result.mSize);
-			
+
 			GrapaFloat val(pScriptExec->vScriptState->mItemState.mFloatFix, pScriptExec->vScriptState->mItemState.mFloatMax, pScriptExec->vScriptState->mItemState.mFloatExtra, 0);
 			for (u64 i = 0; i < mCounts[0]; i++)
 			{
@@ -2669,7 +2542,8 @@ GrapaError GrapaVector::Left(GrapaScriptExec* pScriptExec, GrapaNames* pNameSpac
 			GrapaVectorParam p1(pScriptExec, mData, mBlock, (i));
 			if (p1.Aop) {
 				result.Set((i), p1.Aop);
-			} else {
+			}
+			else {
 				result.Set((i), *p1.aa);
 			}
 		}
@@ -2695,7 +2569,8 @@ GrapaError GrapaVector::Left(GrapaScriptExec* pScriptExec, GrapaNames* pNameSpac
 				GrapaVectorParam p1(pScriptExec, mData, mBlock, (i * mCounts[1] + j));
 				if (p1.Aop) {
 					result.Set((i * result.mCounts[1] + j), p1.Aop);
-				} else {
+				}
+				else {
 					result.Set((i * result.mCounts[1] + j), *p1.aa);
 				}
 			}
@@ -2732,7 +2607,8 @@ GrapaError GrapaVector::Right(GrapaScriptExec* pScriptExec, GrapaNames* pNameSpa
 			GrapaVectorParam p1(pScriptExec, mData, mBlock, (mCounts[0] - i - 1));
 			if (p1.Aop) {
 				result.Set((result.mCounts[0] - i - 1), p1.Aop);
-			} else {
+			}
+			else {
 				result.Set((result.mCounts[0] - i - 1), *p1.aa);
 			}
 		}
@@ -2758,7 +2634,8 @@ GrapaError GrapaVector::Right(GrapaScriptExec* pScriptExec, GrapaNames* pNameSpa
 				GrapaVectorParam p1(pScriptExec, mData, mBlock, (i * mCounts[1] + mCounts[1] - j - 1));
 				if (p1.Aop) {
 					result.Set((i * result.mCounts[1] + result.mCounts[1] - j - 1), p1.Aop);
-				} else {
+				}
+				else {
 					result.Set((i * result.mCounts[1] + result.mCounts[1] - j - 1), *p1.aa);
 				}
 			}
@@ -2778,11 +2655,11 @@ GrapaError GrapaVector::Solve(GrapaScriptExec* pScriptExec, GrapaNames* pNameSpa
 	switch (mDim)
 	{
 	case 2:
-		if ((mCounts[0]+1) != mCounts[1])
+		if ((mCounts[0] + 1) != mCounts[1])
 			return -1;
 		if ((mCounts[0] + 1) == mCounts[1])
 		{
-			GrapaVector left,right;
+			GrapaVector left, right;
 			Left(pScriptExec, pNameSpace, mCounts[0], left);
 			left.Inv(pScriptExec, pNameSpace);
 			Right(pScriptExec, pNameSpace, 1, right);
@@ -2862,7 +2739,7 @@ GrapaError GrapaVector::Cov(GrapaScriptExec* pScriptExec, GrapaNames* pNameSpace
 						isSet = true;
 					}
 				}
-				if (cols>1) val = val / (cols-1);
+				if (cols > 1) val = val / (cols - 1);
 				if (isSet)
 					result.Set((i * rowscols + j), val);
 				else
@@ -2965,7 +2842,7 @@ GrapaError GrapaVector::Mean(GrapaScriptExec* pScriptExec, GrapaVector& result, 
 		result.mSize = 1;
 		result.mData = (GrapaVectorItem*)GrapaMem::Create(result.mBlock * result.mSize);
 		memset(result.mData, 0, result.mBlock * result.mSize);
-		result.Set(0, sum/mCounts[0]);
+		result.Set(0, sum / mCounts[0]);
 		return 0;
 	}
 	else if (mDim == 2)
@@ -2991,7 +2868,7 @@ GrapaError GrapaVector::Mean(GrapaScriptExec* pScriptExec, GrapaVector& result, 
 				GrapaVectorParam p1(pScriptExec, mData, mBlock, (pos));
 				sum = sum + *p1.aa;
 			}
-			result.Set(j, sum/rows);
+			result.Set(j, sum / rows);
 		}
 		return 0;
 	}
@@ -3127,7 +3004,7 @@ GrapaError GrapaVector::Std(GrapaScriptExec* pScriptExec, GrapaVector& result, b
 	{
 		// Handle 1-dimensional vector - standard deviation of all elements
 		if (mCounts[0] < 2) return -1; // Need at least 2 values for std dev
-		
+
 		// Calculate mean first
 		GrapaFloat sum(pScriptExec->vScriptState->mItemState.mFloatFix, pScriptExec->vScriptState->mItemState.mFloatMax, pScriptExec->vScriptState->mItemState.mFloatExtra, 0);
 		for (u64 i = 0; i < mCounts[0]; i++)
@@ -3136,7 +3013,7 @@ GrapaError GrapaVector::Std(GrapaScriptExec* pScriptExec, GrapaVector& result, b
 			sum = sum + *p1.aa;
 		}
 		GrapaFloat mean = sum / mCounts[0];
-		
+
 		// Calculate variance
 		GrapaFloat variance(pScriptExec->vScriptState->mItemState.mFloatFix, pScriptExec->vScriptState->mItemState.mFloatMax, pScriptExec->vScriptState->mItemState.mFloatExtra, 0);
 		for (u64 i = 0; i < mCounts[0]; i++)
@@ -3146,11 +3023,11 @@ GrapaError GrapaVector::Std(GrapaScriptExec* pScriptExec, GrapaVector& result, b
 			variance = variance + (diff * diff);
 		}
 		variance = variance / (mCounts[0] - 1); // Sample variance (n-1)
-		
+
 		// Calculate standard deviation (square root of variance)
 		GrapaInt two(2);
 		GrapaFloat std_dev = variance.Root(two);
-		
+
 		result.mDim = 1;
 		result.mSetBlock = mSetBlock;
 		result.mBlock = mBlock;
@@ -3168,7 +3045,7 @@ GrapaError GrapaVector::Std(GrapaScriptExec* pScriptExec, GrapaVector& result, b
 		u64 rows = isRows ? mCounts[1] : mCounts[0];
 		u64 cols = isRows ? mCounts[0] : mCounts[1];
 		if (rows < 2) return -1; // Need at least 2 values for std dev
-		
+
 		result.mDim = isRows ? 2 : 1;
 		result.mSetBlock = mSetBlock;
 		result.mBlock = mBlock;
@@ -3179,7 +3056,7 @@ GrapaError GrapaVector::Std(GrapaScriptExec* pScriptExec, GrapaVector& result, b
 		result.mSize = cols;
 		result.mData = (GrapaVectorItem*)GrapaMem::Create(result.mBlock * result.mSize);
 		memset(result.mData, 0, result.mBlock * result.mSize);
-		
+
 		for (u64 j = 0; j < cols; j++)
 		{
 			// Calculate mean for this column/row
@@ -3191,7 +3068,7 @@ GrapaError GrapaVector::Std(GrapaScriptExec* pScriptExec, GrapaVector& result, b
 				sum = sum + *p1.aa;
 			}
 			GrapaFloat mean = sum / rows;
-			
+
 			// Calculate variance for this column/row
 			GrapaFloat variance(pScriptExec->vScriptState->mItemState.mFloatFix, pScriptExec->vScriptState->mItemState.mFloatMax, pScriptExec->vScriptState->mItemState.mFloatExtra, 0);
 			for (u64 i = 0; i < rows; i++)
@@ -3202,7 +3079,7 @@ GrapaError GrapaVector::Std(GrapaScriptExec* pScriptExec, GrapaVector& result, b
 				variance = variance + (diff * diff);
 			}
 			variance = variance / (rows - 1); // Sample variance (n-1)
-			
+
 			// Calculate standard deviation
 			GrapaInt two(2);
 			GrapaFloat std_dev = variance.Root(two);
@@ -3222,7 +3099,7 @@ GrapaError GrapaVector::Var(GrapaScriptExec* pScriptExec, GrapaVector& result, b
 	{
 		// Handle 1-dimensional vector - variance of all elements
 		if (mCounts[0] < 2) return -1; // Need at least 2 values for variance
-		
+
 		// Calculate mean first
 		GrapaFloat sum(pScriptExec->vScriptState->mItemState.mFloatFix, pScriptExec->vScriptState->mItemState.mFloatMax, pScriptExec->vScriptState->mItemState.mFloatExtra, 0);
 		for (u64 i = 0; i < mCounts[0]; i++)
@@ -3231,7 +3108,7 @@ GrapaError GrapaVector::Var(GrapaScriptExec* pScriptExec, GrapaVector& result, b
 			sum = sum + *p1.aa;
 		}
 		GrapaFloat mean = sum / mCounts[0];
-		
+
 		// Calculate variance
 		GrapaFloat variance(pScriptExec->vScriptState->mItemState.mFloatFix, pScriptExec->vScriptState->mItemState.mFloatMax, pScriptExec->vScriptState->mItemState.mFloatExtra, 0);
 		for (u64 i = 0; i < mCounts[0]; i++)
@@ -3241,7 +3118,7 @@ GrapaError GrapaVector::Var(GrapaScriptExec* pScriptExec, GrapaVector& result, b
 			variance = variance + (diff * diff);
 		}
 		variance = variance / (mCounts[0] - 1); // Sample variance (n-1)
-		
+
 		result.mDim = 1;
 		result.mSetBlock = mSetBlock;
 		result.mBlock = mBlock;
@@ -3259,7 +3136,7 @@ GrapaError GrapaVector::Var(GrapaScriptExec* pScriptExec, GrapaVector& result, b
 		u64 rows = isRows ? mCounts[1] : mCounts[0];
 		u64 cols = isRows ? mCounts[0] : mCounts[1];
 		if (rows < 2) return -1; // Need at least 2 values for variance
-		
+
 		result.mDim = isRows ? 2 : 1;
 		result.mSetBlock = mSetBlock;
 		result.mBlock = mBlock;
@@ -3270,7 +3147,7 @@ GrapaError GrapaVector::Var(GrapaScriptExec* pScriptExec, GrapaVector& result, b
 		result.mSize = cols;
 		result.mData = (GrapaVectorItem*)GrapaMem::Create(result.mBlock * result.mSize);
 		memset(result.mData, 0, result.mBlock * result.mSize);
-		
+
 		for (u64 j = 0; j < cols; j++)
 		{
 			// Calculate mean for this column/row
@@ -3282,7 +3159,7 @@ GrapaError GrapaVector::Var(GrapaScriptExec* pScriptExec, GrapaVector& result, b
 				sum = sum + *p1.aa;
 			}
 			GrapaFloat mean = sum / rows;
-			
+
 			// Calculate variance for this column/row
 			GrapaFloat variance(pScriptExec->vScriptState->mItemState.mFloatFix, pScriptExec->vScriptState->mItemState.mFloatMax, pScriptExec->vScriptState->mItemState.mFloatExtra, 0);
 			for (u64 i = 0; i < rows; i++)
@@ -3372,7 +3249,7 @@ GrapaError GrapaVector::Mode(GrapaScriptExec* pScriptExec, GrapaVector& result, 
 			GrapaVectorParam p1(pScriptExec, mData, mBlock, i);
 			frequency[*p1.aa]++;
 		}
-		
+
 		// Find the value with highest frequency
 		GrapaFloat mode_val = frequency.begin()->first;
 		u64 max_freq = 0;
@@ -3384,7 +3261,7 @@ GrapaError GrapaVector::Mode(GrapaScriptExec* pScriptExec, GrapaVector& result, 
 				mode_val = pair.first;
 			}
 		}
-		
+
 		result.mDim = 1;
 		result.mSetBlock = mSetBlock;
 		result.mBlock = mBlock;
@@ -3421,7 +3298,7 @@ GrapaError GrapaVector::Mode(GrapaScriptExec* pScriptExec, GrapaVector& result, 
 				GrapaVectorParam p1(pScriptExec, mData, mBlock, pos);
 				frequency[*p1.aa]++;
 			}
-			
+
 			// Find the value with highest frequency
 			GrapaFloat mode_val = frequency.begin()->first;
 			u64 max_freq = 0;
@@ -3450,7 +3327,7 @@ GrapaError GrapaVector::Median(GrapaScriptExec* pScriptExec, GrapaVector& result
 		// Handle 1-dimensional vector - find median
 		if (mCounts[0] == 0)
 			return -1;
-		
+
 		// Create a copy of the data for sorting
 		std::vector<GrapaFloat> sorted_data;
 		for (u64 i = 0; i < mCounts[0]; i++)
@@ -3458,24 +3335,24 @@ GrapaError GrapaVector::Median(GrapaScriptExec* pScriptExec, GrapaVector& result
 			GrapaVectorParam p1(pScriptExec, mData, mBlock, i);
 			sorted_data.push_back(*p1.aa);
 		}
-		
+
 		// Sort the data
 		std::sort(sorted_data.begin(), sorted_data.end());
-		
+
 		// Calculate median
 		GrapaFloat median_val;
 		u64 n = sorted_data.size();
 		if (n % 2 == 0)
 		{
 			// Even number of elements - average of middle two
-			median_val = (sorted_data[n/2 - 1] + sorted_data[n/2]) / 2;
+			median_val = (sorted_data[n / 2 - 1] + sorted_data[n / 2]) / 2;
 		}
 		else
 		{
 			// Odd number of elements - middle element
-			median_val = sorted_data[n/2];
+			median_val = sorted_data[n / 2];
 		}
-		
+
 		result.mDim = 1;
 		result.mSetBlock = mSetBlock;
 		result.mBlock = mBlock;
@@ -3512,22 +3389,22 @@ GrapaError GrapaVector::Median(GrapaScriptExec* pScriptExec, GrapaVector& result
 				GrapaVectorParam p1(pScriptExec, mData, mBlock, pos);
 				sorted_data.push_back(*p1.aa);
 			}
-			
+
 			// Sort the data
 			std::sort(sorted_data.begin(), sorted_data.end());
-			
+
 			// Calculate median
 			GrapaFloat median_val;
 			u64 n = sorted_data.size();
 			if (n % 2 == 0)
 			{
 				// Even number of elements - average of middle two
-				median_val = (sorted_data[n/2 - 1] + sorted_data[n/2]) / 2;
+				median_val = (sorted_data[n / 2 - 1] + sorted_data[n / 2]) / 2;
 			}
 			else
 			{
 				// Odd number of elements - middle element
-				median_val = sorted_data[n/2];
+				median_val = sorted_data[n / 2];
 			}
 			result.Set(j, median_val);
 		}
@@ -3546,7 +3423,7 @@ GrapaError GrapaVector::Percentile(GrapaScriptExec* pScriptExec, GrapaVector& re
 		// Handle 1-dimensional vector - find 50th percentile (median)
 		if (mCounts[0] == 0)
 			return -1;
-		
+
 		// Create a copy of the data for sorting
 		std::vector<GrapaFloat> sorted_data;
 		for (u64 i = 0; i < mCounts[0]; i++)
@@ -3554,10 +3431,10 @@ GrapaError GrapaVector::Percentile(GrapaScriptExec* pScriptExec, GrapaVector& re
 			GrapaVectorParam p1(pScriptExec, mData, mBlock, i);
 			sorted_data.push_back(*p1.aa);
 		}
-		
+
 		// Sort the data
 		std::sort(sorted_data.begin(), sorted_data.end());
-		
+
 		// Calculate q-th percentile
 		GrapaFloat percentile_val;
 		u64 n = sorted_data.size();
@@ -3575,7 +3452,7 @@ GrapaError GrapaVector::Percentile(GrapaScriptExec* pScriptExec, GrapaVector& re
 			GrapaFloat index = q * GrapaFloat(n - 1);
 			u64 lower_index = (u64)index.ToInt().LongValue();
 			u64 upper_index = lower_index + 1;
-			
+
 			if (upper_index >= n)
 			{
 				// At the end of the array
@@ -3588,7 +3465,7 @@ GrapaError GrapaVector::Percentile(GrapaScriptExec* pScriptExec, GrapaVector& re
 				percentile_val = sorted_data[lower_index] * (GrapaFloat(1) - weight) + sorted_data[upper_index] * weight;
 			}
 		}
-		
+
 		result.mDim = 1;
 		result.mSetBlock = mSetBlock;
 		result.mBlock = mBlock;
@@ -3625,10 +3502,10 @@ GrapaError GrapaVector::Percentile(GrapaScriptExec* pScriptExec, GrapaVector& re
 				GrapaVectorParam p1(pScriptExec, mData, mBlock, pos);
 				sorted_data.push_back(*p1.aa);
 			}
-			
+
 			// Sort the data
 			std::sort(sorted_data.begin(), sorted_data.end());
-			
+
 			// Calculate q-th percentile
 			GrapaFloat percentile_val;
 			u64 n = sorted_data.size();
@@ -3642,22 +3519,22 @@ GrapaError GrapaVector::Percentile(GrapaScriptExec* pScriptExec, GrapaVector& re
 			}
 			else
 			{
-							// Convert q (0-1) to percentile index
-			GrapaFloat index = q * GrapaFloat(n - 1);
-			u64 lower_index = (u64)index.ToInt().LongValue();
-			u64 upper_index = lower_index + 1;
-			
-			if (upper_index >= n)
-			{
-				// At the end of the array
-				percentile_val = sorted_data[lower_index];
-			}
-			else
-			{
-				// Interpolate between two values
-				GrapaFloat weight = index - GrapaFloat(lower_index);
-				percentile_val = sorted_data[lower_index] * (GrapaFloat(1) - weight) + sorted_data[upper_index] * weight;
-			}
+				// Convert q (0-1) to percentile index
+				GrapaFloat index = q * GrapaFloat(n - 1);
+				u64 lower_index = (u64)index.ToInt().LongValue();
+				u64 upper_index = lower_index + 1;
+
+				if (upper_index >= n)
+				{
+					// At the end of the array
+					percentile_val = sorted_data[lower_index];
+				}
+				else
+				{
+					// Interpolate between two values
+					GrapaFloat weight = index - GrapaFloat(lower_index);
+					percentile_val = sorted_data[lower_index] * (GrapaFloat(1) - weight) + sorted_data[upper_index] * weight;
+				}
 			}
 			result.Set(j, percentile_val);
 		}
@@ -3676,7 +3553,7 @@ GrapaError GrapaVector::Quantile(GrapaScriptExec* pScriptExec, GrapaVector& resu
 		// Handle 1-dimensional vector - find 0.5 quantile (median)
 		if (mCounts[0] == 0)
 			return -1;
-		
+
 		// Create a copy of the data for sorting
 		std::vector<GrapaFloat> sorted_data;
 		for (u64 i = 0; i < mCounts[0]; i++)
@@ -3684,10 +3561,10 @@ GrapaError GrapaVector::Quantile(GrapaScriptExec* pScriptExec, GrapaVector& resu
 			GrapaVectorParam p1(pScriptExec, mData, mBlock, i);
 			sorted_data.push_back(*p1.aa);
 		}
-		
+
 		// Sort the data
 		std::sort(sorted_data.begin(), sorted_data.end());
-		
+
 		// Calculate q-th quantile
 		GrapaFloat quantile_val;
 		u64 n = sorted_data.size();
@@ -3705,7 +3582,7 @@ GrapaError GrapaVector::Quantile(GrapaScriptExec* pScriptExec, GrapaVector& resu
 			GrapaFloat index = q * GrapaFloat(n - 1);
 			u64 lower_index = (u64)index.ToInt().LongValue();
 			u64 upper_index = lower_index + 1;
-			
+
 			if (upper_index >= n)
 			{
 				// At the end of the array
@@ -3718,7 +3595,7 @@ GrapaError GrapaVector::Quantile(GrapaScriptExec* pScriptExec, GrapaVector& resu
 				quantile_val = sorted_data[lower_index] * (GrapaFloat(1) - weight) + sorted_data[upper_index] * weight;
 			}
 		}
-		
+
 		result.mDim = 1;
 		result.mSetBlock = mSetBlock;
 		result.mBlock = mBlock;
@@ -3755,10 +3632,10 @@ GrapaError GrapaVector::Quantile(GrapaScriptExec* pScriptExec, GrapaVector& resu
 				GrapaVectorParam p1(pScriptExec, mData, mBlock, pos);
 				sorted_data.push_back(*p1.aa);
 			}
-			
+
 			// Sort the data
 			std::sort(sorted_data.begin(), sorted_data.end());
-			
+
 			// Calculate q-th quantile
 			GrapaFloat quantile_val;
 			u64 n = sorted_data.size();
@@ -3776,7 +3653,7 @@ GrapaError GrapaVector::Quantile(GrapaScriptExec* pScriptExec, GrapaVector& resu
 				GrapaFloat index = q * GrapaFloat(n - 1);
 				u64 lower_index = (u64)index.ToInt().LongValue();
 				u64 upper_index = lower_index + 1;
-				
+
 				if (upper_index >= n)
 				{
 					// At the end of the array
@@ -3805,7 +3682,7 @@ GrapaError GrapaVector::Skew(GrapaScriptExec* pScriptExec, GrapaVector& result, 
 	{
 		// Handle 1-dimensional vector - skewness of all elements
 		if (mCounts[0] < 3) return -1; // Need at least 3 values for skewness
-		
+
 		// Calculate mean first
 		GrapaFloat sum(pScriptExec->vScriptState->mItemState.mFloatFix, pScriptExec->vScriptState->mItemState.mFloatMax, pScriptExec->vScriptState->mItemState.mFloatExtra, 0);
 		for (u64 i = 0; i < mCounts[0]; i++)
@@ -3814,7 +3691,7 @@ GrapaError GrapaVector::Skew(GrapaScriptExec* pScriptExec, GrapaVector& result, 
 			sum = sum + *p1.aa;
 		}
 		GrapaFloat mean = sum / mCounts[0];
-		
+
 		// Calculate variance
 		GrapaFloat variance(pScriptExec->vScriptState->mItemState.mFloatFix, pScriptExec->vScriptState->mItemState.mFloatMax, pScriptExec->vScriptState->mItemState.mFloatExtra, 0);
 		for (u64 i = 0; i < mCounts[0]; i++)
@@ -3824,12 +3701,12 @@ GrapaError GrapaVector::Skew(GrapaScriptExec* pScriptExec, GrapaVector& result, 
 			variance = variance + (diff * diff);
 		}
 		variance = variance / (mCounts[0] - 1); // Sample variance (n-1)
-		
+
 		// Calculate skewness
 		GrapaFloat skewness(pScriptExec->vScriptState->mItemState.mFloatFix, pScriptExec->vScriptState->mItemState.mFloatMax, pScriptExec->vScriptState->mItemState.mFloatExtra, 0);
 		GrapaFloat std_dev = variance.Root(GrapaInt(2));
 		if (std_dev == GrapaFloat(0)) return -1; // Cannot calculate skewness if standard deviation is zero
-		
+
 		for (u64 i = 0; i < mCounts[0]; i++)
 		{
 			GrapaVectorParam p1(pScriptExec, mData, mBlock, i);
@@ -3838,7 +3715,7 @@ GrapaError GrapaVector::Skew(GrapaScriptExec* pScriptExec, GrapaVector& result, 
 			skewness = skewness + (z_score * z_score * z_score);
 		}
 		skewness = skewness / mCounts[0];
-		
+
 		result.mDim = 1;
 		result.mSetBlock = mSetBlock;
 		result.mBlock = mBlock;
@@ -3856,7 +3733,7 @@ GrapaError GrapaVector::Skew(GrapaScriptExec* pScriptExec, GrapaVector& result, 
 		u64 rows = isRows ? mCounts[1] : mCounts[0];
 		u64 cols = isRows ? mCounts[0] : mCounts[1];
 		if (rows < 3) return -1; // Need at least 3 values for skewness
-		
+
 		result.mDim = isRows ? 2 : 1;
 		result.mSetBlock = mSetBlock;
 		result.mBlock = mBlock;
@@ -3867,7 +3744,7 @@ GrapaError GrapaVector::Skew(GrapaScriptExec* pScriptExec, GrapaVector& result, 
 		result.mSize = cols;
 		result.mData = (GrapaVectorItem*)GrapaMem::Create(result.mBlock * result.mSize);
 		memset(result.mData, 0, result.mBlock * result.mSize);
-		
+
 		for (u64 j = 0; j < cols; j++)
 		{
 			// Calculate mean for this column/row
@@ -3879,7 +3756,7 @@ GrapaError GrapaVector::Skew(GrapaScriptExec* pScriptExec, GrapaVector& result, 
 				sum = sum + *p1.aa;
 			}
 			GrapaFloat mean = sum / rows;
-			
+
 			// Calculate variance for this column/row
 			GrapaFloat variance(pScriptExec->vScriptState->mItemState.mFloatFix, pScriptExec->vScriptState->mItemState.mFloatMax, pScriptExec->vScriptState->mItemState.mFloatExtra, 0);
 			for (u64 i = 0; i < rows; i++)
@@ -3890,7 +3767,7 @@ GrapaError GrapaVector::Skew(GrapaScriptExec* pScriptExec, GrapaVector& result, 
 				variance = variance + (diff * diff);
 			}
 			variance = variance / (rows - 1); // Sample variance (n-1)
-			
+
 			// Calculate skewness for this column/row
 			GrapaFloat skewness(pScriptExec->vScriptState->mItemState.mFloatFix, pScriptExec->vScriptState->mItemState.mFloatMax, pScriptExec->vScriptState->mItemState.mFloatExtra, 0);
 			GrapaFloat std_dev = variance.Root(GrapaInt(2));
@@ -3926,7 +3803,7 @@ GrapaError GrapaVector::Kurtosis(GrapaScriptExec* pScriptExec, GrapaVector& resu
 	{
 		// Handle 1-dimensional vector - kurtosis of all elements
 		if (mCounts[0] < 4) return -1; // Need at least 4 values for kurtosis
-		
+
 		// Calculate mean first
 		GrapaFloat sum(pScriptExec->vScriptState->mItemState.mFloatFix, pScriptExec->vScriptState->mItemState.mFloatMax, pScriptExec->vScriptState->mItemState.mFloatExtra, 0);
 		for (u64 i = 0; i < mCounts[0]; i++)
@@ -3935,7 +3812,7 @@ GrapaError GrapaVector::Kurtosis(GrapaScriptExec* pScriptExec, GrapaVector& resu
 			sum = sum + *p1.aa;
 		}
 		GrapaFloat mean = sum / mCounts[0];
-		
+
 		// Calculate variance
 		GrapaFloat variance(pScriptExec->vScriptState->mItemState.mFloatFix, pScriptExec->vScriptState->mItemState.mFloatMax, pScriptExec->vScriptState->mItemState.mFloatExtra, 0);
 		for (u64 i = 0; i < mCounts[0]; i++)
@@ -3945,12 +3822,12 @@ GrapaError GrapaVector::Kurtosis(GrapaScriptExec* pScriptExec, GrapaVector& resu
 			variance = variance + (diff * diff);
 		}
 		variance = variance / (mCounts[0] - 1); // Sample variance (n-1)
-		
+
 		// Calculate kurtosis
 		GrapaFloat kurtosis(pScriptExec->vScriptState->mItemState.mFloatFix, pScriptExec->vScriptState->mItemState.mFloatMax, pScriptExec->vScriptState->mItemState.mFloatExtra, 0);
 		GrapaFloat std_dev = variance.Root(GrapaInt(2));
 		if (std_dev == GrapaFloat(0)) return -1; // Cannot calculate kurtosis if standard deviation is zero
-		
+
 		for (u64 i = 0; i < mCounts[0]; i++)
 		{
 			GrapaVectorParam p1(pScriptExec, mData, mBlock, i);
@@ -3959,10 +3836,10 @@ GrapaError GrapaVector::Kurtosis(GrapaScriptExec* pScriptExec, GrapaVector& resu
 			kurtosis = kurtosis + (z_score * z_score * z_score * z_score);
 		}
 		kurtosis = kurtosis / mCounts[0];
-		
+
 		// Subtract 3 to get excess kurtosis (relative to normal distribution)
 		kurtosis = kurtosis - GrapaFloat(3);
-		
+
 		result.mDim = 1;
 		result.mSetBlock = mSetBlock;
 		result.mBlock = mBlock;
@@ -3980,7 +3857,7 @@ GrapaError GrapaVector::Kurtosis(GrapaScriptExec* pScriptExec, GrapaVector& resu
 		u64 rows = isRows ? mCounts[1] : mCounts[0];
 		u64 cols = isRows ? mCounts[0] : mCounts[1];
 		if (rows < 4) return -1; // Need at least 4 values for kurtosis
-		
+
 		result.mDim = isRows ? 2 : 1;
 		result.mSetBlock = mSetBlock;
 		result.mBlock = mBlock;
@@ -3991,7 +3868,7 @@ GrapaError GrapaVector::Kurtosis(GrapaScriptExec* pScriptExec, GrapaVector& resu
 		result.mSize = cols;
 		result.mData = (GrapaVectorItem*)GrapaMem::Create(result.mBlock * result.mSize);
 		memset(result.mData, 0, result.mBlock * result.mSize);
-		
+
 		for (u64 j = 0; j < cols; j++)
 		{
 			// Calculate mean for this column/row
@@ -4003,7 +3880,7 @@ GrapaError GrapaVector::Kurtosis(GrapaScriptExec* pScriptExec, GrapaVector& resu
 				sum = sum + *p1.aa;
 			}
 			GrapaFloat mean = sum / rows;
-			
+
 			// Calculate variance for this column/row
 			GrapaFloat variance(pScriptExec->vScriptState->mItemState.mFloatFix, pScriptExec->vScriptState->mItemState.mFloatMax, pScriptExec->vScriptState->mItemState.mFloatExtra, 0);
 			for (u64 i = 0; i < rows; i++)
@@ -4014,7 +3891,7 @@ GrapaError GrapaVector::Kurtosis(GrapaScriptExec* pScriptExec, GrapaVector& resu
 				variance = variance + (diff * diff);
 			}
 			variance = variance / (rows - 1); // Sample variance (n-1)
-			
+
 			// Calculate kurtosis for this column/row
 			GrapaFloat kurtosis(pScriptExec->vScriptState->mItemState.mFloatFix, pScriptExec->vScriptState->mItemState.mFloatMax, pScriptExec->vScriptState->mItemState.mFloatExtra, 0);
 			GrapaFloat std_dev = variance.Root(GrapaInt(2));
@@ -4213,8 +4090,8 @@ bool GrapaVector::Extend(const GrapaVector& bi)
 			{
 				u8 newBlock = mBlock > bi.mBlock ? mBlock : bi.mBlock;
 				GrapaVector v2(bi, newBlock);
-				GrapaVectorItem *data2 = (GrapaVectorItem*)GrapaMem::Create(newBlock * (mSize + v2.mSize));
-				if (mBlock!=newBlock)
+				GrapaVectorItem* data2 = (GrapaVectorItem*)GrapaMem::Create(newBlock * (mSize + v2.mSize));
+				if (mBlock != newBlock)
 				{
 					u64* oCounts = mCounts;
 					GrapaVectorItem* oData = mData;
@@ -4410,7 +4287,7 @@ bool GrapaVector::Join(GrapaRuleEvent* event)
 		evx = evx->Next();
 	}
 
-	mSize = rows*cols;
+	mSize = rows * cols;
 	mDim = 2;
 	mBlock = block;
 	mMaxBlock = maxBlock;
@@ -4649,7 +4526,7 @@ bool GrapaVector::Transpose()
 {
 	mLabels.CLEAR();
 
-	if (mDim == 2 && mCounts[1]==1)
+	if (mDim == 2 && mCounts[1] == 1)
 	{
 		mCounts[1] = mCounts[0];
 		mCounts[0] = 1;
@@ -4693,7 +4570,7 @@ struct GrapaVectorStruct
 	GrapaVectorItem* mData2;
 	u8 mBlock;
 	bool mZero, mDecend;
-	u64 mRows,mCols;
+	u64 mRows, mCols;
 	bool isCol;
 	u64 mPos;
 };
@@ -4706,7 +4583,7 @@ static int GrapaVectorSort(const void* arg1, const void* arg2)
 	{
 		GrapaVectorParam p1(a->vScriptExec, a->mData2, a->mBlock, (a->isCol ? i * a->mCols + a->mPos : a->mPos * a->mCols + i));
 		GrapaVectorParam p2(b->vScriptExec, b->mData2, b->mBlock, (b->isCol ? i * b->mCols + b->mPos : b->mPos * b->mCols + i));
-		if (a->vOp && a->vOp->mValue.mToken==GrapaTokenType::OP)
+		if (a->vOp && a->vOp->mValue.mToken == GrapaTokenType::OP)
 		{
 			a->vParams->Head(0)->mValue.FROM(p1.aa->getBytes());
 			a->vParams->Head(1)->mValue.FROM(p2.aa->getBytes());
@@ -4912,7 +4789,7 @@ bool GrapaVector::Sort(GrapaScriptExec* pScriptExec, GrapaNames* pNameSpace, Gra
 			else
 			{
 				if (!rowvar)
-					pResult.mLabels.PushTail(new GrapaRuleEvent(0, posName,GrapaCHAR()));
+					pResult.mLabels.PushTail(new GrapaRuleEvent(0, posName, GrapaCHAR()));
 				for (s64 j = 0; j < rescols; j++)
 				{
 					pResult.Set(rowvar ? i * pResult.mCounts[1] + j : j * pResult.mCounts[1] + i);
@@ -4981,7 +4858,7 @@ bool GrapaVector::Sort(GrapaScriptExec* pScriptExec, GrapaNames* pNameSpace, Gra
 			pResult.mCounts[1] = mCounts[1];
 			pResult.mSize = pResult.mCounts[0] * pResult.mCounts[1];
 			pResult.mData = (GrapaVectorItem*)GrapaMem::Create(pResult.mBlock * pResult.mSize);
-			memset(pResult.mData, 0, pResult.mBlock* pResult.mSize);
+			memset(pResult.mData, 0, pResult.mBlock * pResult.mSize);
 			GrapaVectorItem* dataOther = NULL;
 			if (hasOther)
 			{
@@ -5131,7 +5008,7 @@ bool GrapaVector::Rref(GrapaScriptExec* pScriptExec, GrapaNames* pNameSpace)
 	if (mDim != 2)
 		return false;
 
-	for (u64 i = 0; i < mCounts[0]-1; i++)
+	for (u64 i = 0; i < mCounts[0] - 1; i++)
 	{
 		GrapaVector vv(*this);
 		vv.Sort(pScriptExec, pNameSpace, NULL, NULL, NULL, true, true, true, NULL, *this);
@@ -5144,7 +5021,7 @@ bool GrapaVector::Rref(GrapaScriptExec* pScriptExec, GrapaNames* pNameSpace)
 			{
 				GrapaVectorParam p2(pScriptExec, mData, mBlock, (l * mCounts[1] + j));
 				Set((l * mCounts[1] + j), GrapaFloat(pScriptExec->vScriptState->mItemState.mFloatFix, pScriptExec->vScriptState->mItemState.mFloatMax, pScriptExec->vScriptState->mItemState.mFloatExtra, 0));
-				for (u64 m = j+1; m < mCounts[1]; m++)
+				for (u64 m = j + 1; m < mCounts[1]; m++)
 				{
 					GrapaVectorParam p3(pScriptExec, mData, mBlock, (i * mCounts[1] + m));
 					GrapaVectorParam p4(pScriptExec, mData, mBlock, (l * mCounts[1] + m));
@@ -5247,7 +5124,7 @@ bool GrapaVector::Inv(GrapaScriptExec* pScriptExec, GrapaNames* pNameSpace)
 		memcpy(_datavectorpos(mData, mBlock, (i * mCounts[1] * 2)), _datavectorpos(data, mBlock, (i * mCounts[1])), mCounts[1] * mBlock);
 		for (u64 j = 0; j < mCounts[1]; j++)
 		{
-			if (i==j)
+			if (i == j)
 				Set((i * mCounts[1] * 2 + mCounts[1] + j), GrapaFloat(pScriptExec->vScriptState->mItemState.mFloatFix, pScriptExec->vScriptState->mItemState.mFloatMax, pScriptExec->vScriptState->mItemState.mFloatExtra, 1));
 			else
 				Set((i * mCounts[1] * 2 + mCounts[1] + j), GrapaFloat(pScriptExec->vScriptState->mItemState.mFloatFix, pScriptExec->vScriptState->mItemState.mFloatMax, pScriptExec->vScriptState->mItemState.mFloatExtra, 0));
@@ -5277,7 +5154,7 @@ GrapaFloat GrapaVector::Determinant(GrapaScriptExec* pScriptExec, GrapaNames* pN
 {
 	GrapaFloat f(pScriptExec->vScriptState->mItemState.mFloatFix, pScriptExec->vScriptState->mItemState.mFloatMax, pScriptExec->vScriptState->mItemState.mFloatExtra, 1);
 
-	if (mDim!=2 || mCounts[0] != mCounts[1])
+	if (mDim != 2 || mCounts[0] != mCounts[1])
 	{
 		f.FromInt(0);
 		return(f);
@@ -5357,7 +5234,7 @@ void GrapaVector::Identity(GrapaScriptExec* pScriptExec, u64 n)
 	{
 		for (u64 j = 0; j < n; j++)
 		{
-			if (i==j)
+			if (i == j)
 				Set((i * mCounts[1] + j), one);
 			else
 				Set((i * mCounts[1] + j), zero);
@@ -5380,21 +5257,22 @@ bool GrapaVector::Diagonal(GrapaScriptExec* pScriptExec, s64 n, GrapaVector& res
 		result.mCounts[1] = mCounts[0];
 		result.mSize = mCounts[0] * mCounts[0];
 		result.mData = (GrapaVectorItem*)GrapaMem::Create(result.mBlock * result.mSize);
-		
+
 		/* Initialize with zeros */
 		GrapaFloat zero(pScriptExec->vScriptState->mItemState.mFloatFix, pScriptExec->vScriptState->mItemState.mFloatMax, pScriptExec->vScriptState->mItemState.mFloatExtra, 0);
 		for (u64 i = 0; i < result.mSize; i++)
 		{
 			result.Set(i, zero);
 		}
-		
+
 		/* Set diagonal elements from vector */
 		for (u64 i = 0; i < mCounts[0]; i++)
 		{
 			GrapaVectorParam p1(pScriptExec, mData, mBlock, i);
 			if (p1.Aop) {
 				result.Set(i * result.mCounts[1] + i, p1.Aop);
-			} else {
+			}
+			else {
 				result.Set(i * result.mCounts[1] + i, *p1.aa);
 			}
 		}
@@ -5443,7 +5321,7 @@ bool GrapaVector::Diagonal(GrapaScriptExec* pScriptExec, s64 n, GrapaVector& res
 	{
 		for (u64 i = 0; i < size; i++)
 		{
-			GrapaVectorParam p1(pScriptExec, mData, mBlock, ((i-n) * mCounts[1] + i));
+			GrapaVectorParam p1(pScriptExec, mData, mBlock, ((i - n) * mCounts[1] + i));
 			result.Set((i), *p1.aa);
 		}
 	}
@@ -5478,7 +5356,8 @@ bool GrapaVector::TriU(GrapaScriptExec* pScriptExec, s64 n, GrapaVector& result)
 				GrapaVectorParam p1(pScriptExec, mData, mBlock, (i * mCounts[1] + j));
 				if (p1.Aop) {
 					result.Set((i * result.mCounts[1] + j), p1.Aop);
-				} else {
+				}
+				else {
 					result.Set((i * result.mCounts[1] + j), *p1.aa);
 				}
 			}
@@ -5513,7 +5392,8 @@ bool GrapaVector::TriL(GrapaScriptExec* pScriptExec, s64 n, GrapaVector& result)
 				GrapaVectorParam p1(pScriptExec, mData, mBlock, (i * mCounts[1] + j));
 				if (p1.Aop) {
 					result.Set((i * result.mCounts[1] + j), p1.Aop);
-				} else {
+				}
+				else {
 					result.Set((i * result.mCounts[1] + j), *p1.aa);
 				}
 			}
