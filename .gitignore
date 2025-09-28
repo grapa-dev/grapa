@@ -127,6 +127,7 @@ prj/winlib-amd64_static/x64
 dep/fltk-1.4.4/
 dep/openssl-3.5.2/
 dep/llama.cpp-master/
+dep/onnx-main/
 
 # mypy
 .mypy_cache/
