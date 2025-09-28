@@ -24,7 +24,7 @@ public:
 	GrapaFloat(const GrapaInt& bi);
 	GrapaFloat(double pValue);
 	double ToDouble();
-	void INIT() { mSigned = mTrunc = mNaN = false; mExp = mBits = 0; mData = 0; mMax = 4 * 8; mExtra = 10; mFix = false; }
+	void INIT() { mSigned = mTrunc = mNaN = false; mExp = mBits = 0; mData = 0; mMax = 56; mExtra = 4; mFix = false; }
 	void FROM(const GrapaFloat& pData) { mSigned = pData.mSigned; mNaN = pData.mNaN; mTrunc = pData.mTrunc; mExp = pData.mExp; mBits = pData.mBits; mMax = pData.mMax; mFix = pData.mFix; mExtra = pData.mExtra; mData = pData.mData; mTail = pData.mTail; }
 	void TO(GrapaInt& pInteger, s64& pLenI, GrapaInt& pFraction, s64& pLenF, int lpadbits);
 	GrapaFloat& operator=(const GrapaFloat& that);
