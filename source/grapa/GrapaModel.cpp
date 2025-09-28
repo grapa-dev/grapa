@@ -774,23 +774,28 @@ GrapaRuleEvent* GrapaModel::EmbedOpenAI(const GrapaCHAR& text, GrapaRuleEvent* m
     headerStr.Append(requestBody);
     
     GrapaError err = mNet.mNet.Send(headerStr);
-    if (err != 0) {
+    if (err != 0)
         return result;
-    }
     
-    mNet.HttpRead(vScriptExec);
+    err = mNet.HttpRead(vScriptExec);
+    if (err != 0)
+        return result;
+
     GrapaRuleEvent* message = mNet.HttpMessage(vScriptExec, vNameSpace);
     if (message && message->vQueue)
     {
-        // Parse the JSON response to extract embedding
         s64 index;
-        GrapaRuleEvent* data = message->vQueue->Search("data", index);
+        // Parse the JSON response to extract embedding
+        GrapaRuleEvent* data = message->vQueue->Search("body", index);
         if (data && data->vQueue) {
-            GrapaRuleEvent* embedding = data->vQueue->Head();
-            if (embedding && embedding->vQueue) {
-                GrapaRuleEvent* embeddingData = embedding->vQueue->Search("embedding", index);
-                if (embeddingData) {
-                    result = GrapaScriptExec::CopyItem(embeddingData);
+            data = data->vQueue->Search("data", index);
+            if (data && data->vQueue) {
+                GrapaRuleEvent* embedding = data->vQueue->Head();
+                if (embedding && embedding->vQueue) {
+                    GrapaRuleEvent* embeddingData = embedding->vQueue->Search("embedding", index);
+                    if (embeddingData) {
+                        result = GrapaScriptExec::CopyItem(embeddingData);
+                    }
                 }
             }
         }
@@ -802,7 +807,7 @@ GrapaRuleEvent* GrapaModel::EmbedOpenAI(const GrapaCHAR& text, GrapaRuleEvent* m
         message = NULL;
     }
     
-    return 0;
+    return result;
 }
 
 GrapaRuleEvent* GrapaModel::GetModelInfo() const

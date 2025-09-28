@@ -1722,6 +1722,9 @@ GrapaError GrapaNet::Receive(u8* recvbuf, u64 recvbuflen, u64& recvlen)
 			if (iResult > 0)
 				recvlen = iResult;
 			err = SSL_get_error(vSSL, iResult);
+			unsigned long ssl_error = ERR_get_error();
+			char error_buf[256];
+			ERR_error_string_n(ssl_error, error_buf, sizeof(error_buf));
             switch (err)
             {
             case SSL_ERROR_SYSCALL:
