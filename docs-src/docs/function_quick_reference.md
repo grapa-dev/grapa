@@ -56,6 +56,9 @@ tags:
 ## String Operations
 `left`, `right`, `mid`, `midtrim`, `rtrim`, `ltrim`, `trim`, `rrot`, `lrot`, `rpad`, `lpad`, `reverse`, `replace`, `grep`, `split`, `join`, `lower`, `upper`
 
+## String Distance & Similarity
+`levenshtein_distance`, `damerau_levenshtein_distance`, `jaro_winkler_similarity`, `cosine_similarity`, `jaccard_similarity`
+
 ## Array/Matrix
 `shape`, `reshape`, `dot`, `identity`, `diagonal`, `triu`, `tril`, `eigh`, `sum`, `mean`
 

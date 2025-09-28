@@ -26,31 +26,31 @@ doc5 = "snow in winter";
 
 /* Scenario 1: No options - should use word frequency */
 "Scenario 1: No options (word frequency)".echo();
-doc1.cosinesimilarity(doc2).echo();
-doc1.cosinesimilarity(doc3).echo();
-doc1.cosinesimilarity(doc4).echo();
+doc1.cosine_similarity(doc2).echo();
+doc1.cosine_similarity(doc3).echo();
+doc1.cosine_similarity(doc4).echo();
 
 /* Scenario 2: With corpus - should auto-select TF-IDF */
 "Scenario 2: With corpus (auto TF-IDF)".echo();
-doc1.cosinesimilarity(doc2, {corpus: corpus}).echo();
-doc1.cosinesimilarity(doc3, {corpus: corpus}).echo();
-doc1.cosinesimilarity(doc4, {corpus: corpus}).echo();
+doc1.cosine_similarity(doc2, {corpus: corpus}).echo();
+doc1.cosine_similarity(doc3, {corpus: corpus}).echo();
+doc1.cosine_similarity(doc4, {corpus: corpus}).echo();
 
 /* Scenario 3: Force word frequency */
 "Scenario 3: Force word frequency".echo();
-doc1.cosinesimilarity(doc2, {method: "word_freq"}).echo();
-doc1.cosinesimilarity(doc2, {method: "word_freq", corpus: corpus}).echo();
+doc1.cosine_similarity(doc2, {method: "word_freq"}).echo();
+doc1.cosine_similarity(doc2, {method: "word_freq", corpus: corpus}).echo();
 
 /* Scenario 4: Force TF-IDF */
 "Scenario 4: Force TF-IDF".echo();
-doc1.cosinesimilarity(doc2, {method: "tfidf", corpus: corpus}).echo();
-doc1.cosinesimilarity(doc3, {method: "tfidf", corpus: corpus}).echo();
+doc1.cosine_similarity(doc2, {method: "tfidf", corpus: corpus}).echo();
+doc1.cosine_similarity(doc3, {method: "tfidf", corpus: corpus}).echo();
 
 /* Scenario 5: Edge cases */
 "Scenario 5: Edge cases".echo();
-"".cosinesimilarity("").echo();
-"".cosinesimilarity("hello").echo();
-"hello".cosinesimilarity("").echo();
-"hello".cosinesimilarity("hello").echo();
+"".cosine_similarity("").echo();
+"".cosine_similarity("hello").echo();
+"hello".cosine_similarity("").echo();
+"hello".cosine_similarity("hello").echo();
 
 "=== Test completed ===".echo();

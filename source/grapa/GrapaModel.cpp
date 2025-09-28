@@ -186,6 +186,9 @@ GrapaError GrapaModel::Load(const GrapaCHAR& modelPath, const GrapaCHAR& method)
     else if (mMethod.StrCmp("openai") == 0) {
         result = LoadOpenAI(modelPath);
     }
+    else if (mMethod.StrCmp("openai-embedding") == 0) {
+        result = LoadOpenAI(modelPath); // Same as OpenAI but for embeddings
+    }
     else if (mMethod.StrCmp("onnx") == 0) {
         result = LoadOnnx(modelPath);
     }
@@ -436,6 +439,25 @@ GrapaError GrapaModel::Generate(const GrapaCHAR& prompt, GrapaCHAR& result, Grap
     
     delete mergedParams;
     return -2; // Unsupported backend
+}
+
+GrapaError GrapaModel::Embed(const GrapaCHAR& text, GrapaCHAR& result, GrapaRuleEvent* callParams)
+{
+    if (!mLoaded) {
+        return -1;
+    }
+    
+    // Merge persistent + call-specific parameters
+    GrapaRuleEvent* mergedParams = MergeParams(vParams, callParams);
+    
+    if (mMethod.StrCmp("openai") == 0 || mMethod.StrCmp("openai-embedding") == 0) {
+        GrapaError err = EmbedOpenAI(text, result, mergedParams);
+        delete mergedParams;
+        return err;
+    }
+    
+    delete mergedParams;
+    return -2; // Unsupported backend for embeddings
 }
 
 GrapaError GrapaModel::GenerateLlama(const GrapaCHAR& prompt, GrapaCHAR& result, GrapaRuleEvent* mergedParams)
@@ -690,6 +712,103 @@ GrapaError GrapaModel::GenerateOpenAI(const GrapaCHAR& prompt, GrapaCHAR& result
                         break; // Found message type, exit outer loop
                     }
                     outputItem = outputItem->Next();
+                }
+            }
+        }
+    }
+    if (message)
+    {
+        message->CLEAR();
+        delete message;
+        message = NULL;
+    }
+    
+    return 0;
+}
+
+GrapaError GrapaModel::EmbedOpenAI(const GrapaCHAR& text, GrapaCHAR& result, GrapaRuleEvent* mergedParams)
+{
+    s64 index;
+
+    // Early exit for empty text
+    if (text.mLength == 0) {
+        result.SetLength(0);
+        return 0;
+    }
+    
+    // Extract authorization token
+    GrapaCHAR authToken;
+    if (mergedParams && mergedParams->vQueue) {
+        GrapaRuleEvent* authParam = mergedParams->vQueue->Search("api_key", index);
+        while (authParam && authParam->mValue.mToken == GrapaTokenType::PTR && authParam->vRulePointer) authParam = authParam->vRulePointer;
+        if (authParam && authParam->mValue.mToken == GrapaTokenType::STR) {
+            authToken.FROM(authParam->mValue);
+        }
+    }
+    
+    if (authToken.mLength == 0) {
+        return -1; // No authorization token provided
+    }
+    
+    // Check if connection is still active
+    if (!mNet.mNet.mConnected) {
+        return -2; // Connection lost, need to reload
+    }
+    
+    // Prepare headers
+    GrapaCHAR headers;
+    headers.FROM("Host: api.openai.com\r\n");
+    headers.Append("Authorization: Bearer ");
+    headers.Append(authToken);
+    headers.Append("\r\nContent-Type: application/json\r\nConnection: keep-alive\r\n");
+    
+    // Prepare request body for embeddings
+    GrapaCHAR requestBody;
+    requestBody.FROM("{");
+    requestBody.Append("\"model\": \"");
+    requestBody.Append(mModelPath);
+    requestBody.Append("\",");
+    requestBody.Append("\"input\": \"");
+    
+    // Escape the text for JSON
+    GrapaCHAR escapedText = text;
+    escapedText.Replace("\"", "\\\"");
+    escapedText.Replace("\n", "\\n");
+    escapedText.Replace("\r", "\\r");
+    escapedText.Replace("\t", "\\t");
+    requestBody.Append(escapedText);
+    requestBody.Append("\"");
+    requestBody.Append("}");
+    
+    // Send request using the existing connection
+    GrapaCHAR headerStr;
+    headerStr.Append("POST /v1/embeddings HTTP/1.1\r\n");
+    headerStr.Append(headers);
+    headerStr.Append("Content-Length: ");
+    headerStr.Append(GrapaInt(requestBody.mLength).ToString());
+    headerStr.Append("\r\n");
+    headerStr.Append("\r\n");
+    headerStr.Append(requestBody);
+    
+    GrapaError err = mNet.mNet.Send(headerStr);
+    if (err != 0) {
+        return -3; // HTTP request failed
+    }
+    
+    mNet.HttpRead(vScriptExec);
+    GrapaRuleEvent* message = mNet.HttpMessage(vScriptExec, vNameSpace);
+    if (message && message->vQueue)
+    {
+        // Parse the JSON response to extract embedding
+        s64 index;
+        GrapaRuleEvent* data = message->vQueue->Search("data", index);
+        if (data && data->vQueue) {
+            GrapaRuleEvent* embedding = data->vQueue->Head();
+            if (embedding && embedding->vQueue) {
+                GrapaRuleEvent* embeddingData = embedding->vQueue->Search("embedding", index);
+                if (embeddingData && embeddingData->mValue.mToken == GrapaTokenType::LIST) {
+                    // Convert array to string representation
+                    result.FROM(embeddingData->mValue);
                 }
             }
         }

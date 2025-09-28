@@ -441,6 +441,158 @@ sudo apt-get install -y cmake build-essential git libcurl4-openssl-dev libomp-de
 3. **Complete AI/ML Integration** - Finalize cross-platform AI/ML model support
 4. **Document AI/ML Features** - Update user documentation for $MODEL functionality
 
+## Next Major Feature: Pinecone-Style Similarity Search
+
+### Overview
+Implement comprehensive similarity search capabilities in Grapa, enabling Pinecone-style vector similarity search with fuzzy string matching and hybrid search capabilities.
+
+### Phase 1: Enhanced String Matching (C++ Implementation Required)
+**Priority**: High - Foundation for fuzzy search capabilities
+
+#### **1.1 Add Damerau-Levenshtein Distance to $STR Class**
+- **Location**: `source/grapa/GrapaLibRule.cpp` - Add `GrapaLibraryRuleDamerauLevenshteinEvent::Run()`
+- **Function**: `"kitten".damerau_levenshtein("sitting")` - Returns edit distance with transpositions
+- **Use Cases**: Advanced spell checking, fuzzy matching with character transpositions
+- **Implementation**: Dynamic programming algorithm with transposition support
+
+#### **1.2 Add Jaccard Similarity with N-gram Support**
+- **Location**: `source/grapa/GrapaLibRule.cpp` - Add `GrapaLibraryRuleJaccardEvent::Run()`
+- **Function**: `"hello world".jaccard("world hello", "word")` - Token-based Jaccard
+- **Function**: `"hello".jaccard("hallo", "char", 2)` - Character 2-gram Jaccard
+- **Use Cases**: Document similarity, token-based fuzzy matching
+- **Implementation**: N-gram generation with Jaccard coefficient calculation
+
+#### **1.3 Add Fuzzy Search to Database Queries**
+- **Location**: `source/grapa/GrapaDB.cpp` - Extend `SearchDb()` method
+- **Function**: `table.search({text: "machine learning", fuzzy: true, threshold: 0.8})`
+- **Use Cases**: Fuzzy database queries, approximate string matching
+- **Implementation**: Integration with string distance functions for database search
+
+### Phase 2: Vector Similarity Search (C++ Implementation Required)
+**Priority**: High - Core vector similarity capabilities
+
+#### **2.1 Implement Distance Kernels in GrapaVector**
+- **Location**: `source/grapa/GrapaVector.cpp` - Add `GrapaVector::Similarity()` method
+- **Functions**:
+  - `vec1.similarity(vec2, "cosine")` - Cosine similarity
+  - `vec1.similarity(vec2, "l2")` - L2 distance
+  - `vec1.similarity(vec2, "inner")` - Inner product
+  - `vec1.similarity(vec2, "hamming")` - Hamming distance
+- **Use Cases**: Vector similarity search, embedding comparisons
+- **Implementation**: Optimized distance calculations for different metrics
+
+#### **2.2 Add ANN Index Types (HNSW, IVF, etc.)**
+- **Location**: New files `source/grapa/GrapaVectorIndex.cpp` and `source/grapa/GrapaVectorIndex.h`
+- **Classes**: `GrapaVectorIndex`, `GrapaHNSWIndex`, `GrapaIVFIndex`
+- **Functions**:
+  - `table.mkindex("vector_index", ["embedding"], {type: "HNSW", distance: "cosine"})`
+  - `table.search({embedding: query_vector, index: "vector_index", limit: 10})`
+- **Use Cases**: Fast approximate nearest neighbor search, large-scale vector databases
+- **Implementation**: HNSW (Hierarchical Navigable Small World) and IVF (Inverted File) algorithms
+
+#### **2.3 Integrate with GrapaDB for Persistent Vector Storage**
+- **Location**: `source/grapa/GrapaDB.cpp` - Add vector index support
+- **Functions**:
+  - `GrapaDB::CreateVectorIndex()` - Create vector indexes
+  - `GrapaDB::SearchVectorIndex()` - Search using vector indexes
+  - `GrapaDB::UpdateVectorIndex()` - Update indexes when data changes
+- **Use Cases**: Persistent vector storage, real-time vector search
+- **Implementation**: Integration with existing BTree-based storage system
+
+### Phase 3: Advanced Features (Mixed Implementation)
+**Priority**: Medium - Advanced search capabilities
+
+#### **3.1 Hybrid Search (Pure Grapa Implementation)**
+- **Location**: Pure Grapa code - No C++ changes needed
+- **Function**: `table.hybrid_search({text: "query", embedding: query_vector, metadata: {category: "AI"}})`
+- **Use Cases**: Combined vector, text, and metadata search
+- **Implementation**: Leverage existing database operations and vector functions
+
+#### **3.2 Real-time Indexing (C++ Implementation Required)**
+- **Location**: `source/grapa/GrapaDB.cpp` - Add real-time index updates
+- **Function**: Automatic index updates when data changes
+- **Use Cases**: Dynamic vector databases, real-time similarity search
+- **Implementation**: Event-driven index updates with change detection
+
+#### **3.3 Distributed Search (C++ Implementation Required)**
+- **Location**: New files for distributed search capabilities
+- **Function**: `table.distributed_search({query: query_vector, nodes: ["node1", "node2"]})`
+- **Use Cases**: Large-scale distributed vector search
+- **Implementation**: Network-based distributed search coordination
+
+### Implementation Strategy
+
+#### **Phase 1 Implementation (C++ Required)**
+1. **Add Damerau-Levenshtein to $STR.grc**:
+   ```grapa
+   $global["$STR"] = class ($OBJ) {
+       // ... existing methods ...
+       damerau_levenshtein = @<[op,@<"damerau_levenshtein",{@<this>,@<var,{other},@<var,{options}>}>],{other,options}>;
+   };
+   ```
+
+2. **Add Jaccard Similarity to $STR.grc**:
+   ```grapa
+   $global["$STR"] = class ($OBJ) {
+       // ... existing methods ...
+       jaccard = @<[op,@<"jaccard",{@<this>,@<var,{other},@<var,{method},@<var,{n}>}>},@<var,{method},@<var,{n}>}>],{other,method,n}>;
+   };
+   ```
+
+3. **Implement C++ Functions**:
+   - `GrapaLibraryRuleDamerauLevenshteinEvent::Run()` in `GrapaLibRule.cpp`
+   - `GrapaLibraryRuleJaccardEvent::Run()` in `GrapaLibRule.cpp`
+   - Extend `GrapaDB::SearchDb()` for fuzzy search support
+
+#### **Phase 2 Implementation (C++ Required)**
+1. **Add Vector Similarity Methods**:
+   ```grapa
+   $global["$VECTOR"] = class ($OBJ) {
+       // ... existing methods ...
+       similarity = @<[op,@<"similarity",{@<this>,@<var,{other},@<var,{method}>}>],{other,method}>;
+   };
+   ```
+
+2. **Implement C++ Functions**:
+   - `GrapaVector::Similarity()` method in `GrapaVector.cpp`
+   - `GrapaVectorIndex` classes for ANN indexes
+   - Database integration in `GrapaDB.cpp`
+
+#### **Phase 3 Implementation (Mixed)**
+1. **Hybrid Search (Pure Grapa)**:
+   ```grapa
+   function hybrid_search(table, query_text, query_embedding, filters, limit=10) {
+       // Pure Grapa implementation using existing capabilities
+       // Combines vector similarity, text search, and metadata filtering
+   }
+   ```
+
+2. **Real-time Indexing (C++ Required)**:
+   - Extend `GrapaDB` for automatic index updates
+   - Implement change detection and index maintenance
+
+3. **Distributed Search (C++ Required)**:
+   - Network-based distributed search coordination
+   - Load balancing and result aggregation
+
+### Success Criteria
+- [ ] **Phase 1**: Damerau-Levenshtein and Jaccard similarity functions working
+- [ ] **Phase 1**: Fuzzy database search capabilities
+- [ ] **Phase 2**: Vector similarity functions (cosine, L2, inner product, Hamming)
+- [ ] **Phase 2**: ANN indexes (HNSW, IVF) for fast vector search
+- [ ] **Phase 2**: Database integration for persistent vector storage
+- [ ] **Phase 3**: Hybrid search combining vectors, text, and metadata
+- [ ] **Phase 3**: Real-time indexing for dynamic updates
+- [ ] **Phase 3**: Distributed search for large-scale deployments
+
+### Technical Notes
+- **Phase 1**: Requires C++ implementation of string distance algorithms
+- **Phase 2**: Requires C++ implementation of vector similarity and ANN indexes
+- **Phase 3**: Hybrid search can be implemented in pure Grapa; real-time and distributed features require C++
+- **Database Integration**: Leverage existing BTree-based storage system
+- **Performance**: ANN indexes essential for large-scale vector search performance
+- **Compatibility**: Maintain backward compatibility with existing database operations
+
 ## Technical Notes
 
 ### Static-Only Architecture Technical Details

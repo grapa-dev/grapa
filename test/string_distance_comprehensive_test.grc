@@ -1,0 +1,111 @@
+/* Comprehensive String Distance and Similarity Test Suite */
+
+/* Test cases for string distance and similarity functions */
+("=== String Distance and Similarity Test Suite ===\n").echo();
+
+/* Test Case 1: Identical strings */
+print("Test 1: Identical strings");
+str1 = "hello";
+str2 = "hello";
+print("Levenshtein distance: " + str1.levenshtein_distance(str2));
+print("Damerau-Levenshtein distance: " + str1.damerau_levenshtein_distance(str2));
+print("Jaro-Winkler similarity: " + str1.jaro_winkler_similarity(str2));
+print("Cosine similarity: " + str1.cosine_similarity(str2));
+print("Jaccard similarity: " + str1.jaccard_similarity(str2));
+print("");
+
+/* Test Case 2: Completely different strings */
+print("Test 2: Completely different strings");
+str1 = "abc";
+str2 = "xyz";
+print("Levenshtein distance: " + str1.levenshtein_distance(str2));
+print("Damerau-Levenshtein distance: " + str1.damerau_levenshtein_distance(str2));
+print("Jaro-Winkler similarity: " + str1.jaro_winkler_similarity(str2));
+print("Cosine similarity: " + str1.cosine_similarity(str2));
+print("Jaccard similarity: " + str1.jaccard_similarity(str2));
+print("");
+
+/* Test Case 3: Single character difference */
+print("Test 3: Single character difference");
+str1 = "cat";
+str2 = "bat";
+print("Levenshtein distance: " + str1.levenshtein_distance(str2));
+print("Damerau-Levenshtein distance: " + str1.damerau_levenshtein_distance(str2));
+print("Jaro-Winkler similarity: " + str1.jaro_winkler_similarity(str2));
+print("Cosine similarity: " + str1.cosine_similarity(str2));
+print("Jaccard similarity: " + str1.jaccard_similarity(str2));
+print("");
+
+/* Test Case 4: Transposition test (Damerau-Levenshtein should be better) */
+print("Test 4: Transposition test");
+str1 = "ab";
+str2 = "ba";
+print("Levenshtein distance: " + str1.levenshtein_distance(str2));
+print("Damerau-Levenshtein distance: " + str1.damerau_levenshtein_distance(str2));
+print("Jaro-Winkler similarity: " + str1.jaro_winkler_similarity(str2));
+print("Cosine similarity: " + str1.cosine_similarity(str2));
+print("Jaccard similarity: " + str1.jaccard_similarity(str2));
+print("");
+
+/* Test Case 5: Longer transposition test */
+print("Test 5: Longer transposition test");
+str1 = "abcdef";
+str2 = "abcedf";
+print("Levenshtein distance: " + str1.levenshtein_distance(str2));
+print("Damerau-Levenshtein distance: " + str1.damerau_levenshtein_distance(str2));
+print("Jaro-Winkler similarity: " + str1.jaro_winkler_similarity(str2));
+print("Cosine similarity: " + str1.cosine_similarity(str2));
+print("Jaccard similarity: " + str1.jaccard_similarity(str2));
+print("");
+
+/* Test Case 6: Empty string tests */
+print("Test 6: Empty string tests");
+str1 = "";
+str2 = "hello";
+print("Levenshtein distance: " + str1.levenshtein_distance(str2));
+print("Damerau-Levenshtein distance: " + str1.damerau_levenshtein_distance(str2));
+print("Jaro-Winkler similarity: " + str1.jaro_winkler_similarity(str2));
+print("Cosine similarity: " + str1.cosine_similarity(str2));
+print("Jaccard similarity: " + str1.jaccard_similarity(str2));
+print("");
+
+/* Test Case 7: Common words with different lengths */
+print("Test 7: Common words with different lengths");
+str1 = "book";
+str2 = "books";
+print("Levenshtein distance: " + str1.levenshtein_distance(str2));
+print("Damerau-Levenshtein distance: " + str1.damerau_levenshtein_distance(str2));
+print("Jaro-Winkler similarity: " + str1.jaro_winkler_similarity(str2));
+print("Cosine similarity: " + str1.cosine_similarity(str2));
+print("Jaccard similarity: " + str1.jaccard_similarity(str2));
+print("");
+
+/* Test Case 8: Similar words */
+print("Test 8: Similar words");
+str1 = "computer";
+str2 = "computers";
+print("Levenshtein distance: " + str1.levenshtein_distance(str2));
+print("Damerau-Levenshtein distance: " + str1.damerau_levenshtein_distance(str2));
+print("Jaro-Winkler similarity: " + str1.jaro_winkler_similarity(str2));
+print("Cosine similarity: " + str1.cosine_similarity(str2));
+print("Jaccard similarity: " + str1.jaccard_similarity(str2));
+print("");
+
+/* Test Case 9: Jaccard similarity with different n-gram sizes */
+print("Test 9: Jaccard similarity with different n-gram sizes");
+str1 = "hello";
+str2 = "hallo";
+print("Jaccard similarity (default): " + str1.jaccard_similarity(str2));
+print("Jaccard similarity (n=2): " + str1.jaccard_similarity(str2, "char", 2));
+print("Jaccard similarity (n=3): " + str1.jaccard_similarity(str2, "char", 3));
+print("");
+
+/* Test Case 10: Word-based Jaccard similarity */
+print("Test 10: Word-based Jaccard similarity");
+str1 = "the quick brown fox";
+str2 = "the fast brown dog";
+print("Jaccard similarity (word): " + str1.jaccard_similarity(str2, "word"));
+print("Jaccard similarity (char, n=2): " + str1.jaccard_similarity(str2, "char", 2));
+print("");
+
+print("=== Test Suite Complete ===");

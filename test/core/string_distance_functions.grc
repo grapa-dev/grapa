@@ -4,45 +4,45 @@
 
 /* Test 1: Identical strings */
 "Test 1: Identical strings\n".echo();
-"hello".levenshtein("hello").echo();
-"hello".jarowinkler("hello").echo();
-"hello".cosinesimilarity("hello").echo();
+"hello".levenshtein_distance_distance("hello").echo();
+"hello".jaro_winkler_similarity("hello").echo();
+"hello".cosine_similarity("hello").echo();
 
 /* Test 2: Similar strings */
 "Test 2: Similar strings\n".echo();
-"hello".levenshtein("helo").echo();
-"hello".jarowinkler("helo").echo();
-"hello".cosinesimilarity("helo").echo();
+"hello".levenshtein_distance_distance("helo").echo();
+"hello".jaro_winkler_similarity("helo").echo();
+"hello".cosine_similarity("helo").echo();
 
 /* Test 3: Different strings */
 "Test 3: Different strings\n".echo();
-"hello".levenshtein("world").echo();
-"hello".jarowinkler("world").echo();
-"hello".cosinesimilarity("world").echo();
+"hello".levenshtein_distance("world").echo();
+"hello".jaro_winkler_similarity("world").echo();
+"hello".cosine_similarity("world").echo();
 
 /* Test 4: Classic Levenshtein examples */
 "Test 4: Classic Levenshtein examples\n".echo();
-"kitten".levenshtein("sitting").echo();
-"book".levenshtein("back").echo();
+"kitten".levenshtein_distance("sitting").echo();
+"book".levenshtein_distance("back").echo();
 
 /* Test 5: Jaro-Winkler examples */
 "Test 5: Jaro-Winkler examples\n".echo();
-"martha".jarowinkler("marhta").echo();
-"dwayne".jarowinkler("duane").echo();
+"martha".jaro_winkler_similarity("marhta").echo();
+"dwayne".jaro_winkler_similarity("duane").echo();
 
 /* Test 6: Cosine similarity examples */
 "Test 6: Cosine similarity examples\n".echo();
-"hello world".cosinesimilarity("hello world").echo();
-"hello world".cosinesimilarity("world hello").echo();
+"hello world".cosine_similarity("hello world").echo();
+"hello world".cosine_similarity("world hello").echo();
 
 /* Test 7: Edge cases */
 "Test 7: Edge cases\n".echo();
-"".levenshtein("").echo();
-"".jarowinkler("").echo();
-"".cosinesimilarity("").echo();
+"".levenshtein_distance("").echo();
+"".jaro_winkler_similarity("").echo();
+"".cosine_similarity("").echo();
 
-"a".levenshtein("").echo();
-"a".jarowinkler("").echo();
-"a".cosinesimilarity("").echo();
+"a".levenshtein_distance("").echo();
+"a".jaro_winkler_similarity("").echo();
+"a".cosine_similarity("").echo();
 
 "String Distance Functions test completed\n".echo();

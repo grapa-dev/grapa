@@ -26,7 +26,7 @@ def run_grapa_command(command: str) -> str:
     except Exception as e:
         return f"EXCEPTION: {str(e)}"
 
-def test_levenshtein():
+def test_levenshtein_distance():
     """Test Levenshtein distance against Python's difflib"""
     print("=== Testing Levenshtein Distance ===")
     
@@ -50,7 +50,7 @@ def test_levenshtein():
         python_levenshtein = 1 - python_distance  # Convert similarity to distance
         
         # Grapa implementation
-        grapa_command = f'"{str1}".levenshtein("{str2}").echo();'
+        grapa_command = f'"{str1}".levenshtein_distance("{str2}").echo();'
         grapa_result = run_grapa_command(grapa_command)
         
         print(f"'{str1}' vs '{str2}':")
@@ -91,7 +91,7 @@ def test_jaro_winkler():
             python_similarity = 1.0 if str1 == str2 else 0.0
         
         # Grapa implementation
-        grapa_command = f'"{str1}".jarowinkler("{str2}").echo();'
+        grapa_command = f'"{str1}".jaro_winkler_similarity("{str2}").echo();'
         grapa_result = run_grapa_command(grapa_command)
         
         print(f"'{str1}' vs '{str2}':")
@@ -137,7 +137,7 @@ def test_cosine_similarity():
             python_similarity = 1.0 if str1 == str2 else 0.0
         
         # Grapa implementation
-        grapa_command = f'"{str1}".cosinesimilarity("{str2}").echo();'
+        grapa_command = f'"{str1}".cosine_similarity("{str2}").echo();'
         grapa_result = run_grapa_command(grapa_command)
         
         print(f"'{str1}' vs '{str2}':")
@@ -177,7 +177,7 @@ def main():
     print()
     
     # Test each function
-    test_levenshtein()
+    test_levenshtein_distance()
     test_jaro_winkler()
     test_cosine_similarity()
     test_edge_cases()

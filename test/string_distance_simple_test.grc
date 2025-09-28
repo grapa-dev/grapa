@@ -1,0 +1,36 @@
+/* Simple String Distance Test */
+
+("=== Simple String Distance Test ===\n").echo();
+
+/* Test basic functionality */
+str1 = "hello";
+str2 = "world";
+
+("Testing: " + str1 + " vs " + str2 + "\n").echo();
+("Levenshtein distance: " + str1.levenshtein_distance(str2) + "\n").echo();
+("Damerau-Levenshtein distance: " + str1.damerau_levenshtein_distance(str2) + "\n").echo();
+("Jaro-Winkler similarity: " + str1.jaro_winkler_similarity(str2) + "\n").echo();
+("Cosine similarity: " + str1.cosine_similarity(str2) + "\n").echo();
+("Jaccard similarity: " + str1.jaccard_similarity(str2) + "\n").echo();
+("\n").echo();
+
+/* Test identical strings */
+str3 = "test";
+str4 = "test";
+("Testing identical strings: " + str3 + " vs " + str4 + "\n").echo();
+("Levenshtein distance: " + str3.levenshtein_distance(str4) + "\n").echo();
+("Damerau-Levenshtein distance: " + str3.damerau_levenshtein_distance(str4) + "\n").echo();
+("Jaro-Winkler similarity: " + str3.jaro_winkler_similarity(str4) + "\n").echo();
+("Cosine similarity: " + str3.cosine_similarity(str4) + "\n").echo();
+("Jaccard similarity: " + str3.jaccard_similarity(str4) + "\n").echo();
+("\n").echo();
+
+/* Test transposition */
+str5 = "ab";
+str6 = "ba";
+("Testing transposition: " + str5 + " vs " + str6 + "\n").echo();
+("Levenshtein distance: " + str5.levenshtein_distance(str6) + "\n").echo();
+("Damerau-Levenshtein distance: " + str5.damerau_levenshtein_distance(str6) + "\n").echo();
+("\n").echo();
+
+("=== Test Complete ===\n").echo();

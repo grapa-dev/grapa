@@ -699,9 +699,9 @@ The following string-specific methods are available in the `$STR` class:
 - **`.upper()`** - Converts the string to uppercase
 - **`.lower()`** - Converts the string to lowercase  :
 - **`.casefold()`** - Converts the string to Unicode case folded form for case-insensitive comparisons:
-- **`.levenshtein()`** - Calculates Levenshtein distance between strings
-- **`.jarowinkler()`** - Calculates Jaro-Winkler similarity between strings
-- **`.cosinesimilarity()`** - Calculates cosine similarity between strings
+- **`.levenshtein_distance()`** - Calculates Levenshtein distance between strings
+- **`.jaro_winkler_similarity()`** - Calculates Jaro-Winkler similarity between strings
+- **`.cosine_similarity()`** - Calculates cosine similarity between strings
 
 > **See Also:** [$STR Documentation](str.md) for comprehensive string method documentation and examples.
 

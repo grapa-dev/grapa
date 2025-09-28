@@ -1,0 +1,27 @@
+/* OpenAI Embedding Test */
+
+("=== OpenAI Embedding Test ===\n").echo();
+
+/* Test embedding with OpenAI */
+model = $MODEL();
+model.load("text-embedding-3-small", "openai-embedding");
+
+/* Test embedding generation */
+text = "The quick brown fox jumps over the lazy dog";
+("Testing embedding for: " + text + "\n").echo();
+
+embedding = model.embed(text, {"api_key": "your-openai-api-key-here"});
+("Embedding result: " + embedding + "\n").echo();
+
+/* Test with different text */
+text2 = "A fast brown fox leaps over a sleepy dog";
+("Testing embedding for: " + text2 + "\n").echo();
+
+embedding2 = model.embed(text2, {"api_key": "your-openai-api-key-here"});
+("Embedding result: " + embedding2 + "\n").echo();
+
+/* Test model info */
+info = model.info();
+("Model info: " + info + "\n").echo();
+
+("=== Test Complete ===\n").echo();

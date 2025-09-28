@@ -2704,21 +2704,29 @@ public:
 };
 GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleCaseFold(GrapaCHAR& pName) { return new GrapaLibraryRuleCaseFoldEvent(pName); }
 
-class GrapaLibraryRuleLevenshteinEvent : public GrapaLibraryEvent
+class GrapaLibraryRuleLevenshteinDistanceEvent : public GrapaLibraryEvent
 {
 public:
-    GrapaLibraryRuleLevenshteinEvent(GrapaCHAR& pName) { mName.FROM(pName); };
+    GrapaLibraryRuleLevenshteinDistanceEvent(GrapaCHAR& pName) { mName.FROM(pName); };
     virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
-GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleLevenshtein(GrapaCHAR& pName) { return new GrapaLibraryRuleLevenshteinEvent(pName); }
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleLevenshteinDistance(GrapaCHAR& pName) { return new GrapaLibraryRuleLevenshteinDistanceEvent(pName); }
 
-class GrapaLibraryRuleJaroWinklerEvent : public GrapaLibraryEvent
+class GrapaLibraryRuleDamerauLevenshteinDistanceEvent : public GrapaLibraryEvent
 {
 public:
-    GrapaLibraryRuleJaroWinklerEvent(GrapaCHAR& pName) { mName.FROM(pName); };
+	GrapaLibraryRuleDamerauLevenshteinDistanceEvent(GrapaCHAR& pName) { mName.FROM(pName); };
     virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
-GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleJaroWinkler(GrapaCHAR& pName) { return new GrapaLibraryRuleJaroWinklerEvent(pName); }
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleDamerauLevenshteinDistance(GrapaCHAR& pName) { return new GrapaLibraryRuleDamerauLevenshteinDistanceEvent(pName); }
+
+class GrapaLibraryRuleJaroWinklerSimilarityEvent : public GrapaLibraryEvent
+{
+public:
+    GrapaLibraryRuleJaroWinklerSimilarityEvent(GrapaCHAR& pName) { mName.FROM(pName); };
+    virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
+};
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleJaroWinklerSimilarity(GrapaCHAR& pName) { return new GrapaLibraryRuleJaroWinklerSimilarityEvent(pName); }
 
 class GrapaLibraryRuleCosineSimilarityEvent : public GrapaLibraryEvent
 {
@@ -2727,6 +2735,14 @@ public:
     virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
 GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleCosineSimilarity(GrapaCHAR& pName) { return new GrapaLibraryRuleCosineSimilarityEvent(pName); }
+
+class GrapaLibraryRuleJaccardSimilarityEvent : public GrapaLibraryEvent
+{
+public:
+    GrapaLibraryRuleJaccardSimilarityEvent(GrapaCHAR& pName) { mName.FROM(pName); };
+    virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
+};
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleJaccardSimilarity(GrapaCHAR& pName) { return new GrapaLibraryRuleJaccardSimilarityEvent(pName); }
 
 class GrapaLibraryRuleUtcEvent : public GrapaLibraryEvent
 {
@@ -3083,6 +3099,14 @@ GrapaLibraryRuleModelContextEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 };
 GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleModelContext(GrapaCHAR& pName) { return new GrapaLibraryRuleModelContextEvent(pName); }
 
+class GrapaLibraryRuleModelEmbedEvent : public GrapaLibraryEvent
+{
+public:
+    GrapaLibraryRuleModelEmbedEvent(GrapaCHAR& pName) { mName.FROM(pName); };
+    virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
+};
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleModelEmbed(GrapaCHAR& pName) { return new GrapaLibraryRuleModelEmbedEvent(pName); }
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 void GrapaLibraryRuleEvent::LoadLibWrap(GrapaScriptExec* vScriptExec, GrapaRuleEvent* pOperation)
@@ -3329,9 +3353,11 @@ GrapaLibraryEvent* GrapaLibraryRuleEvent::LoadLib(GrapaScriptExec *vScriptExec, 
 			{ "lower", &GrapaLibraryRuleEvent::HandleLower },
 			{ "upper", &GrapaLibraryRuleEvent::HandleUpper },
 			{ "casefold", &GrapaLibraryRuleEvent::HandleCaseFold },
-			{ "levenshtein", &GrapaLibraryRuleEvent::HandleLevenshtein },
-			{ "jarowinkler", &GrapaLibraryRuleEvent::HandleJaroWinkler },
-			{ "cosinesimilarity", &GrapaLibraryRuleEvent::HandleCosineSimilarity },
+			{ "levenshtein_distance", &GrapaLibraryRuleEvent::HandleLevenshteinDistance	 },
+			{ "damerau_levenshtein_distance", &GrapaLibraryRuleEvent::HandleDamerauLevenshteinDistance },
+			{ "jaro_winkler_similarity", &GrapaLibraryRuleEvent::HandleJaroWinklerSimilarity },
+			{ "cosine_similarity", &GrapaLibraryRuleEvent::HandleCosineSimilarity },
+			{ "jaccard_similarity", &GrapaLibraryRuleEvent::HandleJaccardSimilarity },
 			{ "eq", &GrapaLibraryRuleEvent::HandleEq },
 			{ "neq", &GrapaLibraryRuleEvent::HandleNEq },
 			{ "gteq", &GrapaLibraryRuleEvent::HandleGtEq },
@@ -3439,6 +3465,7 @@ GrapaLibraryEvent* GrapaLibraryRuleEvent::LoadLib(GrapaScriptExec *vScriptExec, 
         static const std::unordered_map<std::string, Handler> handlerMap = {
             { "load", &GrapaLibraryRuleEvent::HandleModelLoad },
             { "gen", &GrapaLibraryRuleEvent::HandleModelGen },
+            { "embed", &GrapaLibraryRuleEvent::HandleModelEmbed },
             { "info", &GrapaLibraryRuleEvent::HandleModelInfo },
             { "params", &GrapaLibraryRuleEvent::HandleModelParams },
             { "context", &GrapaLibraryRuleEvent::HandleModelContext },
@@ -21535,7 +21562,7 @@ GrapaRuleEvent* GrapaLibraryRuleCaseFoldEvent::Run(GrapaScriptExec *vScriptExec,
     return(result);
 }
 
-GrapaRuleEvent* GrapaLibraryRuleLevenshteinEvent::Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput)
+GrapaRuleEvent* GrapaLibraryRuleLevenshteinDistanceEvent::Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput)
 {
     GrapaRuleEvent *result = NULL;
     GrapaLibraryParam r1(vScriptExec, pNameSpace, pInput ? pInput->Head(0) : NULL);
@@ -21571,7 +21598,40 @@ GrapaRuleEvent* GrapaLibraryRuleLevenshteinEvent::Run(GrapaScriptExec *vScriptEx
     return(result);
 }
 
-GrapaRuleEvent* GrapaLibraryRuleJaroWinklerEvent::Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput)
+GrapaRuleEvent* GrapaLibraryRuleDamerauLevenshteinDistanceEvent::Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput)
+{
+    GrapaRuleEvent *result = NULL;
+    GrapaLibraryParam r1(vScriptExec, pNameSpace, pInput ? pInput->Head(0) : NULL);
+    GrapaLibraryParam r2(vScriptExec, pNameSpace, pInput ? pInput->Head(1) : NULL);
+    
+    if (r1.vVal && r2.vVal)
+    {
+        switch (r1.vVal->mValue.mToken)
+        {
+        case GrapaTokenType::STR:
+        case GrapaTokenType::ID:
+            {
+                // Get the two strings to compare
+                std::string str1(reinterpret_cast<const char*>(r1.vVal->mValue.mBytes), r1.vVal->mValue.mLength);
+                std::string str2(reinterpret_cast<const char*>(r2.vVal->mValue.mBytes), r2.vVal->mValue.mLength);
+                
+                // Calculate Damerau-Levenshtein distance
+                int distance = calculate_damerau_levenshtein_distance(str1, str2);
+                
+                // Return the distance as an integer
+                result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaInt(distance).getBytes());
+            }
+            break;
+        default:
+            break;
+        }
+    }
+    if (result == NULL)
+        result = Error(vScriptExec, pNameSpace, -1);
+    return(result);
+}
+
+GrapaRuleEvent* GrapaLibraryRuleJaroWinklerSimilarityEvent::Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput)
 {
     GrapaRuleEvent *result = NULL;
     GrapaLibraryParam r1(vScriptExec, pNameSpace, pInput ? pInput->Head(0) : NULL);
@@ -21618,6 +21678,150 @@ GrapaRuleEvent* GrapaLibraryRuleCosineSimilarityEvent::Run(GrapaScriptExec *vScr
     {
         switch (r1.vVal->mValue.mToken)
         {
+			case GrapaTokenType::STR:
+			case GrapaTokenType::ID:
+			{
+				// Get the two strings to compare
+				std::string str1(reinterpret_cast<const char*>(r1.vVal->mValue.mBytes), r1.vVal->mValue.mLength);
+				std::string str2(reinterpret_cast<const char*>(r2.vVal->mValue.mBytes), r2.vVal->mValue.mLength);
+					
+				// Parse options
+				std::string method = "auto";  // Default to auto-selection
+				std::vector<std::string> corpus;
+				bool case_sensitive = true;   // Default to case-sensitive
+								
+				// printf("DEBUG: r3.vVal = %p, token = %d\n", r3.vVal, r3.vVal ? r3.vVal->mValue.mToken : -1);
+								
+				if (r3.vVal && (r3.vVal->mValue.mToken == GrapaTokenType::OBJ || r3.vVal->mValue.mToken == GrapaTokenType::GOBJ || r3.vVal->mValue.mToken == GrapaTokenType::ERR))
+				{
+														// Parse method option
+					s64 method_index = 0;
+					GrapaRuleEvent* method_opt = r3.vVal->vQueue->Search(GrapaCHAR("method"), method_index);
+					// printf("DEBUG: method_opt = %p\n", method_opt);
+					if (method_opt && method_opt->mValue.mToken == GrapaTokenType::STR)
+					{
+						std::string method_str(reinterpret_cast<const char*>(method_opt->mValue.mBytes), method_opt->mValue.mLength);
+						// printf("DEBUG: method_str = '%s'\n", method_str.c_str());
+						if (method_str == "word_freq" || method_str == "tfidf")
+						{
+							method = method_str;
+							// printf("DEBUG: method set to '%s'\n", method.c_str());
+						}
+					}
+						
+														// Parse corpus option
+					s64 corpus_index = 0;
+					GrapaRuleEvent* corpus_opt = r3.vVal->vQueue->Search(GrapaCHAR("corpus"), corpus_index);
+					// printf("DEBUG: corpus_opt = %p\n", corpus_opt);
+					if (corpus_opt) {
+						// printf("DEBUG: corpus_opt token = %d (LIST=%d, LIST=%d)\n", 
+						//        corpus_opt->mValue.mToken, GrapaTokenType::LIST, GrapaTokenType::GOBJ);
+					}
+					// Handle PTR types like findall() does
+					while (corpus_opt && corpus_opt->mValue.mToken == GrapaTokenType::PTR && corpus_opt->vRulePointer) 
+						corpus_opt = corpus_opt->vRulePointer;
+					if (corpus_opt && (corpus_opt->mValue.mToken == GrapaTokenType::LIST || corpus_opt->mValue.mToken == GrapaTokenType::GOBJ || corpus_opt->mValue.mToken == GrapaTokenType::ERR || corpus_opt->vQueue != NULL))
+					{
+						// Extract corpus documents
+						// printf("DEBUG: corpus_opt token = %d, vQueue = %p, count = %llu\n", 
+						//        corpus_opt->mValue.mToken, corpus_opt->vQueue, 
+						//        corpus_opt->vQueue ? corpus_opt->vQueue->mCount : 0);
+						if (corpus_opt->vQueue)
+						{
+							for (u64 i = 0; i < corpus_opt->vQueue->mCount; i++)
+							{
+								GrapaRuleEvent* doc = corpus_opt->vQueue->Head(i);
+								if (doc && (doc->mValue.mToken == GrapaTokenType::STR || doc->mValue.mToken == GrapaTokenType::ID))
+								{
+									std::string doc_str(reinterpret_cast<const char*>(doc->mValue.mBytes), doc->mValue.mLength);
+									corpus.push_back(doc_str);
+									// printf("DEBUG: Added corpus doc: '%s'\n", doc_str.c_str());
+								}
+							}
+						}
+					}
+						
+					// Parse case_sensitive option
+					s64 case_index = 0;
+					GrapaRuleEvent* case_opt = r3.vVal->vQueue->Search(GrapaCHAR("case_sensitive"), case_index);
+					// printf("DEBUG: case_opt = %p\n", case_opt);
+					if (case_opt)
+					{
+						// printf("DEBUG: case_opt token = %d\n", case_opt->mValue.mToken);
+						if (case_opt->mValue.mToken == GrapaTokenType::BOOL)
+						{
+							case_sensitive = (case_opt->mValue.mBytes && case_opt->mValue.mLength && case_opt->mValue.mBytes[0] && case_opt->mValue.mBytes[0] != '0');
+							// printf("DEBUG: BOOL case_sensitive = %s\n", case_sensitive ? "true" : "false");
+						}
+						else if (case_opt->mValue.mToken == GrapaTokenType::STR)
+						{
+							std::string case_str(reinterpret_cast<const char*>(case_opt->mValue.mBytes), case_opt->mValue.mLength);
+							case_sensitive = (case_str != "false" && case_str != "0");
+							// printf("DEBUG: STR case_sensitive = %s (str='%s')\n", case_sensitive ? "true" : "false", case_str.c_str());
+						}
+						else
+						{
+							case_sensitive = !case_opt->IsZero();
+							// printf("DEBUG: OTHER case_sensitive = %s\n", case_sensitive ? "true" : "false");
+						}
+					}
+				}
+					
+				// Auto-select method if not specified
+				if (method == "auto")
+				{
+					if (!corpus.empty())
+					{
+						method = "tfidf";  // Use TF-IDF if corpus provided
+					}
+					else
+					{
+						method = "word_freq";  // Use word frequency otherwise
+					}
+				}
+				
+				// Apply case sensitivity if needed
+				if (!case_sensitive)
+				{
+					str1 = grapa_case_fold_string(str1);
+					str2 = grapa_case_fold_string(str2);
+				}
+				
+				// Calculate similarity based on selected method
+				double similarity = 0.0;
+				if (method == "tfidf" && !corpus.empty())
+				{
+					similarity = calculate_cosine_similarity_tfidf(str1, str2, corpus);
+				}
+				else
+				{
+					similarity = calculate_cosine_similarity(str1, str2);
+				}
+				
+				// Return the similarity as a float using the double constructor
+				result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaFloat(similarity).getBytes());
+			}
+			break;
+		default:
+			break;
+		}
+    }
+    if (result == NULL)
+        result = Error(vScriptExec, pNameSpace, -1);
+    return(result);
+}
+
+GrapaRuleEvent* GrapaLibraryRuleJaccardSimilarityEvent::Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput)
+{
+    GrapaRuleEvent *result = NULL;
+    GrapaLibraryParam r1(vScriptExec, pNameSpace, pInput ? pInput->Head(0) : NULL);
+    GrapaLibraryParam r2(vScriptExec, pNameSpace, pInput ? pInput->Head(1) : NULL);
+    GrapaLibraryParam r3(vScriptExec, pNameSpace, pInput ? pInput->Head(2) : NULL);
+    
+    if (r1.vVal && r2.vVal)
+    {
+        switch (r1.vVal->mValue.mToken)
+        {
         case GrapaTokenType::STR:
         case GrapaTokenType::ID:
             {
@@ -21625,121 +21829,27 @@ GrapaRuleEvent* GrapaLibraryRuleCosineSimilarityEvent::Run(GrapaScriptExec *vScr
                 std::string str1(reinterpret_cast<const char*>(r1.vVal->mValue.mBytes), r1.vVal->mValue.mLength);
                 std::string str2(reinterpret_cast<const char*>(r2.vVal->mValue.mBytes), r2.vVal->mValue.mLength);
                 
-                                            // Parse options
-                            std::string method = "auto";  // Default to auto-selection
-                            std::vector<std::string> corpus;
-                            bool case_sensitive = true;   // Default to case-sensitive
-                            
-                            // printf("DEBUG: r3.vVal = %p, token = %d\n", r3.vVal, r3.vVal ? r3.vVal->mValue.mToken : -1);
-                            
-                            if (r3.vVal && (r3.vVal->mValue.mToken == GrapaTokenType::OBJ || r3.vVal->mValue.mToken == GrapaTokenType::GOBJ || r3.vVal->mValue.mToken == GrapaTokenType::ERR))
-                {
-                                                    // Parse method option
-                                s64 method_index = 0;
-                                GrapaRuleEvent* method_opt = r3.vVal->vQueue->Search(GrapaCHAR("method"), method_index);
-                                // printf("DEBUG: method_opt = %p\n", method_opt);
-                                if (method_opt && method_opt->mValue.mToken == GrapaTokenType::STR)
-                                            {
-                            std::string method_str(reinterpret_cast<const char*>(method_opt->mValue.mBytes), method_opt->mValue.mLength);
-                            // printf("DEBUG: method_str = '%s'\n", method_str.c_str());
-                            if (method_str == "word_freq" || method_str == "tfidf")
-                            {
-                                method = method_str;
-                                // printf("DEBUG: method set to '%s'\n", method.c_str());
-                            }
-                        }
-                    
-                                                    // Parse corpus option
-                                s64 corpus_index = 0;
-                                GrapaRuleEvent* corpus_opt = r3.vVal->vQueue->Search(GrapaCHAR("corpus"), corpus_index);
-                                // printf("DEBUG: corpus_opt = %p\n", corpus_opt);
-                                if (corpus_opt) {
-                                    // printf("DEBUG: corpus_opt token = %d (LIST=%d, LIST=%d)\n", 
-                                    //        corpus_opt->mValue.mToken, GrapaTokenType::LIST, GrapaTokenType::GOBJ);
-                                }
-                                // Handle PTR types like findall() does
-                                while (corpus_opt && corpus_opt->mValue.mToken == GrapaTokenType::PTR && corpus_opt->vRulePointer) 
-                                    corpus_opt = corpus_opt->vRulePointer;
-                                if (corpus_opt && (corpus_opt->mValue.mToken == GrapaTokenType::LIST || corpus_opt->mValue.mToken == GrapaTokenType::GOBJ || corpus_opt->mValue.mToken == GrapaTokenType::ERR || corpus_opt->vQueue != NULL))
-                    {
-                        // Extract corpus documents
-                                                            // printf("DEBUG: corpus_opt token = %d, vQueue = %p, count = %llu\n", 
-                                    //        corpus_opt->mValue.mToken, corpus_opt->vQueue, 
-                                    //        corpus_opt->vQueue ? corpus_opt->vQueue->mCount : 0);
-                                    if (corpus_opt->vQueue)
-                                    {
-                                        for (u64 i = 0; i < corpus_opt->vQueue->mCount; i++)
-                            {
-                                GrapaRuleEvent* doc = corpus_opt->vQueue->Head(i);
-                                if (doc && (doc->mValue.mToken == GrapaTokenType::STR || doc->mValue.mToken == GrapaTokenType::ID))
-                                {
-                                                                                    std::string doc_str(reinterpret_cast<const char*>(doc->mValue.mBytes), doc->mValue.mLength);
-                                                corpus.push_back(doc_str);
-                                                // printf("DEBUG: Added corpus doc: '%s'\n", doc_str.c_str());
-                                }
-                            }
-                        }
-                    }
-                    
-                                                    // Parse case_sensitive option
-                                s64 case_index = 0;
-                                GrapaRuleEvent* case_opt = r3.vVal->vQueue->Search(GrapaCHAR("case_sensitive"), case_index);
-                                // printf("DEBUG: case_opt = %p\n", case_opt);
-                                if (case_opt)
-                    {
-                        // printf("DEBUG: case_opt token = %d\n", case_opt->mValue.mToken);
-                        if (case_opt->mValue.mToken == GrapaTokenType::BOOL)
-                        {
-                            case_sensitive = (case_opt->mValue.mBytes && case_opt->mValue.mLength &&
-                                              case_opt->mValue.mBytes[0] && case_opt->mValue.mBytes[0] != '0');
-                            // printf("DEBUG: BOOL case_sensitive = %s\n", case_sensitive ? "true" : "false");
-                        }
-                        else if (case_opt->mValue.mToken == GrapaTokenType::STR)
-                        {
-                            std::string case_str(reinterpret_cast<const char*>(case_opt->mValue.mBytes), case_opt->mValue.mLength);
-                            case_sensitive = (case_str != "false" && case_str != "0");
-                            // printf("DEBUG: STR case_sensitive = %s (str='%s')\n", case_sensitive ? "true" : "false", case_str.c_str());
-                        }
-                        else
-                        {
-                            case_sensitive = !case_opt->IsZero();
-                            // printf("DEBUG: OTHER case_sensitive = %s\n", case_sensitive ? "true" : "false");
-                        }
+                // Get method parameter (default to "word")
+                std::string method = "word";
+                if (r3.vVal && r3.vVal->mValue.mToken == GrapaTokenType::STR) {
+                    method = std::string(reinterpret_cast<const char*>(r3.vVal->mValue.mBytes), r3.vVal->mValue.mLength);
+                }
+                
+                // Get n-gram size parameter (default to 2)
+                int n = 2;
+                if (pInput && pInput->mCount > 3) {
+                    GrapaLibraryParam r4(vScriptExec, pNameSpace, pInput->Head(3));
+                    if (r4.vVal && r4.vVal->mValue.mToken == GrapaTokenType::INT) {
+                        GrapaInt nInt;
+                        nInt.FromBytes(r4.vVal->mValue);
+                        n = (int)nInt.LongValue();
                     }
                 }
                 
-                // Auto-select method if not specified
-                if (method == "auto")
-                {
-                    if (!corpus.empty())
-                    {
-                        method = "tfidf";  // Use TF-IDF if corpus provided
-                    }
-                    else
-                    {
-                        method = "word_freq";  // Use word frequency otherwise
-                    }
-                }
+                // Calculate Jaccard similarity
+                double similarity = calculate_jaccard_similarity(str1, str2, method, n);
                 
-                // Apply case sensitivity if needed
-                if (!case_sensitive)
-                {
-                    str1 = grapa_case_fold_string(str1);
-                    str2 = grapa_case_fold_string(str2);
-                }
-                
-                // Calculate similarity based on selected method
-                double similarity = 0.0;
-                if (method == "tfidf" && !corpus.empty())
-                {
-                    similarity = calculate_cosine_similarity_tfidf(str1, str2, corpus);
-                }
-                else
-                {
-                    similarity = calculate_cosine_similarity(str1, str2);
-                }
-                
-                // Return the similarity as a float using the double constructor
+                // Return the similarity as a float
                 result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaFloat(similarity).getBytes());
             }
             break;
@@ -23929,4 +24039,164 @@ double calculate_cosine_similarity_tfidf(const std::string& str1, const std::str
     if (mag1 == 0.0 || mag2 == 0.0) return 0.0;
     
     return dot_product / (mag1 * mag2);
+}
+
+// Helper function for Damerau-Levenshtein distance
+int calculate_damerau_levenshtein_distance(const std::string& str1, const std::string& str2) {
+    int len1 = str1.length();
+    int len2 = str2.length();
+    
+    // Create a 2D array to store distances
+    std::vector<std::vector<int>> dp(len1 + 1, std::vector<int>(len2 + 1));
+    
+    // Initialize base cases
+    for (int i = 0; i <= len1; i++) {
+        dp[i][0] = i;
+    }
+    for (int j = 0; j <= len2; j++) {
+        dp[0][j] = j;
+    }
+    
+    // Fill the dp table
+    for (int i = 1; i <= len1; i++) {
+        for (int j = 1; j <= len2; j++) {
+            if (str1[i-1] == str2[j-1]) {
+                dp[i][j] = dp[i-1][j-1];
+            } else {
+                dp[i][j] = 1 + std::min({dp[i-1][j], dp[i][j-1], dp[i-1][j-1]});
+                
+                // Check for transposition (Damerau extension)
+                if (i > 1 && j > 1 && str1[i-1] == str2[j-2] && str1[i-2] == str2[j-1]) {
+                    dp[i][j] = std::min(dp[i][j], dp[i-2][j-2] + 1);
+                }
+            }
+        }
+    }
+    
+    return dp[len1][len2];
+}
+
+// Helper function for Jaccard similarity
+double calculate_jaccard_similarity(const std::string& str1, const std::string& str2, const std::string& method, int n) {
+    std::set<std::string> set1, set2;
+    
+    if (method == "word") {
+        // Word-based Jaccard
+        std::vector<std::string> words1 = split_words(str1);
+        std::vector<std::string> words2 = split_words(str2);
+        
+        for (const auto& word : words1) set1.insert(word);
+        for (const auto& word : words2) set2.insert(word);
+    } else if (method == "char") {
+        // Character n-gram based Jaccard
+        set1 = generate_ngrams(str1, n);
+        set2 = generate_ngrams(str2, n);
+    } else {
+        // Default to word-based
+        std::vector<std::string> words1 = split_words(str1);
+        std::vector<std::string> words2 = split_words(str2);
+        
+        for (const auto& word : words1) set1.insert(word);
+        for (const auto& word : words2) set2.insert(word);
+    }
+    
+    // Calculate intersection and union
+    std::set<std::string> intersection, union_set;
+    
+    for (const auto& item : set1) {
+        if (set2.find(item) != set2.end()) {
+            intersection.insert(item);
+        }
+        union_set.insert(item);
+    }
+    
+    for (const auto& item : set2) {
+        union_set.insert(item);
+    }
+    
+    if (union_set.empty()) return 1.0; // Both sets are empty
+    
+    return static_cast<double>(intersection.size()) / static_cast<double>(union_set.size());
+}
+
+// Helper function to split string into words
+std::vector<std::string> split_words(const std::string& str) {
+    std::vector<std::string> words;
+    std::string word;
+    
+    for (char c : str) {
+        if (std::isspace(c)) {
+            if (!word.empty()) {
+                words.push_back(word);
+                word.clear();
+            }
+        } else {
+            word += c;
+        }
+    }
+    
+    if (!word.empty()) {
+        words.push_back(word);
+    }
+    
+    return words;
+}
+
+// Helper function to generate n-grams
+std::set<std::string> generate_ngrams(const std::string& str, int n) {
+    std::set<std::string> ngrams;
+    
+    if (str.length() < n) {
+        ngrams.insert(str);
+        return ngrams;
+    }
+    
+    for (size_t i = 0; i <= str.length() - n; i++) {
+        ngrams.insert(str.substr(i, n));
+    }
+    
+    return ngrams;
+}
+
+GrapaRuleEvent* GrapaLibraryRuleModelEmbedEvent::Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput)
+{
+    GrapaError err = -1;
+    GrapaRuleEvent* result = NULL;
+
+    // Get the model object
+    GrapaLibraryParam r1(vScriptExec, pNameSpace, pInput ? pInput->Head(0) : NULL);
+    GrapaRuleEvent* objEvent = vScriptExec->vScriptState->SearchTarget(pNameSpace, r1.vVal);
+    
+    if (!objEvent) {
+        return Error(vScriptExec, pNameSpace, -1);
+    }
+
+    // Create model if needed
+    if (!objEvent->vModel) {
+        objEvent->vModel = new GrapaModel(vScriptExec, pNameSpace, objEvent);
+    }
+    
+    // Get text to embed
+    GrapaLibraryParam r2(vScriptExec, pNameSpace, pInput ? pInput->Head(1) : NULL);
+    GrapaCHAR text;
+    if (r2.vVal && r2.vVal->mValue.mToken == GrapaTokenType::STR) {
+        text.FROM(r2.vVal->mValue);
+    } else {
+        return Error(vScriptExec, pNameSpace, -2); // Invalid text parameter
+    }
+    
+    // Get optional parameters
+    GrapaLibraryParam r3(vScriptExec, pNameSpace, pInput ? pInput->Head(2) : NULL);
+    GrapaRuleEvent* params = r3.vVal;
+    
+    // Call the embed method
+    GrapaCHAR embedding;
+    err = objEvent->vModel->Embed(text, embedding, params);
+    if (err) {
+        result = Error(vScriptExec, pNameSpace, err);
+    } else {
+        result = new GrapaRuleEvent(0, GrapaCHAR(), embedding);
+    }
+
+    return(result);
 }

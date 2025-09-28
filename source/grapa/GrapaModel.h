@@ -75,6 +75,9 @@ public:
     GrapaError Generate(const GrapaCHAR& prompt, GrapaCHAR& result, GrapaRuleEvent* callParams);
     GrapaError GenerateStream(const GrapaCHAR& prompt, GrapaCHAR& result, GrapaRuleEvent* callParams);
     
+    // Embedding operations
+    GrapaError Embed(const GrapaCHAR& text, GrapaCHAR& result, GrapaRuleEvent* callParams);
+    
     // Model information
     GrapaRuleEvent* GetModelInfo() const;
     
@@ -96,6 +99,7 @@ public:
     GrapaError LoadOpenAI(const GrapaCHAR& modelPath);
     GrapaError UnloadOpenAI();
     GrapaError GenerateOpenAI(const GrapaCHAR& prompt, GrapaCHAR& result, GrapaRuleEvent* mergedParams);
+    GrapaError EmbedOpenAI(const GrapaCHAR& text, GrapaCHAR& result, GrapaRuleEvent* mergedParams);
     
     // Future backends
     GrapaError LoadOnnx(const GrapaCHAR& modelPath);

@@ -1,0 +1,44 @@
+/* String Similarity Test with Multi-word Strings */
+
+("=== String Similarity Test with Multi-word Strings ===\n").echo();
+
+/* Test with multi-word strings */
+str1 = "the quick brown fox";
+str2 = "the fast brown dog";
+
+("Testing multi-word strings:\n").echo();
+("String 1: " + str1 + "\n").echo();
+("String 2: " + str2 + "\n").echo();
+("Levenshtein distance: " + str1.levenshtein_distance(str2) + "\n").echo();
+("Damerau-Levenshtein distance: " + str1.damerau_levenshtein_distance(str2) + "\n").echo();
+("Jaro-Winkler similarity: " + str1.jaro_winkler_similarity(str2) + "\n").echo();
+("Cosine similarity: " + str1.cosine_similarity(str2) + "\n").echo();
+("Jaccard similarity: " + str1.jaccard_similarity(str2) + "\n").echo();
+("\n").echo();
+
+/* Test with overlapping words */
+str3 = "hello world";
+str4 = "hello there";
+
+("Testing overlapping words:\n").echo();
+("String 1: " + str3 + "\n").echo();
+("String 2: " + str4 + "\n").echo();
+("Levenshtein distance: " + str3.levenshtein_distance(str4) + "\n").echo();
+("Damerau-Levenshtein distance: " + str3.damerau_levenshtein_distance(str4) + "\n").echo();
+("Jaro-Winkler similarity: " + str3.jaro_winkler_similarity(str4) + "\n").echo();
+("Cosine similarity: " + str3.cosine_similarity(str4) + "\n").echo();
+("Jaccard similarity: " + str3.jaccard_similarity(str4) + "\n").echo();
+("\n").echo();
+
+/* Test character n-grams for single words */
+str5 = "hello";
+str6 = "hallo";
+
+("Testing character n-grams for single words:\n").echo();
+("String 1: " + str5 + "\n").echo();
+("String 2: " + str6 + "\n").echo();
+("Jaccard similarity (char, n=2): " + str5.jaccard_similarity(str6, "char", 2) + "\n").echo();
+("Jaccard similarity (char, n=3): " + str5.jaccard_similarity(str6, "char", 3) + "\n").echo();
+("\n").echo();
+
+("=== Test Complete ===\n").echo();

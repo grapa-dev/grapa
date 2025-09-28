@@ -26,52 +26,52 @@ doc5 = "snow in winter";
 
 /* Test 1: Basic functionality */
 "Test 1: Basic functionality".echo();
-"Identical strings: ${'hello'.cosinesimilarity('hello')}".interpolate().echo();
-"Similar strings: ${'hello world'.cosinesimilarity('hello there')}".interpolate().echo();
-"Different strings: ${'hello world'.cosinesimilarity('goodbye world')}".interpolate().echo();
+"Identical strings: ${'hello'.cosine_similarity('hello')}".interpolate().echo();
+"Similar strings: ${'hello world'.cosine_similarity('hello there')}".interpolate().echo();
+"Different strings: ${'hello world'.cosine_similarity('goodbye world')}".interpolate().echo();
 "".echo();
 
 /* Test 2: Auto-selection */
 "Test 2: Auto-selection".echo();
-"Auto (no corpus): ${doc1.cosinesimilarity(doc2)}".interpolate().echo();
-"Auto (with corpus): ${doc1.cosinesimilarity(doc2, {corpus: corpus})}".interpolate().echo();
+"Auto (no corpus): ${doc1.cosine_similarity(doc2)}".interpolate().echo();
+"Auto (with corpus): ${doc1.cosine_similarity(doc2, {corpus: corpus})}".interpolate().echo();
 "".echo();
 
 /* Test 3: Method comparison */
 "Test 3: Method comparison".echo();
-"Word frequency: ${doc1.cosinesimilarity(doc2, {method: 'word_freq'})}".interpolate().echo();
-"TF-IDF: ${doc1.cosinesimilarity(doc2, {method: 'tfidf', corpus: corpus})}".interpolate().echo();
+"Word frequency: ${doc1.cosine_similarity(doc2, {method: 'word_freq'})}".interpolate().echo();
+"TF-IDF: ${doc1.cosine_similarity(doc2, {method: 'tfidf', corpus: corpus})}".interpolate().echo();
 "".echo();
 
 /* Test 4: Case sensitivity */
 "Test 4: Case sensitivity".echo();
-"Case sensitive: ${'Hello World'.cosinesimilarity('hello world')}".interpolate().echo();
-"Case insensitive: ${'Hello World'.cosinesimilarity('hello world', {case_sensitive: false})}".interpolate().echo();
-"Manual case fold: ${'Hello World'.casefold().cosinesimilarity('hello world'.casefold())}".interpolate().echo();
+"Case sensitive: ${'Hello World'.cosine_similarity('hello world')}".interpolate().echo();
+"Case insensitive: ${'Hello World'.cosine_similarity('hello world', {case_sensitive: false})}".interpolate().echo();
+"Manual case fold: ${'Hello World'.casefold().cosine_similarity('hello world'.casefold())}".interpolate().echo();
 "".echo();
 
 /* Test 5: TF-IDF vs Word Frequency differences */
 "Test 5: TF-IDF vs Word Frequency differences".echo();
 "Comparing '${doc1}' vs '${doc3}':".interpolate().echo();
-"  Word Frequency: ${doc1.cosinesimilarity(doc3, {method: 'word_freq'})}".interpolate().echo();
-"  TF-IDF: ${doc1.cosinesimilarity(doc3, {method: 'tfidf', corpus: corpus})}".interpolate().echo();
+"  Word Frequency: ${doc1.cosine_similarity(doc3, {method: 'word_freq'})}".interpolate().echo();
+"  TF-IDF: ${doc1.cosine_similarity(doc3, {method: 'tfidf', corpus: corpus})}".interpolate().echo();
 "".echo();
 
 "Comparing '${doc1}' vs '${doc4}':".interpolate().echo();
-"  Word Frequency: ${doc1.cosinesimilarity(doc4, {method: 'word_freq'})}".interpolate().echo();
-"  TF-IDF: ${doc1.cosinesimilarity(doc4, {method: 'tfidf', corpus: corpus})}".interpolate().echo();
+"  Word Frequency: ${doc1.cosine_similarity(doc4, {method: 'word_freq'})}".interpolate().echo();
+"  TF-IDF: ${doc1.cosine_similarity(doc4, {method: 'tfidf', corpus: corpus})}".interpolate().echo();
 "".echo();
 
 "Comparing '${doc1}' vs '${doc5}':".interpolate().echo();
-"  Word Frequency: ${doc1.cosinesimilarity(doc5, {method: 'word_freq'})}".interpolate().echo();
-"  TF-IDF: ${doc1.cosinesimilarity(doc5, {method: 'tfidf', corpus: corpus})}".interpolate().echo();
+"  Word Frequency: ${doc1.cosine_similarity(doc5, {method: 'word_freq'})}".interpolate().echo();
+"  TF-IDF: ${doc1.cosine_similarity(doc5, {method: 'tfidf', corpus: corpus})}".interpolate().echo();
 "".echo();
 
 /* Test 6: Edge cases */
 "Test 6: Edge cases".echo();
-"Empty vs empty: ${''.cosinesimilarity('')}".interpolate().echo();
-"Empty vs non-empty: ${''.cosinesimilarity('hello')}".interpolate().echo();
-"Non-empty vs empty: ${'hello'.cosinesimilarity('')}".interpolate().echo();
+"Empty vs empty: ${''.cosine_similarity('')}".interpolate().echo();
+"Empty vs non-empty: ${''.cosine_similarity('hello')}".interpolate().echo();
+"Non-empty vs empty: ${'hello'.cosine_similarity('')}".interpolate().echo();
 "".echo();
 
 "=== Test completed ===".echo();

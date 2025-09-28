@@ -239,14 +239,14 @@ checkCodeSyntax = op(code) {
             if (cleanLine.find(".casefold(") >= 0 && cleanLine.find(".casefold(") != cleanLine.find(".casefold(")) {
                 errors += "Line ${lineNumber}: Missing closing parenthesis in .casefold() method\n".interpolate();
             };
-            if (cleanLine.find(".levenshtein(") >= 0 && cleanLine.find(".levenshtein(") != cleanLine.find(".levenshtein(")) {
-                errors += "Line ${lineNumber}: Missing closing parenthesis in .levenshtein() method\n".interpolate();
+            if (cleanLine.find(".levenshtein_distance(") >= 0 && cleanLine.find(".levenshtein_distance(") != cleanLine.find(".levenshtein_distance(")) {
+                errors += "Line ${lineNumber}: Missing closing parenthesis in .levenshtein_distance() method\n".interpolate();
             };
-            if (cleanLine.find(".jarowinkler(") >= 0 && cleanLine.find(".jarowinkler(") != cleanLine.find(".jarowinkler(")) {
-                errors += "Line ${lineNumber}: Missing closing parenthesis in .jarowinkler() method\n".interpolate();
+            if (cleanLine.find(".jaro_winkler_similarity(") >= 0 && cleanLine.find(".jaro_winkler_similarity(") != cleanLine.find(".jaro_winkler_similarity(")) {
+                errors += "Line ${lineNumber}: Missing closing parenthesis in .jaro_winkler_similarity() method\n".interpolate();
             };
-            if (cleanLine.find(".cosinesimilarity(") >= 0 && cleanLine.find(".cosinesimilarity(") != cleanLine.find(".cosinesimilarity(")) {
-                errors += "Line ${lineNumber}: Missing closing parenthesis in .cosinesimilarity() method\n".interpolate();
+            if (cleanLine.find(".cosine_similarity(") >= 0 && cleanLine.find(".cosine_similarity(") != cleanLine.find(".cosine_similarity(")) {
+                errors += "Line ${lineNumber}: Missing closing parenthesis in .cosine_similarity() method\n".interpolate();
             };
             
             // Check for vector method parentheses
@@ -537,7 +537,7 @@ if (args.len() >= 2) {
         "- Data type access patterns (array brackets, method chaining)\n".echo();
         "- Operator precedence validation (ambiguous precedence, mixed operators)\n".echo();
         "- Method chaining validation (.map(), .filter(), .reduce(), .echo(), etc.)\n".echo();
-        "- String method validation (.upper(), .lower(), .casefold(), .levenshtein(), etc.)\n".echo();
+        "- String method validation (.upper(), .lower(), .casefold(), .levenshtein_distance(), etc.)\n".echo();
         "- Vector method validation (.sum(), .mean(), .std(), .min(), .max(), .var(), etc.)\n".echo();
         "- Advanced vector methods (.shape(), .reshape(), .dot(), .norm(), .mode(), .median(), etc.)\n".echo();
         "- Statistical methods (.percentile(), .quantile(), .skew(), .kurtosis())\n".echo();

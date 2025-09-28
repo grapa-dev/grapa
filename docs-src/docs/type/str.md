@@ -135,26 +135,36 @@ The following methods are available specifically on `$STR` objects:
 "ß".casefold();            /* Returns: "ss" */
 ```
 
-### String Similarity Functions
+### String Distance & Similarity Functions
 ```grapa
 /* Levenshtein distance - edit distance between strings */
-"hello".levenshtein("hallo");     /* Returns: 1 (one character difference) */
-"kitten".levenshtein("sitting");  /* Returns: 3 (three edit operations) */
+"hello".levenshtein_distance("hallo");     /* Returns: 1 (one character difference) */
+"kitten".levenshtein_distance("sitting");  /* Returns: 3 (three edit operations) */
+
+/* Damerau-Levenshtein distance - edit distance with transposition support */
+"hello".damerau_levenshtein_distance("hlelo");  /* Returns: 1 (transposition) */
+"kitten".damerau_levenshtein_distance("sitting"); /* Returns: 3 (same as Levenshtein) */
 
 /* Jaro-Winkler similarity - string similarity score */
-"hello".jarowinkler("hallo");     /* Returns: 0.933... (high similarity) */
-"hello".jarowinkler("world");     /* Returns: 0.0 (no similarity) */
+"hello".jaro_winkler_similarity("hallo");     /* Returns: 0.933... (high similarity) */
+"hello".jaro_winkler_similarity("world");     /* Returns: 0.0 (no similarity) */
 
 /* Cosine similarity - vector-based similarity */
-"hello world".cosinesimilarity("world hello");  /* Returns: 1.0 (identical words) */
-"hello world".cosinesimilarity("goodbye world"); /* Returns: 0.5 (partial similarity) */
+"hello world".cosine_similarity("world hello");  /* Returns: 1.0 (identical words) */
+"hello world".cosine_similarity("goodbye world"); /* Returns: 0.5 (partial similarity) */
+
+/* Jaccard similarity - set-based similarity */
+"hello world".jaccard_similarity("hello there");  /* Returns: 0.333 (1/3 words overlap) */
+"hello".jaccard_similarity("hallo", "char", 2);   /* Returns: 0.0 (no 2-gram overlap) */
 ```
 
 **Use Cases:**
 - **Case conversion**: Text normalization, user input processing
 - **Levenshtein distance**: Spell checking, fuzzy matching, edit distance calculations
+- **Damerau-Levenshtein distance**: Typo detection, DNA analysis, transposition handling
 - **Jaro-Winkler similarity**: Record matching, duplicate detection, name matching
-- **Cosine similarity**: Document similarity, text analysis, recommendation systems
+- **Cosine similarity**: Document similarity, word-based analysis
+- **Jaccard similarity**: Set-based analysis, n-gram matching, document overlap
 
 > **Note:** While string content supports full Unicode, **identifiers** (variable names, function names) are limited to ASCII characters only. This is a lexical limitation in the parser. See [$ID Documentation](id.md) for details.
 

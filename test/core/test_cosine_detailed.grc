@@ -26,36 +26,36 @@ doc5 = "snow in winter";
 
 /* Compare same documents with different methods */
 "Comparing '${doc1}' vs '${doc2}':".interpolate().echo();
-"  Word Frequency: ${doc1.cosinesimilarity(doc2)}".interpolate().echo();
-"  TF-IDF: ${doc1.cosinesimilarity(doc2, {method: 'tfidf', corpus: corpus})}".interpolate().echo();
+"  Word Frequency: ${doc1.cosine_similarity(doc2)}".interpolate().echo();
+"  TF-IDF: ${doc1.cosine_similarity(doc2, {method: 'tfidf', corpus: corpus})}".interpolate().echo();
 "".echo();
 
 "Comparing '${doc1}' vs '${doc3}':".interpolate().echo();
-"  Word Frequency: ${doc1.cosinesimilarity(doc3)}".interpolate().echo();
-"  TF-IDF: ${doc1.cosinesimilarity(doc3, {method: 'tfidf', corpus: corpus})}".interpolate().echo();
+"  Word Frequency: ${doc1.cosine_similarity(doc3)}".interpolate().echo();
+"  TF-IDF: ${doc1.cosine_similarity(doc3, {method: 'tfidf', corpus: corpus})}".interpolate().echo();
 "".echo();
 
 "Comparing '${doc1}' vs '${doc4}':".interpolate().echo();
-"  Word Frequency: ${doc1.cosinesimilarity(doc4)}".interpolate().echo();
-"  TF-IDF: ${doc1.cosinesimilarity(doc4, {method: 'tfidf', corpus: corpus})}".interpolate().echo();
+"  Word Frequency: ${doc1.cosine_similarity(doc4)}".interpolate().echo();
+"  TF-IDF: ${doc1.cosine_similarity(doc4, {method: 'tfidf', corpus: corpus})}".interpolate().echo();
 "".echo();
 
 "Comparing '${doc1}' vs '${doc5}':".interpolate().echo();
-"  Word Frequency: ${doc1.cosinesimilarity(doc5)}".interpolate().echo();
-"  TF-IDF: ${doc1.cosinesimilarity(doc5, {method: 'tfidf', corpus: corpus})}".interpolate().echo();
+"  Word Frequency: ${doc1.cosine_similarity(doc5)}".interpolate().echo();
+"  TF-IDF: ${doc1.cosine_similarity(doc5, {method: 'tfidf', corpus: corpus})}".interpolate().echo();
 "".echo();
 
 /* Test auto-selection */
 "".echo();
 "=== Auto-Selection Test ===".echo();
-"Auto-selection (no corpus): ${doc1.cosinesimilarity(doc2)}".interpolate().echo();
-"Auto-selection (with corpus): ${doc1.cosinesimilarity(doc2, {corpus: corpus})}".interpolate().echo();
+"Auto-selection (no corpus): ${doc1.cosine_similarity(doc2)}".interpolate().echo();
+"Auto-selection (with corpus): ${doc1.cosine_similarity(doc2, {corpus: corpus})}".interpolate().echo();
 "".echo();
 
 /* Test case sensitivity */:
 "=== Case Sensitivity Test ===".echo();
-"Case sensitive: ${'Hello World'.cosinesimilarity('hello world')}".interpolate().echo();
-"Case insensitive: ${'Hello World'.cosinesimilarity('hello world', {case_sensitive: false})}".interpolate().echo();
+"Case sensitive: ${'Hello World'.cosine_similarity('hello world')}".interpolate().echo();
+"Case insensitive: ${'Hello World'.cosine_similarity('hello world', {case_sensitive: false})}".interpolate().echo();
 "".echo();
 
 "=== Test completed ===".echo();

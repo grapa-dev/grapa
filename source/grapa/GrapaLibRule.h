@@ -8,6 +8,7 @@
 #include "GrapaState.h"
 #include <string>
 #include <vector>
+#include <set>
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -253,9 +254,13 @@ public:
 	GrapaLibraryEvent* HandleLower(GrapaCHAR& pName);
     GrapaLibraryEvent* HandleUpper(GrapaCHAR& pName);
     GrapaLibraryEvent* HandleCaseFold(GrapaCHAR& pName);
-    GrapaLibraryEvent* HandleLevenshtein(GrapaCHAR& pName);
-    GrapaLibraryEvent* HandleJaroWinkler(GrapaCHAR& pName);
+
+    GrapaLibraryEvent* HandleLevenshteinDistance(GrapaCHAR& pName);
+    GrapaLibraryEvent* HandleDamerauLevenshteinDistance(GrapaCHAR& pName);
+    GrapaLibraryEvent* HandleJaroWinklerSimilarity(GrapaCHAR& pName);
     GrapaLibraryEvent* HandleCosineSimilarity(GrapaCHAR& pName);
+    GrapaLibraryEvent* HandleJaccardSimilarity(GrapaCHAR& pName);
+	
 	GrapaLibraryEvent* HandleUtc(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleTz(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleEq(GrapaCHAR& pName);
@@ -327,6 +332,7 @@ public:
 	GrapaLibraryEvent* HandleWidgetClear(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleModelLoad(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleModelGen(GrapaCHAR& pName);
+	GrapaLibraryEvent* HandleModelEmbed(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleModelInfo(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleModelParams(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleModelContext(GrapaCHAR& pName);
@@ -335,9 +341,13 @@ public:
 
 // String Distance Helper Functions
 int calculate_levenshtein_distance(const std::string& str1, const std::string& str2);
+int calculate_damerau_levenshtein_distance(const std::string& str1, const std::string& str2);
 double calculate_jaro_winkler_similarity(const std::string& str1, const std::string& str2);
 double calculate_cosine_similarity(const std::string& str1, const std::string& str2);
+double calculate_jaccard_similarity(const std::string& str1, const std::string& str2, const std::string& method, int n);
 double calculate_cosine_similarity_tfidf(const std::string& str1, const std::string& str2, const std::vector<std::string>& corpus);
+std::vector<std::string> split_words(const std::string& str);
+std::set<std::string> generate_ngrams(const std::string& str, int n);
 
 
 
