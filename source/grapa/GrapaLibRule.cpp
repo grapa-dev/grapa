@@ -3099,14 +3099,6 @@ GrapaLibraryRuleModelContextEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 };
 GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleModelContext(GrapaCHAR& pName) { return new GrapaLibraryRuleModelContextEvent(pName); }
 
-class GrapaLibraryRuleModelEmbedEvent : public GrapaLibraryEvent
-{
-public:
-    GrapaLibraryRuleModelEmbedEvent(GrapaCHAR& pName) { mName.FROM(pName); };
-    virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
-};
-GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleModelEmbed(GrapaCHAR& pName) { return new GrapaLibraryRuleModelEmbedEvent(pName); }
-
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 void GrapaLibraryRuleEvent::LoadLibWrap(GrapaScriptExec* vScriptExec, GrapaRuleEvent* pOperation)
@@ -3465,7 +3457,6 @@ GrapaLibraryEvent* GrapaLibraryRuleEvent::LoadLib(GrapaScriptExec *vScriptExec, 
         static const std::unordered_map<std::string, Handler> handlerMap = {
             { "load", &GrapaLibraryRuleEvent::HandleModelLoad },
             { "gen", &GrapaLibraryRuleEvent::HandleModelGen },
-            { "embed", &GrapaLibraryRuleEvent::HandleModelEmbed },
             { "info", &GrapaLibraryRuleEvent::HandleModelInfo },
             { "params", &GrapaLibraryRuleEvent::HandleModelParams },
             { "context", &GrapaLibraryRuleEvent::HandleModelContext },
@@ -23643,11 +23634,9 @@ GrapaRuleEvent* GrapaLibraryRuleModelGenEvent::Run(GrapaScriptExec* vScriptExec,
     GrapaCHAR generatedText;
     
     // Generate text
-    err = objEvent->vModel->Generate(prompt, generatedText, params);
+    result = objEvent->vModel->Generate(prompt, params);
     
-    if (err == 0) {
-        result = new GrapaRuleEvent(0, GrapaCHAR("result"), generatedText);
-    } else {
+    if (result == NULL) {
         result = Error(vScriptExec, pNameSpace, err);
     }
 
@@ -24156,47 +24145,4 @@ std::set<std::string> generate_ngrams(const std::string& str, int n) {
     }
     
     return ngrams;
-}
-
-GrapaRuleEvent* GrapaLibraryRuleModelEmbedEvent::Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput)
-{
-    GrapaError err = -1;
-    GrapaRuleEvent* result = NULL;
-
-    // Get the model object
-    GrapaLibraryParam r1(vScriptExec, pNameSpace, pInput ? pInput->Head(0) : NULL);
-    GrapaRuleEvent* objEvent = vScriptExec->vScriptState->SearchTarget(pNameSpace, r1.vVal);
-    
-    if (!objEvent) {
-        return Error(vScriptExec, pNameSpace, -1);
-    }
-
-    // Create model if needed
-    if (!objEvent->vModel) {
-        objEvent->vModel = new GrapaModel(vScriptExec, pNameSpace, objEvent);
-    }
-    
-    // Get text to embed
-    GrapaLibraryParam r2(vScriptExec, pNameSpace, pInput ? pInput->Head(1) : NULL);
-    GrapaCHAR text;
-    if (r2.vVal && r2.vVal->mValue.mToken == GrapaTokenType::STR) {
-        text.FROM(r2.vVal->mValue);
-    } else {
-        return Error(vScriptExec, pNameSpace, -2); // Invalid text parameter
-    }
-    
-    // Get optional parameters
-    GrapaLibraryParam r3(vScriptExec, pNameSpace, pInput ? pInput->Head(2) : NULL);
-    GrapaRuleEvent* params = r3.vVal;
-    
-    // Call the embed method
-    GrapaCHAR embedding;
-    err = objEvent->vModel->Embed(text, embedding, params);
-    if (err) {
-        result = Error(vScriptExec, pNameSpace, err);
-    } else {
-        result = new GrapaRuleEvent(0, GrapaCHAR(), embedding);
-    }
-
-    return(result);
 }

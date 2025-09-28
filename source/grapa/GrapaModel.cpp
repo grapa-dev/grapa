@@ -417,65 +417,47 @@ GrapaError GrapaModel::UnloadOpenAI()
     return 0;
 }
 
-GrapaError GrapaModel::Generate(const GrapaCHAR& prompt, GrapaCHAR& result, GrapaRuleEvent* callParams)
+GrapaRuleEvent* GrapaModel::Generate(const GrapaCHAR& prompt, GrapaRuleEvent* callParams)
 {
+    GrapaRuleEvent* result = NULL;
+
     if (!mLoaded) {
-        return -1;
+        return result;
     }
-    
-    // Merge persistent + call-specific parameters
+
     GrapaRuleEvent* mergedParams = MergeParams(vParams, callParams);
     
     if (mMethod.StrCmp("llama") == 0) {
-        GrapaError err = GenerateLlama(prompt, result, mergedParams);
-        delete mergedParams;
-        return err;
+        result = GenerateLlama(prompt, mergedParams);
     }
     else if (mMethod.StrCmp("openai") == 0) {
-        GrapaError err = GenerateOpenAI(prompt, result, mergedParams);
-        delete mergedParams;
-        return err;
+        result = GenerateOpenAI(prompt, mergedParams);
     }
-    
+    else if (mMethod.StrCmp("openai-embedding") == 0) {
+        result = EmbedOpenAI(prompt, mergedParams);
+    }
+
     delete mergedParams;
-    return -2; // Unsupported backend
+    return result;
 }
 
-GrapaError GrapaModel::Embed(const GrapaCHAR& text, GrapaCHAR& result, GrapaRuleEvent* callParams)
+GrapaRuleEvent* GrapaModel::GenerateLlama(const GrapaCHAR& prompt, GrapaRuleEvent* mergedParams)
 {
-    if (!mLoaded) {
-        return -1;
-    }
-    
-    // Merge persistent + call-specific parameters
-    GrapaRuleEvent* mergedParams = MergeParams(vParams, callParams);
-    
-    if (mMethod.StrCmp("openai") == 0 || mMethod.StrCmp("openai-embedding") == 0) {
-        GrapaError err = EmbedOpenAI(text, result, mergedParams);
-        delete mergedParams;
-        return err;
-    }
-    
-    delete mergedParams;
-    return -2; // Unsupported backend for embeddings
-}
+    GrapaRuleEvent* result = NULL;
 
-GrapaError GrapaModel::GenerateLlama(const GrapaCHAR& prompt, GrapaCHAR& result, GrapaRuleEvent* mergedParams)
-{
     if (!this->mLlamaContext) {
-        return -1;
+        return result;
     }
     
     // Apply parameters to LLAMA context
     GrapaError paramResult = this->ApplyParamsToLlama(mergedParams);
     if (paramResult != 0) {
-        return paramResult;
+        return result;
     }
     
     // Early exit for empty prompts
     if (prompt.mLength == 0) {
-        result.SetLength(0);
-        return 0;
+        return result;
     }
     
     // Backend-optimized context management
@@ -497,8 +479,7 @@ GrapaError GrapaModel::GenerateLlama(const GrapaCHAR& prompt, GrapaCHAR& result,
     
     // Early exit if no tokens
     if (n_new_tokens == 0) {
-        result.SetLength(0);
-        return 0;
+        return result;
     }
     
     // For LLAMA.cpp: Use truly persistent context (Option 3 - most efficient)
@@ -509,7 +490,7 @@ GrapaError GrapaModel::GenerateLlama(const GrapaCHAR& prompt, GrapaCHAR& result,
         // Process only the new tokens (LLAMA.cpp context preserves all previous state)
         struct llama_batch batch = llama_batch_get_one(new_tokens.data(), n_new_tokens);
         if (llama_decode(this->mLlamaContext, batch)) {
-            return -2;
+            return result;
         }
     } else {
         // First call - initialize context with all tokens
@@ -520,12 +501,12 @@ GrapaError GrapaModel::GenerateLlama(const GrapaCHAR& prompt, GrapaCHAR& result,
         // Process all tokens to initialize the context
         struct llama_batch batch = llama_batch_get_one(mContextTokens.data(), mContextTokens.size());
         if (llama_decode(this->mLlamaContext, batch)) {
-            return -2;
+            return result;
         }
     }
     
     // Generate response
-    result.SetLength(0);
+	result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaCHAR());
     
     // Now generate new tokens using LLAMA.cpp sampler
     for (int i = 0; i < this->mMaxTokens; i++) {
@@ -559,28 +540,29 @@ GrapaError GrapaModel::GenerateLlama(const GrapaCHAR& prompt, GrapaCHAR& result,
         char token_str[256];
         int n_chars = llama_token_to_piece(vocab, next_token, token_str, sizeof(token_str), 0, false);
         if (n_chars > 0) {
-            result.Append(token_str, n_chars);
+            result->mValue.GrapaCHAR::Append(token_str, n_chars);
         }
         
         // Add the new token to persistent context and decode it
         mContextTokens.push_back(next_token);
         struct llama_batch next_batch = llama_batch_get_one(&next_token, 1);
         if (llama_decode(this->mLlamaContext, next_batch)) {
-            return -2;
+            return result;
         }
     }
     
-    return 0;
+    return result;
 }
 
-GrapaError GrapaModel::GenerateOpenAI(const GrapaCHAR& prompt, GrapaCHAR& result, GrapaRuleEvent* mergedParams)
+GrapaRuleEvent* GrapaModel::GenerateOpenAI(const GrapaCHAR& prompt, GrapaRuleEvent* mergedParams)
 {
+    GrapaRuleEvent* result = NULL;
+
     s64 index;
 
     // Early exit for empty prompts
     if (prompt.mLength == 0) {
-        result.SetLength(0);
-        return 0;
+        return result;
     }
     
     // Extract authorization and store parameters
@@ -602,12 +584,12 @@ GrapaError GrapaModel::GenerateOpenAI(const GrapaCHAR& prompt, GrapaCHAR& result
     }
     
     if (authToken.mLength == 0) {
-        return -1; // No authorization token provided
+        return result;
     }
     
     // Check if connection is still active
     if (!mNet.mNet.mConnected) {
-        return -2; // Connection lost, need to reload
+        return result;
     }
     
     // Prepare headers
@@ -658,7 +640,7 @@ GrapaError GrapaModel::GenerateOpenAI(const GrapaCHAR& prompt, GrapaCHAR& result
     
     GrapaError err = mNet.mNet.Send(headerStr);
     if (err != 0) {
-        return -3; // HTTP request failed
+        return result;
     }
     
     mNet.HttpRead(vScriptExec);
@@ -701,8 +683,8 @@ GrapaError GrapaModel::GenerateOpenAI(const GrapaCHAR& prompt, GrapaCHAR& result
                                 {
                                     // Extract the text
                                     GrapaRuleEvent* text = contentItem->vQueue->Search("text", index);
-                                    if (text && text->mValue.mToken == GrapaTokenType::STR) {
-                                        result.FROM(text->mValue);
+                                    if (text) {
+                                        result = GrapaScriptExec::CopyItem(text);
                                         break; // Found the text, exit loops
                                     }
                                 }
@@ -723,17 +705,18 @@ GrapaError GrapaModel::GenerateOpenAI(const GrapaCHAR& prompt, GrapaCHAR& result
         message = NULL;
     }
     
-    return 0;
+    return result;
 }
 
-GrapaError GrapaModel::EmbedOpenAI(const GrapaCHAR& text, GrapaCHAR& result, GrapaRuleEvent* mergedParams)
+GrapaRuleEvent* GrapaModel::EmbedOpenAI(const GrapaCHAR& text, GrapaRuleEvent* mergedParams)
 {
+    GrapaRuleEvent* result = NULL;
+
     s64 index;
 
     // Early exit for empty text
     if (text.mLength == 0) {
-        result.SetLength(0);
-        return 0;
+        return result;
     }
     
     // Extract authorization token
@@ -747,12 +730,12 @@ GrapaError GrapaModel::EmbedOpenAI(const GrapaCHAR& text, GrapaCHAR& result, Gra
     }
     
     if (authToken.mLength == 0) {
-        return -1; // No authorization token provided
+        return result;
     }
     
     // Check if connection is still active
     if (!mNet.mNet.mConnected) {
-        return -2; // Connection lost, need to reload
+        return result;
     }
     
     // Prepare headers
@@ -792,7 +775,7 @@ GrapaError GrapaModel::EmbedOpenAI(const GrapaCHAR& text, GrapaCHAR& result, Gra
     
     GrapaError err = mNet.mNet.Send(headerStr);
     if (err != 0) {
-        return -3; // HTTP request failed
+        return result;
     }
     
     mNet.HttpRead(vScriptExec);
@@ -806,9 +789,8 @@ GrapaError GrapaModel::EmbedOpenAI(const GrapaCHAR& text, GrapaCHAR& result, Gra
             GrapaRuleEvent* embedding = data->vQueue->Head();
             if (embedding && embedding->vQueue) {
                 GrapaRuleEvent* embeddingData = embedding->vQueue->Search("embedding", index);
-                if (embeddingData && embeddingData->mValue.mToken == GrapaTokenType::LIST) {
-                    // Convert array to string representation
-                    result.FROM(embeddingData->mValue);
+                if (embeddingData) {
+                    result = GrapaScriptExec::CopyItem(embeddingData);
                 }
             }
         }

@@ -72,11 +72,7 @@ public:
     bool IsLoaded() const;
     
     // Generation operations
-    GrapaError Generate(const GrapaCHAR& prompt, GrapaCHAR& result, GrapaRuleEvent* callParams);
-    GrapaError GenerateStream(const GrapaCHAR& prompt, GrapaCHAR& result, GrapaRuleEvent* callParams);
-    
-    // Embedding operations
-    GrapaError Embed(const GrapaCHAR& text, GrapaCHAR& result, GrapaRuleEvent* callParams);
+    GrapaRuleEvent* Generate(const GrapaCHAR& prompt, GrapaRuleEvent* callParams);
     
     // Model information
     GrapaRuleEvent* GetModelInfo() const;
@@ -93,13 +89,13 @@ public:
     // Backend-specific operations
     GrapaError LoadLlama(const GrapaCHAR& modelPath);
     GrapaError UnloadLlama();
-    GrapaError GenerateLlama(const GrapaCHAR& prompt, GrapaCHAR& result, GrapaRuleEvent* mergedParams);
+    GrapaRuleEvent* GenerateLlama(const GrapaCHAR& prompt, GrapaRuleEvent* mergedParams);
     
     // OpenAI cloud model operations
     GrapaError LoadOpenAI(const GrapaCHAR& modelPath);
     GrapaError UnloadOpenAI();
-    GrapaError GenerateOpenAI(const GrapaCHAR& prompt, GrapaCHAR& result, GrapaRuleEvent* mergedParams);
-    GrapaError EmbedOpenAI(const GrapaCHAR& text, GrapaCHAR& result, GrapaRuleEvent* mergedParams);
+    GrapaRuleEvent* GenerateOpenAI(const GrapaCHAR& prompt, GrapaRuleEvent* mergedParams);
+    GrapaRuleEvent* EmbedOpenAI(const GrapaCHAR& text, GrapaRuleEvent* mergedParams);
     
     // Future backends
     GrapaError LoadOnnx(const GrapaCHAR& modelPath);
