@@ -43,7 +43,7 @@ public:
 	GrapaScriptExec* vScriptExec;
 	GrapaCHAR mProfile;
 public:
-	GrapaItemState() { mItemParams = NULL; mClearState = false;  mFloatFix = false; mFloatMax = 16 * 8; mFloatExtra = 10; mNameSpace = NULL; vScriptExec = NULL; }
+	GrapaItemState() { mItemParams = NULL; mClearState = false;  mFloatFix = false; mFloatMax = 56; mFloatExtra = 4; mNameSpace = NULL; vScriptExec = NULL; }
 	GrapaItemState(GrapaItemParams* pLexParams, GrapaNames* pNameSpace, GrapaScriptExec* pScriptExec) { mItemParams = NULL; mFloatFix = false; mFloatMax = 16 * 8; mFloatExtra = 10; SetParams(pLexParams, pNameSpace, pScriptExec); }
 public:
 	virtual inline void SetParams(GrapaItemParams* pLexParams, GrapaNames* pNameSpace, GrapaScriptExec* pScriptExec = NULL) { mItemParams = pLexParams; mNameSpace = pNameSpace; vScriptExec = pScriptExec; }
