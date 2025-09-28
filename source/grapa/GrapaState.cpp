@@ -1766,6 +1766,9 @@ void GrapaRuleEvent::TOSize(u64& pSize)
 		pSize +=  size;
 		break;
 	case GrapaTokenType::VECTOR:
+		size = 0;
+		if (vVector) size = vVector->ToSize();
+		pSize += size;
 		break;
 	case GrapaTokenType::WIDGET:
 		break;
@@ -1883,6 +1886,8 @@ bool GrapaRuleEvent::IsZero()
 			isZero = true;
 		break;
 	case GrapaTokenType::VECTOR:
+		if (!vVector || !vVector->mSize)
+			isZero = true;
 		break;
 	case GrapaTokenType::WIDGET:
 		break;
@@ -1973,6 +1978,8 @@ bool GrapaRuleEvent::IsNullIsNegIsZero(bool& isNeg, bool& isNull)
 				isZero = true;
 			break;
 		case GrapaTokenType::VECTOR:
+			if (!vVector || !vVector->mSize)
+				isZero = true;
 			break;
 		case GrapaTokenType::WIDGET:
 			break;
@@ -2067,16 +2074,17 @@ GrapaRuleEvent* GrapaRuleQueue::FROM(GrapaScriptState* pScriptState, GrapaNames*
 		case GrapaTokenType::CODE:
 		case GrapaTokenType::OBJ:
 		case GrapaTokenType::TABLE:
+		case GrapaTokenType::VECTOR:
 		case GrapaTokenType::ID: value.mToken = tType; break;
 		case GrapaTokenType::SYSID: value.mToken = GrapaTokenType::SYSID; if (value.mLength == 0) { value.SetSize(0); isNull = true; } break;
-		case GrapaTokenType::VECTOR:
 			break;
 		case GrapaTokenType::WIDGET:
 			break;
 		default: value.mToken = GrapaTokenType::RAW; break;
 		}
 
-		GrapaRuleEvent *ev = new GrapaRuleEvent(0, name, value);
+		GrapaRuleEvent *ev = new GrapaRuleEvent(0, name, GrapaCHAR());
+		ev->mValue.mToken = value.mToken;
 		ev->mNull = isNull;
 		switch (value.mToken)
 		{
@@ -2094,10 +2102,14 @@ GrapaRuleEvent* GrapaRuleQueue::FROM(GrapaScriptState* pScriptState, GrapaNames*
 			ev->vClass = ((GrapaRuleQueue*)ev->vQueue)->FROM(pScriptState, pNameSpace, value);
 			break;
 		case GrapaTokenType::VECTOR:
+			ev->vVector = new GrapaVector();
+			ev->vVector->FromBytes(pScriptState->vScriptExec, pNameSpace, value);
 			break;
 		case GrapaTokenType::WIDGET:
 			break;
 		default:
+			ev->mValue.FROM(value);
+			ev->mValue.mToken = value.mToken;
             break;
 		}
 		PushTail(ev);
@@ -2186,6 +2198,12 @@ void GrapaRuleQueue::TO(GrapaBYTE& pValue, GrapaRuleEvent* pClass, u8 pType)
 			if (ev->vQueue) ((GrapaRuleQueue*)ev->vQueue)->TO(value, ev->vClass, ev->mValue.mToken);
 			valuePtr = &value;
 			break;
+		case GrapaTokenType::VECTOR:
+			tType = ev->mValue.mToken;
+			value.SetLength(0);
+			if (ev->vVector) ev->vVector->ToBytes(value);
+			valuePtr = &value;
+			break;
 		case GrapaTokenType::PTR:
 			switch (ev->vRulePointer->mValue.mToken)
 			{
@@ -2225,6 +2243,10 @@ void GrapaRuleQueue::TO(GrapaBYTE& pValue, GrapaRuleEvent* pClass, u8 pType)
 				valuePtr = &value;
 				break;
 			case GrapaTokenType::VECTOR:
+				tType = ev->vRulePointer->mValue.mToken;
+				value.SetLength(0);
+				if (ev->vRulePointer->vVector) ev->vRulePointer->vVector->ToBytes(value);
+				valuePtr = &value;
 				break;
 			case GrapaTokenType::WIDGET:
 				break;
@@ -2232,8 +2254,6 @@ void GrapaRuleQueue::TO(GrapaBYTE& pValue, GrapaRuleEvent* pClass, u8 pType)
 				valuePtr = NULL;
 				break;
 			}
-			break;
-		case GrapaTokenType::VECTOR:
 			break;
 		case GrapaTokenType::WIDGET:
 			break;
@@ -2265,8 +2285,8 @@ void GrapaRuleQueue::TO(GrapaBYTE& pValue, GrapaRuleEvent* pClass, u8 pType)
 		case GrapaTokenType::OBJ:
 		case GrapaTokenType::TABLE:
 		case GrapaTokenType::ID:
-		case GrapaTokenType::SYSID: fieldType = tType; break;
-		case GrapaTokenType::VECTOR:
+		case GrapaTokenType::SYSID:
+		case GrapaTokenType::VECTOR: fieldType = tType; break;
 		case GrapaTokenType::WIDGET:
 			break;
 		default: fieldType = GrapaTokenType::RAW; break;

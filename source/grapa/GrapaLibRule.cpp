@@ -11609,7 +11609,7 @@ GrapaRuleEvent* GrapaLibraryRuleFileSetEvent::Run(GrapaScriptExec* vScriptExec, 
 					{
 						if (scan->vVector)
 						{
-							scan->vVector->ToBytes(vScriptExec, pNameSpace, scan->mValue);
+							scan->vVector->ToBytes(scan->mValue);
 						}
 						scan->mValue.mToken = scan->mValue.mToken;
 					}
@@ -11640,7 +11640,7 @@ GrapaRuleEvent* GrapaLibraryRuleFileSetEvent::Run(GrapaScriptExec* vScriptExec, 
 					{
 						if (fieldValue.vVal->vVector)
 						{
-							fieldValue.vVal->vVector->ToBytes(vScriptExec, pNameSpace, setValue);
+							fieldValue.vVal->vVector->ToBytes(setValue);
 						}
 						setValue.mToken = fieldValue.vVal->mValue.mToken;
 						fieldValue.vVal = NULL;
@@ -13711,7 +13711,6 @@ GrapaRuleEvent* GrapaLibraryRuleEncodeEvent::Run(GrapaScriptExec *vScriptExec, G
 			{
 			case GrapaTokenType::LIST:
 			case GrapaTokenType::TUPLE:
-			case GrapaTokenType::VECTOR:
 			case GrapaTokenType::GOBJ:
 			case GrapaTokenType::ERR:
 			case GrapaTokenType::XML:
@@ -13720,6 +13719,11 @@ GrapaRuleEvent* GrapaLibraryRuleEncodeEvent::Run(GrapaScriptExec *vScriptExec, G
 			case GrapaTokenType::OP:
 			case GrapaTokenType::OBJ:
 				r1.vVal->TO(s);
+				GrapaCompress::Compress(s, result->mValue);
+				break;
+			case GrapaTokenType::VECTOR:
+				if (r1.vVal->vVector == NULL) break;
+				r1.vVal->vVector->ToBytes(s);
 				GrapaCompress::Compress(s, result->mValue);
 				break;
 			default:
@@ -13934,7 +13938,7 @@ GrapaRuleEvent* GrapaLibraryRuleDecodeEvent::Run(GrapaScriptExec *vScriptExec, G
 				break;
 			case GrapaTokenType::VECTOR:
 				result->vVector = new GrapaVector();
-				result->vVector->FROM(result->mValue);
+				result->vVector->FromBytes(vScriptExec,pNameSpace,result->mValue);
 				result->vClass = vScriptExec->vScriptState->GetClass(pNameSpace, GrapaCHAR("$VECTOR"));
 				break;
 			case GrapaTokenType::WIDGET:

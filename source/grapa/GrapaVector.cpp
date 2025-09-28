@@ -430,6 +430,7 @@ void GrapaVector::CLEAR()
 	mBlock = _minvectorblock_;
 	mMaxBlock = _minvectordatablock_;
 	mLabels.CLEAR();
+	mKeys.CLEAR();
 	// mSetBlock = 0;
 }
 
@@ -502,6 +503,12 @@ bool GrapaVector::FROM(const GrapaVector& pData, u8 pBlock)
 	while (ev)
 	{
 		mLabels.PushTail(new GrapaRuleEvent(0, ev->mName, ev->mValue));
+		ev = ev->Next();
+	}
+	ev = ((GrapaVector*)&pData)->mKeys.Head();
+	while (ev)
+	{
+		mKeys.PushTail(new GrapaRuleEvent(0, ev->mName, ev->mValue));
 		ev = ev->Next();
 	}
 	return(true);
@@ -1288,7 +1295,7 @@ void GrapaVector::FromBytes(GrapaScriptExec* pScriptExec, GrapaNames* pNameSpace
 	}
 }
 
-u64 GrapaVector::ToSize(GrapaScriptExec* pScriptExec, GrapaNames* pNameSpace)
+u64 GrapaVector::ToSize()
 {
 	/*
 	GrapaBYTE value;
@@ -1376,10 +1383,10 @@ u64 GrapaVector::ToSize(GrapaScriptExec* pScriptExec, GrapaNames* pNameSpace)
 	return totalSize;
 }
 
-void GrapaVector::ToBytes(GrapaScriptExec* pScriptExec, GrapaNames* pNameSpace, GrapaBYTE& pValue)
+void GrapaVector::ToBytes(GrapaBYTE& pValue)
 {
 	// Calculate size and pre-allocate buffer
-	u64 totalSize = ToSize(pScriptExec, pNameSpace);
+	u64 totalSize = ToSize();
 	pValue.SetSize(totalSize, false);
 	pValue.SetLength(totalSize);
 	memset(pValue.mBytes, 0, totalSize);
