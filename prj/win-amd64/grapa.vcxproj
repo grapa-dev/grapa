@@ -85,12 +85,12 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>$(SolutionDir)..\..\source;$(SolutionDir)..\..\source\pre2;$(SolutionDir)..\..\source\llama;$(SolutionDir)..\..\source\onnxruntime;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)..\..\source;$(SolutionDir)..\..\bin;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(SolutionDir)..\..\source;$(SolutionDir)..\..\bin;$(SolutionDir)..\..\source\onnxruntime-lib\win-amd64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(SolutionDir)..\..\source;$(SolutionDir)..\..\source\pre2;$(SolutionDir)..\..\source\llama;$(SolutionDir)..\..\source\onnxruntime;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)..\..\source;$(SolutionDir)..\..\bin;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(SolutionDir)..\..\source;$(SolutionDir)..\..\bin;$(SolutionDir)..\..\source\onnxruntime-lib\win-amd64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -219,4 +219,9 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Message Text="Copying ONNX Runtime DLLs to output directory..." Importance="high" />
+    <Copy SourceFiles="$(SolutionDir)..\..\source\onnxruntime-lib\win-amd64\onnxruntime.dll" DestinationFolder="$(TargetDir)" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="$(SolutionDir)..\..\source\onnxruntime-lib\win-amd64\onnxruntime_providers_shared.dll" DestinationFolder="$(TargetDir)" SkipUnchangedFiles="true" />
+  </Target>
 </Project>
