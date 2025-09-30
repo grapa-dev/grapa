@@ -1267,9 +1267,15 @@ GrapaRuleEvent* GrapaModel::EmbedOnnx(const GrapaCHAR& text, GrapaRuleEvent* mer
 {
     GrapaRuleEvent* result = NULL;
 
+    result = new GrapaRuleEvent();
+    result->mValue.mToken = GrapaTokenType::GOBJ;
+    result->vQueue = new GrapaRuleQueue();
+
     try {
         if (!mOnnxSession) {
-            result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaCHAR("ONNX session not loaded"));
+            result->mValue.mToken = GrapaTokenType::ERR;
+            result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("error"), GrapaInt(-1).getBytes()));
+            result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("message"),GrapaCHAR("ONNX session not loaded")));
             return result;
         }
 
@@ -1364,41 +1370,90 @@ GrapaRuleEvent* GrapaModel::EmbedOnnx(const GrapaCHAR& text, GrapaRuleEvent* mer
 
             printf("Tokenizing input text with %s tokenizer\n", tokenizer_type.c_str());
 
-            // Basic vocabulary mapping (simplified for demonstration)
-            std::map<std::string, int> vocab = {
-                {"<PAD>", 0}, {"<UNK>", 1}, {"<CLS>", 2}, {"<SEP>", 3},
-                {"the", 4}, {"a", 5}, {"an", 6}, {"and", 7}, {"or", 8}, {"but", 9},
-                {"in", 10}, {"on", 11}, {"at", 12}, {"to", 13}, {"for", 14}, {"of", 15},
-                {"with", 16}, {"by", 17}, {"is", 18}, {"are", 19}, {"was", 20}, {"were", 21},
-                {"be", 22}, {"been", 23}, {"being", 24}, {"have", 25}, {"has", 26}, {"had", 27},
-                {"do", 28}, {"does", 29}, {"did", 30}, {"will", 31}, {"would", 32}, {"could", 33},
-                {"should", 34}, {"may", 35}, {"might", 36}, {"can", 37}, {"this", 38}, {"that", 39},
-                {"these", 40}, {"those", 41}, {"i", 42}, {"you", 43}, {"he", 44}, {"she", 45},
-                {"it", 46}, {"we", 47}, {"they", 48}, {"me", 49}, {"him", 50}, {"her", 51},
-                {"us", 52}, {"them", 53}
-            };
+            // Load vocabulary from file if available
+            std::map<std::string, int> vocab;
+            std::string model_path_str((char*)mModelPath.mBytes, mModelPath.mLength);
+            
+            // Try to find vocab.txt in the model directory
+            std::string vocab_file = model_path_str;
+            size_t last_slash = vocab_file.find_last_of('/');
+            if (last_slash != std::string::npos) {
+                vocab_file = vocab_file.substr(0, last_slash + 1) + "vocab.txt";
+            } else {
+                vocab_file = "vocab.txt";
+            }
+            
+            printf("Looking for vocabulary file: %s\n", vocab_file.c_str());
+            
+            std::ifstream vocab_stream(vocab_file);
+            if (vocab_stream.is_open()) {
+                printf("Loading vocabulary from file\n");
+                std::string line;
+                int token_id = 0;
+                while (std::getline(vocab_stream, line)) {
+                    // Remove any trailing whitespace
+                    line.erase(line.find_last_not_of(" \t\r\n") + 1);
+                    if (!line.empty()) {
+                        vocab[line] = token_id++;
+                    }
+                }
+                printf("Loaded %zu tokens from vocabulary file\n", vocab.size());
+            } else {
+                printf("Vocabulary file not found, using minimal fallback vocabulary\n");
+                // Minimal fallback vocabulary for when no vocab.txt is available
+                vocab = {
+                    {"[PAD]", 0}, {"[UNK]", 1}, {"[CLS]", 2}, {"[SEP]", 3}
+                };
+            }
 
             // Add CLS token at the beginning
-            token_ids.push_back(vocab["<CLS>"]);
+            if (vocab.count("[CLS]")) {
+                token_ids.push_back(vocab["[CLS]"]);
+            } else if (vocab.count("<CLS>")) {
+                token_ids.push_back(vocab["<CLS>"]);
+            } else {
+                token_ids.push_back(2); // Default CLS token ID
+            }
             attention_mask.push_back(1);
 
             // Add word tokens
             for (const auto& word : words) {
                 if (token_ids.size() >= max_length - 1) break; // Leave room for SEP token
-                int token_id = vocab.count(word) ? vocab[word] : vocab["<UNK>"];
+                int token_id;
+                if (vocab.count(word)) {
+                    token_id = vocab[word];
+                } else if (vocab.count("[UNK]")) {
+                    token_id = vocab["[UNK]"];
+                } else if (vocab.count("<UNK>")) {
+                    token_id = vocab["<UNK>"];
+                } else {
+                    token_id = 1; // Default UNK token ID
+                }
                 token_ids.push_back(token_id);
                 attention_mask.push_back(1);
             }
 
             // Add SEP token at the end
             if (token_ids.size() < max_length) {
-                token_ids.push_back(vocab["<SEP>"]);
+                if (vocab.count("[SEP]")) {
+                    token_ids.push_back(vocab["[SEP]"]);
+                } else if (vocab.count("<SEP>")) {
+                    token_ids.push_back(vocab["<SEP>"]);
+                } else {
+                    token_ids.push_back(3); // Default SEP token ID
+                }
                 attention_mask.push_back(1);
             }
 
             // Pad to max_length
             while (token_ids.size() < max_length) {
-                token_ids.push_back(vocab["<PAD>"]);
+                if (vocab.count("[PAD]")) {
+                    token_ids.push_back(vocab["[PAD]"]);
+                } else if (vocab.count("<PAD>")) {
+                    token_ids.push_back(vocab["<PAD>"]);
+                } else {
+                    token_ids.push_back(0); // Default PAD token ID
+                }
                 attention_mask.push_back(0);
             }
         }
@@ -1612,9 +1667,11 @@ GrapaRuleEvent* GrapaModel::EmbedOnnx(const GrapaCHAR& text, GrapaRuleEvent* mer
                 printf("Converting to Grapa $LIST format\n");
 
                 // Create the embedding as a Grapa $LIST
-                result = new GrapaRuleEvent();
-                result->mValue.mToken = GrapaTokenType::LIST;
-                result->vQueue = new GrapaRuleQueue();
+                GrapaRuleEvent* embedding_list = new GrapaRuleEvent();
+                embedding_list->mName.FROM("embedding");
+                embedding_list->mValue.mToken = GrapaTokenType::LIST;
+                embedding_list->vQueue = new GrapaRuleQueue();
+                result->vQueue->PushTail(embedding_list);
 
                 // Determine output format
                 bool use_2d = (output_format == "2d") ||
@@ -1637,7 +1694,7 @@ GrapaRuleEvent* GrapaModel::EmbedOnnx(const GrapaCHAR& text, GrapaRuleEvent* mer
                             chunk_list->vQueue->PushTail(val_item);
                         }
 
-                        result->vQueue->PushTail(chunk_list);
+                        embedding_list->vQueue->PushTail(chunk_list);
                     }
                 }
                 else {
@@ -1646,12 +1703,38 @@ GrapaRuleEvent* GrapaModel::EmbedOnnx(const GrapaCHAR& text, GrapaRuleEvent* mer
 
                     for (float val : final_embedding) {
                         GrapaRuleEvent* val_item = new GrapaRuleEvent(0, GrapaCHAR(), GrapaFloat(val).getBytes());
-                        result->vQueue->PushTail(val_item);
+                        embedding_list->vQueue->PushTail(val_item);
                     }
                 }
 
                 printf("Embedding created: %s format, %zu dimensions\n",
                     use_2d ? "2D" : "1D", final_embedding.size());
+
+                // Add simple metadata to result
+                GrapaRuleEvent* metadata_item = new GrapaRuleEvent();
+                metadata_item->mName.FROM("metadata");
+                metadata_item->mValue.mToken = GrapaTokenType::GOBJ;
+                metadata_item->vQueue = new GrapaRuleQueue();
+                result->vQueue->PushTail(metadata_item);
+
+                // Add basic processing information
+                GrapaRuleEvent* token_count_item = new GrapaRuleEvent(0, GrapaCHAR("token_count"), GrapaInt(token_ids.size()).getBytes());
+                metadata_item->vQueue->PushTail(token_count_item);
+
+                GrapaRuleEvent* embedding_dimensions_item = new GrapaRuleEvent(0, GrapaCHAR("embedding_dimensions"), GrapaInt(final_embedding.size()).getBytes());
+                metadata_item->vQueue->PushTail(embedding_dimensions_item);
+
+                GrapaRuleEvent* max_length_item = new GrapaRuleEvent(0, GrapaCHAR("max_length"), GrapaInt(max_length).getBytes());
+                metadata_item->vQueue->PushTail(max_length_item);
+
+                GrapaRuleEvent* pooling_method_item = new GrapaRuleEvent(0, GrapaCHAR("pooling_method"), GrapaCHAR(pooling_method.c_str()));
+                metadata_item->vQueue->PushTail(pooling_method_item);
+
+                GrapaRuleEvent* output_format_item = new GrapaRuleEvent(0, GrapaCHAR("output_format"), GrapaCHAR(output_format.c_str()));
+                metadata_item->vQueue->PushTail(output_format_item);
+
+                GrapaRuleEvent* normalize_item = new GrapaRuleEvent(0, GrapaCHAR("normalize"), GrapaInt(normalize ? 1 : 0).getBytes());
+                metadata_item->vQueue->PushTail(normalize_item);
 
                 // result is already set above
 
