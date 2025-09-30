@@ -74,9 +74,9 @@ target_link_libraries(grapapy PRIVATE
     libggml-cpu.a
     libmtmd.a
     libcommon.a
-    # ONNX Runtime shared libraries - link them directly into the extension
-    libonnxruntime.so
-    libonnxruntime_providers_shared.so
+    # ONNX Runtime shared libraries - use full path to avoid absolute RPATH
+    ${CMAKE_CURRENT_SOURCE_DIR}/source/onnxruntime-lib/${GRAPAPY_OS}/libonnxruntime.so
+    ${CMAKE_CURRENT_SOURCE_DIR}/source/onnxruntime-lib/${GRAPAPY_OS}/libonnxruntime_providers_shared.so
     # The actual shared libraries (.dylib, .so, .dll) must be available in the system path
     X11 Xfixes Xft Xext Xrender Xinerama Xcursor xcb Xau png16 fontconfig freetype
     gomp
@@ -99,9 +99,9 @@ target_link_libraries(grapapy PRIVATE
     libggml-cpu.a
     libmtmd.a
     libcommon.a
-    # ONNX Runtime shared libraries - link them directly into the extension
-    libonnxruntime.so
-    libonnxruntime_providers_shared.so
+    # ONNX Runtime shared libraries - use full path to avoid absolute RPATH
+    ${CMAKE_CURRENT_SOURCE_DIR}/source/onnxruntime-lib/${GRAPAPY_OS}/libonnxruntime.so
+    ${CMAKE_CURRENT_SOURCE_DIR}/source/onnxruntime-lib/${GRAPAPY_OS}/libonnxruntime_providers_shared.so
     # The actual shared libraries (.dylib, .so, .dll) must be available in the system path
     X11 Xfixes Xft Xext Xrender Xinerama Xcursor xcb Xau png16 fontconfig freetype
     gomp

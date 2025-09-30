@@ -405,6 +405,11 @@ class CMakeBuild(build_ext):
         lib_dir = Path(extdir)
         lib_dir.mkdir(exist_ok=True)
         
+        # Also copy to current directory if Python extension is there (for development builds)
+        current_dir = Path(".")
+        if (current_dir / "grapapy.cpython-313-darwin.so").exists() or (current_dir / "grapapy.cpython-39-x86_64-linux-gnu.so").exists():
+            print(f"Also copying ONNX Runtime libraries to current directory for development build")
+        
         # Find the current versioned library dynamically
         versioned_lib = None
         unversioned_lib = None
@@ -449,6 +454,37 @@ class CMakeBuild(build_ext):
                 print(f"⚠️  Warning: Could not create symlink: {e}")
         
         print(f"ONNX Runtime libraries copied to: {lib_dir}")
+        
+        # Also copy to current directory if this is a development build (--inplace)
+        current_dir = Path(".")
+        # Check if we're doing an inplace build by checking if the extension will be copied to current directory
+        # The --inplace flag means the extension will be copied to the current directory
+        is_inplace_build = '--inplace' in sys.argv or str(extdir) == str(current_dir.absolute())
+        if is_inplace_build:
+            print(f"Also copying ONNX Runtime libraries to current directory for development build")
+            for lib_file in source_lib_dir.glob("*"):
+                if lib_file.is_file() and (lib_file.suffix in ['.dylib', '.so', '.dll'] or 'onnxruntime' in lib_file.name):
+                    dest_path = current_dir / lib_file.name
+                    shutil.copy2(lib_file, dest_path)
+                    print(f"Copied to current directory: {lib_file.name}")
+            
+            # Create symlink/shim in current directory if needed
+            if versioned_lib and not unversioned_lib:
+                versioned_dest = current_dir / versioned_lib.name
+                unversioned_dest = current_dir / "libonnxruntime.dylib" if versioned_lib.suffix == '.dylib' else current_dir / "libonnxruntime.so" if versioned_lib.suffix == '.so' else current_dir / "libonnxruntime.dll"
+                shutil.copy2(versioned_dest, unversioned_dest)
+                print(f"Created symlink/shim in current directory: {unversioned_dest.name} -> {versioned_lib.name}")
+            
+            # Create libonnxruntime.so.1 symlink for Linux systems in current directory
+            if platform.system().lower() == 'linux':
+                try:
+                    libonnxruntime_so = current_dir / "libonnxruntime.so"
+                    libonnxruntime_so_1 = current_dir / "libonnxruntime.so.1"
+                    if libonnxruntime_so.exists() and not libonnxruntime_so_1.exists():
+                        libonnxruntime_so_1.symlink_to("libonnxruntime.so")
+                        print("✅ Created symlink in current directory: libonnxruntime.so.1 -> libonnxruntime.so")
+                except Exception as e:
+                    print(f"⚠️  Warning: Could not create symlink in current directory: {e}")
     
     def fix_macos_rpath(self, extdir):
         """Fix RPATH for macOS to use relative paths instead of absolute paths."""

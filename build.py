@@ -349,6 +349,7 @@ class GrapaBuilder:
                 f"source/llama-lib/{config.target}/*.a"
             ] + onnx_libs + config.frameworks + [
                 "-std=c++17", "-m64", "-O3", "-pthread", 
+                f"-Wl,-rpath,@loader_path/bin/lib/{config.target}",
                 "-o", config.output_name
             ]
             print(f"Current working directory: {os.getcwd()}")
@@ -815,7 +816,7 @@ class GrapaBuilder:
                     raise RuntimeError("No Python wheel found in dist/ directory")
                 print(f"✅ Created wheel file: {dist_files[0].name}")
                 print(f"⚠️  NOTE: This is a .whl file, not a .tar.gz file needed for PyPI")
-                return
+                returndirectory
 
         # Find the built package file (either tar.gz or wheel)
         dist_files = list(Path("dist").glob("*.tar.gz")) + list(Path("dist").glob("*.whl"))

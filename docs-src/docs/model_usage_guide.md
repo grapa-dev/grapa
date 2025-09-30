@@ -714,6 +714,174 @@ personal_result = personal_response.interpolate();
 - **Safe**: Programmer controls evaluation
 - **Powerful**: Full Grapa capabilities in responses
 
+## OpenAI Integration
+
+### OpenAI Text Generation
+
+Grapa supports OpenAI's GPT models for text generation. The `model.gen()` method returns the complete JSON response from OpenAI, giving you access to all metadata and additional information:
+
+```grapa
+/* OpenAI text generation */
+model = $MODEL();
+model.load('gpt-4o', 'openai');
+
+/* Generate with API key */
+result = model.gen('The quick brown fox jumps over the lazy dog', {
+    'api_key': 'your-openai-api-key'
+});
+
+/* Access the full JSON response */
+("Full response: " + result.str() + "\n").echo();
+
+/* Extract specific information from the JSON */
+response_data = op()(result.str())();
+if (response_data."output".len() > 0) {
+    text_content = response_data."output"[0]."content"[0]."text";
+    ("Generated text: " + text_content + "\n").echo();
+    
+    /* Access usage information */
+    usage = response_data."usage";
+    ("Tokens used: " + usage."total_tokens".str() + "\n").echo();
+};
+
+model.load();
+```
+
+### OpenAI Embeddings
+
+For embedding generation, Grapa returns the complete OpenAI embedding response:
+
+```grapa
+/* OpenAI embeddings */
+model = $MODEL();
+model.load('text-embedding-3-small', 'openai-embedding');
+
+/* Generate embeddings */
+result = model.gen('The quick brown fox jumps over the lazy dog', {
+    'api_key': 'your-openai-api-key'
+});
+
+/* Access the full JSON response */
+("Full response: " + result.str() + "\n").echo();
+
+/* Extract embedding data */
+response_data = op()(result.str())();
+if (response_data."data".len() > 0) {
+    embedding = response_data."data"[0]."embedding";
+    ("Embedding dimension: " + embedding.len().str() + "\n").echo();
+    ("First 5 values: " + embedding[0:5].str() + "\n").echo();
+    
+    /* Access model and usage information */
+    ("Model used: " + response_data."model" + "\n").echo();
+    usage = response_data."usage";
+    ("Total tokens: " + usage."total_tokens".str() + "\n").echo();
+};
+
+model.load();
+```
+
+### Working with OpenAI JSON Responses
+
+The JSON responses contain rich metadata that you can extract and use:
+
+```grapa
+/* Extract information from OpenAI responses */
+extract_response_info = op(response_json) {
+    data = op()(response_json)();
+    info = {};
+    
+    /* For text generation responses */
+    if (data."output".len() > 0) {
+        output = data."output"[0];
+        info["text"] = output."content"[0]."text";
+        info["role"] = output."role";
+        info["status"] = output."status";
+    };
+    
+    /* For embedding responses */
+    if (data."data".len() > 0) {
+        embedding_data = data."data"[0];
+        info["embedding"] = embedding_data."embedding";
+        info["index"] = embedding_data."index";
+    };
+    
+    /* Common metadata */
+    info["model"] = data."model";
+    info["usage"] = data."usage";
+    info["created_at"] = data."created_at";
+    
+    return info;
+};
+
+/* Usage example */
+model = $MODEL();
+model.load('gpt-4o', 'openai');
+
+result = model.gen('Explain machine learning', {
+    'api_key': 'your-openai-api-key'
+});
+
+info = extract_response_info(result.str());
+("Generated text: " + info["text"] + "\n").echo();
+("Model: " + info["model"] + "\n").echo();
+("Tokens used: " + info["usage"]."total_tokens".str() + "\n").echo();
+
+model.load();
+```
+
+### OpenAI Response Structure
+
+The JSON responses follow OpenAI's API format:
+
+**Text Generation Response:**
+```json
+{
+  "id": "resp_...",
+  "object": "response",
+  "created_at": 1759248115,
+  "status": "completed",
+  "model": "gpt-4o-2024-08-06",
+  "output": [
+    {
+      "id": "msg_...",
+      "type": "message",
+      "status": "completed",
+      "content": [
+        {
+          "type": "output_text",
+          "text": "Generated text here"
+        }
+      ],
+      "role": "assistant"
+    }
+  ],
+  "usage": {
+    "input_tokens": 16,
+    "output_tokens": 32,
+    "total_tokens": 48
+  }
+}
+```
+
+**Embedding Response:**
+```json
+{
+  "object": "list",
+  "data": [
+    {
+      "object": "embedding",
+      "index": 0,
+      "embedding": [0.123, -0.456, ...]
+    }
+  ],
+  "model": "text-embedding-3-small",
+  "usage": {
+    "prompt_tokens": 9,
+    "total_tokens": 9
+  }
+}
+```
+
 ## See Also
 
 - [$MODEL Data Type](type/model.md) - Complete type reference
