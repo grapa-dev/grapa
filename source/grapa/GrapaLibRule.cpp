@@ -12009,7 +12009,7 @@ GrapaRuleEvent* GrapaLibraryRuleFileGetEvent::Run(GrapaScriptExec *vScriptExec, 
 
 				GrapaCHAR setValue;
 				result = new GrapaRuleEvent(GrapaTokenType::STR, 0, "", "");
-				if (r2.vVal->mValue.mToken == GrapaTokenType::INT || r2.vVal->mValue.mToken == GrapaTokenType::SYSINT)
+				if (r2.vVal->mValue.mToken == GrapaTokenType::INT)
 				{
 					GrapaInt a;
 					a.FromBytes(r2.vVal->mValue);
