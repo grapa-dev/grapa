@@ -376,7 +376,10 @@ class GrapaInstaller:
         # Copy ONNX Runtime shared libraries
         if files['shared_lib']:
             for lib_file in files['shared_lib']:
+                # Copy to lib directory for development use
                 shutil.copy2(lib_file, lib_dir / lib_file.name)
+                # Copy to bin directory so executable can find them
+                shutil.copy2(lib_file, bin_dir / lib_file.name)
                 print(f"✅ Copied ONNX Runtime library: {lib_file.name}")
         
         # Add to PATH
@@ -406,7 +409,10 @@ class GrapaInstaller:
         # Copy ONNX Runtime shared libraries
         if files['shared_lib']:
             for lib_file in files['shared_lib']:
+                # Copy to lib directory for development use
                 shutil.copy2(lib_file, lib_dir / lib_file.name)
+                # Copy to bin directory so executable can find them
+                shutil.copy2(lib_file, bin_dir / lib_file.name)
                 print(f"✅ Copied ONNX Runtime library: {lib_file.name}")
             
             # Create symlink for Linux systems (libonnxruntime.so.1 -> libonnxruntime.so)
