@@ -465,19 +465,31 @@ GrapaRuleEvent* GrapaModel::Generate(const GrapaCHAR& prompt, GrapaRuleEvent* ca
 GrapaRuleEvent* GrapaModel::GenerateLlama(const GrapaCHAR& prompt, GrapaRuleEvent* mergedParams)
 {
     GrapaRuleEvent* result = NULL;
+    result = new GrapaRuleEvent();
+    result->mValue.mToken = GrapaTokenType::GOBJ;
+    result->vQueue = new GrapaRuleQueue();
 
     if (!this->mLlamaContext) {
+        result->mValue.mToken = GrapaTokenType::ERR;
+        result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("error"), GrapaInt(-1).getBytes()));
+        result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("message"),GrapaCHAR("Llama context not initialized")));
         return result;
     }
 
     // Apply parameters to LLAMA context
     GrapaError paramResult = this->ApplyParamsToLlama(mergedParams);
     if (paramResult != 0) {
+        result->mValue.mToken = GrapaTokenType::ERR;
+        result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("error"), GrapaInt(-1).getBytes()));
+        result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("message"),GrapaCHAR("Llama parameter application error")));
         return result;
     }
 
     // Early exit for empty prompts
     if (prompt.mLength == 0) {
+        result->mValue.mToken = GrapaTokenType::ERR;
+        result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("error"), GrapaInt(-1).getBytes()));
+        result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("message"),GrapaCHAR("Llama prompt is empty")));
         return result;
     }
 
@@ -527,8 +539,8 @@ GrapaRuleEvent* GrapaModel::GenerateLlama(const GrapaCHAR& prompt, GrapaRuleEven
         }
     }
 
-    // Generate response
-    result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaCHAR());
+    GrapaRuleEvent* text = new GrapaRuleEvent(0, GrapaCHAR("text"), GrapaCHAR());
+    result->vQueue->PushTail(text);
 
     // Now generate new tokens using LLAMA.cpp sampler
     for (int i = 0; i < this->mMaxTokens; i++) {
@@ -563,7 +575,7 @@ GrapaRuleEvent* GrapaModel::GenerateLlama(const GrapaCHAR& prompt, GrapaRuleEven
         char token_str[256];
         int n_chars = llama_token_to_piece(vocab, next_token, token_str, sizeof(token_str), 0, false);
         if (n_chars > 0) {
-            result->mValue.GrapaCHAR::Append(token_str, n_chars);
+            text->mValue.GrapaCHAR::Append(token_str, n_chars);
         }
 
         // Add the new token to persistent context and decode it
@@ -1158,8 +1170,6 @@ GrapaError GrapaModel::LoadOnnx(const GrapaCHAR& modelPath)
 {
     GrapaError result = 0;
 
-    printf("Loading ONNX model: %s\n", modelPath.mBytes);
-
     try {
         // Initialize ONNX Runtime environment
         if (!mOnnxEnv) {
@@ -1170,8 +1180,6 @@ GrapaError GrapaModel::LoadOnnx(const GrapaCHAR& modelPath)
         Ort::SessionOptions sessionOptions;
         sessionOptions.SetIntraOpNumThreads(1);
         sessionOptions.SetGraphOptimizationLevel(GraphOptimizationLevel::ORT_ENABLE_EXTENDED);
-
-        printf("Creating ONNX session\n");
         // Create session
 #ifdef _WIN32
         // Convert to wide string for Windows ONNX Runtime
@@ -1186,8 +1194,6 @@ GrapaError GrapaModel::LoadOnnx(const GrapaCHAR& modelPath)
             (char*)modelPath.mBytes,
             sessionOptions);
 #endif
-
-        printf("ONNX session created\n");
 
         mLoaded = true;
         mModelPath = modelPath;
@@ -1281,8 +1287,6 @@ GrapaRuleEvent* GrapaModel::EmbedOnnx(const GrapaCHAR& text, GrapaRuleEvent* mer
 
         Ort::Session* session = static_cast<Ort::Session*>(mOnnxSession);
 
-        printf("Running ONNX embedding\n");
-
         // Extract parameters with defaults
         int max_length = 512;
         std::string tokenizer_type = "word";  // "word", "bert", "custom"
@@ -1353,9 +1357,6 @@ GrapaRuleEvent* GrapaModel::EmbedOnnx(const GrapaCHAR& text, GrapaRuleEvent* mer
             }
         }
 
-        printf("Parameters: max_length=%d, tokenizer=%s, pooling=%s, format=%s, normalize=%s\n",
-            max_length, tokenizer_type.c_str(), pooling_method.c_str(), output_format.c_str(), normalize ? "true" : "false");
-
         // Tokenize input text based on tokenizer type
         std::vector<int64_t> token_ids;
         std::vector<int64_t> attention_mask;
@@ -1367,8 +1368,6 @@ GrapaRuleEvent* GrapaModel::EmbedOnnx(const GrapaCHAR& text, GrapaRuleEvent* mer
             std::istringstream iss(inputText);
             std::vector<std::string> words(std::istream_iterator<std::string>{iss},
                 std::istream_iterator<std::string>());
-
-            printf("Tokenizing input text with %s tokenizer\n", tokenizer_type.c_str());
 
             // Load vocabulary from file if available
             std::map<std::string, int> vocab;
@@ -1383,11 +1382,9 @@ GrapaRuleEvent* GrapaModel::EmbedOnnx(const GrapaCHAR& text, GrapaRuleEvent* mer
                 vocab_file = "vocab.txt";
             }
             
-            printf("Looking for vocabulary file: %s\n", vocab_file.c_str());
             
             std::ifstream vocab_stream(vocab_file);
             if (vocab_stream.is_open()) {
-                printf("Loading vocabulary from file\n");
                 std::string line;
                 int token_id = 0;
                 while (std::getline(vocab_stream, line)) {
@@ -1397,9 +1394,7 @@ GrapaRuleEvent* GrapaModel::EmbedOnnx(const GrapaCHAR& text, GrapaRuleEvent* mer
                         vocab[line] = token_id++;
                     }
                 }
-                printf("Loaded %zu tokens from vocabulary file\n", vocab.size());
             } else {
-                printf("Vocabulary file not found, using minimal fallback vocabulary\n");
                 // Minimal fallback vocabulary for when no vocab.txt is available
                 vocab = {
                     {"[PAD]", 0}, {"[UNK]", 1}, {"[CLS]", 2}, {"[SEP]", 3}
@@ -1476,8 +1471,6 @@ GrapaRuleEvent* GrapaModel::EmbedOnnx(const GrapaCHAR& text, GrapaRuleEvent* mer
             }
         }
 
-        printf("Creating input tensors\n");
-
         // Create input tensors
         std::vector<int64_t> input_shape = { 1, max_length };
         std::vector<int64_t> attention_shape = { 1, max_length };
@@ -1489,8 +1482,6 @@ GrapaRuleEvent* GrapaModel::EmbedOnnx(const GrapaCHAR& text, GrapaRuleEvent* mer
 
         Ort::Value attention_tensor = Ort::Value::CreateTensor<int64_t>(
             memory_info, attention_mask.data(), attention_mask.size(), attention_shape.data(), attention_shape.size());
-
-        printf("Input tensors created successfully\n");
 
         // Prepare input names (use custom names if provided, otherwise defaults)
         std::vector<const char*> input_names;
@@ -1505,20 +1496,12 @@ GrapaRuleEvent* GrapaModel::EmbedOnnx(const GrapaCHAR& text, GrapaRuleEvent* mer
             input_names.push_back("attention_mask");
         }
 
-        printf("Input names: ");
-        for (size_t i = 0; i < input_names.size(); i++) {
-            printf("%s ", input_names[i]);
-        }
-        printf("\n");
-
         // Prepare input tensors in the correct order
         std::vector<Ort::Value> input_tensors;
         input_tensors.push_back(std::move(input_tensor));
         if (input_names.size() > 1) {
             input_tensors.push_back(std::move(attention_tensor));
         }
-
-        printf("Running inference\n");
 
         // Prepare output names (use custom names if provided, otherwise defaults)
         std::vector<const char*> output_names;
@@ -1533,24 +1516,13 @@ GrapaRuleEvent* GrapaModel::EmbedOnnx(const GrapaCHAR& text, GrapaRuleEvent* mer
             output_names.push_back("pooler_output");
         }
 
-        printf("Output names: ");
-        for (size_t i = 0; i < output_names.size(); i++) {
-            printf("%s ", output_names[i]);
-        }
-        printf("\n");
-
         // Run inference
         try {
             auto output_tensors = session->Run(Ort::RunOptions{ nullptr },
                 input_names.data(), input_tensors.data(), input_tensors.size(),
                 output_names.data(), output_names.size());
 
-            printf("Inference completed successfully\n");
-            printf("Number of output tensors: %zu\n", output_tensors.size());
-
             if (output_tensors.size() > 0) {
-                printf("Processing output data\n");
-
                 // Determine which output to use based on pooling method and available outputs
                 int output_index = 0;
                 if (pooling_method == "cls" && output_tensors.size() > 1) {
@@ -1563,12 +1535,6 @@ GrapaRuleEvent* GrapaModel::EmbedOnnx(const GrapaCHAR& text, GrapaRuleEvent* mer
                 float* output_data = output_tensors[output_index].GetTensorMutableData<float>();
                 auto output_shape = output_tensors[output_index].GetTensorTypeAndShapeInfo().GetShape();
 
-                printf("Using output %d, shape: ", output_index);
-                for (size_t i = 0; i < output_shape.size(); i++) {
-                    printf("%lld ", output_shape[i]);
-                }
-                printf("\n");
-
                 // Process output based on shape and pooling method
                 std::vector<float> final_embedding;
 
@@ -1577,8 +1543,6 @@ GrapaRuleEvent* GrapaModel::EmbedOnnx(const GrapaCHAR& text, GrapaRuleEvent* mer
                     int batch_size = output_shape[0];
                     int hidden_size = output_shape[1];
 
-                    printf("Already pooled output, hidden_size: %d\n", hidden_size);
-
                     final_embedding.assign(output_data, output_data + hidden_size);
                 }
                 else if (output_shape.size() == 3) {
@@ -1586,8 +1550,6 @@ GrapaRuleEvent* GrapaModel::EmbedOnnx(const GrapaCHAR& text, GrapaRuleEvent* mer
                     int batch_size = output_shape[0];
                     int sequence_length = output_shape[1];
                     int hidden_size = output_shape[2];
-
-                    printf("Sequence output, applying %s pooling\n", pooling_method.c_str());
 
                     final_embedding.resize(hidden_size, 0.0f);
 
@@ -1640,7 +1602,6 @@ GrapaRuleEvent* GrapaModel::EmbedOnnx(const GrapaCHAR& text, GrapaRuleEvent* mer
                 }
                 else {
                     // Handle other output shapes
-                    printf("Unexpected output shape, using raw data\n");
                     size_t total_elements = 1;
                     for (size_t i = 0; i < output_shape.size(); i++) {
                         total_elements *= output_shape[i];
@@ -1660,11 +1621,7 @@ GrapaRuleEvent* GrapaModel::EmbedOnnx(const GrapaCHAR& text, GrapaRuleEvent* mer
                             val /= norm;
                         }
                     }
-                    printf("Embedding normalized\n");
                 }
-
-                // Convert to Grapa $LIST format
-                printf("Converting to Grapa $LIST format\n");
 
                 // Create the embedding as a Grapa $LIST
                 GrapaRuleEvent* embedding_list = new GrapaRuleEvent();
@@ -1679,8 +1636,6 @@ GrapaRuleEvent* GrapaModel::EmbedOnnx(const GrapaCHAR& text, GrapaRuleEvent* mer
 
                 if (use_2d) {
                     // Create 2D embedding (list of lists)
-                    printf("Creating 2D embedding format\n");
-
                     // Split into chunks (e.g., 100 dimensions per row)
                     int chunk_size = 100;
                     for (size_t i = 0; i < final_embedding.size(); i += chunk_size) {
@@ -1699,16 +1654,11 @@ GrapaRuleEvent* GrapaModel::EmbedOnnx(const GrapaCHAR& text, GrapaRuleEvent* mer
                 }
                 else {
                     // Create 1D embedding (flat list)
-                    printf("Creating 1D embedding format\n");
-
                     for (float val : final_embedding) {
                         GrapaRuleEvent* val_item = new GrapaRuleEvent(0, GrapaCHAR(), GrapaFloat(val).getBytes());
                         embedding_list->vQueue->PushTail(val_item);
                     }
                 }
-
-                printf("Embedding created: %s format, %zu dimensions\n",
-                    use_2d ? "2D" : "1D", final_embedding.size());
 
                 // Add simple metadata to result
                 GrapaRuleEvent* metadata_item = new GrapaRuleEvent();
@@ -1740,18 +1690,23 @@ GrapaRuleEvent* GrapaModel::EmbedOnnx(const GrapaCHAR& text, GrapaRuleEvent* mer
 
             }
             else {
-                result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaCHAR("No output from ONNX model"));
+                result->mValue.mToken = GrapaTokenType::ERR;
+                result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("error"), GrapaInt(-1).getBytes()));
+                result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("message"),GrapaCHAR("No output from ONNX model")));
+    
             }
         }
         catch (const std::exception& e) {
-            printf("ONNX inference error: %s\n", e.what());
-            result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaCHAR("ONNX inference error"));
+            result->mValue.mToken = GrapaTokenType::ERR;
+            result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("error"), GrapaInt(-1).getBytes()));
+            result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("message"),GrapaCHAR("ONNX inference error")));
         }
 
     }
     catch (const std::exception& e) {
-        printf("ONNX embedding error: %s\n", e.what());
-        result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaCHAR("ONNX embedding error"));
+        result->mValue.mToken = GrapaTokenType::ERR;
+        result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("error"), GrapaInt(-1).getBytes()));
+        result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("message"),GrapaCHAR("ONNX embedding error")));
     }
 
     return result;
