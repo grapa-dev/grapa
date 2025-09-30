@@ -303,7 +303,13 @@ GrapaError GrapaModel::Unload()
         else if (mMethod.StrCmp("openai") == 0) {
             result = UnloadOpenAI();
         }
+        else if (mMethod.StrCmp("openai-embedding") == 0) {
+            result = UnloadOpenAI();
+        }
         else if (mMethod.StrCmp("onnx") == 0) {
+            result = UnloadOnnx();
+        }
+        else if (mMethod.StrCmp("onnx-embedding") == 0) {
             result = UnloadOnnx();
         }
         // Add other backend cleanup here
@@ -539,8 +545,16 @@ GrapaRuleEvent* GrapaModel::GenerateLlama(const GrapaCHAR& prompt, GrapaRuleEven
         }
     }
 
+    // Add text field
     GrapaRuleEvent* text = new GrapaRuleEvent(0, GrapaCHAR("text"), GrapaCHAR());
     result->vQueue->PushTail(text);
+
+    // Add metadata field
+    GrapaRuleEvent* metadata = new GrapaRuleEvent();
+    metadata->mName.FROM("metadata");
+    metadata->mValue.mToken = GrapaTokenType::GOBJ;
+    metadata->vQueue = new GrapaRuleQueue();
+    result->vQueue->PushTail(metadata);
 
     // Now generate new tokens using LLAMA.cpp sampler
     for (int i = 0; i < this->mMaxTokens; i++) {
@@ -585,6 +599,34 @@ GrapaRuleEvent* GrapaModel::GenerateLlama(const GrapaCHAR& prompt, GrapaRuleEven
             return result;
         }
     }
+
+    // Add metadata to result
+    GrapaRuleEvent* prompt_tokens_item = new GrapaRuleEvent(0, GrapaCHAR("prompt_tokens"), GrapaInt(n_new_tokens).getBytes());
+    metadata->vQueue->PushTail(prompt_tokens_item);
+
+    GrapaRuleEvent* completion_tokens_item = new GrapaRuleEvent(0, GrapaCHAR("completion_tokens"), GrapaInt(mMaxTokens).getBytes());
+    metadata->vQueue->PushTail(completion_tokens_item);
+
+    GrapaRuleEvent* total_tokens_item = new GrapaRuleEvent(0, GrapaCHAR("total_tokens"), GrapaInt(n_new_tokens + mMaxTokens).getBytes());
+    metadata->vQueue->PushTail(total_tokens_item);
+
+    GrapaRuleEvent* finish_reason_item = new GrapaRuleEvent(0, GrapaCHAR("finish_reason"), GrapaCHAR("stop"));
+    metadata->vQueue->PushTail(finish_reason_item);
+
+    GrapaRuleEvent* model_path_item = new GrapaRuleEvent(0, GrapaCHAR("model_path"), mModelPath);
+    metadata->vQueue->PushTail(model_path_item);
+
+    GrapaRuleEvent* temperature_item = new GrapaRuleEvent(0, GrapaCHAR("temperature"), GrapaFloat(mTemperature).getBytes());
+    metadata->vQueue->PushTail(temperature_item);
+
+    GrapaRuleEvent* max_tokens_item = new GrapaRuleEvent(0, GrapaCHAR("max_tokens"), GrapaInt(mMaxTokens).getBytes());
+    metadata->vQueue->PushTail(max_tokens_item);
+
+    GrapaRuleEvent* context_length_item = new GrapaRuleEvent(0, GrapaCHAR("context_length"), GrapaInt(mContextTokens.size()).getBytes());
+    metadata->vQueue->PushTail(context_length_item);
+
+    GrapaRuleEvent* context_preserved_item = new GrapaRuleEvent(0, GrapaCHAR("context_preserved"), GrapaInt(mContextPreserved ? 1 : 0).getBytes());
+    metadata->vQueue->PushTail(context_preserved_item);
 
     return result;
 }
@@ -859,7 +901,7 @@ GrapaRuleEvent* GrapaModel::EmbedOpenAI(const GrapaCHAR& text, GrapaRuleEvent* m
     return result;
 }
 
-GrapaRuleEvent* GrapaModel::GetModelInfo() const
+GrapaRuleEvent* GrapaModel::GetModelInfo()
 {
     GrapaRuleEvent* result = new GrapaRuleEvent();
     result->mValue.mToken = GrapaTokenType::GOBJ;
@@ -877,61 +919,66 @@ GrapaRuleEvent* GrapaModel::GetModelInfo() const
     GrapaRuleEvent* path = new GrapaRuleEvent(0, GrapaCHAR("model_path"), mModelPath);
     result->vQueue->PushTail(path);
 
-    // Add model filename (for consistency with .context())
-    GrapaCHAR modelName = mModelPath;
-    // Extract filename from path
-    std::string pathStr((char*)modelName.mBytes, modelName.mLength);
-    size_t lastSlash = pathStr.find_last_of("/\\");
-    if (lastSlash != std::string::npos) {
-        pathStr = pathStr.substr(lastSlash + 1);
-    }
-    GrapaRuleEvent* model = new GrapaRuleEvent(0, GrapaCHAR("model"), GrapaCHAR(pathStr.c_str(), pathStr.length()));
-    result->vQueue->PushTail(model);
 
     // Note: Configuration parameters (temperature, top_k, etc.) are available via .params()
     // This method focuses on model metadata and status information
 
-    // Add LLAMA.cpp specific information if model is loaded
-    if (mLoaded && const_cast<GrapaModel*>(this)->mMethod.StrCmp("llama") == 0 && mLlamaModel) {
-        // Model size in bytes
-        uint64_t model_size = llama_model_size(mLlamaModel);
-        GrapaRuleEvent* model_size_info = new GrapaRuleEvent(0, GrapaCHAR("model_size_bytes"), GrapaInt((s64)model_size).getBytes());
-        result->vQueue->PushTail(model_size_info);
+    // Add method-specific information if model is loaded
+    if (mLoaded) {
+        // LLAMA.cpp specific information
+        if (const_cast<GrapaModel*>(this)->mMethod.StrCmp("llama") == 0 && mLlamaModel) {
+            // Model size in bytes
+            uint64_t model_size = llama_model_size(mLlamaModel);
+            GrapaRuleEvent* model_size_info = new GrapaRuleEvent(0, GrapaCHAR("model_size_bytes"), GrapaInt((s64)model_size).getBytes());
+            result->vQueue->PushTail(model_size_info);
 
-        // Number of parameters
-        uint64_t n_params = llama_model_n_params(mLlamaModel);
-        GrapaRuleEvent* n_params_info = new GrapaRuleEvent(0, GrapaCHAR("n_params"), GrapaInt((s64)n_params).getBytes());
-        result->vQueue->PushTail(n_params_info);
+            // Number of parameters
+            uint64_t n_params = llama_model_n_params(mLlamaModel);
+            GrapaRuleEvent* n_params_info = new GrapaRuleEvent(0, GrapaCHAR("n_params"), GrapaInt((s64)n_params).getBytes());
+            result->vQueue->PushTail(n_params_info);
 
-        // Model description
-        char desc_buf[256];
-        int desc_len = llama_model_desc(mLlamaModel, desc_buf, sizeof(desc_buf));
-        if (desc_len > 0) {
-            GrapaRuleEvent* model_desc = new GrapaRuleEvent(0, GrapaCHAR("model_description"), GrapaCHAR(desc_buf, desc_len));
-            result->vQueue->PushTail(model_desc);
+            // Model description
+            char desc_buf[256];
+            int desc_len = llama_model_desc(mLlamaModel, desc_buf, sizeof(desc_buf));
+            if (desc_len > 0) {
+                GrapaRuleEvent* model_desc = new GrapaRuleEvent(0, GrapaCHAR("model_description"), GrapaCHAR(desc_buf, desc_len));
+                result->vQueue->PushTail(model_desc);
+            }
+
+            // Model capabilities
+            bool has_encoder = llama_model_has_encoder(mLlamaModel);
+            GrapaRuleEvent* encoder_info = new GrapaRuleEvent(GrapaTokenType::BOOL, 0, "has_encoder", has_encoder ? "\1" : "");
+            result->vQueue->PushTail(encoder_info);
+
+            bool has_decoder = llama_model_has_decoder(mLlamaModel);
+            GrapaRuleEvent* decoder_info = new GrapaRuleEvent(GrapaTokenType::BOOL, 0, "has_decoder", has_decoder ? "\1" : "");
+            result->vQueue->PushTail(decoder_info);
+
+            bool is_recurrent = llama_model_is_recurrent(mLlamaModel);
+            GrapaRuleEvent* recurrent_info = new GrapaRuleEvent(GrapaTokenType::BOOL, 0, "is_recurrent", is_recurrent ? "\1" : "");
+            result->vQueue->PushTail(recurrent_info);
+
+            // Vocabulary size (if context is available)
+            if (mLlamaContext) {
+                // Use the context to get vocabulary size - skip for now as API is unclear
+                // int32_t vocab_size = llama_n_vocab(mLlamaContext);
+                // if (vocab_size > 0) {
+                //     GrapaRuleEvent* vocab_info = new GrapaRuleEvent(0, GrapaCHAR("vocab_size"), GrapaInt(vocab_size).getBytes());
+                //     result->vQueue->PushTail(vocab_info);
+                // }
+            }
         }
-
-        // Model capabilities
-        bool has_encoder = llama_model_has_encoder(mLlamaModel);
-        GrapaRuleEvent* encoder_info = new GrapaRuleEvent(GrapaTokenType::BOOL, 0, "has_encoder", has_encoder ? "\1" : "");
-        result->vQueue->PushTail(encoder_info);
-
-        bool has_decoder = llama_model_has_decoder(mLlamaModel);
-        GrapaRuleEvent* decoder_info = new GrapaRuleEvent(GrapaTokenType::BOOL, 0, "has_decoder", has_decoder ? "\1" : "");
-        result->vQueue->PushTail(decoder_info);
-
-        bool is_recurrent = llama_model_is_recurrent(mLlamaModel);
-        GrapaRuleEvent* recurrent_info = new GrapaRuleEvent(GrapaTokenType::BOOL, 0, "is_recurrent", is_recurrent ? "\1" : "");
-        result->vQueue->PushTail(recurrent_info);
-
-        // Vocabulary size (if context is available)
-        if (mLlamaContext) {
-            // Use the context to get vocabulary size - skip for now as API is unclear
-            // int32_t vocab_size = llama_n_vocab(mLlamaContext);
-            // if (vocab_size > 0) {
-            //     GrapaRuleEvent* vocab_info = new GrapaRuleEvent(0, GrapaCHAR("vocab_size"), GrapaInt(vocab_size).getBytes());
-            //     result->vQueue->PushTail(vocab_info);
-            // }
+        
+        // ONNX specific information
+        else if (const_cast<GrapaModel*>(this)->mMethod.StrCmp("onnx") == 0 || 
+                 const_cast<GrapaModel*>(this)->mMethod.StrCmp("onnx-embedding") == 0) {
+            // No ONNX-specific information needed - method field already tells us everything
+        }
+        
+        // OpenAI specific information
+        else if (const_cast<GrapaModel*>(this)->mMethod.StrCmp("openai") == 0 || 
+                 const_cast<GrapaModel*>(this)->mMethod.StrCmp("openai-embedding") == 0) {
+            // No OpenAI-specific information needed - method field already tells us everything
         }
     }
 
@@ -1685,6 +1732,9 @@ GrapaRuleEvent* GrapaModel::EmbedOnnx(const GrapaCHAR& text, GrapaRuleEvent* mer
 
                 GrapaRuleEvent* normalize_item = new GrapaRuleEvent(0, GrapaCHAR("normalize"), GrapaInt(normalize ? 1 : 0).getBytes());
                 metadata_item->vQueue->PushTail(normalize_item);
+
+                GrapaRuleEvent* model_path_item = new GrapaRuleEvent(0, GrapaCHAR("model_path"), mModelPath);
+                metadata_item->vQueue->PushTail(model_path_item);
 
                 // result is already set above
 

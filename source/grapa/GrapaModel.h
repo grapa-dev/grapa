@@ -79,7 +79,7 @@ public:
     GrapaRuleEvent* Generate(const GrapaCHAR& prompt, GrapaRuleEvent* callParams);
     
     // Model information
-    GrapaRuleEvent* GetModelInfo() const;
+    GrapaRuleEvent* GetModelInfo();
     
     // Parameter management
     GrapaError SetParams(GrapaRuleEvent* params);
