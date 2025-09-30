@@ -1,0 +1,71 @@
+# Dockerfile for building ONNX Runtime on macOS
+# This uses a Linux container to build ONNX Runtime, then copies the results
+# Note: This builds Linux static libraries, not macOS libraries
+
+FROM ubuntu:22.04
+
+# Set environment variables
+ENV DEBIAN_FRONTEND=noninteractive
+ENV ONNX_VERSION=1.22.2
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    cmake \
+    git \
+    wget \
+    curl \
+    python3 \
+    python3-pip \
+    python3-dev \
+    libprotobuf-dev \
+    protobuf-compiler \
+    libprotoc-dev \
+    libssl-dev \
+    libffi-dev \
+    pkg-config \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Python dependencies
+RUN pip3 install --upgrade pip
+RUN pip3 install numpy
+
+# Create working directory
+WORKDIR /workspace
+
+# Clone ONNX Runtime repository
+RUN git clone --recursive https://github.com/microsoft/onnxruntime.git
+WORKDIR /workspace/onnxruntime
+
+# Checkout specific version
+RUN git checkout v${ONNX_VERSION}
+
+# Build ONNX Runtime with static libraries
+RUN python3 tools/ci_build/build.py \
+    --config Release \
+    --build_dir build \
+    --parallel \
+    --cmake_extra_defines CMAKE_CXX_FLAGS=-fPIC \
+    --cmake_extra_defines CMAKE_C_FLAGS=-fPIC \
+    --cmake_extra_defines ONNX_BUILD_SHARED_LIBS=OFF \
+    --cmake_extra_defines ONNX_USE_PROTOBUF_SHARED_LIBS=OFF \
+    --cmake_extra_defines ONNX_USE_LITE_PROTO=ON
+
+# Create output directory
+RUN mkdir -p /output/lib /output/include
+
+# Copy static libraries
+RUN find build -name "*.a" -exec cp {} /output/lib/ \;
+
+# Copy headers
+RUN cp -r include/* /output/include/
+
+# Create a script to extract the built libraries
+RUN echo '#!/bin/bash' > /extract_libs.sh && \
+    echo 'echo "Extracting ONNX Runtime static libraries..."' >> /extract_libs.sh && \
+    echo 'cp -r /output/* /host_output/' >> /extract_libs.sh && \
+    echo 'echo "Libraries extracted to host_output/"' >> /extract_libs.sh && \
+    chmod +x /extract_libs.sh
+
+# Default command
+CMD ["/extract_libs.sh"]

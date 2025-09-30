@@ -17,9 +17,14 @@ endif()
 
 add_subdirectory(source/pybind11)
 
-include_directories(source)
+include_directories(source source/llama source/onnxruntime)
 
-link_directories(
+pybind11_add_module(grapapy 
+    source/mainpy.cpp
+    )
+
+# Use target_link_directories instead of link_directories to avoid adding to RPATH
+target_link_directories(grapapy PRIVATE
     source 
     source/grapa-lib/${GRAPAPY_OS}
     source/fl-lib/${GRAPAPY_OS} 
@@ -27,10 +32,6 @@ link_directories(
     source/blst-lib/${GRAPAPY_OS}
     source/pcre2-lib/${GRAPAPY_OS}
     source/llama-lib/${GRAPAPY_OS}
-    )
-
-pybind11_add_module(grapapy 
-    source/mainpy.cpp
     )
 
 if (MSVC)
@@ -43,6 +44,11 @@ target_link_libraries(grapapy PRIVATE
     ggml-base
     ggml-cpu
     mtmd
+    onnx
+    onnx_proto
+    # ONNX Runtime shared libraries - link them directly into the extension
+    ${CMAKE_CURRENT_SOURCE_DIR}/source/onnxruntime-lib/${GRAPAPY_OS}/onnxruntime.dll
+    ${CMAKE_CURRENT_SOURCE_DIR}/source/onnxruntime-lib/${GRAPAPY_OS}/onnxruntime_providers_shared.dll
     Gdi32
     Advapi32
     User32
@@ -68,6 +74,10 @@ target_link_libraries(grapapy PRIVATE
     libggml-cpu.a
     libmtmd.a
     libcommon.a
+    # ONNX Runtime shared libraries - link them directly into the extension
+    libonnxruntime.so
+    libonnxruntime_providers_shared.so
+    # The actual shared libraries (.dylib, .so, .dll) must be available in the system path
     X11 Xfixes Xft Xext Xrender Xinerama Xcursor xcb Xau png16 fontconfig freetype
     gomp
     )
@@ -89,6 +99,10 @@ target_link_libraries(grapapy PRIVATE
     libggml-cpu.a
     libmtmd.a
     libcommon.a
+    # ONNX Runtime shared libraries - link them directly into the extension
+    libonnxruntime.so
+    libonnxruntime_providers_shared.so
+    # The actual shared libraries (.dylib, .so, .dll) must be available in the system path
     X11 Xfixes Xft Xext Xrender Xinerama Xcursor xcb Xau png16 fontconfig freetype
     gomp
     )
@@ -111,6 +125,9 @@ target_link_libraries(grapapy PRIVATE
     libggml-metal.a
     libggml-blas.a
     libmtmd.a
+    # ONNX Runtime shared libraries - use full path to avoid absolute RPATH
+    ${CMAKE_CURRENT_SOURCE_DIR}/source/onnxruntime-lib/${GRAPAPY_OS}/libonnxruntime.dylib
+    # The actual shared libraries (.dylib, .so, .dll) must be available in the system path
     "-framework CoreFoundation"
     "-framework AppKit"
     "-framework IOKit"
@@ -119,4 +136,7 @@ target_link_libraries(grapapy PRIVATE
     "-framework MetalKit"
     "-framework Accelerate"
     )
+SET(CMAKE_SKIP_BUILD_RPATH  FALSE)
+SET(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
+SET(CMAKE_INSTALL_RPATH "@loader_path")
 endif (APPLE)

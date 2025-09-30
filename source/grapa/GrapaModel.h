@@ -40,6 +40,10 @@ public:
     // OpenAI context management
     GrapaCHAR mOpenAIResponseId;  // OpenAI: Response ID for context continuity
     
+    // ONNX Runtime specific
+    void* mOnnxSession;  // ONNX Runtime session
+    void* mOnnxEnv;      // ONNX Runtime environment
+    
     // Generation parameters
     s32 mMaxTokens;
     float mTemperature;
@@ -97,9 +101,13 @@ public:
     GrapaRuleEvent* GenerateOpenAI(const GrapaCHAR& prompt, GrapaRuleEvent* mergedParams);
     GrapaRuleEvent* EmbedOpenAI(const GrapaCHAR& text, GrapaRuleEvent* mergedParams);
     
-    // Future backends
+    // ONNX Runtime operations
     GrapaError LoadOnnx(const GrapaCHAR& modelPath);
-    GrapaError LoadTensorFlow(const GrapaCHAR& modelPath);
+    GrapaError UnloadOnnx();
+    GrapaRuleEvent* GenerateOnnx(const GrapaCHAR& prompt, GrapaRuleEvent* mergedParams);
+    GrapaRuleEvent* EmbedOnnx(const GrapaCHAR& text, GrapaRuleEvent* mergedParams);
+    
+    // Future backends
     
 private:
     GrapaError InitializeLlama();

@@ -64,6 +64,8 @@ class BuildConfig:
         
         # Add LLAMA.cpp include path
         base_flags.append("-Isource/llama")
+        # Add ONNX Runtime include path
+        base_flags.append("-Isource/onnxruntime")
         
         # Define FLTK_USE_X11 for Linux/AWS builds since FLTK was built with X11 support
         if self.platform in ["linux", "aws"]:
@@ -126,9 +128,32 @@ class GrapaBuilder:
             else:
                 raise RuntimeError(f"mac-amd64 is no longer supported. Please use an Apple Silicon Mac (arm64). Current architecture: {machine}")
         elif system == "linux":
-            # Check if this is AWS Linux by looking for Amazon Linux specific files
-            if (os.path.exists("/etc/system-release") and 
-                ("Amazon Linux" in open("/etc/system-release").read())):
+            # Check if this is AWS Linux using comprehensive detection
+            is_aws = False
+            
+            # Check for AWS-specific environment variables
+            if 'AWS' in os.environ.get('AWS_EXECUTION_ENV', ''):
+                is_aws = True
+            # Check for Amazon Linux in os-release
+            elif os.path.exists('/etc/os-release'):
+                try:
+                    with open('/etc/os-release', 'r') as f:
+                        content = f.read().lower()
+                        if any(identifier in content for identifier in ['amazon linux', 'amazon-linux', 'aws', 'amazon']):
+                            is_aws = True
+                except:
+                    pass
+            # Check for Amazon Linux in system-release
+            elif os.path.exists('/etc/system-release'):
+                try:
+                    with open('/etc/system-release', 'r') as f:
+                        content = f.read().lower()
+                        if any(identifier in content for identifier in ['amazon linux', 'amazon-linux', 'aws', 'amazon']):
+                            is_aws = True
+                except:
+                    pass
+            
+            if is_aws:
                 return "aws", "arm64" if machine == "aarch64" else "amd64"
             else:
                 return "linux", "arm64" if machine == "aarch64" else "amd64"
@@ -258,7 +283,7 @@ class GrapaBuilder:
         # Build utf8proc first (C compilation)
         print("Building utf8proc...")
         subprocess.run([
-            "clang", "-Isource", "-Isource/llama", "-DUTF8PROC_STATIC", "-c", 
+            "clang", "-Isource", "-Isource/llama", "-Isource/onnxruntime", "-DUTF8PROC_STATIC", "-c", 
             "source/utf8proc/utf8proc.c", "-m64", "-O3"
         ], check=True)
         
@@ -268,7 +293,7 @@ class GrapaBuilder:
                 print("Building static library...")
                 cpp_files = glob.glob("source/grapa/*.cpp")
                 subprocess.run([
-                    "clang++", "-Isource", "-Isource/llama", "-c"
+                    "clang++", "-Isource", "-Isource/llama", "-Isource/onnxruntime", "-c"
                 ] + cpp_files + [
                     "-std=c++17", "-m64", "-O3", "-pthread"
                 ], check=True)
@@ -299,15 +324,32 @@ class GrapaBuilder:
             blst_libs = glob.glob(f"source/blst-lib/{config.target}/*.a")
             pcre2_lib = glob.glob(f"source/pcre2-lib/{config.target}/libpcre2-8.a")
             
+            # Add ONNX Runtime shared libraries
+            onnx_libs = []
+            onnx_lib_dir = f"source/onnxruntime-lib/{config.target}"
+            
+            # Look for shared libraries (.dylib, .so, .dll)
+            if os.path.exists(onnx_lib_dir):
+                for lib_file in os.listdir(onnx_lib_dir):
+                    if lib_file.endswith(('.dylib', '.so', '.dll')):
+                        lib_path = os.path.join(onnx_lib_dir, lib_file)
+                        onnx_libs.append(lib_path)
+                        print(f"✅ Found ONNX Runtime shared library: {lib_file}")
+            
+            if not onnx_libs:
+                print(f"⚠️  Warning: No ONNX Runtime shared libraries found in {onnx_lib_dir}")
+                print("   Run 'python3 scripts/build/build_onnx_shared.py' to download them")
+            
             # Step 1: utf8proc.o is already built above
             # Step 2: Build executable using utf8proc.o - use shell globs like manual command
             cmd = [
-                "clang++", "-Isource", "-Isource/llama", "source/main.cpp", "source/grapa/*.cpp", "utf8proc.o",
+                "clang++", "-Isource", "-Isource/llama", "-Isource/onnxruntime", "source/main.cpp", "source/grapa/*.cpp", "utf8proc.o",
                 f"source/openssl-lib/{config.target}/*.a", f"source/fl-lib/{config.target}/*.a", 
                 f"source/blst-lib/{config.target}/*.a", f"source/pcre2-lib/{config.target}/libpcre2-8.a",
                 f"source/llama-lib/{config.target}/*.a"
-            ] + config.frameworks + [
-                "-std=c++17", "-m64", "-O3", "-pthread", "-o", config.output_name
+            ] + onnx_libs + config.frameworks + [
+                "-std=c++17", "-m64", "-O3", "-pthread", 
+                "-o", config.output_name
             ]
             print(f"Current working directory: {os.getcwd()}")
             print(f"Executing executable build command: {' '.join(cmd)}")
@@ -372,7 +414,7 @@ class GrapaBuilder:
         # Use -fPIC for shared library builds, regular for executable
         pic_flag = ["-fPIC"] if is_library else []
         subprocess.run([
-            "gcc", "-Isource", "-Isource/llama", "-DUTF8PROC_STATIC", "-c", 
+            "gcc", "-Isource", "-Isource/llama", "-Isource/onnxruntime", "-DUTF8PROC_STATIC", "-c", 
             "source/utf8proc/utf8proc.c", "-O3"
         ] + pic_flag, check=True)
         
@@ -423,6 +465,22 @@ class GrapaBuilder:
             # Add LLAMA.cpp libraries in dependency order
             llama_libs = []
             llama_lib_dir = f"source/llama-lib/{config.target}"
+            
+            # Add ONNX Runtime shared libraries
+            onnx_libs = []
+            onnx_lib_dir = f"source/onnxruntime-lib/{config.target}"
+            
+            # Look for shared libraries (.dylib, .so, .dll)
+            if os.path.exists(onnx_lib_dir):
+                for lib_file in os.listdir(onnx_lib_dir):
+                    if lib_file.endswith(('.dylib', '.so', '.dll')):
+                        lib_path = os.path.join(onnx_lib_dir, lib_file)
+                        onnx_libs.append(lib_path)
+                        print(f"✅ Found ONNX Runtime shared library: {lib_file}")
+            
+            if not onnx_libs:
+                print(f"⚠️  Warning: No ONNX Runtime shared libraries found in {onnx_lib_dir}")
+                print("   Run 'python3 scripts/build/build_onnx_shared.py' to download them")
             # Link in dependency order with circular dependency resolution
             # Static libraries with circular dependencies need to be linked multiple times
             llama_lib_order = [
@@ -448,7 +506,7 @@ class GrapaBuilder:
                 "g++"
             ] + config.flags + [
                 "source/main.cpp"
-            ] + cpp_files + ["source/utf8proc/utf8proc.c"] + openssl_libs + fl_libs + blst_libs + llama_libs + [
+            ] + cpp_files + ["source/utf8proc/utf8proc.c"] + openssl_libs + fl_libs + blst_libs + llama_libs + onnx_libs + [
                 f"source/pcre2-lib/{config.target}/libpcre2-8.a", f"-Lsource/openssl-lib/{config.target}", "-lcrypto"
             ] + x11_libs + [
                 "-ldl", "-lm", "-fopenmp", "-static-libgcc", 
@@ -491,13 +549,13 @@ class GrapaBuilder:
         if is_library and is_static:
             print("Building utf8proc...")
             subprocess.run([
-                "gcc", "-Isource", "-DUTF8PROC_STATIC", "-c", 
+                "gcc", "-Isource", "-Isource/llama", "-Isource/onnxruntime", "-DUTF8PROC_STATIC", "-c", 
                 "source/utf8proc/utf8proc.c", "-O3", "-fPIC"
             ], check=True)
         elif not is_library:
             print("Building utf8proc...")
             subprocess.run([
-                "gcc", "-Isource", "-DUTF8PROC_STATIC", "-c", 
+                "gcc", "-Isource", "-Isource/llama", "-Isource/onnxruntime", "-DUTF8PROC_STATIC", "-c", 
                 "source/utf8proc/utf8proc.c", "-O3"
             ], check=True)
         
@@ -545,6 +603,22 @@ class GrapaBuilder:
             # Add LLAMA.cpp libraries in dependency order
             llama_libs = []
             llama_lib_dir = f"source/llama-lib/{config.target}"
+            
+            # Add ONNX Runtime shared libraries
+            onnx_libs = []
+            onnx_lib_dir = f"source/onnxruntime-lib/{config.target}"
+            
+            # Look for shared libraries (.dylib, .so, .dll)
+            if os.path.exists(onnx_lib_dir):
+                for lib_file in os.listdir(onnx_lib_dir):
+                    if lib_file.endswith(('.dylib', '.so', '.dll')):
+                        lib_path = os.path.join(onnx_lib_dir, lib_file)
+                        onnx_libs.append(lib_path)
+                        print(f"✅ Found ONNX Runtime shared library: {lib_file}")
+            
+            if not onnx_libs:
+                print(f"⚠️  Warning: No ONNX Runtime shared libraries found in {onnx_lib_dir}")
+                print("   Run 'python3 scripts/build/build_onnx_shared.py' to download them")
             # Link in dependency order with circular dependency resolution
             # Static libraries with circular dependencies need to be linked multiple times
             llama_lib_order = [
@@ -570,7 +644,7 @@ class GrapaBuilder:
                 "g++"
             ] + config.flags + [
                 "source/main.cpp"
-            ] + cpp_files + ["source/utf8proc/utf8proc.c"] + openssl_libs + fl_libs + blst_libs + llama_libs + [
+            ] + cpp_files + ["source/utf8proc/utf8proc.c"] + openssl_libs + fl_libs + blst_libs + llama_libs + onnx_libs + [
                 f"source/pcre2-lib/{config.target}/libpcre2-8.a", f"-Lsource/openssl-lib/{config.target}", "-lcrypto"
             ] + x11_libs + [
                 "-ldl", "-lm", "-fopenmp", "-static-libgcc", 
@@ -642,10 +716,106 @@ class GrapaBuilder:
         # Build package
         python_cmd = "python" if config.platform == "windows" else "python3"
         pip_cmd = "pip" if config.platform == "windows" else "pip3"
-        subprocess.run([python_cmd, "setup.py", "sdist"], check=True)
+        
+        # Set environment variable to fix timestamp issue in tar files
+        # This is needed to handle the Year 2038 problem in Python's tarfile module
+        # when file timestamps exceed the 32-bit integer limit (2147483647)
+        # 
+        # Root cause: Python's tarfile module uses 32-bit integers for timestamps,
+        # which can only represent dates up to January 19, 2038. If any files have
+        # timestamps beyond this date, the tar creation fails with:
+        # struct.error: 'L' format requires 0 <= number <= 4294967295
+        #
+        # This can happen due to:
+        # - System clock set to future dates
+        # - Files created with future timestamps
+        # - Build environment timestamp issues
+        #
+        # TODO: This is a workaround. The proper fix would be to upgrade to a
+        # Python version that handles 64-bit timestamps in tarfile, or use
+        # a different archive format that doesn't have this limitation.
+        import os
+        import time
+        
+        env = os.environ.copy()
+        # Use a safe timestamp well before 2038 (year 2020)
+        safe_timestamp = 1577836800  # January 1, 2020 00:00:00 UTC
+        env['SOURCE_DATE_EPOCH'] = str(safe_timestamp)
+        
+        # Also set it in the current process environment for any subprocess calls
+        os.environ['SOURCE_DATE_EPOCH'] = str(safe_timestamp)
+        
+        print(f"🔧 Setting SOURCE_DATE_EPOCH={safe_timestamp} to fix Year 2038 timestamp issue")
+        print(f"🔧 This ensures all file timestamps in the tar archive are within 32-bit range")
+        
+        # Debug: Print the environment variable that will be passed
+        print(f"🔧 Environment variable in subprocess: SOURCE_DATE_EPOCH={env.get('SOURCE_DATE_EPOCH', 'not set')}")
+        
+        # Try sdist first (needed for PyPI), with fallback to bdist_wheel
+        print(f"🔧 Trying sdist first (needed for PyPI publishing)")
+        
+        # Approach 1: Try sdist with SOURCE_DATE_EPOCH set in the command line
+        print(f"🔧 Using env command to set SOURCE_DATE_EPOCH before Python starts")
+        cmd_with_env = ["env", f"SOURCE_DATE_EPOCH={safe_timestamp}", python_cmd, "setup.py", "sdist"]
+        print(f"🔧 Running command with env: {' '.join(cmd_with_env)}")
+        
+        try:
+            print(f"🔧 Starting sdist with timeout (30 minutes)...")
+            result = subprocess.run(cmd_with_env, check=True, timeout=1800)
+            print("✅ sdist completed successfully with env command")
+        except subprocess.CalledProcessError as e:
+            print(f"❌ sdist failed with env command: {e}")
+            if e.stdout:
+                print(f"stdout: {e.stdout}")
+            if e.stderr:
+                print(f"stderr: {e.stderr}")
+            
+            # Approach 2: Try sdist with SOURCE_DATE_EPOCH in environment
+            print(f"🔧 Trying alternative approach: using subprocess with environment variable")
+            cmd = [python_cmd, "setup.py", "sdist"]
+            print(f"🔧 Running command: {' '.join(cmd)}")
+            print(f"🔧 With environment: {dict((k, v) for k, v in env.items() if k == 'SOURCE_DATE_EPOCH')}")
+            
+            try:
+                print(f"🔧 Starting sdist with environment variable (timeout: 30 minutes)...")
+                result = subprocess.run(cmd, check=True, env=env, timeout=1800)
+                print("✅ sdist completed successfully with environment variable")
+            except subprocess.CalledProcessError as e2:
+                print(f"❌ sdist failed even with environment variable: {e2}")
+                if e2.stdout:
+                    print(f"stdout: {e2.stdout}")
+                if e2.stderr:
+                    print(f"stderr: {e2.stderr}")
+                
+                # Approach 3: Fallback to bdist_wheel (but warn about PyPI)
+                print(f"🔧 Trying final approach: using bdist_wheel instead of sdist")
+                print(f"⚠️  WARNING: bdist_wheel creates .whl files, not .tar.gz files needed for PyPI")
+                print(f"🔧 bdist_wheel doesn't have the same timestamp issues as sdist")
+                
+                # Fallback: use bdist_wheel which doesn't have the same timestamp issues
+                cmd_wheel = [python_cmd, "setup.py", "bdist_wheel"]
+                print(f"🔧 Running fallback command: {' '.join(cmd_wheel)}")
+                try:
+                    subprocess.run(cmd_wheel, check=True, env=env)
+                    print("✅ bdist_wheel completed successfully")
+                except subprocess.CalledProcessError as wheel_error:
+                    print(f"❌ bdist_wheel also failed: {wheel_error}")
+                    if wheel_error.stdout:
+                        print(f"stdout: {wheel_error.stdout}")
+                    if wheel_error.stderr:
+                        print(f"stderr: {wheel_error.stderr}")
+                    raise wheel_error
+                
+                # Update the search pattern to look for wheel files instead of tar.gz
+                dist_files = list(Path("dist").glob("*.whl"))
+                if not dist_files:
+                    raise RuntimeError("No Python wheel found in dist/ directory")
+                print(f"✅ Created wheel file: {dist_files[0].name}")
+                print(f"⚠️  NOTE: This is a .whl file, not a .tar.gz file needed for PyPI")
+                return
 
-        # Find the built package file
-        dist_files = list(Path("dist").glob("*.tar.gz"))
+        # Find the built package file (either tar.gz or wheel)
+        dist_files = list(Path("dist").glob("*.tar.gz")) + list(Path("dist").glob("*.whl"))
         if not dist_files:
             raise RuntimeError("No Python package found in dist/ directory")
 
@@ -868,6 +1038,48 @@ class GrapaBuilder:
                     shutil.copy2(src_path, dst_path)
                     print(f"✅ Copied {lib_file} to {lib_dir}/")
         
+        # Copy ONNX Runtime shared libraries (Release)
+        onnx_src = f"source/onnxruntime-lib/{config.target}"
+        if os.path.exists(onnx_src):
+            for lib_file in os.listdir(onnx_src):
+                if lib_file.endswith(('.dylib', '.so', '.dll')):
+                    src_path = os.path.join(onnx_src, lib_file)
+                    dst_path = os.path.join(lib_dir, lib_file)
+                    # For symlinks, copy the symlink itself, not the target
+                    if os.path.islink(src_path):
+                        if os.path.exists(dst_path):
+                            os.remove(dst_path)
+                        os.symlink(os.readlink(src_path), dst_path)
+                        print(f"✅ Copied symlink {lib_file} to {lib_dir}/")
+                    else:
+                        shutil.copy2(src_path, dst_path)
+                        print(f"✅ Copied {lib_file} to {lib_dir}/")
+        
+        # Create symlink for Linux systems (libonnxruntime.so.1 -> libonnxruntime.so)
+        if config.platform in ["linux", "aws"]:
+            try:
+                from pathlib import Path
+                libonnxruntime_so = Path(lib_dir) / "libonnxruntime.so"
+                libonnxruntime_so_1 = Path(lib_dir) / "libonnxruntime.so.1"
+                print(f"🔍 Checking for libonnxruntime.so: {libonnxruntime_so.exists()}")
+                print(f"🔍 Checking for libonnxruntime.so.1: {libonnxruntime_so_1.exists()}")
+                if libonnxruntime_so.exists() and not libonnxruntime_so_1.exists():
+                    libonnxruntime_so_1.symlink_to("libonnxruntime.so")
+                    print("✅ Created symlink: libonnxruntime.so.1 -> libonnxruntime.so")
+                elif libonnxruntime_so_1.exists():
+                    print("ℹ️  Symlink already exists: libonnxruntime.so.1")
+                else:
+                    print("⚠️  libonnxruntime.so not found, cannot create symlink")
+            except Exception as e:
+                print(f"⚠️  Warning: Could not create symlink: {e}")
+        
+        # Note: System library path setup is now handled by bin/install-grapa.py
+        # This allows build.py to run without sudo privileges
+        if config.platform in ["linux", "aws"]:
+            print("ℹ️  For development builds to work, run: sudo bin/install-grapa.py")
+            print("   This sets up system library paths for /usr/local/lib/")
+            print("   After installation, you can build and run grapa without sudo")
+        
         # Copy llama.cpp Debug libraries (Windows only)
         if config.platform == "windows":
             llama_debug_src = f"source/llama-lib/{config.target}-debug"
@@ -924,6 +1136,15 @@ class GrapaBuilder:
             shutil.copytree(llama_include_src, llama_include_dst)
             print(f"✅ Copied llama.cpp headers to {llama_include_dst}/")
         
+        # Copy ONNX Runtime headers
+        onnx_include_src = "source/onnxruntime"
+        onnx_include_dst = f"bin/include/onnxruntime"
+        if os.path.exists(onnx_include_src):
+            if os.path.exists(onnx_include_dst):
+                shutil.rmtree(onnx_include_dst)
+            shutil.copytree(onnx_include_src, onnx_include_dst)
+            print(f"✅ Copied ONNX Runtime headers to {onnx_include_dst}/")
+        
         # Copy GGML headers
         ggml_include_src = "source/ggml/include"
         ggml_include_dst = f"bin/include/ggml"
@@ -941,6 +1162,14 @@ class GrapaBuilder:
         print(f"   Build: bin/CMakeLists.txt")
         print(f"   Documentation: bin/README.md")
         print(f"   Libraries: {lib_dir}/")
+    
+    def _setup_development_library_path(self, target):
+        """Set up library path for development build on Linux"""
+        # This method is no longer used - system library path setup is now handled by bin/install-grapa.py
+        # This allows build.py to run without sudo privileges
+        print("ℹ️  System library path setup is now handled by bin/install-grapa.py")
+        print("   Run: sudo bin/install-grapa.py to set up system library paths")
+        print("   After installation, you can build and run grapa without sudo")
 
 
 

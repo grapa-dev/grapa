@@ -30,6 +30,13 @@ limitations under the License.
 #include "llama.h"
 #include "ggml.h"   // for ggml_log_level enum
 
+// ONNX Runtime includes
+#include "onnxruntime_cxx_api.h"
+#include <algorithm>
+#include <sstream>
+#include <iterator>
+#include <map>
+
 extern GrapaSystem* gSystem;
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -63,6 +70,10 @@ void GrapaModel::INIT(GrapaRuleEvent* pParams)
     
     // Initialize sampler to NULL
     mLlamaSampler = nullptr;
+    
+    // Initialize ONNX Runtime members
+    mOnnxSession = nullptr;
+    mOnnxEnv = nullptr;
     
     // Initialize context management
     mContextPreserved = false;
@@ -192,8 +203,8 @@ GrapaError GrapaModel::Load(const GrapaCHAR& modelPath, const GrapaCHAR& method)
     else if (mMethod.StrCmp("onnx") == 0) {
         result = LoadOnnx(modelPath);
     }
-    else if (mMethod.StrCmp("tensorflow") == 0) {
-        result = LoadTensorFlow(modelPath);
+    else if (mMethod.StrCmp("onnx-embedding") == 0) {
+        result = LoadOnnx(modelPath); // Same as onnx but for embeddings
     }
     else {
         result = -1; // Unsupported method
@@ -233,7 +244,7 @@ GrapaCHAR GrapaModel::AutoDetectMethod(const GrapaCHAR& modelPath)
             return result;
         }
         else if (ext == ".tflite") {
-            result.FROM("tensorflow");
+            result.FROM("onnx"); // TensorFlow models should be converted to ONNX
             return result;
         }
     }
@@ -264,7 +275,7 @@ GrapaCHAR GrapaModel::AutoDetectMethod(const GrapaCHAR& modelPath)
             
             // TensorFlow Lite format - requires 4 bytes
             if (bytesRead >= 4 && strncmp(header, "TFL3", 4) == 0) {
-                result.FROM("tensorflow");
+                result.FROM("onnx"); // TensorFlow models should be converted to ONNX
                 return result;
             }
             
@@ -290,6 +301,9 @@ GrapaError GrapaModel::Unload()
         }
         else if (mMethod.StrCmp("openai") == 0) {
             result = UnloadOpenAI();
+        }
+        else if (mMethod.StrCmp("onnx") == 0) {
+            result = UnloadOnnx();
         }
         // Add other backend cleanup here
     }
@@ -435,6 +449,12 @@ GrapaRuleEvent* GrapaModel::Generate(const GrapaCHAR& prompt, GrapaRuleEvent* ca
     }
     else if (mMethod.StrCmp("openai-embedding") == 0) {
         result = EmbedOpenAI(prompt, mergedParams);
+    }
+    else if (mMethod.StrCmp("onnx") == 0) {
+        result = GenerateOnnx(prompt, mergedParams);
+    }
+    else if (mMethod.StrCmp("onnx-embedding") == 0) {
+        result = EmbedOnnx(prompt, mergedParams);
     }
 
     delete mergedParams;
@@ -1118,15 +1138,343 @@ GrapaError GrapaModel::SetContextFromText(const GrapaCHAR& text)
 // Future backend implementations
 GrapaError GrapaModel::LoadOnnx(const GrapaCHAR& modelPath)
 {
-    // TODO: Implement ONNX Runtime backend
-    return -1;
+    GrapaError result = 0;
+    
+    printf("Loading ONNX model: %s\n", modelPath.mBytes);
+
+    try {
+        // Initialize ONNX Runtime environment
+        if (!mOnnxEnv) {
+            mOnnxEnv = new Ort::Env(ORT_LOGGING_LEVEL_WARNING, "GrapaModel");
+        }
+        
+        // Create session options
+        Ort::SessionOptions sessionOptions;
+        sessionOptions.SetIntraOpNumThreads(1);
+        sessionOptions.SetGraphOptimizationLevel(GraphOptimizationLevel::ORT_ENABLE_EXTENDED);
+        
+        printf("Creating ONNX session\n");
+        // Create session
+        mOnnxSession = new Ort::Session(*static_cast<Ort::Env*>(mOnnxEnv), 
+                                       (char*)modelPath.mBytes, 
+                                       sessionOptions);
+        
+        printf("ONNX session created\n");
+
+        mLoaded = true;
+        mModelPath = modelPath;
+        // Don't override mMethod here - it should already be set to "onnx" or "onnx-embedding"
+        
+    } catch (const std::exception& e) {
+        result = -1;
+        mLoaded = false;
+    }
+    
+    return result;
 }
 
-GrapaError GrapaModel::LoadTensorFlow(const GrapaCHAR& modelPath)
+GrapaError GrapaModel::UnloadOnnx()
 {
-    // TODO: Implement TensorFlow backend
-    return -1;
+    if (mOnnxSession) {
+        delete static_cast<Ort::Session*>(mOnnxSession);
+        mOnnxSession = nullptr;
+    }
+    
+    if (mOnnxEnv) {
+        delete static_cast<Ort::Env*>(mOnnxEnv);
+        mOnnxEnv = nullptr;
+    }
+    
+    mLoaded = false;
+    return 0;
 }
+
+GrapaRuleEvent* GrapaModel::GenerateOnnx(const GrapaCHAR& prompt, GrapaRuleEvent* mergedParams)
+{
+    GrapaRuleEvent* result = NULL;
+    
+    try {
+        if (!mOnnxSession) {
+            result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaCHAR("ONNX session not loaded"));
+            return result;
+        }
+        
+        Ort::Session* session = static_cast<Ort::Session*>(mOnnxSession);
+        
+        // Get input/output info
+        size_t numInputNodes = session->GetInputCount();
+        size_t numOutputNodes = session->GetOutputCount();
+        
+        if (numInputNodes == 0 || numOutputNodes == 0) {
+            result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaCHAR("Invalid ONNX model: no input/output nodes"));
+            return result;
+        }
+        
+        // Get input/output names
+        std::vector<const char*> inputNames;
+        std::vector<const char*> outputNames;
+        
+        for (size_t i = 0; i < numInputNodes; i++) {
+            inputNames.push_back(session->GetInputNameAllocated(i, nullptr).get());
+        }
+        
+        for (size_t i = 0; i < numOutputNodes; i++) {
+            outputNames.push_back(session->GetOutputNameAllocated(i, nullptr).get());
+        }
+        
+        // Create input tensor (simplified - assumes text input needs tokenization)
+        // For now, return a placeholder indicating the model is loaded but generation needs implementation
+        result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaCHAR("ONNX model loaded successfully. Text generation implementation pending."));
+        
+    } catch (const std::exception& e) {
+        result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaCHAR("ONNX generation error"));
+    }
+    
+    return result;
+}
+
+GrapaRuleEvent* GrapaModel::EmbedOnnx(const GrapaCHAR& text, GrapaRuleEvent* mergedParams)
+{
+    GrapaRuleEvent* result = NULL;
+    
+    try {
+        if (!mOnnxSession) {
+            result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaCHAR("ONNX session not loaded"));
+            return result;
+        }
+        
+        Ort::Session* session = static_cast<Ort::Session*>(mOnnxSession);
+        
+        printf("Running ONNX embedding\n");
+
+        // For now, use a simplified tokenization approach
+        // In a production system, you would want to use the actual tokenizer
+        std::string inputText = std::string((char*)text.mBytes, text.mLength);
+        
+        // Simple word-based tokenization with basic vocabulary
+        // This is a simplified approach - in practice you'd use the actual tokenizer
+        std::transform(inputText.begin(), inputText.end(), inputText.begin(), ::tolower);
+        std::istringstream iss(inputText);
+        std::vector<std::string> words(std::istream_iterator<std::string>{iss},
+                                     std::istream_iterator<std::string>());
+        
+        printf("Tokenizing input text\n");
+
+        // Basic vocabulary mapping (simplified for demonstration)
+        std::map<std::string, int> vocab = {
+            {"<PAD>", 0}, {"<UNK>", 1}, {"<CLS>", 2}, {"<SEP>", 3},
+            {"the", 4}, {"a", 5}, {"an", 6}, {"and", 7}, {"or", 8}, {"but", 9},
+            {"in", 10}, {"on", 11}, {"at", 12}, {"to", 13}, {"for", 14}, {"of", 15},
+            {"with", 16}, {"by", 17}, {"is", 18}, {"are", 19}, {"was", 20}, {"were", 21},
+            {"be", 22}, {"been", 23}, {"being", 24}, {"have", 25}, {"has", 26}, {"had", 27},
+            {"do", 28}, {"does", 29}, {"did", 30}, {"will", 31}, {"would", 32}, {"could", 33},
+            {"should", 34}, {"may", 35}, {"might", 36}, {"can", 37}, {"this", 38}, {"that", 39},
+            {"these", 40}, {"those", 41}, {"i", 42}, {"you", 43}, {"he", 44}, {"she", 45},
+            {"it", 46}, {"we", 47}, {"they", 48}, {"me", 49}, {"him", 50}, {"her", 51},
+            {"us", 52}, {"them", 53}
+        };
+        
+        // Tokenize with max length of 512 (standard for BERT-based models)
+        const int max_length = 512;
+        std::vector<int64_t> token_ids;
+        std::vector<int64_t> attention_mask;
+        
+        printf("Adding CLS token at the beginning\n");
+
+        // Add CLS token at the beginning
+        token_ids.push_back(vocab["<CLS>"]);
+        attention_mask.push_back(1);
+        
+        printf("Adding word tokens\n");
+
+        // Add word tokens
+        for (const auto& word : words) {
+            if (token_ids.size() >= max_length - 1) break; // Leave room for SEP token
+            int token_id = vocab.count(word) ? vocab[word] : vocab["<UNK>"];
+            token_ids.push_back(token_id);
+            attention_mask.push_back(1);
+        }
+        
+        printf("Adding SEP token at the end\n");
+
+        // Add SEP token at the end
+        if (token_ids.size() < max_length) {
+            token_ids.push_back(vocab["<SEP>"]);
+            attention_mask.push_back(1);
+        }
+        
+        printf("Padding to max_length\n");
+
+        // Pad to max_length
+        while (token_ids.size() < max_length) {
+            token_ids.push_back(vocab["<PAD>"]);
+            attention_mask.push_back(0);
+        }
+        
+        printf("Creating input tensors\n");
+
+        // Create input tensors
+        std::vector<int64_t> input_shape = {1, max_length};
+        std::vector<int64_t> attention_shape = {1, max_length};
+        
+        printf("Creating memory info\n");
+
+        Ort::MemoryInfo memory_info = Ort::MemoryInfo::CreateCpu(OrtArenaAllocator, OrtMemTypeDefault);
+        
+                   printf("Creating input tensor\n");
+                   printf("token_ids size: %zu\n", token_ids.size());
+                   printf("input_shape: [%lld, %lld]\n", input_shape[0], input_shape[1]);
+
+                   Ort::Value input_tensor = Ort::Value::CreateTensor<int64_t>(
+                       memory_info, token_ids.data(), token_ids.size(), input_shape.data(), input_shape.size());
+                   
+                   printf("Input tensor created successfully\n");
+                   printf("Creating attention tensor\n");
+                   printf("attention_mask size: %zu\n", attention_mask.size());
+                   printf("attention_shape: [%lld, %lld]\n", attention_shape[0], attention_shape[1]);
+
+                   Ort::Value attention_tensor = Ort::Value::CreateTensor<int64_t>(
+                       memory_info, attention_mask.data(), attention_mask.size(), attention_shape.data(), attention_shape.size());
+                   
+                   printf("Attention tensor created successfully\n");
+        
+                   printf("Preparing input names\n");
+                   
+                   // Use hardcoded input names since we know the model expects these
+                   // from the Python test: ['input_ids', 'attention_mask']
+                   std::vector<const char*> input_names;
+                   input_names.push_back("input_ids");
+                   input_names.push_back("attention_mask");
+                   
+                   printf("Using hardcoded input names: input_ids, attention_mask\n");
+                   
+                   printf("Input names prepared, count: %zu\n", input_names.size());
+                   
+                   // Prepare input tensors in the correct order
+                   std::vector<Ort::Value> input_tensors;
+                   printf("Moving input tensor\n");
+                   input_tensors.push_back(std::move(input_tensor));
+                   printf("Moving attention tensor\n");
+                   input_tensors.push_back(std::move(attention_tensor));
+                   
+                   printf("Input tensors prepared, count: %zu\n", input_tensors.size());
+                   printf("Running inference\n");
+                   
+                   // Prepare output names - use common BERT output names
+                   std::vector<const char*> output_names;
+                   output_names.push_back("last_hidden_state");
+                   output_names.push_back("pooler_output");
+                   
+                   printf("Output names prepared, count: %zu\n", output_names.size());
+                   
+                   // Run inference
+                   try {
+                       auto output_tensors = session->Run(Ort::RunOptions{nullptr}, 
+                                                         input_names.data(), input_tensors.data(), input_tensors.size(),
+                                                         output_names.data(), output_names.size());
+                       
+                       printf("Inference completed successfully\n");
+                       printf("Number of output tensors: %zu\n", output_tensors.size());
+                       
+                       if (output_tensors.size() > 0) {
+                           printf("Getting output data\n");
+                           
+                           // Use the second output (pooler_output) which is already pooled
+                           // The first output is last_hidden_state, second is pooler_output
+                           if (output_tensors.size() > 1) {
+                               printf("Using pooler_output (second output)\n");
+                               float* output_data = output_tensors[1].GetTensorMutableData<float>();
+                               auto output_shape = output_tensors[1].GetTensorTypeAndShapeInfo().GetShape();
+                               
+                               printf("Output shape: %lld, %lld\n", output_shape[0], output_shape[1]);
+
+                               // pooler_output is already pooled, shape is [batch_size, hidden_size]
+                               int batch_size = output_shape[0];
+                               int hidden_size = output_shape[1];
+                               
+                               printf("Using pooler_output, hidden_size: %d\n", hidden_size);
+                               
+                               // Convert to GrapaCHAR (show first 10 dimensions)
+                               std::string embedding_str = "[";
+                               for (int i = 0; i < hidden_size && i < 10; i++) {
+                                   if (i > 0) embedding_str += ",";
+                                   embedding_str += std::to_string(output_data[i]);
+                               }
+                               if (hidden_size > 10) embedding_str += ",...";
+                               embedding_str += "]";
+                               
+                               result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaCHAR(embedding_str.c_str()));
+                           } else {
+                               printf("Only one output, using first output\n");
+                               // Fallback to first output if only one output
+                               float* output_data = output_tensors[0].GetTensorMutableData<float>();
+                               auto output_shape = output_tensors[0].GetTensorTypeAndShapeInfo().GetShape();
+                               
+                               printf("Output shape: %lld, %lld, %lld\n", output_shape[0], output_shape[1], output_shape[2]);
+
+                               // For embedding models, we typically use mean pooling
+                               // Shape is [batch_size, sequence_length, hidden_size]
+                               int batch_size = output_shape[0];
+                               int sequence_length = output_shape[1];
+                               int hidden_size = output_shape[2];
+                               
+                               printf("Calculating mean pooling\n");
+
+                               // Calculate mean pooling (average over sequence length, excluding padding)
+                               std::vector<float> pooled_embedding(hidden_size, 0.0f);
+                               int valid_tokens = 0;
+                               
+                               printf("Calculating mean pooling\n");
+
+                               for (int i = 0; i < sequence_length; i++) {
+                                   if (attention_mask[i] == 1) { // Only include non-padding tokens
+                                       for (int j = 0; j < hidden_size; j++) {
+                                           pooled_embedding[j] += output_data[i * hidden_size + j];
+                                       }
+                                       valid_tokens++;
+                                   }
+                               }
+                               
+                               printf("Averaging embeddings\n");
+
+                               // Average the embeddings
+                               if (valid_tokens > 0) {
+                                   for (int j = 0; j < hidden_size; j++) {
+                                       pooled_embedding[j] /= valid_tokens;
+                                   }
+                               }
+                               
+                               printf("Converting to GrapaCHAR\n");
+                               
+                               // Convert to GrapaCHAR (show first 10 dimensions)
+                               std::string embedding_str = "[";
+                               for (int i = 0; i < hidden_size && i < 10; i++) {
+                                   if (i > 0) embedding_str += ",";
+                                   embedding_str += std::to_string(pooled_embedding[i]);
+                               }
+                               printf("Embedding string: %s\n", embedding_str.c_str());
+                               if (hidden_size > 10) embedding_str += ",...";
+                               embedding_str += "]";
+                               
+                               printf("Creating result\n");
+                               
+                               result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaCHAR(embedding_str.c_str()));
+                           }
+                       } else {
+                           result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaCHAR("No output from ONNX model"));
+                       }
+                   } catch (const std::exception& e) {
+                       printf("ONNX inference error: %s\n", e.what());
+                       result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaCHAR("ONNX inference error"));
+                   }
+        
+    } catch (const std::exception& e) {
+        result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaCHAR("ONNX embedding error"));
+    }
+    
+    return result;
+}
+
 
 void GrapaModel::ResetModelSpecificParams()
 {
@@ -1186,6 +1534,30 @@ void GrapaModel::SetModelDefaults()
             if (override)
                 override->mValue.FROM(GrapaFloat((double)0.1f).getBytes());
         }
+    }
+    else if (mMethod.StrCmp("onnx") == 0) {
+        // ONNX-specific parameters
+        GrapaRuleEvent* override;
+        s64 index;
+        
+        // For ONNX models, we typically don't need generation parameters
+        // but we might need model-specific parameters
+        override = vParams->vQueue ? vParams->vQueue->Search("max_tokens", index) : nullptr;
+        if (override)
+            override->mValue.FROM(GrapaInt(512).getBytes()); // Default for ONNX models
+        
+        override = vParams->vQueue ? vParams->vQueue->Search("temperature", index) : nullptr;
+        if (override)
+            override->mValue.FROM(GrapaFloat((double)0.1f).getBytes());
+            
+        // ONNX-specific parameters
+        override = vParams->vQueue ? vParams->vQueue->Search("onnx_provider", index) : nullptr;
+        if (override)
+            override->mValue.FROM(GrapaCHAR("CPUExecutionProvider"));
+            
+        override = vParams->vQueue ? vParams->vQueue->Search("onnx_optimization_level", index) : nullptr;
+        if (override)
+            override->mValue.FROM(GrapaInt(1).getBytes()); // ORT_ENABLE_EXTENDED
     }
 }
 

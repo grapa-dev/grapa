@@ -82,8 +82,15 @@ class GrapaInstaller:
         else:
             raise FileNotFoundError(f"Static library not found: {static_path}")
         
-        # Shared libraries are no longer supported
-        files['shared_lib'] = None
+        # Find ONNX Runtime shared libraries
+        onnx_lib_dir = self.script_dir / "lib" / self.platform
+        onnx_libs = []
+        if onnx_lib_dir.exists():
+            for lib_file in onnx_lib_dir.iterdir():
+                if lib_file.is_file() and lib_file.suffix in ['.dylib', '.so', '.dll']:
+                    onnx_libs.append(lib_file)
+        
+        files['shared_lib'] = onnx_libs if onnx_libs else None
         
         return files
     
@@ -366,9 +373,11 @@ class GrapaInstaller:
         if files['static_lib']:
             shutil.copy2(files['static_lib'], lib_dir / "grapa_static.lib")
         
-        # Shared libraries are no longer supported
+        # Copy ONNX Runtime shared libraries
         if files['shared_lib']:
-            shutil.copy2(files['shared_lib'], lib_dir / "grapa.dll")
+            for lib_file in files['shared_lib']:
+                shutil.copy2(lib_file, lib_dir / lib_file.name)
+                print(f"✅ Copied ONNX Runtime library: {lib_file.name}")
         
         # Add to PATH
         self._add_to_windows_path(str(bin_dir))
@@ -376,7 +385,7 @@ class GrapaInstaller:
         return {
             'executable': str(bin_dir / "grapa.exe"),
             'static_lib': str(lib_dir / "grapa_static.lib") if files['static_lib'] else None,
-            'shared_lib': str(lib_dir / "grapa.dll") if files['shared_lib'] else None
+            'shared_lib': [str(lib_dir / lib_file.name) for lib_file in files['shared_lib']] if files['shared_lib'] else None
         }
     
     def _install_unix(self, files, force=False):
@@ -394,12 +403,81 @@ class GrapaInstaller:
         if files['static_lib']:
             shutil.copy2(files['static_lib'], lib_dir / "libgrapa_static.a")
         
-        # Shared libraries are no longer supported
+        # Copy ONNX Runtime shared libraries
         if files['shared_lib']:
-            shutil.copy2(files['shared_lib'], lib_dir / files['shared_lib'].name)
+            for lib_file in files['shared_lib']:
+                shutil.copy2(lib_file, lib_dir / lib_file.name)
+                print(f"✅ Copied ONNX Runtime library: {lib_file.name}")
+            
+            # Create symlink for Linux systems (libonnxruntime.so.1 -> libonnxruntime.so)
+            if platform.system().lower() == "linux":
+                try:
+                    libonnxruntime_so = lib_dir / "libonnxruntime.so"
+                    libonnxruntime_so_1 = lib_dir / "libonnxruntime.so.1"
+                    if libonnxruntime_so.exists() and not libonnxruntime_so_1.exists():
+                        libonnxruntime_so_1.symlink_to("libonnxruntime.so")
+                        print("✅ Created symlink: libonnxruntime.so.1 -> libonnxruntime.so")
+                except Exception as e:
+                    print(f"⚠️  Warning: Could not create symlink: {e}")
         
         # Set permissions
         (bin_dir / "grapa").chmod(0o755)
+        
+        # Set RPATH for ONNX Runtime shared libraries
+        if files['shared_lib']:
+            if platform.system().lower() == "darwin":
+                try:
+                    # macOS: Set RPATH to point to the lib directory relative to the executable
+                    subprocess.run([
+                        "install_name_tool", "-add_rpath", 
+                        "@loader_path/../lib", 
+                        str(bin_dir / "grapa")
+                    ], check=True)
+                    print("✅ Set RPATH for ONNX Runtime libraries")
+                except subprocess.CalledProcessError as e:
+                    print(f"⚠️  Warning: Could not set RPATH: {e}")
+                except FileNotFoundError:
+                    print("⚠️  Warning: install_name_tool not found, RPATH not set")
+            elif platform.system().lower() == "linux":
+                try:
+                    # Linux: Set RPATH to point to the lib directory relative to the executable
+                    subprocess.run([
+                        "patchelf", "--set-rpath", 
+                        "$ORIGIN/../lib", 
+                        str(bin_dir / "grapa")
+                    ], check=True)
+                    print("✅ Set RPATH for ONNX Runtime libraries")
+                except subprocess.CalledProcessError as e:
+                    print(f"⚠️  Warning: Could not set RPATH: {e}")
+                except FileNotFoundError:
+                    print("⚠️  patchelf not found, attempting to install it...")
+                    try:
+                        # Use existing platform detection to determine package manager
+                        if self.platform.startswith("aws-"):
+                            # Amazon Linux uses yum
+                            subprocess.run(["yum", "install", "-y", "patchelf"], check=True)
+                        else:
+                            # Regular Linux (Ubuntu/Debian) uses apt-get
+                            subprocess.run(["apt-get", "update"], check=True)
+                            subprocess.run(["apt-get", "install", "-y", "patchelf"], check=True)
+                        
+                        print("✅ Installed patchelf")
+                        
+                        # Now try to set RPATH again
+                        subprocess.run([
+                            "patchelf", "--set-rpath", 
+                            "$ORIGIN/../lib", 
+                            str(bin_dir / "grapa")
+                        ], check=True)
+                        print("✅ Set RPATH for ONNX Runtime libraries")
+                    except subprocess.CalledProcessError as install_error:
+                        print(f"⚠️  Could not install patchelf: {install_error}")
+                        print("   Falling back to LD_LIBRARY_PATH method...")
+                        self._setup_ld_library_path()
+        
+        # Set up system library path for development builds (Linux only)
+        if platform.system().lower() == "linux":
+            self._setup_system_library_path()
         
         # Add to PATH
         self._add_to_unix_path(str(bin_dir))
@@ -407,8 +485,76 @@ class GrapaInstaller:
         return {
             'executable': str(bin_dir / "grapa"),
             'static_lib': str(lib_dir / "libgrapa_static.a") if files['static_lib'] else None,
-            'shared_lib': str(lib_dir / files['shared_lib'].name) if files['shared_lib'] else None
+            'shared_lib': [str(lib_dir / lib_file.name) for lib_file in files['shared_lib']] if files['shared_lib'] else None
         }
+    
+    def _detect_linux_distro(self):
+        """Detect the Linux distribution"""
+        try:
+            # Check for Amazon Linux
+            if os.path.exists("/etc/system-release"):
+                with open("/etc/system-release", "r") as f:
+                    content = f.read().lower()
+                    if "amazon linux" in content:
+                        return "amazon"
+                    elif "centos" in content:
+                        return "centos"
+                    elif "red hat" in content or "rhel" in content:
+                        return "rhel"
+            
+            # Check for Ubuntu/Debian
+            if os.path.exists("/etc/lsb-release"):
+                with open("/etc/lsb-release", "r") as f:
+                    content = f.read().lower()
+                    if "ubuntu" in content:
+                        return "ubuntu"
+                    elif "debian" in content:
+                        return "debian"
+            
+            # Check for Fedora
+            if os.path.exists("/etc/fedora-release"):
+                return "fedora"
+            
+            # Check for generic Red Hat family
+            if os.path.exists("/etc/redhat-release"):
+                return "rhel"
+            
+            return "unknown"
+        except Exception:
+            return "unknown"
+    
+    def _setup_system_library_path(self):
+        """Set up system library path for development builds on Linux"""
+        try:
+            # Add /usr/local/lib to /etc/ld.so.conf.d/ for system-wide library path
+            ld_conf_path = Path("/etc/ld.so.conf.d/grapa.conf")
+            with open(ld_conf_path, "w") as f:
+                f.write("/usr/local/lib\n")
+            
+            # Update the dynamic linker cache
+            subprocess.run(["ldconfig"], check=True)
+            print("✅ Added /usr/local/lib to system library path for development builds")
+            print("   Now you can build and run grapa from any directory without sudo")
+            
+        except Exception as e:
+            print(f"⚠️  Could not set up system library path: {e}")
+            print("   You may need to run: export LD_LIBRARY_PATH='/usr/local/lib:$LD_LIBRARY_PATH'")
+    
+    def _setup_ld_library_path(self):
+        """Set up LD_LIBRARY_PATH as a fallback for Linux systems"""
+        try:
+            # Add /usr/local/lib to /etc/ld.so.conf.d/ for system-wide library path
+            ld_conf_path = Path("/etc/ld.so.conf.d/grapa.conf")
+            with open(ld_conf_path, "w") as f:
+                f.write("/usr/local/lib\n")
+            
+            # Update the dynamic linker cache
+            subprocess.run(["ldconfig"], check=True)
+            print("✅ Added /usr/local/lib to system library path")
+            
+        except Exception as e:
+            print(f"⚠️  Could not set up system library path: {e}")
+            print("   You may need to run: export LD_LIBRARY_PATH='/usr/local/lib:$LD_LIBRARY_PATH'")
     
     def _add_to_windows_path(self, bin_path):
         """Add Grapa to Windows PATH"""
