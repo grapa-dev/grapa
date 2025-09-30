@@ -2661,27 +2661,45 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#levenshteinother-options" class="md-nav__link">
+  <a href="#levenshtein_distanceother-options" class="md-nav__link">
     <span class="md-ellipsis">
-      levenshtein(other, options)
+      levenshtein_distance(other, options)
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#jarowinklerother-options" class="md-nav__link">
+  <a href="#jaro_winkler_similarityother-options" class="md-nav__link">
     <span class="md-ellipsis">
-      jarowinkler(other, options)
+      jaro_winkler_similarity(other, options)
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#cosinesimilarityother-options" class="md-nav__link">
+  <a href="#cosine_similarityother-options" class="md-nav__link">
     <span class="md-ellipsis">
-      cosinesimilarity(other, options)
+      cosine_similarity(other, options)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#damerau_levenshtein_distanceother-options" class="md-nav__link">
+    <span class="md-ellipsis">
+      damerau_levenshtein_distance(other, options)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#jaccard_similarityother-method-n" class="md-nav__link">
+    <span class="md-ellipsis">
+      jaccard_similarity(other, method, n)
     </span>
   </a>
   
@@ -2978,9 +2996,9 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#setconsttruefalse" class="md-nav__link">
+  <a href="#setfreezetruefalse" class="md-nav__link">
     <span class="md-ellipsis">
-      setconst(truefalse)
+      setfreeze(truefalse)
     </span>
   </a>
   
@@ -5470,27 +5488,45 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#levenshteinother-options" class="md-nav__link">
+  <a href="#levenshtein_distanceother-options" class="md-nav__link">
     <span class="md-ellipsis">
-      levenshtein(other, options)
+      levenshtein_distance(other, options)
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#jarowinklerother-options" class="md-nav__link">
+  <a href="#jaro_winkler_similarityother-options" class="md-nav__link">
     <span class="md-ellipsis">
-      jarowinkler(other, options)
+      jaro_winkler_similarity(other, options)
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#cosinesimilarityother-options" class="md-nav__link">
+  <a href="#cosine_similarityother-options" class="md-nav__link">
     <span class="md-ellipsis">
-      cosinesimilarity(other, options)
+      cosine_similarity(other, options)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#damerau_levenshtein_distanceother-options" class="md-nav__link">
+    <span class="md-ellipsis">
+      damerau_levenshtein_distance(other, options)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#jaccard_similarityother-method-n" class="md-nav__link">
+    <span class="md-ellipsis">
+      jaccard_similarity(other, method, n)
     </span>
   </a>
   
@@ -5787,9 +5823,9 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#setconsttruefalse" class="md-nav__link">
+  <a href="#setfreezetruefalse" class="md-nav__link">
     <span class="md-ellipsis">
-      setconst(truefalse)
+      setfreeze(truefalse)
     </span>
   </a>
   
@@ -6295,53 +6331,55 @@ result = input.grep(r&quot;cafe&quot;, &quot;di&quot;);
 </code></pre></div>
 <hr />
 <h2 id="string-distance-functions">String Distance Functions</h2>
-<p>Grapa provides three string distance algorithms for fuzzy matching, spell checking, and similarity analysis. Each algorithm is optimized for different use cases:</p>
+<p>Grapa provides five string distance and similarity algorithms for fuzzy matching, spell checking, and similarity analysis. Each algorithm is optimized for different use cases:</p>
 <blockquote>
 <p><strong>📋 Current Implementation Status</strong>: 
-- <strong>Levenshtein</strong>: ✅ <strong>Fully working</strong> - Correctly calculates edit distance for all string comparisons
-- <strong>Jaro-Winkler</strong>: ✅ <strong>Fully working</strong> - Correctly calculates similarity scores for all string comparisons
-- <strong>Cosine Similarity</strong>: ✅ <strong>Fully working</strong> - Uses word-based frequency analysis for document similarity</p>
-<p>All three algorithms are now functional and provide accurate results for their respective use cases.</p>
+- <strong>Levenshtein Distance</strong>: ✅ <strong>Fully working</strong> - Correctly calculates edit distance for all string comparisons
+- <strong>Damerau-Levenshtein Distance</strong>: ✅ <strong>Fully working</strong> - Edit distance with transposition support
+- <strong>Jaro-Winkler Similarity</strong>: ✅ <strong>Fully working</strong> - Correctly calculates similarity scores for all string comparisons
+- <strong>Cosine Similarity</strong>: ✅ <strong>Fully working</strong> - Uses word-based frequency analysis for document similarity
+- <strong>Jaccard Similarity</strong>: ✅ <strong>Fully working</strong> - Set-based similarity with n-gram support</p>
+<p>All five algorithms are now functional and provide accurate results for their respective use cases.</p>
 </blockquote>
-<h3 id="levenshteinother-options">levenshtein(other, options)</h3>
+<h3 id="levenshtein_distanceother-options">levenshtein_distance(other, options)</h3>
 <p>Calculates the <strong>edit distance</strong> between two strings - the minimum number of single-character edits (insertions, deletions, substitutions) needed to transform one string into another.</p>
 <p><strong>Returns</strong>: <code>$INT</code> - Distance value (0 = identical, higher = more different)</p>
 <p><strong>Best for</strong>: Spell checking, fuzzy matching, finding similar words</p>
 <p><strong>Examples</strong>:
-<div class="highlight"><pre><span></span><code>&quot;kitten&quot;.levenshtein(&quot;sitting&quot;)  /* Returns: 3 (k→s, e→i, add g) */
-&quot;hello&quot;.levenshtein(&quot;world&quot;)     /* Returns: 4 (h→w, e→o, l→r, o→l) */
-&quot;hello&quot;.levenshtein(&quot;hello&quot;)     /* Returns: 0 (identical) */
-&quot;book&quot;.levenshtein(&quot;back&quot;)       /* Returns: 2 (o→a, o→c) */
+<div class="highlight"><pre><span></span><code>&quot;kitten&quot;.levenshtein_distance(&quot;sitting&quot;)  /* Returns: 3 (k→s, e→i, add g) */
+&quot;hello&quot;.levenshtein_distance(&quot;world&quot;)     /* Returns: 4 (h→w, e→o, l→r, o→l) */
+&quot;hello&quot;.levenshtein_distance(&quot;hello&quot;)     /* Returns: 0 (identical) */
+&quot;book&quot;.levenshtein_distance(&quot;back&quot;)       /* Returns: 2 (o→a, o→c) */
 </code></pre></div></p>
 <p><strong>When to use Levenshtein</strong>:
 - ✅ <strong>Spell checking</strong> - Find closest matches to misspelled words
 - ✅ <strong>Fuzzy search</strong> - Find items with similar names
 - ✅ <strong>Data cleaning</strong> - Identify potential duplicates with typos
 - ✅ <strong>Short strings</strong> - Words, names, codes (typically &lt; 50 characters)</p>
-<h3 id="jarowinklerother-options">jarowinkler(other, options)</h3>
+<h3 id="jaro_winkler_similarityother-options">jaro_winkler_similarity(other, options)</h3>
 <p>Calculates <strong>Jaro-Winkler similarity</strong> - optimized for short strings like names, with bonus for matching prefixes.</p>
 <p><strong>Returns</strong>: <code>$FLOAT</code> - Similarity score (0.0 = completely different, 1.0 = identical)</p>
 <p><strong>Best for</strong>: Name matching, short string similarity, person names</p>
 <p><strong>Examples</strong>:
-<div class="highlight"><pre><span></span><code>&quot;martha&quot;.jarowinkler(&quot;marhta&quot;)   /* Returns: 0.0 (low similarity) */
-&quot;hello&quot;.jarowinkler(&quot;world&quot;)     /* Returns: 0.0 (low similarity) */
-&quot;hello&quot;.jarowinkler(&quot;hello&quot;)     /* Returns: 1.0 (identical) */
-&quot;abc&quot;.jarowinkler(&quot;abc&quot;)         /* Returns: 1.0 (identical) */
+<div class="highlight"><pre><span></span><code>&quot;martha&quot;.jaro_winkler_similarity(&quot;marhta&quot;)   /* Returns: 0.0 (low similarity) */
+&quot;hello&quot;.jaro_winkler_similarity(&quot;world&quot;)     /* Returns: 0.0 (low similarity) */
+&quot;hello&quot;.jaro_winkler_similarity(&quot;hello&quot;)     /* Returns: 1.0 (identical) */
+&quot;abc&quot;.jaro_winkler_similarity(&quot;abc&quot;)         /* Returns: 1.0 (identical) */
 </code></pre></div></p>
 <p><strong>When to use Jaro-Winkler</strong>:
 - ✅ <strong>Name matching</strong> - Person names, company names
 - ✅ <strong>Short strings</strong> - Typically 2-10 characters
 - ✅ <strong>Prefix importance</strong> - When matching prefixes is valuable
 - ✅ <strong>Exact matches</strong> - High similarity for identical strings</p>
-<h3 id="cosinesimilarityother-options">cosinesimilarity(other, options)</h3>
+<h3 id="cosine_similarityother-options">cosine_similarity(other, options)</h3>
 <p>Calculates <strong>cosine similarity</strong> using vector space model - treats strings as word vectors and measures the angle between them.</p>
 <p><strong>Returns</strong>: <code>$FLOAT</code> - Similarity score (0.0 = completely different, 1.0 = identical)</p>
 <p><strong>Best for</strong>: Document similarity, longer texts, semantic similarity</p>
 <p><strong>Examples</strong>:
-<div class="highlight"><pre><span></span><code>&quot;hello world&quot;.cosinesimilarity(&quot;hello there&quot;)  /* Returns: 0.0 (low similarity) */
-&quot;hello world&quot;.cosinesimilarity(&quot;hello world&quot;)  /* Returns: 1.0 (identical) */
-&quot;hello world&quot;.cosinesimilarity(&quot;world hello&quot;)  /* Returns: 0.0 (low similarity) */
-&quot;abc&quot;.cosinesimilarity(&quot;abc&quot;)                  /* Returns: 1.0 (identical) */
+<div class="highlight"><pre><span></span><code>&quot;hello world&quot;.cosine_similarity(&quot;hello there&quot;)  /* Returns: 0.0 (low similarity) */
+&quot;hello world&quot;.cosine_similarity(&quot;hello world&quot;)  /* Returns: 1.0 (identical) */
+&quot;hello world&quot;.cosine_similarity(&quot;world hello&quot;)  /* Returns: 0.0 (low similarity) */
+&quot;abc&quot;.cosine_similarity(&quot;abc&quot;)                  /* Returns: 1.0 (identical) */
 </code></pre></div></p>
 <p><strong>When to use Cosine Similarity</strong>:
 - ✅ <strong>Document similarity</strong> - Comparing longer texts
@@ -6349,6 +6387,41 @@ result = input.grep(r&quot;cafe&quot;, &quot;di&quot;);
 - ✅ <strong>Longer strings</strong> - Sentences, paragraphs, documents
 - ⚠️ <strong>Uses word frequency</strong> - Current implementation uses simple word frequency (not TF-IDF)
 - 📋 <strong>Future enhancement</strong> - TF-IDF implementation planned for better accuracy</p>
+<h3 id="damerau_levenshtein_distanceother-options">damerau_levenshtein_distance(other, options)</h3>
+<p>Calculates the <strong>Damerau-Levenshtein distance</strong> - an extension of Levenshtein distance that also counts transpositions (swaps of adjacent characters) as a single operation.</p>
+<p><strong>Returns</strong>: <code>$INT</code> - Distance value (0 = identical, higher = more different)</p>
+<p><strong>Best for</strong>: Typo detection, DNA sequence analysis, where transpositions are common</p>
+<p><strong>Examples</strong>:
+<div class="highlight"><pre><span></span><code>&quot;kitten&quot;.damerau_levenshtein_distance(&quot;sitting&quot;)  /* Returns: 3 (k→s, e→i, add g) */
+&quot;hello&quot;.damerau_levenshtein_distance(&quot;hlelo&quot;)     /* Returns: 1 (transposition: l-e) */
+&quot;hello&quot;.damerau_levenshtein_distance(&quot;hello&quot;)    /* Returns: 0 (identical) */
+&quot;ab&quot;.damerau_levenshtein_distance(&quot;ba&quot;)          /* Returns: 1 (transposition) */
+</code></pre></div></p>
+<p><strong>When to use Damerau-Levenshtein</strong>:
+- ✅ <strong>Typo detection</strong> - When users commonly transpose adjacent characters
+- ✅ <strong>DNA/RNA analysis</strong> - Biological sequences where transpositions occur
+- ✅ <strong>Keyboard errors</strong> - Adjacent key swaps on QWERTY keyboards
+- ✅ <strong>Short strings</strong> - Words, codes, sequences (typically &lt; 50 characters)</p>
+<h3 id="jaccard_similarityother-method-n">jaccard_similarity(other, method, n)</h3>
+<p>Calculates <strong>Jaccard similarity</strong> using set-based analysis - measures the intersection over union of character n-grams or words.</p>
+<p><strong>Returns</strong>: <code>$FLOAT</code> - Similarity score (0.0 = completely different, 1.0 = identical)</p>
+<p><strong>Parameters</strong>:
+- <code>method</code> (string): "word" for word-based, "char" for character n-grams (default: "word")
+- <code>n</code> (integer): N-gram size for character-based analysis (default: 2)</p>
+<p><strong>Best for</strong>: Set-based similarity, n-gram analysis, document similarity</p>
+<p><strong>Examples</strong>:
+<div class="highlight"><pre><span></span><code>&quot;hello world&quot;.jaccard_similarity(&quot;hello there&quot;)           /* Returns: 0.333 (1/3 words overlap) */
+&quot;hello world&quot;.jaccard_similarity(&quot;hello world&quot;)          /* Returns: 1.0 (identical) */
+&quot;hello&quot;.jaccard_similarity(&quot;hallo&quot;, &quot;char&quot;, 2)           /* Returns: 0.0 (no 2-gram overlap) */
+&quot;hello&quot;.jaccard_similarity(&quot;hallo&quot;, &quot;char&quot;, 3)           /* Returns: 0.0 (no 3-gram overlap) */
+&quot;the quick brown fox&quot;.jaccard_similarity(&quot;the fast brown dog&quot;)  /* Returns: 0.333 (2/6 words overlap) */
+</code></pre></div></p>
+<p><strong>When to use Jaccard Similarity</strong>:
+- ✅ <strong>Set-based analysis</strong> - When order doesn't matter, only presence/absence
+- ✅ <strong>Document similarity</strong> - Word-based document comparison
+- ✅ <strong>N-gram analysis</strong> - Character-level pattern matching
+- ✅ <strong>Multi-word texts</strong> - Sentences, paragraphs, documents
+- ✅ <strong>Fuzzy matching</strong> - When exact order is less important than content overlap</p>
 <h3 id="algorithm-selection-guide">Algorithm Selection Guide</h3>
 <table>
 <thead>
@@ -6361,28 +6434,43 @@ result = input.grep(r&quot;cafe&quot;, &quot;di&quot;);
 <tbody>
 <tr>
 <td><strong>Spell checking</strong></td>
-<td>Levenshtein</td>
+<td>Levenshtein Distance</td>
 <td>Measures actual edit distance</td>
 </tr>
 <tr>
+<td><strong>Typo detection</strong></td>
+<td>Damerau-Levenshtein Distance</td>
+<td>Handles transpositions (adjacent character swaps)</td>
+</tr>
+<tr>
 <td><strong>Fuzzy search</strong></td>
-<td>Levenshtein</td>
+<td>Levenshtein Distance</td>
 <td>Most intuitive distance metric</td>
 </tr>
 <tr>
 <td><strong>Short codes/IDs</strong></td>
-<td>Levenshtein</td>
+<td>Levenshtein Distance</td>
 <td>Precise edit distance</td>
 </tr>
 <tr>
 <td><strong>Name matching</strong></td>
-<td>Jaro-Winkler</td>
+<td>Jaro-Winkler Similarity</td>
 <td>Optimized for short strings with prefix bonus</td>
 </tr>
 <tr>
 <td><strong>Document similarity</strong></td>
 <td>Cosine Similarity</td>
 <td>Word-based analysis for longer texts</td>
+</tr>
+<tr>
+<td><strong>Set-based similarity</strong></td>
+<td>Jaccard Similarity</td>
+<td>Measures overlap between word/character sets</td>
+</tr>
+<tr>
+<td><strong>N-gram analysis</strong></td>
+<td>Jaccard Similarity</td>
+<td>Character-level pattern matching</td>
 </tr>
 <tr>
 <td><strong>Exact string matching</strong></td>
@@ -6403,13 +6491,19 @@ result = input.grep(r&quot;cafe&quot;, &quot;di&quot;);
 </thead>
 <tbody>
 <tr>
-<td><strong>Levenshtein</strong></td>
+<td><strong>Levenshtein Distance</strong></td>
 <td>O(m×n)</td>
 <td>O(m×n)</td>
 <td>&lt; 100 characters</td>
 </tr>
 <tr>
-<td><strong>Jaro-Winkler</strong></td>
+<td><strong>Damerau-Levenshtein Distance</strong></td>
+<td>O(m×n)</td>
+<td>O(m×n)</td>
+<td>&lt; 100 characters</td>
+</tr>
+<tr>
+<td><strong>Jaro-Winkler Similarity</strong></td>
 <td>O(n²)</td>
 <td>O(n)</td>
 <td>&lt; 20 characters</td>
@@ -6420,32 +6514,45 @@ result = input.grep(r&quot;cafe&quot;, &quot;di&quot;);
 <td>O(n)</td>
 <td>Any length</td>
 </tr>
+<tr>
+<td><strong>Jaccard Similarity</strong></td>
+<td>O(n)</td>
+<td>O(n)</td>
+<td>Any length</td>
+</tr>
 </tbody>
 </table>
 <h3 id="implementation-notes">Implementation Notes</h3>
 <h4 id="current-status-fully-implemented">Current Status ✅ <strong>FULLY IMPLEMENTED</strong></h4>
 <ul>
-<li><strong>Cosine Similarity</strong>: Now supports both word frequency and TF-IDF approaches</li>
+<li><strong>Levenshtein Distance</strong>: ✅ <strong>Complete</strong> - Standard edit distance algorithm</li>
+<li><strong>Damerau-Levenshtein Distance</strong>: ✅ <strong>Complete</strong> - Edit distance with transposition support</li>
+<li><strong>Jaro-Winkler Similarity</strong>: ✅ <strong>Complete</strong> - Optimized for short strings with prefix bonus</li>
+<li><strong>Cosine Similarity</strong>: ✅ <strong>Complete</strong> - Supports both word frequency and TF-IDF approaches</li>
 <li><strong>Auto-selection</strong>: Automatically chooses TF-IDF when corpus is provided, word frequency otherwise</li>
 <li><strong>Manual selection</strong>: Can force specific method using <code>{method: "word_freq"}</code> or <code>{method: "tfidf"}</code></li>
 <li><strong>TF-IDF</strong>: Uses corpus-based IDF calculation with smoothing to avoid log(0)</li>
 <li><strong>PTR Handling</strong>: Properly handles Grapa's internal PTR types for corpus data</li>
+<li><strong>Jaccard Similarity</strong>: ✅ <strong>Complete</strong> - Set-based similarity with n-gram support</li>
+<li><strong>Word-based</strong>: Default mode for document similarity</li>
+<li><strong>Character n-grams</strong>: Configurable n-gram size for character-level analysis</li>
+<li><strong>Parameter handling</strong>: Proper Grapa integer conversion for n-gram size</li>
 <li><strong>Case Sensitivity</strong>: Supports case-insensitive comparison via <code>{case_sensitive: false}</code></li>
 <li><strong>Options Parameter</strong>: Fully implemented with auto-selection logic and robust parsing</li>
 </ul>
 <h4 id="auto-selection-logic">Auto-Selection Logic</h4>
 <div class="highlight"><pre><span></span><code>// No options → word frequency (backward compatible)
-&quot;hello world&quot;.cosinesimilarity(&quot;hello there&quot;)
+&quot;hello world&quot;.cosine_similarity(&quot;hello there&quot;)
 
 // With corpus → automatically uses TF-IDF
-&quot;hello world&quot;.cosinesimilarity(&quot;hello there&quot;, {corpus: my_documents})
+&quot;hello world&quot;.cosine_similarity(&quot;hello there&quot;, {corpus: my_documents})
 
 // Force specific method
-&quot;hello world&quot;.cosinesimilarity(&quot;hello there&quot;, {method: &quot;word_freq&quot;})
-&quot;hello world&quot;.cosinesimilarity(&quot;hello there&quot;, {method: &quot;tfidf&quot;, corpus: my_documents})
+&quot;hello world&quot;.cosine_similarity(&quot;hello there&quot;, {method: &quot;word_freq&quot;})
+&quot;hello world&quot;.cosine_similarity(&quot;hello there&quot;, {method: &quot;tfidf&quot;, corpus: my_documents})
 
 // Case-insensitive comparison
-&quot;Hello World&quot;.cosinesimilarity(&quot;hello world&quot;, {case_sensitive: false})
+&quot;Hello World&quot;.cosine_similarity(&quot;hello world&quot;, {case_sensitive: false})
 </code></pre></div>
 <h4 id="when-to-use-each-implementation">When to Use Each Implementation</h4>
 <ul>
@@ -6462,29 +6569,51 @@ result = input.grep(r&quot;cafe&quot;, &quot;di&quot;);
 <h3 id="options-parameter-future-enhancement">Options Parameter (Future Enhancement)</h3>
 <p>All three functions will support an optional <code>options</code> parameter for advanced configuration:</p>
 <div class="highlight"><pre><span></span><code>/* Case-insensitive comparison (planned) */
-&quot;Hello&quot;.levenshtein(&quot;hello&quot;, {case_sensitive: false})  /* Returns: 0 */
-&quot;Hello&quot;.jarowinkler(&quot;hello&quot;, {case_sensitive: false})  /* Returns: 1.0 */
-&quot;Hello&quot;.cosinesimilarity(&quot;hello&quot;, {case_sensitive: false})  /* Returns: 1.0 */
+&quot;Hello&quot;.levenshtein_distance(&quot;hello&quot;, {case_sensitive: false})  /* Returns: 0 */
+&quot;Hello&quot;.jaro_winkler_similarity(&quot;hello&quot;, {case_sensitive: false})  /* Returns: 1.0 */
+&quot;Hello&quot;.cosine_similarity(&quot;hello&quot;, {case_sensitive: false})  /* Returns: 1.0 */
 </code></pre></div>
 <h3 id="real-world-examples">Real-World Examples</h3>
-<div class="highlight"><pre><span></span><code>/* Spell checking */
+<div class="highlight"><pre><span></span><code>/* Spell checking with Levenshtein Distance */
 words = [&quot;hello&quot;, &quot;world&quot;, &quot;grapa&quot;, &quot;programming&quot;];
 user_input = &quot;helo&quot;;
-closest = words.map(word =&gt; ({word: word, distance: word.levenshtein(user_input)}))
+closest = words.map(word =&gt; ({word: word, distance: word.levenshtein_distance(user_input)}))
                .sort((a, b) =&gt; a.distance - b.distance)[0];
 /* Result: {word: &quot;hello&quot;, distance: 1} */
 
-/* Name matching with Jaro-Winkler */
+/* Typo detection with Damerau-Levenshtein Distance */
+user_input = &quot;hlelo&quot;;  /* Transposed &#39;l&#39; and &#39;e&#39; */
+closest = words.map(word =&gt; ({word: word, distance: word.damerau_levenshtein_distance(user_input)}))
+               .sort((a, b) =&gt; a.distance - b.distance)[0];
+/* Result: {word: &quot;hello&quot;, distance: 1} */
+
+/* Name matching with Jaro-Winkler Similarity */
 names = [&quot;John Smith&quot;, &quot;Jane Doe&quot;, &quot;Bob Johnson&quot;];
 search_name = &quot;Jon Smith&quot;;
-matches = names.map(name =&gt; ({name: name, similarity: name.jarowinkler(search_name)}))
+matches = names.map(name =&gt; ({name: name, similarity: name.jaro_winkler_similarity(search_name)}))
               .filter(match =&gt; match.similarity &gt; 0.8);
 /* Result: [{name: &quot;John Smith&quot;, similarity: 0.961}] */
 
 /* Document similarity with Cosine Similarity */
 documents = [&quot;the quick brown fox&quot;, &quot;a quick brown fox&quot;, &quot;hello world&quot;];
+doc1 = documents[0];
+doc2 = documents[1];
+similarity = doc1.cosine_similarity(doc2);
+/* Result: 0.5 (shared words: &quot;quick&quot;, &quot;brown&quot;, &quot;fox&quot;) */
+
+/* Set-based similarity with Jaccard Similarity */
+text1 = &quot;the quick brown fox&quot;;
+text2 = &quot;the fast brown dog&quot;;
+jaccard_sim = text1.jaccard_similarity(text2);
+/* Result: 0.333 (2 shared words out of 6 total unique words) */
+
+/* Character n-gram analysis */
+str1 = &quot;hello&quot;;
+str2 = &quot;hallo&quot;;
+char_sim = str1.jaccard_similarity(str2, &quot;char&quot;, 2);
+/* Result: 0.0 (no 2-gram overlap) */
 query = &quot;quick brown fox&quot;;
-similar = documents.map(doc =&gt; ({doc: doc, similarity: doc.cosinesimilarity(query)}))
+similar = documents.map(doc =&gt; ({doc: doc, similarity: doc.cosine_similarity(query)}))
                   .filter(match =&gt; match.similarity &gt; 0.7);
 /* Result: [{doc: &quot;the quick brown fox&quot;, similarity: 0.999}, {doc: &quot;a quick brown fox&quot;, similarity: 0.999}] */
 </code></pre></div>
@@ -6590,8 +6719,8 @@ false
 <p>Converts to binary. </p>
 <div class="highlight"><pre><span></span><code>(0xC).bin() -&gt; 1100
 </code></pre></div>
-<h2 id="setconsttruefalse">setconst(truefalse)</h2>
-<p>Sets a bit to lock the variable from being modified. If set as const, the variable will not be locked when accessed. Useful for global variables accessed by multiple threads where if not a const will cause threads to block on access which is not needed if the variable doesn't change.</p>
+<h2 id="setfreezetruefalse">setfreeze(truefalse)</h2>
+<p>Sets a bit to lock the variable from being modified. If set as freeze, the variable will not be locked when accessed. Useful for global variables accessed by multiple threads where if not freeze will cause threads to block on access which is not needed if the variable doesn't change.</p>
 <blockquote>
 <p><strong>Performance &amp; Parallelism:</strong>
 All array/vector transformation methods (e.g., <code>.map()</code>, <code>.filter()</code>, <code>.reduce()</code>) are parallel by default, robust, and production-ready for ETL workloads. Grapa's parallelism is well tested for high-throughput data processing.</p>

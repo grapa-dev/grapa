@@ -1421,9 +1421,9 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#setconstvalue" class="md-nav__link">
+  <a href="#setfreezevalue" class="md-nav__link">
     <span class="md-ellipsis">
-      .setconst(value)
+      .setfreeze(value)
     </span>
   </a>
   
@@ -5389,9 +5389,9 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#setconstvalue" class="md-nav__link">
+  <a href="#setfreezevalue" class="md-nav__link">
     <span class="md-ellipsis">
-      .setconst(value)
+      .setfreeze(value)
     </span>
   </a>
   
@@ -6490,10 +6490,10 @@ float_val.bytes();  /* Returns: 29 (internal storage size) */
 float_val.raw();    /* Returns: 0x00281000A09... (hex) */
 </code></pre></div></p>
 <p><strong>Key Relationship</strong>: For some types, <code>.raw().len() == .bytes()</code> because <code>.raw()</code> returns the internal bytes and <code>.len()</code> on those bytes gives the byte count.</p>
-<h3 id="setconstvalue"><code>.setconst(value)</code></h3>
-<p>Sets the object to a constant value.</p>
-<div class="highlight"><pre><span></span><code>obj.setconst(100);  /* Sets object to constant value 100 */
-obj.setconst(&quot;new value&quot;); /* Sets object to constant string */
+<h3 id="setfreezevalue"><code>.setfreeze(value)</code></h3>
+<p>Sets the freeze state of the object.</p>
+<div class="highlight"><pre><span></span><code>obj.setfreeze(true);  /* Sets object to freeze state */
+obj.setfreeze(false); /* Makes object mutable again */
 </code></pre></div>
 <p><strong>Parameters:</strong>
 - <code>value</code> - The value to set as constant</p>
@@ -6668,9 +6668,9 @@ obj.setconst(&quot;new value&quot;); /* Sets object to constant string */
 <li><strong><code>.upper()</code></strong> - Converts the string to uppercase</li>
 <li><strong><code>.lower()</code></strong> - Converts the string to lowercase  :</li>
 <li><strong><code>.casefold()</code></strong> - Converts the string to Unicode case folded form for case-insensitive comparisons:</li>
-<li><strong><code>.levenshtein()</code></strong> - Calculates Levenshtein distance between strings</li>
-<li><strong><code>.jarowinkler()</code></strong> - Calculates Jaro-Winkler similarity between strings</li>
-<li><strong><code>.cosinesimilarity()</code></strong> - Calculates cosine similarity between strings</li>
+<li><strong><code>.levenshtein_distance()</code></strong> - Calculates Levenshtein distance between strings</li>
+<li><strong><code>.jaro_winkler_similarity()</code></strong> - Calculates Jaro-Winkler similarity between strings</li>
+<li><strong><code>.cosine_similarity()</code></strong> - Calculates cosine similarity between strings</li>
 </ul>
 <blockquote>
 <p><strong>See Also:</strong> <a href="../str/">$STR Documentation</a> for comprehensive string method documentation and examples.</p>

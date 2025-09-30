@@ -5741,10 +5741,10 @@ result = arr.custom_method();
 <p><strong>Read-Only Protection:</strong>
 <div class="highlight"><pre><span></span><code>/* Make a variable read-only to prevent modification */
 my_variable = &quot;important data&quot;;
-$sys().setconst(my_variable, true);
+$sys().setfreeze(my_variable, true);
 
-/* Check if a variable is read-only */
-is_readonly = $sys().const(my_variable);
+/* Check if a variable is freeze (read-only) */
+is_readonly = $sys().freeze(my_variable);
 </code></pre></div></p>
 <p><strong>Future Enhancement:</strong>
 The <code>+=</code> operator will be enhanced to safely add methods to system classes:

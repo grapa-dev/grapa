@@ -111,13 +111,13 @@ X_with_bias = add_bias_column(X_scaled);
 /* Calculate coefficients using normal equation */
 start_time = $TIME().utc();
 XT = X_with_bias.t();
-XT.setconst(true);
+XT.setfreeze(true);
 XTX = XT.dot(X_with_bias);
-XTX.setconst(true);
+XTX.setfreeze(true);
 XTy = XT.dot(y);
-XTy.setconst(true);
+XTy.setfreeze(true);
 coefficients = XTX.inv().dot(XTy);
-coefficients.setconst(true);
+coefficients.setfreeze(true);
 training_time = start_time.ms();
 
 ("Training completed in " + training_time.str() + "ms\n").echo();

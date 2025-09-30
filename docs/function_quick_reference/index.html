@@ -2122,6 +2122,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#string-distance-similarity" class="md-nav__link">
+    <span class="md-ellipsis">
+      String Distance &amp; Similarity
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#arraymatrix" class="md-nav__link">
     <span class="md-ellipsis">
       Array/Matrix
@@ -4548,6 +4557,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#string-distance-similarity" class="md-nav__link">
+    <span class="md-ellipsis">
+      String Distance &amp; Similarity
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#arraymatrix" class="md-nav__link">
     <span class="md-ellipsis">
       Array/Matrix
@@ -4715,7 +4733,7 @@
 <h2 id="core-language">Core Language</h2>
 <p><code>rule</code>, <code>ruleval</code>, <code>ruleref</code>, <code>token</code>, <code>grammar</code>, <code>reset</code>, <code>shell</code>, <code>eval</code>, <code>exec</code>, <code>post</code>, <code>sleep</code>, <code>exit</code>, <code>getenv</code>, <code>putenv</code>, <code>setenv</code>, <code>include</code></p>
 <h2 id="variables-scope">Variables &amp; Scope</h2>
-<p><code>name</code>, <code>getname</code>, <code>lit</code>, <code>ref</code>, <code>setnull</code>, <code>var</code>, <code>assign</code>, <code>assignappend</code>, <code>assignextend</code>, <code>global</code>, <code>parent</code>, <code>this</code>, <code>local</code>, <code>static</code>, <code>const</code>, <code>setconst</code></p>
+<p><code>name</code>, <code>getname</code>, <code>lit</code>, <code>ref</code>, <code>setnull</code>, <code>var</code>, <code>assign</code>, <code>assignappend</code>, <code>assignextend</code>, <code>global</code>, <code>parent</code>, <code>this</code>, <code>local</code>, <code>constexpr</code>, <code>freeze</code>, <code>setfreeze</code></p>
 <h2 id="data-structures">Data Structures</h2>
 <p><code>createarray</code>, <code>createtuple</code>, <code>createlist</code>, <code>createxml</code>, <code>createel</code>, <code>createtag</code>, <code>createop</code>, <code>createcode</code>, <code>createrule</code>, <code>extend</code>, <code>remove</code>, <code>prepend</code>, <code>pop</code>, <code>call</code></p>
 <h2 id="search-analysis">Search &amp; Analysis</h2>
@@ -4748,6 +4766,8 @@
 <p><code>bits</code>, <code>bytes</code>, <code>len</code>, <code>bool</code>, <code>not</code>, <code>int</code>, <code>raw</code>, <code>base</code>, <code>str</code>, <code>list</code>, <code>array</code>, <code>vector</code>, <code>xml</code>, <code>float</code>, <code>fix</code>, <code>time</code>, <code>type</code>, <code>describe</code></p>
 <h2 id="string-operations">String Operations</h2>
 <p><code>left</code>, <code>right</code>, <code>mid</code>, <code>midtrim</code>, <code>rtrim</code>, <code>ltrim</code>, <code>trim</code>, <code>rrot</code>, <code>lrot</code>, <code>rpad</code>, <code>lpad</code>, <code>reverse</code>, <code>replace</code>, <code>grep</code>, <code>split</code>, <code>join</code>, <code>lower</code>, <code>upper</code></p>
+<h2 id="string-distance-similarity">String Distance &amp; Similarity</h2>
+<p><code>levenshtein_distance</code>, <code>damerau_levenshtein_distance</code>, <code>jaro_winkler_similarity</code>, <code>cosine_similarity</code>, <code>jaccard_similarity</code></p>
 <h2 id="arraymatrix">Array/Matrix</h2>
 <p><code>shape</code>, <code>reshape</code>, <code>dot</code>, <code>identity</code>, <code>diagonal</code>, <code>triu</code>, <code>tril</code>, <code>eigh</code>, <code>sum</code>, <code>mean</code></p>
 <h2 id="comparison">Comparison</h2>
@@ -4755,7 +4775,7 @@
 <h2 id="time">Time</h2>
 <p><code>utc</code>, <code>tz</code></p>
 <h2 id="system">System</h2>
-<p><code>getenv</code>, <code>putenv</code>, <code>setenv</code>, <code>const</code>, <code>setconst</code>, <code>compile</code>, <code>compilef</code>, <code>eval</code>, <code>sleep</code></p>
+<p><code>getenv</code>, <code>putenv</code>, <code>setenv</code>, <code>freeze</code>, <code>setfreeze</code>, <code>compile</code>, <code>compilef</code>, <code>eval</code>, <code>sleep</code></p>
 <p><strong>Command Line Arguments</strong>: <code>$ARGV</code> (positional args), <code>$CLIARGV</code> (full command line)</p>
 <h2 id="file-system">File System</h2>
 <p><strong>Navigation</strong>: <code>file_pwd</code> (working dir), <code>file_cd</code> (change working dir), <code>file_phd</code> (home dir), <code>file_chd</code> (change home dir)
