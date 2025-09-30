@@ -72,8 +72,8 @@ $global["$OBJ"] = class {
     echo = @<echo,{@<this>}>;
     debug = @<[op,@<"debug",{@<this>,@<var,{level}>,@<var,{component}>}>],{"level":null,"component":"debug"}>;
  	string = @<string,{@<this>}>;
- 	const = @<const,{@<this>}>;
-	setconst = @<[op,@<setconst,{@<this>,@<var,{value}>}>],{value}>;
+ 	freeze = @<freeze,{@<this>}>;
+	setfreeze = @<[op,@<setfreeze,{@<this>,@<var,{value}>}>],{value}>;
 	json = op(){$local."$comp"=rule <$function>;$this.encode("JSON");};
 	xml = op(){$local."$comp"=rule <$function>;$this.encode("XML");};
 	html = op(){$local."$comp"=rule <$function>;$this.encode("HTML");};

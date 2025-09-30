@@ -502,8 +502,8 @@ $global["$function"]
 	| '-' <$function> {@<neg,{$2}>}
 	| '~' <$function> {@<inv,{$2}>}
 	| '!' <$function> {@<not,{$2}>}
-	| static <$comp> {@<static,{$2}>}
-	| const <$comp> {@<const,{$2}>}
+	| constexpr <$comp> {@<constexpr,{$2}>}
+	| freeze <$comp> {@<freeze,{$2}>}
 	| <$custom_function>
 	| <$litname> '(' ')' {@<call,{$1}>}
 	| <$litname> '(' <$list> ')' {@<call,{$1,$3}>}

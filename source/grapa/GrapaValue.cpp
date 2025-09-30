@@ -1587,7 +1587,7 @@ void GrapaQueue::Push(GrapaEvent* pEvent, GrapaEvent* pLoc)
 
 GrapaEvent* GrapaQueue::PopHead(u64 mSkip)
 {
-	if (mConst) return(NULL);
+	if (mFreeze) return(NULL);
 	WaitCritical();
 	GrapaEvent* e = mHead;
 	while (mSkip--&&e) 
@@ -1611,7 +1611,7 @@ GrapaEvent* GrapaQueue::PopHead(u64 mSkip)
 
 GrapaEvent* GrapaQueue::PopTail(u64 mSkip)
 {
-	if (mConst) return(NULL);
+	if (mFreeze) return(NULL);
 	WaitCritical();
 	GrapaEvent* e = mTail;
 	while (mSkip--&&e) 
@@ -1635,7 +1635,7 @@ GrapaEvent* GrapaQueue::PopTail(u64 mSkip)
 
 GrapaEvent* GrapaQueue::PopEvent(GrapaEvent* pEvent)
 {
-	if (mConst) return(NULL);
+	if (mFreeze) return(NULL);
 	WaitCritical();
 	GrapaEvent *e = mHead;
 	while (e && e != pEvent) 
@@ -1697,7 +1697,7 @@ bool GrapaQueue::HasEvent(GrapaEvent* pEvent)
 
 void GrapaQueue::ReplaceEvent(GrapaEvent* pLoc, GrapaEvent* pEvent)
 {
-	if (mConst) return;
+	if (mFreeze) return;
 	WaitCritical();
 	GrapaEvent* prev = pLoc->Prev();
 	GrapaEvent* next = pLoc->Next();

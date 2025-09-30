@@ -5096,15 +5096,15 @@ GrapaLibraryParam::~GrapaLibraryParam()
 //	return(err);
 //}
 
-GrapaRuleEvent* GrapaScriptExec::CopyItem(GrapaRuleEvent* pAction, bool isTAG, bool isConst)
+GrapaRuleEvent* GrapaScriptExec::CopyItem(GrapaRuleEvent* pAction, bool isTAG, bool isFreeze)
 {
 	if (pAction == NULL) return(NULL);
 	GrapaRuleEvent* p = pAction;
 	while (p->mValue.mToken == GrapaTokenType::PTR && p->vRulePointer) p = p->vRulePointer;
 	GrapaRuleEvent* result = new GrapaRuleEvent(pAction->mId, pAction->mName, p->mValue);
-	if (p->vQueue) result->vQueue = CopyQueue((GrapaRuleQueue*)p->vQueue, isTAG, isConst);
-	if (p->vRuleLambda) result->vRuleLambda = CopyItem(p->vRuleLambda,false, isConst);
-	if (p->vValueEvent) result->vValueEvent = CopyItem(p->vValueEvent, false, isConst);
+	if (p->vQueue) result->vQueue = CopyQueue((GrapaRuleQueue*)p->vQueue, isTAG, isFreeze);
+	if (p->vRuleLambda) result->vRuleLambda = CopyItem(p->vRuleLambda,false, isFreeze);
+	if (p->vValueEvent) result->vValueEvent = CopyItem(p->vValueEvent, false, isFreeze);
 	result->vRulePointer = p->vRulePointer;
 	result->vRuleParent = p->vRuleParent;
 	result->vClass = p->vClass;
@@ -5118,7 +5118,7 @@ GrapaRuleEvent* GrapaScriptExec::CopyItem(GrapaRuleEvent* pAction, bool isTAG, b
 	result->mExit = p->mExit;
 	result->mNull = p->mNull;
 	result->mQuote = p->mQuote;
-	result->mConst = isConst;
+	result->mFreeze = p->mFreeze || isFreeze;
 	result->mCopied = true;
 	if (isTAG)
 	{
@@ -5135,7 +5135,7 @@ GrapaRuleEvent* GrapaScriptExec::CopyItem(GrapaRuleEvent* pAction, bool isTAG, b
 		result->vDatabase = new GrapaLocalDatabase(p->vDatabase->vScriptState);
 		result->vDatabase->mHomeDir.FROM(p->vDatabase->mHomeDir);
 		result->vDatabase->vScriptState = p->vDatabase->vScriptState;
-		if (p->vDatabase->mInclude) result->vDatabase->mInclude = CopyQueue((GrapaRuleQueue*)p->vDatabase->mInclude,false,isConst);
+		if (p->vDatabase->mInclude) result->vDatabase->mInclude = CopyQueue((GrapaRuleQueue*)p->vDatabase->mInclude,false,isFreeze);
 		result->vDatabase->mLocation.FROM(p->vDatabase->mLocation);
 		
 		if (p->vDatabase->mVar)
@@ -5197,14 +5197,14 @@ GrapaRuleEvent* GrapaScriptExec::CopyItem(GrapaRuleEvent* pAction, bool isTAG, b
 	return(result);
 }
 
-GrapaRuleQueue* GrapaScriptExec::CopyQueue(GrapaRuleQueue* pList, bool isTAG, bool isConst)
+GrapaRuleQueue* GrapaScriptExec::CopyQueue(GrapaRuleQueue* pList, bool isTAG, bool isFreeze)
 {
 	if (pList == NULL) return(NULL);
 	GrapaRuleQueue* result = new GrapaRuleQueue();
 	GrapaRuleEvent* item = pList->Head();
 	while (item)
 	{
-		GrapaRuleEvent* ev = CopyItem(item, isTAG, isConst);
+		GrapaRuleEvent* ev = CopyItem(item, isTAG, isFreeze);
 		if (isTAG)
 		{
 			if (ev->mValue.mToken == GrapaTokenType::TAG)
@@ -5217,7 +5217,7 @@ GrapaRuleQueue* GrapaScriptExec::CopyQueue(GrapaRuleQueue* pList, bool isTAG, bo
 		result->PushTail(ev);
 		item = item->Next();
 	}
-	result->mConst = isConst;
+	result->mFreeze = result->mFreeze || isFreeze;
 	return(result);
 }
 
@@ -5319,7 +5319,7 @@ void GrapaScriptExec::AssignValue(GrapaNames* pNameSpace, GrapaRuleEvent* parame
 		parameter->mEscape = r->mEscape;
 		parameter->mExit = r->mExit;
 		parameter->mNull = r->mNull;
-		parameter->mConst = r->mConst;
+		parameter->mFreeze = r->mFreeze;
 		if (r->mValue.mToken != GrapaTokenType::ERR && r->vRulePointer)
 		{
 			GrapaRuleEvent* ev = r->vRulePointer;
@@ -5381,7 +5381,7 @@ void GrapaScriptExec::AssignValue(GrapaNames* pNameSpace, GrapaRuleEvent* parame
 			{
 				if (true || rDel == NULL || r->mValue.mToken == GrapaTokenType::PTR)
 				{
-					parameter->vQueue = CopyQueue((GrapaRuleQueue*)r->vQueue, false, r->mConst);
+					parameter->vQueue = CopyQueue((GrapaRuleQueue*)r->vQueue, false, r->mFreeze);
 				}
 				else
 				{
@@ -5393,7 +5393,7 @@ void GrapaScriptExec::AssignValue(GrapaNames* pNameSpace, GrapaRuleEvent* parame
 			{
 				if (true || rDel == NULL || r->mValue.mToken == GrapaTokenType::PTR)
 				{
-					parameter->vRuleLambda = CopyItem((GrapaRuleEvent*)r->vRuleLambda, false, r->mConst);
+					parameter->vRuleLambda = CopyItem((GrapaRuleEvent*)r->vRuleLambda, false, r->mFreeze);
 				}
 				else
 				{
@@ -5405,7 +5405,7 @@ void GrapaScriptExec::AssignValue(GrapaNames* pNameSpace, GrapaRuleEvent* parame
 			{
 				if (true || rDel == NULL || r->mValue.mToken == GrapaTokenType::PTR)
 				{
-					parameter->vValueEvent = CopyItem((GrapaRuleEvent*)r->vValueEvent, false, r->mConst);
+					parameter->vValueEvent = CopyItem((GrapaRuleEvent*)r->vValueEvent, false, r->mFreeze);
 				}
 				else
 				{
@@ -5421,7 +5421,7 @@ void GrapaScriptExec::AssignValue(GrapaNames* pNameSpace, GrapaRuleEvent* parame
 					parameter->vDatabase->mHomeDir.FROM(r->vDatabase->mHomeDir);
 					//if (r->vDatabase->mDirectoryPath) parameter->vDatabase->mDirectoryPath = vScriptExec->CopyQueue(r->vDatabase->mDirectoryPath);
 					//if (r->vDatabase->mDatabasePath) parameter->vDatabase->mDatabasePath = vScriptExec->CopyQueue(r->vDatabase->mDatabasePath);
-					if (r->vDatabase->mInclude) parameter->vDatabase->mInclude = CopyQueue(r->vDatabase->mInclude, false, r->mConst);
+					if (r->vDatabase->mInclude) parameter->vDatabase->mInclude = CopyQueue(r->vDatabase->mInclude, false, r->mFreeze);
 					parameter->vDatabase->mLocation.FROM(r->vDatabase->mLocation);
 					//parameter->vDatabase->mVar = r->vDatabase->mVar;
 					//parameter->vDatabase->mDirId = r->vDatabase->mDirId;

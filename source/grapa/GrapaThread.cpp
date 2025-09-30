@@ -132,7 +132,7 @@ GrapaCritical::GrapaCritical()
 #endif
 	mWaitCount = 0;
 	mWaiting = false;
-	mConst = false;
+	mFreeze = false;
 }
 
 GrapaCritical::~GrapaCritical()
@@ -159,7 +159,7 @@ GrapaCritical::~GrapaCritical()
 
 bool GrapaCritical::TryCritical()
 {
-	if (mConst) return(true);
+	if (mFreeze) return(true);
 #if defined(__MINGW32__) || defined(__GNUC__)
 	if (!pthread_mutex_trylock(&((GrapaCriticalPrivate*)vInstanceC)->mCritical)) return(true);
 	//if (!pthread_spin_trylock(&mCritical)) return(true);
@@ -173,7 +173,7 @@ bool GrapaCritical::TryCritical()
 
 void GrapaCritical::WaitCritical()
 {
-	if (mConst) return;
+	if (mFreeze) return;
 #if defined(__MINGW32__) || defined(__GNUC__)
 	pthread_mutex_lock(&((GrapaCriticalPrivate*)vInstanceC)->mCritical);
 	//pthread_spin_lock(&mCritical);
@@ -187,7 +187,7 @@ void GrapaCritical::WaitCritical()
 
 void GrapaCritical::LeaveCritical()
 {
-	if (mConst) return;
+	if (mFreeze) return;
 #if defined(__MINGW32__) || defined(__GNUC__)
 	pthread_mutex_unlock(&((GrapaCriticalPrivate*)vInstanceC)->mCritical);
 	//pthread_spin_unlock(&mCritical);
@@ -200,7 +200,7 @@ void GrapaCritical::LeaveCritical()
 
 void GrapaCritical::WaitCondition(bool noAdd)
 {
-	if (mConst) return;
+	if (mFreeze) return;
 	if (mWaiting || (noAdd && mWaitCount == 0))
 	{
 		mWaiting = false;
@@ -239,7 +239,7 @@ void GrapaCritical::WaitCondition(bool noAdd)
 
 void GrapaCritical::SendCondition(bool force)
 {
-	if (mConst) return;
+	if (mFreeze) return;
 	if (force)
 	{
 #if defined(__MINGW32__) || defined(__GNUC__)

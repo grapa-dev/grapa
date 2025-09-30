@@ -1030,29 +1030,29 @@ GrapaLibraryRuleOpLocalEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 };
 GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleOpLocal(GrapaCHAR& pName) { return new GrapaLibraryRuleOpLocalEvent(pName); }
 
-class GrapaLibraryRuleStaticEvent : public GrapaLibraryEvent
+class GrapaLibraryRuleConstExprEvent : public GrapaLibraryEvent
 {
 public:
-	GrapaLibraryRuleStaticEvent(GrapaCHAR& pName) { mName.FROM(pName); };
+	GrapaLibraryRuleConstExprEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Optimize(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleEvent* pParam);
 };
-GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleStatic(GrapaCHAR& pName) { return new GrapaLibraryRuleStaticEvent(pName); }
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleConstExpr(GrapaCHAR& pName) { return new GrapaLibraryRuleConstExprEvent(pName); }
 
-class GrapaLibraryRuleConstEvent : public GrapaLibraryEvent
+class GrapaLibraryRuleFreezeEvent : public GrapaLibraryEvent
 {
 public:
-	GrapaLibraryRuleConstEvent(GrapaCHAR& pName) { mName.FROM(pName); };
+	GrapaLibraryRuleFreezeEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
-GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleConst(GrapaCHAR& pName) { return new GrapaLibraryRuleConstEvent(pName); }
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleFreeze(GrapaCHAR& pName) { return new GrapaLibraryRuleFreezeEvent(pName); }
 
-class GrapaLibraryRuleSetConstEvent : public GrapaLibraryEvent
+class GrapaLibraryRuleSetFreezeEvent : public GrapaLibraryEvent
 {
 public:
-	GrapaLibraryRuleSetConstEvent(GrapaCHAR& pName) { mName.FROM(pName); };
+	GrapaLibraryRuleSetFreezeEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
-GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleSetConst(GrapaCHAR& pName) { return new GrapaLibraryRuleSetConstEvent(pName); }
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleSetFreeze(GrapaCHAR& pName) { return new GrapaLibraryRuleSetFreezeEvent(pName); }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -3207,9 +3207,9 @@ GrapaLibraryEvent* GrapaLibraryRuleEvent::LoadLib(GrapaScriptExec *vScriptExec, 
 			{ "this", &GrapaLibraryRuleEvent::HandleThis },
 			{ "local", &GrapaLibraryRuleEvent::HandleLocal },
 			{ "oplocal", &GrapaLibraryRuleEvent::HandleOpLocal },
-			{ "static", &GrapaLibraryRuleEvent::HandleStatic },
-			{ "const", &GrapaLibraryRuleEvent::HandleConst },
-			{ "setconst", &GrapaLibraryRuleEvent::HandleSetConst },
+			{ "constexpr", &GrapaLibraryRuleEvent::HandleConstExpr },
+			{ "freeze", &GrapaLibraryRuleEvent::HandleFreeze },
+			{ "setfreeze", &GrapaLibraryRuleEvent::HandleSetFreeze },
 			{ "return", &GrapaLibraryRuleEvent::HandleReturn },
 			{ "break", &GrapaLibraryRuleEvent::HandleBreak },
 			{ "continue", &GrapaLibraryRuleEvent::HandleContinue },
@@ -5445,7 +5445,7 @@ static GrapaRuleEvent* ItemAssignRun(GrapaScriptExec *vScriptExec, GrapaNames* p
 		{
 			//if (!ItemAssignCheck(parameter, r))
 			//	; // issue need to address when assigning something to itself, like a=@a or a={@a}
-			if (!parameter->mConst)
+			if (!parameter->mFreeze)
 			{
 				//if (parameter->mValue.mToken == GrapaTokenType::TAG)
 				//{
@@ -5478,7 +5478,7 @@ static GrapaRuleEvent* ItemAssignRun(GrapaScriptExec *vScriptExec, GrapaNames* p
 			{
 				result = r;
 			}
-			else if (parameter && !parameter->mConst)
+			else if (parameter && !parameter->mFreeze)
 			{
 				if (GrapaMem::StrCmp((char*)pName.mBytes, pName.mLength, "assignappend") == 0 || GrapaMem::StrCmp((char*)pName.mBytes, pName.mLength, "assignextend") == 0 || GrapaMem::StrCmp((char*)pName.mBytes, pName.mLength, "assignmul") == 0 || GrapaMem::StrCmp((char*)pName.mBytes, pName.mLength, "assigndiv") == 0 || GrapaMem::StrCmp((char*)pName.mBytes, pName.mLength, "assignmod") == 0 || GrapaMem::StrCmp((char*)pName.mBytes, pName.mLength, "assignpow") == 0)
 				{
@@ -9440,7 +9440,7 @@ GrapaRuleEvent* GrapaLibraryRuleOpLocalEvent::Run(GrapaScriptExec* vScriptExec, 
 	return(result);
 }
 
-GrapaRuleEvent* GrapaLibraryRuleStaticEvent::Optimize(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleEvent* pParam)
+GrapaRuleEvent* GrapaLibraryRuleConstExprEvent::Optimize(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleEvent* pParam)
 {
 	if (pParam && pParam->vQueue && pParam->vQueue->mCount == 1)
 	{
@@ -9450,22 +9450,27 @@ GrapaRuleEvent* GrapaLibraryRuleStaticEvent::Optimize(GrapaScriptExec* vScriptEx
 			GrapaRuleEvent* rx1 = vScriptExec->ProcessPlan(pNameSpace, p1);
 			pOperation->CLEAR();
 			delete pOperation;
-			pOperation = rx1;
+			pOperation = vScriptExec->CopyItem(rx1, false, true);  // freeze
+			if (rx1)
+			{
+				rx1->CLEAR();
+				delete rx1;
+			}
 		}
 	}
 	return(pOperation);
 }
 
-GrapaRuleEvent* GrapaLibraryRuleConstEvent::Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput)
+GrapaRuleEvent* GrapaLibraryRuleFreezeEvent::Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput)
 {
 	GrapaRuleEvent* result = NULL;
 	GrapaLibraryParam r1(vScriptExec, pNameSpace, pInput ? pInput->Head(0) : NULL);
 	if (r1.vVal)
-		result = vScriptExec->CopyItem(r1.vVal,false,true);
+		result = vScriptExec->CopyItem(r1.vVal, false, true); // freeze
 	return(result);
 }
 
-GrapaRuleEvent* GrapaLibraryRuleSetConstEvent::Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput)
+GrapaRuleEvent* GrapaLibraryRuleSetFreezeEvent::Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput)
 {
 	GrapaRuleEvent* result = NULL;
 	GrapaLibraryParam r1(vScriptExec, pNameSpace, pInput ? pInput->Head(0) : NULL);
@@ -9473,11 +9478,11 @@ GrapaRuleEvent* GrapaLibraryRuleSetConstEvent::Run(GrapaScriptExec* vScriptExec,
 	if (r1.vVal)
 	{
 		if (r2.vVal && r2.vVal->mValue.mToken==GrapaTokenType::BOOL && r2.vVal->mValue.mBytes && r2.vVal->mValue.mLength && r2.vVal->mValue.mBytes[0] && r2.vVal->mValue.mBytes[0] != '0')
-			r1.vVal->mConst = true;
+			r1.vVal->mFreeze = true;
 		else
-			r1.vVal->mConst = false;
+			r1.vVal->mFreeze = false;
 		if (r1.vVal->vQueue)
-			r1.vVal->vQueue->mConst = r1.vVal->mConst;
+			r1.vVal->vQueue->mFreeze = r1.vVal->mFreeze;
 	}
 	return(result);
 }
