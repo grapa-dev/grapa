@@ -10,7 +10,8 @@ This comprehensive guide covers all the different ways to use the `$MODEL` data 
 4. [Multiple Model Instances](#multiple-model-instances)
 5. [Performance Optimization](#performance-optimization)
 6. [Real-world Use Cases](#real-world-use-cases)
-7. [Best Practices](#best-practices)
+7. [Consistent Metadata Structure](#consistent-metadata-structure)
+8. [Best Practices](#best-practices)
 
 ## Basic Usage Patterns
 
@@ -26,7 +27,19 @@ result = model.load("models/qwen2.5-7b-instruct-q3_k_m.gguf");
 if (result.type() != $ERR) {
     /* Generate text */
     response = model.gen("Hello, how are you?");
-    ("Response: " + response.str() + "\n").echo();
+    
+    /* Response is a $GOBJ with 'text' and 'metadata' fields */
+    ("Response type: " + response.type().str() + "\n").echo();
+    ("Response keys: " + response.keys().str() + "\n").echo();
+    
+    /* Access the generated text */
+    text = response."text";
+    ("Generated text: " + text.str() + "\n").echo();
+    
+    /* Access metadata */
+    metadata = response."metadata";
+    ("Model path: " + metadata."model_path".str() + "\n").echo();
+    ("Total tokens: " + metadata."total_tokens".str() + "\n").echo();
     
     /* Clean up */
     model.load();
@@ -215,7 +228,14 @@ if (!load_context(model, "conversation_context.txt")) {
 
 /* Have a conversation */
 response = model.gen("Hello, I'd like to learn about machine learning.");
-("Response: " + response.str() + "\n").echo();
+
+/* Access the generated text and metadata */
+text = response."text";
+metadata = response."metadata";
+
+("Response: " + text.str() + "\n").echo();
+("Model: " + metadata."model_path".str() + "\n").echo();
+("Tokens used: " + metadata."total_tokens".str() + "\n").echo();
 
 /* Save context for next session */
 save_context(model, "conversation_context.txt");
@@ -558,6 +578,75 @@ $file(context_file).set(current_context."text".str());
 assistant.load();
 ```
 
+## Consistent Metadata Structure
+
+All model types now return structured results with consistent metadata fields:
+
+### Llama Models
+
+```grapa
+/* Llama models return $GOBJ with 'text' and 'metadata' */
+result = model.gen("Your prompt here");
+text = result."text";                    /* Generated text */
+metadata = result."metadata";            /* Processing metadata */
+
+/* Available metadata fields */
+("Model path: " + metadata."model_path".str() + "\n").echo();
+("Prompt tokens: " + metadata."prompt_tokens".str() + "\n").echo();
+("Completion tokens: " + metadata."completion_tokens".str() + "\n").echo();
+("Total tokens: " + metadata."total_tokens".str() + "\n").echo();
+("Temperature: " + metadata."temperature".str() + "\n").echo();
+("Max tokens: " + metadata."max_tokens".str() + "\n").echo();
+("Context length: " + metadata."context_length".str() + "\n").echo();
+```
+
+### ONNX Embedding Models
+
+```grapa
+/* ONNX embedding models return $GOBJ with 'embedding' and 'metadata' */
+result = model.gen("Your text here");
+embedding = result."embedding";          /* Embedding vector */
+metadata = result."metadata";            /* Processing metadata */
+
+/* Available metadata fields */
+("Model path: " + metadata."model_path".str() + "\n").echo();
+("Token count: " + metadata."token_count".str() + "\n").echo();
+("Embedding dimensions: " + metadata."embedding_dimensions".str() + "\n").echo();
+("Max length: " + metadata."max_length".str() + "\n").echo();
+("Pooling method: " + metadata."pooling_method".str() + "\n").echo();
+("Output format: " + metadata."output_format".str() + "\n").echo();
+("Normalize: " + metadata."normalize".str() + "\n").echo();
+```
+
+### OpenAI Models
+
+```grapa
+/* OpenAI models return the full JSON response */
+result = model.gen("Your prompt here");
+/* Access the parsed JSON structure */
+response_data = op()(result.str())();
+text = response_data."output"[0]."content"[0]."text";
+usage = response_data."usage";
+model_name = response_data."model";
+```
+
+### Model Information
+
+```grapa
+/* Get model information for any loaded model */
+info = model.info();
+("Loaded: " + info."loaded".str() + "\n").echo();
+("Method: " + info."method".str() + "\n").echo();
+("Model path: " + info."model_path".str() + "\n").echo();
+
+/* Llama-specific information */
+if (info."method".str() == "llama") {
+    ("Model size: " + info."model_size_bytes".str() + " bytes\n").echo();
+    ("Parameters: " + info."n_params".str() + "\n").echo();
+    ("Description: " + info."model_description".str() + "\n").echo();
+}
+```
+
 ## Best Practices
 
 ### 1. Always Check Load Results
@@ -569,7 +658,14 @@ result = model.load("models/qwen2.5-7b-instruct-q3_k_m.gguf");
 if (result.type() != $ERR) {
     /* Model loaded successfully */
     response = model.gen("Hello");
-    ("Response: " + response.str() + "\n").echo();
+    
+    /* Access structured response */
+    text = response."text";
+    metadata = response."metadata";
+    
+    ("Response: " + text.str() + "\n").echo();
+    ("Model: " + metadata."model_path".str() + "\n").echo();
+    ("Context length: " + metadata."context_length".str() + "\n").echo();
 } else {
     ("Error loading model: " + result.str() + "\n").echo();
     return;
@@ -713,6 +809,352 @@ personal_result = personal_response.interpolate();
 - **Flexible**: Interpolate when/where you want
 - **Safe**: Programmer controls evaluation
 - **Powerful**: Full Grapa capabilities in responses
+
+## ONNX Embedding Models
+
+Grapa supports ONNX-based embedding models through the `onnx-embedding` method. This provides a flexible, generic interface for any ONNX embedding model with configurable parameters and support for both 1D and 2D vector outputs.
+
+### Basic ONNX Embedding Usage
+
+```grapa
+/* Load an ONNX embedding model */
+model = $MODEL();
+model.load('models/all-MiniLM-L6-v2-onnx/model.onnx', 'onnx-embedding');
+
+/* Generate embedding with default parameters */
+result = model.gen('The quick brown fox jumps over the lazy dog');
+
+/* Result is a $GOBJ with 'embedding' and 'metadata' fields */
+("Result type: " + result.type().str() + "\n").echo();
+("Result keys: " + result.keys().str() + "\n").echo();
+
+/* Access the embedding vector */
+embedding = result."embedding";
+("Embedding type: " + embedding.type().str() + "\n").echo();
+("Embedding length: " + embedding.len().str() + "\n").echo();
+("First 5 values: " + embedding[0:5].str() + "\n").echo();
+
+/* Access metadata */
+metadata = result."metadata";
+("Token count: " + metadata."token_count".str() + "\n").echo();
+("Model path: " + metadata."model_path".str() + "\n").echo();
+
+model.load();
+```
+
+### Advanced ONNX Embedding Parameters
+
+The ONNX embedding method supports extensive parameter configuration:
+
+```grapa
+/* Configure embedding parameters */
+model = $MODEL();
+model.load('models/all-MiniLM-L6-v2-onnx/model.onnx', 'onnx-embedding');
+
+/* Advanced parameter configuration */
+params = {
+    'max_length': 256,           /* Maximum sequence length (default: 512) */
+    'tokenizer_type': 'word',    /* Tokenizer type: 'word', 'bert', 'custom' */
+    'pooling_method': 'mean',     /* Pooling: 'mean', 'cls', 'max', 'last' */
+    'output_format': '1d',        /* Output format: '1d', '2d', 'auto' */
+    'normalize': 1,               /* Normalize embedding (0 or 1) */
+    'input_names': ['input_ids', 'attention_mask'],  /* Custom input names */
+    'output_names': ['last_hidden_state', 'pooler_output']  /* Custom output names */
+};
+
+result = model.gen('Your text here', params);
+("Embedding generated with custom parameters\n").echo();
+
+/* Access the structured result */
+embedding = result."embedding";
+metadata = result."metadata";
+
+("Embedding dimensions: " + metadata."embedding_dimensions".str() + "\n").echo();
+("Pooling method: " + metadata."pooling_method".str() + "\n").echo();
+("Output format: " + metadata."output_format".str() + "\n").echo();
+("Model path: " + metadata."model_path".str() + "\n").echo();
+
+model.load();
+```
+
+### Custom Vocabulary Support
+
+ONNX embedding models automatically load custom vocabulary files when available. The system looks for `vocab.txt` in the same directory as the model file:
+
+```grapa
+/* Model with custom vocabulary */
+model = $MODEL();
+/* This will automatically load models/my-domain-model/vocab.txt if it exists */
+model.load('models/my-domain-model/model.onnx', 'onnx-embedding');
+
+/* The system supports multiple vocabulary formats */
+/* Standard BERT tokens: [PAD], [UNK], [CLS], [SEP] */
+/* Alternative formats: <PAD>, <UNK>, <CLS>, <SEP> */
+/* Custom domain tokens: [MEDICAL], [LEGAL], [TECHNICAL] */
+
+result = model.gen('Domain-specific text with specialized terminology');
+("Embedding with custom vocabulary: " + result."embedding".len().str() + " dimensions\n").echo();
+("Model path: " + result."metadata"."model_path".str() + "\n").echo();
+
+model.load();
+```
+
+### Vocabulary File Organization
+
+You can organize multiple models with different vocabularies:
+
+```grapa
+/* Medical domain model */
+medical_model = $MODEL();
+medical_model.load('models/medical/model.onnx', 'onnx-embedding');
+/* Uses models/medical/vocab.txt with medical terminology */
+
+/* Legal domain model */
+legal_model = $MODEL();
+legal_model.load('models/legal/model.onnx', 'onnx-embedding');
+/* Uses models/legal/vocab.txt with legal terminology */
+
+/* Multilingual model */
+multilingual_model = $MODEL();
+multilingual_model.load('models/multilingual/model.onnx', 'onnx-embedding');
+/* Uses models/multilingual/vocab.txt with multiple languages */
+
+/* Generate embeddings for each domain */
+medical_text = "Patient presents with acute symptoms";
+legal_text = "The contract stipulates the following terms";
+multilingual_text = "Hello world / Hola mundo / Bonjour le monde";
+
+medical_result = medical_model.gen(medical_text);
+legal_result = legal_model.gen(legal_text);
+multilingual_result = multilingual_model.gen(multilingual_text);
+
+("Medical embedding: " + medical_result."embedding".len().str() + " dimensions\n").echo();
+("Legal embedding: " + legal_result."embedding".len().str() + " dimensions\n").echo();
+("Multilingual embedding: " + multilingual_result."embedding".len().str() + " dimensions\n").echo();
+
+/* Show model paths from metadata */
+("Medical model: " + medical_result."metadata"."model_path".str() + "\n").echo();
+("Legal model: " + legal_result."metadata"."model_path".str() + "\n").echo();
+("Multilingual model: " + multilingual_result."metadata"."model_path".str() + "\n").echo();
+
+/* Clean up */
+medical_model.load();
+legal_model.load();
+multilingual_model.load();
+```
+
+### Vocabulary File Format
+
+Vocabulary files should be plain text with one token per line:
+
+```
+[PAD]
+[UNK]
+[CLS]
+[SEP]
+the
+a
+an
+and
+or
+but
+...
+```
+
+**Best Practices for Vocabulary Files:**
+
+1. **Special Tokens First**: Place special tokens (`[PAD]`, `[UNK]`, `[CLS]`, `[SEP]`) at the beginning
+2. **Consistent Format**: Use consistent token formats throughout your vocabulary
+3. **Domain-Specific Terms**: Add domain-specific terminology for specialized models
+4. **Size Considerations**: Balance vocabulary size with model performance (typically 30K-100K tokens)
+5. **Encoding**: Use UTF-8 encoding for international characters
+
+**Example Domain-Specific Vocabulary:**
+
+```grapa
+/* Medical model with specialized vocabulary */
+medical_model = $MODEL();
+medical_model.load('models/medical/model.onnx', 'onnx-embedding');
+
+/* The vocab.txt file might contain: */
+/* [PAD] */
+/* [UNK] */
+/* [CLS] */
+/* [SEP] */
+/* patient */
+/* diagnosis */
+/* treatment */
+/* symptoms */
+/* medication */
+/* ... */
+
+result = medical_model.gen('Patient shows signs of acute myocardial infarction');
+("Medical embedding generated with domain-specific vocabulary\n").echo();
+
+medical_model.load();
+```
+
+### 1D vs 2D Vector Outputs
+
+ONNX embeddings can return either 1D (flat) or 2D (chunked) vectors:
+
+```grapa
+/* 1D Vector Output (default) */
+model = $MODEL();
+model.load('models/all-MiniLM-L6-v2-onnx/model.onnx', 'onnx-embedding');
+
+params_1d = {
+    'output_format': '1d',
+    'normalize': 1
+};
+
+result_1d = model.gen('Test text', params_1d);
+("1D embedding length: " + result_1d.len().str() + "\n").echo();
+("Is 1D: " + (result_1d[0].type() == $FLOAT).str() + "\n").echo();
+
+/* 2D Vector Output (chunked) */
+params_2d = {
+    'output_format': '2d',
+    'normalize': 1
+};
+
+result_2d = model.gen('Test text', params_2d);
+("2D embedding chunks: " + result_2d.len().str() + "\n").echo();
+("Is 2D: " + (result_2d[0].type() == $LIST).str() + "\n").echo();
+("First chunk length: " + result_2d[0].len().str() + "\n").echo();
+
+model.load();
+```
+
+### Pooling Methods
+
+Different pooling methods are available for sequence-based models:
+
+```grapa
+/* Mean Pooling (default) */
+model = $MODEL();
+model.load('models/all-MiniLM-L6-v2-onnx/model.onnx', 'onnx-embedding');
+
+params_mean = {
+    'pooling_method': 'mean',
+    'output_format': '1d'
+};
+result_mean = model.gen('Text for mean pooling', params_mean);
+
+/* CLS Token Pooling */
+params_cls = {
+    'pooling_method': 'cls',
+    'output_format': '1d'
+};
+result_cls = model.gen('Text for CLS pooling', params_cls);
+
+/* Max Pooling */
+params_max = {
+    'pooling_method': 'max',
+    'output_format': '1d'
+};
+result_max = model.gen('Text for max pooling', params_max);
+
+/* Last Token Pooling */
+params_last = {
+    'pooling_method': 'last',
+    'output_format': '1d'
+};
+result_last = model.gen('Text for last token pooling', params_last);
+
+("Mean pooling: " + result_mean.len().str() + " dimensions\n").echo();
+("CLS pooling: " + result_cls.len().str() + " dimensions\n").echo();
+("Max pooling: " + result_max.len().str() + " dimensions\n").echo();
+("Last pooling: " + result_last.len().str() + " dimensions\n").echo();
+
+model.load();
+```
+
+### Auto-Format Detection
+
+The `auto` output format automatically chooses between 1D and 2D based on embedding size:
+
+```grapa
+/* Auto-format detection */
+model = $MODEL();
+model.load('models/all-MiniLM-L6-v2-onnx/model.onnx', 'onnx-embedding');
+
+params_auto = {
+    'output_format': 'auto',
+    'normalize': 1
+};
+
+result_auto = model.gen('Text for auto-format detection', params_auto);
+format_chosen = (result_auto[0].type() == $LIST) ? "2D" : "1D";
+("Auto-format chose: " + format_chosen + "\n").echo();
+
+model.load();
+```
+
+### Custom Input/Output Names
+
+For models with non-standard input/output names:
+
+```grapa
+/* Custom input/output names */
+model = $MODEL();
+model.load('models/custom-model.onnx', 'onnx-embedding');
+
+params_custom = {
+    'input_names': ['tokens', 'masks'],  /* Custom input names */
+    'output_names': ['embeddings'],       /* Custom output names */
+    'output_format': '1d'
+};
+
+result_custom = model.gen('Text for custom model', params_custom);
+("Custom model embedding: " + result_custom.len().str() + " dimensions\n").echo();
+
+model.load();
+```
+
+### Embedding Comparison and Similarity
+
+```grapa
+/* Compare embeddings for similarity */
+model = $MODEL();
+model.load('models/all-MiniLM-L6-v2-onnx/model.onnx', 'onnx-embedding');
+
+/* Generate embeddings for two texts */
+text1 = "The quick brown fox";
+text2 = "A fast brown animal";
+
+params = {
+    'output_format': '1d',
+    'normalize': 1
+};
+
+embedding1 = model.gen(text1, params);
+embedding2 = model.gen(text2, params);
+
+/* Calculate cosine similarity */
+cosine_similarity = op(emb1, emb2) {
+    if (emb1.len() != emb2.len()) return 0.0;
+    
+    dot_product = 0.0;
+    norm1 = 0.0;
+    norm2 = 0.0;
+    
+    for (i = 0; i < emb1.len(); i++) {
+        dot_product += emb1[i] * emb2[i];
+        norm1 += emb1[i] * emb1[i];
+        norm2 += emb2[i] * emb2[i];
+    };
+    
+    if (norm1 == 0.0 || norm2 == 0.0) return 0.0;
+    
+    return dot_product / (norm1.sqrt() * norm2.sqrt());
+};
+
+similarity = cosine_similarity(embedding1, embedding2);
+("Cosine similarity: " + similarity.str() + "\n").echo();
+
+model.load();
+```
 
 ## OpenAI Integration
 
