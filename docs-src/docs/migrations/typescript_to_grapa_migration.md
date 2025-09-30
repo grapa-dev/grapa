@@ -416,10 +416,10 @@ These represent fundamental language features that genuinely cannot be accomplis
 > - **No explicit namespace declarations**: Namespaces are managed automatically by the execution tree
 > - **Hierarchical access**: Variables can be accessed from parent namespaces
 
-> **Important Note on Const Protection:**
-> Grapa's `const` operator provides **superior runtime protection** compared to TypeScript's `as const`:
-> - **Runtime modification prevention**: Grapa's const prevents actual modification at runtime
-> - **Dynamic control**: Can toggle const on/off with `.setconst(false/true)`
+> **Important Note on Freeze Protection:**
+> Grapa's `freeze` operator provides **superior runtime protection** compared to TypeScript's `as const`:
+> - **Runtime modification prevention**: Grapa's freeze prevents actual modification at runtime
+> - **Dynamic control**: Can toggle freeze on/off with `.setfreeze(false/true)`
 > - **Performance optimization**: Designed for caching and optimization
 > - **Thread safety**: Prevents blocking on access for concurrent threads
 > - **No static type narrowing**: Grapa uses dynamic typing, so no compile-time literal type inference

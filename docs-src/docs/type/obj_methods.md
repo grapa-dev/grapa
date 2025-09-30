@@ -448,12 +448,12 @@ float_val.raw();    /* Returns: 0x00281000A09... (hex) */
 
 **Key Relationship**: For some types, `.raw().len() == .bytes()` because `.raw()` returns the internal bytes and `.len()` on those bytes gives the byte count.
 
-### `.setconst(value)`
-Sets the object to a constant value.
+### `.setfreeze(value)`
+Sets the freeze state of the object.
 
 ```grapa
-obj.setconst(100);  /* Sets object to constant value 100 */
-obj.setconst("new value"); /* Sets object to constant string */
+obj.setfreeze(true);  /* Sets object to freeze state */
+obj.setfreeze(false); /* Makes object mutable again */
 ```
 
 **Parameters:**

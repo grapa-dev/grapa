@@ -413,8 +413,8 @@ readonly_data = $sys().const(data);
 /* readonly_data is now read-only */
 ```
 
-### setconst(object, readonly)
-Makes an object read-only or writable.
+### setfreeze(object, readonly)
+Makes an object read-only (frozen) or writable.
 
 **Parameters:**
 - `object` - Any Grapa object or variable
@@ -425,13 +425,13 @@ Makes an object read-only or writable.
 **Example:**
 ```grapa
 my_variable = "important data";
-$sys().setconst(my_variable, true);  /* Make read-only */
+$sys().setfreeze(my_variable, true);  /* Make read-only */
 
 /* Attempting to modify will fail */
-my_variable = "new data";  /* Error: Cannot modify const variable */
+my_variable = "new data";  /* Error: Cannot modify freeze variable */
 
 /* Make writable again */
-$sys().setconst(my_variable, false);
+$sys().setfreeze(my_variable, false);
 my_variable = "new data";  /* Now works */
 ```
 
