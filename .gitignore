@@ -122,6 +122,8 @@ prj/winlib-amd64_static/x64
 /*.exe
 /*.dll
 /build
+/cache
+/models
 
 # Dependency directories
 dep/fltk-1.4.4/
@@ -140,20 +142,3 @@ temp/
 *.deb
 *.rpm
 *.tar.gz
-
-# AI/ML Models (large files, typically not committed)
-models/*.gguf
-models/*.bin
-models/*.safetensors
-models/*.pt
-models/*.pth
-models/*.onnx
-models/*.h5
-models/*.pb
-models/*.tflite
-models/*.mlmodel
-models/*.coreml
-models/*.pkl
-models/*.joblib
-models/*.npy
-models/*.npz 
