@@ -816,7 +816,6 @@ class GrapaBuilder:
                     raise RuntimeError("No Python wheel found in dist/ directory")
                 print(f"✅ Created wheel file: {dist_files[0].name}")
                 print(f"⚠️  NOTE: This is a .whl file, not a .tar.gz file needed for PyPI")
-                returndirectory
 
         # Find the built package file (either tar.gz or wheel)
         dist_files = list(Path("dist").glob("*.tar.gz")) + list(Path("dist").glob("*.whl"))
