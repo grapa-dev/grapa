@@ -669,6 +669,12 @@ GrapaRuleEvent* GrapaModel::GenerateOpenAI(const GrapaCHAR& prompt, GrapaRuleEve
     {
         // Extract response ID for context management
         GrapaRuleEvent* body = message->vQueue->Search("body", index);
+        if (body)
+        {
+            result = body;
+            message->vQueue->PopEvent(body);
+        }
+        /*
         if (body && body->vQueue)
         {
             // Get the response ID for context
@@ -717,6 +723,7 @@ GrapaRuleEvent* GrapaModel::GenerateOpenAI(const GrapaCHAR& prompt, GrapaRuleEve
                 }
             }
         }
+        */
     }
     if (message)
     {
@@ -807,6 +814,12 @@ GrapaRuleEvent* GrapaModel::EmbedOpenAI(const GrapaCHAR& text, GrapaRuleEvent* m
         s64 index;
         // Parse the JSON response to extract embedding
         GrapaRuleEvent* data = message->vQueue->Search("body", index);
+        if (data)
+        {
+            result = data;
+            message->vQueue->PopEvent(data);
+        }
+        /*
         if (data && data->vQueue) {
             data = data->vQueue->Search("data", index);
             if (data && data->vQueue) {
@@ -819,6 +832,7 @@ GrapaRuleEvent* GrapaModel::EmbedOpenAI(const GrapaCHAR& text, GrapaRuleEvent* m
                 }
             }
         }
+        */
     }
     if (message)
     {
@@ -1140,8 +1154,6 @@ GrapaError GrapaModel::LoadOnnx(const GrapaCHAR& modelPath)
 {
     GrapaError result = 0;
     
-    printf("Loading ONNX model: %s\n", modelPath.mBytes);
-
     try {
         // Initialize ONNX Runtime environment
         if (!mOnnxEnv) {
@@ -1153,7 +1165,6 @@ GrapaError GrapaModel::LoadOnnx(const GrapaCHAR& modelPath)
         sessionOptions.SetIntraOpNumThreads(1);
         sessionOptions.SetGraphOptimizationLevel(GraphOptimizationLevel::ORT_ENABLE_EXTENDED);
         
-        printf("Creating ONNX session\n");
         // Create session
 #ifdef _WIN32
         // Convert to wide string for Windows ONNX Runtime
@@ -1169,8 +1180,6 @@ GrapaError GrapaModel::LoadOnnx(const GrapaCHAR& modelPath)
                                        sessionOptions);
 #endif
         
-        printf("ONNX session created\n");
-
         mLoaded = true;
         mModelPath = modelPath;
         // Don't override mMethod here - it should already be set to "onnx" or "onnx-embedding"
@@ -1331,152 +1340,152 @@ GrapaRuleEvent* GrapaModel::EmbedOnnx(const GrapaCHAR& text, GrapaRuleEvent* mer
 
         Ort::MemoryInfo memory_info = Ort::MemoryInfo::CreateCpu(OrtArenaAllocator, OrtMemTypeDefault);
         
-                   printf("Creating input tensor\n");
-                   printf("token_ids size: %zu\n", token_ids.size());
-                   printf("input_shape: [%lld, %lld]\n", input_shape[0], input_shape[1]);
+        printf("Creating input tensor\n");
+        printf("token_ids size: %zu\n", token_ids.size());
+        printf("input_shape: [%lld, %lld]\n", input_shape[0], input_shape[1]);
 
-                   Ort::Value input_tensor = Ort::Value::CreateTensor<int64_t>(
-                       memory_info, token_ids.data(), token_ids.size(), input_shape.data(), input_shape.size());
+        Ort::Value input_tensor = Ort::Value::CreateTensor<int64_t>(
+            memory_info, token_ids.data(), token_ids.size(), input_shape.data(), input_shape.size());
                    
-                   printf("Input tensor created successfully\n");
-                   printf("Creating attention tensor\n");
-                   printf("attention_mask size: %zu\n", attention_mask.size());
-                   printf("attention_shape: [%lld, %lld]\n", attention_shape[0], attention_shape[1]);
+        printf("Input tensor created successfully\n");
+        printf("Creating attention tensor\n");
+        printf("attention_mask size: %zu\n", attention_mask.size());
+        printf("attention_shape: [%lld, %lld]\n", attention_shape[0], attention_shape[1]);
 
-                   Ort::Value attention_tensor = Ort::Value::CreateTensor<int64_t>(
-                       memory_info, attention_mask.data(), attention_mask.size(), attention_shape.data(), attention_shape.size());
+        Ort::Value attention_tensor = Ort::Value::CreateTensor<int64_t>(
+            memory_info, attention_mask.data(), attention_mask.size(), attention_shape.data(), attention_shape.size());
                    
-                   printf("Attention tensor created successfully\n");
+        printf("Attention tensor created successfully\n");
         
-                   printf("Preparing input names\n");
+        printf("Preparing input names\n");
                    
-                   // Use hardcoded input names since we know the model expects these
-                   // from the Python test: ['input_ids', 'attention_mask']
-                   std::vector<const char*> input_names;
-                   input_names.push_back("input_ids");
-                   input_names.push_back("attention_mask");
+        // Use hardcoded input names since we know the model expects these
+        // from the Python test: ['input_ids', 'attention_mask']
+        std::vector<const char*> input_names;
+        input_names.push_back("input_ids");
+        input_names.push_back("attention_mask");
                    
-                   printf("Using hardcoded input names: input_ids, attention_mask\n");
+        printf("Using hardcoded input names: input_ids, attention_mask\n");
                    
-                   printf("Input names prepared, count: %zu\n", input_names.size());
+        printf("Input names prepared, count: %zu\n", input_names.size());
                    
-                   // Prepare input tensors in the correct order
-                   std::vector<Ort::Value> input_tensors;
-                   printf("Moving input tensor\n");
-                   input_tensors.push_back(std::move(input_tensor));
-                   printf("Moving attention tensor\n");
-                   input_tensors.push_back(std::move(attention_tensor));
+        // Prepare input tensors in the correct order
+        std::vector<Ort::Value> input_tensors;
+        printf("Moving input tensor\n");
+        input_tensors.push_back(std::move(input_tensor));
+        printf("Moving attention tensor\n");
+        input_tensors.push_back(std::move(attention_tensor));
                    
-                   printf("Input tensors prepared, count: %zu\n", input_tensors.size());
-                   printf("Running inference\n");
+        printf("Input tensors prepared, count: %zu\n", input_tensors.size());
+        printf("Running inference\n");
                    
-                   // Prepare output names - use common BERT output names
-                   std::vector<const char*> output_names;
-                   output_names.push_back("last_hidden_state");
-                   output_names.push_back("pooler_output");
+        // Prepare output names - use common BERT output names
+        std::vector<const char*> output_names;
+        output_names.push_back("last_hidden_state");
+        output_names.push_back("pooler_output");
                    
-                   printf("Output names prepared, count: %zu\n", output_names.size());
+        printf("Output names prepared, count: %zu\n", output_names.size());
                    
-                   // Run inference
-                   try {
-                       auto output_tensors = session->Run(Ort::RunOptions{nullptr}, 
-                                                         input_names.data(), input_tensors.data(), input_tensors.size(),
-                                                         output_names.data(), output_names.size());
+        // Run inference
+        try {
+            auto output_tensors = session->Run(Ort::RunOptions{nullptr}, 
+                                                input_names.data(), input_tensors.data(), input_tensors.size(),
+                                                output_names.data(), output_names.size());
                        
-                       printf("Inference completed successfully\n");
-                       printf("Number of output tensors: %zu\n", output_tensors.size());
+            printf("Inference completed successfully\n");
+            printf("Number of output tensors: %zu\n", output_tensors.size());
                        
-                       if (output_tensors.size() > 0) {
-                           printf("Getting output data\n");
+            if (output_tensors.size() > 0) {
+                printf("Getting output data\n");
                            
-                           // Use the second output (pooler_output) which is already pooled
-                           // The first output is last_hidden_state, second is pooler_output
-                           if (output_tensors.size() > 1) {
-                               printf("Using pooler_output (second output)\n");
-                               float* output_data = output_tensors[1].GetTensorMutableData<float>();
-                               auto output_shape = output_tensors[1].GetTensorTypeAndShapeInfo().GetShape();
+                // Use the second output (pooler_output) which is already pooled
+                // The first output is last_hidden_state, second is pooler_output
+                if (output_tensors.size() > 1) {
+                    printf("Using pooler_output (second output)\n");
+                    float* output_data = output_tensors[1].GetTensorMutableData<float>();
+                    auto output_shape = output_tensors[1].GetTensorTypeAndShapeInfo().GetShape();
                                
-                               printf("Output shape: %lld, %lld\n", output_shape[0], output_shape[1]);
+                    printf("Output shape: %lld, %lld\n", output_shape[0], output_shape[1]);
 
-                               // pooler_output is already pooled, shape is [batch_size, hidden_size]
-                               int batch_size = output_shape[0];
-                               int hidden_size = output_shape[1];
+                    // pooler_output is already pooled, shape is [batch_size, hidden_size]
+                    int batch_size = output_shape[0];
+                    int hidden_size = output_shape[1];
                                
-                               printf("Using pooler_output, hidden_size: %d\n", hidden_size);
+                    printf("Using pooler_output, hidden_size: %d\n", hidden_size);
                                
-                               // Convert to GrapaCHAR (show first 10 dimensions)
-                               std::string embedding_str = "[";
-                               for (int i = 0; i < hidden_size && i < 10; i++) {
-                                   if (i > 0) embedding_str += ",";
-                                   embedding_str += std::to_string(output_data[i]);
-                               }
-                               if (hidden_size > 10) embedding_str += ",...";
-                               embedding_str += "]";
+                    // Convert to GrapaCHAR (show first 10 dimensions)
+                    std::string embedding_str = "[";
+                    for (int i = 0; i < hidden_size && i < 10; i++) {
+                        if (i > 0) embedding_str += ",";
+                        embedding_str += std::to_string(output_data[i]);
+                    }
+                    if (hidden_size > 10) embedding_str += ",...";
+                    embedding_str += "]";
                                
-                               result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaCHAR(embedding_str.c_str()));
-                           } else {
-                               printf("Only one output, using first output\n");
-                               // Fallback to first output if only one output
-                               float* output_data = output_tensors[0].GetTensorMutableData<float>();
-                               auto output_shape = output_tensors[0].GetTensorTypeAndShapeInfo().GetShape();
+                    result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaCHAR(embedding_str.c_str()));
+                } else {
+                    printf("Only one output, using first output\n");
+                    // Fallback to first output if only one output
+                    float* output_data = output_tensors[0].GetTensorMutableData<float>();
+                    auto output_shape = output_tensors[0].GetTensorTypeAndShapeInfo().GetShape();
                                
-                               printf("Output shape: %lld, %lld, %lld\n", output_shape[0], output_shape[1], output_shape[2]);
+                    printf("Output shape: %lld, %lld, %lld\n", output_shape[0], output_shape[1], output_shape[2]);
 
-                               // For embedding models, we typically use mean pooling
-                               // Shape is [batch_size, sequence_length, hidden_size]
-                               int batch_size = output_shape[0];
-                               int sequence_length = output_shape[1];
-                               int hidden_size = output_shape[2];
+                    // For embedding models, we typically use mean pooling
+                    // Shape is [batch_size, sequence_length, hidden_size]
+                    int batch_size = output_shape[0];
+                    int sequence_length = output_shape[1];
+                    int hidden_size = output_shape[2];
                                
-                               printf("Calculating mean pooling\n");
+                    printf("Calculating mean pooling\n");
 
-                               // Calculate mean pooling (average over sequence length, excluding padding)
-                               std::vector<float> pooled_embedding(hidden_size, 0.0f);
-                               int valid_tokens = 0;
+                    // Calculate mean pooling (average over sequence length, excluding padding)
+                    std::vector<float> pooled_embedding(hidden_size, 0.0f);
+                    int valid_tokens = 0;
                                
-                               printf("Calculating mean pooling\n");
+                    printf("Calculating mean pooling\n");
 
-                               for (int i = 0; i < sequence_length; i++) {
-                                   if (attention_mask[i] == 1) { // Only include non-padding tokens
-                                       for (int j = 0; j < hidden_size; j++) {
-                                           pooled_embedding[j] += output_data[i * hidden_size + j];
-                                       }
-                                       valid_tokens++;
-                                   }
-                               }
+                    for (int i = 0; i < sequence_length; i++) {
+                        if (attention_mask[i] == 1) { // Only include non-padding tokens
+                            for (int j = 0; j < hidden_size; j++) {
+                                pooled_embedding[j] += output_data[i * hidden_size + j];
+                            }
+                            valid_tokens++;
+                        }
+                    }
                                
-                               printf("Averaging embeddings\n");
+                    printf("Averaging embeddings\n");
 
-                               // Average the embeddings
-                               if (valid_tokens > 0) {
-                                   for (int j = 0; j < hidden_size; j++) {
-                                       pooled_embedding[j] /= valid_tokens;
-                                   }
-                               }
+                    // Average the embeddings
+                    if (valid_tokens > 0) {
+                        for (int j = 0; j < hidden_size; j++) {
+                            pooled_embedding[j] /= valid_tokens;
+                        }
+                    }
                                
-                               printf("Converting to GrapaCHAR\n");
+                    printf("Converting to GrapaCHAR\n");
                                
-                               // Convert to GrapaCHAR (show first 10 dimensions)
-                               std::string embedding_str = "[";
-                               for (int i = 0; i < hidden_size && i < 10; i++) {
-                                   if (i > 0) embedding_str += ",";
-                                   embedding_str += std::to_string(pooled_embedding[i]);
-                               }
-                               printf("Embedding string: %s\n", embedding_str.c_str());
-                               if (hidden_size > 10) embedding_str += ",...";
-                               embedding_str += "]";
+                    // Convert to GrapaCHAR (show first 10 dimensions)
+                    std::string embedding_str = "[";
+                    for (int i = 0; i < hidden_size && i < 10; i++) {
+                        if (i > 0) embedding_str += ",";
+                        embedding_str += std::to_string(pooled_embedding[i]);
+                    }
+                    printf("Embedding string: %s\n", embedding_str.c_str());
+                    if (hidden_size > 10) embedding_str += ",...";
+                    embedding_str += "]";
                                
-                               printf("Creating result\n");
+                    printf("Creating result\n");
                                
-                               result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaCHAR(embedding_str.c_str()));
-                           }
-                       } else {
-                           result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaCHAR("No output from ONNX model"));
-                       }
-                   } catch (const std::exception& e) {
-                       printf("ONNX inference error: %s\n", e.what());
-                       result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaCHAR("ONNX inference error"));
-                   }
+                    result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaCHAR(embedding_str.c_str()));
+                }
+            } else {
+                result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaCHAR("No output from ONNX model"));
+            }
+        } catch (const std::exception& e) {
+            printf("ONNX inference error: %s\n", e.what());
+            result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaCHAR("ONNX inference error"));
+        }
         
     } catch (const std::exception& e) {
         result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaCHAR("ONNX embedding error"));
