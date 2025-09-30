@@ -1155,9 +1155,19 @@ GrapaError GrapaModel::LoadOnnx(const GrapaCHAR& modelPath)
         
         printf("Creating ONNX session\n");
         // Create session
+#ifdef _WIN32
+        // Convert to wide string for Windows ONNX Runtime
+        std::wstring wideModelPath(modelPath.mLength, L'\0');
+        MultiByteToWideChar(CP_UTF8, 0, (char*)modelPath.mBytes, (int)modelPath.mLength, &wideModelPath[0], (int)modelPath.mLength);
+        mOnnxSession = new Ort::Session(*static_cast<Ort::Env*>(mOnnxEnv), 
+                                       wideModelPath.c_str(), 
+                                       sessionOptions);
+#else
+        // Use narrow string for non-Windows platforms
         mOnnxSession = new Ort::Session(*static_cast<Ort::Env*>(mOnnxEnv), 
                                        (char*)modelPath.mBytes, 
                                        sessionOptions);
+#endif
         
         printf("ONNX session created\n");
 

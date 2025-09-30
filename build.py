@@ -763,12 +763,15 @@ class GrapaBuilder:
             print(f"🔧 Starting sdist with timeout (30 minutes)...")
             result = subprocess.run(cmd_with_env, check=True, timeout=1800)
             print("✅ sdist completed successfully with env command")
-        except subprocess.CalledProcessError as e:
-            print(f"❌ sdist failed with env command: {e}")
-            if e.stdout:
-                print(f"stdout: {e.stdout}")
-            if e.stderr:
-                print(f"stderr: {e.stderr}")
+        except (subprocess.CalledProcessError, FileNotFoundError) as e:
+            if isinstance(e, FileNotFoundError):
+                print(f"❌ env command not found (expected on Windows): {e}")
+            else:
+                print(f"❌ sdist failed with env command: {e}")
+                if e.stdout:
+                    print(f"stdout: {e.stdout}")
+                if e.stderr:
+                    print(f"stderr: {e.stderr}")
             
             # Approach 2: Try sdist with SOURCE_DATE_EPOCH in environment
             print(f"🔧 Trying alternative approach: using subprocess with environment variable")
