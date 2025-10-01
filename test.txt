@@ -1,8 +1,8 @@
-./grapa -c "model = \$MODEL(); model.load('models/all-MiniLM-L6-v2-onnx/model.onnx', 'onnx-embedding'); result = model.gen('The quick brown fox jumps over the lazy dog'); result.echo();"
+./grapa -c "model = \$MODEL(); model.load('models/qwen2.5-7b-instruct-q5_k_m.gguf', 'llama-local'); result = model.gen('The quick brown fox jumps over the lazy dog'); result.echo();"
 
 import grapapy
 g = grapapy.grapa()
-g.eval('model = $MODEL(); model.load("models/all-MiniLM-L6-v2-onnx/model.onnx", "onnx-embedding");')
+g.eval('model = $MODEL(); model.load("models/qwen2.5-7b-instruct-q5_k_m.gguf", "llama-local");')
 g.eval('model.info();')	
 g.eval('model.gen("test");')	
   

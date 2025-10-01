@@ -361,7 +361,6 @@ The current implementation uses LLAMA.cpp as the method:
 
 The `$MODEL` type is designed to support multiple methods:
 
-- **ONNX:** For cross-platform inference (auto-detected from `.onnx` extension)
 - **TensorFlow:** For TensorFlow models (auto-detected from `.tflite` extension)
 - **PyTorch:** For PyTorch models (via Python integration)
 - **scikit-learn:** For traditional ML models (auto-detected from `.pkl` extension)

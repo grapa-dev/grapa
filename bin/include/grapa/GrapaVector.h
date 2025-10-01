@@ -25,11 +25,12 @@ class GrapaVectorValue
 {
 public:
 	u8 isRaw;
+	u8 reserved;
 	union {
 		GrapaRuleEvent* e;
 		GrapaVectorBYTE* b;
 	};
-	GrapaVectorValue() { isRaw = 0; e = NULL; };
+	GrapaVectorValue() { isRaw = 0; reserved = 0;  e = NULL; };
 	GrapaVectorValue(GrapaRuleEvent* v) { isRaw = 0; e = NULL; Set(v); };
 	GrapaVectorValue(GrapaVectorValue* v) { isRaw = 0; e = NULL; Set(v); };
 	GrapaVectorValue(GrapaFloat* v) { isRaw = 0; e = NULL; Set(v); };
@@ -81,7 +82,7 @@ public:
 	GrapaVectorItem* mData;
 	u64 mSize;
 	u8 mDim, mBlock, mMaxBlock, mSetBlock;
-	GrapaRuleQueue mLabels;
+	GrapaRuleQueue mLabels, mKeys;
 	GrapaVector();
 	GrapaVector(const GrapaVector& bi, u8 pBlock = 0);
 	~GrapaVector();
@@ -95,8 +96,8 @@ public:
 	virtual void TO(GrapaBYTE& pValue);
 	virtual void TO(GrapaScriptExec* pScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* delim, GrapaBYTE& pValue);
 	virtual void FromBytes(GrapaScriptExec* pScriptExec, GrapaNames* pNameSpace, const GrapaBYTE& pValue);
-	virtual u64 ToSize(GrapaScriptExec* pScriptExec, GrapaNames* pNameSpace);
-	virtual void ToBytes(GrapaScriptExec* pScriptExec, GrapaNames* pNameSpace, GrapaBYTE& pValue);
+	virtual u64 ToSize();
+	virtual void ToBytes(GrapaBYTE& pValue);
 	void _tocsv(GrapaScriptExec* pScriptExec, GrapaNames* pNameSpace, u64 pos, u64& p, GrapaRuleEvent* delim, GrapaBYTE& pValue);
 	GrapaVector& operator=(const GrapaVector& that);
 	GrapaError Dot(GrapaScriptExec* pScriptExec, GrapaNames* pNameSpace, GrapaVector& bi, GrapaVector& result);
