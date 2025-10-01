@@ -26,7 +26,6 @@ link_directories(
     source/openssl-lib/${GRAPAPY_OS} 
     source/blst-lib/${GRAPAPY_OS}
     source/pcre2-lib/${GRAPAPY_OS}
-    source/llama-lib/${GRAPAPY_OS}
     )
 
 pybind11_add_module(grapapy 
@@ -38,11 +37,6 @@ if (MSVC)
 find_package(OpenMP REQUIRED)
 target_link_libraries(grapapy PRIVATE 
     grapa_static
-    llama
-    ggml
-    ggml-base
-    ggml-cpu
-    mtmd
     Gdi32
     Advapi32
     User32
@@ -62,12 +56,6 @@ target_link_libraries(grapapy PRIVATE
     libfltk_forms.a libfltk_gl.a libfltk_images.a libfltk_jpeg.a libfltk.a
     libcrypto.a libssl.a
     libpcre2-8.a
-    libllama.a
-    libggml.a
-    libggml-base.a
-    libggml-cpu.a
-    libmtmd.a
-    libcommon.a
     X11 Xfixes Xft Xext Xrender Xinerama Xcursor xcb Xau png16 fontconfig freetype
     gomp
     )
@@ -83,12 +71,6 @@ target_link_libraries(grapapy PRIVATE
     libfltk_forms.a libfltk_gl.a libfltk_images.a libfltk_jpeg.a libfltk.a
     libcrypto.a libssl.a
     libpcre2-8.a
-    libllama.a
-    libggml.a
-    libggml-base.a
-    libggml-cpu.a
-    libmtmd.a
-    libcommon.a
     X11 Xfixes Xft Xext Xrender Xinerama Xcursor xcb Xau png16 fontconfig freetype
     gomp
     )
@@ -104,19 +86,9 @@ target_link_libraries(grapapy PRIVATE
     libfltk.a libfltk_forms.a libfltk_gl.a libfltk_images.a libfltk_jpeg.a libfltk_png.a
     libcrypto.a libssl.a
     libpcre2-8.a
-    libllama.a
-    libggml.a
-    libggml-base.a
-    libggml-cpu.a
-    libggml-metal.a
-    libggml-blas.a
-    libmtmd.a
     "-framework CoreFoundation"
     "-framework AppKit"
     "-framework IOKit"
     "-framework ScreenCaptureKit"
-    "-framework Metal"
-    "-framework MetalKit"
-    "-framework Accelerate"
     )
 endif (APPLE)

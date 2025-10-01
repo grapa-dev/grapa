@@ -414,21 +414,21 @@ def pick_library_dirs():
     if my_system == 'Linux':
         if is_aws:
             if is_arm:
-                return ["source", "source/grapa-lib/aws-arm64", "source/fl-lib/aws-arm64", "source/blst-lib/aws-arm64", "source/pcre2-lib/aws-arm64", "source/openssl-lib/aws-arm64", "source/llama-lib/aws-arm64"]
+                return ["source", "source/grapa-lib/aws-arm64", "source/fl-lib/aws-arm64", "source/blst-lib/aws-arm64", "source/pcre2-lib/aws-arm64", "source/openssl-lib/aws-arm64"]
             else:
-                return ["source", "source/grapa-lib/aws-amd64", "source/fl-lib/aws-amd64", "source/blst-lib/aws-amd64", "source/pcre2-lib/aws-amd64", "source/openssl-lib/aws-amd64", "source/llama-lib/aws-amd64"]
+                return ["source", "source/grapa-lib/aws-amd64", "source/fl-lib/aws-amd64", "source/blst-lib/aws-amd64", "source/pcre2-lib/aws-amd64", "source/openssl-lib/aws-amd64"]
         else:
             if is_arm:
-                return ["source", "source/grapa-lib/linux-arm64", "source/fl-lib/linux-arm64", "source/blst-lib/linux-arm64", "source/pcre2-lib/linux-arm64", "source/openssl-lib/linux-arm64", "source/llama-lib/linux-arm64"]
+                return ["source", "source/grapa-lib/linux-arm64", "source/fl-lib/linux-arm64", "source/blst-lib/linux-arm64", "source/pcre2-lib/linux-arm64", "source/openssl-lib/linux-arm64"]
             else:
-                return ["source", "source/grapa-lib/linux-amd64", "source/fl-lib/linux-amd64", "source/blst-lib/linux-amd64", "source/pcre2-lib/linux-amd64", "source/openssl-lib/linux-amd64", "source/llama-lib/linux-amd64"]
+                return ["source", "source/grapa-lib/linux-amd64", "source/fl-lib/linux-amd64", "source/blst-lib/linux-amd64", "source/pcre2-lib/linux-amd64", "source/openssl-lib/linux-amd64"]
     if my_system == 'Darwin':
         if is_arm:
-            return ["source", "source/grapa-lib/mac-arm64", "source/llama-lib/mac-arm64"]
+            return ["source", "source/grapa-lib/mac-arm64"]
         else:
-            return ["source", "source/grapa-lib/mac-amd64", "source/llama-lib/mac-amd64"]
+            return ["source", "source/grapa-lib/mac-amd64"]
     if my_system == 'Windows':
-        return ["source", "source/grapa-lib/win-amd64", "source/fl-lib/win-amd64", "source/blst-lib/win-amd64", "source/pcre2-lib/win-amd64", "source/openssl-lib/win-amd64", "source/llama-lib/win-amd64"]
+        return ["source", "source/grapa-lib/win-amd64", "source/fl-lib/win-amd64", "source/blst-lib/win-amd64", "source/pcre2-lib/win-amd64", "source/openssl-lib/win-amd64"]
     raise ValueError("Unknown platform: " + my_system)
 
 def pick_libraries():
@@ -436,12 +436,6 @@ def pick_libraries():
     if my_system == 'Linux':
         return [
             'grapa',
-            'llama',
-            'ggml',
-            'ggml-base',
-            'ggml-cpu',
-            'mtmd',
-            'common',  # Add common library
             'fltk',
             'fltk_forms',
             'fltk_gl',
@@ -457,14 +451,7 @@ def pick_libraries():
     if my_system == 'Darwin':
         #return ['@rpath/grapa']
         return [
-            'source/grapa-lib/libgrapa_static.a',
-            'llama',
-            'ggml',
-            'ggml-base',
-            'ggml-cpu',
-            'ggml-metal',
-            'ggml-blas',
-            'mtmd'
+            'source/grapa-lib/libgrapa_static.a'
         ]
     if my_system == 'Windows':
         return [
@@ -478,11 +465,6 @@ def pick_libraries():
             "fltk_z",
             "libcrypto",
             "libssl",
-            "llama",    
-            "ggml",
-            "ggml-base",
-            "ggml-cpu",
-            "mtmd",
             "blst",
             "pcre2-8-static",
             "gdiplus",
@@ -500,11 +482,11 @@ def pick_libraries():
 
 if sys.platform.startswith('win32') and 'include_dirs' in locals():
     # Use custom include_dirs that puts Windows SDK paths first
-    base_include_dirs = ["source","source/utf8proc",'source/pybind11/include','source/llama']
+    base_include_dirs = ["source","source/utf8proc",'source/pybind11/include']
     include_dirs = include_dirs + base_include_dirs
 else:
     # For non-Windows platforms, set up base include directories
-    include_dirs = ["source","source/utf8proc",'source/pybind11/include','source/llama']
+    include_dirs = ["source","source/utf8proc",'source/pybind11/include']
 
 lib_grapa = Extension(
     'grapapy', 

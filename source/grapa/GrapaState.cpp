@@ -5180,18 +5180,6 @@ GrapaRuleEvent* GrapaScriptExec::CopyItem(GrapaRuleEvent* pAction, bool isTAG, b
 		result->vModel->mLoaded = p->vModel->mLoaded;
 		result->vModel->mModelPath.FROM(p->vModel->mModelPath);
 		result->vModel->mMethod.FROM(p->vModel->mMethod);
-		result->vModel->mMaxTokens = p->vModel->mMaxTokens;
-		result->vModel->mTemperature = p->vModel->mTemperature;
-		result->vModel->mTopK = p->vModel->mTopK;
-		result->vModel->mTopP = p->vModel->mTopP;
-		result->vModel->mRepeatPenalty = p->vModel->mRepeatPenalty;
-		result->vModel->mSeed = p->vModel->mSeed;
-		result->vModel->mContextSize = p->vModel->mContextSize;
-
-		// Note: Don't copy LLAMA contexts - they need to be recreated
-                if (result->vModel->mLoaded && result->vModel->mMethod.StrCmp("llama-local") == 0) {
-			result->vModel->LoadLlamaLocal(result->vModel->mModelPath);
-		}
 	}
 
 	return(result);

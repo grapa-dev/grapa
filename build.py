@@ -62,9 +62,6 @@ class BuildConfig:
         """Get compiler flags for the platform"""
         base_flags = ["-Isource", "-DUTF8PROC_STATIC", "-std=c++17", "-O3", "-pthread"]
         
-        # Add LLAMA.cpp include path
-        base_flags.append("-Isource/llama")
-        
         # Define FLTK_USE_X11 for Linux/AWS builds since FLTK was built with X11 support
         if self.platform in ["linux", "aws"]:
             base_flags.append("-DFLTK_USE_X11")
@@ -90,16 +87,12 @@ class BuildConfig:
             frameworks = [
                 "-framework CoreFoundation",
                 "-framework AppKit", 
-                "-framework IOKit",
-                "-framework Metal",           # For LLAMA.cpp Metal GPU acceleration
-                "-framework MetalKit",        # For LLAMA.cpp Metal GPU acceleration
-                "-framework Accelerate"       # For LLAMA.cpp BLAS operations
+                "-framework IOKit"
             ]
             
             # Always include ScreenCaptureKit for mac-arm64 (requires macOS 15.0+)
             frameworks.append("-framework ScreenCaptureKit")
             print("✅ Including ScreenCaptureKit framework for mac-arm64")
-            print("✅ Including Metal, MetalKit, and Accelerate frameworks for LLAMA.cpp")
             
             return frameworks
         return []
@@ -163,7 +156,7 @@ class GrapaBuilder:
         print(f"Building for {config.target} using Visual Studio...")
         
         try:
-            # Build main executable with llama.cpp libraries
+            # Build main executable 
             subprocess.run([
                 "msbuild", "prj/win-amd64/grapa.sln", "/p:Configuration=Release"
             ], check=True)
@@ -281,7 +274,7 @@ class GrapaBuilder:
         # Build utf8proc first (C compilation)
         print("Building utf8proc...")
         subprocess.run([
-            "clang", "-Isource", "-Isource/llama", "-DUTF8PROC_STATIC", "-c", 
+            "clang", "-Isource", "-DUTF8PROC_STATIC", "-c", 
             "source/utf8proc/utf8proc.c", "-m64", "-O3"
         ], check=True)
         
@@ -291,7 +284,7 @@ class GrapaBuilder:
                 print("Building static library...")
                 cpp_files = glob.glob("source/grapa/*.cpp")
                 subprocess.run([
-                    "clang++", "-Isource", "-Isource/llama", "-c"
+                    "clang++", "-Isource", "-c"
                 ] + cpp_files + [
                     "-std=c++17", "-m64", "-O3", "-pthread"
                 ], check=True)
@@ -325,10 +318,9 @@ class GrapaBuilder:
             # Step 1: utf8proc.o is already built above
             # Step 2: Build executable using utf8proc.o - use shell globs like manual command
             cmd = [
-                "clang++", "-Isource", "-Isource/llama", "source/main.cpp", "source/grapa/*.cpp", "utf8proc.o",
+                "clang++", "-Isource", "source/main.cpp", "source/grapa/*.cpp", "utf8proc.o",
                 f"source/openssl-lib/{config.target}/*.a", f"source/fl-lib/{config.target}/*.a", 
-                f"source/blst-lib/{config.target}/*.a", f"source/pcre2-lib/{config.target}/libpcre2-8.a",
-                f"source/llama-lib/{config.target}/*.a"
+                f"source/blst-lib/{config.target}/*.a", f"source/pcre2-lib/{config.target}/libpcre2-8.a"
             ] + config.frameworks + [
                 "-std=c++17", "-m64", "-O3", "-pthread", 
                 f"-Wl,-rpath,@loader_path/bin/lib/{config.target}",
@@ -397,7 +389,7 @@ class GrapaBuilder:
         # Use -fPIC for shared library builds, regular for executable
         pic_flag = ["-fPIC"] if is_library else []
         subprocess.run([
-            "gcc", "-Isource", "-Isource/llama", "-DUTF8PROC_STATIC", "-c", 
+            "gcc", "-Isource", "-DUTF8PROC_STATIC", "-c", 
             "source/utf8proc/utf8proc.c", "-O3"
         ] + pic_flag, check=True)
         
@@ -444,37 +436,11 @@ class GrapaBuilder:
             # Get X11 libraries conditionally
             x11_libs = self._get_x11_libs()
             
-            # Add LLAMA.cpp libraries
-            # Add LLAMA.cpp libraries in dependency order
-            llama_libs = []
-            llama_lib_dir = f"source/llama-lib/{config.target}"
-            
-            # Link in dependency order with circular dependency resolution
-            # Static libraries with circular dependencies need to be linked multiple times
-            llama_lib_order = [
-                "libggml-base.a",
-                "libggml-cpu.a", 
-                "libggml.a",
-                "libcommon.a",
-                "libmtmd.a",
-                "libllama.a",
-                # Link core GGML libraries again to resolve circular dependencies
-                "libggml.a",
-                "libggml-base.a",
-                "libggml-cpu.a"
-            ]
-            for lib_name in llama_lib_order:
-                lib_path = f"{llama_lib_dir}/{lib_name}"
-                if os.path.exists(lib_path):
-                    llama_libs.append(lib_path)
-                else:
-                    print(f"⚠️  Warning: LLAMA.cpp library not found: {lib_path}")
-            
             cmd = [
                 "g++"
             ] + config.flags + [
                 "source/main.cpp"
-            ] + cpp_files + ["source/utf8proc/utf8proc.c"] + openssl_libs + fl_libs + blst_libs + llama_libs + [
+            ] + cpp_files + ["source/utf8proc/utf8proc.c"] + openssl_libs + fl_libs + blst_libs + [
                 f"source/pcre2-lib/{config.target}/libpcre2-8.a", f"-Lsource/openssl-lib/{config.target}", "-lcrypto"
             ] + x11_libs + [
                 "-ldl", "-lm", "-fopenmp", "-static-libgcc", 
@@ -517,13 +483,13 @@ class GrapaBuilder:
         if is_library and is_static:
             print("Building utf8proc...")
             subprocess.run([
-                "gcc", "-Isource", "-Isource/llama", "-DUTF8PROC_STATIC", "-c", 
+                "gcc", "-Isource", "-DUTF8PROC_STATIC", "-c", 
                 "source/utf8proc/utf8proc.c", "-O3", "-fPIC"
             ], check=True)
         elif not is_library:
             print("Building utf8proc...")
             subprocess.run([
-                "gcc", "-Isource", "-Isource/llama", "-DUTF8PROC_STATIC", "-c", 
+                "gcc", "-Isource", "-DUTF8PROC_STATIC", "-c", 
                 "source/utf8proc/utf8proc.c", "-O3"
             ], check=True)
         
@@ -567,37 +533,11 @@ class GrapaBuilder:
             # Get X11 libraries conditionally
             x11_libs = self._get_x11_libs()
             
-            # Add LLAMA.cpp libraries
-            # Add LLAMA.cpp libraries in dependency order
-            llama_libs = []
-            llama_lib_dir = f"source/llama-lib/{config.target}"
-
-            # Link in dependency order with circular dependency resolution
-            # Static libraries with circular dependencies need to be linked multiple times
-            llama_lib_order = [
-                "libggml-base.a",
-                "libggml-cpu.a", 
-                "libggml.a",
-                "libcommon.a",
-                "libmtmd.a",
-                "libllama.a",
-                # Link core GGML libraries again to resolve circular dependencies
-                "libggml.a",
-                "libggml-base.a",
-                "libggml-cpu.a"
-            ]
-            for lib_name in llama_lib_order:
-                lib_path = f"{llama_lib_dir}/{lib_name}"
-                if os.path.exists(lib_path):
-                    llama_libs.append(lib_path)
-                else:
-                    print(f"⚠️  Warning: LLAMA.cpp library not found: {lib_path}")
-            
             cmd = [
                 "g++"
             ] + config.flags + [
                 "source/main.cpp"
-            ] + cpp_files + ["source/utf8proc/utf8proc.c"] + openssl_libs + fl_libs + blst_libs + llama_libs + [
+            ] + cpp_files + ["source/utf8proc/utf8proc.c"] + openssl_libs + fl_libs + blst_libs + [
                 f"source/pcre2-lib/{config.target}/libpcre2-8.a", f"-Lsource/openssl-lib/{config.target}", "-lcrypto"
             ] + x11_libs + [
                 "-ldl", "-lm", "-fopenmp", "-static-libgcc", 
@@ -888,44 +828,6 @@ class GrapaBuilder:
                     shutil.copy2(src_path, dst_path)
                     print(f"✅ Copied {lib_file} to {lib_dir}/")
         
-        # Copy llama.cpp libraries (Release)
-        llama_src = f"source/llama-lib/{config.target}"
-        if os.path.exists(llama_src):
-            for lib_file in os.listdir(llama_src):
-                if lib_file.endswith('.a') or lib_file.endswith('.lib'):
-                    src_path = os.path.join(llama_src, lib_file)
-                    dst_path = os.path.join(lib_dir, lib_file)
-                    shutil.copy2(src_path, dst_path)
-                    print(f"✅ Copied {lib_file} to {lib_dir}/")
-        
-        # Copy llama.cpp Debug libraries (Windows only)
-        if config.platform == "windows":
-            llama_debug_src = f"source/llama-lib/{config.target}-debug"
-            if os.path.exists(llama_debug_src):
-                debug_lib_dir = f"bin/lib/{config.target}-debug"
-                os.makedirs(debug_lib_dir, exist_ok=True)
-                
-                # Copy all other 3rd party libraries to debug directory (same as release)
-                for lib_src_dir in [f"source/openssl-lib/{config.target}", 
-                                   f"source/fl-lib/{config.target}",
-                                   f"source/blst-lib/{config.target}",
-                                   f"source/pcre2-lib/{config.target}"]:
-                    if os.path.exists(lib_src_dir):
-                        for lib_file in os.listdir(lib_src_dir):
-                            if lib_file.endswith('.a') or lib_file.endswith('.lib'):
-                                src_path = os.path.join(lib_src_dir, lib_file)
-                                dst_path = os.path.join(debug_lib_dir, lib_file)
-                                shutil.copy2(src_path, dst_path)
-                                print(f"✅ Copied {lib_file} to {debug_lib_dir}/")
-                
-                # Copy Debug llama.cpp libraries
-                for lib_file in os.listdir(llama_debug_src):
-                    if lib_file.endswith('.a') or lib_file.endswith('.lib'):
-                        src_path = os.path.join(llama_debug_src, lib_file)
-                        dst_path = os.path.join(debug_lib_dir, lib_file)
-                        shutil.copy2(src_path, dst_path)
-                        print(f"✅ Copied Debug {lib_file} to {debug_lib_dir}/")
-        
         # Copy include directories for 3rd party libraries
         # Copy FLTK headers
         fl_include_src = "source/FL"
@@ -944,15 +846,7 @@ class GrapaBuilder:
                 shutil.rmtree(openssl_include_dst)
             shutil.copytree(openssl_include_src, openssl_include_dst)
             print(f"✅ Copied OpenSSL headers to {openssl_include_dst}/")
-        
-        # Copy llama.cpp headers
-        llama_include_src = "source/llama"
-        llama_include_dst = f"bin/include/llama"
-        if os.path.exists(llama_include_src):
-            if os.path.exists(llama_include_dst):
-                shutil.rmtree(llama_include_dst)
-            shutil.copytree(llama_include_src, llama_include_dst)
-            print(f"✅ Copied llama.cpp headers to {llama_include_dst}/")
+
         
         # Copy GGML headers
         ggml_include_src = "source/ggml/include"

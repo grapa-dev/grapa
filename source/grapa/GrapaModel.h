@@ -8,8 +8,6 @@
 #include "GrapaFloat.h"
 #include "GrapaState.h"
 #include "GrapaNetConnect.h"
-#include "llama.h"  // LLAMA.cpp includes
-#include <vector>   // For std::vector<llama_token>
 
 // Forward declarations
 class GrapaRuleEvent;
@@ -20,37 +18,11 @@ public:
     // Model state
     bool mLoaded;
     GrapaCHAR mModelPath;
-    GrapaCHAR mMethod;  // "llama-local", etc.
-    
-    // LLAMA.cpp specific
-    struct llama_model* mLlamaLocalModel;
-    struct llama_context* mLlamaLocalContext;
-    struct llama_model_params mLlamaLocalModelParams;
-    struct llama_context_params mLlamaLocalContextParams;
-    struct llama_sampler* mLlamaLocalSampler;  // Sampler chain for temperature-aware generation
-    
-    // Backend-optimized context management
-    bool mContextPreserved;  // Whether context is preserved between calls
-    std::vector<llama_token> mContextTokens;  // LLAMA.cpp: Persistent token context
-    GrapaCHAR mContextHistory;  // Generic: Text-based conversation history
-    
-    // LLAMA.cpp persistent context optimization
-    bool mContextInitialized;  // Whether the context has been initialized with tokens
+    GrapaCHAR mMethod;  // "openai", etc.
     
     // OpenAI context management
     GrapaCHAR mOpenAIResponseId;  // OpenAI: Response ID for context continuity
 
-    
-    // Generation parameters
-    s32 mMaxTokens;
-    float mTemperature;
-    s32 mTopK;
-    float mTopP;
-    float mRepeatPenalty;
-    s32 mSeed;
-    s32 mContextSize;
-    s32 mVerbose;     // Logging verbosity level (0=silent, 1=errors, 2=warnings, 3=info, 4=debug)
-    
     // Persistent parameter management
     GrapaScriptExec* vScriptExec;
     GrapaNames* vNameSpace;
@@ -87,11 +59,6 @@ public:
     GrapaError SetContext(GrapaRuleEvent* context);  // Accepts $GOBJ, $LIST, or $STR
     GrapaError SetContextFromText(const GrapaCHAR& text);  // Helper for text-based context
     
-    // Backend-specific operations
-    GrapaError LoadLlamaLocal(const GrapaCHAR& modelPath);
-    GrapaError UnloadLlamaLocal();
-    GrapaRuleEvent* GenerateLlamaLocal(const GrapaCHAR& prompt, GrapaRuleEvent* mergedParams);
-    
     // OpenAI cloud model operations
     GrapaError LoadOpenAI(const GrapaCHAR& modelPath);
     GrapaError UnloadOpenAI();
@@ -99,22 +66,11 @@ public:
     GrapaRuleEvent* EmbedOpenAI(const GrapaCHAR& text, GrapaRuleEvent* mergedParams);
     
 private:
-    GrapaError InitializeLlama();
-    GrapaError InitializeSampler();  // Initialize LLAMA.cpp sampler chain
-    void CleanupSampler();           // Clean up sampler resources
-    
     // Parameter management
     void ResetModelSpecificParams();
     void SetModelDefaults();
     GrapaRuleEvent* MergeParams(GrapaRuleEvent* persistent, GrapaRuleEvent* callSpecific);
-    GrapaError ApplyParamsToLlama(GrapaRuleEvent* params);
-    int GetModelSize();  // Estimate model size for parameter defaults
-    
-    // Auto-detection
-    GrapaCHAR AutoDetectMethod(const GrapaCHAR& modelPath);
-    
-    // Logging callback
-    static void LogCallback(enum ggml_log_level level, const char * text, void * user_data);
+
 };
 
 #endif //_GrapaModel_
