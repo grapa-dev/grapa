@@ -5177,10 +5177,10 @@ Grapa has a <strong>dynamic namespace system</strong> that's more flexible than 
 - <strong>Dynamic namespace creation</strong>: Namespaces are created automatically for each execution context
 - <strong>No explicit namespace declarations</strong>: Namespaces are managed automatically by the execution tree
 - <strong>Hierarchical access</strong>: Variables can be accessed from parent namespaces</p>
-<p><strong>Important Note on Const Protection:</strong>
-Grapa's <code>const</code> operator provides <strong>superior runtime protection</strong> compared to TypeScript's <code>as const</code>:
-- <strong>Runtime modification prevention</strong>: Grapa's const prevents actual modification at runtime
-- <strong>Dynamic control</strong>: Can toggle const on/off with <code>.setconst(false/true)</code>
+<p><strong>Important Note on Freeze Protection:</strong>
+Grapa's <code>freeze</code> operator provides <strong>superior runtime protection</strong> compared to TypeScript's <code>as const</code>:
+- <strong>Runtime modification prevention</strong>: Grapa's freeze prevents actual modification at runtime
+- <strong>Dynamic control</strong>: Can toggle freeze on/off with <code>.setfreeze(false/true)</code>
 - <strong>Performance optimization</strong>: Designed for caching and optimization
 - <strong>Thread safety</strong>: Prevents blocking on access for concurrent threads
 - <strong>No static type narrowing</strong>: Grapa uses dynamic typing, so no compile-time literal type inference</p>

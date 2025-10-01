@@ -1723,18 +1723,18 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#const" class="md-nav__link">
+  <a href="#freeze" class="md-nav__link">
     <span class="md-ellipsis">
-      const
+      freeze
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#static" class="md-nav__link">
+  <a href="#constexpr" class="md-nav__link">
     <span class="md-ellipsis">
-      static
+      constexpr
     </span>
   </a>
   
@@ -4497,18 +4497,18 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#const" class="md-nav__link">
+  <a href="#freeze" class="md-nav__link">
     <span class="md-ellipsis">
-      const
+      freeze
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#static" class="md-nav__link">
+  <a href="#constexpr" class="md-nav__link">
     <span class="md-ellipsis">
-      static
+      constexpr
     </span>
   </a>
   
@@ -4692,33 +4692,33 @@ myIns;
 <p>Used to define lexical rules. Currently only used to define special character handling like space and tab, where the default handling is to skip these characters so they do not need to be specified in the grammar. :</p>
 <h2 id="rule">rule</h2>
 <p>See <a href="../../type/rule/">$RULE type</a></p>
-<h2 id="const">const</h2>
-<p>Sets a bit in the variable that prevents it from being changed. Will not be locked when accessed, which is useful for a global variable accssed by concurent threads.</p>
-<div class="highlight"><pre><span></span><code>x = const {one: &quot;string one&quot;, two: &quot;string two&quot;};
+<h2 id="freeze">freeze</h2>
+<p>Sets a bit in the variable that prevents it from being changed. Will not be locked when accessed, which is useful for a global variable accessed by concurrent threads.</p>
+<div class="highlight"><pre><span></span><code>x = freeze {one: &quot;string one&quot;, two: &quot;string two&quot;};
 </code></pre></div>
-<p>Once set, the variable can not be modified. To turn off the const bit, use the following:
-<div class="highlight"><pre><span></span><code>x.setconst(false);
+<p>Once set, the variable can not be modified. To turn off the freeze bit, use the following:
+<div class="highlight"><pre><span></span><code>x.setfreeze(false);
 x += (three:&quot;th str&quot;);
-x.setconst(true);
+x.setfreeze(true);
 </code></pre></div></p>
-<p><strong>Note:</strong> <code>const</code> is intended for performance (caching/optimization), not for locking or thread safety. It prevents modification unless <code>setconst</code> is used, but does not synchronize access between threads. For explicit locking, see <a href="../../sys/thread/">$thread</a>.</p>
-<h2 id="static">static</h2>
-<p>Compile-time option. The code to construct the array (or value) is executed at compile time (during script loading), not at runtime. This reduces repeated computation and improves performance, but does not affect thread safety or immutability.</p>
+<p><strong>Note:</strong> <code>freeze</code> is intended for performance (caching/optimization), not for locking or thread safety. It prevents modification unless <code>setfreeze</code> is used, but does not synchronize access between threads. For explicit locking, see <a href="../../sys/thread/">$thread</a>.</p>
+<h2 id="constexpr">constexpr</h2>
+<p>Compile-time evaluation option. The expression is evaluated at compile time (during script loading), not at runtime. This reduces repeated computation and improves performance, but does not affect thread safety or immutability.</p>
 <div class="highlight"><pre><span></span><code>f = op(s)
 {
-  x = static {one: &quot;string one&quot;, two: &quot;string two&quot;};
+  x = constexpr {one: &quot;string one&quot;, two: &quot;string two&quot;};
   x[s];
 };
 f(&quot;two&quot;);
 </code></pre></div>
-<p>Here is the compiled function with static:
+<p>Here is the compiled function with constexpr:
 <div class="highlight"><pre><span></span><code>@&lt;[op,@[@&lt;assign,{x,{&quot;one&quot;:&quot;string one&quot;,&quot;two&quot;:&quot;string two&quot;}}&gt;,@&lt;search,{@&lt;var,{x}&gt;,@&lt;createlist,{@&lt;var,{s}&gt;}&gt;}&gt;]],{s}&gt;
 </code></pre></div></p>
-<p>Here is the compiled funciton without static:
+<p>Here is the compiled function without constexpr:
 <div class="highlight"><pre><span></span><code>@&lt;[op,@[@&lt;assign,{x,@&lt;prepend,{@&lt;createlist,{@&lt;name,{two,&quot;string two&quot;}&gt;}&gt;,@&lt;name,{one,&quot;string one&quot;}&gt;}&gt;}&gt;,@&lt;search,{@&lt;var,{x}&gt;,@&lt;createlist,{@&lt;var,{s}&gt;}&gt;}&gt;]],{s}&gt;
 </code></pre></div></p>
-<p>If the list needs to be constructed using a variable that is passed in, than do not use the static operator and the variable will be constructed at run time.</p>
-<p><strong>Note:</strong> <code>static</code> is for compile-time evaluation only. It does not make a value immutable or thread safe. For thread safety and locking, see <a href="../../sys/thread/">$thread</a>.</p>
+<p>If the list needs to be constructed using a variable that is passed in, then do not use the constexpr operator and the variable will be constructed at run time.</p>
+<p><strong>Note:</strong> <code>constexpr</code> is for compile-time evaluation only. It does not make a value immutable or thread safe. For thread safety and locking, see <a href="../../sys/thread/">$thread</a>.</p>
 <h2 id="literal">literal</h2>
 <p>Any sequence starting with an ascii letter, and including numbers and '_'. </p>
 <h2 id="literal-params">literal ([params])</h2>

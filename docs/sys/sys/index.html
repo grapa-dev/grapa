@@ -2098,13 +2098,13 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#setconstobject-readonly" class="md-nav__link">
+  <a href="#setfreezeobject-readonly" class="md-nav__link">
     <span class="md-ellipsis">
-      setconst(object, readonly)
+      setfreeze(object, readonly)
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="setconst(object, readonly)">
+    <nav class="md-nav" aria-label="setfreeze(object, readonly)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -4630,13 +4630,13 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#setconstobject-readonly" class="md-nav__link">
+  <a href="#setfreezeobject-readonly" class="md-nav__link">
     <span class="md-ellipsis">
-      setconst(object, readonly)
+      setfreeze(object, readonly)
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="setconst(object, readonly)">
+    <nav class="md-nav" aria-label="setfreeze(object, readonly)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -5226,21 +5226,21 @@ my_helper = op(x) { x * 2; };
 readonly_data = $sys().const(data);
 /* readonly_data is now read-only */
 </code></pre></div></p>
-<h3 id="setconstobject-readonly">setconst(object, readonly)</h3>
-<p>Makes an object read-only or writable.</p>
+<h3 id="setfreezeobject-readonly">setfreeze(object, readonly)</h3>
+<p>Makes an object read-only (frozen) or writable.</p>
 <p><strong>Parameters:</strong>
 - <code>object</code> - Any Grapa object or variable
 - <code>readonly</code> - Boolean: <code>true</code> to make read-only, <code>false</code> to make writable</p>
 <p><strong>Returns:</strong> The modified object</p>
 <p><strong>Example:</strong>
 <div class="highlight"><pre><span></span><code>my_variable = &quot;important data&quot;;
-$sys().setconst(my_variable, true);  /* Make read-only */
+$sys().setfreeze(my_variable, true);  /* Make read-only */
 
 /* Attempting to modify will fail */
-my_variable = &quot;new data&quot;;  /* Error: Cannot modify const variable */
+my_variable = &quot;new data&quot;;  /* Error: Cannot modify freeze variable */
 
 /* Make writable again */
-$sys().setconst(my_variable, false);
+$sys().setfreeze(my_variable, false);
 my_variable = &quot;new data&quot;;  /* Now works */
 </code></pre></div></p>
 <p><strong>Important</strong>: This feature helps protect critical system components from unintended changes, but should be used carefully as it can prevent legitimate modifications.</p>

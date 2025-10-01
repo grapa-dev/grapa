@@ -11,7 +11,7 @@ class GrapaCritical
 {
 public:
 	s32 mWaitCount;
-	bool mWaiting, mConst;
+	bool mWaiting, mFreeze;
 
 	GrapaCritical();
     virtual ~GrapaCritical();

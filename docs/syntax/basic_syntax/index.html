@@ -3106,9 +3106,9 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#const-protection" class="md-nav__link">
+  <a href="#freeze-protection" class="md-nav__link">
     <span class="md-ellipsis">
-      Const Protection
+      Freeze Protection
     </span>
   </a>
   
@@ -6424,9 +6424,9 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#const-protection" class="md-nav__link">
+  <a href="#freeze-protection" class="md-nav__link">
     <span class="md-ellipsis">
-      Const Protection
+      Freeze Protection
     </span>
   </a>
   
@@ -7489,7 +7489,7 @@ This file is the canonical, empirically tested reference for Grapa syntax and ac
 - For Grapa Objects: <code>gobj[key]</code> (preferred) or <code>gobj."key"</code> for data access, and <code>gobj.len()</code>
 - For objects: <code>object.property</code> (preferred) or <code>object[key]</code>
 - For files: <code>file.getfield(key)</code> and <code>file.setfield(key, value)</code>
-- For tables: <code>table.getfield(key, field)</code> and <code>table.setfield(key, value, field)</code>
+- For tables: <code>table.getfield(key_or_id, field)</code> and <code>table.setfield(key_or_id, value, field)</code> - supports both record keys and IDs
 - For widgets: <code>widget.get(name, params)</code> and <code>widget.set(name, data)</code>
 - For universal access: <code>object.get(key)</code> and <code>object.set(key, value)</code> (works with <code>$LIST</code>, <code>$GOBJ</code>, <code>$OBJ</code>, <code>$file</code>, <code>$TABLE</code>, <code>$WIDGET</code>)
 - For flexible field access: <code>object.getfield(key, field)</code> and <code>object.setfield(key, field, value)</code> (mix/match of names and indices supported for <code>$LIST</code>, <code>$GOBJ</code>, and <code>$OBJ</code> non-system classes only)
@@ -7499,7 +7499,7 @@ This file is the canonical, empirically tested reference for Grapa syntax and ac
 - <strong><code>.get()/.set()</code> for <code>$GOBJ</code></strong>: <code>gobj.get(key)</code> and <code>gobj.set(key, value)</code> - alternative to bracket notation
 - <strong><code>.get()/.set()</code> for <code>$OBJ</code></strong>: <code>obj.get(key)</code> and <code>obj.set(key, value)</code> - alternative to dot/bracket notation<br />
 - <strong><code>.get()/.set()</code> for <code>$file</code></strong>: <code>file.get(key)</code> and <code>file.set(key, value)</code> - alternative to <code>.getfield()/.setfield()</code>
-- <strong><code>.get()/.set()</code> for <code>$TABLE</code></strong>: <code>table.get(key, field)</code> and <code>table.set(key, field, value)</code> - alternative to <code>.getfield()/.setfield()</code>
+- <strong><code>.get()/.set()</code> for <code>$TABLE</code></strong>: <code>table.get(key_or_id, field)</code> and <code>table.set(key_or_id, field, value)</code> - supports both record names (keys) and record IDs
 - <strong><code>.get()/.set()</code> for <code>$WIDGET</code></strong>: <code>widget.get(name, params)</code> and <code>widget.set(name, data)</code> - widget-specific operations
 - <strong>Length</strong>: Use <code>.len()</code> for arrays and lists, not <code>.size()</code>.
 - <strong>Keys</strong>: For lists, iterate manually instead of using <code>.keys()</code>.
@@ -8771,29 +8771,29 @@ value3 = @&quot;x y&quot;.&quot;b&quot;;       /* Dot notation with string liter
 <li><strong>Arbitrary names</strong>: Support for variable names that don't conform to standard identifier rules</li>
 </ul>
 <p>This feature enables Grapa's unique capability to add <strong>true native syntax</strong> for other programming languages through its rule-based grammar system.</p>
-<h3 id="const-protection">Const Protection</h3>
-<p>Grapa provides runtime const protection that prevents variable modification:</p>
-<div class="highlight"><pre><span></span><code>/* Create const variable */
-config = const {&quot;debug&quot;: true, &quot;port&quot;: 3000};
+<h3 id="freeze-protection">Freeze Protection</h3>
+<p>Grapa provides runtime freeze protection that prevents variable modification:</p>
+<div class="highlight"><pre><span></span><code>/* Create freeze variable */
+config = freeze {&quot;debug&quot;: true, &quot;port&quot;: 3000};
 
 /* Cannot modify (will error) */
-config.port = 8080;  /* Error: cannot modify const */
+config.port = 8080;  /* Error: cannot modify freeze */
 
-/* Can toggle const protection */
-config.setconst(false);
+/* Can toggle freeze protection */
+config.setfreeze(false);
 config.port = 8080;  /* Now works */
-config.setconst(true);  /* Make const again */
+config.setfreeze(true);  /* Make freeze again */
 
-/* Const arrays */
-colors = const [&quot;red&quot;, &quot;green&quot;, &quot;blue&quot;];
-colors += &quot;yellow&quot;;  /* Error: cannot modify const */
+/* Freeze arrays */
+colors = freeze [&quot;red&quot;, &quot;green&quot;, &quot;blue&quot;];
+colors += &quot;yellow&quot;;  /* Error: cannot modify freeze */
 
-/* Performance optimization */
-static_config = static {&quot;api_url&quot;: &quot;https://api.example.com&quot;};
+/* Compile-time evaluation */
+constexpr_config = constexpr {&quot;api_url&quot;: &quot;https://api.example.com&quot;};
 </code></pre></div>
-<p><strong>Benefits of Grapa's const:</strong>
+<p><strong>Benefits of Grapa's freeze:</strong>
 - <strong>Runtime protection</strong>: Prevents actual modification at runtime
-- <strong>Dynamic control</strong>: Can toggle const on/off as needed
+- <strong>Dynamic control</strong>: Can toggle freeze on/off as needed
 - <strong>Performance</strong>: Optimized for caching and concurrent access
 - <strong>Thread safety</strong>: Prevents blocking on access for concurrent threads</p>
 <h3 id="class-system">Class System</h3>

@@ -174,47 +174,47 @@ Used to define lexical rules. Currently only used to define special character ha
 ## rule
 See [$RULE type](../type/rule.md)
 
-## const
-Sets a bit in the variable that prevents it from being changed. Will not be locked when accessed, which is useful for a global variable accssed by concurent threads.
+## freeze
+Sets a bit in the variable that prevents it from being changed. Will not be locked when accessed, which is useful for a global variable accessed by concurrent threads.
 
 ```
-x = const {one: "string one", two: "string two"};
+x = freeze {one: "string one", two: "string two"};
 ```
 
-Once set, the variable can not be modified. To turn off the const bit, use the following:
+Once set, the variable can not be modified. To turn off the freeze bit, use the following:
 ```
-x.setconst(false);
+x.setfreeze(false);
 x += (three:"th str");
-x.setconst(true);
+x.setfreeze(true);
 ```
 
-**Note:** `const` is intended for performance (caching/optimization), not for locking or thread safety. It prevents modification unless `setconst` is used, but does not synchronize access between threads. For explicit locking, see [$thread](../sys/thread.md).
+**Note:** `freeze` is intended for performance (caching/optimization), not for locking or thread safety. It prevents modification unless `setfreeze` is used, but does not synchronize access between threads. For explicit locking, see [$thread](../sys/thread.md).
 
-## static
-Compile-time option. The code to construct the array (or value) is executed at compile time (during script loading), not at runtime. This reduces repeated computation and improves performance, but does not affect thread safety or immutability.
+## constexpr
+Compile-time evaluation option. The expression is evaluated at compile time (during script loading), not at runtime. This reduces repeated computation and improves performance, but does not affect thread safety or immutability.
 
 ```
 f = op(s)
 {
-  x = static {one: "string one", two: "string two"};
+  x = constexpr {one: "string one", two: "string two"};
   x[s];
 };
 f("two");
 ```
 
-Here is the compiled function with static:
+Here is the compiled function with constexpr:
 ```
 @<[op,@[@<assign,{x,{"one":"string one","two":"string two"}}>,@<search,{@<var,{x}>,@<createlist,{@<var,{s}>}>}>]],{s}>
 ```
 
-Here is the compiled funciton without static:
+Here is the compiled function without constexpr:
 ```
 @<[op,@[@<assign,{x,@<prepend,{@<createlist,{@<name,{two,"string two"}>}>,@<name,{one,"string one"}>}>}>,@<search,{@<var,{x}>,@<createlist,{@<var,{s}>}>}>]],{s}>
 ```
 
-If the list needs to be constructed using a variable that is passed in, than do not use the static operator and the variable will be constructed at run time.
+If the list needs to be constructed using a variable that is passed in, then do not use the constexpr operator and the variable will be constructed at run time.
 
-**Note:** `static` is for compile-time evaluation only. It does not make a value immutable or thread safe. For thread safety and locking, see [$thread](../sys/thread.md).
+**Note:** `constexpr` is for compile-time evaluation only. It does not make a value immutable or thread safe. For thread safety and locking, see [$thread](../sys/thread.md).
 
 ## literal
 Any sequence starting with an ascii letter, and including numbers and '_'. 

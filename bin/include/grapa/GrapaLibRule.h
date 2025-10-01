@@ -80,9 +80,9 @@ public:
 	GrapaLibraryEvent* HandleThis(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleLocal(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleOpLocal(GrapaCHAR& pName);
-	GrapaLibraryEvent* HandleStatic(GrapaCHAR& pName);
-	GrapaLibraryEvent* HandleConst(GrapaCHAR& pName);
-	GrapaLibraryEvent* HandleSetConst(GrapaCHAR& pName);
+	GrapaLibraryEvent* HandleConstExpr(GrapaCHAR& pName);
+	GrapaLibraryEvent* HandleFreeze(GrapaCHAR& pName);
+	GrapaLibraryEvent* HandleSetFreeze(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleReturn(GrapaCHAR& pName);
     GrapaLibraryEvent* HandleBreak(GrapaCHAR& pName);
     GrapaLibraryEvent* HandleContinue(GrapaCHAR& pName);

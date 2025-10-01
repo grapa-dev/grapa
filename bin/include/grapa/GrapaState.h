@@ -107,7 +107,7 @@ public:
 	GrapaRuleEvent *vRuleLambda;
 	GrapaRuleEvent *vRuleParent;
 	GrapaRuleEvent *vClass;
-	bool mVar, mLocal, mClass, mConst, mCopied, mOpLocal, mInTryBlock;
+	bool mVar, mLocal, mClass, mFreeze, mCopied, mOpLocal, mInTryBlock;
 	u8 mControlFlow; // Control flow type: 0 = none, 1 = break, 2 = continue, 3 = return, 4 = throw
 	char mQuote;
 	u8 mT;
@@ -128,7 +128,7 @@ private:
 	void INIT() {
 		vValueEvent = NULL; 
 		vRuleLambda = NULL; vLibraryEvent = NULL;  
-		mVar = mLocal = mClass = mConst = mCopied = mOpLocal = mInTryBlock = false; vRuleParent = NULL;
+		mVar = mLocal = mClass = mFreeze = mCopied = mOpLocal = mInTryBlock = false; vRuleParent = NULL;
 		mControlFlow = 0;
 		vClass = NULL;
 		mQuote = 0;
@@ -310,8 +310,8 @@ public:
 
 	//GrapaError GetParameterKey(GrapaNames* pNameSpace, GrapaRuleEvent* pInputParam, GrapaPublicKey& pKey);
 
-	static GrapaRuleEvent* CopyItem(GrapaRuleEvent* pAction, bool isTAG = false, bool isConst = false);
-	static GrapaRuleQueue* CopyQueue(GrapaRuleQueue* pList, bool isTAG = false, bool isConst = false);
+	static GrapaRuleEvent* CopyItem(GrapaRuleEvent* pAction, bool isTAG = false, bool isFreeze = false);
+	static GrapaRuleQueue* CopyQueue(GrapaRuleQueue* pList, bool isTAG = false, bool isFreeze = false);
 	void AssignValue(GrapaNames* pNameSpace, GrapaRuleEvent* parameter, GrapaRuleEvent* r, GrapaRuleEvent * rDel);
 
 	void ReplaceLocalQueue(GrapaRuleQueue* pList, GrapaRuleQueue* pLocal);

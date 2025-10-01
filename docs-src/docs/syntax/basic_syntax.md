@@ -1509,33 +1509,33 @@ Variable indirection is crucial for implementing **true native syntax** because:
 
 This feature enables Grapa's unique capability to add **true native syntax** for other programming languages through its rule-based grammar system.
 
-### Const Protection
+### Freeze Protection
 
-Grapa provides runtime const protection that prevents variable modification:
+Grapa provides runtime freeze protection that prevents variable modification:
 
 ```grapa
-/* Create const variable */
-config = const {"debug": true, "port": 3000};
+/* Create freeze variable */
+config = freeze {"debug": true, "port": 3000};
 
 /* Cannot modify (will error) */
-config.port = 8080;  /* Error: cannot modify const */
+config.port = 8080;  /* Error: cannot modify freeze */
 
-/* Can toggle const protection */
-config.setconst(false);
+/* Can toggle freeze protection */
+config.setfreeze(false);
 config.port = 8080;  /* Now works */
-config.setconst(true);  /* Make const again */
+config.setfreeze(true);  /* Make freeze again */
 
-/* Const arrays */
-colors = const ["red", "green", "blue"];
-colors += "yellow";  /* Error: cannot modify const */
+/* Freeze arrays */
+colors = freeze ["red", "green", "blue"];
+colors += "yellow";  /* Error: cannot modify freeze */
 
-/* Performance optimization */
-static_config = static {"api_url": "https://api.example.com"};
+/* Compile-time evaluation */
+constexpr_config = constexpr {"api_url": "https://api.example.com"};
 ```
 
-**Benefits of Grapa's const:**
+**Benefits of Grapa's freeze:**
 - **Runtime protection**: Prevents actual modification at runtime
-- **Dynamic control**: Can toggle const on/off as needed
+- **Dynamic control**: Can toggle freeze on/off as needed
 - **Performance**: Optimized for caching and concurrent access
 - **Thread safety**: Prevents blocking on access for concurrent threads
 

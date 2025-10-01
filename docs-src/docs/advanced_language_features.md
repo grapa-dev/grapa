@@ -743,10 +743,10 @@ result = arr.custom_method();
 ```grapa
 /* Make a variable read-only to prevent modification */
 my_variable = "important data";
-$sys().setconst(my_variable, true);
+$sys().setfreeze(my_variable, true);
 
-/* Check if a variable is read-only */
-is_readonly = $sys().const(my_variable);
+/* Check if a variable is freeze (read-only) */
+is_readonly = $sys().freeze(my_variable);
 ```
 
 **Future Enhancement:**

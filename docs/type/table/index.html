@@ -1658,6 +1658,48 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#data-access-patterns" class="md-nav__link">
+    <span class="md-ellipsis">
+      Data Access Patterns
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Data Access Patterns">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#multiple-access-methods" class="md-nav__link">
+    <span class="md-ellipsis">
+      Multiple Access Methods
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#key-vs-id-access" class="md-nav__link">
+    <span class="md-ellipsis">
+      Key vs ID Access
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#list-format-with-id-field" class="md-nav__link">
+    <span class="md-ellipsis">
+      List Format with $ID Field
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#data-retrieval-and-type-conversion" class="md-nav__link">
     <span class="md-ellipsis">
       Data Retrieval and Type Conversion
@@ -1818,7 +1860,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#data-access-patterns" class="md-nav__link">
+  <a href="#data-access-patterns_1" class="md-nav__link">
     <span class="md-ellipsis">
       Data Access Patterns
     </span>
@@ -4962,6 +5004,48 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#data-access-patterns" class="md-nav__link">
+    <span class="md-ellipsis">
+      Data Access Patterns
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Data Access Patterns">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#multiple-access-methods" class="md-nav__link">
+    <span class="md-ellipsis">
+      Multiple Access Methods
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#key-vs-id-access" class="md-nav__link">
+    <span class="md-ellipsis">
+      Key vs ID Access
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#list-format-with-id-field" class="md-nav__link">
+    <span class="md-ellipsis">
+      List Format with $ID Field
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#data-retrieval-and-type-conversion" class="md-nav__link">
     <span class="md-ellipsis">
       Data Retrieval and Type Conversion
@@ -5122,7 +5206,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#data-access-patterns" class="md-nav__link">
+  <a href="#data-access-patterns_1" class="md-nav__link">
     <span class="md-ellipsis">
       Data Access Patterns
     </span>
@@ -5452,13 +5536,106 @@ f.setfield(&quot;sale_001&quot;, &quot;quantity&quot;, 2);
 /* Column-oriented queries are efficient */
 /* (In a real implementation, you&#39;d have aggregation functions) */
 </code></pre></div>
+<h2 id="data-access-patterns">Data Access Patterns</h2>
+<h3 id="multiple-access-methods">Multiple Access Methods</h3>
+<p>$TABLE objects support both key-based and ID-based record access, providing flexibility for different use cases:</p>
+<div class="highlight"><pre><span></span><code>/* Create table and add records */
+table = {}.table(&quot;ROW&quot;);
+table.mkfield(&quot;name&quot;, &quot;STR&quot;, &quot;VAR&quot;);
+table.set(&quot;user1&quot;, &quot;Alice&quot;, &quot;name&quot;);
+table.set(&quot;user2&quot;, &quot;Bob&quot;, &quot;name&quot;);
+
+/* List records to see structure - includes $ID field */
+records = table.ls();
+/* Returns: [{&quot;$PATH&quot;:&quot;&quot;,&quot;$KEY&quot;:&quot;user1&quot;,&quot;$ID&quot;:1,&quot;$TYPE&quot;:&quot;VALUE&quot;,&quot;$BYTES&quot;:5},{&quot;$PATH&quot;:&quot;&quot;,&quot;$KEY&quot;:&quot;user2&quot;,&quot;$ID&quot;:2,&quot;$TYPE&quot;:&quot;VALUE&quot;,&quot;$BYTES&quot;:3}] */
+
+/* Access by key (name) */
+name1 = table.get(&quot;user1&quot;, &quot;name&quot;);  /* &quot;Alice&quot; */
+
+/* Access by ID (record database ID) */
+name2 = table.get(2, &quot;name&quot;);        /* &quot;Bob&quot; - using record ID */
+
+/* Both methods work for getfield/setfield too */
+table.set(1, &quot;name&quot;, &quot;Alice Updated&quot;);  /* Update using record ID */
+value = table.getfield(1, &quot;name&quot;);      /* Retrieve using record ID */
+</code></pre></div>
+<h3 id="key-vs-id-access">Key vs ID Access</h3>
+<table>
+<thead>
+<tr>
+<th>Access Method</th>
+<th>Use</th>
+<th>Syntax</th>
+<th>Persistence</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Key-based</strong></td>
+<td>Human-readable record names</td>
+<td><code>table.get("record_name", "field")</code></td>
+<td>Names can change</td>
+</tr>
+<tr>
+<td><strong>ID-based</strong></td>
+<td>Database-assigned numeric IDs</td>
+<td><code>table.get(record_id, "field")</code></td>
+<td>IDs are permanent</td>
+</tr>
+</tbody>
+</table>
+<p><strong>ID Benefits:</strong>
+- <strong>Permanent references</strong>: Record IDs never change, even after deletions
+- <strong>Performance</strong>: Direct numeric lookup is faster than string comparison<br />
+- <strong>Stability</strong>: Bo/s deletion of other records doesn't affect ID references</p>
+<p><strong>Example of ID stability:</strong>
+<div class="highlight"><pre><span></span><code>table = {}.table(&quot;ROW&quot;);
+table.mkfield(&quot;name&quot;, &quot;STR&quot;, &quot;VAR&quot;);
+
+table.set(&quot;a&quot;, &quot;one&quot;);
+table.set(&quot;b&quot;, &quot;two&quot;); 
+table.set(&quot;c&quot;, &quot;three&quot;);
+
+records = table.ls();
+/* Returns: [{&quot;$PATH&quot;:&quot;&quot;,&quot;$KEY&quot;:&quot;a&quot;,&quot;$ID&quot;:1,&quot;$TYPE&quot;:&quot;VALUE&quot;,&quot;$BYTES&quot;:3},{&quot;$PATH&quot;:&quot;&quot;,&quot;$KEY&quot;:&quot;b&quot;,&quot;$ID&quot;:2,&quot;$TYPE&quot;:&quot;VALUE&quot;,&quot;$BYTES&quot;:3},{&quot;$PATH&quot;:&quot;&quot;,&quot;$KEY&quot;:&quot;c&quot;,&quot;$ID&quot;:3,&quot;$TYPE&quot;:&quot;VALUE&quot;,&quot;$BYTES&quot;:5}] */
+/* Note: Each record includes $ID field for numeric access */
+
+table.rm(&quot;b&quot;);  /* Delete record b */
+records = table.ls();
+/* Returns: [{&quot;$PATH&quot;:&quot;&quot;,&quot;$KEY&quot;:&quot;a&quot;,&quot;$ID&quot;:1,&quot;$TYPE&quot;:&quot;VALUE&quot;,&quot;$BYTES&quot;:3},{&quot;$PATH&quot;:&quot;&quot;,&quot;$KEY&quot;:&quot;c&quot;,&quot;$ID&quot;:3,&quot;$TYPE&quot;:&quot;VALUE&quot;,&quot;$BYTES&quot;:5}] */
+/* IDs remain: a=1, c=3 (ID 2 is gone but not renumbered) */
+
+table.set(&quot;d&quot;, &quot;four&quot;);
+records = table.ls();
+/* Returns: [{&quot;$PATH&quot;:&quot;&quot;,&quot;$KEY&quot;:&quot;a&quot;,&quot;$ID&quot;:1,&quot;$TYPE&quot;:&quot;VALUE&quot;,&quot;$BYTES&quot;:3},{&quot;$PATH&quot;:&quot;&quot;,&quot;$KEY&quot;:&quot;c&quot;,&quot;$ID&quot;:3,&quot;$TYPE&quot;:&quot;VALUE&quot;,&quot;$BYTES&quot;:5},{&quot;$PATH&quot;:&quot;&quot;,&quot;$KEY&quot;:&quot;d&quot;,&quot;$ID&quot;:4,&quot;$TYPE&quot;:&quot;VALUE&quot;,&quot;$BYTES&quot;:4}] */
+/* ID 4 assigned to d */
+
+table.get(3, &quot;name&quot;);  /* Still returns &quot;three&quot; */
+table.get(4, &quot;name&quot;);  /* Returns &quot;four&quot; */
+</code></pre></div></p>
+<h3 id="list-format-with-id-field">List Format with $ID Field</h3>
+<p>The <code>.ls()</code> method returns records with <strong>$ID field included</strong>:</p>
+<div class="highlight"><pre><span></span><code>table = {}.table(&quot;ROW&quot;);
+table.mkfield(&quot;name&quot;, &quot;STR&quot;, &quot;VAR&quot;);
+table.set(&quot;user1&quot;, &quot;Alice&quot;, &quot;name&quot;);
+table.set(&quot;user2&quot;, &quot;Bob&quot;, &quot;name&quot;);
+
+records = table.ls();
+/* Returns: [{&quot;$PATH&quot;:&quot;&quot;,&quot;$KEY&quot;:&quot;user1&quot;,&quot;$ID&quot;:1,&quot;$TYPE&quot;:&quot;VALUE&quot;,&quot;$BYTES&quot;:5},{&quot;$PATH&quot;:&quot;&quot;,&quot;$KEY&quot;:&quot;user2&quot;,&quot;$ID&quot;:2,&quot;$TYPE&quot;:&quot;VALUE&quot;,&quot;$BYTES&quot;:3}] */
+</code></pre></div>
+<p><strong>Record Object Fields:</strong>
+- <strong>$PATH</strong>: Path component (usually empty for $TABLE)
+- <strong>$KEY</strong>: Record name/key (e.g., "user1")
+- <strong>$ID</strong>: <strong>Numeric record ID</strong> for direct access (e.g., 1, 2, 3...)
+- <strong>$TYPE</strong>: Record type (usually "VALUE" for data records)
+- <strong>$BYTES</strong>: Size of record data</p>
 <h2 id="data-retrieval-and-type-conversion">Data Retrieval and Type Conversion</h2>
 <h3 id="retrieving-data-with-type-conversion">Retrieving Data with Type Conversion</h3>
 <p>When retrieving data from tables, use appropriate type conversion methods:</p>
-<div class="highlight"><pre><span></span><code>/* Retrieve with type conversion */
-name = table.get(&quot;user1&quot;, &quot;name&quot;).str();       /* Convert to string */
-age = table.get(&quot;user1&quot;, &quot;age&quot;).int();         /* Convert to integer */
-salary = table.get(&quot;user1&quot;, &quot;salary&quot;).float(); /* Convert to float */
+<div class="highlight"><pre><span></span><code>/* Retrieve with type conversion - both key and ID access supported */
+name = table.get(&quot;user1&quot;, &quot;name&quot;).str();       /* Key-based: Convert to string */
+age = table.get(1, &quot;age&quot;).int();              /* ID-based: Convert to integer */
+salary = table.get(&quot;user1&quot;, &quot;salary&quot;).float(); /* Key-based: Convert to float */
 </code></pre></div>
 <h3 id="type-conversion-methods">Type Conversion Methods</h3>
 <table>
@@ -5553,7 +5730,7 @@ f.dump().echo();
 <li><strong>Growth Management</strong>: Automatic growth parameter setting for optimal performance</li>
 <li><strong>Sparse Data</strong>: Efficient handling of NULL and empty values</li>
 </ul>
-<h3 id="data-access-patterns">Data Access Patterns</h3>
+<h3 id="data-access-patterns_1">Data Access Patterns</h3>
 <ul>
 <li><strong>Row Store</strong>: Optimized for horizontal data access</li>
 <li><strong>Column Store</strong>: Optimized for vertical data access</li>

@@ -9,7 +9,7 @@ tags:
 `rule`, `ruleval`, `ruleref`, `token`, `grammar`, `reset`, `shell`, `eval`, `exec`, `post`, `sleep`, `exit`, `getenv`, `putenv`, `setenv`, `include`
 
 ## Variables & Scope
-`name`, `getname`, `lit`, `ref`, `setnull`, `var`, `assign`, `assignappend`, `assignextend`, `global`, `parent`, `this`, `local`, `static`, `const`, `setconst`
+`name`, `getname`, `lit`, `ref`, `setnull`, `var`, `assign`, `assignappend`, `assignextend`, `global`, `parent`, `this`, `local`, `constexpr`, `freeze`, `setfreeze`
 
 ## Data Structures
 `createarray`, `createtuple`, `createlist`, `createxml`, `createel`, `createtag`, `createop`, `createcode`, `createrule`, `extend`, `remove`, `prepend`, `pop`, `call`
@@ -69,7 +69,7 @@ tags:
 `utc`, `tz`
 
 ## System
-`getenv`, `putenv`, `setenv`, `const`, `setconst`, `compile`, `compilef`, `eval`, `sleep`
+`getenv`, `putenv`, `setenv`, `freeze`, `setfreeze`, `compile`, `compilef`, `eval`, `sleep`
 
 **Command Line Arguments**: `$ARGV` (positional args), `$CLIARGV` (full command line)
 
