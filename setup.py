@@ -3,8 +3,6 @@ import sys
 import platform
 import subprocess
 import re
-from setuptools.command.install import install
-from setuptools.command.build import build
 
 # Check setuptools version for compatibility
 try:
@@ -355,189 +353,6 @@ class CMakeBuild(build_ext):
 
         subprocess.check_call(["cmake", ext.sourcedir] + cmake_args, cwd=self.build_temp)
         subprocess.check_call(["cmake", "--build", "."] + build_args, cwd=self.build_temp)
-        
-        # Copy ONNX Runtime shared libraries to the same directory as the extension
-        self.copy_onnxruntime_libs_to_extension_dir(extdir)
-        
-        # Fix RPATH for macOS to use relative paths
-        if sys.platform.startswith("darwin"):
-            self.fix_macos_rpath(extdir)
-    
-    def copy_onnxruntime_libs_to_extension_dir(self, extdir):
-        """Copy ONNX Runtime shared libraries to the extension directory.
-        
-        This ensures the shared libraries are in the same directory as the Python extension,
-        making them locatable at runtime without requiring system-wide installation or
-        LD_LIBRARY_PATH configuration.
-        """
-        import shutil
-        import os
-        from pathlib import Path
-        
-        # Determine platform
-        my_system = platform.system()
-        my_machine = platform.machine().lower()
-        
-        if my_system == 'Darwin':
-            if my_machine == 'arm64':
-                platform_name = 'mac-arm64'
-            else:
-                platform_name = 'mac-amd64'
-        elif my_system == 'Linux':
-            if my_machine == 'aarch64' or my_machine == 'arm64':
-                platform_name = 'linux-arm64'
-            else:
-                platform_name = 'linux-amd64'
-        elif my_system == 'Windows':
-            platform_name = 'win-amd64'
-        else:
-            print(f"Warning: Unknown platform {my_system} {my_machine}")
-            return
-        
-        # Source directory for ONNX Runtime libraries
-        source_lib_dir = Path("source/onnxruntime-lib") / platform_name
-        if not source_lib_dir.exists():
-            print(f"Warning: ONNX Runtime libraries not found at {source_lib_dir}")
-            return
-        
-        # Copy shared libraries directly to extension directory (same level as the extension)
-        # This ensures they're locatable at runtime since they're in the same directory
-        lib_dir = Path(extdir)
-        lib_dir.mkdir(exist_ok=True)
-        
-        # Also copy to current directory if Python extension is there (for development builds)
-        current_dir = Path(".")
-        if (current_dir / "grapapy.cpython-313-darwin.so").exists() or (current_dir / "grapapy.cpython-39-x86_64-linux-gnu.so").exists():
-            print(f"Also copying ONNX Runtime libraries to current directory for development build")
-        
-        # Find the current versioned library dynamically
-        versioned_lib = None
-        unversioned_lib = None
-        
-        for lib_file in source_lib_dir.glob("*"):
-            if lib_file.is_file() and lib_file.suffix in ['.dylib', '.so', '.dll']:
-                # Skip older versioned libraries to reduce distribution size
-                # Only include the current version and create symlink/shim as needed
-                if '1.22.2' in lib_file.name:
-                    print(f"Skipping older version: {lib_file.name}")
-                    continue
-                
-                # Identify the current versioned library (e.g., libonnxruntime.1.23.0.dylib)
-                if 'libonnxruntime.' in lib_file.name and '.' in lib_file.name.split('libonnxruntime.')[1]:
-                    versioned_lib = lib_file
-                elif lib_file.name == 'libonnxruntime.dylib' or lib_file.name == 'libonnxruntime.so' or lib_file.name == 'libonnxruntime.dll':
-                    unversioned_lib = lib_file
-                # Handle Windows ONNX Runtime files (without lib prefix)
-                elif lib_file.name == 'onnxruntime.dll':
-                    unversioned_lib = lib_file
-                
-                dest_path = lib_dir / lib_file.name
-                shutil.copy2(lib_file, dest_path)
-                print(f"Copied ONNX Runtime library: {lib_file.name}")
-        
-        # Create the symlink/shim if we have the versioned library but not the unversioned one
-        if versioned_lib and not unversioned_lib:
-            versioned_dest = lib_dir / versioned_lib.name
-            unversioned_dest = lib_dir / "libonnxruntime.dylib" if versioned_lib.suffix == '.dylib' else lib_dir / "libonnxruntime.so" if versioned_lib.suffix == '.so' else lib_dir / "libonnxruntime.dll"
-            shutil.copy2(versioned_dest, unversioned_dest)
-            print(f"Created symlink/shim: {unversioned_dest.name} -> {versioned_lib.name}")
-        
-        # Create libonnxruntime.so.1 symlink for Linux systems
-        if platform.system().lower() == 'linux':
-            try:
-                libonnxruntime_so = lib_dir / "libonnxruntime.so"
-                libonnxruntime_so_1 = lib_dir / "libonnxruntime.so.1"
-                if libonnxruntime_so.exists() and not libonnxruntime_so_1.exists():
-                    libonnxruntime_so_1.symlink_to("libonnxruntime.so")
-                    print("✅ Created symlink: libonnxruntime.so.1 -> libonnxruntime.so")
-            except Exception as e:
-                print(f"⚠️  Warning: Could not create symlink: {e}")
-        
-        print(f"ONNX Runtime libraries copied to: {lib_dir}")
-        
-        # Also copy to current directory if this is a development build (--inplace)
-        current_dir = Path(".")
-        # Check if we're doing an inplace build by checking if the extension will be copied to current directory
-        # The --inplace flag means the extension will be copied to the current directory
-        is_inplace_build = '--inplace' in sys.argv or str(extdir) == str(current_dir.absolute())
-        if is_inplace_build:
-            print(f"Also copying ONNX Runtime libraries to current directory for development build")
-            for lib_file in source_lib_dir.glob("*"):
-                if lib_file.is_file() and (lib_file.suffix in ['.dylib', '.so', '.dll'] or 'onnxruntime' in lib_file.name):
-                    dest_path = current_dir / lib_file.name
-                    shutil.copy2(lib_file, dest_path)
-                    print(f"Copied to current directory: {lib_file.name}")
-            
-            # Create symlink/shim in current directory if needed
-            if versioned_lib and not unversioned_lib:
-                versioned_dest = current_dir / versioned_lib.name
-                unversioned_dest = current_dir / "libonnxruntime.dylib" if versioned_lib.suffix == '.dylib' else current_dir / "libonnxruntime.so" if versioned_lib.suffix == '.so' else current_dir / "libonnxruntime.dll"
-                shutil.copy2(versioned_dest, unversioned_dest)
-                print(f"Created symlink/shim in current directory: {unversioned_dest.name} -> {versioned_lib.name}")
-            
-            # Create libonnxruntime.so.1 symlink for Linux systems in current directory
-            if platform.system().lower() == 'linux':
-                try:
-                    libonnxruntime_so = current_dir / "libonnxruntime.so"
-                    libonnxruntime_so_1 = current_dir / "libonnxruntime.so.1"
-                    if libonnxruntime_so.exists() and not libonnxruntime_so_1.exists():
-                        libonnxruntime_so_1.symlink_to("libonnxruntime.so")
-                        print("✅ Created symlink in current directory: libonnxruntime.so.1 -> libonnxruntime.so")
-                except Exception as e:
-                    print(f"⚠️  Warning: Could not create symlink in current directory: {e}")
-    
-    def fix_macos_rpath(self, extdir):
-        """Fix RPATH for macOS to use relative paths instead of absolute paths."""
-        import subprocess
-        import os
-        
-        # Find the Python extension file
-        ext_files = list(Path(extdir).glob("grapapy*.so"))
-        if not ext_files:
-            print("Warning: No Python extension found to fix RPATH")
-            return
-        
-        ext_file = ext_files[0]
-        print(f"Fixing RPATH for: {ext_file}")
-        
-        try:
-            # Remove all existing RPATH entries
-            result = subprocess.run(["otool", "-l", str(ext_file)], capture_output=True, text=True)
-            if result.returncode != 0:
-                print(f"Warning: Could not read RPATH from {ext_file}")
-                return
-            
-            # Find all RPATH entries and remove them
-            rpath_entries = []
-            lines = result.stdout.split('\n')
-            for i, line in enumerate(lines):
-                if 'LC_RPATH' in line:
-                    # Find the path in the next few lines
-                    for j in range(i+1, min(i+5, len(lines))):
-                        if 'path' in lines[j]:
-                            path = lines[j].split('path')[1].strip()
-                            # Remove any trailing text like "(offset 12)"
-                            if '(' in path:
-                                path = path.split('(')[0].strip()
-                            rpath_entries.append(path)
-                            break
-            
-            # Remove each RPATH entry
-            for rpath in rpath_entries:
-                try:
-                    subprocess.run(["install_name_tool", "-delete_rpath", rpath, str(ext_file)], check=True)
-                    print(f"Removed RPATH: {rpath}")
-                except subprocess.CalledProcessError:
-                    print(f"Warning: Could not remove RPATH: {rpath}")
-            
-            # Add the correct RPATH
-            subprocess.run(["install_name_tool", "-add_rpath", "@loader_path", str(ext_file)], check=True)
-            print("Added RPATH: @loader_path")
-            
-        except subprocess.CalledProcessError as e:
-            print(f"Warning: Could not fix RPATH: {e}")
-        except FileNotFoundError:
-            print("Warning: install_name_tool not found, RPATH not fixed")
 
 class CopySharedLibrary(Command):
     user_options = []
@@ -599,21 +414,21 @@ def pick_library_dirs():
     if my_system == 'Linux':
         if is_aws:
             if is_arm:
-                return ["source", "source/grapa-lib/aws-arm64", "source/fl-lib/aws-arm64", "source/blst-lib/aws-arm64", "source/pcre2-lib/aws-arm64", "source/openssl-lib/aws-arm64", "source/llama-lib/aws-arm64", "source/onnxruntime-lib/aws-arm64"]
+                return ["source", "source/grapa-lib/aws-arm64", "source/fl-lib/aws-arm64", "source/blst-lib/aws-arm64", "source/pcre2-lib/aws-arm64", "source/openssl-lib/aws-arm64", "source/llama-lib/aws-arm64"]
             else:
-                return ["source", "source/grapa-lib/aws-amd64", "source/fl-lib/aws-amd64", "source/blst-lib/aws-amd64", "source/pcre2-lib/aws-amd64", "source/openssl-lib/aws-amd64", "source/llama-lib/aws-amd64", "source/onnxruntime-lib/aws-amd64"]
+                return ["source", "source/grapa-lib/aws-amd64", "source/fl-lib/aws-amd64", "source/blst-lib/aws-amd64", "source/pcre2-lib/aws-amd64", "source/openssl-lib/aws-amd64", "source/llama-lib/aws-amd64"]
         else:
             if is_arm:
-                return ["source", "source/grapa-lib/linux-arm64", "source/fl-lib/linux-arm64", "source/blst-lib/linux-arm64", "source/pcre2-lib/linux-arm64", "source/openssl-lib/linux-arm64", "source/llama-lib/linux-arm64", "source/onnxruntime-lib/linux-arm64"]
+                return ["source", "source/grapa-lib/linux-arm64", "source/fl-lib/linux-arm64", "source/blst-lib/linux-arm64", "source/pcre2-lib/linux-arm64", "source/openssl-lib/linux-arm64", "source/llama-lib/linux-arm64"]
             else:
-                return ["source", "source/grapa-lib/linux-amd64", "source/fl-lib/linux-amd64", "source/blst-lib/linux-amd64", "source/pcre2-lib/linux-amd64", "source/openssl-lib/linux-amd64", "source/llama-lib/linux-amd64", "source/onnxruntime-lib/linux-amd64"]
+                return ["source", "source/grapa-lib/linux-amd64", "source/fl-lib/linux-amd64", "source/blst-lib/linux-amd64", "source/pcre2-lib/linux-amd64", "source/openssl-lib/linux-amd64", "source/llama-lib/linux-amd64"]
     if my_system == 'Darwin':
         if is_arm:
-            return ["source", "source/grapa-lib/mac-arm64", "source/llama-lib/mac-arm64", "source/onnxruntime-lib/mac-arm64"]
+            return ["source", "source/grapa-lib/mac-arm64", "source/llama-lib/mac-arm64"]
         else:
-            return ["source", "source/grapa-lib/mac-amd64", "source/llama-lib/mac-amd64", "source/onnxruntime-lib/mac-amd64"]
+            return ["source", "source/grapa-lib/mac-amd64", "source/llama-lib/mac-amd64"]
     if my_system == 'Windows':
-        return ["source", "source/grapa-lib/win-amd64", "source/fl-lib/win-amd64", "source/blst-lib/win-amd64", "source/pcre2-lib/win-amd64", "source/openssl-lib/win-amd64", "source/llama-lib/win-amd64", "source/onnxruntime-lib/win-amd64"]
+        return ["source", "source/grapa-lib/win-amd64", "source/fl-lib/win-amd64", "source/blst-lib/win-amd64", "source/pcre2-lib/win-amd64", "source/openssl-lib/win-amd64", "source/llama-lib/win-amd64"]
     raise ValueError("Unknown platform: " + my_system)
 
 def pick_libraries():
@@ -627,8 +442,6 @@ def pick_libraries():
             'ggml-cpu',
             'mtmd',
             'common',  # Add common library
-            # ONNX Runtime shared libraries - these will be linked dynamically at runtime
-            # The actual shared libraries (.dylib, .so, .dll) must be available in the system path
             'fltk',
             'fltk_forms',
             'fltk_gl',
@@ -651,9 +464,7 @@ def pick_libraries():
             'ggml-cpu',
             'ggml-metal',
             'ggml-blas',
-            'mtmd',
-            'onnx',
-            'onnx_proto'
+            'mtmd'
         ]
     if my_system == 'Windows':
         return [
@@ -672,8 +483,6 @@ def pick_libraries():
             "ggml-base",
             "ggml-cpu",
             "mtmd",
-            "onnxruntime",
-            "onnxruntime_providers_shared",
             "blst",
             "pcre2-8-static",
             "gdiplus",
@@ -691,11 +500,11 @@ def pick_libraries():
 
 if sys.platform.startswith('win32') and 'include_dirs' in locals():
     # Use custom include_dirs that puts Windows SDK paths first
-    base_include_dirs = ["source","source/utf8proc",'source/pybind11/include','source/llama','source/onnxruntime']
+    base_include_dirs = ["source","source/utf8proc",'source/pybind11/include','source/llama']
     include_dirs = include_dirs + base_include_dirs
 else:
     # For non-Windows platforms, set up base include directories
-    include_dirs = ["source","source/utf8proc",'source/pybind11/include','source/llama','source/onnxruntime']
+    include_dirs = ["source","source/utf8proc",'source/pybind11/include','source/llama']
 
 lib_grapa = Extension(
     'grapapy', 
@@ -709,226 +518,6 @@ lib_grapa = Extension(
     extra_link_args=extra_link_args,
     extra_compile_args=extra_compile_args,
 )
-
-# Custom install command to copy shared libraries
-class CustomInstallCommand(install):
-    def run(self):
-        install.run(self)
-        # Copy ONNX Runtime shared libraries to package directory
-        self.copy_onnxruntime_libs()
-    
-    def copy_onnxruntime_libs(self):
-        """Copy ONNX Runtime shared libraries to the package directory.
-        
-        This ensures the shared libraries are in the same directory as the Python extension,
-        making them locatable at runtime without requiring system-wide installation or
-        LD_LIBRARY_PATH configuration.
-        """
-        import shutil
-        import os
-        from pathlib import Path
-        
-        # Get the package installation directory
-        # The extension is installed directly in site-packages, not in a subdirectory
-        package_dir = Path(self.install_lib)
-        package_dir.mkdir(exist_ok=True)
-        
-        # Determine platform
-        my_system = platform.system()
-        my_machine = platform.machine().lower()
-        
-        if my_system == 'Darwin':
-            if my_machine == 'arm64':
-                platform_name = 'mac-arm64'
-            else:
-                platform_name = 'mac-amd64'
-        elif my_system == 'Linux':
-            if my_machine == 'aarch64' or my_machine == 'arm64':
-                platform_name = 'linux-arm64'
-            else:
-                platform_name = 'linux-amd64'
-        elif my_system == 'Windows':
-            platform_name = 'win-amd64'
-        else:
-            print(f"Warning: Unknown platform {my_system} {my_machine}")
-            return
-        
-        # Source directory for ONNX Runtime libraries
-        source_lib_dir = Path("source/onnxruntime-lib") / platform_name
-        if not source_lib_dir.exists():
-            print(f"Warning: ONNX Runtime libraries not found at {source_lib_dir}")
-            return
-        
-        # Copy shared libraries directly to package directory (same level as the extension)
-        # This ensures they're locatable at runtime since they're in the same directory
-        lib_dir = package_dir
-        lib_dir.mkdir(exist_ok=True)
-        
-        # Find the current versioned library dynamically
-        versioned_lib = None
-        unversioned_lib = None
-        
-        for lib_file in source_lib_dir.glob("*"):
-            if lib_file.is_file() and lib_file.suffix in ['.dylib', '.so', '.dll']:
-                # Skip older versioned libraries to reduce distribution size
-                # Only include the current version and create symlink/shim as needed
-                if '1.22.2' in lib_file.name:
-                    print(f"Skipping older version: {lib_file.name}")
-                    continue
-                
-                # Identify the current versioned library (e.g., libonnxruntime.1.23.0.dylib)
-                if 'libonnxruntime.' in lib_file.name and '.' in lib_file.name.split('libonnxruntime.')[1]:
-                    versioned_lib = lib_file
-                elif lib_file.name == 'libonnxruntime.dylib' or lib_file.name == 'libonnxruntime.so' or lib_file.name == 'libonnxruntime.dll':
-                    unversioned_lib = lib_file
-                # Handle Windows ONNX Runtime files (without lib prefix)
-                elif lib_file.name == 'onnxruntime.dll':
-                    unversioned_lib = lib_file
-                
-                dest_path = lib_dir / lib_file.name
-                shutil.copy2(lib_file, dest_path)
-                print(f"Copied ONNX Runtime library: {lib_file.name}")
-        
-        # Create the symlink/shim if we have the versioned library but not the unversioned one
-        if versioned_lib and not unversioned_lib:
-            versioned_dest = lib_dir / versioned_lib.name
-            unversioned_dest = lib_dir / "libonnxruntime.dylib" if versioned_lib.suffix == '.dylib' else lib_dir / "libonnxruntime.so" if versioned_lib.suffix == '.so' else lib_dir / "libonnxruntime.dll"
-            shutil.copy2(versioned_dest, unversioned_dest)
-            print(f"Created symlink/shim: {unversioned_dest.name} -> {versioned_lib.name}")
-        
-        # Create libonnxruntime.so.1 symlink for Linux systems
-        if platform.system().lower() == 'linux':
-            try:
-                libonnxruntime_so = lib_dir / "libonnxruntime.so"
-                libonnxruntime_so_1 = lib_dir / "libonnxruntime.so.1"
-                if libonnxruntime_so.exists() and not libonnxruntime_so_1.exists():
-                    libonnxruntime_so_1.symlink_to("libonnxruntime.so")
-                    print("✅ Created symlink: libonnxruntime.so.1 -> libonnxruntime.so")
-            except Exception as e:
-                print(f"⚠️  Warning: Could not create symlink: {e}")
-        
-        # Copy headers for development
-        include_dir = package_dir / "include"
-        include_dir.mkdir(exist_ok=True)
-        
-        source_include_dir = Path("source/onnxruntime")
-        if source_include_dir.exists():
-            shutil.copytree(source_include_dir, include_dir / "onnxruntime", dirs_exist_ok=True)
-            print("Copied ONNX Runtime headers")
-        
-        print(f"ONNX Runtime libraries copied to: {lib_dir}")
-        print(f"ONNX Runtime headers copied to: {include_dir}")
-
-# Custom build command to copy shared libraries during build
-class CustomBuildCommand(build):
-    def run(self):
-        build.run(self)
-        # Copy ONNX Runtime shared libraries to build directory
-        self.copy_onnxruntime_libs()
-    
-    def copy_onnxruntime_libs(self):
-        """Copy ONNX Runtime shared libraries to the build directory.
-        
-        This ensures the shared libraries are in the same directory as the Python extension,
-        making them locatable at runtime without requiring system-wide installation or
-        LD_LIBRARY_PATH configuration.
-        """
-        import shutil
-        import os
-        from pathlib import Path
-        
-        # Get the build directory
-        # The extension is built directly in the build directory, not in a subdirectory
-        build_dir = Path(self.build_lib)
-        build_dir.mkdir(parents=True, exist_ok=True)
-        
-        # Determine platform
-        my_system = platform.system()
-        my_machine = platform.machine().lower()
-        
-        if my_system == 'Darwin':
-            if my_machine == 'arm64':
-                platform_name = 'mac-arm64'
-            else:
-                platform_name = 'mac-amd64'
-        elif my_system == 'Linux':
-            if my_machine == 'aarch64' or my_machine == 'arm64':
-                platform_name = 'linux-arm64'
-            else:
-                platform_name = 'linux-amd64'
-        elif my_system == 'Windows':
-            platform_name = 'win-amd64'
-        else:
-            print(f"Warning: Unknown platform {my_system} {my_machine}")
-            return
-        
-        # Source directory for ONNX Runtime libraries
-        source_lib_dir = Path("source/onnxruntime-lib") / platform_name
-        if not source_lib_dir.exists():
-            print(f"Warning: ONNX Runtime libraries not found at {source_lib_dir}")
-            return
-        
-        # Copy shared libraries directly to build directory (same level as the extension)
-        # This ensures they're locatable at runtime since they're in the same directory
-        lib_dir = build_dir
-        lib_dir.mkdir(exist_ok=True)
-        
-        # Find the current versioned library dynamically
-        versioned_lib = None
-        unversioned_lib = None
-        
-        for lib_file in source_lib_dir.glob("*"):
-            if lib_file.is_file() and lib_file.suffix in ['.dylib', '.so', '.dll']:
-                # Skip older versioned libraries to reduce distribution size
-                # Only include the current version and create symlink/shim as needed
-                if '1.22.2' in lib_file.name:
-                    print(f"Skipping older version: {lib_file.name}")
-                    continue
-                
-                # Identify the current versioned library (e.g., libonnxruntime.1.23.0.dylib)
-                if 'libonnxruntime.' in lib_file.name and '.' in lib_file.name.split('libonnxruntime.')[1]:
-                    versioned_lib = lib_file
-                elif lib_file.name == 'libonnxruntime.dylib' or lib_file.name == 'libonnxruntime.so' or lib_file.name == 'libonnxruntime.dll':
-                    unversioned_lib = lib_file
-                # Handle Windows ONNX Runtime files (without lib prefix)
-                elif lib_file.name == 'onnxruntime.dll':
-                    unversioned_lib = lib_file
-                
-                dest_path = lib_dir / lib_file.name
-                shutil.copy2(lib_file, dest_path)
-                print(f"Copied ONNX Runtime library to build: {lib_file.name}")
-        
-        # Create the symlink/shim if we have the versioned library but not the unversioned one
-        if versioned_lib and not unversioned_lib:
-            versioned_dest = lib_dir / versioned_lib.name
-            unversioned_dest = lib_dir / "libonnxruntime.dylib" if versioned_lib.suffix == '.dylib' else lib_dir / "libonnxruntime.so" if versioned_lib.suffix == '.so' else lib_dir / "libonnxruntime.dll"
-            shutil.copy2(versioned_dest, unversioned_dest)
-            print(f"Created symlink/shim: {unversioned_dest.name} -> {versioned_lib.name}")
-        
-        # Create libonnxruntime.so.1 symlink for Linux systems
-        if platform.system().lower() == 'linux':
-            try:
-                libonnxruntime_so = lib_dir / "libonnxruntime.so"
-                libonnxruntime_so_1 = lib_dir / "libonnxruntime.so.1"
-                if libonnxruntime_so.exists() and not libonnxruntime_so_1.exists():
-                    libonnxruntime_so_1.symlink_to("libonnxruntime.so")
-                    print("✅ Created symlink: libonnxruntime.so.1 -> libonnxruntime.so")
-            except Exception as e:
-                print(f"⚠️  Warning: Could not create symlink: {e}")
-        
-        # Copy headers for development
-        include_dir = build_dir / "include"
-        include_dir.mkdir(exist_ok=True)
-        
-        source_include_dir = Path("source/onnxruntime")
-        if source_include_dir.exists():
-            shutil.copytree(source_include_dir, include_dir / "onnxruntime", dirs_exist_ok=True)
-            print("Copied ONNX Runtime headers to build")
-        
-        print(f"ONNX Runtime libraries copied to build: {lib_dir}")
-        print(f"ONNX Runtime headers copied to build: {include_dir}")
-
-# Custom install command is now defined above
 
 # Check system dependencies before attempting to build
 check_system_dependencies()
@@ -957,8 +546,7 @@ For comprehensive documentation, visit: https://grapa-dev.github.io/grapa/
         cmdclass={
             'copy_grapalib': CopySharedLibrary,
             'build_ext': CustomBuildExt,
-            'build': CustomBuildCommand,
-            'install': CustomInstallCommand,
+            'build': CustomBuild,
         },
         zip_safe=False,
         python_requires=">=3.6",
@@ -989,7 +577,7 @@ else:
         long_description_content_type="text/markdown",
         url="https://grapa-dev.github.io/grapa/",
         ext_modules=[CMakeExtension("grapapy")],
-        cmdclass={"build_ext": CMakeBuild, "build": CustomBuildCommand, "install": CustomInstallCommand},
+        cmdclass={"build_ext": CMakeBuild},
         zip_safe=False,
         python_requires=">=3.6",
         install_requires=[

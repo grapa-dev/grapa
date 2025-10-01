@@ -84,13 +84,13 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(SolutionDir)..\..\source;$(SolutionDir)..\..\source\pre2;$(SolutionDir)..\..\source\llama;$(SolutionDir)..\..\source\onnxruntime;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)..\..\source;$(SolutionDir)..\..\bin;$(SolutionDir)..\..\source\onnxruntime-lib\win-amd64;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)..\..\source;$(SolutionDir)..\..\source\pre2;$(SolutionDir)..\..\source\llama;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)..\..\source;$(SolutionDir)..\..\bin;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(SolutionDir)..\..\source;$(SolutionDir)..\..\source\pre2;$(SolutionDir)..\..\source\llama;$(SolutionDir)..\..\source\onnxruntime;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)..\..\source;$(SolutionDir)..\..\bin;$(SolutionDir)..\..\source\onnxruntime-lib\win-amd64;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)..\..\source;$(SolutionDir)..\..\source\pre2;$(SolutionDir)..\..\source\llama;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)..\..\source;$(SolutionDir)..\..\bin;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -153,7 +153,7 @@
       </HeapCommitSize>
       <StackCommitSize>
       </StackCommitSize>
-      <AdditionalDependencies>lib/win-amd64/fltk.lib;lib/win-amd64/fltk_forms.lib;lib/win-amd64/fltk_gl.lib;lib/win-amd64/fltk_images.lib;lib/win-amd64/fltk_jpeg.lib;lib/win-amd64/fltk_png.lib;lib/win-amd64/fltk_z.lib;lib/win-amd64/libcrypto.lib;lib/win-amd64/libssl.lib;lib/win-amd64/blst.lib;lib/win-amd64/pcre2-8-static.lib;$(SolutionDir)..\..\source\llama-lib\win-amd64-debug\llama.lib;$(SolutionDir)..\..\source\llama-lib\win-amd64-debug\ggml.lib;$(SolutionDir)..\..\source\llama-lib\win-amd64-debug\ggml-base.lib;$(SolutionDir)..\..\source\llama-lib\win-amd64-debug\ggml-cpu.lib;$(SolutionDir)..\..\source\llama-lib\win-amd64-debug\mtmd.lib;$(SolutionDir)..\..\source\onnxruntime-lib\win-amd64\onnxruntime.lib;$(SolutionDir)..\..\source\onnxruntime-lib\win-amd64\onnxruntime_providers_shared.lib;gdiplus.lib;ComCtl32.lib;crypt32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>lib/win-amd64/fltk.lib;lib/win-amd64/fltk_forms.lib;lib/win-amd64/fltk_gl.lib;lib/win-amd64/fltk_images.lib;lib/win-amd64/fltk_jpeg.lib;lib/win-amd64/fltk_png.lib;lib/win-amd64/fltk_z.lib;lib/win-amd64/libcrypto.lib;lib/win-amd64/libssl.lib;lib/win-amd64/blst.lib;lib/win-amd64/pcre2-8-static.lib;$(SolutionDir)..\..\source\llama-lib\win-amd64-debug\llama.lib;$(SolutionDir)..\..\source\llama-lib\win-amd64-debug\ggml.lib;$(SolutionDir)..\..\source\llama-lib\win-amd64-debug\ggml-base.lib;$(SolutionDir)..\..\source\llama-lib\win-amd64-debug\ggml-cpu.lib;$(SolutionDir)..\..\source\llama-lib\win-amd64-debug\mtmd.lib;gdiplus.lib;ComCtl32.lib;crypt32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -179,7 +179,7 @@
       </HeapCommitSize>
       <StackCommitSize>
       </StackCommitSize>
-      <AdditionalDependencies>lib/win-amd64/fltk.lib;lib/win-amd64/fltk_forms.lib;lib/win-amd64/fltk_gl.lib;lib/win-amd64/fltk_images.lib;lib/win-amd64/fltk_jpeg.lib;lib/win-amd64/fltk_png.lib;lib/win-amd64/fltk_z.lib;lib/win-amd64/libcrypto.lib;lib/win-amd64/libssl.lib;lib/win-amd64/blst.lib;lib/win-amd64/pcre2-8-static.lib;$(SolutionDir)..\..\source\llama-lib\win-amd64\llama.lib;$(SolutionDir)..\..\source\llama-lib\win-amd64\ggml.lib;$(SolutionDir)..\..\source\llama-lib\win-amd64\ggml-base.lib;$(SolutionDir)..\..\source\llama-lib\win-amd64\ggml-cpu.lib;$(SolutionDir)..\..\source\llama-lib\win-amd64\mtmd.lib;$(SolutionDir)..\..\source\onnxruntime-lib\win-amd64\onnxruntime.lib;$(SolutionDir)..\..\source\onnxruntime-lib\win-amd64\onnxruntime_providers_shared.lib;gdiplus.lib;ComCtl32.lib;crypt32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>lib/win-amd64/fltk.lib;lib/win-amd64/fltk_forms.lib;lib/win-amd64/fltk_gl.lib;lib/win-amd64/fltk_images.lib;lib/win-amd64/fltk_jpeg.lib;lib/win-amd64/fltk_png.lib;lib/win-amd64/fltk_z.lib;lib/win-amd64/libcrypto.lib;lib/win-amd64/libssl.lib;lib/win-amd64/blst.lib;lib/win-amd64/pcre2-8-static.lib;$(SolutionDir)..\..\source\llama-lib\win-amd64\llama.lib;$(SolutionDir)..\..\source\llama-lib\win-amd64\ggml.lib;$(SolutionDir)..\..\source\llama-lib\win-amd64\ggml-base.lib;$(SolutionDir)..\..\source\llama-lib\win-amd64\ggml-cpu.lib;$(SolutionDir)..\..\source\llama-lib\win-amd64\mtmd.lib;gdiplus.lib;ComCtl32.lib;crypt32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -220,8 +220,5 @@
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Message Text="Copying ONNX Runtime DLLs to output directory..." Importance="high" />
-    <Copy SourceFiles="$(SolutionDir)..\..\source\onnxruntime-lib\win-amd64\onnxruntime.dll" DestinationFolder="$(TargetDir)" SkipUnchangedFiles="true" />
-    <Copy SourceFiles="$(SolutionDir)..\..\source\onnxruntime-lib\win-amd64\onnxruntime_providers_shared.dll" DestinationFolder="$(TargetDir)" SkipUnchangedFiles="true" />
   </Target>
 </Project>

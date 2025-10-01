@@ -5189,8 +5189,8 @@ GrapaRuleEvent* GrapaScriptExec::CopyItem(GrapaRuleEvent* pAction, bool isTAG, b
 		result->vModel->mContextSize = p->vModel->mContextSize;
 
 		// Note: Don't copy LLAMA contexts - they need to be recreated
-                if (result->vModel->mLoaded && result->vModel->mMethod.StrCmp("llama") == 0) {
-			result->vModel->LoadLlama(result->vModel->mModelPath);
+                if (result->vModel->mLoaded && result->vModel->mMethod.StrCmp("llama-local") == 0) {
+			result->vModel->LoadLlamaLocal(result->vModel->mModelPath);
 		}
 	}
 

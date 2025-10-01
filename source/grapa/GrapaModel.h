@@ -20,14 +20,14 @@ public:
     // Model state
     bool mLoaded;
     GrapaCHAR mModelPath;
-    GrapaCHAR mMethod;  // "llama", "onnx", etc.
+    GrapaCHAR mMethod;  // "llama-local", etc.
     
     // LLAMA.cpp specific
-    struct llama_model* mLlamaModel;
-    struct llama_context* mLlamaContext;
-    struct llama_model_params mLlamaModelParams;
-    struct llama_context_params mLlamaContextParams;
-    struct llama_sampler* mLlamaSampler;  // Sampler chain for temperature-aware generation
+    struct llama_model* mLlamaLocalModel;
+    struct llama_context* mLlamaLocalContext;
+    struct llama_model_params mLlamaLocalModelParams;
+    struct llama_context_params mLlamaLocalContextParams;
+    struct llama_sampler* mLlamaLocalSampler;  // Sampler chain for temperature-aware generation
     
     // Backend-optimized context management
     bool mContextPreserved;  // Whether context is preserved between calls
@@ -39,10 +39,7 @@ public:
     
     // OpenAI context management
     GrapaCHAR mOpenAIResponseId;  // OpenAI: Response ID for context continuity
-    
-    // ONNX Runtime specific
-    void* mOnnxSession;  // ONNX Runtime session
-    void* mOnnxEnv;      // ONNX Runtime environment
+
     
     // Generation parameters
     s32 mMaxTokens;
@@ -91,23 +88,15 @@ public:
     GrapaError SetContextFromText(const GrapaCHAR& text);  // Helper for text-based context
     
     // Backend-specific operations
-    GrapaError LoadLlama(const GrapaCHAR& modelPath);
-    GrapaError UnloadLlama();
-    GrapaRuleEvent* GenerateLlama(const GrapaCHAR& prompt, GrapaRuleEvent* mergedParams);
+    GrapaError LoadLlamaLocal(const GrapaCHAR& modelPath);
+    GrapaError UnloadLlamaLocal();
+    GrapaRuleEvent* GenerateLlamaLocal(const GrapaCHAR& prompt, GrapaRuleEvent* mergedParams);
     
     // OpenAI cloud model operations
     GrapaError LoadOpenAI(const GrapaCHAR& modelPath);
     GrapaError UnloadOpenAI();
     GrapaRuleEvent* GenerateOpenAI(const GrapaCHAR& prompt, GrapaRuleEvent* mergedParams);
     GrapaRuleEvent* EmbedOpenAI(const GrapaCHAR& text, GrapaRuleEvent* mergedParams);
-    
-    // ONNX Runtime operations
-    GrapaError LoadOnnx(const GrapaCHAR& modelPath);
-    GrapaError UnloadOnnx();
-    GrapaRuleEvent* GenerateOnnx(const GrapaCHAR& prompt, GrapaRuleEvent* mergedParams);
-    GrapaRuleEvent* EmbedOnnx(const GrapaCHAR& text, GrapaRuleEvent* mergedParams);
-    
-    // Future backends
     
 private:
     GrapaError InitializeLlama();
