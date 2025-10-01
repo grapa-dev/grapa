@@ -64,8 +64,6 @@ class BuildConfig:
         
         # Add LLAMA.cpp include path
         base_flags.append("-Isource/llama")
-        # Add ONNX Runtime include path
-        base_flags.append("-Isource/onnxruntime")
         
         # Define FLTK_USE_X11 for Linux/AWS builds since FLTK was built with X11 support
         if self.platform in ["linux", "aws"]:
@@ -283,7 +281,7 @@ class GrapaBuilder:
         # Build utf8proc first (C compilation)
         print("Building utf8proc...")
         subprocess.run([
-            "clang", "-Isource", "-Isource/llama", "-Isource/onnxruntime", "-DUTF8PROC_STATIC", "-c", 
+            "clang", "-Isource", "-Isource/llama", "-DUTF8PROC_STATIC", "-c", 
             "source/utf8proc/utf8proc.c", "-m64", "-O3"
         ], check=True)
         
@@ -293,7 +291,7 @@ class GrapaBuilder:
                 print("Building static library...")
                 cpp_files = glob.glob("source/grapa/*.cpp")
                 subprocess.run([
-                    "clang++", "-Isource", "-Isource/llama", "-Isource/onnxruntime", "-c"
+                    "clang++", "-Isource", "-Isource/llama", "-c"
                 ] + cpp_files + [
                     "-std=c++17", "-m64", "-O3", "-pthread"
                 ], check=True)
@@ -324,30 +322,14 @@ class GrapaBuilder:
             blst_libs = glob.glob(f"source/blst-lib/{config.target}/*.a")
             pcre2_lib = glob.glob(f"source/pcre2-lib/{config.target}/libpcre2-8.a")
             
-            # Add ONNX Runtime shared libraries
-            onnx_libs = []
-            onnx_lib_dir = f"source/onnxruntime-lib/{config.target}"
-            
-            # Look for shared libraries (.dylib, .so, .dll)
-            if os.path.exists(onnx_lib_dir):
-                for lib_file in os.listdir(onnx_lib_dir):
-                    if lib_file.endswith(('.dylib', '.so', '.dll')):
-                        lib_path = os.path.join(onnx_lib_dir, lib_file)
-                        onnx_libs.append(lib_path)
-                        print(f"✅ Found ONNX Runtime shared library: {lib_file}")
-            
-            if not onnx_libs:
-                print(f"⚠️  Warning: No ONNX Runtime shared libraries found in {onnx_lib_dir}")
-                print("   Run 'python3 scripts/build/build_onnx_shared.py' to download them")
-            
             # Step 1: utf8proc.o is already built above
             # Step 2: Build executable using utf8proc.o - use shell globs like manual command
             cmd = [
-                "clang++", "-Isource", "-Isource/llama", "-Isource/onnxruntime", "source/main.cpp", "source/grapa/*.cpp", "utf8proc.o",
+                "clang++", "-Isource", "-Isource/llama", "source/main.cpp", "source/grapa/*.cpp", "utf8proc.o",
                 f"source/openssl-lib/{config.target}/*.a", f"source/fl-lib/{config.target}/*.a", 
                 f"source/blst-lib/{config.target}/*.a", f"source/pcre2-lib/{config.target}/libpcre2-8.a",
                 f"source/llama-lib/{config.target}/*.a"
-            ] + onnx_libs + config.frameworks + [
+            ] + config.frameworks + [
                 "-std=c++17", "-m64", "-O3", "-pthread", 
                 f"-Wl,-rpath,@loader_path/bin/lib/{config.target}",
                 "-o", config.output_name
@@ -415,7 +397,7 @@ class GrapaBuilder:
         # Use -fPIC for shared library builds, regular for executable
         pic_flag = ["-fPIC"] if is_library else []
         subprocess.run([
-            "gcc", "-Isource", "-Isource/llama", "-Isource/onnxruntime", "-DUTF8PROC_STATIC", "-c", 
+            "gcc", "-Isource", "-Isource/llama", "-DUTF8PROC_STATIC", "-c", 
             "source/utf8proc/utf8proc.c", "-O3"
         ] + pic_flag, check=True)
         
@@ -467,21 +449,6 @@ class GrapaBuilder:
             llama_libs = []
             llama_lib_dir = f"source/llama-lib/{config.target}"
             
-            # Add ONNX Runtime shared libraries
-            onnx_libs = []
-            onnx_lib_dir = f"source/onnxruntime-lib/{config.target}"
-            
-            # Look for shared libraries (.dylib, .so, .dll)
-            if os.path.exists(onnx_lib_dir):
-                for lib_file in os.listdir(onnx_lib_dir):
-                    if lib_file.endswith(('.dylib', '.so', '.dll')):
-                        lib_path = os.path.join(onnx_lib_dir, lib_file)
-                        onnx_libs.append(lib_path)
-                        print(f"✅ Found ONNX Runtime shared library: {lib_file}")
-            
-            if not onnx_libs:
-                print(f"⚠️  Warning: No ONNX Runtime shared libraries found in {onnx_lib_dir}")
-                print("   Run 'python3 scripts/build/build_onnx_shared.py' to download them")
             # Link in dependency order with circular dependency resolution
             # Static libraries with circular dependencies need to be linked multiple times
             llama_lib_order = [
@@ -507,7 +474,7 @@ class GrapaBuilder:
                 "g++"
             ] + config.flags + [
                 "source/main.cpp"
-            ] + cpp_files + ["source/utf8proc/utf8proc.c"] + openssl_libs + fl_libs + blst_libs + llama_libs + onnx_libs + [
+            ] + cpp_files + ["source/utf8proc/utf8proc.c"] + openssl_libs + fl_libs + blst_libs + llama_libs + [
                 f"source/pcre2-lib/{config.target}/libpcre2-8.a", f"-Lsource/openssl-lib/{config.target}", "-lcrypto"
             ] + x11_libs + [
                 "-ldl", "-lm", "-fopenmp", "-static-libgcc", 
@@ -550,13 +517,13 @@ class GrapaBuilder:
         if is_library and is_static:
             print("Building utf8proc...")
             subprocess.run([
-                "gcc", "-Isource", "-Isource/llama", "-Isource/onnxruntime", "-DUTF8PROC_STATIC", "-c", 
+                "gcc", "-Isource", "-Isource/llama", "-DUTF8PROC_STATIC", "-c", 
                 "source/utf8proc/utf8proc.c", "-O3", "-fPIC"
             ], check=True)
         elif not is_library:
             print("Building utf8proc...")
             subprocess.run([
-                "gcc", "-Isource", "-Isource/llama", "-Isource/onnxruntime", "-DUTF8PROC_STATIC", "-c", 
+                "gcc", "-Isource", "-Isource/llama", "-DUTF8PROC_STATIC", "-c", 
                 "source/utf8proc/utf8proc.c", "-O3"
             ], check=True)
         
@@ -604,22 +571,7 @@ class GrapaBuilder:
             # Add LLAMA.cpp libraries in dependency order
             llama_libs = []
             llama_lib_dir = f"source/llama-lib/{config.target}"
-            
-            # Add ONNX Runtime shared libraries
-            onnx_libs = []
-            onnx_lib_dir = f"source/onnxruntime-lib/{config.target}"
-            
-            # Look for shared libraries (.dylib, .so, .dll)
-            if os.path.exists(onnx_lib_dir):
-                for lib_file in os.listdir(onnx_lib_dir):
-                    if lib_file.endswith(('.dylib', '.so', '.dll')):
-                        lib_path = os.path.join(onnx_lib_dir, lib_file)
-                        onnx_libs.append(lib_path)
-                        print(f"✅ Found ONNX Runtime shared library: {lib_file}")
-            
-            if not onnx_libs:
-                print(f"⚠️  Warning: No ONNX Runtime shared libraries found in {onnx_lib_dir}")
-                print("   Run 'python3 scripts/build/build_onnx_shared.py' to download them")
+
             # Link in dependency order with circular dependency resolution
             # Static libraries with circular dependencies need to be linked multiple times
             llama_lib_order = [
@@ -645,7 +597,7 @@ class GrapaBuilder:
                 "g++"
             ] + config.flags + [
                 "source/main.cpp"
-            ] + cpp_files + ["source/utf8proc/utf8proc.c"] + openssl_libs + fl_libs + blst_libs + llama_libs + onnx_libs + [
+            ] + cpp_files + ["source/utf8proc/utf8proc.c"] + openssl_libs + fl_libs + blst_libs + llama_libs + [
                 f"source/pcre2-lib/{config.target}/libpcre2-8.a", f"-Lsource/openssl-lib/{config.target}", "-lcrypto"
             ] + x11_libs + [
                 "-ldl", "-lm", "-fopenmp", "-static-libgcc", 
@@ -1041,48 +993,6 @@ class GrapaBuilder:
                     shutil.copy2(src_path, dst_path)
                     print(f"✅ Copied {lib_file} to {lib_dir}/")
         
-        # Copy ONNX Runtime shared libraries (Release)
-        onnx_src = f"source/onnxruntime-lib/{config.target}"
-        if os.path.exists(onnx_src):
-            for lib_file in os.listdir(onnx_src):
-                if lib_file.endswith(('.dylib', '.so', '.dll')):
-                    src_path = os.path.join(onnx_src, lib_file)
-                    dst_path = os.path.join(lib_dir, lib_file)
-                    # For symlinks, copy the symlink itself, not the target
-                    if os.path.islink(src_path):
-                        if os.path.exists(dst_path):
-                            os.remove(dst_path)
-                        os.symlink(os.readlink(src_path), dst_path)
-                        print(f"✅ Copied symlink {lib_file} to {lib_dir}/")
-                    else:
-                        shutil.copy2(src_path, dst_path)
-                        print(f"✅ Copied {lib_file} to {lib_dir}/")
-        
-        # Create symlink for Linux systems (libonnxruntime.so.1 -> libonnxruntime.so)
-        if config.platform in ["linux", "aws"]:
-            try:
-                from pathlib import Path
-                libonnxruntime_so = Path(lib_dir) / "libonnxruntime.so"
-                libonnxruntime_so_1 = Path(lib_dir) / "libonnxruntime.so.1"
-                print(f"🔍 Checking for libonnxruntime.so: {libonnxruntime_so.exists()}")
-                print(f"🔍 Checking for libonnxruntime.so.1: {libonnxruntime_so_1.exists()}")
-                if libonnxruntime_so.exists() and not libonnxruntime_so_1.exists():
-                    libonnxruntime_so_1.symlink_to("libonnxruntime.so")
-                    print("✅ Created symlink: libonnxruntime.so.1 -> libonnxruntime.so")
-                elif libonnxruntime_so_1.exists():
-                    print("ℹ️  Symlink already exists: libonnxruntime.so.1")
-                else:
-                    print("⚠️  libonnxruntime.so not found, cannot create symlink")
-            except Exception as e:
-                print(f"⚠️  Warning: Could not create symlink: {e}")
-        
-        # Note: System library path setup is now handled by bin/install-grapa.py
-        # This allows build.py to run without sudo privileges
-        if config.platform in ["linux", "aws"]:
-            print("ℹ️  For development builds to work, run: sudo bin/install-grapa.py")
-            print("   This sets up system library paths for /usr/local/lib/")
-            print("   After installation, you can build and run grapa without sudo")
-        
         # Copy llama.cpp Debug libraries (Windows only)
         if config.platform == "windows":
             llama_debug_src = f"source/llama-lib/{config.target}-debug"
@@ -1138,15 +1048,6 @@ class GrapaBuilder:
                 shutil.rmtree(llama_include_dst)
             shutil.copytree(llama_include_src, llama_include_dst)
             print(f"✅ Copied llama.cpp headers to {llama_include_dst}/")
-        
-        # Copy ONNX Runtime headers
-        onnx_include_src = "source/onnxruntime"
-        onnx_include_dst = f"bin/include/onnxruntime"
-        if os.path.exists(onnx_include_src):
-            if os.path.exists(onnx_include_dst):
-                shutil.rmtree(onnx_include_dst)
-            shutil.copytree(onnx_include_src, onnx_include_dst)
-            print(f"✅ Copied ONNX Runtime headers to {onnx_include_dst}/")
         
         # Copy GGML headers
         ggml_include_src = "source/ggml/include"

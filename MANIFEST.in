@@ -26,7 +26,4 @@ graft source/pcre2-lib
 recursive-include source/llama *.h
 graft source/llama-lib
 
-recursive-include source/onnxruntime *.h
-graft source/onnxruntime-lib
-
 recursive-include source/grep *.hpp *.cpp

@@ -30,12 +30,6 @@ limitations under the License.
 #include "llama.h"
 #include "ggml.h"   // for ggml_log_level enum
 
-// ONNX Runtime includes
-#include "onnxruntime_cxx_api.h"
-#include <algorithm>
-#include <sstream>
-#include <iterator>
-#include <map>
 
 extern GrapaSystem* gSystem;
 
@@ -145,8 +139,6 @@ void GrapaModel::INIT(GrapaRuleEvent* pParams)
     // Initialize LLAMA parameters
     mLlamaModelParams = llama_model_default_params();
     mLlamaContextParams = llama_context_default_params();
-    //mLlamaContextParams.n_threads = std::thread::hardware_concurrency();
-    //mLlamaContextParams.n_threads_batch = mLlamaContextParams.n_threads;
 }
 
 void GrapaModel::CLEAR()
@@ -192,7 +184,7 @@ GrapaError GrapaModel::Load(const GrapaCHAR& modelPath, const GrapaCHAR& method)
         mMethod.FROM(method);
     }
 
-    if (mMethod.StrCmp("llama") == 0) {
+    if (mMethod.StrCmp("llama-local") == 0) {
         result = LoadLlama(modelPath);
     }
     else if (mMethod.StrCmp("openai") == 0) {
@@ -200,12 +192,6 @@ GrapaError GrapaModel::Load(const GrapaCHAR& modelPath, const GrapaCHAR& method)
     }
     else if (mMethod.StrCmp("openai-embedding") == 0) {
         result = LoadOpenAI(modelPath); // Same as OpenAI but for embeddings
-    }
-    else if (mMethod.StrCmp("onnx") == 0) {
-        result = LoadOnnx(modelPath);
-    }
-    else if (mMethod.StrCmp("onnx-embedding") == 0) {
-        result = LoadOnnx(modelPath); // Same as onnx but for embeddings
     }
     else {
         result = -1; // Unsupported method
@@ -233,21 +219,14 @@ GrapaCHAR GrapaModel::AutoDetectMethod(const GrapaCHAR& modelPath)
         std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
 
         if (ext == ".gguf") {
-            result.FROM("llama");
+            result.FROM("llama-local");
             return result;
         }
         else if (ext == ".pkl" || ext == ".joblib") {
             result.FROM("sklearn");
             return result;
         }
-        else if (ext == ".onnx") {
-            result.FROM("onnx");
-            return result;
-        }
-        else if (ext == ".tflite") {
-            result.FROM("onnx"); // TensorFlow models should be converted to ONNX
-            return result;
-        }
+
     }
 
     // If extension doesn't match, try magic bytes detection
@@ -264,19 +243,7 @@ GrapaCHAR GrapaModel::AutoDetectMethod(const GrapaCHAR& modelPath)
         if (bytesRead >= 4) {
             // GGUF format (LLAMA.cpp) - requires 4 bytes
             if (bytesRead >= 4 && strncmp(header, "GGUF", 4) == 0) {
-                result.FROM("llama");
-                return result;
-            }
-
-            // ONNX format - requires 4 bytes
-            if (bytesRead >= 4 && strncmp(header, "ONNX", 4) == 0) {
-                result.FROM("onnx");
-                return result;
-            }
-
-            // TensorFlow Lite format - requires 4 bytes
-            if (bytesRead >= 4 && strncmp(header, "TFL3", 4) == 0) {
-                result.FROM("onnx"); // TensorFlow models should be converted to ONNX
+                result.FROM("llama-local");
                 return result;
             }
 
@@ -297,7 +264,7 @@ GrapaError GrapaModel::Unload()
     GrapaError result = 0;
 
     if (mLoaded) {
-        if (mMethod.StrCmp("llama") == 0) {
+        if (mMethod.StrCmp("llama-local") == 0) {
             result = UnloadLlama();
         }
         else if (mMethod.StrCmp("openai") == 0) {
@@ -305,12 +272,6 @@ GrapaError GrapaModel::Unload()
         }
         else if (mMethod.StrCmp("openai-embedding") == 0) {
             result = UnloadOpenAI();
-        }
-        else if (mMethod.StrCmp("onnx") == 0) {
-            result = UnloadOnnx();
-        }
-        else if (mMethod.StrCmp("onnx-embedding") == 0) {
-            result = UnloadOnnx();
         }
         // Add other backend cleanup here
     }
@@ -448,7 +409,7 @@ GrapaRuleEvent* GrapaModel::Generate(const GrapaCHAR& prompt, GrapaRuleEvent* ca
 
     GrapaRuleEvent* mergedParams = MergeParams(vParams, callParams);
 
-    if (mMethod.StrCmp("llama") == 0) {
+    if (mMethod.StrCmp("llama-local") == 0) {
         result = GenerateLlama(prompt, mergedParams);
     }
     else if (mMethod.StrCmp("openai") == 0) {
@@ -456,12 +417,6 @@ GrapaRuleEvent* GrapaModel::Generate(const GrapaCHAR& prompt, GrapaRuleEvent* ca
     }
     else if (mMethod.StrCmp("openai-embedding") == 0) {
         result = EmbedOpenAI(prompt, mergedParams);
-    }
-    else if (mMethod.StrCmp("onnx") == 0) {
-        result = GenerateOnnx(prompt, mergedParams);
-    }
-    else if (mMethod.StrCmp("onnx-embedding") == 0) {
-        result = EmbedOnnx(prompt, mergedParams);
     }
 
     delete mergedParams;
@@ -731,56 +686,6 @@ GrapaRuleEvent* GrapaModel::GenerateOpenAI(const GrapaCHAR& prompt, GrapaRuleEve
             result = body;
             message->vQueue->PopEvent(body);
         }
-        /*
-        if (body && body->vQueue)
-        {
-            // Get the response ID for context
-            GrapaRuleEvent* responseId = body->vQueue->Search("id", index);
-            if (responseId && responseId->mValue.mToken == GrapaTokenType::STR) {
-                mOpenAIResponseId.FROM(responseId->mValue);
-            }
-
-            // Extract the generated text from output array
-            GrapaRuleEvent* output = body->vQueue->Search("output", index);
-            if (output && output->vQueue)
-            {
-                GrapaRuleEvent* outputItem = output->vQueue->Head();
-                while(outputItem)
-                {
-                    // Look for message type items
-                    GrapaRuleEvent* type = outputItem->vQueue->Search("type", index);
-                    if (type && type->mValue.mToken == GrapaTokenType::STR &&
-                        type->mValue.StrCmp("message") == 0)
-                    {
-                        // Get content array
-                        GrapaRuleEvent* content = outputItem->vQueue->Search("content", index);
-                        if (content && content->vQueue)
-                        {
-                            GrapaRuleEvent* contentItem = content->vQueue->Head();
-                            while(contentItem)
-                            {
-                                // Look for output_text type
-                                GrapaRuleEvent* contentType = contentItem->vQueue->Search("type", index);
-                                if (contentType && contentType->mValue.mToken == GrapaTokenType::STR &&
-                                    contentType->mValue.StrCmp("output_text") == 0)
-                                {
-                                    // Extract the text
-                                    GrapaRuleEvent* text = contentItem->vQueue->Search("text", index);
-                                    if (text) {
-                                        result = GrapaScriptExec::CopyItem(text);
-                                        break; // Found the text, exit loops
-                                    }
-                                }
-                                contentItem = contentItem->Next();
-                            }
-                        }
-                        break; // Found message type, exit outer loop
-                    }
-                    outputItem = outputItem->Next();
-                }
-            }
-        }
-        */
     }
     if (message)
     {
@@ -876,20 +781,6 @@ GrapaRuleEvent* GrapaModel::EmbedOpenAI(const GrapaCHAR& text, GrapaRuleEvent* m
             result = data;
             message->vQueue->PopEvent(data);
         }
-        /*
-        if (data && data->vQueue) {
-            data = data->vQueue->Search("data", index);
-            if (data && data->vQueue) {
-                GrapaRuleEvent* embedding = data->vQueue->Head();
-                if (embedding && embedding->vQueue) {
-                    GrapaRuleEvent* embeddingData = embedding->vQueue->Search("embedding", index);
-                    if (embeddingData) {
-                        result = GrapaScriptExec::CopyItem(embeddingData);
-                    }
-                }
-            }
-        }
-        */
     }
     if (message)
     {
@@ -926,7 +817,7 @@ GrapaRuleEvent* GrapaModel::GetModelInfo()
     // Add method-specific information if model is loaded
     if (mLoaded) {
         // LLAMA.cpp specific information
-        if (const_cast<GrapaModel*>(this)->mMethod.StrCmp("llama") == 0 && mLlamaModel) {
+        if (const_cast<GrapaModel*>(this)->mMethod.StrCmp("llama-local") == 0 && mLlamaModel) {
             // Model size in bytes
             uint64_t model_size = llama_model_size(mLlamaModel);
             GrapaRuleEvent* model_size_info = new GrapaRuleEvent(0, GrapaCHAR("model_size_bytes"), GrapaInt((s64)model_size).getBytes());
@@ -968,18 +859,7 @@ GrapaRuleEvent* GrapaModel::GetModelInfo()
                 // }
             }
         }
-        
-        // ONNX specific information
-        else if (const_cast<GrapaModel*>(this)->mMethod.StrCmp("onnx") == 0 || 
-                 const_cast<GrapaModel*>(this)->mMethod.StrCmp("onnx-embedding") == 0) {
-            // No ONNX-specific information needed - method field already tells us everything
-        }
-        
-        // OpenAI specific information
-        else if (const_cast<GrapaModel*>(this)->mMethod.StrCmp("openai") == 0 || 
-                 const_cast<GrapaModel*>(this)->mMethod.StrCmp("openai-embedding") == 0) {
-            // No OpenAI-specific information needed - method field already tells us everything
-        }
+
     }
 
     return result;
@@ -1044,7 +924,7 @@ GrapaRuleEvent* GrapaModel::GetContext() const
 
     // Add text context (convert tokens back to text for human readability)
     GrapaCHAR textContext;
-    if (!mContextTokens.empty() && const_cast<GrapaModel*>(this)->mMethod.StrCmp("llama") == 0 && mLlamaModel) {
+    if (!mContextTokens.empty() && const_cast<GrapaModel*>(this)->mMethod.StrCmp("llama-local") == 0 && mLlamaModel) {
         const struct llama_vocab* vocab = llama_model_get_vocab(mLlamaModel);
         for (size_t i = 0; i < mContextTokens.size(); i++) {
             char token_str[256];
@@ -1161,7 +1041,7 @@ GrapaError GrapaModel::SetContext(GrapaRuleEvent* context)
     }
 
     // Rebuild the LLAMA.cpp context from tokens
-    if (!mContextTokens.empty() && mMethod.StrCmp("llama") == 0) {
+    if (!mContextTokens.empty() && mMethod.StrCmp("llama-local") == 0) {
         // Process all tokens to rebuild the context
         struct llama_batch batch = llama_batch_get_one(mContextTokens.data(), (int32_t)mContextTokens.size());
         if (llama_decode(mLlamaContext, batch)) {
@@ -1176,7 +1056,7 @@ GrapaError GrapaModel::SetContext(GrapaRuleEvent* context)
 
 GrapaError GrapaModel::SetContextFromText(const GrapaCHAR& text)
 {
-    if (!mLoaded || mMethod.StrCmp("llama") != 0 || !mLlamaModel) {
+    if (!mLoaded || mMethod.StrCmp("llama-local") != 0 || !mLlamaModel) {
         return -1; // Model not loaded or not LLAMA backend
     }
 
@@ -1212,557 +1092,6 @@ GrapaError GrapaModel::SetContextFromText(const GrapaCHAR& text)
     return 0; // Success
 }
 
-// Future backend implementations
-GrapaError GrapaModel::LoadOnnx(const GrapaCHAR& modelPath)
-{
-    GrapaError result = 0;
-
-    try {
-        // Initialize ONNX Runtime environment
-        if (!mOnnxEnv) {
-            mOnnxEnv = new Ort::Env(ORT_LOGGING_LEVEL_WARNING, "GrapaModel");
-        }
-
-        // Create session options
-        Ort::SessionOptions sessionOptions;
-        sessionOptions.SetIntraOpNumThreads(1);
-        sessionOptions.SetGraphOptimizationLevel(GraphOptimizationLevel::ORT_ENABLE_EXTENDED);
-        // Create session
-#ifdef _WIN32
-        // Convert to wide string for Windows ONNX Runtime
-        std::wstring wideModelPath(modelPath.mLength, L'\0');
-        MultiByteToWideChar(CP_UTF8, 0, (char*)modelPath.mBytes, (int)modelPath.mLength, &wideModelPath[0], (int)modelPath.mLength);
-        mOnnxSession = new Ort::Session(*static_cast<Ort::Env*>(mOnnxEnv),
-            wideModelPath.c_str(),
-            sessionOptions);
-#else
-        // Use narrow string for non-Windows platforms
-        mOnnxSession = new Ort::Session(*static_cast<Ort::Env*>(mOnnxEnv),
-            (char*)modelPath.mBytes,
-            sessionOptions);
-#endif
-
-        mLoaded = true;
-        mModelPath = modelPath;
-        // Don't override mMethod here - it should already be set to "onnx" or "onnx-embedding"
-
-    }
-    catch (const std::exception& e) {
-        result = -1;
-        mLoaded = false;
-    }
-
-    return result;
-}
-
-GrapaError GrapaModel::UnloadOnnx()
-{
-    if (mOnnxSession) {
-        delete static_cast<Ort::Session*>(mOnnxSession);
-        mOnnxSession = nullptr;
-    }
-
-    if (mOnnxEnv) {
-        delete static_cast<Ort::Env*>(mOnnxEnv);
-        mOnnxEnv = nullptr;
-    }
-
-    mLoaded = false;
-    return 0;
-}
-
-GrapaRuleEvent* GrapaModel::GenerateOnnx(const GrapaCHAR& prompt, GrapaRuleEvent* mergedParams)
-{
-    GrapaRuleEvent* result = NULL;
-
-    try {
-        if (!mOnnxSession) {
-            result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaCHAR("ONNX session not loaded"));
-            return result;
-        }
-
-        Ort::Session* session = static_cast<Ort::Session*>(mOnnxSession);
-
-        // Get input/output info
-        size_t numInputNodes = session->GetInputCount();
-        size_t numOutputNodes = session->GetOutputCount();
-
-        if (numInputNodes == 0 || numOutputNodes == 0) {
-            result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaCHAR("Invalid ONNX model: no input/output nodes"));
-            return result;
-        }
-
-        // Get input/output names
-        std::vector<const char*> inputNames;
-        std::vector<const char*> outputNames;
-
-        for (size_t i = 0; i < numInputNodes; i++) {
-            inputNames.push_back(session->GetInputNameAllocated(i, nullptr).get());
-        }
-
-        for (size_t i = 0; i < numOutputNodes; i++) {
-            outputNames.push_back(session->GetOutputNameAllocated(i, nullptr).get());
-        }
-
-        // Create input tensor (simplified - assumes text input needs tokenization)
-        // For now, return a placeholder indicating the model is loaded but generation needs implementation
-        result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaCHAR("ONNX model loaded successfully. Text generation implementation pending."));
-
-    }
-    catch (const std::exception& e) {
-        result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaCHAR("ONNX generation error"));
-    }
-
-    return result;
-}
-
-GrapaRuleEvent* GrapaModel::EmbedOnnx(const GrapaCHAR& text, GrapaRuleEvent* mergedParams)
-{
-    GrapaRuleEvent* result = NULL;
-
-    result = new GrapaRuleEvent();
-    result->mValue.mToken = GrapaTokenType::GOBJ;
-    result->vQueue = new GrapaRuleQueue();
-
-    try {
-        if (!mOnnxSession) {
-            result->mValue.mToken = GrapaTokenType::ERR;
-            result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("error"), GrapaInt(-1).getBytes()));
-            result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("message"),GrapaCHAR("ONNX session not loaded")));
-            return result;
-        }
-
-        Ort::Session* session = static_cast<Ort::Session*>(mOnnxSession);
-
-        // Extract parameters with defaults
-        int max_length = 512;
-        std::string tokenizer_type = "word";  // "word", "bert", "custom"
-        std::string pooling_method = "mean";   // "mean", "cls", "max", "last"
-        std::string output_format = "1d";     // "1d", "2d", "auto"
-        bool normalize = false;
-        std::vector<std::string> custom_input_names;
-        std::vector<std::string> custom_output_names;
-
-        // Parse parameters from mergedParams
-        if (mergedParams && mergedParams->mValue.mToken == GrapaTokenType::GOBJ && mergedParams->vQueue) {
-            GrapaRuleEvent* param = mergedParams->vQueue->Head();
-            while (param) {
-                if (param->mName.StrCmp("max_length") == 0) {
-                    if (param->mValue.mToken == GrapaTokenType::INT) {
-                        max_length = GrapaInt(param->mValue).LongValue();
-                    }
-                }
-
-                else if (param->mName.StrCmp("tokenizer_type") == 0) {
-                    if (param->mValue.mToken == GrapaTokenType::STR) {
-                        tokenizer_type = std::string((char*)param->mValue.mBytes, param->mValue.mLength);
-                    }
-                }
-
-                else if (param->mName.StrCmp("pooling_method") == 0) {
-                    if (param->mValue.mToken == GrapaTokenType::STR) {
-                        pooling_method = std::string((char*)param->mValue.mBytes, param->mValue.mLength);
-                    }
-                }
-
-                else if (param->mName.StrCmp("output_format") == 0) {
-                    if (param->mValue.mToken == GrapaTokenType::STR) {
-                        output_format = std::string((char*)param->mValue.mBytes, param->mValue.mLength);
-                    }
-                }
-
-                else if (param->mName.StrCmp("normalize") == 0) {
-                    if (param->mValue.mToken == GrapaTokenType::INT) {
-                        normalize = (GrapaInt(param->mValue).LongValue() != 0);
-                    }
-                }
-
-                else if (param->mName.StrCmp("input_names") == 0) {
-                    if (param->mValue.mToken == GrapaTokenType::LIST && param->vQueue) {
-                        GrapaRuleEvent* name_item = param->vQueue->Head();
-                        while (name_item) {
-                            if (name_item->mValue.mToken == GrapaTokenType::STR) {
-                                custom_input_names.push_back(std::string((char*)name_item->mValue.mBytes, name_item->mValue.mLength));
-                            }
-                            name_item = name_item->Next();
-                        }
-                    }
-                }
-
-                else if (param->mName.StrCmp("output_names") == 0) {
-                    if (param->mValue.mToken == GrapaTokenType::LIST && param->vQueue) {
-                        GrapaRuleEvent* name_item = param->vQueue->Head();
-                        while (name_item) {
-                            if (name_item->mValue.mToken == GrapaTokenType::STR) {
-                                custom_output_names.push_back(std::string((char*)name_item->mValue.mBytes, name_item->mValue.mLength));
-                            }
-                            name_item = name_item->Next();
-                        }
-                    }
-                }
-                param = param->Next();
-            }
-        }
-
-        // Tokenize input text based on tokenizer type
-        std::vector<int64_t> token_ids;
-        std::vector<int64_t> attention_mask;
-
-        if (tokenizer_type == "bert" || tokenizer_type == "word") {
-            // Use the existing word-based tokenization
-            std::string inputText = std::string((char*)text.mBytes, text.mLength);
-            std::transform(inputText.begin(), inputText.end(), inputText.begin(), ::tolower);
-            std::istringstream iss(inputText);
-            std::vector<std::string> words(std::istream_iterator<std::string>{iss},
-                std::istream_iterator<std::string>());
-
-            // Load vocabulary from file if available
-            std::map<std::string, int> vocab;
-            std::string model_path_str((char*)mModelPath.mBytes, mModelPath.mLength);
-            
-            // Try to find vocab.txt in the model directory
-            std::string vocab_file = model_path_str;
-            size_t last_slash = vocab_file.find_last_of('/');
-            if (last_slash != std::string::npos) {
-                vocab_file = vocab_file.substr(0, last_slash + 1) + "vocab.txt";
-            } else {
-                vocab_file = "vocab.txt";
-            }
-            
-            
-            std::ifstream vocab_stream(vocab_file);
-            if (vocab_stream.is_open()) {
-                std::string line;
-                int token_id = 0;
-                while (std::getline(vocab_stream, line)) {
-                    // Remove any trailing whitespace
-                    line.erase(line.find_last_not_of(" \t\r\n") + 1);
-                    if (!line.empty()) {
-                        vocab[line] = token_id++;
-                    }
-                }
-            } else {
-                // Minimal fallback vocabulary for when no vocab.txt is available
-                vocab = {
-                    {"[PAD]", 0}, {"[UNK]", 1}, {"[CLS]", 2}, {"[SEP]", 3}
-                };
-            }
-
-            // Add CLS token at the beginning
-            if (vocab.count("[CLS]")) {
-                token_ids.push_back(vocab["[CLS]"]);
-            } else if (vocab.count("<CLS>")) {
-                token_ids.push_back(vocab["<CLS>"]);
-            } else {
-                token_ids.push_back(2); // Default CLS token ID
-            }
-            attention_mask.push_back(1);
-
-            // Add word tokens
-            for (const auto& word : words) {
-                if (token_ids.size() >= max_length - 1) break; // Leave room for SEP token
-                int token_id;
-                if (vocab.count(word)) {
-                    token_id = vocab[word];
-                } else if (vocab.count("[UNK]")) {
-                    token_id = vocab["[UNK]"];
-                } else if (vocab.count("<UNK>")) {
-                    token_id = vocab["<UNK>"];
-                } else {
-                    token_id = 1; // Default UNK token ID
-                }
-                token_ids.push_back(token_id);
-                attention_mask.push_back(1);
-            }
-
-            // Add SEP token at the end
-            if (token_ids.size() < max_length) {
-                if (vocab.count("[SEP]")) {
-                    token_ids.push_back(vocab["[SEP]"]);
-                } else if (vocab.count("<SEP>")) {
-                    token_ids.push_back(vocab["<SEP>"]);
-                } else {
-                    token_ids.push_back(3); // Default SEP token ID
-                }
-                attention_mask.push_back(1);
-            }
-
-            // Pad to max_length
-            while (token_ids.size() < max_length) {
-                if (vocab.count("[PAD]")) {
-                    token_ids.push_back(vocab["[PAD]"]);
-                } else if (vocab.count("<PAD>")) {
-                    token_ids.push_back(vocab["<PAD>"]);
-                } else {
-                    token_ids.push_back(0); // Default PAD token ID
-                }
-                attention_mask.push_back(0);
-            }
-        }
-        else {
-            // For other tokenizer types, use simple character-based tokenization
-            std::string inputText = std::string((char*)text.mBytes, text.mLength);
-            token_ids.reserve(max_length);
-            attention_mask.reserve(max_length);
-
-            size_t max_len = ((size_t)max_length < inputText.length()) ? (size_t)max_length : inputText.length();
-            for (size_t i = 0; i < max_len; i++) {
-                token_ids.push_back((int64_t)inputText[i]);
-                attention_mask.push_back(1);
-            }
-
-            // Pad to max_length
-            while (token_ids.size() < max_length) {
-                token_ids.push_back(0);
-                attention_mask.push_back(0);
-            }
-        }
-
-        // Create input tensors
-        std::vector<int64_t> input_shape = { 1, max_length };
-        std::vector<int64_t> attention_shape = { 1, max_length };
-
-        Ort::MemoryInfo memory_info = Ort::MemoryInfo::CreateCpu(OrtArenaAllocator, OrtMemTypeDefault);
-
-        Ort::Value input_tensor = Ort::Value::CreateTensor<int64_t>(
-            memory_info, token_ids.data(), token_ids.size(), input_shape.data(), input_shape.size());
-
-        Ort::Value attention_tensor = Ort::Value::CreateTensor<int64_t>(
-            memory_info, attention_mask.data(), attention_mask.size(), attention_shape.data(), attention_shape.size());
-
-        // Prepare input names (use custom names if provided, otherwise defaults)
-        std::vector<const char*> input_names;
-        if (!custom_input_names.empty()) {
-            for (const auto& name : custom_input_names) {
-                input_names.push_back(name.c_str());
-            }
-        }
-        else {
-            // Default input names for BERT-like models
-            input_names.push_back("input_ids");
-            input_names.push_back("attention_mask");
-        }
-
-        // Prepare input tensors in the correct order
-        std::vector<Ort::Value> input_tensors;
-        input_tensors.push_back(std::move(input_tensor));
-        if (input_names.size() > 1) {
-            input_tensors.push_back(std::move(attention_tensor));
-        }
-
-        // Prepare output names (use custom names if provided, otherwise defaults)
-        std::vector<const char*> output_names;
-        if (!custom_output_names.empty()) {
-            for (const auto& name : custom_output_names) {
-                output_names.push_back(name.c_str());
-            }
-        }
-        else {
-            // Default output names for BERT-like models
-            output_names.push_back("last_hidden_state");
-            output_names.push_back("pooler_output");
-        }
-
-        // Run inference
-        try {
-            auto output_tensors = session->Run(Ort::RunOptions{ nullptr },
-                input_names.data(), input_tensors.data(), input_tensors.size(),
-                output_names.data(), output_names.size());
-
-            if (output_tensors.size() > 0) {
-                // Determine which output to use based on pooling method and available outputs
-                int output_index = 0;
-                if (pooling_method == "cls" && output_tensors.size() > 1) {
-                    output_index = 1; // Use pooler_output for CLS pooling
-                }
-                else if (pooling_method == "mean" || pooling_method == "max") {
-                    output_index = 0; // Use last_hidden_state for mean/max pooling
-                }
-
-                float* output_data = output_tensors[output_index].GetTensorMutableData<float>();
-                auto output_shape = output_tensors[output_index].GetTensorTypeAndShapeInfo().GetShape();
-
-                // Process output based on shape and pooling method
-                std::vector<float> final_embedding;
-
-                if (output_shape.size() == 2) {
-                    // Already pooled output [batch_size, hidden_size]
-                    int batch_size = output_shape[0];
-                    int hidden_size = output_shape[1];
-
-                    final_embedding.assign(output_data, output_data + hidden_size);
-                }
-                else if (output_shape.size() == 3) {
-                    // Sequence output [batch_size, sequence_length, hidden_size]
-                    int batch_size = output_shape[0];
-                    int sequence_length = output_shape[1];
-                    int hidden_size = output_shape[2];
-
-                    final_embedding.resize(hidden_size, 0.0f);
-
-                    if (pooling_method == "mean") {
-                        // Mean pooling over sequence length
-                        int valid_tokens = 0;
-                        for (int i = 0; i < sequence_length; i++) {
-                            if (i < attention_mask.size() && attention_mask[i] == 1) {
-                                for (int j = 0; j < hidden_size; j++) {
-                                    final_embedding[j] += output_data[i * hidden_size + j];
-                                }
-                                valid_tokens++;
-                            }
-                        }
-                        if (valid_tokens > 0) {
-                            for (int j = 0; j < hidden_size; j++) {
-                                final_embedding[j] /= valid_tokens;
-                            }
-                        }
-                    }
-                    else if (pooling_method == "max") {
-                        // Max pooling over sequence length
-                        for (int i = 0; i < sequence_length; i++) {
-                            if (i < attention_mask.size() && attention_mask[i] == 1) {
-                                for (int j = 0; j < hidden_size; j++) {
-                                    float new_val = output_data[i * hidden_size + j];
-                                    final_embedding[j] = (final_embedding[j] > new_val) ? final_embedding[j] : new_val;
-                                }
-                            }
-                        }
-                    }
-                    else if (pooling_method == "last") {
-                        // Use last token
-                        int last_token = sequence_length - 1;
-                        while (last_token >= 0 && last_token < attention_mask.size() && attention_mask[last_token] == 0) {
-                            last_token--;
-                        }
-                        if (last_token >= 0) {
-                            for (int j = 0; j < hidden_size; j++) {
-                                final_embedding[j] = output_data[last_token * hidden_size + j];
-                            }
-                        }
-                    }
-                    else if (pooling_method == "cls") {
-                        // Use CLS token (first token)
-                        for (int j = 0; j < hidden_size; j++) {
-                            final_embedding[j] = output_data[j];
-                        }
-                    }
-                }
-                else {
-                    // Handle other output shapes
-                    size_t total_elements = 1;
-                    for (size_t i = 0; i < output_shape.size(); i++) {
-                        total_elements *= output_shape[i];
-                    }
-                    final_embedding.assign(output_data, output_data + total_elements);
-                }
-
-                // Normalize if requested
-                if (normalize) {
-                    float norm = 0.0f;
-                    for (float val : final_embedding) {
-                        norm += val * val;
-                    }
-                    norm = std::sqrt(norm);
-                    if (norm > 0.0f) {
-                        for (float& val : final_embedding) {
-                            val /= norm;
-                        }
-                    }
-                }
-
-                // Create the embedding as a Grapa $LIST
-                GrapaRuleEvent* embedding_list = new GrapaRuleEvent();
-                embedding_list->mName.FROM("embedding");
-                embedding_list->mValue.mToken = GrapaTokenType::LIST;
-                embedding_list->vQueue = new GrapaRuleQueue();
-                result->vQueue->PushTail(embedding_list);
-
-                // Determine output format
-                bool use_2d = (output_format == "2d") ||
-                    (output_format == "auto" && final_embedding.size() > 1000); // Auto-detect for large embeddings
-
-                if (use_2d) {
-                    // Create 2D embedding (list of lists)
-                    // Split into chunks (e.g., 100 dimensions per row)
-                    int chunk_size = 100;
-                    for (size_t i = 0; i < final_embedding.size(); i += chunk_size) {
-                        GrapaRuleEvent* chunk_list = new GrapaRuleEvent(0, GrapaCHAR(), GrapaCHAR());
-                        chunk_list->mValue.mToken = GrapaTokenType::LIST;
-                        chunk_list->vQueue = new GrapaRuleQueue();
-
-                        size_t end_j = (i + chunk_size < final_embedding.size()) ? (i + chunk_size) : final_embedding.size();
-                        for (size_t j = i; j < end_j; j++) {
-                            GrapaRuleEvent* val_item = new GrapaRuleEvent(0, GrapaCHAR(), GrapaFloat(final_embedding[j]).getBytes());
-                            chunk_list->vQueue->PushTail(val_item);
-                        }
-
-                        embedding_list->vQueue->PushTail(chunk_list);
-                    }
-                }
-                else {
-                    // Create 1D embedding (flat list)
-                    for (float val : final_embedding) {
-                        GrapaRuleEvent* val_item = new GrapaRuleEvent(0, GrapaCHAR(), GrapaFloat(val).getBytes());
-                        embedding_list->vQueue->PushTail(val_item);
-                    }
-                }
-
-                // Add simple metadata to result
-                GrapaRuleEvent* metadata_item = new GrapaRuleEvent();
-                metadata_item->mName.FROM("metadata");
-                metadata_item->mValue.mToken = GrapaTokenType::GOBJ;
-                metadata_item->vQueue = new GrapaRuleQueue();
-                result->vQueue->PushTail(metadata_item);
-
-                // Add basic processing information
-                GrapaRuleEvent* token_count_item = new GrapaRuleEvent(0, GrapaCHAR("token_count"), GrapaInt(token_ids.size()).getBytes());
-                metadata_item->vQueue->PushTail(token_count_item);
-
-                GrapaRuleEvent* embedding_dimensions_item = new GrapaRuleEvent(0, GrapaCHAR("embedding_dimensions"), GrapaInt(final_embedding.size()).getBytes());
-                metadata_item->vQueue->PushTail(embedding_dimensions_item);
-
-                GrapaRuleEvent* max_length_item = new GrapaRuleEvent(0, GrapaCHAR("max_length"), GrapaInt(max_length).getBytes());
-                metadata_item->vQueue->PushTail(max_length_item);
-
-                GrapaRuleEvent* pooling_method_item = new GrapaRuleEvent(0, GrapaCHAR("pooling_method"), GrapaCHAR(pooling_method.c_str()));
-                metadata_item->vQueue->PushTail(pooling_method_item);
-
-                GrapaRuleEvent* output_format_item = new GrapaRuleEvent(0, GrapaCHAR("output_format"), GrapaCHAR(output_format.c_str()));
-                metadata_item->vQueue->PushTail(output_format_item);
-
-                GrapaRuleEvent* normalize_item = new GrapaRuleEvent(0, GrapaCHAR("normalize"), GrapaInt(normalize ? 1 : 0).getBytes());
-                metadata_item->vQueue->PushTail(normalize_item);
-
-                GrapaRuleEvent* model_path_item = new GrapaRuleEvent(0, GrapaCHAR("model_path"), mModelPath);
-                metadata_item->vQueue->PushTail(model_path_item);
-
-                // result is already set above
-
-            }
-            else {
-                result->mValue.mToken = GrapaTokenType::ERR;
-                result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("error"), GrapaInt(-1).getBytes()));
-                result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("message"),GrapaCHAR("No output from ONNX model")));
-    
-            }
-        }
-        catch (const std::exception& e) {
-            result->mValue.mToken = GrapaTokenType::ERR;
-            result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("error"), GrapaInt(-1).getBytes()));
-            result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("message"),GrapaCHAR("ONNX inference error")));
-        }
-
-    }
-    catch (const std::exception& e) {
-        result->mValue.mToken = GrapaTokenType::ERR;
-        result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("error"), GrapaInt(-1).getBytes()));
-        result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("message"),GrapaCHAR("ONNX embedding error")));
-    }
-
-    return result;
-}
-
-
 void GrapaModel::ResetModelSpecificParams()
 {
     // Reset model-dependent parameters
@@ -1793,7 +1122,7 @@ void GrapaModel::SetModelDefaults()
         return;  // No parameters to set defaults for
     }
 
-    if (mMethod.StrCmp("llama") == 0) {
+    if (mMethod.StrCmp("llama-local") == 0) {
         // Get model info and set appropriate defaults
         int modelSize = GetModelSize();  // 7B, 13B, 70B, etc.
         GrapaRuleEvent* override;
@@ -1824,30 +1153,7 @@ void GrapaModel::SetModelDefaults()
                 override->mValue.FROM(GrapaFloat((double)0.1f).getBytes());
         }
     }
-    else if (mMethod.StrCmp("onnx") == 0) {
-        // ONNX-specific parameters
-        GrapaRuleEvent* override;
-        s64 index;
 
-        // For ONNX models, we typically don't need generation parameters
-        // but we might need model-specific parameters
-        override = vParams->vQueue ? vParams->vQueue->Search("max_tokens", index) : nullptr;
-        if (override)
-            override->mValue.FROM(GrapaInt(512).getBytes()); // Default for ONNX models
-
-        override = vParams->vQueue ? vParams->vQueue->Search("temperature", index) : nullptr;
-        if (override)
-            override->mValue.FROM(GrapaFloat((double)0.1f).getBytes());
-
-        // ONNX-specific parameters
-        override = vParams->vQueue ? vParams->vQueue->Search("onnx_provider", index) : nullptr;
-        if (override)
-            override->mValue.FROM(GrapaCHAR("CPUExecutionProvider"));
-
-        override = vParams->vQueue ? vParams->vQueue->Search("onnx_optimization_level", index) : nullptr;
-        if (override)
-            override->mValue.FROM(GrapaInt(1).getBytes()); // ORT_ENABLE_EXTENDED
-    }
 }
 
 GrapaRuleEvent* GrapaModel::MergeParams(GrapaRuleEvent* persistent, GrapaRuleEvent* callSpecific)

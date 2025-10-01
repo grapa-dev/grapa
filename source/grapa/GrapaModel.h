@@ -20,7 +20,7 @@ public:
     // Model state
     bool mLoaded;
     GrapaCHAR mModelPath;
-    GrapaCHAR mMethod;  // "llama", "onnx", etc.
+    GrapaCHAR mMethod;  // "llama-local", etc.
     
     // LLAMA.cpp specific
     struct llama_model* mLlamaModel;
@@ -101,13 +101,13 @@ public:
     GrapaRuleEvent* GenerateOpenAI(const GrapaCHAR& prompt, GrapaRuleEvent* mergedParams);
     GrapaRuleEvent* EmbedOpenAI(const GrapaCHAR& text, GrapaRuleEvent* mergedParams);
     
+    /*
     // ONNX Runtime operations
     GrapaError LoadOnnx(const GrapaCHAR& modelPath);
     GrapaError UnloadOnnx();
     GrapaRuleEvent* GenerateOnnx(const GrapaCHAR& prompt, GrapaRuleEvent* mergedParams);
     GrapaRuleEvent* EmbedOnnx(const GrapaCHAR& text, GrapaRuleEvent* mergedParams);
-    
-    // Future backends
+    */
     
 private:
     GrapaError InitializeLlama();
