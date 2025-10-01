@@ -17,12 +17,9 @@ endif()
 
 add_subdirectory(source/pybind11)
 
-pybind11_add_module(grapapy 
-    source/mainpy.cpp
-    )
+include_directories(source)
 
-# Use target_link_directories instead of link_directories to avoid adding to RPATH
-target_link_directories(grapapy PRIVATE
+link_directories(
     source 
     source/grapa-lib/${GRAPAPY_OS}
     source/fl-lib/${GRAPAPY_OS} 
@@ -30,6 +27,10 @@ target_link_directories(grapapy PRIVATE
     source/blst-lib/${GRAPAPY_OS}
     source/pcre2-lib/${GRAPAPY_OS}
     source/llama-lib/${GRAPAPY_OS}
+    )
+
+pybind11_add_module(grapapy 
+    source/mainpy.cpp
     )
 
 if (MSVC)
@@ -118,7 +119,4 @@ target_link_libraries(grapapy PRIVATE
     "-framework MetalKit"
     "-framework Accelerate"
     )
-SET(CMAKE_SKIP_BUILD_RPATH  FALSE)
-SET(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
-SET(CMAKE_INSTALL_RPATH "@loader_path")
 endif (APPLE)

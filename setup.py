@@ -3,8 +3,6 @@ import sys
 import platform
 import subprocess
 import re
-from setuptools.command.install import install
-from setuptools.command.build import build
 
 # Check setuptools version for compatibility
 try:
@@ -355,63 +353,6 @@ class CMakeBuild(build_ext):
 
         subprocess.check_call(["cmake", ext.sourcedir] + cmake_args, cwd=self.build_temp)
         subprocess.check_call(["cmake", "--build", "."] + build_args, cwd=self.build_temp)
-        
-        # Fix RPATH for macOS to use relative paths
-        if sys.platform.startswith("darwin"):
-            self.fix_macos_rpath(extdir)
-    
-    def fix_macos_rpath(self, extdir):
-        """Fix RPATH for macOS to use relative paths instead of absolute paths."""
-        import subprocess
-        import os
-        
-        # Find the Python extension file
-        ext_files = list(Path(extdir).glob("grapapy*.so"))
-        if not ext_files:
-            print("Warning: No Python extension found to fix RPATH")
-            return
-        
-        ext_file = ext_files[0]
-        print(f"Fixing RPATH for: {ext_file}")
-        
-        try:
-            # Remove all existing RPATH entries
-            result = subprocess.run(["otool", "-l", str(ext_file)], capture_output=True, text=True)
-            if result.returncode != 0:
-                print(f"Warning: Could not read RPATH from {ext_file}")
-                return
-            
-            # Find all RPATH entries and remove them
-            rpath_entries = []
-            lines = result.stdout.split('\n')
-            for i, line in enumerate(lines):
-                if 'LC_RPATH' in line:
-                    # Find the path in the next few lines
-                    for j in range(i+1, min(i+5, len(lines))):
-                        if 'path' in lines[j]:
-                            path = lines[j].split('path')[1].strip()
-                            # Remove any trailing text like "(offset 12)"
-                            if '(' in path:
-                                path = path.split('(')[0].strip()
-                            rpath_entries.append(path)
-                            break
-            
-            # Remove each RPATH entry
-            for rpath in rpath_entries:
-                try:
-                    subprocess.run(["install_name_tool", "-delete_rpath", rpath, str(ext_file)], check=True)
-                    print(f"Removed RPATH: {rpath}")
-                except subprocess.CalledProcessError:
-                    print(f"Warning: Could not remove RPATH: {rpath}")
-            
-            # Add the correct RPATH
-            subprocess.run(["install_name_tool", "-add_rpath", "@loader_path", str(ext_file)], check=True)
-            print("Added RPATH: @loader_path")
-            
-        except subprocess.CalledProcessError as e:
-            print(f"Warning: Could not fix RPATH: {e}")
-        except FileNotFoundError:
-            print("Warning: install_name_tool not found, RPATH not fixed")
 
 class CopySharedLibrary(Command):
     user_options = []
@@ -578,18 +519,6 @@ lib_grapa = Extension(
     extra_compile_args=extra_compile_args,
 )
 
-# Custom install command to copy shared libraries
-class CustomInstallCommand(install):
-    def run(self):
-        install.run(self)
-
-# Custom build command to copy shared libraries during build
-class CustomBuildCommand(build):
-    def run(self):
-        build.run(self)
-
-# Custom install command is now defined above
-
 # Check system dependencies before attempting to build
 check_system_dependencies()
 
@@ -617,8 +546,7 @@ For comprehensive documentation, visit: https://grapa-dev.github.io/grapa/
         cmdclass={
             'copy_grapalib': CopySharedLibrary,
             'build_ext': CustomBuildExt,
-            'build': CustomBuildCommand,
-            'install': CustomInstallCommand,
+            'build': CustomBuild,
         },
         zip_safe=False,
         python_requires=">=3.6",
@@ -649,7 +577,7 @@ else:
         long_description_content_type="text/markdown",
         url="https://grapa-dev.github.io/grapa/",
         ext_modules=[CMakeExtension("grapapy")],
-        cmdclass={"build_ext": CMakeBuild, "build": CustomBuildCommand, "install": CustomInstallCommand},
+        cmdclass={"build_ext": CMakeBuild},
         zip_safe=False,
         python_requires=">=3.6",
         install_requires=[
