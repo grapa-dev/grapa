@@ -670,107 +670,12 @@ class GrapaBuilder:
         python_cmd = "python" if config.platform == "windows" else "python3"
         pip_cmd = "pip" if config.platform == "windows" else "pip3"
         
-        # Set environment variable to fix timestamp issue in tar files
-        # This is needed to handle the Year 2038 problem in Python's tarfile module
-        # when file timestamps exceed the 32-bit integer limit (2147483647)
-        # 
-        # Root cause: Python's tarfile module uses 32-bit integers for timestamps,
-        # which can only represent dates up to January 19, 2038. If any files have
-        # timestamps beyond this date, the tar creation fails with:
-        # struct.error: 'L' format requires 0 <= number <= 4294967295
-        #
-        # This can happen due to:
-        # - System clock set to future dates
-        # - Files created with future timestamps
-        # - Build environment timestamp issues
-        #
-        # TODO: This is a workaround. The proper fix would be to upgrade to a
-        # Python version that handles 64-bit timestamps in tarfile, or use
-        # a different archive format that doesn't have this limitation.
-        import os
-        import time
+        # Build sdist (source distribution) for PyPI compatibility
+        print("Building source distribution...")
+        subprocess.run([python_cmd, "setup.py", "sdist"], check=True)
         
-        env = os.environ.copy()
-        # Use a safe timestamp well before 2038 (year 2020)
-        safe_timestamp = 1577836800  # January 1, 2020 00:00:00 UTC
-        env['SOURCE_DATE_EPOCH'] = str(safe_timestamp)
-        
-        # Also set it in the current process environment for any subprocess calls
-        os.environ['SOURCE_DATE_EPOCH'] = str(safe_timestamp)
-        
-        print(f"🔧 Setting SOURCE_DATE_EPOCH={safe_timestamp} to fix Year 2038 timestamp issue")
-        print(f"🔧 This ensures all file timestamps in the tar archive are within 32-bit range")
-        
-        # Debug: Print the environment variable that will be passed
-        print(f"🔧 Environment variable in subprocess: SOURCE_DATE_EPOCH={env.get('SOURCE_DATE_EPOCH', 'not set')}")
-        
-        # Try sdist first (needed for PyPI), with fallback to bdist_wheel
-        print(f"🔧 Trying sdist first (needed for PyPI publishing)")
-        
-        # Approach 1: Try sdist with SOURCE_DATE_EPOCH set in the command line
-        print(f"🔧 Using env command to set SOURCE_DATE_EPOCH before Python starts")
-        cmd_with_env = ["env", f"SOURCE_DATE_EPOCH={safe_timestamp}", python_cmd, "setup.py", "sdist"]
-        print(f"🔧 Running command with env: {' '.join(cmd_with_env)}")
-        
-        try:
-            print(f"🔧 Starting sdist with timeout (30 minutes)...")
-            result = subprocess.run(cmd_with_env, check=True, timeout=1800)
-            print("✅ sdist completed successfully with env command")
-        except (subprocess.CalledProcessError, FileNotFoundError) as e:
-            if isinstance(e, FileNotFoundError):
-                print(f"❌ env command not found (expected on Windows): {e}")
-            else:
-                print(f"❌ sdist failed with env command: {e}")
-                if e.stdout:
-                    print(f"stdout: {e.stdout}")
-                if e.stderr:
-                    print(f"stderr: {e.stderr}")
-            
-            # Approach 2: Try sdist with SOURCE_DATE_EPOCH in environment
-            print(f"🔧 Trying alternative approach: using subprocess with environment variable")
-            cmd = [python_cmd, "setup.py", "sdist"]
-            print(f"🔧 Running command: {' '.join(cmd)}")
-            print(f"🔧 With environment: {dict((k, v) for k, v in env.items() if k == 'SOURCE_DATE_EPOCH')}")
-            
-            try:
-                print(f"🔧 Starting sdist with environment variable (timeout: 30 minutes)...")
-                result = subprocess.run(cmd, check=True, env=env, timeout=1800)
-                print("✅ sdist completed successfully with environment variable")
-            except subprocess.CalledProcessError as e2:
-                print(f"❌ sdist failed even with environment variable: {e2}")
-                if e2.stdout:
-                    print(f"stdout: {e2.stdout}")
-                if e2.stderr:
-                    print(f"stderr: {e2.stderr}")
-                
-                # Approach 3: Fallback to bdist_wheel (but warn about PyPI)
-                print(f"🔧 Trying final approach: using bdist_wheel instead of sdist")
-                print(f"⚠️  WARNING: bdist_wheel creates .whl files, not .tar.gz files needed for PyPI")
-                print(f"🔧 bdist_wheel doesn't have the same timestamp issues as sdist")
-                
-                # Fallback: use bdist_wheel which doesn't have the same timestamp issues
-                cmd_wheel = [python_cmd, "setup.py", "bdist_wheel"]
-                print(f"🔧 Running fallback command: {' '.join(cmd_wheel)}")
-                try:
-                    subprocess.run(cmd_wheel, check=True, env=env)
-                    print("✅ bdist_wheel completed successfully")
-                except subprocess.CalledProcessError as wheel_error:
-                    print(f"❌ bdist_wheel also failed: {wheel_error}")
-                    if wheel_error.stdout:
-                        print(f"stdout: {wheel_error.stdout}")
-                    if wheel_error.stderr:
-                        print(f"stderr: {wheel_error.stderr}")
-                    raise wheel_error
-                
-                # Update the search pattern to look for wheel files instead of tar.gz
-                dist_files = list(Path("dist").glob("*.whl"))
-                if not dist_files:
-                    raise RuntimeError("No Python wheel found in dist/ directory")
-                print(f"✅ Created wheel file: {dist_files[0].name}")
-                print(f"⚠️  NOTE: This is a .whl file, not a .tar.gz file needed for PyPI")
-
-        # Find the built package file (either tar.gz or wheel)
-        dist_files = list(Path("dist").glob("*.tar.gz")) + list(Path("dist").glob("*.whl"))
+        # Find the built package file
+        dist_files = list(Path("dist").glob("*.tar.gz"))
         if not dist_files:
             raise RuntimeError("No Python package found in dist/ directory")
 

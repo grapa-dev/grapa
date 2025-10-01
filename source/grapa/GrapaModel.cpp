@@ -49,8 +49,8 @@ void GrapaModel::SetRuleEvent(GrapaRuleEvent* pParams)
 void GrapaModel::INIT(GrapaRuleEvent* pParams)
 {
     mLoaded = false;
-    mLlamaModel = nullptr;
-    mLlamaContext = nullptr;
+    mLlamaLocalModel = nullptr;
+    mLlamaLocalContext = nullptr;
 
     mMaxTokens = 20;  // Very low for testing
     mContextSize = 2048;  // Default context size
@@ -63,11 +63,7 @@ void GrapaModel::INIT(GrapaRuleEvent* pParams)
     mVerbose = 0;     // Default to silent (no LLAMA.cpp output)
 
     // Initialize sampler to NULL
-    mLlamaSampler = nullptr;
-
-    // Initialize ONNX Runtime members
-    mOnnxSession = nullptr;
-    mOnnxEnv = nullptr;
+    mLlamaLocalSampler = nullptr;
 
     // Initialize context management
     mContextPreserved = false;
@@ -137,8 +133,8 @@ void GrapaModel::INIT(GrapaRuleEvent* pParams)
     }
 
     // Initialize LLAMA parameters
-    mLlamaModelParams = llama_model_default_params();
-    mLlamaContextParams = llama_context_default_params();
+    mLlamaLocalModelParams = llama_model_default_params();
+    mLlamaLocalContextParams = llama_context_default_params();
 }
 
 void GrapaModel::CLEAR()
@@ -185,7 +181,7 @@ GrapaError GrapaModel::Load(const GrapaCHAR& modelPath, const GrapaCHAR& method)
     }
 
     if (mMethod.StrCmp("llama-local") == 0) {
-        result = LoadLlama(modelPath);
+        result = LoadLlamaLocal(modelPath);
     }
     else if (mMethod.StrCmp("openai") == 0) {
         result = LoadOpenAI(modelPath);
@@ -265,7 +261,7 @@ GrapaError GrapaModel::Unload()
 
     if (mLoaded) {
         if (mMethod.StrCmp("llama-local") == 0) {
-            result = UnloadLlama();
+            result = UnloadLlamaLocal();
         }
         else if (mMethod.StrCmp("openai") == 0) {
             result = UnloadOpenAI();
@@ -285,7 +281,7 @@ bool GrapaModel::IsLoaded() const
     return mLoaded;
 }
 
-GrapaError GrapaModel::LoadLlama(const GrapaCHAR& modelPath)
+GrapaError GrapaModel::LoadLlamaLocal(const GrapaCHAR& modelPath)
 {
     GrapaError result = 0;
 
@@ -293,16 +289,16 @@ GrapaError GrapaModel::LoadLlama(const GrapaCHAR& modelPath)
     llama_log_set(LogCallback, (void*)&mVerbose);
 
     // Load the model
-    mLlamaModel = llama_load_model_from_file((char*)modelPath.mBytes, mLlamaModelParams);
-    if (!mLlamaModel) {
+    mLlamaLocalModel = llama_load_model_from_file((char*)modelPath.mBytes, mLlamaLocalModelParams);
+    if (!mLlamaLocalModel) {
         return -1;
     }
 
     // Create context
-    mLlamaContext = llama_new_context_with_model(mLlamaModel, mLlamaContextParams);
-    if (!mLlamaContext) {
-        llama_free_model(mLlamaModel);
-        mLlamaModel = nullptr;
+    mLlamaLocalContext = llama_new_context_with_model(mLlamaLocalModel, mLlamaLocalContextParams);
+    if (!mLlamaLocalContext) {
+        llama_free_model(mLlamaLocalModel);
+        mLlamaLocalModel = nullptr;
         return -2;
     }
 
@@ -317,18 +313,18 @@ GrapaError GrapaModel::LoadLlama(const GrapaCHAR& modelPath)
     return result;
 }
 
-GrapaError GrapaModel::UnloadLlama()
+GrapaError GrapaModel::UnloadLlamaLocal()
 {
     // Clean up sampler first
     CleanupSampler();
 
-    if (mLlamaContext) {
-        llama_free(mLlamaContext);
-        mLlamaContext = nullptr;
+    if (mLlamaLocalContext) {
+        llama_free(mLlamaLocalContext);
+        mLlamaLocalContext = nullptr;
     }
-    if (mLlamaModel) {
-        llama_free_model(mLlamaModel);
-        mLlamaModel = nullptr;
+    if (mLlamaLocalModel) {
+        llama_free_model(mLlamaLocalModel);
+        mLlamaLocalModel = nullptr;
     }
     return 0;
 }
@@ -410,7 +406,7 @@ GrapaRuleEvent* GrapaModel::Generate(const GrapaCHAR& prompt, GrapaRuleEvent* ca
     GrapaRuleEvent* mergedParams = MergeParams(vParams, callParams);
 
     if (mMethod.StrCmp("llama-local") == 0) {
-        result = GenerateLlama(prompt, mergedParams);
+        result = GenerateLlamaLocal(prompt, mergedParams);
     }
     else if (mMethod.StrCmp("openai") == 0) {
         result = GenerateOpenAI(prompt, mergedParams);
@@ -423,14 +419,14 @@ GrapaRuleEvent* GrapaModel::Generate(const GrapaCHAR& prompt, GrapaRuleEvent* ca
     return result;
 }
 
-GrapaRuleEvent* GrapaModel::GenerateLlama(const GrapaCHAR& prompt, GrapaRuleEvent* mergedParams)
+GrapaRuleEvent* GrapaModel::GenerateLlamaLocal(const GrapaCHAR& prompt, GrapaRuleEvent* mergedParams)
 {
     GrapaRuleEvent* result = NULL;
     result = new GrapaRuleEvent();
     result->mValue.mToken = GrapaTokenType::GOBJ;
     result->vQueue = new GrapaRuleQueue();
 
-    if (!this->mLlamaContext) {
+    if (!this->mLlamaLocalContext) {
         result->mValue.mToken = GrapaTokenType::ERR;
         result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("error"), GrapaInt(-1).getBytes()));
         result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("message"),GrapaCHAR("Llama context not initialized")));
@@ -455,7 +451,7 @@ GrapaRuleEvent* GrapaModel::GenerateLlama(const GrapaCHAR& prompt, GrapaRuleEven
     }
 
     // Backend-optimized context management
-    const struct llama_vocab* vocab = llama_model_get_vocab(this->mLlamaModel);
+    const struct llama_vocab* vocab = llama_model_get_vocab(this->mLlamaLocalModel);
     std::vector<llama_token> new_tokens;
 
     // Tokenize the new prompt
@@ -483,7 +479,7 @@ GrapaRuleEvent* GrapaModel::GenerateLlama(const GrapaCHAR& prompt, GrapaRuleEven
 
         // Process only the new tokens (LLAMA.cpp context preserves all previous state)
         struct llama_batch batch = llama_batch_get_one(new_tokens.data(), n_new_tokens);
-        if (llama_decode(this->mLlamaContext, batch)) {
+        if (llama_decode(this->mLlamaLocalContext, batch)) {
             return result;
         }
     }
@@ -495,7 +491,7 @@ GrapaRuleEvent* GrapaModel::GenerateLlama(const GrapaCHAR& prompt, GrapaRuleEven
 
         // Process all tokens to initialize the context
         struct llama_batch batch = llama_batch_get_one(mContextTokens.data(), mContextTokens.size());
-        if (llama_decode(this->mLlamaContext, batch)) {
+        if (llama_decode(this->mLlamaLocalContext, batch)) {
             return result;
         }
     }
@@ -516,14 +512,14 @@ GrapaRuleEvent* GrapaModel::GenerateLlama(const GrapaCHAR& prompt, GrapaRuleEven
         llama_token next_token;
 
         // Use LLAMA.cpp sampler if available, otherwise fall back to greedy
-        if (mLlamaSampler) {
+        if (mLlamaLocalSampler) {
             // Use the sampler chain for temperature-aware generation
-            next_token = llama_sampler_sample(mLlamaSampler, this->mLlamaContext, -1);
-            llama_sampler_accept(mLlamaSampler, next_token);
+            next_token = llama_sampler_sample(mLlamaLocalSampler, this->mLlamaLocalContext, -1);
+            llama_sampler_accept(mLlamaLocalSampler, next_token);
         }
         else {
             // Fallback to greedy sampling if sampler is not available
-            float* logits = llama_get_logits(this->mLlamaContext);
+            float* logits = llama_get_logits(this->mLlamaLocalContext);
             int n_vocab = llama_vocab_n_tokens(vocab);
 
             next_token = 0;
@@ -550,7 +546,7 @@ GrapaRuleEvent* GrapaModel::GenerateLlama(const GrapaCHAR& prompt, GrapaRuleEven
         // Add the new token to persistent context and decode it
         mContextTokens.push_back(next_token);
         struct llama_batch next_batch = llama_batch_get_one(&next_token, 1);
-        if (llama_decode(this->mLlamaContext, next_batch)) {
+        if (llama_decode(this->mLlamaLocalContext, next_batch)) {
             return result;
         }
     }
@@ -817,40 +813,40 @@ GrapaRuleEvent* GrapaModel::GetModelInfo()
     // Add method-specific information if model is loaded
     if (mLoaded) {
         // LLAMA.cpp specific information
-        if (const_cast<GrapaModel*>(this)->mMethod.StrCmp("llama-local") == 0 && mLlamaModel) {
+        if (const_cast<GrapaModel*>(this)->mMethod.StrCmp("llama-local") == 0 && mLlamaLocalModel) {
             // Model size in bytes
-            uint64_t model_size = llama_model_size(mLlamaModel);
+            uint64_t model_size = llama_model_size(mLlamaLocalModel);
             GrapaRuleEvent* model_size_info = new GrapaRuleEvent(0, GrapaCHAR("model_size_bytes"), GrapaInt((s64)model_size).getBytes());
             result->vQueue->PushTail(model_size_info);
 
             // Number of parameters
-            uint64_t n_params = llama_model_n_params(mLlamaModel);
+            uint64_t n_params = llama_model_n_params(mLlamaLocalModel);
             GrapaRuleEvent* n_params_info = new GrapaRuleEvent(0, GrapaCHAR("n_params"), GrapaInt((s64)n_params).getBytes());
             result->vQueue->PushTail(n_params_info);
 
             // Model description
             char desc_buf[256];
-            int desc_len = llama_model_desc(mLlamaModel, desc_buf, sizeof(desc_buf));
+            int desc_len = llama_model_desc(mLlamaLocalModel, desc_buf, sizeof(desc_buf));
             if (desc_len > 0) {
                 GrapaRuleEvent* model_desc = new GrapaRuleEvent(0, GrapaCHAR("model_description"), GrapaCHAR(desc_buf, desc_len));
                 result->vQueue->PushTail(model_desc);
             }
 
             // Model capabilities
-            bool has_encoder = llama_model_has_encoder(mLlamaModel);
+            bool has_encoder = llama_model_has_encoder(mLlamaLocalModel);
             GrapaRuleEvent* encoder_info = new GrapaRuleEvent(GrapaTokenType::BOOL, 0, "has_encoder", has_encoder ? "\1" : "");
             result->vQueue->PushTail(encoder_info);
 
-            bool has_decoder = llama_model_has_decoder(mLlamaModel);
+            bool has_decoder = llama_model_has_decoder(mLlamaLocalModel);
             GrapaRuleEvent* decoder_info = new GrapaRuleEvent(GrapaTokenType::BOOL, 0, "has_decoder", has_decoder ? "\1" : "");
             result->vQueue->PushTail(decoder_info);
 
-            bool is_recurrent = llama_model_is_recurrent(mLlamaModel);
+            bool is_recurrent = llama_model_is_recurrent(mLlamaLocalModel);
             GrapaRuleEvent* recurrent_info = new GrapaRuleEvent(GrapaTokenType::BOOL, 0, "is_recurrent", is_recurrent ? "\1" : "");
             result->vQueue->PushTail(recurrent_info);
 
             // Vocabulary size (if context is available)
-            if (mLlamaContext) {
+            if (mLlamaLocalContext) {
                 // Use the context to get vocabulary size - skip for now as API is unclear
                 // int32_t vocab_size = llama_n_vocab(mLlamaContext);
                 // if (vocab_size > 0) {
@@ -924,8 +920,8 @@ GrapaRuleEvent* GrapaModel::GetContext() const
 
     // Add text context (convert tokens back to text for human readability)
     GrapaCHAR textContext;
-    if (!mContextTokens.empty() && const_cast<GrapaModel*>(this)->mMethod.StrCmp("llama-local") == 0 && mLlamaModel) {
-        const struct llama_vocab* vocab = llama_model_get_vocab(mLlamaModel);
+    if (!mContextTokens.empty() && const_cast<GrapaModel*>(this)->mMethod.StrCmp("llama-local") == 0 && mLlamaLocalModel) {
+        const struct llama_vocab* vocab = llama_model_get_vocab(mLlamaLocalModel);
         for (size_t i = 0; i < mContextTokens.size(); i++) {
             char token_str[256];
             int n_chars = llama_token_to_piece(vocab, mContextTokens[i], token_str, sizeof(token_str), 0, false);
@@ -1044,7 +1040,7 @@ GrapaError GrapaModel::SetContext(GrapaRuleEvent* context)
     if (!mContextTokens.empty() && mMethod.StrCmp("llama-local") == 0) {
         // Process all tokens to rebuild the context
         struct llama_batch batch = llama_batch_get_one(mContextTokens.data(), (int32_t)mContextTokens.size());
-        if (llama_decode(mLlamaContext, batch)) {
+        if (llama_decode(mLlamaLocalContext, batch)) {
             return -3; // Failed to rebuild context
         }
         mContextPreserved = true;
@@ -1056,12 +1052,12 @@ GrapaError GrapaModel::SetContext(GrapaRuleEvent* context)
 
 GrapaError GrapaModel::SetContextFromText(const GrapaCHAR& text)
 {
-    if (!mLoaded || mMethod.StrCmp("llama-local") != 0 || !mLlamaModel) {
+    if (!mLoaded || mMethod.StrCmp("llama-local") != 0 || !mLlamaLocalModel) {
         return -1; // Model not loaded or not LLAMA backend
     }
 
     // Tokenize the text
-    const struct llama_vocab* vocab = llama_model_get_vocab(mLlamaModel);
+    const struct llama_vocab* vocab = llama_model_get_vocab(mLlamaLocalModel);
     std::vector<llama_token> new_tokens;
 
     size_t estimated_tokens = text.mLength / 4;  // Rough estimate: ~4 chars per token
@@ -1082,7 +1078,7 @@ GrapaError GrapaModel::SetContextFromText(const GrapaCHAR& text)
     // Rebuild the LLAMA.cpp context from tokens
     if (!mContextTokens.empty()) {
         struct llama_batch batch = llama_batch_get_one(mContextTokens.data(), (int32_t)mContextTokens.size());
-        if (llama_decode(mLlamaContext, batch)) {
+        if (llama_decode(mLlamaLocalContext, batch)) {
             return -2; // Failed to rebuild context
         }
         mContextPreserved = true;
@@ -1253,7 +1249,7 @@ GrapaError GrapaModel::ApplyParamsToLlama(GrapaRuleEvent* params)
     }
 
     // Only reinitialize sampler if sampling-related parameters changed and model is loaded
-    if (samplerParamsChanged && mLlamaContext && mLlamaSampler) {
+    if (samplerParamsChanged && mLlamaLocalContext && mLlamaLocalSampler) {
         InitializeSampler();  // This will clean up and recreate the sampler with new parameters
     }
 
@@ -1324,7 +1320,7 @@ int GrapaModel::GetModelSize()
 
 GrapaError GrapaModel::InitializeSampler()
 {
-    if (!mLlamaContext) {
+    if (!mLlamaLocalContext) {
         return -1;  // Context not loaded
     }
 
@@ -1333,9 +1329,9 @@ GrapaError GrapaModel::InitializeSampler()
 
     // Create sampler chain with default parameters
     auto sparams = llama_sampler_chain_default_params();
-    mLlamaSampler = llama_sampler_chain_init(sparams);
+    mLlamaLocalSampler = llama_sampler_chain_init(sparams);
 
-    if (!mLlamaSampler) {
+    if (!mLlamaLocalSampler) {
         return -2;  // Failed to create sampler
     }
 
@@ -1344,7 +1340,7 @@ GrapaError GrapaModel::InitializeSampler()
     if (mTopK > 0) {
         struct llama_sampler* top_k_sampler = llama_sampler_init_top_k(mTopK);
         if (top_k_sampler) {
-            llama_sampler_chain_add(mLlamaSampler, top_k_sampler);
+            llama_sampler_chain_add(mLlamaLocalSampler, top_k_sampler);
         }
     }
 
@@ -1352,7 +1348,7 @@ GrapaError GrapaModel::InitializeSampler()
     if (mTopP > 0.0f && mTopP < 1.0f) {
         struct llama_sampler* top_p_sampler = llama_sampler_init_top_p(mTopP, 1);
         if (top_p_sampler) {
-            llama_sampler_chain_add(mLlamaSampler, top_p_sampler);
+            llama_sampler_chain_add(mLlamaLocalSampler, top_p_sampler);
         }
     }
 
@@ -1360,7 +1356,7 @@ GrapaError GrapaModel::InitializeSampler()
     if (mTemperature > 0.0f) {
         struct llama_sampler* temp_sampler = llama_sampler_init_temp(mTemperature);
         if (temp_sampler) {
-            llama_sampler_chain_add(mLlamaSampler, temp_sampler);
+            llama_sampler_chain_add(mLlamaLocalSampler, temp_sampler);
         }
     }
 
@@ -1376,7 +1372,7 @@ GrapaError GrapaModel::InitializeSampler()
     }
 
     if (dist_sampler) {
-        llama_sampler_chain_add(mLlamaSampler, dist_sampler);
+        llama_sampler_chain_add(mLlamaLocalSampler, dist_sampler);
     }
 
     return 0;  // Success
@@ -1384,9 +1380,9 @@ GrapaError GrapaModel::InitializeSampler()
 
 void GrapaModel::CleanupSampler()
 {
-    if (mLlamaSampler) {
-        llama_sampler_free(mLlamaSampler);
-        mLlamaSampler = nullptr;
+    if (mLlamaLocalSampler) {
+        llama_sampler_free(mLlamaLocalSampler);
+        mLlamaLocalSampler = nullptr;
     }
 }
 
