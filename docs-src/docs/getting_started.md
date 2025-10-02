@@ -48,8 +48,8 @@ grapa -f "my_script.grc"
 ### Universal Installer (Recommended)
 ```bash
 # Download and run the universal installer
-curl -O https://github.com/grapa-dev/grapa/releases/download/v0.1.55/install-grapa-0.1.55.py
-python3 install-grapa-0.1.55.py
+curl -O https://github.com/grapa-dev/grapa/releases/download/v0.1.56/install-grapa-0.1.56.py
+python3 install-grapa-0.1.56.py
 ```
 
 ### Manual Installation
@@ -345,7 +345,7 @@ int main() {
 **Build with CMake:**
 ```bash
 # After extracting the platform-specific package
-cd grapa-0.1.55
+cd grapa-0.1.56
 mkdir build && cd build
 cmake ..
 cmake --build .
