@@ -1182,6 +1182,65 @@ default = vec1.similarity(vec2);                   /* Returns: 0.974... */
 - **Only works with 1D vectors** of the same length
 - **Returns scalar result** in a 1-element vector format
 
+## Array Similarity
+
+The `.similarity()` method also supports **array similarity** - comparing a query vector against a list of vectors to find the best matches:
+
+```grapa
+/* Basic array similarity */
+vectors = [#[1, 2, 3]#, #[4, 5, 6]#, #[7, 8, 9]#];
+query = #[2, 3, 4]#;
+
+/* Find best matches (returns structured object) */
+result = vectors.similarity(query, "cosine");
+/* Returns: {
+  "results": [
+    {"index": 0, "similarity": 0.992, "item": #[1, 2, 3]#},
+    {"index": 1, "similarity": 0.992, "item": #[4, 5, 6]#}
+  ],
+  "best_similarity": 0.992,
+  "best_index": 0,
+  "best_match": #[1, 2, 3]#,
+  "method": "cosine"
+} */
+```
+
+### Array Similarity Parameters
+
+```grapa
+/* Control result format and filtering */
+result = vectors.similarity(query, "cosine", {
+  "top_n": 2,              /* Limit to top 2 results (default: 5) */
+  "threshold": 0.5,        /* Minimum similarity score (default: 0.0) */
+  "sort": "desc",          /* Sort order: "desc", "asc", "none" (default: "desc") */
+  "include_scores": true,  /* Include similarity scores (default: true) */
+  "include_items": true    /* Include actual items (default: true) */
+});
+
+/* Compact results without items */
+compact = vectors.similarity(query, "cosine", {
+  "top_n": 3,
+  "include_items": false
+});
+/* Returns: {
+  "results": [
+    {"index": 0, "similarity": 0.992},
+    {"index": 1, "similarity": 0.992}
+  ],
+  "best_similarity": 0.992,
+  "best_index": 0,
+  "method": "cosine"
+} */
+```
+
+### Array Similarity Use Cases
+
+- **Vector search**: Find closest vectors in high-dimensional spaces
+- **Recommendation systems**: Rank items by vector similarity
+- **Clustering**: Group similar vectors together
+- **Anomaly detection**: Find vectors that don't match patterns
+- **Content filtering**: Filter results by similarity threshold
+
 ## Best Practices
 
 1. **Use appropriate data types**: Use vectors for numerical operations, arrays for general data

@@ -218,6 +218,66 @@ similarity = embedding1."embedding".similarity(embedding2."embedding", "cosine")
 
 **Performance comparison:**
 - **String algorithms**: O(m×n) complexity, slow for long strings
+- **Embedding algorithms**: O(1) complexity after embedding, but requires API calls
+
+## Array Similarity
+
+The `.similarity()` method also supports **array similarity** - comparing a query string against a list of strings to find the best matches:
+
+```grapa
+/* Basic array similarity */
+strings = ["hello world", "hello there", "goodbye world"];
+query = "hello";
+
+/* Find best matches (returns structured object) */
+result = strings.similarity(query, "cosine");
+/* Returns: {
+  "results": [
+    {"index": 0, "similarity": 0.707, "item": "hello world"},
+    {"index": 1, "similarity": 0.707, "item": "hello there"}
+  ],
+  "best_similarity": 0.707,
+  "best_index": 0,
+  "best_match": "hello world",
+  "method": "cosine"
+} */
+```
+
+### Array Similarity Parameters
+
+```grapa
+/* Control result format and filtering */
+result = strings.similarity(query, "cosine", {
+  "top_n": 2,              /* Limit to top 2 results (default: 5) */
+  "threshold": 0.5,        /* Minimum similarity score (default: 0.0) */
+  "sort": "desc",          /* Sort order: "desc", "asc", "none" (default: "desc") */
+  "include_scores": true,  /* Include similarity scores (default: true) */
+  "include_items": true    /* Include actual items (default: true) */
+});
+
+/* Compact results without items */
+compact = strings.similarity(query, "cosine", {
+  "top_n": 3,
+  "include_items": false
+});
+/* Returns: {
+  "results": [
+    {"index": 0, "similarity": 0.707},
+    {"index": 1, "similarity": 0.707}
+  ],
+  "best_similarity": 0.707,
+  "best_index": 0,
+  "method": "cosine"
+} */
+```
+
+### Array Similarity Use Cases
+
+- **Search and ranking**: Find best matches from a list of strings
+- **Fuzzy matching**: Find closest matches even with typos
+- **Content filtering**: Filter results by similarity threshold
+- **Recommendation systems**: Rank items by similarity to user input
+- **Data deduplication**: Find similar entries in datasets
 - **Embedding algorithms**: O(d) complexity where d is embedding dimension (~1536), consistent performance
 
 > **Note:** While string content supports full Unicode, **identifiers** (variable names, function names) are limited to ASCII characters only. This is a lexical limitation in the parser. See [$ID Documentation](id.md) for details.

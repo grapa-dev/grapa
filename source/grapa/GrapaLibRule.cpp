@@ -21492,44 +21492,493 @@ GrapaRuleEvent* GrapaLibraryRuleVectorKurtosisEvent::Run(GrapaScriptExec* vScrip
 	return(result);
 }
 
+// Helper function to calculate string similarity
+GrapaRuleEvent* calculate_string_similarity(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* str1, GrapaRuleEvent* str2, GrapaCHAR& method)
+{
+	GrapaRuleEvent* result = NULL;
+	
+	// Get the two strings to compare
+	std::string string1(reinterpret_cast<const char*>(str1->mValue.mBytes), str1->mValue.mLength);
+	std::string string2(reinterpret_cast<const char*>(str2->mValue.mBytes), str2->mValue.mLength);
+	
+	// Convert method to lowercase for case-insensitive comparison
+	std::string method_str(reinterpret_cast<const char*>(method.mBytes), method.mLength);
+	std::transform(method_str.begin(), method_str.end(), method_str.begin(), ::tolower);
+	
+	if (method_str == "levenshtein" || method_str == "levenshtein_distance")
+	{
+		// Levenshtein distance (lower = more similar)
+		int distance = calculate_levenshtein_distance(string1, string2);
+		result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaInt(distance).getBytes());
+	}
+	else if (method_str == "damerau" || method_str == "damerau_levenshtein" || method_str == "damerau_levenshtein_distance")
+	{
+		// Damerau-Levenshtein distance (lower = more similar)
+		int distance = calculate_damerau_levenshtein_distance(string1, string2);
+		result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaInt(distance).getBytes());
+	}
+	else if (method_str == "jaro" || method_str == "jaro_winkler" || method_str == "jaro_winkler_similarity")
+	{
+		// Jaro-Winkler similarity (higher = more similar)
+		double similarity = calculate_jaro_winkler_similarity(string1, string2);
+		result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaFloat(similarity).getBytes());
+	}
+	else if (method_str == "cosine" || method_str == "cosine_similarity")
+	{
+		// Cosine similarity (higher = more similar)
+		double similarity = calculate_cosine_similarity(string1, string2);
+		result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaFloat(similarity).getBytes());
+	}
+	else if (method_str == "jaccard" || method_str == "jaccard_similarity")
+	{
+		// Jaccard similarity (higher = more similar) - default to word-based
+		double similarity = calculate_jaccard_similarity(string1, string2, "word", 1);
+		result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaFloat(similarity).getBytes());
+	}
+	else if (method_str == "tfidf" || method_str == "cosine_tfidf")
+	{
+		// TF-IDF cosine similarity (higher = more similar)
+		// For now, use basic cosine similarity as fallback
+		// TODO: Add corpus parameter support
+		double similarity = calculate_cosine_similarity(string1, string2);
+		result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaFloat(similarity).getBytes());
+	}
+	else
+	{
+		// Default to cosine similarity
+		double similarity = calculate_cosine_similarity(string1, string2);
+		result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaFloat(similarity).getBytes());
+	}
+	
+	return result;
+}
+
+// Helper function to calculate array-string similarity
+GrapaRuleEvent* calculate_array_string_similarity(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* array, GrapaRuleEvent* query, GrapaCHAR& method, int top_n, double threshold, std::string sort, bool include_scores, bool include_items)
+{
+	GrapaRuleEvent* result = NULL;
+	
+	// Get query string
+	std::string query_str(reinterpret_cast<const char*>(query->mValue.mBytes), query->mValue.mLength);
+	
+	// Get array items
+	std::vector<GrapaRuleEvent*> array_items;
+	if (array->vQueue)
+	{
+		for (int i = 0; i < array->vQueue->mCount; i++)
+		{
+			GrapaRuleEvent* item = array->vQueue->Head(i);
+			if (item && item->mValue.mToken == GrapaTokenType::STR)
+			{
+				array_items.push_back(item);
+			}
+		}
+	}
+	
+	// Calculate similarities
+	std::vector<std::pair<int, double>> similarities;
+	for (size_t i = 0; i < array_items.size(); i++)
+	{
+		std::string item_str(reinterpret_cast<const char*>(array_items[i]->mValue.mBytes), array_items[i]->mValue.mLength);
+		
+		// Calculate similarity based on method
+		double similarity = 0.0;
+		std::string method_str(reinterpret_cast<const char*>(method.mBytes), method.mLength);
+		std::transform(method_str.begin(), method_str.end(), method_str.begin(), ::tolower);
+		
+		if (method_str == "levenshtein" || method_str == "levenshtein_distance")
+		{
+			// Convert distance to similarity (lower distance = higher similarity)
+			int distance = calculate_levenshtein_distance(query_str, item_str);
+			similarity = 1.0 / (1.0 + distance);
+		}
+		else if (method_str == "damerau" || method_str == "damerau_levenshtein" || method_str == "damerau_levenshtein_distance")
+		{
+			int distance = calculate_damerau_levenshtein_distance(query_str, item_str);
+			similarity = 1.0 / (1.0 + distance);
+		}
+		else if (method_str == "jaro" || method_str == "jaro_winkler" || method_str == "jaro_winkler_similarity")
+		{
+			similarity = calculate_jaro_winkler_similarity(query_str, item_str);
+		}
+		else if (method_str == "cosine" || method_str == "cosine_similarity")
+		{
+			similarity = calculate_cosine_similarity(query_str, item_str);
+		}
+		else if (method_str == "jaccard" || method_str == "jaccard_similarity")
+		{
+			similarity = calculate_jaccard_similarity(query_str, item_str, "word", 1);
+		}
+		else if (method_str == "tfidf" || method_str == "cosine_tfidf")
+		{
+			similarity = calculate_cosine_similarity(query_str, item_str);
+		}
+		else
+		{
+			similarity = calculate_cosine_similarity(query_str, item_str);
+		}
+		
+		// Apply threshold filter
+		if (similarity >= threshold)
+		{
+			similarities.push_back(std::make_pair(i, similarity));
+		}
+	}
+	
+	// Sort results
+	if (sort == "desc")
+	{
+		std::sort(similarities.begin(), similarities.end(), [](const std::pair<int, double>& a, const std::pair<int, double>& b) {
+			return a.second > b.second;
+		});
+	}
+	else if (sort == "asc")
+	{
+		std::sort(similarities.begin(), similarities.end(), [](const std::pair<int, double>& a, const std::pair<int, double>& b) {
+			return a.second < b.second;
+		});
+	}
+	
+	// Limit to top_n results
+	if (similarities.size() > (size_t)top_n)
+	{
+		similarities.resize(top_n);
+	}
+	
+	// Create result object
+	result = new GrapaRuleEvent(0, GrapaCHAR(""), GrapaCHAR(""));
+	result->mValue.mToken = GrapaTokenType::OBJ;
+	result->vQueue = new GrapaRuleQueue();
+	
+	// Add results array
+	GrapaRuleEvent* results_array = new GrapaRuleEvent(0, GrapaCHAR(""), GrapaCHAR(""));
+	results_array->mValue.mToken = GrapaTokenType::LIST;
+	results_array->vQueue = new GrapaRuleQueue();
+	
+	for (const auto& sim : similarities)
+	{
+		GrapaRuleEvent* result_item = new GrapaRuleEvent(0, GrapaCHAR(""), GrapaCHAR(""));
+		result_item->mValue.mToken = GrapaTokenType::OBJ;
+		result_item->vQueue = new GrapaRuleQueue();
+		
+		// Add index
+		GrapaRuleEvent* index_key = new GrapaRuleEvent(0, GrapaCHAR("index"), GrapaCHAR(""));
+		GrapaRuleEvent* index_val = new GrapaRuleEvent(0, GrapaCHAR(), GrapaInt(sim.first).getBytes());
+		result_item->vQueue->Push(index_key);
+		result_item->vQueue->Push(index_val);
+		
+		// Add similarity score if requested
+		if (include_scores)
+		{
+			GrapaRuleEvent* score_key = new GrapaRuleEvent(0, GrapaCHAR("similarity"), GrapaCHAR(""));
+			GrapaRuleEvent* score_val = new GrapaRuleEvent(0, GrapaCHAR(), GrapaFloat(sim.second).getBytes());
+			result_item->vQueue->Push(score_key);
+			result_item->vQueue->Push(score_val);
+		}
+		
+		// Add item if requested
+		if (include_items)
+		{
+			GrapaRuleEvent* item_key = new GrapaRuleEvent(0, GrapaCHAR("item"), GrapaCHAR(""));
+			GrapaRuleEvent* item_val = new GrapaRuleEvent(0, GrapaCHAR(), array_items[sim.first]->mValue);
+			result_item->vQueue->Push(item_key);
+			result_item->vQueue->Push(item_val);
+		}
+		
+		results_array->vQueue->Push(result_item);
+	}
+	
+	// Add results to main object
+	GrapaRuleEvent* results_key = new GrapaRuleEvent(0, GrapaCHAR("results"), GrapaCHAR(""));
+	result->vQueue->Push(results_key);
+	result->vQueue->Push(results_array);
+	
+	// Add best match info if we have results
+	if (!similarities.empty())
+	{
+		int best_index = similarities[0].first;
+		double best_similarity = similarities[0].second;
+		
+		// Add best_similarity
+		GrapaRuleEvent* best_sim_key = new GrapaRuleEvent(0, GrapaCHAR("best_similarity"), GrapaCHAR(""));
+		GrapaRuleEvent* best_sim_val = new GrapaRuleEvent(0, GrapaCHAR(), GrapaFloat(best_similarity).getBytes());
+		result->vQueue->Push(best_sim_key);
+		result->vQueue->Push(best_sim_val);
+		
+		// Add best_index
+		GrapaRuleEvent* best_idx_key = new GrapaRuleEvent(0, GrapaCHAR("best_index"), GrapaCHAR(""));
+		GrapaRuleEvent* best_idx_val = new GrapaRuleEvent(0, GrapaCHAR(), GrapaInt(best_index).getBytes());
+		result->vQueue->Push(best_idx_key);
+		result->vQueue->Push(best_idx_val);
+		
+		// Add best_match if items are included
+		if (include_items)
+		{
+			GrapaRuleEvent* best_match_key = new GrapaRuleEvent(0, GrapaCHAR("best_match"), GrapaCHAR(""));
+			GrapaRuleEvent* best_match_val = new GrapaRuleEvent(0, GrapaCHAR(), array_items[best_index]->mValue);
+			result->vQueue->Push(best_match_key);
+			result->vQueue->Push(best_match_val);
+		}
+	}
+	
+	// Add method
+	GrapaRuleEvent* method_key = new GrapaRuleEvent(0, GrapaCHAR("method"), GrapaCHAR(""));
+		GrapaRuleEvent* method_val = new GrapaRuleEvent(0, GrapaCHAR(), GrapaBYTE(method.mBytes, method.mLength));
+	result->vQueue->Push(method_key);
+	result->vQueue->Push(method_val);
+	
+	return result;
+}
+
+// Helper function to calculate array-vector similarity
+GrapaRuleEvent* calculate_array_vector_similarity(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* array, GrapaRuleEvent* query, GrapaCHAR& method, int top_n, double threshold, std::string sort, bool include_scores, bool include_items)
+{
+	GrapaRuleEvent* result = NULL;
+	
+	// Get array items
+	std::vector<GrapaRuleEvent*> array_items;
+	if (array->vQueue)
+	{
+		for (int i = 0; i < array->vQueue->mCount; i++)
+		{
+			GrapaRuleEvent* item = array->vQueue->Head(i);
+			if (item && item->mValue.mToken == GrapaTokenType::VECTOR)
+			{
+				array_items.push_back(item);
+			}
+		}
+	}
+	
+	// Calculate similarities
+	std::vector<std::pair<int, double>> similarities;
+	for (size_t i = 0; i < array_items.size(); i++)
+	{
+		// Create temporary result vector for similarity calculation
+		GrapaVector temp_result;
+		GrapaError err = query->vVector->Similarity(vScriptExec, pNameSpace, *array_items[i]->vVector, temp_result, method);
+		
+		if (!err)
+		{
+			// Extract similarity value from result vector
+			double similarity = 0.0;
+			if (temp_result.mCounts && temp_result.mCounts[0] > 0)
+			{
+				// Get the first element as the similarity score
+				GrapaVectorParam param(vScriptExec, temp_result.mData, temp_result.mBlock, 0);
+				if (param.aa)
+				{
+					// Convert GrapaFloat to double
+					GrapaFloat* float_val = param.aa;
+					similarity = float_val->ToDouble();
+				}
+			}
+			
+			// Apply threshold filter
+			if (similarity >= threshold)
+			{
+				similarities.push_back(std::make_pair(i, similarity));
+			}
+		}
+	}
+	
+	// Sort results
+	if (sort == "desc")
+	{
+		std::sort(similarities.begin(), similarities.end(), [](const std::pair<int, double>& a, const std::pair<int, double>& b) {
+			return a.second > b.second;
+		});
+	}
+	else if (sort == "asc")
+	{
+		std::sort(similarities.begin(), similarities.end(), [](const std::pair<int, double>& a, const std::pair<int, double>& b) {
+			return a.second < b.second;
+		});
+	}
+	
+	// Limit to top_n results
+	if (similarities.size() > (size_t)top_n)
+	{
+		similarities.resize(top_n);
+	}
+	
+	// Create result object
+	result = new GrapaRuleEvent(0, GrapaCHAR(""), GrapaCHAR(""));
+	result->mValue.mToken = GrapaTokenType::OBJ;
+	result->vQueue = new GrapaRuleQueue();
+	
+	// Add results array
+	GrapaRuleEvent* results_array = new GrapaRuleEvent(0, GrapaCHAR(""), GrapaCHAR(""));
+	results_array->mValue.mToken = GrapaTokenType::LIST;
+	results_array->vQueue = new GrapaRuleQueue();
+	
+	for (const auto& sim : similarities)
+	{
+		GrapaRuleEvent* result_item = new GrapaRuleEvent(0, GrapaCHAR(""), GrapaCHAR(""));
+		result_item->mValue.mToken = GrapaTokenType::OBJ;
+		result_item->vQueue = new GrapaRuleQueue();
+		
+		// Add index
+		GrapaRuleEvent* index_key = new GrapaRuleEvent(0, GrapaCHAR("index"), GrapaCHAR(""));
+		GrapaRuleEvent* index_val = new GrapaRuleEvent(0, GrapaCHAR(), GrapaInt(sim.first).getBytes());
+		result_item->vQueue->Push(index_key);
+		result_item->vQueue->Push(index_val);
+		
+		// Add similarity score if requested
+		if (include_scores)
+		{
+			GrapaRuleEvent* score_key = new GrapaRuleEvent(0, GrapaCHAR("similarity"), GrapaCHAR(""));
+			GrapaRuleEvent* score_val = new GrapaRuleEvent(0, GrapaCHAR(), GrapaFloat(sim.second).getBytes());
+			result_item->vQueue->Push(score_key);
+			result_item->vQueue->Push(score_val);
+		}
+		
+		// Add item if requested
+		if (include_items)
+		{
+			GrapaRuleEvent* item_key = new GrapaRuleEvent(0, GrapaCHAR("item"), GrapaCHAR(""));
+			GrapaRuleEvent* item_val = new GrapaRuleEvent(0, GrapaCHAR(), array_items[sim.first]->mValue);
+			result_item->vQueue->Push(item_key);
+			result_item->vQueue->Push(item_val);
+		}
+		
+		results_array->vQueue->Push(result_item);
+	}
+	
+	// Add results to main object
+	GrapaRuleEvent* results_key = new GrapaRuleEvent(0, GrapaCHAR("results"), GrapaCHAR(""));
+	result->vQueue->Push(results_key);
+	result->vQueue->Push(results_array);
+	
+	// Add best match info if we have results
+	if (!similarities.empty())
+	{
+		int best_index = similarities[0].first;
+		double best_similarity = similarities[0].second;
+		
+		// Add best_similarity
+		GrapaRuleEvent* best_sim_key = new GrapaRuleEvent(0, GrapaCHAR("best_similarity"), GrapaCHAR(""));
+		GrapaRuleEvent* best_sim_val = new GrapaRuleEvent(0, GrapaCHAR(), GrapaFloat(best_similarity).getBytes());
+		result->vQueue->Push(best_sim_key);
+		result->vQueue->Push(best_sim_val);
+		
+		// Add best_index
+		GrapaRuleEvent* best_idx_key = new GrapaRuleEvent(0, GrapaCHAR("best_index"), GrapaCHAR(""));
+		GrapaRuleEvent* best_idx_val = new GrapaRuleEvent(0, GrapaCHAR(), GrapaInt(best_index).getBytes());
+		result->vQueue->Push(best_idx_key);
+		result->vQueue->Push(best_idx_val);
+		
+		// Add best_match if items are included
+		if (include_items)
+		{
+			GrapaRuleEvent* best_match_key = new GrapaRuleEvent(0, GrapaCHAR("best_match"), GrapaCHAR(""));
+			GrapaRuleEvent* best_match_val = new GrapaRuleEvent(0, GrapaCHAR(), array_items[best_index]->mValue);
+			result->vQueue->Push(best_match_key);
+			result->vQueue->Push(best_match_val);
+		}
+	}
+	
+	// Add method
+	GrapaRuleEvent* method_key = new GrapaRuleEvent(0, GrapaCHAR("method"), GrapaCHAR(""));
+		GrapaRuleEvent* method_val = new GrapaRuleEvent(0, GrapaCHAR(), GrapaBYTE(method.mBytes, method.mLength));
+	result->vQueue->Push(method_key);
+	result->vQueue->Push(method_val);
+	
+	return result;
+}
+
 GrapaRuleEvent* GrapaLibraryRuleSimilarityEvent::Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput)
 {
 	GrapaRuleEvent* result = NULL;
-	GrapaLibraryParam r1(vScriptExec, pNameSpace, pInput ? pInput->Head(0) : NULL);
-	GrapaLibraryParam r2(vScriptExec, pNameSpace, pInput ? pInput->Head(1) : NULL);
-	GrapaLibraryParam r3(vScriptExec, pNameSpace, pInput ? pInput->Head(2) : NULL);
-	GrapaLibraryParam r4(vScriptExec, pNameSpace, pInput ? pInput->Head(3) : NULL);
+	GrapaLibraryParam array_param(vScriptExec, pNameSpace, pInput ? pInput->Head(0) : NULL);
+	GrapaLibraryParam query_param(vScriptExec, pNameSpace, pInput ? pInput->Head(1) : NULL);
+	GrapaLibraryParam method_param(vScriptExec, pNameSpace, pInput ? pInput->Head(2) : NULL);
+	GrapaLibraryParam params_param(vScriptExec, pNameSpace, pInput ? pInput->Head(3) : NULL);
+	
 	GrapaCHAR method;
-	if (r3.vVal && r3.vVal->mValue.mToken == GrapaTokenType::STR)
+	if (method_param.vVal && method_param.vVal->mValue.mToken == GrapaTokenType::STR)
 	{
-		method.FROM(r3.vVal->mValue);
+		method.FROM(method_param.vVal->mValue);
 	}
 	else
 	{
 		method.FROM("cosine");
 	}
-	if (r1.vVal && r2.vVal && r1.vVal->mValue.mToken == GrapaTokenType::LIST && r2.vVal->mValue.mToken == GrapaTokenType::STR)
+	
+	// Parse parameters with defaults
+	int top_n = 5;
+	double threshold = 0.0;
+	std::string sort = "desc";
+	bool include_scores = true;
+	bool include_items = true;
+	
+	if (params_param.vVal && params_param.vVal->mValue.mToken == GrapaTokenType::GOBJ && params_param.vVal->vQueue)
 	{
-
+		// Parse parameters from object
+		GrapaRuleEvent* params_event = params_param.vVal->vQueue->Head();
+		while (params_event)
+		{
+			std::string key_str(reinterpret_cast<const char*>(params_event->mName.mBytes), params_event->mName.mLength);
+			std::transform(key_str.begin(), key_str.end(), key_str.begin(), ::tolower);
+			if (key_str == "top_n" && params_event->mValue.mToken == GrapaTokenType::INT)
+			{
+				top_n = (int)GrapaInt(params_event->mValue).LongValue();
+			}
+			else if (key_str == "threshold" && params_event->mValue.mToken == GrapaTokenType::FLOAT)
+			{
+				threshold = GrapaFloat(params_event->mValue).ToDouble();
+			}
+			else if (key_str == "sort" && params_event->mValue.mToken == GrapaTokenType::STR)
+			{
+				sort = std::string(reinterpret_cast<const char*>(params_event->mValue.mBytes), params_event->mValue.mLength);
+				std::transform(sort.begin(), sort.end(), sort.begin(), ::tolower);
+			}
+			else if (key_str == "include_scores")
+			{
+				if (params_event->mValue.mToken == GrapaTokenType::BOOL)
+					include_scores = (params_event->mValue.mBytes && params_event->mValue.mLength && params_event->mValue.mBytes[0] && params_event->mValue.mBytes[0] != '0');
+				else if (params_event->mValue.mToken == GrapaTokenType::INT)
+					include_scores = GrapaInt(params_event->mValue).LongValue() != 0;
+				else if (params_event->mValue.mToken == GrapaTokenType::FLOAT)
+					include_scores = GrapaFloat(params_event->mValue).ToDouble() != 0.0;
+			}
+			else if (key_str == "include_items")
+			{
+				if (params_event->mValue.mToken == GrapaTokenType::BOOL)
+					include_items = (params_event->mValue.mBytes && params_event->mValue.mLength && params_event->mValue.mBytes[0] && params_event->mValue.mBytes[0] != '0');
+				else if (params_event->mValue.mToken == GrapaTokenType::INT)
+					include_items = GrapaInt(params_event->mValue).LongValue() != 0;
+				else if (params_event->mValue.mToken == GrapaTokenType::FLOAT)
+					include_items = GrapaFloat(params_event->mValue).ToDouble() != 0.0;
+			}
+			params_event = params_event->Next();
+		}
 	}
-	else if (r1.vVal && r2.vVal && r1.vVal->mValue.mToken == GrapaTokenType::STR && r2.vVal->mValue.mToken == GrapaTokenType::LIST)
+	
+	// Handle array similarity cases
+	if (array_param.vVal && query_param.vVal && array_param.vVal->mValue.mToken == GrapaTokenType::LIST && query_param.vVal->mValue.mToken == GrapaTokenType::STR)
 	{
-
+		result = calculate_array_string_similarity(vScriptExec, pNameSpace, array_param.vVal, query_param.vVal, method, top_n, threshold, sort, include_scores, include_items);
 	}
-	else if (r1.vVal && r2.vVal && r1.vVal->mValue.mToken == GrapaTokenType::LIST && r2.vVal->mValue.mToken == GrapaTokenType::VECTOR)
+	else if (array_param.vVal && query_param.vVal && array_param.vVal->mValue.mToken == GrapaTokenType::STR && query_param.vVal->mValue.mToken == GrapaTokenType::LIST)
 	{
-
+		// Swap parameters for consistency
+		result = calculate_array_string_similarity(vScriptExec, pNameSpace, query_param.vVal, array_param.vVal, method, top_n, threshold, sort, include_scores, include_items);
 	}
-	else if (r1.vVal && r2.vVal && r1.vVal->mValue.mToken == GrapaTokenType::VECTOR && r2.vVal->mValue.mToken == GrapaTokenType::LIST)
+	else if (array_param.vVal && query_param.vVal && array_param.vVal->mValue.mToken == GrapaTokenType::LIST && query_param.vVal->mValue.mToken == GrapaTokenType::VECTOR)
 	{
-
+		result = calculate_array_vector_similarity(vScriptExec, pNameSpace, array_param.vVal, query_param.vVal, method, top_n, threshold, sort, include_scores, include_items);
 	}
-	else if (r1.vVal && r2.vVal && r1.vVal->mValue.mToken == GrapaTokenType::VECTOR && r2.vVal->mValue.mToken == GrapaTokenType::VECTOR)
+	else if (array_param.vVal && query_param.vVal && array_param.vVal->mValue.mToken == GrapaTokenType::VECTOR && query_param.vVal->mValue.mToken == GrapaTokenType::LIST)
+	{
+		// Swap parameters for consistency
+		result = calculate_array_vector_similarity(vScriptExec, pNameSpace, query_param.vVal, array_param.vVal, method, top_n, threshold, sort, include_scores, include_items);
+	}
+	else if (array_param.vVal && query_param.vVal && array_param.vVal->mValue.mToken == GrapaTokenType::VECTOR && query_param.vVal->mValue.mToken == GrapaTokenType::VECTOR)
 	{
 		result = new GrapaRuleEvent(0, GrapaCHAR(""), GrapaCHAR(""));
 		result->mValue.mToken = GrapaTokenType::VECTOR;
 		result->vVector = new GrapaVector();
-		GrapaError err = r1.vVal->vVector->Similarity(vScriptExec, pNameSpace, *r2.vVal->vVector, *result->vVector, method);
+		GrapaError err = array_param.vVal->vVector->Similarity(vScriptExec, pNameSpace, *query_param.vVal->vVector, *result->vVector, method);
 		if (err)
 		{
 			result->vVector->CLEAR();
@@ -21538,60 +21987,10 @@ GrapaRuleEvent* GrapaLibraryRuleSimilarityEvent::Run(GrapaScriptExec* vScriptExe
 			result = Error(vScriptExec, pNameSpace, -1);
 		}
 	}
-	else if (r1.vVal && r2.vVal && r1.vVal->mValue.mToken == GrapaTokenType::STR && r2.vVal->mValue.mToken == GrapaTokenType::STR)
+	else if (array_param.vVal && query_param.vVal && array_param.vVal->mValue.mToken == GrapaTokenType::STR && query_param.vVal->mValue.mToken == GrapaTokenType::STR)
 	{
-		// Get the two strings to compare
-		std::string str1(reinterpret_cast<const char*>(r1.vVal->mValue.mBytes), r1.vVal->mValue.mLength);
-		std::string str2(reinterpret_cast<const char*>(r2.vVal->mValue.mBytes), r2.vVal->mValue.mLength);
-		
-		// Convert method to lowercase for case-insensitive comparison
-		std::string method_str(reinterpret_cast<const char*>(method.mBytes), method.mLength);
-		std::transform(method_str.begin(), method_str.end(), method_str.begin(), ::tolower);
-		
-		if (method_str == "levenshtein" || method_str == "levenshtein_distance")
-		{
-			// Levenshtein distance (lower = more similar)
-			int distance = calculate_levenshtein_distance(str1, str2);
-			result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaInt(distance).getBytes());
-		}
-		else if (method_str == "damerau" || method_str == "damerau_levenshtein" || method_str == "damerau_levenshtein_distance")
-		{
-			// Damerau-Levenshtein distance (lower = more similar)
-			int distance = calculate_damerau_levenshtein_distance(str1, str2);
-			result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaInt(distance).getBytes());
-		}
-		else if (method_str == "jaro" || method_str == "jaro_winkler" || method_str == "jaro_winkler_similarity")
-		{
-			// Jaro-Winkler similarity (higher = more similar)
-			double similarity = calculate_jaro_winkler_similarity(str1, str2);
-			result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaFloat(similarity).getBytes());
-		}
-		else if (method_str == "cosine" || method_str == "cosine_similarity")
-		{
-			// Cosine similarity (higher = more similar)
-			double similarity = calculate_cosine_similarity(str1, str2);
-			result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaFloat(similarity).getBytes());
-		}
-		else if (method_str == "jaccard" || method_str == "jaccard_similarity")
-		{
-			// Jaccard similarity (higher = more similar) - default to word-based
-			double similarity = calculate_jaccard_similarity(str1, str2, "word", 1);
-			result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaFloat(similarity).getBytes());
-		}
-		else if (method_str == "tfidf" || method_str == "cosine_tfidf")
-		{
-			// TF-IDF cosine similarity (higher = more similar)
-			// For now, use basic cosine similarity as fallback
-			// TODO: Add corpus parameter support
-			double similarity = calculate_cosine_similarity(str1, str2);
-			result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaFloat(similarity).getBytes());
-		}
-		else
-		{
-			// Default to cosine similarity
-			double similarity = calculate_cosine_similarity(str1, str2);
-			result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaFloat(similarity).getBytes());
-		}
+		// Handle string-to-string similarity
+		result = calculate_string_similarity(vScriptExec, pNameSpace, array_param.vVal, query_param.vVal, method);
 	}
 
 	if (result == NULL)

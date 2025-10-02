@@ -350,6 +350,11 @@ double calculate_cosine_similarity_tfidf(const std::string& str1, const std::str
 std::vector<std::string> split_words(const std::string& str);
 std::set<std::string> generate_ngrams(const std::string& str, int n);
 
+// Array Similarity Helper Functions
+GrapaRuleEvent* calculate_string_similarity(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* str1, GrapaRuleEvent* str2, GrapaCHAR& method);
+GrapaRuleEvent* calculate_array_string_similarity(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* array, GrapaRuleEvent* query, GrapaCHAR& method, int top_n, double threshold, std::string sort, bool include_scores, bool include_items);
+GrapaRuleEvent* calculate_array_vector_similarity(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* array, GrapaRuleEvent* query, GrapaCHAR& method, int top_n, double threshold, std::string sort, bool include_scores, bool include_items);
+
 
 
 #endif //_GrapaLibRule_

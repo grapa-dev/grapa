@@ -58,9 +58,18 @@ tags:
 
 ## String Distance & Similarity
 `.similarity()` - Unified method supporting all string similarity and distance algorithms
+- **String-to-string**: `"hello".similarity("hallo", "levenshtein")`
+- **Array similarity**: `["hello", "world"].similarity("query", "cosine")`
+- **Parameters**: `top_n`, `threshold`, `sort`, `include_scores`, `include_items`
 
 ## Array/Matrix
 `shape`, `reshape`, `dot`, `identity`, `diagonal`, `triu`, `tril`, `eigh`, `sum`, `mean`
+
+## Vector Operations
+`.similarity()` - Unified method supporting all vector similarity and distance algorithms
+- **Vector-to-vector**: `vec1.similarity(vec2, "cosine")`
+- **Array similarity**: `[vec1, vec2, vec3].similarity(query_vec, "euclidean")`
+- **Parameters**: `top_n`, `threshold`, `sort`, `include_scores`, `include_items`
 
 ## Comparison
 `eq`, `neq`, `gteq`, `gt`, `lteq`, `lt`, `cmp`
