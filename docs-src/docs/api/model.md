@@ -32,14 +32,14 @@ Loads a model from the specified file path.
 
 **Example:**
 ```grapa
-/* Auto-detect method from file extension */
-result = model.load("models/qwen2.5-7b-instruct-q3_k_m.gguf");
+/* Load OpenAI text generation model */
+result = model.load("gpt-4o", "openai");
 if (result.type() != $ERR) {
     "Model loaded successfully".echo();
 }
 
-/* Explicitly specify method */
-result = model.load("models/qwen2.5-7b-instruct-q3_k_m.gguf");
+/* Load OpenAI embedding model */
+result = model.load("text-embedding-3-small", "openai-embedding");
 ```
 
 **Error Codes:**
@@ -295,11 +295,11 @@ response2 = model2.gen("Hi");
 
 2. **Check available memory before loading large models:**
    ```grapa
-   /* Large models (7B+ parameters) require significant RAM */
+   /* Load OpenAI model */
    model = $MODEL();
-   result = model.load("qwen2.5-7b-instruct-q3_k_m.gguf");
+   result = model.load("gpt-4o", "openai");
    if (result != 0) {
-       "Insufficient memory for model".echo();
+       "Failed to load OpenAI model".echo();
    }
    ```
 

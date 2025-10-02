@@ -4465,32 +4465,32 @@
 grapa<span class="w"> </span>--version
 
 <span class="c1"># Download and run the universal installer for the latest version</span>
-<span class="c1"># Example for version 0.1.55:</span>
-curl<span class="w"> </span>-O<span class="w"> </span>https://github.com/grapa-dev/grapa/releases/download/v0.1.55/install-grapa-0.1.55.py
-python3<span class="w"> </span>install-grapa-0.1.55.py
+<span class="c1"># Example for version 0.1.56:</span>
+curl<span class="w"> </span>-O<span class="w"> </span>https://github.com/grapa-dev/grapa/releases/download/v0.1.56/install-grapa-0.1.56.py
+python3<span class="w"> </span>install-grapa-0.1.56.py
 </code></pre></div>
 <h3 id="manual-platform-specific-update">Manual Platform-Specific Update</h3>
 <div class="highlight"><pre><span></span><code><span class="c1"># Check current version</span>
 grapa<span class="w"> </span>--version
 
 <span class="c1"># Download the appropriate package for your platform</span>
-<span class="c1"># Example for version 0.1.55:</span>
+<span class="c1"># Example for version 0.1.56:</span>
 
 <span class="c1"># macOS ARM64</span>
-curl<span class="w"> </span>-L<span class="w"> </span>-o<span class="w"> </span>grapa-0.1.55-mac-arm64.zip<span class="w"> </span>https://github.com/grapa-dev/grapa/releases/download/v0.1.55/grapa-0.1.55-mac-arm64.zip
+curl<span class="w"> </span>-L<span class="w"> </span>-o<span class="w"> </span>grapa-0.1.56-mac-arm64.zip<span class="w"> </span>https://github.com/grapa-dev/grapa/releases/download/v0.1.56/grapa-0.1.56-mac-arm64.zip
 
 <span class="c1"># Linux AMD64</span>
-wget<span class="w"> </span>https://github.com/grapa-dev/grapa/releases/download/v0.1.55/grapa-0.1.55-linux-amd64.zip
+wget<span class="w"> </span>https://github.com/grapa-dev/grapa/releases/download/v0.1.56/grapa-0.1.56-linux-amd64.zip
 
 <span class="c1"># Linux ARM64</span>
-wget<span class="w"> </span>https://github.com/grapa-dev/grapa/releases/download/v0.1.55/grapa-0.1.55-linux-arm64.zip
+wget<span class="w"> </span>https://github.com/grapa-dev/grapa/releases/download/v0.1.56/grapa-0.1.56-linux-arm64.zip
 
 <span class="c1"># Windows AMD64 (PowerShell)</span>
-<span class="c1"># Invoke-WebRequest -Uri &quot;https://github.com/grapa-dev/grapa/releases/download/v0.1.55/grapa-0.1.55-win-amd64.zip&quot; -OutFile &quot;grapa-0.1.55-win-amd64.zip&quot;</span>
+<span class="c1"># Invoke-WebRequest -Uri &quot;https://github.com/grapa-dev/grapa/releases/download/v0.1.56/grapa-0.1.56-win-amd64.zip&quot; -OutFile &quot;grapa-0.1.56-win-amd64.zip&quot;</span>
 
 <span class="c1"># Extract and install</span>
-unzip<span class="w"> </span>grapa-0.1.55-&lt;platform&gt;.zip
-<span class="nb">cd</span><span class="w"> </span>grapa-0.1.55
+unzip<span class="w"> </span>grapa-0.1.56-&lt;platform&gt;.zip
+<span class="nb">cd</span><span class="w"> </span>grapa-0.1.56
 python3<span class="w"> </span>install-grapa.py
 </code></pre></div>
 <h2 id="automatic-update-notifications">Automatic Update Notifications</h2>
@@ -4513,34 +4513,34 @@ python3<span class="w"> </span>install-grapa.py
 <div class="highlight"><pre><span></span><code>grapa<span class="w"> </span>--version
 </code></pre></div>
 <p>Example output:
-<div class="highlight"><pre><span></span><code>Grapa version 0.1.51
+<div class="highlight"><pre><span></span><code>Grapa version 0.1.56
 </code></pre></div></p>
 <h2 id="update-frequency">Update Frequency</h2>
 <p>Grapa releases follow semantic versioning:</p>
 <ul>
-<li><strong>Patch releases</strong> (0.1.51 → 0.1.52): Bug fixes and minor improvements</li>
-<li><strong>Minor releases</strong> (0.1.51 → 0.2.0): New features, backward compatible</li>
-<li><strong>Major releases</strong> (0.1.51 → 1.0.0): Breaking changes</li>
+<li><strong>Patch releases</strong> (0.1.55 → 0.1.56): Bug fixes and minor improvements</li>
+<li><strong>Minor releases</strong> (0.1.55 → 0.2.0): New features, backward compatible</li>
+<li><strong>Major releases</strong> (0.1.55 → 1.0.0): Breaking changes</li>
 </ul>
 <p>Updates are typically available within a few days of a new release.</p>
 <h2 id="rollback-if-needed">Rollback (If Needed)</h2>
 <p>If you need to downgrade to a previous version:</p>
 <h3 id="all-platforms-universal-development-kit">All Platforms (Universal Development Kit)</h3>
 <div class="highlight"><pre><span></span><code><span class="c1"># Download and install specific version from GitHub releases</span>
-<span class="c1"># Example for version 0.1.52:</span>
+<span class="c1"># Example for version 0.1.56:</span>
 
 <span class="c1"># All platforms - download universal package</span>
-curl<span class="w"> </span>-L<span class="w"> </span>-o<span class="w"> </span>grapa-0.1.52.zip<span class="w"> </span>https://github.com/grapa-dev/grapa/releases/download/v0.1.52/grapa-0.1.52.zip
+curl<span class="w"> </span>-L<span class="w"> </span>-o<span class="w"> </span>grapa-0.1.56.zip<span class="w"> </span>https://github.com/grapa-dev/grapa/releases/download/v0.1.56/grapa-0.1.56.zip
 
 <span class="c1"># Extract and install</span>
-unzip<span class="w"> </span>grapa-0.1.52.zip
-<span class="nb">cd</span><span class="w"> </span>grapa-0.1.52
+unzip<span class="w"> </span>grapa-0.1.56.zip
+<span class="nb">cd</span><span class="w"> </span>grapa-0.1.56
 python3<span class="w"> </span>install-grapa.py
 
 <span class="c1"># On Windows, use:</span>
-<span class="c1"># Invoke-WebRequest -Uri &quot;https://github.com/grapa-dev/grapa/releases/download/v0.1.52/grapa-0.1.52.zip&quot; -OutFile &quot;grapa-0.1.52.zip&quot;</span>
-<span class="c1"># Expand-Archive -Path &quot;grapa-0.1.52.zip&quot; -DestinationPath &quot;grapa-0.1.52&quot; -Force</span>
-<span class="c1"># cd grapa-0.1.52</span>
+<span class="c1"># Invoke-WebRequest -Uri &quot;https://github.com/grapa-dev/grapa/releases/download/v0.1.56/grapa-0.1.56.zip&quot; -OutFile &quot;grapa-0.1.56.zip&quot;</span>
+<span class="c1"># Expand-Archive -Path &quot;grapa-0.1.56.zip&quot; -DestinationPath &quot;grapa-0.1.56&quot; -Force</span>
+<span class="c1"># cd grapa-0.1.56</span>
 <span class="c1"># python install-grapa.py</span>
 </code></pre></div>
 <h2 id="troubleshooting-updates">Troubleshooting Updates</h2>

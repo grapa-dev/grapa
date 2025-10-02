@@ -5746,18 +5746,20 @@ result = data.json.users[0].name + &quot; from &quot; + data.xml.config.setting;
 <p>Grapa provides <strong>comprehensive machine learning capabilities</strong> that rival dedicated ML libraries, plus <strong>native AI model integration</strong>:</p>
 <h3 id="aiml-model-integration"><strong>AI/ML Model Integration</strong> 🤖</h3>
 <p>Grapa's <code>$MODEL</code> type provides <strong>native AI model support</strong> with unique capabilities:
-- <strong>LLAMA.cpp Integration</strong> - Direct access to state-of-the-art language models
+- <strong>Model Integration</strong> - Direct access to state-of-the-art language models
 - <strong>Grapa Interpolation</strong> - AI responses can contain <code>${expression}</code> placeholders for Grapa evaluation
 - <strong>Hybrid Computation</strong> - Combine AI natural language with Grapa's precise computation
 - <strong>Context Management</strong> - Persistent conversation context across sessions
 - <strong>Multi-Platform Support</strong> - Works on Windows, macOS, Linux with GPU acceleration where available</p>
 <div class="highlight"><pre><span></span><code>/* AI + Grapa hybrid computation */
 model = $MODEL();
-model.load(&quot;models/qwen2.5-7b-instruct-q3_k_m.gguf&quot;);
+model.load(&quot;gpt-4o&quot;, &quot;openai&quot;);
 model.context(&quot;Use ${expression} placeholders for calculations.&quot;);
 
-response = model.gen(&quot;What is 15 * 23 + 45?&quot;);
-/* LLAMA: &quot;The calculation is ${15 * 23 + 45} which equals ${15 * 23 + 45}&quot; */
+response = model.gen(&quot;What is 15 * 23 + 45?&quot;, {
+    &quot;api_key&quot;: &quot;sk-your-openai-api-key&quot;
+});
+/* Model: &quot;The calculation is ${15 * 23 + 45} which equals ${15 * 23 + 45}&quot; */
 result = response.interpolate();
 /* Result: &quot;The calculation is 390 which equals 390&quot; */
 </code></pre></div>
@@ -6642,7 +6644,7 @@ encrypted_data = data.encode(aes_keys);
 <li><strong>Array Comprehension Alternatives</strong> - Functional methods (.filter(), .map()) with threading support</li>
 <li><strong>Vector Operations</strong> - <strong>COMPREHENSIVE</strong> matrix operations, linear algebra, statistical functions, and creative capabilities</li>
 <li><strong>Machine Learning</strong> - Linear regression, statistical analysis, and ML algorithms with optimized vector operations</li>
-<li><strong>AI/ML Model Integration</strong> - Native <code>$MODEL</code> type with LLAMA.cpp backend for text generation and Grapa interpolation</li>
+<li><strong>AI/ML Model Integration</strong> - Native <code>$MODEL</code> type for text generation and Grapa interpolation</li>
 <li><strong>String Interpolation</strong> - Advanced template literal support with expressions</li>
 <li><strong>Advanced Pattern Matching</strong> - 100% ripgrep compatibility with binary data support</li>
 <li><strong>Unified Data Type Integration</strong> - Seamless cross-format manipulation</li>

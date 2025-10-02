@@ -10,9 +10,9 @@ Grapa is distributed through GitHub releases, making updates straightforward. Yo
 grapa --version
 
 # Download and run the universal installer for the latest version
-# Example for version 0.1.55:
-curl -O https://github.com/grapa-dev/grapa/releases/download/v0.1.55/install-grapa-0.1.55.py
-python3 install-grapa-0.1.55.py
+# Example for version 0.1.56:
+curl -O https://github.com/grapa-dev/grapa/releases/download/v0.1.56/install-grapa-0.1.56.py
+python3 install-grapa-0.1.56.py
 ```
 
 ### Manual Platform-Specific Update
@@ -21,23 +21,23 @@ python3 install-grapa-0.1.55.py
 grapa --version
 
 # Download the appropriate package for your platform
-# Example for version 0.1.55:
+# Example for version 0.1.56:
 
 # macOS ARM64
-curl -L -o grapa-0.1.55-mac-arm64.zip https://github.com/grapa-dev/grapa/releases/download/v0.1.55/grapa-0.1.55-mac-arm64.zip
+curl -L -o grapa-0.1.56-mac-arm64.zip https://github.com/grapa-dev/grapa/releases/download/v0.1.56/grapa-0.1.56-mac-arm64.zip
 
 # Linux AMD64
-wget https://github.com/grapa-dev/grapa/releases/download/v0.1.55/grapa-0.1.55-linux-amd64.zip
+wget https://github.com/grapa-dev/grapa/releases/download/v0.1.56/grapa-0.1.56-linux-amd64.zip
 
 # Linux ARM64
-wget https://github.com/grapa-dev/grapa/releases/download/v0.1.55/grapa-0.1.55-linux-arm64.zip
+wget https://github.com/grapa-dev/grapa/releases/download/v0.1.56/grapa-0.1.56-linux-arm64.zip
 
 # Windows AMD64 (PowerShell)
-# Invoke-WebRequest -Uri "https://github.com/grapa-dev/grapa/releases/download/v0.1.55/grapa-0.1.55-win-amd64.zip" -OutFile "grapa-0.1.55-win-amd64.zip"
+# Invoke-WebRequest -Uri "https://github.com/grapa-dev/grapa/releases/download/v0.1.56/grapa-0.1.56-win-amd64.zip" -OutFile "grapa-0.1.56-win-amd64.zip"
 
 # Extract and install
-unzip grapa-0.1.55-<platform>.zip
-cd grapa-0.1.55
+unzip grapa-0.1.56-<platform>.zip
+cd grapa-0.1.56
 python3 install-grapa.py
 ```
 
@@ -71,16 +71,16 @@ grapa --version
 
 Example output:
 ```
-Grapa version 0.1.51
+Grapa version 0.1.56
 ```
 
 ## Update Frequency
 
 Grapa releases follow semantic versioning:
 
-- **Patch releases** (0.1.51 → 0.1.52): Bug fixes and minor improvements
-- **Minor releases** (0.1.51 → 0.2.0): New features, backward compatible
-- **Major releases** (0.1.51 → 1.0.0): Breaking changes
+- **Patch releases** (0.1.55 → 0.1.56): Bug fixes and minor improvements
+- **Minor releases** (0.1.55 → 0.2.0): New features, backward compatible
+- **Major releases** (0.1.55 → 1.0.0): Breaking changes
 
 Updates are typically available within a few days of a new release.
 
@@ -91,20 +91,20 @@ If you need to downgrade to a previous version:
 ### All Platforms (Universal Development Kit)
 ```bash
 # Download and install specific version from GitHub releases
-# Example for version 0.1.52:
+# Example for version 0.1.56:
 
 # All platforms - download universal package
-curl -L -o grapa-0.1.52.zip https://github.com/grapa-dev/grapa/releases/download/v0.1.52/grapa-0.1.52.zip
+curl -L -o grapa-0.1.56.zip https://github.com/grapa-dev/grapa/releases/download/v0.1.56/grapa-0.1.56.zip
 
 # Extract and install
-unzip grapa-0.1.52.zip
-cd grapa-0.1.52
+unzip grapa-0.1.56.zip
+cd grapa-0.1.56
 python3 install-grapa.py
 
 # On Windows, use:
-# Invoke-WebRequest -Uri "https://github.com/grapa-dev/grapa/releases/download/v0.1.52/grapa-0.1.52.zip" -OutFile "grapa-0.1.52.zip"
-# Expand-Archive -Path "grapa-0.1.52.zip" -DestinationPath "grapa-0.1.52" -Force
-# cd grapa-0.1.52
+# Invoke-WebRequest -Uri "https://github.com/grapa-dev/grapa/releases/download/v0.1.56/grapa-0.1.56.zip" -OutFile "grapa-0.1.56.zip"
+# Expand-Archive -Path "grapa-0.1.56.zip" -DestinationPath "grapa-0.1.56" -Force
+# cd grapa-0.1.56
 # python install-grapa.py
 ```
 

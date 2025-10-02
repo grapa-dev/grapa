@@ -6893,7 +6893,7 @@ tomorrow = now.add(86400);  /* Add 24 hours */
 <p><a href="#grapa-api-reference">Back to Top</a></p>
 <hr />
 <h2 id="aiml-model-integration">AI/ML Model Integration</h2>
-<p>Grapa provides native support for AI/ML models through the <code>$MODEL</code> data type, currently supporting LLAMA.cpp-based models for text generation.</p>
+<p>Grapa provides native support for AI/ML models through the <code>$MODEL</code> data type, currently supporting local models for text generation.</p>
 <h3 id="core-functions_1">Core Functions</h3>
 <h4 id="model"><strong><code>$MODEL()</code></strong></h4>
 <p>Creates a new model instance.</p>
@@ -6903,9 +6903,9 @@ tomorrow = now.add(86400);  /* Add 24 hours */
 <p>Loads a model from the specified file path.</p>
 <p><strong>Parameters:</strong>
 - <code>path</code> (string): Path to the model file (GGUF format)
-- <code>backend</code> (string, optional): Backend to use ("llama" is currently the only supported backend)</p>
+- <code>backend</code> (string, optional): Backend to use</p>
 <p><strong>Returns:</strong> Error code (0 for success)</p>
-<div class="highlight"><pre><span></span><code>result = model.load(&quot;models/qwen2.5-7b-instruct-q3_k_m.gguf&quot;, &quot;llama&quot;);
+<div class="highlight"><pre><span></span><code>result = model.load(&quot;gpt-4o&quot;, &quot;openai&quot;);
 if (result.type() != $ERR) {
     &quot;Model loaded successfully!&quot;.echo();
 }
@@ -7028,12 +7028,14 @@ model.params({
 });
 
 /* Load model */
-result = model.load(&quot;models/qwen2.5-7b-instruct-q3_k_m.gguf&quot;);
+result = model.load(&quot;gpt-4o&quot;, &quot;openai&quot;);
 if (result.type() != $ERR) {
     &quot;Model loaded successfully!&quot;.echo();
 
     /* Generate text */
-    response = model.gen(&quot;What is artificial intelligence?&quot;);
+    response = model.gen(&quot;What is artificial intelligence?&quot;, {
+        &quot;api_key&quot;: &quot;sk-your-openai-api-key&quot;
+    });
     (&quot;Response: &quot; + response.str()).echo();
 
     /* Generate with different parameters */
@@ -7051,13 +7053,13 @@ model.load();
 </code></pre></div>
 <h3 id="model-formats">Model Formats</h3>
 <p>Currently supports:
-- <strong>GGUF</strong>: The standard format for LLAMA.cpp models
+- <strong>GGUF</strong>: The standard format for local models
   - Efficient quantization (Q2_K, Q3_K_M, Q4_K_M, Q5_K_M, Q6_K, Q8_0, FP16)
   - Cross-platform compatibility
   - Metadata inclusion</p>
 <h3 id="backend-support">Backend Support</h3>
 <ul>
-<li><strong>LLAMA.cpp</strong>: For GGUF format models</li>
+<li><strong>Local</strong>: For GGUF format models</li>
 <li>Supports various quantization levels</li>
 <li>Optimized for CPU inference</li>
 <li>Thread-safe operations</li>

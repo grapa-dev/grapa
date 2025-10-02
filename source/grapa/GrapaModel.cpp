@@ -501,9 +501,9 @@ GrapaRuleEvent* GrapaModel::GetContext() const
         GrapaRuleEvent* method = new GrapaRuleEvent(0, GrapaCHAR("method"), mMethod);
         result->vQueue->PushTail(method);
 
-        // Add model
-        GrapaRuleEvent* model = new GrapaRuleEvent(0, GrapaCHAR("model"), mModelPath);
-        result->vQueue->PushTail(model);
+        // Add model path
+        GrapaRuleEvent* modelPath = new GrapaRuleEvent(0, GrapaCHAR("model_path"), mModelPath);
+        result->vQueue->PushTail(modelPath);
 
         return result;
     }

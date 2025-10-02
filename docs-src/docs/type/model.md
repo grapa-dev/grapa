@@ -1,14 +1,14 @@
 # $MODEL Data Type
 
-The `$MODEL` data type provides AI/ML model integration capabilities in Grapa, supporting both local models and cloud-based OpenAI models for text generation.
+The `$MODEL` data type provides AI/ML model integration capabilities in Grapa, supporting cloud-based OpenAI models for text generation and embeddings.
 
 ## Overview
 
 The `$MODEL` type allows you to:
-- Load and manage AI/ML models (GGUF format for local models, OpenAI models for cloud)
-- Generate text using loaded models
-- Configure generation parameters
-- Control model verbosity and logging
+- Load and manage OpenAI models for text generation and embeddings
+- Generate text using OpenAI models
+- Create text embeddings using OpenAI models
+- Configure API key and context storage
 - Unload models to free memory
 - Use cloud-based models with persistent context
 
@@ -18,11 +18,13 @@ The `$MODEL` type allows you to:
 /* Create a new model instance */
 model = $MODEL();
 
-/* Load a model file */
-result = model.load("path/to/model.gguf");
+/* Load an OpenAI model */
+result = model.load("gpt-4o", "openai");
 
-/* Generate text */
-response = model.gen("Hello, how are you?");
+/* Generate text with API key */
+response = model.gen("Hello, how are you?", {
+    "api_key": "sk-your-openai-api-key"
+});
 
 /* Get model information */
 info = model.info();
@@ -33,30 +35,27 @@ model.load();
 
 ## Methods
 
-### `.load(modelpath, method)`
-Loads a model from the specified file path.
+### `.load(modelname, method)`
+Loads an OpenAI model.
 
 **Parameters:**
-- `path` (string): Path to the model file (GGUF format) or model name (for OpenAI)
-- `method` (string, optional): Method to use ("openai" for cloud models). If not specified, the method will be auto-detected from the file extension or magic bytes.
+- `modelname` (string): OpenAI model name (e.g., "gpt-4o", "gpt-3.5-turbo", "text-embedding-3-small")
+- `method` (string): Method to use ("openai" for text generation, "openai-embedding" for embeddings)
 
 **Returns:** Error code (0 for success)
 
 **Example:**
 ```grapa
-/* Auto-detect method from file extension */
-result = model.load("models/qwen2.5-7b-instruct-q3_k_m.gguf");
+/* Load OpenAI text generation model */
+result = model.load("gpt-4o", "openai");
 if (result.type() != $ERR) {
     "Model loaded successfully!".echo();
 } else {
     ("Failed to load model: " + result.str()).echo();
 }
 
-/* Explicitly specify method for local model */
-result = model.load("models/qwen2.5-7b-instruct-q3_k_m.gguf");
-
-/* Load OpenAI cloud model */
-result = model.load("gpt-4o", "openai");
+/* Load OpenAI embedding model */
+result = model.load("text-embedding-3-small", "openai-embedding");
 ```
 
 ### `.gen(prompt, params)`
@@ -73,10 +72,10 @@ Generates text using the loaded model.
 /* Basic generation */
 response = model.gen("What is artificial intelligence?");
 
-/* Generation with custom parameters (local model) */
+/* Generation with store parameter */
 response = model.gen("Explain machine learning", {
-    "temperature": 0.8,
-    "max_tokens": 100
+    "api_key": "sk-your-openai-api-key",
+    "store": false
 });
 
 /* Generation with OpenAI API key (cloud model) */
@@ -88,7 +87,10 @@ response = model.gen("Hello, how are you?", {
 ### `.info()`
 Returns information about the current model state.
 
-**Returns:** Object containing model information
+**Returns:** Object containing model information:
+- `loaded` (boolean): Whether the model is currently loaded
+- `method` (string): The method being used (e.g., "openai", "openai-embedding")
+- `model_path` (string): The model name or path
 
 **Example:**
 ```grapa
@@ -96,7 +98,6 @@ info = model.info();
 ("Model loaded: " + info."loaded".str()).echo();
 ("Method: " + info."method".str()).echo();
 ("Model path: " + info."model_path".str()).echo();
-("Model name: " + info."model".str()).echo();
 ```
 
 ### `.params()`
@@ -107,8 +108,7 @@ Returns current generation parameters.
 **Example:**
 ```grapa
 params = model.params();
-("Current temperature: " + params."temperature".str()).echo();
-("Max tokens: " + params."max_tokens".str()).echo();
+("Current parameters: " + params.str()).echo();
 ```
 
 ### `.params(parameters)`
@@ -120,9 +120,8 @@ Sets generation parameters using a `$GOBJ` collection.
 **Example:**
 ```grapa
 model.params({
-    "temperature": 0.7,
-    "max_tokens": 50,
-    "verbose": 2
+    "api_key": "sk-your-openai-api-key",
+    "store": true
 });
 ```
 
@@ -130,41 +129,33 @@ model.params({
 Gets the current context state of the model.
 
 **Returns:** Object containing context information:
-- `text` (string): Current text context
-- `tokens` (list): Current token context (for efficient method processing)
+- `id` (string): Response ID for conversation continuity (OpenAI only)
 - `method` (string): Method being used
-- `model` (string): Model filename
+- `model_path` (string): Model name or path
 
 **Example:**
 ```grapa
 context = model.context();
-("Context text: " + context."text".str()).echo();
-("Context tokens: " + context."tokens".len().str() + " tokens").echo();
+("Response ID: " + context."id".str()).echo();
+("Method: " + context."method".str()).echo();
+("Model path: " + context."model_path".str()).echo();
 ```
 
 ### `.context(contextData)`
 Sets the context for the model.
 
 **Parameters:**
-- `contextData` (string, list, or object): Context data to set
-  - If string: Sets text context
-  - If list: Sets token context (for efficient processing)
-  - If object: Can contain both "text" and "tokens" fields
+- `contextData` (object): Context object containing an `id` field for conversation continuity
 
 **Example:**
 ```grapa
-/* Set text context */
-model.context("Previous conversation: Hello, how are you?");
-
-/* Set token context (more efficient) */
-tokenList = [1, 2, 3, 4, 5];
-model.context(tokenList);
-
-/* Set both text and tokens */
-model.context({
-    "text": "Previous conversation",
-    "tokens": [1, 2, 3, 4, 5]
-});
+/* Set context using response ID from previous conversation */
+context = {
+    "id": "response_12345",
+    "method": "openai",
+    "model_path": "gpt-4o"
+};
+model.context(context);
 ```
 
 ### `.load()`
@@ -182,62 +173,31 @@ if (result.type() != $ERR) {
 
 ## Generation Parameters
 
-The following parameters can be set using `.params()`. Note that not all parameters apply to every method:
-
-| Parameter | Type | Default | Description | Local | OpenAI |
-|-----------|------|---------|-------------|-------|--------|
-| `temperature` | float | 0.7 | Controls randomness (0.0 = deterministic, 1.0+ = more random) | ✅ | ✅ |
-| `max_tokens` | int | 10 | Maximum number of tokens to generate | ✅ | ✅ |
-| `top_k` | int | 40 | Number of top tokens to consider | ✅ | ❌ |
-| `top_p` | float | 0.9 | Nucleus sampling threshold | ✅ | ✅ |
-| `repeat_penalty` | float | 1.1 | Penalty for repeating tokens | ✅ | ❌ |
-| `seed` | int | -1 | Random seed (-1 for random) | ✅ | ❌ |
-| `context_size` | int | 2048 | Context window size | ✅ | ❌ |
-| `verbose` | int | 0 | Logging verbosity (0=silent, 1=errors, 2=warnings, 3=info, 4=debug) | ✅ | ✅ |
-
-### OpenAI-Specific Parameters
-
-When using the "openai" method, additional parameters are available:
+**Note: Local model support has been removed. Only OpenAI parameters are supported.**
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `api_key` | string | Yes | OpenAI API key for authentication |
-| `store` | boolean | No | Enable server-side context persistence (default: true) |
+| `api_key` | string | ✅ | OpenAI API key for authentication |
+| `store` | boolean | ❌ | Whether to store context for conversation continuity (default: true) |
 
-**Note:** For OpenAI models, only `temperature`, `max_tokens`, `top_p`, and `verbose` parameters are applied. Other parameters (`top_k`, `repeat_penalty`, `seed`, `context_size`) are ignored as they are not supported by the OpenAI API.
 
 ## Method Support
 
 Currently, the `$MODEL` type supports:
 
-- **Local**: For GGUF format models
-  - Supports various quantization levels (Q2_K, Q3_K_M, Q4_K_M, Q5_K_M, Q6_K, Q8_0, FP16)
-  - Optimized for CPU inference
-  - Thread-safe operations
-  - Auto-detected from `.gguf` file extension or "GGUF" magic bytes
-
 - **OpenAI**: For cloud-based models
-  - Supports GPT-4, GPT-3.5-turbo, and other OpenAI models
+  - Supports GPT-4, GPT-3.5-turbo, text-embedding-3-small, and other OpenAI models
   - Server-side context persistence
   - Requires API key authentication
   - Uses HTTPS with SSL certificate verification
-
-## Model Formats
-
-The `$MODEL` type currently supports:
-
-- **GGUF**: The standard format for local models
-  - Efficient quantization
-  - Cross-platform compatibility
-  - Metadata inclusion
-  - Auto-detected by file extension (`.gguf`) or magic bytes ("GGUF")
+  - Two methods: "openai" for text generation, "openai-embedding" for embeddings
 
 ## Performance Considerations
 
-- **Memory Usage**: Large models (7B+ parameters) require significant RAM
-- **Loading Time**: Initial model loading can take several seconds
-- **Generation Speed**: Depends on model size and hardware capabilities
-- **Context Size**: Larger context windows use more memory
+- **API Rate Limits**: OpenAI has rate limits based on your subscription tier
+- **Network Latency**: Response time depends on network connection to OpenAI servers
+- **Context Management**: Server-side context persistence reduces API calls
+- **Cost**: Usage is billed per token, so consider prompt and response length
 
 ## Error Handling
 
@@ -245,15 +205,19 @@ Always check return values from `.load()` and `.unload()`:
 
 ```grapa
 model = $MODEL();
-/* Auto-detect method from file extension */
-result = model.load("model.gguf");
-if (result != 0) {
+/* Load OpenAI model */
+result = model.load("gpt-4o", "openai");
+if (result.type() != $ERR) {
+    "Model loaded successfully".echo();
+} else {
     ("Error loading model: " + result.str()).echo();
     return;
 }
 
 /* Use model safely */
-response = model.gen("Hello");
+response = model.gen("Hello", {
+    "api_key": "sk-your-openai-api-key"
+});
 model.load(); /* Unload when done */
 ```
 

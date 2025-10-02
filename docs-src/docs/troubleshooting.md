@@ -18,7 +18,7 @@ This guide covers common issues encountered when working with Grapa and GrapaPy,
 **Linux - Automatic (Recommended):**
 ```bash
 # Install Grapa CLI with automatic dependency installation
-python3 install-grapa-0.1.55.py --install-dependencies
+python3 install-grapa-0.1.56.py --install-dependencies
 
 # Then install Python extension
 pip3 install grapapy
@@ -45,7 +45,7 @@ pip3 install grapapy
 **macOS - Automatic (Recommended):**
 ```bash
 # Install Grapa CLI with automatic dependency installation
-python3 install-grapa-0.1.55.py --install-dependencies
+python3 install-grapa-0.1.56.py --install-dependencies
 
 # Then install Python extension
 pip3 install grapapy
@@ -84,7 +84,7 @@ pip3 install grapapy --break-system-packages
 #### **"undefined symbol" Error on Linux**
 **Problem**: `ImportError: undefined symbol: _ZN17GrapaLibraryEvent17HasActiveTryBlockEP10GrapaNames`
 
-**Solution**: This indicates an outdated distribution package. The issue is resolved in Grapa 0.1.55+ with updated static libraries.
+**Solution**: This indicates an outdated distribution package. The issue is resolved in Grapa 0.1.56+ with updated static libraries.
 
 ### CMake Build Failures
 
