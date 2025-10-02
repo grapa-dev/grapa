@@ -21498,6 +21498,7 @@ GrapaRuleEvent* GrapaLibraryRuleSimilarityEvent::Run(GrapaScriptExec* vScriptExe
 	GrapaLibraryParam r1(vScriptExec, pNameSpace, pInput ? pInput->Head(0) : NULL);
 	GrapaLibraryParam r2(vScriptExec, pNameSpace, pInput ? pInput->Head(1) : NULL);
 	GrapaLibraryParam r3(vScriptExec, pNameSpace, pInput ? pInput->Head(2) : NULL);
+	GrapaLibraryParam r4(vScriptExec, pNameSpace, pInput ? pInput->Head(3) : NULL);
 	GrapaCHAR method;
 	if (r3.vVal && r3.vVal->mValue.mToken == GrapaTokenType::STR)
 	{

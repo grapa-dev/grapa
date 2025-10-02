@@ -86,7 +86,7 @@ $global["$OBJ"] = class {
 	getfield = @<[op,@<"getfield",{@<this>,@<var,{name}>,@<var,{field}>}>],{name,field}>; 
 	setfield = @<[op,@<"setfield",{@<this>,@<var,{name}>,@<var,{field}>,@<var,{data}>}>],{name,field,data}>; 
 	copy = @<copy,{@<this>}>;
-	similarity = @<[op,@<"similarity",{@<this,{}>,@<var,{other}>,@<var,{method}>}>],{"other","method"}>; 
+	similarity = @<[op,@<"similarity",{@<this,{}>,@<var,{other}>,@<var,{method}>,@<var,{params}>}>],{other,method,params}>; 
 };
 
 
