@@ -299,6 +299,7 @@ public:
 	GrapaLibraryEvent* HandleVectorQuantile(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleVectorSkew(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleVectorKurtosis(GrapaCHAR& pName);
+	GrapaLibraryEvent* HandleVectorSimilarity(GrapaCHAR& pName);
 
 	GrapaLibraryEvent* HandleTryLock(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleLock(GrapaCHAR& pName);

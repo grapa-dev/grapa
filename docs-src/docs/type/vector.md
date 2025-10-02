@@ -32,6 +32,7 @@ Vectors in Grapa are multi-dimensional data structures that support mathematical
 | **Get Labels** | `vec.keys()` | Get column labels |
 | **Mathematical** | `vec1 + vec2`, `vec * 2` | Element-wise operations |
 | **Statistical** | `vec.sum()`, `vec.mean()` | Statistical functions |
+| **Similarity** | `vec1.similarity(vec2, 'cosine')` | Calculate similarity/distance |
 
 ## **🆕 What's New**
 
@@ -1087,6 +1088,54 @@ arr = vec.list();            /* [1, 2, 3, 4, 5] */
 mixed_vec = #[1, "hello", true, [1, 2, 3]]#;  /* Mixed types supported */
 ```
 
+## Similarity and Distance Examples
+
+The `.similarity()` method calculates various similarity and distance metrics between 1D vectors:
+
+```grapa
+/* Basic similarity calculation */
+vec1 = #[1, 2, 3]#;
+vec2 = #[4, 5, 6]#;
+
+/* Cosine similarity (default) */
+cosine_sim = vec1.similarity(vec2);           /* #[0.97463184619707]# */
+cosine_sim2 = vec1.similarity(vec2, 'cosine'); /* Same result */
+
+/* Pearson correlation */
+pearson = vec1.similarity(vec2, 'pearson');    /* #[1]# - perfect correlation */
+
+/* Distance metrics */
+euclidean = vec1.similarity(vec2, 'euclidean'); /* #[5.1961524227066]# */
+manhattan = vec1.similarity(vec2, 'manhattan'); /* #[9]# */
+chebyshev = vec1.similarity(vec2, 'chebyshev'); /* #[3]# */
+
+/* Alternative method names */
+l2_dist = vec1.similarity(vec2, 'l2');         /* Same as euclidean */
+l1_dist = vec1.similarity(vec2, 'l1');         /* Same as manhattan */
+l_inf = vec1.similarity(vec2, 'l∞');           /* Same as chebyshev */
+
+/* Set-based similarity (for binary vectors) */
+binary1 = #[1, 0, 1, 0, 1]#;
+binary2 = #[1, 1, 0, 0, 1]#;
+jaccard = binary1.similarity(binary2, 'jaccard'); /* #[0.5]# */
+dice = binary1.similarity(binary2, 'dice');       /* #[0.66666666666667]# */
+
+/* Inner product (dot product) */
+inner = vec1.similarity(vec2, 'inner');        /* #[32]# - same as vec1.dot(vec2) */
+
+/* Normalized distances */
+norm_euclidean = vec1.similarity(vec2, 'norm_euclidean'); /* #[3.0]# */
+norm_manhattan = vec1.similarity(vec2, 'norm_manhattan'); /* #[3]# */
+```
+
+**Key Points:**
+- **Similarity methods** return values where higher = more similar (0-1 range for most)
+- **Distance methods** return values where lower = more similar (≥0 range)
+- **Method names are case-insensitive** (`'COSINE'`, `'cosine'`, `'Cosine'` all work)
+- **Alternative names supported** (`'l1'`/`'l2'`/`'l∞'` for manhattan/euclidean/chebyshev)
+- **Only works with 1D vectors** of the same length
+- **Returns scalar result** in a 1-element vector format
+
 ## Best Practices
 
 1. **Use appropriate data types**: Use vectors for numerical operations, arrays for general data
@@ -1180,7 +1229,28 @@ The `add()`, `mul()`, `pow()` functions in the C++ backend are internal methods 
 - `.eigh()` - Eigenvalue decomposition
 - `.solve()` - Linear system solver (matrix must be n×n+1 with last column as right-hand side)
 - `.dot(other)` - Dot product (1D vectors) or matrix multiplication (2D matrices)
+- `.similarity(other, method='cosine')` - Calculate similarity/distance between vectors
 - `.cov(axis=null)` - Covariance matrix
+
+### **Similarity and Distance Functions**
+- `.similarity(other, method='cosine')` - Calculate similarity/distance between 1D vectors
+  - **Similarity Methods** (higher values = more similar):
+    - `'cosine'` - Cosine similarity (default): measures angle between vectors
+    - `'pearson'` - Pearson correlation: measures linear correlation
+    - `'jaccard'` - Jaccard similarity: set intersection over union
+    - `'dice'` - Dice similarity: 2×intersection over sum
+    - `'tanimoto'` - Tanimoto similarity: intersection over (sum - intersection)
+    - `'inner'` - Inner product (dot product)
+  - **Distance Methods** (lower values = more similar):
+    - `'euclidean'` or `'l2'` - Euclidean distance: straight-line distance
+    - `'manhattan'` or `'l1'` - Manhattan distance: sum of absolute differences
+    - `'chebyshev'` or `'l∞'` - Chebyshev distance: maximum absolute difference
+    - `'minkowski'` - Minkowski distance: generalized distance (default p=2)
+    - `'hamming'` - Hamming distance: number of differing positions
+    - `'canberra'` - Canberra distance: weighted distance
+    - `'braycurtis'` - Bray-Curtis distance: normalized Manhattan
+    - `'norm_euclidean'` - Normalized Euclidean distance
+    - `'norm_manhattan'` - Normalized Manhattan distance
 
 ### **Shape and Structure Functions**
 - `.shape()` - Get vector shape

@@ -101,6 +101,7 @@ public:
 	void _tocsv(GrapaScriptExec* pScriptExec, GrapaNames* pNameSpace, u64 pos, u64& p, GrapaRuleEvent* delim, GrapaBYTE& pValue);
 	GrapaVector& operator=(const GrapaVector& that);
 	GrapaError Dot(GrapaScriptExec* pScriptExec, GrapaNames* pNameSpace, GrapaVector& bi, GrapaVector& result);
+	GrapaError Similarity(GrapaScriptExec* pScriptExec, GrapaNames* pNameSpace, GrapaVector& other, GrapaVector& result, GrapaCHAR& method);
 	GrapaError Mul(GrapaScriptExec* pScriptExec, GrapaNames* pNameSpace, const GrapaVector& bi, bool pDiv = false);
 	GrapaError Pow(GrapaScriptExec* pScriptExec, GrapaNames* pNameSpace, const GrapaVector& bi, bool pRoot = false);
 	GrapaError Add(GrapaScriptExec* pScriptExec, GrapaNames* pNameSpace, const GrapaVector& bi, bool pSub=false);

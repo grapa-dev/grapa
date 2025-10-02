@@ -5553,9 +5553,254 @@ bool GrapaVector::EigH(GrapaScriptExec* pScriptExec, GrapaNames* pNameSpace, Gra
 	return false;
 }
 
-GrapaError GrapaVector::Similarity(GrapaScriptExec* pScriptExec, GrapaNames* pNameSpace, GrapaVector& other, GrapaVector& result, const GrapaCHAR& method)
+GrapaError GrapaVector::Similarity(GrapaScriptExec* pScriptExec, GrapaNames* pNameSpace, GrapaVector& other, GrapaVector& result, GrapaCHAR& method)
 {
-	return -1;
+	// Validate inputs
+	if (mData == NULL || other.mData == NULL)
+		return -1;
+	
+	// Only support 1D vectors for similarity calculations
+	if (mDim != 1 || other.mDim != 1)
+		return -1;
+	
+	// Vectors must have the same length
+	if (mCounts[0] != other.mCounts[0])
+		return -1;
+	
+	u64 n = mCounts[0];
+	if (n == 0)
+		return -1;
+	
+	// Set up result vector as scalar
+	result.CLEAR();
+	result.mDim = 1;
+	result.mSetBlock = mSetBlock;
+	result.mBlock = mBlock;
+	result.mMaxBlock = _minvectordatablock_;
+	result.mCounts = (u64*)GrapaMem::Create(sizeof(u64) * result.mDim);
+	result.mCounts[0] = 1;
+	result.mSize = 1;
+	result.mData = (GrapaVectorItem*)GrapaMem::Create(result.mBlock * result.mSize);
+	memset(result.mData, 0, result.mBlock * result.mSize);
+	
+	// Initialize working variables
+	GrapaFloat sum_ab(pScriptExec->vScriptState->mItemState.mFloatFix, pScriptExec->vScriptState->mItemState.mFloatMax, pScriptExec->vScriptState->mItemState.mFloatExtra, 0);
+	GrapaFloat sum_a2(pScriptExec->vScriptState->mItemState.mFloatFix, pScriptExec->vScriptState->mItemState.mFloatMax, pScriptExec->vScriptState->mItemState.mFloatExtra, 0);
+	GrapaFloat sum_b2(pScriptExec->vScriptState->mItemState.mFloatFix, pScriptExec->vScriptState->mItemState.mFloatMax, pScriptExec->vScriptState->mItemState.mFloatExtra, 0);
+	GrapaFloat sum_a(pScriptExec->vScriptState->mItemState.mFloatFix, pScriptExec->vScriptState->mItemState.mFloatMax, pScriptExec->vScriptState->mItemState.mFloatExtra, 0);
+	GrapaFloat sum_b(pScriptExec->vScriptState->mItemState.mFloatFix, pScriptExec->vScriptState->mItemState.mFloatMax, pScriptExec->vScriptState->mItemState.mFloatExtra, 0);
+	GrapaFloat sum_diff2(pScriptExec->vScriptState->mItemState.mFloatFix, pScriptExec->vScriptState->mItemState.mFloatMax, pScriptExec->vScriptState->mItemState.mFloatExtra, 0);
+	GrapaFloat sum_abs_diff(pScriptExec->vScriptState->mItemState.mFloatFix, pScriptExec->vScriptState->mItemState.mFloatMax, pScriptExec->vScriptState->mItemState.mFloatExtra, 0);
+	GrapaFloat sum_max_diff(pScriptExec->vScriptState->mItemState.mFloatFix, pScriptExec->vScriptState->mItemState.mFloatMax, pScriptExec->vScriptState->mItemState.mFloatExtra, 0);
+	GrapaFloat sum_canberra(pScriptExec->vScriptState->mItemState.mFloatFix, pScriptExec->vScriptState->mItemState.mFloatMax, pScriptExec->vScriptState->mItemState.mFloatExtra, 0);
+	GrapaFloat sum_bray_curtis(pScriptExec->vScriptState->mItemState.mFloatFix, pScriptExec->vScriptState->mItemState.mFloatMax, pScriptExec->vScriptState->mItemState.mFloatExtra, 0);
+	GrapaFloat sum_jaccard_num(pScriptExec->vScriptState->mItemState.mFloatFix, pScriptExec->vScriptState->mItemState.mFloatMax, pScriptExec->vScriptState->mItemState.mFloatExtra, 0);
+	GrapaFloat sum_jaccard_den(pScriptExec->vScriptState->mItemState.mFloatFix, pScriptExec->vScriptState->mItemState.mFloatMax, pScriptExec->vScriptState->mItemState.mFloatExtra, 0);
+	
+	// Calculate all intermediate values in one pass
+	for (u64 i = 0; i < n; i++)
+	{
+		GrapaVectorParam p1(pScriptExec, mData, mBlock, i);
+		GrapaVectorParam p2(pScriptExec, other.mData, other.mBlock, i);
+		
+		if (p1.a && p2.a)
+		{
+			GrapaFloat a = *p1.aa;
+			GrapaFloat b = *p2.aa;
+			
+			// Basic sums
+			sum_ab = sum_ab + (a * b);
+			sum_a2 = sum_a2 + (a * a);
+			sum_b2 = sum_b2 + (b * b);
+			sum_a = sum_a + a;
+			sum_b = sum_b + b;
+			
+			// Distance calculations
+			GrapaFloat diff = a - b;
+			sum_diff2 = sum_diff2 + (diff * diff);
+			GrapaFloat abs_diff = (diff < 0) ? -diff : diff;
+			sum_abs_diff = sum_abs_diff + abs_diff;
+			
+			// Max difference for Chebyshev
+			if (abs_diff > sum_max_diff)
+				sum_max_diff = abs_diff;
+			
+			// Canberra distance components
+			GrapaFloat abs_a = (a < 0) ? -a : a;
+			GrapaFloat abs_b = (b < 0) ? -b : b;
+			GrapaFloat sum_abs = abs_a + abs_b;
+			if (sum_abs > 0)
+				sum_canberra = sum_canberra + (abs_diff / sum_abs);
+			
+			// Bray-Curtis distance components
+			sum_bray_curtis = sum_bray_curtis + abs_diff;
+			
+			// Jaccard similarity components (for binary vectors)
+			if (a != 0 || b != 0)
+			{
+				if (a != 0 && b != 0)
+					sum_jaccard_num = sum_jaccard_num + 1;
+				sum_jaccard_den = sum_jaccard_den + 1;
+			}
+		}
+	}
+	
+	// Calculate final result based on method
+	GrapaFloat final_result(pScriptExec->vScriptState->mItemState.mFloatFix, pScriptExec->vScriptState->mItemState.mFloatMax, pScriptExec->vScriptState->mItemState.mFloatExtra, 0);
+	
+	if (method.StrLowerCmp("cosine") == 0)
+	{
+		// Cosine similarity: (a·b) / (||a|| * ||b||)
+		GrapaFloat norm_a = sum_a2.Root(2);
+		GrapaFloat norm_b = sum_b2.Root(2);
+		if (norm_a == 0 || norm_b == 0)
+		{
+			GrapaFloat zero(pScriptExec->vScriptState->mItemState.mFloatFix, pScriptExec->vScriptState->mItemState.mFloatMax, pScriptExec->vScriptState->mItemState.mFloatExtra, 0);
+			final_result = zero;
+		}
+		else
+			final_result = sum_ab / (norm_a * norm_b);
+	}
+	else if (method.StrLowerCmp("pearson") == 0)
+	{
+		// Pearson correlation: (n*sum(ab) - sum(a)*sum(b)) / sqrt((n*sum(a²) - sum(a)²) * (n*sum(b²) - sum(b)²))
+		GrapaFloat n_float(pScriptExec->vScriptState->mItemState.mFloatFix, pScriptExec->vScriptState->mItemState.mFloatMax, pScriptExec->vScriptState->mItemState.mFloatExtra, n);
+		GrapaFloat numerator = (n_float * sum_ab) - (sum_a * sum_b);
+		GrapaFloat denom_a = (n_float * sum_a2) - (sum_a * sum_a);
+		GrapaFloat denom_b = (n_float * sum_b2) - (sum_b * sum_b);
+		GrapaFloat denominator = (denom_a * denom_b).Root(2);
+		if (denominator == 0)
+		{
+			GrapaFloat zero(pScriptExec->vScriptState->mItemState.mFloatFix, pScriptExec->vScriptState->mItemState.mFloatMax, pScriptExec->vScriptState->mItemState.mFloatExtra, 0);
+			final_result = zero;
+		}
+		else
+			final_result = numerator / denominator;
+	}
+	else if (method.StrLowerCmp("jaccard") == 0)
+	{
+		// Jaccard similarity: |A ∩ B| / |A ∪ B|
+		if (sum_jaccard_den == 0)
+		{
+			GrapaFloat zero(pScriptExec->vScriptState->mItemState.mFloatFix, pScriptExec->vScriptState->mItemState.mFloatMax, pScriptExec->vScriptState->mItemState.mFloatExtra, 0);
+			final_result = zero;
+		}
+		else
+			final_result = sum_jaccard_num / sum_jaccard_den;
+	}
+	else if (method.StrLowerCmp("dice") == 0)
+	{
+		// Dice similarity: 2 * |A ∩ B| / (|A| + |B|)
+		GrapaFloat denominator = sum_a2 + sum_b2;
+		if (denominator == 0)
+		{
+			GrapaFloat zero(pScriptExec->vScriptState->mItemState.mFloatFix, pScriptExec->vScriptState->mItemState.mFloatMax, pScriptExec->vScriptState->mItemState.mFloatExtra, 0);
+			final_result = zero;
+		}
+		else
+		{
+			GrapaFloat two(pScriptExec->vScriptState->mItemState.mFloatFix, pScriptExec->vScriptState->mItemState.mFloatMax, pScriptExec->vScriptState->mItemState.mFloatExtra, 2);
+			final_result = (two * sum_jaccard_num) / denominator;
+		}
+	}
+	else if (method.StrLowerCmp("tanimoto") == 0)
+	{
+		// Tanimoto similarity: |A ∩ B| / (|A| + |B| - |A ∩ B|)
+		GrapaFloat denominator = (sum_a2 + sum_b2) - sum_jaccard_num;
+		if (denominator == 0)
+		{
+			GrapaFloat zero(pScriptExec->vScriptState->mItemState.mFloatFix, pScriptExec->vScriptState->mItemState.mFloatMax, pScriptExec->vScriptState->mItemState.mFloatExtra, 0);
+			final_result = zero;
+		}
+		else
+			final_result = sum_jaccard_num / denominator;
+	}
+	else if (method.StrLowerCmp("inner") == 0)
+	{
+		// Inner product (dot product)
+		final_result = sum_ab;
+	}
+	else if (method.StrLowerCmp("euclidean") == 0 || method.StrLowerCmp("l2") == 0)
+	{
+		// Euclidean distance: sqrt(sum((a-b)²))
+		final_result = sum_diff2.Root(2);
+	}
+	else if (method.StrLowerCmp("manhattan") == 0 || method.StrLowerCmp("l1") == 0)
+	{
+		// Manhattan distance: sum(|a-b|)
+		final_result = sum_abs_diff;
+	}
+	else if (method.StrLowerCmp("chebyshev") == 0 || method.StrLowerCmp("l∞") == 0)
+	{
+		// Chebyshev distance: max(|a-b|)
+		final_result = sum_max_diff;
+	}
+	else if (method.StrLowerCmp("minkowski") == 0)
+	{
+		// Minkowski distance: (sum(|a-b|^p))^(1/p)
+		// Default to p=2 (Euclidean) if no parameter provided
+		// For now, default to Euclidean (p=2)
+		final_result = sum_diff2.Root(2);
+	}
+	else if (method.StrLowerCmp("hamming") == 0)
+	{
+		// Hamming distance: number of positions where vectors differ
+		// For continuous vectors, this is not directly applicable
+		// We'll use a threshold-based approach
+		GrapaFloat threshold(pScriptExec->vScriptState->mItemState.mFloatFix, pScriptExec->vScriptState->mItemState.mFloatMax, pScriptExec->vScriptState->mItemState.mFloatExtra, 0.001);
+		GrapaFloat hamming_count(pScriptExec->vScriptState->mItemState.mFloatFix, pScriptExec->vScriptState->mItemState.mFloatMax, pScriptExec->vScriptState->mItemState.mFloatExtra, 0);
+		
+		for (u64 i = 0; i < n; i++)
+		{
+			GrapaVectorParam p1(pScriptExec, mData, mBlock, i);
+			GrapaVectorParam p2(pScriptExec, other.mData, other.mBlock, i);
+			if (p1.a && p2.a)
+			{
+				GrapaFloat diff = *p1.aa - *p2.aa;
+				GrapaFloat abs_diff = (diff < 0) ? -diff : diff;
+				if (abs_diff > threshold)
+					hamming_count = hamming_count + 1;
+			}
+		}
+		final_result = hamming_count;
+	}
+	else if (method.StrLowerCmp("canberra") == 0)
+	{
+		// Canberra distance: sum(|a-b| / (|a| + |b|))
+		final_result = sum_canberra;
+	}
+	else if (method.StrLowerCmp("braycurtis") == 0)
+	{
+		// Bray-Curtis distance: sum(|a-b|) / sum(|a| + |b|)
+		GrapaFloat denominator = sum_a2 + sum_b2;
+		if (denominator == 0)
+		{
+			GrapaFloat zero(pScriptExec->vScriptState->mItemState.mFloatFix, pScriptExec->vScriptState->mItemState.mFloatMax, pScriptExec->vScriptState->mItemState.mFloatExtra, 0);
+			final_result = zero;
+		}
+		else
+			final_result = sum_bray_curtis / denominator;
+	}
+	else if (method.StrLowerCmp("norm_euclidean") == 0)
+	{
+		// Normalized Euclidean distance: sqrt(sum((a-b)²)) / sqrt(n)
+		GrapaFloat n_float(pScriptExec->vScriptState->mItemState.mFloatFix, pScriptExec->vScriptState->mItemState.mFloatMax, pScriptExec->vScriptState->mItemState.mFloatExtra, n);
+		final_result = sum_diff2.Root(2) / n_float.Root(2);
+	}
+	else if (method.StrLowerCmp("norm_manhattan") == 0)
+	{
+		// Normalized Manhattan distance: sum(|a-b|) / n
+		GrapaFloat n_float(pScriptExec->vScriptState->mItemState.mFloatFix, pScriptExec->vScriptState->mItemState.mFloatMax, pScriptExec->vScriptState->mItemState.mFloatExtra, n);
+		final_result = sum_abs_diff / n_float;
+	}
+	else
+	{
+		// Unknown method
+		return -1;
+	}
+	
+	result.Set(0, final_result);
+	return 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
