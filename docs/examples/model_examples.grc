@@ -4,10 +4,11 @@
 "=============================================\n".echo();
 
 /* This file demonstrates comprehensive usage of the $MODEL data type */
-/* Note: Uses qwen2.5-7b-instruct-q3_k_m.gguf for simplicity (single file download) */
-/* For higher quality results, substitute qwen2.5-7b-instruct-q5_k_m.gguf (requires merging 2 files) */
+/* Note: Uses OpenAI models for cloud-based AI capabilities */
 
-modelpath = "models/qwen2.5-7b-instruct-q5_k_m.gguf";
+modelname = "gpt-4o";
+method = "openai";
+api_key = "sk-your-openai-api-key";
 
 "=== Basic Model Usage ===\n".echo();
 
@@ -17,11 +18,13 @@ model = $MODEL();
 "Loading model...\n".echo();
 
 /* Auto-detect method from file extension */
-result = model.load(modelpath);
+result = model.load(modelname, method);
 if (result.type() != $ERR) {
     "Model loaded successfully!\n".echo();
     /* Generate a simple response */
-    response = model.gen("Hello, how are you?");
+    response = model.gen("Hello, how are you?", {
+        "api_key": api_key
+    });
     ("Response: " + response.str() + "\n").echo();
 } else {
     ("Failed to load model: " + result.str() + "\n").echo();
@@ -35,7 +38,7 @@ model.load();
 /* Model Information */
 "--- Model Information ---\n".echo();
 model = $MODEL();
-model.load(modelpath);
+model.load(modelname, method);
 
 info = model.info();
 ("Model loaded: " + info."loaded".str() + "\n").echo();
@@ -62,7 +65,7 @@ model = $MODEL();
 
 "Parameters configured\n".echo();
 /* Auto-detect method from file extension */
-model.load(modelpath);
+model.load(modelname, method);
 
 /* Set generation parameters */
 model.params({
@@ -74,7 +77,9 @@ model.params({
 
 
 /* Generate with configured parameters */
-response = model.gen("Write a short story about a robot");
+response = model.gen("Write a short story about a robot", {
+    "api_key": api_key
+});
 ("Story: " + response.str() + "\n").echo();
 
 model.load();
@@ -85,16 +90,18 @@ model.load();
 "--- Dynamic Parameter Override ---\n".echo();
 model = $MODEL();
 /* Auto-detect method from file extension */
-model.load(modelpath);
+model.load(modelname, method);
 
 /* Conservative generation */
 conservative_response = model.gen("Explain quantum computing", {
+    "api_key": api_key,
     "temperature": 0.3,
     "max_tokens": 50
 });
 
 /* Creative generation */
 creative_response = model.gen("Write a poem about space", {
+    "api_key": api_key,
     "temperature": 1.2,
     "max_tokens": 150
 });
@@ -114,13 +121,15 @@ model = $MODEL();
 
 "Loading model with debug output...\n".echo();
 /* Auto-detect method from file extension */
-result = model.load(modelpath);
+result = model.load(modelname, method);
 
 model.params({"verbose": 4});  /* Maximum verbosity */
 
 if (result.type() != $ERR) {
     "Model loaded, generating with debug info...\n".echo();
-    response = model.gen("What is machine learning?");
+    response = model.gen("What is machine learning?", {
+        "api_key": api_key
+    });
     ("Response: " + response.str() + "\n").echo();
 } else {
     ("Load failed with error: " + result.str() + "\n").echo();
@@ -135,11 +144,13 @@ model.load();
 model = $MODEL();
 
 /* Auto-detect method from file extension */
-model.load(modelpath);
+model.load(modelname, method);
 
 model.params({"verbose": 0});  /* No output */
 
-response = model.gen("Hello");
+response = model.gen("Hello", {
+    "api_key": api_key
+});
 ("Response: " + response.str() + "\n").echo();
 
 model.load();
@@ -189,7 +200,9 @@ if (result.type() == $ERR) {
     ("  - Insufficient memory" + "\n").echo();
 }
 else {
-    response = model.gen("Hello");
+    response = model.gen("Hello", {
+        "api_key": api_key
+    });
     if (response.len() == 0) {
         "Warning: Empty response generated\n".echo();
     } else {
@@ -208,13 +221,15 @@ model.load();
 "--- Setting and Getting Context ---\n".echo();
 model = $MODEL();
 /* Auto-detect method from file extension */
-model.load(modelpath);
+model.load(modelname, method);
 
 /* Set initial context */
 model.context("You are a helpful assistant. Previous conversation: User asked about AI.");
 
 /* Generate response with context */
-response1 = model.gen("What is machine learning?");
+response1 = model.gen("What is machine learning?", {
+    "api_key": api_key
+});
 ("Response 1: " + response1.str() + "\n").echo();
 
 /* Get current context */
@@ -223,7 +238,9 @@ current_context = model.context();
 ("Context tokens: " + current_context."tokens".len().str() + " tokens" + "\n").echo();
 
 /* Continue conversation with preserved context */
-response2 = model.gen("Can you explain that in simpler terms?");
+response2 = model.gen("Can you explain that in simpler terms?", {
+    "api_key": api_key
+});
 ("Response 2: " + response2.str() + "\n").echo();
 
 model.load();
@@ -233,14 +250,16 @@ model.load();
 /* Efficient Token Context */
 "--- Efficient Token Context ---\n".echo();
 model = $MODEL();
-model.load(modelpath);
+model.load(modelname, method);
 
 /* Set context using tokens (more efficient than text) */
 token_context = [1, 2, 3, 4, 5];  /* Example token IDs */
 model.context(token_context);
 
 /* Generate with token context */
-response = model.gen("Continue the conversation");
+response = model.gen("Continue the conversation", {
+    "api_key": api_key
+});
 ("Response: " + response.str() + "\n").echo();
 
 /* Get context back as object with both text and tokens */
@@ -321,7 +340,7 @@ model = $MODEL();
 
 "Loading optimized model...\n".echo();
 /* Auto-detect method from file extension */
-model.load(modelpath);
+model.load(modelname, method);
 
 /* Set optimal parameters for your use case */:
 model.params({
@@ -335,7 +354,9 @@ prompts = ["What is AI?", "Explain ML", "Define deep learning"];
 responses = [];
 
 for (i = 0; i < prompts.len(); i+=1) {
-    response = model.gen(prompts[i]);
+    response = model.gen(prompts[i], {
+        "api_key": api_key
+    });
     responses.append(response);
     ("Response " + (i+1).str() + ": " + response.str() + "\n").echo();
 };

@@ -3516,6 +3516,24 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#openai-model-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      OpenAI Model Usage
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#legacy-local-model-information" class="md-nav__link">
+    <span class="md-ellipsis">
+      Legacy Local Model Information
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#download-methods" class="md-nav__link">
     <span class="md-ellipsis">
       Download Methods
@@ -4356,6 +4374,24 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#openai-model-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      OpenAI Model Usage
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#legacy-local-model-information" class="md-nav__link">
+    <span class="md-ellipsis">
+      Legacy Local Model Information
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#download-methods" class="md-nav__link">
     <span class="md-ellipsis">
       Download Methods
@@ -4584,7 +4620,29 @@
 <h1 id="model-download-guide">Model Download Guide</h1>
 <p>This guide explains how to download AI/ML models for use with the <code>$MODEL</code> data type in Grapa.</p>
 <h2 id="overview">Overview</h2>
-<p>The <code>$MODEL</code> type supports GGUF format models, which are optimized for local inference. These models are typically large files (several GB) and may be split into multiple parts for easier downloading.</p>
+<p><strong>Note: Local model support has been removed from Grapa. The <code>$MODEL</code> type now only supports OpenAI cloud-based models.</strong></p>
+<p>For OpenAI models, no downloading is required - you simply specify the model name when loading:</p>
+<div class="highlight"><pre><span></span><code>/* Load OpenAI text generation model */
+model = $MODEL();
+result = model.load(&quot;gpt-4o&quot;, &quot;openai&quot;);
+
+/* Load OpenAI embedding model */
+result = model.load(&quot;text-embedding-3-small&quot;, &quot;openai-embedding&quot;);
+</code></pre></div>
+<h2 id="openai-model-usage">OpenAI Model Usage</h2>
+<p>OpenAI models are accessed via API calls and don't require local downloads. Simply use the model name and provide your API key:</p>
+<div class="highlight"><pre><span></span><code>/* Generate text with OpenAI */
+response = model.gen(&quot;Hello, how are you?&quot;, {
+    &quot;api_key&quot;: &quot;sk-your-openai-api-key&quot;
+});
+
+/* Create embeddings with OpenAI */
+response = model.gen(&quot;The quick brown fox&quot;, {
+    &quot;api_key&quot;: &quot;sk-your-openai-api-key&quot;
+});
+</code></pre></div>
+<h2 id="legacy-local-model-information">Legacy Local Model Information</h2>
+<p>The following information is kept for reference but local models are no longer supported:</p>
 <h2 id="download-methods">Download Methods</h2>
 <h3 id="method-1-using-curl-recommended">Method 1: Using curl (Recommended)</h3>
 <p>The most reliable method for downloading models is using the <code>curl</code> command:</p>

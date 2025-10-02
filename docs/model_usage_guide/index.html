@@ -4951,13 +4951,15 @@
 <h2 id="basic-usage-patterns">Basic Usage Patterns</h2>
 <h3 id="simple-text-generation">Simple Text Generation</h3>
 <p>The most basic pattern for using <code>$MODEL</code>:</p>
-<div class="highlight"><pre><span></span><code>/* Create and load a model */
+<div class="highlight"><pre><span></span><code>/* Create and load OpenAI model */
 model = $MODEL();
-result = model.load(&quot;models/qwen2.5-7b-instruct-q3_k_m.gguf&quot;);
+result = model.load(&quot;gpt-4o&quot;, &quot;openai&quot;);
 
 if (result.type() != $ERR) {
-    /* Generate text */
-    response = model.gen(&quot;Hello, how are you?&quot;);
+    /* Generate text with API key */
+    response = model.gen(&quot;Hello, how are you?&quot;, {
+        &quot;api_key&quot;: &quot;sk-your-openai-api-key&quot;
+    });
 
     /* Response is a $GOBJ with &#39;text&#39; and &#39;metadata&#39; fields */
     (&quot;Response type: &quot; + response.type().str() + &quot;\n&quot;).echo();
@@ -4989,10 +4991,12 @@ model.params({
     &quot;verbose&quot;: 0
 });
 
-model.load(&quot;models/qwen2.5-7b-instruct-q3_k_m.gguf&quot;);
+model.load(&quot;gpt-4o&quot;, &quot;openai&quot;);
 
-/* Generate with configured parameters */
-response = model.gen(&quot;Write a short story&quot;);
+/* Generate with configured parameters and API key */
+response = model.gen(&quot;Write a short story&quot;, {
+    &quot;api_key&quot;: &quot;sk-your-openai-api-key&quot;
+});
 (&quot;Story: &quot; + response.str() + &quot;\n&quot;).echo();
 
 model.load();
@@ -5000,16 +5004,18 @@ model.load();
 <h3 id="dynamic-parameter-override">Dynamic Parameter Override</h3>
 <p>Override parameters for specific generation calls:</p>
 <div class="highlight"><pre><span></span><code>model = $MODEL();
-model.load(&quot;models/qwen2.5-7b-instruct-q3_k_m.gguf&quot;);
+model.load(&quot;gpt-4o&quot;, &quot;openai&quot;);
 
 /* Conservative generation */
 conservative = model.gen(&quot;Explain AI&quot;, {
+    &quot;api_key&quot;: &quot;sk-your-openai-api-key&quot;,
     &quot;temperature&quot;: 0.3,
     &quot;max_tokens&quot;: 50
 });
 
 /* Creative generation */
 creative = model.gen(&quot;Write a poem&quot;, {
+    &quot;api_key&quot;: &quot;sk-your-openai-api-key&quot;,
     &quot;temperature&quot;: 1.2,
     &quot;max_tokens&quot;: 150
 });
@@ -5023,17 +5029,21 @@ model.load();
 <h3 id="basic-context-usage">Basic Context Usage</h3>
 <p>Context allows the model to maintain conversation history and state:</p>
 <div class="highlight"><pre><span></span><code>model = $MODEL();
-model.load(&quot;models/qwen2.5-7b-instruct-q3_k_m.gguf&quot;);
+model.load(&quot;gpt-4o&quot;, &quot;openai&quot;);
 
 /* Set initial context */
 model.context(&quot;You are a helpful assistant. Previous conversation: User asked about AI.&quot;);
 
-/* Generate with context */
-response1 = model.gen(&quot;What is machine learning?&quot;);
+/* Generate with context and API key */
+response1 = model.gen(&quot;What is machine learning?&quot;, {
+    &quot;api_key&quot;: &quot;sk-your-openai-api-key&quot;
+});
 (&quot;Response 1: &quot; + response1.str() + &quot;\n&quot;).echo();
 
 /* Continue conversation with preserved context */
-response2 = model.gen(&quot;Can you explain that in simpler terms?&quot;);
+response2 = model.gen(&quot;Can you explain that in simpler terms?&quot;, {
+    &quot;api_key&quot;: &quot;sk-your-openai-api-key&quot;
+});
 (&quot;Response 2: &quot; + response2.str() + &quot;\n&quot;).echo();
 
 model.load();
@@ -5041,14 +5051,16 @@ model.load();
 <h3 id="efficient-token-context">Efficient Token Context</h3>
 <p>For better performance, use token context instead of text:</p>
 <div class="highlight"><pre><span></span><code>model = $MODEL();
-model.load(&quot;models/qwen2.5-7b-instruct-q3_k_m.gguf&quot;);
+model.load(&quot;gpt-4o&quot;, &quot;openai&quot;);
 
 /* Set context using tokens (more efficient) */
 token_context = [1, 2, 3, 4, 5];  /* Example token IDs */
 model.context(token_context);
 
-/* Generate with token context */
-response = model.gen(&quot;Continue the conversation&quot;);
+/* Generate with token context and API key */
+response = model.gen(&quot;Continue the conversation&quot;, {
+    &quot;api_key&quot;: &quot;sk-your-openai-api-key&quot;
+});
 (&quot;Response: &quot; + response.str() + &quot;\n&quot;).echo();
 
 model.load();
@@ -5059,15 +5071,17 @@ model.load();
 model1 = $MODEL();
 model2 = $MODEL();
 
-/* Load the same model in both instances */
-model1.load(&quot;models/qwen2.5-7b-instruct-q3_k_m.gguf&quot;);
-model2.load(&quot;models/qwen2.5-7b-instruct-q3_k_m.gguf&quot;);
+/* Load the same OpenAI model in both instances */
+model1.load(&quot;gpt-4o&quot;, &quot;openai&quot;);
+model2.load(&quot;gpt-4o&quot;, &quot;openai&quot;);
 
 /* Set up context in first model */
 model1.context(&quot;Previous conversation: User asked about quantum computing.&quot;);
 
 /* Generate response in first model */
-response1 = model1.gen(&quot;What is quantum computing?&quot;);
+response1 = model1.gen(&quot;What is quantum computing?&quot;, {
+    &quot;api_key&quot;: &quot;sk-your-openai-api-key&quot;
+});
 (&quot;Model 1 Response: &quot; + response1.str() + &quot;\n&quot;).echo();
 
 /* Get context from first model */
@@ -5078,7 +5092,9 @@ context_data = model1.context();
 model2.context(context_data);
 
 /* Continue conversation in second model */
-response2 = model2.gen(&quot;Can you give me a simple example?&quot;);
+response2 = model2.gen(&quot;Can you give me a simple example?&quot;, {
+    &quot;api_key&quot;: &quot;sk-your-openai-api-key&quot;
+});
 (&quot;Model 2 Response: &quot; + response2.str() + &quot;\n&quot;).echo();
 
 /* Clean up */
@@ -5123,7 +5139,7 @@ load_context = op(model, filename) {
 
 /* Usage example */
 model = $MODEL();
-model.load(&quot;models/qwen2.5-7b-instruct-q3_k_m.gguf&quot;);
+model.load(&quot;gpt-4o&quot;, &quot;openai&quot;);
 
 /* Try to load existing context */
 if (!load_context(model, &quot;conversation_context.txt&quot;)) {
@@ -5132,7 +5148,9 @@ if (!load_context(model, &quot;conversation_context.txt&quot;)) {
 };
 
 /* Have a conversation */
-response = model.gen(&quot;Hello, I&#39;d like to learn about machine learning.&quot;);
+response = model.gen(&quot;Hello, I&#39;d like to learn about machine learning.&quot;, {
+    &quot;api_key&quot;: &quot;sk-your-openai-api-key&quot;
+});
 
 /* Access the generated text and metadata */
 text = response.&quot;text&quot;;
@@ -5204,7 +5222,7 @@ load_token_context = op(model, filename) {
 
 /* Usage example - try text context first, then token context */
 model = $MODEL();
-model.load(&quot;models/qwen2.5-7b-instruct-q3_k_m.gguf&quot;);
+model.load(&quot;gpt-4o&quot;, &quot;openai&quot;);
 
 /* Try to load existing text context first (simpler approach) */
 if (!load_text_context(model, &quot;text_context.txt&quot;)) {
@@ -5245,15 +5263,19 @@ creative_model.params({
     &quot;verbose&quot;: 0
 });
 
-/* Load the same model in both instances */
-conservative_model.load(&quot;models/qwen2.5-7b-instruct-q3_k_m.gguf&quot;);
-creative_model.load(&quot;models/qwen2.5-7b-instruct-q3_k_m.gguf&quot;);
+/* Load the same OpenAI model in both instances */
+conservative_model.load(&quot;gpt-4o&quot;, &quot;openai&quot;);
+creative_model.load(&quot;gpt-4o&quot;, &quot;openai&quot;);
 
 /* Generate with different styles */
 prompt = &quot;Write a story about space exploration&quot;;
 
-conservative_story = conservative_model.gen(prompt);
-creative_story = creative_model.gen(prompt);
+conservative_story = conservative_model.gen(prompt, {
+    &quot;api_key&quot;: &quot;sk-your-openai-api-key&quot;
+});
+creative_story = creative_model.gen(prompt, {
+    &quot;api_key&quot;: &quot;sk-your-openai-api-key&quot;
+});
 
 (&quot;Conservative Story: &quot; + conservative_story.str() + &quot;\n&quot;).echo();
 (&quot;Creative Story: &quot; + creative_story.str() + &quot;\n&quot;).echo();
@@ -5275,9 +5297,11 @@ compare_temperatures = op(prompt) {
 
         model = $MODEL();
         model.params({&quot;temperature&quot;: temp, &quot;max_tokens&quot;: 100});
-        model.load(&quot;models/qwen2.5-7b-instruct-q3_k_m.gguf&quot;);
+        model.load(&quot;gpt-4o&quot;, &quot;openai&quot;);
 
-        response = model.gen(prompt);
+        response = model.gen(prompt, {
+            &quot;api_key&quot;: &quot;sk-your-openai-api-key&quot;
+        });
         results[temp.str()] = response;
 
         model.load();
@@ -5306,7 +5330,7 @@ fast_model.params({
     &quot;verbose&quot;: 0             /* No logging */
 });
 
-fast_model.load(&quot;models/qwen2.5-7b-instruct-q3_k_m.gguf&quot;);
+fast_model.load(&quot;gpt-4o&quot;, &quot;openai&quot;);
 
 /* Batch multiple generations */
 prompts = [&quot;What is AI?&quot;, &quot;Explain ML&quot;, &quot;Define deep learning&quot;];
@@ -5327,10 +5351,12 @@ use_model_efficiently = op(prompt) {
     model = $MODEL();
 
     /* Load model */
-    result = model.load(&quot;models/qwen2.5-7b-instruct-q3_k_m.gguf&quot;);
+    result = model.load(&quot;gpt-4o&quot;, &quot;openai&quot;);
     if (result.type() != $ERR) {
         /* Generate response */
-        response = model.gen(prompt);
+        response = model.gen(prompt, {
+            &quot;api_key&quot;: &quot;sk-your-openai-api-key&quot;
+        });
 
         /* Always clean up */
         model.load();
@@ -5356,7 +5382,7 @@ chatbot.params({
     &quot;verbose&quot;: 0
 });
 
-chatbot.load(&quot;models/qwen2.5-7b-instruct-q3_k_m.gguf&quot;);
+chatbot.load(&quot;gpt-4o&quot;, &quot;openai&quot;);
 
 /* Set up chatbot personality */
 chatbot.context(&quot;You are a helpful, friendly AI assistant. Be concise but informative.&quot;);
@@ -5387,18 +5413,22 @@ content_pipeline = op(topic) {
     /* Technical writing */
     technical_model = $MODEL();
     technical_model.params({&quot;temperature&quot;: 0.3, &quot;max_tokens&quot;: 150});
-    technical_model.load(&quot;models/qwen2.5-7b-instruct-q3_k_m.gguf&quot;);
+    technical_model.load(&quot;gpt-4o&quot;, &quot;openai&quot;);
 
-    technical_content = technical_model.gen(&quot;Write a technical explanation of &quot; + topic);
+    technical_content = technical_model.gen(&quot;Write a technical explanation of &quot; + topic, {
+        &quot;api_key&quot;: &quot;sk-your-openai-api-key&quot;
+    });
     results[&quot;technical&quot;] = technical_content;
     technical_model.load();
 
     /* Creative writing */
     creative_model = $MODEL();
     creative_model.params({&quot;temperature&quot;: 1.1, &quot;max_tokens&quot;: 200});
-    creative_model.load(&quot;models/qwen2.5-7b-instruct-q3_k_m.gguf&quot;);
+    creative_model.load(&quot;gpt-4o&quot;, &quot;openai&quot;);
 
-    creative_content = creative_model.gen(&quot;Write a creative story about &quot; + topic);
+    creative_content = creative_model.gen(&quot;Write a creative story about &quot; + topic, {
+        &quot;api_key&quot;: &quot;sk-your-openai-api-key&quot;
+    });
     results[&quot;creative&quot;] = creative_content;
     creative_model.load();
 
@@ -5415,7 +5445,7 @@ content = content_pipeline(topic);
 <h3 id="context-aware-assistant">Context-Aware Assistant</h3>
 <div class="highlight"><pre><span></span><code>/* Context-aware assistant with memory */
 assistant = $MODEL();
-assistant.load(&quot;models/qwen2.5-7b-instruct-q3_k_m.gguf&quot;);
+assistant.load(&quot;gpt-4o&quot;, &quot;openai&quot;);
 
 /* Load previous context if available */
 context_file = &quot;assistant_context.txt&quot;;
@@ -5471,11 +5501,13 @@ info = model.info();
 <h2 id="best-practices">Best Practices</h2>
 <h3 id="1-always-check-load-results">1. Always Check Load Results</h3>
 <div class="highlight"><pre><span></span><code>model = $MODEL();
-result = model.load(&quot;models/qwen2.5-7b-instruct-q3_k_m.gguf&quot;);
+result = model.load(&quot;gpt-4o&quot;, &quot;openai&quot;);
 
 if (result.type() != $ERR) {
     /* Model loaded successfully */
-    response = model.gen(&quot;Hello&quot;);
+    response = model.gen(&quot;Hello&quot;, {
+        &quot;api_key&quot;: &quot;sk-your-openai-api-key&quot;
+    });
 
     /* Access structured response */
     text = response.&quot;text&quot;;

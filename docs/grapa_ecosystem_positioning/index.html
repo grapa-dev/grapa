@@ -5753,10 +5753,12 @@ result = data.json.users[0].name + &quot; from &quot; + data.xml.config.setting;
 - <strong>Multi-Platform Support</strong> - Works on Windows, macOS, Linux with GPU acceleration where available</p>
 <div class="highlight"><pre><span></span><code>/* AI + Grapa hybrid computation */
 model = $MODEL();
-model.load(&quot;models/qwen2.5-7b-instruct-q3_k_m.gguf&quot;);
+model.load(&quot;gpt-4o&quot;, &quot;openai&quot;);
 model.context(&quot;Use ${expression} placeholders for calculations.&quot;);
 
-response = model.gen(&quot;What is 15 * 23 + 45?&quot;);
+response = model.gen(&quot;What is 15 * 23 + 45?&quot;, {
+    &quot;api_key&quot;: &quot;sk-your-openai-api-key&quot;
+});
 /* Model: &quot;The calculation is ${15 * 23 + 45} which equals ${15 * 23 + 45}&quot; */
 result = response.interpolate();
 /* Result: &quot;The calculation is 390 which equals 390&quot; */

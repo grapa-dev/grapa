@@ -1126,9 +1126,9 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#loadmodelpath-method" class="md-nav__link">
+  <a href="#loadmodelname-method" class="md-nav__link">
     <span class="md-ellipsis">
-      .load(modelpath, method)
+      .load(modelname, method)
     </span>
   </a>
   
@@ -1209,36 +1209,12 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Generation Parameters">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#openai-specific-parameters" class="md-nav__link">
-    <span class="md-ellipsis">
-      OpenAI-Specific Parameters
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
 </li>
       
         <li class="md-nav__item">
   <a href="#method-support" class="md-nav__link">
     <span class="md-ellipsis">
       Method Support
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#model-formats" class="md-nav__link">
-    <span class="md-ellipsis">
-      Model Formats
     </span>
   </a>
   
@@ -4348,9 +4324,9 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#loadmodelpath-method" class="md-nav__link">
+  <a href="#loadmodelname-method" class="md-nav__link">
     <span class="md-ellipsis">
-      .load(modelpath, method)
+      .load(modelname, method)
     </span>
   </a>
   
@@ -4431,36 +4407,12 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Generation Parameters">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#openai-specific-parameters" class="md-nav__link">
-    <span class="md-ellipsis">
-      OpenAI-Specific Parameters
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
 </li>
       
         <li class="md-nav__item">
   <a href="#method-support" class="md-nav__link">
     <span class="md-ellipsis">
       Method Support
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#model-formats" class="md-nav__link">
-    <span class="md-ellipsis">
-      Model Formats
     </span>
   </a>
   
@@ -4528,11 +4480,12 @@
 
 
 <h1 id="model-data-type">$MODEL Data Type</h1>
-<p>The <code>$MODEL</code> data type provides AI/ML model integration capabilities in Grapa, supporting both local models and cloud-based OpenAI models for text generation.</p>
+<p>The <code>$MODEL</code> data type provides AI/ML model integration capabilities in Grapa, supporting cloud-based OpenAI models for text generation and embeddings.</p>
 <h2 id="overview">Overview</h2>
 <p>The <code>$MODEL</code> type allows you to:
-- Load and manage AI/ML models (GGUF format for local models, OpenAI models for cloud)
-- Generate text using loaded models
+- Load and manage OpenAI models for text generation and embeddings
+- Generate text using OpenAI models
+- Create text embeddings using OpenAI models
 - Configure generation parameters
 - Control model verbosity and logging
 - Unload models to free memory
@@ -4541,11 +4494,13 @@
 <div class="highlight"><pre><span></span><code>/* Create a new model instance */
 model = $MODEL();
 
-/* Load a model file */
-result = model.load(&quot;path/to/model.gguf&quot;);
+/* Load an OpenAI model */
+result = model.load(&quot;gpt-4o&quot;, &quot;openai&quot;);
 
-/* Generate text */
-response = model.gen(&quot;Hello, how are you?&quot;);
+/* Generate text with API key */
+response = model.gen(&quot;Hello, how are you?&quot;, {
+    &quot;api_key&quot;: &quot;sk-your-openai-api-key&quot;
+});
 
 /* Get model information */
 info = model.info();
@@ -4554,26 +4509,23 @@ info = model.info();
 model.load();
 </code></pre></div>
 <h2 id="methods">Methods</h2>
-<h3 id="loadmodelpath-method"><code>.load(modelpath, method)</code></h3>
-<p>Loads a model from the specified file path.</p>
+<h3 id="loadmodelname-method"><code>.load(modelname, method)</code></h3>
+<p>Loads an OpenAI model.</p>
 <p><strong>Parameters:</strong>
-- <code>path</code> (string): Path to the model file (GGUF format) or model name (for OpenAI)
-- <code>method</code> (string, optional): Method to use ("openai" for cloud models). If not specified, the method will be auto-detected from the file extension or magic bytes.</p>
+- <code>modelname</code> (string): OpenAI model name (e.g., "gpt-4o", "gpt-3.5-turbo", "text-embedding-3-small")
+- <code>method</code> (string): Method to use ("openai" for text generation, "openai-embedding" for embeddings)</p>
 <p><strong>Returns:</strong> Error code (0 for success)</p>
 <p><strong>Example:</strong>
-<div class="highlight"><pre><span></span><code>/* Auto-detect method from file extension */
-result = model.load(&quot;models/qwen2.5-7b-instruct-q3_k_m.gguf&quot;);
+<div class="highlight"><pre><span></span><code>/* Load OpenAI text generation model */
+result = model.load(&quot;gpt-4o&quot;, &quot;openai&quot;);
 if (result.type() != $ERR) {
     &quot;Model loaded successfully!&quot;.echo();
 } else {
     (&quot;Failed to load model: &quot; + result.str()).echo();
 }
 
-/* Explicitly specify method for local model */
-result = model.load(&quot;models/qwen2.5-7b-instruct-q3_k_m.gguf&quot;);
-
-/* Load OpenAI cloud model */
-result = model.load(&quot;gpt-4o&quot;, &quot;openai&quot;);
+/* Load OpenAI embedding model */
+result = model.load(&quot;text-embedding-3-small&quot;, &quot;openai-embedding&quot;);
 </code></pre></div></p>
 <h3 id="genprompt-params"><code>.gen(prompt, params)</code></h3>
 <p>Generates text using the loaded model.</p>
@@ -4668,87 +4620,7 @@ if (result.type() != $ERR) {
 }
 </code></pre></div></p>
 <h2 id="generation-parameters">Generation Parameters</h2>
-<p>The following parameters can be set using <code>.params()</code>. Note that not all parameters apply to every method:</p>
-<table>
-<thead>
-<tr>
-<th>Parameter</th>
-<th>Type</th>
-<th>Default</th>
-<th>Description</th>
-<th>Local</th>
-<th>OpenAI</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>temperature</code></td>
-<td>float</td>
-<td>0.7</td>
-<td>Controls randomness (0.0 = deterministic, 1.0+ = more random)</td>
-<td>✅</td>
-<td>✅</td>
-</tr>
-<tr>
-<td><code>max_tokens</code></td>
-<td>int</td>
-<td>10</td>
-<td>Maximum number of tokens to generate</td>
-<td>✅</td>
-<td>✅</td>
-</tr>
-<tr>
-<td><code>top_k</code></td>
-<td>int</td>
-<td>40</td>
-<td>Number of top tokens to consider</td>
-<td>✅</td>
-<td>❌</td>
-</tr>
-<tr>
-<td><code>top_p</code></td>
-<td>float</td>
-<td>0.9</td>
-<td>Nucleus sampling threshold</td>
-<td>✅</td>
-<td>✅</td>
-</tr>
-<tr>
-<td><code>repeat_penalty</code></td>
-<td>float</td>
-<td>1.1</td>
-<td>Penalty for repeating tokens</td>
-<td>✅</td>
-<td>❌</td>
-</tr>
-<tr>
-<td><code>seed</code></td>
-<td>int</td>
-<td>-1</td>
-<td>Random seed (-1 for random)</td>
-<td>✅</td>
-<td>❌</td>
-</tr>
-<tr>
-<td><code>context_size</code></td>
-<td>int</td>
-<td>2048</td>
-<td>Context window size</td>
-<td>✅</td>
-<td>❌</td>
-</tr>
-<tr>
-<td><code>verbose</code></td>
-<td>int</td>
-<td>0</td>
-<td>Logging verbosity (0=silent, 1=errors, 2=warnings, 3=info, 4=debug)</td>
-<td>✅</td>
-<td>✅</td>
-</tr>
-</tbody>
-</table>
-<h3 id="openai-specific-parameters">OpenAI-Specific Parameters</h3>
-<p>When using the "openai" method, additional parameters are available:</p>
+<p><strong>Note: Local model support has been removed. Only OpenAI parameters are supported.</strong></p>
 <table>
 <thead>
 <tr>
@@ -4762,64 +4634,50 @@ if (result.type() != $ERR) {
 <tr>
 <td><code>api_key</code></td>
 <td>string</td>
-<td>Yes</td>
+<td>✅</td>
 <td>OpenAI API key for authentication</td>
 </tr>
 <tr>
 <td><code>store</code></td>
 <td>boolean</td>
-<td>No</td>
-<td>Enable server-side context persistence (default: true)</td>
+<td>❌</td>
+<td>Whether to store context for conversation continuity (default: true)</td>
 </tr>
 </tbody>
 </table>
-<p><strong>Note:</strong> For OpenAI models, only <code>temperature</code>, <code>max_tokens</code>, <code>top_p</code>, and <code>verbose</code> parameters are applied. Other parameters (<code>top_k</code>, <code>repeat_penalty</code>, <code>seed</code>, <code>context_size</code>) are ignored as they are not supported by the OpenAI API.</p>
 <h2 id="method-support">Method Support</h2>
 <p>Currently, the <code>$MODEL</code> type supports:</p>
 <ul>
-<li><strong>Local</strong>: For GGUF format models</li>
-<li>Supports various quantization levels (Q2_K, Q3_K_M, Q4_K_M, Q5_K_M, Q6_K, Q8_0, FP16)</li>
-<li>Optimized for CPU inference</li>
-<li>Thread-safe operations</li>
-<li>
-<p>Auto-detected from <code>.gguf</code> file extension or "GGUF" magic bytes</p>
-</li>
-<li>
-<p><strong>OpenAI</strong>: For cloud-based models</p>
-</li>
-<li>Supports GPT-4, GPT-3.5-turbo, and other OpenAI models</li>
+<li><strong>OpenAI</strong>: For cloud-based models</li>
+<li>Supports GPT-4, GPT-3.5-turbo, text-embedding-3-small, and other OpenAI models</li>
 <li>Server-side context persistence</li>
 <li>Requires API key authentication</li>
 <li>Uses HTTPS with SSL certificate verification</li>
-</ul>
-<h2 id="model-formats">Model Formats</h2>
-<p>The <code>$MODEL</code> type currently supports:</p>
-<ul>
-<li><strong>GGUF</strong>: The standard format for local models</li>
-<li>Efficient quantization</li>
-<li>Cross-platform compatibility</li>
-<li>Metadata inclusion</li>
-<li>Auto-detected by file extension (<code>.gguf</code>) or magic bytes ("GGUF")</li>
+<li>Two methods: "openai" for text generation, "openai-embedding" for embeddings</li>
 </ul>
 <h2 id="performance-considerations">Performance Considerations</h2>
 <ul>
-<li><strong>Memory Usage</strong>: Large models (7B+ parameters) require significant RAM</li>
-<li><strong>Loading Time</strong>: Initial model loading can take several seconds</li>
-<li><strong>Generation Speed</strong>: Depends on model size and hardware capabilities</li>
-<li><strong>Context Size</strong>: Larger context windows use more memory</li>
+<li><strong>API Rate Limits</strong>: OpenAI has rate limits based on your subscription tier</li>
+<li><strong>Network Latency</strong>: Response time depends on network connection to OpenAI servers</li>
+<li><strong>Context Management</strong>: Server-side context persistence reduces API calls</li>
+<li><strong>Cost</strong>: Usage is billed per token, so consider prompt and response length</li>
 </ul>
 <h2 id="error-handling">Error Handling</h2>
 <p>Always check return values from <code>.load()</code> and <code>.unload()</code>:</p>
 <div class="highlight"><pre><span></span><code>model = $MODEL();
-/* Auto-detect method from file extension */
-result = model.load(&quot;model.gguf&quot;);
-if (result != 0) {
+/* Load OpenAI model */
+result = model.load(&quot;gpt-4o&quot;, &quot;openai&quot;);
+if (result.type() != $ERR) {
+    &quot;Model loaded successfully&quot;.echo();
+} else {
     (&quot;Error loading model: &quot; + result.str()).echo();
     return;
 }
 
 /* Use model safely */
-response = model.gen(&quot;Hello&quot;);
+response = model.gen(&quot;Hello&quot;, {
+    &quot;api_key&quot;: &quot;sk-your-openai-api-key&quot;
+});
 model.load(); /* Unload when done */
 </code></pre></div>
 <h2 id="thread-safety">Thread Safety</h2>

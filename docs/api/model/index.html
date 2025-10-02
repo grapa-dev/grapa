@@ -4600,14 +4600,14 @@
 - <code>-2</code> - Model loading failed
 - Other negative values - Various error conditions</p>
 <p><strong>Example:</strong>
-<div class="highlight"><pre><span></span><code>/* Auto-detect method from file extension */
-result = model.load(&quot;models/qwen2.5-7b-instruct-q3_k_m.gguf&quot;);
+<div class="highlight"><pre><span></span><code>/* Load OpenAI text generation model */
+result = model.load(&quot;gpt-4o&quot;, &quot;openai&quot;);
 if (result.type() != $ERR) {
     &quot;Model loaded successfully&quot;.echo();
 }
 
-/* Explicitly specify method */
-result = model.load(&quot;models/qwen2.5-7b-instruct-q3_k_m.gguf&quot;);
+/* Load OpenAI embedding model */
+result = model.load(&quot;text-embedding-3-small&quot;, &quot;openai-embedding&quot;);
 </code></pre></div></p>
 <p><strong>Error Codes:</strong>
 - <code>-1</code>: Failed to create model context (usually memory or file issues)
@@ -4855,11 +4855,11 @@ model.load();  /* Free memory */
 </li>
 <li>
 <p><strong>Check available memory before loading large models:</strong>
-   <div class="highlight"><pre><span></span><code>/* Large models (7B+ parameters) require significant RAM */
+   <div class="highlight"><pre><span></span><code>/* Load OpenAI model */
 model = $MODEL();
-result = model.load(&quot;qwen2.5-7b-instruct-q3_k_m.gguf&quot;);
+result = model.load(&quot;gpt-4o&quot;, &quot;openai&quot;);
 if (result != 0) {
-    &quot;Insufficient memory for model&quot;.echo();
+    &quot;Failed to load OpenAI model&quot;.echo();
 }
 </code></pre></div></p>
 </li>
