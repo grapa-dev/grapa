@@ -191,6 +191,35 @@ The unified `.similarity()` method supports the following algorithms:
 - **Cosine similarity**: Document similarity, word-based analysis
 - **Jaccard similarity**: Set-based analysis, n-gram matching, document overlap
 
+#### **Large String Optimization**
+
+For very large strings (> 500 characters), consider using embedding-based similarity for better performance and semantic understanding:
+
+```grapa
+/* For large strings, use embedding-based similarity */
+long_text1 = "This is a very long piece of text that contains multiple sentences and paragraphs...";
+long_text2 = "This is another long piece of text with similar content but different wording...";
+
+/* Convert to embeddings using $MODEL */
+model = $MODEL();
+model.load("text-embedding-3-small", "openai-embedding", {api_key: "your-api-key"});
+embedding1 = model.gen(long_text1);
+embedding2 = model.gen(long_text2);
+
+/* Use vector similarity for better performance and semantic understanding */
+similarity = embedding1."embedding".similarity(embedding2."embedding", "cosine");
+```
+
+**When to use embedding-based similarity:**
+- **Long texts** (> 500 characters): Better performance than string algorithms
+- **Semantic similarity**: When meaning matters more than exact character matching
+- **Document comparison**: Comparing paragraphs, articles, or documents
+- **Content recommendation**: Finding semantically similar content
+
+**Performance comparison:**
+- **String algorithms**: O(m×n) complexity, slow for long strings
+- **Embedding algorithms**: O(d) complexity where d is embedding dimension (~1536), consistent performance
+
 > **Note:** While string content supports full Unicode, **identifiers** (variable names, function names) are limited to ASCII characters only. This is a lexical limitation in the parser. See [$ID Documentation](id.md) for details.
 
 ## Common String Operations
