@@ -4528,7 +4528,7 @@
 
 
 <h1 id="model-data-type">$MODEL Data Type</h1>
-<p>The <code>$MODEL</code> data type provides AI/ML model integration capabilities in Grapa, supporting both local LLAMA.cpp-based models and cloud-based OpenAI models for text generation.</p>
+<p>The <code>$MODEL</code> data type provides AI/ML model integration capabilities in Grapa, supporting both local models and cloud-based OpenAI models for text generation.</p>
 <h2 id="overview">Overview</h2>
 <p>The <code>$MODEL</code> type allows you to:
 - Load and manage AI/ML models (GGUF format for local models, OpenAI models for cloud)
@@ -4558,7 +4558,7 @@ model.load();
 <p>Loads a model from the specified file path.</p>
 <p><strong>Parameters:</strong>
 - <code>path</code> (string): Path to the model file (GGUF format) or model name (for OpenAI)
-- <code>method</code> (string, optional): Method to use ("llama" for local models, "openai" for cloud models). If not specified, the method will be auto-detected from the file extension or magic bytes.</p>
+- <code>method</code> (string, optional): Method to use ("openai" for cloud models). If not specified, the method will be auto-detected from the file extension or magic bytes.</p>
 <p><strong>Returns:</strong> Error code (0 for success)</p>
 <p><strong>Example:</strong>
 <div class="highlight"><pre><span></span><code>/* Auto-detect method from file extension */
@@ -4570,7 +4570,7 @@ if (result.type() != $ERR) {
 }
 
 /* Explicitly specify method for local model */
-result = model.load(&quot;models/qwen2.5-7b-instruct-q3_k_m.gguf&quot;, &quot;llama&quot;);
+result = model.load(&quot;models/qwen2.5-7b-instruct-q3_k_m.gguf&quot;);
 
 /* Load OpenAI cloud model */
 result = model.load(&quot;gpt-4o&quot;, &quot;openai&quot;);
@@ -4676,7 +4676,7 @@ if (result.type() != $ERR) {
 <th>Type</th>
 <th>Default</th>
 <th>Description</th>
-<th>LLAMA</th>
+<th>Local</th>
 <th>OpenAI</th>
 </tr>
 </thead>
@@ -4777,7 +4777,7 @@ if (result.type() != $ERR) {
 <h2 id="method-support">Method Support</h2>
 <p>Currently, the <code>$MODEL</code> type supports:</p>
 <ul>
-<li><strong>LLAMA.cpp</strong>: For GGUF format models</li>
+<li><strong>Local</strong>: For GGUF format models</li>
 <li>Supports various quantization levels (Q2_K, Q3_K_M, Q4_K_M, Q5_K_M, Q6_K, Q8_0, FP16)</li>
 <li>Optimized for CPU inference</li>
 <li>Thread-safe operations</li>
@@ -4795,7 +4795,7 @@ if (result.type() != $ERR) {
 <h2 id="model-formats">Model Formats</h2>
 <p>The <code>$MODEL</code> type currently supports:</p>
 <ul>
-<li><strong>GGUF</strong>: The standard format for LLAMA.cpp models</li>
+<li><strong>GGUF</strong>: The standard format for local models</li>
 <li>Efficient quantization</li>
 <li>Cross-platform compatibility</li>
 <li>Metadata inclusion</li>

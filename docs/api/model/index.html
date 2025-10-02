@@ -1020,30 +1020,6 @@
   
 </li>
         
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#method-specific-information" class="md-nav__link">
-    <span class="md-ellipsis">
-      Method-Specific Information
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Method-Specific Information">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#llamacpp-method" class="md-nav__link">
-    <span class="md-ellipsis">
-      LLAMA.cpp Method
-    </span>
-  </a>
-  
-</li>
-        
           <li class="md-nav__item">
   <a href="#future-methods" class="md-nav__link">
     <span class="md-ellipsis">
@@ -4564,30 +4540,6 @@
   
 </li>
         
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#method-specific-information" class="md-nav__link">
-    <span class="md-ellipsis">
-      Method-Specific Information
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Method-Specific Information">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#llamacpp-method" class="md-nav__link">
-    <span class="md-ellipsis">
-      LLAMA.cpp Method
-    </span>
-  </a>
-  
-</li>
-        
           <li class="md-nav__item">
   <a href="#future-methods" class="md-nav__link">
     <span class="md-ellipsis">
@@ -4641,7 +4593,7 @@
 <p>Loads a model from the specified file path.</p>
 <p><strong>Parameters:</strong>
 - <code>path</code> (string): Path to the model file (GGUF format)
-- <code>method</code> (string, optional): Method to use ("llama" is currently the only supported method). If not specified, the method will be auto-detected from the file extension or magic bytes.</p>
+- <code>method</code> (string, optional): Method to use. If not specified, the method will be auto-detected from the file extension or magic bytes.</p>
 <p><strong>Returns:</strong> 
 - <code>0</code> - Success
 - <code>-1</code> - Model context creation failed
@@ -4655,10 +4607,10 @@ if (result.type() != $ERR) {
 }
 
 /* Explicitly specify method */
-result = model.load(&quot;models/qwen2.5-7b-instruct-q3_k_m.gguf&quot;, &quot;llama&quot;);
+result = model.load(&quot;models/qwen2.5-7b-instruct-q3_k_m.gguf&quot;);
 </code></pre></div></p>
 <p><strong>Error Codes:</strong>
-- <code>-1</code>: Failed to create LLAMA context (usually memory or file issues)
+- <code>-1</code>: Failed to create model context (usually memory or file issues)
 - <code>-2</code>: Failed to load model (file not found, invalid format, etc.)</p>
 <h3 id="genprompt-params"><code>.gen(prompt, params)</code></h3>
 <p>Generates text using the loaded model.</p>
@@ -4689,15 +4641,9 @@ response = model.gen(&quot;Explain AI&quot;, {
 <p>Returns information about the current model state.</p>
 <p><strong>Returns:</strong> Object containing:
 - <code>loaded</code> (boolean): Whether the model is currently loaded
-- <code>method</code> (string): Method being used ("llama")
+- <code>method</code> (string): Method being used
 - <code>model_path</code> (string): Full path to the loaded model file
-- <code>model</code> (string): Model filename only
-- <code>model_size_bytes</code> (int): Size of the model in bytes (LLAMA.cpp only)
-- <code>n_params</code> (int): Number of parameters in the model (LLAMA.cpp only)
-- <code>model_description</code> (string): Model description (LLAMA.cpp only)
-- <code>has_encoder</code> (boolean): Whether model has encoder (LLAMA.cpp only)
-- <code>has_decoder</code> (boolean): Whether model has decoder (LLAMA.cpp only)
-- <code>is_recurrent</code> (boolean): Whether model is recurrent (LLAMA.cpp only)</p>
+- <code>model</code> (string): Model filename only</p>
 <p><strong>Example:</strong>
 <div class="highlight"><pre><span></span><code>info = model.info();
 (&quot;Model loaded: &quot; + info.&quot;loaded&quot;.str()).echo();
@@ -4953,21 +4899,15 @@ model.params({
 model.load(&quot;qwen2.5-7b-instruct-q2_k.gguf&quot;);
 </code></pre></div></p>
 </li>
-</ol>
-<h2 id="method-specific-information">Method-Specific Information</h2>
-<h3 id="llamacpp-method">LLAMA.cpp Method</h3>
-<p>The current implementation uses LLAMA.cpp as the method:</p>
-<ul>
-<li><strong>Supported formats:</strong> GGUF</li>
-<li><strong>Quantization levels:</strong> Q2_K, Q3_K_M, Q4_K_M, Q5_K_M, Q6_K, Q8_0, FP16</li>
-<li><strong>Hardware acceleration:</strong> CPU-optimized</li>
+<li>
+<p><strong>Hardware acceleration:</strong> CPU-optimized</p>
+</li>
 <li><strong>Thread safety:</strong> Yes</li>
 <li><strong>Auto-detection:</strong> From <code>.gguf</code> file extension or "GGUF" magic bytes</li>
-</ul>
+</ol>
 <h3 id="future-methods">Future Methods</h3>
 <p>The <code>$MODEL</code> type is designed to support multiple methods:</p>
 <ul>
-<li><strong>ONNX:</strong> For cross-platform inference (auto-detected from <code>.onnx</code> extension)</li>
 <li><strong>TensorFlow:</strong> For TensorFlow models (auto-detected from <code>.tflite</code> extension)</li>
 <li><strong>PyTorch:</strong> For PyTorch models (via Python integration)</li>
 <li><strong>scikit-learn:</strong> For traditional ML models (auto-detected from <code>.pkl</code> extension)</li>
