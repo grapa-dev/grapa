@@ -21507,22 +21507,21 @@ GrapaRuleEvent* GrapaLibraryRuleSimilarityEvent::Run(GrapaScriptExec* vScriptExe
 	{
 		method.FROM("cosine");
 	}
-	if (r1.vVal && r2.vVal && r1.vVal->mValue.mToken == GrapaTokenType::LIST && r2.vVal->mValue.mToken == GrapaTokenType::LIST)
+	if (r1.vVal && r2.vVal && r1.vVal->mValue.mToken == GrapaTokenType::LIST && r2.vVal->mValue.mToken == GrapaTokenType::STR)
 	{
-		GrapaVector aa;
-		aa.FROM(vScriptExec->vScriptState->mItemState.mFloatFix, vScriptExec->vScriptState->mItemState.mFloatMax, vScriptExec->vScriptState->mItemState.mFloatExtra, r1.vVal, 0);
-		GrapaVector bb;
-		bb.FROM(vScriptExec->vScriptState->mItemState.mFloatFix, vScriptExec->vScriptState->mItemState.mFloatMax, vScriptExec->vScriptState->mItemState.mFloatExtra, r2.vVal, 0);
-		GrapaVector cc;
-		GrapaError err = aa.Similarity(vScriptExec, pNameSpace, bb, cc, method);
-		if (err)
-		{
-			result = Error(vScriptExec, pNameSpace, -1);
-		}
-		else
-		{
-			result = cc.ToArray();
-		}
+
+	}
+	else if (r1.vVal && r2.vVal && r1.vVal->mValue.mToken == GrapaTokenType::STR && r2.vVal->mValue.mToken == GrapaTokenType::LIST)
+	{
+
+	}
+	else if (r1.vVal && r2.vVal && r1.vVal->mValue.mToken == GrapaTokenType::LIST && r2.vVal->mValue.mToken == GrapaTokenType::VECTOR)
+	{
+
+	}
+	else if (r1.vVal && r2.vVal && r1.vVal->mValue.mToken == GrapaTokenType::VECTOR && r2.vVal->mValue.mToken == GrapaTokenType::LIST)
+	{
+
 	}
 	else if (r1.vVal && r2.vVal && r1.vVal->mValue.mToken == GrapaTokenType::VECTOR && r2.vVal->mValue.mToken == GrapaTokenType::VECTOR)
 	{
