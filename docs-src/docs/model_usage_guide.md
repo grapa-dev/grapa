@@ -20,13 +20,15 @@ This comprehensive guide covers all the different ways to use the `$MODEL` data 
 The most basic pattern for using `$MODEL`:
 
 ```grapa
-/* Create and load a model */
+/* Create and load OpenAI model */
 model = $MODEL();
-result = model.load("models/qwen2.5-7b-instruct-q3_k_m.gguf");
+result = model.load("gpt-4o", "openai");
 
 if (result.type() != $ERR) {
-    /* Generate text */
-    response = model.gen("Hello, how are you?");
+    /* Generate text with API key */
+    response = model.gen("Hello, how are you?", {
+        "api_key": "sk-your-openai-api-key"
+    });
     
     /* Response is a $GOBJ with 'text' and 'metadata' fields */
     ("Response type: " + response.type().str() + "\n").echo();
@@ -62,10 +64,12 @@ model.params({
     "verbose": 0
 });
 
-model.load("models/qwen2.5-7b-instruct-q3_k_m.gguf");
+model.load("gpt-4o", "openai");
 
-/* Generate with configured parameters */
-response = model.gen("Write a short story");
+/* Generate with configured parameters and API key */
+response = model.gen("Write a short story", {
+    "api_key": "sk-your-openai-api-key"
+});
 ("Story: " + response.str() + "\n").echo();
 
 model.load();
@@ -77,16 +81,18 @@ Override parameters for specific generation calls:
 
 ```grapa
 model = $MODEL();
-model.load("models/qwen2.5-7b-instruct-q3_k_m.gguf");
+model.load("gpt-4o", "openai");
 
 /* Conservative generation */
 conservative = model.gen("Explain AI", {
+    "api_key": "sk-your-openai-api-key",
     "temperature": 0.3,
     "max_tokens": 50
 });
 
 /* Creative generation */
 creative = model.gen("Write a poem", {
+    "api_key": "sk-your-openai-api-key",
     "temperature": 1.2,
     "max_tokens": 150
 });
@@ -105,17 +111,21 @@ Context allows the model to maintain conversation history and state:
 
 ```grapa
 model = $MODEL();
-model.load("models/qwen2.5-7b-instruct-q3_k_m.gguf");
+model.load("gpt-4o", "openai");
 
 /* Set initial context */
 model.context("You are a helpful assistant. Previous conversation: User asked about AI.");
 
-/* Generate with context */
-response1 = model.gen("What is machine learning?");
+/* Generate with context and API key */
+response1 = model.gen("What is machine learning?", {
+    "api_key": "sk-your-openai-api-key"
+});
 ("Response 1: " + response1.str() + "\n").echo();
 
 /* Continue conversation with preserved context */
-response2 = model.gen("Can you explain that in simpler terms?");
+response2 = model.gen("Can you explain that in simpler terms?", {
+    "api_key": "sk-your-openai-api-key"
+});
 ("Response 2: " + response2.str() + "\n").echo();
 
 model.load();
@@ -127,14 +137,16 @@ For better performance, use token context instead of text:
 
 ```grapa
 model = $MODEL();
-model.load("models/qwen2.5-7b-instruct-q3_k_m.gguf");
+model.load("gpt-4o", "openai");
 
 /* Set context using tokens (more efficient) */
 token_context = [1, 2, 3, 4, 5];  /* Example token IDs */
 model.context(token_context);
 
-/* Generate with token context */
-response = model.gen("Continue the conversation");
+/* Generate with token context and API key */
+response = model.gen("Continue the conversation", {
+    "api_key": "sk-your-openai-api-key"
+});
 ("Response: " + response.str() + "\n").echo();
 
 model.load();
@@ -149,15 +161,17 @@ Transfer context from one model instance to another:
 model1 = $MODEL();
 model2 = $MODEL();
 
-/* Load the same model in both instances */
-model1.load("models/qwen2.5-7b-instruct-q3_k_m.gguf");
-model2.load("models/qwen2.5-7b-instruct-q3_k_m.gguf");
+/* Load the same OpenAI model in both instances */
+model1.load("gpt-4o", "openai");
+model2.load("gpt-4o", "openai");
 
 /* Set up context in first model */
 model1.context("Previous conversation: User asked about quantum computing.");
 
 /* Generate response in first model */
-response1 = model1.gen("What is quantum computing?");
+response1 = model1.gen("What is quantum computing?", {
+    "api_key": "sk-your-openai-api-key"
+});
 ("Model 1 Response: " + response1.str() + "\n").echo();
 
 /* Get context from first model */
@@ -168,7 +182,9 @@ context_data = model1.context();
 model2.context(context_data);
 
 /* Continue conversation in second model */
-response2 = model2.gen("Can you give me a simple example?");
+response2 = model2.gen("Can you give me a simple example?", {
+    "api_key": "sk-your-openai-api-key"
+});
 ("Model 2 Response: " + response2.str() + "\n").echo();
 
 /* Clean up */
@@ -218,7 +234,7 @@ load_context = op(model, filename) {
 
 /* Usage example */
 model = $MODEL();
-model.load("models/qwen2.5-7b-instruct-q3_k_m.gguf");
+model.load("gpt-4o", "openai");
 
 /* Try to load existing context */
 if (!load_context(model, "conversation_context.txt")) {
@@ -227,7 +243,9 @@ if (!load_context(model, "conversation_context.txt")) {
 };
 
 /* Have a conversation */
-response = model.gen("Hello, I'd like to learn about machine learning.");
+response = model.gen("Hello, I'd like to learn about machine learning.", {
+    "api_key": "sk-your-openai-api-key"
+});
 
 /* Access the generated text and metadata */
 text = response."text";
@@ -303,7 +321,7 @@ load_token_context = op(model, filename) {
 
 /* Usage example - try text context first, then token context */
 model = $MODEL();
-model.load("models/qwen2.5-7b-instruct-q3_k_m.gguf");
+model.load("gpt-4o", "openai");
 
 /* Try to load existing text context first (simpler approach) */
 if (!load_text_context(model, "text_context.txt")) {
@@ -349,15 +367,19 @@ creative_model.params({
     "verbose": 0
 });
 
-/* Load the same model in both instances */
-conservative_model.load("models/qwen2.5-7b-instruct-q3_k_m.gguf");
-creative_model.load("models/qwen2.5-7b-instruct-q3_k_m.gguf");
+/* Load the same OpenAI model in both instances */
+conservative_model.load("gpt-4o", "openai");
+creative_model.load("gpt-4o", "openai");
 
 /* Generate with different styles */
 prompt = "Write a story about space exploration";
 
-conservative_story = conservative_model.gen(prompt);
-creative_story = creative_model.gen(prompt);
+conservative_story = conservative_model.gen(prompt, {
+    "api_key": "sk-your-openai-api-key"
+});
+creative_story = creative_model.gen(prompt, {
+    "api_key": "sk-your-openai-api-key"
+});
 
 ("Conservative Story: " + conservative_story.str() + "\n").echo();
 ("Creative Story: " + creative_story.str() + "\n").echo();
@@ -383,9 +405,11 @@ compare_temperatures = op(prompt) {
         
         model = $MODEL();
         model.params({"temperature": temp, "max_tokens": 100});
-        model.load("models/qwen2.5-7b-instruct-q3_k_m.gguf");
+        model.load("gpt-4o", "openai");
         
-        response = model.gen(prompt);
+        response = model.gen(prompt, {
+            "api_key": "sk-your-openai-api-key"
+        });
         results[temp.str()] = response;
         
         model.load();
@@ -419,7 +443,7 @@ fast_model.params({
     "verbose": 0             /* No logging */
 });
 
-fast_model.load("models/qwen2.5-7b-instruct-q3_k_m.gguf");
+fast_model.load("gpt-4o", "openai");
 
 /* Batch multiple generations */
 prompts = ["What is AI?", "Explain ML", "Define deep learning"];
@@ -444,10 +468,12 @@ use_model_efficiently = op(prompt) {
     model = $MODEL();
     
     /* Load model */
-    result = model.load("models/qwen2.5-7b-instruct-q3_k_m.gguf");
+    result = model.load("gpt-4o", "openai");
     if (result.type() != $ERR) {
         /* Generate response */
-        response = model.gen(prompt);
+        response = model.gen(prompt, {
+            "api_key": "sk-your-openai-api-key"
+        });
         
         /* Always clean up */
         model.load();
@@ -477,7 +503,7 @@ chatbot.params({
     "verbose": 0
 });
 
-chatbot.load("models/qwen2.5-7b-instruct-q3_k_m.gguf");
+chatbot.load("gpt-4o", "openai");
 
 /* Set up chatbot personality */
 chatbot.context("You are a helpful, friendly AI assistant. Be concise but informative.");
@@ -511,18 +537,22 @@ content_pipeline = op(topic) {
     /* Technical writing */
     technical_model = $MODEL();
     technical_model.params({"temperature": 0.3, "max_tokens": 150});
-    technical_model.load("models/qwen2.5-7b-instruct-q3_k_m.gguf");
+    technical_model.load("gpt-4o", "openai");
     
-    technical_content = technical_model.gen("Write a technical explanation of " + topic);
+    technical_content = technical_model.gen("Write a technical explanation of " + topic, {
+        "api_key": "sk-your-openai-api-key"
+    });
     results["technical"] = technical_content;
     technical_model.load();
     
     /* Creative writing */
     creative_model = $MODEL();
     creative_model.params({"temperature": 1.1, "max_tokens": 200});
-    creative_model.load("models/qwen2.5-7b-instruct-q3_k_m.gguf");
+    creative_model.load("gpt-4o", "openai");
     
-    creative_content = creative_model.gen("Write a creative story about " + topic);
+    creative_content = creative_model.gen("Write a creative story about " + topic, {
+        "api_key": "sk-your-openai-api-key"
+    });
     results["creative"] = creative_content;
     creative_model.load();
     
@@ -542,7 +572,7 @@ content = content_pipeline(topic);
 ```grapa
 /* Context-aware assistant with memory */
 assistant = $MODEL();
-assistant.load("models/qwen2.5-7b-instruct-q3_k_m.gguf");
+assistant.load("gpt-4o", "openai");
 
 /* Load previous context if available */
 context_file = "assistant_context.txt";
@@ -613,11 +643,13 @@ info = model.info();
 
 ```grapa
 model = $MODEL();
-result = model.load("models/qwen2.5-7b-instruct-q3_k_m.gguf");
+result = model.load("gpt-4o", "openai");
 
 if (result.type() != $ERR) {
     /* Model loaded successfully */
-    response = model.gen("Hello");
+    response = model.gen("Hello", {
+        "api_key": "sk-your-openai-api-key"
+    });
     
     /* Access structured response */
     text = response."text";
