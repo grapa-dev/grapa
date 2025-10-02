@@ -17,7 +17,7 @@ model = $MODEL();
 "Loading model...\n".echo();
 
 /* Auto-detect method from file extension */
-result = model.load(modelpath,"llama");
+result = model.load(modelpath);
 if (result.type() != $ERR) {
     "Model loaded successfully!\n".echo();
     /* Generate a simple response */

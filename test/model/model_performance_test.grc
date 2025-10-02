@@ -1,6 +1,6 @@
-/* Performance test for optimized GenerateLlama function */
+/* Performance test for optimized Generate function */
 
-"Testing Optimized GenerateLlama Performance...".echo();
+"Testing Optimized Generate Performance...".echo();
 "=============================================".echo();
 
 /* Test with a longer prompt to see batch processing benefits */

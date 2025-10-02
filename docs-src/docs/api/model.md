@@ -22,7 +22,7 @@ Loads a model from the specified file path.
 
 **Parameters:**
 - `path` (string): Path to the model file (GGUF format)
-- `method` (string, optional): Method to use ("llama" is currently the only supported method). If not specified, the method will be auto-detected from the file extension or magic bytes.
+- `method` (string, optional): Method to use. If not specified, the method will be auto-detected from the file extension or magic bytes.
 
 **Returns:** 
 - `0` - Success
@@ -39,11 +39,11 @@ if (result.type() != $ERR) {
 }
 
 /* Explicitly specify method */
-result = model.load("models/qwen2.5-7b-instruct-q3_k_m.gguf", "llama");
+result = model.load("models/qwen2.5-7b-instruct-q3_k_m.gguf");
 ```
 
 **Error Codes:**
-- `-1`: Failed to create LLAMA context (usually memory or file issues)
+- `-1`: Failed to create model context (usually memory or file issues)
 - `-2`: Failed to load model (file not found, invalid format, etc.)
 
 ### `.gen(prompt, params)`
@@ -84,15 +84,9 @@ Returns information about the current model state.
 
 **Returns:** Object containing:
 - `loaded` (boolean): Whether the model is currently loaded
-- `method` (string): Method being used ("llama")
+- `method` (string): Method being used
 - `model_path` (string): Full path to the loaded model file
 - `model` (string): Model filename only
-- `model_size_bytes` (int): Size of the model in bytes (LLAMA.cpp only)
-- `n_params` (int): Number of parameters in the model (LLAMA.cpp only)
-- `model_description` (string): Model description (LLAMA.cpp only)
-- `has_encoder` (boolean): Whether model has encoder (LLAMA.cpp only)
-- `has_decoder` (boolean): Whether model has decoder (LLAMA.cpp only)
-- `is_recurrent` (boolean): Whether model is recurrent (LLAMA.cpp only)
 
 **Example:**
 ```grapa
@@ -345,14 +339,6 @@ response2 = model2.gen("Hi");
    model.load("qwen2.5-7b-instruct-q2_k.gguf");
    ```
 
-## Method-Specific Information
-
-### LLAMA.cpp Method
-
-The current implementation uses LLAMA.cpp as the method:
-
-- **Supported formats:** GGUF
-- **Quantization levels:** Q2_K, Q3_K_M, Q4_K_M, Q5_K_M, Q6_K, Q8_0, FP16
 - **Hardware acceleration:** CPU-optimized
 - **Thread safety:** Yes
 - **Auto-detection:** From `.gguf` file extension or "GGUF" magic bytes

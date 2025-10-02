@@ -17,8 +17,8 @@ model.params({"verbose": 3});
 
 /* Test 3: Load model with verbose=3 */
 "\n=== Test 3: Load Model with Verbose=3 ===".echo();
-"Loading model... (should show LLAMA.cpp output)".echo();
-result = model.load("models/qwen2.5-7b-instruct-q5_k_m.gguf", "llama");
+"Loading model... (should show model output)".echo();
+result = model.load("models/qwen2.5-7b-instruct-q5_k_m.gguf");
 ("Load result: " + result.str()).echo();
 
 /* Test 4: Generate with verbose=3 */

@@ -1,8 +1,10 @@
-./grapa -c "model = \$MODEL(); model.load('models/qwen2.5-7b-instruct-q5_k_m.gguf', 'llama-local'); result = model.gen('The quick brown fox jumps over the lazy dog'); result.echo();"
+./grapa -c "model = \$MODEL(); model.load('gpt-4o', 'openai'); result = model.gen('The quick brown fox jumps over the lazy dog', {'api_key': openai_key}); result.echo();"
 
 import grapapy
 g = grapapy.grapa()
-g.eval('model = $MODEL(); model.load("models/qwen2.5-7b-instruct-q5_k_m.gguf", "llama-local");')
+g.eval('model = $MODEL(); model.load("gpt-4o", "openai");')
 g.eval('model.info();')	
-g.eval('model.gen("test");')	
-  
+g.eval('model.gen("The quick brown fox jumps over the lazy dog", {"api_key": openai_key});')	
+        
+import grapapy
+grapapy.eval('model = $MODEL(); model.load("gpt-4o", "openai"); model.gen("what is your favorate color?", {"api_key": openai_key});')

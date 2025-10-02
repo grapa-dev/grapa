@@ -1,6 +1,6 @@
-/* Test LLAMA.cpp Sampler API Implementation */
+/* Test Model Sampler API Implementation */
 
-"Testing LLAMA.cpp Sampler API Implementation\n".echo();
+"Testing Model Sampler API Implementation\n".echo();
 "=============================================\n".echo();
 
 /* Test 1: Temperature-aware sampling */
@@ -15,7 +15,7 @@ model1.params({
 });
 
 "Loading model with temperature sampling...\n".echo();
-result1 = model1.load("models/qwen2.5-7b-instruct-q5_k_m.gguf", "llama");
+result1 = model1.load("models/qwen2.5-7b-instruct-q5_k_m.gguf");
 if (result1.type() != $ERR) {
     "Model loaded successfully!\n".echo();
     
@@ -46,7 +46,7 @@ model2.params({
 });
 
 "Loading model with greedy sampling...\n".echo();
-result2 = model2.load("models/qwen2.5-7b-instruct-q5_k_m.gguf", "llama");
+result2 = model2.load("models/qwen2.5-7b-instruct-q5_k_m.gguf");
 if (result2.type() != $ERR) {
     "Model loaded successfully!\n".echo();
     
@@ -77,7 +77,7 @@ model3.params({
 });
 
 "Loading model for parameter testing...\n".echo();
-result3 = model3.load("models/qwen2.5-7b-instruct-q5_k_m.gguf", "llama");
+result3 = model3.load("models/qwen2.5-7b-instruct-q5_k_m.gguf");
 if (result3.type() != $ERR) {
     "Model loaded successfully!\n".echo();
     
@@ -116,7 +116,7 @@ model4.params({
 });
 
 "Loading model for filtering test...\n".echo();
-result4 = model4.load("models/qwen2.5-7b-instruct-q5_k_m.gguf", "llama");
+result4 = model4.load("models/qwen2.5-7b-instruct-q5_k_m.gguf");
 if (result4.type() != $ERR) {
     "Model loaded successfully!\n".echo();
     

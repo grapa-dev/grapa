@@ -8,7 +8,7 @@ Grapa is a modern, grammar-based programming language and data processing platfo
 - **True Parallelism:** Production-ready parallel ETL/data processing (map/reduce/filter, $thread, $net)
 - **Comprehensive Vector Operations:** Complete matrix operations, linear algebra, statistical functions, and creative capabilities
 - **Machine Learning:** Linear regression, statistical analysis, and ML algorithms using optimized vector operations
-- **AI/ML Model Integration:** Native support for AI models via `$MODEL` type with LLAMA.cpp backend for text generation and Grapa interpolation
+- **AI/ML Model Integration:** Native support for AI models via `$MODEL` type for text generation and Grapa interpolation
 - **Advanced Pattern Matching:** 100% ripgrep compatibility with binary data support and Unicode awareness
 - **Comprehensive Cryptography:** Production-ready cryptographic capabilities with OpenSSL 3.5.2 integration (RSA, EC, DH, AES, hash functions, key exchange, digital signatures)
 - **Unified File/Database API:** Seamless navigation and processing of files and databases

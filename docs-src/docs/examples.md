@@ -46,7 +46,7 @@ Welcome to the Grapa Examples hub! Here you'll find practical, ready-to-run scri
 |---------|-------------|
 | [Model Usage Guide](model_usage_guide.md) | Comprehensive guide covering all ways to use the `$MODEL` data type, from basic usage to advanced patterns and real-world applications. |
 | [Model Examples Guide](examples/model_examples.grc) | Working code examples demonstrating `$MODEL` functionality. |
-| [Model Interpolation Example](examples/model_interpolate.grc) | Demonstrates LLAMA + Grapa interpolation pattern for combining natural language generation with precise computation. |
+| [Model Interpolation Example](examples/model_interpolate.grc) | Demonstrates model + Grapa interpolation pattern for combining natural language generation with precise computation. |
 | [Model Download Guide](model_download.md) | Complete guide for downloading AI/ML models, including curl commands, Hugging Face CLI, file merging, and verification scripts. |
 
 ### **Integration Examples**

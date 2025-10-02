@@ -1,20 +1,19 @@
 # Grapa Development Kit
 
-This directory contains everything you need to build and run Grapa applications using the Grapa static library, including AI/ML model support via LLAMA.cpp integration.
+This directory contains everything you need to build and run Grapa applications using the Grapa static library.
 
 ## Directory Structure
 
 ```
 bin/
 ├── include/grapa/          # Grapa public API headers
-├── include/llama/          # LLAMA.cpp headers for AI/ML support
 ├── lib/                    # 3rd party static libraries
-│   ├── mac-arm64/         # Mac ARM64 libraries (including LLAMA.cpp)
-│   ├── linux-arm64/       # Linux ARM64 libraries (including LLAMA.cpp)
-│   ├── linux-amd64/       # Linux AMD64 libraries (including LLAMA.cpp)
-│   ├── aws-arm64/         # AWS ARM64 libraries (including LLAMA.cpp)
-│   ├── aws-amd64/         # AWS AMD64 libraries (including LLAMA.cpp)
-│   └── win-amd64/         # Windows AMD64 libraries (including LLAMA.cpp)
+│   ├── mac-arm64/         # Mac ARM64 libraries
+│   ├── linux-arm64/       # Linux ARM64 libraries
+│   ├── linux-amd64/       # Linux AMD64 libraries
+│   ├── aws-arm64/         # AWS ARM64 libraries
+│   ├── aws-amd64/         # AWS AMD64 libraries
+│   └── win-amd64/         # Windows AMD64 libraries
 ├── platforms/              # Platform-specific Grapa files
 │   ├── mac-arm64/         # Mac ARM64 executable and static library
 │   ├── linux-arm64/       # Linux ARM64 executable and static library
@@ -41,7 +40,6 @@ bin/
   - **Linux**: OpenMP support (`libomp-dev` on Ubuntu/Debian, `libgomp` on CentOS/RHEL) - requires separate library linking
   - **macOS**: Metal framework (included with Xcode) - uses hardware acceleration
   - **Windows**: OpenMP support (included with Visual Studio 2019+ or LLVM/Clang) - built into MSVC runtime, no separate library needed
-    - **Debug Support**: Debug LLAMA libraries are available in `source/llama-lib/win-amd64-debug/` for Visual Studio debugging sessions
 
 ### Build Steps
 
@@ -50,12 +48,6 @@ bin/
    cd bin
    ```
 
-2. **Optional: Rebuild LLAMA libraries with OpenMP (Windows only):**
-   If you need to rebuild LLAMA libraries with OpenMP support or for debugging:
-   ```bash
-   python ../scripts/build_llama_windows.py
-   ```
-   This creates both Release and Debug versions with full CPU optimizations.
 
 3. **Create and enter build directory:**
    ```bash
@@ -83,14 +75,6 @@ bin/
    ./grapa_example -c "m = \$MODEL(); m.info();"
    ```
 
-## AI/ML Model Support
-
-Grapa includes comprehensive AI/ML model support via LLAMA.cpp integration:
-
-### Available Libraries
-- **libllama.a** - Main LLAMA.cpp library
-- **libggml.a** - Core GGML tensor library  
-- **libggml-base.a** - Base GGML operations
 - **libggml-cpu.a** - CPU-specific GGML operations
 - **libmtmd.a** - Multi-threaded matrix operations
 - **libcommon.a** - Common utilities and GGUF support
@@ -225,7 +209,7 @@ python3 install-grapa.py --uninstall
 
 4. **AI/ML model errors:**
    - **Linux**: Ensure OpenMP is installed (`libomp-dev` on Ubuntu/Debian)
-   - **Missing libraries**: Verify all LLAMA.cpp libraries are present in `lib/{platform}/`
+   - **Missing libraries**: Verify all required libraries are present in `lib/{platform}/`
    - **Model loading**: Check that GGUF model files are accessible and valid
    - **OpenMP errors**: Install `libomp-dev` (Ubuntu/Debian) or `libgomp` (CentOS/RHEL)
 

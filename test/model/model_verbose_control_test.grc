@@ -1,4 +1,4 @@
-/* Test script to demonstrate LLAMA.cpp verbose control */
+/* Test script to demonstrate model verbose control */
 
 "Testing Grapa Model Verbose Control...".echo();
 "=====================================".echo();
@@ -7,7 +7,7 @@
 "=== Test 1: Default Silent Mode ===".echo();
 model = $MODEL();
 "Loading model with default verbose=0 (silent)...".echo();:
-result = model.load("models/qwen2.5-7b-instruct-q5_k_m.gguf", "llama");
+result = model.load("models/qwen2.5-7b-instruct-q5_k_m.gguf");
 ("Load result: " + result.str()).echo();
 ("Model info: " + model.info().str()).echo();
 ("Current parameters: " + model.params().str()).echo();
@@ -24,7 +24,7 @@ model.params({"verbose": 3});  /* Set verbose to 3 (info level) before loading *
 "Set verbose to 3 (info level) before loading".echo();
 ("Current parameters: " + model.params().str()).echo();
 "Loading model with verbose=3...".echo();
-result = model.load("models/qwen2.5-7b-instruct-q5_k_m.gguf", "llama");
+result = model.load("models/qwen2.5-7b-instruct-q5_k_m.gguf");
 ("Load result: " + result.str()).echo();
 
 /* Test 4: Generate with Verbose Mode */
@@ -38,7 +38,7 @@ model.unload();
 model.params({"verbose": 0});  /* Set verbose to 0 (silent) before loading */
 "Set verbose to 0 (silent) before loading".echo();
 "Loading model with verbose=0...".echo();
-result = model.load("models/qwen2.5-7b-instruct-q5_k_m.gguf", "llama");
+result = model.load("models/qwen2.5-7b-instruct-q5_k_m.gguf");
 ("Load result: " + result.str()).echo();
 
 /* Test 6: Generate with Silent Mode Again */

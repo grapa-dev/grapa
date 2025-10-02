@@ -1,13 +1,13 @@
 /*
     Model Interpolation Example
     
-    This example demonstrates how to use LLAMA + Grapa interpolation
+    This example demonstrates how to use model + Grapa interpolation
     to combine natural language generation with precise computation.
     
     The pattern:
     1. Set up model context to use ${} placeholders
     2. Generate response with math question
-    3. Show raw LLAMA response
+    3. Show raw model response
     4. Interpolate to get final result with computed values
 */
 
@@ -33,7 +33,7 @@ if (result.type() != $ERR) {
     ("Expected format: '15 * 23 = ${15 * 23}' and '345 + 45 = ${345 + 45}'\n").echo();
     
     response = model.gen(prompt,{"max_tokens":200});
-    ("Raw LLAMA response:\n" + response.str() + "\n").echo();
+    ("Raw model response:\n" + response.str() + "\n").echo();
     
     /* Interpolate to get final result */
     final_result = response.interpolate();

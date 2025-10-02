@@ -2,11 +2,11 @@
 
 ## Summary
 
-The Grapa project has completed version 0.1.55 with comprehensive AI/ML model support on Mac and Windows platforms. The current focus is extending $MODEL functionality to all Linux platforms by building LLAMA.cpp static libraries. All major infrastructure work from previous releases is stable and ready for production use.
+The Grapa project has completed version 0.1.55 with comprehensive AI/ML model support on Mac and Windows platforms. The current focus is extending $MODEL functionality to all Linux platforms. All major infrastructure work from previous releases is stable and ready for production use.
 
 ## Current Development Status
 
-The project has completed version 0.1.55 with comprehensive AI/ML model support on Mac and Windows platforms. The current focus is extending $MODEL functionality to all Linux platforms by building LLAMA.cpp static libraries. All major infrastructure work from previous releases is stable. For detailed information about previous achievements, see `maintainers/PROJECT_MANAGEMENT/BACKLOG.md`.
+The project has completed version 0.1.55 with comprehensive AI/ML model support on Mac and Windows platforms. The current focus is extending $MODEL functionality to all Linux platforms. All major infrastructure work from previous releases is stable. For detailed information about previous achievements, see `maintainers/PROJECT_MANAGEMENT/BACKLOG.md`.
 
 ## Current Status
 

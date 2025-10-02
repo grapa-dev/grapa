@@ -9,7 +9,7 @@ test_time = $TIME().utc();
 model = $MODEL();
 "Created model object\n".echo();
 
-loadResult = model.load("models/qwen2.5-7b-instruct-q5_k_m.gguf", "llama");
+loadResult = model.load("models/qwen2.5-7b-instruct-q5_k_m.gguf");
 "Load result: ${loadResult}\n".interpolate().echo();
 
 /* Test 2: Get model info */

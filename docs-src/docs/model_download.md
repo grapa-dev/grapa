@@ -4,7 +4,7 @@ This guide explains how to download AI/ML models for use with the `$MODEL` data 
 
 ## Overview
 
-The `$MODEL` type supports GGUF format models, which are optimized for LLAMA.cpp. These models are typically large files (several GB) and may be split into multiple parts for easier downloading.
+The `$MODEL` type supports GGUF format models, which are optimized for local inference. These models are typically large files (several GB) and may be split into multiple parts for easier downloading.
 
 ## Download Methods
 

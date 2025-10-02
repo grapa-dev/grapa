@@ -1,6 +1,6 @@
 # $MODEL Data Type
 
-The `$MODEL` data type provides AI/ML model integration capabilities in Grapa, supporting both local LLAMA.cpp-based models and cloud-based OpenAI models for text generation.
+The `$MODEL` data type provides AI/ML model integration capabilities in Grapa, supporting both local models and cloud-based OpenAI models for text generation.
 
 ## Overview
 
@@ -38,7 +38,7 @@ Loads a model from the specified file path.
 
 **Parameters:**
 - `path` (string): Path to the model file (GGUF format) or model name (for OpenAI)
-- `method` (string, optional): Method to use ("llama" for local models, "openai" for cloud models). If not specified, the method will be auto-detected from the file extension or magic bytes.
+- `method` (string, optional): Method to use ("openai" for cloud models). If not specified, the method will be auto-detected from the file extension or magic bytes.
 
 **Returns:** Error code (0 for success)
 
@@ -53,7 +53,7 @@ if (result.type() != $ERR) {
 }
 
 /* Explicitly specify method for local model */
-result = model.load("models/qwen2.5-7b-instruct-q3_k_m.gguf", "llama");
+result = model.load("models/qwen2.5-7b-instruct-q3_k_m.gguf");
 
 /* Load OpenAI cloud model */
 result = model.load("gpt-4o", "openai");
@@ -184,7 +184,7 @@ if (result.type() != $ERR) {
 
 The following parameters can be set using `.params()`. Note that not all parameters apply to every method:
 
-| Parameter | Type | Default | Description | LLAMA | OpenAI |
+| Parameter | Type | Default | Description | Local | OpenAI |
 |-----------|------|---------|-------------|-------|--------|
 | `temperature` | float | 0.7 | Controls randomness (0.0 = deterministic, 1.0+ = more random) | ✅ | ✅ |
 | `max_tokens` | int | 10 | Maximum number of tokens to generate | ✅ | ✅ |
@@ -210,7 +210,7 @@ When using the "openai" method, additional parameters are available:
 
 Currently, the `$MODEL` type supports:
 
-- **LLAMA.cpp**: For GGUF format models
+- **Local**: For GGUF format models
   - Supports various quantization levels (Q2_K, Q3_K_M, Q4_K_M, Q5_K_M, Q6_K, Q8_0, FP16)
   - Optimized for CPU inference
   - Thread-safe operations
@@ -226,7 +226,7 @@ Currently, the `$MODEL` type supports:
 
 The `$MODEL` type currently supports:
 
-- **GGUF**: The standard format for LLAMA.cpp models
+- **GGUF**: The standard format for local models
   - Efficient quantization
   - Cross-platform compatibility
   - Metadata inclusion

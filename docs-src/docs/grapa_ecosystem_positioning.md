@@ -168,7 +168,7 @@ Grapa provides **comprehensive machine learning capabilities** that rival dedica
 
 ### **AI/ML Model Integration** 🤖
 Grapa's `$MODEL` type provides **native AI model support** with unique capabilities:
-- **LLAMA.cpp Integration** - Direct access to state-of-the-art language models
+- **Model Integration** - Direct access to state-of-the-art language models
 - **Grapa Interpolation** - AI responses can contain `${expression}` placeholders for Grapa evaluation
 - **Hybrid Computation** - Combine AI natural language with Grapa's precise computation
 - **Context Management** - Persistent conversation context across sessions
@@ -181,7 +181,7 @@ model.load("models/qwen2.5-7b-instruct-q3_k_m.gguf");
 model.context("Use ${expression} placeholders for calculations.");
 
 response = model.gen("What is 15 * 23 + 45?");
-/* LLAMA: "The calculation is ${15 * 23 + 45} which equals ${15 * 23 + 45}" */
+/* Model: "The calculation is ${15 * 23 + 45} which equals ${15 * 23 + 45}" */
 result = response.interpolate();
 /* Result: "The calculation is 390 which equals 390" */
 ```
@@ -748,7 +748,7 @@ Grapa provides **comprehensive IDE support** through a dedicated VSCode extensio
 - **Array Comprehension Alternatives** - Functional methods (.filter(), .map()) with threading support
 - **Vector Operations** - **COMPREHENSIVE** matrix operations, linear algebra, statistical functions, and creative capabilities
 - **Machine Learning** - Linear regression, statistical analysis, and ML algorithms with optimized vector operations
-- **AI/ML Model Integration** - Native `$MODEL` type with LLAMA.cpp backend for text generation and Grapa interpolation
+- **AI/ML Model Integration** - Native `$MODEL` type for text generation and Grapa interpolation
 - **String Interpolation** - Advanced template literal support with expressions
 - **Advanced Pattern Matching** - 100% ripgrep compatibility with binary data support
 - **Unified Data Type Integration** - Seamless cross-format manipulation

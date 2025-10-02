@@ -741,7 +741,7 @@ tomorrow = now.add(86400);  /* Add 24 hours */
 
 ## AI/ML Model Integration
 
-Grapa provides native support for AI/ML models through the `$MODEL` data type, currently supporting LLAMA.cpp-based models for text generation.
+Grapa provides native support for AI/ML models through the `$MODEL` data type, currently supporting local models for text generation.
 
 ### Core Functions
 
@@ -757,12 +757,12 @@ Loads a model from the specified file path.
 
 **Parameters:**
 - `path` (string): Path to the model file (GGUF format)
-- `backend` (string, optional): Backend to use ("llama" is currently the only supported backend)
+- `backend` (string, optional): Backend to use
 
 **Returns:** Error code (0 for success)
 
 ```grapa
-result = model.load("models/qwen2.5-7b-instruct-q3_k_m.gguf", "llama");
+result = model.load("models/qwen2.5-7b-instruct-q3_k_m.gguf");
 if (result.type() != $ERR) {
     "Model loaded successfully!".echo();
 }
@@ -884,14 +884,14 @@ model.load();
 ### Model Formats
 
 Currently supports:
-- **GGUF**: The standard format for LLAMA.cpp models
+- **GGUF**: The standard format for local models
   - Efficient quantization (Q2_K, Q3_K_M, Q4_K_M, Q5_K_M, Q6_K, Q8_0, FP16)
   - Cross-platform compatibility
   - Metadata inclusion
 
 ### Backend Support
 
-- **LLAMA.cpp**: For GGUF format models
+- **Local**: For GGUF format models
   - Supports various quantization levels
   - Optimized for CPU inference
   - Thread-safe operations

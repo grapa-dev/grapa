@@ -33,7 +33,7 @@ if(WIN32)
         message(STATUS "OpenMP C++ flags: ${OpenMP_CXX_FLAGS}")
         message(STATUS "OpenMP C++ libraries: ${OpenMP_CXX_LIB_NAMES}")
     else()
-        message(WARNING "OpenMP not found - LLAMA.cpp may run slower without parallel processing")
+        message(WARNING "OpenMP not found - may run slower without parallel processing")
     endif()
 endif()
 
@@ -91,7 +91,6 @@ if(WIN32)
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /MANIFEST:NO")
 
     include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
-    include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/llama)
     
     # Add Windows SDK include paths for standard C headers like float.h
     # This is especially important for Ninja builds which may not auto-detect SDK paths
@@ -164,7 +163,6 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
     
     # Add include directories for Linux
     include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
-    include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/llama)
 elseif(APPLE)
     # macOS flags
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DUTF8PROC_STATIC -DPCRE2_STATIC -std=c++17 -O3 -pthread")
@@ -172,7 +170,6 @@ elseif(APPLE)
     
     # Add include directories for macOS
     include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
-    include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/llama)
 endif()
 
 # Set output directory
@@ -323,9 +320,6 @@ if(WIN32)
 		fltk_z
 		libcrypto
 		libssl
-		llama
-		ggml
-		ggml-base
 		ggml-cpu
 		mtmd
 		blst
@@ -341,7 +335,7 @@ if(WIN32)
 		winspool
 		crypt32
 		comctl32
-		# OpenMP library for LLAMA.cpp parallel processing
+		# OpenMP library for parallel processing
 		OpenMP::OpenMP_CXX
 	)
 elseif(APPLE)
@@ -359,10 +353,6 @@ elseif(APPLE)
 		${CMAKE_CURRENT_SOURCE_DIR}/lib/${GRAPA_PLATFORM_DIR}/libcrypto.a
 		${CMAKE_CURRENT_SOURCE_DIR}/lib/${GRAPA_PLATFORM_DIR}/libblst.a
 		${CMAKE_CURRENT_SOURCE_DIR}/lib/${GRAPA_PLATFORM_DIR}/libpcre2-8.a
-		# LLAMA.cpp libraries
-		${CMAKE_CURRENT_SOURCE_DIR}/lib/${GRAPA_PLATFORM_DIR}/libllama.a
-		${CMAKE_CURRENT_SOURCE_DIR}/lib/${GRAPA_PLATFORM_DIR}/libggml.a
-		${CMAKE_CURRENT_SOURCE_DIR}/lib/${GRAPA_PLATFORM_DIR}/libggml-base.a
 		${CMAKE_CURRENT_SOURCE_DIR}/lib/${GRAPA_PLATFORM_DIR}/libggml-cpu.a
 		${CMAKE_CURRENT_SOURCE_DIR}/lib/${GRAPA_PLATFORM_DIR}/libggml-metal.a
 		${CMAKE_CURRENT_SOURCE_DIR}/lib/${GRAPA_PLATFORM_DIR}/libggml-blas.a
@@ -383,10 +373,6 @@ else()
 		${CMAKE_CURRENT_SOURCE_DIR}/lib/${GRAPA_PLATFORM_DIR}/libcrypto.a
 		${CMAKE_CURRENT_SOURCE_DIR}/lib/${GRAPA_PLATFORM_DIR}/libblst.a
 		${CMAKE_CURRENT_SOURCE_DIR}/lib/${GRAPA_PLATFORM_DIR}/libpcre2-8.a
-		# LLAMA.cpp libraries
-		${CMAKE_CURRENT_SOURCE_DIR}/lib/${GRAPA_PLATFORM_DIR}/libllama.a
-		${CMAKE_CURRENT_SOURCE_DIR}/lib/${GRAPA_PLATFORM_DIR}/libggml.a
-		${CMAKE_CURRENT_SOURCE_DIR}/lib/${GRAPA_PLATFORM_DIR}/libggml-base.a
 		${CMAKE_CURRENT_SOURCE_DIR}/lib/${GRAPA_PLATFORM_DIR}/libggml-cpu.a
 		${CMAKE_CURRENT_SOURCE_DIR}/lib/${GRAPA_PLATFORM_DIR}/libmtmd.a
 		${CMAKE_CURRENT_SOURCE_DIR}/lib/${GRAPA_PLATFORM_DIR}/libcommon.a
@@ -414,7 +400,7 @@ if(APPLE)
         "-framework ApplicationServices"
         "-framework Security"
         "-framework SystemConfiguration"
-        # LLAMA.cpp frameworks for GPU acceleration
+        # Frameworks for GPU acceleration
         "-framework Metal"
         "-framework MetalKit"
         "-framework Accelerate"
@@ -447,7 +433,7 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
         "-lXcursor"
         "-ldl"
         "-lm"
-        "-lgomp"  # Add OpenMP library for LLAMA.cpp
+        "-lgomp"  # Add OpenMP library for parallel processing
     )
 elseif(WIN32)
     # Windows settings

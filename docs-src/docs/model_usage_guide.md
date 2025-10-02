@@ -582,23 +582,6 @@ assistant.load();
 
 All model types now return structured results with consistent metadata fields:
 
-### Llama Models
-
-```grapa
-/* Llama models return $GOBJ with 'text' and 'metadata' */
-result = model.gen("Your prompt here");
-text = result."text";                    /* Generated text */
-metadata = result."metadata";            /* Processing metadata */
-
-/* Available metadata fields */
-("Model path: " + metadata."model_path".str() + "\n").echo();
-("Prompt tokens: " + metadata."prompt_tokens".str() + "\n").echo();
-("Completion tokens: " + metadata."completion_tokens".str() + "\n").echo();
-("Total tokens: " + metadata."total_tokens".str() + "\n").echo();
-("Temperature: " + metadata."temperature".str() + "\n").echo();
-("Max tokens: " + metadata."max_tokens".str() + "\n").echo();
-("Context length: " + metadata."context_length".str() + "\n").echo();
-```
 
 
 ### OpenAI Models
@@ -622,12 +605,6 @@ info = model.info();
 ("Method: " + info."method".str() + "\n").echo();
 ("Model path: " + info."model_path".str() + "\n").echo();
 
-/* Llama-specific information */
-if (info."method".str() == "llama") {
-    ("Model size: " + info."model_size_bytes".str() + " bytes\n").echo();
-    ("Parameters: " + info."n_params".str() + "\n").echo();
-    ("Description: " + info."model_description".str() + "\n").echo();
-}
 ```
 
 ## Best Practices
@@ -742,56 +719,6 @@ safe_generate_explicit = op(model, prompt) {
 
 ## Grapa Integration Patterns
 
-### LLAMA + Grapa Interpolation
-
-A powerful pattern is to have LLAMA generate responses with Grapa interpolation placeholders, then use `.interpolate()` to evaluate them:
-
-```grapa
-/* Set up model to use interpolation placeholders */
-model = $MODEL();
-model.load("models/qwen2.5-7b-instruct-q3_k_m.gguf");
-model.context("You are a helpful math tutor. When doing calculations, you MUST use ${expression} placeholders that can be evaluated by Grapa. For example, instead of writing '15 * 23 = 345', write '15 * 23 = ${15 * 23}'. Always show the calculation step by step using this format.");
-
-/* Important: Define variables for literal text that looks like placeholders */
-expression = "${expression}";  /* Prevents interpolation errors on literal text */
-
-/* Math calculations */
-math_response = model.gen("What is 15 * 23 + 45? Please show your work step by step using ${expression} format for all calculations.");
-/* LLAMA: "The calculation is ${15 * 23 + 45} which equals ${15 * 23 + 45}" */
-result = math_response.interpolate();
-/* Result: "The calculation is 390 which equals 390" */
-
-/* Data processing */
-data_response = model.gen("What's the average of [10, 20, 30, 40, 50]?");
-/* LLAMA: "The average is ${[10, 20, 30, 40, 50].reduce(op(a,b){a+b}) / 5}" */
-avg_result = data_response.interpolate();
-/* Result: "The average is 30" */
-
-/* File operations */
-file_response = model.gen("How many lines are in my data.txt file?");
-/* LLAMA: "The file has ${$file('data.txt').get().split('\n').len()} lines" */
-line_count = file_response.interpolate();
-/* Result: "The file has 42 lines" */
-
-/* With context variables */
-user_name = "Alice";
-user_age = 30;
-personal_response = model.gen("Tell me about this user");
-/* LLAMA: "User ${user_name} is ${user_age} years old, born in ${2024 - user_age}" */
-personal_result = personal_response.interpolate();
-/* Result: "User Alice is 30 years old, born in 1994" */
-```
-
-**Important Notes:**
-- **Pre-define literal variables**: If LLAMA generates text like `"use ${expression} format"`, define `expression = "${expression}";` to prevent interpolation errors
-- **Interpolation scope**: Variables in `${}` must be defined in the current scope before calling `.interpolate()`
-- **Error handling**: Undefined variables in placeholders will result in `{"error":-1}`
-
-**Benefits:**
-- **Simple**: LLAMA just uses `${}` syntax
-- **Flexible**: Interpolate when/where you want
-- **Safe**: Programmer controls evaluation
-- **Powerful**: Full Grapa capabilities in responses
 
 
 ## OpenAI Integration
