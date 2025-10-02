@@ -2680,13 +2680,13 @@ public:
 };
 GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleVectorKurtosis(GrapaCHAR& pName) { return new GrapaLibraryRuleVectorKurtosisEvent(pName); }
 
-class GrapaLibraryRuleVectorSimilarityEvent : public GrapaLibraryEvent
+class GrapaLibraryRuleSimilarityEvent : public GrapaLibraryEvent
 {
 public:
-	GrapaLibraryRuleVectorSimilarityEvent(GrapaCHAR& pName) { mName.FROM(pName); };
+	GrapaLibraryRuleSimilarityEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
-GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleVectorSimilarity(GrapaCHAR& pName) { return new GrapaLibraryRuleVectorSimilarityEvent(pName); }
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleSimilarity(GrapaCHAR& pName) { return new GrapaLibraryRuleSimilarityEvent(pName); }
 
 class GrapaLibraryRuleLowerEvent : public GrapaLibraryEvent
 {
@@ -3358,6 +3358,7 @@ GrapaLibraryEvent* GrapaLibraryRuleEvent::LoadLib(GrapaScriptExec *vScriptExec, 
 			{ "jaro_winkler_similarity", &GrapaLibraryRuleEvent::HandleJaroWinklerSimilarity },
 			{ "cosine_similarity", &GrapaLibraryRuleEvent::HandleCosineSimilarity },
 			{ "jaccard_similarity", &GrapaLibraryRuleEvent::HandleJaccardSimilarity },
+			{ "similarity", &GrapaLibraryRuleEvent::HandleSimilarity },
 			{ "eq", &GrapaLibraryRuleEvent::HandleEq },
 			{ "neq", &GrapaLibraryRuleEvent::HandleNEq },
 			{ "gteq", &GrapaLibraryRuleEvent::HandleGtEq },
@@ -3454,7 +3455,6 @@ GrapaLibraryEvent* GrapaLibraryRuleEvent::LoadLib(GrapaScriptExec *vScriptExec, 
             { "quantile", &GrapaLibraryRuleEvent::HandleVectorQuantile },
             { "skew", &GrapaLibraryRuleEvent::HandleVectorSkew },
 			{ "kurtosis", &GrapaLibraryRuleEvent::HandleVectorKurtosis },
-			{ "similarity", &GrapaLibraryRuleEvent::HandleVectorSimilarity },
         };
         auto it = handlerMap.find((char*)pName.mBytes);
         if (it != handlerMap.end())
@@ -21492,7 +21492,7 @@ GrapaRuleEvent* GrapaLibraryRuleVectorKurtosisEvent::Run(GrapaScriptExec* vScrip
 	return(result);
 }
 
-GrapaRuleEvent* GrapaLibraryRuleVectorSimilarityEvent::Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput)
+GrapaRuleEvent* GrapaLibraryRuleSimilarityEvent::Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput)
 {
 	GrapaRuleEvent* result = NULL;
 	GrapaLibraryParam r1(vScriptExec, pNameSpace, pInput ? pInput->Head(0) : NULL);
@@ -21538,6 +21538,11 @@ GrapaRuleEvent* GrapaLibraryRuleVectorSimilarityEvent::Run(GrapaScriptExec* vScr
 			result = Error(vScriptExec, pNameSpace, -1);
 		}
 	}
+	else if (r1.vVal && r2.vVal && r1.vVal->mValue.mToken == GrapaTokenType::STR && r2.vVal->mValue.mToken == GrapaTokenType::STR)
+	{
+
+	}
+
 	if (result == NULL)
 		result = Error(vScriptExec, pNameSpace, -1);
 	return(result);
