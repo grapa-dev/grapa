@@ -177,10 +177,12 @@ Grapa's `$MODEL` type provides **native AI model support** with unique capabilit
 ```grapa
 /* AI + Grapa hybrid computation */
 model = $MODEL();
-model.load("models/qwen2.5-7b-instruct-q3_k_m.gguf");
+model.load("gpt-4o", "openai");
 model.context("Use ${expression} placeholders for calculations.");
 
-response = model.gen("What is 15 * 23 + 45?");
+response = model.gen("What is 15 * 23 + 45?", {
+    "api_key": "sk-your-openai-api-key"
+});
 /* Model: "The calculation is ${15 * 23 + 45} which equals ${15 * 23 + 45}" */
 result = response.interpolate();
 /* Result: "The calculation is 390 which equals 390" */

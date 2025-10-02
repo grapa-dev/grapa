@@ -4,10 +4,11 @@
 "=============================================\n".echo();
 
 /* This file demonstrates comprehensive usage of the $MODEL data type */
-/* Note: Uses qwen2.5-7b-instruct-q3_k_m.gguf for simplicity (single file download) */
-/* For higher quality results, substitute qwen2.5-7b-instruct-q5_k_m.gguf (requires merging 2 files) */
+/* Note: Uses OpenAI models for cloud-based AI capabilities */
 
-modelpath = "gpt-4o";
+modelname = "gpt-4o";
+method = "openai";
+api_key = "sk-your-openai-api-key";
 
 "=== Basic Model Usage ===\n".echo();
 
@@ -17,7 +18,7 @@ model = $MODEL();
 "Loading model...\n".echo();
 
 /* Auto-detect method from file extension */
-result = model.load(modelpath,"openai");
+result = model.load(modelname, method);
 if (result.type() != $ERR) {
     "Model loaded successfully!\n".echo();
     /* Generate a simple response */
@@ -35,7 +36,7 @@ model.load();
 /* Model Information */
 "--- Model Information ---\n".echo();
 model = $MODEL();
-model.load(modelpath,"openai");
+model.load(modelname, method);
 
 info = model.info();
 ("Model loaded: " + info."loaded".str() + "\n").echo();
@@ -62,7 +63,7 @@ model = $MODEL();
 
 "Parameters configured\n".echo();
 /* Auto-detect method from file extension */
-model.load(modelpath,"openai");
+model.load(modelname, method);
 
 /* Set generation parameters */
 model.params({
@@ -85,7 +86,7 @@ model.load();
 "--- Dynamic Parameter Override ---\n".echo();
 model = $MODEL();
 /* Auto-detect method from file extension */
-model.load(modelpath,"openai");
+model.load(modelname, method);
 
 /* Conservative generation */
 conservative_response = model.gen("Explain quantum computing", {
@@ -116,7 +117,7 @@ model = $MODEL();
 
 "Loading model with debug output...\n".echo();
 /* Auto-detect method from file extension */
-result = model.load(modelpath,"openai");
+result = model.load(modelname, method);
 
 model.params({"verbose": 4});  /* Maximum verbosity */
 
@@ -137,7 +138,7 @@ model.load();
 model = $MODEL();
 
 /* Auto-detect method from file extension */
-model.load(modelpath,"openai");
+model.load(modelname, method);
 
 model.params({"verbose": 0});  /* No output */
 
@@ -210,7 +211,7 @@ model.load();
 "--- Setting and Getting Context ---\n".echo();
 model = $MODEL();
 /* Auto-detect method from file extension */
-model.load(modelpath,"openai");
+model.load(modelname, method);
 
 /* Set initial context */
 model.gen("You are a helpful assistant. Previous conversation: User asked about AI.",{"api_key":openai_key});
@@ -303,7 +304,7 @@ model = $MODEL();
 
 "Loading optimized model...\n".echo();
 /* Auto-detect method from file extension */
-model.load(modelpath,"openai");
+model.load(modelname, method);
 
 /* Set optimal parameters for your use case */:
 model.params({

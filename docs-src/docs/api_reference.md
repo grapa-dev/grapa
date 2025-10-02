@@ -762,7 +762,7 @@ Loads a model from the specified file path.
 **Returns:** Error code (0 for success)
 
 ```grapa
-result = model.load("models/qwen2.5-7b-instruct-q3_k_m.gguf");
+result = model.load("gpt-4o", "openai");
 if (result.type() != $ERR) {
     "Model loaded successfully!".echo();
 }
@@ -859,12 +859,14 @@ model.params({
 });
 
 /* Load model */
-result = model.load("models/qwen2.5-7b-instruct-q3_k_m.gguf");
+result = model.load("gpt-4o", "openai");
 if (result.type() != $ERR) {
     "Model loaded successfully!".echo();
     
     /* Generate text */
-    response = model.gen("What is artificial intelligence?");
+    response = model.gen("What is artificial intelligence?", {
+        "api_key": "sk-your-openai-api-key"
+    });
     ("Response: " + response.str()).echo();
     
     /* Generate with different parameters */

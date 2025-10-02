@@ -4,7 +4,38 @@ This guide explains how to download AI/ML models for use with the `$MODEL` data 
 
 ## Overview
 
-The `$MODEL` type supports GGUF format models, which are optimized for local inference. These models are typically large files (several GB) and may be split into multiple parts for easier downloading.
+**Note: Local model support has been removed from Grapa. The `$MODEL` type now only supports OpenAI cloud-based models.**
+
+For OpenAI models, no downloading is required - you simply specify the model name when loading:
+
+```grapa
+/* Load OpenAI text generation model */
+model = $MODEL();
+result = model.load("gpt-4o", "openai");
+
+/* Load OpenAI embedding model */
+result = model.load("text-embedding-3-small", "openai-embedding");
+```
+
+## OpenAI Model Usage
+
+OpenAI models are accessed via API calls and don't require local downloads. Simply use the model name and provide your API key:
+
+```grapa
+/* Generate text with OpenAI */
+response = model.gen("Hello, how are you?", {
+    "api_key": "sk-your-openai-api-key"
+});
+
+/* Create embeddings with OpenAI */
+response = model.gen("The quick brown fox", {
+    "api_key": "sk-your-openai-api-key"
+});
+```
+
+## Legacy Local Model Information
+
+The following information is kept for reference but local models are no longer supported:
 
 ## Download Methods
 
