@@ -131,14 +131,14 @@ Gets the current context state of the model.
 **Returns:** Object containing context information:
 - `id` (string): Response ID for conversation continuity (OpenAI only)
 - `method` (string): Method being used
-- `model` (string): Model name
+- `model_path` (string): Model name or path
 
 **Example:**
 ```grapa
 context = model.context();
 ("Response ID: " + context."id".str()).echo();
 ("Method: " + context."method".str()).echo();
-("Model: " + context."model".str()).echo();
+("Model path: " + context."model_path".str()).echo();
 ```
 
 ### `.context(contextData)`
@@ -153,7 +153,7 @@ Sets the context for the model.
 context = {
     "id": "response_12345",
     "method": "openai",
-    "model": "gpt-4o"
+    "model_path": "gpt-4o"
 };
 model.context(context);
 ```
