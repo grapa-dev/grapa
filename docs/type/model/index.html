@@ -4486,8 +4486,7 @@
 - Load and manage OpenAI models for text generation and embeddings
 - Generate text using OpenAI models
 - Create text embeddings using OpenAI models
-- Configure generation parameters
-- Control model verbosity and logging
+- Configure API key and context storage
 - Unload models to free memory
 - Use cloud-based models with persistent context</p>
 <h2 id="basic-usage">Basic Usage</h2>
@@ -4537,10 +4536,10 @@ result = model.load(&quot;text-embedding-3-small&quot;, &quot;openai-embedding&q
 <div class="highlight"><pre><span></span><code>/* Basic generation */
 response = model.gen(&quot;What is artificial intelligence?&quot;);
 
-/* Generation with custom parameters (local model) */
+/* Generation with store parameter */
 response = model.gen(&quot;Explain machine learning&quot;, {
-    &quot;temperature&quot;: 0.8,
-    &quot;max_tokens&quot;: 100
+    &quot;api_key&quot;: &quot;sk-your-openai-api-key&quot;,
+    &quot;store&quot;: false
 });
 
 /* Generation with OpenAI API key (cloud model) */
@@ -4550,21 +4549,22 @@ response = model.gen(&quot;Hello, how are you?&quot;, {
 </code></pre></div></p>
 <h3 id="info"><code>.info()</code></h3>
 <p>Returns information about the current model state.</p>
-<p><strong>Returns:</strong> Object containing model information</p>
+<p><strong>Returns:</strong> Object containing model information:
+- <code>loaded</code> (boolean): Whether the model is currently loaded
+- <code>method</code> (string): The method being used (e.g., "openai", "openai-embedding")
+- <code>model_path</code> (string): The model name or path</p>
 <p><strong>Example:</strong>
 <div class="highlight"><pre><span></span><code>info = model.info();
 (&quot;Model loaded: &quot; + info.&quot;loaded&quot;.str()).echo();
 (&quot;Method: &quot; + info.&quot;method&quot;.str()).echo();
 (&quot;Model path: &quot; + info.&quot;model_path&quot;.str()).echo();
-(&quot;Model name: &quot; + info.&quot;model&quot;.str()).echo();
 </code></pre></div></p>
 <h3 id="params"><code>.params()</code></h3>
 <p>Returns current generation parameters.</p>
 <p><strong>Returns:</strong> Object containing all current parameters</p>
 <p><strong>Example:</strong>
 <div class="highlight"><pre><span></span><code>params = model.params();
-(&quot;Current temperature: &quot; + params.&quot;temperature&quot;.str()).echo();
-(&quot;Max tokens: &quot; + params.&quot;max_tokens&quot;.str()).echo();
+(&quot;Current parameters: &quot; + params.str()).echo();
 </code></pre></div></p>
 <h3 id="paramsparameters"><code>.params(parameters)</code></h3>
 <p>Sets generation parameters using a <code>$GOBJ</code> collection.</p>
@@ -4572,43 +4572,34 @@ response = model.gen(&quot;Hello, how are you?&quot;, {
 - <code>parameters</code> (<code>$GOBJ</code>): Collection containing parameter name-value pairs</p>
 <p><strong>Example:</strong>
 <div class="highlight"><pre><span></span><code>model.params({
-    &quot;temperature&quot;: 0.7,
-    &quot;max_tokens&quot;: 50,
-    &quot;verbose&quot;: 2
+    &quot;api_key&quot;: &quot;sk-your-openai-api-key&quot;,
+    &quot;store&quot;: true
 });
 </code></pre></div></p>
 <h3 id="context"><code>.context()</code></h3>
 <p>Gets the current context state of the model.</p>
 <p><strong>Returns:</strong> Object containing context information:
-- <code>text</code> (string): Current text context
-- <code>tokens</code> (list): Current token context (for efficient method processing)
+- <code>id</code> (string): Response ID for conversation continuity (OpenAI only)
 - <code>method</code> (string): Method being used
-- <code>model</code> (string): Model filename</p>
+- <code>model</code> (string): Model name</p>
 <p><strong>Example:</strong>
 <div class="highlight"><pre><span></span><code>context = model.context();
-(&quot;Context text: &quot; + context.&quot;text&quot;.str()).echo();
-(&quot;Context tokens: &quot; + context.&quot;tokens&quot;.len().str() + &quot; tokens&quot;).echo();
+(&quot;Response ID: &quot; + context.&quot;id&quot;.str()).echo();
+(&quot;Method: &quot; + context.&quot;method&quot;.str()).echo();
+(&quot;Model: &quot; + context.&quot;model&quot;.str()).echo();
 </code></pre></div></p>
 <h3 id="contextcontextdata"><code>.context(contextData)</code></h3>
 <p>Sets the context for the model.</p>
 <p><strong>Parameters:</strong>
-- <code>contextData</code> (string, list, or object): Context data to set
-  - If string: Sets text context
-  - If list: Sets token context (for efficient processing)
-  - If object: Can contain both "text" and "tokens" fields</p>
+- <code>contextData</code> (object): Context object containing an <code>id</code> field for conversation continuity</p>
 <p><strong>Example:</strong>
-<div class="highlight"><pre><span></span><code>/* Set text context */
-model.context(&quot;Previous conversation: Hello, how are you?&quot;);
-
-/* Set token context (more efficient) */
-tokenList = [1, 2, 3, 4, 5];
-model.context(tokenList);
-
-/* Set both text and tokens */
-model.context({
-    &quot;text&quot;: &quot;Previous conversation&quot;,
-    &quot;tokens&quot;: [1, 2, 3, 4, 5]
-});
+<div class="highlight"><pre><span></span><code>/* Set context using response ID from previous conversation */
+context = {
+    &quot;id&quot;: &quot;response_12345&quot;,
+    &quot;method&quot;: &quot;openai&quot;,
+    &quot;model&quot;: &quot;gpt-4o&quot;
+};
+model.context(context);
 </code></pre></div></p>
 <h3 id="load"><code>.load()</code></h3>
 <p>Unloads the current model and frees memory by calling <code>.load()</code> with no parameters.</p>
