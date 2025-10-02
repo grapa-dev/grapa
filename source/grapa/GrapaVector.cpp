@@ -5553,4 +5553,9 @@ bool GrapaVector::EigH(GrapaScriptExec* pScriptExec, GrapaNames* pNameSpace, Gra
 	return false;
 }
 
+GrapaError GrapaVector::Similarity(GrapaScriptExec* pScriptExec, GrapaNames* pNameSpace, GrapaVector& other, GrapaVector& result, const GrapaCHAR& method)
+{
+	return false;
+}
+
 ////////////////////////////////////////////////////////////////////////////////

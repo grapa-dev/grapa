@@ -163,6 +163,7 @@ public:
 	virtual bool TriU(GrapaScriptExec* pScriptExec, s64 n, GrapaVector& result);
 	virtual bool TriL(GrapaScriptExec* pScriptExec, s64 n, GrapaVector& result);
 	virtual bool EigH(GrapaScriptExec* pScriptExec, GrapaNames* pNameSpace, GrapaVector& w, GrapaVector& p);
+	virtual GrapaError Similarity(GrapaScriptExec* pScriptExec, GrapaNames* pNameSpace, GrapaVector& other, GrapaVector& result, const GrapaCHAR& method);
 };
 
 #endif //_GrapaVector_

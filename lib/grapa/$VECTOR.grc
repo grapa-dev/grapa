@@ -28,5 +28,6 @@ $global["$VECTOR"]
 	quantile = @<[op,@<"$VECTOR","quantile",{@<this,{}>,@<var,{q}>,@<var,{axis}>}>],{"q":null,"axis":null}>; 
 	skew = @<[op,@<"$VECTOR","skew",{@<this,{}>,@<var,{axis}>}>],{"axis":null}>; 
 	kurtosis = @<[op,@<"$VECTOR","kurtosis",{@<this,{}>,@<var,{axis}>}>],{"axis":null}>; 
+	similarity = @<[op,@<"$VECTOR","similarity",{@<this,{}>,@<var,{other}>,@<var,{method}>}>],{"other":null,"method"}>; 
 	};
 	

@@ -2680,6 +2680,14 @@ public:
 };
 GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleVectorKurtosis(GrapaCHAR& pName) { return new GrapaLibraryRuleVectorKurtosisEvent(pName); }
 
+class GrapaLibraryRuleVectorSimilarityEvent : public GrapaLibraryEvent
+{
+public:
+	GrapaLibraryRuleVectorSimilarityEvent(GrapaCHAR& pName) { mName.FROM(pName); };
+	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
+};
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleVectorSimilarity(GrapaCHAR& pName) { return new GrapaLibraryRuleVectorSimilarityEvent(pName); }
+
 class GrapaLibraryRuleLowerEvent : public GrapaLibraryEvent
 {
 public:
@@ -3445,7 +3453,8 @@ GrapaLibraryEvent* GrapaLibraryRuleEvent::LoadLib(GrapaScriptExec *vScriptExec, 
             { "percentile", &GrapaLibraryRuleEvent::HandleVectorPercentile },
             { "quantile", &GrapaLibraryRuleEvent::HandleVectorQuantile },
             { "skew", &GrapaLibraryRuleEvent::HandleVectorSkew },
-            { "kurtosis", &GrapaLibraryRuleEvent::HandleVectorKurtosis },
+			{ "kurtosis", &GrapaLibraryRuleEvent::HandleVectorKurtosis },
+			{ "similarity", &GrapaLibraryRuleEvent::HandleVectorSimilarity },
         };
         auto it = handlerMap.find((char*)pName.mBytes);
         if (it != handlerMap.end())
@@ -21482,6 +21491,58 @@ GrapaRuleEvent* GrapaLibraryRuleVectorKurtosisEvent::Run(GrapaScriptExec* vScrip
 		result = Error(vScriptExec, pNameSpace, -1);
 	return(result);
 }
+
+GrapaRuleEvent* GrapaLibraryRuleVectorSimilarityEvent::Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput)
+{
+	GrapaRuleEvent* result = NULL;
+	GrapaLibraryParam r1(vScriptExec, pNameSpace, pInput ? pInput->Head(0) : NULL);
+	GrapaLibraryParam r2(vScriptExec, pNameSpace, pInput ? pInput->Head(1) : NULL);
+	GrapaLibraryParam r3(vScriptExec, pNameSpace, pInput ? pInput->Head(2) : NULL);
+	GrapaCHAR method;
+	if (r3.vVal && r3.vVal->mValue.mToken == GrapaTokenType::STR)
+	{
+		method.FROM(r3.vVal->mValue);
+	}
+	else
+	{
+		method.FROM("cosine");
+	}
+	if (r1.vVal && r2.vVal && r1.vVal->mValue.mToken == GrapaTokenType::LIST && r2.vVal->mValue.mToken == GrapaTokenType::LIST)
+	{
+		GrapaVector aa;
+		aa.FROM(vScriptExec->vScriptState->mItemState.mFloatFix, vScriptExec->vScriptState->mItemState.mFloatMax, vScriptExec->vScriptState->mItemState.mFloatExtra, r1.vVal, 0);
+		GrapaVector bb;
+		bb.FROM(vScriptExec->vScriptState->mItemState.mFloatFix, vScriptExec->vScriptState->mItemState.mFloatMax, vScriptExec->vScriptState->mItemState.mFloatExtra, r2.vVal, 0);
+		GrapaVector cc;
+		GrapaError err = aa.Similarity(vScriptExec, pNameSpace, bb, cc, method);
+		if (err)
+		{
+			result = Error(vScriptExec, pNameSpace, -1);
+		}
+		else
+		{
+			result = cc.ToArray();
+		}
+	}
+	else if (r1.vVal && r2.vVal && r1.vVal->mValue.mToken == GrapaTokenType::VECTOR && r2.vVal->mValue.mToken == GrapaTokenType::VECTOR)
+	{
+		result = new GrapaRuleEvent(0, GrapaCHAR(""), GrapaCHAR(""));
+		result->mValue.mToken = GrapaTokenType::VECTOR;
+		result->vVector = new GrapaVector();
+		GrapaError err = r1.vVal->vVector->Similarity(vScriptExec, pNameSpace, *r2.vVal->vVector, *result->vVector, method);
+		if (err)
+		{
+			result->vVector->CLEAR();
+			delete result->vVector;
+			result->vVector = NULL;
+			result = Error(vScriptExec, pNameSpace, -1);
+		}
+	}
+	if (result == NULL)
+		result = Error(vScriptExec, pNameSpace, -1);
+	return(result);
+}
+
 
 GrapaRuleEvent* GrapaLibraryRuleLowerEvent::Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput)
 {
