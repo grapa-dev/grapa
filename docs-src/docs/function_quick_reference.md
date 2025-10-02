@@ -57,7 +57,7 @@ tags:
 `left`, `right`, `mid`, `midtrim`, `rtrim`, `ltrim`, `trim`, `rrot`, `lrot`, `rpad`, `lpad`, `reverse`, `replace`, `grep`, `split`, `join`, `lower`, `upper`
 
 ## String Distance & Similarity
-`levenshtein_distance`, `damerau_levenshtein_distance`, `jaro_winkler_similarity`, `cosine_similarity`, `jaccard_similarity`
+`.similarity()` - Unified method supporting all string similarity and distance algorithms
 
 ## Array/Matrix
 `shape`, `reshape`, `dot`, `identity`, `diagonal`, `triu`, `tril`, `eigh`, `sum`, `mean`

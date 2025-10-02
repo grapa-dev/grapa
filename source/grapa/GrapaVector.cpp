@@ -5648,7 +5648,7 @@ GrapaError GrapaVector::Similarity(GrapaScriptExec* pScriptExec, GrapaNames* pNa
 	// Calculate final result based on method
 	GrapaFloat final_result(pScriptExec->vScriptState->mItemState.mFloatFix, pScriptExec->vScriptState->mItemState.mFloatMax, pScriptExec->vScriptState->mItemState.mFloatExtra, 0);
 	
-	if (method.StrLowerCmp("cosine") == 0)
+	if (method.StrLowerCmp("cosine") == 0 || method.StrLowerCmp("cosine_similarity") == 0)
 	{
 		// Cosine similarity: (a·b) / (||a|| * ||b||)
 		GrapaFloat norm_a = sum_a2.Root(2);
@@ -5661,7 +5661,7 @@ GrapaError GrapaVector::Similarity(GrapaScriptExec* pScriptExec, GrapaNames* pNa
 		else
 			final_result = sum_ab / (norm_a * norm_b);
 	}
-	else if (method.StrLowerCmp("pearson") == 0)
+	else if (method.StrLowerCmp("pearson") == 0 || method.StrLowerCmp("pearson_similarity") == 0)
 	{
 		// Pearson correlation: (n*sum(ab) - sum(a)*sum(b)) / sqrt((n*sum(a²) - sum(a)²) * (n*sum(b²) - sum(b)²))
 		GrapaFloat n_float(pScriptExec->vScriptState->mItemState.mFloatFix, pScriptExec->vScriptState->mItemState.mFloatMax, pScriptExec->vScriptState->mItemState.mFloatExtra, n);
@@ -5677,7 +5677,7 @@ GrapaError GrapaVector::Similarity(GrapaScriptExec* pScriptExec, GrapaNames* pNa
 		else
 			final_result = numerator / denominator;
 	}
-	else if (method.StrLowerCmp("jaccard") == 0)
+	else if (method.StrLowerCmp("jaccard") == 0 || method.StrLowerCmp("jaccard_similarity") == 0)
 	{
 		// Jaccard similarity: |A ∩ B| / |A ∪ B|
 		if (sum_jaccard_den == 0)
@@ -5688,7 +5688,7 @@ GrapaError GrapaVector::Similarity(GrapaScriptExec* pScriptExec, GrapaNames* pNa
 		else
 			final_result = sum_jaccard_num / sum_jaccard_den;
 	}
-	else if (method.StrLowerCmp("dice") == 0)
+	else if (method.StrLowerCmp("dice") == 0 || method.StrLowerCmp("dice_similarity") == 0)
 	{
 		// Dice similarity: 2 * |A ∩ B| / (|A| + |B|)
 		GrapaFloat denominator = sum_a2 + sum_b2;
@@ -5703,7 +5703,7 @@ GrapaError GrapaVector::Similarity(GrapaScriptExec* pScriptExec, GrapaNames* pNa
 			final_result = (two * sum_jaccard_num) / denominator;
 		}
 	}
-	else if (method.StrLowerCmp("tanimoto") == 0)
+	else if (method.StrLowerCmp("tanimoto") == 0 || method.StrLowerCmp("tanimoto_similarity") == 0)
 	{
 		// Tanimoto similarity: |A ∩ B| / (|A| + |B| - |A ∩ B|)
 		GrapaFloat denominator = (sum_a2 + sum_b2) - sum_jaccard_num;
@@ -5715,34 +5715,34 @@ GrapaError GrapaVector::Similarity(GrapaScriptExec* pScriptExec, GrapaNames* pNa
 		else
 			final_result = sum_jaccard_num / denominator;
 	}
-	else if (method.StrLowerCmp("inner") == 0)
+	else if (method.StrLowerCmp("inner") == 0 || method.StrLowerCmp("inner_similarity") == 0)
 	{
 		// Inner product (dot product)
 		final_result = sum_ab;
 	}
-	else if (method.StrLowerCmp("euclidean") == 0 || method.StrLowerCmp("l2") == 0)
+	else if (method.StrLowerCmp("euclidean") == 0 || method.StrLowerCmp("euclidean_distance") == 0 || method.StrLowerCmp("l2") == 0)
 	{
 		// Euclidean distance: sqrt(sum((a-b)²))
 		final_result = sum_diff2.Root(2);
 	}
-	else if (method.StrLowerCmp("manhattan") == 0 || method.StrLowerCmp("l1") == 0)
+	else if (method.StrLowerCmp("manhattan") == 0 || method.StrLowerCmp("manhattan_distance") == 0 || method.StrLowerCmp("l1") == 0)
 	{
 		// Manhattan distance: sum(|a-b|)
 		final_result = sum_abs_diff;
 	}
-	else if (method.StrLowerCmp("chebyshev") == 0 || method.StrLowerCmp("l∞") == 0)
+	else if (method.StrLowerCmp("chebyshev") == 0 || method.StrLowerCmp("chebyshev_distance") == 0 || method.StrLowerCmp("l∞") == 0)
 	{
 		// Chebyshev distance: max(|a-b|)
 		final_result = sum_max_diff;
 	}
-	else if (method.StrLowerCmp("minkowski") == 0)
+	else if (method.StrLowerCmp("minkowski") == 0 || method.StrLowerCmp("minkowski_distance") == 0)
 	{
 		// Minkowski distance: (sum(|a-b|^p))^(1/p)
 		// Default to p=2 (Euclidean) if no parameter provided
 		// For now, default to Euclidean (p=2)
 		final_result = sum_diff2.Root(2);
 	}
-	else if (method.StrLowerCmp("hamming") == 0)
+	else if (method.StrLowerCmp("hamming") == 0 || method.StrLowerCmp("hamming_distance") == 0)
 	{
 		// Hamming distance: number of positions where vectors differ
 		// For continuous vectors, this is not directly applicable
@@ -5764,12 +5764,12 @@ GrapaError GrapaVector::Similarity(GrapaScriptExec* pScriptExec, GrapaNames* pNa
 		}
 		final_result = hamming_count;
 	}
-	else if (method.StrLowerCmp("canberra") == 0)
+	else if (method.StrLowerCmp("canberra") == 0 || method.StrLowerCmp("canberra_distance") == 0)
 	{
 		// Canberra distance: sum(|a-b| / (|a| + |b|))
 		final_result = sum_canberra;
 	}
-	else if (method.StrLowerCmp("braycurtis") == 0)
+	else if (method.StrLowerCmp("braycurtis") == 0 || method.StrLowerCmp("braycurtis_distance") == 0)
 	{
 		// Bray-Curtis distance: sum(|a-b|) / sum(|a| + |b|)
 		GrapaFloat denominator = sum_a2 + sum_b2;
@@ -5781,13 +5781,13 @@ GrapaError GrapaVector::Similarity(GrapaScriptExec* pScriptExec, GrapaNames* pNa
 		else
 			final_result = sum_bray_curtis / denominator;
 	}
-	else if (method.StrLowerCmp("norm_euclidean") == 0)
+	else if (method.StrLowerCmp("norm_euclidean") == 0 || method.StrLowerCmp("norm_euclidean_distance") == 0)
 	{
 		// Normalized Euclidean distance: sqrt(sum((a-b)²)) / sqrt(n)
 		GrapaFloat n_float(pScriptExec->vScriptState->mItemState.mFloatFix, pScriptExec->vScriptState->mItemState.mFloatMax, pScriptExec->vScriptState->mItemState.mFloatExtra, n);
 		final_result = sum_diff2.Root(2) / n_float.Root(2);
 	}
-	else if (method.StrLowerCmp("norm_manhattan") == 0)
+	else if (method.StrLowerCmp("norm_manhattan") == 0 || method.StrLowerCmp("norm_manhattan_distance") == 0)
 	{
 		// Normalized Manhattan distance: sum(|a-b|) / n
 		GrapaFloat n_float(pScriptExec->vScriptState->mItemState.mFloatFix, pScriptExec->vScriptState->mItemState.mFloatMax, pScriptExec->vScriptState->mItemState.mFloatExtra, n);

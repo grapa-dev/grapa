@@ -260,7 +260,8 @@ public:
     GrapaLibraryEvent* HandleJaroWinklerSimilarity(GrapaCHAR& pName);
     GrapaLibraryEvent* HandleCosineSimilarity(GrapaCHAR& pName);
     GrapaLibraryEvent* HandleJaccardSimilarity(GrapaCHAR& pName);
-	
+	GrapaLibraryEvent* HandleSimilarity(GrapaCHAR& pName);
+
 	GrapaLibraryEvent* HandleUtc(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleTz(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleEq(GrapaCHAR& pName);
@@ -299,7 +300,6 @@ public:
 	GrapaLibraryEvent* HandleVectorQuantile(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleVectorSkew(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleVectorKurtosis(GrapaCHAR& pName);
-	GrapaLibraryEvent* HandleVectorSimilarity(GrapaCHAR& pName);
 
 	GrapaLibraryEvent* HandleTryLock(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleLock(GrapaCHAR& pName);

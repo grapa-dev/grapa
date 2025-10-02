@@ -1128,6 +1128,52 @@ norm_euclidean = vec1.similarity(vec2, 'norm_euclidean'); /* #[3.0]# */
 norm_manhattan = vec1.similarity(vec2, 'norm_manhattan'); /* #[3]# */
 ```
 
+#### **Supported Similarity Methods for $VECTOR**
+
+The unified `.similarity()` method supports the following algorithms:
+
+**Similarity Methods (Higher = More Similar):**
+- `"cosine"` / `"cosine_similarity"` - Cosine similarity (default): measures angle between vectors
+- `"pearson"` / `"pearson_similarity"` - Pearson correlation: measures linear correlation
+- `"jaccard"` / `"jaccard_similarity"` - Jaccard similarity: set intersection over union
+- `"dice"` / `"dice_similarity"` - Dice similarity: 2×intersection over sum
+- `"tanimoto"` / `"tanimoto_similarity"` - Tanimoto similarity: intersection over (sum - intersection)
+- `"inner"` / `"inner_similarity"` - Inner product (dot product)
+
+**Distance Methods (Lower = More Similar):**
+- `"euclidean"` / `"euclidean_distance"` / `"l2"` - Euclidean distance: straight-line distance
+- `"manhattan"` / `"manhattan_distance"` / `"l1"` - Manhattan distance: sum of absolute differences
+- `"chebyshev"` / `"chebyshev_distance"` / `"l∞"` - Chebyshev distance: maximum absolute difference
+- `"minkowski"` / `"minkowski_distance"` - Minkowski distance: generalized distance (default p=2)
+- `"hamming"` / `"hamming_distance"` - Hamming distance: number of differing positions
+- `"canberra"` / `"canberra_distance"` - Canberra distance: weighted distance
+- `"braycurtis"` / `"braycurtis_distance"` - Bray-Curtis distance: normalized Manhattan
+- `"norm_euclidean"` / `"norm_euclidean_distance"` - Normalized Euclidean distance
+- `"norm_manhattan"` / `"norm_manhattan_distance"` - Normalized Manhattan distance
+
+**Examples:**
+```grapa
+/* Similarity methods (higher = more similar) */
+vec1 = #[1, 2, 3]#;
+vec2 = #[4, 5, 6]#;
+cosine = vec1.similarity(vec2, "cosine");           /* Returns: 0.974... */
+pearson = vec1.similarity(vec2, "pearson");        /* Returns: 1.0 (perfect correlation) */
+jaccard = vec1.similarity(vec2, "jaccard");        /* Returns: 0.0 (no overlap) */
+
+/* Distance methods (lower = more similar) */
+euclidean = vec1.similarity(vec2, "euclidean");    /* Returns: 5.196... */
+manhattan = vec1.similarity(vec2, "manhattan");    /* Returns: 9 */
+hamming = vec1.similarity(vec2, "hamming");        /* Returns: 3 */
+
+/* Alternative method names */
+l2_dist = vec1.similarity(vec2, "l2");             /* Same as euclidean */
+l1_dist = vec1.similarity(vec2, "l1");             /* Same as manhattan */
+l_inf = vec1.similarity(vec2, "l∞");               /* Same as chebyshev */
+
+/* Default method (cosine similarity) */
+default = vec1.similarity(vec2);                   /* Returns: 0.974... */
+```
+
 **Key Points:**
 - **Similarity methods** return values where higher = more similar (0-1 range for most)
 - **Distance methods** return values where lower = more similar (≥0 range)

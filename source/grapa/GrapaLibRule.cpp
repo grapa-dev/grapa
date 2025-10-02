@@ -21540,7 +21540,58 @@ GrapaRuleEvent* GrapaLibraryRuleSimilarityEvent::Run(GrapaScriptExec* vScriptExe
 	}
 	else if (r1.vVal && r2.vVal && r1.vVal->mValue.mToken == GrapaTokenType::STR && r2.vVal->mValue.mToken == GrapaTokenType::STR)
 	{
-
+		// Get the two strings to compare
+		std::string str1(reinterpret_cast<const char*>(r1.vVal->mValue.mBytes), r1.vVal->mValue.mLength);
+		std::string str2(reinterpret_cast<const char*>(r2.vVal->mValue.mBytes), r2.vVal->mValue.mLength);
+		
+		// Convert method to lowercase for case-insensitive comparison
+		std::string method_str(reinterpret_cast<const char*>(method.mBytes), method.mLength);
+		std::transform(method_str.begin(), method_str.end(), method_str.begin(), ::tolower);
+		
+		if (method_str == "levenshtein" || method_str == "levenshtein_distance")
+		{
+			// Levenshtein distance (lower = more similar)
+			int distance = calculate_levenshtein_distance(str1, str2);
+			result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaInt(distance).getBytes());
+		}
+		else if (method_str == "damerau" || method_str == "damerau_levenshtein" || method_str == "damerau_levenshtein_distance")
+		{
+			// Damerau-Levenshtein distance (lower = more similar)
+			int distance = calculate_damerau_levenshtein_distance(str1, str2);
+			result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaInt(distance).getBytes());
+		}
+		else if (method_str == "jaro" || method_str == "jaro_winkler" || method_str == "jaro_winkler_similarity")
+		{
+			// Jaro-Winkler similarity (higher = more similar)
+			double similarity = calculate_jaro_winkler_similarity(str1, str2);
+			result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaFloat(similarity).getBytes());
+		}
+		else if (method_str == "cosine" || method_str == "cosine_similarity")
+		{
+			// Cosine similarity (higher = more similar)
+			double similarity = calculate_cosine_similarity(str1, str2);
+			result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaFloat(similarity).getBytes());
+		}
+		else if (method_str == "jaccard" || method_str == "jaccard_similarity")
+		{
+			// Jaccard similarity (higher = more similar) - default to word-based
+			double similarity = calculate_jaccard_similarity(str1, str2, "word", 1);
+			result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaFloat(similarity).getBytes());
+		}
+		else if (method_str == "tfidf" || method_str == "cosine_tfidf")
+		{
+			// TF-IDF cosine similarity (higher = more similar)
+			// For now, use basic cosine similarity as fallback
+			// TODO: Add corpus parameter support
+			double similarity = calculate_cosine_similarity(str1, str2);
+			result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaFloat(similarity).getBytes());
+		}
+		else
+		{
+			// Default to cosine similarity
+			double similarity = calculate_cosine_similarity(str1, str2);
+			result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaFloat(similarity).getBytes());
+		}
 	}
 
 	if (result == NULL)

@@ -136,26 +136,51 @@ The following methods are available specifically on `$STR` objects:
 ```
 
 ### String Distance & Similarity Functions
+
+#### **Unified Similarity Method (NEW)**
 ```grapa
-/* Levenshtein distance - edit distance between strings */
-"hello".levenshtein_distance("hallo");     /* Returns: 1 (one character difference) */
-"kitten".levenshtein_distance("sitting");  /* Returns: 3 (three edit operations) */
+/* Unified .similarity() method with multiple algorithms */
+"hello".similarity("hallo", "levenshtein");        /* Returns: 1 (edit distance) */
+"hello".similarity("hallo", "levenshtein_distance"); /* Same as above */
+"hello".similarity("hallo", "jaro");               /* Returns: 0.88 (Jaro-Winkler similarity) */
+"hello".similarity("hallo", "jaro_winkler_similarity"); /* Same as above */
+"hello world".similarity("world hello", "cosine"); /* Returns: 1.0 (cosine similarity) */
+"hello world".similarity("world hello", "cosine_similarity"); /* Same as above */
+"hello world".similarity("hello there", "jaccard"); /* Returns: 0.333 (Jaccard similarity) */
+"hello world".similarity("hello there", "jaccard_similarity"); /* Same as above */
 
-/* Damerau-Levenshtein distance - edit distance with transposition support */
-"hello".damerau_levenshtein_distance("hlelo");  /* Returns: 1 (transposition) */
-"kitten".damerau_levenshtein_distance("sitting"); /* Returns: 3 (same as Levenshtein) */
+/* Default method (cosine similarity) */
+"hello world".similarity("world hello");           /* Returns: 1.0 (default cosine) */
+```
 
-/* Jaro-Winkler similarity - string similarity score */
-"hello".jaro_winkler_similarity("hallo");     /* Returns: 0.933... (high similarity) */
-"hello".jaro_winkler_similarity("world");     /* Returns: 0.0 (no similarity) */
 
-/* Cosine similarity - vector-based similarity */
-"hello world".cosine_similarity("world hello");  /* Returns: 1.0 (identical words) */
-"hello world".cosine_similarity("goodbye world"); /* Returns: 0.5 (partial similarity) */
+#### **Supported Similarity Methods for $STR**
 
-/* Jaccard similarity - set-based similarity */
-"hello world".jaccard_similarity("hello there");  /* Returns: 0.333 (1/3 words overlap) */
-"hello".jaccard_similarity("hallo", "char", 2);   /* Returns: 0.0 (no 2-gram overlap) */
+The unified `.similarity()` method supports the following algorithms:
+
+**Distance Methods (Lower = More Similar):**
+- `"levenshtein"` / `"levenshtein_distance"` - Edit distance between strings
+- `"damerau"` / `"damerau_levenshtein"` / `"damerau_levenshtein_distance"` - Edit distance with transposition support
+
+**Similarity Methods (Higher = More Similar):**
+- `"jaro"` / `"jaro_winkler"` / `"jaro_winkler_similarity"` - String similarity score (0-1 range)
+- `"cosine"` / `"cosine_similarity"` - Vector-based similarity using word frequencies
+- `"jaccard"` / `"jaccard_similarity"` - Set-based similarity using word overlap
+- `"tfidf"` / `"cosine_tfidf"` - TF-IDF weighted cosine similarity
+
+**Examples:**
+```grapa
+/* Distance methods (lower = more similar) */
+"hello".similarity("hallo", "levenshtein");        /* Returns: 1 */
+"hello".similarity("hlelo", "damerau");           /* Returns: 1 (transposition) */
+
+/* Similarity methods (higher = more similar) */
+"hello".similarity("hallo", "jaro");               /* Returns: 0.88 */
+"hello world".similarity("world hello", "cosine"); /* Returns: 1.0 */
+"hello world".similarity("hello there", "jaccard"); /* Returns: 0.333 */
+
+/* Default method (cosine similarity) */
+"hello world".similarity("world hello");           /* Returns: 1.0 */
 ```
 
 **Use Cases:**
