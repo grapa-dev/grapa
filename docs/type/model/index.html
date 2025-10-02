@@ -4581,12 +4581,12 @@ response = model.gen(&quot;Hello, how are you?&quot;, {
 <p><strong>Returns:</strong> Object containing context information:
 - <code>id</code> (string): Response ID for conversation continuity (OpenAI only)
 - <code>method</code> (string): Method being used
-- <code>model</code> (string): Model name</p>
+- <code>model_path</code> (string): Model name or path</p>
 <p><strong>Example:</strong>
 <div class="highlight"><pre><span></span><code>context = model.context();
 (&quot;Response ID: &quot; + context.&quot;id&quot;.str()).echo();
 (&quot;Method: &quot; + context.&quot;method&quot;.str()).echo();
-(&quot;Model: &quot; + context.&quot;model&quot;.str()).echo();
+(&quot;Model path: &quot; + context.&quot;model_path&quot;.str()).echo();
 </code></pre></div></p>
 <h3 id="contextcontextdata"><code>.context(contextData)</code></h3>
 <p>Sets the context for the model.</p>
@@ -4597,7 +4597,7 @@ response = model.gen(&quot;Hello, how are you?&quot;, {
 context = {
     &quot;id&quot;: &quot;response_12345&quot;,
     &quot;method&quot;: &quot;openai&quot;,
-    &quot;model&quot;: &quot;gpt-4o&quot;
+    &quot;model_path&quot;: &quot;gpt-4o&quot;
 };
 model.context(context);
 </code></pre></div></p>
