@@ -282,11 +282,10 @@ results = tech_documents.similarity(query_text, "cosine", {
 /* Benchmark $KEY lookup performance */
 start_time = $TIME().utc();
 for i in (1000).range() {
-    key = "doc" + ((i % 3) + 1).toString();
+    key = "doc" + ((i % 3) + 1).str();
     content = vector_db.getfield(key, "content");
 }
-key_lookup_time = $TIME().utc();
-key_duration = key_lookup_time.ms() - start_time.ms();
+key_duration = start_time.ms();
 
 /* Benchmark $ID lookup performance */
 start_time = $TIME().utc();
@@ -294,12 +293,11 @@ for i in (1000).range() {
     record_id = all_records[(i % 3)]["$ID"];
     content = vector_db.getfield(record_id, "content");
 }
-id_lookup_time = $TIME().utc();
-id_duration = id_lookup_time.ms() - start_time.ms();
+id_duration = start_time.ms();
 
 /* Calculate performance improvement */
 improvement = key_duration / id_duration;
-("Performance improvement: " + improvement.toString() + "x faster with $ID\n").echo();
+("Performance improvement: " + improvement.str() + "x faster with $ID\n").echo();
 ```
 
 ### Large Dataset Performance
@@ -307,7 +305,7 @@ improvement = key_duration / id_duration;
 /* Create larger dataset for performance testing */
 large_dataset = [];
 for i in (1000).range() {
-    large_dataset.push("document " + i.toString() + " about machine learning and artificial intelligence");
+    large_dataset.push("document " + i.str() + " about machine learning and artificial intelligence");
 }
 
 query = "machine learning";
@@ -318,11 +316,10 @@ results = large_dataset.similarity(query, "cosine", {
     "top_n": 10,
     "include_scores": true
 });
-end_time = $TIME().utc();
-duration = end_time.ms() - start_time.ms();
+duration = start_time.ms();
 
-("Dataset size: " + large_dataset.len().toString() + " documents\n").echo();
-("Search time: " + duration.toString() + "ms\n").echo();
+("Dataset size: " + large_dataset.len().str() + " documents\n").echo();
+("Search time: " + duration.str() + "ms\n").echo();
 ("Results found: " + results."results".len().str() + "\n").echo();
 ```
 
