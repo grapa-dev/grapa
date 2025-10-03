@@ -5306,11 +5306,10 @@ results = tech_documents.similarity(query_text, &quot;cosine&quot;, {
 <div class="highlight"><pre><span></span><code>/* Benchmark $KEY lookup performance */
 start_time = $TIME().utc();
 for i in (1000).range() {
-    key = &quot;doc&quot; + ((i % 3) + 1).toString();
+    key = &quot;doc&quot; + ((i % 3) + 1).str();
     content = vector_db.getfield(key, &quot;content&quot;);
 }
-key_lookup_time = $TIME().utc();
-key_duration = key_lookup_time.ms() - start_time.ms();
+key_duration = start_time.ms();
 
 /* Benchmark $ID lookup performance */
 start_time = $TIME().utc();
@@ -5318,18 +5317,17 @@ for i in (1000).range() {
     record_id = all_records[(i % 3)][&quot;$ID&quot;];
     content = vector_db.getfield(record_id, &quot;content&quot;);
 }
-id_lookup_time = $TIME().utc();
-id_duration = id_lookup_time.ms() - start_time.ms();
+id_duration = start_time.ms();
 
 /* Calculate performance improvement */
 improvement = key_duration / id_duration;
-(&quot;Performance improvement: &quot; + improvement.toString() + &quot;x faster with $ID\n&quot;).echo();
+(&quot;Performance improvement: &quot; + improvement.str() + &quot;x faster with $ID\n&quot;).echo();
 </code></pre></div>
 <h3 id="large-dataset-performance">Large Dataset Performance</h3>
 <div class="highlight"><pre><span></span><code>/* Create larger dataset for performance testing */
 large_dataset = [];
 for i in (1000).range() {
-    large_dataset.push(&quot;document &quot; + i.toString() + &quot; about machine learning and artificial intelligence&quot;);
+    large_dataset.push(&quot;document &quot; + i.str() + &quot; about machine learning and artificial intelligence&quot;);
 }
 
 query = &quot;machine learning&quot;;
@@ -5340,11 +5338,10 @@ results = large_dataset.similarity(query, &quot;cosine&quot;, {
     &quot;top_n&quot;: 10,
     &quot;include_scores&quot;: true
 });
-end_time = $TIME().utc();
-duration = end_time.ms() - start_time.ms();
+duration = start_time.ms();
 
-(&quot;Dataset size: &quot; + large_dataset.len().toString() + &quot; documents\n&quot;).echo();
-(&quot;Search time: &quot; + duration.toString() + &quot;ms\n&quot;).echo();
+(&quot;Dataset size: &quot; + large_dataset.len().str() + &quot; documents\n&quot;).echo();
+(&quot;Search time: &quot; + duration.str() + &quot;ms\n&quot;).echo();
 (&quot;Results found: &quot; + results.&quot;results&quot;.len().str() + &quot;\n&quot;).echo();
 </code></pre></div>
 <h2 id="error-handling-and-edge-cases">Error Handling and Edge Cases</h2>
