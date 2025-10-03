@@ -290,6 +290,13 @@ result = strings.similarity(query, "cosine");
   "best_match": "hello world",
   "method": "cosine"
 } */
+
+/* Access and iterate through results */
+results_len = result."results".len();
+for i in results_len.range() {
+    match = result."results"[i];
+    ("Score: " + match."similarity".str() + " - " + match."item" + "\n").echo();
+}
 ```
 
 ### Object Array Similarity (Metadata Search)
@@ -318,6 +325,14 @@ result = metadata.similarity(query, "cosine", {"include_scores": true, "include_
   "best_match": {"name": "John", "age": 30, "city": "New York", "department": "Engineering"},
   "method": "cosine"
 } */
+
+/* Access and iterate through object similarity results */
+results_len = result."results".len();
+for i in results_len.range() {
+    match = result."results"[i];
+    item = match."item";
+    ("Score: " + match."similarity".str() + " - " + item."name" + " (age: " + item."age".str() + ")\n").echo();
+}
 ```
 
 **Object Similarity Features:**

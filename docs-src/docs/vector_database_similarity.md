@@ -29,18 +29,18 @@ Grapa's `.similarity()` method supports multiple algorithms in a single, consist
 
 ## Grapa vs Pinecone Comparison
 
-| Feature | Grapa `.similarity()` | Pinecone | Winner |
-|---------|----------------------|----------|---------|
-| **Similarity Algorithms** | 5+ algorithms (levenshtein, damerau, jaro, cosine, jaccard) | Primarily cosine | 🏆 **Grapa** |
-| **Array Search** | ✅ Native support | ✅ Native support | 🤝 **Tie** |
-| **Metadata Search** | ✅ Object field matching | ✅ Metadata filtering | 🤝 **Tie** |
-| **Result Control** | ✅ top_n, threshold, sort, include_scores | ✅ top_k, score_threshold, include_metadata | 🤝 **Tie** |
-| **Persistence** | ❌ In-memory only | ✅ Persistent database | 🏆 **Pinecone** |
-| **Scale** | ❌ Memory limited | ✅ Billions of vectors | 🏆 **Pinecone** |
-| **Performance** | ❌ O(n) for each search | ✅ Optimized indexing | 🏆 **Pinecone** |
-| **Ease of Use** | ✅ Native language integration | ❌ Requires API calls | 🏆 **Grapa** |
-| **Cost** | ✅ Free (local) | ❌ Pay-per-use | 🏆 **Grapa** |
-| **Advanced Options** | ✅ TF-IDF, word-based jaccard, configurable parameters | ❌ Limited options | 🏆 **Grapa** |
+| Feature | Grapa `.similarity()` | Grapa with DB | Pinecone | Winner |
+|---------|----------------------|---------------|----------|---------|
+| **Similarity Algorithms** | 5+ algorithms (levenshtein, damerau, jaro, cosine, jaccard) | 5+ algorithms (levenshtein, damerau, jaro, cosine, jaccard) | Primarily cosine | 🏆 **Grapa** |
+| **Array Search** | ✅ Native support | ✅ Native support | ✅ Native support | 🤝 **Tie** |
+| **Metadata Search** | ✅ Object field matching | ✅ Object field matching + DB indexing | ✅ Metadata filtering | 🏆 **Grapa with DB** |
+| **Result Control** | ✅ top_n, threshold, sort, include_scores | ✅ top_n, threshold, sort, include_scores | ✅ top_k, score_threshold, include_metadata | 🤝 **Tie** |
+| **Persistence** | ❌ In-memory only | ✅ Persistent database ($file, $TABLE) | ✅ Persistent database | 🏆 **Tie** |
+| **Scale** | ❌ Memory limited | ✅ Limited by disk space | ✅ Billions of vectors | 🏆 **Pinecone** |
+| **Performance** | ❌ O(n) for each search | ✅ O(log n) with DB indexing + O(n) similarity | ✅ Optimized indexing | 🏆 **Pinecone** |
+| **Ease of Use** | ✅ Native language integration | ✅ Native language integration | ❌ Requires API calls | 🏆 **Grapa** |
+| **Cost** | ✅ Free (local) | ✅ Free (local) | ❌ Pay-per-use | 🏆 **Grapa** |
+| **Advanced Options** | ✅ TF-IDF, word-based jaccard, configurable parameters | ✅ TF-IDF, word-based jaccard, configurable parameters | ❌ Limited options | 🏆 **Grapa** |
 
 ## Use Case Recommendations
 
@@ -53,13 +53,23 @@ Grapa's `.similarity()` method supports multiple algorithms in a single, consist
 - ✅ **Cost-sensitive** applications
 - ✅ **Real-time data** that changes frequently
 
+### Use Grapa with DB when:
+- ✅ **Medium to large datasets** (1M - 100M items)
+- ✅ **Persistent storage** required
+- ✅ **Local/offline applications** with data persistence
+- ✅ **Complex similarity algorithms** needed
+- ✅ **Native language integration** preferred
+- ✅ **Cost-sensitive** applications
+- ✅ **Metadata indexing** and filtering required
+- ✅ **Hybrid approach** (DB filtering + similarity search)
+
 ### Use Pinecone when:
-- ✅ **Large-scale production** (> 1M items)
+- ✅ **Large-scale production** (> 100M items)
 - ✅ **High-performance requirements** (sub-second latency)
-- ✅ **Persistent storage** needed
-- ✅ **Cloud deployment**
+- ✅ **Cloud deployment** preferred
 - ✅ **Simple cosine similarity** sufficient
 - ✅ **Budget available** for managed service
+- ✅ **Global distribution** needed
 
 ## Basic Usage
 
@@ -97,9 +107,10 @@ results = documents.similarity(query, "cosine", {
 });
 
 /* Display results */
-for i in results.range() {
-    result = results[i];
-    ("Score: " + result.similarity.toString() + " - " + result.item + "\n").echo();
+results_len = results."results".len();
+for i in results_len.range() {
+    result = results."results"[i];
+    ("Score: " + result."similarity".str() + " - " + result."item" + "\n").echo();
 }
 ```
 
@@ -121,9 +132,11 @@ results = user_profiles.similarity(query_profile, "cosine", {
 });
 
 /* Display results */
-for i in results.range() {
-    result = results[i];
-    ("Score: " + result.similarity.toString() + " - " + result.item.name + " (age: " + result.item.age.toString() + ")\n").echo();
+results_len = results."results".len();
+for i in results_len.range() {
+    result = results."results"[i];
+    item = result."item";
+    ("Score: " + result."similarity".str() + " - " + item."name" + " (age: " + item."age".str() + ")\n").echo();
 }
 ```
 
@@ -203,17 +216,21 @@ results = vectors.similarity(query_vector, "cosine", {
 vector_db = {}.table();
 
 /* Insert vector data with metadata */
-vector_db.set("doc1", "id", "document_1");
-vector_db.set("doc1", "content", "machine learning algorithms");
-vector_db.set("doc1", "type", "article");
-vector_db.set("doc1", "category", "tech");
-vector_db.set("doc1", "author", "John");
+vector_db.setfield("doc1", {
+    "id": "ml_algorithms_paper",
+    "content": "machine learning algorithms and neural networks",
+    "type": "research_paper",
+    "category": "machine_learning",
+    "author": "John"
+});
 
-vector_db.set("doc2", "id", "document_2");
-vector_db.set("doc2", "content", "artificial intelligence research");
-vector_db.set("doc2", "type", "article");
-vector_db.set("doc2", "category", "science");
-vector_db.set("doc2", "author", "Jane");
+vector_db.setfield("doc2", {
+    "id": "ai_research_survey", 
+    "content": "artificial intelligence research and development",
+    "type": "survey_paper",
+    "category": "artificial_intelligence",
+    "author": "Jane"
+});
 ```
 
 ### Performance Optimization with $ID
@@ -306,7 +323,7 @@ duration = end_time.ms() - start_time.ms();
 
 ("Dataset size: " + large_dataset.len().toString() + " documents\n").echo();
 ("Search time: " + duration.toString() + "ms\n").echo();
-("Results found: " + results.len().toString() + "\n").echo();
+("Results found: " + results."results".len().str() + "\n").echo();
 ```
 
 ## Error Handling and Edge Cases
@@ -315,14 +332,14 @@ duration = end_time.ms() - start_time.ms();
 ```grapa
 empty_array = [];
 empty_results = empty_array.similarity("test", "cosine");
-("Empty array similarity: " + empty_results.len().toString() + " results\n").echo();
+("Empty array similarity: " + empty_results."results".len().str() + " results\n").echo();
 ```
 
 ### Single Item Arrays
 ```grapa
 single_array = ["single item"];
 single_results = single_array.similarity("single item", "cosine");
-("Single item similarity: " + single_results.len().toString() + " results\n").echo();
+("Single item similarity: " + single_results."results".len().str() + " results\n").echo();
 ```
 
 ### Threshold Filtering
@@ -332,7 +349,7 @@ results = documents.similarity(query, "cosine", {
     "threshold": 0.5,
     "include_scores": true
 });
-("Results above 0.5 threshold: " + results.len().toString() + "\n").echo();
+("Results above 0.5 threshold: " + results."results".len().str() + "\n").echo();
 ```
 
 ## Best Practices

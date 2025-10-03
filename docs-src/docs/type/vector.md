@@ -1205,6 +1205,13 @@ result = vectors.similarity(query, "cosine");
   "best_match": #[1, 2, 3]#,
   "method": "cosine"
 } */
+
+/* Access and iterate through vector similarity results */
+results_len = result."results".len();
+for i in results_len.range() {
+    match = result."results"[i];
+    ("Score: " + match."similarity".str() + " - Vector: " + match."item".str() + "\n").echo();
+}
 ```
 
 ### Object Array Similarity (Metadata Search)
@@ -1233,6 +1240,14 @@ result = metadata.similarity(query, "cosine", {"include_scores": true, "include_
   "best_match": {"name": "Alice", "score": 85.5, "active": true, "department": "Engineering"},
   "method": "cosine"
 } */
+
+/* Access and iterate through object similarity results */
+results_len = result."results".len();
+for i in results_len.range() {
+    match = result."results"[i];
+    item = match."item";
+    ("Score: " + match."similarity".str() + " - " + item."name" + " (active: " + item."active".str() + ")\n").echo();
+}
 ```
 
 **Object Similarity Features:**
