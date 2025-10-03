@@ -4562,6 +4562,7 @@ GrapaRuleEvent* GrapaLibraryRuleRuleValEvent::Run(GrapaScriptExec *vScriptExec, 
 			else if (r1->mValue.Cmp("FLOAT") == 0) setTypeId = GrapaTokenType::FLOAT;
 			else if (r1->mValue.Cmp("STR") == 0) setTypeId = GrapaTokenType::STR;
 			else if (r1->mValue.Cmp("TABLE") == 0) setTypeId = GrapaTokenType::TABLE;
+			else if (r1->mValue.Cmp("VECTOR") == 0) setTypeId = GrapaTokenType::VECTOR;
 			else if (r1->mValue.Cmp("RAW") == 0) setTypeId = GrapaTokenType::RAW;
 			else if (r1->mValue.Cmp("SYM") == 0) setTypeId = GrapaTokenType::SYM;
 			else if (r1->mValue.Cmp("SYSSYM") == 0) setTypeId = GrapaTokenType::SYSSYM;
