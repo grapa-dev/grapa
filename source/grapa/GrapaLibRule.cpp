@@ -21683,7 +21683,6 @@ GrapaRuleEvent* calculate_array_object_similarity(GrapaScriptExec* vScriptExec, 
 	std::vector<GrapaRuleEvent*> array_items;
 	if (array->vQueue)
 	{
-		printf("DEBUG: Array has %d items\n", (int)array->vQueue->mCount);
 		GrapaRuleEvent* item = array->vQueue->Head(0);
 		while(item)
 		{
@@ -21695,11 +21694,9 @@ GrapaRuleEvent* calculate_array_object_similarity(GrapaScriptExec* vScriptExec, 
 		}
 	}
 	
-	printf("DEBUG: Found %zu GOBJ items\n", array_items.size());
 	
 	if (array_items.empty())
 	{
-		printf("DEBUG: No GOBJ items found, returning empty result\n");
 		// Return empty result
 		result = new GrapaRuleEvent(0, GrapaCHAR(""), GrapaCHAR(""));
 		result->mValue.mToken = GrapaTokenType::GOBJ;
@@ -21721,15 +21718,11 @@ GrapaRuleEvent* calculate_array_object_similarity(GrapaScriptExec* vScriptExec, 
 	
 	// Calculate similarity for each object
 	std::vector<std::pair<int, double>> similarities;
-	printf("DEBUG: Calculating similarity for %zu items\n", array_items.size());
 	for (size_t i = 0; i < array_items.size(); i++)
 	{
-		printf("DEBUG: Processing item %zu\n", i);
 		double similarity = calculate_object_similarity(array_items[i], query);
-		printf("DEBUG: Similarity for item %zu: %f\n", i, similarity);
 		if (similarity >= threshold)
 		{
-			printf("DEBUG: Adding similarity %f for item %zu\n", similarity, i);
 			similarities.push_back({(int)i, similarity});
 		}
 	}
@@ -21755,75 +21748,60 @@ GrapaRuleEvent* calculate_array_object_similarity(GrapaScriptExec* vScriptExec, 
 		return result;
 	}
 	
-	printf("DEBUG: About to sort results\n");
 	// Sort results
 	if (sort == "desc")
 	{
-		printf("DEBUG: Sorting in descending order\n");
 		std::sort(similarities.begin(), similarities.end(), [](const std::pair<int, double>& a, const std::pair<int, double>& b) {
 			return a.second > b.second;
 		});
 	}
 	else if (sort == "asc")
 	{
-		printf("DEBUG: Sorting in ascending order\n");
 		std::sort(similarities.begin(), similarities.end(), [](const std::pair<int, double>& a, const std::pair<int, double>& b) {
 			return a.second < b.second;
 		});
 	}
 	
-	printf("DEBUG: About to limit to top_n=%d\n", top_n);
 	// Limit to top_n
 	if (similarities.size() > top_n)
 	{
-		printf("DEBUG: Resizing similarities from %zu to %d\n", similarities.size(), top_n);
 		similarities.resize(top_n);
 	}
 	
-	printf("DEBUG: Creating result object\n");
 	// Create result object
 	result = new GrapaRuleEvent(0, GrapaCHAR(""), GrapaCHAR(""));
 	result->mValue.mToken = GrapaTokenType::GOBJ;
 	result->vQueue = new GrapaRuleQueue();
 	
-	printf("DEBUG: Creating results array\n");
 	// Add results array
 	GrapaRuleEvent* results_array = new GrapaRuleEvent(0, GrapaCHAR("results"), GrapaCHAR(""));
 	results_array->mValue.mToken = GrapaTokenType::LIST;
 	results_array->vQueue = new GrapaRuleQueue();
 	
-	printf("DEBUG: Processing %zu similarities\n", similarities.size());
 	for (const auto& sim : similarities)
 	{
-		printf("DEBUG: Processing similarity item with index %d, score %f\n", sim.first, sim.second);
 		GrapaRuleEvent* result_item = new GrapaRuleEvent(0, GrapaCHAR(""), GrapaCHAR(""));
 		result_item->mValue.mToken = GrapaTokenType::GOBJ;
 		result_item->vQueue = new GrapaRuleQueue();
 		
-		printf("DEBUG: Adding index field\n");
 		// Add index
 		GrapaRuleEvent* index_field = new GrapaRuleEvent(0, GrapaCHAR("index"), GrapaInt(sim.first).getBytes());
 		result_item->vQueue->PushTail(index_field);
 		
-		printf("DEBUG: include_scores=%d\n", include_scores);
 		// Add similarity score if requested
 		if (include_scores)
 		{
-			printf("DEBUG: Adding similarity field\n");
 			GrapaRuleEvent* similarity_field = new GrapaRuleEvent(0, GrapaCHAR("similarity"), GrapaFloat(sim.second).getBytes());
 			result_item->vQueue->PushTail(similarity_field);
 		}
 		
-		printf("DEBUG: include_items=%d\n", include_items);
 		// Add item if requested
 		if (include_items)
 		{
-			printf("DEBUG: Adding item field\n");
 			GrapaRuleEvent* item_field = new GrapaRuleEvent(0, GrapaCHAR("item"), GrapaCHAR(""));
 			GrapaRuleEvent* original_item = array->vQueue->Head(sim.first);
 			if (original_item)
 			{
-				printf("DEBUG: Copying original item\n");
 				item_field->mValue.FROM(original_item->mValue);
 				if (original_item->vQueue)
 					item_field->vQueue = vScriptExec->CopyQueue(original_item->vQueue);
@@ -21831,33 +21809,26 @@ GrapaRuleEvent* calculate_array_object_similarity(GrapaScriptExec* vScriptExec, 
 			result_item->vQueue->PushTail(item_field);
 		}
 		
-		printf("DEBUG: Adding result item to results array\n");
 		results_array->vQueue->PushTail(result_item);
 	}
 	
-	printf("DEBUG: Adding results array to result\n");
 	result->vQueue->PushTail(results_array);
 	
-	printf("DEBUG: Adding best match info\n");
 	// Add best match info if we have results
 	if (!similarities.empty())
 	{
-		printf("DEBUG: Creating best_similarity field\n");
 		GrapaRuleEvent* best_similarity = new GrapaRuleEvent(0, GrapaCHAR("best_similarity"), GrapaFloat(similarities[0].second).getBytes());
 		result->vQueue->PushTail(best_similarity);
 		
-		printf("DEBUG: Creating best_index field\n");
 		GrapaRuleEvent* best_index = new GrapaRuleEvent(0, GrapaCHAR("best_index"), GrapaInt(similarities[0].first).getBytes());
 		result->vQueue->PushTail(best_index);
 		
 		if (include_items)
 		{
-			printf("DEBUG: Creating best_match field\n");
 			GrapaRuleEvent* best_match = new GrapaRuleEvent(0, GrapaCHAR("best_match"), GrapaCHAR(""));
 			GrapaRuleEvent* original_item = array->vQueue->Head(similarities[0].first);
 			if (original_item)
 			{
-				printf("DEBUG: Copying original item for best_match\n");
 				best_match->mValue.FROM(original_item->mValue);
 				if (original_item->vQueue)
 					best_match->vQueue = vScriptExec->CopyQueue(original_item->vQueue);
@@ -21866,49 +21837,55 @@ GrapaRuleEvent* calculate_array_object_similarity(GrapaScriptExec* vScriptExec, 
 		}
 	}
 	
-	printf("DEBUG: Adding method field\n");
 	// Add method
 	std::string method_str2(reinterpret_cast<const char*>(method.mBytes), method.mLength);
-	printf("DEBUG: Method string: %s\n", method_str2.c_str());
 	GrapaRuleEvent* method_field = new GrapaRuleEvent(GrapaTokenType::STR, 0, "method", method_str2.c_str());
-	printf("DEBUG: Method field created successfully\n");
 	result->vQueue->PushTail(method_field);
-	printf("DEBUG: Method field added to result\n");
 	
-	printf("DEBUG: About to return result\n");
 	return result;
 }
 
 // Helper function to calculate object similarity
 double calculate_object_similarity(GrapaRuleEvent* obj1, GrapaRuleEvent* obj2)
 {
-	printf("DEBUG: calculate_object_similarity called with obj1=%p, obj2=%p\n", obj1, obj2);
-	
 	if (!obj1 || !obj2)
-	{
-		printf("DEBUG: One or both objects are null\n");
 		return 0.0;
-	}
-	
-	printf("DEBUG: obj1 token: %d, obj2 token: %d\n", (int)obj1->mValue.mToken, (int)obj2->mValue.mToken);
 	
 	if (obj1->mValue.mToken != GrapaTokenType::GOBJ || obj2->mValue.mToken != GrapaTokenType::GOBJ)
-	{
-		printf("DEBUG: One or both objects are not GOBJ type\n");
 		return 0.0;
-	}
-	
-	printf("DEBUG: obj1 vQueue: %p, obj2 vQueue: %p\n", obj1->vQueue, obj2->vQueue);
 	
 	if (!obj1->vQueue || !obj2->vQueue)
-	{
-		printf("DEBUG: One or both objects have null vQueue\n");
 		return 0.0;
+	
+	// Count matching fields
+	int total_fields = 0;
+	int matching_fields = 0;
+	
+	// Iterate through fields in obj1 (query object)
+	GrapaRuleEvent* field1 = obj1->vQueue->Head();
+	while (field1)
+	{
+		if (field1->mName.mBytes && field1->mName.mLength > 0)
+		{
+			total_fields++;
+			
+			// Look for matching field in obj2
+			s64 field_index = 0;
+			GrapaRuleEvent* field2 = obj2->vQueue->Search(field1->mName, field_index);
+			
+			if (field2 && are_values_similar(field1, field2))
+			{
+				matching_fields++;
+			}
+		}
+		field1 = field1->Next();
 	}
 	
-	printf("DEBUG: calculate_object_similarity returning 1.0\n");
-	// Simplified version - just return 1.0 for now to test if the issue is elsewhere
-	return 1.0;
+	// Calculate similarity as ratio of matching fields to total fields
+	if (total_fields == 0)
+		return 0.0;
+	
+	return (double)matching_fields / (double)total_fields;
 }
 
 // Helper function to check if two values are similar
