@@ -8,28 +8,28 @@
       
       
       
-        <link rel="canonical" href="https://grapa-dev.github.io/grapa/migrations/ruby_to_grapa_migration/">
+        <link rel="canonical" href="https://grapa-dev.github.io/grapa/vector_database_similarity/">
       
       
-        <link rel="prev" href="../go_to_grapa_migration/">
+        <link rel="prev" href="../vector_performance_guide/">
       
       
-        <link rel="next" href="../kotlin_to_grapa_migration/">
+        <link rel="next" href="../grapa_core_differentiators/">
       
       
-      <link rel="icon" href="../../assets/images/favicon.png">
+      <link rel="icon" href="../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.15">
     
     
       
-        <title>Ruby - Grapa Documentation</title>
+        <title>Vector Database Similarity - Grapa Documentation</title>
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.342714a4.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.342714a4.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+        <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
       
       
 
@@ -48,7 +48,7 @@
       
     
     
-    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -74,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#ruby-to-grapa-migration-guide" class="md-skip">
+        <a href="#vector-database-similarity-search" class="md-skip">
           Skip to content
         </a>
       
@@ -88,7 +88,7 @@
 
 <header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../.." title="Grapa Documentation" class="md-header__button md-logo" aria-label="Grapa Documentation" data-md-component="logo">
+    <a href=".." title="Grapa Documentation" class="md-header__button md-logo" aria-label="Grapa Documentation" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -108,7 +108,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Ruby
+              Vector Database Similarity
             
           </span>
         </div>
@@ -205,7 +205,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../../about/" class="md-tabs__link">
+      <a href="../about/" class="md-tabs__link">
         
   
   
@@ -224,7 +224,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../.." class="md-tabs__link">
+      <a href=".." class="md-tabs__link">
         
   
   
@@ -245,7 +245,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../getting_started/" class="md-tabs__link">
+        <a href="../getting_started/" class="md-tabs__link">
           
   
   
@@ -263,7 +263,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../../cli_quickstart/" class="md-tabs__link">
+      <a href="../cli_quickstart/" class="md-tabs__link">
         
   
   
@@ -280,11 +280,13 @@
   
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
-        <a href="../../api_reference/" class="md-tabs__link">
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../api_reference/" class="md-tabs__link">
           
   
   
@@ -300,8 +302,6 @@
   
   
   
-    
-  
   
     
     
@@ -309,13 +309,11 @@
   
   
   
-    
-  
   
     
     
-      <li class="md-tabs__item md-tabs__item--active">
-        <a href="../python_to_grapa_migration/" class="md-tabs__link">
+      <li class="md-tabs__item">
+        <a href="../migrations/python_to_grapa_migration/" class="md-tabs__link">
           
   
   
@@ -338,7 +336,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../use_cases/" class="md-tabs__link">
+        <a href="../use_cases/" class="md-tabs__link">
           
   
   
@@ -358,7 +356,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../troubleshooting/" class="md-tabs__link">
+        <a href="../troubleshooting/" class="md-tabs__link">
           
   
   
@@ -392,7 +390,7 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../.." title="Grapa Documentation" class="md-nav__button md-logo" aria-label="Grapa Documentation" data-md-component="logo">
+    <a href=".." title="Grapa Documentation" class="md-nav__button md-logo" aria-label="Grapa Documentation" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -410,7 +408,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../about/" class="md-nav__link">
+      <a href="../about/" class="md-nav__link">
         
   
   
@@ -432,7 +430,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../.." class="md-nav__link">
+      <a href=".." class="md-nav__link">
         
   
   
@@ -495,7 +493,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../getting_started/" class="md-nav__link">
+      <a href="../getting_started/" class="md-nav__link">
         
   
   
@@ -518,7 +516,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../installation/" class="md-nav__link">
+      <a href="../installation/" class="md-nav__link">
         
   
   
@@ -541,7 +539,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../cli_integration/" class="md-nav__link">
+      <a href="../cli_integration/" class="md-nav__link">
         
   
   
@@ -564,7 +562,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../vscode_extension/" class="md-nav__link">
+      <a href="../vscode_extension/" class="md-nav__link">
         
   
   
@@ -587,7 +585,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../run/" class="md-nav__link">
+      <a href="../run/" class="md-nav__link">
         
   
   
@@ -610,7 +608,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../python_integration/" class="md-nav__link">
+      <a href="../python_integration/" class="md-nav__link">
         
   
   
@@ -633,7 +631,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../cpp_integration/" class="md-nav__link">
+      <a href="../cpp_integration/" class="md-nav__link">
         
   
   
@@ -656,7 +654,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../grapa_ecosystem_positioning/" class="md-nav__link">
+      <a href="../grapa_ecosystem_positioning/" class="md-nav__link">
         
   
   
@@ -686,7 +684,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../cli_quickstart/" class="md-nav__link">
+      <a href="../cli_quickstart/" class="md-nav__link">
         
   
   
@@ -705,24 +703,29 @@
       
   
   
+    
   
   
+  
     
     
     
     
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
         
           
-          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
             
   
   
@@ -735,7 +738,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_5">
             <span class="md-nav__icon md-icon"></span>
             Reference
@@ -749,7 +752,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../api_reference/" class="md-nav__link">
+      <a href="../api_reference/" class="md-nav__link">
         
   
   
@@ -772,7 +775,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../api/model/" class="md-nav__link">
+      <a href="../api/model/" class="md-nav__link">
         
   
   
@@ -836,7 +839,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../data_type_selection_guide/" class="md-nav__link">
+      <a href="../data_type_selection_guide/" class="md-nav__link">
         
   
   
@@ -859,7 +862,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../type/array/" class="md-nav__link">
+      <a href="../type/array/" class="md-nav__link">
         
   
   
@@ -882,7 +885,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../type/bool/" class="md-nav__link">
+      <a href="../type/bool/" class="md-nav__link">
         
   
   
@@ -905,7 +908,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../type/class/" class="md-nav__link">
+      <a href="../type/class/" class="md-nav__link">
         
   
   
@@ -928,7 +931,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../type/code/" class="md-nav__link">
+      <a href="../type/code/" class="md-nav__link">
         
   
   
@@ -951,7 +954,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../type/err/" class="md-nav__link">
+      <a href="../type/err/" class="md-nav__link">
         
   
   
@@ -974,7 +977,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../type/float/" class="md-nav__link">
+      <a href="../type/float/" class="md-nav__link">
         
   
   
@@ -997,7 +1000,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../type/id/" class="md-nav__link">
+      <a href="../type/id/" class="md-nav__link">
         
   
   
@@ -1020,7 +1023,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../type/int/" class="md-nav__link">
+      <a href="../type/int/" class="md-nav__link">
         
   
   
@@ -1043,7 +1046,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../type/model/" class="md-nav__link">
+      <a href="../type/model/" class="md-nav__link">
         
   
   
@@ -1066,7 +1069,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../type/gobj/" class="md-nav__link">
+      <a href="../type/gobj/" class="md-nav__link">
         
   
   
@@ -1089,7 +1092,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../type/obj_methods/" class="md-nav__link">
+      <a href="../type/obj_methods/" class="md-nav__link">
         
   
   
@@ -1112,7 +1115,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../type/op/" class="md-nav__link">
+      <a href="../type/op/" class="md-nav__link">
         
   
   
@@ -1135,7 +1138,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../type/raw/" class="md-nav__link">
+      <a href="../type/raw/" class="md-nav__link">
         
   
   
@@ -1158,7 +1161,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../type/rule/" class="md-nav__link">
+      <a href="../type/rule/" class="md-nav__link">
         
   
   
@@ -1181,7 +1184,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../type/str/" class="md-nav__link">
+      <a href="../type/str/" class="md-nav__link">
         
   
   
@@ -1204,7 +1207,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../type/sysid/" class="md-nav__link">
+      <a href="../type/sysid/" class="md-nav__link">
         
   
   
@@ -1227,7 +1230,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../type/sysint/" class="md-nav__link">
+      <a href="../type/sysint/" class="md-nav__link">
         
   
   
@@ -1250,7 +1253,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../type/sysstr/" class="md-nav__link">
+      <a href="../type/sysstr/" class="md-nav__link">
         
   
   
@@ -1273,7 +1276,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../type/table/" class="md-nav__link">
+      <a href="../type/table/" class="md-nav__link">
         
   
   
@@ -1296,7 +1299,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../type/tag/" class="md-nav__link">
+      <a href="../type/tag/" class="md-nav__link">
         
   
   
@@ -1319,7 +1322,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../type/time/" class="md-nav__link">
+      <a href="../type/time/" class="md-nav__link">
         
   
   
@@ -1342,7 +1345,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../type/tuple/" class="md-nav__link">
+      <a href="../type/tuple/" class="md-nav__link">
         
   
   
@@ -1365,7 +1368,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../type/vector/" class="md-nav__link">
+      <a href="../type/vector/" class="md-nav__link">
         
   
   
@@ -1388,7 +1391,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../type/widget/" class="md-nav__link">
+      <a href="../type/widget/" class="md-nav__link">
         
   
   
@@ -1411,7 +1414,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../type/widget/attributes/" class="md-nav__link">
+      <a href="../type/widget/attributes/" class="md-nav__link">
         
   
   
@@ -1434,7 +1437,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../type/xml/" class="md-nav__link">
+      <a href="../type/xml/" class="md-nav__link">
         
   
   
@@ -1506,7 +1509,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../operators/function/" class="md-nav__link">
+      <a href="../operators/function/" class="md-nav__link">
         
   
   
@@ -1529,7 +1532,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../operators/assignment/" class="md-nav__link">
+      <a href="../operators/assignment/" class="md-nav__link">
         
   
   
@@ -1552,7 +1555,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../operators/math/" class="md-nav__link">
+      <a href="../operators/math/" class="md-nav__link">
         
   
   
@@ -1575,7 +1578,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../operators/bit/" class="md-nav__link">
+      <a href="../operators/bit/" class="md-nav__link">
         
   
   
@@ -1598,7 +1601,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../operators/compare/" class="md-nav__link">
+      <a href="../operators/compare/" class="md-nav__link">
         
   
   
@@ -1621,7 +1624,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../operators/condition/" class="md-nav__link">
+      <a href="../operators/condition/" class="md-nav__link">
         
   
   
@@ -1644,7 +1647,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../operators/loop/" class="md-nav__link">
+      <a href="../operators/loop/" class="md-nav__link">
         
   
   
@@ -1667,7 +1670,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../operators/command/" class="md-nav__link">
+      <a href="../operators/command/" class="md-nav__link">
         
   
   
@@ -1690,7 +1693,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../operators/constants/" class="md-nav__link">
+      <a href="../operators/constants/" class="md-nav__link">
         
   
   
@@ -1762,7 +1765,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../sys/file/" class="md-nav__link">
+      <a href="../sys/file/" class="md-nav__link">
         
   
   
@@ -1785,7 +1788,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../sys/math/" class="md-nav__link">
+      <a href="../sys/math/" class="md-nav__link">
         
   
   
@@ -1808,7 +1811,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../sys/net/" class="md-nav__link">
+      <a href="../sys/net/" class="md-nav__link">
         
   
   
@@ -1831,7 +1834,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../sys/py/" class="md-nav__link">
+      <a href="../sys/py/" class="md-nav__link">
         
   
   
@@ -1854,7 +1857,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../curl_function/" class="md-nav__link">
+      <a href="../curl_function/" class="md-nav__link">
         
   
   
@@ -1877,7 +1880,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../sys/sys/" class="md-nav__link">
+      <a href="../sys/sys/" class="md-nav__link">
         
   
   
@@ -1900,7 +1903,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../sys/thread/" class="md-nav__link">
+      <a href="../sys/thread/" class="md-nav__link">
         
   
   
@@ -1923,7 +1926,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../function_quick_reference/" class="md-nav__link">
+      <a href="../function_quick_reference/" class="md-nav__link">
         
   
   
@@ -1995,7 +1998,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../obj/document/" class="md-nav__link">
+      <a href="../obj/document/" class="md-nav__link">
         
   
   
@@ -2018,7 +2021,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../obj/encode/" class="md-nav__link">
+      <a href="../obj/encode/" class="md-nav__link">
         
   
   
@@ -2041,7 +2044,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../obj/grep/" class="md-nav__link">
+      <a href="../obj/grep/" class="md-nav__link">
         
   
   
@@ -2064,7 +2067,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../obj/grep_python/" class="md-nav__link">
+      <a href="../obj/grep_python/" class="md-nav__link">
         
   
   
@@ -2087,7 +2090,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../obj/iterate/" class="md-nav__link">
+      <a href="../obj/iterate/" class="md-nav__link">
         
   
   
@@ -2110,7 +2113,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../obj/transform/" class="md-nav__link">
+      <a href="../obj/transform/" class="md-nav__link">
         
   
   
@@ -2182,7 +2185,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../grep/" class="md-nav__link">
+      <a href="../grep/" class="md-nav__link">
         
   
   
@@ -2254,7 +2257,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../database/quick_reference/" class="md-nav__link">
+      <a href="../database/quick_reference/" class="md-nav__link">
         
   
   
@@ -2277,7 +2280,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../database/column_store/" class="md-nav__link">
+      <a href="../database/column_store/" class="md-nav__link">
         
   
   
@@ -2300,7 +2303,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../database/troubleshooting/" class="md-nav__link">
+      <a href="../database/troubleshooting/" class="md-nav__link">
         
   
   
@@ -2372,7 +2375,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../syntax/basic_syntax/" class="md-nav__link">
+      <a href="../syntax/basic_syntax/" class="md-nav__link">
         
   
   
@@ -2395,7 +2398,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../syntax/namespace_scoping/" class="md-nav__link">
+      <a href="../syntax/namespace_scoping/" class="md-nav__link">
         
   
   
@@ -2418,7 +2421,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../syntax/operator/" class="md-nav__link">
+      <a href="../syntax/operator/" class="md-nav__link">
         
   
   
@@ -2441,7 +2444,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../syntax/precedence/" class="md-nav__link">
+      <a href="../syntax/precedence/" class="md-nav__link">
         
   
   
@@ -2464,7 +2467,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../syntax/grammar_design/" class="md-nav__link">
+      <a href="../syntax/grammar_design/" class="md-nav__link">
         
   
   
@@ -2487,7 +2490,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../syntax/thread_safe_variables/" class="md-nav__link">
+      <a href="../syntax/thread_safe_variables/" class="md-nav__link">
         
   
   
@@ -2518,7 +2521,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../debugging/" class="md-nav__link">
+      <a href="../debugging/" class="md-nav__link">
         
   
   
@@ -2541,7 +2544,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../execution_pipeline_overview/" class="md-nav__link">
+      <a href="../execution_pipeline_overview/" class="md-nav__link">
         
   
   
@@ -2561,6 +2564,8 @@
                 
   
   
+    
+  
   
   
     
@@ -2571,11 +2576,11 @@
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_12" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_12" checked>
         
           
           <label class="md-nav__link" for="__nav_5_12" id="__nav_5_12_label" tabindex="0">
@@ -2591,7 +2596,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_12_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_12_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_5_12">
             <span class="md-nav__icon md-icon"></span>
             Advanced Topics
@@ -2605,7 +2610,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../advanced_topics/" class="md-nav__link">
+      <a href="../advanced_topics/" class="md-nav__link">
         
   
   
@@ -2628,7 +2633,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../advanced_language_features/" class="md-nav__link">
+      <a href="../advanced_language_features/" class="md-nav__link">
         
   
   
@@ -2651,7 +2656,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../advanced_concurrency_and_callbacks/" class="md-nav__link">
+      <a href="../advanced_concurrency_and_callbacks/" class="md-nav__link">
         
   
   
@@ -2674,7 +2679,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../advanced/array_vector_interoperability/" class="md-nav__link">
+      <a href="../advanced/array_vector_interoperability/" class="md-nav__link">
         
   
   
@@ -2697,7 +2702,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../multi_syntax_programming/" class="md-nav__link">
+      <a href="../multi_syntax_programming/" class="md-nav__link">
         
   
   
@@ -2720,7 +2725,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../language_design_with_executable_bnf/" class="md-nav__link">
+      <a href="../language_design_with_executable_bnf/" class="md-nav__link">
         
   
   
@@ -2743,7 +2748,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../isolated_rule_execution/" class="md-nav__link">
+      <a href="../isolated_rule_execution/" class="md-nav__link">
         
   
   
@@ -2766,7 +2771,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../deep_expert_implementation_overview/" class="md-nav__link">
+      <a href="../deep_expert_implementation_overview/" class="md-nav__link">
         
   
   
@@ -2789,7 +2794,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../xml_list_integration/" class="md-nav__link">
+      <a href="../xml_list_integration/" class="md-nav__link">
         
   
   
@@ -2812,7 +2817,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../unified_dot_notation/" class="md-nav__link">
+      <a href="../unified_dot_notation/" class="md-nav__link">
         
   
   
@@ -2835,7 +2840,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../module_system/" class="md-nav__link">
+      <a href="../module_system/" class="md-nav__link">
         
   
   
@@ -2858,7 +2863,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../machine_learning/" class="md-nav__link">
+      <a href="../machine_learning/" class="md-nav__link">
         
   
   
@@ -2881,7 +2886,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../vector_performance_guide/" class="md-nav__link">
+      <a href="../vector_performance_guide/" class="md-nav__link">
         
   
   
@@ -2901,10 +2906,32 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../../vector_database_similarity/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Vector Database Similarity
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -2915,6 +2942,422 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      Overview
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#key-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      Key Features
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Key Features">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#unified-similarity-algorithms" class="md-nav__link">
+    <span class="md-ellipsis">
+      Unified Similarity Algorithms
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#advanced-options" class="md-nav__link">
+    <span class="md-ellipsis">
+      Advanced Options
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#database-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      Database Integration
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#grapa-vs-pinecone-comparison" class="md-nav__link">
+    <span class="md-ellipsis">
+      Grapa vs Pinecone Comparison
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#use-case-recommendations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Use Case Recommendations
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Use Case Recommendations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#use-grapa-similarity-when" class="md-nav__link">
+    <span class="md-ellipsis">
+      Use Grapa .similarity() when:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#use-pinecone-when" class="md-nav__link">
+    <span class="md-ellipsis">
+      Use Pinecone when:
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#basic-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      Basic Usage
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Basic Usage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#string-similarity" class="md-nav__link">
+    <span class="md-ellipsis">
+      String Similarity
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#array-similarity-search" class="md-nav__link">
+    <span class="md-ellipsis">
+      Array Similarity Search
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#object-array-similarity-metadata-search" class="md-nav__link">
+    <span class="md-ellipsis">
+      Object Array Similarity (Metadata Search)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#advanced-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      Advanced Features
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Advanced Features">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#tf-idf-cosine-similarity" class="md-nav__link">
+    <span class="md-ellipsis">
+      TF-IDF Cosine Similarity
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#word-based-jaccard-similarity" class="md-nav__link">
+    <span class="md-ellipsis">
+      Word-based Jaccard Similarity
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#vector-mathematical-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Vector Mathematical Operations
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#database-integration_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Database Integration
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Database Integration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#in-memory-vector-database" class="md-nav__link">
+    <span class="md-ellipsis">
+      In-Memory Vector Database
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#performance-optimization-with-id" class="md-nav__link">
+    <span class="md-ellipsis">
+      Performance Optimization with $ID
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#database-filtering-and-similarity-search" class="md-nav__link">
+    <span class="md-ellipsis">
+      Database Filtering and Similarity Search
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#performance-optimization" class="md-nav__link">
+    <span class="md-ellipsis">
+      Performance Optimization
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Performance Optimization">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#id-vs-key-performance" class="md-nav__link">
+    <span class="md-ellipsis">
+      $ID vs $KEY Performance
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#large-dataset-performance" class="md-nav__link">
+    <span class="md-ellipsis">
+      Large Dataset Performance
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#error-handling-and-edge-cases" class="md-nav__link">
+    <span class="md-ellipsis">
+      Error Handling and Edge Cases
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Error Handling and Edge Cases">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#empty-array-handling" class="md-nav__link">
+    <span class="md-ellipsis">
+      Empty Array Handling
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#single-item-arrays" class="md-nav__link">
+    <span class="md-ellipsis">
+      Single Item Arrays
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#threshold-filtering" class="md-nav__link">
+    <span class="md-ellipsis">
+      Threshold Filtering
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#best-practices" class="md-nav__link">
+    <span class="md-ellipsis">
+      Best Practices
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Best Practices">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-use-id-for-database-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Use $ID for Database Operations
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-optimize-similarity-algorithm-selection" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Optimize Similarity Algorithm Selection
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-leverage-advanced-options" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Leverage Advanced Options
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-database-schema-design" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Database Schema Design
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-performance-monitoring" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. Performance Monitoring
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#future-enhancements" class="md-nav__link">
+    <span class="md-ellipsis">
+      Future Enhancements
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Future Enhancements">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#planned-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      Planned Features
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#implementation-roadmap" class="md-nav__link">
+    <span class="md-ellipsis">
+      Implementation Roadmap
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#conclusion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Conclusion
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -2927,7 +3370,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../grapa_core_differentiators/" class="md-nav__link">
+      <a href="../grapa_core_differentiators/" class="md-nav__link">
         
   
   
@@ -2999,7 +3442,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../crypto/key_exchange_methods/" class="md-nav__link">
+      <a href="../crypto/key_exchange_methods/" class="md-nav__link">
         
   
   
@@ -3071,7 +3514,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../sql_interpreter/" class="md-nav__link">
+      <a href="../sql_interpreter/" class="md-nav__link">
         
   
   
@@ -3094,7 +3537,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../prolog_interpreter/" class="md-nav__link">
+      <a href="../prolog_interpreter/" class="md-nav__link">
         
   
   
@@ -3117,7 +3560,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../lisp_interpreter/" class="md-nav__link">
+      <a href="../lisp_interpreter/" class="md-nav__link">
         
   
   
@@ -3152,29 +3595,24 @@
       
   
   
-    
   
   
-  
     
     
     
     
       
-        
-        
-      
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
         
           
-          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
             
   
   
@@ -3187,7 +3625,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_6">
             <span class="md-nav__icon md-icon"></span>
             Guides
@@ -3198,8 +3636,6 @@
                 
   
   
-    
-  
   
   
     
@@ -3210,11 +3646,11 @@
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_1" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_1" >
         
           
           <label class="md-nav__link" for="__nav_6_1" id="__nav_6_1_label" tabindex="0">
@@ -3230,7 +3666,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_1_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_1_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_6_1">
             <span class="md-nav__icon md-icon"></span>
             Migration Guides
@@ -3244,7 +3680,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../python_to_grapa_migration/" class="md-nav__link">
+      <a href="../migrations/python_to_grapa_migration/" class="md-nav__link">
         
   
   
@@ -3267,7 +3703,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../js_to_grapa_migration/" class="md-nav__link">
+      <a href="../migrations/js_to_grapa_migration/" class="md-nav__link">
         
   
   
@@ -3290,7 +3726,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../rust_to_grapa_migration/" class="md-nav__link">
+      <a href="../migrations/rust_to_grapa_migration/" class="md-nav__link">
         
   
   
@@ -3313,7 +3749,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../typescript_to_grapa_migration/" class="md-nav__link">
+      <a href="../migrations/typescript_to_grapa_migration/" class="md-nav__link">
         
   
   
@@ -3336,7 +3772,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../go_to_grapa_migration/" class="md-nav__link">
+      <a href="../migrations/go_to_grapa_migration/" class="md-nav__link">
         
   
   
@@ -3356,32 +3792,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    Ruby
-    
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../migrations/ruby_to_grapa_migration/" class="md-nav__link">
         
   
   
@@ -3392,221 +3806,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#common-ruby-to-grapa-mappings" class="md-nav__link">
-    <span class="md-ellipsis">
-      Common Ruby-to-Grapa Mappings
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#notes" class="md-nav__link">
-    <span class="md-ellipsis">
-      Notes
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#ruby-to-grapa-migration-guide-wip-features" class="md-nav__link">
-    <span class="md-ellipsis">
-      Ruby-to-Grapa Migration Guide (WIP Features)
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Ruby-to-Grapa Migration Guide (WIP Features)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#main-table-core-gaps-tracked-for-enhancement" class="md-nav__link">
-    <span class="md-ellipsis">
-      Main Table: Core Gaps (Tracked for Enhancement)
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#nice-to-have" class="md-nav__link">
-    <span class="md-ellipsis">
-      Nice to Have
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#rarely-used" class="md-nav__link">
-    <span class="md-ellipsis">
-      Rarely Used
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#work-in-progress-wip-items" class="md-nav__link">
-    <span class="md-ellipsis">
-      Work-in-Progress (WIP) Items
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Work-in-Progress (WIP) Items">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#core-gaps-true-language-gaps" class="md-nav__link">
-    <span class="md-ellipsis">
-      Core Gaps (True Language Gaps)
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#nice-to-have_1" class="md-nav__link">
-    <span class="md-ellipsis">
-      Nice to Have
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#rarely-used_1" class="md-nav__link">
-    <span class="md-ellipsis">
-      Rarely Used
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#customizing-grapa-for-familiar-syntax" class="md-nav__link">
-    <span class="md-ellipsis">
-      Customizing Grapa for Familiar Syntax
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#debugging-and-logging" class="md-nav__link">
-    <span class="md-ellipsis">
-      Debugging and Logging
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Debugging and Logging">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#basic-debug-output" class="md-nav__link">
-    <span class="md-ellipsis">
-      Basic Debug Output
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#enabling-debug-mode" class="md-nav__link">
-    <span class="md-ellipsis">
-      Enabling Debug Mode
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#command-line-debug-options" class="md-nav__link">
-    <span class="md-ellipsis">
-      Command Line Debug Options
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#debug-vs-ruby-comparison" class="md-nav__link">
-    <span class="md-ellipsis">
-      Debug vs Ruby Comparison
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#advanced-debug-patterns" class="md-nav__link">
-    <span class="md-ellipsis">
-      Advanced Debug Patterns
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#see-also" class="md-nav__link">
-    <span class="md-ellipsis">
-      See Also
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="See Also">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#custom-match-function-for-regex" class="md-nav__link">
-    <span class="md-ellipsis">
-      Custom match() Function for Regex
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -3619,7 +3818,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../kotlin_to_grapa_migration/" class="md-nav__link">
+      <a href="../migrations/kotlin_to_grapa_migration/" class="md-nav__link">
         
   
   
@@ -3642,7 +3841,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../swift_to_grapa_migration/" class="md-nav__link">
+      <a href="../migrations/swift_to_grapa_migration/" class="md-nav__link">
         
   
   
@@ -3673,7 +3872,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../examples/" class="md-nav__link">
+      <a href="../examples/" class="md-nav__link">
         
   
   
@@ -3696,7 +3895,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../model_usage_guide/" class="md-nav__link">
+      <a href="../model_usage_guide/" class="md-nav__link">
         
   
   
@@ -3719,7 +3918,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../model_download/" class="md-nav__link">
+      <a href="../model_download/" class="md-nav__link">
         
   
   
@@ -3742,7 +3941,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../python_use_cases/" class="md-nav__link">
+      <a href="../python_use_cases/" class="md-nav__link">
         
   
   
@@ -3765,7 +3964,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../grc_scripts/" class="md-nav__link">
+      <a href="../grc_scripts/" class="md-nav__link">
         
   
   
@@ -3788,7 +3987,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../grz_format/" class="md-nav__link">
+      <a href="../grz_format/" class="md-nav__link">
         
   
   
@@ -3811,7 +4010,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../grapapy_namespace_solution/" class="md-nav__link">
+      <a href="../grapapy_namespace_solution/" class="md-nav__link">
         
   
   
@@ -3834,7 +4033,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../directory_navigation/" class="md-nav__link">
+      <a href="../directory_navigation/" class="md-nav__link">
         
   
   
@@ -3857,7 +4056,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../unified_path_system/" class="md-nav__link">
+      <a href="../unified_path_system/" class="md-nav__link">
         
   
   
@@ -3928,7 +4127,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../use_cases/" class="md-nav__link">
+      <a href="../use_cases/" class="md-nav__link">
         
   
   
@@ -3951,7 +4150,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../use_cases/etl_data_engineering/" class="md-nav__link">
+      <a href="../use_cases/etl_data_engineering/" class="md-nav__link">
         
   
   
@@ -3974,7 +4173,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../use_cases/compiler_bnf_learning/" class="md-nav__link">
+      <a href="../use_cases/compiler_bnf_learning/" class="md-nav__link">
         
   
   
@@ -3997,7 +4196,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../use_cases/high_precision_math/" class="md-nav__link">
+      <a href="../use_cases/high_precision_math/" class="md-nav__link">
         
   
   
@@ -4020,7 +4219,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../use_cases/parallel_concurrent_programming/" class="md-nav__link">
+      <a href="../use_cases/parallel_concurrent_programming/" class="md-nav__link">
         
   
   
@@ -4043,7 +4242,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../use_cases/web_data_scraping/" class="md-nav__link">
+      <a href="../use_cases/web_data_scraping/" class="md-nav__link">
         
   
   
@@ -4066,7 +4265,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../use_cases/database_file_system/" class="md-nav__link">
+      <a href="../use_cases/database_file_system/" class="md-nav__link">
         
   
   
@@ -4089,7 +4288,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../use_cases/education_prototyping/" class="md-nav__link">
+      <a href="../use_cases/education_prototyping/" class="md-nav__link">
         
   
   
@@ -4112,7 +4311,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../use_cases/cryptography/" class="md-nav__link">
+      <a href="../use_cases/cryptography/" class="md-nav__link">
         
   
   
@@ -4135,7 +4334,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../use_cases/multi_syntax_data_processing/" class="md-nav__link">
+      <a href="../use_cases/multi_syntax_data_processing/" class="md-nav__link">
         
   
   
@@ -4158,7 +4357,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../use_cases/language_design_and_dsls/" class="md-nav__link">
+      <a href="../use_cases/language_design_and_dsls/" class="md-nav__link">
         
   
   
@@ -4181,7 +4380,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../use_cases/network_programming_patterns/" class="md-nav__link">
+      <a href="../use_cases/network_programming_patterns/" class="md-nav__link">
         
   
   
@@ -4252,7 +4451,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../troubleshooting/" class="md-nav__link">
+      <a href="../troubleshooting/" class="md-nav__link">
         
   
   
@@ -4275,7 +4474,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../testing/" class="md-nav__link">
+      <a href="../testing/" class="md-nav__link">
         
   
   
@@ -4298,7 +4497,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../updates/" class="md-nav__link">
+      <a href="../updates/" class="md-nav__link">
         
   
   
@@ -4348,55 +4547,46 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#common-ruby-to-grapa-mappings" class="md-nav__link">
+  <a href="#overview" class="md-nav__link">
     <span class="md-ellipsis">
-      Common Ruby-to-Grapa Mappings
+      Overview
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#notes" class="md-nav__link">
+  <a href="#key-features" class="md-nav__link">
     <span class="md-ellipsis">
-      Notes
+      Key Features
     </span>
   </a>
   
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#ruby-to-grapa-migration-guide-wip-features" class="md-nav__link">
-    <span class="md-ellipsis">
-      Ruby-to-Grapa Migration Guide (WIP Features)
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Ruby-to-Grapa Migration Guide (WIP Features)">
+    <nav class="md-nav" aria-label="Key Features">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#main-table-core-gaps-tracked-for-enhancement" class="md-nav__link">
+  <a href="#unified-similarity-algorithms" class="md-nav__link">
     <span class="md-ellipsis">
-      Main Table: Core Gaps (Tracked for Enhancement)
+      Unified Similarity Algorithms
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#nice-to-have" class="md-nav__link">
+  <a href="#advanced-options" class="md-nav__link">
     <span class="md-ellipsis">
-      Nice to Have
+      Advanced Options
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#rarely-used" class="md-nav__link">
+  <a href="#database-integration" class="md-nav__link">
     <span class="md-ellipsis">
-      Rarely Used
+      Database Integration
     </span>
   </a>
   
@@ -4408,37 +4598,37 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#work-in-progress-wip-items" class="md-nav__link">
+  <a href="#grapa-vs-pinecone-comparison" class="md-nav__link">
     <span class="md-ellipsis">
-      Work-in-Progress (WIP) Items
+      Grapa vs Pinecone Comparison
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Work-in-Progress (WIP) Items">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#use-case-recommendations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Use Case Recommendations
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Use Case Recommendations">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#core-gaps-true-language-gaps" class="md-nav__link">
+  <a href="#use-grapa-similarity-when" class="md-nav__link">
     <span class="md-ellipsis">
-      Core Gaps (True Language Gaps)
+      Use Grapa .similarity() when:
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#nice-to-have_1" class="md-nav__link">
+  <a href="#use-pinecone-when" class="md-nav__link">
     <span class="md-ellipsis">
-      Nice to Have
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#rarely-used_1" class="md-nav__link">
-    <span class="md-ellipsis">
-      Rarely Used
+      Use Pinecone when:
     </span>
   </a>
   
@@ -4450,64 +4640,37 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#customizing-grapa-for-familiar-syntax" class="md-nav__link">
+  <a href="#basic-usage" class="md-nav__link">
     <span class="md-ellipsis">
-      Customizing Grapa for Familiar Syntax
+      Basic Usage
     </span>
   </a>
   
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#debugging-and-logging" class="md-nav__link">
-    <span class="md-ellipsis">
-      Debugging and Logging
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Debugging and Logging">
+    <nav class="md-nav" aria-label="Basic Usage">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#basic-debug-output" class="md-nav__link">
+  <a href="#string-similarity" class="md-nav__link">
     <span class="md-ellipsis">
-      Basic Debug Output
+      String Similarity
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#enabling-debug-mode" class="md-nav__link">
+  <a href="#array-similarity-search" class="md-nav__link">
     <span class="md-ellipsis">
-      Enabling Debug Mode
+      Array Similarity Search
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#command-line-debug-options" class="md-nav__link">
+  <a href="#object-array-similarity-metadata-search" class="md-nav__link">
     <span class="md-ellipsis">
-      Command Line Debug Options
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#debug-vs-ruby-comparison" class="md-nav__link">
-    <span class="md-ellipsis">
-      Debug vs Ruby Comparison
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#advanced-debug-patterns" class="md-nav__link">
-    <span class="md-ellipsis">
-      Advanced Debug Patterns
+      Object Array Similarity (Metadata Search)
     </span>
   </a>
   
@@ -4519,19 +4682,37 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#see-also" class="md-nav__link">
+  <a href="#advanced-features" class="md-nav__link">
     <span class="md-ellipsis">
-      See Also
+      Advanced Features
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="See Also">
+    <nav class="md-nav" aria-label="Advanced Features">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#custom-match-function-for-regex" class="md-nav__link">
+  <a href="#tf-idf-cosine-similarity" class="md-nav__link">
     <span class="md-ellipsis">
-      Custom match() Function for Regex
+      TF-IDF Cosine Similarity
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#word-based-jaccard-similarity" class="md-nav__link">
+    <span class="md-ellipsis">
+      Word-based Jaccard Similarity
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#vector-mathematical-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Vector Mathematical Operations
     </span>
   </a>
   
@@ -4539,6 +4720,225 @@
         
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#database-integration_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Database Integration
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Database Integration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#in-memory-vector-database" class="md-nav__link">
+    <span class="md-ellipsis">
+      In-Memory Vector Database
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#performance-optimization-with-id" class="md-nav__link">
+    <span class="md-ellipsis">
+      Performance Optimization with $ID
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#database-filtering-and-similarity-search" class="md-nav__link">
+    <span class="md-ellipsis">
+      Database Filtering and Similarity Search
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#performance-optimization" class="md-nav__link">
+    <span class="md-ellipsis">
+      Performance Optimization
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Performance Optimization">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#id-vs-key-performance" class="md-nav__link">
+    <span class="md-ellipsis">
+      $ID vs $KEY Performance
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#large-dataset-performance" class="md-nav__link">
+    <span class="md-ellipsis">
+      Large Dataset Performance
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#error-handling-and-edge-cases" class="md-nav__link">
+    <span class="md-ellipsis">
+      Error Handling and Edge Cases
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Error Handling and Edge Cases">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#empty-array-handling" class="md-nav__link">
+    <span class="md-ellipsis">
+      Empty Array Handling
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#single-item-arrays" class="md-nav__link">
+    <span class="md-ellipsis">
+      Single Item Arrays
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#threshold-filtering" class="md-nav__link">
+    <span class="md-ellipsis">
+      Threshold Filtering
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#best-practices" class="md-nav__link">
+    <span class="md-ellipsis">
+      Best Practices
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Best Practices">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-use-id-for-database-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Use $ID for Database Operations
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-optimize-similarity-algorithm-selection" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Optimize Similarity Algorithm Selection
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-leverage-advanced-options" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Leverage Advanced Options
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-database-schema-design" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Database Schema Design
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-performance-monitoring" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. Performance Monitoring
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#future-enhancements" class="md-nav__link">
+    <span class="md-ellipsis">
+      Future Enhancements
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Future Enhancements">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#planned-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      Planned Features
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#implementation-roadmap" class="md-nav__link">
+    <span class="md-ellipsis">
+      Implementation Roadmap
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#conclusion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Conclusion
+    </span>
+  </a>
   
 </li>
       
@@ -4558,517 +4958,421 @@
 
 
 
-<h1 id="ruby-to-grapa-migration-guide">Ruby-to-Grapa Migration Guide</h1>
-<blockquote>
-<p><strong>Important: Access Patterns for .get() and Indexing (Tested, v0.0.39)</strong></p>
-<table>
-<thead>
-<tr>
-<th>Type</th>
-<th style="text-align: center;">.get("key")</th>
-<th style="text-align: center;">.get(index)</th>
-<th style="text-align: center;">Bracket Notation</th>
-<th style="text-align: center;">Dot Notation</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>$LIST</td>
-<td style="text-align: center;">✓</td>
-<td style="text-align: center;">✓</td>
-<td style="text-align: center;">✓</td>
-<td style="text-align: center;">✓</td>
-</tr>
-<tr>
-<td>$GOBJ</td>
-<td style="text-align: center;">✓</td>
-<td style="text-align: center;">✓</td>
-<td style="text-align: center;">✓</td>
-<td style="text-align: center;">✓</td>
-</tr>
-<tr>
-<td>$file</td>
-<td style="text-align: center;">✓</td>
-<td style="text-align: center;">✓</td>
-<td style="text-align: center;">✓</td>
-<td style="text-align: center;">✓</td>
-</tr>
-<tr>
-<td>$TABLE</td>
-<td style="text-align: center;">✓</td>
-<td style="text-align: center;">✓</td>
-<td style="text-align: center;">✓</td>
-<td style="text-align: center;">✓</td>
-</tr>
-<tr>
-<td>$OBJ</td>
-<td style="text-align: center;">✓</td>
-<td style="text-align: center;">✓</td>
-<td style="text-align: center;">✓</td>
-<td style="text-align: center;">✓</td>
-</tr>
-<tr>
-<td>$STR</td>
-<td style="text-align: center;">✗</td>
-<td style="text-align: center;">✗</td>
-<td style="text-align: center;">✓</td>
-<td style="text-align: center;">—</td>
-</tr>
-</tbody>
-</table>
-<p>See <a href="../../syntax/basic_syntax/">Basic Syntax Guide</a> for details.</p>
-</blockquote>
-<h2 id="common-ruby-to-grapa-mappings">Common Ruby-to-Grapa Mappings</h2>
-<table>
-<thead>
-<tr>
-<th>Ruby</th>
-<th>Grapa Equivalent</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>require 'json'</code></td>
-<td><code>$file().get("file.json").decode("JSON")</code></td>
-</tr>
-<tr>
-<td><code>File.write('file.txt', d)</code></td>
-<td><code>$file().set("file.txt", d)</code></td>
-</tr>
-<tr>
-<td><code>raise</code></td>
-<td><code>exit</code></td>
-</tr>
-<tr>
-<td><code>Thread.new { ... }</code></td>
-<td><code>$thread().start(op() { ... })</code></td>
-</tr>
-<tr>
-<td><code>sleep 1</code></td>
-<td><code>$sys().sleep(1000)</code></td>
-</tr>
-<tr>
-<td><code>ENV['HOME']</code></td>
-<td><code>$sys().getenv($HOME)</code></td>
-</tr>
-<tr>
-<td><code>system('ls')</code></td>
-<td><code>$file().ls()</code></td>
-</tr>
-<tr>
-<td><code>exit</code></td>
-<td><code>exit</code></td>
-</tr>
-<tr>
-<td><code>class Foo; end</code></td>
-<td><code>class Foo {}</code></td>
-</tr>
-<tr>
-<td><code>module Bar; end</code></td>
-<td>WIP</td>
-</tr>
-<tr>
-<td><code>include Bar</code></td>
-<td>WIP</td>
-</tr>
-<tr>
-<td><code>attr_accessor :x</code></td>
-<td><code>obj.x</code> (direct property access)</td>
-</tr>
-<tr>
-<td><code>@x</code></td>
-<td><code>@x</code> (reference variable by name)</td>
-</tr>
-<tr>
-<td><code>@@x</code></td>
-<td><code>$global.x</code> or <code>$root.x</code> (global/root scope)</td>
-</tr>
-<tr>
-<td><code>$x</code></td>
-<td><code>$global.x</code></td>
-</tr>
-<tr>
-<td><code>:symbol</code></td>
-<td>WIP</td>
-</tr>
-<tr>
-<td><code>lambda { |x| ... }</code></td>
-<td><code>op(x){...}</code> or <code>op(x)("...")</code></td>
-</tr>
-<tr>
-<td><code>proc { |x| ... }</code></td>
-<td><code>op(x){...}</code></td>
-</tr>
-<tr>
-<td><code>method(:foo)</code></td>
-<td><code>obj.getname()</code> (partial reflection)</td>
-</tr>
-<tr>
-<td><code>send(:foo)</code></td>
-<td>WIP</td>
-</tr>
-<tr>
-<td><code>respond_to?(:foo)</code></td>
-<td>WIP</td>
-</tr>
-<tr>
-<td><code>a, b = obj.values_at(:a, :b)</code></td>
-<td><code>$local ++= obj; a.echo(); b.echo();</code></td>
-</tr>
-<tr>
-<td><code>Object.new</code></td>
-<td><code>obj {}</code></td>
-</tr>
-<tr>
-<td><code>self</code></td>
-<td><code>self</code></td>
-</tr>
-<tr>
-<td><code>super</code></td>
-<td><code>super</code></td>
-</tr>
-<tr>
-<td><code>yield</code></td>
-<td>WIP</td>
-</tr>
-<tr>
-<td><code>block_given?</code></td>
-<td>WIP</td>
-</tr>
-<tr>
-<td><code>begin ... ensure ... end</code></td>
-<td>WIP</td>
-</tr>
-<tr>
-<td><code>alias :foo :bar</code></td>
-<td>WIP</td>
-</tr>
-<tr>
-<td><code>undef :foo</code></td>
-<td>WIP</td>
-</tr>
-<tr>
-<td><code>defined?(foo)</code></td>
-<td>WIP</td>
-</tr>
-<tr>
-<td><code>__FILE__</code></td>
-<td><strong>Grapa has <code>.debug()</code> method for debugging</strong></td>
-</tr>
-<tr>
-<td><code>__LINE__</code></td>
-<td><strong>Grapa has <code>.debug()</code> method for debugging</strong></td>
-</tr>
-</tbody>
-</table>
-<h2 id="notes">Notes</h2>
+<h1 id="vector-database-similarity-search">Vector Database Similarity Search</h1>
+<h2 id="overview">Overview</h2>
+<p>Grapa provides comprehensive vector similarity search capabilities that can serve as a powerful alternative to dedicated vector databases like Pinecone. This guide covers the unified similarity search system, database integration, and advanced features that make Grapa competitive with specialized vector database solutions.</p>
+<h2 id="key-features">Key Features</h2>
+<h3 id="unified-similarity-algorithms">Unified Similarity Algorithms</h3>
+<p>Grapa's <code>.similarity()</code> method supports multiple algorithms in a single, consistent API:</p>
 <ul>
-<li>See <a href="../../syntax/operator/">Operators</a> and <a href="../../sys/sys/">System</a> docs for more details.</li>
-<li>Grapa supports variable scoping with <code>$global</code>, <code>$local</code>, and <code>$root</code>.</li>
-<li>Use <code>@x</code> to reference a variable by name.</li>
-<li>Use <code>$sys().getenv()</code> for environment variables.</li>
-<li>Use <code>$thread()</code> for threading and <code>$sys().sleep()</code> for sleep.</li>
-<li>Use <code>op(){}</code> for lambdas and function definitions. </li>
+<li><strong>Levenshtein Distance</strong> - Edit distance for string similarity</li>
+<li><strong>Damerau-Levenshtein Distance</strong> - Edit distance with transposition support</li>
+<li><strong>Jaro-Winkler Similarity</strong> - String similarity with prefix matching</li>
+<li><strong>Cosine Similarity</strong> - Vector similarity with TF-IDF support</li>
+<li><strong>Jaccard Similarity</strong> - Set-based similarity with configurable n-grams</li>
 </ul>
-<h2 id="ruby-to-grapa-migration-guide-wip-features">Ruby-to-Grapa Migration Guide (WIP Features)</h2>
-<h3 id="main-table-core-gaps-tracked-for-enhancement">Main Table: Core Gaps (Tracked for Enhancement)</h3>
+<h3 id="advanced-options">Advanced Options</h3>
+<ul>
+<li><strong>TF-IDF Cosine Similarity</strong> - Term frequency-inverse document frequency weighting</li>
+<li><strong>Word-based Jaccard</strong> - Token-based similarity with configurable n-gram sizes</li>
+<li><strong>Case Sensitivity Control</strong> - Configurable case handling</li>
+<li><strong>Corpus-based Analysis</strong> - Context-aware similarity calculations</li>
+</ul>
+<h3 id="database-integration">Database Integration</h3>
+<ul>
+<li><strong>In-memory Tables</strong> - High-performance similarity search</li>
+<li><strong>$ID Optimization</strong> - Faster lookups using integer IDs vs string keys</li>
+<li><strong>Metadata Filtering</strong> - Object-based similarity with field matching</li>
+<li><strong>Schema Validation</strong> - Proper database structure maintenance</li>
+</ul>
+<h2 id="grapa-vs-pinecone-comparison">Grapa vs Pinecone Comparison</h2>
 <table>
 <thead>
 <tr>
-<th>Ruby Feature</th>
-<th>Grapa Equivalent</th>
-<th>Status/Note</th>
+<th>Feature</th>
+<th>Grapa <code>.similarity()</code></th>
+<th>Pinecone</th>
+<th>Winner</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>alias :foo :bar</code></td>
-<td>—</td>
-<td><strong>GAP</strong>: Meta-programming not yet supported</td>
+<td><strong>Similarity Algorithms</strong></td>
+<td>5+ algorithms (levenshtein, damerau, jaro, cosine, jaccard)</td>
+<td>Primarily cosine</td>
+<td>🏆 <strong>Grapa</strong></td>
 </tr>
 <tr>
-<td><code>undef :foo</code></td>
-<td>—</td>
-<td><strong>GAP</strong>: Meta-programming not yet supported</td>
+<td><strong>Array Search</strong></td>
+<td>✅ Native support</td>
+<td>✅ Native support</td>
+<td>🤝 <strong>Tie</strong></td>
 </tr>
 <tr>
-<td><code>defined?(foo)</code></td>
-<td>—</td>
-<td><strong>GAP</strong>: Meta-programming not yet supported</td>
+<td><strong>Metadata Search</strong></td>
+<td>✅ Object field matching</td>
+<td>✅ Metadata filtering</td>
+<td>🤝 <strong>Tie</strong></td>
 </tr>
 <tr>
-<td><code>__FILE__</code></td>
-<td>—</td>
-<td><strong>Grapa has <code>.debug()</code> method for debugging</strong></td>
+<td><strong>Result Control</strong></td>
+<td>✅ top_n, threshold, sort, include_scores</td>
+<td>✅ top_k, score_threshold, include_metadata</td>
+<td>🤝 <strong>Tie</strong></td>
 </tr>
 <tr>
-<td><code>__LINE__</code></td>
-<td>—</td>
-<td><strong>Grapa has <code>.debug()</code> method for debugging</strong></td>
+<td><strong>Persistence</strong></td>
+<td>❌ In-memory only</td>
+<td>✅ Persistent database</td>
+<td>🏆 <strong>Pinecone</strong></td>
 </tr>
 <tr>
-<td><code>yield</code></td>
-<td>—</td>
-<td><strong>GAP</strong>: Block/yield not supported</td>
+<td><strong>Scale</strong></td>
+<td>❌ Memory limited</td>
+<td>✅ Billions of vectors</td>
+<td>🏆 <strong>Pinecone</strong></td>
 </tr>
 <tr>
-<td><code>block_given?</code></td>
-<td>—</td>
-<td><strong>GAP</strong>: Block/yield not supported</td>
+<td><strong>Performance</strong></td>
+<td>❌ O(n) for each search</td>
+<td>✅ Optimized indexing</td>
+<td>🏆 <strong>Pinecone</strong></td>
 </tr>
 <tr>
-<td><code>begin ... ensure ... end</code></td>
-<td>—</td>
-<td><strong>GAP</strong>: No ensure/finally</td>
+<td><strong>Ease of Use</strong></td>
+<td>✅ Native language integration</td>
+<td>❌ Requires API calls</td>
+<td>🏆 <strong>Grapa</strong></td>
+</tr>
+<tr>
+<td><strong>Cost</strong></td>
+<td>✅ Free (local)</td>
+<td>❌ Pay-per-use</td>
+<td>🏆 <strong>Grapa</strong></td>
+</tr>
+<tr>
+<td><strong>Advanced Options</strong></td>
+<td>✅ TF-IDF, word-based jaccard, configurable parameters</td>
+<td>❌ Limited options</td>
+<td>🏆 <strong>Grapa</strong></td>
 </tr>
 </tbody>
 </table>
-<h3 id="nice-to-have">Nice to Have</h3>
-<table>
-<thead>
-<tr>
-<th>Ruby Feature</th>
-<th>Grapa Equivalent</th>
-<th>Note</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>respond_to?(:foo)</code></td>
-<td>—</td>
-<td>Reflection, rarely needed</td>
-</tr>
-<tr>
-<td><code>send(:foo)</code></td>
-<td>—</td>
-<td>Reflection, rarely needed</td>
-</tr>
-<tr>
-<td><code>:symbol</code></td>
-<td>—</td>
-<td>Ruby-specific, not common</td>
-</tr>
-<tr>
-<td><code>class inheritance</code></td>
-<td><code>class (ParentClass)</code></td>
-<td>Grapa supports inheritance</td>
-</tr>
-<tr>
-<td><code>method overriding</code></td>
-<td>—</td>
-<td>Use regular method definitions</td>
-</tr>
-<tr>
-<td><code>object/class composition</code></td>
-<td><code>class {...}</code>/object</td>
-<td>Grapa supports composition</td>
-</tr>
-</tbody>
-</table>
-<h3 id="rarely-used">Rarely Used</h3>
-<table>
-<thead>
-<tr>
-<th>Ruby Feature</th>
-<th>Grapa Equivalent</th>
-<th>Note</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>module Bar; end</code></td>
-<td>—</td>
-<td>Ruby module system, not relevant</td>
-</tr>
-<tr>
-<td><code>include Bar</code></td>
-<td>—</td>
-<td>Ruby module system, not relevant</td>
-</tr>
-</tbody>
-</table>
-<h2 id="work-in-progress-wip-items">Work-in-Progress (WIP) Items</h2>
-<p>Some Ruby idioms don't have direct Grapa equivalents yet. These are categorized by priority:</p>
-<h3 id="core-gaps-true-language-gaps">Core Gaps (True Language Gaps)</h3>
-<p>These represent fundamental language features that genuinely cannot be accomplished in Grapa:</p>
+<h2 id="use-case-recommendations">Use Case Recommendations</h2>
+<h3 id="use-grapa-similarity-when">Use Grapa <code>.similarity()</code> when:</h3>
 <ul>
-<li><strong>Meta-programming</strong>: <code>alias</code>, <code>undef</code>, <code>defined?</code> - No meta-programming capabilities</li>
-<li><strong>File/line macros</strong>: <code>__FILE__</code>, <code>__LINE__</code> - Grapa provides <code>.debug()</code> method for sophisticated debugging and logging (outputs to stderr, can be redirected at CLI level)</li>
-<li><strong>Block/yield</strong>: <code>yield</code>, <code>block_given?</code> - No block/yield mechanism</li>
-<li><strong>Method chaining</strong>: <code>"hello".upcase + " world".downcase</code> - Use string interpolation: <code>"${'hello'.upper()} ${'world'.lower()}".interpolate()</code></li>
-<li><strong>Ensure/finally</strong>: <code>begin ... ensure ... end</code> - No ensure/finally mechanism</li>
-<li><strong>Symbols</strong>: <code>:symbol</code> - No symbol type</li>
-<li><strong>Method reflection</strong>: <code>respond_to?</code>, <code>send</code> - Limited reflection capabilities</li>
-<li><strong>Module system</strong>: <code>module</code>, <code>include</code> - No module system</li>
-<li><strong>Mixins</strong>: - No mixin system</li>
-<li><strong>Singleton classes</strong>: - No singleton class system</li>
-<li><strong>Method missing</strong>: - No method missing mechanism</li>
-<li><strong>Method aliasing</strong>: - No method aliasing</li>
-<li><strong>Method undefining</strong>: - No method undefining</li>
-<li><strong>Method redefinition</strong>: - No method redefinition</li>
-<li><strong>Method visibility</strong>: <code>private</code>, <code>protected</code> - No access control</li>
-<li><strong>Method arity</strong>: - No method arity system</li>
-<li><strong>Method parameters</strong>: - No method parameter system</li>
-<li><strong>Method defaults</strong>: - No method default parameters:</li>
-<li><strong>Method splat</strong>: - No splat operator</li>
-<li><strong>Method keyword args</strong>: - No keyword arguments</li>
+<li>✅ <strong>Small to medium datasets</strong> (&lt; 1M items)</li>
+<li>✅ <strong>Prototyping and development</strong></li>
+<li>✅ <strong>Local/offline applications</strong></li>
+<li>✅ <strong>Complex similarity algorithms</strong> needed</li>
+<li>✅ <strong>Native language integration</strong> preferred</li>
+<li>✅ <strong>Cost-sensitive</strong> applications</li>
+<li>✅ <strong>Real-time data</strong> that changes frequently</li>
 </ul>
-<h3 id="nice-to-have_1">Nice to Have</h3>
-<p>These would improve developer experience but aren't essential:</p>
+<h3 id="use-pinecone-when">Use Pinecone when:</h3>
 <ul>
-<li><strong>Safe navigation</strong>: <code>obj&amp;.user&amp;.profile</code> - Use <code>.iferr()</code> for superior safe property access with custom fallback values: <code>obj.user.iferr(null).profile.iferr("default")</code></li>
-<li><strong>Nil coalescing</strong>: <code>x || y</code> - Use <code>.ifnull()</code> for superior nullish coalescing: <code>x.ifnull(y)</code></li>
-<li><strong>Class inheritance</strong>: - Use object composition</li>
-<li><strong>Method overriding</strong>: - Use regular method definitions</li>
-<li><strong>Method super</strong>: - Use regular method calls</li>
-<li><strong>Method chaining</strong>: - Use regular method calls</li>
-<li><strong>Method composition</strong>: - Use function composition</li>
-<li><strong>Method currying</strong>: - Use function composition</li>
-<li><strong>Method partial application</strong>: - Use function composition</li>
-<li><strong>Method memoization</strong>: - Use caching</li>
-<li><strong>Method caching</strong>: - Use caching</li>
-<li><strong>Method optimization</strong>: - Use Grapa's built-in optimization</li>
+<li>✅ <strong>Large-scale production</strong> (&gt; 1M items)</li>
+<li>✅ <strong>High-performance requirements</strong> (sub-second latency)</li>
+<li>✅ <strong>Persistent storage</strong> needed</li>
+<li>✅ <strong>Cloud deployment</strong></li>
+<li>✅ <strong>Simple cosine similarity</strong> sufficient</li>
+<li>✅ <strong>Budget available</strong> for managed service</li>
 </ul>
-<h3 id="rarely-used_1">Rarely Used</h3>
-<p>These are advanced features that most developers won't miss:</p>
-<ul>
-<li><strong>Ruby-specific features</strong>: - Use Grapa equivalents</li>
-<li><strong>Ruby gems</strong>: - Use Grapa's library system</li>
-<li><strong>Ruby bundler</strong>: - Use Grapa's dependency management</li>
-<li><strong>Ruby rake</strong>: - Use Grapa's build system</li>
-<li><strong>Ruby irb</strong>: - Use Grapa's REPL</li>
-<li><strong>Ruby pry</strong>: - Use Grapa's <code>.debug()</code> method: <code>"Debug info".debug(0)</code> (requires <code>-d</code> flag)</li>
-<li><strong>Ruby rspec</strong>: - Use Grapa's testing framework</li>
-<li><strong>Ruby minitest</strong>: - Use Grapa's testing framework</li>
-<li><strong>Ruby cucumber</strong>: - Use Grapa's testing framework</li>
-<li><strong>Ruby capybara</strong>: - Use Grapa's testing framework</li>
-</ul>
-<blockquote>
-<p><strong>Note:</strong> Many "missing" features are actually available in Grapa through different mechanisms. For example, Ruby's meta-programming is replaced by Grapa's built-in code generation, and Ruby's blocks are replaced by Grapa's function composition.</p>
-</blockquote>
-<h2 id="customizing-grapa-for-familiar-syntax">Customizing Grapa for Familiar Syntax</h2>
-<p>If you prefer Ruby-style function calls, you can define your own <code>puts()</code> function in Grapa:</p>
-<div class="highlight"><pre><span></span><code># Define a puts function similar to Ruby
-puts = op(&quot;value&quot;=&quot;&quot;){value.echo();};
-puts(&quot;Hello from Grapa!&quot;);
+<h2 id="basic-usage">Basic Usage</h2>
+<h3 id="string-similarity">String Similarity</h3>
+<div class="highlight"><pre><span></span><code>str1 = &quot;hello world&quot;;
+str2 = &quot;hello there&quot;;
+
+/* Test different similarity algorithms */
+levenshtein_sim = str1.similarity(str2, &quot;levenshtein&quot;);
+cosine_sim = str1.similarity(str2, &quot;cosine&quot;);
+jaccard_sim = str1.similarity(str2, &quot;jaccard&quot;);
+
+(&quot;Levenshtein: &quot; + levenshtein_sim.toString() + &quot;\n&quot;).echo();
+(&quot;Cosine: &quot; + cosine_sim.toString() + &quot;\n&quot;).echo();
+(&quot;Jaccard: &quot; + jaccard_sim.toString() + &quot;\n&quot;).echo();
 </code></pre></div>
-<p>This can make migration easier for those used to Ruby's <code>puts()</code> or similar functions.</p>
-<h2 id="debugging-and-logging">Debugging and Logging</h2>
-<p>Grapa provides sophisticated debugging capabilities that go beyond Ruby's puts and logger methods. While Grapa doesn't have <code>__FILE__</code> and <code>__LINE__</code> macros, it offers superior debugging through the <code>.debug()</code> method with component targeting and level control:</p>
-<h3 id="basic-debug-output">Basic Debug Output</h3>
-<div class="highlight"><pre><span></span><code>/* Standard output - equivalent to puts */
-&quot;Hello World&quot;.echo();
+<h3 id="array-similarity-search">Array Similarity Search</h3>
+<div class="highlight"><pre><span></span><code>documents = [
+    &quot;machine learning algorithms&quot;,
+    &quot;artificial intelligence research&quot;, 
+    &quot;deep learning neural networks&quot;,
+    &quot;computer vision applications&quot;,
+    &quot;natural language processing&quot;
+];
 
-/* Debug output with component targeting */
-&quot;Debug message&quot;.debug(1, &quot;component&quot;);
+query = &quot;machine learning&quot;;
 
-/* Debug with different levels */
-&quot;Info message&quot;.debug(1, &quot;info&quot;);
-&quot;Warning message&quot;.debug(2, &quot;warning&quot;);
-&quot;Error message&quot;.debug(3, &quot;error&quot;);
-</code></pre></div>
-<h3 id="enabling-debug-mode">Enabling Debug Mode</h3>
-<div class="highlight"><pre><span></span><code>/* Enable debug mode for current session */
-$sys().putenv(&quot;GRAPA_SESSION_DEBUG_MODE&quot;, &quot;1&quot;);
-$sys().putenv(&quot;GRAPA_SESSION_DEBUG_LEVEL&quot;, &quot;2&quot;);
+/* Basic similarity search */
+results = documents.similarity(query, &quot;cosine&quot;, {
+    &quot;top_n&quot;: 3,
+    &quot;include_scores&quot;: true
+});
 
-/* Enable debug for specific components */
-$sys().putenv(&quot;GRAPA_SESSION_DEBUG_COMPONENTS&quot;, &quot;database,grep,vector&quot;);
-
-/* Enable all components at different levels */
-$sys().putenv(&quot;GRAPA_SESSION_DEBUG_COMPONENTS&quot;, &quot;grep:3,database:1,*:0&quot;);
-</code></pre></div>
-<h3 id="command-line-debug-options">Command Line Debug Options</h3>
-<div class="highlight"><pre><span></span><code><span class="c1"># Enable debug mode from command line</span>
-./grapa<span class="w"> </span>-d<span class="w"> </span>script.grc
-
-<span class="c1"># Enable debug with specific components</span>
-<span class="nv">GRAPA_SESSION_DEBUG_COMPONENTS</span><span class="o">=</span><span class="s2">&quot;debug:1&quot;</span><span class="w"> </span>./grapa<span class="w"> </span>-d<span class="w"> </span>script.grc
-
-<span class="c1"># Enable debug with multiple components</span>
-<span class="nv">GRAPA_SESSION_DEBUG_COMPONENTS</span><span class="o">=</span><span class="s2">&quot;database:2,grep:1,vector:0&quot;</span><span class="w"> </span>./grapa<span class="w"> </span>-d<span class="w"> </span>script.grc
-</code></pre></div>
-<h3 id="debug-vs-ruby-comparison">Debug vs Ruby Comparison</h3>
-<table>
-<thead>
-<tr>
-<th>Ruby</th>
-<th>Grapa</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>puts "Hello"</code></td>
-<td><code>"Hello".echo()</code></td>
-</tr>
-<tr>
-<td><code>puts "Count: #{count}"</code></td>
-<td><code>"Count: ${count}".interpolate().echo()</code></td>
-</tr>
-<tr>
-<td><code>p "Debug info"</code></td>
-<td><code>"Debug info".debug(1, "debug")</code></td>
-</tr>
-<tr>
-<td><code>logger.info "Info message"</code></td>
-<td><code>"Info message".debug(1, "info")</code></td>
-</tr>
-<tr>
-<td><code>logger.warn "Warning"</code></td>
-<td><code>"Warning".debug(2, "warning")</code></td>
-</tr>
-<tr>
-<td><code>logger.error "Error"</code></td>
-<td><code>"Error".debug(3, "error")</code></td>
-</tr>
-<tr>
-<td><code>puts "Processing #{i}/#{total}"</code></td>
-<td><code>"Processing ${i}/${total}".interpolate().debug(1, "progress")</code></td>
-</tr>
-</tbody>
-</table>
-<h3 id="advanced-debug-patterns">Advanced Debug Patterns</h3>
-<div class="highlight"><pre><span></span><code>/* Debug with interpolation for clean output */
-&quot;Processing ${record_count} records...&quot;.debug(1, &quot;process&quot;);
-
-/* Debug with error handling */
-result = some_operation();
-if (result.type() == $ERR) {
-    &quot;Error occurred: ${result}&quot;.debug(3, &quot;error&quot;);
-} else {
-    &quot;Operation successful: ${result}&quot;.debug(1, &quot;info&quot;);
-};
-
-/* Debug with component-specific formatting */
-&quot;Database query: ${query}&quot;.debug(2, &quot;database&quot;);
-&quot;Network request: ${url}&quot;.debug(2, &quot;network&quot;);
-&quot;File operation: ${filename}&quot;.debug(2, &quot;filesystem&quot;);
-</code></pre></div>
-<blockquote>
-<p><strong>Advanced:</strong> Grapa also allows advanced users to customize or extend the language syntax using <code>$RULE</code> or by modifying <code>$global</code> rules. This enables you to inject your own grammar or override built-in behaviors to match your preferred style. For most users, we recommend learning the canonical Grapa method syntax, but this flexibility is available if needed.</p>
-</blockquote>
-<h2 id="see-also">See Also</h2>
-<ul>
-<li><a href="../../syntax/basic_syntax/">Basic Syntax Guide</a></li>
-<li><a href="../../syntax/operator/">Operator Reference</a></li>
-</ul>
-<hr />
-<p><em>If you have more Ruby idioms you want mapped to Grapa, please open an issue or PR!</em></p>
-<h3 id="custom-match-function-for-regex">Custom match() Function for Regex</h3>
-<p>Ruby users often use <code>str.match</code> for regex checks. You can define a similar function in Grapa:</p>
-<div class="highlight"><pre><span></span><code># Define a match function that returns true if the pattern is found
-match = op(&quot;text&quot;=&quot;&quot;, &quot;pattern&quot;=&quot;&quot;) {
-    text.grep(pattern, &quot;x&quot;).len() &gt; 0;
-};
-
-# Usage
-if (match(&quot;hello world&quot;, &quot;world&quot;)) {
-    &quot;Found!&quot;.echo();
-} else {
-    &quot;Not found.&quot;.echo();
+/* Display results */
+for i in results.range() {
+    result = results[i];
+    (&quot;Score: &quot; + result.similarity.toString() + &quot; - &quot; + result.item + &quot;\n&quot;).echo();
 }
 </code></pre></div>
-<p>This is a handy workaround until Grapa adds a native <code>.match()</code> method.</p>
+<h3 id="object-array-similarity-metadata-search">Object Array Similarity (Metadata Search)</h3>
+<div class="highlight"><pre><span></span><code>user_profiles = [
+    {&quot;name&quot;: &quot;Alice&quot;, &quot;age&quot;: 30, &quot;skills&quot;: [&quot;python&quot;, &quot;ml&quot;], &quot;location&quot;: &quot;NYC&quot;},
+    {&quot;name&quot;: &quot;Bob&quot;, &quot;age&quot;: 25, &quot;skills&quot;: [&quot;java&quot;, &quot;web&quot;], &quot;location&quot;: &quot;SF&quot;},
+    {&quot;name&quot;: &quot;Charlie&quot;, &quot;age&quot;: 35, &quot;skills&quot;: [&quot;python&quot;, &quot;ai&quot;], &quot;location&quot;: &quot;NYC&quot;}
+];
+
+query_profile = {&quot;age&quot;: 30, &quot;skills&quot;: [&quot;python&quot;], &quot;location&quot;: &quot;NYC&quot;};
+
+/* Object similarity search */
+results = user_profiles.similarity(query_profile, &quot;cosine&quot;, {
+    &quot;top_n&quot;: 2,
+    &quot;include_scores&quot;: true,
+    &quot;include_items&quot;: true
+});
+
+/* Display results */
+for i in results.range() {
+    result = results[i];
+    (&quot;Score: &quot; + result.similarity.toString() + &quot; - &quot; + result.item.name + &quot; (age: &quot; + result.item.age.toString() + &quot;)\n&quot;).echo();
+}
+</code></pre></div>
+<h2 id="advanced-features">Advanced Features</h2>
+<h3 id="tf-idf-cosine-similarity">TF-IDF Cosine Similarity</h3>
+<div class="highlight"><pre><span></span><code>documents = [
+    &quot;machine learning algorithms&quot;,
+    &quot;artificial intelligence research&quot;, 
+    &quot;deep learning neural networks&quot;
+];
+
+query = &quot;machine learning&quot;;
+
+/* Advanced cosine similarity with TF-IDF */
+results = documents.similarity(query, &quot;cosine&quot;, {
+    &quot;cosine_method&quot;: &quot;tfidf&quot;,
+    &quot;corpus&quot;: documents,
+    &quot;case_sensitive&quot;: false,
+    &quot;top_n&quot;: 3,
+    &quot;include_scores&quot;: true
+});
+</code></pre></div>
+<h3 id="word-based-jaccard-similarity">Word-based Jaccard Similarity</h3>
+<div class="highlight"><pre><span></span><code>documents = [
+    &quot;the quick brown fox&quot;,
+    &quot;the fast brown dog&quot;,
+    &quot;a quick brown cat&quot;
+];
+
+query = &quot;the quick brown&quot;;
+
+/* Word-based jaccard with configurable n-grams */
+results = documents.similarity(query, &quot;jaccard&quot;, {
+    &quot;jaccard_method&quot;: &quot;word&quot;,
+    &quot;jaccard_n&quot;: 2,
+    &quot;case_sensitive&quot;: false,
+    &quot;top_n&quot;: 3,
+    &quot;include_scores&quot;: true
+});
+</code></pre></div>
+<h3 id="vector-mathematical-operations">Vector Mathematical Operations</h3>
+<div class="highlight"><pre><span></span><code>/* Create test vectors representing document embeddings */
+vector1 = #[1.0, 0.0, 0.0, 0.0, 0.0]#;  /* machine learning - perfect match */
+vector2 = #[0.8, 0.6, 0.0, 0.0, 0.0]#;  /* artificial intelligence - high similarity */
+vector3 = #[0.6, 0.8, 0.0, 0.0, 0.0]#;  /* deep learning - medium similarity */
+vector4 = #[0.0, 0.0, 0.0, 1.0, 0.0]#;  /* computer vision - low similarity */
+vector5 = #[0.0, 0.0, 0.0, 0.0, 1.0]#;  /* natural language processing - no similarity */
+
+vectors = [vector1, vector2, vector3, vector4, vector5];
+query_vector = #[1.0, 0.0, 0.0, 0.0, 0.0]#;  /* machine learning query */
+
+/* Vector similarity search */
+results = vectors.similarity(query_vector, &quot;cosine&quot;, {
+    &quot;top_n&quot;: 3,
+    &quot;include_scores&quot;: true,
+    &quot;include_items&quot;: true
+});
+
+/* Results will show realistic cosine similarity scores:
+   - Score: 1.0 (perfect match)
+   - Score: 0.8 (high similarity) 
+   - Score: 0.6 (medium similarity)
+*/
+</code></pre></div>
+<h2 id="database-integration_1">Database Integration</h2>
+<h3 id="in-memory-vector-database">In-Memory Vector Database</h3>
+<div class="highlight"><pre><span></span><code>/* Create in-memory table for vector storage */
+vector_db = {}.table();
+
+/* Insert vector data with metadata */
+vector_db.set(&quot;doc1&quot;, &quot;id&quot;, &quot;document_1&quot;);
+vector_db.set(&quot;doc1&quot;, &quot;content&quot;, &quot;machine learning algorithms&quot;);
+vector_db.set(&quot;doc1&quot;, &quot;type&quot;, &quot;article&quot;);
+vector_db.set(&quot;doc1&quot;, &quot;category&quot;, &quot;tech&quot;);
+vector_db.set(&quot;doc1&quot;, &quot;author&quot;, &quot;John&quot;);
+
+vector_db.set(&quot;doc2&quot;, &quot;id&quot;, &quot;document_2&quot;);
+vector_db.set(&quot;doc2&quot;, &quot;content&quot;, &quot;artificial intelligence research&quot;);
+vector_db.set(&quot;doc2&quot;, &quot;type&quot;, &quot;article&quot;);
+vector_db.set(&quot;doc2&quot;, &quot;category&quot;, &quot;science&quot;);
+vector_db.set(&quot;doc2&quot;, &quot;author&quot;, &quot;Jane&quot;);
+</code></pre></div>
+<h3 id="performance-optimization-with-id">Performance Optimization with $ID</h3>
+<div class="highlight"><pre><span></span><code>/* Get all records for performance testing */
+all_records = vector_db.ls();
+
+/* Use $ID for faster lookups */
+for i in all_records.range() {
+    record = all_records[i];
+    record_id = record[&quot;$ID&quot;];
+
+    /* Fast field access using $ID */
+    content = vector_db.getfield(record_id, &quot;content&quot;);
+    type = vector_db.getfield(record_id, &quot;type&quot;);
+    category = vector_db.getfield(record_id, &quot;category&quot;);
+}
+</code></pre></div>
+<h3 id="database-filtering-and-similarity-search">Database Filtering and Similarity Search</h3>
+<div class="highlight"><pre><span></span><code>/* Manual filtering using $ID for performance */
+tech_documents = [];
+for i in all_records.range() {
+    record = all_records[i];
+    record_id = record[&quot;$ID&quot;];
+    record_type = vector_db.getfield(record_id, &quot;type&quot;);
+    record_category = vector_db.getfield(record_id, &quot;category&quot;);
+
+    if (record_type == &quot;article&quot; &amp;&amp; record_category == &quot;tech&quot;) {
+        content = vector_db.getfield(record_id, &quot;content&quot;);
+        tech_documents.push(content);
+    }
+}
+
+/* Perform similarity search on filtered results */
+query_text = &quot;machine learning&quot;;
+results = tech_documents.similarity(query_text, &quot;cosine&quot;, {
+    &quot;top_n&quot;: 2,
+    &quot;include_scores&quot;: true,
+    &quot;include_items&quot;: true
+});
+</code></pre></div>
+<h2 id="performance-optimization">Performance Optimization</h2>
+<h3 id="id-vs-key-performance">$ID vs $KEY Performance</h3>
+<div class="highlight"><pre><span></span><code>/* Benchmark $KEY lookup performance */
+start_time = $TIME().utc();
+for i in (1000).range() {
+    key = &quot;doc&quot; + ((i % 3) + 1).toString();
+    content = vector_db.getfield(key, &quot;content&quot;);
+}
+key_lookup_time = $TIME().utc();
+key_duration = key_lookup_time.ms() - start_time.ms();
+
+/* Benchmark $ID lookup performance */
+start_time = $TIME().utc();
+for i in (1000).range() {
+    record_id = all_records[(i % 3)][&quot;$ID&quot;];
+    content = vector_db.getfield(record_id, &quot;content&quot;);
+}
+id_lookup_time = $TIME().utc();
+id_duration = id_lookup_time.ms() - start_time.ms();
+
+/* Calculate performance improvement */
+improvement = key_duration / id_duration;
+(&quot;Performance improvement: &quot; + improvement.toString() + &quot;x faster with $ID\n&quot;).echo();
+</code></pre></div>
+<h3 id="large-dataset-performance">Large Dataset Performance</h3>
+<div class="highlight"><pre><span></span><code>/* Create larger dataset for performance testing */
+large_dataset = [];
+for i in (1000).range() {
+    large_dataset.push(&quot;document &quot; + i.toString() + &quot; about machine learning and artificial intelligence&quot;);
+}
+
+query = &quot;machine learning&quot;;
+
+/* Benchmark similarity search performance */
+start_time = $TIME().utc();
+results = large_dataset.similarity(query, &quot;cosine&quot;, {
+    &quot;top_n&quot;: 10,
+    &quot;include_scores&quot;: true
+});
+end_time = $TIME().utc();
+duration = end_time.ms() - start_time.ms();
+
+(&quot;Dataset size: &quot; + large_dataset.len().toString() + &quot; documents\n&quot;).echo();
+(&quot;Search time: &quot; + duration.toString() + &quot;ms\n&quot;).echo();
+(&quot;Results found: &quot; + results.len().toString() + &quot;\n&quot;).echo();
+</code></pre></div>
+<h2 id="error-handling-and-edge-cases">Error Handling and Edge Cases</h2>
+<h3 id="empty-array-handling">Empty Array Handling</h3>
+<div class="highlight"><pre><span></span><code>empty_array = [];
+empty_results = empty_array.similarity(&quot;test&quot;, &quot;cosine&quot;);
+(&quot;Empty array similarity: &quot; + empty_results.len().toString() + &quot; results\n&quot;).echo();
+</code></pre></div>
+<h3 id="single-item-arrays">Single Item Arrays</h3>
+<div class="highlight"><pre><span></span><code>single_array = [&quot;single item&quot;];
+single_results = single_array.similarity(&quot;single item&quot;, &quot;cosine&quot;);
+(&quot;Single item similarity: &quot; + single_results.len().toString() + &quot; results\n&quot;).echo();
+</code></pre></div>
+<h3 id="threshold-filtering">Threshold Filtering</h3>
+<div class="highlight"><pre><span></span><code>results = documents.similarity(query, &quot;cosine&quot;, {
+    &quot;top_n&quot;: 10,
+    &quot;threshold&quot;: 0.5,
+    &quot;include_scores&quot;: true
+});
+(&quot;Results above 0.5 threshold: &quot; + results.len().toString() + &quot;\n&quot;).echo();
+</code></pre></div>
+<h2 id="best-practices">Best Practices</h2>
+<h3 id="1-use-id-for-database-operations">1. Use $ID for Database Operations</h3>
+<ul>
+<li><strong>$ID lookups</strong> are significantly faster than $KEY lookups</li>
+<li><strong>Integer comparison</strong> vs string comparison performance</li>
+<li><strong>Better cache locality</strong> for bulk operations</li>
+</ul>
+<h3 id="2-optimize-similarity-algorithm-selection">2. Optimize Similarity Algorithm Selection</h3>
+<ul>
+<li><strong>Cosine similarity</strong> for text documents and vectors</li>
+<li><strong>Jaccard similarity</strong> for set-based data</li>
+<li><strong>Levenshtein/Damerau</strong> for edit distance requirements</li>
+<li><strong>Jaro-Winkler</strong> for name matching and fuzzy string search</li>
+</ul>
+<h3 id="3-leverage-advanced-options">3. Leverage Advanced Options</h3>
+<ul>
+<li><strong>TF-IDF</strong> for document similarity with corpus context</li>
+<li><strong>Word-based jaccard</strong> for token-based similarity</li>
+<li><strong>Case sensitivity</strong> control for your use case</li>
+<li><strong>Configurable n-grams</strong> for jaccard similarity</li>
+</ul>
+<h3 id="4-database-schema-design">4. Database Schema Design</h3>
+<ul>
+<li><strong>Separate fields</strong> for metadata instead of complex objects</li>
+<li><strong>Index-friendly</strong> field structures</li>
+<li><strong>$ID-based</strong> primary access patterns</li>
+<li><strong>Consistent field naming</strong> conventions</li>
+</ul>
+<h3 id="5-performance-monitoring">5. Performance Monitoring</h3>
+<ul>
+<li><strong>Benchmark</strong> similarity search performance</li>
+<li><strong>Monitor</strong> memory usage with large datasets</li>
+<li><strong>Profile</strong> database operations</li>
+<li><strong>Optimize</strong> based on actual usage patterns</li>
+</ul>
+<h2 id="future-enhancements">Future Enhancements</h2>
+<h3 id="planned-features">Planned Features</h3>
+<ul>
+<li><strong>Persistent database</strong> integration for large-scale storage</li>
+<li><strong>Enhanced database querying</strong> with multi-field search</li>
+<li><strong>Index optimization</strong> for very large datasets</li>
+<li><strong>Distributed similarity</strong> search across multiple databases</li>
+<li><strong>Real-time indexing</strong> for dynamic data</li>
+</ul>
+<h3 id="implementation-roadmap">Implementation Roadmap</h3>
+<ol>
+<li><strong>Phase 1</strong>: Enhanced database methods (<code>.search()</code>, <code>.filter()</code>)</li>
+<li><strong>Phase 2</strong>: Optimized indexing and query planning</li>
+<li><strong>Phase 3</strong>: Persistent storage integration</li>
+<li><strong>Phase 4</strong>: Advanced similarity algorithms and optimizations</li>
+</ol>
+<h2 id="conclusion">Conclusion</h2>
+<p>Grapa's vector database similarity search provides a powerful, cost-effective alternative to dedicated vector databases like Pinecone. With its unified API, advanced similarity algorithms, and native language integration, Grapa offers significant advantages for many use cases while maintaining competitive performance for small to medium-scale applications.</p>
+<p>The system's flexibility, combined with its comprehensive similarity algorithms and database integration capabilities, makes it an excellent choice for prototyping, development, and production applications where cost, simplicity, and algorithmic diversity are important factors.</p>
 
 
 
@@ -5125,16 +5429,16 @@ if (match(&quot;hello world&quot;, &quot;world&quot;)) {
     
     
       
-      <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.top", "search.suggest", "content.code.copy", "content.action.edit", "content.action.view", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"base": "..", "features": ["navigation.tabs", "navigation.top", "search.suggest", "content.code.copy", "content.action.edit", "content.action.view", "content.tabs.link"], "search": "../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.56ea9cef.min.js"></script>
+      <script src="../assets/javascripts/bundle.56ea9cef.min.js"></script>
       
         <script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.0/dist/mermaid.min.js"></script>
       
-        <script src="../../javascripts/mermaid-init.js"></script>
+        <script src="../javascripts/mermaid-init.js"></script>
       
-        <script src="../../javascripts/search-fix.js"></script>
+        <script src="../javascripts/search-fix.js"></script>
       
     
   </body>
