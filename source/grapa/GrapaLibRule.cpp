@@ -21708,8 +21708,7 @@ GrapaRuleEvent* calculate_array_object_similarity(GrapaScriptExec* vScriptExec, 
 		result->vQueue->PushTail(results_array);
 		
 		// Add method
-		std::string method_str(reinterpret_cast<const char*>(method.mBytes), method.mLength);
-		GrapaRuleEvent* method_field = new GrapaRuleEvent(0, GrapaCHAR("method"), GrapaCHAR(method_str.c_str()));
+		GrapaRuleEvent* method_field = new GrapaRuleEvent(0, GrapaCHAR("method"), method);
 		result->vQueue->PushTail(method_field);
 		
 		return result;
@@ -21740,8 +21739,7 @@ GrapaRuleEvent* calculate_array_object_similarity(GrapaScriptExec* vScriptExec, 
 		result->vQueue->PushTail(results_array);
 		
 		// Add method
-		std::string method_str(reinterpret_cast<const char*>(method.mBytes), method.mLength);
-		GrapaRuleEvent* method_field = new GrapaRuleEvent(0, GrapaCHAR("method"), GrapaCHAR(method_str.c_str()));
+		GrapaRuleEvent* method_field = new GrapaRuleEvent(0, GrapaCHAR("method"), method);
 		result->vQueue->PushTail(method_field);
 		
 		return result;
@@ -21859,8 +21857,7 @@ GrapaRuleEvent* calculate_array_object_similarity(GrapaScriptExec* vScriptExec, 
 	}
 	
 	// Add method
-	std::string method_str2(reinterpret_cast<const char*>(method.mBytes), method.mLength);
-	GrapaRuleEvent* method_field = new GrapaRuleEvent(GrapaTokenType::STR, 0, "method", method_str2.c_str());
+	GrapaRuleEvent* method_field = new GrapaRuleEvent(0, GrapaCHAR("method"), method);
 	result->vQueue->PushTail(method_field);
 	
 	return result;
@@ -21971,13 +21968,14 @@ GrapaRuleEvent* calculate_array_string_similarity(GrapaScriptExec* vScriptExec, 
 	std::vector<GrapaRuleEvent*> array_items;
 	if (array->vQueue)
 	{
-		for (int i = 0; i < array->vQueue->mCount; i++)
+		GrapaRuleEvent* item = array->vQueue->Head();
+		while(item)
 		{
-			GrapaRuleEvent* item = array->vQueue->Head(i);
 			if (item && item->mValue.mToken == GrapaTokenType::STR)
 			{
 				array_items.push_back(item);
 			}
+			item = item->Next();
 		}
 	}
 	
@@ -22057,7 +22055,7 @@ GrapaRuleEvent* calculate_array_string_similarity(GrapaScriptExec* vScriptExec, 
 	result->vQueue = new GrapaRuleQueue();
 	
 	// Add results array
-	GrapaRuleEvent* results_array = new GrapaRuleEvent(0, GrapaCHAR(""), GrapaCHAR(""));
+	GrapaRuleEvent* results_array = new GrapaRuleEvent(0, GrapaCHAR("results"), GrapaCHAR(""));
 	results_array->mValue.mToken = GrapaTokenType::LIST;
 	results_array->vQueue = new GrapaRuleQueue();
 	
@@ -22068,36 +22066,29 @@ GrapaRuleEvent* calculate_array_string_similarity(GrapaScriptExec* vScriptExec, 
 		result_item->vQueue = new GrapaRuleQueue();
 		
 		// Add index
-		GrapaRuleEvent* index_key = new GrapaRuleEvent(0, GrapaCHAR("index"), GrapaCHAR(""));
-		GrapaRuleEvent* index_val = new GrapaRuleEvent(0, GrapaCHAR(), GrapaInt(sim.first).getBytes());
-		result_item->vQueue->Push(index_key);
-		result_item->vQueue->Push(index_val);
+		GrapaRuleEvent* index_key = new GrapaRuleEvent(0, GrapaCHAR("index"), GrapaInt(sim.first).getBytes());
+		result_item->vQueue->PushTail(index_key);
 		
 		// Add similarity score if requested
 		if (include_scores)
 		{
-			GrapaRuleEvent* score_key = new GrapaRuleEvent(0, GrapaCHAR("similarity"), GrapaCHAR(""));
-			GrapaRuleEvent* score_val = new GrapaRuleEvent(0, GrapaCHAR(), GrapaFloat(sim.second).getBytes());
-			result_item->vQueue->Push(score_key);
-			result_item->vQueue->Push(score_val);
+			GrapaRuleEvent* score_key = new GrapaRuleEvent(0, GrapaCHAR("similarity"), GrapaFloat(sim.second).getBytes());
+			result_item->vQueue->PushTail(score_key);
 		}
 		
 		// Add item if requested
 		if (include_items)
 		{
-			GrapaRuleEvent* item_key = new GrapaRuleEvent(0, GrapaCHAR("item"), GrapaCHAR(""));
-			GrapaRuleEvent* item_val = new GrapaRuleEvent(0, GrapaCHAR(), array_items[sim.first]->mValue);
-			result_item->vQueue->Push(item_key);
-			result_item->vQueue->Push(item_val);
+			GrapaRuleEvent* item_key = vScriptExec->CopyItem(array_items[sim.first]);
+			item_key->mName.FROM("item");
+			result_item->vQueue->PushTail(item_key);
 		}
 		
-		results_array->vQueue->Push(result_item);
+		results_array->vQueue->PushTail(result_item);
 	}
 	
 	// Add results to main object
-	GrapaRuleEvent* results_key = new GrapaRuleEvent(0, GrapaCHAR("results"), GrapaCHAR(""));
-	result->vQueue->Push(results_key);
-	result->vQueue->Push(results_array);
+	result->vQueue->PushTail(results_array);
 	
 	// Add best match info if we have results
 	if (!similarities.empty())
@@ -22106,32 +22097,25 @@ GrapaRuleEvent* calculate_array_string_similarity(GrapaScriptExec* vScriptExec, 
 		double best_similarity = similarities[0].second;
 		
 		// Add best_similarity
-		GrapaRuleEvent* best_sim_key = new GrapaRuleEvent(0, GrapaCHAR("best_similarity"), GrapaCHAR(""));
-		GrapaRuleEvent* best_sim_val = new GrapaRuleEvent(0, GrapaCHAR(), GrapaFloat(best_similarity).getBytes());
-		result->vQueue->Push(best_sim_key);
-		result->vQueue->Push(best_sim_val);
+		GrapaRuleEvent* best_sim_key = new GrapaRuleEvent(0, GrapaCHAR("best_similarity"), GrapaFloat(best_similarity).getBytes());
+		result->vQueue->PushTail(best_sim_key);
 		
 		// Add best_index
-		GrapaRuleEvent* best_idx_key = new GrapaRuleEvent(0, GrapaCHAR("best_index"), GrapaCHAR(""));
-		GrapaRuleEvent* best_idx_val = new GrapaRuleEvent(0, GrapaCHAR(), GrapaInt(best_index).getBytes());
-		result->vQueue->Push(best_idx_key);
-		result->vQueue->Push(best_idx_val);
+		GrapaRuleEvent* best_idx_key = new GrapaRuleEvent(0, GrapaCHAR("best_index"), GrapaInt(best_index).getBytes());
+		result->vQueue->PushTail(best_idx_key);
 		
 		// Add best_match if items are included
 		if (include_items)
 		{
-			GrapaRuleEvent* best_match_key = new GrapaRuleEvent(0, GrapaCHAR("best_match"), GrapaCHAR(""));
-			GrapaRuleEvent* best_match_val = new GrapaRuleEvent(0, GrapaCHAR(), array_items[best_index]->mValue);
-			result->vQueue->Push(best_match_key);
-			result->vQueue->Push(best_match_val);
+			GrapaRuleEvent* best_match_key = vScriptExec->CopyItem(array_items[best_index]);
+			best_match_key->mName.FROM("best_match");
+			result->vQueue->PushTail(best_match_key);
 		}
 	}
 	
 	// Add method
-	GrapaRuleEvent* method_key = new GrapaRuleEvent(0, GrapaCHAR("method"), GrapaCHAR(""));
-		GrapaRuleEvent* method_val = new GrapaRuleEvent(0, GrapaCHAR(), GrapaBYTE(method.mBytes, method.mLength));
-	result->vQueue->Push(method_key);
-	result->vQueue->Push(method_val);
+	GrapaRuleEvent* method_key = new GrapaRuleEvent(0, GrapaCHAR("method"), method);
+	result->vQueue->PushTail(method_key);
 	
 	return result;
 }
@@ -22145,13 +22129,14 @@ GrapaRuleEvent* calculate_array_vector_similarity(GrapaScriptExec* vScriptExec, 
 	std::vector<GrapaRuleEvent*> array_items;
 	if (array->vQueue)
 	{
-		for (int i = 0; i < array->vQueue->mCount; i++)
+		GrapaRuleEvent* item = array->vQueue->Head();
+		while(item)
 		{
-			GrapaRuleEvent* item = array->vQueue->Head(i);
 			if (item && item->mValue.mToken == GrapaTokenType::VECTOR)
 			{
 				array_items.push_back(item);
 			}
+			item = item->Next();
 		}
 	}
 	
@@ -22213,7 +22198,7 @@ GrapaRuleEvent* calculate_array_vector_similarity(GrapaScriptExec* vScriptExec, 
 	result->vQueue = new GrapaRuleQueue();
 	
 	// Add results array
-	GrapaRuleEvent* results_array = new GrapaRuleEvent(0, GrapaCHAR(""), GrapaCHAR(""));
+	GrapaRuleEvent* results_array = new GrapaRuleEvent(0, GrapaCHAR("results"), GrapaCHAR(""));
 	results_array->mValue.mToken = GrapaTokenType::LIST;
 	results_array->vQueue = new GrapaRuleQueue();
 	
@@ -22224,36 +22209,29 @@ GrapaRuleEvent* calculate_array_vector_similarity(GrapaScriptExec* vScriptExec, 
 		result_item->vQueue = new GrapaRuleQueue();
 		
 		// Add index
-		GrapaRuleEvent* index_key = new GrapaRuleEvent(0, GrapaCHAR("index"), GrapaCHAR(""));
-		GrapaRuleEvent* index_val = new GrapaRuleEvent(0, GrapaCHAR(), GrapaInt(sim.first).getBytes());
-		result_item->vQueue->Push(index_key);
-		result_item->vQueue->Push(index_val);
+		GrapaRuleEvent* index_key = new GrapaRuleEvent(0, GrapaCHAR("index"), GrapaInt(sim.first).getBytes());
+		result_item->vQueue->PushTail(index_key);
 		
 		// Add similarity score if requested
 		if (include_scores)
 		{
-			GrapaRuleEvent* score_key = new GrapaRuleEvent(0, GrapaCHAR("similarity"), GrapaCHAR(""));
-			GrapaRuleEvent* score_val = new GrapaRuleEvent(0, GrapaCHAR(), GrapaFloat(sim.second).getBytes());
-			result_item->vQueue->Push(score_key);
-			result_item->vQueue->Push(score_val);
+			GrapaRuleEvent* score_key = new GrapaRuleEvent(0, GrapaCHAR("similarity"), GrapaFloat(sim.second).getBytes());
+			result_item->vQueue->PushTail(score_key);
 		}
 		
 		// Add item if requested
 		if (include_items)
 		{
-			GrapaRuleEvent* item_key = new GrapaRuleEvent(0, GrapaCHAR("item"), GrapaCHAR(""));
-			GrapaRuleEvent* item_val = new GrapaRuleEvent(0, GrapaCHAR(), array_items[sim.first]->mValue);
-			result_item->vQueue->Push(item_key);
-			result_item->vQueue->Push(item_val);
+			GrapaRuleEvent* item_key = vScriptExec->CopyItem(array_items[sim.first]);
+			item_key->mName.FROM("item");
+			result_item->vQueue->PushTail(item_key);
 		}
 		
-		results_array->vQueue->Push(result_item);
+		results_array->vQueue->PushTail(result_item);
 	}
 	
 	// Add results to main object
-	GrapaRuleEvent* results_key = new GrapaRuleEvent(0, GrapaCHAR("results"), GrapaCHAR(""));
-	result->vQueue->Push(results_key);
-	result->vQueue->Push(results_array);
+	result->vQueue->PushTail(results_array);
 	
 	// Add best match info if we have results
 	if (!similarities.empty())
@@ -22262,32 +22240,25 @@ GrapaRuleEvent* calculate_array_vector_similarity(GrapaScriptExec* vScriptExec, 
 		double best_similarity = similarities[0].second;
 		
 		// Add best_similarity
-		GrapaRuleEvent* best_sim_key = new GrapaRuleEvent(0, GrapaCHAR("best_similarity"), GrapaCHAR(""));
-		GrapaRuleEvent* best_sim_val = new GrapaRuleEvent(0, GrapaCHAR(), GrapaFloat(best_similarity).getBytes());
-		result->vQueue->Push(best_sim_key);
-		result->vQueue->Push(best_sim_val);
+		GrapaRuleEvent* best_sim_key = new GrapaRuleEvent(0, GrapaCHAR("best_similarity"), GrapaFloat(best_similarity).getBytes());
+		result->vQueue->PushTail(best_sim_key);
 		
 		// Add best_index
-		GrapaRuleEvent* best_idx_key = new GrapaRuleEvent(0, GrapaCHAR("best_index"), GrapaCHAR(""));
-		GrapaRuleEvent* best_idx_val = new GrapaRuleEvent(0, GrapaCHAR(), GrapaInt(best_index).getBytes());
-		result->vQueue->Push(best_idx_key);
-		result->vQueue->Push(best_idx_val);
+		GrapaRuleEvent* best_idx_key = new GrapaRuleEvent(0, GrapaCHAR("best_index"), GrapaInt(best_index).getBytes());
+		result->vQueue->PushTail(best_idx_key);
 		
 		// Add best_match if items are included
 		if (include_items)
 		{
-			GrapaRuleEvent* best_match_key = new GrapaRuleEvent(0, GrapaCHAR("best_match"), GrapaCHAR(""));
-			GrapaRuleEvent* best_match_val = new GrapaRuleEvent(0, GrapaCHAR(), array_items[best_index]->mValue);
-			result->vQueue->Push(best_match_key);
-			result->vQueue->Push(best_match_val);
+			GrapaRuleEvent* best_match_key = vScriptExec->CopyItem(array_items[best_index]);
+			best_match_key->mName.FROM("best_match");
+			result->vQueue->PushTail(best_match_key);
 		}
 	}
 	
 	// Add method
-	GrapaRuleEvent* method_key = new GrapaRuleEvent(0, GrapaCHAR("method"), GrapaCHAR(""));
-		GrapaRuleEvent* method_val = new GrapaRuleEvent(0, GrapaCHAR(), GrapaBYTE(method.mBytes, method.mLength));
-	result->vQueue->Push(method_key);
-	result->vQueue->Push(method_val);
+	GrapaRuleEvent* method_key = new GrapaRuleEvent(0, GrapaCHAR("method"), method);
+	result->vQueue->PushTail(method_key);
 	
 	return result;
 }
