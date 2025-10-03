@@ -351,9 +351,12 @@ std::vector<std::string> split_words(const std::string& str);
 std::set<std::string> generate_ngrams(const std::string& str, int n);
 
 // Array Similarity Helper Functions
-GrapaRuleEvent* calculate_string_similarity(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* str1, GrapaRuleEvent* str2, GrapaCHAR& method);
+GrapaRuleEvent* calculate_string_similarity(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* str1, GrapaRuleEvent* str2, GrapaCHAR& method, GrapaRuleEvent* options = NULL);
 GrapaRuleEvent* calculate_array_string_similarity(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* array, GrapaRuleEvent* query, GrapaCHAR& method, int top_n, double threshold, std::string sort, bool include_scores, bool include_items);
 GrapaRuleEvent* calculate_array_vector_similarity(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* array, GrapaRuleEvent* query, GrapaCHAR& method, int top_n, double threshold, std::string sort, bool include_scores, bool include_items);
+GrapaRuleEvent* calculate_array_object_similarity(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* array, GrapaRuleEvent* query, GrapaCHAR& method, int top_n, double threshold, std::string sort, bool include_scores, bool include_items);
+double calculate_object_similarity(GrapaRuleEvent* obj1, GrapaRuleEvent* obj2);
+bool are_values_similar(GrapaRuleEvent* val1, GrapaRuleEvent* val2);
 
 
 

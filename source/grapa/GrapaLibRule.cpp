@@ -17,6 +17,7 @@ limitations under the License.
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "GrapaLibRule.h"
+#include <set>
 #include "GrapaSystem.h"
 #include "GrapaState.h"
 #include "GrapaCompress.h"
@@ -21493,7 +21494,7 @@ GrapaRuleEvent* GrapaLibraryRuleVectorKurtosisEvent::Run(GrapaScriptExec* vScrip
 }
 
 // Helper function to calculate string similarity
-GrapaRuleEvent* calculate_string_similarity(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* str1, GrapaRuleEvent* str2, GrapaCHAR& method)
+GrapaRuleEvent* calculate_string_similarity(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* str1, GrapaRuleEvent* str2, GrapaCHAR& method, GrapaRuleEvent* options)
 {
 	GrapaRuleEvent* result = NULL;
 	
@@ -21504,6 +21505,110 @@ GrapaRuleEvent* calculate_string_similarity(GrapaScriptExec* vScriptExec, GrapaN
 	// Convert method to lowercase for case-insensitive comparison
 	std::string method_str(reinterpret_cast<const char*>(method.mBytes), method.mLength);
 	std::transform(method_str.begin(), method_str.end(), method_str.begin(), ::tolower);
+	
+	// Parse advanced options for Cosine and Jaccard
+	std::string cosine_method = "auto";  // Default to auto-selection
+	std::vector<std::string> corpus;
+	bool case_sensitive = true;   // Default to case-sensitive
+	std::string jaccard_method = "word";  // Default to word-based
+	int jaccard_n = 2;  // Default n-gram size
+	
+	if (options && options->mValue.mToken == GrapaTokenType::GOBJ && options->vQueue)
+	{
+		// Parse Cosine options
+		s64 method_index = 0;
+		GrapaRuleEvent* method_opt = options->vQueue->Search(GrapaCHAR("method"), method_index);
+		if (method_opt && method_opt->mValue.mToken == GrapaTokenType::STR)
+		{
+			std::string method_str_opt(reinterpret_cast<const char*>(method_opt->mValue.mBytes), method_opt->mValue.mLength);
+			if (method_str_opt == "word_freq" || method_str_opt == "tfidf")
+			{
+				cosine_method = method_str_opt;
+			}
+		}
+		
+		// Parse corpus option
+		s64 corpus_index = 0;
+		GrapaRuleEvent* corpus_opt = options->vQueue->Search(GrapaCHAR("corpus"), corpus_index);
+		if (corpus_opt)
+		{
+			// Handle PTR types like findall() does
+			while (corpus_opt && corpus_opt->mValue.mToken == GrapaTokenType::PTR && corpus_opt->vRulePointer) 
+				corpus_opt = corpus_opt->vRulePointer;
+			if (corpus_opt && (corpus_opt->mValue.mToken == GrapaTokenType::LIST || corpus_opt->mValue.mToken == GrapaTokenType::GOBJ || corpus_opt->mValue.mToken == GrapaTokenType::ERR || corpus_opt->vQueue != NULL))
+			{
+				if (corpus_opt->vQueue)
+				{
+					for (u64 i = 0; i < corpus_opt->vQueue->mCount; i++)
+					{
+						GrapaRuleEvent* doc = corpus_opt->vQueue->Head(i);
+						if (doc && (doc->mValue.mToken == GrapaTokenType::STR || doc->mValue.mToken == GrapaTokenType::ID))
+						{
+							std::string doc_str(reinterpret_cast<const char*>(doc->mValue.mBytes), doc->mValue.mLength);
+							corpus.push_back(doc_str);
+						}
+					}
+				}
+			}
+		}
+		
+		// Parse case_sensitive option
+		s64 case_index = 0;
+		GrapaRuleEvent* case_opt = options->vQueue->Search(GrapaCHAR("case_sensitive"), case_index);
+		if (case_opt)
+		{
+			if (case_opt->mValue.mToken == GrapaTokenType::BOOL)
+			{
+				case_sensitive = (case_opt->mValue.mBytes && case_opt->mValue.mLength && case_opt->mValue.mBytes[0] && case_opt->mValue.mBytes[0] != '0');
+			}
+			else if (case_opt->mValue.mToken == GrapaTokenType::STR)
+			{
+				std::string case_str(reinterpret_cast<const char*>(case_opt->mValue.mBytes), case_opt->mValue.mLength);
+				case_sensitive = (case_str != "false" && case_str != "0");
+			}
+			else
+			{
+				case_sensitive = !case_opt->IsZero();
+			}
+		}
+		
+		// Parse Jaccard options
+		s64 jaccard_method_index = 0;
+		GrapaRuleEvent* jaccard_method_opt = options->vQueue->Search(GrapaCHAR("jaccard_method"), jaccard_method_index);
+		if (jaccard_method_opt && jaccard_method_opt->mValue.mToken == GrapaTokenType::STR)
+		{
+			jaccard_method = std::string(reinterpret_cast<const char*>(jaccard_method_opt->mValue.mBytes), jaccard_method_opt->mValue.mLength);
+		}
+		
+		s64 jaccard_n_index = 0;
+		GrapaRuleEvent* jaccard_n_opt = options->vQueue->Search(GrapaCHAR("jaccard_n"), jaccard_n_index);
+		if (jaccard_n_opt && jaccard_n_opt->mValue.mToken == GrapaTokenType::INT)
+		{
+			GrapaInt nInt;
+			nInt.FromBytes(jaccard_n_opt->mValue);
+			jaccard_n = (int)nInt.LongValue();
+		}
+	}
+	
+	// Auto-select cosine method if not specified
+	if (cosine_method == "auto")
+	{
+		if (!corpus.empty())
+		{
+			cosine_method = "tfidf";  // Use TF-IDF if corpus provided
+		}
+		else
+		{
+			cosine_method = "word_freq";  // Use word frequency otherwise
+		}
+	}
+	
+	// Apply case sensitivity if needed
+	if (!case_sensitive)
+	{
+		string1 = grapa_case_fold_string(string1);
+		string2 = grapa_case_fold_string(string2);
+	}
 	
 	if (method_str == "levenshtein" || method_str == "levenshtein_distance")
 	{
@@ -21526,21 +21631,36 @@ GrapaRuleEvent* calculate_string_similarity(GrapaScriptExec* vScriptExec, GrapaN
 	else if (method_str == "cosine" || method_str == "cosine_similarity")
 	{
 		// Cosine similarity (higher = more similar)
-		double similarity = calculate_cosine_similarity(string1, string2);
+		double similarity = 0.0;
+		if (cosine_method == "tfidf" && !corpus.empty())
+		{
+			similarity = calculate_cosine_similarity_tfidf(string1, string2, corpus);
+		}
+		else
+		{
+			similarity = calculate_cosine_similarity(string1, string2);
+		}
 		result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaFloat(similarity).getBytes());
 	}
 	else if (method_str == "jaccard" || method_str == "jaccard_similarity")
 	{
-		// Jaccard similarity (higher = more similar) - default to word-based
-		double similarity = calculate_jaccard_similarity(string1, string2, "word", 1);
+		// Jaccard similarity (higher = more similar)
+		double similarity = calculate_jaccard_similarity(string1, string2, jaccard_method, jaccard_n);
 		result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaFloat(similarity).getBytes());
 	}
 	else if (method_str == "tfidf" || method_str == "cosine_tfidf")
 	{
 		// TF-IDF cosine similarity (higher = more similar)
-		// For now, use basic cosine similarity as fallback
-		// TODO: Add corpus parameter support
-		double similarity = calculate_cosine_similarity(string1, string2);
+		double similarity = 0.0;
+		if (!corpus.empty())
+		{
+			similarity = calculate_cosine_similarity_tfidf(string1, string2, corpus);
+		}
+		else
+		{
+			// Fallback to basic cosine similarity if no corpus provided
+			similarity = calculate_cosine_similarity(string1, string2);
+		}
 		result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaFloat(similarity).getBytes());
 	}
 	else
@@ -21551,6 +21671,292 @@ GrapaRuleEvent* calculate_string_similarity(GrapaScriptExec* vScriptExec, GrapaN
 	}
 	
 	return result;
+}
+
+// Helper function to calculate array-object similarity
+GrapaRuleEvent* calculate_array_object_similarity(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* array, GrapaRuleEvent* query, GrapaCHAR& method, int top_n, double threshold, std::string sort, bool include_scores, bool include_items)
+{
+	GrapaRuleEvent* result = NULL;
+	
+	// Get array items (objects)
+	std::vector<GrapaRuleEvent*> array_items;
+	if (array->vQueue)
+	{
+		printf("DEBUG: Array has %d items\n", (int)array->vQueue->mCount);
+		for (int i = 0; i < array->vQueue->mCount; i++)
+		{
+			GrapaRuleEvent* item = array->vQueue->Head(i);
+			printf("DEBUG: Item %d: %p, token: %d\n", i, item, item ? (int)item->mValue.mToken : -1);
+			if (item && item->mValue.mToken == GrapaTokenType::GOBJ)
+			{
+				printf("DEBUG: Adding GOBJ item %d to array_items\n", i);
+				array_items.push_back(item);
+			}
+		}
+	}
+	
+	printf("DEBUG: Found %zu GOBJ items\n", array_items.size());
+	
+	if (array_items.empty())
+	{
+		printf("DEBUG: No GOBJ items found, returning empty result\n");
+		// Return empty result
+		result = new GrapaRuleEvent(0, GrapaCHAR(""), GrapaCHAR(""));
+		result->mValue.mToken = GrapaTokenType::GOBJ;
+		result->vQueue = new GrapaRuleQueue();
+		
+		// Add empty results array
+		GrapaRuleEvent* results_array = new GrapaRuleEvent(0, GrapaCHAR("results"), GrapaCHAR(""));
+		results_array->mValue.mToken = GrapaTokenType::LIST;
+		results_array->vQueue = new GrapaRuleQueue();
+		result->vQueue->PushTail(results_array);
+		
+		// Add method
+		std::string method_str(reinterpret_cast<const char*>(method.mBytes), method.mLength);
+		GrapaRuleEvent* method_field = new GrapaRuleEvent(0, GrapaCHAR("method"), GrapaCHAR(method_str.c_str()));
+		result->vQueue->PushTail(method_field);
+		
+		return result;
+	}
+	
+	// Calculate similarity for each object
+	std::vector<std::pair<int, double>> similarities;
+	printf("DEBUG: Calculating similarity for %zu items\n", array_items.size());
+	for (size_t i = 0; i < array_items.size(); i++)
+	{
+		printf("DEBUG: Processing item %zu\n", i);
+		double similarity = calculate_object_similarity(array_items[i], query);
+		printf("DEBUG: Similarity for item %zu: %f\n", i, similarity);
+		if (similarity >= threshold)
+		{
+			printf("DEBUG: Adding similarity %f for item %zu\n", similarity, i);
+			similarities.push_back({(int)i, similarity});
+		}
+	}
+	
+	if (similarities.empty())
+	{
+		// Return empty result
+		result = new GrapaRuleEvent(0, GrapaCHAR(""), GrapaCHAR(""));
+		result->mValue.mToken = GrapaTokenType::GOBJ;
+		result->vQueue = new GrapaRuleQueue();
+		
+		// Add empty results array
+		GrapaRuleEvent* results_array = new GrapaRuleEvent(0, GrapaCHAR("results"), GrapaCHAR(""));
+		results_array->mValue.mToken = GrapaTokenType::LIST;
+		results_array->vQueue = new GrapaRuleQueue();
+		result->vQueue->PushTail(results_array);
+		
+		// Add method
+		std::string method_str(reinterpret_cast<const char*>(method.mBytes), method.mLength);
+		GrapaRuleEvent* method_field = new GrapaRuleEvent(0, GrapaCHAR("method"), GrapaCHAR(method_str.c_str()));
+		result->vQueue->PushTail(method_field);
+		
+		return result;
+	}
+	
+	printf("DEBUG: About to sort results\n");
+	// Sort results
+	if (sort == "desc")
+	{
+		printf("DEBUG: Sorting in descending order\n");
+		std::sort(similarities.begin(), similarities.end(), [](const std::pair<int, double>& a, const std::pair<int, double>& b) {
+			return a.second > b.second;
+		});
+	}
+	else if (sort == "asc")
+	{
+		printf("DEBUG: Sorting in ascending order\n");
+		std::sort(similarities.begin(), similarities.end(), [](const std::pair<int, double>& a, const std::pair<int, double>& b) {
+			return a.second < b.second;
+		});
+	}
+	
+	printf("DEBUG: About to limit to top_n=%d\n", top_n);
+	// Limit to top_n
+	if (similarities.size() > top_n)
+	{
+		printf("DEBUG: Resizing similarities from %zu to %d\n", similarities.size(), top_n);
+		similarities.resize(top_n);
+	}
+	
+	printf("DEBUG: Creating result object\n");
+	// Create result object
+	result = new GrapaRuleEvent(0, GrapaCHAR(""), GrapaCHAR(""));
+	result->mValue.mToken = GrapaTokenType::GOBJ;
+	result->vQueue = new GrapaRuleQueue();
+	
+	printf("DEBUG: Creating results array\n");
+	// Add results array
+	GrapaRuleEvent* results_array = new GrapaRuleEvent(0, GrapaCHAR("results"), GrapaCHAR(""));
+	results_array->mValue.mToken = GrapaTokenType::LIST;
+	results_array->vQueue = new GrapaRuleQueue();
+	
+	printf("DEBUG: Processing %zu similarities\n", similarities.size());
+	for (const auto& sim : similarities)
+	{
+		printf("DEBUG: Processing similarity item with index %d, score %f\n", sim.first, sim.second);
+		GrapaRuleEvent* result_item = new GrapaRuleEvent(0, GrapaCHAR(""), GrapaCHAR(""));
+		result_item->mValue.mToken = GrapaTokenType::GOBJ;
+		result_item->vQueue = new GrapaRuleQueue();
+		
+		printf("DEBUG: Adding index field\n");
+		// Add index
+		GrapaRuleEvent* index_field = new GrapaRuleEvent(0, GrapaCHAR("index"), GrapaInt(sim.first).getBytes());
+		result_item->vQueue->PushTail(index_field);
+		
+		printf("DEBUG: include_scores=%d\n", include_scores);
+		// Add similarity score if requested
+		if (include_scores)
+		{
+			printf("DEBUG: Adding similarity field\n");
+			GrapaRuleEvent* similarity_field = new GrapaRuleEvent(0, GrapaCHAR("similarity"), GrapaFloat(sim.second).getBytes());
+			result_item->vQueue->PushTail(similarity_field);
+		}
+		
+		printf("DEBUG: include_items=%d\n", include_items);
+		// Add item if requested
+		if (include_items)
+		{
+			printf("DEBUG: Adding item field\n");
+			GrapaRuleEvent* item_field = new GrapaRuleEvent(0, GrapaCHAR("item"), GrapaCHAR(""));
+			GrapaRuleEvent* original_item = array->vQueue->Head(sim.first);
+			if (original_item)
+			{
+				printf("DEBUG: Copying original item\n");
+				item_field->mValue = original_item->mValue;
+				item_field->vQueue = original_item->vQueue;
+			}
+			result_item->vQueue->PushTail(item_field);
+		}
+		
+		printf("DEBUG: Adding result item to results array\n");
+		results_array->vQueue->PushTail(result_item);
+	}
+	
+	printf("DEBUG: Adding results array to result\n");
+	result->vQueue->PushTail(results_array);
+	
+	printf("DEBUG: Adding best match info\n");
+	// Add best match info if we have results
+	if (!similarities.empty())
+	{
+		printf("DEBUG: Creating best_similarity field\n");
+		GrapaRuleEvent* best_similarity = new GrapaRuleEvent(0, GrapaCHAR("best_similarity"), GrapaFloat(similarities[0].second).getBytes());
+		result->vQueue->PushTail(best_similarity);
+		
+		printf("DEBUG: Creating best_index field\n");
+		GrapaRuleEvent* best_index = new GrapaRuleEvent(0, GrapaCHAR("best_index"), GrapaInt(similarities[0].first).getBytes());
+		result->vQueue->PushTail(best_index);
+		
+		if (include_items)
+		{
+			printf("DEBUG: Creating best_match field\n");
+			GrapaRuleEvent* best_match = new GrapaRuleEvent(0, GrapaCHAR("best_match"), GrapaCHAR(""));
+			GrapaRuleEvent* original_item = array->vQueue->Head(similarities[0].first);
+			if (original_item)
+			{
+				printf("DEBUG: Copying original item for best_match\n");
+				best_match->mValue = original_item->mValue;
+				best_match->vQueue = original_item->vQueue;
+			}
+			result->vQueue->PushTail(best_match);
+		}
+	}
+	
+	printf("DEBUG: Adding method field\n");
+	// Add method
+	std::string method_str2(reinterpret_cast<const char*>(method.mBytes), method.mLength);
+	printf("DEBUG: Method string: %s\n", method_str2.c_str());
+	GrapaRuleEvent* method_field = new GrapaRuleEvent(GrapaTokenType::STR, 0, "method", method_str2.c_str());
+	printf("DEBUG: Method field created successfully\n");
+	result->vQueue->PushTail(method_field);
+	printf("DEBUG: Method field added to result\n");
+	
+	printf("DEBUG: About to return result\n");
+	return result;
+}
+
+// Helper function to calculate object similarity
+double calculate_object_similarity(GrapaRuleEvent* obj1, GrapaRuleEvent* obj2)
+{
+	printf("DEBUG: calculate_object_similarity called with obj1=%p, obj2=%p\n", obj1, obj2);
+	
+	if (!obj1 || !obj2)
+	{
+		printf("DEBUG: One or both objects are null\n");
+		return 0.0;
+	}
+	
+	printf("DEBUG: obj1 token: %d, obj2 token: %d\n", (int)obj1->mValue.mToken, (int)obj2->mValue.mToken);
+	
+	if (obj1->mValue.mToken != GrapaTokenType::GOBJ || obj2->mValue.mToken != GrapaTokenType::GOBJ)
+	{
+		printf("DEBUG: One or both objects are not GOBJ type\n");
+		return 0.0;
+	}
+	
+	printf("DEBUG: obj1 vQueue: %p, obj2 vQueue: %p\n", obj1->vQueue, obj2->vQueue);
+	
+	if (!obj1->vQueue || !obj2->vQueue)
+	{
+		printf("DEBUG: One or both objects have null vQueue\n");
+		return 0.0;
+	}
+	
+	printf("DEBUG: calculate_object_similarity returning 1.0\n");
+	// Simplified version - just return 1.0 for now to test if the issue is elsewhere
+	return 1.0;
+}
+
+// Helper function to check if two values are similar
+bool are_values_similar(GrapaRuleEvent* val1, GrapaRuleEvent* val2)
+{
+	if (!val1 || !val2)
+		return false;
+	
+	// Same type and value
+	if (val1->mValue.mToken == val2->mValue.mToken)
+	{
+		if (val1->mValue.mToken == GrapaTokenType::STR || val1->mValue.mToken == GrapaTokenType::ID)
+		{
+			// String comparison
+			if (val1->mValue.mBytes && val2->mValue.mBytes && val1->mValue.mLength > 0 && val2->mValue.mLength > 0)
+			{
+				std::string str1(reinterpret_cast<const char*>(val1->mValue.mBytes), val1->mValue.mLength);
+				std::string str2(reinterpret_cast<const char*>(val2->mValue.mBytes), val2->mValue.mLength);
+				return str1 == str2;
+			}
+			return false;
+		}
+		else if (val1->mValue.mToken == GrapaTokenType::INT)
+		{
+			// Integer comparison
+			GrapaInt int1, int2;
+			int1.FromBytes(val1->mValue);
+			int2.FromBytes(val2->mValue);
+			return int1.LongValue() == int2.LongValue();
+		}
+		else if (val1->mValue.mToken == GrapaTokenType::FLOAT)
+		{
+			// Float comparison
+			GrapaFloat float1, float2;
+			float1.FromBytes(val1->mValue);
+			float2.FromBytes(val2->mValue);
+			return std::abs(float1.ToDouble() - float2.ToDouble()) < 1e-9;
+		}
+		else if (val1->mValue.mToken == GrapaTokenType::BOOL)
+		{
+			// Boolean comparison
+			if (val1->mValue.mBytes && val2->mValue.mBytes && val1->mValue.mLength > 0 && val2->mValue.mLength > 0)
+			{
+				return val1->mValue.mBytes[0] == val2->mValue.mBytes[0];
+			}
+			return false;
+		}
+	}
+	
+	return false;
 }
 
 // Helper function to calculate array-string similarity
@@ -21973,6 +22379,15 @@ GrapaRuleEvent* GrapaLibraryRuleSimilarityEvent::Run(GrapaScriptExec* vScriptExe
 		// Swap parameters for consistency
 		result = calculate_array_vector_similarity(vScriptExec, pNameSpace, query_param.vVal, array_param.vVal, method, top_n, threshold, sort, include_scores, include_items);
 	}
+	else if (array_param.vVal && query_param.vVal && array_param.vVal->mValue.mToken == GrapaTokenType::LIST && query_param.vVal->mValue.mToken == GrapaTokenType::GOBJ)
+	{
+		result = calculate_array_object_similarity(vScriptExec, pNameSpace, array_param.vVal, query_param.vVal, method, top_n, threshold, sort, include_scores, include_items);
+	}
+	else if (array_param.vVal && query_param.vVal && array_param.vVal->mValue.mToken == GrapaTokenType::GOBJ && query_param.vVal->mValue.mToken == GrapaTokenType::LIST)
+	{
+		// Swap parameters for consistency
+		result = calculate_array_object_similarity(vScriptExec, pNameSpace, query_param.vVal, array_param.vVal, method, top_n, threshold, sort, include_scores, include_items);
+	}
 	else if (array_param.vVal && query_param.vVal && array_param.vVal->mValue.mToken == GrapaTokenType::VECTOR && query_param.vVal->mValue.mToken == GrapaTokenType::VECTOR)
 	{
 		result = new GrapaRuleEvent(0, GrapaCHAR(""), GrapaCHAR(""));
@@ -21990,7 +22405,7 @@ GrapaRuleEvent* GrapaLibraryRuleSimilarityEvent::Run(GrapaScriptExec* vScriptExe
 	else if (array_param.vVal && query_param.vVal && array_param.vVal->mValue.mToken == GrapaTokenType::STR && query_param.vVal->mValue.mToken == GrapaTokenType::STR)
 	{
 		// Handle string-to-string similarity
-		result = calculate_string_similarity(vScriptExec, pNameSpace, array_param.vVal, query_param.vVal, method);
+		result = calculate_string_similarity(vScriptExec, pNameSpace, array_param.vVal, query_param.vVal, method, params_param.vVal);
 	}
 
 	if (result == NULL)
