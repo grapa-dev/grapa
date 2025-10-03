@@ -151,6 +151,19 @@ The following methods are available specifically on `$STR` objects:
 
 /* Default method (cosine similarity) */
 "hello world".similarity("world hello");           /* Returns: 1.0 (default cosine) */
+
+/* Advanced options for Cosine and Jaccard */
+"hello world".similarity("world hello", "cosine", {
+  "method": "tfidf",                    /* Use TF-IDF instead of word frequency */
+  "corpus": ["hello world", "goodbye"], /* Document corpus for TF-IDF */
+  "case_sensitive": false               /* Case-insensitive comparison */
+});
+
+"hello world".similarity("hello there", "jaccard", {
+  "jaccard_method": "char",             /* Use character-based instead of word-based */
+  "jaccard_n": 3,                       /* Use 3-grams for character method */
+  "case_sensitive": false               /* Case-insensitive comparison */
+});
 ```
 
 
@@ -190,6 +203,40 @@ The unified `.similarity()` method supports the following algorithms:
 - **Jaro-Winkler similarity**: Record matching, duplicate detection, name matching
 - **Cosine similarity**: Document similarity, word-based analysis
 - **Jaccard similarity**: Set-based analysis, n-gram matching, document overlap
+
+#### **Advanced Parameters**
+
+The unified `.similarity()` method supports advanced parameters for fine-tuning Cosine and Jaccard algorithms:
+
+**Cosine Similarity Parameters:**
+- `"method"`: `"word_freq"` (default) or `"tfidf"` - Choose between word frequency or TF-IDF weighting
+- `"corpus"`: Array of documents for TF-IDF calculation - Required for TF-IDF method
+- `"case_sensitive"`: `true` (default) or `false` - Enable case-insensitive comparison
+
+**Jaccard Similarity Parameters:**
+- `"jaccard_method"`: `"word"` (default), `"char"`, or `"ngram"` - Choose similarity approach
+- `"jaccard_n"`: Integer (default: 2) - N-gram size for character/ngram methods
+- `"case_sensitive"`: `true` (default) or `false` - Enable case-insensitive comparison
+
+**Examples:**
+```grapa
+/* TF-IDF with document corpus */
+"machine learning".similarity("artificial intelligence", "cosine", {
+  "method": "tfidf",
+  "corpus": ["machine learning algorithms", "artificial intelligence systems", "data science methods"]
+});
+
+/* Character-based Jaccard with 3-grams */
+"hello".similarity("hallo", "jaccard", {
+  "jaccard_method": "char",
+  "jaccard_n": 3
+});
+
+/* Case-insensitive comparison */
+"Hello World".similarity("hello world", "cosine", {
+  "case_sensitive": false
+});
+```
 
 #### **Large String Optimization**
 
