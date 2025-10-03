@@ -3038,6 +3038,15 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#use-grapa-with-db-when" class="md-nav__link">
+    <span class="md-ellipsis">
+      Use Grapa with DB when:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#use-pinecone-when" class="md-nav__link">
     <span class="md-ellipsis">
       Use Pinecone when:
@@ -4626,6 +4635,15 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#use-grapa-with-db-when" class="md-nav__link">
+    <span class="md-ellipsis">
+      Use Grapa with DB when:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#use-pinecone-when" class="md-nav__link">
     <span class="md-ellipsis">
       Use Pinecone when:
@@ -4991,6 +5009,7 @@
 <tr>
 <th>Feature</th>
 <th>Grapa <code>.similarity()</code></th>
+<th>Grapa with DB</th>
 <th>Pinecone</th>
 <th>Winner</th>
 </tr>
@@ -4999,6 +5018,7 @@
 <tr>
 <td><strong>Similarity Algorithms</strong></td>
 <td>5+ algorithms (levenshtein, damerau, jaro, cosine, jaccard)</td>
+<td>5+ algorithms (levenshtein, damerau, jaro, cosine, jaccard)</td>
 <td>Primarily cosine</td>
 <td>🏆 <strong>Grapa</strong></td>
 </tr>
@@ -5006,16 +5026,19 @@
 <td><strong>Array Search</strong></td>
 <td>✅ Native support</td>
 <td>✅ Native support</td>
+<td>✅ Native support</td>
 <td>🤝 <strong>Tie</strong></td>
 </tr>
 <tr>
 <td><strong>Metadata Search</strong></td>
 <td>✅ Object field matching</td>
+<td>✅ Object field matching + DB indexing</td>
 <td>✅ Metadata filtering</td>
-<td>🤝 <strong>Tie</strong></td>
+<td>🏆 <strong>Grapa with DB</strong></td>
 </tr>
 <tr>
 <td><strong>Result Control</strong></td>
+<td>✅ top_n, threshold, sort, include_scores</td>
 <td>✅ top_n, threshold, sort, include_scores</td>
 <td>✅ top_k, score_threshold, include_metadata</td>
 <td>🤝 <strong>Tie</strong></td>
@@ -5023,23 +5046,27 @@
 <tr>
 <td><strong>Persistence</strong></td>
 <td>❌ In-memory only</td>
+<td>✅ Persistent database ($file, $TABLE)</td>
 <td>✅ Persistent database</td>
-<td>🏆 <strong>Pinecone</strong></td>
+<td>🏆 <strong>Tie</strong></td>
 </tr>
 <tr>
 <td><strong>Scale</strong></td>
 <td>❌ Memory limited</td>
+<td>✅ Limited by disk space</td>
 <td>✅ Billions of vectors</td>
 <td>🏆 <strong>Pinecone</strong></td>
 </tr>
 <tr>
 <td><strong>Performance</strong></td>
 <td>❌ O(n) for each search</td>
+<td>✅ O(log n) with DB indexing + O(n) similarity</td>
 <td>✅ Optimized indexing</td>
 <td>🏆 <strong>Pinecone</strong></td>
 </tr>
 <tr>
 <td><strong>Ease of Use</strong></td>
+<td>✅ Native language integration</td>
 <td>✅ Native language integration</td>
 <td>❌ Requires API calls</td>
 <td>🏆 <strong>Grapa</strong></td>
@@ -5047,11 +5074,13 @@
 <tr>
 <td><strong>Cost</strong></td>
 <td>✅ Free (local)</td>
+<td>✅ Free (local)</td>
 <td>❌ Pay-per-use</td>
 <td>🏆 <strong>Grapa</strong></td>
 </tr>
 <tr>
 <td><strong>Advanced Options</strong></td>
+<td>✅ TF-IDF, word-based jaccard, configurable parameters</td>
 <td>✅ TF-IDF, word-based jaccard, configurable parameters</td>
 <td>❌ Limited options</td>
 <td>🏆 <strong>Grapa</strong></td>
@@ -5069,14 +5098,25 @@
 <li>✅ <strong>Cost-sensitive</strong> applications</li>
 <li>✅ <strong>Real-time data</strong> that changes frequently</li>
 </ul>
+<h3 id="use-grapa-with-db-when">Use Grapa with DB when:</h3>
+<ul>
+<li>✅ <strong>Medium to large datasets</strong> (1M - 100M items)</li>
+<li>✅ <strong>Persistent storage</strong> required</li>
+<li>✅ <strong>Local/offline applications</strong> with data persistence</li>
+<li>✅ <strong>Complex similarity algorithms</strong> needed</li>
+<li>✅ <strong>Native language integration</strong> preferred</li>
+<li>✅ <strong>Cost-sensitive</strong> applications</li>
+<li>✅ <strong>Metadata indexing</strong> and filtering required</li>
+<li>✅ <strong>Hybrid approach</strong> (DB filtering + similarity search)</li>
+</ul>
 <h3 id="use-pinecone-when">Use Pinecone when:</h3>
 <ul>
-<li>✅ <strong>Large-scale production</strong> (&gt; 1M items)</li>
+<li>✅ <strong>Large-scale production</strong> (&gt; 100M items)</li>
 <li>✅ <strong>High-performance requirements</strong> (sub-second latency)</li>
-<li>✅ <strong>Persistent storage</strong> needed</li>
-<li>✅ <strong>Cloud deployment</strong></li>
+<li>✅ <strong>Cloud deployment</strong> preferred</li>
 <li>✅ <strong>Simple cosine similarity</strong> sufficient</li>
 <li>✅ <strong>Budget available</strong> for managed service</li>
+<li>✅ <strong>Global distribution</strong> needed</li>
 </ul>
 <h2 id="basic-usage">Basic Usage</h2>
 <h3 id="string-similarity">String Similarity</h3>
