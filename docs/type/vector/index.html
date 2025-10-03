@@ -7531,6 +7531,13 @@ result = vectors.similarity(query, &quot;cosine&quot;);
   &quot;best_match&quot;: #[1, 2, 3]#,
   &quot;method&quot;: &quot;cosine&quot;
 } */
+
+/* Access and iterate through vector similarity results */
+results_len = result.&quot;results&quot;.len();
+for i in results_len.range() {
+    match = result.&quot;results&quot;[i];
+    (&quot;Score: &quot; + match.&quot;similarity&quot;.str() + &quot; - Vector: &quot; + match.&quot;item&quot;.str() + &quot;\n&quot;).echo();
+}
 </code></pre></div>
 <h3 id="object-array-similarity-metadata-search">Object Array Similarity (Metadata Search)</h3>
 <p>The <code>.similarity()</code> method also supports <strong>object similarity</strong> for searching through collections of metadata objects:</p>
@@ -7555,6 +7562,14 @@ result = metadata.similarity(query, &quot;cosine&quot;, {&quot;include_scores&qu
   &quot;best_match&quot;: {&quot;name&quot;: &quot;Alice&quot;, &quot;score&quot;: 85.5, &quot;active&quot;: true, &quot;department&quot;: &quot;Engineering&quot;},
   &quot;method&quot;: &quot;cosine&quot;
 } */
+
+/* Access and iterate through object similarity results */
+results_len = result.&quot;results&quot;.len();
+for i in results_len.range() {
+    match = result.&quot;results&quot;[i];
+    item = match.&quot;item&quot;;
+    (&quot;Score: &quot; + match.&quot;similarity&quot;.str() + &quot; - &quot; + item.&quot;name&quot; + &quot; (active: &quot; + item.&quot;active&quot;.str() + &quot;)\n&quot;).echo();
+}
 </code></pre></div>
 <p><strong>Object Similarity Features:</strong>
 - <strong>Field Matching</strong>: Compares fields that exist in both the query object and target objects

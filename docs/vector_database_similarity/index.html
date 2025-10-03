@@ -5150,9 +5150,10 @@ results = documents.similarity(query, &quot;cosine&quot;, {
 });
 
 /* Display results */
-for i in results.range() {
-    result = results[i];
-    (&quot;Score: &quot; + result.similarity.toString() + &quot; - &quot; + result.item + &quot;\n&quot;).echo();
+results_len = results.&quot;results&quot;.len();
+for i in results_len.range() {
+    result = results.&quot;results&quot;[i];
+    (&quot;Score: &quot; + result.&quot;similarity&quot;.str() + &quot; - &quot; + result.&quot;item&quot; + &quot;\n&quot;).echo();
 }
 </code></pre></div>
 <h3 id="object-array-similarity-metadata-search">Object Array Similarity (Metadata Search)</h3>
@@ -5172,9 +5173,11 @@ results = user_profiles.similarity(query_profile, &quot;cosine&quot;, {
 });
 
 /* Display results */
-for i in results.range() {
-    result = results[i];
-    (&quot;Score: &quot; + result.similarity.toString() + &quot; - &quot; + result.item.name + &quot; (age: &quot; + result.item.age.toString() + &quot;)\n&quot;).echo();
+results_len = results.&quot;results&quot;.len();
+for i in results_len.range() {
+    result = results.&quot;results&quot;[i];
+    item = result.&quot;item&quot;;
+    (&quot;Score: &quot; + result.&quot;similarity&quot;.str() + &quot; - &quot; + item.&quot;name&quot; + &quot; (age: &quot; + item.&quot;age&quot;.str() + &quot;)\n&quot;).echo();
 }
 </code></pre></div>
 <h2 id="advanced-features">Advanced Features</h2>
@@ -5342,18 +5345,18 @@ duration = end_time.ms() - start_time.ms();
 
 (&quot;Dataset size: &quot; + large_dataset.len().toString() + &quot; documents\n&quot;).echo();
 (&quot;Search time: &quot; + duration.toString() + &quot;ms\n&quot;).echo();
-(&quot;Results found: &quot; + results.len().toString() + &quot;\n&quot;).echo();
+(&quot;Results found: &quot; + results.&quot;results&quot;.len().str() + &quot;\n&quot;).echo();
 </code></pre></div>
 <h2 id="error-handling-and-edge-cases">Error Handling and Edge Cases</h2>
 <h3 id="empty-array-handling">Empty Array Handling</h3>
 <div class="highlight"><pre><span></span><code>empty_array = [];
 empty_results = empty_array.similarity(&quot;test&quot;, &quot;cosine&quot;);
-(&quot;Empty array similarity: &quot; + empty_results.len().toString() + &quot; results\n&quot;).echo();
+(&quot;Empty array similarity: &quot; + empty_results.&quot;results&quot;.len().str() + &quot; results\n&quot;).echo();
 </code></pre></div>
 <h3 id="single-item-arrays">Single Item Arrays</h3>
 <div class="highlight"><pre><span></span><code>single_array = [&quot;single item&quot;];
 single_results = single_array.similarity(&quot;single item&quot;, &quot;cosine&quot;);
-(&quot;Single item similarity: &quot; + single_results.len().toString() + &quot; results\n&quot;).echo();
+(&quot;Single item similarity: &quot; + single_results.&quot;results&quot;.len().str() + &quot; results\n&quot;).echo();
 </code></pre></div>
 <h3 id="threshold-filtering">Threshold Filtering</h3>
 <div class="highlight"><pre><span></span><code>results = documents.similarity(query, &quot;cosine&quot;, {
@@ -5361,7 +5364,7 @@ single_results = single_array.similarity(&quot;single item&quot;, &quot;cosine&q
     &quot;threshold&quot;: 0.5,
     &quot;include_scores&quot;: true
 });
-(&quot;Results above 0.5 threshold: &quot; + results.len().toString() + &quot;\n&quot;).echo();
+(&quot;Results above 0.5 threshold: &quot; + results.&quot;results&quot;.len().str() + &quot;\n&quot;).echo();
 </code></pre></div>
 <h2 id="best-practices">Best Practices</h2>
 <h3 id="1-use-id-for-database-operations">1. Use $ID for Database Operations</h3>
