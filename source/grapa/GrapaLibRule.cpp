@@ -21683,15 +21683,14 @@ GrapaRuleEvent* calculate_array_object_similarity(GrapaScriptExec* vScriptExec, 
 	if (array->vQueue)
 	{
 		printf("DEBUG: Array has %d items\n", (int)array->vQueue->mCount);
-		for (int i = 0; i < array->vQueue->mCount; i++)
+		GrapaRuleEvent* item = array->vQueue->Head(0);
+		while(item)
 		{
-			GrapaRuleEvent* item = array->vQueue->Head(i);
-			printf("DEBUG: Item %d: %p, token: %d\n", i, item, item ? (int)item->mValue.mToken : -1);
 			if (item && item->mValue.mToken == GrapaTokenType::GOBJ)
 			{
-				printf("DEBUG: Adding GOBJ item %d to array_items\n", i);
 				array_items.push_back(item);
 			}
+			item = item->Next();
 		}
 	}
 	
@@ -21824,8 +21823,9 @@ GrapaRuleEvent* calculate_array_object_similarity(GrapaScriptExec* vScriptExec, 
 			if (original_item)
 			{
 				printf("DEBUG: Copying original item\n");
-				item_field->mValue = original_item->mValue;
-				item_field->vQueue = original_item->vQueue;
+				item_field->mValue.FROM(original_item->mValue);
+				if (original_item->vQueue)
+					item_field->vQueue = vScriptExec->CopyQueue(original_item->vQueue);
 			}
 			result_item->vQueue->PushTail(item_field);
 		}
@@ -21857,8 +21857,9 @@ GrapaRuleEvent* calculate_array_object_similarity(GrapaScriptExec* vScriptExec, 
 			if (original_item)
 			{
 				printf("DEBUG: Copying original item for best_match\n");
-				best_match->mValue = original_item->mValue;
-				best_match->vQueue = original_item->vQueue;
+				best_match->mValue.FROM(original_item->mValue);
+				if (original_item->vQueue)
+					best_match->vQueue = vScriptExec->CopyQueue(original_item->vQueue);
 			}
 			result->vQueue->PushTail(best_match);
 		}
