@@ -21716,13 +21716,13 @@ GrapaRuleEvent* calculate_array_object_similarity(GrapaScriptExec* vScriptExec, 
 	}
 	
 	// Calculate similarity for each object
-	std::vector<std::pair<int, double>> similarities;
+	std::vector<std::pair<GrapaRuleEvent*, double>> similarities;
 	for (size_t i = 0; i < array_items.size(); i++)
 	{
 		double similarity = calculate_object_similarity(array_items[i], query);
 		if (similarity >= threshold)
 		{
-			similarities.push_back({(int)i, similarity});
+			similarities.push_back({array_items[i], similarity});
 		}
 	}
 	
@@ -21750,13 +21750,13 @@ GrapaRuleEvent* calculate_array_object_similarity(GrapaScriptExec* vScriptExec, 
 	// Sort results
 	if (sort == "desc")
 	{
-		std::sort(similarities.begin(), similarities.end(), [](const std::pair<int, double>& a, const std::pair<int, double>& b) {
+		std::sort(similarities.begin(), similarities.end(), [](const std::pair<GrapaRuleEvent*, double>& a, const std::pair<GrapaRuleEvent*, double>& b) {
 			return a.second > b.second;
 		});
 	}
 	else if (sort == "asc")
 	{
-		std::sort(similarities.begin(), similarities.end(), [](const std::pair<int, double>& a, const std::pair<int, double>& b) {
+		std::sort(similarities.begin(), similarities.end(), [](const std::pair<GrapaRuleEvent*, double>& a, const std::pair<GrapaRuleEvent*, double>& b) {
 			return a.second < b.second;
 		});
 	}
@@ -21783,8 +21783,19 @@ GrapaRuleEvent* calculate_array_object_similarity(GrapaScriptExec* vScriptExec, 
 		result_item->mValue.mToken = GrapaTokenType::GOBJ;
 		result_item->vQueue = new GrapaRuleQueue();
 		
+		// Find the index of this item in the original array
+		int item_index = -1;
+		for (size_t i = 0; i < array_items.size(); i++)
+		{
+			if (array_items[i] == sim.first)
+			{
+				item_index = (int)i;
+				break;
+			}
+		}
+		
 		// Add index
-		GrapaRuleEvent* index_field = new GrapaRuleEvent(0, GrapaCHAR("index"), GrapaInt(sim.first).getBytes());
+		GrapaRuleEvent* index_field = new GrapaRuleEvent(0, GrapaCHAR("index"), GrapaInt(item_index).getBytes());
 		result_item->vQueue->PushTail(index_field);
 		
 		// Add similarity score if requested
@@ -21798,7 +21809,7 @@ GrapaRuleEvent* calculate_array_object_similarity(GrapaScriptExec* vScriptExec, 
 		if (include_items)
 		{
 			GrapaRuleEvent* item_field = new GrapaRuleEvent(0, GrapaCHAR("item"), GrapaCHAR(""));
-			GrapaRuleEvent* original_item = array->vQueue->Head(sim.first);
+			GrapaRuleEvent* original_item = sim.first; // Direct pointer access - no more sequential walk!
 			if (original_item)
 			{
 				item_field->mValue.FROM(original_item->mValue);
@@ -21819,13 +21830,24 @@ GrapaRuleEvent* calculate_array_object_similarity(GrapaScriptExec* vScriptExec, 
 		GrapaRuleEvent* best_similarity = new GrapaRuleEvent(0, GrapaCHAR("best_similarity"), GrapaFloat(similarities[0].second).getBytes());
 		result->vQueue->PushTail(best_similarity);
 		
-		GrapaRuleEvent* best_index = new GrapaRuleEvent(0, GrapaCHAR("best_index"), GrapaInt(similarities[0].first).getBytes());
+		// Find the index of the best match
+		int best_index_val = -1;
+		for (size_t i = 0; i < array_items.size(); i++)
+		{
+			if (array_items[i] == similarities[0].first)
+			{
+				best_index_val = (int)i;
+				break;
+			}
+		}
+		
+		GrapaRuleEvent* best_index = new GrapaRuleEvent(0, GrapaCHAR("best_index"), GrapaInt(best_index_val).getBytes());
 		result->vQueue->PushTail(best_index);
 		
 		if (include_items)
 		{
 			GrapaRuleEvent* best_match = new GrapaRuleEvent(0, GrapaCHAR("best_match"), GrapaCHAR(""));
-			GrapaRuleEvent* original_item = array->vQueue->Head(similarities[0].first);
+			GrapaRuleEvent* original_item = similarities[0].first; // Direct pointer access - no more sequential walk!
 			if (original_item)
 			{
 				best_match->mValue.FROM(original_item->mValue);

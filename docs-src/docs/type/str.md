@@ -269,10 +269,12 @@ similarity = embedding1."embedding".similarity(embedding2."embedding", "cosine")
 
 ## Array Similarity
 
-The `.similarity()` method also supports **array similarity** - comparing a query string against a list of strings to find the best matches:
+The `.similarity()` method supports **array similarity** - comparing a query against a list of items to find the best matches. This works with both **string arrays** and **object arrays** for metadata search.
+
+### String Array Similarity
 
 ```grapa
-/* Basic array similarity */
+/* Basic string array similarity */
 strings = ["hello world", "hello there", "goodbye world"];
 query = "hello";
 
@@ -289,6 +291,41 @@ result = strings.similarity(query, "cosine");
   "method": "cosine"
 } */
 ```
+
+### Object Array Similarity (Metadata Search)
+
+The `.similarity()` method also supports **object similarity** for searching through collections of metadata objects:
+
+```grapa
+/* Metadata search with object similarity */
+metadata = [
+    {"name": "John", "age": 30, "city": "New York", "department": "Engineering"},
+    {"name": "Jane", "age": 25, "city": "Boston", "department": "Marketing"},
+    {"name": "Bob", "age": 30, "city": "Chicago", "department": "Engineering"}
+];
+
+/* Search for objects matching query criteria */
+query = {"name": "John", "age": 30};
+result = metadata.similarity(query, "cosine", {"include_scores": true, "include_items": true});
+/* Returns: {
+  "results": [
+    {"index": 0, "similarity": 0.666667, "item": {"name": "John", "age": 30, "city": "New York", "department": "Engineering"}},
+    {"index": 2, "similarity": 0.333333, "item": {"name": "Bob", "age": 30, "city": "Chicago", "department": "Engineering"}},
+    {"index": 1, "similarity": 0.0, "item": {"name": "Jane", "age": 25, "city": "Boston", "department": "Marketing"}}
+  ],
+  "best_similarity": 0.666667,
+  "best_index": 0,
+  "best_match": {"name": "John", "age": 30, "city": "New York", "department": "Engineering"},
+  "method": "cosine"
+} */
+```
+
+**Object Similarity Features:**
+- **Field Matching**: Compares fields that exist in both the query object and target objects
+- **Partial Matches**: Query objects can contain a subset of fields from the target objects
+- **Multiple Data Types**: Supports string, integer, float, and boolean field comparisons
+- **Similarity Scoring**: Returns similarity as ratio of matching fields to total fields in query
+- **Flexible Queries**: Can search by any combination of object fields
 
 ### Array Similarity Parameters
 
@@ -320,11 +357,25 @@ compact = strings.similarity(query, "cosine", {
 
 ### Array Similarity Use Cases
 
+**String Array Similarity:**
 - **Search and ranking**: Find best matches from a list of strings
 - **Fuzzy matching**: Find closest matches even with typos
 - **Content filtering**: Filter results by similarity threshold
 - **Recommendation systems**: Rank items by similarity to user input
 - **Data deduplication**: Find similar entries in datasets
+
+**Object Array Similarity (Metadata Search):**
+- **Database queries**: Search through structured data collections
+- **User profiles**: Find users matching specific criteria
+- **Product catalogs**: Search products by attributes
+- **Document metadata**: Find documents with matching properties
+- **Configuration management**: Search system configurations by parameters
+- **API responses**: Filter and rank API results by metadata
+- **Content management**: Find content items by tags, categories, or properties
+
+**Performance:**
+- **String algorithms**: O(m×n) complexity, slow for long strings
+- **Object similarity**: O(n×f) complexity where n is number of objects and f is average number of fields
 - **Embedding algorithms**: O(d) complexity where d is embedding dimension (~1536), consistent performance
 
 > **Note:** While string content supports full Unicode, **identifiers** (variable names, function names) are limited to ASCII characters only. This is a lexical limitation in the parser. See [$ID Documentation](id.md) for details.

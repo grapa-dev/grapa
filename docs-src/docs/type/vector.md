@@ -1184,10 +1184,12 @@ default = vec1.similarity(vec2);                   /* Returns: 0.974... */
 
 ## Array Similarity
 
-The `.similarity()` method also supports **array similarity** - comparing a query vector against a list of vectors to find the best matches:
+The `.similarity()` method supports **array similarity** - comparing a query against a list of items to find the best matches. This works with **vector arrays**, **string arrays**, and **object arrays** for metadata search.
+
+### Vector Array Similarity
 
 ```grapa
-/* Basic array similarity */
+/* Basic vector array similarity */
 vectors = [#[1, 2, 3]#, #[4, 5, 6]#, #[7, 8, 9]#];
 query = #[2, 3, 4]#;
 
@@ -1204,6 +1206,41 @@ result = vectors.similarity(query, "cosine");
   "method": "cosine"
 } */
 ```
+
+### Object Array Similarity (Metadata Search)
+
+The `.similarity()` method also supports **object similarity** for searching through collections of metadata objects:
+
+```grapa
+/* Metadata search with object similarity */
+metadata = [
+    {"name": "Alice", "score": 85.5, "active": true, "department": "Engineering"},
+    {"name": "Bob", "score": 92.0, "active": false, "department": "Marketing"},
+    {"name": "Charlie", "score": 78.3, "active": true, "department": "Engineering"}
+];
+
+/* Search for objects matching query criteria */
+query = {"name": "Alice", "active": true};
+result = metadata.similarity(query, "cosine", {"include_scores": true, "include_items": true});
+/* Returns: {
+  "results": [
+    {"index": 0, "similarity": 0.666667, "item": {"name": "Alice", "score": 85.5, "active": true, "department": "Engineering"}},
+    {"index": 2, "similarity": 0.333333, "item": {"name": "Charlie", "score": 78.3, "active": true, "department": "Engineering"}},
+    {"index": 1, "similarity": 0.0, "item": {"name": "Bob", "score": 92.0, "active": false, "department": "Marketing"}}
+  ],
+  "best_similarity": 0.666667,
+  "best_index": 0,
+  "best_match": {"name": "Alice", "score": 85.5, "active": true, "department": "Engineering"},
+  "method": "cosine"
+} */
+```
+
+**Object Similarity Features:**
+- **Field Matching**: Compares fields that exist in both the query object and target objects
+- **Partial Matches**: Query objects can contain a subset of fields from the target objects
+- **Multiple Data Types**: Supports string, integer, float, and boolean field comparisons
+- **Similarity Scoring**: Returns similarity as ratio of matching fields to total fields in query
+- **Flexible Queries**: Can search by any combination of object fields
 
 ### Array Similarity Parameters
 
@@ -1235,11 +1272,21 @@ compact = vectors.similarity(query, "cosine", {
 
 ### Array Similarity Use Cases
 
+**Vector Array Similarity:**
 - **Vector search**: Find closest vectors in high-dimensional spaces
 - **Recommendation systems**: Rank items by vector similarity
 - **Clustering**: Group similar vectors together
 - **Anomaly detection**: Find vectors that don't match patterns
 - **Content filtering**: Filter results by similarity threshold
+
+**Object Array Similarity (Metadata Search):**
+- **Database queries**: Search through structured data collections
+- **User profiles**: Find users matching specific criteria
+- **Product catalogs**: Search products by attributes
+- **Document metadata**: Find documents with matching properties
+- **Configuration management**: Search system configurations by parameters
+- **API responses**: Filter and rank API results by metadata
+- **Content management**: Find content items by tags, categories, or properties
 
 ## Best Practices
 
