@@ -5244,17 +5244,21 @@ results = vectors.similarity(query_vector, &quot;cosine&quot;, {
 vector_db = {}.table();
 
 /* Insert vector data with metadata */
-vector_db.set(&quot;doc1&quot;, &quot;id&quot;, &quot;document_1&quot;);
-vector_db.set(&quot;doc1&quot;, &quot;content&quot;, &quot;machine learning algorithms&quot;);
-vector_db.set(&quot;doc1&quot;, &quot;type&quot;, &quot;article&quot;);
-vector_db.set(&quot;doc1&quot;, &quot;category&quot;, &quot;tech&quot;);
-vector_db.set(&quot;doc1&quot;, &quot;author&quot;, &quot;John&quot;);
+vector_db.setfield(&quot;doc1&quot;, {
+    &quot;id&quot;: &quot;ml_algorithms_paper&quot;,
+    &quot;content&quot;: &quot;machine learning algorithms and neural networks&quot;,
+    &quot;type&quot;: &quot;research_paper&quot;,
+    &quot;category&quot;: &quot;machine_learning&quot;,
+    &quot;author&quot;: &quot;John&quot;
+});
 
-vector_db.set(&quot;doc2&quot;, &quot;id&quot;, &quot;document_2&quot;);
-vector_db.set(&quot;doc2&quot;, &quot;content&quot;, &quot;artificial intelligence research&quot;);
-vector_db.set(&quot;doc2&quot;, &quot;type&quot;, &quot;article&quot;);
-vector_db.set(&quot;doc2&quot;, &quot;category&quot;, &quot;science&quot;);
-vector_db.set(&quot;doc2&quot;, &quot;author&quot;, &quot;Jane&quot;);
+vector_db.setfield(&quot;doc2&quot;, {
+    &quot;id&quot;: &quot;ai_research_survey&quot;, 
+    &quot;content&quot;: &quot;artificial intelligence research and development&quot;,
+    &quot;type&quot;: &quot;survey_paper&quot;,
+    &quot;category&quot;: &quot;artificial_intelligence&quot;,
+    &quot;author&quot;: &quot;Jane&quot;
+});
 </code></pre></div>
 <h3 id="performance-optimization-with-id">Performance Optimization with $ID</h3>
 <div class="highlight"><pre><span></span><code>/* Get all records for performance testing */
