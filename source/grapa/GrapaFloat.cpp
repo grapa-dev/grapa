@@ -95,34 +95,14 @@ GrapaFloat::GrapaFloat(double value)
 	mTrunc = false;
 	Truncate();
 	char buffer[128];
-	sprintf(buffer, "%f", value);
+	sprintf(buffer, "%lf", value);
 	FromString(buffer, 10);
 }
 double GrapaFloat::ToDouble()
 {
 	double result = 0.0;
-	
-	// Handle special cases
-	if (mNaN) return std::numeric_limits<double>::quiet_NaN();
-	if (mData.IsZero()) return 0.0;
-	
-	// Extract the integer and fractional parts
-	// The constructor stored: (integer_part * 2^52) + (fractional_part * 2^52)
-	u64 scale_factor = 0x10000000000000ULL; // 2^52
-	
-	// Get the integer part by dividing by scale factor
-	u64 integer_part = mData.GetItem(0) / scale_factor;
-	
-	// Get the fractional part by taking remainder
-	u64 fractional_part = mData.GetItem(0) % scale_factor;
-	
-	// Convert to double
-	result = (double)integer_part + ((double)fractional_part / (double)scale_factor);
-	
-	// Apply sign
-	if (mSigned) result = -result;
-	
-	return(result);
+	sscanf((char*)(ToString().mBytes), "%lf", &result);
+	return result;
 }
 
 bool GrapaFloat::IsInt()

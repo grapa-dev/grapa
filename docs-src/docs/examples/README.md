@@ -20,6 +20,7 @@ This directory contains practical, ready-to-run examples demonstrating Grapa's c
 - **Python integration**: Using Grapa from Python
 - **Network programming**: HTTP/HTTPS clients and servers
 - **Database operations**: Table creation and data manipulation
+- **Vector database similarity**: Pinecone-style vector search and similarity operations
 
 ### Language Extension Examples
 - **Custom syntax**: SQL, PROLOG, LISP implementations
@@ -45,6 +46,20 @@ This directory contains practical, ready-to-run examples demonstrating Grapa's c
 # Run Python examples
 python3 examples/python_integration_example.py
 ```
+
+## Vector Database Similarity Examples
+
+### New Examples
+- **`vector_database_similarity_example.grc`** - Comprehensive demonstration of Grapa's similarity search capabilities
+- **`pinecone_style_vector_search.grc`** - Implementation of typical Pinecone functionality in Grapa
+
+These examples demonstrate:
+- **Unified similarity algorithms** (Levenshtein, Damerau, Jaro, Cosine, Jaccard)
+- **Advanced options** (TF-IDF, word-based jaccard, configurable parameters)
+- **Database integration** with performance optimization using $ID
+- **Object similarity** with metadata search
+- **Vector mathematical operations** with similarity search
+- **Performance benchmarking** and optimization techniques
 
 ## Example Structure
 

@@ -21,6 +21,7 @@
 
 ## Advanced Topics
 - [Machine Learning](machine_learning.md) - Linear regression, statistical analysis, and ML algorithms using vector operations
+- [Vector Database Similarity](vector_database_similarity.md) - Comprehensive similarity search capabilities as a Pinecone alternative
 - [Debugging](debugging.md) - Comprehensive debugging system with CLI and script control
 - [Grammar Design](syntax/grammar_design.md) - Create your own languages with Grapa
 - [Multi-Syntax Programming](multi_syntax_programming.md) - JSON, XML, HTML (native), SQL/PROLOG/LISP (example implementations), and custom syntax support

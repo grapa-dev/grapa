@@ -40,14 +40,20 @@ cosine_results = documents.similarity(query, "cosine", {"top_n": 3, "include_sco
 jaccard_results = documents.similarity(query, "jaccard", {"top_n": 3, "include_scores": true});
 
 ("Cosine similarity results:\n").echo();
-("  Results count: " + cosine_results."results".len().str() + "\n").echo();
-result1 = cosine_results."results"[0];
-("  Score: " + result1."similarity".str() + " - " + result1."item" + "\n").echo();
+cosine_len = cosine_results."results".len();
+("  Results count: " + cosine_len.str() + "\n").echo();
+for i in cosine_len.range() {
+    result = cosine_results."results"[i];
+    ("  Score: " + result."similarity".str() + " - " + result."item" + "\n").echo();
+}
 
 ("Jaccard similarity results:\n").echo();
-("  Results count: " + jaccard_results."results".len().str() + "\n").echo();
-result1 = jaccard_results."results"[0];
-("  Score: " + result1."similarity".str() + " - " + result1."item" + "\n").echo();
+jaccard_len = jaccard_results."results".len();
+("  Results count: " + jaccard_len.str() + "\n").echo();
+for i in jaccard_len.range() {
+    result = jaccard_results."results"[i];
+    ("  Score: " + result."similarity".str() + " - " + result."item" + "\n").echo();
+}
 
 /* Test 3: Object Array Similarity (Metadata Search) */
 ("Test 3: Object Array Similarity (Metadata Search)\n").echo();
@@ -68,9 +74,12 @@ object_results = user_profiles.similarity(query_profile, "cosine", {
 });
 
 ("Object similarity results:\n").echo();
-("  Results count: " + object_results."results".len().str() + "\n").echo();
-result1 = object_results."results"[0];
-("  Score: " + result1."similarity".str() + " - " + result1."item".name + " (age: " + result1."item"."age".str() + ")\n").echo();
+object_len = object_results."results".len();
+("  Results count: " + object_len.str() + "\n").echo();
+for i in object_len.range() {
+    result = object_results."results"[i];
+    ("  Score: " + result."similarity".str() + " - " + result."item".name + " (age: " + result."item"."age".str() + ")\n").echo();
+}
 
 /* Test 4: Database Integration with $ID Performance Optimization */
 ("Test 4: Database Integration with $ID Performance Optimization\n").echo();
@@ -175,9 +184,12 @@ similarity_results = tech_documents.similarity(query_text, "cosine", {
 });
 
 ("Similarity search results:\n").echo();
-("  Results count: " + similarity_results."results".len().str() + "\n").echo();
-result1 = similarity_results."results"[0];
-("  Score: " + result1."similarity".str() + " - " + result1."item" + "\n").echo();
+similarity_len = similarity_results."results".len();
+("  Results count: " + similarity_len.str() + "\n").echo();
+for i in similarity_len.range() {
+    result = similarity_results."results"[i];
+    ("  Score: " + result."similarity".str() + " - " + result."item" + "\n").echo();
+}
 
 /* Test 6: Advanced Similarity Options */
 ("Test 6: Advanced Similarity Options\n").echo();
@@ -192,9 +204,12 @@ advanced_cosine = documents.similarity(query, "cosine", {
 });
 
 ("Advanced cosine similarity (TF-IDF):\n").echo();
-("  Results count: " + advanced_cosine."results".len().str() + "\n").echo();
-result1 = advanced_cosine."results"[0];
-("  Score: " + result1."similarity".str() + " - " + result1."item" + "\n").echo();
+advanced_cosine_len = advanced_cosine."results".len();
+("  Results count: " + advanced_cosine_len.str() + "\n").echo();
+for i in advanced_cosine_len.range() {
+    result = advanced_cosine."results"[i];
+    ("  Score: " + result."similarity".str() + " - " + result."item" + "\n").echo();
+}
 
 /* Test jaccard similarity with advanced options */
 advanced_jaccard = documents.similarity(query, "jaccard", {
@@ -206,9 +221,12 @@ advanced_jaccard = documents.similarity(query, "jaccard", {
 });
 
 ("Advanced jaccard similarity (word-based, n=2):\n").echo();
-("  Results count: " + advanced_jaccard."results".len().str() + "\n").echo();
-result1 = advanced_jaccard."results"[0];
-("  Score: " + result1."similarity".str() + " - " + result1."item" + "\n").echo();
+advanced_jaccard_len = advanced_jaccard."results".len();
+("  Results count: " + advanced_jaccard_len.str() + "\n").echo();
+for i in advanced_jaccard_len.range() {
+    result = advanced_jaccard."results"[i];
+    ("  Score: " + result."similarity".str() + " - " + result."item" + "\n").echo();
+}
 
 /* Test 7: Vector Similarity with Mathematical Operations */
 ("Test 7: Vector Similarity with Mathematical Operations\n").echo();
@@ -229,9 +247,12 @@ vector_results = vectors.similarity(query_vector, "cosine", {
 });
 
 ("Vector similarity results:\n").echo();
-("  Results count: " + vector_results."results".len().str() + "\n").echo();
-result1 = vector_results."results"[0];
-("  Score: " + result1."similarity".str() + " - Vector: " + result1."item".str() + "\n").echo();
+vector_len = vector_results."results".len();
+("  Results count: " + vector_len.str() + "\n").echo();
+for i in vector_len.range() {
+    result = vector_results."results"[i];
+    ("  Score: " + result."similarity".str() + " - Vector: " + result."item".str() + "\n").echo();
+}
 
 /* Test 8: Performance Benchmarking */
 ("Test 8: Performance Benchmarking\n").echo();

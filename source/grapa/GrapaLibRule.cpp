@@ -22159,8 +22159,7 @@ GrapaRuleEvent* calculate_array_vector_similarity(GrapaScriptExec* vScriptExec, 
 				if (param.aa)
 				{
 					// Convert GrapaFloat to double
-					GrapaFloat* float_val = param.aa;
-					similarity = float_val->ToDouble();
+					similarity = param.aa->ToDouble();
 				}
 			}
 			
