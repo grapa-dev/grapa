@@ -14519,6 +14519,14 @@ GrapaRuleEvent* GrapaLibraryRuleAddEvent::Run(GrapaScriptExec *vScriptExec, Grap
 						break;
 					case GrapaTokenType::TIME:
 						break;
+					case GrapaTokenType::FLOAT:
+						rFloat2.mMax = vScriptExec->vScriptState->mItemState.mFloatMax;
+						rFloat2.mFix = vScriptExec->vScriptState->mItemState.mFloatFix;
+						rFloat2.mExtra = vScriptExec->vScriptState->mItemState.mFloatExtra;
+						rFloat2.FromBytes(r1.vVal->mValue);
+						e = GrapaTokenType::FLOAT;
+						rFloat = rFloat + rFloat2;
+						break;
 					default:
 						break;
 					}
