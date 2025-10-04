@@ -103,7 +103,7 @@ This backlog tracks all future, long-term, and queued tasks for the Grapa projec
 
 ---
 
-## 🚀 **FUTURE RELEASES (0.1.53+)** (6 items)
+## 🚀 **FUTURE RELEASES (0.1.53+)** (10 items)
 
 ### **1. Universal .get/.set Implementation** - **LANGUAGE ADOPTION FOUNDATION** ✅ **COMPLETED in 0.1.54**
 - [x] **Universal .get/.set Implementation**: Implemented consistent .get/.set methods across all data types
@@ -226,6 +226,36 @@ This backlog tracks all future, long-term, and queued tasks for the Grapa projec
 - **Estimated Effort**: Major Release (6-12 months)
 - **Dependencies**: Core language features completion, Syntax Improvements (for error handling) ✅ **COMPLETED IN 0.1.52**
 - **Priority**: Lower - performance optimization after core features are stable
+
+### **10. LSH Vector Indexing for Large-Scale Similarity Search** - **PERFORMANCE & DATABASE** 🟡 **MEDIUM PRIORITY**
+- [ ] **LSH Hash Generation**: Implement Locality Sensitive Hashing for vector similarity search
+- [ ] **In-Memory Hash Index**: Create `{}.table()` based index mapping LSH hashes to database record IDs
+- [ ] **Database Integration**: Extend similarity search to work with persistent vector storage
+- [ ] **Approximate Search**: Implement fast candidate selection with configurable accuracy vs speed trade-offs
+- [ ] **Performance Optimization**: Target 100K+ records with < 100ms search times
+- **Problem**: Current similarity search performance degrades significantly above 20K records (25K records = 2.25s, 100K records = 41s)
+- **Solution**: Use LSH with in-memory hash index that maps to database record IDs, keeping vectors in persistent storage
+- **Architecture**: Query Vector → LSH Hash → Hash Lookup → Candidate IDs → Database Fetch → Exact Similarity
+- **Performance Targets**:
+  - 100K records: < 100ms (180x improvement)
+  - 1M records: < 500ms (45x improvement) 
+  - 10M records: < 2s (40x improvement)
+- **Memory Efficiency**: Index size = num_records × hash_size × num_hashes bits (e.g., 10M records = ~80MB)
+- **Reference**: [`LSH_VECTOR_INDEXING_IMPLEMENTATION.md`](../DEVELOPMENT/LSH_VECTOR_INDEXING_IMPLEMENTATION.md)
+- **Implementation Phases**:
+  1. **Core LSH Infrastructure**: Hash generation, index management
+  2. **Database Integration**: Enhanced similarity search with LSH support
+  3. **Grapa Language Integration**: New methods for LSH operations
+  4. **Advanced Optimizations**: Multi-level indexing, GPU acceleration
+- **Estimated Effort**: Major Release (4-6 months)
+- **Dependencies**: Database system enhancements, vector performance optimization
+- **Priority**: Medium - addresses significant performance limitation for large datasets
+- **Risk Level**: Medium - complex implementation but well-established algorithm
+- **Success Criteria**: 
+  - 100K records: < 100ms search time
+  - > 95% recall for top-10 results
+  - < 1GB memory usage for 10M records
+  - Backward compatibility with existing similarity search
 
 ---
 

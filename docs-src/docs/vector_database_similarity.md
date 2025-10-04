@@ -290,11 +290,11 @@ Based on extensive testing across different dataset sizes, here are the performa
 | 1,000 records | ~0.02ms | ✅ **EXCELLENT** | Great for medium applications |
 | 5,000 records | ~0.02ms | ✅ **EXCELLENT** | Excellent for larger applications |
 | 10,000 records | ~85ms | ✅ **EXCELLENT** | Still competitive with Pinecone |
-| 15,000 records | ~860ms | ⚠️ **ACCEPTABLE** | Consider Pinecone for production |
-| 20,000 records | ~1,482ms | ⚠️ **ACCEPTABLE** | Edge case for local use |
-| 25,000 records | ~2,250ms | ❌ **SLOW** | Use Pinecone |
-| 50,000 records | ~9,067ms | ❌ **SLOW** | Definitely use Pinecone |
-| 100,000 records | ~40,968ms | ❌ **SLOW** | Pinecone required |
+| 15,000 records | ~751ms | ⚠️ **ACCEPTABLE** | Consider Pinecone for production |
+| 20,000 records | ~1,333ms | ⚠️ **ACCEPTABLE** | Edge case for local use |
+| 25,000 records | ~2,065ms | ❌ **SLOW** | Use Pinecone |
+| 50,000 records | ~8,502ms | ❌ **SLOW** | Definitely use Pinecone |
+| 100,000 records | ~37,646ms | ❌ **SLOW** | Pinecone required |
 
 #### Performance Breakpoints
 
@@ -306,7 +306,7 @@ Based on extensive testing across different dataset sizes, here are the performa
 #### Scaling Characteristics
 
 - **Linear scaling** up to ~10,000 records
-- **Performance degradation** becomes significant above 20,000 records
+- **Performance degradation** becomes significant above 15,000 records
 - **Memory and processing overhead** increases exponentially at larger scales
 - **Database operations** add minimal overhead compared to pure vector search
 
@@ -315,8 +315,8 @@ Based on extensive testing across different dataset sizes, here are the performa
 | Metric | Grapa | Pinecone | Winner |
 |--------|-------|----------|---------|
 | **Small datasets** (< 10K) | < 100ms | < 100ms | 🤝 **Tie** |
-| **Medium datasets** (10K-20K) | 100ms-2s | < 100ms | 🏆 **Pinecone** |
-| **Large datasets** (> 50K) | > 9s | < 100ms | 🏆 **Pinecone** |
+| **Medium datasets** (10K-20K) | 100ms-1.3s | < 100ms | 🏆 **Pinecone** |
+| **Large datasets** (> 50K) | > 8.5s | < 100ms | 🏆 **Pinecone** |
 | **Algorithm variety** | 5+ algorithms | Primarily cosine | 🏆 **Grapa** |
 | **Cost** | Free | Pay-per-use | 🏆 **Grapa** |
 | **Local control** | Full control | Managed service | 🏆 **Grapa** |

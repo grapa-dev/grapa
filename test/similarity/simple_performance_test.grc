@@ -12,9 +12,9 @@ vectors = [];
 for i in test_size.range() {
     vector = [];
     for j in 5.range() {
-        vector.push(0.5 + (i % 10) / 100.0);
+        vector += (0.5 + (i % 10) / 100.0);
     };
-    vectors.push(vector);
+    vectors += vector;
 };
 
 ("Generated " + vectors.len().str() + " vectors\n").echo();
