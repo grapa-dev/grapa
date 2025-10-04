@@ -3207,9 +3207,18 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#performance-thresholds" class="md-nav__link">
+  <a href="#performance-thresholds-in-memory-similarity-search" class="md-nav__link">
     <span class="md-ellipsis">
-      Performance Thresholds
+      Performance Thresholds (In-Memory Similarity Search)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#database-vector-similarity-search-performance" class="md-nav__link">
+    <span class="md-ellipsis">
+      Database Vector Similarity Search Performance
     </span>
   </a>
   
@@ -3234,9 +3243,9 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#performance-comparison-with-pinecone" class="md-nav__link">
+  <a href="#performance-comparison-with-pinecone-in-memory-search" class="md-nav__link">
     <span class="md-ellipsis">
-      Performance Comparison with Pinecone
+      Performance Comparison with Pinecone (In-Memory Search)
     </span>
   </a>
   
@@ -4903,9 +4912,18 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#performance-thresholds" class="md-nav__link">
+  <a href="#performance-thresholds-in-memory-similarity-search" class="md-nav__link">
     <span class="md-ellipsis">
-      Performance Thresholds
+      Performance Thresholds (In-Memory Similarity Search)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#database-vector-similarity-search-performance" class="md-nav__link">
+    <span class="md-ellipsis">
+      Database Vector Similarity Search Performance
     </span>
   </a>
   
@@ -4930,9 +4948,9 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#performance-comparison-with-pinecone" class="md-nav__link">
+  <a href="#performance-comparison-with-pinecone-in-memory-search" class="md-nav__link">
     <span class="md-ellipsis">
-      Performance Comparison with Pinecone
+      Performance Comparison with Pinecone (In-Memory Search)
     </span>
   </a>
   
@@ -5502,7 +5520,8 @@ results = tech_documents.similarity(query_text, &quot;cosine&quot;, {
 <h2 id="performance-analysis">Performance Analysis</h2>
 <h3 id="comprehensive-performance-testing">Comprehensive Performance Testing</h3>
 <p>Based on extensive testing across different dataset sizes, here are the performance characteristics of Grapa's similarity search:</p>
-<h4 id="performance-thresholds">Performance Thresholds</h4>
+<h4 id="performance-thresholds-in-memory-similarity-search">Performance Thresholds (In-Memory Similarity Search)</h4>
+<p><strong>Note</strong>: These performance numbers are for <strong>in-memory similarity search</strong> using arrays of vectors. For persistent database vector similarity search, performance will be different due to database I/O overhead.</p>
 <table>
 <thead>
 <tr>
@@ -5575,6 +5594,23 @@ results = tech_documents.similarity(query_text, &quot;cosine&quot;, {
 </tr>
 </tbody>
 </table>
+<h4 id="database-vector-similarity-search-performance">Database Vector Similarity Search Performance</h4>
+<p><strong>Important</strong>: The performance characteristics above are for <strong>in-memory similarity search</strong>. When using persistent database storage with <code>$TABLE</code> or <code>$file</code>, performance will be different due to:</p>
+<ul>
+<li><strong>Database I/O Overhead</strong>: Reading vectors from disk/database</li>
+<li><strong>Memory Management</strong>: Loading vectors into memory for similarity calculation</li>
+<li><strong>Index Lookup</strong>: Database index operations for record retrieval</li>
+<li><strong>Serialization/Deserialization</strong>: Converting database records to vector objects</li>
+</ul>
+<p><strong>Database Performance Considerations</strong>:
+- <strong>Small datasets</strong> (&lt; 1,000 records): Database overhead minimal, similar to in-memory performance
+- <strong>Medium datasets</strong> (1,000-10,000 records): Database I/O becomes noticeable but manageable
+- <strong>Large datasets</strong> (&gt; 10,000 records): Database I/O overhead significant, consider hybrid approaches</p>
+<p><strong>Recommended Database Strategies</strong>:
+1. <strong>Hybrid Approach</strong>: Use database for storage, extract vectors to memory for similarity search
+2. <strong>Batch Processing</strong>: Process multiple queries together to amortize database overhead
+3. <strong>Caching</strong>: Cache frequently accessed vectors in memory
+4. <strong>Indexing</strong>: Use database indexes on metadata fields to pre-filter before similarity search</p>
 <h4 id="performance-breakpoints">Performance Breakpoints</h4>
 <ul>
 <li><strong>Excellent Performance</strong> (&lt; 100ms): Up to <strong>10,000 records</strong></li>
@@ -5589,12 +5625,12 @@ results = tech_documents.similarity(query_text, &quot;cosine&quot;, {
 <li><strong>Memory and processing overhead</strong> increases exponentially at larger scales</li>
 <li><strong>Database operations</strong> add minimal overhead compared to pure vector search</li>
 </ul>
-<h4 id="performance-comparison-with-pinecone">Performance Comparison with Pinecone</h4>
+<h4 id="performance-comparison-with-pinecone-in-memory-search">Performance Comparison with Pinecone (In-Memory Search)</h4>
 <table>
 <thead>
 <tr>
 <th>Metric</th>
-<th>Grapa</th>
+<th>Grapa (In-Memory)</th>
 <th>Pinecone</th>
 <th>Winner</th>
 </tr>
@@ -5636,6 +5672,12 @@ results = tech_documents.similarity(query_text, &quot;cosine&quot;, {
 <td>Managed service</td>
 <td>🏆 <strong>Grapa</strong></td>
 </tr>
+<tr>
+<td><strong>Database integration</strong></td>
+<td>Requires hybrid approach</td>
+<td>Native database</td>
+<td>🏆 <strong>Pinecone</strong></td>
+</tr>
 </tbody>
 </table>
 <h3 id="performance-testing-methodology">Performance Testing Methodology</h3>
@@ -5645,9 +5687,10 @@ results = tech_documents.similarity(query_text, &quot;cosine&quot;, {
 <li><strong>Vector Dimensions</strong>: 5-dimensional vectors (typical for document embeddings)</li>
 <li><strong>Similarity Algorithm</strong>: Cosine similarity with top_n=10</li>
 <li><strong>Test Method</strong>: Multiple runs with timing using <code>$TIME().utc().ms()</code></li>
-<li><strong>Database Operations</strong>: Both in-memory arrays and persistent database storage</li>
+<li><strong>Test Type</strong>: <strong>In-memory similarity search</strong> using arrays of vectors</li>
 <li><strong>Scaling Tests</strong>: Incremental testing from 100 to 100,000 records</li>
 </ul>
+<p><strong>Note</strong>: These tests measure pure in-memory vector similarity performance. Database vector similarity search will have additional overhead from I/O operations, serialization, and memory management.</p>
 <h4 id="key-performance-insights">Key Performance Insights</h4>
 <ol>
 <li><strong>Linear Scaling</strong>: Performance scales linearly up to ~10,000 records</li>
