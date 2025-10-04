@@ -1,0 +1,48 @@
+/* Simple Performance Test */
+/* Test basic similarity performance at different scales */
+
+("=== Simple Performance Test ===\n").echo();
+
+/* Test with 100 records first */
+test_size = 100;
+("Testing with " + test_size.str() + " records...\n").echo();
+
+/* Create test data */
+vectors = [];
+for i in test_size.range() {
+    vector = [];
+    for j in 5.range() {
+        vector.push(0.5 + (i % 10) / 100.0);
+    };
+    vectors.push(vector);
+};
+
+("Generated " + vectors.len().str() + " vectors\n").echo();
+
+/* Test similarity search */
+query_vector = [0.8, 0.7, 0.6, 0.5, 0.4];
+
+start_time = $TIME().utc();
+results = vectors.similarity(query_vector, "cosine", {
+    "top_n": 10,
+    "include_scores": true,
+    "include_items": true
+});
+search_time = start_time.ms();
+
+("Search time: " + search_time.str() + "ms\n").echo();
+("Results found: " + results."results".len().str() + "\n").echo();
+
+/* Show first few results */
+results_len = results."results".len();
+if (results_len > 0) {
+    ("First 3 results:\n").echo();
+    for i in 3.range() {
+        if (i < results_len) {
+            result = results."results"[i];
+            ("  " + (i+1).str() + ". Score: " + result."similarity".str() + "\n").echo();
+        };
+    };
+};
+
+("Test complete!\n").echo();

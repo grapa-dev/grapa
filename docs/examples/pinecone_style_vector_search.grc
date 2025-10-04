@@ -1,0 +1,310 @@
+/* Pinecone-Style Vector Search Implementation */
+/* Demonstrates how to implement typical Pinecone functionality in Grapa */
+
+("=== Pinecone-Style Vector Search Implementation ===\n").echo();
+
+/* Example 1: Document Embeddings and Similarity Search */
+("Example 1: Document Embeddings and Similarity Search\n").echo();
+
+/* Simulate document embeddings (in real Pinecone, these would be pre-computed) */
+document_embeddings = [
+    {"id": "doc1", "vector": [0.8, 0.6, 0.4, 0.2, 0.1], "metadata": {"title": "Machine Learning Fundamentals", "category": "ML", "author": "Dr. Smith"}},
+    {"id": "doc2", "vector": [0.7, 0.5, 0.3, 0.1, 0.2], "metadata": {"title": "Artificial Intelligence Research", "category": "AI", "author": "Dr. Johnson"}},
+    {"id": "doc3", "vector": [0.9, 0.7, 0.5, 0.3, 0.1], "metadata": {"title": "Deep Learning Networks", "category": "DL", "author": "Dr. Brown"}},
+    {"id": "doc4", "vector": [0.6, 0.4, 0.2, 0.8, 0.3], "metadata": {"title": "Computer Vision Applications", "category": "CV", "author": "Dr. Wilson"}},
+    {"id": "doc5", "vector": [0.5, 0.3, 0.1, 0.7, 0.4], "metadata": {"title": "Natural Language Processing", "category": "NLP", "author": "Dr. Davis"}}
+];
+
+/* Query vector (simulating a search query embedding) */
+query_vector = [0.8, 0.6, 0.4, 0.2, 0.1];
+
+/* Extract vectors for similarity search */
+vectors = [];
+for i in document_embeddings.range() {
+    doc = document_embeddings[i];
+    vectors.push(doc.vector.vector());
+}
+
+/* Perform similarity search (equivalent to Pinecone's query) */
+results = vectors.similarity(query_vector, "cosine", {
+    "top_n": 3,
+    "include_scores": true,
+    "include_items": true
+});
+
+("Pinecone-style similarity search results:\n").echo();
+for i in results.range() {
+    result = results[i];
+    doc_index = result.index;
+    doc = document_embeddings[doc_index];
+    ("  Score: " + result.similarity.toString() + " - " + doc.metadata.title + " (Category: " + doc.metadata.category + ")\n").echo();
+}
+
+/* Example 2: Metadata Filtering (Pinecone-style) */
+("Example 2: Metadata Filtering (Pinecone-style)\n").echo();
+
+/* Filter documents by metadata before similarity search */
+ml_documents = [];
+ml_vectors = [];
+for i in document_embeddings.range() {
+    doc = document_embeddings[i];
+    if (doc.metadata.category == "ML" || doc.metadata.category == "DL") {
+        ml_documents.push(doc);
+        ml_vectors.push(doc.vector.vector());
+    }
+}
+
+("Filtered ML/DL documents: " + ml_documents.len().toString() + "\n").echo();
+
+/* Perform similarity search on filtered results */
+ml_results = ml_vectors.similarity(query_vector, "cosine", {
+    "top_n": 2,
+    "include_scores": true,
+    "include_items": true
+});
+
+("Filtered similarity search results:\n").echo();
+for i in ml_results.range() {
+    result = ml_results[i];
+    doc_index = result.index;
+    doc = ml_documents[doc_index];
+    ("  Score: " + result.similarity.toString() + " - " + doc.metadata.title + " (Author: " + doc.metadata.author + ")\n").echo();
+}
+
+/* Example 3: Vector Database with Pinecone-style Operations */
+("Example 3: Vector Database with Pinecone-style Operations\n").echo();
+
+/* Create vector database (equivalent to Pinecone index) */
+vector_index = {}.table();
+
+/* Insert vectors with metadata (equivalent to Pinecone upsert) */
+for i in document_embeddings.range() {
+    doc = document_embeddings[i];
+    vector_index.set(doc.id, "vector", doc.vector);
+    vector_index.set(doc.id, "title", doc.metadata.title);
+    vector_index.set(doc.id, "category", doc.metadata.category);
+    vector_index.set(doc.id, "author", doc.metadata.author);
+}
+
+("Vector index created with " + vector_index.ls().len().toString() + " documents\n").echo();
+
+/* Query function (equivalent to Pinecone query) */
+query_vector_db = op(query_vec, top_k, filter_metadata) {
+    all_records = vector_index.ls();
+    candidates = [];
+    candidate_vectors = [];
+    
+    /* Apply metadata filtering if specified */
+    for i in all_records.range() {
+        record = all_records[i];
+        record_id = record["$ID"];
+        record_key = record["$KEY"];
+        
+        /* Check metadata filter */
+        include_doc = true;
+        if (filter_metadata) {
+            for field in filter_metadata.keys() {
+                field_value = vector_index.getfield(record_id, field);
+                if (field_value != filter_metadata[field]) {
+                    include_doc = false;
+                    break;
+                }
+            }
+        }
+        
+        if (include_doc) {
+            vector = vector_index.getfield(record_id, "vector");
+            title = vector_index.getfield(record_id, "title");
+            category = vector_index.getfield(record_id, "category");
+            author = vector_index.getfield(record_id, "author");
+            
+            candidates.push({
+                "id": record_key,
+                "title": title,
+                "category": category,
+                "author": author
+            });
+            candidate_vectors.push(vector.vector());
+        }
+    }
+    
+    /* Perform similarity search */
+    results = candidate_vectors.similarity(query_vec, "cosine", {
+        "top_n": top_k,
+        "include_scores": true,
+        "include_items": true
+    });
+    
+    /* Format results */
+    formatted_results = [];
+    for i in results.range() {
+        result = results[i];
+        candidate = candidates[result.index];
+        formatted_results.push({
+            "id": candidate.id,
+            "score": result.similarity,
+            "metadata": {
+                "title": candidate.title,
+                "category": candidate.category,
+                "author": candidate.author
+            }
+        });
+    }
+    
+    return formatted_results;
+};
+
+/* Test the query function */
+query_results = query_vector_db(query_vector, 3, null);
+("Vector database query results:\n").echo();
+for i in query_results.range() {
+    result = query_results[i];
+    ("  ID: " + result.id + ", Score: " + result.score.toString() + ", Title: " + result.metadata.title + "\n").echo();
+}
+
+/* Test with metadata filtering */
+filtered_results = query_vector_db(query_vector, 2, {"category": "ML"});
+("Filtered query results (category=ML):\n").echo();
+for i in filtered_results.range() {
+    result = filtered_results[i];
+    ("  ID: " + result.id + ", Score: " + result.score.toString() + ", Title: " + result.metadata.title + "\n").echo();
+}
+
+/* Example 4: Batch Operations (Pinecone-style) */
+("Example 4: Batch Operations (Pinecone-style)\n").echo();
+
+/* Batch upsert function (equivalent to Pinecone batch upsert) */
+batch_upsert = op(new_documents) {
+    for i in new_documents.range() {
+        doc = new_documents[i];
+        vector_index.set(doc.id, "vector", doc.vector);
+        vector_index.set(doc.id, "title", doc.metadata.title);
+        vector_index.set(doc.id, "category", doc.metadata.category);
+        vector_index.set(doc.id, "author", doc.metadata.author);
+    }
+    return new_documents.len();
+};
+
+/* Add new documents */
+new_docs = [
+    {"id": "doc6", "vector": [0.4, 0.2, 0.8, 0.6, 0.3], "metadata": {"title": "Data Science Methods", "category": "DS", "author": "Dr. Taylor"}},
+    {"id": "doc7", "vector": [0.3, 0.1, 0.7, 0.5, 0.2], "metadata": {"title": "Statistical Analysis", "category": "STAT", "author": "Dr. Anderson"}}
+];
+
+inserted_count = batch_upsert(new_docs);
+("Batch upserted " + inserted_count.toString() + " documents\n").echo();
+
+/* Verify new documents */
+all_records = vector_index.ls();
+("Total documents after batch upsert: " + all_records.len().toString() + "\n").echo();
+
+/* Example 5: Similarity Search with Multiple Queries */
+("Example 5: Similarity Search with Multiple Queries\n").echo();
+
+/* Multiple query vectors */
+queries = [
+    [0.8, 0.6, 0.4, 0.2, 0.1],  /* machine learning */
+    [0.6, 0.4, 0.2, 0.8, 0.3],  /* computer vision */
+    [0.5, 0.3, 0.1, 0.7, 0.4]   /* natural language processing */
+];
+
+query_labels = ["Machine Learning", "Computer Vision", "Natural Language Processing"];
+
+/* Process multiple queries */
+for i in queries.range() {
+    query_vec = queries[i];
+    query_label = query_labels[i];
+    
+    results = query_vector_db(query_vec, 2, null);
+    
+    ("Query: " + query_label + "\n").echo();
+    for j in results.range() {
+        result = results[j];
+        ("  Score: " + result.score.toString() + " - " + result.metadata.title + " (" + result.metadata.category + ")\n").echo();
+    }
+}
+
+/* Example 6: Performance Benchmarking */
+("Example 6: Performance Benchmarking\n").echo();
+
+/* Create larger dataset for benchmarking */
+large_embeddings = [];
+for i in (100).range() {
+    large_embeddings.push({
+        "id": "large_doc" + i.toString(),
+        "vector": [0.1 + (i % 10) * 0.1, 0.2 + (i % 7) * 0.1, 0.3 + (i % 5) * 0.1, 0.4 + (i % 3) * 0.1, 0.5 + (i % 2) * 0.1],
+        "metadata": {"title": "Document " + i.toString(), "category": "CAT" + (i % 5).toString()}
+    });
+}
+
+/* Benchmark batch upsert */
+start_time = $TIME().utc();
+batch_upsert(large_embeddings);
+end_time = $TIME().utc();
+upsert_duration = end_time.ms() - start_time.ms();
+
+("Batch upsert performance:\n").echo();
+("  Documents: " + large_embeddings.len().toString() + "\n").echo();
+("  Time: " + upsert_duration.toString() + "ms\n").echo();
+("  Rate: " + (large_embeddings.len() * 1000 / upsert_duration).toString() + " docs/sec\n").echo();
+
+/* Benchmark query performance */
+start_time = $TIME().utc();
+query_results = query_vector_db(query_vector, 10, null);
+end_time = $TIME().utc();
+query_duration = end_time.ms() - start_time.ms();
+
+("Query performance:\n").echo();
+("  Query time: " + query_duration.toString() + "ms\n").echo();
+("  Results: " + query_results.len().toString() + "\n").echo();
+
+/* Example 7: Advanced Filtering and Aggregation */
+("Example 7: Advanced Filtering and Aggregation\n").echo();
+
+/* Get all documents and perform analysis */
+all_records = vector_index.ls();
+categories = {};
+authors = {};
+
+for i in all_records.range() {
+    record = all_records[i];
+    record_id = record["$ID"];
+    category = vector_index.getfield(record_id, "category");
+    author = vector_index.getfield(record_id, "author");
+    
+    /* Count categories */
+    if (categories[category]) {
+        categories[category] = categories[category] + 1;
+    } else {
+        categories[category] = 1;
+    }
+    
+    /* Count authors */
+    if (authors[author]) {
+        authors[author] = authors[author] + 1;
+    } else {
+        authors[author] = 1;
+    }
+}
+
+("Document statistics:\n").echo();
+("  Total documents: " + all_records.len().toString() + "\n").echo();
+("  Categories: " + categories.len().toString() + "\n").echo();
+("  Authors: " + authors.len().toString() + "\n").echo();
+
+/* Example 8: Error Handling and Edge Cases */
+("Example 8: Error Handling and Edge Cases\n").echo();
+
+/* Test with empty query */
+empty_results = query_vector_db([], 5, null);
+("Empty query results: " + empty_results.len().toString() + "\n").echo();
+
+/* Test with non-existent filter */
+no_results = query_vector_db(query_vector, 5, {"category": "NONEXISTENT"});
+("Non-existent filter results: " + no_results.len().toString() + "\n").echo();
+
+/* Test with zero top_k */
+zero_results = query_vector_db(query_vector, 0, null);
+("Zero top_k results: " + zero_results.len().toString() + "\n").echo();
+
+("=== Pinecone-Style Implementation Complete ===\n").echo();

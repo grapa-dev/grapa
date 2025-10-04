@@ -1,0 +1,327 @@
+/* Vector Database Similarity Search Example */
+/* Demonstrates Grapa's capabilities as a Pinecone alternative */
+
+("=== Vector Database Similarity Search Example ===\n").echo();
+
+/* Example 1: Document Similarity Search */
+("Example 1: Document Similarity Search\n").echo();
+
+documents = [
+    "machine learning algorithms and neural networks",
+    "artificial intelligence research and development", 
+    "deep learning neural networks and computer vision",
+    "natural language processing and text analysis",
+    "data science methodologies and statistical analysis"
+];
+
+query = "machine learning neural networks";
+
+/* Basic cosine similarity search */
+cosine_results = documents.similarity(query, "cosine", {
+    "top_n": 3,
+    "include_scores": true,
+    "include_items": true
+});
+
+("Cosine similarity results:\n").echo();
+cosine_len = cosine_results."results".len();
+("  Results count: " + cosine_len.str() + "\n").echo();
+for i in cosine_len.range() {
+    result = cosine_results."results"[i];
+    ("  Score: " + result."similarity".str() + " - " + result."item" + "\n").echo();
+}
+
+/* Advanced TF-IDF cosine similarity */
+tfidf_results = documents.similarity(query, "cosine", {
+    "cosine_method": "tfidf",
+    "corpus": documents,
+    "case_sensitive": false,
+    "top_n": 3,
+    "include_scores": true
+});
+
+("TF-IDF cosine similarity results:\n").echo();
+tfidf_len = tfidf_results."results".len();
+("  Results count: " + tfidf_len.str() + "\n").echo();
+for i in tfidf_len.range() {
+    result = tfidf_results."results"[i];
+    ("  Score: " + result."similarity".str() + " - " + result."item" + "\n").echo();
+}
+
+/* Example 2: User Profile Similarity Search */
+("Example 2: User Profile Similarity Search\n").echo();
+
+user_profiles = [
+    {"name": "Alice", "age": 30, "skills": ["python", "machine learning"], "location": "NYC"},
+    {"name": "Bob", "age": 25, "skills": ["java", "web development"], "location": "SF"},
+    {"name": "Charlie", "age": 35, "skills": ["python", "artificial intelligence"], "location": "NYC"}
+];
+
+query_profile = {"age": 30, "skills": ["python", "machine learning"], "location": "NYC"};
+
+/* Object similarity search */
+profile_results = user_profiles.similarity(query_profile, "cosine", {
+    "top_n": 3,
+    "include_scores": true,
+    "include_items": true
+});
+
+("User profile similarity results:\n").echo();
+profile_len = profile_results."results".len();
+("  Results count: " + profile_len.str() + "\n").echo();
+for i in profile_len.range() {
+    result = profile_results."results"[i];
+    ("  Score: " + result."similarity".str() + " - " + result."item".name + " (age: " + result."item"."age".str() + ")\n").echo();
+}
+
+/* Example 3: Vector Database with Metadata */
+("Example 3: Vector Database with Metadata\n").echo();
+
+/* Create in-memory vector database */
+vector_db = {}.table();
+vector_db.mkfield("id", "STR");
+vector_db.mkfield("content", "STR");
+vector_db.mkfield("type", "STR");
+vector_db.mkfield("category", "STR");
+
+/* Insert documents with metadata */
+vector_db.setfield("doc1", {
+    "id": "ml_algorithms_paper",
+    "content": "machine learning algorithms and neural networks",
+    "type": "research_paper",
+    "category": "machine_learning"
+});
+
+vector_db.setfield("doc2", {
+    "id": "ai_research_survey",
+    "content": "artificial intelligence research and development",
+    "type": "survey_paper",
+    "category": "artificial_intelligence"
+});
+
+vector_db.setfield("doc3", {
+    "id": "deep_learning_tutorial",
+    "content": "deep learning neural networks and computer vision",
+    "type": "tutorial",
+    "category": "deep_learning"
+});
+
+/* Get all records for processing */
+all_records = vector_db.ls();
+all_records_len = all_records.len();
+("Total documents in database: " + all_records_len.str() + "\n").echo();
+
+/* Filter by metadata and perform similarity search */
+ml_documents = [];
+record1 = all_records[0];
+record_id1 = record1["$ID"];
+record_type1 = vector_db.getfield(record_id1, "type");
+record_category1 = vector_db.getfield(record_id1, "category");
+
+if (record_type1 == "research_paper" && record_category1 == "machine_learning") {
+    content1 = vector_db.getfield(record_id1, "content");
+    ml_documents += content1;
+};
+
+record2 = all_records[1];
+record_id2 = record2["$ID"];
+record_type2 = vector_db.getfield(record_id2, "type");
+record_category2 = vector_db.getfield(record_id2, "category");
+
+if (record_type2 == "research_paper" && record_category2 == "machine_learning") {
+    content2 = vector_db.getfield(record_id2, "content");
+    ml_documents += content2;
+};
+
+record3 = all_records[2];
+record_id3 = record3["$ID"];
+record_type3 = vector_db.getfield(record_id3, "type");
+record_category3 = vector_db.getfield(record_id3, "category");
+
+if (record_type3 == "research_paper" && record_category3 == "machine_learning") {
+    content3 = vector_db.getfield(record_id3, "content");
+    ml_documents += content3;
+};
+
+("Machine learning research papers found: " + ml_documents.len().str() + "\n").echo();
+
+/* Perform similarity search on filtered results */
+query_text = "machine learning algorithms";
+if (ml_documents.len() > 0) {
+    similarity_results = ml_documents.similarity(query_text, "cosine", {
+        "top_n": 2,
+        "include_scores": true,
+        "include_items": true
+    });
+    
+    ("Similarity search results for ML papers:\n").echo();
+    similarity_len = similarity_results."results".len();
+    ("  Results count: " + similarity_len.str() + "\n").echo();
+    for i in similarity_len.range() {
+        result = similarity_results."results"[i];
+        ("  Score: " + result."similarity".str() + " - " + result."item" + "\n").echo();
+    };
+};
+
+/* Example 4: Performance Optimization with $ID */
+("Example 4: Performance Optimization with $ID\n").echo();
+
+/* Benchmark $KEY vs $ID performance */
+start_time = $TIME().utc();
+contentk = "";
+for i in (100).range() {
+    key = "doc" + ((i % all_records_len) + 1).str();
+    contentk = vector_db.getfield(key, "content");
+};
+key_duration = start_time.ms();
+
+start_time = $TIME().utc();
+contenti = "";
+for i in (100).range() {
+    record_id = (i % all_records_len) + 1;
+    contenti = vector_db.getfield(record_id, "content");
+};
+id_duration = start_time.ms();
+
+("Performance comparison (100 lookups):\n").echo();
+("  $KEY lookup time: " + key_duration.str() + "ms\n").echo();
+("  $ID lookup time: " + id_duration.str() + "ms\n").echo();
+improvement = key_duration / id_duration;
+("  Performance improvement: " + improvement.str() + "x faster with $ID\n").echo();
+
+/* Example 5: Advanced Similarity Options */
+("Example 5: Advanced Similarity Options\n").echo();
+
+/* Word-based Jaccard similarity */
+jaccard_results = documents.similarity(query, "jaccard", {
+    "jaccard_method": "word",
+    "jaccard_n": 2,
+    "case_sensitive": false,
+    "top_n": 3,
+    "include_scores": true
+});
+
+("Word-based Jaccard similarity (n=2):\n").echo();
+jaccard_len = jaccard_results."results".len();
+("  Results count: " + jaccard_len.str() + "\n").echo();
+for i in jaccard_len.range() {
+    result = jaccard_results."results"[i];
+    ("  Score: " + result."similarity".str() + " - " + result."item" + "\n").echo();
+};
+
+/* Example 6: Vector Mathematical Operations */
+("Example 6: Vector Mathematical Operations\n").echo();
+
+/* Create test vectors representing document embeddings */
+vector1 = #[1.0, 0.0, 0.0, 0.0, 0.0]#;  /* machine learning - perfect match */
+vector2 = #[0.8, 0.6, 0.0, 0.0, 0.0]#;  /* artificial intelligence - high similarity */
+vector3 = #[0.6, 0.8, 0.0, 0.0, 0.0]#;  /* deep learning - high similarity */
+vector4 = #[0.0, 0.0, 0.0, 1.0, 0.0]#;  /* computer vision - low similarity */
+vector5 = #[0.0, 0.0, 0.0, 0.0, 1.0]#;  /* natural language processing - low similarity */
+
+vectors = [vector1, vector2, vector3, vector4, vector5];
+query_vector = #[1.0, 0.0, 0.0, 0.0, 0.0]#;  /* machine learning query */
+
+/* Vector similarity search */
+vector_results = vectors.similarity(query_vector, "cosine", {
+    "top_n": 3,
+    "include_scores": true,
+    "include_items": true
+});
+
+("Vector similarity results:\n").echo();
+vector_len = vector_results."results".len();
+("  Results count: " + vector_len.str() + "\n").echo();
+for i in vector_len.range() {
+    result = vector_results."results"[i];
+    ("  Score: " + result."similarity".str() + " - Vector: " + result."item".str() + "\n").echo();
+};
+
+/* Example 7: Performance Benchmarking */
+("Example 7: Performance Benchmarking\n").echo();
+
+/* Create larger dataset for performance testing */
+large_dataset = [];
+for i in (50).range() {
+    large_dataset += ("document " + i.str() + " about machine learning artificial intelligence deep learning neural networks computer vision natural language processing data science");
+};
+
+query_perf = "machine learning artificial intelligence";
+
+/* Benchmark similarity search performance */
+start_time = $TIME().utc();
+perf_results = large_dataset.similarity(query_perf, "cosine", {
+    "top_n": 10,
+    "include_scores": true
+});
+perf_duration = start_time.ms();
+
+("Performance test results:\n").echo();
+("  Dataset size: " + large_dataset.len().str() + " documents\n").echo();
+("  Search time: " + perf_duration.str() + "ms\n").echo();
+("  Results found: " + perf_results."results".len().str() + "\n").echo();
+("  Average time per document: " + (perf_duration / large_dataset.len()).str() + "ms\n").echo();
+
+/* Example 8: Error Handling and Edge Cases */
+("Example 8: Error Handling and Edge Cases\n").echo();
+
+/* Test empty array */
+empty_array = [];
+empty_results = empty_array.similarity("test", "cosine");
+("Empty array similarity: " + empty_results.len().str() + " results\n").echo();
+
+/* Test single item array */
+single_array = ["single item"];
+single_results = single_array.similarity("single item", "cosine");
+("Single item similarity: " + single_results."results".len().str() + " results\n").echo();
+
+/* Test with threshold */
+threshold_results = documents.similarity(query, "cosine", {
+    "top_n": 10,
+    "threshold": 0.3,
+    "include_scores": true
+});
+("Results above 0.3 threshold: " + threshold_results."results".len().str() + "\n").echo();
+
+/* Example 9: Database Schema Validation */
+("Example 9: Database Schema Validation\n").echo();
+
+("Database schema validation:\n").echo();
+record1 = all_records[0];
+record_id1 = record1["$ID"];
+record_key1 = record1["$KEY"];
+record_type1 = record1["$TYPE"];
+("  $ID: " + record_id1.str() + ", $KEY: " + record_key1 + ", $TYPE: " + record_type1 + "\n").echo();
+
+record2 = all_records[1];
+record_id2 = record2["$ID"];
+record_key2 = record2["$KEY"];
+record_type2 = record2["$TYPE"];
+("  $ID: " + record_id2.str() + ", $KEY: " + record_key2 + ", $TYPE: " + record_type2 + "\n").echo();
+
+record3 = all_records[2];
+record_id3 = record3["$ID"];
+record_key3 = record3["$KEY"];
+record_type3 = record3["$TYPE"];
+("  $ID: " + record_id3.str() + ", $KEY: " + record_key3 + ", $TYPE: " + record_type3 + "\n").echo();
+
+("Field access patterns:\n").echo();
+record_id1 = all_records[0]["$ID"];
+id_field1 = vector_db.getfield(record_id1, "id");
+type_field1 = vector_db.getfield(record_id1, "type");
+category_field1 = vector_db.getfield(record_id1, "category");
+("  Record " + record_id1.str() + ": id=" + id_field1 + ", type=" + type_field1 + ", category=" + category_field1 + "\n").echo();
+
+record_id2 = all_records[1]["$ID"];
+id_field2 = vector_db.getfield(record_id2, "id");
+type_field2 = vector_db.getfield(record_id2, "type");
+category_field2 = vector_db.getfield(record_id2, "category");
+("  Record " + record_id2.str() + ": id=" + id_field2 + ", type=" + type_field2 + ", category=" + category_field2 + "\n").echo();
+
+record_id3 = all_records[2]["$ID"];
+id_field3 = vector_db.getfield(record_id3, "id");
+type_field3 = vector_db.getfield(record_id3, "type");
+category_field3 = vector_db.getfield(record_id3, "category");
+("  Record " + record_id3.str() + ": id=" + id_field3 + ", type=" + type_field3 + ", category=" + category_field3 + "\n").echo();
+
+("=== Example Complete ===\n").echo();

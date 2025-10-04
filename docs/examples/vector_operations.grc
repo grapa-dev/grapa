@@ -104,6 +104,16 @@ vec_b = [4, 5, 6].vector();
 dot_result = vec_a.dot(vec_b);
 ("Dot product: " + dot_result + "\n").echo();
 
+// Similarity and distance calculations
+cosine_sim = vec_a.similarity(vec_b, 'cosine');
+pearson_corr = vec_a.similarity(vec_b, 'pearson');
+euclidean_dist = vec_a.similarity(vec_b, 'euclidean');
+manhattan_dist = vec_a.similarity(vec_b, 'manhattan');
+("Cosine similarity: " + cosine_sim + "\n").echo();
+("Pearson correlation: " + pearson_corr + "\n").echo();
+("Euclidean distance: " + euclidean_dist + "\n").echo();
+("Manhattan distance: " + manhattan_dist + "\n").echo();
+
 // Matrix-vector multiplication
 mat_2x3 = [[1, 2, 3], [4, 5, 6]].vector();
 vec_3 = [1, 2, 3].vector();
@@ -122,6 +132,94 @@ square_mat = [[2, 1], [1, 3]].vector();
 rhs = [5, 6].vector();
 solution = square_mat.solve(rhs);
 ("Linear system solution: " + solution + "\n").echo();
+
+/* Similarity and Distance Examples */
+
+("--- Similarity and Distance Calculations ---\n").echo();
+
+// Test vectors for similarity calculations
+vec1 = [1, 2, 3].vector();
+vec2 = [4, 5, 6].vector();
+vec3 = [1, 2, 3].vector();  // Identical to vec1
+vec4 = [0, 0, 0].vector();  // Zero vector
+
+// Similarity methods (higher values = more similar)
+cosine_sim = vec1.similarity(vec2, 'cosine');
+pearson_corr = vec1.similarity(vec2, 'pearson');
+jaccard_sim = vec1.similarity(vec2, 'jaccard');
+dice_sim = vec1.similarity(vec2, 'dice');
+tanimoto_sim = vec1.similarity(vec2, 'tanimoto');
+inner_prod = vec1.similarity(vec2, 'inner');
+
+("Similarity methods:\n").echo();
+("Cosine similarity: " + cosine_sim + "\n").echo();
+("Pearson correlation: " + pearson_corr + "\n").echo();
+("Jaccard similarity: " + jaccard_sim + "\n").echo();
+("Dice similarity: " + dice_sim + "\n").echo();
+("Tanimoto similarity: " + tanimoto_sim + "\n").echo();
+("Inner product: " + inner_prod + "\n").echo();
+
+// Distance methods (lower values = more similar)
+euclidean_dist = vec1.similarity(vec2, 'euclidean');
+manhattan_dist = vec1.similarity(vec2, 'manhattan');
+chebyshev_dist = vec1.similarity(vec2, 'chebyshev');
+minkowski_dist = vec1.similarity(vec2, 'minkowski');
+hamming_dist = vec1.similarity(vec2, 'hamming');
+canberra_dist = vec1.similarity(vec2, 'canberra');
+bray_curtis_dist = vec1.similarity(vec2, 'braycurtis');
+norm_euclidean_dist = vec1.similarity(vec2, 'norm_euclidean');
+norm_manhattan_dist = vec1.similarity(vec2, 'norm_manhattan');
+
+("Distance methods:\n").echo();
+("Euclidean distance: " + euclidean_dist + "\n").echo();
+("Manhattan distance: " + manhattan_dist + "\n").echo();
+("Chebyshev distance: " + chebyshev_dist + "\n").echo();
+("Minkowski distance: " + minkowski_dist + "\n").echo();
+("Hamming distance: " + hamming_dist + "\n").echo();
+("Canberra distance: " + canberra_dist + "\n").echo();
+("Bray-Curtis distance: " + bray_curtis_dist + "\n").echo();
+("Normalized Euclidean: " + norm_euclidean_dist + "\n").echo();
+("Normalized Manhattan: " + norm_manhattan_dist + "\n").echo();
+
+// Alternative method names
+l2_dist = vec1.similarity(vec2, 'l2');
+l1_dist = vec1.similarity(vec2, 'l1');
+l_inf_dist = vec1.similarity(vec2, 'l∞');
+
+("Alternative method names:\n").echo();
+("L2 distance (euclidean): " + l2_dist + "\n").echo();
+("L1 distance (manhattan): " + l1_dist + "\n").echo();
+("L∞ distance (chebyshev): " + l_inf_dist + "\n").echo();
+
+// Test with identical vectors
+identical_cosine = vec1.similarity(vec3, 'cosine');
+identical_pearson = vec1.similarity(vec3, 'pearson');
+identical_euclidean = vec1.similarity(vec3, 'euclidean');
+
+("Identical vectors test:\n").echo();
+("Cosine similarity (identical): " + identical_cosine + "\n").echo();
+("Pearson correlation (identical): " + identical_pearson + "\n").echo();
+("Euclidean distance (identical): " + identical_euclidean + "\n").echo();
+
+// Test with zero vector
+zero_cosine = vec1.similarity(vec4, 'cosine');
+zero_euclidean = vec1.similarity(vec4, 'euclidean');
+
+("Zero vector test:\n").echo();
+("Cosine similarity (with zero): " + zero_cosine + "\n").echo();
+("Euclidean distance (with zero): " + zero_euclidean + "\n").echo();
+
+// Binary vector examples for set-based similarity
+binary1 = [1, 0, 1, 0, 1].vector();
+binary2 = [1, 1, 0, 0, 1].vector();
+binary_jaccard = binary1.similarity(binary2, 'jaccard');
+binary_dice = binary1.similarity(binary2, 'dice');
+binary_tanimoto = binary1.similarity(binary2, 'tanimoto');
+
+("Binary vector similarity:\n").echo();
+("Binary Jaccard: " + binary_jaccard + "\n").echo();
+("Binary Dice: " + binary_dice + "\n").echo();
+("Binary Tanimoto: " + binary_tanimoto + "\n").echo();
 
 /* Statistical Operations */
 

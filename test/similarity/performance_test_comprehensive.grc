@@ -1,0 +1,301 @@
+/* Comprehensive Performance Test for Vector Database Similarity */
+/* Tests performance with database operations and metadata filtering */
+
+("=== Comprehensive Vector Database Performance Test ===\n").echo();
+
+/* Test sizes */
+test_sizes = [100, 500, 1000];
+("Testing at scales: " + test_sizes.str() + "\n").echo();
+("\n").echo();
+
+/* Performance thresholds */
+pinecone_threshold = 100;  /* Pinecone typically < 100ms */
+acceptable_threshold = 500;  /* Acceptable for local use */
+
+/* Results storage */
+results = [];
+
+for test_size in test_sizes {
+    ("--- Testing " + test_size.str() + " records ---\n").echo();
+    
+    /* Create database */
+    vector_db = {}.table();
+    
+    /* Generate test data with metadata */
+    ("  Generating " + test_size.str() + " records with metadata...\n").echo();
+    start_time = $TIME().utc();
+    
+    for i in test_size.range() {
+        doc_id = "doc_" + i.str();
+        
+        /* Generate metadata */
+        category = "category_" + (i % 5).str();
+        author = "author_" + (i % 3).str();
+        score = 0.5 + (i % 50) / 100.0;
+        
+        /* Generate vector */
+        vector = [];
+        for j in 5.range() {
+            vector.push(0.5 + (i % 10) / 100.0);
+        };
+        
+        /* Store in database */
+        vector_db.setfield(doc_id, {
+            "id": doc_id,
+            "category": category,
+            "author": author,
+            "score": score,
+            "vector": vector
+        });
+    };
+    
+    data_generation_time = start_time.ms();
+    ("  Data generation: " + data_generation_time.str() + "ms\n").echo();
+    
+    /* Test 1: Vector-only similarity search */
+    ("  Test 1: Vector similarity search...\n").echo();
+    start_time = $TIME().utc();
+    
+    /* Extract vectors */
+    all_records = vector_db.ls();
+    vectors = [];
+    for i in all_records.range() {
+        record = all_records[i];
+        record_id = record["$ID"];
+        vector = vector_db.getfield(record_id, "vector");
+        vectors.push(vector);
+    };
+    
+    /* Perform similarity search */
+    query_vector = [0.8, 0.7, 0.6, 0.5, 0.4];
+    vector_results = vectors.similarity(query_vector, "cosine", {
+        "top_n": 10,
+        "include_scores": true,
+        "include_items": true
+    });
+    
+    vector_search_time = start_time.ms();
+    ("    Vector search: " + vector_search_time.str() + "ms\n").echo();
+    ("    Results: " + vector_results."results".len().str() + "\n").echo();
+    
+    /* Test 2: Metadata filtering + vector similarity */
+    ("  Test 2: Metadata filtering + vector similarity...\n").echo();
+    start_time = $TIME().utc();
+    
+    /* Filter by metadata first */
+    filtered_vectors = [];
+    for i in all_records.range() {
+        record = all_records[i];
+        record_id = record["$ID"];
+        category = vector_db.getfield(record_id, "category");
+        
+        if (category == "category_0" || category == "category_1") {
+            vector = vector_db.getfield(record_id, "vector");
+            filtered_vectors.push(vector);
+        }
+    };
+    
+    /* Perform similarity search on filtered set */
+    if (filtered_vectors.len() > 0) {
+        filtered_results = filtered_vectors.similarity(query_vector, "cosine", {
+            "top_n": 10,
+            "include_scores": true,
+            "include_items": true
+        });
+    } else {
+        filtered_results = {"results": []};
+    };
+    
+    hybrid_search_time = start_time.ms();
+    ("    Hybrid search: " + hybrid_search_time.str() + "ms\n").echo();
+    ("    Filtered records: " + filtered_vectors.len().str() + "\n").echo();
+    ("    Results: " + filtered_results."results".len().str() + "\n").echo();
+    
+    /* Test 3: Object similarity (metadata search) */
+    ("  Test 3: Object similarity (metadata search)...\n").echo();
+    start_time = $TIME().utc();
+    
+    /* Extract objects */
+    objects = [];
+    for i in all_records.range() {
+        record = all_records[i];
+        record_id = record["$ID"];
+        
+        object = {
+            "category": vector_db.getfield(record_id, "category"),
+            "author": vector_db.getfield(record_id, "author"),
+            "score": vector_db.getfield(record_id, "score")
+        };
+        objects.push(object);
+    };
+    
+    /* Perform object similarity search */
+    query_object = {"category": "category_0", "score": 0.8};
+    object_results = objects.similarity(query_object, "cosine", {
+        "top_n": 10,
+        "include_scores": true,
+        "include_items": true
+    });
+    
+    object_search_time = start_time.ms();
+    ("    Object search: " + object_search_time.str() + "ms\n").echo();
+    ("    Results: " + object_results."results".len().str() + "\n").echo();
+    
+    /* Performance analysis */
+    ("  Performance Analysis:\n").echo();
+    
+    if (vector_search_time < pinecone_threshold) {
+        ("    ✅ Vector search: EXCELLENT (< " + pinecone_threshold.str() + "ms)\n").echo();
+    } else if (vector_search_time < acceptable_threshold) {
+        ("    ✅ Vector search: GOOD (< " + acceptable_threshold.str() + "ms)\n").echo();
+    } else {
+        ("    ❌ Vector search: SLOW (> " + acceptable_threshold.str() + "ms)\n").echo();
+    };
+    
+    if (hybrid_search_time < pinecone_threshold) {
+        ("    ✅ Hybrid search: EXCELLENT (< " + pinecone_threshold.str() + "ms)\n").echo();
+    } else if (hybrid_search_time < acceptable_threshold) {
+        ("    ✅ Hybrid search: GOOD (< " + acceptable_threshold.str() + "ms)\n").echo();
+    } else {
+        ("    ❌ Hybrid search: SLOW (> " + acceptable_threshold.str() + "ms)\n").echo();
+    };
+    
+    if (object_search_time < pinecone_threshold) {
+        ("    ✅ Object search: EXCELLENT (< " + pinecone_threshold.str() + "ms)\n").echo();
+    } else if (object_search_time < acceptable_threshold) {
+        ("    ✅ Object search: GOOD (< " + acceptable_threshold.str() + "ms)\n").echo();
+    } else {
+        ("    ❌ Object search: SLOW (> " + acceptable_threshold.str() + "ms)\n").echo();
+    };
+    
+    /* Store result */
+    result = {
+        "size": test_size,
+        "data_generation_time": data_generation_time,
+        "vector_search_time": vector_search_time,
+        "hybrid_search_time": hybrid_search_time,
+        "object_search_time": object_search_time,
+        "filtered_count": filtered_vectors.len()
+    };
+    results.push(result);
+    
+    ("\n").echo();
+};
+
+/* Summary Report */
+("=== PERFORMANCE SUMMARY ===\n").echo();
+("Size\tVector\tHybrid\tObject\tRecommendation\n").echo();
+("----\t------\t-------\t-------\t---------------\n").echo();
+
+for result in results {
+    size = result."size";
+    vector_time = result."vector_search_time";
+    hybrid_time = result."hybrid_search_time";
+    object_time = result."object_search_time";
+    
+    /* Determine recommendation */
+    if (vector_time < pinecone_threshold && hybrid_time < pinecone_threshold) {
+        recommendation = "✅ EXCELLENT - Competitive with Pinecone";
+    } else if (vector_time < acceptable_threshold && hybrid_time < acceptable_threshold) {
+        recommendation = "✅ GOOD - Suitable for local use";
+    } else {
+        recommendation = "❌ SLOW - Use Pinecone";
+    };
+    
+    (size.str() + "\t" + vector_time.str() + "ms\t" + hybrid_time.str() + "ms\t" + object_time.str() + "ms\t" + recommendation + "\n").echo();
+};
+
+/* Scaling Analysis */
+("\n=== SCALING ANALYSIS ===\n").echo();
+if (results.len() >= 2) {
+    first = results[0];
+    last = results[results.len() - 1];
+    
+    size_ratio = last."size" / first."size";
+    vector_time_ratio = last."vector_search_time" / first."vector_search_time";
+    hybrid_time_ratio = last."hybrid_search_time" / first."hybrid_search_time";
+    
+    ("Size increase: " + size_ratio.str() + "x\n").echo();
+    ("Vector search time increase: " + vector_time_ratio.str() + "x\n").echo();
+    ("Hybrid search time increase: " + hybrid_time_ratio.str() + "x\n").echo();
+    
+    if (vector_time_ratio < size_ratio) {
+        ("✅ Vector search: Sub-linear scaling - Performance scales well\n").echo();
+    } else if (vector_time_ratio == size_ratio) {
+        ("✅ Vector search: Linear scaling - Expected performance\n").echo();
+    } else {
+        ("⚠️  Vector search: Super-linear scaling - Performance degrades\n").echo();
+    };
+    
+    if (hybrid_time_ratio < size_ratio) {
+        ("✅ Hybrid search: Sub-linear scaling - Performance scales well\n").echo();
+    } else if (hybrid_time_ratio == size_ratio) {
+        ("✅ Hybrid search: Linear scaling - Expected performance\n").echo();
+    } else {
+        ("⚠️  Hybrid search: Super-linear scaling - Performance degrades\n").echo();
+    };
+};
+
+/* Recommendations */
+("\n=== RECOMMENDATIONS ===\n").echo();
+
+excellent_count = 0;
+good_count = 0;
+slow_count = 0;
+
+for result in results {
+    vector_time = result."vector_search_time";
+    if (vector_time < pinecone_threshold) {
+        excellent_count = excellent_count + 1;
+    } else if (vector_time < acceptable_threshold) {
+        good_count = good_count + 1;
+    } else {
+        slow_count = slow_count + 1;
+    };
+};
+
+if (excellent_count > 0) {
+    ("✅ Grapa is competitive with Pinecone for small to medium datasets\n").echo();
+};
+
+if (good_count > 0) {
+    ("✅ Grapa is suitable for local/offline applications\n").echo();
+};
+
+if (slow_count > 0) {
+    ("❌ Use Pinecone for large-scale production applications\n").echo();
+};
+
+/* Performance breakpoint analysis */
+("\n=== PERFORMANCE BREAKPOINT ANALYSIS ===\n").echo();
+("Based on the test results:\n").echo();
+
+if (results.len() > 0) {
+    max_size = 0;
+    max_vector_time = 0;
+    max_hybrid_time = 0;
+    
+    for result in results {
+        if (result."vector_search_time" > max_vector_time) {
+            max_vector_time = result."vector_search_time";
+            max_size = result."size";
+        };
+        if (result."hybrid_search_time" > max_hybrid_time) {
+            max_hybrid_time = result."hybrid_search_time";
+        };
+    };
+    
+    ("• Vector search remains excellent up to " + max_size.str() + " records\n").echo();
+    ("• Maximum vector search time: " + max_vector_time.str() + "ms\n").echo();
+    ("• Maximum hybrid search time: " + max_hybrid_time.str() + "ms\n").echo();
+    
+    if (max_vector_time < pinecone_threshold) {
+        ("• Grapa vector search is competitive with Pinecone at tested scales\n").echo();
+    };
+    
+    if (max_hybrid_time < pinecone_threshold) {
+        ("• Grapa hybrid search is competitive with Pinecone at tested scales\n").echo();
+    };
+};
+
+("\n=== TEST COMPLETE ===\n").echo();

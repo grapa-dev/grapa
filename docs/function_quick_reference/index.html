@@ -2140,6 +2140,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#vector-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Vector Operations
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#comparison" class="md-nav__link">
     <span class="md-ellipsis">
       Comparison
@@ -3219,6 +3228,29 @@
   
   <span class="md-ellipsis">
     Vector Performance Guide
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../vector_database_similarity/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Vector Database Similarity
     
   </span>
   
@@ -4575,6 +4607,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#vector-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Vector Operations
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#comparison" class="md-nav__link">
     <span class="md-ellipsis">
       Comparison
@@ -4767,9 +4808,17 @@
 <h2 id="string-operations">String Operations</h2>
 <p><code>left</code>, <code>right</code>, <code>mid</code>, <code>midtrim</code>, <code>rtrim</code>, <code>ltrim</code>, <code>trim</code>, <code>rrot</code>, <code>lrot</code>, <code>rpad</code>, <code>lpad</code>, <code>reverse</code>, <code>replace</code>, <code>grep</code>, <code>split</code>, <code>join</code>, <code>lower</code>, <code>upper</code></p>
 <h2 id="string-distance-similarity">String Distance &amp; Similarity</h2>
-<p><code>levenshtein_distance</code>, <code>damerau_levenshtein_distance</code>, <code>jaro_winkler_similarity</code>, <code>cosine_similarity</code>, <code>jaccard_similarity</code></p>
+<p><code>.similarity()</code> - Unified method supporting all string similarity and distance algorithms
+- <strong>String-to-string</strong>: <code>"hello".similarity("hallo", "levenshtein")</code>
+- <strong>Array similarity</strong>: <code>["hello", "world"].similarity("query", "cosine")</code>
+- <strong>Parameters</strong>: <code>top_n</code>, <code>threshold</code>, <code>sort</code>, <code>include_scores</code>, <code>include_items</code></p>
 <h2 id="arraymatrix">Array/Matrix</h2>
 <p><code>shape</code>, <code>reshape</code>, <code>dot</code>, <code>identity</code>, <code>diagonal</code>, <code>triu</code>, <code>tril</code>, <code>eigh</code>, <code>sum</code>, <code>mean</code></p>
+<h2 id="vector-operations">Vector Operations</h2>
+<p><code>.similarity()</code> - Unified method supporting all vector similarity and distance algorithms
+- <strong>Vector-to-vector</strong>: <code>vec1.similarity(vec2, "cosine")</code>
+- <strong>Array similarity</strong>: <code>[vec1, vec2, vec3].similarity(query_vec, "euclidean")</code>
+- <strong>Parameters</strong>: <code>top_n</code>, <code>threshold</code>, <code>sort</code>, <code>include_scores</code>, <code>include_items</code></p>
 <h2 id="comparison">Comparison</h2>
 <p><code>eq</code>, <code>neq</code>, <code>gteq</code>, <code>gt</code>, <code>lteq</code>, <code>lt</code>, <code>cmp</code></p>
 <h2 id="time">Time</h2>

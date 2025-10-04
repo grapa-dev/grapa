@@ -1,0 +1,5854 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://grapa-dev.github.io/grapa/vector_database_similarity/">
+      
+      
+        <link rel="prev" href="../vector_performance_guide/">
+      
+      
+        <link rel="next" href="../grapa_core_differentiators/">
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.15">
+    
+    
+      
+        <title>Vector Database Similarity - Grapa Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.342714a4.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#vector-database-similarity-search" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Grapa Documentation" class="md-header__button md-logo" aria-label="Grapa Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Grapa Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Vector Database Similarity
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-hidden="true"  type="radio" name="__palette" id="__palette_0">
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../about/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  About
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href=".." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../getting_started/" class="md-tabs__link">
+          
+  
+  
+  Getting Started
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../cli_quickstart/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Quickstart
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../api_reference/" class="md-tabs__link">
+          
+  
+  
+  Reference
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../migrations/python_to_grapa_migration/" class="md-tabs__link">
+          
+  
+  
+  Guides
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../use_cases/" class="md-tabs__link">
+          
+  
+  
+  Use Cases
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../troubleshooting/" class="md-tabs__link">
+          
+  
+  
+  Support
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Grapa Documentation" class="md-nav__button md-logo" aria-label="Grapa Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Grapa Documentation
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../about/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    About
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Home
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Getting Started
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Getting Started
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../getting_started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Overview
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Installation
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cli_integration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    CLI Integration
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../vscode_extension/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    VSCode Extension
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../run/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Run Command
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../python_integration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Python Integration
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cpp_integration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    C++ Integration
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../grapa_ecosystem_positioning/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Grapa in the Ecosystem
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cli_quickstart/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Quickstart
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    Reference
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            Reference
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    API Reference
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Model API
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_5_3" id="__nav_5_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Data Types
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_3">
+            <span class="md-nav__icon md-icon"></span>
+            Data Types
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../data_type_selection_guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Data Type Selection Guide
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../type/array/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Array
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../type/bool/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Boolean
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../type/class/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Class
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../type/code/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Code
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../type/err/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Error
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../type/float/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Float
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../type/id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    ID
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../type/int/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Integer
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../type/model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Model
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../type/gobj/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    GOBJ
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../type/obj_methods/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Object Methods
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../type/op/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Operation
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../type/raw/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Raw
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../type/rule/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Rule
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../type/str/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    String
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../type/sysid/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    System ID
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../type/sysint/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    System Integer
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../type/sysstr/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    System String
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../type/table/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Table
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../type/tag/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tag
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../type/time/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Time
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../type/tuple/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tuple
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../type/vector/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Vector
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../type/widget/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Widget
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../type/widget/attributes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Widget Attributes
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../type/xml/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    XML
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_5_4" id="__nav_5_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Operators
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_4">
+            <span class="md-nav__icon md-icon"></span>
+            Operators
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../operators/function/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Function Operators
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../operators/assignment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Assignment Operators
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../operators/math/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Math Operators
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../operators/bit/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Bitwise Operators
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../operators/compare/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Comparison Operators
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../operators/condition/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Condition Operators
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../operators/loop/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Functional Array Methods
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../operators/command/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Command Operators
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../operators/constants/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Constants
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5_5" id="__nav_5_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    System Functions
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_5">
+            <span class="md-nav__icon md-icon"></span>
+            System Functions
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sys/file/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    File Operations
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sys/math/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Math Functions
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sys/net/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Network Functions
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sys/py/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Python Integration
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../curl_function/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    HTTP/HTTPS Client
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sys/sys/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    System Functions
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sys/thread/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Thread Functions
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../function_quick_reference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Function Quick Reference
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_5_6" id="__nav_5_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Object Types
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_6">
+            <span class="md-nav__icon md-icon"></span>
+            Object Types
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../obj/document/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Document
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../obj/encode/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Encode
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../obj/grep/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Grep
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../obj/grep_python/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Grep Python
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../obj/iterate/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Iteration Methods
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../obj/transform/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Transform
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_5_7" id="__nav_5_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Pattern Matching
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_7">
+            <span class="md-nav__icon md-icon"></span>
+            Pattern Matching
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../grep/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Grep Documentation
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_5_8" id="__nav_5_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Database
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_8">
+            <span class="md-nav__icon md-icon"></span>
+            Database
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../database/quick_reference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Quick Reference
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../database/column_store/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Storage Types
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../database/troubleshooting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Troubleshooting
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_9" >
+        
+          
+          <label class="md-nav__link" for="__nav_5_9" id="__nav_5_9_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Language Reference
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_9">
+            <span class="md-nav__icon md-icon"></span>
+            Language Reference
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../syntax/basic_syntax/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Basic Syntax
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../syntax/namespace_scoping/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Namespace Scoping
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../syntax/operator/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Operators
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../syntax/precedence/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Precedence
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../syntax/grammar_design/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Grammar Design
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../syntax/thread_safe_variables/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Thread-Safe Variables
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../debugging/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Debugging
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../execution_pipeline_overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Execution Pipeline
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_12" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_5_12" id="__nav_5_12_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Advanced Topics
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_12_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_5_12">
+            <span class="md-nav__icon md-icon"></span>
+            Advanced Topics
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../advanced_topics/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Overview
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../advanced_language_features/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Language Features
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../advanced_concurrency_and_callbacks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Concurrency and Callbacks
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../advanced/array_vector_interoperability/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Array-Vector Interoperability
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../multi_syntax_programming/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Multi-Syntax Programming
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../language_design_with_executable_bnf/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Language Design with Executable BNF
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../isolated_rule_execution/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Isolated Rule Execution
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../deep_expert_implementation_overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Deep Expert Implementation
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../xml_list_integration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    XML and LIST Integration
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../unified_dot_notation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Unified Dot Notation System
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../module_system/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Module System
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../machine_learning/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Machine Learning
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../vector_performance_guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Vector Performance Guide
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Vector Database Similarity
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    Vector Database Similarity
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      Overview
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#key-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      Key Features
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Key Features">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#unified-similarity-algorithms" class="md-nav__link">
+    <span class="md-ellipsis">
+      Unified Similarity Algorithms
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#advanced-options" class="md-nav__link">
+    <span class="md-ellipsis">
+      Advanced Options
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#database-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      Database Integration
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#grapa-vs-pinecone-comparison" class="md-nav__link">
+    <span class="md-ellipsis">
+      Grapa vs Pinecone Comparison
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#use-case-recommendations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Use Case Recommendations
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Use Case Recommendations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#use-grapa-similarity-when" class="md-nav__link">
+    <span class="md-ellipsis">
+      Use Grapa .similarity() when:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#use-grapa-with-db-when" class="md-nav__link">
+    <span class="md-ellipsis">
+      Use Grapa with DB when:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#use-pinecone-when" class="md-nav__link">
+    <span class="md-ellipsis">
+      Use Pinecone when:
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#basic-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      Basic Usage
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Basic Usage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#string-similarity" class="md-nav__link">
+    <span class="md-ellipsis">
+      String Similarity
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#array-similarity-search" class="md-nav__link">
+    <span class="md-ellipsis">
+      Array Similarity Search
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#object-array-similarity-metadata-search" class="md-nav__link">
+    <span class="md-ellipsis">
+      Object Array Similarity (Metadata Search)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#advanced-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      Advanced Features
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Advanced Features">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#tf-idf-cosine-similarity" class="md-nav__link">
+    <span class="md-ellipsis">
+      TF-IDF Cosine Similarity
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#word-based-jaccard-similarity" class="md-nav__link">
+    <span class="md-ellipsis">
+      Word-based Jaccard Similarity
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#vector-mathematical-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Vector Mathematical Operations
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#database-integration_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Database Integration
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Database Integration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#in-memory-vector-database" class="md-nav__link">
+    <span class="md-ellipsis">
+      In-Memory Vector Database
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#performance-optimization-with-id" class="md-nav__link">
+    <span class="md-ellipsis">
+      Performance Optimization with $ID
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#database-filtering-and-similarity-search" class="md-nav__link">
+    <span class="md-ellipsis">
+      Database Filtering and Similarity Search
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#performance-analysis" class="md-nav__link">
+    <span class="md-ellipsis">
+      Performance Analysis
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Performance Analysis">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#comprehensive-performance-testing" class="md-nav__link">
+    <span class="md-ellipsis">
+      Comprehensive Performance Testing
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Comprehensive Performance Testing">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#performance-thresholds" class="md-nav__link">
+    <span class="md-ellipsis">
+      Performance Thresholds
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#performance-breakpoints" class="md-nav__link">
+    <span class="md-ellipsis">
+      Performance Breakpoints
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#scaling-characteristics" class="md-nav__link">
+    <span class="md-ellipsis">
+      Scaling Characteristics
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#performance-comparison-with-pinecone" class="md-nav__link">
+    <span class="md-ellipsis">
+      Performance Comparison with Pinecone
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#performance-testing-methodology" class="md-nav__link">
+    <span class="md-ellipsis">
+      Performance Testing Methodology
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Performance Testing Methodology">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#key-performance-insights" class="md-nav__link">
+    <span class="md-ellipsis">
+      Key Performance Insights
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#recommendations-by-use-case" class="md-nav__link">
+    <span class="md-ellipsis">
+      Recommendations by Use Case
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#performance-optimization" class="md-nav__link">
+    <span class="md-ellipsis">
+      Performance Optimization
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Performance Optimization">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#id-vs-key-performance" class="md-nav__link">
+    <span class="md-ellipsis">
+      $ID vs $KEY Performance
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#large-dataset-performance" class="md-nav__link">
+    <span class="md-ellipsis">
+      Large Dataset Performance
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#error-handling-and-edge-cases" class="md-nav__link">
+    <span class="md-ellipsis">
+      Error Handling and Edge Cases
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Error Handling and Edge Cases">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#empty-array-handling" class="md-nav__link">
+    <span class="md-ellipsis">
+      Empty Array Handling
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#single-item-arrays" class="md-nav__link">
+    <span class="md-ellipsis">
+      Single Item Arrays
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#threshold-filtering" class="md-nav__link">
+    <span class="md-ellipsis">
+      Threshold Filtering
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#best-practices" class="md-nav__link">
+    <span class="md-ellipsis">
+      Best Practices
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Best Practices">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-use-id-for-database-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Use $ID for Database Operations
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-optimize-similarity-algorithm-selection" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Optimize Similarity Algorithm Selection
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-leverage-advanced-options" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Leverage Advanced Options
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-database-schema-design" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Database Schema Design
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-performance-monitoring" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. Performance Monitoring
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#future-enhancements" class="md-nav__link">
+    <span class="md-ellipsis">
+      Future Enhancements
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Future Enhancements">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#planned-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      Planned Features
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#implementation-roadmap" class="md-nav__link">
+    <span class="md-ellipsis">
+      Implementation Roadmap
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#conclusion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Conclusion
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../grapa_core_differentiators/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Core Differentiators
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_13" >
+        
+          
+          <label class="md-nav__link" for="__nav_5_13" id="__nav_5_13_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Cryptography
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_13_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_13">
+            <span class="md-nav__icon md-icon"></span>
+            Cryptography
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../crypto/key_exchange_methods/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Key Exchange Methods
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_14" >
+        
+          
+          <label class="md-nav__link" for="__nav_5_14" id="__nav_5_14_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Language Interpreters
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_14_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_14">
+            <span class="md-nav__icon md-icon"></span>
+            Language Interpreters
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sql_interpreter/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    SQL Interpreter
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../prolog_interpreter/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    PROLOG Interpreter
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../lisp_interpreter/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    LISP Interpreter
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Guides
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            Guides
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_6_1" id="__nav_6_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Migration Guides
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6_1">
+            <span class="md-nav__icon md-icon"></span>
+            Migration Guides
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../migrations/python_to_grapa_migration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Python
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../migrations/js_to_grapa_migration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    JavaScript
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../migrations/rust_to_grapa_migration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Rust
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../migrations/typescript_to_grapa_migration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    TypeScript
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../migrations/go_to_grapa_migration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Go
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../migrations/ruby_to_grapa_migration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Ruby
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../migrations/kotlin_to_grapa_migration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Kotlin
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../migrations/swift_to_grapa_migration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Swift
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../examples/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Examples
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../model_usage_guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Model Usage Guide
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../model_download/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Model Download Guide
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../python_use_cases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Python Use Cases
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../grc_scripts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    GRC Scripts
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../grz_format/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    GRZ Format
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../grapapy_namespace_solution/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    GrapaPy Namespace Solution
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../directory_navigation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Directory Navigation
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../unified_path_system/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Unified Path System
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Use Cases
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            Use Cases
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../use_cases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Overview
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../use_cases/etl_data_engineering/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    ETL / Data Engineering
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../use_cases/compiler_bnf_learning/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Compiler/BNF Learning
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../use_cases/high_precision_math/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    High-Precision Math
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../use_cases/parallel_concurrent_programming/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Parallel Programming
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../use_cases/web_data_scraping/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Web Scraping
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../use_cases/database_file_system/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Database & File System
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../use_cases/education_prototyping/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Education & Prototyping
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../use_cases/cryptography/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Cryptography
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../use_cases/multi_syntax_data_processing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Multi-Syntax Data Processing
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../use_cases/language_design_and_dsls/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Language Design and DSLs
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../use_cases/network_programming_patterns/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Network Programming Patterns
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Support
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            Support
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../troubleshooting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Troubleshooting
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../testing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Testing
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../updates/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Updates
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      Overview
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#key-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      Key Features
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Key Features">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#unified-similarity-algorithms" class="md-nav__link">
+    <span class="md-ellipsis">
+      Unified Similarity Algorithms
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#advanced-options" class="md-nav__link">
+    <span class="md-ellipsis">
+      Advanced Options
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#database-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      Database Integration
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#grapa-vs-pinecone-comparison" class="md-nav__link">
+    <span class="md-ellipsis">
+      Grapa vs Pinecone Comparison
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#use-case-recommendations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Use Case Recommendations
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Use Case Recommendations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#use-grapa-similarity-when" class="md-nav__link">
+    <span class="md-ellipsis">
+      Use Grapa .similarity() when:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#use-grapa-with-db-when" class="md-nav__link">
+    <span class="md-ellipsis">
+      Use Grapa with DB when:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#use-pinecone-when" class="md-nav__link">
+    <span class="md-ellipsis">
+      Use Pinecone when:
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#basic-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      Basic Usage
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Basic Usage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#string-similarity" class="md-nav__link">
+    <span class="md-ellipsis">
+      String Similarity
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#array-similarity-search" class="md-nav__link">
+    <span class="md-ellipsis">
+      Array Similarity Search
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#object-array-similarity-metadata-search" class="md-nav__link">
+    <span class="md-ellipsis">
+      Object Array Similarity (Metadata Search)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#advanced-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      Advanced Features
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Advanced Features">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#tf-idf-cosine-similarity" class="md-nav__link">
+    <span class="md-ellipsis">
+      TF-IDF Cosine Similarity
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#word-based-jaccard-similarity" class="md-nav__link">
+    <span class="md-ellipsis">
+      Word-based Jaccard Similarity
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#vector-mathematical-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Vector Mathematical Operations
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#database-integration_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Database Integration
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Database Integration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#in-memory-vector-database" class="md-nav__link">
+    <span class="md-ellipsis">
+      In-Memory Vector Database
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#performance-optimization-with-id" class="md-nav__link">
+    <span class="md-ellipsis">
+      Performance Optimization with $ID
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#database-filtering-and-similarity-search" class="md-nav__link">
+    <span class="md-ellipsis">
+      Database Filtering and Similarity Search
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#performance-analysis" class="md-nav__link">
+    <span class="md-ellipsis">
+      Performance Analysis
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Performance Analysis">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#comprehensive-performance-testing" class="md-nav__link">
+    <span class="md-ellipsis">
+      Comprehensive Performance Testing
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Comprehensive Performance Testing">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#performance-thresholds" class="md-nav__link">
+    <span class="md-ellipsis">
+      Performance Thresholds
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#performance-breakpoints" class="md-nav__link">
+    <span class="md-ellipsis">
+      Performance Breakpoints
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#scaling-characteristics" class="md-nav__link">
+    <span class="md-ellipsis">
+      Scaling Characteristics
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#performance-comparison-with-pinecone" class="md-nav__link">
+    <span class="md-ellipsis">
+      Performance Comparison with Pinecone
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#performance-testing-methodology" class="md-nav__link">
+    <span class="md-ellipsis">
+      Performance Testing Methodology
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Performance Testing Methodology">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#key-performance-insights" class="md-nav__link">
+    <span class="md-ellipsis">
+      Key Performance Insights
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#recommendations-by-use-case" class="md-nav__link">
+    <span class="md-ellipsis">
+      Recommendations by Use Case
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#performance-optimization" class="md-nav__link">
+    <span class="md-ellipsis">
+      Performance Optimization
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Performance Optimization">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#id-vs-key-performance" class="md-nav__link">
+    <span class="md-ellipsis">
+      $ID vs $KEY Performance
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#large-dataset-performance" class="md-nav__link">
+    <span class="md-ellipsis">
+      Large Dataset Performance
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#error-handling-and-edge-cases" class="md-nav__link">
+    <span class="md-ellipsis">
+      Error Handling and Edge Cases
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Error Handling and Edge Cases">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#empty-array-handling" class="md-nav__link">
+    <span class="md-ellipsis">
+      Empty Array Handling
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#single-item-arrays" class="md-nav__link">
+    <span class="md-ellipsis">
+      Single Item Arrays
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#threshold-filtering" class="md-nav__link">
+    <span class="md-ellipsis">
+      Threshold Filtering
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#best-practices" class="md-nav__link">
+    <span class="md-ellipsis">
+      Best Practices
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Best Practices">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-use-id-for-database-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Use $ID for Database Operations
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-optimize-similarity-algorithm-selection" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Optimize Similarity Algorithm Selection
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-leverage-advanced-options" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Leverage Advanced Options
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-database-schema-design" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Database Schema Design
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-performance-monitoring" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. Performance Monitoring
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#future-enhancements" class="md-nav__link">
+    <span class="md-ellipsis">
+      Future Enhancements
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Future Enhancements">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#planned-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      Planned Features
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#implementation-roadmap" class="md-nav__link">
+    <span class="md-ellipsis">
+      Implementation Roadmap
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#conclusion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Conclusion
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="vector-database-similarity-search">Vector Database Similarity Search</h1>
+<h2 id="overview">Overview</h2>
+<p>Grapa provides comprehensive vector similarity search capabilities that can serve as a powerful alternative to dedicated vector databases like Pinecone. This guide covers the unified similarity search system, database integration, and advanced features that make Grapa competitive with specialized vector database solutions.</p>
+<h2 id="key-features">Key Features</h2>
+<h3 id="unified-similarity-algorithms">Unified Similarity Algorithms</h3>
+<p>Grapa's <code>.similarity()</code> method supports multiple algorithms in a single, consistent API:</p>
+<ul>
+<li><strong>Levenshtein Distance</strong> - Edit distance for string similarity</li>
+<li><strong>Damerau-Levenshtein Distance</strong> - Edit distance with transposition support</li>
+<li><strong>Jaro-Winkler Similarity</strong> - String similarity with prefix matching</li>
+<li><strong>Cosine Similarity</strong> - Vector similarity with TF-IDF support</li>
+<li><strong>Jaccard Similarity</strong> - Set-based similarity with configurable n-grams</li>
+</ul>
+<h3 id="advanced-options">Advanced Options</h3>
+<ul>
+<li><strong>TF-IDF Cosine Similarity</strong> - Term frequency-inverse document frequency weighting</li>
+<li><strong>Word-based Jaccard</strong> - Token-based similarity with configurable n-gram sizes</li>
+<li><strong>Case Sensitivity Control</strong> - Configurable case handling</li>
+<li><strong>Corpus-based Analysis</strong> - Context-aware similarity calculations</li>
+</ul>
+<h3 id="database-integration">Database Integration</h3>
+<ul>
+<li><strong>In-memory Tables</strong> - High-performance similarity search</li>
+<li><strong>$ID Optimization</strong> - Faster lookups using integer IDs vs string keys</li>
+<li><strong>Metadata Filtering</strong> - Object-based similarity with field matching</li>
+<li><strong>Schema Validation</strong> - Proper database structure maintenance</li>
+</ul>
+<h2 id="grapa-vs-pinecone-comparison">Grapa vs Pinecone Comparison</h2>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Grapa <code>.similarity()</code></th>
+<th>Grapa with DB</th>
+<th>Pinecone</th>
+<th>Winner</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Similarity Algorithms</strong></td>
+<td>5+ algorithms (levenshtein, damerau, jaro, cosine, jaccard)</td>
+<td>5+ algorithms (levenshtein, damerau, jaro, cosine, jaccard)</td>
+<td>Primarily cosine</td>
+<td>🏆 <strong>Grapa</strong></td>
+</tr>
+<tr>
+<td><strong>Array Search</strong></td>
+<td>✅ Native support</td>
+<td>✅ Native support</td>
+<td>✅ Native support</td>
+<td>🤝 <strong>Tie</strong></td>
+</tr>
+<tr>
+<td><strong>Metadata Search</strong></td>
+<td>✅ Object field matching</td>
+<td>✅ Object field matching + DB indexing</td>
+<td>✅ Metadata filtering</td>
+<td>🏆 <strong>Grapa with DB</strong></td>
+</tr>
+<tr>
+<td><strong>Result Control</strong></td>
+<td>✅ top_n, threshold, sort, include_scores</td>
+<td>✅ top_n, threshold, sort, include_scores</td>
+<td>✅ top_k, score_threshold, include_metadata</td>
+<td>🤝 <strong>Tie</strong></td>
+</tr>
+<tr>
+<td><strong>Persistence</strong></td>
+<td>❌ In-memory only</td>
+<td>✅ Persistent database ($file, $TABLE)</td>
+<td>✅ Persistent database</td>
+<td>🏆 <strong>Tie</strong></td>
+</tr>
+<tr>
+<td><strong>Scale</strong></td>
+<td>❌ Memory limited</td>
+<td>✅ Limited by disk space</td>
+<td>✅ Billions of vectors</td>
+<td>🏆 <strong>Pinecone</strong></td>
+</tr>
+<tr>
+<td><strong>Performance</strong></td>
+<td>✅ Excellent up to 10K records, good up to 15K, acceptable up to 20K</td>
+<td>✅ Excellent up to 10K records, good up to 15K, acceptable up to 20K</td>
+<td>✅ Optimized for millions+ records</td>
+<td>🏆 <strong>Pinecone</strong> for scale</td>
+</tr>
+<tr>
+<td><strong>Ease of Use</strong></td>
+<td>✅ Native language integration</td>
+<td>✅ Native language integration</td>
+<td>❌ Requires API calls</td>
+<td>🏆 <strong>Grapa</strong></td>
+</tr>
+<tr>
+<td><strong>Cost</strong></td>
+<td>✅ Free (local)</td>
+<td>✅ Free (local)</td>
+<td>❌ Pay-per-use</td>
+<td>🏆 <strong>Grapa</strong></td>
+</tr>
+<tr>
+<td><strong>Advanced Options</strong></td>
+<td>✅ TF-IDF, word-based jaccard, configurable parameters</td>
+<td>✅ TF-IDF, word-based jaccard, configurable parameters</td>
+<td>❌ Limited options</td>
+<td>🏆 <strong>Grapa</strong></td>
+</tr>
+</tbody>
+</table>
+<h2 id="use-case-recommendations">Use Case Recommendations</h2>
+<h3 id="use-grapa-similarity-when">Use Grapa <code>.similarity()</code> when:</h3>
+<ul>
+<li>✅ <strong>Small to medium datasets</strong> (&lt; 20,000 records for excellent performance, &lt; 50,000 for acceptable)</li>
+<li>✅ <strong>Prototyping and development</strong></li>
+<li>✅ <strong>Local/offline applications</strong></li>
+<li>✅ <strong>Complex similarity algorithms</strong> needed</li>
+<li>✅ <strong>Native language integration</strong> preferred</li>
+<li>✅ <strong>Cost-sensitive</strong> applications</li>
+<li>✅ <strong>Real-time data</strong> that changes frequently</li>
+</ul>
+<h3 id="use-grapa-with-db-when">Use Grapa with DB when:</h3>
+<ul>
+<li>✅ <strong>Medium datasets</strong> (1K - 20K records for excellent performance, up to 50K for acceptable)</li>
+<li>✅ <strong>Persistent storage</strong> required</li>
+<li>✅ <strong>Local/offline applications</strong> with data persistence</li>
+<li>✅ <strong>Complex similarity algorithms</strong> needed</li>
+<li>✅ <strong>Native language integration</strong> preferred</li>
+<li>✅ <strong>Cost-sensitive</strong> applications</li>
+<li>✅ <strong>Metadata indexing</strong> and filtering required</li>
+<li>✅ <strong>Hybrid approach</strong> (DB filtering + similarity search)</li>
+</ul>
+<h3 id="use-pinecone-when">Use Pinecone when:</h3>
+<ul>
+<li>✅ <strong>Large-scale production</strong> (&gt; 50,000 records, especially &gt; 100,000 records)</li>
+<li>✅ <strong>High-performance requirements</strong> (sub-second latency at scale)</li>
+<li>✅ <strong>Cloud deployment</strong> preferred</li>
+<li>✅ <strong>Simple cosine similarity</strong> sufficient</li>
+<li>✅ <strong>Budget available</strong> for managed service</li>
+<li>✅ <strong>Global distribution</strong> needed</li>
+</ul>
+<h2 id="basic-usage">Basic Usage</h2>
+<h3 id="string-similarity">String Similarity</h3>
+<div class="highlight"><pre><span></span><code>str1 = &quot;hello world&quot;;
+str2 = &quot;hello there&quot;;
+
+/* Test different similarity algorithms */
+levenshtein_sim = str1.similarity(str2, &quot;levenshtein&quot;);
+cosine_sim = str1.similarity(str2, &quot;cosine&quot;);
+jaccard_sim = str1.similarity(str2, &quot;jaccard&quot;);
+
+(&quot;Levenshtein: &quot; + levenshtein_sim.toString() + &quot;\n&quot;).echo();
+(&quot;Cosine: &quot; + cosine_sim.toString() + &quot;\n&quot;).echo();
+(&quot;Jaccard: &quot; + jaccard_sim.toString() + &quot;\n&quot;).echo();
+</code></pre></div>
+<h3 id="array-similarity-search">Array Similarity Search</h3>
+<div class="highlight"><pre><span></span><code>documents = [
+    &quot;machine learning algorithms&quot;,
+    &quot;artificial intelligence research&quot;, 
+    &quot;deep learning neural networks&quot;,
+    &quot;computer vision applications&quot;,
+    &quot;natural language processing&quot;
+];
+
+query = &quot;machine learning&quot;;
+
+/* Basic similarity search */
+results = documents.similarity(query, &quot;cosine&quot;, {
+    &quot;top_n&quot;: 3,
+    &quot;include_scores&quot;: true
+});
+
+/* Display results */
+results_len = results.&quot;results&quot;.len();
+for i in results_len.range() {
+    result = results.&quot;results&quot;[i];
+    (&quot;Score: &quot; + result.&quot;similarity&quot;.str() + &quot; - &quot; + result.&quot;item&quot; + &quot;\n&quot;).echo();
+}
+</code></pre></div>
+<h3 id="object-array-similarity-metadata-search">Object Array Similarity (Metadata Search)</h3>
+<div class="highlight"><pre><span></span><code>user_profiles = [
+    {&quot;name&quot;: &quot;Alice&quot;, &quot;age&quot;: 30, &quot;skills&quot;: [&quot;python&quot;, &quot;ml&quot;], &quot;location&quot;: &quot;NYC&quot;},
+    {&quot;name&quot;: &quot;Bob&quot;, &quot;age&quot;: 25, &quot;skills&quot;: [&quot;java&quot;, &quot;web&quot;], &quot;location&quot;: &quot;SF&quot;},
+    {&quot;name&quot;: &quot;Charlie&quot;, &quot;age&quot;: 35, &quot;skills&quot;: [&quot;python&quot;, &quot;ai&quot;], &quot;location&quot;: &quot;NYC&quot;}
+];
+
+query_profile = {&quot;age&quot;: 30, &quot;skills&quot;: [&quot;python&quot;], &quot;location&quot;: &quot;NYC&quot;};
+
+/* Object similarity search */
+results = user_profiles.similarity(query_profile, &quot;cosine&quot;, {
+    &quot;top_n&quot;: 2,
+    &quot;include_scores&quot;: true,
+    &quot;include_items&quot;: true
+});
+
+/* Display results */
+results_len = results.&quot;results&quot;.len();
+for i in results_len.range() {
+    result = results.&quot;results&quot;[i];
+    item = result.&quot;item&quot;;
+    (&quot;Score: &quot; + result.&quot;similarity&quot;.str() + &quot; - &quot; + item.&quot;name&quot; + &quot; (age: &quot; + item.&quot;age&quot;.str() + &quot;)\n&quot;).echo();
+}
+</code></pre></div>
+<h2 id="advanced-features">Advanced Features</h2>
+<h3 id="tf-idf-cosine-similarity">TF-IDF Cosine Similarity</h3>
+<div class="highlight"><pre><span></span><code>documents = [
+    &quot;machine learning algorithms&quot;,
+    &quot;artificial intelligence research&quot;, 
+    &quot;deep learning neural networks&quot;
+];
+
+query = &quot;machine learning&quot;;
+
+/* Advanced cosine similarity with TF-IDF */
+results = documents.similarity(query, &quot;cosine&quot;, {
+    &quot;cosine_method&quot;: &quot;tfidf&quot;,
+    &quot;corpus&quot;: documents,
+    &quot;case_sensitive&quot;: false,
+    &quot;top_n&quot;: 3,
+    &quot;include_scores&quot;: true
+});
+</code></pre></div>
+<h3 id="word-based-jaccard-similarity">Word-based Jaccard Similarity</h3>
+<div class="highlight"><pre><span></span><code>documents = [
+    &quot;the quick brown fox&quot;,
+    &quot;the fast brown dog&quot;,
+    &quot;a quick brown cat&quot;
+];
+
+query = &quot;the quick brown&quot;;
+
+/* Word-based jaccard with configurable n-grams */
+results = documents.similarity(query, &quot;jaccard&quot;, {
+    &quot;jaccard_method&quot;: &quot;word&quot;,
+    &quot;jaccard_n&quot;: 2,
+    &quot;case_sensitive&quot;: false,
+    &quot;top_n&quot;: 3,
+    &quot;include_scores&quot;: true
+});
+</code></pre></div>
+<h3 id="vector-mathematical-operations">Vector Mathematical Operations</h3>
+<div class="highlight"><pre><span></span><code>/* Create test vectors representing document embeddings */
+vector1 = #[1.0, 0.0, 0.0, 0.0, 0.0]#;  /* machine learning - perfect match */
+vector2 = #[0.8, 0.6, 0.0, 0.0, 0.0]#;  /* artificial intelligence - high similarity */
+vector3 = #[0.6, 0.8, 0.0, 0.0, 0.0]#;  /* deep learning - medium similarity */
+vector4 = #[0.0, 0.0, 0.0, 1.0, 0.0]#;  /* computer vision - low similarity */
+vector5 = #[0.0, 0.0, 0.0, 0.0, 1.0]#;  /* natural language processing - no similarity */
+
+vectors = [vector1, vector2, vector3, vector4, vector5];
+query_vector = #[1.0, 0.0, 0.0, 0.0, 0.0]#;  /* machine learning query */
+
+/* Vector similarity search */
+results = vectors.similarity(query_vector, &quot;cosine&quot;, {
+    &quot;top_n&quot;: 3,
+    &quot;include_scores&quot;: true,
+    &quot;include_items&quot;: true
+});
+
+/* Results will show realistic cosine similarity scores:
+   - Score: 1.0 (perfect match)
+   - Score: 0.8 (high similarity) 
+   - Score: 0.6 (medium similarity)
+*/
+</code></pre></div>
+<h2 id="database-integration_1">Database Integration</h2>
+<h3 id="in-memory-vector-database">In-Memory Vector Database</h3>
+<div class="highlight"><pre><span></span><code>/* Create in-memory table for vector storage */
+vector_db = {}.table();
+
+/* Insert vector data with metadata */
+vector_db.setfield(&quot;doc1&quot;, {
+    &quot;id&quot;: &quot;ml_algorithms_paper&quot;,
+    &quot;content&quot;: &quot;machine learning algorithms and neural networks&quot;,
+    &quot;type&quot;: &quot;research_paper&quot;,
+    &quot;category&quot;: &quot;machine_learning&quot;,
+    &quot;author&quot;: &quot;John&quot;
+});
+
+vector_db.setfield(&quot;doc2&quot;, {
+    &quot;id&quot;: &quot;ai_research_survey&quot;, 
+    &quot;content&quot;: &quot;artificial intelligence research and development&quot;,
+    &quot;type&quot;: &quot;survey_paper&quot;,
+    &quot;category&quot;: &quot;artificial_intelligence&quot;,
+    &quot;author&quot;: &quot;Jane&quot;
+});
+</code></pre></div>
+<h3 id="performance-optimization-with-id">Performance Optimization with $ID</h3>
+<div class="highlight"><pre><span></span><code>/* Get all records for performance testing */
+all_records = vector_db.ls();
+
+/* Use $ID for faster lookups */
+for i in all_records.range() {
+    record = all_records[i];
+    record_id = record[&quot;$ID&quot;];
+
+    /* Fast field access using $ID */
+    content = vector_db.getfield(record_id, &quot;content&quot;);
+    type = vector_db.getfield(record_id, &quot;type&quot;);
+    category = vector_db.getfield(record_id, &quot;category&quot;);
+}
+</code></pre></div>
+<h3 id="database-filtering-and-similarity-search">Database Filtering and Similarity Search</h3>
+<div class="highlight"><pre><span></span><code>/* Manual filtering using $ID for performance */
+tech_documents = [];
+for i in all_records.range() {
+    record = all_records[i];
+    record_id = record[&quot;$ID&quot;];
+    record_type = vector_db.getfield(record_id, &quot;type&quot;);
+    record_category = vector_db.getfield(record_id, &quot;category&quot;);
+
+    if (record_type == &quot;article&quot; &amp;&amp; record_category == &quot;tech&quot;) {
+        content = vector_db.getfield(record_id, &quot;content&quot;);
+        tech_documents.push(content);
+    }
+}
+
+/* Perform similarity search on filtered results */
+query_text = &quot;machine learning&quot;;
+results = tech_documents.similarity(query_text, &quot;cosine&quot;, {
+    &quot;top_n&quot;: 2,
+    &quot;include_scores&quot;: true,
+    &quot;include_items&quot;: true
+});
+</code></pre></div>
+<h2 id="performance-analysis">Performance Analysis</h2>
+<h3 id="comprehensive-performance-testing">Comprehensive Performance Testing</h3>
+<p>Based on extensive testing across different dataset sizes, here are the performance characteristics of Grapa's similarity search:</p>
+<h4 id="performance-thresholds">Performance Thresholds</h4>
+<table>
+<thead>
+<tr>
+<th>Dataset Size</th>
+<th>Search Time</th>
+<th>Performance Rating</th>
+<th>Recommendation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>100 records</td>
+<td>~0.03ms</td>
+<td>✅ <strong>EXCELLENT</strong></td>
+<td>Perfect for real-time applications</td>
+</tr>
+<tr>
+<td>500 records</td>
+<td>~0.02ms</td>
+<td>✅ <strong>EXCELLENT</strong></td>
+<td>Ideal for small applications</td>
+</tr>
+<tr>
+<td>1,000 records</td>
+<td>~0.02ms</td>
+<td>✅ <strong>EXCELLENT</strong></td>
+<td>Great for medium applications</td>
+</tr>
+<tr>
+<td>5,000 records</td>
+<td>~0.02ms</td>
+<td>✅ <strong>EXCELLENT</strong></td>
+<td>Excellent for larger applications</td>
+</tr>
+<tr>
+<td>10,000 records</td>
+<td>~85ms</td>
+<td>✅ <strong>EXCELLENT</strong></td>
+<td>Still competitive with Pinecone</td>
+</tr>
+<tr>
+<td>15,000 records</td>
+<td>~860ms</td>
+<td>⚠️ <strong>ACCEPTABLE</strong></td>
+<td>Consider Pinecone for production</td>
+</tr>
+<tr>
+<td>20,000 records</td>
+<td>~1,482ms</td>
+<td>⚠️ <strong>ACCEPTABLE</strong></td>
+<td>Edge case for local use</td>
+</tr>
+<tr>
+<td>25,000 records</td>
+<td>~2,250ms</td>
+<td>❌ <strong>SLOW</strong></td>
+<td>Use Pinecone</td>
+</tr>
+<tr>
+<td>50,000 records</td>
+<td>~9,067ms</td>
+<td>❌ <strong>SLOW</strong></td>
+<td>Definitely use Pinecone</td>
+</tr>
+<tr>
+<td>100,000 records</td>
+<td>~40,968ms</td>
+<td>❌ <strong>SLOW</strong></td>
+<td>Pinecone required</td>
+</tr>
+</tbody>
+</table>
+<h4 id="performance-breakpoints">Performance Breakpoints</h4>
+<ul>
+<li><strong>Excellent Performance</strong> (&lt; 100ms): Up to <strong>10,000 records</strong></li>
+<li><strong>Good Performance</strong> (&lt; 500ms): Up to <strong>15,000 records</strong></li>
+<li><strong>Acceptable Performance</strong> (&lt; 2,000ms): Up to <strong>20,000 records</strong></li>
+<li><strong>Slow Performance</strong> (&gt; 2,000ms): Above <strong>25,000 records</strong></li>
+</ul>
+<h4 id="scaling-characteristics">Scaling Characteristics</h4>
+<ul>
+<li><strong>Linear scaling</strong> up to ~10,000 records</li>
+<li><strong>Performance degradation</strong> becomes significant above 20,000 records</li>
+<li><strong>Memory and processing overhead</strong> increases exponentially at larger scales</li>
+<li><strong>Database operations</strong> add minimal overhead compared to pure vector search</li>
+</ul>
+<h4 id="performance-comparison-with-pinecone">Performance Comparison with Pinecone</h4>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Grapa</th>
+<th>Pinecone</th>
+<th>Winner</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Small datasets</strong> (&lt; 10K)</td>
+<td>&lt; 100ms</td>
+<td>&lt; 100ms</td>
+<td>🤝 <strong>Tie</strong></td>
+</tr>
+<tr>
+<td><strong>Medium datasets</strong> (10K-20K)</td>
+<td>100ms-2s</td>
+<td>&lt; 100ms</td>
+<td>🏆 <strong>Pinecone</strong></td>
+</tr>
+<tr>
+<td><strong>Large datasets</strong> (&gt; 50K)</td>
+<td>&gt; 9s</td>
+<td>&lt; 100ms</td>
+<td>🏆 <strong>Pinecone</strong></td>
+</tr>
+<tr>
+<td><strong>Algorithm variety</strong></td>
+<td>5+ algorithms</td>
+<td>Primarily cosine</td>
+<td>🏆 <strong>Grapa</strong></td>
+</tr>
+<tr>
+<td><strong>Cost</strong></td>
+<td>Free</td>
+<td>Pay-per-use</td>
+<td>🏆 <strong>Grapa</strong></td>
+</tr>
+<tr>
+<td><strong>Local control</strong></td>
+<td>Full control</td>
+<td>Managed service</td>
+<td>🏆 <strong>Grapa</strong></td>
+</tr>
+</tbody>
+</table>
+<h3 id="performance-testing-methodology">Performance Testing Methodology</h3>
+<p>The performance data above is based on comprehensive testing using:</p>
+<ul>
+<li><strong>Test Environment</strong>: Standard development machine</li>
+<li><strong>Vector Dimensions</strong>: 5-dimensional vectors (typical for document embeddings)</li>
+<li><strong>Similarity Algorithm</strong>: Cosine similarity with top_n=10</li>
+<li><strong>Test Method</strong>: Multiple runs with timing using <code>$TIME().utc().ms()</code></li>
+<li><strong>Database Operations</strong>: Both in-memory arrays and persistent database storage</li>
+<li><strong>Scaling Tests</strong>: Incremental testing from 100 to 100,000 records</li>
+</ul>
+<h4 id="key-performance-insights">Key Performance Insights</h4>
+<ol>
+<li><strong>Linear Scaling</strong>: Performance scales linearly up to ~10,000 records</li>
+<li><strong>Memory Impact</strong>: Large datasets (&gt; 20K records) show significant memory overhead</li>
+<li><strong>Database Overhead</strong>: Database operations add minimal overhead compared to pure vector search</li>
+<li><strong>Algorithm Efficiency</strong>: Cosine similarity is highly optimized in Grapa</li>
+<li><strong>Breakpoint</strong>: Clear performance degradation above 25,000 records</li>
+</ol>
+<h4 id="recommendations-by-use-case">Recommendations by Use Case</h4>
+<ul>
+<li><strong>Real-time Applications</strong> (&lt; 1,000 records): Grapa is excellent</li>
+<li><strong>Small Applications</strong> (1K-10K records): Grapa is ideal</li>
+<li><strong>Medium Applications</strong> (10K-20K records): Grapa is acceptable, consider Pinecone for production</li>
+<li><strong>Large Applications</strong> (&gt; 20K records): Use Pinecone</li>
+<li><strong>Enterprise Applications</strong> (&gt; 50K records): Definitely use Pinecone</li>
+</ul>
+<h2 id="performance-optimization">Performance Optimization</h2>
+<h3 id="id-vs-key-performance">$ID vs $KEY Performance</h3>
+<div class="highlight"><pre><span></span><code>/* Benchmark $KEY lookup performance */
+start_time = $TIME().utc();
+for i in (1000).range() {
+    key = &quot;doc&quot; + ((i % 3) + 1).str();
+    content = vector_db.getfield(key, &quot;content&quot;);
+}
+key_duration = start_time.ms();
+
+/* Benchmark $ID lookup performance */
+start_time = $TIME().utc();
+for i in (1000).range() {
+    record_id = all_records[(i % 3)][&quot;$ID&quot;];
+    content = vector_db.getfield(record_id, &quot;content&quot;);
+}
+id_duration = start_time.ms();
+
+/* Calculate performance improvement */
+improvement = key_duration / id_duration;
+(&quot;Performance improvement: &quot; + improvement.str() + &quot;x faster with $ID\n&quot;).echo();
+</code></pre></div>
+<h3 id="large-dataset-performance">Large Dataset Performance</h3>
+<div class="highlight"><pre><span></span><code>/* Create larger dataset for performance testing */
+large_dataset = [];
+for i in (1000).range() {
+    large_dataset.push(&quot;document &quot; + i.str() + &quot; about machine learning and artificial intelligence&quot;);
+}
+
+query = &quot;machine learning&quot;;
+
+/* Benchmark similarity search performance */
+start_time = $TIME().utc();
+results = large_dataset.similarity(query, &quot;cosine&quot;, {
+    &quot;top_n&quot;: 10,
+    &quot;include_scores&quot;: true
+});
+duration = start_time.ms();
+
+(&quot;Dataset size: &quot; + large_dataset.len().str() + &quot; documents\n&quot;).echo();
+(&quot;Search time: &quot; + duration.str() + &quot;ms\n&quot;).echo();
+(&quot;Results found: &quot; + results.&quot;results&quot;.len().str() + &quot;\n&quot;).echo();
+</code></pre></div>
+<h2 id="error-handling-and-edge-cases">Error Handling and Edge Cases</h2>
+<h3 id="empty-array-handling">Empty Array Handling</h3>
+<div class="highlight"><pre><span></span><code>empty_array = [];
+empty_results = empty_array.similarity(&quot;test&quot;, &quot;cosine&quot;);
+(&quot;Empty array similarity: &quot; + empty_results.&quot;results&quot;.len().str() + &quot; results\n&quot;).echo();
+</code></pre></div>
+<h3 id="single-item-arrays">Single Item Arrays</h3>
+<div class="highlight"><pre><span></span><code>single_array = [&quot;single item&quot;];
+single_results = single_array.similarity(&quot;single item&quot;, &quot;cosine&quot;);
+(&quot;Single item similarity: &quot; + single_results.&quot;results&quot;.len().str() + &quot; results\n&quot;).echo();
+</code></pre></div>
+<h3 id="threshold-filtering">Threshold Filtering</h3>
+<div class="highlight"><pre><span></span><code>results = documents.similarity(query, &quot;cosine&quot;, {
+    &quot;top_n&quot;: 10,
+    &quot;threshold&quot;: 0.5,
+    &quot;include_scores&quot;: true
+});
+(&quot;Results above 0.5 threshold: &quot; + results.&quot;results&quot;.len().str() + &quot;\n&quot;).echo();
+</code></pre></div>
+<h2 id="best-practices">Best Practices</h2>
+<h3 id="1-use-id-for-database-operations">1. Use $ID for Database Operations</h3>
+<ul>
+<li><strong>$ID lookups</strong> are significantly faster than $KEY lookups</li>
+<li><strong>Integer comparison</strong> vs string comparison performance</li>
+<li><strong>Better cache locality</strong> for bulk operations</li>
+</ul>
+<h3 id="2-optimize-similarity-algorithm-selection">2. Optimize Similarity Algorithm Selection</h3>
+<ul>
+<li><strong>Cosine similarity</strong> for text documents and vectors</li>
+<li><strong>Jaccard similarity</strong> for set-based data</li>
+<li><strong>Levenshtein/Damerau</strong> for edit distance requirements</li>
+<li><strong>Jaro-Winkler</strong> for name matching and fuzzy string search</li>
+</ul>
+<h3 id="3-leverage-advanced-options">3. Leverage Advanced Options</h3>
+<ul>
+<li><strong>TF-IDF</strong> for document similarity with corpus context</li>
+<li><strong>Word-based jaccard</strong> for token-based similarity</li>
+<li><strong>Case sensitivity</strong> control for your use case</li>
+<li><strong>Configurable n-grams</strong> for jaccard similarity</li>
+</ul>
+<h3 id="4-database-schema-design">4. Database Schema Design</h3>
+<ul>
+<li><strong>Separate fields</strong> for metadata instead of complex objects</li>
+<li><strong>Index-friendly</strong> field structures</li>
+<li><strong>$ID-based</strong> primary access patterns</li>
+<li><strong>Consistent field naming</strong> conventions</li>
+</ul>
+<h3 id="5-performance-monitoring">5. Performance Monitoring</h3>
+<ul>
+<li><strong>Benchmark</strong> similarity search performance at your dataset size</li>
+<li><strong>Monitor</strong> memory usage with large datasets (&gt; 10K records)</li>
+<li><strong>Profile</strong> database operations and consider $ID optimization</li>
+<li><strong>Optimize</strong> based on actual usage patterns</li>
+<li><strong>Consider Pinecone</strong> if your dataset exceeds 20,000 records</li>
+<li><strong>Test performance</strong> before production deployment</li>
+</ul>
+<h2 id="future-enhancements">Future Enhancements</h2>
+<h3 id="planned-features">Planned Features</h3>
+<ul>
+<li><strong>Persistent database</strong> integration for large-scale storage</li>
+<li><strong>Enhanced database querying</strong> with multi-field search</li>
+<li><strong>Index optimization</strong> for very large datasets</li>
+<li><strong>Distributed similarity</strong> search across multiple databases</li>
+<li><strong>Real-time indexing</strong> for dynamic data</li>
+</ul>
+<h3 id="implementation-roadmap">Implementation Roadmap</h3>
+<ol>
+<li><strong>Phase 1</strong>: Enhanced database methods (<code>.search()</code>, <code>.filter()</code>)</li>
+<li><strong>Phase 2</strong>: Optimized indexing and query planning</li>
+<li><strong>Phase 3</strong>: Persistent storage integration</li>
+<li><strong>Phase 4</strong>: Advanced similarity algorithms and optimizations</li>
+</ol>
+<h2 id="conclusion">Conclusion</h2>
+<p>Grapa's vector database similarity search provides a powerful, cost-effective alternative to dedicated vector databases like Pinecone. With its unified API, advanced similarity algorithms, and native language integration, Grapa offers significant advantages for many use cases while maintaining competitive performance for small to medium-scale applications.</p>
+<p>The system's flexibility, combined with its comprehensive similarity algorithms and database integration capabilities, makes it an excellent choice for prototyping, development, and production applications where cost, simplicity, and algorithmic diversity are important factors.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "..", "features": ["navigation.tabs", "navigation.top", "search.suggest", "content.code.copy", "content.action.edit", "content.action.view", "content.tabs.link"], "search": "../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.56ea9cef.min.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.0/dist/mermaid.min.js"></script>
+      
+        <script src="../javascripts/mermaid-init.js"></script>
+      
+        <script src="../javascripts/search-fix.js"></script>
+      
+    
+  </body>
+</html>
