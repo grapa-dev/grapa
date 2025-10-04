@@ -22129,23 +22129,55 @@ GrapaRuleEvent* calculate_array_string_similarity(GrapaScriptExec* vScriptExec, 
 	return result;
 }
 
+GrapaError get_table_pointer_similarity(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* datasource, u64 pId, GrapaRuleEvent* actual_item)
+{
+	if (actual_item == NULL) return -1;
+	GrapaCHAR field, value;
+	GrapaError err = datasource->vDatabase->FieldGet(pId, field, value);
+	if (err) return err;
+	actual_item->mName.FROM(field);
+	actual_item->mValue.FROM(value);
+	if (actual_item->mValue.mToken == GrapaTokenType::LIST || actual_item->mValue.mToken == GrapaTokenType::TUPLE || actual_item->mValue.mToken == GrapaTokenType::GOBJ || actual_item->mValue.mToken == GrapaTokenType::ERR || actual_item->mValue.mToken == GrapaTokenType::XML || actual_item->mValue.mToken == GrapaTokenType::EL || actual_item->mValue.mToken == GrapaTokenType::TAG || actual_item->mValue.mToken == GrapaTokenType::OP || actual_item->mValue.mToken == GrapaTokenType::CODE || actual_item->mValue.mToken == GrapaTokenType::ERR)
+	{
+		actual_item->vQueue = new GrapaRuleQueue();
+		actual_item->vClass = ((GrapaRuleQueue*)actual_item->vQueue)->FROM(vScriptExec->vScriptState, pNameSpace, actual_item->mValue);
+		if (actual_item->mValue.mLength == 0)
+			actual_item->mNull = true;
+		actual_item->mValue.SetLength(0);
+		actual_item->mValue.SetSize(0);
+		return 0;
+	}
+	else if (actual_item->mValue.mToken == GrapaTokenType::VECTOR)
+	{
+		if (actual_item->vVector == NULL)
+			actual_item->vVector = new GrapaVector();
+		actual_item->vVector->FromBytes(vScriptExec, pNameSpace, actual_item->mValue);
+		if (actual_item->mValue.mLength == 0)
+			actual_item->mNull = true;
+		actual_item->mValue.SetLength(0);
+		actual_item->mValue.SetSize(0);
+		return 0;
+	}
+	else if (actual_item->mValue.mToken == GrapaTokenType::STR)
+	{
+		return 0;
+	}
+	return -1;
+}
+
 // Helper function to calculate pointer-based similarity (new in-memory approach)
 GrapaRuleEvent* calculate_pointer_similarity(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* index_list, GrapaRuleEvent* query, GrapaCHAR& method, GrapaRuleEvent* datasource, int top_n, double threshold, std::string sort, bool include_scores, bool include_items)
 {
 	GrapaRuleEvent* result = NULL;
+	if (datasource == NULL)
+		return NULL;
 	
-	// Get datasource items
-	std::vector<GrapaRuleEvent*> datasource_items;
-	if (datasource && datasource->mValue.mToken == GrapaTokenType::LIST && datasource->vQueue)
-	{
-		GrapaRuleEvent* item = datasource->vQueue->Head();
-		while (item)
-		{
-			datasource_items.push_back(item);
-			item = item->Next();
-		}
-	}
-	
+	if (datasource->mValue.mToken == GrapaTokenType::LIST && datasource->vQueue == NULL)
+		return NULL;
+
+	if (datasource->mValue.mToken == GrapaTokenType::TABLE && datasource->vDatabase == NULL)
+		return NULL;
+
 	// Get index list
 	std::vector<int> indexes;
 	if (index_list->vQueue)
@@ -22169,9 +22201,23 @@ GrapaRuleEvent* calculate_pointer_similarity(GrapaScriptExec* vScriptExec, Grapa
 		int index = indexes[i];
 		
 		// Check if index is valid
-		if (index >= 0 && index < (int)datasource_items.size())
+		if (index >= 0) // && index < (int)datasource->vQueue->mCount)
 		{
-			GrapaRuleEvent* actual_item = datasource_items[index];
+			GrapaRuleEvent* actual_item = NULL;
+			GrapaRuleEvent table_item;
+
+			if (datasource->mValue.mToken == GrapaTokenType::LIST)
+				actual_item = datasource->vQueue->Head(index);
+			else if ((datasource->mValue.mToken == GrapaTokenType::OBJ && datasource->vClass->mName.Cmp("$file") == 0) || datasource->mValue.mToken == GrapaTokenType::TABLE)
+			{
+				GrapaError err = get_table_pointer_similarity(vScriptExec, pNameSpace, datasource, index, &table_item);
+				if (err)
+					continue;
+				actual_item = &table_item;
+			}
+
+			if (actual_item == NULL)
+				continue;
 			
 			// Calculate similarity based on query type
 			double similarity = 0.0;
@@ -22259,9 +22305,27 @@ GrapaRuleEvent* calculate_pointer_similarity(GrapaScriptExec* vScriptExec, Grapa
 		if (include_items)
 		{
 			// Add the actual item from datasource
-			GrapaRuleEvent* item_field = vScriptExec->CopyItem(datasource_items[sim.first]);
-			item_field->mName.FROM("item");
-			result_item->vQueue->PushTail(item_field);
+			if (datasource->mValue.mToken == GrapaTokenType::LIST)
+			{
+				GrapaRuleEvent* item_field = vScriptExec->CopyItem(datasource->vQueue->Head(sim.first));
+				item_field->mName.FROM("item");
+				result_item->vQueue->PushTail(item_field);
+			}
+			else if ((datasource->mValue.mToken == GrapaTokenType::OBJ && datasource->vClass->mName.Cmp("$file") == 0) || datasource->mValue.mToken == GrapaTokenType::TABLE)
+			{
+				GrapaRuleEvent* item_field = new GrapaRuleEvent(0, GrapaCHAR(), GrapaCHAR());
+				GrapaError err = get_table_pointer_similarity(vScriptExec, pNameSpace, datasource, sim.first, item_field);
+				if (err)
+				{
+					item_field->CLEAR();
+					delete item_field;
+				}
+				else
+				{
+					item_field->mName.FROM("item");
+					result_item->vQueue->PushTail(item_field);
+				}
+			}
 		}
 		
 		results_array->vQueue->PushTail(result_item);
@@ -22286,9 +22350,27 @@ GrapaRuleEvent* calculate_pointer_similarity(GrapaScriptExec* vScriptExec, Grapa
 		// Add best_match if items are included
 		if (include_items)
 		{
-			GrapaRuleEvent* best_match_key = vScriptExec->CopyItem(datasource_items[best_index]);
-			best_match_key->mName.FROM("best_match");
-			result->vQueue->PushTail(best_match_key);
+			if (datasource->mValue.mToken == GrapaTokenType::LIST)
+			{
+				GrapaRuleEvent* best_match_key = vScriptExec->CopyItem(datasource->vQueue->Head(best_index));
+				best_match_key->mName.FROM("best_match");
+				result->vQueue->PushTail(best_match_key);
+			}
+			else if ((datasource->mValue.mToken == GrapaTokenType::OBJ && datasource->vClass->mName.Cmp("$file") == 0) || datasource->mValue.mToken == GrapaTokenType::TABLE)
+			{
+				GrapaRuleEvent* best_match_key = new GrapaRuleEvent(0, GrapaCHAR(), GrapaCHAR());
+				GrapaError err = get_table_pointer_similarity(vScriptExec, pNameSpace, datasource, best_index, best_match_key);
+				if (err)
+				{
+					best_match_key->CLEAR();
+					delete best_match_key;
+				}
+				else
+				{
+					best_match_key->mName.FROM("best_match");
+					result->vQueue->PushTail(best_match_key);
+				}
+			}
 		}
 	}
 	
@@ -22510,7 +22592,8 @@ GrapaRuleEvent* GrapaLibraryRuleSimilarityEvent::Run(GrapaScriptExec* vScriptExe
 			{
 				// Store the datasource (in-memory array) for pointer-based similarity
 				while(params_event && params_event->mValue.mToken == GrapaTokenType::PTR) params_event = params_event->vRulePointer;
-				if (params_event && params_event->mValue.mToken == GrapaTokenType::LIST)
+				if ((params_event && params_event->mValue.mToken == GrapaTokenType::LIST) ||
+					((params_event->mValue.mToken == GrapaTokenType::OBJ && params_event->vClass->mName.Cmp("$file") == 0) || params_event->mValue.mToken == GrapaTokenType::TABLE))
 				{
 					// Create a new GrapaRuleEvent to represent the list properly
 					datasource = params_event;
