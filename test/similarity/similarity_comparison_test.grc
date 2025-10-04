@@ -1,0 +1,223 @@
+/* Similarity Performance Comparison Test */
+/* Compares vector similarity vs metadata similarity performance */
+
+("=== Similarity Performance Comparison Test ===\n").echo();
+
+/* Test sizes for comparison */
+test_sizes = [1000, 5000, 10000, 15000, 20000];
+pinecone_threshold = 100;  /* Pinecone typically < 100ms */
+acceptable_threshold = 500;  /* Acceptable for local use */
+warning_threshold = 2000;   /* Warning threshold */
+
+("Comparing vector similarity vs metadata similarity performance...\n").echo();
+("Pinecone threshold: < " + pinecone_threshold.str() + "ms\n").echo();
+("Acceptable threshold: < " + acceptable_threshold.str() + "ms\n").echo();
+("\n").echo();
+
+/* Results storage */
+results = [];
+
+for test_size in test_sizes {
+    ("--- Testing " + test_size.str() + " records ---\n").echo();
+    
+    /* Test 1: Vector similarity */
+    ("  Test 1: Vector similarity...\n").echo();
+    start_time = $TIME().utc();
+    
+    vectors = [];
+    for i in test_size.range() {
+        /* Create truly random vectors for realistic similarity testing */
+        vector = [
+            (8.random()) / 255,  /* Random float 0.0-1.0 */
+            (8.random()) / 255,  /* Random float 0.0-1.0 */
+            (8.random()) / 255,  /* Random float 0.0-1.0 */
+            (8.random()) / 255,  /* Random float 0.0-1.0 */
+            (8.random()) / 255   /* Random float 0.0-1.0 */
+        ];
+        vectors += vector;
+    };
+    
+    vector_results = vectors.similarity([0.8, 0.6, 0.4, 0.2, 0.1], "cosine", {
+        "top_n": 10,
+        "include_scores": true,
+        "include_items": true
+    });
+    
+    vector_time = start_time.ms();
+    ("    Vector search: " + vector_time.str() + "ms\n").echo();
+    ("    Results: " + vector_results."results".len().str() + "\n").echo();
+    
+    /* Test 2: Metadata similarity */
+    ("  Test 2: Metadata similarity...\n").echo();
+    start_time = $TIME().utc();
+    
+    /* Create metadata objects with various fields */
+    metadata_objects = [];
+    for i in test_size.range() {
+        /* Create diverse metadata objects */
+        category = ["tech", "science", "business", "health", "education"][i % 5];
+        type = ["article", "blog", "paper", "tutorial", "review"][i % 5];
+        author = ["Alice", "Bob", "Charlie", "Diana", "Eve"][i % 5];
+        status = ["published", "draft", "archived"][i % 3];
+        priority = ["high", "medium", "low"][i % 3];
+        
+        metadata_obj = {
+            "id": "doc_" + i.str(),
+            "category": category,
+            "type": type,
+            "author": author,
+            "status": status,
+            "priority": priority,
+            "views": (i * 10),
+            "rating": (i % 5) + 1,
+            "tags": ["tag" + (i % 10).str(), "category_" + category]
+        };
+        metadata_objects += metadata_obj;
+    };
+    
+    /* Query object with subset of fields */
+    query_metadata = {
+        "category": "tech",
+        "type": "article",
+        "author": "Alice",
+        "status": "published"
+    };
+    
+    metadata_results = metadata_objects.similarity(query_metadata, "object", {
+        "top_n": 10,
+        "include_scores": true,
+        "include_items": true
+    });
+    
+    metadata_time = start_time.ms();
+    ("    Metadata search: " + metadata_time.str() + "ms\n").echo();
+    ("    Results: " + metadata_results."results".len().str() + "\n").echo();
+    
+    /* Performance comparison */
+    if (vector_time < metadata_time) {
+        ratio = metadata_time / vector_time;
+        ("    📊 Vector is " + ratio.str() + "x faster than metadata\n").echo();
+    } else {
+        ratio = vector_time / metadata_time;
+        ("    📊 Metadata is " + ratio.str() + "x faster than vector\n").echo();
+    };
+    
+    /* Store result */
+    result = {
+        "size": test_size,
+        "vector_time": vector_time,
+        "metadata_time": metadata_time,
+        "ratio": metadata_time / vector_time
+    };
+    results += result;
+    
+    ("\n").echo();
+};
+
+/* Summary Report */
+("=== PERFORMANCE COMPARISON SUMMARY ===\n").echo();
+("Size\tVector\tMetadata\tRatio\tWinner\n").echo();
+("----\t------\t--------\t-----\t------\n").echo();
+
+for result in results {
+    size = result."size";
+    vector_time = result."vector_time";
+    metadata_time = result."metadata_time";
+    ratio = result."ratio";
+    
+    /* Determine winner */
+    if (vector_time < metadata_time) {
+        winner = "Vector";
+    } else {
+        winner = "Metadata";
+    };
+    
+    (size.str() + "\t" + vector_time.str() + "ms\t" + metadata_time.str() + "ms\t" + ratio.str() + "x\t" + winner + "\n").echo();
+};
+
+/* Performance Analysis */
+("\n=== PERFORMANCE ANALYSIS ===\n").echo();
+
+if (results.len() > 0) {
+    total_vector_time = 0;
+    total_metadata_time = 0;
+    vector_wins = 0;
+    metadata_wins = 0;
+    
+    for result in results {
+        total_vector_time = total_vector_time + result."vector_time";
+        total_metadata_time = total_metadata_time + result."metadata_time";
+        
+        if (result."vector_time" < result."metadata_time") {
+            vector_wins = vector_wins + 1;
+        } else {
+            metadata_wins = metadata_wins + 1;
+        };
+    };
+    
+    avg_vector_time = total_vector_time / results.len();
+    avg_metadata_time = total_metadata_time / results.len();
+    avg_ratio = avg_metadata_time / avg_vector_time;
+    
+    ("• Average vector similarity time: " + avg_vector_time.str() + "ms\n").echo();
+    ("• Average metadata similarity time: " + avg_metadata_time.str() + "ms\n").echo();
+    ("• Average performance ratio: " + avg_ratio.str() + "x (metadata/vector)\n").echo();
+    ("• Vector similarity wins: " + vector_wins.str() + " tests\n").echo();
+    ("• Metadata similarity wins: " + metadata_wins.str() + " tests\n").echo();
+    
+    if (avg_ratio > 2) {
+        ("• ⚠️  Metadata similarity is significantly slower than vector similarity\n").echo();
+    } else if (avg_ratio > 1.5) {
+        ("• ⚠️  Metadata similarity is moderately slower than vector similarity\n").echo();
+    } else if (avg_ratio > 1.1) {
+        ("• ✅ Metadata similarity is slightly slower than vector similarity\n").echo();
+    } else {
+        ("• ✅ Metadata and vector similarity have similar performance\n").echo();
+    };
+};
+
+/* Scaling Analysis */
+("\n=== SCALING ANALYSIS ===\n").echo();
+if (results.len() >= 2) {
+    first = results[0];
+    last = results[results.len() - 1];
+    
+    size_ratio = last."size" / first."size";
+    vector_time_ratio = last."vector_time" / first."vector_time";
+    metadata_time_ratio = last."metadata_time" / first."metadata_time";
+    
+    ("Size increase: " + size_ratio.str() + "x\n").echo();
+    ("Vector time increase: " + vector_time_ratio.str() + "x\n").echo();
+    ("Metadata time increase: " + metadata_time_ratio.str() + "x\n").echo();
+    
+    if (vector_time_ratio < metadata_time_ratio) {
+        ("✅ Vector similarity scales better than metadata similarity\n").echo();
+    } else if (vector_time_ratio > metadata_time_ratio) {
+        ("⚠️  Metadata similarity scales better than vector similarity\n").echo();
+    } else {
+        ("✅ Both similarity types scale similarly\n").echo();
+    };
+};
+
+/* Recommendations */
+("\n=== RECOMMENDATIONS ===\n").echo();
+("Based on performance comparison:\n").echo();
+("\n").echo();
+("Use Vector Similarity when:\n").echo();
+("• Working with numerical embeddings or feature vectors\n").echo();
+("• Need maximum performance for large datasets\n").echo();
+("• Semantic similarity is the primary concern\n").echo();
+("• Dataset size > 10,000 records\n").echo();
+("\n").echo();
+("Use Metadata Similarity when:\n").echo();
+("• Working with structured object data\n").echo();
+("• Need to match on multiple field criteria\n").echo();
+("• Dataset size < 10,000 records\n").echo();
+("• Object field matching is more important than performance\n").echo();
+("\n").echo();
+("Hybrid Approach:\n").echo();
+("• Use metadata similarity for pre-filtering\n").echo();
+("• Apply vector similarity on filtered results\n").echo();
+("• Best of both worlds: accuracy + performance\n").echo();
+
+("\n=== TEST COMPLETE ===\n").echo();
