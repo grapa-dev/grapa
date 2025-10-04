@@ -1069,6 +1069,7 @@ GrapaError GrapaLocalDatabase::FieldCreate(GrapaCHAR& pName, GrapaCHAR& fieldTyp
 		else if (fieldType.StrCmp("FLOAT") == 0) listType = GrapaTokenType::FLOAT;
 		else if (fieldType.StrCmp("STR") == 0) listType = GrapaTokenType::STR;
 		else if (fieldType.StrCmp("TABLE") == 0) listType = GrapaTokenType::TABLE;
+		else if (fieldType.StrCmp("VECTOR") == 0) listType = GrapaTokenType::VECTOR;
 		else if (fieldType.StrCmp("RAW") == 0) listType = GrapaTokenType::RAW;
 	}
 	/* This was a bug causing everything to be STORE_VAR and resetting the data type.
