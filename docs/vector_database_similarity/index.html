@@ -3243,6 +3243,15 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#metadata-filtering-vs-metadata-similarity-search" class="md-nav__link">
+    <span class="md-ellipsis">
+      Metadata Filtering vs Metadata Similarity Search
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -4981,6 +4990,15 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#metadata-filtering-vs-metadata-similarity-search" class="md-nav__link">
+    <span class="md-ellipsis">
+      Metadata Filtering vs Metadata Similarity Search
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -5390,6 +5408,7 @@
 <li>✅ <strong>Native language integration</strong> preferred</li>
 <li>✅ <strong>Cost-sensitive</strong> applications</li>
 <li>✅ <strong>Metadata indexing</strong> and filtering required</li>
+<li>✅ <strong>Metadata similarity search</strong> (fuzzy object matching - unique to Grapa)</li>
 <li>✅ <strong>Hybrid approach</strong> (DB filtering + similarity search)</li>
 <li>✅ <strong>Production applications</strong> (sub-50ms search times)</li>
 </ul>
@@ -5760,6 +5779,53 @@ results = tech_documents.similarity(query_text, &quot;cosine&quot;, {
 - <strong>Both types show excellent performance</strong> across all tested scales
 - <strong>Vector similarity</strong>: Best for numerical embeddings and maximum speed
 - <strong>Metadata similarity</strong>: Best for structured object matching with multiple field criteria</p>
+<h5 id="metadata-filtering-vs-metadata-similarity-search">Metadata Filtering vs Metadata Similarity Search</h5>
+<p><strong>Important Distinction</strong>: There's a crucial difference between metadata filtering and metadata similarity search:</p>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Grapa</th>
+<th>Pinecone</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Metadata Filtering</strong></td>
+<td>✅ Yes</td>
+<td>✅ Yes</td>
+<td>Exact matches, range queries, boolean filters</td>
+</tr>
+<tr>
+<td><strong>Metadata Similarity Search</strong></td>
+<td>✅ Yes</td>
+<td>❌ No</td>
+<td>Fuzzy matching, partial field matching, similarity scoring</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Examples:</strong></p>
+<p><strong>Metadata Filtering</strong> (both Grapa and Pinecone support):
+<div class="highlight"><pre><span></span><code>// Exact category match
+results = db.search(vector, filter={&quot;category&quot;: &quot;tech&quot;});
+
+// Range query
+results = db.search(vector, filter={&quot;rating&quot;: {&quot;$gte&quot;: 4.0}});
+
+// Boolean filters
+results = db.search(vector, filter={&quot;status&quot;: &quot;published&quot;, &quot;priority&quot;: &quot;high&quot;});
+</code></pre></div></p>
+<p><strong>Metadata Similarity Search</strong> (only Grapa supports):
+<div class="highlight"><pre><span></span><code>// Fuzzy object matching with similarity scoring
+query_object = {&quot;category&quot;: &quot;technology&quot;, &quot;type&quot;: &quot;article&quot;, &quot;author&quot;: &quot;Alice&quot;};
+results = metadata_objects.similarity(query_object, &quot;object&quot;, {
+    &quot;top_n&quot;: 10,
+    &quot;include_scores&quot;: true
+});
+// Returns objects with similarity scores based on field overlap and value similarity
+</code></pre></div></p>
+<p><strong>Grapa's Unique Advantage</strong>: Only Grapa supports <strong>metadata similarity search</strong>, which allows fuzzy matching and similarity scoring between structured objects, not just exact filtering.</p>
 <h4 id="database-vector-similarity-search-performance">Database Vector Similarity Search Performance</h4>
 <p><strong>Important</strong>: The performance characteristics above are for <strong>in-memory similarity search</strong>. When using persistent database storage with <code>$TABLE</code> or <code>$file</code>, performance will be different due to:</p>
 <ul>
@@ -5853,11 +5919,18 @@ results = tech_documents.similarity(query_text, &quot;cosine&quot;, {
 <td>🏆 <strong>Pinecone</strong></td>
 </tr>
 <tr>
-<td><strong>Object similarity</strong></td>
+<td><strong>Metadata similarity search</strong></td>
 <td>❌ No</td>
 <td>✅ Yes</td>
 <td>❌ No</td>
 <td>🏆 <strong>Grapa</strong></td>
+</tr>
+<tr>
+<td><strong>Metadata filtering</strong></td>
+<td>❌ No</td>
+<td>✅ Yes</td>
+<td>✅ Yes</td>
+<td>🤝 <strong>Tie</strong></td>
 </tr>
 </tbody>
 </table>
