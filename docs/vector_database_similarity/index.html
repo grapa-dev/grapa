@@ -5564,31 +5564,31 @@ results = tech_documents.similarity(query_text, &quot;cosine&quot;, {
 </tr>
 <tr>
 <td>15,000 records</td>
-<td>~751ms</td>
+<td>~1,619ms</td>
 <td>⚠️ <strong>ACCEPTABLE</strong></td>
 <td>Consider Pinecone for production</td>
 </tr>
 <tr>
 <td>20,000 records</td>
-<td>~1,333ms</td>
-<td>⚠️ <strong>ACCEPTABLE</strong></td>
-<td>Edge case for local use</td>
+<td>~2,514ms</td>
+<td>❌ <strong>SLOW</strong></td>
+<td>Use Pinecone</td>
 </tr>
 <tr>
 <td>25,000 records</td>
-<td>~2,065ms</td>
+<td>~3,711ms</td>
 <td>❌ <strong>SLOW</strong></td>
 <td>Use Pinecone</td>
 </tr>
 <tr>
 <td>50,000 records</td>
-<td>~8,502ms</td>
+<td>~13,196ms</td>
 <td>❌ <strong>SLOW</strong></td>
 <td>Definitely use Pinecone</td>
 </tr>
 <tr>
 <td>100,000 records</td>
-<td>~37,646ms</td>
+<td>~58,201ms</td>
 <td>❌ <strong>SLOW</strong></td>
 <td>Pinecone required</td>
 </tr>
@@ -5621,7 +5621,7 @@ results = tech_documents.similarity(query_text, &quot;cosine&quot;, {
 <h4 id="scaling-characteristics">Scaling Characteristics</h4>
 <ul>
 <li><strong>Linear scaling</strong> up to ~10,000 records</li>
-<li><strong>Performance degradation</strong> becomes significant above 15,000 records</li>
+<li><strong>Performance degradation</strong> becomes significant above 10,000 records</li>
 <li><strong>Memory and processing overhead</strong> increases exponentially at larger scales</li>
 <li><strong>Database operations</strong> add minimal overhead compared to pure vector search</li>
 </ul>
@@ -5644,13 +5644,13 @@ results = tech_documents.similarity(query_text, &quot;cosine&quot;, {
 </tr>
 <tr>
 <td><strong>Medium datasets</strong> (10K-20K)</td>
-<td>100ms-1.3s</td>
+<td>100ms-2.5s</td>
 <td>&lt; 100ms</td>
 <td>🏆 <strong>Pinecone</strong></td>
 </tr>
 <tr>
 <td><strong>Large datasets</strong> (&gt; 50K)</td>
-<td>&gt; 8.5s</td>
+<td>&gt; 13s</td>
 <td>&lt; 100ms</td>
 <td>🏆 <strong>Pinecone</strong></td>
 </tr>
@@ -5690,7 +5690,7 @@ results = tech_documents.similarity(query_text, &quot;cosine&quot;, {
 <li><strong>Test Type</strong>: <strong>In-memory similarity search</strong> using arrays of vectors</li>
 <li><strong>Scaling Tests</strong>: Incremental testing from 100 to 100,000 records</li>
 </ul>
-<p><strong>Note</strong>: These tests measure pure in-memory vector similarity performance. Database vector similarity search will have additional overhead from I/O operations, serialization, and memory management.</p>
+<p><strong>Note</strong>: These tests measure pure in-memory vector similarity performance with <strong>realistic diverse vectors</strong> (not identical vectors). Database vector similarity search will have additional overhead from I/O operations, serialization, and memory management.</p>
 <h4 id="key-performance-insights">Key Performance Insights</h4>
 <ol>
 <li><strong>Linear Scaling</strong>: Performance scales linearly up to ~10,000 records</li>
