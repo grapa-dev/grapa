@@ -27,7 +27,7 @@ for test_size in test_sizes {
     vectors = [];
     for i in test_size.range() {
         vector = [0.8, 0.6, 0.4, 0.2, 0.1];
-        vectors.push(vector);
+        vectors += vector;
     };
     
     vector_results = vectors.similarity([0.8, 0.6, 0.4, 0.2, 0.1], "cosine", {
@@ -56,7 +56,7 @@ for test_size in test_sizes {
         "size": test_size,
         "pure_vector_time": pure_vector_time
     };
-    results.push(result);
+    results += result;
     
     ("\n").echo();
 };
