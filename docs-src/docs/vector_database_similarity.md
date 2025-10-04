@@ -92,6 +92,9 @@ jaccard_sim = str1.similarity(str2, "jaccard");
 ```
 
 ### Array Similarity Search
+
+Grapa supports **4 different calling patterns** for array similarity search, all producing equivalent results:
+
 ```grapa
 documents = [
     "machine learning algorithms",
@@ -102,22 +105,52 @@ documents = [
 ];
 
 query = "machine learning";
+indexes = [0, 1, 2, 3, 4];
 
-/* Basic similarity search */
-results = documents.similarity(query, "cosine", {
+/* Pattern 1: documents.similarity(query, method) - Traditional array similarity */
+results1 = documents.similarity(query, "cosine", {
     "top_n": 3,
     "include_scores": true
 });
 
+/* Pattern 2: query.similarity(documents, method) - Reversed parameter order */
+results2 = query.similarity(documents, "cosine", {
+    "top_n": 3,
+    "include_scores": true
+});
+
+/* Pattern 3: indexes.similarity(query, method, {datasource: documents}) - New pointer-based */
+results3 = indexes.similarity(query, "cosine", {
+    "datasource": documents,
+    "top_n": 3,
+    "include_scores": true
+});
+
+/* Pattern 4: query.similarity(indexes, method, {datasource: documents}) - New pointer-based reversed */
+results4 = query.similarity(indexes, "cosine", {
+    "datasource": documents,
+    "top_n": 3,
+    "include_scores": true
+});
+
+/* All 4 patterns return identical results */
+
 /* Display results */
-results_len = results."results".len();
+results_len = results1."results".len();
 for i in results_len.range() {
-    result = results."results"[i];
+    result = results1."results"[i];
     ("Score: " + result."similarity".str() + " - " + result."item" + "\n").echo();
 }
 ```
 
+**When to Use Each Pattern:**
+- **Patterns 1 & 2**: Use when you have the full data array in memory
+- **Patterns 3 & 4**: Use when you have indexes/IDs and want to reference a separate datasource array
+
 ### Object Array Similarity (Metadata Search)
+
+Grapa supports **4 different calling patterns** for object array similarity search:
+
 ```grapa
 user_profiles = [
     {"name": "Alice", "age": 30, "skills": ["python", "ml"], "location": "NYC"},
@@ -126,22 +159,52 @@ user_profiles = [
 ];
 
 query_profile = {"age": 30, "skills": ["python"], "location": "NYC"};
+indexes = [0, 1, 2];
 
-/* Object similarity search */
-results = user_profiles.similarity(query_profile, "cosine", {
+/* Pattern 1: user_profiles.similarity(query_profile, method) - Traditional array similarity */
+results1 = user_profiles.similarity(query_profile, "object", {
     "top_n": 2,
     "include_scores": true,
     "include_items": true
 });
 
+/* Pattern 2: query_profile.similarity(user_profiles, method) - Reversed parameter order */
+results2 = query_profile.similarity(user_profiles, "object", {
+    "top_n": 2,
+    "include_scores": true,
+    "include_items": true
+});
+
+/* Pattern 3: indexes.similarity(query_profile, method, {datasource: user_profiles}) - New pointer-based */
+results3 = indexes.similarity(query_profile, "object", {
+    "datasource": user_profiles,
+    "top_n": 2,
+    "include_scores": true,
+    "include_items": true
+});
+
+/* Pattern 4: query_profile.similarity(indexes, method, {datasource: user_profiles}) - New pointer-based reversed */
+results4 = query_profile.similarity(indexes, "object", {
+    "datasource": user_profiles,
+    "top_n": 2,
+    "include_scores": true,
+    "include_items": true
+});
+
+/* All 4 patterns return identical results */
+
 /* Display results */
-results_len = results."results".len();
+results_len = results1."results".len();
 for i in results_len.range() {
-    result = results."results"[i];
+    result = results1."results"[i];
     item = result."item";
     ("Score: " + result."similarity".str() + " - " + item."name" + " (age: " + item."age".str() + ")\n").echo();
 }
 ```
+
+**When to Use Each Pattern:**
+- **Patterns 1 & 2**: Use when you have the full metadata array in memory
+- **Patterns 3 & 4**: Use when you have indexes/IDs and want to reference a separate datasource array
 
 ## Advanced Features
 
@@ -186,6 +249,9 @@ results = documents.similarity(query, "jaccard", {
 ```
 
 ### Vector Mathematical Operations
+
+Grapa supports **4 different calling patterns** for vector array similarity search:
+
 ```grapa
 /* Create test vectors representing document embeddings */
 vector1 = #[1.0, 0.0, 0.0, 0.0, 0.0]#;  /* machine learning - perfect match */
@@ -196,20 +262,48 @@ vector5 = #[0.0, 0.0, 0.0, 0.0, 1.0]#;  /* natural language processing - no simi
 
 vectors = [vector1, vector2, vector3, vector4, vector5];
 query_vector = #[1.0, 0.0, 0.0, 0.0, 0.0]#;  /* machine learning query */
+indexes = [0, 1, 2, 3, 4];
 
-/* Vector similarity search */
-results = vectors.similarity(query_vector, "cosine", {
+/* Pattern 1: vectors.similarity(query_vector, method) - Traditional array similarity */
+results1 = vectors.similarity(query_vector, "cosine", {
     "top_n": 3,
     "include_scores": true,
     "include_items": true
 });
 
-/* Results will show realistic cosine similarity scores:
+/* Pattern 2: query_vector.similarity(vectors, method) - Reversed parameter order */
+results2 = query_vector.similarity(vectors, "cosine", {
+    "top_n": 3,
+    "include_scores": true,
+    "include_items": true
+});
+
+/* Pattern 3: indexes.similarity(query_vector, method, {datasource: vectors}) - New pointer-based */
+results3 = indexes.similarity(query_vector, "cosine", {
+    "datasource": vectors,
+    "top_n": 3,
+    "include_scores": true,
+    "include_items": true
+});
+
+/* Pattern 4: query_vector.similarity(indexes, method, {datasource: vectors}) - New pointer-based reversed */
+results4 = query_vector.similarity(indexes, "cosine", {
+    "datasource": vectors,
+    "top_n": 3,
+    "include_scores": true,
+    "include_items": true
+});
+
+/* All 4 patterns return identical results with realistic cosine similarity scores:
    - Score: 1.0 (perfect match)
    - Score: 0.8 (high similarity) 
    - Score: 0.6 (medium similarity)
 */
 ```
+
+**When to Use Each Pattern:**
+- **Patterns 1 & 2**: Use when you have the full vector array in memory
+- **Patterns 3 & 4**: Use when you have indexes/IDs and want to reference a separate datasource array
 
 ## Database Integration
 

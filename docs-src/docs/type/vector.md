@@ -1188,14 +1188,28 @@ The `.similarity()` method supports **array similarity** - comparing a query aga
 
 ### Vector Array Similarity
 
+Grapa supports **4 different calling patterns** for vector array similarity, all producing equivalent results:
+
 ```grapa
-/* Basic vector array similarity */
+/* Setup */
 vectors = [#[1, 2, 3]#, #[4, 5, 6]#, #[7, 8, 9]#];
 query = #[2, 3, 4]#;
+indexes = [0, 1, 2];
 
-/* Find best matches (returns structured object) */
-result = vectors.similarity(query, "cosine");
-/* Returns: {
+/* Pattern 1: vectors.similarity(query, method) - Traditional array similarity */
+result1 = vectors.similarity(query, "cosine");
+
+/* Pattern 2: query.similarity(vectors, method) - Reversed parameter order */
+result2 = query.similarity(vectors, "cosine");
+
+/* Pattern 3: indexes.similarity(query, method, {datasource: vectors}) - New pointer-based */
+result3 = indexes.similarity(query, "cosine", {"datasource": vectors});
+
+/* Pattern 4: query.similarity(indexes, method, {datasource: vectors}) - New pointer-based reversed */
+result4 = query.similarity(indexes, "cosine", {"datasource": vectors});
+
+/* All 4 patterns return identical results:
+{
   "results": [
     {"index": 0, "similarity": 0.992, "item": #[1, 2, 3]#},
     {"index": 1, "similarity": 0.992, "item": #[4, 5, 6]#}
@@ -1207,29 +1221,45 @@ result = vectors.similarity(query, "cosine");
 } */
 
 /* Access and iterate through vector similarity results */
-results_len = result."results".len();
+results_len = result1."results".len();
 for i in results_len.range() {
-    match = result."results"[i];
+    match = result1."results"[i];
     ("Score: " + match."similarity".str() + " - Vector: " + match."item".str() + "\n").echo();
 }
 ```
 
+**When to Use Each Pattern:**
+- **Patterns 1 & 2**: Use when you have the full data array in memory
+- **Patterns 3 & 4**: Use when you have indexes/IDs and want to reference a separate datasource array
+
 ### Object Array Similarity (Metadata Search)
 
-The `.similarity()` method also supports **object similarity** for searching through collections of metadata objects:
+The `.similarity()` method also supports **object similarity** for searching through collections of metadata objects. Grapa supports **4 different calling patterns** for object array similarity:
 
 ```grapa
-/* Metadata search with object similarity */
+/* Setup */
 metadata = [
     {"name": "Alice", "score": 85.5, "active": true, "department": "Engineering"},
     {"name": "Bob", "score": 92.0, "active": false, "department": "Marketing"},
     {"name": "Charlie", "score": 78.3, "active": true, "department": "Engineering"}
 ];
-
-/* Search for objects matching query criteria */
 query = {"name": "Alice", "active": true};
-result = metadata.similarity(query, "cosine", {"include_scores": true, "include_items": true});
-/* Returns: {
+indexes = [0, 1, 2];
+
+/* Pattern 1: metadata.similarity(query, method) - Traditional array similarity */
+result1 = metadata.similarity(query, "object");
+
+/* Pattern 2: query.similarity(metadata, method) - Reversed parameter order */
+result2 = query.similarity(metadata, "object");
+
+/* Pattern 3: indexes.similarity(query, method, {datasource: metadata}) - New pointer-based */
+result3 = indexes.similarity(query, "object", {"datasource": metadata});
+
+/* Pattern 4: query.similarity(indexes, method, {datasource: metadata}) - New pointer-based reversed */
+result4 = query.similarity(indexes, "object", {"datasource": metadata});
+
+/* All 4 patterns return identical results:
+{
   "results": [
     {"index": 0, "similarity": 0.666667, "item": {"name": "Alice", "score": 85.5, "active": true, "department": "Engineering"}},
     {"index": 2, "similarity": 0.333333, "item": {"name": "Charlie", "score": 78.3, "active": true, "department": "Engineering"}},
@@ -1238,17 +1268,21 @@ result = metadata.similarity(query, "cosine", {"include_scores": true, "include_
   "best_similarity": 0.666667,
   "best_index": 0,
   "best_match": {"name": "Alice", "score": 85.5, "active": true, "department": "Engineering"},
-  "method": "cosine"
+  "method": "object"
 } */
 
 /* Access and iterate through object similarity results */
-results_len = result."results".len();
+results_len = result1."results".len();
 for i in results_len.range() {
-    match = result."results"[i];
+    match = result1."results"[i];
     item = match."item";
     ("Score: " + match."similarity".str() + " - " + item."name" + " (active: " + item."active".str() + ")\n").echo();
 }
 ```
+
+**When to Use Each Pattern:**
+- **Patterns 1 & 2**: Use when you have the full metadata array in memory
+- **Patterns 3 & 4**: Use when you have indexes/IDs and want to reference a separate datasource array
 
 **Object Similarity Features:**
 - **Field Matching**: Compares fields that exist in both the query object and target objects

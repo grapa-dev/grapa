@@ -355,6 +355,7 @@ GrapaRuleEvent* calculate_string_similarity(GrapaScriptExec* vScriptExec, GrapaN
 GrapaRuleEvent* calculate_array_string_similarity(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* array, GrapaRuleEvent* query, GrapaCHAR& method, int top_n, double threshold, std::string sort, bool include_scores, bool include_items);
 GrapaRuleEvent* calculate_array_vector_similarity(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* array, GrapaRuleEvent* query, GrapaCHAR& method, int top_n, double threshold, std::string sort, bool include_scores, bool include_items);
 GrapaRuleEvent* calculate_array_object_similarity(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* array, GrapaRuleEvent* query, GrapaCHAR& method, int top_n, double threshold, std::string sort, bool include_scores, bool include_items);
+GrapaRuleEvent* calculate_pointer_similarity(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* index_list, GrapaRuleEvent* query, GrapaCHAR& method, GrapaRuleEvent* datasource, int top_n, double threshold, std::string sort, bool include_scores, bool include_items);
 double calculate_object_similarity(GrapaRuleEvent* obj1, GrapaRuleEvent* obj2);
 bool are_values_similar(GrapaRuleEvent* val1, GrapaRuleEvent* val2);
 

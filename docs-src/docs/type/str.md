@@ -138,8 +138,30 @@ The following methods are available specifically on `$STR` objects:
 ### String Distance & Similarity Functions
 
 #### **Unified Similarity Method (NEW)**
+
+Grapa supports **4 different calling patterns** for string similarity, all producing equivalent results:
+
 ```grapa
-/* Unified .similarity() method with multiple algorithms */
+/* Setup */
+strings = ["hello", "hallo", "world", "goodbye"];
+query = "helo";
+indexes = [0, 1, 2];
+
+/* Pattern 1: strings.similarity(query, method) - Traditional array similarity */
+result1 = strings.similarity(query, "cosine");
+
+/* Pattern 2: query.similarity(strings, method) - Reversed parameter order */
+result2 = query.similarity(strings, "cosine");
+
+/* Pattern 3: indexes.similarity(query, method, {datasource: strings}) - New pointer-based */
+result3 = indexes.similarity(query, "cosine", {"datasource": strings});
+
+/* Pattern 4: query.similarity(indexes, method, {datasource: strings}) - New pointer-based reversed */
+result4 = query.similarity(indexes, "cosine", {"datasource": strings});
+
+/* All 4 patterns return identical results with similarity scores for each string */
+
+/* Single string similarity methods */
 "hello".similarity("hallo", "levenshtein");        /* Returns: 1 (edit distance) */
 "hello".similarity("hallo", "levenshtein_distance"); /* Same as above */
 "hello".similarity("hallo", "jaro");               /* Returns: 0.88 (Jaro-Winkler similarity) */
@@ -165,6 +187,10 @@ The following methods are available specifically on `$STR` objects:
   "case_sensitive": false               /* Case-insensitive comparison */
 });
 ```
+
+**When to Use Each Pattern:**
+- **Patterns 1 & 2**: Use when you have the full string array in memory
+- **Patterns 3 & 4**: Use when you have indexes/IDs and want to reference a separate datasource array
 
 
 #### **Supported Similarity Methods for $STR**
