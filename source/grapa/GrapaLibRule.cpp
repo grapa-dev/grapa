@@ -10813,6 +10813,7 @@ GrapaRuleEvent* GrapaLibraryRuleRangeEvent::Run(GrapaScriptExec* vScriptExec, Gr
 		if (Pstart.vVal && !Pstart.vVal->IsNull() && Pstart.vVal->mValue.mToken == GrapaTokenType::INT)
 		{
 			startI.FromBytes(Pstart.vVal->mValue);
+			stopI += startI;
 		}
 
 		if (Pstep.vVal && !Pstep.vVal->IsNull() && Pstep.vVal->mValue.mToken == GrapaTokenType::INT)
