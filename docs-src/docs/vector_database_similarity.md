@@ -35,9 +35,9 @@ Grapa's `.similarity()` method supports multiple algorithms in a single, consist
 | **Array Search** | ✅ Native support | ✅ Native support | ✅ Native support | 🤝 **Tie** |
 | **Metadata Search** | ✅ Object field matching | ✅ Object field matching + DB indexing | ✅ Metadata filtering | 🏆 **Grapa with DB** |
 | **Result Control** | ✅ top_n, threshold, sort, include_scores | ✅ top_n, threshold, sort, include_scores | ✅ top_k, score_threshold, include_metadata | 🤝 **Tie** |
-| **Persistence** | ❌ In-memory only | ✅ Persistent database ($file, $TABLE) | ✅ Persistent database | 🏆 **Tie** |
+| **Persistence** | ❌ In-memory only | ✅ Persistent database ($file, $TABLE) + Database similarity search | ✅ Persistent database | 🏆 **Grapa with DB** |
 | **Scale** | ❌ Memory limited | ✅ Limited by disk space | ✅ Billions of vectors | 🏆 **Pinecone** |
-| **Performance** | ✅ Excellent up to 10K records, good up to 15K, acceptable up to 20K | ✅ Excellent up to 10K records, good up to 15K, acceptable up to 20K | ✅ Optimized for millions+ records | 🏆 **Pinecone** for scale |
+| **Performance** | ⚠️ Acceptable up to 15K records, slow beyond 20K | ⚠️ Acceptable up to 15K records, slow beyond 20K | ✅ Optimized for millions+ records | 🏆 **Pinecone** for scale |
 | **Ease of Use** | ✅ Native language integration | ✅ Native language integration | ❌ Requires API calls | 🏆 **Grapa** |
 | **Cost** | ✅ Free (local) | ✅ Free (local) | ❌ Pay-per-use | 🏆 **Grapa** |
 | **Advanced Options** | ✅ TF-IDF, word-based jaccard, configurable parameters | ✅ TF-IDF, word-based jaccard, configurable parameters | ❌ Limited options | 🏆 **Grapa** |
@@ -45,17 +45,17 @@ Grapa's `.similarity()` method supports multiple algorithms in a single, consist
 ## Use Case Recommendations
 
 ### Use Grapa `.similarity()` when:
-- ✅ **Any dataset size** (excellent performance up to 100,000+ records)
+- ✅ **Small to medium datasets** (up to 15,000 records for acceptable performance)
 - ✅ **Prototyping and development**
 - ✅ **Local/offline applications**
 - ✅ **Complex similarity algorithms** needed
 - ✅ **Native language integration** preferred
 - ✅ **Cost-sensitive** applications
 - ✅ **Real-time data** that changes frequently
-- ✅ **Production applications** (sub-50ms search times)
+- ✅ **Development and testing** applications
 
 ### Use Grapa with DB when:
-- ✅ **Any dataset size** (excellent performance up to 100,000+ records)
+- ✅ **Small to medium datasets** (up to 15,000 records for acceptable performance)
 - ✅ **Persistent storage** required
 - ✅ **Local/offline applications** with data persistence
 - ✅ **Complex similarity algorithms** needed
@@ -64,7 +64,8 @@ Grapa's `.similarity()` method supports multiple algorithms in a single, consist
 - ✅ **Metadata indexing** and filtering required
 - ✅ **Metadata similarity search** (fuzzy object matching - unique to Grapa)
 - ✅ **Hybrid approach** (DB filtering + similarity search)
-- ✅ **Production applications** (sub-50ms search times)
+- ✅ **Database similarity search** (direct similarity against $file/$TABLE - unique to Grapa)
+- ✅ **Development and testing** applications
 
 ### Use Pinecone when:
 - ✅ **Cloud deployment** preferred
@@ -73,6 +74,9 @@ Grapa's `.similarity()` method supports multiple algorithms in a single, consist
 - ✅ **Global distribution** needed
 - ✅ **No local infrastructure** requirements
 - ✅ **External API integration** preferred
+- ✅ **Large-scale datasets** (20K+ records)
+- ✅ **High-throughput production** workloads
+- ✅ **Production applications** requiring sub-100ms response times
 
 ## Basic Usage
 
@@ -145,7 +149,7 @@ for i in results_len.range() {
 
 **When to Use Each Pattern:**
 - **Patterns 1 & 2**: Use when you have the full data array in memory
-- **Patterns 3 & 4**: Use when you have indexes/IDs and want to reference a separate datasource array
+- **Patterns 3 & 4**: Use when you have indexes/IDs and want to reference a separate datasource (array, $file, or $TABLE)
 
 ### Object Array Similarity (Metadata Search)
 
@@ -204,7 +208,7 @@ for i in results_len.range() {
 
 **When to Use Each Pattern:**
 - **Patterns 1 & 2**: Use when you have the full metadata array in memory
-- **Patterns 3 & 4**: Use when you have indexes/IDs and want to reference a separate datasource array
+- **Patterns 3 & 4**: Use when you have indexes/IDs and want to reference a separate datasource (array, $file, or $TABLE)
 
 ## Advanced Features
 
@@ -303,9 +307,116 @@ results4 = query_vector.similarity(indexes, "cosine", {
 
 **When to Use Each Pattern:**
 - **Patterns 1 & 2**: Use when you have the full vector array in memory
-- **Patterns 3 & 4**: Use when you have indexes/IDs and want to reference a separate datasource array
+- **Patterns 3 & 4**: Use when you have indexes/IDs and want to reference a separate datasource (array, $file, or $TABLE)
 
 ## Database Integration
+
+### Database Similarity Search with $file and $TABLE
+
+The new pointer-based similarity patterns (3 & 4) now support **database datasources**, enabling similarity search directly against persistent storage and in-memory tables:
+
+#### **Persistent Storage with $file**
+```grapa
+/* Create persistent database */
+f = $file();
+f.rm("test.db");
+f.mk("test.db", "ROW");
+f.cd("test.db");
+
+/* Insert data */
+f.set("a", "test 1 data");
+f.set("b", "test 2 data");
+f.set("c", "test 3 data");
+f.set("d", "test 4 data");
+
+/* Get record IDs for similarity search */
+indexes = f.ls().vector().sort(1, ["$ID"]).t().list()[0];
+
+/* Perform similarity search against database */
+query_string = "2";
+results = indexes.similarity(query_string, "cosine", {"datasource": f});
+
+/* Results show similarity against database records:
+{
+  "results": [
+    {"index": 2, "similarity": 0.57735, "item": "test 2 data"},
+    {"index": 1, "similarity": 0.0, "item": "test 1 data"},
+    {"index": 3, "similarity": 0.0, "item": "test 3 data"},
+    {"index": 4, "similarity": 0.0, "item": "test 4 data"}
+  ],
+  "best_similarity": 0.57735,
+  "best_index": 2,
+  "best_match": "test 2 data",
+  "method": "cosine"
+} */
+```
+
+#### **In-Memory Table with $TABLE**
+```grapa
+/* Create in-memory table */
+f = {}.table();
+
+/* Insert data */
+f.set("a", "test 1 data");
+f.set("b", "test 2 data");
+f.set("c", "test 3 data");
+f.set("d", "test 4 data");
+
+/* Get record IDs for similarity search */
+indexes = f.ls().vector().sort(1, ["$ID"]).t().list()[0];
+
+/* Perform similarity search against table */
+query_string = "2";
+results = indexes.similarity(query_string, "cosine", {"datasource": f});
+
+/* Same results as $file - both support database similarity search */
+```
+
+#### **Database Similarity with Metadata Objects**
+```grapa
+/* Create database with metadata */
+f = $file();
+f.rm("metadata.db");
+f.mk("metadata.db", "ROW");
+f.cd("metadata.db");
+
+/* Insert metadata objects */
+f.set("user1", {"name": "Alice", "age": 30, "department": "Engineering"});
+f.set("user2", {"name": "Bob", "age": 25, "department": "Marketing"});
+f.set("user3", {"name": "Charlie", "age": 35, "department": "Engineering"});
+
+/* Get record IDs */
+indexes = f.ls().vector().sort(1, ["$ID"]).t().list()[0];
+
+/* Search metadata in database */
+query_meta = {"age": 30, "department": "Engineering"};
+results = indexes.similarity(query_meta, "object", {"datasource": f});
+```
+
+#### **Database Similarity with Vectors**
+```grapa
+/* Create database with vectors */
+f = {}.table();
+
+/* Insert vector data */
+f.set("vec1", #[1.0, 0.0, 0.0, 0.0, 0.0]#);
+f.set("vec2", #[0.8, 0.6, 0.0, 0.0, 0.0]#);
+f.set("vec3", #[0.6, 0.8, 0.0, 0.0, 0.0]#);
+
+/* Get record IDs */
+indexes = f.ls().vector().sort(1, ["$ID"]).t().list()[0];
+
+/* Search vectors in database */
+query_vector = #[1.0, 0.0, 0.0, 0.0, 0.0]#;
+results = indexes.similarity(query_vector, "cosine", {"datasource": f});
+```
+
+**Key Benefits of Database Similarity:**
+- **Persistent Storage**: Data survives program restarts with `$file`
+- **Memory Efficiency**: Only load data as needed with `$TABLE`
+- **Scalability**: Handle large datasets beyond memory limits
+- **Flexibility**: Same similarity algorithms work with any datasource type
+- **Performance**: Leverage database indexing for fast record lookups
 
 ### In-Memory Vector Database
 ```grapa
@@ -391,11 +502,11 @@ Based on extensive testing across different dataset sizes, here are the performa
 | 1,000 records | ~0.02ms | ✅ **EXCELLENT** | Great for medium applications |
 | 5,000 records | ~0.02ms | ✅ **EXCELLENT** | Excellent for larger applications |
 | 10,000 records | ~85ms | ✅ **EXCELLENT** | Still competitive with Pinecone |
-| 15,000 records | ~2.2ms | ✅ **EXCELLENT** | Excellent performance |
-| 20,000 records | ~3.7ms | ✅ **EXCELLENT** | Excellent performance |
-| 25,000 records | ~4.1ms | ✅ **EXCELLENT** | Excellent performance |
-| 50,000 records | ~10.1ms | ✅ **EXCELLENT** | Excellent performance |
-| 100,000 records | ~42.5ms | ✅ **EXCELLENT** | Excellent performance |
+| 15,000 records | ~1,403ms | ⚠️ **ACCEPTABLE** | Suitable for development/testing |
+| 20,000 records | ~1,856ms | ⚠️ **ACCEPTABLE** | Consider Pinecone for production |
+| 25,000 records | ~2,328ms | ❌ **SLOW** | Use Pinecone for better performance |
+| 50,000 records | ~4,653ms | ❌ **SLOW** | Use Pinecone for better performance |
+| 100,000 records | ~9,596ms | ❌ **SLOW** | Use Pinecone for better performance |
 
 ##### Metadata Similarity Performance
 
@@ -641,7 +752,7 @@ results = documents.similarity(query, "cosine", {
 - **Monitor** memory usage with large datasets (> 10K records)
 - **Profile** database operations and consider $ID optimization
 - **Optimize** based on actual usage patterns
-- **Consider Pinecone** if your dataset exceeds 20,000 records
+- **Consider Pinecone** if your dataset exceeds 15,000 records
 - **Test performance** before production deployment
 
 ## Future Enhancements
@@ -661,6 +772,6 @@ results = documents.similarity(query, "cosine", {
 
 ## Conclusion
 
-Grapa's vector database similarity search provides a powerful, cost-effective alternative to dedicated vector databases like Pinecone. With its unified API, advanced similarity algorithms, and native language integration, Grapa offers significant advantages for many use cases while maintaining competitive performance for small to medium-scale applications.
+Grapa's vector database similarity search provides a powerful, cost-effective alternative to dedicated vector databases like Pinecone. With its unified API, advanced similarity algorithms, and native language integration, Grapa offers significant advantages for many use cases while maintaining acceptable performance for small to medium-scale applications (up to 15,000 records).
 
-The system's flexibility, combined with its comprehensive similarity algorithms and database integration capabilities, makes it an excellent choice for prototyping, development, and production applications where cost, simplicity, and algorithmic diversity are important factors.
+The system's flexibility, combined with its comprehensive similarity algorithms and database integration capabilities, makes it an excellent choice for prototyping, development, and testing applications where cost, simplicity, and algorithmic diversity are important factors. For production applications with larger datasets or strict performance requirements, consider using specialized vector databases like Pinecone.
