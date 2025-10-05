@@ -27,14 +27,13 @@ for test_size in test_sizes {
     vectors = [];
     for i in test_size.range() {
         /* Create truly random vectors for realistic similarity testing */
-        vector = #[
+        vectors += #[
             (8.random()) / 255,  /* Random float 0.0-1.0 */
             (8.random()) / 255,  /* Random float 0.0-1.0 */
             (8.random()) / 255,  /* Random float 0.0-1.0 */
             (8.random()) / 255,  /* Random float 0.0-1.0 */
             (8.random()) / 255   /* Random float 0.0-1.0 */
         ]#;
-        vectors += vector;
     };
     
     create_vector_time = start_time.ms();
@@ -44,6 +43,9 @@ for test_size in test_sizes {
         "include_scores": true,
         "include_items": true
     });
+    
+    vector_results.str().echo();
+    "\n".echo();
     
     pure_vector_time = start_time.ms() - create_vector_time;
     ("    Create vector: " + create_vector_time.float(30).str() + "ms\n").echo();

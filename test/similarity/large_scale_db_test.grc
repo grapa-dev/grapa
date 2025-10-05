@@ -1,8 +1,6 @@
 /* Large Scale Performance Test */
 /* Tests performance at larger scales to find the breakpoint */
 
-128.setfloat(10);
-
 ("=== Large Scale Performance Test ===\n").echo();
 
 /* Test larger sizes incrementally */
