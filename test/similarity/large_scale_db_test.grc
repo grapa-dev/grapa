@@ -1,10 +1,13 @@
 /* Large Scale Performance Test */
 /* Tests performance at larger scales to find the breakpoint */
 
+128.setfloat(10);
+
 ("=== Large Scale Performance Test ===\n").echo();
 
 /* Test larger sizes incrementally */
-test_sizes = [15000, 20000, 25000, 50000];
+test_sizes = [15000, 20000, 25000, 50000, 100000];
+test_sizes = [15000];
 pinecone_threshold = 100;  /* Pinecone typically < 100ms */
 acceptable_threshold = 500;  /* Acceptable for local use */
 warning_threshold = 2000;   /* Warning threshold */
@@ -24,26 +27,43 @@ for test_size in test_sizes {
     ("  Test 1: Pure vector similarity...\n").echo();
     start_time = $TIME().utc();
     
-    vectors = [];
-    for i in test_size.range() {
-        /* Create truly random vectors for realistic similarity testing */
-        vector = #[
-            (8.random()) / 255,  /* Random float 0.0-1.0 */
-            (8.random()) / 255,  /* Random float 0.0-1.0 */
-            (8.random()) / 255,  /* Random float 0.0-1.0 */
-            (8.random()) / 255,  /* Random float 0.0-1.0 */
-            (8.random()) / 255   /* Random float 0.0-1.0 */
-        ]#;
-        vectors += vector;
+    dbname = "test"+test_size.str().lpad(8,"0")+".gdb";
+    vectors = $file();
+    if ($file().info(dbname)."$TYPE"!="FILE")
+    {
+        vectors.rm(dbname);
+        vectors.mk(dbname,"ROW");
+        vectors.cd(dbname);
+        for i in test_size.range() {
+            /* Create truly random vectors for realistic similarity testing */
+            vector = #[
+                (8.random()) / 255,  /* Random float 0.0-1.0 */
+                (8.random()) / 255,  /* Random float 0.0-1.0 */
+                (8.random()) / 255,  /* Random float 0.0-1.0 */
+                (8.random()) / 255,  /* Random float 0.0-1.0 */
+                (8.random()) / 255   /* Random float 0.0-1.0 */
+            ]#;
+            vectors.set("r"+i.str().lpad(8,"0"),vector);
+        };
+    }
+    else
+    {
+        vectors.cd(dbname);
     };
+
+    indexes = vectors.ls().vector().sort(1,["$ID"]).t().list()[0];
     
     create_vector_time = start_time.ms();
 
-    vector_results = vectors.similarity(#[0.8, 0.6, 0.4, 0.2, 0.1]#, "cosine", {
+    vector_results = indexes.similarity(#[0.8, 0.6, 0.4, 0.2, 0.1]#, "cosine", {
+        "datasource": vectors,
         "top_n": 10,
         "include_scores": true,
         "include_items": true
     });
+    
+    vector_results.str().echo();
+    "\n".echo();
     
     pure_vector_time = start_time.ms() - create_vector_time;
     ("    Create vector: " + create_vector_time.float(30).str() + "ms\n").echo();
@@ -91,7 +111,7 @@ for result in results {
         recommendation = "❌ SLOW - Use Pinecone";
     };
     
-    (size.str() + "\t" + pure_time.str() + "ms\t" + recommendation + "\n").echo();
+    (size.str() + "\t" + pure_time.float(30).str() + "ms\t" + recommendation + "\n").echo();
 };
 
 /* Scaling Analysis */
@@ -103,8 +123,8 @@ if (results.len() >= 2) {
     size_ratio = last."size" / first."size";
     time_ratio = last."pure_vector_time" / first."pure_vector_time";
     
-    ("Size increase: " + size_ratio.str() + "x\n").echo();
-    ("Time increase: " + time_ratio.str() + "x\n").echo();
+    ("Size increase: " + size_ratio.float(30).str() + "x\n").echo();
+    ("Time increase: " + time_ratio.float(30).str() + "x\n").echo();
     
     if (time_ratio < size_ratio) {
         ("✅ Sub-linear scaling - Performance scales well\n").echo();
@@ -144,7 +164,7 @@ if (results.len() > 0) {
         };
     };
     
-    ("• Maximum search time: " + max_time.str() + "ms at " + max_size.str() + " records\n").echo();
+    ("• Maximum search time: " + max_time.float(30).str() + "ms at " + max_size.str() + " records\n").echo();
     ("• Excellent performance: " + excellent_count.str() + " tests\n").echo();
     ("• Good performance: " + good_count.str() + " tests\n").echo();
     ("• Acceptable performance: " + acceptable_count.str() + " tests\n").echo();

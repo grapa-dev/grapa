@@ -190,7 +190,7 @@ result4 = query.similarity(indexes, "cosine", {"datasource": strings});
 
 **When to Use Each Pattern:**
 - **Patterns 1 & 2**: Use when you have the full string array in memory
-- **Patterns 3 & 4**: Use when you have indexes/IDs and want to reference a separate datasource array
+- **Patterns 3 & 4**: Use when you have indexes/IDs and want to reference a separate datasource (array, $file, or $TABLE)
 
 
 #### **Supported Similarity Methods for $STR**
