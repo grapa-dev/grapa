@@ -22201,7 +22201,7 @@ GrapaRuleEvent* calculate_pointer_similarity(GrapaScriptExec* vScriptExec, Grapa
 	GrapaFloat norm_b(vScriptExec->vScriptState->mItemState.mFloatFix, vScriptExec->vScriptState->mItemState.mFloatMax, vScriptExec->vScriptState->mItemState.mFloatExtra, 0);
 
 	// Calculate similarities
-	std::vector<std::pair<int, double>> similarities;
+	std::vector<std::pair<int, GrapaFloat>> similarities;
 	for (size_t i = 0; i < indexes.size(); i++)
 	{
 		int index = indexes[i];
@@ -22226,14 +22226,14 @@ GrapaRuleEvent* calculate_pointer_similarity(GrapaScriptExec* vScriptExec, Grapa
 				continue;
 			
 			// Calculate similarity based on query type
-			double similarity = 0.0;
+			GrapaFloat similarity(vScriptExec->vScriptState->mItemState.mFloatFix, vScriptExec->vScriptState->mItemState.mFloatMax, vScriptExec->vScriptState->mItemState.mFloatExtra, 0);
 			if (query->mValue.mToken == GrapaTokenType::STR && actual_item->mValue.mToken == GrapaTokenType::STR)
 			{
 				// String similarity
 				GrapaRuleEvent* temp_result = calculate_string_similarity(vScriptExec, pNameSpace, actual_item, query, method);
 				if (temp_result && temp_result->mValue.mToken == GrapaTokenType::FLOAT)
 				{
-					similarity = GrapaFloat(temp_result->mValue).ToDouble();
+					similarity = GrapaFloat(temp_result->mValue);
 				}
 			}
 			else if (query->mValue.mToken == GrapaTokenType::VECTOR && actual_item->mValue.mToken == GrapaTokenType::VECTOR)
@@ -22270,7 +22270,7 @@ GrapaRuleEvent* calculate_pointer_similarity(GrapaScriptExec* vScriptExec, Grapa
 							norm_b = sum_b2.Root(GrapaInt(2));
 							if (norm_a > 0 && norm_b > 0)
 							{
-								similarity = (sum_ab / (norm_a * norm_b)).ToDouble();
+								similarity = (sum_ab / (norm_a * norm_b));
 							}
 						}
 						else
@@ -22283,7 +22283,7 @@ GrapaRuleEvent* calculate_pointer_similarity(GrapaScriptExec* vScriptExec, Grapa
 								GrapaVectorParam param(vScriptExec, result_vector.mData, result_vector.mBlock, 0);
 								if (param.aa)
 								{
-									similarity = param.aa->ToDouble();
+									similarity = *param.aa;
 								}
 							}
 						}
@@ -22293,7 +22293,7 @@ GrapaRuleEvent* calculate_pointer_similarity(GrapaScriptExec* vScriptExec, Grapa
 			else if (query->mValue.mToken == GrapaTokenType::GOBJ && actual_item->mValue.mToken == GrapaTokenType::GOBJ)
 			{
 				// Object similarity
-				similarity = calculate_object_similarity(actual_item, query);
+				similarity = GrapaFloat(calculate_object_similarity(actual_item, query));
 			}
 			
 			if (similarity >= threshold)
@@ -22374,10 +22374,10 @@ GrapaRuleEvent* calculate_pointer_similarity(GrapaScriptExec* vScriptExec, Grapa
 	if (!similarities.empty())
 	{
 		int best_index = similarities[0].first;
-		double best_similarity = similarities[0].second;
+		GrapaFloat best_similarity = similarities[0].second;
 		
 		// Add best_similarity
-		GrapaRuleEvent* best_sim_key = new GrapaRuleEvent(0, GrapaCHAR("best_similarity"), GrapaFloat(best_similarity).getBytes());
+		GrapaRuleEvent* best_sim_key = new GrapaRuleEvent(0, GrapaCHAR("best_similarity"), best_similarity.getBytes());
 		result->vQueue->PushTail(best_sim_key);
 		
 		// Add best_index
