@@ -28,6 +28,8 @@ limitations under the License.
 #include "GrapaTime.h"
 #include "GrapaFloat.h"
 #include "GrapaMem.h"
+#include "GrapaCompress.h"
+
 //#include <stdio.h>
 
 
@@ -1558,6 +1560,23 @@ GrapaError GrapaDB::SetRecordField(GrapaCursor& cursor, GrapaDBFieldValueArray& 
 			u64 dataPtr = 0, dataSize, dataLength, growBlockSize;
 			u8 fieldType = dbFieldValue->mValue.ToDbType();
 			u8 isRaw = (dbFieldValue->mType == (u8)GrapaTokenType::RAW) ? 1 : 0;
+
+			GrapaCHAR* dataValue = &dbFieldValue->mValue;
+			GrapaCHAR compressValue;
+			switch (recCursor.mTreeType)
+			{
+			case RTABLE_TREE:
+			case CTABLE_TREE:
+				switch (dbFieldValue->mStore)
+				{
+				case GrapaDBField::STORE_VAR:
+				case GrapaDBField::STORE_PAR:
+					GrapaCompress::Compress(dbFieldValue->mValue, compressValue);
+					dataValue = &compressValue;
+					break;
+				}
+			}
+
 			switch (dbFieldValue->mStore)
 			{
 			case GrapaDBField::STORE_FIX:
@@ -1568,10 +1587,10 @@ GrapaError GrapaDB::SetRecordField(GrapaCursor& cursor, GrapaDBFieldValueArray& 
 					case GrapaTokenType::BOOL:
 					case GrapaTokenType::INT:
 					case GrapaTokenType::TIME:
-						if (dbFieldValue->mValue.mBytes) h[0] = 0x80;
-						if (dbFieldValue->mValue.mLength)
+						if ((*dataValue).mBytes) h[0] = 0x80;
+						if ((*dataValue).mLength)
 						{
-							u8 c = ((u8*)dbFieldValue->mValue.mBytes)[dbFieldValue->mValue.mLength - 1];
+							u8 c = ((u8*)(*dataValue).mBytes)[(*dataValue).mLength - 1];
 							if (c > 127) c = 127;
 							h[0] |= c;
 						}
@@ -1582,11 +1601,11 @@ GrapaError GrapaDB::SetRecordField(GrapaCursor& cursor, GrapaDBFieldValueArray& 
 				}
 				//else if (dbFieldValue->mDictSize == 9 && (dbFieldValue->mType == (u8)GrapaTokenType::TIME))
 				//{
-				//	if (dbFieldValue->mValue.mBytes) h[0] = 0x80;
-				//	if (dbFieldValue->mValue.mLength == 8)
+				//	if ((*dataValue).mBytes) h[0] = 0x80;
+				//	if ((*dataValue).mLength == 8)
 				//	{
 				//		h[0] |= 8;
-				//		err = SetDataValue(recCursor.mValue, dbFieldValue->mDictOffset + 1, 8, dbFieldValue->mValue.mBytes, &bytesWriten);
+				//		err = SetDataValue(recCursor.mValue, dbFieldValue->mDictOffset + 1, 8, (*dataValue).mBytes, &bytesWriten);
 				//	}
 				//	err = SetDataValue(recCursor.mValue, dbFieldValue->mDictOffset, 1, h, &bytesWriten);
 				//	if (err) return(err);
@@ -1596,23 +1615,23 @@ GrapaError GrapaDB::SetRecordField(GrapaCursor& cursor, GrapaDBFieldValueArray& 
 					err = GetDataValue(recCursor.mValue, dbFieldValue->mDictOffset, 1, h, &bytesWriten);
 					len = h[0] & 0x7F;
 					h[0] = 0;
-					if (len > dbFieldValue->mValue.mLength)
+					if (len > (*dataValue).mLength)
 					{
-						err = ClearDataValue(recCursor.mValue, dbFieldValue->mDictOffset + 1 + isRaw + dbFieldValue->mValue.mLength, len - dbFieldValue->mValue.mLength);
+						err = ClearDataValue(recCursor.mValue, dbFieldValue->mDictOffset + 1 + isRaw + (*dataValue).mLength, len - (*dataValue).mLength);
 					}
-					if (dbFieldValue->mValue.mBytes) h[0] = 0x80;
-					if (dbFieldValue->mValue.mLength)
+					if ((*dataValue).mBytes) h[0] = 0x80;
+					if ((*dataValue).mLength)
 					{
-						if (dbFieldValue->mValue.mLength > (dbFieldValue->mDictSize - 1 - isRaw)) len = (dbFieldValue->mDictSize - 1 - isRaw); else len = dbFieldValue->mValue.mLength;
+						if ((*dataValue).mLength > (dbFieldValue->mDictSize - 1 - isRaw)) len = (dbFieldValue->mDictSize - 1 - isRaw); else len = (*dataValue).mLength;
 						h[0] |= (u8)len;
 						switch (dbFieldValue->mType)
 						{
 						case GrapaTokenType::INT:
 						case GrapaTokenType::TIME:
-							offset = dbFieldValue->mValue.mLength - len;
+							offset = (*dataValue).mLength - len;
 							break;
 						}
-						err = SetDataValue(recCursor.mValue, dbFieldValue->mDictOffset + 1 + isRaw, len, &((u8*)dbFieldValue->mValue.mBytes)[offset], &bytesWriten);
+						err = SetDataValue(recCursor.mValue, dbFieldValue->mDictOffset + 1 + isRaw, len, &((u8*)(*dataValue).mBytes)[offset], &bytesWriten);
 						if (err) return(err);
 					}
 					if (isRaw)
@@ -1626,23 +1645,23 @@ GrapaError GrapaDB::SetRecordField(GrapaCursor& cursor, GrapaDBFieldValueArray& 
 					len = ((u64)(h[0] & 0x7F)) << 8 | (u64)h[1];
 					h[0] = 0;
 					h[1] = 0;
-					if (len > dbFieldValue->mValue.mLength)
+					if (len > (*dataValue).mLength)
 					{
-						err = ClearDataValue(recCursor.mValue, dbFieldValue->mDictOffset + 2 + isRaw + dbFieldValue->mValue.mLength, len - dbFieldValue->mValue.mLength);
+						err = ClearDataValue(recCursor.mValue, dbFieldValue->mDictOffset + 2 + isRaw + (*dataValue).mLength, len - (*dataValue).mLength);
 					}
-					if (dbFieldValue->mValue.mBytes) h[0] = 0x80;
-					if (dbFieldValue->mValue.mBytes && dbFieldValue->mValue.mLength)
+					if ((*dataValue).mBytes) h[0] = 0x80;
+					if ((*dataValue).mBytes && (*dataValue).mLength)
 					{
-						if (dbFieldValue->mValue.mLength > (dbFieldValue->mDictSize - 2 - isRaw)) len = (dbFieldValue->mDictSize - 2 - isRaw); else len = dbFieldValue->mValue.mLength;
+						if ((*dataValue).mLength > (dbFieldValue->mDictSize - 2 - isRaw)) len = (dbFieldValue->mDictSize - 2 - isRaw); else len = (*dataValue).mLength;
 						h[0] |= (len >> 8) & 0xFF; h[1] = len & 0xFF;
 						switch (dbFieldValue->mType)
 						{
 						case GrapaTokenType::INT:
 						case GrapaTokenType::TIME:
-							offset = dbFieldValue->mValue.mLength - len;
+							offset = (*dataValue).mLength - len;
 							break;
 						}
-						err = SetDataValue(recCursor.mValue, dbFieldValue->mDictOffset + 2 + isRaw, len, &((u8*)dbFieldValue->mValue.mBytes)[offset], &bytesWriten);
+						err = SetDataValue(recCursor.mValue, dbFieldValue->mDictOffset + 2 + isRaw, len, &((u8*)(*dataValue).mBytes)[offset], &bytesWriten);
 						if (err) return(err);
 					}
 					if (isRaw)
@@ -1663,29 +1682,29 @@ GrapaError GrapaDB::SetRecordField(GrapaCursor& cursor, GrapaDBFieldValueArray& 
 					switch (dbFieldValue->mStore)
 					{
 					case GrapaDBField::STORE_VAR:
-						err = NewData(BYTE_DATA, recCursor.mValue, dbFieldValue->mValue.GetLength(), dbFieldValue->mSize, dbFieldValue->mGrow, dataPtr);
+						err = NewData(BYTE_DATA, recCursor.mValue, (*dataValue).GetLength(), dbFieldValue->mSize, dbFieldValue->mGrow, dataPtr);
 						break;
 					case GrapaDBField::STORE_PAR:
-						err = NewData(FREC_DATA, recCursor.mValue, dbFieldValue->mValue.GetLength(), dbFieldValue->mSize, dbFieldValue->mGrow, dataPtr);
+						err = NewData(FREC_DATA, recCursor.mValue, (*dataValue).GetLength(), dbFieldValue->mSize, dbFieldValue->mGrow, dataPtr);
 						break;
 					}
 					if (err) return(err);
 					if (isRaw) SetFieldType(dataPtr, fieldType); 
 					else SetFieldType(dataPtr, dbFieldValue->mType);
-					err = SetDataValue(dataPtr, 0, dbFieldValue->mValue.GetLength(), dbFieldValue->mValue.GetPtr(), &bytesWriten);
+					err = SetDataValue(dataPtr, 0, (*dataValue).GetLength(), (*dataValue).GetPtr(), &bytesWriten);
 					if (err) return(err);
 					dataPtr = BE_S64(dataPtr);
 					err = SetDataValue(recCursor.mValue, dbFieldValue->mDictOffset, sizeof(dataPtr), &dataPtr, &bytesWriten);
 				}
 				else
 				{
-					if (dbFieldValue->mValue.mBytes)
+					if ((*dataValue).mBytes)
 					{
 						err = GetDataSize(dataPtr, growBlockSize, dataSize, dataLength, compressType);
 						if (err) return(err);
-						err = SetDataSize(dataPtr, dataSize, dbFieldValue->mValue.GetLength(), compressType);
+						err = SetDataSize(dataPtr, dataSize, (*dataValue).GetLength(), compressType);
 						if (err) return(err);
-						err = SetDataValue(dataPtr, 0, dbFieldValue->mValue.GetLength(), dbFieldValue->mValue.GetPtr(), &bytesWriten);
+						err = SetDataValue(dataPtr, 0, (*dataValue).GetLength(), (*dataValue).GetPtr(), &bytesWriten);
 						if (err) return(err);
 						if (isRaw) SetFieldType(dataPtr, fieldType);
 					}
@@ -1714,6 +1733,23 @@ GrapaError GrapaDB::SetRecordField(GrapaCursor& cursor, GrapaDBFieldValueArray& 
 			GrapaCursor fieldCursor;
 			u8 fieldType = dbFieldValue->mValue.ToDbType();
 			u8 isRaw = (dbFieldValue->mType == (u8)GrapaTokenType::RAW) ? 1 : 0;
+
+			GrapaCHAR* dataValue = &dbFieldValue->mValue;
+			GrapaCHAR compressValue;
+			switch (recCursor.mTreeType)
+			{
+			case RTABLE_TREE:
+			case CTABLE_TREE:
+				switch (dbFieldValue->mStore)
+				{
+				case GrapaDBField::STORE_VAR:
+				case GrapaDBField::STORE_PAR:
+					GrapaCompress::Compress(dbFieldValue->mValue, compressValue);
+					dataValue = &compressValue;
+					break;
+				}
+			}
+
 			switch (dbFieldValue->mStore)
 			{
 			case GrapaDBField::STORE_FIX:
@@ -1726,10 +1762,10 @@ GrapaError GrapaDB::SetRecordField(GrapaCursor& cursor, GrapaDBFieldValueArray& 
 					{
 					case GrapaTokenType::INT:
 					case GrapaTokenType::TIME:
-						if (dbFieldValue->mValue.mBytes) h[0] = 0x80;
-						if (dbFieldValue->mValue.mLength && dbFieldValue->mValue.mBytes)
+						if ((*dataValue).mBytes) h[0] = 0x80;
+						if ((*dataValue).mLength && (*dataValue).mBytes)
 						{
-							u8 c = ((u8*)dbFieldValue->mValue.mBytes)[dbFieldValue->mValue.mLength - 1];
+							u8 c = ((u8*)(*dataValue).mBytes)[(*dataValue).mLength - 1];
 							if (c > 127) c = 127;
 							h[0] |= c;
 						}
@@ -1740,11 +1776,11 @@ GrapaError GrapaDB::SetRecordField(GrapaCursor& cursor, GrapaDBFieldValueArray& 
 				}
 				//else if (dbFieldValue->mDictSize == 9 && (dbFieldValue->mType == (u8)GrapaTokenType::TIME))
 				//{
-				//	if (dbFieldValue->mValue.mBytes) h[0] = 0x80;
-				//	if (dbFieldValue->mValue.mLength == 8)
+				//	if ((*dataValue).mBytes) h[0] = 0x80;
+				//	if ((*dataValue).mLength == 8)
 				//	{
 				//		h[0] |= 8;
-				//		SetDataValue(tableCursor.mValue, dbFieldValue->mDictSize*recCursor.mLength + 1, 8, dbFieldValue->mValue.mBytes, &bytesWriten);
+				//		SetDataValue(tableCursor.mValue, dbFieldValue->mDictSize*recCursor.mLength + 1, 8, (*dataValue).mBytes, &bytesWriten);
 				//	}
 				//	err = SetDataValue(tableCursor.mValue, dbFieldValue->mDictSize*recCursor.mLength, 1, h, &bytesWriten);
 				//	if (err) return(err);
@@ -1754,23 +1790,23 @@ GrapaError GrapaDB::SetRecordField(GrapaCursor& cursor, GrapaDBFieldValueArray& 
 					err = GetDataValue(tableCursor.mValue, dbFieldValue->mDictSize*recCursor.mLength, 1, h, &bytesWriten);
 					len = h[0] & 0x7F;
 					h[0] = 0;
-					if (len > dbFieldValue->mValue.mLength)
+					if (len > (*dataValue).mLength)
 					{
-						err = ClearDataValue(tableCursor.mValue, dbFieldValue->mDictSize*recCursor.mLength + 1 + isRaw + dbFieldValue->mValue.mLength, len - dbFieldValue->mValue.mLength);
+						err = ClearDataValue(tableCursor.mValue, dbFieldValue->mDictSize*recCursor.mLength + 1 + isRaw + (*dataValue).mLength, len - (*dataValue).mLength);
 					}
-					if (dbFieldValue->mValue.mBytes) h[0] = 0x80;
-					if (dbFieldValue->mValue.mLength)
+					if ((*dataValue).mBytes) h[0] = 0x80;
+					if ((*dataValue).mLength)
 					{
-						if (dbFieldValue->mValue.mLength > (dbFieldValue->mDictSize - 1 - isRaw)) len = (dbFieldValue->mDictSize - 1 - isRaw); else len = dbFieldValue->mValue.mLength;
+						if ((*dataValue).mLength > (dbFieldValue->mDictSize - 1 - isRaw)) len = (dbFieldValue->mDictSize - 1 - isRaw); else len = (*dataValue).mLength;
 						h[0] |= (u8)len;
 						switch (dbFieldValue->mType)
 						{
 						case GrapaTokenType::INT:
 						case GrapaTokenType::TIME:
-							offset = dbFieldValue->mValue.mLength - len;
+							offset = (*dataValue).mLength - len;
 							break;
 						}
-						err = SetDataValue(tableCursor.mValue, dbFieldValue->mDictSize*recCursor.mLength + 1 + isRaw, len, &((u8*)dbFieldValue->mValue.mBytes)[offset], &bytesWriten);
+						err = SetDataValue(tableCursor.mValue, dbFieldValue->mDictSize*recCursor.mLength + 1 + isRaw, len, &((u8*)(*dataValue).mBytes)[offset], &bytesWriten);
 						if (err) return(err);
 					}
 					if (isRaw)
@@ -1784,23 +1820,23 @@ GrapaError GrapaDB::SetRecordField(GrapaCursor& cursor, GrapaDBFieldValueArray& 
 					len = ((u64)(h[0] & 0x7F)) << 8 | (u64)h[1];
 					h[0] = 0;
 					h[1] = 0;
-					if (len > dbFieldValue->mValue.mLength)
+					if (len > (*dataValue).mLength)
 					{
-						err = ClearDataValue(tableCursor.mValue, dbFieldValue->mDictSize*recCursor.mLength + 2 + isRaw + dbFieldValue->mValue.mLength, len - dbFieldValue->mValue.mLength);
+						err = ClearDataValue(tableCursor.mValue, dbFieldValue->mDictSize*recCursor.mLength + 2 + isRaw + (*dataValue).mLength, len - (*dataValue).mLength);
 					}
-					if (dbFieldValue->mValue.mBytes) h[0] = 0x80;
-					if (dbFieldValue->mValue.mLength)
+					if ((*dataValue).mBytes) h[0] = 0x80;
+					if ((*dataValue).mLength)
 					{
-						if (dbFieldValue->mValue.mLength > (dbFieldValue->mDictSize - 2 - isRaw)) len = (dbFieldValue->mDictSize - 2 - isRaw); else len = dbFieldValue->mValue.mLength;
+						if ((*dataValue).mLength > (dbFieldValue->mDictSize - 2 - isRaw)) len = (dbFieldValue->mDictSize - 2 - isRaw); else len = (*dataValue).mLength;
 						h[0] |= (len >> 8) & 0xFF; h[1] = len & 0xFF;
 						switch (dbFieldValue->mType)
 						{
 						case GrapaTokenType::INT:
 						case GrapaTokenType::TIME:
-							offset = dbFieldValue->mValue.mLength - len;
+							offset = (*dataValue).mLength - len;
 							break;
 						}
-						err = SetDataValue(tableCursor.mValue, dbFieldValue->mDictSize*recCursor.mLength + 2 + isRaw, len, &((u8*)dbFieldValue->mValue.mBytes)[offset], &bytesWriten);
+						err = SetDataValue(tableCursor.mValue, dbFieldValue->mDictSize*recCursor.mLength + 2 + isRaw, len, &((u8*)(*dataValue).mBytes)[offset], &bytesWriten);
 						if (err) return(err);
 					}
 					if (isRaw)
@@ -1821,14 +1857,14 @@ GrapaError GrapaDB::SetRecordField(GrapaCursor& cursor, GrapaDBFieldValueArray& 
 				err = Search(fieldCursor);
 				if (err)
 				{
-					if (dbFieldValue->mValue.mBytes == NULL) break;
+					if ((*dataValue).mBytes == NULL) break;
 					switch (dbFieldValue->mStore)
 					{
 					case GrapaDBField::STORE_VAR:
-						err = NewData(BYTE_DATA, tableCursor.mValue, dbFieldValue->mValue.GetLength(), dbFieldValue->mSize, dbFieldValue->mGrow, dataPtr);
+						err = NewData(BYTE_DATA, tableCursor.mValue, (*dataValue).GetLength(), dbFieldValue->mSize, dbFieldValue->mGrow, dataPtr);
 						break;
 					case GrapaDBField::STORE_PAR:
-						err = NewData(FREC_DATA, tableCursor.mValue, dbFieldValue->mValue.GetLength(), dbFieldValue->mSize, dbFieldValue->mGrow, dataPtr);
+						err = NewData(FREC_DATA, tableCursor.mValue, (*dataValue).GetLength(), dbFieldValue->mSize, dbFieldValue->mGrow, dataPtr);
 						break;
 					}
 					if (err) return(err);
@@ -1841,16 +1877,16 @@ GrapaError GrapaDB::SetRecordField(GrapaCursor& cursor, GrapaDBFieldValueArray& 
 						return(err);
 					}
 				}
-				if (dbFieldValue->mValue.mBytes == NULL)
+				if ((*dataValue).mBytes == NULL)
 				{
 					err = Delete(fieldCursor);
 					break;
 				}
 				err = GetDataSize(fieldCursor.mValue, growBlockSize, dataSize, dataLength, compressType);
 				if (err) return(err);
-				err = SetDataSize(fieldCursor.mValue, dataSize, dbFieldValue->mValue.mLength, compressType);
+				err = SetDataSize(fieldCursor.mValue, dataSize, (*dataValue).mLength, compressType);
 				if (err) return(err);
-				err = SetDataValue(fieldCursor.mValue, 0, dbFieldValue->mValue.mLength, dbFieldValue->mValue.GetPtr(), &bytesWriten);
+				err = SetDataValue(fieldCursor.mValue, 0, (*dataValue).mLength, (*dataValue).GetPtr(), &bytesWriten);
 				if (err) return(err);
 				if (isRaw) SetFieldType(fieldCursor.mValue, fieldType);
 				break;
@@ -1949,7 +1985,7 @@ GrapaError GrapaDB::GetRecordField(GrapaCursor& cursor, u64 fieldId, GrapaBYTE& 
 	return 0;
 }
 
-GrapaError GrapaDB::GetRecordField(GrapaCursor& cursor, GrapaDBField& field, GrapaBYTE& buffer)
+GrapaError GrapaDB::GetRecordField(GrapaCursor& cursor, GrapaDBField& field, GrapaBYTE& bufferX)
 {
 	GrapaError err;
 	u64 returnSize=0;
@@ -1958,7 +1994,7 @@ GrapaError GrapaDB::GetRecordField(GrapaCursor& cursor, GrapaDBField& field, Gra
 	GrapaCursor fieldCursor,recCursor;
 	u8 compressType=0;
 
-	buffer.SetSize(0);
+	bufferX.SetSize(0);
 
 	GrapaBlockTree tree;
 	err = tree.Read(mFile,cursor.mTreeRef);
@@ -1974,8 +2010,25 @@ GrapaError GrapaDB::GetRecordField(GrapaCursor& cursor, GrapaDBField& field, Gra
 	u8 h[2] = { 0, 0 };
 	u64 len = 0;
 	u64 dataPtr, dataSize, dataLength = 0, growBlockSize;
-	buffer.FromDbType(field.mType);
+	bufferX.FromDbType(field.mType);
 	u8 isRaw = (field.mType == (u8)GrapaTokenType::RAW) ? 1 : 0;
+
+	GrapaBYTE* dataValue = &bufferX;
+	GrapaBYTE compressValue;
+	switch (recCursor.mTreeType)
+	{
+	case RTABLE_TREE:
+	case CTABLE_TREE:
+		switch (field.mStore)
+		{
+		case GrapaDBField::STORE_VAR:
+		case GrapaDBField::STORE_PAR:
+			dataValue = &compressValue;
+			compressValue.FromDbType(field.mType);
+			break;
+		}
+	}
+
 	switch (recCursor.mTreeType)
 	{
 	case SU64_TREE:
@@ -1992,12 +2045,12 @@ GrapaError GrapaDB::GetRecordField(GrapaCursor& cursor, GrapaDBField& field, Gra
 			{
 				err = GetDataValue(dataRef, field.mDictOffset, 1, h, &returnSize);
 				if ((h[0] & 0x80) == 0)
-					buffer.SetSize(0);
+					dataValue->SetSize(0);
 				else
 				{
 					h[0] &= 0x7F;
-					buffer.SetLength(1, false);
-					((u8*)buffer.mBytes)[0] = h[0] & 0x7F;
+					dataValue->SetLength(1, false);
+					((u8*)dataValue->mBytes)[0] = h[0] & 0x7F;
 				}
 			}
 			//else if (field.mDictSize == 9 && (field.mType == (u8)GrapaTokenType::TIME))
@@ -2017,38 +2070,38 @@ GrapaError GrapaDB::GetRecordField(GrapaCursor& cursor, GrapaDBField& field, Gra
 			{
 				err = GetDataValue(dataRef, field.mDictOffset, 1, h, &returnSize);
 				if ((h[0] & 0x80) == 0)
-					buffer.SetSize(0);
+					dataValue->SetSize(0);
 				else
 				{
 					len = h[0] & 0x7F;
-					buffer.SetLength(len, false);
-					err = GetDataValue(dataRef, field.mDictOffset + 1 + isRaw, len, buffer.GetPtr(), &returnSize);
+					dataValue->SetLength(len, false);
+					err = GetDataValue(dataRef, field.mDictOffset + 1 + isRaw, len, dataValue->GetPtr(), &returnSize);
 					if (err) return(err);
 				}
 				if (isRaw)
 				{
 					h[0] = 0;
 					err = GetDataValue(dataRef, field.mDictOffset + 1, 1, h, &returnSize);
-					buffer.mToken = h[0];
+					dataValue->mToken = h[0];
 				}
 			}
 			else if (field.mDictSize <= (0x8001 + isRaw))
 			{
 				err = GetDataValue(dataRef, field.mDictOffset, 2, h, &returnSize);
 				if ((h[0] & 0x80) == 0)
-					buffer.SetSize(0);
+					dataValue->SetSize(0);
 				else
 				{
 					len = ((u64)(h[0] & 0x7F)) << 8 | (u64)h[1];
-					buffer.SetLength(len, false);
-					err = GetDataValue(dataRef, field.mDictOffset + 2 + isRaw, len, buffer.GetPtr(), &returnSize);
+					dataValue->SetLength(len, false);
+					err = GetDataValue(dataRef, field.mDictOffset + 2 + isRaw, len, dataValue->GetPtr(), &returnSize);
 					if (err) return(err);
 				}
 				if (isRaw)
 				{
 					h[0] = 0;
 					err = GetDataValue(dataRef, field.mDictOffset + 2, 1, h, &returnSize);
-					buffer.mToken = h[0];
+					dataValue->mToken = h[0];
 				}
 			}
 			else
@@ -2064,18 +2117,18 @@ GrapaError GrapaDB::GetRecordField(GrapaCursor& cursor, GrapaDBField& field, Gra
 				dataPtr = BE_S64(dataPtr);
 				err = GetDataSize(dataPtr, growBlockSize, dataSize, dataLength, compressType);
 				if (err) return(err);
-				buffer.SetLength(dataLength, false);
-				err = GetDataValue(dataPtr, 0, dataLength, buffer.GetPtr(), &returnSize);
+				dataValue->SetLength(dataLength, false);
+				err = GetDataValue(dataPtr, 0, dataLength, dataValue->GetPtr(), &returnSize);
 				if (err) return(err);
 			}
 			else
 			{
-				buffer.SetSize(0);
+				dataValue->SetSize(0);
 			}
 			if (isRaw)
 			{
 				GetFieldType(dataPtr, h[0]);
-				buffer.mToken = h[0];
+				dataValue->mToken = h[0];
 			}
 			break;
 		}
@@ -2096,12 +2149,12 @@ GrapaError GrapaDB::GetRecordField(GrapaCursor& cursor, GrapaDBField& field, Gra
 			{
 				err = GetDataValue(fieldCursor.mValue, field.mDictSize*recCursor.mLength, 1, h, &returnSize);
 				if ((h[0] & 0x80) == 0)
-					buffer.SetSize(0);
+					dataValue->SetSize(0);
 				else
 				{
 					h[0] &= 0x7F;
-					buffer.SetLength(1, false);
-					((u8*)buffer.mBytes)[0] = h[0] & 0x7F;
+					dataValue->SetLength(1, false);
+					((u8*)dataValue->mBytes)[0] = h[0] & 0x7F;
 				}
 			}
 			//else if (field.mDictSize == 9 && (field.mType == (u8)GrapaTokenType::TIME))
@@ -2121,19 +2174,19 @@ GrapaError GrapaDB::GetRecordField(GrapaCursor& cursor, GrapaDBField& field, Gra
 			{
 				err = GetDataValue(fieldCursor.mValue, field.mDictSize*recCursor.mLength, 1, h, &returnSize);
 				if ((h[0] & 0x80) == 0)
-					buffer.SetSize(0);
+					dataValue->SetSize(0);
 				else
 				{
 					len = h[0] & 0x7F;
-					buffer.SetLength(len, false);
-					err = GetDataValue(fieldCursor.mValue, field.mDictSize*recCursor.mLength + 1 + isRaw, len, buffer.GetPtr(), &returnSize);
+					dataValue->SetLength(len, false);
+					err = GetDataValue(fieldCursor.mValue, field.mDictSize*recCursor.mLength + 1 + isRaw, len, dataValue->GetPtr(), &returnSize);
 					if (err) return(err);
 				}
 				if (isRaw)
 				{
 					h[0] = 0;
 					err = GetDataValue(fieldCursor.mValue, field.mDictSize*recCursor.mLength + 1, 1, h, &returnSize);
-					buffer.mToken = h[0];
+					dataValue->mToken = h[0];
 				}
 			}
 			else if (field.mDictSize <= (0x8001 + isRaw))
@@ -2141,19 +2194,19 @@ GrapaError GrapaDB::GetRecordField(GrapaCursor& cursor, GrapaDBField& field, Gra
 				// err = GetDataValue(fieldCursor.mValue, field.mDictSize*recCursor.mLength, 2, h, &bytesWriten); // DEBUG: incorrect variable, causes build error
 				err = GetDataValue(fieldCursor.mValue, field.mDictSize * recCursor.mLength, 2, h, &returnSize); // DEBUG: corrected variable
 				if ((h[0] & 0x80) == 0)
-					buffer.SetSize(0);
+					dataValue->SetSize(0);
 				else
 				{
 					len = ((u64)(h[0] & 0x7F)) << 8 | (u64)h[1];
-					buffer.SetLength(len, false);
-					err = GetDataValue(fieldCursor.mValue, field.mDictSize*recCursor.mLength + 2 + isRaw, len, buffer.GetPtr(), &returnSize);
+					dataValue->SetLength(len, false);
+					err = GetDataValue(fieldCursor.mValue, field.mDictSize*recCursor.mLength + 2 + isRaw, len, dataValue->GetPtr(), &returnSize);
 					if (err) return(err);
 				}
 				if (isRaw)
 				{
 					h[0] = 0;
 					err = GetDataValue(fieldCursor.mValue, field.mDictSize*recCursor.mLength + 2, 1, h, &returnSize);
-					buffer.mToken = h[0];
+					dataValue->mToken = h[0];
 				}
 			}
 			else
@@ -2170,24 +2223,37 @@ GrapaError GrapaDB::GetRecordField(GrapaCursor& cursor, GrapaDBField& field, Gra
 			err = Search(fieldCursor);
 			if (err)
 			{
-				buffer.SetSize(0);
+				dataValue->SetSize(0);
 				break;
 			}
 			err = GetDataSize(fieldCursor.mValue, growBlockSize, dataSize, dataLength, compressType);
-			buffer.SetLength(dataLength, false);
+			dataValue->SetLength(dataLength, false);
 			returnSize = 0;
-			err = GetDataValue(fieldCursor.mValue, 0, dataLength, buffer.GetPtr(), &returnSize);
+			err = GetDataValue(fieldCursor.mValue, 0, dataLength, dataValue->GetPtr(), &returnSize);
 			if (err) return(err);
 			if (isRaw)
 			{
 				GetFieldType(fieldCursor.mValue, h[0]);
-				buffer.mToken = h[0];
+				dataValue->mToken = h[0];
 			}
 			break;
 
 		}
 		break;
 
+	}
+
+	switch (recCursor.mTreeType)
+	{
+	case RTABLE_TREE:
+	case CTABLE_TREE:
+		switch (field.mStore)
+		{
+		case GrapaDBField::STORE_VAR:
+		case GrapaDBField::STORE_PAR:
+			GrapaCompress::Expand(compressValue, bufferX);
+			break;
+		}
 	}
 
 	return(0);
