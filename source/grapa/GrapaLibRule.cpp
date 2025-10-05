@@ -22129,13 +22129,13 @@ GrapaRuleEvent* calculate_array_string_similarity(GrapaScriptExec* vScriptExec, 
 	return result;
 }
 
-GrapaError get_table_pointer_similarity(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* datasource, u64 pId, GrapaRuleEvent* actual_item)
+GrapaError get_table_pointer_similarity(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* datasource, GrapaCHAR& datafield, u64 pId, GrapaRuleEvent* actual_item)
 {
 	if (actual_item == NULL) return -1;
-	GrapaCHAR field, value;
-	GrapaError err = datasource->vDatabase->FieldGet(pId, field, value);
+	GrapaCHAR value;
+	GrapaError err = datasource->vDatabase->FieldGet(pId, datafield, value);
 	if (err) return err;
-	actual_item->mName.FROM(field);
+	actual_item->mName.FROM(datafield);
 	actual_item->mValue.FROM(value);
 	if (actual_item->mValue.mToken == GrapaTokenType::LIST || actual_item->mValue.mToken == GrapaTokenType::TUPLE || actual_item->mValue.mToken == GrapaTokenType::GOBJ || actual_item->mValue.mToken == GrapaTokenType::ERR || actual_item->mValue.mToken == GrapaTokenType::XML || actual_item->mValue.mToken == GrapaTokenType::EL || actual_item->mValue.mToken == GrapaTokenType::TAG || actual_item->mValue.mToken == GrapaTokenType::OP || actual_item->mValue.mToken == GrapaTokenType::CODE || actual_item->mValue.mToken == GrapaTokenType::ERR)
 	{
@@ -22166,7 +22166,7 @@ GrapaError get_table_pointer_similarity(GrapaScriptExec* vScriptExec, GrapaNames
 }
 
 // Helper function to calculate pointer-based similarity (new in-memory approach)
-GrapaRuleEvent* calculate_pointer_similarity(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* index_list, GrapaRuleEvent* query, GrapaCHAR& method, GrapaRuleEvent* datasource, int top_n, double threshold, std::string sort, bool include_scores, bool include_items)
+GrapaRuleEvent* calculate_pointer_similarity(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* index_list, GrapaRuleEvent* query, GrapaCHAR& method, GrapaRuleEvent* datasource, GrapaCHAR& datafield, int top_n, double threshold, std::string sort, bool include_scores, bool include_items)
 {
 	GrapaRuleEvent* result = NULL;
 	if (datasource == NULL)
@@ -22194,6 +22194,12 @@ GrapaRuleEvent* calculate_pointer_similarity(GrapaScriptExec* vScriptExec, Grapa
 		}
 	}
 	
+	GrapaFloat sum_ab(vScriptExec->vScriptState->mItemState.mFloatFix, vScriptExec->vScriptState->mItemState.mFloatMax, vScriptExec->vScriptState->mItemState.mFloatExtra, 0);
+	GrapaFloat sum_a2(vScriptExec->vScriptState->mItemState.mFloatFix, vScriptExec->vScriptState->mItemState.mFloatMax, vScriptExec->vScriptState->mItemState.mFloatExtra, 0);
+	GrapaFloat sum_b2(vScriptExec->vScriptState->mItemState.mFloatFix, vScriptExec->vScriptState->mItemState.mFloatMax, vScriptExec->vScriptState->mItemState.mFloatExtra, 0);
+	GrapaFloat norm_a(vScriptExec->vScriptState->mItemState.mFloatFix, vScriptExec->vScriptState->mItemState.mFloatMax, vScriptExec->vScriptState->mItemState.mFloatExtra, 0);
+	GrapaFloat norm_b(vScriptExec->vScriptState->mItemState.mFloatFix, vScriptExec->vScriptState->mItemState.mFloatMax, vScriptExec->vScriptState->mItemState.mFloatExtra, 0);
+
 	// Calculate similarities
 	std::vector<std::pair<int, double>> similarities;
 	for (size_t i = 0; i < indexes.size(); i++)
@@ -22210,7 +22216,7 @@ GrapaRuleEvent* calculate_pointer_similarity(GrapaScriptExec* vScriptExec, Grapa
 				actual_item = datasource->vQueue->Head(index);
 			else if ((datasource->mValue.mToken == GrapaTokenType::OBJ && datasource->vClass->mName.Cmp("$file") == 0) || datasource->mValue.mToken == GrapaTokenType::TABLE)
 			{
-				GrapaError err = get_table_pointer_similarity(vScriptExec, pNameSpace, datasource, index, &table_item);
+				GrapaError err = get_table_pointer_similarity(vScriptExec, pNameSpace, datasource, datafield, index, &table_item);
 				if (err)
 					continue;
 				actual_item = &table_item;
@@ -22232,22 +22238,53 @@ GrapaRuleEvent* calculate_pointer_similarity(GrapaScriptExec* vScriptExec, Grapa
 			}
 			else if (query->mValue.mToken == GrapaTokenType::VECTOR && actual_item->mValue.mToken == GrapaTokenType::VECTOR)
 			{
-				// Vector similarity
+				// Vector similarity with optimized inline calculation
 				if (actual_item->vVector && query->vVector)
 				{
-					GrapaVector result_vector;
-					GrapaError err = actual_item->vVector->Similarity(vScriptExec, pNameSpace, *query->vVector, result_vector, method);
-					if (err == 0)
+					GrapaVector* query_vec = query->vVector;
+					GrapaVector* item_vec = actual_item->vVector;
+					
+					if (query_vec->mData && item_vec->mData && query_vec->mDim == 1 && item_vec->mDim == 1 && query_vec->mCounts[0] == item_vec->mCounts[0])
 					{
-						// Extract similarity value from result_vector
-						if (result_vector.mCounts && result_vector.mCounts[0] > 0)
+						u64 query_len = query_vec->mCounts[0];
+						
+						// Optimized cosine similarity calculation (inline)
+						if (method.StrLowerCmp("cosine") == 0 || method.StrLowerCmp("cosine_similarity") == 0)
 						{
-							// Get the first element as the similarity score
-							GrapaVectorParam param(vScriptExec, result_vector.mData, result_vector.mBlock, 0);
-							if (param.aa)
+							// Calculate cosine similarity: (a·b) / (||a|| * ||b||)							
+							for (u64 j = 0; j < query_len; j++)
 							{
-								// Convert GrapaFloat to double
-								similarity = param.aa->ToDouble();
+								GrapaVectorParam p1(vScriptExec, query_vec->mData, query_vec->mBlock, j);
+								GrapaVectorParam p2(vScriptExec, item_vec->mData, item_vec->mBlock, j);
+								
+								if (p1.aa && p2.aa)
+								{
+									sum_ab += *p1.aa * *p2.aa;
+									sum_a2 += *p1.aa * *p1.aa;
+									sum_b2 += *p2.aa * *p2.aa;
+								}
+							}
+							
+							// Calculate final cosine similarity
+							norm_a = sum_a2.Root(GrapaInt(2));
+							norm_b = sum_b2.Root(GrapaInt(2));
+							if (norm_a > 0 && norm_b > 0)
+							{
+								similarity = (sum_ab / (norm_a * norm_b)).ToDouble();
+							}
+						}
+						else
+						{
+							// For non-cosine methods, fall back to full Similarity method
+							GrapaVector result_vector;
+							GrapaError err = item_vec->Similarity(vScriptExec, pNameSpace, *query_vec, result_vector, method);
+							if (err == 0 && result_vector.mCounts && result_vector.mCounts[0] > 0)
+							{
+								GrapaVectorParam param(vScriptExec, result_vector.mData, result_vector.mBlock, 0);
+								if (param.aa)
+								{
+									similarity = param.aa->ToDouble();
+								}
 							}
 						}
 					}
@@ -22275,7 +22312,7 @@ GrapaRuleEvent* calculate_pointer_similarity(GrapaScriptExec* vScriptExec, Grapa
 	// Limit to top_n
 	if (similarities.size() > (size_t)top_n)
 		similarities.resize(top_n);
-	
+
 	// Build result object
 	result = new GrapaRuleEvent(0, GrapaCHAR(""), GrapaCHAR(""));
 	result->mValue.mToken = GrapaTokenType::GOBJ;
@@ -22314,7 +22351,7 @@ GrapaRuleEvent* calculate_pointer_similarity(GrapaScriptExec* vScriptExec, Grapa
 			else if ((datasource->mValue.mToken == GrapaTokenType::OBJ && datasource->vClass->mName.Cmp("$file") == 0) || datasource->mValue.mToken == GrapaTokenType::TABLE)
 			{
 				GrapaRuleEvent* item_field = new GrapaRuleEvent(0, GrapaCHAR(), GrapaCHAR());
-				GrapaError err = get_table_pointer_similarity(vScriptExec, pNameSpace, datasource, sim.first, item_field);
+				GrapaError err = get_table_pointer_similarity(vScriptExec, pNameSpace, datasource, datafield, sim.first, item_field);
 				if (err)
 				{
 					item_field->CLEAR();
@@ -22359,7 +22396,7 @@ GrapaRuleEvent* calculate_pointer_similarity(GrapaScriptExec* vScriptExec, Grapa
 			else if ((datasource->mValue.mToken == GrapaTokenType::OBJ && datasource->vClass->mName.Cmp("$file") == 0) || datasource->mValue.mToken == GrapaTokenType::TABLE)
 			{
 				GrapaRuleEvent* best_match_key = new GrapaRuleEvent(0, GrapaCHAR(), GrapaCHAR());
-				GrapaError err = get_table_pointer_similarity(vScriptExec, pNameSpace, datasource, best_index, best_match_key);
+				GrapaError err = get_table_pointer_similarity(vScriptExec, pNameSpace, datasource, datafield, best_index, best_match_key);
 				if (err)
 				{
 					best_match_key->CLEAR();
@@ -22401,34 +22438,75 @@ GrapaRuleEvent* calculate_array_vector_similarity(GrapaScriptExec* vScriptExec, 
 		}
 	}
 	
-	// Calculate similarities
+	// Calculate similarities with optimized inline calculation
 	std::vector<std::pair<int, double>> similarities;
+	
+	// Get query vector data for efficient access
+	GrapaVector* query_vec = query->vVector;
+	if (!query_vec || !query_vec->mData || query_vec->mDim != 1)
+		return result;
+	
+	u64 query_len = query_vec->mCounts[0];
+	
 	for (size_t i = 0; i < array_items.size(); i++)
 	{
-		// Create temporary result vector for similarity calculation
-		GrapaVector temp_result;
-		GrapaError err = query->vVector->Similarity(vScriptExec, pNameSpace, *array_items[i]->vVector, temp_result, method);
+		GrapaVector* item_vec = array_items[i]->vVector;
+		if (!item_vec || !item_vec->mData || item_vec->mDim != 1 || item_vec->mCounts[0] != query_len)
+			continue;
 		
-		if (!err)
+		// Optimized cosine similarity calculation (inline)
+		double similarity = 0.0;
+		if (method.StrLowerCmp("cosine") == 0 || method.StrLowerCmp("cosine_similarity") == 0)
 		{
-			// Extract similarity value from result vector
-			double similarity = 0.0;
-			if (temp_result.mCounts && temp_result.mCounts[0] > 0)
+			// Calculate cosine similarity: (a·b) / (||a|| * ||b||)
+			double sum_ab = 0.0;
+			double sum_a2 = 0.0;
+			double sum_b2 = 0.0;
+			
+			for (u64 j = 0; j < query_len; j++)
 			{
-				// Get the first element as the similarity score
-				GrapaVectorParam param(vScriptExec, temp_result.mData, temp_result.mBlock, 0);
-				if (param.aa)
+				GrapaVectorParam p1(vScriptExec, query_vec->mData, query_vec->mBlock, j);
+				GrapaVectorParam p2(vScriptExec, item_vec->mData, item_vec->mBlock, j);
+				
+				if (p1.aa && p2.aa)
 				{
-					// Convert GrapaFloat to double
-					similarity = param.aa->ToDouble();
+					double a = p1.aa->ToDouble();
+					double b = p2.aa->ToDouble();
+					
+					sum_ab += a * b;
+					sum_a2 += a * a;
+					sum_b2 += b * b;
 				}
 			}
 			
-			// Apply threshold filter
-			if (similarity >= threshold)
+			// Calculate final cosine similarity
+			double norm_a = sqrt(sum_a2);
+			double norm_b = sqrt(sum_b2);
+			if (norm_a > 0 && norm_b > 0)
 			{
-				similarities.push_back(std::make_pair(i, similarity));
+				similarity = sum_ab / (norm_a * norm_b);
 			}
+		}
+		else
+		{
+			// For non-cosine methods, fall back to full Similarity method
+			GrapaVector temp_result;
+			GrapaError err = query_vec->Similarity(vScriptExec, pNameSpace, *item_vec, temp_result, method);
+			
+			if (!err && temp_result.mCounts && temp_result.mCounts[0] > 0)
+			{
+				GrapaVectorParam param(vScriptExec, temp_result.mData, temp_result.mBlock, 0);
+				if (param.aa)
+				{
+					similarity = param.aa->ToDouble();
+				}
+			}
+		}
+		
+		// Apply threshold filter
+		if (similarity >= threshold)
+		{
+			similarities.push_back(std::make_pair(i, similarity));
 		}
 	}
 	
@@ -22548,14 +22626,17 @@ GrapaRuleEvent* GrapaLibraryRuleSimilarityEvent::Run(GrapaScriptExec* vScriptExe
 	bool include_scores = true;
 	bool include_items = true;
 	GrapaRuleEvent* datasource = NULL;
+	GrapaCHAR datafield;
 	
 	if (params_param.vVal && params_param.vVal->mValue.mToken == GrapaTokenType::GOBJ && params_param.vVal->vQueue)
 	{
 		// Parse parameters from object
-		GrapaRuleEvent* params_event = params_param.vVal->vQueue->Head();
-		while (params_event)
+		GrapaRuleEvent* params_event_head = params_param.vVal->vQueue->Head();
+		while (params_event_head)
 		{
-			std::string key_str(reinterpret_cast<const char*>(params_event->mName.mBytes), params_event->mName.mLength);
+			GrapaRuleEvent* params_event = params_event_head;
+			while (params_event && params_event->mValue.mToken == GrapaTokenType::PTR) params_event = params_event->vRulePointer;
+			std::string key_str(reinterpret_cast<const char*>(params_event_head->mName.mBytes), params_event_head->mName.mLength);
 			std::transform(key_str.begin(), key_str.end(), key_str.begin(), ::tolower);
 			if (key_str == "top_n" && params_event->mValue.mToken == GrapaTokenType::INT)
 			{
@@ -22591,7 +22672,6 @@ GrapaRuleEvent* GrapaLibraryRuleSimilarityEvent::Run(GrapaScriptExec* vScriptExe
 			else if (key_str == "datasource")
 			{
 				// Store the datasource (in-memory array) for pointer-based similarity
-				while(params_event && params_event->mValue.mToken == GrapaTokenType::PTR) params_event = params_event->vRulePointer;
 				if ((params_event && params_event->mValue.mToken == GrapaTokenType::LIST) ||
 					((params_event->mValue.mToken == GrapaTokenType::OBJ && params_event->vClass->mName.Cmp("$file") == 0) || params_event->mValue.mToken == GrapaTokenType::TABLE))
 				{
@@ -22607,7 +22687,11 @@ GrapaRuleEvent* GrapaLibraryRuleSimilarityEvent::Run(GrapaScriptExec* vScriptExe
 					datasource = NULL;
 				}
 			}
-			params_event = params_event->Next();
+			else if (key_str == "datafield")
+			{
+				datafield.FROM(params_event->mValue);
+			}
+			params_event_head = params_event_head->Next();
 		}
 	}
 	
@@ -22629,7 +22713,7 @@ GrapaRuleEvent* GrapaLibraryRuleSimilarityEvent::Run(GrapaScriptExec* vScriptExe
 		if (is_pointer_list)
 		{
 			// Use pointer-based similarity search with in-memory datasource
-			result = calculate_pointer_similarity(vScriptExec, pNameSpace, array_param.vVal, query_param.vVal, method, datasource, top_n, threshold, sort, include_scores, include_items);
+			result = calculate_pointer_similarity(vScriptExec, pNameSpace, array_param.vVal, query_param.vVal, method, datasource, datafield, top_n, threshold, sort, include_scores, include_items);
 		}
 	}
 	// Case 2: query_param is list of indexes, array_param is the query
@@ -22649,7 +22733,7 @@ GrapaRuleEvent* GrapaLibraryRuleSimilarityEvent::Run(GrapaScriptExec* vScriptExe
 		if (is_pointer_list)
 		{
 			// Use pointer-based similarity search with in-memory datasource (swap parameters)
-			result = calculate_pointer_similarity(vScriptExec, pNameSpace, query_param.vVal, array_param.vVal, method, datasource, top_n, threshold, sort, include_scores, include_items);
+			result = calculate_pointer_similarity(vScriptExec, pNameSpace, query_param.vVal, array_param.vVal, method, datasource, datafield, top_n, threshold, sort, include_scores, include_items);
 		}
 	}
 	
