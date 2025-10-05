@@ -21941,7 +21941,7 @@ bool are_values_similar(GrapaRuleEvent* val1, GrapaRuleEvent* val2)
 			GrapaInt int1, int2;
 			int1.FromBytes(val1->mValue);
 			int2.FromBytes(val2->mValue);
-			return int1.LongValue() == int2.LongValue();
+			return int1 == int2;
 		}
 		else if (val1->mValue.mToken == GrapaTokenType::FLOAT)
 		{
