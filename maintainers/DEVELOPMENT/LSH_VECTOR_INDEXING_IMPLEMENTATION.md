@@ -4,6 +4,12 @@
 
 This document outlines the implementation plan for **Multi-Hash Locality Sensitive Hashing (LSH)** vector indexing in Grapa to address performance issues with similarity search on datasets larger than 20K records. The approach uses **multiple hash sets** to reduce the boundary problem while leveraging Grapa's database infrastructure for persistent storage and fast hash-based lookups.
 
+## Implementation Status
+- ✅ **`datafield` parameter**: Already implemented in `GrapaLibraryRuleSimilarityEvent::Run`
+- 🔄 **`hashsource` parameter**: Needs to be added (renamed from `hash_vectors`)
+- 🔄 **`hashfield` parameter**: Needs to be added
+- 🔄 **Multi-hash similarity functions**: Need to be implemented
+
 ## Problem Statement
 
 Current Grapa similarity search performance degrades significantly above 20K records:
@@ -474,8 +480,10 @@ GrapaRuleEvent* GrapaLibraryRuleSimilarityEvent::Run(GrapaScriptExec* vScriptExe
 {
     // ... existing parameter parsing ...
     
-    // Parse hash_vectors parameter (new)
-    GrapaRuleEvent* hash_vectors = NULL;
+    // Parse new parameters for hash-based similarity
+    GrapaRuleEvent* hashsource = NULL;
+    GrapaCHAR hashfield;             // Hash field (required if hashsource provided)
+    
     if (params_param.vVal && params_param.vVal->mValue.mToken == GrapaTokenType::GOBJ && params_param.vVal->vQueue)
     {
         GrapaRuleEvent* params_event_head = params_param.vVal->vQueue->Head();
@@ -488,26 +496,30 @@ GrapaRuleEvent* GrapaLibraryRuleSimilarityEvent::Run(GrapaScriptExec* vScriptExe
             std::string key_str(reinterpret_cast<const char*>(params_event_head->mName.mBytes), params_event_head->mName.mLength);
             std::transform(key_str.begin(), key_str.end(), key_str.begin(), ::tolower);
             
-            if (key_str == "hash_vectors")
+            if (key_str == "hashsource")
             {
                 if (params_event->mValue.mToken == GrapaTokenType::LIST)
                 {
-                    hash_vectors = params_event;
+                    hashsource = params_event;
                 }
                 else
                 {
-                    hash_vectors = NULL;
+                    hashsource = NULL;
                 }
             }
-            // ... existing parameter parsing ...
+            else if (key_str == "hashfield")
+            {
+                hashfield.FROM(params_event->mValue);
+            }
+            // ... existing parameter parsing (datafield already implemented) ...
             params_event_head = params_event_head->Next();
         }
     }
     
-    // Use hash vectors if provided
-    if (hash_vectors && array_param.vVal && query_param.vVal)
+    // Use hash source if provided
+    if (hashsource && array_param.vVal && query_param.vVal)
     {
-        return calculate_multi_hash_similarity(vScriptExec, pNameSpace, array_param.vVal, query_param.vVal, method, hash_vectors, top_n, threshold, sort, include_scores, include_items);
+        return calculate_multi_hash_similarity(vScriptExec, pNameSpace, array_param.vVal, query_param.vVal, method, hashsource, datafield, hashfield, top_n, threshold, sort, include_scores, include_items);
     }
     
     // ... existing similarity calculation logic ...
@@ -525,24 +537,26 @@ GrapaRuleEvent* calculate_multi_hash_similarity(
     GrapaRuleEvent* array,
     GrapaRuleEvent* query,
     GrapaCHAR& method,
-    GrapaRuleEvent* hash_vectors,
+    GrapaRuleEvent* hashsource,
+    GrapaCHAR& datafield,
+    GrapaCHAR& hashfield,
     int top_n,
     double threshold,
     std::string sort,
     bool include_scores,
     bool include_items
 ) {
-    // Validate hash_vectors is a LIST
-    if (!hash_vectors || hash_vectors->mValue.mToken != GrapaTokenType::LIST)
+    // Validate hashsource is a LIST
+    if (!hashsource || hashsource->mValue.mToken != GrapaTokenType::LIST)
     {
         return NULL;
     }
     
     // Generate query hash using same method
-    std::vector<u64> query_hashes = generate_query_hashes(query, method, hash_vectors);
+    std::vector<u64> query_hashes = generate_query_hashes(query, method, hashsource);
     
-    // Collect candidates from hash buckets
-    std::vector<GrapaVector*> candidates = collect_hash_candidates(array, query_hashes, method);
+    // Collect candidates from hash buckets using datafield and hashfield
+    std::vector<GrapaVector*> candidates = collect_hash_candidates(array, query_hashes, method, datafield, hashfield);
     
     // Compute exact similarity for candidates
     std::vector<std::pair<GrapaVector*, double>> similarities;
@@ -562,16 +576,27 @@ GrapaRuleEvent* calculate_multi_hash_similarity(
 
 #### 3.3 New Grapa Methods
 ```grapa
-/* Enhanced Similarity Search with Hash Vectors */
+/* Enhanced Similarity Search with Hash Source */
 // Using pre-computed hash vectors for fast search
-hash_vectors = [
+hashsource = [
     [hyperplane_set_1],  // Hash set 1
     [hyperplane_set_2],  // Hash set 2
     [hyperplane_set_3]   // Hash set 3
 ];
 
+// Basic usage with default datafield ($VALUE) - datafield already implemented
 results = vectors.similarity(query_vector, "cosine", {
-    "hash_vectors": hash_vectors,
+    "hashsource": hashsource,
+    "hashfield": "cosine_hash",
+    "top_n": 10,
+    "threshold": 0.5
+});
+
+// Custom datafield and hashfield - datafield already implemented
+results = vectors.similarity(query_vector, "cosine", {
+    "hashsource": hashsource,
+    "datafield": "vector_data",    // Already implemented
+    "hashfield": "cosine_hash_1",
     "top_n": 10,
     "threshold": 0.5
 });
@@ -586,10 +611,10 @@ hashes = vector.multi_hash("cosine", num_hash_sets=3, hyperplanes_per_set=8);
 similarity = hash1.similarity(hash2, "hamming");
 ```
 
-#### 3.4 Hash Vectors Parameter Structure
+#### 3.4 Hash Source Parameter Structure
 ```grapa
-// Hash vectors parameter structure
-hash_vectors = [
+// Hash source parameter structure
+hashsource = [
     // Hash set 1 (for cosine similarity)
     [
         #[0.707, 0.707, 0.0]#,  // Hyperplane 1
@@ -610,10 +635,24 @@ hash_vectors = [
     ]
 ];
 
-// Usage examples
-results = vectors.similarity(query_vector, "cosine", {"hash_vectors": hash_vectors});
-results = vectors.similarity(query_vector, "euclidean", {"hash_vectors": euclidean_hash_vectors});
-results = vectors.similarity(query_vector, "jaccard", {"hash_vectors": jaccard_hash_vectors});
+// Usage examples with datafield and hashfield - datafield already implemented
+results = vectors.similarity(query_vector, "cosine", {
+    "hashsource": hashsource,
+    "datafield": "$VALUE",        // Already implemented - default data field
+    "hashfield": "cosine_hash"
+});
+
+results = vectors.similarity(query_vector, "euclidean", {
+    "hashsource": euclidean_hashsource,
+    "datafield": "vector_data",   // Already implemented
+    "hashfield": "euclidean_hash_1"
+});
+
+results = vectors.similarity(query_vector, "jaccard", {
+    "hashsource": jaccard_hashsource,
+    "datafield": "metadata",      // Already implemented
+    "hashfield": "jaccard_hash_2"
+});
 ```
 
 #### 3.5 Hash Vector Processing Functions
@@ -621,8 +660,8 @@ results = vectors.similarity(query_vector, "jaccard", {"hash_vectors": jaccard_h
 **New Helper Functions**:
 
 ```cpp
-// Generate query hashes using provided hash vectors
-std::vector<u64> generate_query_hashes(GrapaRuleEvent* query, GrapaCHAR& method, GrapaRuleEvent* hash_vectors)
+// Generate query hashes using provided hash source
+std::vector<u64> generate_query_hashes(GrapaRuleEvent* query, GrapaCHAR& method, GrapaRuleEvent* hashsource)
 {
     std::vector<u64> query_hashes;
     
@@ -632,7 +671,7 @@ std::vector<u64> generate_query_hashes(GrapaRuleEvent* query, GrapaCHAR& method,
     GrapaVector* query_vec = query->vVector;
     
     // Iterate through hash sets
-    GrapaRuleEvent* hash_set = hash_vectors->vQueue->Head();
+    GrapaRuleEvent* hash_set = hashsource->vQueue->Head();
     while (hash_set)
     {
         u64 hash = 0;
@@ -659,8 +698,9 @@ std::vector<u64> generate_query_hashes(GrapaRuleEvent* query, GrapaCHAR& method,
     return query_hashes;
 }
 
-// Collect candidates from hash buckets
-std::vector<GrapaVector*> collect_hash_candidates(GrapaRuleEvent* array, std::vector<u64>& query_hashes, GrapaCHAR& method)
+// Collect candidates from hash buckets using datafield and hashfield
+std::vector<GrapaVector*> collect_hash_candidates(GrapaRuleEvent* array, std::vector<u64>& query_hashes, 
+                                                  GrapaCHAR& method, GrapaCHAR& datafield, GrapaCHAR& hashfield)
 {
     std::vector<GrapaVector*> candidates;
     
@@ -673,19 +713,20 @@ std::vector<GrapaVector*> collect_hash_candidates(GrapaRuleEvent* array, std::ve
     {
         if (item->mValue.mToken == GrapaTokenType::VECTOR)
         {
-            // Generate hashes for this vector using the same method
-            std::vector<u64> vector_hashes = generate_vector_hashes(item, method);
+            // Get vector data from specified datafield
+            GrapaVector* vector_data = get_vector_from_field(item, datafield);
+            if (!vector_data) continue;
             
-            // Check if any hash matches query hashes
+            // Get stored hash from specified hashfield
+            u64 stored_hash = get_hash_from_field(item, hashfield);
+            
+            // Check if stored hash matches any query hashes
             for (u64 query_hash : query_hashes)
             {
-                for (u64 vector_hash : vector_hashes)
+                if (query_hash == stored_hash)
                 {
-                    if (query_hash == vector_hash)
-                    {
-                        candidates.push_back(item->vVector);
-                        break;
-                    }
+                    candidates.push_back(vector_data);
+                    break;
                 }
             }
         }
@@ -695,14 +736,14 @@ std::vector<GrapaVector*> collect_hash_candidates(GrapaRuleEvent* array, std::ve
     return candidates;
 }
 
-// Validate hash vectors structure
-bool validate_hash_vectors(GrapaRuleEvent* hash_vectors, GrapaCHAR& method, int expected_dimension)
+// Validate hash source structure
+bool validate_hash_source(GrapaRuleEvent* hashsource, GrapaCHAR& method, int expected_dimension)
 {
-    if (!hash_vectors || hash_vectors->mValue.mToken != GrapaTokenType::LIST)
+    if (!hashsource || hashsource->mValue.mToken != GrapaTokenType::LIST)
         return false;
     
     // Check if it's a list of hash sets
-    GrapaRuleEvent* hash_set = hash_vectors->vQueue->Head();
+    GrapaRuleEvent* hash_set = hashsource->vQueue->Head();
     while (hash_set)
     {
         if (hash_set->mValue.mToken != GrapaTokenType::LIST)
@@ -729,16 +770,445 @@ bool validate_hash_vectors(GrapaRuleEvent* hash_vectors, GrapaCHAR& method, int 
 }
 ```
 
-#### 3.6 Configuration Options
+#### 3.6 Hash Set Generation Method
+**Files**: `source/grapa/GrapaVector.cpp`, `source/grapa/GrapaStr.cpp`, `source/grapa/GrapaObj.cpp`
+**New Method**: `GenHashSet` (implemented across multiple types)
+
+```cpp
+GrapaError GrapaVector::GenHashSet(
+    GrapaScriptExec* pScriptExec,
+    GrapaNames* pNameSpace,
+    GrapaCHAR& method,
+    int count,
+    int hyperplanes,
+    int randseed,
+    GrapaRuleEvent* result
+) {
+    // Validate parameters
+    if (count < 1 || count > 4) return -1;
+    if (hyperplanes < 4 || hyperplanes > 16) return -1;
+    
+    // Set random seed for reproducibility
+    srand(randseed);
+    
+    // Generate hash sets based on method
+    std::vector<std::vector<GrapaVector*>> hash_sets;
+    
+    if (method.StrLowerCmp("cosine") == 0) {
+        for (int i = 0; i < count; i++) {
+            std::vector<GrapaVector*> hyperplanes_set = generateCosineHyperplanes(
+                mCounts[0], hyperplanes);
+            hash_sets.push_back(hyperplanes_set);
+        }
+    } else if (method.StrLowerCmp("euclidean") == 0) {
+        for (int i = 0; i < count; i++) {
+            std::vector<GrapaVector*> projections_set = generateEuclideanProjections(
+                mCounts[0], hyperplanes);
+            hash_sets.push_back(projections_set);
+        }
+    } else if (method.StrLowerCmp("jaccard") == 0) {
+        for (int i = 0; i < count; i++) {
+            std::vector<GrapaVector*> minhash_set = generateJaccardMinhash(
+                mCounts[0], hyperplanes);
+            hash_sets.push_back(minhash_set);
+        }
+    }
+    // ... other methods
+    
+    // Build result structure
+    result->mValue.mToken = GrapaTokenType::LIST;
+    result->vQueue = new GrapaRuleQueue();
+    
+    for (auto& hash_set : hash_sets) {
+        GrapaRuleEvent* set_event = new GrapaRuleEvent(0, GrapaCHAR(""), GrapaCHAR(""));
+        set_event->mValue.mToken = GrapaTokenType::LIST;
+        set_event->vQueue = new GrapaRuleQueue();
+        
+        for (auto hyperplane : hash_set) {
+            GrapaRuleEvent* hp_event = new GrapaRuleEvent(0, GrapaCHAR(""), GrapaCHAR(""));
+            hp_event->mValue.mToken = GrapaTokenType::VECTOR;
+            hp_event->vVector = hyperplane;
+            set_event->vQueue->PushTail(hp_event);
+        }
+        
+        result->vQueue->PushTail(set_event);
+    }
+    
+    return 0;
+}
+```
+
+**Type-Based Hash Set Generation:**
+
+```cpp
+// String-based hash set generation
+GrapaError GrapaStr::GenHashSet(
+    GrapaScriptExec* pScriptExec,
+    GrapaNames* pNameSpace,
+    GrapaCHAR& method,
+    int count,
+    int hyperplanes,
+    int randseed,
+    GrapaRuleEvent* result
+) {
+    // Generate character feature-based hash sets for string similarity
+    // Uses string length and character patterns to generate appropriate hash functions
+    
+    // Validate parameters
+    if (count < 1 || count > 4) return -1;
+    if (hyperplanes < 4 || hyperplanes < 16) return -1;
+    
+    // Set random seed for reproducibility
+    srand(randseed);
+    
+    // Generate hash sets based on string similarity method
+    std::vector<std::vector<GrapaStr*>> hash_sets;
+    
+    if (method.StrLowerCmp("jaccard") == 0) {
+        for (int i = 0; i < count; i++) {
+            std::vector<GrapaStr*> char_features = generateStringFeatures(
+                mLength, hyperplanes);
+            hash_sets.push_back(char_features);
+        }
+    } else if (method.StrLowerCmp("levenshtein") == 0) {
+        for (int i = 0; i < count; i++) {
+            std::vector<GrapaStr*> edit_features = generateEditDistanceFeatures(
+                mLength, hyperplanes);
+            hash_sets.push_back(edit_features);
+        }
+    }
+    
+    // Build result structure
+    result->mValue.mToken = GrapaTokenType::LIST;
+    result->vQueue = new GrapaRuleQueue();
+    
+    for (const auto& hash_set : hash_sets) {
+        GrapaRuleEvent* set_event = new GrapaRuleEvent(0, GrapaCHAR(""), GrapaBYTE(""));
+        set_event->mValue.mToken = GrapaTokenType::LIST;
+        set_event->vQueue = new GrapaRuleQueue();
+        
+        for (GrapaStr* feature : hash_set) {
+            GrapaRuleEvent* feature_event = new GrapaRuleEvent(0, GrapaCHAR(""), GrapaBYTE(""));
+            feature_event->mValue.mToken = GrapaTokenType::STR;
+            feature_event->vStr = feature;
+            set_event->vQueue->PushTail(feature_event);
+        }
+        
+        result->vQueue->PushTail(set_event);
+    }
+    
+    return 0;
+}
+
+// Object-based hash set generation
+GrapaError GrapaObj::GenHashSet(
+    GrapaScriptExec* pScriptExec,
+    GrapaNames* pNameSpace,
+    GrapaCHAR& method,
+    int count,
+    int hyperplanes,
+    int randseed,
+    GrapaRuleEvent* result
+) {
+    // Generate field weight-based hash sets for metadata similarity
+    // Uses object field structure to generate appropriate field weights
+    
+    // Validate parameters
+    if (count < 1 || count > 4) return -1;
+    if (hyperplanes < 4 || hyperplanes < 16) return -1;
+    
+    // Set random seed for reproducibility
+    srand(randseed);
+    
+    // Generate hash sets based on metadata similarity method
+    std::vector<std::vector<GrapaObj*>> hash_sets;
+    
+    if (method.StrLowerCmp("metadata") == 0 || method.StrLowerCmp("object") == 0) {
+        for (int i = 0; i < count; i++) {
+            std::vector<GrapaObj*> field_weights = generateMetadataWeights(
+                this, hyperplanes);
+            hash_sets.push_back(field_weights);
+        }
+    }
+    
+    // Build result structure
+    result->mValue.mToken = GrapaTokenType::LIST;
+    result->vQueue = new GrapaRuleQueue();
+    
+    for (const auto& hash_set : hash_sets) {
+        GrapaRuleEvent* set_event = new GrapaRuleEvent(0, GrapaCHAR(""), GrapaBYTE(""));
+        set_event->mValue.mToken = GrapaTokenType::LIST;
+        set_event->vQueue = new GrapaRuleQueue();
+        
+        for (GrapaObj* weight : hash_set) {
+            GrapaRuleEvent* weight_event = new GrapaRuleEvent(0, GrapaCHAR(""), GrapaBYTE(""));
+            weight_event->mValue.mToken = GrapaTokenType::GOBJ;
+            weight_event->vObj = weight;
+            set_event->vQueue->PushTail(weight_event);
+        }
+        
+        result->vQueue->PushTail(set_event);
+    }
+    
+    return 0;
+}
+```
+
+#### 3.7 Hash Set Generation Usage
+```grapa
+/* Type-Based Hash Set Generation */
+
+// Vector similarity - generate hyperplane-based hash sets
+vector_hashsource = #[0, 0, 0, 0, 0]#.genHashSet("cosine", 3, 8, 12345);
+vector_hashsource = #[0, 0, 0, 0, 0]#.genHashSet("euclidean", 2, 12, 67890);
+
+// String similarity - generate character feature-based hash sets
+string_hashsource = "template string".genHashSet("jaccard", 3, 8, 12345);
+string_hashsource = "template string".genHashSet("levenshtein", 2, 6, 67890);
+
+// Metadata similarity - generate field weight-based hash sets
+metadata_hashsource = {"name": "", "age": 0, "city": ""}.genHashSet("metadata", 3, 8, 12345);
+metadata_hashsource = {"name": "", "age": 0, "city": ""}.genHashSet("object", 2, 6, 67890);
+
+/* Parameter specifications */
+method: "cosine" | "euclidean" | "jaccard" | "levenshtein" | "metadata" | "object"
+count: 1-4 (number of hash sets)
+hyperplanes: 4-16 (features per hash set)
+randseed: 0-4294967295 (0 = use system random)
+
+/* Type-specific method support */
+// Vector methods: "cosine", "euclidean", "jaccard", "manhattan", "pearson", "dice", "tanimoto"
+// String methods: "jaccard", "levenshtein", "damerau", "hamming"
+// Metadata methods: "metadata", "object", "field_overlap", "value_similarity"
+```
+
+#### 3.8 Type-Based Hash Set Benefits
+
+**Intuitive API Design:**
+- **Vector similarity**: `#[0, 0, 0, 0, 0]#.genHashSet("cosine")` - generates hyperplane-based hash sets
+- **String similarity**: `"template string".genHashSet("jaccard")` - generates character feature-based hash sets  
+- **Metadata similarity**: `{"name": "", "age": 0}.genHashSet("metadata")` - generates field weight-based hash sets
+
+**Type Safety:**
+- Each object type automatically generates appropriate hash functions
+- No need to specify dimension or field structure manually
+- Compile-time type checking ensures correct usage
+
+**Consistent API:**
+- Same method name across all similarity types
+- Same parameter structure for all types
+- Easy to understand and remember
+
+**Extensible Design:**
+- Easy to add new similarity types by implementing `GenHashSet` in new classes
+- Each type can optimize its hash generation for its specific use case
+- Future types (e.g., `$ARRAY`, `$TABLE`) can easily be added
+
+#### 3.9 Configuration Options
 ```grapa
 multi_hash_config = {
     "num_hash_sets": 3,          /* Number of hash sets per method */
-    "hyperplanes_per_set": 8,    /* Hyperplanes per hash set */
+    "hyperplanes": 8,            /* Hyperplanes per hash set */
     "vector_dimension": 384,      /* Vector dimension */
     "similarity_methods": ["cosine", "euclidean", "jaccard", "manhattan"],
     "boundary_threshold": 0.1,   /* Boundary detection threshold */
     "adaptive_hashing": true     /* Use adaptive hash selection */
 };
+```
+
+## Hash Miss Risks and Mitigation Strategies
+
+### 3.7 Hash Miss Scenarios
+
+**LSH Hash Miss Risk:**
+LSH is an approximate search technique, which means there's always a risk that a query vector's hash won't match any database vector hashes, even when similar vectors exist.
+
+**Common Hash Miss Scenarios:**
+
+```grapa
+// Scenario 1: Query hash doesn't match any database hashes
+query_hash = 0b10101010;
+database_hashes = [0b11110000, 0b00001111, 0b11001100];
+// Result: 0 matches found, even if similar vectors exist
+
+// Scenario 2: Boundary problem - similar vectors get different hashes
+vector_a = [0.499, 0.501, 0.0];  // Hash: 0b10
+vector_b = [0.501, 0.499, 0.0];  // Hash: 0b01
+// Very similar vectors, but different hashes due to hyperplane boundary
+```
+
+**Risk Factors:**
+- **High-dimensional vectors**: More hyperplanes = more boundary crossings
+- **Sparse vectors**: Many zero values increase boundary sensitivity
+- **Clustered data**: Vectors grouped in different hash buckets
+- **Hash precision**: Too many hyperplanes increase boundary problems
+
+### 3.8 Mitigation Strategies
+
+**1. Multi-Hash Approach (Primary)**
+```grapa
+// Generate multiple hash sets to reduce miss probability
+hashsource = #[0, 0, 0, 0, 0]#.genHashSet("cosine", 3, 8, 12345);
+// 3 hash sets = 3 chances to find a match
+// Recall: 75% with 2 sets, 87.5% with 3 sets, 93.75% with 4 sets
+```
+
+**2. Hash Bucket Expansion (Secondary)**
+```grapa
+// Search adjacent hash buckets for near-misses
+query_hash = 0b10101010;
+search_hashes = [
+    query_hash,           // Exact match
+    query_hash ^ 1,      // 1-bit difference
+    query_hash ^ 2,       // 2-bit difference
+    query_hash ^ 4        // 4-bit difference
+];
+```
+
+**3. Hybrid LSH + Exact Search (Fallback)**
+```grapa
+// Primary: LSH for speed
+lsh_results = vectors.similarity(query, "cosine", {
+    "hashsource": hashsource,
+    "hashfield": "cosine_hash",
+    "top_n": 10,
+    "threshold": 0.5
+});
+
+// Fallback: Exact search if LSH returns too few results
+if (lsh_results."results".len() < 3) {
+    exact_results = vectors.similarity(query, "cosine", {
+        "top_n": 10,
+        "threshold": 0.5
+    });
+    results = exact_results;
+} else {
+    results = lsh_results;
+}
+```
+
+**4. Adaptive Hash Precision**
+```grapa
+// Start with lower precision, increase if needed
+hashsource = #[0, 0, 0, 0, 0]#.genHashSet("cosine", 3, 6, 12345);  // Lower precision
+// Monitor hit rates and adjust hyperplane count
+if (hit_rate < 0.7) {
+    hashsource = #[0, 0, 0, 0, 0]#.genHashSet("cosine", 3, 8, 12345);  // Higher precision
+}
+```
+
+### 3.9 Risk Assessment and Monitoring
+
+**Risk Levels by Scenario:**
+
+| Scenario | Risk Level | Mitigation Strategy |
+|----------|------------|-------------------|
+| **High-dimensional vectors (384+ dim)** | Medium | Multi-hash (3-4 sets) |
+| **Sparse vectors (many zeros)** | High | Lower hyperplane count (6-8) |
+| **Clustered data** | Medium | Hash bucket expansion |
+| **Boundary vectors** | High | Multi-hash + fallback |
+| **Small datasets (< 1K)** | Low | Single hash set sufficient |
+| **Large datasets (10K+)** | Medium | Multi-hash + monitoring |
+
+**Monitoring Implementation:**
+```grapa
+// Track LSH performance metrics
+lsh_metrics = {
+    "total_queries": 0,
+    "lsh_hits": 0,
+    "exact_fallbacks": 0,
+    "hit_rate": 0.0,
+    "avg_response_time": 0.0
+};
+
+// Update metrics after each search
+if (lsh_results."results".len() > 0) {
+    lsh_metrics.lsh_hits++;
+} else {
+    lsh_metrics.exact_fallbacks++;
+    // Fall back to exact search
+}
+
+lsh_metrics.hit_rate = lsh_metrics.lsh_hits / lsh_metrics.total_queries;
+```
+
+**Performance Thresholds:**
+- **Hit Rate > 80%**: LSH working well, continue current settings
+- **Hit Rate 60-80%**: Consider increasing hash sets or hyperplanes
+- **Hit Rate < 60%**: Enable fallback to exact search
+- **Hit Rate < 40%**: Reconsider LSH approach for this dataset
+
+### 3.10 Implementation Strategy
+
+**Phase 1: Basic LSH**
+- Implement multi-hash approach
+- Add hash bucket expansion
+- Monitor hit rates
+
+**Phase 2: Hybrid Approach**
+- Add fallback to exact search
+- Implement adaptive precision
+- Add performance monitoring
+
+**Phase 3: Advanced Optimization**
+- Machine learning-based hyperplane selection
+- Dynamic hash set adjustment
+- Predictive fallback triggers
+
+## Hash Vectors Parameter Benefits
+
+### 3.11 Usage Patterns and Benefits
+
+#### **Pre-computed Hash Source**
+```grapa
+// Generate hash source once and reuse for multiple searches
+cosine_hashsource = dim.genHashSet("cosine", 3, 8, 12345);
+euclidean_hashsource = dim.genHashSet("euclidean", 3, 8, 67890);
+
+// Use for multiple similarity searches
+results1 = vectors.similarity(query1, "cosine", {
+    "hashsource": cosine_hashsource,
+    "hashfield": "cosine_hash"
+});
+results2 = vectors.similarity(query2, "cosine", {
+    "hashsource": cosine_hashsource,
+    "hashfield": "cosine_hash"
+});
+results3 = vectors.similarity(query3, "cosine", {
+    "hashsource": cosine_hashsource,
+    "hashfield": "cosine_hash"
+});
+```
+
+#### **Method-Specific Hash Vectors**
+```grapa
+// Different hash vectors for different similarity methods
+cosine_vectors = dim.genHashSet("cosine", 3, 8, 12345);
+euclidean_vectors = dim.genHashSet("euclidean", 3, 8, 67890);
+jaccard_vectors = dim.genHashSet("jaccard", 3, 8, 54321);
+
+// Use appropriate hash vectors for each method
+cosine_results = vectors.similarity(query, "cosine", {"hash_vectors": cosine_vectors});
+euclidean_results = vectors.similarity(query, "euclidean", {"hash_vectors": euclidean_vectors});
+jaccard_results = vectors.similarity(query, "jaccard", {"hash_vectors": jaccard_vectors});
+```
+
+#### **Performance Benefits**
+- **Fast Candidate Selection**: O(log n) hash lookup instead of O(n) linear search
+- **Reduced Computation**: Only compute exact similarity for hash-matched candidates
+- **Scalable**: Performance improves with larger datasets
+- **Flexible**: Can be used with any similarity method
+
+#### **Backward Compatibility**
+```grapa
+// Existing code continues to work without hash_vectors
+results = vectors.similarity(query, "cosine", {"top_n": 10});
+
+// New code can use hash_vectors for better performance
+results = vectors.similarity(query, "cosine", {
+    "hash_vectors": hash_vectors,
+    "top_n": 10
+});
 ```
 
 ## Performance Projections
@@ -878,6 +1348,245 @@ struct MultiHashMemoryUsage {
 - **Annoy Integration**: Facebook's approximate nearest neighbors
 - **Faiss Integration**: Meta's similarity search library
 - **Custom Distance Functions**: User-defined similarity metrics
+
+## Future Considerations
+
+### 4.1 Concurrency and Threading
+
+**Thread Safety Requirements:**
+```grapa
+// LSH operations need to be thread-safe for concurrent access
+// Multiple threads may be:
+// - Generating hash sets simultaneously
+// - Performing similarity searches concurrently
+// - Updating hash values in the database
+
+// Thread safety considerations:
+// 1. Hash generation: Random seed management
+// 2. Database operations: Transaction isolation
+// 3. Memory access: Shared hash set storage
+// 4. Performance: Lock contention minimization
+```
+
+**Implementation Strategy:**
+- **Read-Only Operations**: Hash generation and similarity search (thread-safe)
+- **Write Operations**: Database updates (require locking)
+- **Shared Resources**: Hash sets and hyperplanes (immutable after generation)
+- **Performance**: Minimize lock contention with read-write locks
+
+### 4.2 Error Handling and Validation
+
+**Comprehensive Error Handling:**
+```grapa
+// Error scenarios that need handling:
+// 1. Invalid hash set parameters
+// 2. Dimension mismatches between query and database vectors
+// 3. Corrupted hash values in database
+// 4. Memory allocation failures
+// 5. Database connection issues
+// 6. Invalid similarity methods
+
+// Error handling strategy:
+try {
+    results = vectors.similarity(query, "cosine", {
+        "hashsource": hashsource,
+        "hashfield": "cosine_hash"
+    });
+} catch (DimensionMismatchError) {
+    // Fall back to exact search
+    results = vectors.similarity(query, "cosine");
+} catch (HashCorruptionError) {
+    // Regenerate hash values and retry
+    regenerate_hashes();
+    results = vectors.similarity(query, "cosine", {
+        "hashsource": hashsource,
+        "hashfield": "cosine_hash"
+    });
+} catch (MemoryError) {
+    // Reduce hash set count and retry
+    hashsource = #[0, 0, 0, 0, 0]#.genHashSet("cosine", 2, 6, 12345);
+    results = vectors.similarity(query, "cosine", {
+        "hashsource": hashsource,
+        "hashfield": "cosine_hash"
+    });
+}
+```
+
+**Validation Framework:**
+- **Input Validation**: Parameter range checking, type validation
+- **Dimension Validation**: Ensure query and database vectors have matching dimensions
+- **Hash Validation**: Verify hash set integrity and consistency
+- **Performance Validation**: Monitor response times and resource usage
+
+### 4.3 Testing Strategy
+
+**Comprehensive Testing Approach:**
+```grapa
+// Unit Tests
+test_hash_generation() {
+    // Test hash set generation for different similarity methods
+    // Test parameter validation
+    // Test error conditions
+}
+
+test_similarity_search() {
+    // Test LSH similarity search accuracy
+    // Test fallback to exact search
+    // Test performance under load
+}
+
+// Integration Tests
+test_database_integration() {
+    // Test hash storage and retrieval
+    // Test concurrent access
+    // Test schema migrations
+}
+
+// Performance Tests
+test_large_dataset_performance() {
+    // Test with 100K+ vectors
+    // Test memory usage
+    // Test response times
+}
+
+// Benchmark Tests
+test_vs_exact_search() {
+    // Compare LSH vs exact search accuracy
+    // Compare LSH vs exact search performance
+    // Test recall vs precision trade-offs
+}
+```
+
+**Testing Infrastructure:**
+- **Unit Tests**: Individual component testing
+- **Integration Tests**: End-to-end functionality testing
+- **Performance Tests**: Load and stress testing
+- **Benchmark Tests**: Comparison with existing solutions
+- **Regression Tests**: Ensure no performance degradation
+
+### 4.4 Memory Management
+
+**Memory Optimization Strategies:**
+```grapa
+// Memory usage considerations:
+// 1. Hash set storage: Multiple hash sets per similarity method
+// 2. Hyperplane storage: Large hyperplane matrices
+// 3. Query processing: Temporary hash calculations
+// 4. Database caching: Hash value caching
+
+// Memory optimization techniques:
+// 1. Lazy loading: Load hash sets on demand
+// 2. Compression: Compress hash values in database
+// 3. Caching: Cache frequently used hash sets
+// 4. Garbage collection: Proper cleanup of temporary objects
+```
+
+**Memory Monitoring:**
+- **Usage Tracking**: Monitor memory consumption per operation
+- **Leak Detection**: Identify and fix memory leaks
+- **Performance Impact**: Measure memory usage vs performance trade-offs
+- **Resource Limits**: Set and enforce memory limits
+
+### 4.5 Data Migration and Versioning
+
+**Schema Evolution:**
+```grapa
+// Version management for LSH schemas
+lsh_schema_version = {
+    "version": "1.2.0",
+    "hash_sets": 3,
+    "hyperplanes": 8,
+    "similarity_methods": ["cosine", "euclidean", "jaccard"],
+    "compatibility": ["1.1.0", "1.0.0"]
+};
+
+// Migration strategies:
+// 1. Backward compatibility: Support older hash formats
+// 2. Forward compatibility: Graceful handling of newer formats
+// 3. Data migration: Convert old hash values to new format
+// 4. Rollback capability: Revert to previous schema if needed
+```
+
+**Migration Procedures:**
+- **Schema Versioning**: Track LSH schema changes
+- **Data Migration**: Convert existing hash values
+- **Compatibility Testing**: Ensure backward/forward compatibility
+- **Rollback Procedures**: Safe reversion to previous versions
+
+### 4.6 Security Considerations
+
+**Security Threats and Mitigations:**
+```grapa
+// Security considerations:
+// 1. Hash collision attacks: Malicious vectors designed to cause hash collisions
+// 2. Data privacy: Hash values could reveal information about vectors
+// 3. Access control: Unauthorized access to hash values
+// 4. Input validation: Malicious input causing system crashes
+
+// Security measures:
+// 1. Input sanitization: Validate all input parameters
+// 2. Access control: Restrict hash value access
+// 3. Encryption: Encrypt sensitive hash values
+// 4. Rate limiting: Prevent abuse of similarity search
+```
+
+**Security Implementation:**
+- **Input Validation**: Sanitize all user inputs
+- **Access Control**: Implement proper authentication and authorization
+- **Data Encryption**: Encrypt sensitive hash values
+- **Audit Logging**: Track all LSH operations for security monitoring
+
+### 4.7 Performance Monitoring and Alerting
+
+**Real-Time Monitoring:**
+```grapa
+// Performance metrics to monitor:
+lsh_metrics = {
+    "query_count": 0,
+    "avg_response_time": 0.0,
+    "hit_rate": 0.0,
+    "memory_usage": 0,
+    "error_rate": 0.0,
+    "fallback_rate": 0.0
+};
+
+// Alerting thresholds:
+alerts = {
+    "response_time_threshold": 100,  // ms
+    "hit_rate_threshold": 0.6,       // 60%
+    "memory_threshold": 1024,        // MB
+    "error_rate_threshold": 0.05     // 5%
+};
+```
+
+**Monitoring Infrastructure:**
+- **Real-Time Metrics**: Live performance monitoring
+- **Alerting System**: Automated alerts for performance issues
+- **Dashboard**: Visual performance monitoring
+- **Historical Analysis**: Trend analysis and capacity planning
+
+### 4.8 Backup and Recovery
+
+**Data Protection Strategy:**
+```grapa
+// Backup considerations:
+// 1. Hash values: Critical for LSH functionality
+// 2. Hyperplanes: Required for hash generation
+// 3. Schema metadata: Version and configuration information
+// 4. Performance metrics: Historical data for analysis
+
+// Recovery procedures:
+// 1. Point-in-time recovery: Restore to specific timestamp
+// 2. Hash regeneration: Rebuild hash values from vectors
+// 3. Schema restoration: Restore LSH schema configuration
+// 4. Performance restoration: Restore monitoring data
+```
+
+**Backup and Recovery Procedures:**
+- **Regular Backups**: Automated backup of LSH data
+- **Recovery Testing**: Regular testing of recovery procedures
+- **Disaster Recovery**: Complete system recovery procedures
+- **Data Integrity**: Verification of backup and recovery data
 
 ## Conclusion
 
