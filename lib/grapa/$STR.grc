@@ -3,9 +3,4 @@ $global["$STR"]
 	upper = @<"upper",{@<this>}>; 
 	lower = @<"lower",{@<this>}>; 
     casefold = @<"casefold",{@<this>}>;
-    levenshtein_distance = @<[op,@<"levenshtein_distance",{@<this>,@<var,{other}>,@<var,{options}>}>],{other,options}>;
-    damerau_levenshtein_distance = @<[op,@<"damerau_levenshtein_distance",{@<this>,@<var,{other}>,@<var,{options}>}>],{other,options}>;
-    jaro_winkler_similarity = @<[op,@<"jaro_winkler_similarity",{@<this>,@<var,{other}>,@<var,{options}>}>],{other,options}>;
-    cosine_similarity = @<[op,@<"cosine_similarity",{@<this>,@<var,{other}>,@<var,{options}>}>],{other,options}>;
-    jaccard_similarity = @<[op,@<"jaccard_similarity",{@<this>,@<var,{other}>,@<var,{options}>,@<var,{n}>}>],{other,method,n}>;
 	};
