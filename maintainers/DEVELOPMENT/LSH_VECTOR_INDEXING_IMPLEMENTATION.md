@@ -616,7 +616,120 @@ results = vectors.similarity(query_vector, "euclidean", {"hash_vectors": euclide
 results = vectors.similarity(query_vector, "jaccard", {"hash_vectors": jaccard_hash_vectors});
 ```
 
-#### 3.5 Configuration Options
+#### 3.5 Hash Vector Processing Functions
+**File**: `source/grapa/GrapaLibRule.cpp`
+**New Helper Functions**:
+
+```cpp
+// Generate query hashes using provided hash vectors
+std::vector<u64> generate_query_hashes(GrapaRuleEvent* query, GrapaCHAR& method, GrapaRuleEvent* hash_vectors)
+{
+    std::vector<u64> query_hashes;
+    
+    if (query->mValue.mToken != GrapaTokenType::VECTOR)
+        return query_hashes;
+    
+    GrapaVector* query_vec = query->vVector;
+    
+    // Iterate through hash sets
+    GrapaRuleEvent* hash_set = hash_vectors->vQueue->Head();
+    while (hash_set)
+    {
+        u64 hash = 0;
+        int bit_position = 0;
+        
+        // Iterate through hyperplanes in this hash set
+        GrapaRuleEvent* hyperplane = hash_set->vQueue->Head();
+        while (hyperplane)
+        {
+            if (hyperplane->mValue.mToken == GrapaTokenType::VECTOR)
+            {
+                double dot_product = query_vec->dot(*hyperplane->vVector);
+                bool hash_bit = (dot_product > 0);
+                hash = (hash << 1) | (hash_bit ? 1 : 0);
+                bit_position++;
+            }
+            hyperplane = hyperplane->Next();
+        }
+        
+        query_hashes.push_back(hash);
+        hash_set = hash_set->Next();
+    }
+    
+    return query_hashes;
+}
+
+// Collect candidates from hash buckets
+std::vector<GrapaVector*> collect_hash_candidates(GrapaRuleEvent* array, std::vector<u64>& query_hashes, GrapaCHAR& method)
+{
+    std::vector<GrapaVector*> candidates;
+    
+    if (!array || array->mValue.mToken != GrapaTokenType::LIST)
+        return candidates;
+    
+    // For each vector in the array, check if it matches any query hash
+    GrapaRuleEvent* item = array->vQueue->Head();
+    while (item)
+    {
+        if (item->mValue.mToken == GrapaTokenType::VECTOR)
+        {
+            // Generate hashes for this vector using the same method
+            std::vector<u64> vector_hashes = generate_vector_hashes(item, method);
+            
+            // Check if any hash matches query hashes
+            for (u64 query_hash : query_hashes)
+            {
+                for (u64 vector_hash : vector_hashes)
+                {
+                    if (query_hash == vector_hash)
+                    {
+                        candidates.push_back(item->vVector);
+                        break;
+                    }
+                }
+            }
+        }
+        item = item->Next();
+    }
+    
+    return candidates;
+}
+
+// Validate hash vectors structure
+bool validate_hash_vectors(GrapaRuleEvent* hash_vectors, GrapaCHAR& method, int expected_dimension)
+{
+    if (!hash_vectors || hash_vectors->mValue.mToken != GrapaTokenType::LIST)
+        return false;
+    
+    // Check if it's a list of hash sets
+    GrapaRuleEvent* hash_set = hash_vectors->vQueue->Head();
+    while (hash_set)
+    {
+        if (hash_set->mValue.mToken != GrapaTokenType::LIST)
+            return false;
+        
+        // Check if hash set contains vectors
+        GrapaRuleEvent* hyperplane = hash_set->vQueue->Head();
+        while (hyperplane)
+        {
+            if (hyperplane->mValue.mToken != GrapaTokenType::VECTOR)
+                return false;
+            
+            // Validate dimension
+            if (hyperplane->vVector->mCounts[0] != expected_dimension)
+                return false;
+            
+            hyperplane = hyperplane->Next();
+        }
+        
+        hash_set = hash_set->Next();
+    }
+    
+    return true;
+}
+```
+
+#### 3.6 Configuration Options
 ```grapa
 multi_hash_config = {
     "num_hash_sets": 3,          /* Number of hash sets per method */
