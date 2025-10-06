@@ -255,12 +255,8 @@ public:
     GrapaLibraryEvent* HandleUpper(GrapaCHAR& pName);
     GrapaLibraryEvent* HandleCaseFold(GrapaCHAR& pName);
 
-    GrapaLibraryEvent* HandleLevenshteinDistance(GrapaCHAR& pName);
-    GrapaLibraryEvent* HandleDamerauLevenshteinDistance(GrapaCHAR& pName);
-    GrapaLibraryEvent* HandleJaroWinklerSimilarity(GrapaCHAR& pName);
-    GrapaLibraryEvent* HandleCosineSimilarity(GrapaCHAR& pName);
-    GrapaLibraryEvent* HandleJaccardSimilarity(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleSimilarity(GrapaCHAR& pName);
+	GrapaLibraryEvent* HandleGenHashSet(GrapaCHAR& pName);
 
 	GrapaLibraryEvent* HandleUtc(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleTz(GrapaCHAR& pName);
