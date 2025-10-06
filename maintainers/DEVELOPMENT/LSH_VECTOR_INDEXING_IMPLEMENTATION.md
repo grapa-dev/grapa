@@ -465,8 +465,117 @@ GrapaError InsertVectorWithMultiHash(GrapaCHAR& table_name, GrapaVector& vector)
 
 ### Phase 3: Grapa Language Integration
 
-#### 3.1 New Grapa Methods
+#### 3.1 Enhanced Similarity Search with Hash Vectors
+**File**: `source/grapa/GrapaLibRule.cpp`
+**Method**: `GrapaLibraryRuleSimilarityEvent::Run`
+
+```cpp
+GrapaRuleEvent* GrapaLibraryRuleSimilarityEvent::Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput)
+{
+    // ... existing parameter parsing ...
+    
+    // Parse hash_vectors parameter (new)
+    GrapaRuleEvent* hash_vectors = NULL;
+    if (params_param.vVal && params_param.vVal->mValue.mToken == GrapaTokenType::GOBJ && params_param.vVal->vQueue)
+    {
+        GrapaRuleEvent* params_event_head = params_param.vVal->vQueue->Head();
+        while (params_event_head)
+        {
+            GrapaRuleEvent* params_event = params_event_head;
+            while (params_event && params_event->mValue.mToken == GrapaTokenType::PTR) 
+                params_event = params_event->vRulePointer;
+            
+            std::string key_str(reinterpret_cast<const char*>(params_event_head->mName.mBytes), params_event_head->mName.mLength);
+            std::transform(key_str.begin(), key_str.end(), key_str.begin(), ::tolower);
+            
+            if (key_str == "hash_vectors")
+            {
+                if (params_event->mValue.mToken == GrapaTokenType::LIST)
+                {
+                    hash_vectors = params_event;
+                }
+                else
+                {
+                    hash_vectors = NULL;
+                }
+            }
+            // ... existing parameter parsing ...
+            params_event_head = params_event_head->Next();
+        }
+    }
+    
+    // Use hash vectors if provided
+    if (hash_vectors && array_param.vVal && query_param.vVal)
+    {
+        return calculate_multi_hash_similarity(vScriptExec, pNameSpace, array_param.vVal, query_param.vVal, method, hash_vectors, top_n, threshold, sort, include_scores, include_items);
+    }
+    
+    // ... existing similarity calculation logic ...
+}
+```
+
+#### 3.2 Multi-Hash Similarity Calculation
+**File**: `source/grapa/GrapaLibRule.cpp`
+**New Function**: `calculate_multi_hash_similarity`
+
+```cpp
+GrapaRuleEvent* calculate_multi_hash_similarity(
+    GrapaScriptExec* vScriptExec,
+    GrapaNames* pNameSpace,
+    GrapaRuleEvent* array,
+    GrapaRuleEvent* query,
+    GrapaCHAR& method,
+    GrapaRuleEvent* hash_vectors,
+    int top_n,
+    double threshold,
+    std::string sort,
+    bool include_scores,
+    bool include_items
+) {
+    // Validate hash_vectors is a LIST
+    if (!hash_vectors || hash_vectors->mValue.mToken != GrapaTokenType::LIST)
+    {
+        return NULL;
+    }
+    
+    // Generate query hash using same method
+    std::vector<u64> query_hashes = generate_query_hashes(query, method, hash_vectors);
+    
+    // Collect candidates from hash buckets
+    std::vector<GrapaVector*> candidates = collect_hash_candidates(array, query_hashes, method);
+    
+    // Compute exact similarity for candidates
+    std::vector<std::pair<GrapaVector*, double>> similarities;
+    for (auto candidate : candidates)
+    {
+        double similarity = compute_exact_similarity(query, candidate, method);
+        if (similarity >= threshold)
+        {
+            similarities.push_back({candidate, similarity});
+        }
+    }
+    
+    // Sort and return results
+    return build_similarity_results(similarities, method, top_n, sort, include_scores, include_items);
+}
+```
+
+#### 3.3 New Grapa Methods
 ```grapa
+/* Enhanced Similarity Search with Hash Vectors */
+// Using pre-computed hash vectors for fast search
+hash_vectors = [
+    [hyperplane_set_1],  // Hash set 1
+    [hyperplane_set_2],  // Hash set 2
+    [hyperplane_set_3]   // Hash set 3
+];
+
+results = vectors.similarity(query_vector, "cosine", {
+    "hash_vectors": hash_vectors,
+    "top_n": 10,
+    "threshold": 0.5
+});
+
 /* Multi-Hash LSH Operations */
 vector_db.create_vector_table("vectors", vector_dimension=384, num_hash_sets=3);
 vector_db.insert_vector(vector_data, vector_id);
@@ -477,7 +586,37 @@ hashes = vector.multi_hash("cosine", num_hash_sets=3, hyperplanes_per_set=8);
 similarity = hash1.similarity(hash2, "hamming");
 ```
 
-#### 3.2 Configuration Options
+#### 3.4 Hash Vectors Parameter Structure
+```grapa
+// Hash vectors parameter structure
+hash_vectors = [
+    // Hash set 1 (for cosine similarity)
+    [
+        #[0.707, 0.707, 0.0]#,  // Hyperplane 1
+        #[0.0, 0.707, 0.707]#,  // Hyperplane 2
+        #[0.707, 0.0, 0.707]#   // Hyperplane 3
+    ],
+    // Hash set 2 (for cosine similarity)
+    [
+        #[0.5, 0.5, 0.707]#,    // Hyperplane 1
+        #[0.707, 0.5, 0.5]#,    // Hyperplane 2
+        #[0.5, 0.707, 0.5]#     // Hyperplane 3
+    ],
+    // Hash set 3 (for cosine similarity)
+    [
+        #[0.6, 0.8, 0.0]#,      // Hyperplane 1
+        #[0.0, 0.6, 0.8]#,      // Hyperplane 2
+        #[0.8, 0.0, 0.6]#       // Hyperplane 3
+    ]
+];
+
+// Usage examples
+results = vectors.similarity(query_vector, "cosine", {"hash_vectors": hash_vectors});
+results = vectors.similarity(query_vector, "euclidean", {"hash_vectors": euclidean_hash_vectors});
+results = vectors.similarity(query_vector, "jaccard", {"hash_vectors": jaccard_hash_vectors});
+```
+
+#### 3.5 Configuration Options
 ```grapa
 multi_hash_config = {
     "num_hash_sets": 3,          /* Number of hash sets per method */
