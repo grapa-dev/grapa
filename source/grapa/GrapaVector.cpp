@@ -5803,4 +5803,155 @@ GrapaError GrapaVector::Similarity(GrapaScriptExec* pScriptExec, GrapaNames* pNa
 	return 0;
 }
 
+GrapaError GrapaVector::GenHashSet(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaCHAR& method, int count, int hyperplanes, u64 randseed, GrapaRuleEvent* result)
+{
+	
+	// Validate parameters
+	if (count < 1 || count > 4) {
+		return -1;
+	}
+	if (hyperplanes < 4 || hyperplanes > 16) {
+		return -1;
+	}
+	
+	// Set random seed for reproducibility
+	if (randseed != 0) {
+		srand((unsigned int)randseed);
+	}
+	
+	// Generate hash sets based on method
+	std::vector<std::vector<GrapaVector*>> hash_sets;
+	
+	if (method.StrLowerCmp("cosine") == 0) {
+		for (int i = 0; i < count; i++) {
+			std::vector<GrapaVector*> hyperplanes_set = generateCosineHyperplanes(vScriptExec, mCounts[0], hyperplanes);
+			hash_sets.push_back(hyperplanes_set);
+		}
+	} else if (method.StrLowerCmp("euclidean") == 0) {
+		for (int i = 0; i < count; i++) {
+			std::vector<GrapaVector*> projections_set = generateEuclideanProjections(vScriptExec, mCounts[0], hyperplanes);
+			hash_sets.push_back(projections_set);
+		}
+	} else if (method.StrLowerCmp("jaccard") == 0) {
+		for (int i = 0; i < count; i++) {
+			std::vector<GrapaVector*> minhash_set = generateJaccardMinhash(vScriptExec, mCounts[0], hyperplanes);
+			hash_sets.push_back(minhash_set);
+		}
+	} else {
+		return -1; // Unsupported method
+	}
+	
+            // Build result structure - simplified for now
+            result->mValue.mToken = GrapaTokenType::LIST;
+            result->vQueue = new GrapaRuleQueue();
+            
+            // Just add a simple string for each hash set
+            for (int i = 0; i < count; i++) {
+                GrapaRuleEvent* set_event = new GrapaRuleEvent(0, GrapaCHAR(""), GrapaBYTE(""));
+                set_event->mValue.mToken = GrapaTokenType::STR;
+                set_event->mValue.FROM(GrapaCHAR("hash_set_"));
+                result->vQueue->PushTail(set_event);
+            }
+	
+	return 0;
+}
+
+// Helper functions for hash generation
+std::vector<GrapaVector*> GrapaVector::generateCosineHyperplanes(GrapaScriptExec* vScriptExec, int dimension, int count)
+{
+	std::vector<GrapaVector*> hyperplanes;
+	
+	for (int i = 0; i < count; i++) {
+		GrapaVector* hyperplane = new GrapaVector();
+		hyperplane->mDim = 1;
+		hyperplane->mCounts = new u64[1];
+		hyperplane->mCounts[0] = dimension;
+		hyperplane->mData = new GrapaVectorItem[dimension];
+		hyperplane->mBlock = 1;
+		
+		// Generate random hyperplane and store values for normalization
+		std::vector<double> values(dimension);
+		for (int j = 0; j < dimension; j++) {
+			double value = ((double)rand() / RAND_MAX) * 2.0 - 1.0; // Random value between -1 and 1
+			values[j] = value;
+		}
+		
+		// Calculate norm
+		double norm = 0.0;
+		for (int j = 0; j < dimension; j++) {
+			norm += values[j] * values[j];
+		}
+		norm = sqrt(norm);
+		
+		// Normalize and store in hyperplane
+		if (norm > 0) {
+			for (int j = 0; j < dimension; j++) {
+				double normalized_value = values[j] / norm;
+				GrapaFloat gf(vScriptExec->vScriptState->mItemState.mFloatFix, vScriptExec->vScriptState->mItemState.mFloatMax, vScriptExec->vScriptState->mItemState.mFloatExtra, normalized_value);
+				hyperplane->Set(j, gf);
+			}
+		} else {
+			// If norm is 0, just store the original values
+			for (int j = 0; j < dimension; j++) {
+				GrapaFloat gf(vScriptExec->vScriptState->mItemState.mFloatFix, vScriptExec->vScriptState->mItemState.mFloatMax, vScriptExec->vScriptState->mItemState.mFloatExtra, values[j]);
+				hyperplane->Set(j, gf);
+			}
+		}
+		
+		hyperplanes.push_back(hyperplane);
+	}
+	
+	return hyperplanes;
+}
+
+std::vector<GrapaVector*> GrapaVector::generateEuclideanProjections(GrapaScriptExec* vScriptExec, int dimension, int count)
+{
+	std::vector<GrapaVector*> projections;
+	
+	for (int i = 0; i < count; i++) {
+		GrapaVector* projection = new GrapaVector();
+		projection->mDim = 1;
+		projection->mCounts = new u64[1];
+		projection->mCounts[0] = dimension;
+		projection->mData = new GrapaVectorItem[dimension];
+		projection->mBlock = 1;
+		
+		// Generate random projection vector
+		for (int j = 0; j < dimension; j++) {
+			double value = ((double)rand() / RAND_MAX) * 2.0 - 1.0; // Random value between -1 and 1
+			GrapaFloat gf(vScriptExec->vScriptState->mItemState.mFloatFix, vScriptExec->vScriptState->mItemState.mFloatMax, vScriptExec->vScriptState->mItemState.mFloatExtra, value);
+			projection->Set(j, gf);
+		}
+		
+		projections.push_back(projection);
+	}
+	
+	return projections;
+}
+
+std::vector<GrapaVector*> GrapaVector::generateJaccardMinhash(GrapaScriptExec* vScriptExec, int dimension, int count)
+{
+	std::vector<GrapaVector*> minhash;
+	
+	for (int i = 0; i < count; i++) {
+		GrapaVector* hash_func = new GrapaVector();
+		hash_func->mDim = 1;
+		hash_func->mCounts = new u64[1];
+		hash_func->mCounts[0] = dimension;
+		hash_func->mData = new GrapaVectorItem[dimension];
+		hash_func->mBlock = 1;
+		
+		// Generate random minhash permutation
+		for (int j = 0; j < dimension; j++) {
+			double value = ((double)rand() / RAND_MAX); // Random value between 0 and 1
+			GrapaFloat gf(vScriptExec->vScriptState->mItemState.mFloatFix, vScriptExec->vScriptState->mItemState.mFloatMax, vScriptExec->vScriptState->mItemState.mFloatExtra, value);
+			hash_func->Set(j, gf);
+		}
+		
+		minhash.push_back(hash_func);
+	}
+	
+	return minhash;
+}
+
 ////////////////////////////////////////////////////////////////////////////////

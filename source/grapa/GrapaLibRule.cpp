@@ -22758,9 +22758,152 @@ GrapaRuleEvent* GrapaLibraryRuleSimilarityEvent::Run(GrapaScriptExec* vScriptExe
 GrapaRuleEvent* GrapaLibraryRuleGenHashSetEvent::Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput)
 {
 	GrapaRuleEvent* result = NULL;
-	if (result == NULL)
-		result = Error(vScriptExec, pNameSpace, -1);
-	return(result);
+	
+	
+	// Parse input parameters
+	if (!pInput || pInput->mCount < 1) {
+		return Error(vScriptExec, pNameSpace, -1);
+	}
+	
+	// Get the object calling genHashSet (first parameter)
+	GrapaLibraryParam obj_param_helper(vScriptExec, pNameSpace, pInput ? pInput->Head(0) : NULL);
+	GrapaRuleEvent* obj_param = obj_param_helper.vVal;
+	if (!obj_param) {
+		return Error(vScriptExec, pNameSpace, -1);
+	}
+	
+	// Parse method parameter (required)
+	GrapaCHAR method;
+	if (pInput->mCount < 2) {
+		return Error(vScriptExec, pNameSpace, -1);
+	}
+	GrapaLibraryParam method_param_helper(vScriptExec, pNameSpace, pInput ? pInput->Head(1) : NULL);
+	GrapaRuleEvent* method_param = method_param_helper.vVal;
+	if (method_param) {
+		method.FROM(method_param->mValue);
+	} else {
+		return Error(vScriptExec, pNameSpace, -1);
+	}
+	
+	// Parse optional parameters with defaults
+	int count = 3;           // Default: 3 hash sets
+	int hyperplanes = 8;     // Default: 8 hyperplanes per set
+	u64 randseed = 0;        // Default: use system random
+	
+	if (pInput->mCount >= 3) {
+		GrapaRuleEvent* count_param = pInput->Head(2);
+		if (count_param && count_param->mValue.mToken == GrapaTokenType::INT) {
+			GrapaInt count_int;
+			count_int.FromBytes(count_param->mValue);
+			count = (int)count_int.LongValue();
+		}
+	}
+	
+	if (pInput->mCount >= 4) {
+		GrapaRuleEvent* hyperplanes_param = pInput->Head(3);
+		if (hyperplanes_param && hyperplanes_param->mValue.mToken == GrapaTokenType::INT) {
+			GrapaInt hyperplanes_int;
+			hyperplanes_int.FromBytes(hyperplanes_param->mValue);
+			hyperplanes = (int)hyperplanes_int.LongValue();
+		}
+	}
+	
+	if (pInput->mCount >= 5) {
+		GrapaRuleEvent* randseed_param = pInput->Head(4);
+		if (randseed_param && randseed_param->mValue.mToken == GrapaTokenType::INT) {
+			GrapaInt randseed_int;
+			randseed_int.FromBytes(randseed_param->mValue);
+			randseed = (u64)randseed_int.LongValue();
+		}
+	}
+	
+	// Validate parameters
+	if (count < 1 || count > 4) {
+		return Error(vScriptExec, pNameSpace, -1);
+	}
+	if (hyperplanes < 4 || hyperplanes > 16) {
+		return Error(vScriptExec, pNameSpace, -1);
+	}
+	
+	// Create result object
+	result = new GrapaRuleEvent(0, GrapaCHAR(""), GrapaBYTE(""));
+	result->mValue.mToken = GrapaTokenType::LIST;
+	result->vQueue = new GrapaRuleQueue();
+	
+	// Handle different object types
+	if (obj_param->mValue.mToken == GrapaTokenType::VECTOR) {
+		// Vector similarity - use GrapaVector::GenHashSet
+		if (obj_param->vVector) {
+			GrapaError err = obj_param->vVector->GenHashSet(vScriptExec, pNameSpace, method, count, hyperplanes, randseed, result);
+			if (err != 0) {
+				delete result;
+				return Error(vScriptExec, pNameSpace, err);
+			}
+			return result;
+		} else {
+			delete result;
+			return Error(vScriptExec, pNameSpace, -1);
+		}
+	}
+	else if (obj_param->mValue.mToken == GrapaTokenType::INT) {
+		// Integer dimension - create a dummy vector and use its GenHashSet
+		GrapaInt dim_int;
+		dim_int.FromBytes(obj_param->mValue);
+		int dimension = (int)dim_int.LongValue();
+		
+		if (dimension <= 0) {
+			delete result;
+			return Error(vScriptExec, pNameSpace, -1);
+		}
+		
+		// Create a dummy vector with the specified dimension
+		GrapaVector* dummy_vector = new GrapaVector();
+		dummy_vector->mDim = 1;
+		dummy_vector->mCounts = new u64[1];
+		dummy_vector->mCounts[0] = dimension;
+		dummy_vector->mData = new GrapaVectorItem[dimension];
+		dummy_vector->mBlock = 1;
+		
+		// Initialize with zeros
+		for (int i = 0; i < dimension; i++) {
+			GrapaFloat gf(vScriptExec->vScriptState->mItemState.mFloatFix, vScriptExec->vScriptState->mItemState.mFloatMax, vScriptExec->vScriptState->mItemState.mFloatExtra, 0.0);
+			dummy_vector->Set(i, gf);
+		}
+		
+		GrapaError err = dummy_vector->GenHashSet(vScriptExec, pNameSpace, method, count, hyperplanes, randseed, result);
+		
+		// Clean up dummy vector
+		delete[] dummy_vector->mData;
+		delete[] dummy_vector->mCounts;
+		delete dummy_vector;
+		
+		if (err != 0) {
+			delete result;
+			return Error(vScriptExec, pNameSpace, err);
+		}
+		return result;
+	}
+	else if (obj_param->mValue.mToken == GrapaTokenType::STR) {
+		// String similarity - generate character feature-based hash sets
+		// For now, return a placeholder structure
+		// TODO: Implement string-specific hash generation
+		delete result;
+		return Error(vScriptExec, pNameSpace, -1); // Not implemented yet
+	}
+	else if (obj_param->mValue.mToken == GrapaTokenType::GOBJ) {
+		// Object similarity - generate field weight-based hash sets
+		// For now, return a placeholder structure
+		// TODO: Implement object-specific hash generation
+		delete result;
+		return Error(vScriptExec, pNameSpace, -1); // Not implemented yet
+	}
+	else {
+		// Unsupported object type
+		delete result;
+		return Error(vScriptExec, pNameSpace, -1);
+	}
+	
+	return result;
 }
 
 GrapaRuleEvent* GrapaLibraryRuleLowerEvent::Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput)

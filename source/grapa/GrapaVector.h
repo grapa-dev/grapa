@@ -7,6 +7,7 @@
 
 #include "GrapaFloat.h"
 #include "GrapaState.h"
+#include <vector>
 
 class GrapaVectorBYTE
 {
@@ -164,6 +165,12 @@ public:
 	virtual bool TriL(GrapaScriptExec* pScriptExec, s64 n, GrapaVector& result);
 	virtual bool EigH(GrapaScriptExec* pScriptExec, GrapaNames* pNameSpace, GrapaVector& w, GrapaVector& p);
 	virtual GrapaError Similarity(GrapaScriptExec* pScriptExec, GrapaNames* pNameSpace, GrapaVector& other, GrapaVector& result, GrapaCHAR& method);
+	virtual GrapaError GenHashSet(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaCHAR& method, int count, int hyperplanes, u64 randseed, GrapaRuleEvent* result);
+	
+	// Helper functions for hash generation
+	std::vector<GrapaVector*> generateCosineHyperplanes(GrapaScriptExec* vScriptExec, int dimension, int count);
+	std::vector<GrapaVector*> generateEuclideanProjections(GrapaScriptExec* vScriptExec, int dimension, int count);
+	std::vector<GrapaVector*> generateJaccardMinhash(GrapaScriptExec* vScriptExec, int dimension, int count);
 };
 
 #endif //_GrapaVector_
