@@ -88,6 +88,7 @@ $global["$OBJ"] = class {
 	copy = @<copy,{@<this>}>;
 	similarity = @<[op,@<"similarity",{@<this,{}>,@<var,{other}>,@<var,{method}>,@<var,{params}>}>],{other,method,params}>; 
 	genhashset = @<[op,@<"genhashset",{@<this,{}>,@<var,{method}>,@<var,{count}>,@<var,{hyperplanes}>,@<var,{randseed}>}>],{method,count,hyperplanes,randseed}>; 
+	genhash = @<[op,@<"genhash",{@<this,{}>,@<var,{hashsource}>}>],{hashsource}>; 
 };
 
 

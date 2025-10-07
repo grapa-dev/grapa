@@ -2697,6 +2697,14 @@ public:
 };
 GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleGenHashSet(GrapaCHAR& pName) { return new GrapaLibraryRuleGenHashSetEvent(pName); }
 
+class GrapaLibraryRuleGenHashEvent : public GrapaLibraryEvent
+{
+public:
+	GrapaLibraryRuleGenHashEvent(GrapaCHAR& pName) { mName.FROM(pName); };
+	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
+};
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleGenHash(GrapaCHAR& pName) { return new GrapaLibraryRuleGenHashEvent(pName); }
+
 class GrapaLibraryRuleLowerEvent : public GrapaLibraryEvent
 {
 public:
@@ -3324,6 +3332,7 @@ GrapaLibraryEvent* GrapaLibraryRuleEvent::LoadLib(GrapaScriptExec *vScriptExec, 
 			{ "casefold", &GrapaLibraryRuleEvent::HandleCaseFold },
 			{ "similarity", &GrapaLibraryRuleEvent::HandleSimilarity },
 			{ "genhashset", &GrapaLibraryRuleEvent::HandleGenHashSet },
+			{ "genhash", &GrapaLibraryRuleEvent::HandleGenHash },
 			{ "eq", &GrapaLibraryRuleEvent::HandleEq },
 			{ "neq", &GrapaLibraryRuleEvent::HandleNEq },
 			{ "gteq", &GrapaLibraryRuleEvent::HandleGtEq },
@@ -22779,8 +22788,9 @@ GrapaRuleEvent* GrapaLibraryRuleGenHashSetEvent::Run(GrapaScriptExec* vScriptExe
 	// Parse optional parameters with defaults
 	int count = 3;           // Default: 3 hash sets
 	int hyperplanes = 8;     // Default: 8 hyperplanes per set
+	int dimension = 0;
 	u64 randseed = 0;        // Default: use system random
-	
+
 	if (count_helper.vVal && count_helper.vVal->mValue.mToken == GrapaTokenType::INT) {
 		GrapaInt count_int;
 		count_int.FromBytes(count_helper.vVal->mValue);
@@ -22807,34 +22817,34 @@ GrapaRuleEvent* GrapaLibraryRuleGenHashSetEvent::Run(GrapaScriptExec* vScriptExe
 		return Error(vScriptExec, pNameSpace, -1);
 	}
 	
-	// Create result object
-	result = new GrapaRuleEvent(0, GrapaCHAR(""), GrapaBYTE(""));
-	result->mValue.mToken = GrapaTokenType::LIST;
-	result->vQueue = new GrapaRuleQueue();
-	
+	GrapaRuleEvent* sets = new GrapaRuleEvent(0, GrapaCHAR("sets"), GrapaBYTE());
+	sets->mValue.mToken = GrapaTokenType::LIST;
+	sets->vQueue = new GrapaRuleQueue();
+
 	// Handle different object types
 	if (obj_helper.vVal->mValue.mToken == GrapaTokenType::VECTOR) {
 		// Vector similarity - use GrapaVector::GenHashSet
 		if (obj_helper.vVal->vVector) {
-			GrapaError err = obj_helper.vVal->vVector->GenHashSet(vScriptExec, pNameSpace, method, count, hyperplanes, randseed, *result);
+			GrapaError err = obj_helper.vVal->vVector->GenHashSet(vScriptExec, pNameSpace, method, count, hyperplanes, randseed, *sets);
 			if (err != 0) {
-				delete result;
+				delete sets;
 				return Error(vScriptExec, pNameSpace, err);
 			}
-			return result;
 		} else {
-			delete result;
+			delete sets;
 			return Error(vScriptExec, pNameSpace, -1);
 		}
+		if (sets && sets->vQueue && sets->vQueue->Head() && sets->vQueue->Head() && sets->vQueue->Head()->vQueue && sets->vQueue->Head()->vQueue->Head()->vVector)
+			dimension = sets->vQueue->Head()->vQueue->Head()->vVector->mSize;
 	}
 	else if (obj_helper.vVal->mValue.mToken == GrapaTokenType::INT) {
 		// Integer dimension - create a dummy vector and use its GenHashSet
 		GrapaInt dim_int;
 		dim_int.FromBytes(obj_helper.vVal->mValue);
-		int dimension = (int)dim_int.LongValue();
+		dimension = (int)dim_int.LongValue();
 		
 		if (dimension <= 0) {
-			delete result;
+			delete sets;
 			return Error(vScriptExec, pNameSpace, -1);
 		}
 		
@@ -22853,15 +22863,14 @@ GrapaRuleEvent* GrapaLibraryRuleGenHashSetEvent::Run(GrapaScriptExec* vScriptExe
 			dummy_vector->Set(i, gf);
 		}
 		
-		GrapaError err = dummy_vector->GenHashSet(vScriptExec, pNameSpace, method, count, hyperplanes, randseed, *result);
+		GrapaError err = dummy_vector->GenHashSet(vScriptExec, pNameSpace, method, count, hyperplanes, randseed, *sets);
 		
 		delete dummy_vector;
 		
 		if (err != 0) {
-			delete result;
+			delete sets;
 			return Error(vScriptExec, pNameSpace, err);
 		}
-		return result;
 	}
 	else if (obj_helper.vVal->mValue.mToken == GrapaTokenType::STR) {
 		// String similarity - generate character feature-based hash sets
@@ -22893,11 +22902,10 @@ GrapaRuleEvent* GrapaLibraryRuleGenHashSetEvent::Run(GrapaScriptExec* vScriptExe
 					set_event->vQueue->PushTail(hash_event);
 				}
 				
-				result->vQueue->PushTail(set_event);
+				sets->vQueue->PushTail(set_event);
 			}
-			return result;
 		} else {
-			delete result;
+			delete sets;
 			return Error(vScriptExec, pNameSpace, -1); // Unsupported method
 		}
 	}
@@ -22932,6 +22940,8 @@ GrapaRuleEvent* GrapaLibraryRuleGenHashSetEvent::Run(GrapaScriptExec* vScriptExe
 				field_names.push_back("field2");
 			}
 			
+			dimension = (int)field_names.size();
+
 			for (int set_idx = 0; set_idx < count; set_idx++) {
 				GrapaRuleEvent* set_event = new GrapaRuleEvent(0, GrapaCHAR(""), GrapaBYTE(""));
 				set_event->mValue.mToken = GrapaTokenType::LIST;
@@ -22958,21 +22968,42 @@ GrapaRuleEvent* GrapaLibraryRuleGenHashSetEvent::Run(GrapaScriptExec* vScriptExe
 					set_event->vQueue->PushTail(hash_obj);
 				}
 				
-				result->vQueue->PushTail(set_event);
+				sets->vQueue->PushTail(set_event);
 			}
-			return result;
 		} else {
-			delete result;
+			delete sets;
 			return Error(vScriptExec, pNameSpace, -1); // Unsupported method
 		}
 	}
 	else {
 		// Unsupported object type
-		delete result;
+		delete sets;
 		return Error(vScriptExec, pNameSpace, -1);
 	}
 	
+
+	// Create result object
+	result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaBYTE());
+	result->mValue.mToken = GrapaTokenType::GOBJ;
+	result->vQueue = new GrapaRuleQueue();
+	result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("method"), method));
+	result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("count"), GrapaInt(count).getBytes()));
+	result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("hyperplanes"), GrapaInt(hyperplanes).getBytes()));
+	result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("dimension"), GrapaInt(dimension).getBytes()));
+	result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("randseed"), GrapaInt(hyperplanes).getBytes()));
+	result->vQueue->PushTail(sets);
+
 	return result;
+}
+
+GrapaRuleEvent* GrapaLibraryRuleGenHashEvent::Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput)
+{
+	GrapaRuleEvent* result = NULL;
+	GrapaLibraryParam obj_helper(vScriptExec, pNameSpace, pInput ? pInput->Head(0) : NULL);
+	GrapaLibraryParam hashsource_helper(vScriptExec, pNameSpace, pInput ? pInput->Head(1) : NULL);
+	if (result == NULL)
+		result = Error(vScriptExec, pNameSpace, -1);
+	return(result);
 }
 
 GrapaRuleEvent* GrapaLibraryRuleLowerEvent::Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput)

@@ -257,6 +257,7 @@ public:
 
 	GrapaLibraryEvent* HandleSimilarity(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleGenHashSet(GrapaCHAR& pName);
+	GrapaLibraryEvent* HandleGenHash(GrapaCHAR& pName);
 
 	GrapaLibraryEvent* HandleUtc(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleTz(GrapaCHAR& pName);
