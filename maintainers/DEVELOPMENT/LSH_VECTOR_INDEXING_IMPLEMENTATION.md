@@ -5,10 +5,25 @@
 This document outlines the implementation plan for **Multi-Hash Locality Sensitive Hashing (LSH)** vector indexing in Grapa to address performance issues with similarity search on datasets larger than 20K records. The approach uses **multiple hash sets** to reduce the boundary problem while leveraging Grapa's database infrastructure for persistent storage and fast hash-based lookups.
 
 ## Implementation Status
-- ✅ **`datafield` parameter**: Already implemented in `GrapaLibraryRuleSimilarityEvent::Run`
-- 🔄 **`hashsource` parameter**: Needs to be added (renamed from `hash_vectors`)
-- 🔄 **`hashfield` parameter**: Needs to be added
-- 🔄 **Multi-hash similarity functions**: Need to be implemented
+
+### Phase 1: Hash Generation (✅ COMPLETED)
+- ✅ **`genHashSet()` method**: Implemented for `$VECTOR`, `$STR`, and `$GOBJ`
+- ✅ **Multi-hash support**: `count` parameter (1-4 hash sets)
+- ✅ **Hyperplane generation**: `hyperplanes` parameter (4-16 per set)
+- ✅ **Random seed support**: `randseed` parameter for reproducibility
+- ✅ **Type-based API**: Each data type generates appropriate hash functions
+
+### Phase 2: Hash-Based Similarity Search (⏳ NOT YET IMPLEMENTED)
+- ⏳ **`hashsource` parameter**: Needs to be added to `.similarity()`
+- ⏳ **`hashfield` parameter**: Needs to be added to `.similarity()`
+- ⏳ **Hash-based lookup**: Need to implement hash calculation and candidate retrieval
+- ⏳ **Multi-hash similarity functions**: Need to be implemented
+- ⏳ **Advanced features**: Boundary detection, adaptive hashing, hybrid fallback
+
+### Phase 3: Database Integration (⏳ NOT YET IMPLEMENTED)
+- ⏳ **Hash storage**: Store hash values in database columns
+- ⏳ **Hash indexes**: Create indexes on hash columns for fast lookup
+- ⏳ **Persistent hash sets**: Store generated hash sets with table schema
 
 ## Problem Statement
 
@@ -1005,18 +1020,57 @@ randseed: 0-4294967295 (0 = use system random)
 - Future types (e.g., `$ARRAY`, `$TABLE`) can easily be added
 
 #### 3.9 Configuration Options
+
+**Currently Implemented (Phase 1: Hash Generation):**
+
+The `genHashSet()` method currently supports these parameters:
 ```grapa
+// Currently implemented API
+hashsource = object.genHashSet(method, count, hyperplanes, randseed);
+
+// Parameters:
+// - method: "cosine" | "euclidean" | "jaccard" | etc.
+// - count: 1-4 (number of hash sets for multi-hash LSH)
+// - hyperplanes: 4-16 (hyperplanes/features per hash set)
+// - randseed: 0 (system random) or integer for reproducibility
+```
+
+**Future Implementation (Phase 2: Hash-Based Similarity Search):**
+
+When `.similarity()` is enhanced to support the `hashsource` parameter, additional configuration options will be available:
+
+```grapa
+// FUTURE: Advanced configuration for hash-based similarity search
 multi_hash_config = {
-    "num_hash_sets": 3,          /* Number of hash sets per method */
-    "hyperplanes": 8,            /* Hyperplanes per hash set */
-    "vector_dimension": 384,      /* Vector dimension */
+    "num_hash_sets": 3,          /* Number of hash sets per method (IMPLEMENTED in genHashSet count param) */
+    "hyperplanes": 8,            /* Hyperplanes per hash set (IMPLEMENTED in genHashSet hyperplanes param) */
+    "vector_dimension": 384,      /* Vector dimension (derived from data) */
     "similarity_methods": ["cosine", "euclidean", "jaccard", "manhattan"],
-    "boundary_threshold": 0.1,   /* Boundary detection threshold */
-    "adaptive_hashing": true     /* Use adaptive hash selection */
+    
+    /* FUTURE: Advanced features for .similarity() hashsource usage */
+    "boundary_threshold": 0.1,   /* NOT YET IMPLEMENTED: Boundary detection threshold */
+    "adaptive_hashing": true,    /* NOT YET IMPLEMENTED: Use adaptive hash selection */
+    "hash_bucket_expansion": 2,  /* NOT YET IMPLEMENTED: Search adjacent hash buckets */
+    "hybrid_fallback": true      /* NOT YET IMPLEMENTED: Fall back to exact search if LSH returns too few results */
 };
 ```
 
+**Implementation Status:**
+- ✅ **Phase 1 (Current)**: `genHashSet()` method for hash generation
+  - Multi-hash LSH via `count` parameter
+  - Configurable hyperplane count
+  - Random seed support
+- ⏳ **Phase 2 (Future)**: Enhanced `.similarity()` with `hashsource` parameter
+  - Boundary detection
+  - Adaptive hashing
+  - Hash bucket expansion
+  - Hybrid LSH + exact search fallback
+
 ## Hash Miss Risks and Mitigation Strategies
+
+> **NOTE**: The strategies in this section describe features for **Phase 2: Hash-Based Similarity Search**.  
+> Phase 1 (Hash Generation via `genHashSet()`) is complete, but these mitigation strategies  
+> will be implemented when `.similarity()` is enhanced to support the `hashsource` parameter.
 
 ### 3.7 Hash Miss Scenarios
 
@@ -1043,9 +1097,9 @@ vector_b = [0.501, 0.499, 0.0];  // Hash: 0b01
 - **Clustered data**: Vectors grouped in different hash buckets
 - **Hash precision**: Too many hyperplanes increase boundary problems
 
-### 3.8 Mitigation Strategies
+### 3.8 Mitigation Strategies (Phase 2 - Future Implementation)
 
-**1. Multi-Hash Approach (Primary)**
+**1. Multi-Hash Approach (Primary - Partially Implemented in Phase 1)**
 ```grapa
 // Generate multiple hash sets to reduce miss probability
 hashsource = #[0, 0, 0, 0, 0]#.genHashSet("cosine", 3, 8, 12345);
@@ -1053,7 +1107,7 @@ hashsource = #[0, 0, 0, 0, 0]#.genHashSet("cosine", 3, 8, 12345);
 // Recall: 75% with 2 sets, 87.5% with 3 sets, 93.75% with 4 sets
 ```
 
-**2. Hash Bucket Expansion (Secondary)**
+**2. Hash Bucket Expansion (Secondary - NOT YET IMPLEMENTED)**
 ```grapa
 // Search adjacent hash buckets for near-misses
 query_hash = 0b10101010;
@@ -1065,7 +1119,7 @@ search_hashes = [
 ];
 ```
 
-**3. Hybrid LSH + Exact Search (Fallback)**
+**3. Hybrid LSH + Exact Search (Fallback - NOT YET IMPLEMENTED)**
 ```grapa
 // Primary: LSH for speed
 lsh_results = vectors.similarity(query, "cosine", {
@@ -1087,7 +1141,7 @@ if (lsh_results."results".len() < 3) {
 }
 ```
 
-**4. Adaptive Hash Precision**
+**4. Adaptive Hash Precision (NOT YET IMPLEMENTED)**
 ```grapa
 // Start with lower precision, increase if needed
 hashsource = #[0, 0, 0, 0, 0]#.genHashSet("cosine", 3, 6, 12345);  // Lower precision

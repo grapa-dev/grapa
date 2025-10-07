@@ -1,0 +1,80 @@
+// Comprehensive test for genHashSet - all data types and methods
+// Tests the LSH hash set generation for vectors, strings, and objects
+// Valid parameters: count (1-4), hyperplanes (4-16)
+
+// ==================================================
+// VECTOR HASH SETS
+// ==================================================
+
+// Test: Vector with Cosine similarity
+#[1.0, 2.0, 3.0, 4.0, 5.0]#.genhashset("cosine", 3, 8);
+
+// Test: Vector with Euclidean distance
+#[0.5, 1.5, 2.5, 3.5]#.genhashset("euclidean", 2, 6);
+
+// Test: Vector with Jaccard similarity
+#[1.0, 0.0, 1.0, 0.0, 1.0]#.genhashset("jaccard", 2, 4);
+
+// Test: Integer dimension (creates vector hashset)
+10.genhashset("cosine", 2, 8);
+
+// Test: Random seed consistency
+#[1.0, 2.0, 3.0]#.genhashset("cosine", 1, 8, 12345);
+#[1.0, 2.0, 3.0]#.genhashset("cosine", 1, 8, 12345);
+
+// ==================================================
+// STRING HASH SETS
+// ==================================================
+
+// Test: String with Jaccard similarity
+"example string for testing".genhashset("jaccard", 3, 8);
+
+// Test: String with Levenshtein distance
+"test string".genhashset("levenshtein", 2, 6);
+
+// Test: String with Damerau-Levenshtein distance
+"another test".genhashset("damerau", 2, 4);
+
+// Test: String with Hamming distance
+"hamming test".genhashset("hamming", 1, 8);
+
+// Test: Random seed consistency
+"test".genhashset("jaccard", 1, 8, 54321);
+"test".genhashset("jaccard", 1, 8, 54321);
+
+// ==================================================
+// OBJECT HASH SETS
+// ==================================================
+
+// Test: Object with Metadata similarity
+{"name": "John Doe", "age": 30, "city": "New York"}.genhashset("metadata", 3, 8);
+
+// Test: Object with Object similarity
+{"field1": 100, "field2": 200, "field3": 300}.genhashset("object", 2, 6);
+
+// Test: Object with Field overlap
+{"title": "Article", "author": "Jane", "year": 2024}.genhashset("field_overlap", 2, 4);
+
+// Test: Object with Value similarity
+{"category": "tech", "rating": 4.5, "price": 99.99}.genhashset("value_similarity", 1, 8);
+
+// Test: Random seed consistency
+{"a": 1, "b": 2, "c": 3}.genhashset("metadata", 1, 8, 99999);
+{"a": 1, "b": 2, "c": 3}.genhashset("metadata", 1, 8, 99999);
+
+// ==================================================
+// PARAMETER VARIATIONS
+// ==================================================
+
+// Test: Minimum parameters (count=1, hyperplanes=4)
+#[1.0, 2.0]#.genhashset("cosine", 1, 4);
+
+// Test: Maximum parameters (count=4, hyperplanes=16)
+#[1.0, 2.0, 3.0]#.genhashset("cosine", 4, 16);
+
+// Test: Default random seed (0 = system random)
+"test".genhashset("jaccard", 2, 4, 0);
+
+// Test: Specific random seed for reproducibility
+{"x": 1}.genhashset("metadata", 2, 4, 123456);
+

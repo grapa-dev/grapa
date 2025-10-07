@@ -22865,17 +22865,106 @@ GrapaRuleEvent* GrapaLibraryRuleGenHashSetEvent::Run(GrapaScriptExec* vScriptExe
 	}
 	else if (obj_helper.vVal->mValue.mToken == GrapaTokenType::STR) {
 		// String similarity - generate character feature-based hash sets
-		// For now, return a placeholder structure
-		// TODO: Implement string-specific hash generation
-		delete result;
-		return Error(vScriptExec, pNameSpace, -1); // Not implemented yet
+		// Set random seed for reproducibility
+		if (randseed != 0) {
+			srand(randseed);
+		}
+		
+		// Generate hash sets based on method
+		if (method.StrLowerCmp("jaccard") == 0 || method.StrLowerCmp("levenshtein") == 0 || 
+		    method.StrLowerCmp("damerau") == 0 || method.StrLowerCmp("hamming") == 0) {
+			
+			for (int set_idx = 0; set_idx < count; set_idx++) {
+				GrapaRuleEvent* set_event = new GrapaRuleEvent(0, GrapaCHAR(""), GrapaBYTE(""));
+				set_event->mValue.mToken = GrapaTokenType::LIST;
+				set_event->vQueue = new GrapaRuleQueue();
+				
+				// Generate hash functions (represented as character position/weight pairs)
+				for (int hp_idx = 0; hp_idx < hyperplanes; hp_idx++) {
+					// Generate a random character position and weight as a string
+					int char_pos = rand() % 256;  // Character position (0-255)
+					double weight = ((double)rand() / RAND_MAX) * 2.0 - 1.0;  // Weight between -1 and 1
+					
+					char hash_str[64];
+					snprintf(hash_str, sizeof(hash_str), "%d:%.6f", char_pos, weight);
+					
+					GrapaRuleEvent* hash_event = new GrapaRuleEvent(0, GrapaCHAR(""), GrapaBYTE(hash_str, strlen(hash_str)));
+					hash_event->mValue.mToken = GrapaTokenType::STR;
+					set_event->vQueue->PushTail(hash_event);
+				}
+				
+				result->vQueue->PushTail(set_event);
+			}
+			return result;
+		} else {
+			delete result;
+			return Error(vScriptExec, pNameSpace, -1); // Unsupported method
+		}
 	}
 	else if (obj_helper.vVal->mValue.mToken == GrapaTokenType::GOBJ) {
 		// Object similarity - generate field weight-based hash sets
-		// For now, return a placeholder structure
-		// TODO: Implement object-specific hash generation
-		delete result;
-		return Error(vScriptExec, pNameSpace, -1); // Not implemented yet
+		// Set random seed for reproducibility
+		if (randseed != 0) {
+			srand(randseed);
+		}
+		
+		// Generate hash sets based on method
+		if (method.StrLowerCmp("metadata") == 0 || method.StrLowerCmp("object") == 0 ||
+		    method.StrLowerCmp("field_overlap") == 0 || method.StrLowerCmp("value_similarity") == 0) {
+			
+			// Get field names from the input object
+			std::vector<std::string> field_names;
+			if (obj_helper.vVal->vQueue) {
+				GrapaRuleEvent* field = obj_helper.vVal->vQueue->Head();
+				while (field) {
+					if (field->mName.mBytes && field->mName.mLength > 0) {
+						std::string field_name(reinterpret_cast<const char*>(field->mName.mBytes), field->mName.mLength);
+						field_names.push_back(field_name);
+					}
+					field = field->Next();
+				}
+			}
+			
+			// If no fields, use a default set of hash functions
+			if (field_names.empty()) {
+				field_names.push_back("field0");
+				field_names.push_back("field1");
+				field_names.push_back("field2");
+			}
+			
+			for (int set_idx = 0; set_idx < count; set_idx++) {
+				GrapaRuleEvent* set_event = new GrapaRuleEvent(0, GrapaCHAR(""), GrapaBYTE(""));
+				set_event->mValue.mToken = GrapaTokenType::LIST;
+				set_event->vQueue = new GrapaRuleQueue();
+				
+				// Generate hash functions (represented as field weight objects)
+				for (int hp_idx = 0; hp_idx < hyperplanes; hp_idx++) {
+					GrapaRuleEvent* hash_obj = new GrapaRuleEvent(0, GrapaCHAR(""), GrapaBYTE(""));
+					hash_obj->mValue.mToken = GrapaTokenType::GOBJ;
+					hash_obj->vQueue = new GrapaRuleQueue();
+					
+					// Add random weights for each field
+					for (const auto& field_name : field_names) {
+						double weight = ((double)rand() / RAND_MAX) * 2.0 - 1.0;  // Weight between -1 and 1
+						
+						GrapaRuleEvent* weight_field = new GrapaRuleEvent(0, GrapaCHAR(field_name.c_str(), field_name.length()), GrapaBYTE(""));
+						weight_field->mValue.mToken = GrapaTokenType::FLOAT;
+						GrapaFloat gf(weight);
+						weight_field->mValue.FROM(gf.getBytes());
+						
+						hash_obj->vQueue->PushTail(weight_field);
+					}
+					
+					set_event->vQueue->PushTail(hash_obj);
+				}
+				
+				result->vQueue->PushTail(set_event);
+			}
+			return result;
+		} else {
+			delete result;
+			return Error(vScriptExec, pNameSpace, -1); // Unsupported method
+		}
 	}
 	else {
 		// Unsupported object type

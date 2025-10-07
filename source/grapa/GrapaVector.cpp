@@ -5913,7 +5913,7 @@ GrapaRuleEvent* GrapaVector::generateEuclideanProjections(GrapaScriptExec* vScri
 		projection->vVector->mSize = dimension;
 		projection->vVector->mData = (GrapaVectorItem*)GrapaMem::Create(projection->vVector->mSize * projection->vVector->mBlock);
 		memset(projection->vVector->mData, 0, projection->vVector->mSize * projection->vVector->mBlock);
-		projection->vQueue->PushTail(projection);
+		projections->vQueue->PushTail(projection);
 		
 		// Generate random projection vector
 		for (int j = 0; j < dimension; j++) {
@@ -5942,7 +5942,7 @@ GrapaRuleEvent* GrapaVector::generateJaccardMinhash(GrapaScriptExec* vScriptExec
 		hash_func->vVector->mSize = dimension;
 		hash_func->vVector->mData = (GrapaVectorItem*)GrapaMem::Create(hash_func->vVector->mSize * hash_func->vVector->mBlock);
 		memset(hash_func->vVector->mData, 0, hash_func->vVector->mSize * hash_func->vVector->mBlock);
-		hash_func->vQueue->PushTail(hash_func);
+		minhash->vQueue->PushTail(hash_func);
 		
 		// Generate random minhash permutation
 		for (int j = 0; j < dimension; j++) {
