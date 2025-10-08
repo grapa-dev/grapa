@@ -39,23 +39,21 @@ for test_size in test_sizes {
         ]#;
 		vectors += vector;
 		hash = vector.genhash(hashsource);
-		hashes += hash;
+		hashes += [hash,vector];
     };
     
     create_vector_time = start_time.ms();
 
-	/*
     search = #[0.8, -0.6, 0.4, 0.2, -0.1]#.genhash(hashsource);
 	vectors2 = [];
 	i = 0;
 	for h in hashes {
-		if (h[0]==search[0] || h[1]==search[1] || h[2]==search[2])
-			vectors2 += vectors[i];
+		if (h[0][0]==search[0] || h[0][1]==search[1] || h[0][2]==search[2])
+			vectors2 += h[1];
 		i += 1;
 	};
-	*/
 	
-    vector_results = vectors.similarity(#[0.8, -0.6, 0.4, 0.2, -0.1]#, "cosine", {
+    vector_results = vectors2.similarity(#[0.8, -0.6, 0.4, 0.2, -0.1]#, "cosine", {
         "top_n": 10,
         "include_scores": true,
         "include_items": true
