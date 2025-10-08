@@ -22990,7 +22990,7 @@ GrapaRuleEvent* GrapaLibraryRuleGenHashSetEvent::Run(GrapaScriptExec* vScriptExe
 	result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("count"), GrapaInt(count).getBytes()));
 	result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("hyperplanes"), GrapaInt(hyperplanes).getBytes()));
 	result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("dimension"), GrapaInt(dimension).getBytes()));
-	result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("randseed"), GrapaInt(hyperplanes).getBytes()));
+	result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("randseed"), GrapaInt(randseed).getBytes()));
 	result->vQueue->PushTail(sets);
 
 	return result;
