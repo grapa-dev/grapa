@@ -74,7 +74,7 @@ for test_size in test_sizes {
 			indexes2 += i;
 	};
 
-    vector_results = indexes.similarity(#[0.8, -0.6, 0.4, 0.2, -0.1]#, "cosine", {
+    vector_results = indexes2.similarity(#[0.8, -0.6, 0.4, 0.2, -0.1]#, "cosine", {
         "datasource": vectors,
         "top_n": 10,
         "include_scores": true,
