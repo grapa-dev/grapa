@@ -45,7 +45,13 @@ for test_size in test_sizes {
     create_vector_time = start_time.ms();
 
     search = #[0.8, -0.6, 0.4, 0.2, -0.1]#.genhash(hashsource);
-
+	vectors2 = [];
+	i = 0;
+	for h in hashes {
+		if (h."h1"==search[0] || h."h2"==search[1] || h."h3"==search[2])
+			vectors2 += vectors[i];
+		i += 1;
+	};
 
     vector_results = vectors.similarity(#[0.8, -0.6, 0.4, 0.2, -0.1]#, "cosine", {
         "top_n": 10,
