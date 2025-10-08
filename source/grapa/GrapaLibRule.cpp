@@ -11602,9 +11602,11 @@ GrapaRuleEvent* GrapaLibraryRuleFileSetEvent::Run(GrapaScriptExec* vScriptExec, 
 
 			if (isSetField && fieldName.vVal && fieldName.vVal->mValue.mToken == GrapaTokenType::GOBJ && fieldName.vVal->vQueue)
 			{
-				GrapaRuleEvent* scan = fieldName.vVal->vQueue->Head();
-				while (scan)
+				GrapaRuleEvent* scanitem = fieldName.vVal->vQueue->Head();
+				while (scanitem)
 				{
+					GrapaRuleEvent* scan = scanitem;
+					while (scan && scan->mValue.mToken == GrapaTokenType::PTR && scan->vRulePointer) scan = scan->vRulePointer;
 					if (scan->mValue.mToken == GrapaTokenType::LIST || scan->mValue.mToken == GrapaTokenType::TUPLE || scan->mValue.mToken == GrapaTokenType::GOBJ || scan->mValue.mToken == GrapaTokenType::ERR || scan->mValue.mToken == GrapaTokenType::XML || scan->mValue.mToken == GrapaTokenType::EL || scan->mValue.mToken == GrapaTokenType::TAG || scan->mValue.mToken == GrapaTokenType::OP || scan->mValue.mToken == GrapaTokenType::CODE || scan->mValue.mToken == GrapaTokenType::ERR)
 					{
 						if (scan->vQueue)
@@ -11621,7 +11623,7 @@ GrapaRuleEvent* GrapaLibraryRuleFileSetEvent::Run(GrapaScriptExec* vScriptExec, 
 						}
 						scan->mValue.mToken = scan->mValue.mToken;
 					}
-					scan = scan->Next();
+					scanitem = scanitem->Next();
 				}
 				err = objEvent->vDatabase->FieldSet(r2.vVal->mValue, fieldName.vVal);
 			}
