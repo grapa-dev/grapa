@@ -14,6 +14,8 @@ warning_threshold = 2000;   /* Warning threshold */
 ("Acceptable threshold: < " + acceptable_threshold.str() + "ms\n").echo();
 ("\n").echo();
 
+hashsource = 5.genhashset("cosine",3,8,1234);
+
 /* Results storage */
 results = [];
 
@@ -25,6 +27,7 @@ for test_size in test_sizes {
     start_time = $TIME().utc();
     
     vectors = [];
+	hashes = [];
     for i in test_size.range() {
         /* Create truly random vectors for realistic similarity testing */
         vector = #[
@@ -34,9 +37,15 @@ for test_size in test_sizes {
 			((9.random()) / 256)-1,  /* Random float -1.0 - 1.0 */
 			((9.random()) / 256)-1   /* Random float -1.0 - 1.0 */
         ]#;
+		vectors += vector;
+		hash = vector.genhash(hashsource);
+		hashes += hash;
     };
     
     create_vector_time = start_time.ms();
+
+    search = #[0.8, -0.6, 0.4, 0.2, -0.1]#.genhash(hashsource);
+
 
     vector_results = vectors.similarity(#[0.8, -0.6, 0.4, 0.2, -0.1]#, "cosine", {
         "top_n": 10,
