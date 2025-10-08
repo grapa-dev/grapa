@@ -23001,9 +23001,116 @@ GrapaRuleEvent* GrapaLibraryRuleGenHashEvent::Run(GrapaScriptExec* vScriptExec, 
 	GrapaRuleEvent* result = NULL;
 	GrapaLibraryParam obj_helper(vScriptExec, pNameSpace, pInput ? pInput->Head(0) : NULL);
 	GrapaLibraryParam hashsource_helper(vScriptExec, pNameSpace, pInput ? pInput->Head(1) : NULL);
-	if (result == NULL)
-		result = Error(vScriptExec, pNameSpace, -1);
-	return(result);
+	
+	if (!obj_helper.vVal || !hashsource_helper.vVal) {
+		return Error(vScriptExec, pNameSpace, -1);
+	}
+	
+	GrapaRuleEvent* vector_param = NULL;
+	GrapaRuleEvent* hashsource_param = NULL;
+	
+	// Support both vector.genhash(hashsource) and hashsource.genhash(vector)
+	if (obj_helper.vVal->mValue.mToken == GrapaTokenType::VECTOR && hashsource_helper.vVal->mValue.mToken == GrapaTokenType::GOBJ) {
+		// Case 1: vector.genhash(hashsource)
+		vector_param = obj_helper.vVal;
+		hashsource_param = hashsource_helper.vVal;
+	}
+	else if (obj_helper.vVal->mValue.mToken == GrapaTokenType::GOBJ && hashsource_helper.vVal->mValue.mToken == GrapaTokenType::VECTOR) {
+		// Case 2: hashsource.genhash(vector)
+		vector_param = hashsource_helper.vVal;
+		hashsource_param = obj_helper.vVal;
+	}
+	else {
+		return Error(vScriptExec, pNameSpace, -1);
+	}
+	
+	// Extract metadata from hashsource
+	if (!hashsource_param->vQueue) {
+		return Error(vScriptExec, pNameSpace, -1);
+	}
+	
+	// Get method field
+	s64 method_index = 0;
+	GrapaRuleEvent* method_field = hashsource_param->vQueue->Search(GrapaCHAR("method"), method_index);
+	if (!method_field || method_field->mValue.mToken != GrapaTokenType::STR) {
+		return Error(vScriptExec, pNameSpace, -1);
+	}
+	GrapaCHAR method;
+	method.FROM(method_field->mValue);
+	
+	// Get sets field
+	s64 sets_index = 0;
+	GrapaRuleEvent* sets_field = hashsource_param->vQueue->Search(GrapaCHAR("sets"), sets_index);
+	if (!sets_field || sets_field->mValue.mToken != GrapaTokenType::LIST || !sets_field->vQueue) {
+		return Error(vScriptExec, pNameSpace, -1);
+	}
+	
+	// Validate vector
+	if (!vector_param->vVector || !vector_param->vVector->mData || vector_param->vVector->mDim != 1) {
+		return Error(vScriptExec, pNameSpace, -1);
+	}
+	
+	GrapaVector* input_vector = vector_param->vVector;
+	u64 vector_dim = input_vector->mCounts[0];
+	
+	// Create result list for hash values
+	result = new GrapaRuleEvent(0, GrapaCHAR(""), GrapaBYTE(""));
+	result->mValue.mToken = GrapaTokenType::LIST;
+	result->vQueue = new GrapaRuleQueue();
+	
+	// Process each hash set
+	GrapaRuleEvent* hash_set = sets_field->vQueue->Head();
+	int set_count = 0;
+	
+	while (hash_set && set_count < 4) {  // Max 4 sets
+		if (hash_set->mValue.mToken == GrapaTokenType::LIST && hash_set->vQueue) {
+			// Calculate hash value for this set
+			u64 hash_value = 0;
+			int hyperplane_count = 0;
+			GrapaRuleEvent* hyperplane_event = hash_set->vQueue->Head();
+			
+			while (hyperplane_event && hyperplane_count < 64) {  // Max 64 bits
+				if (hyperplane_event->mValue.mToken == GrapaTokenType::VECTOR && hyperplane_event->vVector) {
+					GrapaVector* hyperplane = hyperplane_event->vVector;
+					
+					// Validate hyperplane dimension matches input vector
+					if (hyperplane->mDim == 1 && hyperplane->mCounts[0] == vector_dim) {
+						// Calculate dot product
+						double dot_product = 0.0;
+						
+						for (u64 i = 0; i < vector_dim; i++) {
+							GrapaVectorParam vec_param(vScriptExec, input_vector->mData, input_vector->mBlock, i);
+							GrapaVectorParam hp_param(vScriptExec, hyperplane->mData, hyperplane->mBlock, i);
+							
+							if (vec_param.aa && hp_param.aa) {
+								dot_product += vec_param.aa->ToDouble() * hp_param.aa->ToDouble();
+							}
+						}
+						
+						// Generate hash bit: 1 if dot product >= 0, 0 otherwise
+						if (dot_product >= 0.0) {
+							hash_value |= (1ULL << hyperplane_count);
+						}
+						
+						hyperplane_count++;
+					}
+				}
+				hyperplane_event = hyperplane_event->Next();
+			}
+			
+			// Add hash value to result list
+			GrapaRuleEvent* hash_event = new GrapaRuleEvent(0, GrapaCHAR(""), GrapaBYTE(""));
+			hash_event->mValue.mToken = GrapaTokenType::INT;
+			GrapaInt hash_int(hash_value);
+			hash_event->mValue.FROM(hash_int.getBytes());
+			result->vQueue->PushTail(hash_event);
+			
+			set_count++;
+		}
+		hash_set = hash_set->Next();
+	}
+	
+	return result;
 }
 
 GrapaRuleEvent* GrapaLibraryRuleLowerEvent::Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput)

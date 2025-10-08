@@ -1,0 +1,35 @@
+// Test for genhash functionality
+// Demonstrates hash generation from vectors using hashsource
+
+// Generate hashsource with known seed for reproducibility
+hashsource = 5.genhashset("cosine", 3, 8, 12345);
+
+// Test 1: Basic hash generation (forward direction)
+v1 = #[1.0, 2.0, 3.0, 4.0, 5.0]#;
+hash1 = v1.genhash(hashsource);
+hash1;
+
+// Test 2: Hash generation (reversed direction)
+v2 = #[-1.0, -2.0, -3.0, -4.0, -5.0]#;
+hash2 = hashsource.genhash(v2);
+hash2;
+
+// Test 3: Similar vectors should have similar hashes
+v3 = #[1.0, 2.1, 2.9, 4.1, 4.9]#;
+hash3 = v3.genhash(hashsource);
+hash3;
+
+// Test 4: Very different vector should have different hash
+v4 = #[-5.0, 4.0, -3.0, 2.0, -1.0]#;
+hash4 = v4.genhash(hashsource);
+hash4;
+
+// Test 5: Reproducibility - same vector, same hashsource = same hash
+hash1_repeat = v1.genhash(hashsource);
+hash1_repeat;
+
+// Test 6: Different hashsource = different hash
+hashsource2 = 5.genhashset("cosine", 3, 8, 54321);
+hash5 = v1.genhash(hashsource2);
+hash5;
+
