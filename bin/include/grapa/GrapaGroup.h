@@ -58,11 +58,13 @@ public:
 	GrapaError SetField(u64 parentTree, u8 parentType, u64 pId, const GrapaCHAR& pField, const GrapaBYTE& pValue);
 
 	GrapaError SetField(u64 parentTree, u8 parentType, const GrapaCHAR& pName, GrapaRuleEvent* pRowData);
+	GrapaError SetField(u64 parentTree, u8 parentType, u64 pId, GrapaRuleEvent* pRowData);
 
 	GrapaError GetField(u64 parentTree, u8 parentType, const GrapaCHAR& pName, const GrapaCHAR& pField, GrapaBYTE& pValue);
 	GrapaError GetField(u64 parentTree, u8 parentType, u64 pId, const GrapaCHAR& pField, GrapaBYTE& pValue);
 
 	GrapaError GetField(u64 parentTree, u8 parentType, const GrapaCHAR& pName, GrapaRuleEvent* pRowData, GrapaRuleEvent* pRowResults);
+	GrapaError GetField(u64 parentTree, u8 parentType, u64 pId, GrapaRuleEvent* pRowData, GrapaRuleEvent* pRowResults);
 
 	GrapaError DumpGroup(u64 parentTree, u8 parentType, u64 pId=0, GrapaFile *pDumpFile=NULL);
 

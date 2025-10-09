@@ -49,7 +49,7 @@ for test_size in test_sizes {
             ]#;
             hash = vector.genhash(hashsource);
             name = "r"+i.str().lpad(8,"0");
-            vectors.setfield(name,{"vector":vector,"h1":hash[0].copy(),"h2":hash[1].copy(),"h3":hash[2].copy()});
+            vectors.setfield(name,{"vector":vector,"h1":hash[0],"h2":hash[1],"h3":hash[2]});
         };
     }
     else
@@ -57,31 +57,33 @@ for test_size in test_sizes {
         vectors.cd(dbname);
     };
 
-    indexes = vectors.ls().vector().sort(1,["$ID"]).t().list()[0];
-    search = #[0.8, -0.6, 0.4, 0.2, -0.1]#.genhash(hashsource);
-	
     create_vector_time = start_time.ms();
+    indexes = vectors.ls().vector().sort(1,["$ID"]).t().list()[0];
+    vector_results = indexes.similarity(#[0.8, -0.6, 0.4, 0.2, -0.1]#, "cosine", {
+        "datasource": vectors,
+        "datafield": "vector",
+        "top_n": 10,
+        "include_scores": true,
+        "include_items": true
+    });
+    pure_vector_time = start_time.ms() - create_vector_time;
 
-	indexes2 = [];
-	for i in indexes {
+    search = #[0.8, -0.6, 0.4, 0.2, -0.1]#.genhash(hashsource);
+    indexes2 = [];
+    for i in indexes {
         name = "r"+i.str().lpad(8,"0");
         h = vectors.getfield(name,["h1","h2","h3"]);
-		if (h."h1"==search[0] || h."h2"==search[1] || h."h3"==search[2])
-			indexes2 += i;
-	};
-    
-    vector_results = indexes2.similarity(#[0.8, -0.6, 0.4, 0.2, -0.1]#, "cosine", {
+        if (h."h1"==search[0] || h."h2"==search[1] || h."h3"==search[2])
+            indexes2 += i;
+    };
+    vector_results2 = indexes2.similarity(#[0.8, -0.6, 0.4, 0.2, -0.1]#, "cosine", {
         "datasource": vectors,
-        "datafiled": "vector",
+        "datafield": "vector",
         "top_n": 10,
         "include_scores": true,
         "include_items": true
     });
     
-    vector_results.str().echo();
-    "\n".echo();
-    
-    pure_vector_time = start_time.ms() - create_vector_time;
     ("    Create vector: " + create_vector_time.float(30).str() + "ms\n").echo();
     ("    Search vector: " + pure_vector_time.float(30).str() + "ms\n").echo();
     ("    Results: " + vector_results."results".len().str() + "\n").echo();
@@ -96,6 +98,13 @@ for test_size in test_sizes {
     } else {
         ("    ❌ SLOW (> " + warning_threshold.str() + "ms)\n").echo();
     };
+    
+    "Full search\n".echo();
+    vector_results.str().echo();
+    "\n".echo();
+    "Index search\n".echo();
+    vector_results2.str().echo();
+    "\n".echo();
     
     /* Store result */
     result = {
