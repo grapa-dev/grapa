@@ -1334,6 +1334,19 @@ GrapaError GrapaLocalDatabase::FieldSet(const GrapaCHAR& pName, GrapaRuleEvent* 
 	return(err);
 }
 
+GrapaError GrapaLocalDatabase::FieldSet(u64 pId, GrapaRuleEvent* pRowData)
+{
+	GrapaError err = -1;
+	if (mDb)
+	{
+		u64 dirId = mDirId;
+		u8 dirType = mDirType;
+		err = mDb->mValue.SetField(dirId, dirType, pId, pRowData);
+		mDb->mValue.FlushFile();
+	}
+	return(err);
+}
+
 GrapaError GrapaLocalDatabase::FieldGet(const GrapaCHAR& pName, GrapaRuleEvent* pRowData, GrapaRuleEvent* pRowResults)
 {
 	GrapaError err = -1;
@@ -1347,6 +1360,20 @@ GrapaError GrapaLocalDatabase::FieldGet(const GrapaCHAR& pName, GrapaRuleEvent* 
 		err = GrapaLocalDatabase::GetNameInfo(pName, dirId, dirType, fname);
 		if (err) return(err);
 		err = mDb->mValue.GetField(dirId, dirType, fname, pRowData, pRowResults);
+	}
+	return(err);
+}
+
+GrapaError GrapaLocalDatabase::FieldGet(u64 pId, GrapaRuleEvent* pRowData, GrapaRuleEvent* pRowResults)
+{
+	GrapaError err = -1;
+	if (pRowResults == NULL) return(-1);
+	pRowResults->CLEAR();
+	if (mDb)
+	{
+		u64 dirId = mDirId;
+		u8 dirType = mDirType;
+		err = mDb->mValue.GetField(dirId, dirType, pId, pRowData, pRowResults);
 	}
 	return(err);
 }

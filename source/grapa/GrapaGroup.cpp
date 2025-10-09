@@ -1430,13 +1430,16 @@ GrapaError GrapaGroup::SetField(u64 parentTree, u8 parentType, const GrapaCHAR& 
 
 	GrapaDBFieldValueArray data;
 
-	GrapaRuleEvent* fieldEvent = pRowData->vQueue->Head();
-	while (fieldEvent)
+	GrapaRuleEvent* fieldEventItem = pRowData->vQueue->Head();
+	while (fieldEventItem)
 	{
+		GrapaRuleEvent* fieldEvent = fieldEventItem;
+		while (fieldEvent && fieldEvent->mValue.mToken == GrapaTokenType::PTR && fieldEvent->vRulePointer) fieldEvent = fieldEvent->vRulePointer;
+
 		u64 fieldId = 0;
 		u64 indexRef = 0;
 		GrapaDBField dbFieldName;
-		GrapaCHAR fldName(fieldEvent->mName);
+		GrapaCHAR fldName(fieldEventItem->mName);
 		if (fldName.mLength == 0) fldName.FROM("$VALUE");
 		GrapaBYTE fieldValue(fieldEvent->mValue);
 		fieldValue.mToken = fieldEvent->mValue.mToken;
@@ -1498,7 +1501,135 @@ GrapaError GrapaGroup::SetField(u64 parentTree, u8 parentType, const GrapaCHAR& 
 
 		data.Append(this, parentDict, fieldId, fieldValue, EQ_CMP);
 
-		fieldEvent = fieldEvent->Next();
+		fieldEventItem = fieldEventItem->Next();
+	}
+
+	err = SetRecordField(cursor, data);
+	if (err)
+	{
+		mCritical.LeaveCritical();
+		return(err);
+	}
+
+	mCritical.LeaveCritical();
+	return(0);
+}
+
+GrapaError GrapaGroup::SetField(u64 parentTree, u8 parentType, u64 pId, GrapaRuleEvent* pRowData)
+{
+	if (pRowData == NULL)
+		return(-1);
+	if (pRowData->vQueue == NULL || pRowData->mValue.mToken != GrapaTokenType::GOBJ)
+		return(-1);
+
+	GrapaError err;
+	GrapaDBCursor cursor;
+	GrapaDBTable parentDict;
+	u64 dataId = pId;
+	u64 nameId = 0;
+
+	if (dataId == 0)
+		return(-1);
+
+	mCritical.WaitCritical();
+
+	err = GetNameId(parentTree, parentType, nameId);
+
+	parentDict.mRef = parentTree;
+	parentDict.mRecRef = parentTree;
+
+	if (parentType == GROUP_TREE)
+	{
+		err = OpenTable(parentTree, 0, parentDict);
+		if (err)
+		{
+			mCritical.LeaveCritical();
+			return(err);
+		}
+	}
+
+	cursor.Set(parentDict.mRecRef, RREC_ITEM, dataId);
+	err = Search(cursor);
+	if (err)
+	{
+		mCritical.LeaveCritical();
+		return(err);
+	}
+
+	GrapaDBFieldValueArray data;
+
+	GrapaRuleEvent* fieldEventItem = pRowData->vQueue->Head();
+	while (fieldEventItem)
+	{
+		GrapaRuleEvent* fieldEvent = fieldEventItem;
+		while (fieldEvent && fieldEvent->mValue.mToken == GrapaTokenType::PTR && fieldEvent->vRulePointer) fieldEvent = fieldEvent->vRulePointer;
+
+		u64 fieldId = 0;
+		u64 indexRef = 0;
+		GrapaDBField dbFieldName;
+		GrapaCHAR fldName(fieldEventItem->mName);
+		if (fldName.mLength == 0) fldName.FROM("$VALUE");
+		GrapaBYTE fieldValue(fieldEvent->mValue);
+		fieldValue.mToken = fieldEvent->mValue.mToken;
+
+		if (fldName.StrCmp((const char*)"$KEY") == 0)
+		{
+			if (nameId == 0)
+			{
+				mCritical.LeaveCritical();
+				return(-1);
+			}
+			fieldId = nameId;
+			fldName.FROM("$KEY");
+		}
+		else if (fldName.StrCmp((const char*)"$VALUE") == 0)
+		{
+			fldName.FROM("$VALUE");
+			GrapaDBField field;
+			u64 maxId;
+			err = FindField(parentTree, parentType, fldName, field, maxId);
+			if (err)
+			{
+				field.mId = maxId + 1;
+				dbFieldName.Init(field.mId, VALUE_FIELD_TYPE, VALUE_FIELD_STORE, VALUE_FIELD_SIZE, VALUE_FIELD_GROW);
+				err = CreateTableField(parentDict, dbFieldName, fldName);
+				if (err)
+				{
+					mCritical.LeaveCritical();
+					return(err);
+				}
+			}
+			fieldId = field.mId;
+		}
+		else
+		{
+			GrapaDBField field;
+			u64 maxId;
+			err = FindField(parentTree, parentType, fldName, field, maxId);
+			if (err)
+			{
+				mCritical.LeaveCritical();
+				return(err);
+			}
+			fieldId = field.mId;
+		}
+
+		if (fieldId == nameId && fieldValue.mLength && fieldValue.mBytes)
+		{
+			GrapaDBFieldValueArray dataX;
+			GrapaDBCursor findCursor = cursor;
+			dataX.Append(this, parentDict, fieldId, fieldValue, EQ_CMP);
+			err = SearchDb(findCursor, parentDict, dataX);
+			if (!err)
+			{
+				mCritical.LeaveCritical();
+				return(-1);
+			}
+		}
+
+		data.Append(this, parentDict, fieldId, fieldValue, EQ_CMP);
+
+		fieldEventItem = fieldEventItem->Next();
 	}
 
 	err = SetRecordField(cursor, data);
@@ -1714,10 +1845,12 @@ GrapaError GrapaGroup::GetField(u64 parentTree, u8 parentType, const GrapaCHAR& 
 		return(err);
 	}
 
-	GrapaRuleEvent* fieldEvent = pRowData->vQueue->Head();
-	while (fieldEvent)
+	GrapaRuleEvent* fieldEventItem = pRowData->vQueue->Head();
+	while (fieldEventItem)
 	{
-		GrapaCHAR fldName(fieldEvent->mValue);
+		GrapaRuleEvent* fieldEvent = fieldEventItem;
+		while (fieldEvent && fieldEvent->mValue.mToken == GrapaTokenType::PTR && fieldEvent->vRulePointer) fieldEvent = fieldEvent->vRulePointer;
+		GrapaCHAR fldName(fieldEventItem->mValue);
 		if (fldName.mLength == 0 || fldName.mBytes == NULL)
 		{
 			return(-1);
@@ -1761,7 +1894,130 @@ GrapaError GrapaGroup::GetField(u64 parentTree, u8 parentType, const GrapaCHAR& 
 		result->mValue.mToken = dataValue.mToken;
 		pRowResults->vQueue->PushTail(result);
 
-		fieldEvent = fieldEvent->Next();
+		fieldEventItem = fieldEventItem->Next();
+	}
+
+	mCritical.LeaveCritical();
+	return(0);
+}
+
+GrapaError GrapaGroup::GetField(u64 parentTree, u8 parentType, u64 pId, GrapaRuleEvent* pRowData, GrapaRuleEvent* pRowResults)
+{
+	GrapaError err;
+	GrapaDBCursor cursor;
+	GrapaDBTable parentDict;
+	u64 indexRef;
+	u64 dataId;
+
+	if (pId == 0)
+		return(-1);
+	if (pRowData == NULL || pRowData->vQueue == NULL)
+		return(-1);
+	if (pRowResults == NULL)
+		return(-1);
+
+	pRowResults->mValue.mToken = GrapaTokenType::GOBJ;
+	pRowResults->vQueue = new GrapaRuleQueue();
+
+	parentDict.mRef = parentTree;
+	parentDict.mRecRef = parentTree;
+
+	mCritical.WaitCritical();
+
+	if (parentType == GROUP_TREE)
+	{
+		err = OpenTable(parentTree, 0, parentDict);
+		if (err)
+		{
+			mCritical.LeaveCritical();
+			return(err);
+		}
+	}
+
+	err = GetDataTypeRecord(parentDict.mRef, indexRef);
+	if (err)
+	{
+		mCritical.LeaveCritical();
+		return(err);
+	}
+	cursor.Set(indexRef);
+	err = Search(cursor); // go to 0 item
+	if (err)
+	{
+		mCritical.LeaveCritical();
+		return(err);
+	}
+	err = parentDict.mDictField.Read(this, cursor.mValue);
+	if (err)
+	{
+		mCritical.LeaveCritical();
+		return(err);
+	}
+
+	u64 nameId = 0;
+	err = GetNameId(parentTree, parentType, nameId);
+
+	cursor.mKey = pId;
+	dataId = cursor.mKey;
+
+	cursor.Set(parentDict.mRecRef, RREC_ITEM, dataId);
+	err = Search(cursor);
+	if (err)
+	{
+		mCritical.LeaveCritical();
+		return(err);
+	}
+
+	GrapaRuleEvent* fieldEventItem = pRowData->vQueue->Head();
+	while (fieldEventItem)
+	{
+		GrapaRuleEvent* fieldEvent = fieldEventItem;
+		while (fieldEvent && fieldEvent->mValue.mToken == GrapaTokenType::PTR && fieldEvent->vRulePointer) fieldEvent = fieldEvent->vRulePointer;
+		GrapaCHAR fldName(fieldEventItem->mValue);
+		if (fldName.mLength == 0 || fldName.mBytes == NULL)
+		{
+			return(-1);
+			mCritical.LeaveCritical();
+		}
+
+		u64 fieldId = 0;
+		if (fldName.StrCmp("$KEY") == 0)
+		{
+			if (nameId == 0)
+			{
+				mCritical.LeaveCritical();
+				return(-1);
+			}
+			fieldId = nameId;
+			fldName.FROM("$KEY");
+		}
+		else
+		{
+			GrapaDBField field;
+			u64 maxId;
+			err = FindField(parentTree, parentType, fldName, field, maxId);
+			if (err)
+			{
+				mCritical.LeaveCritical();
+				return(err);
+			}
+			fieldId = field.mId;
+		}
+
+		GrapaBYTE dataValue;
+		err = GetRecordField(cursor, fieldId, dataValue);
+		if (err)
+		{
+			mCritical.LeaveCritical();
+			return(err);
+		}
+		GrapaRuleEvent* result = new GrapaRuleEvent();
+		result->mName.FROM(fldName);
+		result->mValue.FROM(dataValue);
+		result->mValue.mToken = dataValue.mToken;
+		pRowResults->vQueue->PushTail(result);
+
+		fieldEventItem = fieldEventItem->Next();
 	}
 
 	mCritical.LeaveCritical();

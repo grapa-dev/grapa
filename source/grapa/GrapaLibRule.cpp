@@ -11613,7 +11613,6 @@ GrapaRuleEvent* GrapaLibraryRuleFileSetEvent::Run(GrapaScriptExec* vScriptExec, 
 						{
 							((GrapaRuleQueue*)scan->vQueue)->TO(scan->mValue, scan->vClass, scan->mValue.mToken);
 						}
-						scan->mValue.mToken = scan->mValue.mToken;
 					}
 					else if (scan->mValue.mToken == GrapaTokenType::VECTOR)
 					{
@@ -11621,11 +11620,19 @@ GrapaRuleEvent* GrapaLibraryRuleFileSetEvent::Run(GrapaScriptExec* vScriptExec, 
 						{
 							scan->vVector->ToBytes(scan->mValue);
 						}
-						scan->mValue.mToken = scan->mValue.mToken;
 					}
 					scanitem = scanitem->Next();
 				}
-				err = objEvent->vDatabase->FieldSet(r2.vVal->mValue, fieldName.vVal);
+				if (r2.vVal->mValue.mToken == GrapaTokenType::INT)
+				{
+					GrapaInt a;
+					a.FromBytes(r2.vVal->mValue);
+					err = objEvent->vDatabase->FieldSet(a.LongValue(), fieldName.vVal);
+				}
+				else
+				{
+					err = objEvent->vDatabase->FieldSet(r2.vVal->mValue, fieldName.vVal);
+				}
 			}
 			else
 			{
@@ -11959,7 +11966,16 @@ GrapaRuleEvent* GrapaLibraryRuleFileGetEvent::Run(GrapaScriptExec *vScriptExec, 
 			if (fieldName.vVal && fieldName.vVal->mValue.mToken == GrapaTokenType::LIST)
 			{
 				result = new GrapaRuleEvent(GrapaTokenType::GOBJ, 0, "", "");
-				err = objEvent->vDatabase->FieldGet(r2.vVal->mValue, fieldName.vVal, result);
+				if (r2.vVal->mValue.mToken == GrapaTokenType::INT)
+				{
+					GrapaInt a;
+					a.FromBytes(r2.vVal->mValue);
+					err = objEvent->vDatabase->FieldGet(a.LongValue(), fieldName.vVal, result);
+				}
+				else
+				{
+					err = objEvent->vDatabase->FieldGet(r2.vVal->mValue, fieldName.vVal, result);
+				}
 				if (err)
 				{
 					result->CLEAR();
