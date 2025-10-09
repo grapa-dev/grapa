@@ -5,7 +5,7 @@
 
 /* Test larger sizes incrementally */
 test_sizes = [15000, 20000, 25000, 50000, 100000];
-test_sizes = [1000];
+test_sizes = [4000];
 pinecone_threshold = 100;  /* Pinecone typically < 100ms */
 acceptable_threshold = 500;  /* Acceptable for local use */
 warning_threshold = 2000;   /* Warning threshold */
@@ -15,7 +15,7 @@ warning_threshold = 2000;   /* Warning threshold */
 ("Acceptable threshold: < " + acceptable_threshold.str() + "ms\n").echo();
 ("\n").echo();
 
-hashsource = 5.genhashset("cosine",3,8,1234);
+hashsource = 5.genhashset("cosine",3,4,1234);
 
 /* Results storage */
 results = [];
@@ -104,6 +104,11 @@ for test_size in test_sizes {
     "\n".echo();
     "Index search\n".echo();
     vector_results2.str().echo();
+    "\n".echo();
+    "Full size:".echo();
+    indexes.len().echo();
+    "\n".echo();    "Index size:".echo();
+    indexes2.len().echo();
     "\n".echo();
     
     /* Store result */
