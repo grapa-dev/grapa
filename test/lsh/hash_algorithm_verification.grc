@@ -1,0 +1,167 @@
+// Hash Algorithm Verification Test
+// Verifies that the LSH hash implementation is mathematically correct
+
+"=== LSH Hash Algorithm Verification ===\n\n".echo();
+
+// Test 1: Hash consistency - same vector, same hashsource = same hash
+"Test 1: Hash Consistency\n".echo();
+"  Same vector + same hashsource should produce same hash\n".echo();
+hashsource = 5.genhashset("cosine", 3, 8, 12345);
+v = #[0.8, -0.6, 0.4, 0.2, -0.1]#;
+hash1 = v.genhash(hashsource);
+hash2 = v.genhash(hashsource);
+"  Hash 1: ".echo(); hash1.str().echo(); "\n".echo();
+"  Hash 2: ".echo(); hash2.str().echo(); "\n".echo();
+if (hash1[0] == hash2[0] && hash1[1] == hash2[1] && hash1[2] == hash2[2]) {
+    "  ✅ PASS: Hashes are identical\n".echo();
+} else {
+    "  ❌ FAIL: Hashes differ!\n".echo();
+};
+"\n".echo();
+
+// Test 2: Hash determinism - same hashsource seed = same hyperplanes = same hash
+"Test 2: Hash Determinism (same seed)\n".echo();
+"  Same seed should produce same hashsource and same hash\n".echo();
+hs1 = 5.genhashset("cosine", 3, 8, 99999);
+hs2 = 5.genhashset("cosine", 3, 8, 99999);
+v = #[1.0, 2.0, 3.0, 4.0, 5.0]#;
+h1 = v.genhash(hs1);
+h2 = v.genhash(hs2);
+"  Hash with hs1: ".echo(); h1.str().echo(); "\n".echo();
+"  Hash with hs2: ".echo(); h2.str().echo(); "\n".echo();
+if (h1[0] == h2[0] && h1[1] == h2[1] && h1[2] == h2[2]) {
+    "  ✅ PASS: Same seed produces same hash\n".echo();
+} else {
+    "  ❌ FAIL: Same seed produces different hash!\n".echo();
+};
+"\n".echo();
+
+// Test 3: Hash variation - different seed = different hyperplanes = different hash
+"Test 3: Hash Variation (different seed)\n".echo();
+"  Different seed should produce different hashsource and likely different hash\n".echo();
+hs1 = 5.genhashset("cosine", 3, 8, 11111);
+hs2 = 5.genhashset("cosine", 3, 8, 22222);
+v = #[1.0, 2.0, 3.0, 4.0, 5.0]#;
+h1 = v.genhash(hs1);
+h2 = v.genhash(hs2);
+"  Hash with seed 11111: ".echo(); h1.str().echo(); "\n".echo();
+"  Hash with seed 22222: ".echo(); h2.str().echo(); "\n".echo();
+if (h1[0] != h2[0] || h1[1] != h2[1] || h1[2] != h2[2]) {
+    "  ✅ PASS: Different seeds produce different hashes\n".echo();
+} else {
+    "  ⚠️  WARNING: Different seeds produced same hash (low probability but possible)\n".echo();
+};
+"\n".echo();
+
+// Test 4: Similar vectors should have similar hashes (high bit overlap)
+"Test 4: Similar Vectors → Similar Hashes\n".echo();
+"  Very similar vectors should have high bit overlap in hashes\n".echo();
+hashsource = 5.genhashset("cosine", 3, 8, 12345);
+v1 = #[1.0, 2.0, 3.0, 4.0, 5.0]#;
+v2 = #[1.01, 2.01, 3.01, 4.01, 5.01]#;  // Very similar to v1
+h1 = v1.genhash(hashsource);
+h2 = v2.genhash(hashsource);
+"  v1: [1.0, 2.0, 3.0, 4.0, 5.0]\n".echo();
+"  v2: [1.01, 2.01, 3.01, 4.01, 5.01]\n".echo();
+"  Hash v1: ".echo(); h1.str().echo(); "\n".echo();
+"  Hash v2: ".echo(); h2.str().echo(); "\n".echo();
+"  Cosine similarity: ".echo(); v1.similarity(v2, "cosine").str().echo(); "\n".echo();
+
+// Count matching hash sets
+matches = 0;
+if (h1[0] == h2[0]) { matches = matches + 1; };
+if (h1[1] == h2[1]) { matches = matches + 1; };
+if (h1[2] == h2[2]) { matches = matches + 1; };
+("  Matching hash sets: " + matches.str() + "/3\n").echo();
+if (matches >= 2) {
+    "  ✅ PASS: Similar vectors have high hash overlap\n".echo();
+} else {
+    "  ⚠️  WARNING: Similar vectors have low hash overlap (might be near boundaries)\n".echo();
+};
+"\n".echo();
+
+// Test 5: Opposite vectors should have different hashes
+"Test 5: Opposite Vectors → Different Hashes\n".echo();
+"  Opposite vectors should have very different hashes\n".echo();
+hashsource = 5.genhashset("cosine", 3, 8, 12345);
+v1 = #[1.0, 2.0, 3.0, 4.0, 5.0]#;
+v2 = #[-1.0, -2.0, -3.0, -4.0, -5.0]#;  // Opposite of v1
+h1 = v1.genhash(hashsource);
+h2 = v2.genhash(hashsource);
+"  v1: [1.0, 2.0, 3.0, 4.0, 5.0]\n".echo();
+"  v2: [-1.0, -2.0, -3.0, -4.0, -5.0]\n".echo();
+"  Hash v1: ".echo(); h1.str().echo(); "\n".echo();
+"  Hash v2: ".echo(); h2.str().echo(); "\n".echo();
+"  Cosine similarity: ".echo(); v1.similarity(v2, "cosine").str().echo(); "\n".echo();
+
+matches = 0;
+if (h1[0] == h2[0]) { matches = matches + 1; };
+if (h1[1] == h2[1]) { matches = matches + 1; };
+if (h1[2] == h2[2]) { matches = matches + 1; };
+("  Matching hash sets: " + matches.str() + "/3\n").echo();
+if (matches == 0) {
+    "  ✅ PASS: Opposite vectors have different hashes\n".echo();
+} else {
+    "  ⚠️  WARNING: Opposite vectors share some hash values (unlikely but possible)\n".echo();
+};
+"\n".echo();
+
+// Test 6: Hash bit pattern correctness
+"Test 6: Hash Bit Pattern Verification\n".echo();
+"  Verifying hash values are in valid range [0, 255] for 8 hyperplanes\n".echo();
+hashsource = 5.genhashset("cosine", 3, 8, 12345);
+v = #[0.5, -0.3, 0.8, -0.2, 0.1]#;
+hash = v.genhash(hashsource);
+"  Hash values: ".echo(); hash.str().echo(); "\n".echo();
+
+valid = 1;
+for i in 3.range() {
+    if (hash[i] < 0 || hash[i] > 255) {
+        valid = 0;
+    };
+};
+if (valid == 1) {
+    "  ✅ PASS: All hash values in range [0, 255]\n".echo();
+} else {
+    "  ❌ FAIL: Hash values out of range!\n".echo();
+};
+"\n".echo();
+
+// Test 7: LSH property - collision probability increases with similarity
+"Test 7: LSH Property Verification\n".echo();
+"  Higher similarity should correlate with higher hash collision rate\n".echo();
+hashsource = 5.genhashset("cosine", 3, 8, 12345);
+base = #[1.0, 0.0, 0.0, 0.0, 0.0]#;
+base_hash = base.genhash(hashsource);
+
+// Test with vectors at different angles
+test_vectors = [
+    #[0.99, 0.01, 0.0, 0.0, 0.0]#,   // Very similar (small angle)
+    #[0.9, 0.1, 0.0, 0.0, 0.0]#,     // Similar
+    #[0.7, 0.3, 0.0, 0.0, 0.0]#,     // Moderately similar
+    #[0.5, 0.5, 0.0, 0.0, 0.0]#,     // Less similar
+    #[0.0, 1.0, 0.0, 0.0, 0.0]#      // Orthogonal
+];
+
+"  Base vector: [1.0, 0.0, 0.0, 0.0, 0.0]\n".echo();
+"  Base hash: ".echo(); base_hash.str().echo(); "\n\n".echo();
+
+for v in test_vectors {
+    sim = base.similarity(v, "cosine");
+    h = v.genhash(hashsource);
+    matches = 0;
+    if (base_hash[0] == h[0]) { matches = matches + 1; };
+    if (base_hash[1] == h[1]) { matches = matches + 1; };
+    if (base_hash[2] == h[2]) { matches = matches + 1; };
+    
+    "  Vector: ".echo(); v.str().echo(); "\n".echo();
+    "  Cosine sim: ".echo(); sim.str().echo(); "\n".echo();
+    "  Hash: ".echo(); h.str().echo(); "\n".echo();
+    ("  Matches: " + matches.str() + "/3\n\n").echo();
+};
+
+"  Note: Higher similarity vectors should tend to have more hash matches,\n".echo();
+"        but this is probabilistic, not guaranteed for every case.\n".echo();
+
+"\n=== Verification Complete ===\n".echo();
+

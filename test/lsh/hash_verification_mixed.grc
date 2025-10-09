@@ -1,0 +1,78 @@
+// LSH Hash Verification with Mixed-Sign Vectors
+// Uses realistic vectors with both positive and negative values
+
+"=== LSH Hash Verification (Mixed-Sign Vectors) ===\n\n".echo();
+
+hashsource = 5.genhashset("cosine", 3, 8, 12345);
+
+// Test with realistic mixed-sign vectors
+"Test: Hash Discrimination with Mixed-Sign Vectors\n".echo();
+"  Using vectors with both positive and negative values\n\n".echo();
+
+base = #[0.8, -0.6, 0.4, 0.2, -0.1]#;
+base_hash = base.genhash(hashsource);
+base_sim = 1.0;
+
+"Base vector: [0.8, -0.6, 0.4, 0.2, -0.1]\n".echo();
+"Base hash: ".echo(); base_hash.str().echo(); "\n\n".echo();
+
+// Test vectors with varying similarity
+test_data = [
+    {
+        "vec": #[0.8, -0.6, 0.4, 0.2, -0.1]#,  // Identical
+        "label": "Identical"
+    },
+    {
+        "vec": #[0.79, -0.61, 0.39, 0.21, -0.09]#,  // Very similar
+        "label": "Very similar"
+    },
+    {
+        "vec": #[0.6, -0.8, 0.3, 0.1, 0.0]#,  // Similar direction
+        "label": "Similar"
+    },
+    {
+        "vec": #[0.4, -0.2, 0.6, -0.3, 0.5]#,  // Moderately similar
+        "label": "Moderate"
+    },
+    {
+        "vec": #[-0.2, 0.7, -0.5, 0.8, 0.3]#,  // Different
+        "label": "Different"
+    },
+    {
+        "vec": #[-0.8, 0.6, -0.4, -0.2, 0.1]#,  // Opposite
+        "label": "Opposite"
+    }
+];
+
+"Vector                              Cosine Sim  Hash            Matches\n".echo();
+"-------------------------------------  ----------  --------------  -------\n".echo();
+
+for item in test_data {
+    v = item."vec";
+    label = item."label";
+    
+    sim = base.similarity(v, "cosine");
+    h = v.genhash(hashsource);
+    
+    // Count matching hash sets
+    matches = 0;
+    if (base_hash[0] == h[0]) { matches = matches + 1; };
+    if (base_hash[1] == h[1]) { matches = matches + 1; };
+    if (base_hash[2] == h[2]) { matches = matches + 1; };
+    
+    // Format output
+    label_padded = label.rpad(12, " ");
+    sim_str = sim.str().rpad(10, " ");
+    hash_str = h.str().rpad(14, " ");
+    matches_str = matches.str() + "/3";
+    
+    (label_padded + "  " + sim_str + "  " + hash_str + "  " + matches_str + "\n").echo();
+};
+
+"\n=== Analysis ===\n".echo();
+"✅ If hash matches correlate with similarity, LSH is working correctly\n".echo();
+"✅ Higher similarity → more hash matches (probabilistic, not guaranteed)\n".echo();
+"✅ Opposite vectors should have 0 matches\n".echo();
+
+"\n=== Verification Complete ===\n".echo();
+
