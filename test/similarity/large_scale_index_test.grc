@@ -15,7 +15,7 @@ warning_threshold = 2000;   /* Warning threshold */
 ("Acceptable threshold: < " + acceptable_threshold.str() + "ms\n").echo();
 ("\n").echo();
 
-hashsource = 5.genhashset("cosine",3,8,1234);
+hashsource = 10.genhashset("cosine",3,4,1234);
 
 /* Results storage */
 results = [];
@@ -45,6 +45,11 @@ for test_size in test_sizes {
                 ((9.random()) / 256)-1,  /* Random float -1.0 - 1.0 */
                 ((9.random()) / 256)-1,  /* Random float -1.0 - 1.0 */
                 ((9.random()) / 256)-1,  /* Random float -1.0 - 1.0 */
+                ((9.random()) / 256)-1,  /* Random float -1.0 - 1.0 */
+                ((9.random()) / 256)-1,  /* Random float -1.0 - 1.0 */
+                ((9.random()) / 256)-1,  /* Random float -1.0 - 1.0 */
+                ((9.random()) / 256)-1,  /* Random float -1.0 - 1.0 */
+                ((9.random()) / 256)-1,  /* Random float -1.0 - 1.0 */
                 ((9.random()) / 256)-1   /* Random float -1.0 - 1.0 */
             ]#;
             hash = vector.genhash(hashsource);
@@ -56,10 +61,12 @@ for test_size in test_sizes {
     {
         vectors.cd(dbname);
     };
+	
+	search_vector = #[-0.90625,-0.296875,-0.71484375,-0.3046875,-0.46875,-0.7578125,0.42578125,0.78125,-0.71875,0.2109375]#;
 
     create_vector_time = start_time.ms();
     indexes = vectors.ls("").vector().sort(1,["$ID"]).t().list()[0];
-    vector_results = indexes.similarity(#[0.8, -0.6, 0.4, 0.2, -0.1]#, "cosine", {
+    vector_results = indexes.similarity(search_vector, "cosine", {
         "datasource": vectors,
         "datafield": "vector",
         "top_n": 10,
@@ -72,7 +79,7 @@ for test_size in test_sizes {
 	indexes2 = vectors.ls("",[{"h1":search[0]},{"h2":search[1]},{"h3":search[2]}],["$ID"]).vector().sort(1,["$ID"]).t().list()[0];
 	index_time = start_time.ms() - create_vector_time - pure_vector_time;
 
-    vector_results2 = indexes2.similarity(#[0.8, -0.6, 0.4, 0.2, -0.1]#, "cosine", {
+    vector_results2 = indexes2.similarity(search_vector, "cosine", {
         "datasource": vectors,
         "datafield": "vector",
         "top_n": 10,
