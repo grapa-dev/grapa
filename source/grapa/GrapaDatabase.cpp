@@ -373,6 +373,7 @@ GrapaError GrapaLocalDatabase::DirectoryList(GrapaCHAR& pName, GrapaRuleEvent* p
 		if (err) return(err);
 		GrapaDBCursor cursor;
 		cursor.Set(parentDict.mRef);
+		GrapaInt a, b;
 		if (mDb->mValue.First(cursor) == 0)
 		{
 			do
@@ -384,8 +385,9 @@ GrapaError GrapaLocalDatabase::DirectoryList(GrapaCHAR& pName, GrapaRuleEvent* p
 					{
 						if (values[i].name.Cmp("$ID") == 0)
 						{
-							GrapaInt id(cursor.mKey);
-							if (values[i].rule->mValue.Cmp(GrapaInt(cursor.mKey).getBytes()))
+							a.FromS64(cursor.mKey);
+							b.FromBytes(values[i].rule->mValue);
+							if (a != b)
 							{
 								match = false;
 								break;
@@ -403,7 +405,17 @@ GrapaError GrapaLocalDatabase::DirectoryList(GrapaCHAR& pName, GrapaRuleEvent* p
 							match = false;
 							break;
 						}
-						if (values[i].rule->mValue.Cmp(fieldValue))
+						if (values[i].rule->mValue.mToken == GrapaTokenType::INT)
+						{
+							a.FromBytes(fieldValue);
+							b.FromBytes(values[i].rule->mValue);
+							if (a != b)
+							{
+								match = false;
+								break;
+							}
+						}
+						else if (values[i].rule->mValue.Cmp(fieldValue))
 						{
 							match = false;
 							break;

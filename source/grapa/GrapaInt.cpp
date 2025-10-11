@@ -108,6 +108,11 @@ GrapaInt::GrapaInt()
 
 GrapaInt::GrapaInt(s64 value)
 {
+	FromS64(value);
+}
+
+void GrapaInt::FromS64(s64 value)
+{
 	dataSigned = value < 0;
 	u64 v = (u64)value;
 	while (v)
@@ -117,6 +122,7 @@ GrapaInt::GrapaInt(s64 value)
 	}
 	RTrim();
 }
+
 
 GrapaInt::GrapaInt(const GrapaInt& bi)
 {

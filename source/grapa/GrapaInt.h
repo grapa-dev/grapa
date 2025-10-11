@@ -44,6 +44,7 @@ class GrapaInt : public GrapaArray32, public GrapaCritical
 public:
 	GrapaInt();
 	GrapaInt(s64 value);
+	void FromS64(s64 value);
 	GrapaInt(const GrapaInt& bi);
 	GrapaInt(const char* value, s32 radix);
 	GrapaInt(const u8* inData, u32 inLen);
