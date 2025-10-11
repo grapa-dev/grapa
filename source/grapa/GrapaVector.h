@@ -168,9 +168,9 @@ public:
 	virtual GrapaError GenHashSet(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaCHAR& method, int count, int hyperplanes, u64 randseed, GrapaRuleEvent& result);
 	
 	// Helper functions for hash generation
-	GrapaRuleEvent* generateCosineHyperplanes(GrapaScriptExec* vScriptExec, int dimension, int count);
-	GrapaRuleEvent* generateEuclideanProjections(GrapaScriptExec* vScriptExec, int dimension, int count);
-	GrapaRuleEvent* generateJaccardMinhash(GrapaScriptExec* vScriptExec, int dimension, int count);
+	GrapaRuleEvent* generateCosineHyperplanes(GrapaScriptExec* vScriptExec, int dimension, int count, u64 randseed);
+	GrapaRuleEvent* generateEuclideanProjections(GrapaScriptExec* vScriptExec, int dimension, int count, u64 randseed);
+	GrapaRuleEvent* generateJaccardMinhash(GrapaScriptExec* vScriptExec, int dimension, int count, u64 randseed);
 };
 
 #endif //_GrapaVector_

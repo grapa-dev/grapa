@@ -23,6 +23,7 @@ limitations under the License.
 #include <map>
 #include <vector>
 #include <algorithm>
+#include <random>
 
 extern GrapaSystem* gSystem;
 
@@ -5814,28 +5815,29 @@ GrapaError GrapaVector::GenHashSet(GrapaScriptExec* vScriptExec, GrapaNames* pNa
 		return -1;
 	}
 	
-	// Set random seed for reproducibility
-	if (randseed != 0) {
-		srand((unsigned int)randseed);
-	}
-	
 	if (result.vQueue == NULL)
 		result.vQueue = new GrapaRuleQueue();
 	
 	if (method.StrLowerCmp("cosine") == 0) {
 		for (int i = 0; i < count; i++) {
-			GrapaRuleEvent* hyperplanes_set = generateCosineHyperplanes(vScriptExec, mCounts[0], hyperplanes);
+			// Use different seed for each set to ensure different hyperplanes
+			u64 set_seed = randseed + i * 1000000;
+			GrapaRuleEvent* hyperplanes_set = generateCosineHyperplanes(vScriptExec, mCounts[0], hyperplanes, set_seed);
 			result.vQueue->PushTail(hyperplanes_set);
 		}
 	} else if (method.StrLowerCmp("euclidean") == 0) {
 		for (int i = 0; i < count; i++) {
-			GrapaRuleEvent* projections_set = generateEuclideanProjections(vScriptExec, mCounts[0], hyperplanes);
+			// Use different seed for each set to ensure different projections
+			u64 set_seed = randseed + i * 1000000;
+			GrapaRuleEvent* projections_set = generateEuclideanProjections(vScriptExec, mCounts[0], hyperplanes, set_seed);
 			result.vQueue->PushTail(projections_set);
 
 		}
 	} else if (method.StrLowerCmp("jaccard") == 0) {
 		for (int i = 0; i < count; i++) {
-			GrapaRuleEvent* minhash_set = generateJaccardMinhash(vScriptExec, mCounts[0], hyperplanes);
+			// Use different seed for each set to ensure different minhash functions
+			u64 set_seed = randseed + i * 1000000;
+			GrapaRuleEvent* minhash_set = generateJaccardMinhash(vScriptExec, mCounts[0], hyperplanes, set_seed);
 			result.vQueue->PushTail(minhash_set);
 		}
 	} else {
@@ -5846,11 +5848,15 @@ GrapaError GrapaVector::GenHashSet(GrapaScriptExec* vScriptExec, GrapaNames* pNa
 }
 
 // Helper functions for hash generation
-GrapaRuleEvent* GrapaVector::generateCosineHyperplanes(GrapaScriptExec* vScriptExec, int dimension, int count)
+GrapaRuleEvent* GrapaVector::generateCosineHyperplanes(GrapaScriptExec* vScriptExec, int dimension, int count, u64 randseed)
 {
 	GrapaRuleEvent* hyperplanes = new GrapaRuleEvent();
 	hyperplanes->mValue.mToken = GrapaTokenType::LIST;
 	hyperplanes->vQueue = new GrapaRuleQueue();
+	
+	// Create cross-platform deterministic random number generator
+	std::mt19937 rng(randseed);
+	std::uniform_real_distribution<double> dist(-1.0, 1.0);
 	
 	for (int i = 0; i < count; i++) {
 		GrapaRuleEvent* hyperplane = new GrapaRuleEvent();
@@ -5867,7 +5873,7 @@ GrapaRuleEvent* GrapaVector::generateCosineHyperplanes(GrapaScriptExec* vScriptE
 		// Generate random hyperplane and store values for normalization
 		std::vector<double> values(dimension);
 		for (int j = 0; j < dimension; j++) {
-			double value = (((double)rand() * 2.0) / RAND_MAX) - 1.0; // Random value between -1 and 1
+			double value = dist(rng); // Random value between -1 and 1
 			values[j] = value;
 		}
 		
@@ -5897,11 +5903,15 @@ GrapaRuleEvent* GrapaVector::generateCosineHyperplanes(GrapaScriptExec* vScriptE
 	return hyperplanes;
 }
 
-GrapaRuleEvent* GrapaVector::generateEuclideanProjections(GrapaScriptExec* vScriptExec, int dimension, int count)
+GrapaRuleEvent* GrapaVector::generateEuclideanProjections(GrapaScriptExec* vScriptExec, int dimension, int count, u64 randseed)
 {
 	GrapaRuleEvent* projections = new GrapaRuleEvent();
 	projections->mValue.mToken = GrapaTokenType::LIST;
 	projections->vQueue = new GrapaRuleQueue();
+
+	// Create cross-platform deterministic random number generator
+	std::mt19937 rng(randseed);
+	std::uniform_real_distribution<double> dist(-1.0, 1.0);
 
 	for (int i = 0; i < count; i++) {
 		GrapaRuleEvent* projection = new GrapaRuleEvent();
@@ -5917,7 +5927,7 @@ GrapaRuleEvent* GrapaVector::generateEuclideanProjections(GrapaScriptExec* vScri
 		
 		// Generate random projection vector
 		for (int j = 0; j < dimension; j++) {
-			double value = ((double)rand() / RAND_MAX) * 2.0 - 1.0; // Random value between -1 and 1
+			double value = dist(rng); // Random value between -1 and 1
 			GrapaFloat gf(value);
 			projection->vVector->Set(j, gf);
 		}
@@ -5926,11 +5936,15 @@ GrapaRuleEvent* GrapaVector::generateEuclideanProjections(GrapaScriptExec* vScri
 	return projections;
 }
 
-GrapaRuleEvent* GrapaVector::generateJaccardMinhash(GrapaScriptExec* vScriptExec, int dimension, int count)
+GrapaRuleEvent* GrapaVector::generateJaccardMinhash(GrapaScriptExec* vScriptExec, int dimension, int count, u64 randseed)
 {
 	GrapaRuleEvent* minhash = new GrapaRuleEvent();
 	minhash->mValue.mToken = GrapaTokenType::LIST;
 	minhash->vQueue = new GrapaRuleQueue();
+
+	// Create cross-platform deterministic random number generator
+	std::mt19937 rng(randseed);
+	std::uniform_real_distribution<double> dist(0.0, 1.0);
 
 	for (int i = 0; i < count; i++) {
 		GrapaRuleEvent* hash_func = new GrapaRuleEvent();
@@ -5946,7 +5960,7 @@ GrapaRuleEvent* GrapaVector::generateJaccardMinhash(GrapaScriptExec* vScriptExec
 		
 		// Generate random minhash permutation
 		for (int j = 0; j < dimension; j++) {
-			double value = ((double)rand() / RAND_MAX); // Random value between 0 and 1
+			double value = dist(rng); // Random value between 0 and 1
 			GrapaFloat gf(value);
 			hash_func->vVector->Set(j, gf);
 		}

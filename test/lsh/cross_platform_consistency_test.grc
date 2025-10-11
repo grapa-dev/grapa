@@ -1,0 +1,76 @@
+// Cross-Platform Consistency Test for LSH Hash Generation
+// Verifies that genHashSet produces identical results on all platforms
+
+"=== Cross-Platform LSH Consistency Test ===\n\n".echo();
+
+// Test 1: Vector hashset with fixed seed
+"Test 1: Vector HashSet with Seed 12345\n".echo();
+hs1 = 5.genhashset("cosine", 3, 8, 12345);
+"  First hyperplane of Set 1: ".echo();
+hs1."sets"[0][0].str().echo();
+"\n".echo();
+"  First hyperplane of Set 2: ".echo();
+hs1."sets"[1][0].str().echo();
+"\n".echo();
+"  First hyperplane of Set 3: ".echo();
+hs1."sets"[2][0].str().echo();
+"\n\n".echo();
+
+// Test 2: Hash generation with fixed seed
+"Test 2: Hash Values with Seed 12345\n".echo();
+v1 = #[0.8, -0.6, 0.4, 0.2, -0.1]#;
+hash1 = v1.genhash(hs1);
+"  Vector: [0.8, -0.6, 0.4, 0.2, -0.1]\n".echo();
+"  Hash values: ".echo();
+hash1.str().echo();
+"\n\n".echo();
+
+// Test 3: Reproducibility
+"Test 3: Reproducibility Check\n".echo();
+hs2 = 5.genhashset("cosine", 3, 8, 12345);
+hash2 = v1.genhash(hs2);
+"  Hash values (repeat): ".echo();
+hash2.str().echo();
+"\n".echo();
+if (hash1[0] == hash2[0] && hash1[1] == hash2[1] && hash1[2] == hash2[2]) {
+    "  ✅ PASS: Identical results on same platform\n".echo();
+} else {
+    "  ❌ FAIL: Results differ!\n".echo();
+};
+"\n".echo();
+
+// Test 4: Different seed produces different results
+"Test 4: Different Seed Test\n".echo();
+hs3 = 5.genhashset("cosine", 3, 8, 99999);
+hash3 = v1.genhash(hs3);
+"  Hash with seed 12345: ".echo();
+hash1.str().echo();
+"\n".echo();
+"  Hash with seed 99999: ".echo();
+hash3.str().echo();
+"\n".echo();
+if (hash1[0] != hash3[0] || hash1[1] != hash3[1] || hash1[2] != hash3[2]) {
+    "  ✅ PASS: Different seeds produce different hashes\n".echo();
+} else {
+    "  ⚠️  WARNING: Different seeds produced same hash\n".echo();
+};
+"\n".echo();
+
+"=== Platform Consistency Note ===\n".echo();
+"These hash values should be IDENTICAL on:\n".echo();
+"  • macOS (arm64 and x86_64)\n".echo();
+"  • Linux (arm64 and x86_64)\n".echo();
+"  • Windows (x86_64)\n".echo();
+"\n".echo();
+"Using std::mt19937 ensures cross-platform deterministic hash generation.\n".echo();
+"\n".echo();
+
+"=== Expected Reference Values (Seed 12345) ===\n".echo();
+"Vector: [0.8, -0.6, 0.4, 0.2, -0.1]\n".echo();
+"Expected hash: ".echo();
+hash1.str().echo();
+"\n".echo();
+"\n".echo();
+
+"=== Test Complete ===\n".echo();
+

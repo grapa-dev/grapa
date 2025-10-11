@@ -41,6 +41,7 @@ limitations under the License.
 #include <set>
 #include <cmath>
 #include <algorithm>
+#include <random>
 
 extern GrapaSystem* gSystem;
 
@@ -22899,10 +22900,10 @@ GrapaRuleEvent* GrapaLibraryRuleGenHashSetEvent::Run(GrapaScriptExec* vScriptExe
 	}
 	else if (obj_helper.vVal->mValue.mToken == GrapaTokenType::STR) {
 		// String similarity - generate character feature-based hash sets
-		// Set random seed for reproducibility
-		if (randseed != 0) {
-			srand(randseed);
-		}
+		// Create cross-platform deterministic random number generator
+		std::mt19937 rng(randseed);
+		std::uniform_int_distribution<int> char_dist(0, 255);
+		std::uniform_real_distribution<double> weight_dist(-1.0, 1.0);
 		
 		// Generate hash sets based on method
 		if (method.StrLowerCmp("jaccard") == 0 || method.StrLowerCmp("levenshtein") == 0 || 
@@ -22916,8 +22917,8 @@ GrapaRuleEvent* GrapaLibraryRuleGenHashSetEvent::Run(GrapaScriptExec* vScriptExe
 				// Generate hash functions (represented as character position/weight pairs)
 				for (int hp_idx = 0; hp_idx < hyperplanes; hp_idx++) {
 					// Generate a random character position and weight as a string
-					int char_pos = rand() % 256;  // Character position (0-255)
-					double weight = ((double)rand() / RAND_MAX) * 2.0 - 1.0;  // Weight between -1 and 1
+					int char_pos = char_dist(rng);  // Character position (0-255)
+					double weight = weight_dist(rng);  // Weight between -1 and 1
 					
 					char hash_str[64];
 					snprintf(hash_str, sizeof(hash_str), "%d:%.6f", char_pos, weight);
@@ -22936,10 +22937,9 @@ GrapaRuleEvent* GrapaLibraryRuleGenHashSetEvent::Run(GrapaScriptExec* vScriptExe
 	}
 	else if (obj_helper.vVal->mValue.mToken == GrapaTokenType::GOBJ) {
 		// Object similarity - generate field weight-based hash sets
-		// Set random seed for reproducibility
-		if (randseed != 0) {
-			srand(randseed);
-		}
+		// Create cross-platform deterministic random number generator
+		std::mt19937 rng(randseed);
+		std::uniform_real_distribution<double> weight_dist(-1.0, 1.0);
 		
 		// Generate hash sets based on method
 		if (method.StrLowerCmp("metadata") == 0 || method.StrLowerCmp("object") == 0 ||
@@ -22980,7 +22980,7 @@ GrapaRuleEvent* GrapaLibraryRuleGenHashSetEvent::Run(GrapaScriptExec* vScriptExe
 					
 					// Add random weights for each field
 					for (const auto& field_name : field_names) {
-						double weight = ((double)rand() / RAND_MAX) * 2.0 - 1.0;  // Weight between -1 and 1
+						double weight = weight_dist(rng);  // Weight between -1 and 1
 						
 						GrapaRuleEvent* weight_field = new GrapaRuleEvent(0, GrapaCHAR(field_name.c_str(), field_name.length()), GrapaBYTE(""));
 						weight_field->mValue.mToken = GrapaTokenType::FLOAT;
