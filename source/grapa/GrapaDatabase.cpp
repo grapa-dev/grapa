@@ -25,6 +25,11 @@ limitations under the License.
 #include <sys/stat.h>
 #include "GrapaCompress.h"
 
+#include <map>
+#include <vector>
+#include <algorithm>
+#include <unordered_map>
+
 #if defined(__MINGW32__) || defined(__GNUC__)
 #include <pthread.h>
 #include <unistd.h>
@@ -134,11 +139,10 @@ void GrapaLocalDatabase::CLEAR()
 	mFile.Close();
 }
 
-GrapaError GrapaLocalDatabase::DirectoryList(GrapaCHAR& pName, GrapaRuleEvent* pTable)
+GrapaError GrapaLocalDatabase::DirectoryList(GrapaCHAR& pName, GrapaRuleEvent* pQuery, GrapaRuleEvent* pFields, GrapaRuleEvent* pTable)
 {
 	GrapaError err=0;
 	GrapaInt b;
-	bool extended = false;
 
 	if (mDb == NULL)
 	{
@@ -301,31 +305,123 @@ GrapaError GrapaLocalDatabase::DirectoryList(GrapaCHAR& pName, GrapaRuleEvent* p
 		GrapaCHAR fieldName;
 		GrapaCHAR fieldValue;
 		GrapaDBFieldArray* fieldList = mDb->mValue.ListFields(parentDict.mRef, parentDict.mRefType);
-		if (fieldList)
-		{
-			for (u32 i = 0; i < fieldList->Count(); i++)
-			{
-				GrapaDBField *field = fieldList->GetFieldAt(i);
-				if (!field) continue;
-				err = mDb->mValue.GetData(field->mNameRef, fieldName);
-				if (err) return(err);
-			}
-			u64 keyId = 0;
-			err = mDb->mValue.GetNameId(parentDict.mRef, parentDict.mRefType, keyId);
-			if (err) return(err);
-			GrapaDBCursor cursor;
-			cursor.Set(parentDict.mRef);
-			if (mDb->mValue.First(cursor) == 0)
-			{
-				do
-				{
-					err = mDb->mValue.GetRecordField(cursor, keyId, fieldKey);
-					if (err) return(err);
-					GrapaRuleEvent* item = new GrapaRuleEvent(0, GrapaCHAR(fieldKey), GrapaCHAR());
-					item->mValue.mToken = GrapaTokenType::GOBJ;
-					item->vQueue = new GrapaRuleQueue();
-					pTable->vQueue->PushTail(item);
+		if (!fieldList)
+			return -1;
 
+		struct DictField {
+			GrapaCHAR name;                 // must remain valid while map is used
+			GrapaDBField* field = nullptr;
+		};
+
+		std::vector<DictField> fields(fieldList->Count());
+		for (u32 i = 0; i < fieldList->Count(); i++) {
+			fields[i].field = fieldList->GetFieldAt(i);
+			if (!fields[i].field) continue;
+			mDb->mValue.GetData(fields[i].field->mNameRef, fields[i].name);
+		}
+
+		// index by string_view (no copy). Ensure name storage outlives fields_index.
+		using SV = std::string_view;
+		std::unordered_map<SV, GrapaDBField*> fields_index;
+		fields_index.reserve(fields.size());
+		for (auto& d : fields) {
+			fields_index.emplace(SV{ (const char*)d.name.mBytes, d.name.mLength }, d.field);
+		}
+
+		struct RuleField {
+			GrapaCHAR name;
+			GrapaRuleEvent* rule = nullptr;
+			GrapaDBField* field = nullptr;
+		};
+
+		u64 queryCount = (pQuery && pQuery->vQueue) ? pQuery->vQueue->mCount : 0;
+		std::vector<RuleField> values(queryCount);
+		GrapaRuleEvent* qitem = (pQuery && pQuery->vQueue) ? pQuery->vQueue->Head() : nullptr;
+		for (u64 i = 0; i < queryCount; i++) {
+			GrapaRuleEvent* scan = qitem;
+			while (scan && scan->mValue.mToken == GrapaTokenType::PTR && scan->vRulePointer)
+				scan = scan->vRulePointer;
+			values[i].rule = scan;
+			values[i].name.FROM(qitem->mName);
+			if (qitem && qitem->mName.mBytes && qitem->mName.Cmp("$ID") != 0) {
+				SV key{ (const char*)qitem->mName.mBytes, qitem->mName.mLength };
+				auto it = fields_index.find(key);
+				values[i].field = (it == fields_index.end()) ? nullptr : it->second;
+			}
+			qitem = qitem->Next();
+		}
+
+		u64 namesCount = (pFields && pFields->vQueue) ? pFields->vQueue->mCount : 0;
+		std::vector<RuleField> names(namesCount);
+		GrapaRuleEvent* nitem = (pFields && pFields->vQueue) ? pFields->vQueue->Head() : nullptr;
+		for (u64 i = 0; i < namesCount; i++) {
+			GrapaRuleEvent* scan = nitem;
+			while (scan && scan->mValue.mToken == GrapaTokenType::PTR && scan->vRulePointer)
+				scan = scan->vRulePointer;
+			names[i].rule = scan;
+			names[i].name.FROM(nitem->mValue);
+			if (nitem && nitem->mValue.mBytes && nitem->mValue.Cmp("$ID") != 0) {
+				SV key{ (const char*)nitem->mValue.mBytes, nitem->mValue.mLength };
+				auto it = fields_index.find(key);
+				names[i].field = (it == fields_index.end()) ? nullptr : it->second;
+			}
+			nitem = nitem->Next();
+		}
+
+		u64 keyId = 0;
+		err = mDb->mValue.GetNameId(parentDict.mRef, parentDict.mRefType, keyId);
+		if (err) return(err);
+		GrapaDBCursor cursor;
+		cursor.Set(parentDict.mRef);
+		if (mDb->mValue.First(cursor) == 0)
+		{
+			do
+			{
+				if (queryCount)
+				{
+					bool match = true;
+					for (u64 i = 0; i < queryCount; i++)
+					{
+						if (values[i].name.Cmp("$ID") == 0)
+						{
+							GrapaInt id(cursor.mKey);
+							if (values[i].rule->mValue.Cmp(GrapaInt(cursor.mKey).getBytes()))
+							{
+								match = false;
+								break;
+							}
+							continue;
+						}
+						if (!values[i].rule || !values[i].field)
+						{
+							match = false;
+							break;
+						}
+						err = mDb->mValue.GetRecordField(cursor, *values[i].field, fieldValue);
+						if (err)
+						{
+							match = false;
+							break;
+						}
+						if (values[i].rule->mValue.Cmp(fieldValue))
+						{
+							match = false;
+							break;
+						}
+					}
+					if (!match)
+						continue;
+				}
+
+				err = mDb->mValue.GetRecordField(cursor, keyId, fieldKey);
+				if (err) return(err);
+				GrapaRuleEvent* item = new GrapaRuleEvent(0, GrapaCHAR(fieldKey), GrapaCHAR());
+				item->mValue.mToken = GrapaTokenType::GOBJ;
+				item->vQueue = new GrapaRuleQueue();
+				pTable->vQueue->PushTail(item);
+
+				if (namesCount == 0)
+				{
 					GrapaDBField fieldRec;
 					fieldName.FROM("$KEY");
 					u64 maxId;
@@ -394,31 +490,29 @@ GrapaError GrapaLocalDatabase::DirectoryList(GrapaCHAR& pName, GrapaRuleEvent* p
 					item->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("$BYTES"), fieldValue));
 					err = 0;
 
-					if (extended)
+				}
+				for (u64 i = 0; i < namesCount; i++)
+				{
+					if (names[i].name.Cmp("$ID") == 0)
 					{
-						if (hasTreeSize)
-						{
-							b = treeSize; fieldValue = b.getBytes();
-							item->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("$ITEMS"), fieldValue));
-						}
-						for (u32 i = 0; i < fieldList->Count(); i++)
-						{
-							GrapaDBField* field = fieldList->GetFieldAt(i);
-							if (!field) continue;
-							err = mDb->mValue.GetData(field->mNameRef, fieldName);
-							if (fieldName.Cmp("$KEY") != 0)
-							{
-								err = mDb->mValue.GetRecordField(cursor, *field, fieldValue);
-								item->vQueue->PushTail(new GrapaRuleEvent(0, fieldName, fieldValue));
-							}
-						}
-						err = 0;
+						item->vQueue->PushTail(new GrapaRuleEvent(0, names[i].name, GrapaInt(cursor.mKey).getBytes()));
+						continue;
 					}
+					if (!names[i].rule || !names[i].field)
+					{
+						continue;
+					}
+					err = mDb->mValue.GetRecordField(cursor, *names[i].field, fieldValue);
+					if (err)
+					{
+						continue;
+					}
+					item->vQueue->PushTail(new GrapaRuleEvent(0, names[i].name, fieldValue));
+				}
 
-				} while (!(mDb->mValue.Next(cursor)));
-			}
-			delete fieldList;
+			} while (!(mDb->mValue.Next(cursor)));
 		}
+		delete fieldList;
 	}
 	return(err);
 }

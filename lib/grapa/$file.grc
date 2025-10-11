@@ -4,7 +4,7 @@ $global["$file"]
 	cd = @<[op,@<"$file","cd",{@<this>,@<var,{path}>}>],{path}>; 
 	phd = @<"$file","phd",{@<this>}>; 
 	chd = @<[op,@<"$file","chd",{@<this>,@<var,{path}>}>],{path}>; 
-	ls  = @<[op,@<"$file","ls",{@<this>,@<var,{path}>,@<var,{format}>}>],{path,format}>; 
+	ls  = @<[op,@<"$file","ls",{@<this>,@<var,{path}>,@<var,{query}>,@<var,{fields}>}>],{path,query,fields}>; 
 	mk = @<[op,@<"$file","mk",{@<this>,@<var,{name}>,@<var,{type}>}>],{name,type}>; 
 	rm = @<[op,@<"$file","rm",{@<this>,@<var,{name}>}>],{name}>; 
 	info = @<[op,@<"$file","info",{@<this>,@<var,{name}>,@<var,{format}>}>],{name,format}>; 

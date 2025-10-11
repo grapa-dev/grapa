@@ -1730,34 +1730,41 @@ GrapaError GrapaGroup::GetField(u64 parentTree, u8 parentType, const GrapaCHAR& 
 	}
 
 	u64 fieldId = 0;
-	if (fldName.StrCmp("$KEY") == 0)
-	{ 
-		if (nameId == 0)
-		{
-			mCritical.LeaveCritical();
-			return(-1);
-		}
-		fieldId = nameId;
-		fldName.FROM("$KEY");
+	if (fldName.StrCmp("$ID") == 0)
+	{
+		pDataValue.FROM(GrapaInt(cursor.mKey).getBytes());
 	}
 	else
 	{
-		GrapaDBField field;
-		u64 maxId;
-		err = FindField(parentTree, parentType, fldName, field, maxId);
+		if (fldName.StrCmp("$KEY") == 0)
+		{
+			if (nameId == 0)
+			{
+				mCritical.LeaveCritical();
+				return(-1);
+			}
+			fieldId = nameId;
+			fldName.FROM("$KEY");
+		}
+		else
+		{
+			GrapaDBField field;
+			u64 maxId;
+			err = FindField(parentTree, parentType, fldName, field, maxId);
+			if (err)
+			{
+				mCritical.LeaveCritical();
+				return(err);
+			}
+			fieldId = field.mId;
+		}
+
+		err = GetRecordField(cursor, fieldId, pDataValue);
 		if (err)
 		{
 			mCritical.LeaveCritical();
 			return(err);
 		}
-		fieldId = field.mId;
-	}
-
-	err = GetRecordField(cursor, fieldId, pDataValue);
-	if (err)
-	{
-		mCritical.LeaveCritical();
-		return(err);
 	}
 
 	mCritical.LeaveCritical();
@@ -1858,41 +1865,51 @@ GrapaError GrapaGroup::GetField(u64 parentTree, u8 parentType, const GrapaCHAR& 
 		}
 
 		u64 fieldId = 0;
-		if (fldName.StrCmp("$KEY") == 0)
+		if (fldName.StrCmp("$ID") == 0)
 		{
-			if (nameId == 0)
-			{
-				mCritical.LeaveCritical();
-				return(-1);
-			}
-			fieldId = nameId;
-			fldName.FROM("$KEY");
+			GrapaRuleEvent* result = new GrapaRuleEvent();
+			result->mName.FROM(fldName);
+			result->mValue.FROM(GrapaInt(cursor.mKey).getBytes());
+			pRowResults->vQueue->PushTail(result);
 		}
 		else
 		{
-			GrapaDBField field;
-			u64 maxId;
-			err = FindField(parentTree, parentType, fldName, field, maxId);
+			if (fldName.StrCmp("$KEY") == 0)
+			{
+				if (nameId == 0)
+				{
+					mCritical.LeaveCritical();
+					return(-1);
+				}
+				fieldId = nameId;
+				fldName.FROM("$KEY");
+			}
+			else
+			{
+				GrapaDBField field;
+				u64 maxId;
+				err = FindField(parentTree, parentType, fldName, field, maxId);
+				if (err)
+				{
+					mCritical.LeaveCritical();
+					return(err);
+				}
+				fieldId = field.mId;
+			}
+
+			GrapaBYTE dataValue;
+			err = GetRecordField(cursor, fieldId, dataValue);
 			if (err)
 			{
 				mCritical.LeaveCritical();
 				return(err);
 			}
-			fieldId = field.mId;
+			GrapaRuleEvent* result = new GrapaRuleEvent();
+			result->mName.FROM(fldName);
+			result->mValue.FROM(dataValue);
+			result->mValue.mToken = dataValue.mToken;
+			pRowResults->vQueue->PushTail(result);
 		}
-
-		GrapaBYTE dataValue;
-		err = GetRecordField(cursor, fieldId, dataValue);
-		if (err)
-		{
-			mCritical.LeaveCritical();
-			return(err);
-		}
-		GrapaRuleEvent* result = new GrapaRuleEvent();
-		result->mName.FROM(fldName);
-		result->mValue.FROM(dataValue);
-		result->mValue.mToken = dataValue.mToken;
-		pRowResults->vQueue->PushTail(result);
 
 		fieldEventItem = fieldEventItem->Next();
 	}
@@ -1981,41 +1998,51 @@ GrapaError GrapaGroup::GetField(u64 parentTree, u8 parentType, u64 pId, GrapaRul
 		}
 
 		u64 fieldId = 0;
-		if (fldName.StrCmp("$KEY") == 0)
+		if (fldName.StrCmp("$ID") == 0)
 		{
-			if (nameId == 0)
-			{
-				mCritical.LeaveCritical();
-				return(-1);
-			}
-			fieldId = nameId;
-			fldName.FROM("$KEY");
+			GrapaRuleEvent* result = new GrapaRuleEvent();
+			result->mName.FROM(fldName);
+			result->mValue.FROM(GrapaInt(cursor.mKey).getBytes());
+			pRowResults->vQueue->PushTail(result);
 		}
 		else
 		{
-			GrapaDBField field;
-			u64 maxId;
-			err = FindField(parentTree, parentType, fldName, field, maxId);
+			if (fldName.StrCmp("$KEY") == 0)
+			{
+				if (nameId == 0)
+				{
+					mCritical.LeaveCritical();
+					return(-1);
+				}
+				fieldId = nameId;
+				fldName.FROM("$KEY");
+			}
+			else
+			{
+				GrapaDBField field;
+				u64 maxId;
+				err = FindField(parentTree, parentType, fldName, field, maxId);
+				if (err)
+				{
+					mCritical.LeaveCritical();
+					return(err);
+				}
+				fieldId = field.mId;
+			}
+
+			GrapaBYTE dataValue;
+			err = GetRecordField(cursor, fieldId, dataValue);
 			if (err)
 			{
 				mCritical.LeaveCritical();
 				return(err);
 			}
-			fieldId = field.mId;
+			GrapaRuleEvent* result = new GrapaRuleEvent();
+			result->mName.FROM(fldName);
+			result->mValue.FROM(dataValue);
+			result->mValue.mToken = dataValue.mToken;
+			pRowResults->vQueue->PushTail(result);
 		}
-
-		GrapaBYTE dataValue;
-		err = GetRecordField(cursor, fieldId, dataValue);
-		if (err)
-		{
-			mCritical.LeaveCritical();
-			return(err);
-		}
-		GrapaRuleEvent* result = new GrapaRuleEvent();
-		result->mName.FROM(fldName);
-		result->mValue.FROM(dataValue);
-		result->mValue.mToken = dataValue.mToken;
-		pRowResults->vQueue->PushTail(result);
 
 		fieldEventItem = fieldEventItem->Next();
 	}
@@ -2234,33 +2261,40 @@ GrapaError GrapaGroup::GetField(u64 parentTree, u8 parentType, u64 pId, const Gr
 	}
 
 	u64 fieldId = 0;
-	if (fldName.StrCmp("$KEY") == 0)
+	if (fldName.StrCmp("$ID") == 0)
 	{
-		err = GetNameId(parentTree, parentType, fieldId);
-		if (fieldId == 0)
-		{
-			mCritical.LeaveCritical();
-			return(-1);
-		}
+		pDataValue.FROM(GrapaInt(cursor.mKey).getBytes());
 	}
 	else
 	{
-		GrapaDBField field;
-		u64 maxId;
-		err = FindField(parentTree, parentType, fldName, field, maxId);
+		if (fldName.StrCmp("$KEY") == 0)
+		{
+			err = GetNameId(parentTree, parentType, fieldId);
+			if (fieldId == 0)
+			{
+				mCritical.LeaveCritical();
+				return(-1);
+			}
+		}
+		else
+		{
+			GrapaDBField field;
+			u64 maxId;
+			err = FindField(parentTree, parentType, fldName, field, maxId);
+			if (err)
+			{
+				mCritical.LeaveCritical();
+				return(err);
+			}
+			fieldId = field.mId;
+		}
+
+		err = GetRecordField(cursor, fieldId, pDataValue);
 		if (err)
 		{
 			mCritical.LeaveCritical();
 			return(err);
 		}
-		fieldId = field.mId;
-	}
-
-	err = GetRecordField(cursor, fieldId, pDataValue);
-	if (err)
-	{
-		mCritical.LeaveCritical();
-		return(err);
 	}
 
 	mCritical.LeaveCritical();

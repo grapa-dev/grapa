@@ -71,7 +71,7 @@ bool GrapaCompress::Compress(GrapaBYTE& pData, GrapaBYTE& pEnc)
 bool GrapaCompress::Expand(GrapaBYTE& pEnc, GrapaBYTE& pData)
 {
 	pData.SetLength(0);
-	if (pEnc.mBytes[0] == 0)
+	if (pEnc.mLength && pEnc.mBytes && pEnc.mBytes[0] == 0)
 	{
 		if (pEnc.mLength < (sizeof(u64) + 1) || pEnc.mBytes == NULL) return false;
 		u64 expandSize = BE_S64((((u64*)pEnc.mBytes)[0]));

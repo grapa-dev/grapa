@@ -11107,6 +11107,8 @@ GrapaRuleEvent* GrapaLibraryRuleLsEvent::Run(GrapaScriptExec *vScriptExec, Grapa
 
 	GrapaLibraryParam r1(vScriptExec, pNameSpace, pInput ? pInput->Head(0) : NULL);
 	GrapaLibraryParam r2(vScriptExec, pNameSpace, pInput ? pInput->Head(1) : NULL);
+	GrapaLibraryParam r3(vScriptExec, pNameSpace, pInput ? pInput->Head(2) : NULL);
+	GrapaLibraryParam r4(vScriptExec, pNameSpace, pInput ? pInput->Head(3) : NULL);
 
 	GrapaRuleEvent* objEvent = vScriptExec->vScriptState->SearchTarget(pNameSpace, r1.vVal);
 	if (objEvent == NULL)
@@ -11117,7 +11119,7 @@ GrapaRuleEvent* GrapaLibraryRuleLsEvent::Run(GrapaScriptExec *vScriptExec, Grapa
 		if (objEvent->vDatabase == NULL)
 			objEvent->vDatabase = new GrapaLocalDatabase(vScriptExec->vScriptState);
 		result = new GrapaRuleEvent();
-		err = objEvent->vDatabase->DirectoryList(r2.vVal->mValue, result);
+		err = objEvent->vDatabase->DirectoryList(r2.vVal->mValue, r3.vVal, r4.vVal, result);
 		if (err)
 		{
 			result->CLEAR();
@@ -22297,7 +22299,7 @@ GrapaRuleEvent* calculate_pointer_similarity(GrapaScriptExec* vScriptExec, Grapa
 	
 	// Sort results
 	if (sort == "desc")
-		std::sort(similarities.begin(), similarities.end(), [](const auto& a, const auto& b) { return a.second > b.second; });
+		std::sort(similarities.begin(), similarities.end(), [](const auto& a, const auto& b) { return a.second> b.second; });
 	else
 		std::sort(similarities.begin(), similarities.end(), [](const auto& a, const auto& b) { return a.second < b.second; });
 	

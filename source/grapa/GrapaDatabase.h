@@ -32,7 +32,7 @@ public:
 	virtual ~GrapaLocalDatabase();
 	virtual void CLEAR();
 
-	virtual GrapaError DirectoryList(GrapaCHAR& pName, GrapaRuleEvent* pTable);
+	virtual GrapaError DirectoryList(GrapaCHAR& pName, GrapaRuleEvent* pQuery, GrapaRuleEvent* pFields, GrapaRuleEvent* pTable);
 	virtual void DirectoryPath(GrapaCHAR& pName);
 	virtual void DirectoryFullPath(GrapaCHAR& pName);
 	virtual void DirectoryPWD(GrapaCHAR& pName);
