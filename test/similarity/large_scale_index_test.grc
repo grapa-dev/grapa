@@ -15,7 +15,7 @@ warning_threshold = 2000;   /* Warning threshold */
 ("Acceptable threshold: < " + acceptable_threshold.str() + "ms\n").echo();
 ("\n").echo();
 
-hashsource = 5.genhashset("cosine",3,4,1234);
+hashsource = 5.genhashset("cosine",3,8,1234);
 
 /* Results storage */
 results = [];
@@ -70,6 +70,8 @@ for test_size in test_sizes {
 
     search = #[0.8, -0.6, 0.4, 0.2, -0.1]#.genhash(hashsource);
 	indexes2 = vectors.ls("",[{"h1":search[0]},{"h2":search[1]},{"h3":search[2]}],["$ID"]).vector().sort(1,["$ID"]).t().list()[0];
+	index_time = start_time.ms() - create_vector_time - pure_vector_time;
+
     vector_results2 = indexes2.similarity(#[0.8, -0.6, 0.4, 0.2, -0.1]#, "cosine", {
         "datasource": vectors,
         "datafield": "vector",
@@ -82,6 +84,7 @@ for test_size in test_sizes {
 
     ("    Create vector: " + create_vector_time.float(30).str() + "ms\n").echo();
     ("    Search vector: " + pure_vector_time.float(30).str() + "ms\n").echo();
+    ("    Search index: " + index_time.float(30).str() + "ms\n").echo();
     ("    Search vector2: " + pure_vector_time2.float(30).str() + "ms\n").echo();
     ("    Results: " + vector_results."results".len().str() + "\n").echo();
     
