@@ -368,8 +368,9 @@ GrapaError GrapaLocalDatabase::DirectoryList(GrapaCHAR& pName, GrapaRuleEvent* p
 			while(orListItem && orListItem->mValue.mToken == GrapaTokenType::PTR && orListItem->vRulePointer)
 				orListItem = orListItem->vRulePointer;
 
-			if (orListItem==NULL || orListItem->mValue.mToken != GrapaTokenType::GOBJ)
-				break;
+			if (pQuery && pQuery->vQueue && pQuery->vQueue->mCount)
+				if (orListItem==NULL || orListItem->mValue.mToken != GrapaTokenType::GOBJ)
+					break;
 
 			u64 queryCount = (orListItem && orListItem->vQueue) ? orListItem->vQueue->mCount : 0;
 			std::vector<RuleField> values(queryCount);
