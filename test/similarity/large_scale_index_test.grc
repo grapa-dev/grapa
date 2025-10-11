@@ -69,10 +69,7 @@ for test_size in test_sizes {
     pure_vector_time = start_time.ms() - create_vector_time;
 
     search = #[0.8, -0.6, 0.4, 0.2, -0.1]#.genhash(hashsource);
-	indexes2 = vectors.ls("",{"h1":search[0]},["$ID"]).vector().sort(1,["$ID"]).t().list()[0];
-	indexes2 ++= vectors.ls("",{"h2":search[1]},["$ID"]).vector().sort(1,["$ID"]).t().list()[0];
-	indexes2 ++= vectors.ls("",{"h3":search[2]},["$ID"]).vector().sort(1,["$ID"]).t().list()[0];
-	indexes2 = indexes2.unique();
+	indexes2 = vectors.ls("",[{"h1":search[0]},{"h2":search[1]},{"h3":search[2]}],["$ID"]).vector().sort(1,["$ID"]).t().list()[0];
     vector_results2 = indexes2.similarity(#[0.8, -0.6, 0.4, 0.2, -0.1]#, "cosine", {
         "datasource": vectors,
         "datafield": "vector",

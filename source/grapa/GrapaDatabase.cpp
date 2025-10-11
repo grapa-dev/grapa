@@ -29,6 +29,7 @@ limitations under the License.
 #include <vector>
 #include <algorithm>
 #include <unordered_map>
+#include <unordered_set>
 
 #if defined(__MINGW32__) || defined(__GNUC__)
 #include <pthread.h>
@@ -334,23 +335,6 @@ GrapaError GrapaLocalDatabase::DirectoryList(GrapaCHAR& pName, GrapaRuleEvent* p
 			GrapaDBField* field = nullptr;
 		};
 
-		u64 queryCount = (pQuery && pQuery->vQueue) ? pQuery->vQueue->mCount : 0;
-		std::vector<RuleField> values(queryCount);
-		GrapaRuleEvent* qitem = (pQuery && pQuery->vQueue) ? pQuery->vQueue->Head() : nullptr;
-		for (u64 i = 0; i < queryCount; i++) {
-			GrapaRuleEvent* scan = qitem;
-			while (scan && scan->mValue.mToken == GrapaTokenType::PTR && scan->vRulePointer)
-				scan = scan->vRulePointer;
-			values[i].rule = scan;
-			values[i].name.FROM(qitem->mName);
-			if (qitem && qitem->mName.mBytes && qitem->mName.Cmp("$ID") != 0) {
-				SV key{ (const char*)qitem->mName.mBytes, qitem->mName.mLength };
-				auto it = fields_index.find(key);
-				values[i].field = (it == fields_index.end()) ? nullptr : it->second;
-			}
-			qitem = qitem->Next();
-		}
-
 		u64 namesCount = (pFields && pFields->vQueue) ? pFields->vQueue->mCount : 0;
 		std::vector<RuleField> names(namesCount);
 		GrapaRuleEvent* nitem = (pFields && pFields->vQueue) ? pFields->vQueue->Head() : nullptr;
@@ -368,149 +352,191 @@ GrapaError GrapaLocalDatabase::DirectoryList(GrapaCHAR& pName, GrapaRuleEvent* p
 			nitem = nitem->Next();
 		}
 
-		u64 keyId = 0;
-		err = mDb->mValue.GetNameId(parentDict.mRef, parentDict.mRefType, keyId);
-		if (err) return(err);
-		GrapaDBCursor cursor;
-		cursor.Set(parentDict.mRef);
-		if (mDb->mValue.First(cursor) == 0)
+		// track seen IDs to avoid duplicates when OR conditions are used
+		std::unordered_set<u64> seen;
+
+		GrapaRuleEvent* orList = (pQuery && pQuery->vQueue && pQuery->vQueue->mCount && pQuery->mValue.mToken == GrapaTokenType::LIST) ? pQuery->vQueue->Head() : nullptr;
+		do
 		{
-			do
+			// {} for AND condistions
+			// [{},{}] for OR condistions
+			// if pQuery is $GOBJ than it is not the OR considion and should be a single AND condition
+
+			GrapaRuleEvent* orListItem = orList;
+			if (orListItem == NULL)
+				orListItem = pQuery;
+			while(orListItem && orListItem->mValue.mToken == GrapaTokenType::PTR && orListItem->vRulePointer)
+				orListItem = orListItem->vRulePointer;
+
+			if (orListItem==NULL || orListItem->mValue.mToken != GrapaTokenType::GOBJ)
+				break;
+
+			u64 queryCount = (orListItem && orListItem->vQueue) ? orListItem->vQueue->mCount : 0;
+			std::vector<RuleField> values(queryCount);
+			GrapaRuleEvent* qitem = (orListItem && orListItem->vQueue) ? orListItem->vQueue->Head() : nullptr;
+			for (u64 i = 0; i < queryCount; i++) {
+				GrapaRuleEvent* scan = qitem;
+				while (scan && scan->mValue.mToken == GrapaTokenType::PTR && scan->vRulePointer)
+					scan = scan->vRulePointer;
+				values[i].rule = scan;
+				values[i].name.FROM(qitem->mName);
+				if (qitem && qitem->mName.mBytes && qitem->mName.Cmp("$ID") != 0) {
+					SV key{ (const char*)qitem->mName.mBytes, qitem->mName.mLength };
+					auto it = fields_index.find(key);
+					values[i].field = (it == fields_index.end()) ? nullptr : it->second;
+				}
+				qitem = qitem->Next();
+			}
+
+			u64 keyId = 0;
+			err = mDb->mValue.GetNameId(parentDict.mRef, parentDict.mRefType, keyId);
+			if (err) return(err);
+			GrapaDBCursor cursor;
+			cursor.Set(parentDict.mRef);
+			if (mDb->mValue.First(cursor) == 0)
 			{
-				if (queryCount)
+				do
 				{
-					bool match = true;
-					for (u64 i = 0; i < queryCount; i++)
+					if (seen.find(cursor.mKey) != seen.end())
+						continue;
+					if (queryCount)
 					{
-						if (values[i].name.Cmp("$ID") == 0)
+						bool match = true;
+						for (u64 i = 0; i < queryCount; i++)
 						{
-							if (values[i].rule->mValue.Cmp(GrapaInt(cursor.mKey).getBytes()))
+							if (values[i].name.Cmp("$ID") == 0)
+							{
+								if (values[i].rule->mValue.Cmp(GrapaInt(cursor.mKey).getBytes()))
+								{
+									match = false;
+									break;
+								}
+								continue;
+							}
+							if (!values[i].rule || !values[i].field)
 							{
 								match = false;
 								break;
 							}
+							err = mDb->mValue.GetRecordField(cursor, *values[i].field, fieldValue);
+							if (err)
+							{
+								match = false;
+								break;
+							}
+							// should convert the following to use the DoCondition function
+							if (values[i].rule->mValue.Cmp(fieldValue))
+							{
+								match = false;
+								break;
+							}
+						}
+						if (!match)
 							continue;
-						}
-						if (!values[i].rule || !values[i].field)
-						{
-							match = false;
-							break;
-						}
-						err = mDb->mValue.GetRecordField(cursor, *values[i].field, fieldValue);
-						if (err)
-						{
-							match = false;
-							break;
-						}
-						if (values[i].rule->mValue.Cmp(fieldValue))
-						{
-							match = false;
-							break;
-						}
 					}
-					if (!match)
-						continue;
-				}
 
-				err = mDb->mValue.GetRecordField(cursor, keyId, fieldKey);
-				if (err) return(err);
-				GrapaRuleEvent* item = new GrapaRuleEvent(0, GrapaCHAR(fieldKey), GrapaCHAR());
-				item->mValue.mToken = GrapaTokenType::GOBJ;
-				item->vQueue = new GrapaRuleQueue();
-				pTable->vQueue->PushTail(item);
+					auto [it, inserted] = seen.insert(cursor.mKey);
 
-				if (namesCount == 0)
-				{
-					GrapaDBField fieldRec;
-					fieldName.FROM("$KEY");
-					u64 maxId;
-					err = mDb->mValue.FindField(dirId, dirType, fieldName, fieldRec, maxId);
+					err = mDb->mValue.GetRecordField(cursor, keyId, fieldKey);
 					if (err) return(err);
-					err = mDb->mValue.GetRecordField(cursor, fieldRec, fieldValue);
-					if (err) return(err);
-					item->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("$PATH"), GrapaCHAR((char*)pName.mBytes, pName.mLength)));
-					item->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("$KEY"), fieldValue));
-					item->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("$ID"), GrapaInt(cursor.mKey).getBytes()));
+					GrapaRuleEvent* item = new GrapaRuleEvent(0, GrapaCHAR(fieldKey), GrapaCHAR());
+					item->mValue.mToken = GrapaTokenType::GOBJ;
+					item->vQueue = new GrapaRuleQueue();
+					pTable->vQueue->PushTail(item);
 
-					u64 treeSize = 0;
-					bool hasTreeSize = false;
-
-					if (dirType == GrapaDB::GROUP_TREE)
+					if (namesCount == 0)
 					{
-						GrapaDBCursor tableCursor;
-						fieldValue.FROM("VALUE");
-						tableCursor.Set(dirId, GrapaDB::TREE_ITEM, cursor.mKey);
-						err = mDb->mValue.Search(tableCursor);
-						if (!err)
-						{
-							u8 treeType;
-							tableCursor.Set(tableCursor.mValue);
-							err = mDb->mValue.GetTreeType(tableCursor, treeType);
-							err = mDb->mValue.GetTreeSize(tableCursor, treeSize);
-							switch (treeType)
-							{
-							case GrapaDB::GROUP_TREE:	fieldValue.FROM("GROUP"); break;
-							case GrapaDB::RTABLE_TREE:	fieldValue.FROM("ROWS"); break;
-							case GrapaDB::CTABLE_TREE:	fieldValue.FROM("COLS"); break;
-							}
-							if (treeType == GrapaDB::GROUP_TREE)
-							{
-								tableCursor.Set(parentDict.mRef, GrapaDB::TREE_ITEM, cursor.mKey);
-								err = mDb->mValue.GetTreeSize(tableCursor, treeSize);
-							}
-						}
-						fieldValue.mToken = GrapaTokenType::STR;
-						item->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("$TYPE"), fieldValue));
+						GrapaDBField fieldRec;
+						fieldName.FROM("$KEY");
+						u64 maxId;
+						err = mDb->mValue.FindField(dirId, dirType, fieldName, fieldRec, maxId);
+						if (err) return(err);
+						err = mDb->mValue.GetRecordField(cursor, fieldRec, fieldValue);
+						if (err) return(err);
+						item->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("$PATH"), GrapaCHAR((char*)pName.mBytes, pName.mLength)));
+						item->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("$KEY"), fieldValue));
+						item->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("$ID"), GrapaInt(cursor.mKey).getBytes()));
+
+						u64 treeSize = 0;
+						bool hasTreeSize = false;
+
 						if (dirType == GrapaDB::GROUP_TREE)
 						{
-							hasTreeSize = true;
+							GrapaDBCursor tableCursor;
+							fieldValue.FROM("VALUE");
+							tableCursor.Set(dirId, GrapaDB::TREE_ITEM, cursor.mKey);
+							err = mDb->mValue.Search(tableCursor);
+							if (!err)
+							{
+								u8 treeType;
+								tableCursor.Set(tableCursor.mValue);
+								err = mDb->mValue.GetTreeType(tableCursor, treeType);
+								err = mDb->mValue.GetTreeSize(tableCursor, treeSize);
+								switch (treeType)
+								{
+								case GrapaDB::GROUP_TREE:	fieldValue.FROM("GROUP"); break;
+								case GrapaDB::RTABLE_TREE:	fieldValue.FROM("ROWS"); break;
+								case GrapaDB::CTABLE_TREE:	fieldValue.FROM("COLS"); break;
+								}
+								if (treeType == GrapaDB::GROUP_TREE)
+								{
+									tableCursor.Set(parentDict.mRef, GrapaDB::TREE_ITEM, cursor.mKey);
+									err = mDb->mValue.GetTreeSize(tableCursor, treeSize);
+								}
+							}
+							fieldValue.mToken = GrapaTokenType::STR;
+							item->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("$TYPE"), fieldValue));
+							if (dirType == GrapaDB::GROUP_TREE)
+							{
+								hasTreeSize = true;
+							}
 						}
-					}
-					else
-					{
-						GrapaDBCursor tableCursor;
-						tableCursor.Set(dirId, GrapaDB::TREE_ITEM, cursor.mKey);
-						err = mDb->mValue.Search(tableCursor);
-						fieldValue.FROM("?");
-						switch (tableCursor.mValueType)
+						else
 						{
-						case GrapaDB::GREC_ITEM: fieldValue.FROM("GROUP"); break; // ERROR: Shouldn't have allowed creating a table in a table.
-						case GrapaDB::RREC_ITEM: fieldValue.FROM("ROW"); break;
-						case GrapaDB::CREC_ITEM: fieldValue.FROM("COL"); break;
+							GrapaDBCursor tableCursor;
+							tableCursor.Set(dirId, GrapaDB::TREE_ITEM, cursor.mKey);
+							err = mDb->mValue.Search(tableCursor);
+							fieldValue.FROM("?");
+							switch (tableCursor.mValueType)
+							{
+							case GrapaDB::GREC_ITEM: fieldValue.FROM("GROUP"); break; // ERROR: Shouldn't have allowed creating a table in a table.
+							case GrapaDB::RREC_ITEM: fieldValue.FROM("ROW"); break;
+							case GrapaDB::CREC_ITEM: fieldValue.FROM("COL"); break;
+							}
+							fieldValue.mToken = GrapaTokenType::STR;
+							item->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("$TYPE"), fieldValue));
 						}
-						fieldValue.mToken = GrapaTokenType::STR;
-						item->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("$TYPE"), fieldValue));
+
+						fieldName.FROM("$VALUE");
+						err = mDb->mValue.FindField(dirId, dirType, fieldName, fieldRec, maxId);
+						err = mDb->mValue.GetRecordField(cursor, fieldRec, fieldValue);
+						b = fieldValue.mLength; fieldValue = b.getBytes();
+						item->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("$BYTES"), fieldValue));
+						err = 0;
+
+					}
+					for (u64 i = 0; i < namesCount; i++)
+					{
+						if (names[i].name.Cmp("$ID") == 0)
+						{
+							item->vQueue->PushTail(new GrapaRuleEvent(0, names[i].name, GrapaInt(cursor.mKey).getBytes()));
+							continue;
+						}
+						if (!names[i].rule || !names[i].field)
+						{
+							continue;
+						}
+						err = mDb->mValue.GetRecordField(cursor, *names[i].field, fieldValue);
+						if (err)
+						{
+							continue;
+						}
+						item->vQueue->PushTail(new GrapaRuleEvent(0, names[i].name, fieldValue));
 					}
 
-					fieldName.FROM("$VALUE");
-					err = mDb->mValue.FindField(dirId, dirType, fieldName, fieldRec, maxId);
-					err = mDb->mValue.GetRecordField(cursor, fieldRec, fieldValue);
-					b = fieldValue.mLength; fieldValue = b.getBytes();
-					item->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("$BYTES"), fieldValue));
-					err = 0;
-
-				}
-				for (u64 i = 0; i < namesCount; i++)
-				{
-					if (names[i].name.Cmp("$ID") == 0)
-					{
-						item->vQueue->PushTail(new GrapaRuleEvent(0, names[i].name, GrapaInt(cursor.mKey).getBytes()));
-						continue;
-					}
-					if (!names[i].rule || !names[i].field)
-					{
-						continue;
-					}
-					err = mDb->mValue.GetRecordField(cursor, *names[i].field, fieldValue);
-					if (err)
-					{
-						continue;
-					}
-					item->vQueue->PushTail(new GrapaRuleEvent(0, names[i].name, fieldValue));
-				}
-
-			} while (!(mDb->mValue.Next(cursor)));
-		}
+				} while (!(mDb->mValue.Next(cursor)));
+			}
+		} while (orList && (orList = orList->Next()));
 		delete fieldList;
 	}
 	return(err);
