@@ -22329,7 +22329,7 @@ GrapaRuleEvent* calculate_pointer_similarity(GrapaScriptExec* vScriptExec, Grapa
 		
 		if (include_scores)
 		{
-			GrapaRuleEvent* score_field = new GrapaRuleEvent(0, GrapaCHAR("similarity"), GrapaFloat(sim.second).getBytes());
+			GrapaRuleEvent* score_field = new GrapaRuleEvent(0, GrapaCHAR("similarity"), sim.second.getBytes());
 			result_item->vQueue->PushTail(score_field);
 		}
 		
