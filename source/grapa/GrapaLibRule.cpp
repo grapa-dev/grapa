@@ -22245,6 +22245,11 @@ GrapaRuleEvent* calculate_pointer_similarity(GrapaScriptExec* vScriptExec, Grapa
 						// Optimized cosine similarity calculation (inline)
 						if (method.StrLowerCmp("cosine") == 0 || method.StrLowerCmp("cosine_similarity") == 0)
 						{
+							// Reset accumulators for this vector
+							sum_ab.FROM(0);
+							sum_a2.FROM(0);
+							sum_b2.FROM(0);
+							
 							// Calculate cosine similarity: (a·b) / (||a|| * ||b||)							
 							for (u64 j = 0; j < query_len; j++)
 							{
