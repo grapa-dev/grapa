@@ -22177,18 +22177,36 @@ GrapaRuleEvent* calculate_pointer_similarity(GrapaScriptExec* vScriptExec, Grapa
 	std::vector<int> indexes;
 	if (index_list->vQueue)
 	{
-		GrapaRuleEvent* item = index_list->vQueue->Head();
-		while (item)
+		GrapaRuleEvent* itemList = index_list->vQueue->Head();
+		while (itemList)
 		{
+			GrapaRuleEvent* item = itemList;
+			while(item && item->mValue.mToken == GrapaTokenType::PTR && item->vRulePointer)
+				item = item->vRulePointer;
 			if (item->mValue.mToken == GrapaTokenType::INT)
 			{
 				int index = (int)GrapaInt(item->mValue).LongValue();
 				indexes.push_back(index);
 			}
-			item = item->Next();
+			itemList = itemList->Next();
 		}
 	}
 	
+	std::vector<GrapaRuleEvent*> data(datasource->vQueue->mCount);
+	if (datasource->vQueue)
+	{
+		GrapaRuleEvent* itemList = datasource->vQueue->Head();
+		u64 i = 0;
+		while (itemList)
+		{
+			GrapaRuleEvent* item = itemList;
+			while (item && item->mValue.mToken == GrapaTokenType::PTR && item->vRulePointer)
+				item = item->vRulePointer;
+			data[i++] = item;
+			itemList = itemList->Next();
+		}
+	}
+
 	GrapaFloat sum_ab(vScriptExec->vScriptState->mItemState.mFloatFix, vScriptExec->vScriptState->mItemState.mFloatMax, vScriptExec->vScriptState->mItemState.mFloatExtra, 0);
 	GrapaFloat sum_a2(vScriptExec->vScriptState->mItemState.mFloatFix, vScriptExec->vScriptState->mItemState.mFloatMax, vScriptExec->vScriptState->mItemState.mFloatExtra, 0);
 	GrapaFloat sum_b2(vScriptExec->vScriptState->mItemState.mFloatFix, vScriptExec->vScriptState->mItemState.mFloatMax, vScriptExec->vScriptState->mItemState.mFloatExtra, 0);
@@ -22208,7 +22226,7 @@ GrapaRuleEvent* calculate_pointer_similarity(GrapaScriptExec* vScriptExec, Grapa
 			GrapaRuleEvent table_item;
 
 			if (datasource->mValue.mToken == GrapaTokenType::LIST)
-				actual_item = datasource->vQueue->Head(index);
+				actual_item = data[index];
 			else if ((datasource->mValue.mToken == GrapaTokenType::OBJ && datasource->vClass->mName.Cmp("$file") == 0) || datasource->mValue.mToken == GrapaTokenType::TABLE)
 			{
 				GrapaError err = get_table_pointer_similarity(vScriptExec, pNameSpace, datasource, datafield, index, &table_item);
@@ -22344,7 +22362,7 @@ GrapaRuleEvent* calculate_pointer_similarity(GrapaScriptExec* vScriptExec, Grapa
 			// Add the actual item from datasource
 			if (datasource->mValue.mToken == GrapaTokenType::LIST)
 			{
-				GrapaRuleEvent* item_field = vScriptExec->CopyItem(datasource->vQueue->Head(sim.first));
+				GrapaRuleEvent* item_field = vScriptExec->CopyItem(data[sim.first]);
 				item_field->mName.FROM("item");
 				result_item->vQueue->PushTail(item_field);
 			}
@@ -22389,7 +22407,7 @@ GrapaRuleEvent* calculate_pointer_similarity(GrapaScriptExec* vScriptExec, Grapa
 		{
 			if (datasource->mValue.mToken == GrapaTokenType::LIST)
 			{
-				GrapaRuleEvent* best_match_key = vScriptExec->CopyItem(datasource->vQueue->Head(best_index));
+				GrapaRuleEvent* best_match_key = vScriptExec->CopyItem(data[best_index]);
 				best_match_key->mName.FROM("best_match");
 				result->vQueue->PushTail(best_match_key);
 			}
