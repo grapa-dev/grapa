@@ -62,7 +62,7 @@ for test_size in test_sizes {
         vectors.cd(dbname);
     };
 	
-	search_vector = #[-0.90625,-0.296875,-0.71484375,-0.3046875,-0.46875,-0.7578125,0.42578125,0.78125,-0.71875,0.2109375]#;
+	search_vector = #[-0.906,-0.296,-0.714-0.304,-0.468,-0.757,0.425,0.781,-0.718,0.210#;
 
     create_vector_time = start_time.ms();
     indexes = vectors.ls("").vector().sort(1,["$ID"]).t().list()[0];
