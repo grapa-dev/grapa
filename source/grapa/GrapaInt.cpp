@@ -26,6 +26,9 @@ limitations under the License.
 
 extern GrapaSystem* gSystem;
 
+// Initialize static member for uniform random generation
+std::mt19937* GrapaInt::sUniformRNG = nullptr;
+
 //struct GrapaBitField8
 //{
 //	u8 b0 : 1;
@@ -1973,12 +1976,47 @@ GrapaInt GrapaInt::gcd(s64 i1) const
 
 void GrapaInt::SeedUniform(u64 seeduniform)
 {
-
+	// Clean up existing RNG if it exists
+	if (sUniformRNG != nullptr) {
+		delete sUniformRNG;
+	}
+	
+	// Create new RNG with the specified seed
+	sUniformRNG = new std::mt19937((unsigned int)seeduniform);
 }
 
-void GrapaInt::RandomUniform(u64 bits)
+void GrapaInt::RandomUniform(u64 bitsx)
 {
-	Random(bits);
+	// If RNG not initialized, use cryptographic random (same as Random)
+	if (sUniformRNG == nullptr) {
+		Random(bitsx);
+		return;
+	}
+	
+	u32 bits = (u32)bitsx;
+	*this = 0;
+
+	u32 dwords = bits >> 5;
+	u32 remBits = bits & 0x1F;
+
+	if (remBits != 0)
+		dwords++;
+
+	SetCount(dwords);
+	
+	// Generate random dwords using std::mt19937
+	for (u32 i = 0; i < dwords; i++) {
+		SetItem(i, (*sUniformRNG)());
+	}
+
+	if (remBits != 0)
+	{
+		u32 mask = (u32)(0x01 << (remBits - 1));
+		SetItem(dwords - 1, GetItem(dwords - 1) | mask);
+		mask--;
+		mask = ~(mask << 1);
+		SetItem(dwords - 1, GetItem(dwords - 1) & mask);
+	}
 }
 
 void GrapaInt::Random(u64 bitsx)

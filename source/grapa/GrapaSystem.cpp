@@ -19,6 +19,7 @@ limitations under the License.
 #include "GrapaSystem.h"
 #include "GrapaLink.h"
 #include "GrapaTime.h"
+#include "GrapaInt.h"
 #include <string>
 #include <algorithm>  // for std::max and std::min
 
@@ -627,6 +628,10 @@ void GrapaSystem::RandSeed(u64 pSeed)
 	srand(seed);
 	u32 rd = Random32();
 	RAND_seed((void*)&rd, 32);
+	
+	// Also seed the uniform RNG for deterministic testing
+	GrapaInt temp;
+	temp.SeedUniform(pSeed ? pSeed : seed);
 }
 
 u64 GrapaSystem::GetNextSessionId()

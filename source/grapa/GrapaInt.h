@@ -8,6 +8,7 @@
 #include "GrapaValue.h"
 #include "GrapaThread.h"
 #include <openssl/rand.h>
+#include <random>
 
 class GrapaArray32
 {
@@ -139,6 +140,8 @@ public:
 	static u64 mul64(u64 a, u64 b, u64 mod);
 	static u64 pow64(u64 a, u64 p, u64 mod);
 	static u64 sqrt64(u64 ull);
+private:
+	static std::mt19937* sUniformRNG;  // Shared RNG for uniform random generation
 };
 
 class GrapaPolyMod
