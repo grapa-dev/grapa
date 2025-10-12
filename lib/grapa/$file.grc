@@ -1,15 +1,15 @@
 $global["$file"]
 	= class ($OBJ) {
 	pwd = @<"$file","pwd",{@<this>}>; 
-	cd = @<[op,@<"$file","cd",{@<this>,@<var,{path}>}>],{path}>; 
+	cd = @<[op,@<"$file","cd",{@<this>,@<var,{path}>}>],{path:null}>; 
 	phd = @<"$file","phd",{@<this>}>; 
-	chd = @<[op,@<"$file","chd",{@<this>,@<var,{path}>}>],{path}>; 
-	ls  = @<[op,@<"$file","ls",{@<this>,@<var,{path}>,@<var,{query}>,@<var,{fields}>}>],{path,query,fields}>; 
-	mk = @<[op,@<"$file","mk",{@<this>,@<var,{name}>,@<var,{type}>}>],{name,type}>; 
-	rm = @<[op,@<"$file","rm",{@<this>,@<var,{name}>}>],{name}>; 
-	info = @<[op,@<"$file","info",{@<this>,@<var,{name}>,@<var,{format}>}>],{name,format}>; 
+	chd = @<[op,@<"$file","chd",{@<this>,@<var,{path}>}>],{path:null}>; 
+	ls  = @<[op,@<"$file","ls",{@<this>,@<var,{path}>,@<var,{query}>,@<var,{fields}>}>],{path:null,query:null,fields:null}>; 
+	mk = @<[op,@<"$file","mk",{@<this>,@<var,{name}>,@<var,{type}>}>],{name:null,type:null}>; 
+	rm = @<[op,@<"$file","rm",{@<this>,@<var,{name}>}>],{name:null}>; 
+	info = @<[op,@<"$file","info",{@<this>,@<var,{name}>,@<var,{format}>}>],{name:null,format:null}>; 
 	split = @<[op,@<"$file","split",{@<this>,@<var,{count}>,@<var,{name}>,@<var,{path}>,@<var,{delim}>,@<var,{option}>}>],{count:2,name:null,path:null,delim:null,option:null}>; 
-	mkfield = @<[op,@<"$file","mkfield",{@<this>,@<var,{name}>,@<var,{type}>,@<var,{storage}>,@<var,{size}>,@<var,{growth}>}>],{name,type,storage,size,growth}>; 
-	rmfield = @<[op,@<"$file","rmfield",{@<this>,@<var,{name}>}>],{name}>; 
-	dump = @<[op,@<"$file","dump",{@<this>,@<var,{level}>,@<var,{format}>}>],{level,format}>;
+	mkfield = @<[op,@<"$file","mkfield",{@<this>,@<var,{name}>,@<var,{type}>,@<var,{storage}>,@<var,{size}>,@<var,{growth}>}>],{name:null,type:null,storage:null,size:null,growth:null}>; 
+	rmfield = @<[op,@<"$file","rmfield",{@<this>,@<var,{name}>}>],{name:null}>; 
+	dump = @<[op,@<"$file","dump",{@<this>,@<var,{level}>,@<var,{format}>}>],{level:null,format:null}>;
 	};
