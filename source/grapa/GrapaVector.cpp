@@ -5821,7 +5821,10 @@ GrapaError GrapaVector::GenHashSet(GrapaScriptExec* vScriptExec, GrapaNames* pNa
 {
 	
 	// Validate parameters
-	if (count < 1 || count > 4) {
+	if (count < 1 || count > 32) {
+		return -1;
+	}
+	if (hyperplanes < 1 || hyperplanes > 64) {
 		return -1;
 	}
 	
