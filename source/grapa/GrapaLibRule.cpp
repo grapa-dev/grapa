@@ -13383,14 +13383,14 @@ static GrapaRuleEvent* GrapaLibraryRuleRandomEventCreate(GrapaFloat&f, u8 token,
 			if (token == GrapaTokenType::INT)
 			{
 				GrapaInt num2;
-				num2.Random(bits + 1);
+				num2.RandomUniform(bits + 1);
 				num2.unsetBit(bits);
 				result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR(""), num2.getBytes()));
 			}
 			else if (token == GrapaTokenType::FLOAT)
 			{
 				GrapaInt num2;
-				num2.Random(bits);
+				num2.RandomUniform(bits);
 				GrapaFloat a(f.mFix, f.mMax, f.mExtra, num2);
 				if (a.mMax < bits) a.mMax = bits;
 				a = a >> bits;
@@ -13459,7 +13459,7 @@ GrapaRuleEvent* GrapaLibraryRuleRandomEvent::Run(GrapaScriptExec *vScriptExec, G
 		else if (r1.vVal->mValue.mToken == GrapaTokenType::INT)
 		{
 			GrapaInt num2;
-			num2.Random(bits + 1);
+			num2.RandomUniform(bits + 1);
 			num2.unsetBit(bits);
 			result = new GrapaRuleEvent(0, GrapaCHAR(""), num2.getBytes());
 			err = 0;
@@ -13467,7 +13467,7 @@ GrapaRuleEvent* GrapaLibraryRuleRandomEvent::Run(GrapaScriptExec *vScriptExec, G
 		else if (r1.vVal && r1.vVal->mValue.mToken == GrapaTokenType::FLOAT)
 		{
 			GrapaInt num2;
-			num2.Random(bits);
+			num2.RandomUniform(bits);
 			GrapaFloat a(vScriptExec->vScriptState->mItemState.mFloatFix, vScriptExec->vScriptState->mItemState.mFloatMax, vScriptExec->vScriptState->mItemState.mFloatExtra, num2);
 			if (a.mMax < bits) a.mMax = bits;
 			a = a >> bits;

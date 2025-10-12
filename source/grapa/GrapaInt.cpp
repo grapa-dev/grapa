@@ -1971,6 +1971,16 @@ GrapaInt GrapaInt::gcd(s64 i1) const
 // Populates "this" with the specified amount of random bits
 //***********************************************************************
 
+void GrapaInt::SeedUniform(u64 seeduniform)
+{
+
+}
+
+void GrapaInt::RandomUniform(u64 bits)
+{
+	Random(bits);
+}
+
 void GrapaInt::Random(u64 bitsx)
 {
 	u32 bits = (u32)bitsx;

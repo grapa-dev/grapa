@@ -115,6 +115,8 @@ public:
 	static GrapaInt BarrettReduction(const GrapaInt& x, const GrapaInt& n, const GrapaInt& constant);
 	GrapaInt gcd(const GrapaInt& bi) const;
 	GrapaInt gcd(s64 i1) const;
+	void SeedUniform(u64 seeduniform);
+	void RandomUniform(u64 bits);
 	void Random(u64 bits);
 	u64 bitCount() const;
 	u64 bitStart() const;
