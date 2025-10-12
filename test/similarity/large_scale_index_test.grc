@@ -75,7 +75,7 @@ for test_size in test_sizes {
     });
     pure_vector_time = start_time.ms() - create_vector_time;
 
-    search = #[0.8, -0.6, 0.4, 0.2, -0.1]#.genhash(hashsource);
+    search = search_vector.genhash(hashsource);
 	indexes2 = vectors.ls("",[{"h1":search[0]},{"h2":search[1]},{"h3":search[2]}],["$ID"]).vector().sort(1,["$ID"]).t().list()[0];
 	index_time = start_time.ms() - create_vector_time - pure_vector_time;
 
