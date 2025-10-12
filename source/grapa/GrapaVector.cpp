@@ -5824,9 +5824,6 @@ GrapaError GrapaVector::GenHashSet(GrapaScriptExec* vScriptExec, GrapaNames* pNa
 	if (count < 1 || count > 4) {
 		return -1;
 	}
-	if (hyperplanes < 4 || hyperplanes > 16) {
-		return -1;
-	}
 	
 	if (result.vQueue == NULL)
 		result.vQueue = new GrapaRuleQueue();
