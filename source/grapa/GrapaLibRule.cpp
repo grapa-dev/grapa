@@ -22857,9 +22857,6 @@ GrapaRuleEvent* GrapaLibraryRuleGenHashSetEvent::Run(GrapaScriptExec* vScriptExe
 	if (count < 1 || count > 4) {
 		return Error(vScriptExec, pNameSpace, -1);
 	}
-	if (hyperplanes < 4 || hyperplanes > 16) {
-		return Error(vScriptExec, pNameSpace, -1);
-	}
 	
 	GrapaRuleEvent* sets = new GrapaRuleEvent(0, GrapaCHAR("sets"), GrapaBYTE());
 	sets->mValue.mToken = GrapaTokenType::LIST;
