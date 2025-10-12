@@ -8,7 +8,7 @@ $global["$thread"]
 	wait = @<[op,@<"$thread",wait>]>; 
 	signal = @<[op,@<"$thread",signal>]>; 
 	waiting = @<[op,@<"$thread",waiting>]>; 
-	start = @<[op,@<"$thread",start,{null,@<var,{runCode}>,@<var,{param}>,@<var,{doneCode}>}>],{runCode,param,doneCode}>; 
+	start = @<[op,@<"$thread",start,{null,@<var,{runCode}>,@<var,{param}>,@<var,{doneCode}>}>],{runCode:null,param:null,doneCode:null}>; 
 	stop = @<[op,@<"$thread",stop>]>; 
 	started = @<[op,@<"$thread",started>]>; 
 	suspend = @<[op,@<"$thread",suspend>]>; 

@@ -1,4 +1,4 @@
 $global["$ERR"]
 	= class ($OBJ) {
-	$new = op(lst){if(lst.type()==$GOBJ) $this++=lst};
+	$new = op(lst:null){if(lst.type()==$GOBJ) $this++=lst};
 	};

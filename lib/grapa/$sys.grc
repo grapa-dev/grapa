@@ -4,10 +4,10 @@ $global["$sys"]
 	compile = op(script,srule="",sprofile=""){{op:op()(script,srule,sprofile),version:$sys().getenv($GRAPA_VERSION)}.encode("ZIP-GRAPA")};
 	eval = @<[op,@<call,{@<plan,{@<prepend,{@<createlist,{@<var,{pRule}>}>,@<var,{pData}>}>,@<createlist,{}>}>,@<var,{pParams}>}>],{"pData":"","pParams":{},"pRule":""}>;
 	eval2 = op(pData='', pParams={}, pRule=''){$local++=pParams;op()(pData, pRule)()};
-	describe = @<[op,@<describe,{@<var,{object}>}>],{object}>;
-	getenv = @<[op,@<getenv,{@<var,{name}>}>],{name}>;
-    putenv = @<[op,@<putenv,{@<var,{name}>,@<var,{value}>}>],{name,value}>;
-    setenv = @<[op,@<putenv,{@<var,{name}>,@<var,{value}>}>],{name,value}>;
-	encode = @<[op,@<encode,{@<var,{data}>,@<var,{method}>,@<var,{params}>}>],{data,method,params}>;
-	sleep = @<[op,@<sleep,{@<var,{milliseconds}>}>],{milliseconds}>;
+	describe = @<[op,@<describe,{@<var,{object}>}>],{object:null}>;
+	getenv = @<[op,@<getenv,{@<var,{name}>}>],{name:null}>;
+    putenv = @<[op,@<putenv,{@<var,{name}>,@<var,{value}>}>],{name:null,value:null}>;
+    setenv = @<[op,@<putenv,{@<var,{name}>,@<var,{value}>}>],{name:null,value:null}>;
+	encode = @<[op,@<encode,{@<var,{data}>,@<var,{method}>,@<var,{params}>}>],{data:null,method:null,params:null}>;
+	sleep = @<[op,@<sleep,{@<var,{ms}>}>],{ms:null}>;
 	};

@@ -12,7 +12,7 @@ $global["$WIDGET"]
 	child = @<[op,@<"$WIDGET","child",{@<this>,@<var,{name}>}>],{name:null}>;
 	next = @<"$WIDGET","next",{@<this>}>; 
 	focus = @<"$WIDGET","focus",{@<this>}>;
-	post = @<[op,@<"$WIDGET","post",{@<this>,@<var,{postop}>,@<var,{postparams}>,@<var,{doneop}>}>],{postop,postparams,doneop}>; 
+	post = @<[op,@<"$WIDGET","post",{@<this>,@<var,{postop}>,@<var,{postparams}>,@<var,{doneop}>}>],{postop:null,postparams:null,doneop:null}>; 
 	redraw = @<"$WIDGET","redraw",{@<this>}>; 
 	handle = @<[op,@<"$WIDGET","handle",{@<this>,@<var,{event}>}>],{event:null}>; 
 	resize = @<[op,@<"$WIDGET","resize",{@<this>,@<var,{x}>,@<var,{y}>,@<var,{w}>,@<var,{h}>}>],{x:null,y:null,w:null,h:null}>; 

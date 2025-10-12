@@ -1,6 +1,6 @@
 $global["$OP"]
 	= class {
 	type = @<"type",{@<this>}>; 
-	describe = @<[op,@<describe,{@<this>,@<var,{options}>}>],{options}>;
+	describe = @<[op,@<describe,{@<this>,@<var,{options}>}>],{options:null}>;
 	str = @<[op,@<str,{@<this>,@<var,{format}>}>],{format:null}>; 
 	};
