@@ -532,6 +532,7 @@ bool GrapaVector::FROM(bool pFix, s64 pMax, s64 pExtra, GrapaRuleEvent* value, u
 		mCounts = (u64*)GrapaMem::Create(mDim * sizeof(u64));
 		mCounts[0] = 0;
 		mData = (GrapaVectorItem*)GrapaMem::Create(mBlock * mSize);
+		memset(mData, 0, mBlock * mSize);
 	}
 	else
 	{
@@ -980,6 +981,7 @@ void GrapaVector::FromValue(GrapaScriptExec* pScriptExec, const GrapaBYTE& pValu
 	mCounts[0] = 1;
 	mSize = 1;
 	mData = (GrapaVectorItem*)GrapaMem::Create(mBlock);
+	memset(mData, 0, mBlock);
 	memset(mData, 0, mBlock);
 	switch (pValue.mToken)
 	{
@@ -1443,7 +1445,7 @@ void GrapaVector::ToBytes(GrapaBYTE& pValue)
 			if (item->isValue && !item->isNull) {
 				GrapaVectorValue* ptr = *(GrapaVectorValue**)item->d;
 				externalObjs.push_back(ptr);
-				*(GrapaVectorValue**)item->d = NULL;
+				memset(item->d, 0, mBlock-(sizeof(GrapaVectorItem) - sizeof(void*)));
 			}
 		}
 	}
@@ -4232,6 +4234,7 @@ GrapaRuleEvent* GrapaVector::Split(u64 num, u64 axis)
 				val->vVector->mSetBlock = tmp.mSetBlock;
 				val->vVector->mCounts = (u64*)GrapaMem::Create(val->vVector->mDim * sizeof(u64));
 				val->vVector->mData = (GrapaVectorItem*)GrapaMem::Create(val->vVector->mBlock * val->vVector->mSize);
+				memset(val->vVector->mData, 0, val->vVector->mBlock * val->vVector->mSize);
 				if (axis == 0)
 				{
 					val->vVector->mCounts[0] = isLast ? lastitems : items;
@@ -4344,6 +4347,7 @@ bool GrapaVector::Join(GrapaRuleEvent* event)
 	mCounts[0] = rows;
 	mCounts[1] = cols;
 	mData = (GrapaVectorItem*)GrapaMem::Create(mBlock * mSize);
+	memset(mData, 0, mBlock * mSize);
 
 	u64 pos = 0;
 	evx = event->vQueue->Head();
@@ -4435,6 +4439,7 @@ bool GrapaVector::JoinH(GrapaRuleEvent* event)
 	mCounts[0] = rows;
 	mCounts[1] = cols;
 	mData = (GrapaVectorItem*)GrapaMem::Create(mBlock * mSize);
+	memset(mData, 0, mBlock * mSize);
 
 	bool hasLabels = false;
 	u64 pos = 0;
@@ -4889,6 +4894,8 @@ bool GrapaVector::Sort(GrapaScriptExec* pScriptExec, GrapaNames* pNameSpace, Gra
 			pReturnIndices->mCounts[0] = mCounts[0];
 			pReturnIndices->mSize = mCounts[0];
 			pReturnIndices->mData = (GrapaVectorItem*)GrapaMem::Create(pReturnIndices->mBlock * pReturnIndices->mSize);
+			memset(pReturnIndices->mData, 0, pReturnIndices->mBlock* pReturnIndices->mSize);
+
 			for (u64 i = 0; i < mCounts[0]; i++)
 			{
 				GrapaFloat sum(pScriptExec->vScriptState->mItemState.mFloatFix, pScriptExec->vScriptState->mItemState.mFloatMax, pScriptExec->vScriptState->mItemState.mFloatExtra, rows[i].mPos);
@@ -4912,6 +4919,7 @@ bool GrapaVector::Sort(GrapaScriptExec* pScriptExec, GrapaNames* pNameSpace, Gra
 			{
 				dataOther = pOther->mData;
 				pOther->mData = (GrapaVectorItem*)GrapaMem::Create(pOther->mBlock * pOther->mSize);
+				memset(pOther->mData, 0, pOther->mBlock* pOther->mSize);
 			}
 			for (s64 i = 0; i < rowcount; i++)
 			{
@@ -5167,6 +5175,7 @@ bool GrapaVector::Inv(GrapaScriptExec* pScriptExec, GrapaNames* pNameSpace)
 
 	GrapaVectorItem* data = mData;
 	mData = (GrapaVectorItem*)GrapaMem::Create(mBlock * mSize * 2);
+	memset(mData, 0, mBlock * mSize * 2);
 	for (u64 i = 0; i < mCounts[0]; i++)
 	{
 		memcpy(_datavectorpos(mData, mBlock, (i * mCounts[1] * 2)), _datavectorpos(data, mBlock, (i * mCounts[1])), mCounts[1] * mBlock);
@@ -5188,6 +5197,7 @@ bool GrapaVector::Inv(GrapaScriptExec* pScriptExec, GrapaNames* pNameSpace)
 	mCounts[1] /= 2;
 	data = mData;
 	mData = (GrapaVectorItem*)GrapaMem::Create(mBlock * mSize);
+	memset(mData, 0, mBlock * mSize);
 	for (u64 i = 0; i < mCounts[0]; i++)
 		memcpy(_datavectorpos(mData, mBlock, (i * mCounts[1])), _datavectorpos(data, mBlock, (i * mCounts[1] * 2 + mCounts[1])), mCounts[1] * mBlock);
 	GrapaMem::Delete(data);
@@ -5278,6 +5288,7 @@ void GrapaVector::Identity(GrapaScriptExec* pScriptExec, u64 n)
 	mCounts[1] = n;
 	mSize = n * n;
 	mData = (GrapaVectorItem*)GrapaMem::Create(mBlock * mSize);
+	memset(mData, 0, mBlock * mSize);
 	for (u64 i = 0; i < n; i++)
 	{
 		for (u64 j = 0; j < n; j++)
@@ -5305,6 +5316,7 @@ bool GrapaVector::Diagonal(GrapaScriptExec* pScriptExec, s64 n, GrapaVector& res
 		result.mCounts[1] = mCounts[0];
 		result.mSize = mCounts[0] * mCounts[0];
 		result.mData = (GrapaVectorItem*)GrapaMem::Create(result.mBlock * result.mSize);
+		memset(result.mData, 0, result.mBlock * result.mSize);
 
 		/* Initialize with zeros */
 		GrapaFloat zero(pScriptExec->vScriptState->mItemState.mFloatFix, pScriptExec->vScriptState->mItemState.mFloatMax, pScriptExec->vScriptState->mItemState.mFloatExtra, 0);
@@ -5357,6 +5369,7 @@ bool GrapaVector::Diagonal(GrapaScriptExec* pScriptExec, s64 n, GrapaVector& res
 	result.mCounts = (u64*)GrapaMem::Create(result.mDim * sizeof(u64));
 	result.mCounts[0] = size;
 	result.mData = (GrapaVectorItem*)GrapaMem::Create(result.mBlock * result.mSize);
+	memset(result.mData, 0, result.mBlock * result.mSize);
 	if (n >= 0)
 	{
 		for (u64 i = 0; i < size; i++)
