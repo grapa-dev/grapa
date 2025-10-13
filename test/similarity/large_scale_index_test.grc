@@ -5,7 +5,7 @@
 
 /* Test larger sizes incrementally */
 test_sizes = [15000, 20000, 25000, 50000, 100000];
-test_sizes = [1000];
+test_sizes = [15000];
 pinecone_threshold = 100;  /* Pinecone typically < 100ms */
 acceptable_threshold = 500;  /* Acceptable for local use */
 warning_threshold = 2000;   /* Warning threshold */
@@ -15,7 +15,8 @@ warning_threshold = 2000;   /* Warning threshold */
 ("Acceptable threshold: < " + acceptable_threshold.str() + "ms\n").echo();
 ("\n").echo();
 
-hashsource = 10.genhashset("cosine",6,12,1234);
+sets = 20;
+hashsource = 10.genhashset("cosine",sets,12,1234);
 
 /* Results storage */
 results = [];
@@ -35,37 +36,30 @@ for test_size in test_sizes {
         vectors.mk(dbname,"ROW");
         vectors.cd(dbname);
         vectors.mkfield("vector","RAW","VAR");
-        vectors.mkfield("h1","INT","FIX",8);
-        vectors.mkfield("h2","INT","FIX",8);
-        vectors.mkfield("h3","INT","FIX",8);
-        vectors.mkfield("h4","INT","FIX",8);
-        vectors.mkfield("h5","INT","FIX",8);
-        vectors.mkfield("h6","INT","FIX",8);
-        for i in test_size.range() {
+        for j in sets.range()
+        {
+            vectors.mkfield("h"+j.str().lpad(2,"0"),"INT","FIX",8);
+        };
+        for i in test_size.range()
+        {
             /* Create truly random vectors for realistic similarity testing */
-            vector = #[
-                ((9.random()) / 256)-1,  /* Random float -1.0 - 1.0 */
-                ((9.random()) / 256)-1,  /* Random float -1.0 - 1.0 */
-                ((9.random()) / 256)-1,  /* Random float -1.0 - 1.0 */
-                ((9.random()) / 256)-1,  /* Random float -1.0 - 1.0 */
-                ((9.random()) / 256)-1,  /* Random float -1.0 - 1.0 */
-                ((9.random()) / 256)-1,  /* Random float -1.0 - 1.0 */
-                ((9.random()) / 256)-1,  /* Random float -1.0 - 1.0 */
-                ((9.random()) / 256)-1,  /* Random float -1.0 - 1.0 */
-                ((9.random()) / 256)-1,  /* Random float -1.0 - 1.0 */
-                ((9.random()) / 256)-1   /* Random float -1.0 - 1.0 */
-            ]#;
+            vector = (8.0.random(#[10]#)*2)-1;
             hash = vector.genhash(hashsource);
             name = "r"+i.str().lpad(8,"0");
-            vectors.setfield(name,{"vector":vector,"h1":hash[0],"h2":hash[1],"h3":hash[2],"h4":hash[3],"h5":hash[4],"h6":hash[5]});
+            field = {"vector":vector};
+            for j in sets.range()
+            {
+                field += (("h"+j.str().lpad(2,"0")):(hash[j]));
+            };
+            vectors.setfield(name,field);
         };
     }
     else
     {
         vectors.cd(dbname);
     };
-	
-	search_vector = #[-0.906,-0.296,-0.714,-0.304,-0.468,-0.757,0.425,0.781,-0.718,0.210]#;
+ 
+	search_vector = #[0.47265625,-0.6796875,-0.77734375,0.9453125,-0.0625,-0.34375,-0.1640625,0.86328125,-0.640625,0.52734375]#;
 
     create_vector_time = start_time.ms();
     indexes = vectors.ls("").vector().sort(1,["$ID"]).t().list()[0];
@@ -79,7 +73,10 @@ for test_size in test_sizes {
     pure_vector_time = start_time.ms() - create_vector_time;
 
     search = search_vector.genhash(hashsource);
-    indexes2 = vectors.ls("",[{"h1":search[0]},{"h2":search[1]},{"h3":search[2]},{"h4":search[3]},{"h5":search[4]},{"h6":search[5]}],["$ID"]).vector().sort(1,["$ID"]).t().list()[0];
+    field = {};
+    for j in sets.range()
+        field += {("h"+j.str().lpad(2,"0")):(search[j])};
+    indexes2 = vectors.ls("",[field],["$ID"]).vector().sort(1,["$ID"]).t().list()[0];
     //indexes2 = vectors.ls("",null,["h1"]).vector().sort(1,["h1]).t().list()[0];
 	index_time = start_time.ms() - create_vector_time - pure_vector_time;
 
