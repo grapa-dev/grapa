@@ -23105,7 +23105,7 @@ GrapaRuleEvent* GrapaLibraryRuleGenHashEvent::Run(GrapaScriptExec* vScriptExec, 
 	GrapaRuleEvent* hash_set = sets_field->vQueue->Head();
 	int set_count = 0;
 	
-	while (hash_set && set_count < 4) {  // Max 4 sets
+	while (hash_set && set_count < 32) {  // Max 4 sets
 		if (hash_set->mValue.mToken == GrapaTokenType::LIST && hash_set->vQueue) {
 			// Calculate hash value for this set
 			u64 hash_value = 0;
