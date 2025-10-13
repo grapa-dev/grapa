@@ -1,4 +1,4 @@
-'Test with 5 fields\n".echo();
+'Test with 5 fields\n'.echo();
 
 fields = 5;
 
@@ -25,9 +25,9 @@ for j in fields.range()
 f.setfield('r'+i.str().lpad(2,'0'),field);
 
 f.ls().echo();
-"\n".echo();
+'\n'.echo();
 
-'Test with 6 fields\n".echo();
+'Test with 6 fields\n'.echo();
 
 fields = 6;
 
@@ -54,4 +54,4 @@ for j in fields.range()
 f.setfield('r'+i.str().lpad(2,'0'),field);
 
 f.ls().echo();
-"\n".echo();
+'\n'.echo();
