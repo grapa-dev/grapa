@@ -59,7 +59,7 @@ void GrapaGroup::INIT(GrapaFile*pFile)
 { 
 	mTree.SetFile(pFile);
 	//mCache.SetFile(&mTree);
-	///mCache.SetCache();
+	mTree.SetCache();
 	SetFile(&mTree);
 }
 

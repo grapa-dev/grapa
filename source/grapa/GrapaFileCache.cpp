@@ -260,7 +260,11 @@ GrapaError GrapaFileCache::GetCacheBlock(u64 blockPos, void* value)
 	if (!mFile) return((GrapaError)-1);
 
 	err = mFile->Read(blockPos,GrapaFileCache::BLOCKPAGESIZE,0,GrapaFileCache::BLOCKPAGESIZE,value);
-	if (err) return(err);
+	if (err)
+	{
+		memset(value, 0, GrapaFileCache::BLOCKPAGESIZE);
+		return(err);
+	}
 
 	err = SetCacheBlock(blockPos,value,false);
 	//if (err) return(err);
