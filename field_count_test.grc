@@ -1,0 +1,57 @@
+'Test with 5 fields\n".echo();
+
+fields = 5;
+
+dbname = 'test.gdb';
+f = $file();
+f.rm(dbname);
+f.mk(dbname,'ROW');
+f.cd(dbname);
+for j in fields.range()
+	f.mkfield('h'+j.str().lpad(2,'0'),'INT','FIX',8);
+
+i = 1;
+hash = 8.random([fields]);
+field = {};
+for j in fields.range()
+	field += (('h'+j.str().lpad(2,'0')):(hash[j]));
+f.setfield('r'+i.str().lpad(2,'0'),field);
+
+i = 2;
+hash = 8.random([fields]);
+field = {};
+for j in fields.range()
+	field += (('h'+j.str().lpad(2,'0')):(hash[j]));
+f.setfield('r'+i.str().lpad(2,'0'),field);
+
+f.ls().echo();
+"\n".echo();
+
+'Test with 6 fields\n".echo();
+
+fields = 6;
+
+dbname = 'test.gdb';
+f = $file();
+f.rm(dbname);
+f.mk(dbname,'ROW');
+f.cd(dbname);
+for j in fields.range()
+	f.mkfield('h'+j.str().lpad(2,'0'),'INT','FIX',8);
+
+i = 1;
+hash = 8.random([fields]);
+field = {};
+for j in fields.range()
+	field += (('h'+j.str().lpad(2,'0')):(hash[j]));
+f.setfield('r'+i.str().lpad(2,'0'),field);
+
+i = 2;
+hash = 8.random([fields]);
+field = {};
+for j in fields.range()
+	field += (('h'+j.str().lpad(2,'0')):(hash[j]));
+f.setfield('r'+i.str().lpad(2,'0'),field);
+
+f.ls().echo();
+"\n".echo();
