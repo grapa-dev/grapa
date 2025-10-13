@@ -85,6 +85,8 @@ GrapaFloat::GrapaFloat(const GrapaBYTE& inData)
 GrapaFloat::GrapaFloat(double value)
 {
 	INIT();
+	bool is_negative = (value < 0.0);
+	if (is_negative) value = -value;
 	mSigned = false;
 	mData = 0;
 	mBits = mData.bitCount();
@@ -97,6 +99,7 @@ GrapaFloat::GrapaFloat(double value)
 	char buffer[128];
 	sprintf(buffer, "%lf", value);
 	FromString(buffer, 10);
+	if (is_negative) mSigned = true;
 }
 double GrapaFloat::ToDouble()
 {
