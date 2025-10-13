@@ -5,7 +5,7 @@
 
 /* Test larger sizes incrementally */
 test_sizes = [15000, 20000, 25000, 50000, 100000];
-test_sizes = [15000];
+test_sizes = [1000];
 pinecone_threshold = 100;  /* Pinecone typically < 100ms */
 acceptable_threshold = 500;  /* Acceptable for local use */
 warning_threshold = 2000;   /* Warning threshold */
@@ -15,8 +15,8 @@ warning_threshold = 2000;   /* Warning threshold */
 ("Acceptable threshold: < " + acceptable_threshold.str() + "ms\n").echo();
 ("\n").echo();
 
-sets = 20;
-hashsource = 10.genhashset("cosine",sets,12,1234);
+sets = 4;
+hashsource = 10.genhashset("cosine",sets,8,1234);
 
 /* Results storage */
 results = [];
@@ -73,11 +73,10 @@ for test_size in test_sizes {
     pure_vector_time = start_time.ms() - create_vector_time;
 
     search = search_vector.genhash(hashsource);
-    field = {};
+    field = [];
     for j in sets.range()
         field += {("h"+j.str().lpad(2,"0")):(search[j])};
-    indexes2 = vectors.ls("",[field],["$ID"]).vector().sort(1,["$ID"]).t().list()[0];
-    //indexes2 = vectors.ls("",null,["h1"]).vector().sort(1,["h1]).t().list()[0];
+    indexes2 = vectors.ls("",field,["$ID"]).vector().sort(1,["$ID"]).t().list()[0];
 	index_time = start_time.ms() - create_vector_time - pure_vector_time;
 
     vector_results2 = indexes2.similarity(search_vector, "cosine", {
