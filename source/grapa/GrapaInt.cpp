@@ -2009,14 +2009,19 @@ void GrapaInt::RandomUniform(u64 bitsx)
 		SetItem(i, (*sUniformRNG)());
 	}
 
+	// Properly mask the bits to match the requested bit count
 	if (remBits != 0)
 	{
 		u32 mask = (u32)(0x01 << (remBits - 1));
 		SetItem(dwords - 1, GetItem(dwords - 1) | mask);
-		mask--;
-		mask = ~(mask << 1);
+
+		mask = (u32)(0xFFFFFFFF >> (32 - remBits));
 		SetItem(dwords - 1, GetItem(dwords - 1) & mask);
 	}
+	else
+		SetItem(dwords - 1, GetItem(dwords - 1) | 0x80000000);
+
+	SetCount(dwords);
 }
 
 void GrapaInt::Random(u64 bitsx)
