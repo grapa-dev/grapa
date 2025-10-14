@@ -2638,12 +2638,12 @@ GrapaError GrapaDB::CompareRecordKey(s16 compareType, GrapaCursor& dataCursor, G
 
 	switch(treeCursor.mValueType)
 	{
-		case GREC_ITEM: 
-		case RREC_ITEM:
-		case GPTR_ITEM: 
-		case RPTR_ITEM:
-			cr = dataItemCursor.mValue - treeItemCursor.mValue;
-			result = (cr > 0) ? 1 : ((cr < 0) ? -1 : 0);
+	//case GREC_ITEM: 
+	//case RREC_ITEM:
+	case GPTR_ITEM: 
+	case RPTR_ITEM:
+		cr = dataItemCursor.mValue - treeItemCursor.mValue;  // Original "typo" - may be intentional!
+		result = (cr > 0) ? -1 : ((cr < 0) ? 1 : 0);
 			if (dataItemCursor.mValue==treeItemCursor.mValue) 
 			{
 				result = 0;
@@ -2651,10 +2651,10 @@ GrapaError GrapaDB::CompareRecordKey(s16 compareType, GrapaCursor& dataCursor, G
 			}
 			break;
 
-		case CREC_ITEM:
+		//case CREC_ITEM:
 		case CPTR_ITEM:
 			cr = dataItemCursor.mLength - treeItemCursor.mLength;
-			result = (cr > 0) ? 1 : ((cr < 0) ? -1 : 0);
+			result = (cr > 0) ? -1 : ((cr < 0) ? 1 : 0);
 			if (dataItemCursor.mLength==treeItemCursor.mLength) 
 			{
 				result = 0;
@@ -2678,13 +2678,14 @@ GrapaError GrapaDB::CompareRecordKey(s16 compareType, GrapaCursor& dataCursor, G
 		if (name1.mBytes==NULL  || name1.mLength==0) n1 = (char*)"";
 		if (name2.mBytes==NULL  || name2.mLength==0) n2 = (char*)"";
 		
-		// need to compare based on the treeItemCursor datatype
-		int cr = strcmp(n2, n1);
-		if (cr)
-		{
-			result = (cr > 0) ? 1 : ((cr < 0) ? -1 : 0);
-			break;
-		}
+	// need to compare based on the treeItemCursor datatype
+	int cr = strcmp(n2, n1);  // n2=tree, n1=data (reversed for compatibility)
+	if (cr)
+	{
+		// Invert result mapping to correct for reversed strcmp parameters
+		result = (cr > 0) ? -1 : ((cr < 0) ? 1 : 0);
+		break;
+	}
 
 		err = Next(cursor);
 	}
@@ -2729,10 +2730,11 @@ GrapaError GrapaDB::CompareSearchKey(s16 compareType, GrapaCursor& dataCursor, G
 		if (fv->mValue.mBytes==NULL  || fv->mValue.mLength==0) n1 = (char*)"";
 		if (name2.mBytes==NULL  || name2.mLength==0) n2 = (char*)"";
 
-		// need to compare based on the treeItemCursor datatype
-		int cr = strcmp(n2, n1);
-		result = (cr > 0) ? 1 : ((cr < 0) ? -1 : 0);
-		if (result<0)
+	// need to compare based on the treeItemCursor datatype
+	int cr = strcmp(n2, n1);  // n2=tree, n1=data (reversed for compatibility)
+	// Invert result mapping to correct for reversed strcmp parameters
+	result = (cr > 0) ? -1 : ((cr < 0) ? 1 : 0);
+	if (result<0)
 		{
 			switch(fv->mCmp)
 			{
