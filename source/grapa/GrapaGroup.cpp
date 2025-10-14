@@ -57,10 +57,9 @@ GrapaGroup::~GrapaGroup()
 
 void GrapaGroup::INIT(GrapaFile*pFile) 
 { 
-	mTree.SetFile(pFile);
-	//mCache.SetFile(&mTree);
-	mTree.SetCache();
-	SetFile(&mTree);
+	mCache.SetFile(pFile);
+	mCache.SetCache();
+	SetFile(&mCache);
 }
 
 bool GrapaGroup::Opened()
