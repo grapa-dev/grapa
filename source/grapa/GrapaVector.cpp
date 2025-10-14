@@ -4520,27 +4520,31 @@ u64* GrapaVector::ToShape(GrapaRuleEvent* event, u64& dim)
 			r2V = event->vVector->ToArray();
 			delr2V = true;
 		}
-		GrapaRuleEvent* e = NULL;
-		e = r2V->vQueue->Head();
-		while (e)
+		GrapaRuleEvent* eL = NULL;
+		eL = r2V->vQueue->Head();
+		while (eL)
 		{
+			GrapaRuleEvent* e = eL;
+			while (e->mValue.mToken == GrapaTokenType::PTR && e->vRulePointer) e = e->vRulePointer;
 			if (e->mValue.mToken != GrapaTokenType::INT)
 				break;
 			dim++;
-			e = e->Next();
+			eL = eL->Next();
 		}
 		if (dim)
 		{
 			counts = (u64*)GrapaMem::Create(dim * sizeof(u64));
 			dim = 0;
-			e = r2V->vQueue->Head();
-			while (e)
+			eL = r2V->vQueue->Head();
+			while (eL)
 			{
+				GrapaRuleEvent* e = eL;
+				while (e->mValue.mToken == GrapaTokenType::PTR && e->vRulePointer) e = e->vRulePointer;
 				if (e->mValue.mToken != GrapaTokenType::INT)
 					break;
 				GrapaInt n(e->mValue);
 				counts[dim++] = n.GetItem(0);
-				e = e->Next();
+				eL = eL->Next();
 			}
 		}
 		if (delr2V)

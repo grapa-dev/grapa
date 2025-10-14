@@ -24,7 +24,10 @@ for j in fields.range()
 	field += (('h'+j.str().lpad(2,'0')):(hash[j]));
 f.setfield('r'+i.str().lpad(2,'0'),field);
 
+
 f.ls().echo();
+'\n'.echo();
+f.dump().echo();
 '\n'.echo();
 
 'Test with 6 fields\n'.echo();
@@ -54,4 +57,6 @@ for j in fields.range()
 f.setfield('r'+i.str().lpad(2,'0'),field);
 
 f.ls().echo();
+'\n'.echo();
+f.dump().echo();
 '\n'.echo();

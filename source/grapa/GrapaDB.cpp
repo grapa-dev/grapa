@@ -2642,7 +2642,7 @@ GrapaError GrapaDB::CompareRecordKey(s16 compareType, GrapaCursor& dataCursor, G
 		case RREC_ITEM:
 		case GPTR_ITEM: 
 		case RPTR_ITEM:
-			cr = treeItemCursor.mValue - treeItemCursor.mValue;
+			cr = dataItemCursor.mValue - treeItemCursor.mValue;
 			result = (cr > 0) ? 1 : ((cr < 0) ? -1 : 0);
 			if (dataItemCursor.mValue==treeItemCursor.mValue) 
 			{
