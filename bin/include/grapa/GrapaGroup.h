@@ -75,8 +75,7 @@ public:
 	GrapaError NextNameId(u64 parentTree, u8 parentType, u64& pNameId);
 
 protected:
-	//GrapaFileCache mCache;
-	GrapaFileCache mTree;
+	GrapaFileCache mCache;
 	GrapaCritical mCritical;
 };
 
