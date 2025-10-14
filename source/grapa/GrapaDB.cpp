@@ -2587,105 +2587,129 @@ GrapaError GrapaDB::CompareRecordKey(s16 compareType, GrapaCursor& dataCursor, G
 	GrapaError err;
 	GrapaCursor cursor;
 	u64 indexRef;
-	GrapaCHAR name1,name2;
+	GrapaCHAR name1, name2;
 
 	result = -1;
 
-	switch(treeCursor.mValueType)
+	switch (treeCursor.mValueType)
 	{
-		case GREC_ITEM: 
+	case GREC_ITEM:
+	case RREC_ITEM:
+	case CREC_ITEM:
+	case GPTR_ITEM:
+	case RPTR_ITEM:
+	case CPTR_ITEM:
+		switch (dataCursor.mValueType)
+		{
+		case GREC_ITEM:
 		case RREC_ITEM:
 		case CREC_ITEM:
-		case GPTR_ITEM: 
-		case RPTR_ITEM:
-		case CPTR_ITEM:
-			switch(dataCursor.mValueType)
+			if (dataCursor.mKey == treeCursor.mKey)
 			{
-				case GREC_ITEM: 
-				case RREC_ITEM:
-				case CREC_ITEM:
-					if (dataCursor.mKey==treeCursor.mKey) 
-					{
-						result = 0;
-						return(0);
-					}
-					break;
-				case GPTR_ITEM: 
-				case RPTR_ITEM:
-				case CPTR_ITEM:
-					break;
-				case SEARCH_ITEM:
-					return CompareSearchKey(compareType, dataCursor, treeCursor, result);
-				default:
-					return(-1);
+				result = 0;
+				return(0);
 			}
 			break;
+		case GPTR_ITEM:
+		case RPTR_ITEM:
+		case CPTR_ITEM:
+			break;
+		case SEARCH_ITEM:
+			return CompareSearchKey(compareType, dataCursor, treeCursor, result);
 		default:
 			return(-1);
+		}
+		break;
+	default:
+		return(-1);
 	}
 
 	cursor.Set(treeCursor.mTreeRef);
-	err = GetTreeIndex(cursor,indexRef);
+	err = GetTreeIndex(cursor, indexRef);
 	if (err) return(err);
 
-	GrapaCursor treeItemCursor,dataItemCursor;
+	GrapaCursor treeItemCursor, dataItemCursor;
 	err = PtrToRec(treeCursor, treeItemCursor);
 	if (err) return(err);
 	err = PtrToRec(dataCursor, dataItemCursor);
 	if (err) return(err);
 
+
+	switch (treeCursor.mValueType)
+	{
+	case GREC_ITEM:
+	case RREC_ITEM:
+	case GPTR_ITEM:
+	case RPTR_ITEM:
+		if (dataItemCursor.mValue == treeItemCursor.mValue)
+		{
+			result = 0;
+			return(0);
+		}
+		break;
+	case CREC_ITEM:
+	case CPTR_ITEM:
+		if (dataItemCursor.mLength == treeItemCursor.mLength)
+		{
+			result = 0;
+			return(0);
+		}
+		break;
+	}
+
 	s64 cr = 0;
 
-	switch(treeCursor.mValueType)
+	switch (treeCursor.mValueType)
 	{
-	//case GREC_ITEM: 
-	//case RREC_ITEM:
-	case GPTR_ITEM: 
+	case GPTR_ITEM:
 	case RPTR_ITEM:
 		cr = dataItemCursor.mValue - treeItemCursor.mValue;  // Original "typo" - may be intentional!
-		result = (cr > 0) ? -1 : ((cr < 0) ? 1 : 0);
-			if (dataItemCursor.mValue==treeItemCursor.mValue) 
-			{
-				result = 0;
-				return(0);
-			}
-			break;
+		result = (cr > 0) ? 1 : ((cr < 0) ? -1 : 0);
+		break;
 
-		//case CREC_ITEM:
-		case CPTR_ITEM:
-			cr = dataItemCursor.mLength - treeItemCursor.mLength;
-			result = (cr > 0) ? -1 : ((cr < 0) ? 1 : 0);
-			if (dataItemCursor.mLength==treeItemCursor.mLength) 
-			{
-				result = 0;
-				return(0);
-			}
-			break;
+	case CPTR_ITEM:
+		cr = dataItemCursor.mLength - treeItemCursor.mLength;
+		result = (cr > 0) ? 1 : ((cr < 0) ? -1 : 0);
+		break;
 	}
 
 	cursor.Set(indexRef);
 	err = First(cursor);
-	while(!err)
+	while (!err)
 	{
 		// need to pull these into the treeItemCursor datatype for the comparison
-		err = GetRecordField(dataItemCursor,cursor.mValue,name1);
-		err = GetRecordField(treeItemCursor,cursor.mValue,name2);
+		err = GetRecordField(dataItemCursor, cursor.mValue, name1);
+		if (err) break;
+		err = GetRecordField(treeItemCursor, cursor.mValue, name2);
+		if (err) break;
 
 		char* n1 = (char*)name1.mBytes;
 		char* n2 = (char*)name2.mBytes;
 
 		// the following conditions should never happen...unless the value really is NULL
-		if (name1.mBytes==NULL  || name1.mLength==0) n1 = (char*)"";
-		if (name2.mBytes==NULL  || name2.mLength==0) n2 = (char*)"";
-		
-	// need to compare based on the treeItemCursor datatype
-	int cr = strcmp(n2, n1);  // n2=tree, n1=data (reversed for compatibility)
-	if (cr)
-	{
-		// Invert result mapping to correct for reversed strcmp parameters
-		result = (cr > 0) ? -1 : ((cr < 0) ? 1 : 0);
-		break;
-	}
+		if (name1.mBytes == NULL || name1.mLength == 0) n1 = (char*)"";
+		if (name2.mBytes == NULL || name2.mLength == 0) n2 = (char*)"";
+
+		result = 0;
+
+		// need to compare based on the treeItemCursor datatype
+		int cr = strcmp(n2, n1);  // n2=tree, n1=data (reversed for compatibility)
+		if (cr)
+		{
+			switch (treeCursor.mValueType)
+			{
+			case GPTR_ITEM:
+			case RPTR_ITEM:
+			case CPTR_ITEM:
+				result = (cr > 0) ? 1 : ((cr < 0) ? -1 : 0);
+				return(0);
+			default:
+				// Invert result mapping to correct for reversed strcmp parameters
+				result = (cr > 0) ? -1 : ((cr < 0) ? 1 : 0);
+				return(0);
+			}
+
+		}
 
 		err = Next(cursor);
 	}
