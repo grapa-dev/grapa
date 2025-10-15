@@ -2679,9 +2679,9 @@ GrapaError GrapaDB::CompareRecordKey(s16 compareType, GrapaCursor& dataCursor, G
 	{
 		// need to pull these into the treeItemCursor datatype for the comparison
 		err = GetRecordField(dataItemCursor, cursor.mValue, name1);
-		if (err) break;
+		//if (err) break;
 		err = GetRecordField(treeItemCursor, cursor.mValue, name2);
-		if (err) break;
+		//if (err) break;
 
 		char* n1 = (char*)name1.mBytes;
 		char* n2 = (char*)name2.mBytes;
@@ -2704,8 +2704,7 @@ GrapaError GrapaDB::CompareRecordKey(s16 compareType, GrapaCursor& dataCursor, G
 				result = (cr > 0) ? 1 : ((cr < 0) ? -1 : 0);
 				return(0);
 			default:
-				// Invert result mapping to correct for reversed strcmp parameters
-				result = (cr > 0) ? -1 : ((cr < 0) ? 1 : 0);
+				result = (cr > 0) ? 1 : ((cr < 0) ? -1 : 0);
 				return(0);
 			}
 
@@ -2754,11 +2753,10 @@ GrapaError GrapaDB::CompareSearchKey(s16 compareType, GrapaCursor& dataCursor, G
 		if (fv->mValue.mBytes==NULL  || fv->mValue.mLength==0) n1 = (char*)"";
 		if (name2.mBytes==NULL  || name2.mLength==0) n2 = (char*)"";
 
-	// need to compare based on the treeItemCursor datatype
-	int cr = strcmp(n2, n1);  // n2=tree, n1=data (reversed for compatibility)
-	// Invert result mapping to correct for reversed strcmp parameters
-	result = (cr > 0) ? -1 : ((cr < 0) ? 1 : 0);
-	if (result<0)
+		// need to compare based on the treeItemCursor datatype
+		int cr = strcmp(n2, n1);  // n2=tree, n1=data (reversed for compatibility)
+		result = (cr > 0) ? 1 : ((cr < 0) ? -1 : 0);
+		if (result<0)
 		{
 			switch(fv->mCmp)
 			{
