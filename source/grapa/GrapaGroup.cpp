@@ -1100,6 +1100,7 @@ GrapaError GrapaGroup::CreateField(u64 parentTree, u8 parentType, GrapaCHAR& pFi
 				return(err);
 			}
 		}
+		// needIndex = false;  // need to remove this to have the $KEY index created
 		if (needIndex)
 		{
 			GrapaDBIndex dbIndexName;

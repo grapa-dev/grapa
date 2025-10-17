@@ -2506,6 +2506,11 @@ GrapaError GrapaDB::CompareKey(s16 compareType, GrapaCursor& dataCursor, GrapaCu
 	GrapaError err=0;
 	GrapaCursor cursor;
 
+	if (compareType == SEARCH_MODE && treeCursor.mValueType == RREC_ITEM)
+	{
+		result = -1;
+	}
+
 	result = -1;
 
 	switch(treeCursor.mValueType)
@@ -2587,7 +2592,11 @@ GrapaError GrapaDB::CompareRecordKey(s16 compareType, GrapaCursor& dataCursor, G
 	GrapaError err;
 	GrapaCursor cursor;
 	u64 indexRef;
-	GrapaCHAR name1,name2;
+
+	if (compareType == SEARCH_MODE && treeCursor.mValueType == RREC_ITEM)
+	{
+		result = -1;
+	}
 
 	result = -1;
 
@@ -2609,7 +2618,8 @@ GrapaError GrapaDB::CompareRecordKey(s16 compareType, GrapaCursor& dataCursor, G
 						result = 0;
 						return(0);
 					}
-					break;
+					result = dataCursor.mKey > treeCursor.mKey ? -1 : 1;
+					return(0);
 				case GPTR_ITEM: 
 				case RPTR_ITEM:
 				case CPTR_ITEM:
@@ -2640,26 +2650,37 @@ GrapaError GrapaDB::CompareRecordKey(s16 compareType, GrapaCursor& dataCursor, G
 	{
 		case GREC_ITEM: 
 		case RREC_ITEM:
+			if (dataItemCursor.mValue == 0)
+				return(0);
+			cr = dataItemCursor.mValue - treeItemCursor.mValue;
+			result = (cr > 0) ? -1 : ((cr < 0) ? 1 : 0);
+			return(0);
+
 		case GPTR_ITEM: 
 		case RPTR_ITEM:
-			cr = treeItemCursor.mValue - treeItemCursor.mValue; // Original "typo" - may be intentional!
-			result = (cr > 0) ? 1 : ((cr < 0) ? -1 : 0);
-			if (dataItemCursor.mValue==treeItemCursor.mValue) 
+			if (dataItemCursor.mValue == 0)
+				return(0);
+			if (dataItemCursor.mValue == treeItemCursor.mValue)
 			{
 				result = 0;
 				return(0);
 			}
+			cr = dataItemCursor.mValue - treeItemCursor.mValue;
+			result = (cr > 0) ? -1 : ((cr < 0) ? 1 : 0);
 			break;
 
 		case CREC_ITEM:
-		case CPTR_ITEM:
-			cr = dataItemCursor.mLength - treeItemCursor.mLength;
-			result = (cr > 0) ? 1 : ((cr < 0) ? -1 : 0);
-			if (dataItemCursor.mLength==treeItemCursor.mLength) 
-			{
-				result = 0;
+			if (dataItemCursor.mLength == 0)
 				return(0);
-			}
+			cr = dataItemCursor.mLength - treeItemCursor.mLength;
+			result = (cr > 0) ? -1 : ((cr < 0) ? 1 : 0);
+			return(0);
+
+		case CPTR_ITEM:
+			if (dataItemCursor.mLength == 0)
+				return(0);
+			cr = dataItemCursor.mLength - treeItemCursor.mLength;
+			result = (cr > 0) ? -1 : ((cr < 0) ? 1 : 0);
 			break;
 	}
 
@@ -2667,19 +2688,16 @@ GrapaError GrapaDB::CompareRecordKey(s16 compareType, GrapaCursor& dataCursor, G
 	err = First(cursor);
 	while(!err)
 	{
+		GrapaCHAR name1, name2;
+
 		// need to pull these into the treeItemCursor datatype for the comparison
 		err = GetRecordField(dataItemCursor,cursor.mValue,name1);
+		if (err) break;
 		err = GetRecordField(treeItemCursor,cursor.mValue,name2);
-
-		char* n1 = (char*)name1.mBytes;
-		char* n2 = (char*)name2.mBytes;
-
-		// the following conditions should never happen...unless the value really is NULL
-		if (name1.mBytes==NULL  || name1.mLength==0) n1 = (char*)"";
-		if (name2.mBytes==NULL  || name2.mLength==0) n2 = (char*)"";
+		if (err) break;
 		
 		// need to compare based on the treeItemCursor datatype
-		int cr = strcmp(n2, n1);
+		int cr = name2.Cmp(name1);
 		if (cr)
 		{
 			result = (cr > 0) ? 1 : ((cr < 0) ? -1 : 0);
@@ -2722,15 +2740,8 @@ GrapaError GrapaDB::CompareSearchKey(s16 compareType, GrapaCursor& dataCursor, G
 		// need to pull this into the treeItemCursor datatype for the comparison
 		err = GetRecordField(treeItemCursor,*fv,name2);
 
-		char* n1 = (char*)fv->mValue.mBytes;
-		char* n2 = (char*)name2.mBytes;
-
-		// the following conditions should never happen...unless the value really is NULL
-		if (fv->mValue.mBytes==NULL  || fv->mValue.mLength==0) n1 = (char*)"";
-		if (name2.mBytes==NULL  || name2.mLength==0) n2 = (char*)"";
-
 		// need to compare based on the treeItemCursor datatype
-		int cr = strcmp(n2, n1);
+		int cr = name2.Cmp(fv->mValue);
 		result = (cr > 0) ? 1 : ((cr < 0) ? -1 : 0);
 		if (result<0)
 		{
@@ -3268,7 +3279,7 @@ GrapaError GrapaDB::DumpTheDT(GrapaCHAR& dbWrite, char *leader, GrapaCursor& cur
 		case BDATA_TREE:	treeTypeStr = (char*)"BDATA"; break;
 	}
 
-	dbWrite.mLength = snprintf((char*)dbWrite.mBytes, dbWrite.mSize, "%sFIELD (%llu) key=%llu id=%llu name=%s rec=%s type=%s store=%s doffset=%llu dsize=%llu size=%llu grow=%llu\n", leader, cursor.mValue, cursor.mKey, dbField.mId, nameBlock, treeTypeStr, fieldTypeStr, fieldStoreStr, dbField.mDictOffset, dbField.mDictSize, dbField.mSize, dbField.mGrow);
+	dbWrite.mLength = snprintf((char*)dbWrite.mBytes, dbWrite.mSize, "%sFIELD (%llu) key=%llu node=(%llu,%d) id=%llu name=%s rec=%s type=%s store=%s doffset=%llu dsize=%llu size=%llu grow=%llu\n", leader, cursor.mValue, cursor.mKey, cursor.mNodeRef, cursor.mNodeIndex, dbField.mId, nameBlock, treeTypeStr, fieldTypeStr, fieldStoreStr, dbField.mDictOffset, dbField.mDictSize, dbField.mSize, dbField.mGrow);
 	if (mDumpFile) mDumpFile->Append(dbWrite.mLength,dbWrite.mBytes);
 	else printf((char*)dbWrite.mBytes,"");
 	return(0);
