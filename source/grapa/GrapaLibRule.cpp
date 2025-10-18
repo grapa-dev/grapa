@@ -13465,17 +13465,17 @@ GrapaRuleEvent* GrapaLibraryRuleRandomEvent::Run(GrapaScriptExec *vScriptExec, G
 			result = new GrapaRuleEvent(0, GrapaCHAR(""), num2.getBytes());
 			err = 0;
 		}
-	else if (r1.vVal && r1.vVal->mValue.mToken == GrapaTokenType::FLOAT)
-	{
-		GrapaInt num2;
-		num2.RandomUniform(bits + 1);
-		num2.unsetBit(bits);
-		GrapaFloat a(vScriptExec->vScriptState->mItemState.mFloatFix, vScriptExec->vScriptState->mItemState.mFloatMax, vScriptExec->vScriptState->mItemState.mFloatExtra, num2);
-		if (a.mMax < bits) a.mMax = bits;
-		a = a >> bits;
-		result = new GrapaRuleEvent(0, GrapaCHAR(""), a.getBytes());
-		err = 0;
-	}
+		else if (r1.vVal && r1.vVal->mValue.mToken == GrapaTokenType::FLOAT)
+		{
+			GrapaInt num2;
+			num2.RandomUniform(bits + 1);
+			num2.unsetBit(bits);
+			GrapaFloat a(vScriptExec->vScriptState->mItemState.mFloatFix, vScriptExec->vScriptState->mItemState.mFloatMax, vScriptExec->vScriptState->mItemState.mFloatExtra, num2);
+			if (a.mMax < bits) a.mMax = bits;
+			a = a >> bits;
+			result = new GrapaRuleEvent(0, GrapaCHAR(""), a.getBytes());
+			err = 0;
+		}
 	}
 	if (err && result == NULL)
 		result = Error(vScriptExec, pNameSpace, err);
