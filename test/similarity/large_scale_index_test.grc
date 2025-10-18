@@ -5,7 +5,7 @@
 
 /* Test larger sizes incrementally */
 test_sizes = [15000, 20000, 25000, 50000, 100000];
-test_sizes = [1000];
+test_sizes = [100];
 pinecone_threshold = 100;  /* Pinecone typically < 100ms */
 acceptable_threshold = 500;  /* Acceptable for local use */
 warning_threshold = 2000;   /* Warning threshold */
@@ -15,9 +15,12 @@ warning_threshold = 2000;   /* Warning threshold */
 ("Acceptable threshold: < " + acceptable_threshold.str() + "ms\n").echo();
 ("\n").echo();
 
-sets = 30;
 dim = 8;
-hashsource = dim.genhashset("cosine",sets,12,1234);
+sets = 20;
+planes = 6;
+prec = 16.0;
+
+hashsource = dim.genhashset("cosine",sets,planes,1234);
 
 /* Results storage */
 results = [];
@@ -29,7 +32,7 @@ for test_size in test_sizes {
     ("  Test 1: Pure vector similarity...\n").echo();
     start_time = $TIME().utc();
     
-    dbname = "test"+test_size.str().lpad(8,"0")+"_"+sets.str().lpad(2,"0")+".gdb";
+    dbname = "test"+test_size.str().lpad(8,"0")+"_"+sets.str().lpad(2,"0")+"_"+planes.str().lpad(2,"0")+".gdb";
     vectors = $file();
     if ($file().info(dbname)."$TYPE"!="FILE")
     {
@@ -45,7 +48,7 @@ for test_size in test_sizes {
         for i in test_size.range()
         {
             /* Create truly random vectors for realistic similarity testing */
-            vector = (8.0.random(#[dim]#)*2)-1;
+            vector = (prec.random(#[dim]#)*2)-1;
             hash = vector.genhash(hashsource);
             name = "r"+i.str().lpad(8,"0");
             field = {"$VALUE":vector};
@@ -61,7 +64,7 @@ for test_size in test_sizes {
         vectors.cd(dbname);
     };
     
-	search_vector = (8.0.random(#[dim]#)*2)-1;
+	search_vector = (prec.random(#[dim]#)*2)-1;
 
     create_vector_time = start_time.ms();
     indexes = vectors.ls("").vector().sort(1,["$ID"]).t().list()[0];
