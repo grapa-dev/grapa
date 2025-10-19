@@ -2506,11 +2506,6 @@ GrapaError GrapaDB::CompareKey(s16 compareType, GrapaCursor& dataCursor, GrapaCu
 	GrapaError err=0;
 	GrapaCursor cursor;
 
-	if (compareType == SEARCH_MODE && treeCursor.mValueType == RREC_ITEM)
-	{
-		result = -1;
-	}
-
 	result = -1;
 
 	switch(treeCursor.mValueType)
@@ -2592,11 +2587,6 @@ GrapaError GrapaDB::CompareRecordKey(s16 compareType, GrapaCursor& dataCursor, G
 	GrapaError err;
 	GrapaCursor cursor;
 	u64 indexRef;
-
-	if (compareType == SEARCH_MODE && treeCursor.mValueType == RREC_ITEM)
-	{
-		result = -1;
-	}
 
 	result = -1;
 
