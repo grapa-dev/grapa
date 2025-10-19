@@ -2701,7 +2701,7 @@ GrapaError GrapaDB::CompareRecordKey(s16 compareType, GrapaCursor& dataCursor, G
 		if (cr)
 		{
 			result = (cr > 0) ? 1 : ((cr < 0) ? -1 : 0);
-			break;
+			return(0);
 		}
 
 		err = Next(cursor);
