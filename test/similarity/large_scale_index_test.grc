@@ -15,7 +15,7 @@ warning_threshold = 2000;   /* Warning threshold */
 ("Acceptable threshold: < " + acceptable_threshold.str() + "ms\n").echo();
 ("\n").echo();
 
-dim = 1024;
+dim = 512;
 sets = 12;
 planes = 6;
 prec = 16.0;
@@ -37,7 +37,7 @@ for test_size in test_sizes {
     if ($file().info(dbname)."$TYPE"!="FILE")
     {
         vectors.rm(dbname);
-        vectors.mk(dbname,"ROW");
+        vectors.mk(dbname,"COL");
         vectors.cd(dbname);
         vectors.mkfield("$KEY","STR","FIX",16);
         for j in sets.range()
