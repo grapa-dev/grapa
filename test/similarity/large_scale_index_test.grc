@@ -44,14 +44,14 @@ for test_size in test_sizes {
         {
             vectors.mkfield("h"+j.str().lpad(2,"0"),"INT","FIX",8);
         };
-        vectors.mkfield("$VALUE","RAW","VAR");
+        vectors.mkfield("vector","RAW","VAR");
         for i in test_size.range()
         {
             /* Create truly random vectors for realistic similarity testing */
             vector = (prec.random(#[dim]#)*2)-1;
             hash = vector.genhash(hashsource);
             name = "r"+i.str().lpad(8,"0");
-            field = {"$VALUE":vector};
+            field = {"vector":vector};
             for j in sets.range()
             {
                 field += (("h"+j.str().lpad(2,"0")):(hash[j]));
@@ -67,10 +67,10 @@ for test_size in test_sizes {
 	search_vector = (prec.random(#[dim]#)*2)-1;
 
     create_vector_time = start_time.ms();
-    indexes = vectors.ls("").vector().sort(1,["$ID"]).t().list()[0];
+    indexes = vectors.ls("",null,["$ID"]).vector().sort(1,["$ID"]).t().list()[0];
     vector_results = indexes.similarity(search_vector, "cosine", {
         "datasource": vectors,
-        "datafield": "$VALUE",
+        "datafield": "vector",
         "top_n": 10,
         "include_scores": true,
         "include_items": true
@@ -86,7 +86,7 @@ for test_size in test_sizes {
 
     vector_results2 = indexes2.similarity(search_vector, "cosine", {
         "datasource": vectors,
-        "datafield": "$VALUE",
+        "datafield": "vector",
         "top_n": 10,
         "include_scores": true,
         "include_items": true
