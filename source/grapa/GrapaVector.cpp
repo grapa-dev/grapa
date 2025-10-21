@@ -5821,9 +5821,6 @@ GrapaError GrapaVector::Similarity(GrapaScriptExec* pScriptExec, GrapaNames* pNa
 	return 0;
 }
 
-
-class GrapaGenHashSetWorkQueue;
-
 class GrapaGenHashSetWorkEvent : public GrapaWorkEvent
 {
 public:
