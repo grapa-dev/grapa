@@ -22341,25 +22341,6 @@ GrapaRuleEvent* calculate_pointer_similarity(GrapaScriptExec* vScriptExec, Grapa
 
 	if (datasource->mValue.mToken == GrapaTokenType::TABLE && datasource->vDatabase == NULL)
 		return NULL;
-
-	// Get index list
-	std::vector<int> indexes;
-	if (index_list->vQueue)
-	{
-		GrapaRuleEvent* itemList = index_list->vQueue->Head();
-		while (itemList)
-		{
-			GrapaRuleEvent* item = itemList;
-			while(item && item->mValue.mToken == GrapaTokenType::PTR && item->vRulePointer)
-				item = item->vRulePointer;
-			if (item->mValue.mToken == GrapaTokenType::INT)
-			{
-				int index = (int)GrapaInt(item->mValue).LongValue();
-				indexes.push_back(index);
-			}
-			itemList = itemList->Next();
-		}
-	}
 	
 	std::vector<GrapaRuleEvent*> data(datasource->vQueue->mCount);
 	if (datasource->vQueue)
@@ -22376,119 +22357,60 @@ GrapaRuleEvent* calculate_pointer_similarity(GrapaScriptExec* vScriptExec, Grapa
 		}
 	}
 
-	GrapaFloat sum_ab(vScriptExec->vScriptState->mItemState.mFloatFix, vScriptExec->vScriptState->mItemState.mFloatMax, vScriptExec->vScriptState->mItemState.mFloatExtra, 0);
-	GrapaFloat sum_a2(vScriptExec->vScriptState->mItemState.mFloatFix, vScriptExec->vScriptState->mItemState.mFloatMax, vScriptExec->vScriptState->mItemState.mFloatExtra, 0);
-	GrapaFloat sum_b2(vScriptExec->vScriptState->mItemState.mFloatFix, vScriptExec->vScriptState->mItemState.mFloatMax, vScriptExec->vScriptState->mItemState.mFloatExtra, 0);
-	GrapaFloat norm_a(vScriptExec->vScriptState->mItemState.mFloatFix, vScriptExec->vScriptState->mItemState.mFloatMax, vScriptExec->vScriptState->mItemState.mFloatExtra, 0);
-	GrapaFloat norm_b(vScriptExec->vScriptState->mItemState.mFloatFix, vScriptExec->vScriptState->mItemState.mFloatMax, vScriptExec->vScriptState->mItemState.mFloatExtra, 0);
+	size_t cpu_cores = std::thread::hardware_concurrency();
+	int count = std::min(cpu_cores, size_t(16));;
 
-	// Calculate similarities
-	std::vector<std::pair<int, GrapaFloat>> similarities;
-	for (size_t i = 0; i < indexes.size(); i++)
+	int indx = 0;
+	std::vector<std::vector<int>> indexes(count);
+	if (index_list->vQueue)
 	{
-		int index = indexes[i];
-		
-		// Check if index is valid
-		if (index >= 0) // && index < (int)datasource->vQueue->mCount)
+		GrapaRuleEvent* itemList = index_list->vQueue->Head();
+		while (itemList)
 		{
-			GrapaRuleEvent* actual_item = NULL;
-			GrapaRuleEvent table_item;
-
-			if (datasource->mValue.mToken == GrapaTokenType::LIST)
-				actual_item = data[index];
-			else if ((datasource->mValue.mToken == GrapaTokenType::OBJ && datasource->vClass->mName.Cmp("$file") == 0) || datasource->mValue.mToken == GrapaTokenType::TABLE)
+			GrapaRuleEvent* item = itemList;
+			while (item && item->mValue.mToken == GrapaTokenType::PTR && item->vRulePointer)
+				item = item->vRulePointer;
+			if (item->mValue.mToken == GrapaTokenType::INT)
 			{
-				GrapaError err = get_table_pointer_similarity(vScriptExec, pNameSpace, datasource, datafield, index, &table_item);
-				if (err)
-					continue;
-				actual_item = &table_item;
+				int index = (int)GrapaInt(item->mValue).LongValue();
+				indexes[indx].push_back(index);
+				indx = (indx + 1) % count;
 			}
-
-			if (actual_item == NULL)
-				continue;
-			
-			// Calculate similarity based on query type
-			GrapaFloat similarity(vScriptExec->vScriptState->mItemState.mFloatFix, vScriptExec->vScriptState->mItemState.mFloatMax, vScriptExec->vScriptState->mItemState.mFloatExtra, 0);
-			if (query->mValue.mToken == GrapaTokenType::STR && actual_item->mValue.mToken == GrapaTokenType::STR)
-			{
-				// String similarity
-				GrapaRuleEvent* temp_result = calculate_string_similarity(vScriptExec, pNameSpace, actual_item, query, method);
-				if (temp_result && temp_result->mValue.mToken == GrapaTokenType::FLOAT)
-				{
-					similarity = GrapaFloat(temp_result->mValue);
-				}
-			}
-			else if (query->mValue.mToken == GrapaTokenType::VECTOR && actual_item->mValue.mToken == GrapaTokenType::VECTOR)
-			{
-				// Vector similarity with optimized inline calculation
-				if (actual_item->vVector && query->vVector)
-				{
-					GrapaVector* query_vec = query->vVector;
-					GrapaVector* item_vec = actual_item->vVector;
-					
-					if (query_vec->mData && item_vec->mData && query_vec->mDim == 1 && item_vec->mDim == 1 && query_vec->mCounts[0] == item_vec->mCounts[0])
-					{
-						u64 query_len = query_vec->mCounts[0];
-						
-						// Optimized cosine similarity calculation (inline)
-						if (method.StrLowerCmp("cosine") == 0 || method.StrLowerCmp("cosine_similarity") == 0)
-						{
-							// Reset accumulators for this vector
-							sum_ab.FROM(0);
-							sum_a2.FROM(0);
-							sum_b2.FROM(0);
-							
-							// Calculate cosine similarity: (a·b) / (||a|| * ||b||)							
-							for (u64 j = 0; j < query_len; j++)
-							{
-								GrapaVectorParam p1(vScriptExec, query_vec->mData, query_vec->mBlock, j);
-								GrapaVectorParam p2(vScriptExec, item_vec->mData, item_vec->mBlock, j);
-								
-								if (p1.aa && p2.aa)
-								{
-									sum_ab += *p1.aa * *p2.aa;
-									sum_a2 += *p1.aa * *p1.aa;
-									sum_b2 += *p2.aa * *p2.aa;
-								}
-							}
-							
-							// Calculate final cosine similarity
-							norm_a = sum_a2.Root(GrapaInt(2));
-							norm_b = sum_b2.Root(GrapaInt(2));
-							if (norm_a > 0 && norm_b > 0)
-							{
-								similarity = (sum_ab / (norm_a * norm_b));
-							}
-						}
-						else
-						{
-							// For non-cosine methods, fall back to full Similarity method
-							GrapaVector result_vector;
-							GrapaError err = item_vec->Similarity(vScriptExec, pNameSpace, *query_vec, result_vector, method);
-							if (err == 0 && result_vector.mCounts && result_vector.mCounts[0] > 0)
-							{
-								GrapaVectorParam param(vScriptExec, result_vector.mData, result_vector.mBlock, 0);
-								if (param.aa)
-								{
-									similarity = *param.aa;
-								}
-							}
-						}
-					}
-				}
-			}
-			else if (query->mValue.mToken == GrapaTokenType::GOBJ && actual_item->mValue.mToken == GrapaTokenType::GOBJ)
-			{
-				// Object similarity
-				similarity = GrapaFloat(calculate_object_similarity(actual_item, query));
-			}
-			
-			if (similarity >= threshold)
-			{
-				similarities.push_back({index, similarity});
-			}
+			itemList = itemList->Next();
 		}
 	}
+
+	GrapaPointerSimilarityWorkQueue wq;
+	GrapaPointerSimilarityWorkEvent* we = NULL;
+
+	for (int i = 0; i < count; i++) {
+		we = new GrapaPointerSimilarityWorkEvent(&wq, vScriptExec, pNameSpace, &indexes[i], query, &method, datasource, &datafield, &data);
+	}
+
+	we = (GrapaPointerSimilarityWorkEvent*)wq.Head();
+	while (we)
+	{
+		we->Start(false);
+		we = (GrapaPointerSimilarityWorkEvent*)we->Next();
+	}
+
+	wq.Start();
+
+	std::vector<std::pair<int, GrapaFloat>> similarities;
+	we = (GrapaPointerSimilarityWorkEvent*)wq.Head();
+	while (we)
+	{
+		for (const auto& sim : we->vResult)
+		{
+			if (sim.second >= threshold)
+			{
+				similarities.push_back({ sim.first, sim.second });
+			}
+		}
+		we = (GrapaPointerSimilarityWorkEvent*)we->Next();
+	}
+
+	wq.CLEAR();
 	
 	// Sort results
 	if (sort == "desc")
