@@ -5849,7 +5849,7 @@ public:
 	}
 	virtual ~GrapaGenHashSetWorkEvent()
 	{
-		//CLEAR();
+		CLEAR();
 	}
 	virtual void CLEAR()
 	{

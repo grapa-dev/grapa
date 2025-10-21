@@ -23040,6 +23040,94 @@ GrapaRuleEvent* GrapaLibraryRuleGenHashSetEvent::Run(GrapaScriptExec* vScriptExe
 	return result;
 }
 
+class GrapaGenHashWorkEvent : public GrapaWorkEvent
+{
+public:
+	GrapaScriptExec* vScriptExec;
+	GrapaVector* vVector;
+	GrapaRuleEvent* vSet;
+	int vIndex;
+	GrapaRuleEvent* vResult;
+	GrapaGenHashWorkEvent(GrapaWorkQueue* vQueue, GrapaScriptExec* vScriptExec, GrapaVector* pVector, GrapaRuleEvent* pSet, int itemIndex)
+	{
+		this->vScriptExec = vScriptExec;
+		this->vVector = pVector;
+		this->vSet = pSet;
+		this->vIndex = itemIndex;
+		this->vResult = NULL;
+		Set(vQueue);
+	}
+	virtual ~GrapaGenHashWorkEvent()
+	{
+		CLEAR();
+	}
+	virtual void CLEAR()
+	{
+		GrapaThread::Stop();
+		GrapaWorkEvent::CLEAR();
+	}
+	virtual void Running()
+	{
+		SendCondition();
+		u64 hash_value = 0;
+		int hyperplane_count = 0;
+		u64 vector_dim = vVector->mCounts[0];
+		GrapaRuleEvent* hyperplane_event = vSet->vQueue->Head();
+
+		while (hyperplane_event && hyperplane_count < 64) {  // Max 64 bits
+			if (hyperplane_event->mValue.mToken == GrapaTokenType::VECTOR && hyperplane_event->vVector) {
+				GrapaVector* hyperplane = hyperplane_event->vVector;
+
+				// Validate hyperplane dimension matches input vector
+				if (hyperplane->mDim == 1 && hyperplane->mCounts[0] == vector_dim) {
+					// Calculate dot product
+					double dot_product = 0.0;
+
+					for (u64 i = 0; i < vector_dim; i++) {
+						GrapaVectorParam vec_param(vScriptExec, vVector->mData, vVector->mBlock, i);
+						GrapaVectorParam hp_param(vScriptExec, hyperplane->mData, hyperplane->mBlock, i);
+
+						if (vec_param.aa && hp_param.aa) {
+							dot_product += vec_param.aa->ToDouble() * hp_param.aa->ToDouble();
+						}
+					}
+
+					// Generate hash bit: 1 if dot product >= 0, 0 otherwise
+					if (dot_product >= 0.0) {
+						hash_value |= (1ULL << hyperplane_count);
+					}
+
+					hyperplane_count++;
+				}
+			}
+			hyperplane_event = hyperplane_event->Next();
+		}
+
+		// Add hash value to result list
+		vResult = new GrapaRuleEvent(0, GrapaCHAR(""), GrapaBYTE(""));
+		vResult->mValue.mToken = GrapaTokenType::INT;
+		vResult->mValue.FROM(GrapaInt(hash_value).getBytes());
+	};
+};
+
+class GrapaGenHashWorkQueue : public GrapaWorkQueue
+{
+public:
+	virtual ~GrapaGenHashWorkQueue() {
+		GrapaGenHashWorkQueue::CLEAR();
+	}
+	virtual void CLEAR()
+	{
+		GrapaGenHashWorkEvent* e = (GrapaGenHashWorkEvent*)PopHead();
+		while (e)
+		{
+			e->CLEAR();
+			delete e;
+			e = (GrapaGenHashWorkEvent*)PopHead();
+		}
+	}
+};
+
 GrapaRuleEvent* GrapaLibraryRuleGenHashEvent::Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput)
 {
 	GrapaRuleEvent* result = NULL;
@@ -23095,7 +23183,6 @@ GrapaRuleEvent* GrapaLibraryRuleGenHashEvent::Run(GrapaScriptExec* vScriptExec, 
 	}
 	
 	GrapaVector* input_vector = vector_param->vVector;
-	u64 vector_dim = input_vector->mCounts[0];
 	
 	// Create result list for hash values
 	result = new GrapaRuleEvent(0, GrapaCHAR(""), GrapaBYTE(""));
@@ -23106,53 +23193,35 @@ GrapaRuleEvent* GrapaLibraryRuleGenHashEvent::Run(GrapaScriptExec* vScriptExec, 
 	GrapaRuleEvent* hash_set = sets_field->vQueue->Head();
 	int set_count = 0;
 	
+	GrapaGenHashWorkQueue wq;
+	GrapaGenHashWorkEvent* we = NULL;
+
 	while (hash_set && set_count < 32) {  // Max 4 sets
 		if (hash_set->mValue.mToken == GrapaTokenType::LIST && hash_set->vQueue) {
-			// Calculate hash value for this set
-			u64 hash_value = 0;
-			int hyperplane_count = 0;
-			GrapaRuleEvent* hyperplane_event = hash_set->vQueue->Head();
-			
-			while (hyperplane_event && hyperplane_count < 64) {  // Max 64 bits
-				if (hyperplane_event->mValue.mToken == GrapaTokenType::VECTOR && hyperplane_event->vVector) {
-					GrapaVector* hyperplane = hyperplane_event->vVector;
-					
-					// Validate hyperplane dimension matches input vector
-					if (hyperplane->mDim == 1 && hyperplane->mCounts[0] == vector_dim) {
-						// Calculate dot product
-						double dot_product = 0.0;
-						
-						for (u64 i = 0; i < vector_dim; i++) {
-							GrapaVectorParam vec_param(vScriptExec, input_vector->mData, input_vector->mBlock, i);
-							GrapaVectorParam hp_param(vScriptExec, hyperplane->mData, hyperplane->mBlock, i);
-							
-							if (vec_param.aa && hp_param.aa) {
-								dot_product += vec_param.aa->ToDouble() * hp_param.aa->ToDouble();
-							}
-						}
-						
-						// Generate hash bit: 1 if dot product >= 0, 0 otherwise
-						if (dot_product >= 0.0) {
-							hash_value |= (1ULL << hyperplane_count);
-						}
-						
-						hyperplane_count++;
-					}
-				}
-				hyperplane_event = hyperplane_event->Next();
-			}
-			
-			// Add hash value to result list
-			GrapaRuleEvent* hash_event = new GrapaRuleEvent(0, GrapaCHAR(""), GrapaBYTE(""));
-			hash_event->mValue.mToken = GrapaTokenType::INT;
-			GrapaInt hash_int(hash_value);
-			hash_event->mValue.FROM(hash_int.getBytes());
-			result->vQueue->PushTail(hash_event);
-			
+			we = new GrapaGenHashWorkEvent(&wq, vScriptExec, input_vector, hash_set, set_count);
 			set_count++;
 		}
 		hash_set = hash_set->Next();
 	}
+
+	we = (GrapaGenHashWorkEvent*)wq.Head();
+	while (we)
+	{
+		we->Start(false);
+		we = (GrapaGenHashWorkEvent*)we->Next();
+	}
+
+	wq.Start();
+
+	we = (GrapaGenHashWorkEvent*)wq.Head();
+	while (we)
+	{
+		if (we->vResult)
+			result->vQueue->PushTail(we->vResult);
+		we = (GrapaGenHashWorkEvent*)we->Next();
+	}
+
+	wq.CLEAR();
 	
 	return result;
 }
