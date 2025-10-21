@@ -5858,9 +5858,7 @@ public:
 	}
 	virtual void Running() 
 	{
-		printf("GrapaGenHashSetWorkEvent condition %d\n", vIndex);
 		SendCondition();
-		printf("GrapaGenHashSetWorkEvent started %d\n", vIndex);
 		if (vMethod->StrLowerCmp("cosine") == 0) {
 			vResult = vVector->generateCosineHyperplanes(vScriptExec, vDimension, vHyperplanes, vRandseed);
 		}
@@ -5870,7 +5868,6 @@ public:
 		else if (vMethod->StrLowerCmp("jaccard") == 0) {
 			vResult = vVector->generateJaccardMinhash(vScriptExec, vDimension, vHyperplanes, vRandseed);
 		}
-		printf("GrapaGenHashSetWorkEvent completed %d\n", vIndex);
 	};
 };
 
@@ -5906,13 +5903,9 @@ GrapaError GrapaVector::GenHashSet(GrapaScriptExec* vScriptExec, GrapaNames* pNa
 	GrapaGenHashSetWorkQueue wq;
 	GrapaGenHashSetWorkEvent* we = NULL;
 
-	printf("GenHashSet setup\n");
-
 	for (int i = 0; i < count; i++) {
 		we = new GrapaGenHashSetWorkEvent(&wq, vScriptExec, this, &method, mCounts[0], hyperplanes, randseed + i * 1000000, i);
 	}
-
-	printf("GenHashSet start\n");
 
 	we = (GrapaGenHashSetWorkEvent*)wq.Head();
 	while (we)
@@ -5921,28 +5914,30 @@ GrapaError GrapaVector::GenHashSet(GrapaScriptExec* vScriptExec, GrapaNames* pNa
 		we = (GrapaGenHashSetWorkEvent*)we->Next();
 	}
 
-	printf("GenHashSet queue start\n");
-
 	wq.Start();
-
-	printf("GenHashSet queue params\n");
 
 	if (result.vQueue == NULL)
 		result.vQueue = new GrapaRuleQueue();
 
+	int sets = 0;
 	we = (GrapaGenHashSetWorkEvent*)wq.Head();
 	while (we)
 	{
 		if (we->vResult)
+		{
 			result.vQueue->PushTail(we->vResult);
+			sets++;
+		}
 		we = (GrapaGenHashSetWorkEvent*)we->Next();
 	}
 
-	printf("GenHashSet CLEAR\n");
-
 	wq.CLEAR();
 
-	printf("GenHashSet queue end\n");
+	if (sets != count)
+	{
+		result.CLEAR();
+		return(-1);
+	}
 
 	return 0;
 }

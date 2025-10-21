@@ -22867,8 +22867,6 @@ GrapaRuleEvent* GrapaLibraryRuleGenHashSetEvent::Run(GrapaScriptExec* vScriptExe
 	sets->mValue.mToken = GrapaTokenType::LIST;
 	sets->vQueue = new GrapaRuleQueue();
 
-	printf("GrapaLibraryRuleGenHashSetEvent start\n");
-
 	// Handle different object types
 	if (obj_helper.vVal->mValue.mToken == GrapaTokenType::VECTOR) {
 		// Vector similarity - use GrapaVector::GenHashSet
@@ -23028,8 +23026,6 @@ GrapaRuleEvent* GrapaLibraryRuleGenHashSetEvent::Run(GrapaScriptExec* vScriptExe
 		return Error(vScriptExec, pNameSpace, -1);
 	}
 	
-	printf("GrapaLibraryRuleGenHashSetEvent params\n");
-
 	// Create result object
 	result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaBYTE());
 	result->mValue.mToken = GrapaTokenType::GOBJ;
@@ -23040,8 +23036,6 @@ GrapaRuleEvent* GrapaLibraryRuleGenHashSetEvent::Run(GrapaScriptExec* vScriptExe
 	result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("dimension"), GrapaInt(dimension).getBytes()));
 	result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("randseed"), GrapaInt(randseed).getBytes()));
 	result->vQueue->PushTail(sets);
-
-	printf("GrapaLibraryRuleGenHashSetEvent end\n");
 
 	return result;
 }
