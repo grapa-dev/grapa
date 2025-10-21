@@ -5821,6 +5821,77 @@ GrapaError GrapaVector::Similarity(GrapaScriptExec* pScriptExec, GrapaNames* pNa
 	return 0;
 }
 
+
+class GrapaGenHashSetWorkQueue;
+
+class GrapaGenHashSetWorkEvent : public GrapaWorkEvent
+{
+public:
+	GrapaVector* vVector;
+	GrapaScriptExec* vScriptExec;
+	GrapaCHAR* vMethod;
+	int vDimension;
+	int vHyperplanes;
+	u64 vRandseed;
+	int vIndex;
+	GrapaRuleEvent* vResult;
+	GrapaGenHashSetWorkEvent(GrapaWorkQueue* vQueue, GrapaScriptExec* vScriptExec, GrapaVector* pVector, GrapaCHAR* method, int dimension, int hyperplanes, u64 randseed, int itemIndex)
+	{
+		this->vScriptExec = vScriptExec;
+		this->vVector = pVector;
+		this->vMethod = method;
+		this->vDimension = dimension;
+		this->vHyperplanes = hyperplanes;
+		this->vRandseed = randseed;
+		this->vIndex = itemIndex;
+		this->vResult = NULL;
+		Set(vQueue);
+	}
+	virtual ~GrapaGenHashSetWorkEvent()
+	{
+		//CLEAR();
+	}
+	virtual void CLEAR()
+	{
+		GrapaThread::Stop();
+		GrapaWorkEvent::CLEAR();
+	}
+	virtual void Running() 
+	{
+		printf("GrapaGenHashSetWorkEvent condition %d\n", vIndex);
+		SendCondition();
+		printf("GrapaGenHashSetWorkEvent started %d\n", vIndex);
+		if (vMethod->StrLowerCmp("cosine") == 0) {
+			vResult = vVector->generateCosineHyperplanes(vScriptExec, vDimension, vHyperplanes, vRandseed);
+		}
+		else if (vMethod->StrLowerCmp("euclidean") == 0) {
+			vResult = vVector->generateEuclideanProjections(vScriptExec, vDimension, vHyperplanes, vRandseed);
+		}
+		else if (vMethod->StrLowerCmp("jaccard") == 0) {
+			vResult = vVector->generateJaccardMinhash(vScriptExec, vDimension, vHyperplanes, vRandseed);
+		}
+		printf("GrapaGenHashSetWorkEvent completed %d\n", vIndex);
+	};
+};
+
+class GrapaGenHashSetWorkQueue : public GrapaWorkQueue
+{
+public:
+	virtual ~GrapaGenHashSetWorkQueue() {
+		GrapaGenHashSetWorkQueue::CLEAR();
+	}
+	virtual void CLEAR()
+	{
+		GrapaGenHashSetWorkEvent* e = (GrapaGenHashSetWorkEvent*)PopHead();
+		while (e)
+		{
+			e->CLEAR();
+			delete e;
+			e = (GrapaGenHashSetWorkEvent*)PopHead();
+		}
+	}
+};
+
 GrapaError GrapaVector::GenHashSet(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaCHAR& method, int count, int hyperplanes, u64 randseed, GrapaRuleEvent& result)
 {
 	
@@ -5832,35 +5903,47 @@ GrapaError GrapaVector::GenHashSet(GrapaScriptExec* vScriptExec, GrapaNames* pNa
 		return -1;
 	}
 	
+	GrapaGenHashSetWorkQueue wq;
+	GrapaGenHashSetWorkEvent* we = NULL;
+
+	printf("GenHashSet setup\n");
+
+	for (int i = 0; i < count; i++) {
+		we = new GrapaGenHashSetWorkEvent(&wq, vScriptExec, this, &method, mCounts[0], hyperplanes, randseed + i * 1000000, i);
+	}
+
+	printf("GenHashSet start\n");
+
+	we = (GrapaGenHashSetWorkEvent*)wq.Head();
+	while (we)
+	{
+		we->Start(false);
+		we = (GrapaGenHashSetWorkEvent*)we->Next();
+	}
+
+	printf("GenHashSet queue start\n");
+
+	wq.Start();
+
+	printf("GenHashSet queue params\n");
+
 	if (result.vQueue == NULL)
 		result.vQueue = new GrapaRuleQueue();
-	
-	if (method.StrLowerCmp("cosine") == 0) {
-		for (int i = 0; i < count; i++) {
-			// Use different seed for each set to ensure different hyperplanes
-			u64 set_seed = randseed + i * 1000000;
-			GrapaRuleEvent* hyperplanes_set = generateCosineHyperplanes(vScriptExec, mCounts[0], hyperplanes, set_seed);
-			result.vQueue->PushTail(hyperplanes_set);
-		}
-	} else if (method.StrLowerCmp("euclidean") == 0) {
-		for (int i = 0; i < count; i++) {
-			// Use different seed for each set to ensure different projections
-			u64 set_seed = randseed + i * 1000000;
-			GrapaRuleEvent* projections_set = generateEuclideanProjections(vScriptExec, mCounts[0], hyperplanes, set_seed);
-			result.vQueue->PushTail(projections_set);
 
-		}
-	} else if (method.StrLowerCmp("jaccard") == 0) {
-		for (int i = 0; i < count; i++) {
-			// Use different seed for each set to ensure different minhash functions
-			u64 set_seed = randseed + i * 1000000;
-			GrapaRuleEvent* minhash_set = generateJaccardMinhash(vScriptExec, mCounts[0], hyperplanes, set_seed);
-			result.vQueue->PushTail(minhash_set);
-		}
-	} else {
-		return -1; // Unsupported method
+	we = (GrapaGenHashSetWorkEvent*)wq.Head();
+	while (we)
+	{
+		if (we->vResult)
+			result.vQueue->PushTail(we->vResult);
+		we = (GrapaGenHashSetWorkEvent*)we->Next();
 	}
-	
+
+	printf("GenHashSet CLEAR\n");
+
+	wq.CLEAR();
+
+	printf("GenHashSet queue end\n");
+
 	return 0;
 }
 
